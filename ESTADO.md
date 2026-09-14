@@ -1,13 +1,11 @@
 # Estado — josecoded
 
 ## Ahora
-Spec v1 cerrada el 2026-09-13 tras la batería de preguntas: `docs/superpowers/specs/2026-09-13-josecoded-plataforma.md`. Repo aún sin código. Se rehace joseCoded desde cero como monorepo `apps/web` + `apps/api`, conservando gateway, worker de Omen, Supabase y dominio (ver CLAUDE.md).
+Spec v1 cerrada el 2026-09-13 tras la batería de preguntas: `docs/superpowers/specs/2026-09-13-josecoded-plataforma.md`. Repo con setup y spec commiteados (a74b5d7), aún sin código. Nota del vault sincronizada el 2026-09-14. Se rehace joseCoded desde cero como monorepo `apps/web` + `apps/api`, conservando gateway, worker de Omen, Supabase y dominio (ver CLAUDE.md).
 
 ## Pendientes
-- [ ] Commitear CLAUDE.md, ESTADO.md, .gitignore y la spec.
 - [ ] Jose: corregir los tres ejemplos provisionales de `Comercial/voz.md` (redactados por Claude) o sustituirlos por textos reales.
 - [ ] Jose: alta de OAuth Google/GitHub en el dashboard de Supabase, antes de la rama de auth.
-- [ ] Actualizar la nota del vault `Proyectos/josecoded.md` con las decisiones cerradas (propuesto, pendiente de OK).
 - [ ] Inventario de contenido real (proyectos, textos, métricas) antes de `ux`.
 - [ ] Tarea 0: validar Next.js + OpenNext en Cloudflare Workers sin middleware Node (fallback Vercel).
 
