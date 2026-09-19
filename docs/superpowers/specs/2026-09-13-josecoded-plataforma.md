@@ -1,6 +1,6 @@
 # joseCoded — plataforma web personal (spec v1)
 
-**Fecha:** 2026-09-13 · **Perfil:** web · **Estado:** v1.1 (2026-09-14: packs escalonados, extras, ampliaciones y afiliados, R12). v1 cerrada el 2026-09-13 con la batería de preguntas a Jose (R1–R11). Sustituye a la v0.
+**Fecha:** 2026-09-13 · **Perfil:** web · **Estado:** v1.4 (2026-09-17: dirección visual redefinida, §12 UI/R14). v1.3 (decisiones técnicas P1–P6). v1.1 (2026-09-14: packs escalonados, extras, ampliaciones y afiliados, R12). v1 cerrada el 2026-09-13 con la batería de preguntas a Jose (R1–R11). Sustituye a la v0.
 
 ## 1. Objetivo y métricas
 
@@ -39,7 +39,7 @@ Se conservan y no se reescriben `josecoded-api`, `josecoded-worker`, Supabase y 
 | `/auth`, `/perfil` (Supabase Auth) | **Se conservan**: una cuenta para chat, comentarios y portal (Google, GitHub, email) |
 | Área de clientes (proyecto, tareas, assets, pack) | **Se conserva**, UI nueva sobre las tablas existentes |
 | Admin (`/admin`: leads, clientes, packs, finanzas, chats) y closer | **Se sustituye** por un panel admin nuevo, solo Jose (D9). Closer, comisiones y finanzas: fuera; CRM comercial en Notion |
-| `/staff/*`, MFA de staff | Fuera (sin staff). Admin = Jose con `admin_superusers` |
+| `/staff/*`, MFA de staff | Fuera (sin staff). Admin = Jose con `staff_members.role='admin'` |
 | SEO/GEO (sitemap, robots, OG dinámica, JSON-LD, `llms.txt`, alternates) | Se porta y se amplía (§8) |
 | Iconos "jc", carrusel de 3catinfo con marco de móvil | Iconos: rehacer. Carrusel: reutilizar la idea en Proyectos |
 | Demo de emulador Android | No vuelve |
@@ -101,8 +101,8 @@ navegador
  stats.josecoded.com → Umami (Docker en Omen, Cloudflare Tunnel)                         [D11]
 ```
 
-- **Frontend:** Next.js App Router, React Server Components, TypeScript estricto, Tailwind CSS v4, shadcn/ui como base (re-tematizado por `ui`), GSAP + `@gsap/react` + ScrollTrigger, `next/font` autoalojado, MDX (`@next/mdx` o `next-mdx-remote`) para blog y contenido largo. **Sin middleware Node**: guards de `/admin` y `/area-clientes` en layouts server-side leyendo la sesión Supabase (`@supabase/ssr`) y `admin_superusers` / `clients.user_id`.
-- **Auth:** Supabase Auth, proveedores Google, GitHub y email (magic link o password). Una única cuenta de visitante sirve para chat, comentarios y portal. Rol admin = fila en `admin_superusers`. Los proveedores OAuth se configuran en el dashboard de Supabase (tarea de Jose).
+- **Frontend:** Next.js App Router, React Server Components, TypeScript estricto, Tailwind CSS v4, shadcn/ui como base (re-tematizado por `ui`), GSAP + `@gsap/react` + ScrollTrigger, `next/font` autoalojado, MDX (`@next/mdx` o `next-mdx-remote`) para blog y contenido largo. **Sin middleware Node**: guards de `/admin` y `/area-clientes` en layouts server-side leyendo la sesión Supabase (`@supabase/ssr`) y `staff_members.role='admin'` / `clients.user_id`.
+- **Auth:** Supabase Auth, proveedores Google, GitHub y email (magic link o password). Una única cuenta de visitante sirve para chat, comentarios y portal. Rol admin = `staff_members.role='admin'`. Los proveedores OAuth se configuran en el dashboard de Supabase (tarea de Jose).
 - **Datos:** el sitio público no consulta Supabase en tiempo de petición salvo comentarios (RSC con caché corta), formulario, generador y chat. Contenido de servicios, proyectos y blog en MDX/JSON versionado.
 - **Gateway (`apps/api`):** el código de `josecoded-api` se mueve a este repo con su propio `wrangler deploy`; rutas existentes intactas; se **añaden** `proposals/generate` y `notify/lead`, y el origen nuevo en CORS. `knowledge.json` se actualiza con el perfil nuevo.
 - **Worker de Omen:** sin cambios. Se usa `n8n/trigger/<workflow>` para Telegram y, desde scripts locales, `ai/blog/*`.
@@ -118,13 +118,13 @@ navegador
 | D2 | Persona principal Marta; secundaria Dani | R2 | Persona única |
 | D3 | Cloudflare Workers vía OpenNext, sin middleware Node; tarea 0 del plan valida un despliegue real; fallback Vercel sin cambiar código | R3. Todo lo demás está en Cloudflare; el bloqueo previo era el middleware, que aquí no existe por diseño | Vercel como primera opción; Pages estático |
 | D4 | Foro eliminado; comentarios en artículos | R4 | Mantener el foro |
-| D5 | Generador de propuesta con IA en el gateway: `POST /api/v1/proposals/generate` con Workers AI (el mismo binding que ya usa admin-chat). El modelo **clasifica** la petición en servicios y extras; el **precio lo calcula una tabla de reglas** derivada de `Comercial/tarifas.md`, nunca el modelo. Turnstile + rate limit por IP. El visitante ve alcance + "desde X €" y decide enviarlo: se crea `lead` con `ai_proposal` | R5. Workers AI evita depender de que Omen esté encendido; separar clasificación de precio elimina precios inventados | Ollama en Omen (disponibilidad); Claude API (coste y otra credencial); precio generado por el LLM |
+| D5 | Generador de propuesta con IA en el gateway: `POST /api/v1/proposals/generate` con Workers AI (el mismo binding que ya usa admin-chat). El modelo **clasifica** la petición en servicios y extras; el **precio lo calcula una tabla de reglas** derivada de `Comercial/tarifas.md`, nunca el modelo. Turnstile + rate limit por IP; Cloudflare AI Gateway delante del binding (caché, límites, logs). El visitante ve alcance + "desde X €" y decide enviarlo: se crea `lead` con `ai_proposal` | R5. Workers AI evita depender de que Omen esté encendido; separar clasificación de precio elimina precios inventados | Ollama en Omen (disponibilidad); Claude API (coste y otra credencial); precio generado por el LLM |
 | D6 | Chat IA conservado sobre `admin-chat/*` (requiere cuenta; login con Google en un clic). El generador de propuesta es la vía anónima de Marta; el chat es sobre todo para Dani | R4. Reutiliza el contrato existente sin tocar el gateway; el takeover humano ya existe | Chat anónimo (exigiría nuevo modelo de conversación en el gateway); descartado en Q1 |
 | D7 | Sin MVP: producto final v1 en ramas por feature con puerta de calidad cada una; producción se abre con todo | R7 | Lanzamiento por etapas |
 | D8 | **Blog en MDX en el repo**, no desde el admin | Un solo autor; versionado en git; render estático perfecto para SEO/GEO; se evita construir un editor, subida de imágenes y previsualización; Claude Code y `ai/blog/*` asisten la redacción en local. El admin solo modera comentarios. `blog_posts` queda sin uso (no se borra) | Editor en el admin (coste alto, beneficio nulo con un autor); Notion como CMS (acopla la web al conector) |
-| D9 | Panel admin propio en `/admin` (solo Jose, `admin_superusers`): leads con propuestas IA, moderación, portal cliente, chat con takeover. Aviso de leads por Telegram vía `notify/lead` → n8n | R9. El CRM comercial (propuestas, seguimiento) sigue en Notion vía skills; el admin es operativo, no comercial | Ver leads solo en Notion; email |
+| D9 | Panel admin propio en `/admin` (solo Jose, `staff_members.role='admin'`): leads con propuestas IA, moderación, portal cliente, chat con takeover. Aviso de leads por Telegram: Edge Function `notify` (evento `lead.created`) como vía primaria, n8n opcional (decisión P3, 2026-09-17) | R9. El CRM comercial (propuestas, seguimiento) sigue en Notion vía skills; el admin es operativo, no comercial | Ver leads solo en Notion; email |
 | D10 | Comentarios solo con cuenta (Google/GitHub/email), estado `pending`/`approved`/`rejected`, moderación en admin; publicación posterior a moderación (cola de aprobación, Q2) | R10 | Comentarios anónimos; servicio externo (Giscus: exige GitHub y no sirve a Marta) |
-| D11 | **Umami autoalojado en Omen** (contenedor nuevo, `stats.josecoded.com` por Cloudflare Tunnel) con eventos `whatsapp_click`, `contact_submit`, `proposal_generated`, `proposal_sent`, `chat_started`. Cloudflare Web Analytics activo como complemento (un script, sin cookies, sin coste) | R11. Cloudflare Web Analytics no tiene eventos personalizados ni embudos; Umami sí, sin cookies ni banner | GA4 (banner y peso) |
+| D11 | **Umami autoalojado en Omen** (contenedor nuevo, `stats.josecoded.com` por Cloudflare Tunnel) con eventos `whatsapp_click`, `contact_submit`, `proposal_generated`, `proposal_sent`, `chat_started`, `call_booked`. Cloudflare Web Analytics activo como complemento (un script, sin cookies, sin coste) | R11. Cloudflare Web Analytics no tiene eventos personalizados ni embudos; Umami sí, sin cookies ni banner | GA4 (banner y peso) |
 | D12 | Oscuro únicamente, tech elegante, "que no parezca hecho por IA": `ux` y `ui` proponen 2–3 direcciones; prohibido: gradientes morados genéricos, glassmorphism de plantilla, Inter + texto degradado, iconos brillantes, copy vacío. Sin 3D | R8 | Claro por defecto (v0); HUD "Reactor" de P8 se toma como antecedente, no como punto de partida |
 | D13 | Precios de packs y extras con fuente única `Comercial/tarifas.md` (con fecha de vigencia) → `pricing.json` en el repo con script de sincronización manual. `pricing.json` contiene packs, extras, regla de ampliación (diferencia de lista) y regla de afiliados (2 meses / 10 % / 20 % sobre el primer pedido sin IVA); los regalos por pack se excluyen del JSON público. Propuestas y presupuestos ya emitidos conservan sus precios en Notion | R8. Una sola fuente para web, generador, área de clientes y skills comerciales; los precios cambian con el tiempo sin reescribir código | Precios escritos a mano en la página; histórico de versiones en tarifas.md |
 | D15 | **Programa de afiliados en la web v1**, dentro del área interna: código por usuario, enlace `?ref=CODIGO` guardado en cookie de 30 días y volcado al `lead` al crearse (formulario, generador o chat); al marcar el lead como cerrado y cobrado en admin se genera la recompensa por regla (cliente: 2 meses de mantenimiento; no cliente: 10 %; premium: 20 %; base = primer pedido sin IVA); el pago es manual y el admin lo marca como abonado. Un lead, un afiliado; sin autoreferidos | R12 (decisión de Jose 2026-09-14). Programa simple, verificable y visible para el afiliado sin construir pasarela de pagos | Llevarlo a mano en Notion; post-lanzamiento |
@@ -184,9 +184,9 @@ navegador
 - Portal: un cliente ve solo lo suyo (test RLS con dos cuentas); Jose gestiona tareas y assets desde admin.
 - Ampliación: un cliente con P2 solicita P3 y ve 1.100 € (diferencia de lista según `pricing.json`); la solicitud aparece en admin.
 - Afiliados: visita con `?ref=CODIGO` → lead creado con `affiliate_code`; al marcarlo cerrado y cobrado en admin con base 1.400 € se genera recompensa de 140 € (no cliente), 280 € (premium) o 2 meses de mantenimiento (cliente); el afiliado la ve en su área como pendiente y como abonada tras marcarla Jose.
-- `/admin` inaccesible sin fila en `admin_superusers` (comprobado sin middleware).
+- `/admin` inaccesible sin `staff_members.role='admin'` (comprobado sin middleware).
 - SEO/GEO: todos los criterios de §8 verificados; redirecciones 301 probadas; `llms.txt` generado.
-- Umami registra los cinco eventos; Cloudflare Web Analytics activo.
+- Umami registra los seis eventos; Cloudflare Web Analytics activo.
 - `pnpm lint && pnpm typecheck && pnpm test && pnpm build` en verde; `/puerta-calidad` pasa en todas las ramas; Lighthouse móvil ≥ 90/95/100.
 
 ## 11. Preguntas abiertas (resueltas el 2026-09-13)
@@ -203,11 +203,38 @@ navegador
 | Q8 | Quién monta Umami | Tarea `infra` del plan (`implementador-infra`), OK de Jose antes de exponer `stats.josecoded.com` |
 | Q9 | Modelo de Workers AI | Se mantiene Llama 3.3 70B para generador y chat |
 
+## 12. Decisiones de UX, UI e integraciones (batería del 2026-09-17, R13)
+
+**UX**
+- Home sin scroll: tesis en una frase + dos vías con el mismo peso (Empresas / Negocios).
+- Navegación: Empresas · Negocios · Proyectos · Blog · Sobre mí + CTA Contacto. Chat y área privada como accesos secundarios (cabecera/pie). Móvil: desplegable.
+- Generador de propuesta: chat guiado de 3–4 preguntas (tipo de negocio, qué debe hacer la web, ¿vende o reserva online?, plazo) → propuesta. Nunca página en blanco.
+- Acción primaria de contacto: Negocios → WhatsApp; Empresas → formulario/email y reserva de llamada (calendario).
+
+**UI** (redefinida el 2026-09-17 tras rechazar Jose las tres direcciones y la demo de motion; R14)
+- Referencias: **limpieza y claridad de raycast.com** (pero menos negro: con color, verde o morado) + **efectos de scroll, animaciones al pulsar y transiciones de página de igloo.inc, lusion.co y activetheory.net**, sin marear. Elementos interactivos, no simples tarjetas.
+- "Futurista pero elegante, muy tecnológico sin recargar; wow de diseño y animación". El wow debe venir de: (1) **profundidad y materiales** (capas, luz volumétrica, vidrio/metal, sensación 3D sin 3D real), (2) **transiciones morph entre secciones** (la interfaz se transforma, nada se recarga), (3) **detalle microscópico** en cada hover, foco y cambio de estado.
+- Hero: de fondo, **código que se sobreescribe alternando sus letras, lento y no todo de golpe**; el título hace lo mismo pero resuelve rápido en el título final. El fondo no debe quitar atención a las llamadas a la acción.
+- Rechazado: ejecución plana sin profundidad ni acabado; tipografía y composición "de web normal"; partículas, ondas, retículas y visual generativo decorativo; el foco de luz estático.
+- Solo modo oscuro (no negro puro). Tipografías con roles distintos (titulares / texto / UI). Motion GSAP + scroll suave con barra propia, desactivable por `prefers-reduced-motion`.
+- Aprobación: `ui` estudia las referencias en el navegador, entrega **un prototipo único de la home** (IDE-lite de UX v2.1) en HTML real y se itera con Jose hasta aprobar antes del plan.
+
+**Integraciones externas (además de Supabase, gateway, worker de Omen, n8n→Telegram, Umami)**
+- GitHub: actividad y repos públicos (API pública, cacheada en build/ISR) como prueba real para Dani.
+- Stores: App Store / Google Play, valoraciones y enlaces en fichas de apps.
+- Calendario: Cal.com (preferido, open source, embebible) o Calendly para "reserva 20 min" en la vía Empresas.
+- Jose está abierto a más propuestas: el diseño técnico lista candidatas con coste/beneficio.
+
+**Tests**
+- Vitest (lógica, componentes, `pricing.json`, reglas de afiliados/ampliación) + integración (rutas del gateway, RLS) + Playwright E2E en flujos críticos (generador, contacto, auth, área privada, admin) + snapshot de JSON-LD + Lighthouse CI en build.
+
+**Documento previo a implementación (pedido por Jose):** pantallas, componentes por pantalla, subpantallas y páginas de error (404, 500, sin permisos, offline), funcionalidades, stack, restricciones, flujos, tests, preview de estilos aprobada, integraciones con API/worker y con plataformas externas. Se consolida en `docs/superpowers/design/` antes del plan.
+
 ## Anexo A — Contratos conservados del gateway (`apps/api`, montado en `/api/v1`)
 
 - `GET /health` (público), `GET /api/v1/health`.
 - `GET /api/v1/auth/me`, `GET /api/v1/system/status` (JWT Supabase; `system/status` proxya al worker).
-- `admin-chat/*`: `GET thread`, `POST messages`, `POST meeting`, `POST n8n/inbound`. `admin-chat/admin/*`: `GET conversations`, `GET/POST :id/messages`, `POST :id/ai`, `POST :id/read` (solo `admin_superusers`).
+- `admin-chat/*`: `GET thread`, `POST messages`, `POST meeting`, `POST n8n/inbound`. `admin-chat/admin/*`: `GET conversations`, `GET/POST :id/messages`, `POST :id/ai`, `POST :id/read` (solo admin: `staff_members.role='admin'`).
 - `forum/*`: intactas, sin consumidor.
 - Middlewares: `requestId`, `securityHeaders`, CORS por origen (añadir preview y producción nuevos), rate limit fijo y de escritura.
 - **Nuevas (aditivas):** `POST /api/v1/proposals/generate`, `POST /api/v1/notify/lead`.
@@ -218,8 +245,8 @@ navegador
 
 ## Anexo C — Supabase
 
-Heredadas e intactas: `blog_posts`, `forum_*` (6), `admin_chat_conversations`, `admin_chat_messages`, `admin_superusers`, `staff_members`, `leads`, `lead_assignments`, `commission_entries`, `clients`, `client_tasks`, `client_task_comments`, `client_assets`, `client_pack_extras`, `pack_templates`, `pack_extras`. Edge Function `notify` (requiere `NOTIFY_SHARED_SECRET`).
+Heredadas e intactas (esquema real verificado el 2026-09-17 en el diseño técnico §0 y §6: no existe `admin_superusers`, el admin es `staff_members.role='admin'`): `blog_posts`, `forum_*` (6), `admin_chat_conversations`, `admin_chat_messages`, `staff_members`, `leads`, `lead_assignments`, `commission_entries`, `clients`, `client_tasks`, `client_task_comments`, `client_assets`, `client_pack_extras`, `pack_templates`, `pack_extras`. Edge Function `notify` (requiere `NOTIFY_SHARED_SECRET`).
 
-Aditivas (solo se añade, nunca se altera lo heredado): `blog_comments`; `affiliates` (user_id, code, level `standard|premium`, created_at); columna `leads.affiliate_code` (nullable); `affiliate_rewards` (affiliate_id, lead_id, type `maintenance_months|percent`, amount, status `pending|paid`, paid_at); `upgrade_requests` (client_id, from_pack, to_pack, extras[], computed_price, status). RLS: cada usuario ve solo sus filas; Jose (`admin_superusers`) ve todo. `pack_templates` y `pack_extras` heredadas se alinean con `pricing.json` mediante el script de sincronización (no se editan a mano).
+Aditivas (solo se añade, nunca se altera lo heredado): `blog_comments`; `affiliates` (user_id, code, level `standard|premium`, created_at); columna `leads.affiliate_code` (nullable); `affiliate_rewards` (affiliate_id, lead_id, type `maintenance_months|percent`, amount, status `pending|paid`, paid_at); `upgrade_requests` (client_id, from_pack, to_pack, extras[], computed_price, status). RLS: cada usuario ve solo sus filas; Jose (`staff_members.role='admin'`) ve todo. `pack_templates` y `pack_extras` heredadas se alinean con `pricing.json` mediante el script de sincronización (no se editan a mano).
 
 Aditivas previstas: `blog_comments` + RLS; `leads.ai_proposal jsonb`, `leads.source text`; política de insert anónimo en `leads` acotada. Todas con `list_tables` y `get_advisors` antes y después, y OK de Jose para producción.

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>hero-lab 3 · split + partículas de código</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js" } }</script>
+</head>
+<body>
+<header class="nav">
+  <span class="nav__brand">josecoded</span>
+  <nav class="nav__links"><a href="#">Empresas</a><a href="#">Negocios</a><a href="#">Proyectos</a><a href="#">Blog</a><a href="#">Sobre mí</a></nav>
+  <span class="nav__right"><span class="dim">Entrar</span><a class="btn btn--primary btn--sm" href="#">Contacto</a></span>
+</header>
+
+<div class="bg" aria-hidden="true">
+  <div class="bg__drift" id="bg-drift"></div>
+  <div class="bg__ray" id="bg-ray"></div>
+  <div class="bg__grid" id="bg-grid"></div>
+  <div class="bg__grain" id="bg-grain"></div>
+</div>
+<canvas id="three" aria-hidden="true"></canvas>
+<section class="hero">
+  <div class="hero__left">
+    <a class="badge" href="#"><span class="dot"></span> Disponible para proyectos <span class="badge__arrow">›</span></a>
+    <h1>Jose Carlos<br>Sánchez</h1>
+    <p class="sub">Desarrollador full-stack. Apps móviles, webs y sistemas con IA que se publican y se usan. React Native, Next.js, TypeScript, Supabase.</p>
+    <div class="ctas"><a class="btn btn--primary" href="#">Ver proyectos</a><a class="btn btn--link" href="#">Una web para mi negocio →</a></div>
+  </div>
+  <div class="hero__right" id="stage" aria-label="Partículas de código que se transforman en un móvil, una web y una red neuronal">
+    <div class="stateLabel" id="stateLabel"><span data-s="0">móvil</span><span data-s="1">web</span><span data-s="2">IA · chip</span></div>
+  </div>
+</section>
+
+<aside class="panel" id="panel" hidden>
+  <div class="panel__row"><b>hero-lab 3</b><span><button id="replay" type="button">Intro</button> <button id="next" type="button">Siguiente</button></span></div>
+  <label>duración estado (s) <input type="range" id="hold" min="1" max="8" step="0.5" value="3.5"><output>3.5</output></label>
+  <label>duración morph (s) <input type="range" id="morph" min="0.5" max="4" step="0.1" value="1.6"><output>1.6</output></label>
+  <label>rotación <input type="range" id="rot" min="0" max="1" step="0.02" value="0.18"><output>0.18</output></label>
+  <label>tamaño glifo <input type="range" id="size" min="6" max="40" step="1" value="16"><output>16</output></label>
+  <label>brillo <input type="range" id="bright" min="0.1" max="2" step="0.05" value="0.8"><output>0.8</output></label>
+  <label>verde (%) <input type="range" id="green" min="0" max="60" step="1" value="14"><output>14</output></label>
+  <label>lluvia matrix <input type="range" id="rain" min="0" max="2" step="0.05" value="0.7"><output>0.7</output></label>
+  <label>respiración <input type="range" id="breath" min="0" max="0.08" step="0.005" value="0.025"><output>0.025</output></label>
+  <label>ondas: periodo (s) <input type="range" id="wperiod" min="1.5" max="10" step="0.5" value="4"><output>4</output></label>
+  <label>ondas: amplitud <input type="range" id="wamp" min="0" max="1.5" step="0.05" value="0.6"><output>0.6</output></label>
+  <label>dispersión morph <input type="range" id="scatter" min="0" max="1.5" step="0.05" value="0.6"><output>0.6</output></label>
+  <details class="panel__group" open><summary>Fondo</summary>
+    <label class="chk"><input type="checkbox" data-layer="grain" checked> grano fino</label>
+    <label>grano: opacidad (%) <input type="range" data-var="--grain-op" min="0" max="12" step="0.5" value="3.5"><output>3.5</output></label>
+    <label>grano: tamaño <input type="range" data-var="--grain-size" data-unit="px" min="80" max="400" step="10" value="180"><output>180</output></label>
+    <label class="chk"><input type="checkbox" data-layer="grid"> retícula de puntos</label>
+    <label>retícula: opacidad (%) <input type="range" data-var="--grid-op" min="0" max="40" step="1" value="12"><output>12</output></label>
+    <label>retícula: paso <input type="range" data-var="--grid-gap" data-unit="px" min="12" max="64" step="2" value="28"><output>28</output></label>
+    <label>retícula: radio visible <input type="range" data-var="--grid-r" data-unit="vmax" min="10" max="80" step="2" value="34"><output>34</output></label>
+    <label class="chk"><input type="checkbox" data-layer="ray" checked> rayo de luz</label>
+    <label>rayo: intensidad (%) <input type="range" data-var="--ray-op" min="0" max="40" step="1" value="10"><output>10</output></label>
+    <label>rayo: anchura (%) <input type="range" data-var="--ray-w" min="4" max="40" step="1" value="14"><output>14</output></label>
+    <label>rayo: ángulo <input type="range" data-var="--ray-a" data-unit="deg" min="180" max="260" step="1" value="214"><output>214</output></label>
+    <label>rayo: desenfoque <input type="range" data-var="--ray-blur" data-unit="px" min="0" max="120" step="4" value="48"><output>48</output></label>
+    <label class="chk"><input type="checkbox" data-layer="drift"> deriva de brillo</label>
+    <label>deriva: amplitud (%) <input type="range" data-var="--drift-amp" min="0" max="15" step="0.5" value="4"><output>4</output></label>
+    <label>deriva: periodo (s) <input type="range" data-var="--drift-t" data-unit="s" min="4" max="60" step="1" value="20"><output>20</output></label>
+  </details>
+  <p class="panel__fps"><span id="fps">–</span> fps · <span id="count">–</span> partículas</p>
+</aside>
+
+<script src="app.js?v=17" type="module"></script>
+</body>
+</html>
