@@ -1,6 +1,6 @@
 # joseCoded — plataforma web personal (spec v1)
 
-**Fecha:** 2026-09-13 · **Perfil:** web · **Estado:** v1.4 (2026-09-17: dirección visual redefinida, §12 UI/R14). v1.3 (decisiones técnicas P1–P6). v1.1 (2026-09-14: packs escalonados, extras, ampliaciones y afiliados, R12). v1 cerrada el 2026-09-13 con la batería de preguntas a Jose (R1–R11). Sustituye a la v0.
+**Fecha:** 2026-09-13 · **Perfil:** web · **Estado:** v1.5.2 (Q11–Q14 y P11–P15 resueltas; hero: subtítulo por audiencia sin tecnologías, alternativa B de UX §4.1) (2026-09-19: decisión del hero cerrada en §12/D16 y nuevo módulo **Radar** en v1, §13/D17–D26). v1.4 (2026-09-17: dirección visual redefinida, §12 UI/R14). v1.3 (decisiones técnicas P1–P6). v1.1 (2026-09-14: packs escalonados, extras, ampliaciones y afiliados, R12). v1 cerrada el 2026-09-13 con la batería de preguntas a Jose (R1–R11). Sustituye a la v0.
 
 ## 1. Objetivo y métricas
 
@@ -9,16 +9,19 @@
 - **(A) Empresas que contratan** (equipos técnicos, CTOs, reclutadores): la web es a la vez portfolio y demostración. Debe mostrar habilidades y conocimientos —en datos y con la propia web— y leerse como una innovación tecnológica y un despliegue técnico real.
 - **(B) Negocios locales que encargan una web**: Jose actúa como freelance con proyectos propios. **No se vende como agencia**; la "agencia de webs para negocios" queda absorbida en la oferta freelance.
 
+Desde v1.5 la plataforma tiene además un **uso interno** para Jose: **Radar** (§13), el módulo del admin que busca empleo y encargos freelance, prepara candidaturas y las envía o asiste solo cuando Jose confirma.
+
 Se conservan y no se reescriben `josecoded-api`, `josecoded-worker`, Supabase y el dominio. Estilos, objetivos y UI/UX son nuevos.
 
 **Métricas de éxito (a 3 meses del lanzamiento):**
 - (B) ≥ 4 leads cualificados/mes desde la web (formulario, generador de propuesta o WhatsApp con origen web).
 - (A) ≥ 2 contactos de empresa/mes; tiempo medio en "Proyectos" y "Sobre mí" > 90 s.
 - Un visitante sin scroll entiende qué hace Jose, para quién y cómo contactar (validado por `usuario-ejemplo` con ambas personas).
-- Core Web Vitals en verde en móvil 4G (LCP < 2,5 s, INP < 200 ms, CLS < 0,1) con las animaciones activas.
+- Core Web Vitals en verde en móvil 4G (LCP < 2,5 s, INP < 200 ms, CLS < 0,1) con las animaciones activas **y con la escena del hero (§12) cargada en diferido**.
 - Lighthouse móvil: rendimiento ≥ 90, accesibilidad ≥ 95, SEO 100. WCAG 2.2 AA en `/puerta-calidad`.
 - GEO: josecoded aparece citado al preguntar a ChatGPT/Perplexity/Google AI "desarrollador full-stack React Native freelance en <ciudad de Jose>" y "quién es Jose (josecoded)" (protocolo de verificación en §8).
 - Nada publicado sin contenido real.
+- **Radar (§13.1):** ≥ 20 ofertas relevantes/semana descubiertas y puntuadas; ≥ 5 candidaturas o propuestas confirmadas/semana con material adaptado; el 100 % de los correos de respuesta de plataformas y empresas conocidas quedan vinculados a su candidatura sin intervención; cero envíos sin confirmación de Jose.
 
 ## 2. Personas
 
@@ -26,7 +29,9 @@ Se conservan y no se reescriben `josecoded-api`, `josecoded-worker`, Supabase y 
 
 **Secundaria: "Dani, CTO / responsable técnico / reclutador"** que evalúa contratar a Jose (proyecto o puesto). Entra desde escritorio, mira stack, proyectos reales en stores, código, cómo trabaja y cómo está hecha esta web. Su ruta: home → "Proyectos" → "Sobre mí" / "Cómo trabajo" → chat IA o contacto.
 
-`usuario-ejemplo` valida siempre con Marta; con Dani en Proyectos, Sobre mí, chat y blog.
+**Operador (para Radar, §13): "Jose"**, único usuario del admin. Revisa la bandeja de Radar desde el móvil (Telegram) varias veces al día y desde escritorio (admin) una vez al día. Quiere confirmar o descartar en un toque, con el material ya preparado, y no perder ningún plazo ni respuesta por correo.
+
+`usuario-ejemplo` valida siempre con Marta; con Dani en Proyectos, Sobre mí, chat y blog; con Jose en la bandeja de Radar (flujo de confirmación en admin y en Telegram).
 
 ## 3. Inventario de josedev y destino
 
@@ -43,15 +48,16 @@ Se conservan y no se reescriben `josecoded-api`, `josecoded-worker`, Supabase y 
 | SEO/GEO (sitemap, robots, OG dinámica, JSON-LD, `llms.txt`, alternates) | Se porta y se amplía (§8) |
 | Iconos "jc", carrusel de 3catinfo con marco de móvil | Iconos: rehacer. Carrusel: reutilizar la idea en Proyectos |
 | Demo de emulador Android | No vuelve |
+| Diseño P7 "Sistema de búsqueda de empleo + dashboard" (spec de josedev del 2026-07-13, nunca implementado) | **Superado por Radar (§13)**: se conserva la idea (Indeed por MCP, Kanban en admin, Gmail para respuestas, Proton Bridge) y cambian las decisiones de LinkedIn (P7 excluía el scraping; Jose lo admite ahora con sesión propia y límites, D20), de preparación (P7 no generaba material; Radar sí) y de envío (P7 era manual; Radar envía o asiste tras confirmación) |
 
 ## 4. Alcance
 
-No hay MVP: se lanza el **producto final v1** completo, cuanto antes. El trabajo se organiza en ramas por feature con `/puerta-calidad` en cada una, pero producción se abre con todo.
+No hay MVP: se lanza el **producto final v1** completo, cuanto antes. El trabajo se organiza en ramas por feature con `/puerta-calidad` en cada una, pero producción se abre con todo. **Desde v1.5, "todo" incluye Radar (§13): Jose acepta que retrase el lanzamiento (D17).**
 
 ### Producto final v1
 
 **Público**
-1. Home: tesis en una frase, dos vías (empresa / negocio local), prueba real visible sin scroll, motion GSAP con propósito.
+1. Home: tesis en una frase, dos vías (empresa / negocio local), prueba real visible sin scroll, **hero split con escena de partículas-glifo en Three.js e intro de caída (§12, D16)**, motion GSAP con propósito en el resto de la página.
 2. "Trabajo con empresas" (audiencia A): servicios freelance (web, móvil, IA integrada), stack, forma de trabajar, CV descargable.
 3. "Webs para tu negocio" (audiencia B): cuatro packs escalonados (P1 básica, P2 pedidos/reservas, P3 gestión, P4 gestión + automatizaciones) con precio cerrado "Desde X €" y extras aparte (mantenimiento básico/extendido, SEO básico/completo, GEO, análisis de ciberseguridad), tomados de `Comercial/tarifas.md`; proceso; CTA al generador de propuesta y a WhatsApp. Los "extras regalados por pack" NO se muestran en la web (son argumento de cierre en la propuesta).
 4. **Generador de propuesta con IA**: el negocio describe lo que necesita; la IA lo clasifica en un pack (P1–P4) y extras; el precio orientativo sale de `pricing.json`; al enviarlo se crea un lead cualificado (D5). Si llega con `?ref=CODIGO`, el lead queda atribuido al afiliado (D15).
@@ -67,14 +73,17 @@ No hay MVP: se lanza el **producto final v1** completo, cuanto antes. El trabajo
 **Privado**
 13. Área interna de clientes y afiliados (`/area-clientes`): proyecto, tareas, comentarios, assets, pack contratado y extras; **ampliaciones** (solicitar subir de pack o añadir extras, con precio calculado por regla: diferencia de lista, sin descuento); **afiliados**: código y enlace propios, leads atribuidos, estado de cada recompensa (pendiente / abonada). Todo usuario del área puede ser afiliado; el nivel premium lo asigna Jose (D15).
 14. **Panel de administrador** (`/admin`, solo Jose): bandeja de leads (incluidas propuestas IA y afiliado atribuido), moderación de comentarios, gestión del área de clientes (clientes, tareas, assets, packs, extras, solicitudes de ampliación), afiliados (nivel, recompensas pendientes, marcar abonadas), conversaciones del chat con takeover.
+15. **Radar** (`/admin/radar`, solo Jose; §13): agente que descubre ofertas de empleo y encargos freelance en varias plataformas mediante conectores enchufables, las puntúa contra el perfil de Jose, prepara la candidatura (CV adaptado, carta o propuesta, formulario prellenado), pide confirmación de un clic (admin o Telegram) y entonces envía donde hay API o formulario propio, o abre el enlace externo con todo preparado; después sigue la candidatura por correo (Gmail y Proton), lleva un calendario de entrevistas y plazos sincronizado con Google Calendar, y avisa por Telegram de plazos y seguimientos vencidos. **Nunca envía sin confirmación.**
 
-**Transversal:** analítica Umami con eventos (D11), Telegram vía n8n para avisos, `prefers-reduced-motion`, accesibilidad AA.
+**Transversal:** analítica Umami con eventos (D11), Telegram vía Edge Function `notify` (primaria) y n8n (opcional) para avisos, `prefers-reduced-motion`, accesibilidad AA.
+
+**Infra que Radar añade (perfil `infra`, `implementador-infra`, con OK de Jose antes de tocar Omen):** contenedor de Proton Bridge, contenedor de navegador headless para los conectores por scraping, workflows n8n de Radar. Servicios preexistentes de Omen intocables.
 
 ### Post-lanzamiento
 Solo las ideas candidatas de §4.1 que Jose apruebe. Nada más queda pendiente.
 
 ### Fuera
-Foro, closer/comisiones/finanzas, staff, demo de emulador, 3D/WebGL, datos en vivo, panel de estado de infraestructura, sección de I+D, testimonios fabricados, modo claro.
+Foro, closer/comisiones/finanzas, staff, demo de emulador, **objetos 3D navegables o escenas 3D fuera del hero y sus miniaturas** (el WebGL de v1 se limita a `GlyphScene`, D16), datos en vivo, panel de estado de infraestructura, sección de I+D, testimonios fabricados, modo claro. **En Radar:** envío 100 % automático, resolución de captchas, gestión de contraseñas de plataformas por el sistema, Easy Apply automatizado en LinkedIn, envío de correos (Gmail solo borradores), creación de eventos de calendario sin confirmación, LinkedIn como cliente de mensajería (InMail).
 
 ### 4.1 Ideas candidatas (no están en alcance; máx. 5)
 
@@ -82,7 +91,7 @@ Foro, closer/comisiones/finanzas, staff, demo de emulador, 3D/WebGL, datos en vi
 |---|---|---|---|
 | **Auditoría exprés**: el negocio pega la URL de su web actual y recibe informe (PageSpeed API + resumen IA) y CTA | Lead muy cualificado con dolor concreto; GEO citable | Medio: 1 ruta en el gateway, cuota de PageSpeed, plantilla de informe | B |
 | **Servidor MCP público** "pregúntale a josecoded" (perfil, proyectos, disponibilidad) sobre el gateway | Innovación real y GEO literal: los agentes consultan la fuente | Medio-bajo: reutiliza `knowledge.json`; skill `cloudflare:build-mcp` disponible | A |
-| **CV/JSON Resume generado** desde la entidad única (JSON-LD → PDF y `/resume.json`) | Una fuente de verdad para web, PDF y crawlers | Bajo | A |
+| **CV/JSON Resume generado** desde la entidad única (JSON-LD → PDF y `/resume.json`) | Una fuente de verdad para web, PDF y crawlers; **Radar lo reutilizaría como CV maestro** | Bajo | A |
 | **RSS + newsletter** del blog | Retención de audiencia técnica | Bajo (RSS) / medio (newsletter: proveedor) | A |
 | **Playground de motion/componentes** (`/lab`) con el sistema de diseño propio | Demostración de oficio en frontend | Medio; riesgo de vitrina vacía | A |
 
@@ -91,23 +100,28 @@ Foro, closer/comisiones/finanzas, staff, demo de emulador, 3D/WebGL, datos en vi
 ```
 navegador
  └─ apps/web (Next.js App Router, Cloudflare Workers vía OpenNext, sin middleware Node)
-     ├─ público: RSC estáticos/ISR, MDX del blog, GSAP en cliente
-     ├─ Supabase (publishable key + RLS): auth, comentarios, leads, portal, admin
+     ├─ público: RSC estáticos/ISR, MDX del blog, GSAP en cliente, Three.js diferido solo en la home (GlyphScene)
+     ├─ Supabase (publishable key + RLS): auth, comentarios, leads, portal, admin, radar_* (solo admin)
      └─ NEXT_PUBLIC_JOSECODED_API_URL → apps/api (josecoded-api, Hono, Cloudflare Worker)
            ├─ conservado: /api/v1/{health, auth/me, system/status, admin-chat/*, admin-chat/admin/*, forum/*}
            ├─ NUEVO aditivo: /api/v1/proposals/generate  (Workers AI + reglas de precio)  [D5]
-           ├─ NUEVO aditivo: /api/v1/notify/lead          (→ worker n8n/trigger → Telegram) [D9]
+           ├─ NUEVO aditivo: /api/v1/notify/lead          (→ Edge Function notify → Telegram) [D9/P3]
+           ├─ NUEVO aditivo: /api/v1/radar/*              (ingesta de conectores, puntuar, preparar,
+           │                                               confirmar, webhook de Telegram, cron) [§13]
            └─ WORKER_URL + token interno → josecoded-worker (Omen): ai/*, n8n/*, storage/*, system/*
- stats.josecoded.com → Umami (Docker en Omen, Cloudflare Tunnel)                         [D11]
+ Omen (n8n + contenedores nuevos): conectores por scraping (LinkedIn, Workana), Proton Bridge (IMAP),
+      orquestación de Radar; todo escribe en el gateway /api/v1/radar/ingest                     [§13.5]
+ Mac de Jose (launchd, claude -p): conector Indeed por MCP oficial → gateway /api/v1/radar/ingest [§13.5]
+ stats.josecoded.com → Umami (Docker en Omen, Cloudflare Tunnel)                                 [D11]
 ```
 
-- **Frontend:** Next.js App Router, React Server Components, TypeScript estricto, Tailwind CSS v4, shadcn/ui como base (re-tematizado por `ui`), GSAP + `@gsap/react` + ScrollTrigger, `next/font` autoalojado, MDX (`@next/mdx` o `next-mdx-remote`) para blog y contenido largo. **Sin middleware Node**: guards de `/admin` y `/area-clientes` en layouts server-side leyendo la sesión Supabase (`@supabase/ssr`) y `staff_members.role='admin'` / `clients.user_id`.
+- **Frontend:** Next.js App Router, React Server Components, TypeScript estricto, Tailwind CSS v4, shadcn/ui como base (re-tematizado por `ui`), GSAP + `@gsap/react` + ScrollTrigger, `next/font` autoalojado, MDX (`@next/mdx` o `next-mdx-remote`) para blog y contenido largo. **Three.js** (`three`, importado en diferido tras el LCP) únicamente para `GlyphScene` del hero y sus miniaturas (D16). **Sin middleware Node**: guards de `/admin` y `/area-clientes` en layouts server-side leyendo la sesión Supabase (`@supabase/ssr`) y `staff_members.role='admin'` / `clients.user_id`.
 - **Auth:** Supabase Auth, proveedores Google, GitHub y email (magic link o password). Una única cuenta de visitante sirve para chat, comentarios y portal. Rol admin = `staff_members.role='admin'`. Los proveedores OAuth se configuran en el dashboard de Supabase (tarea de Jose).
 - **Datos:** el sitio público no consulta Supabase en tiempo de petición salvo comentarios (RSC con caché corta), formulario, generador y chat. Contenido de servicios, proyectos y blog en MDX/JSON versionado.
-- **Gateway (`apps/api`):** el código de `josecoded-api` se mueve a este repo con su propio `wrangler deploy`; rutas existentes intactas; se **añaden** `proposals/generate` y `notify/lead`, y el origen nuevo en CORS. `knowledge.json` se actualiza con el perfil nuevo.
-- **Worker de Omen:** sin cambios. Se usa `n8n/trigger/<workflow>` para Telegram y, desde scripts locales, `ai/blog/*`.
-- **Supabase:** tablas heredadas intactas. Migraciones **aditivas**: `blog_comments` (slug, user_id, body, status, parent_id) con RLS; columna `leads.ai_proposal jsonb` y `leads.source`; política de insert anónimo de `leads` restringida a los campos del formulario. `list_tables` y `get_advisors` antes; aplicar en producción solo con OK de Jose en la sesión.
-- **Repo:** monorepo pnpm workspaces: `apps/web`, `apps/api`, `packages/config` (eslint, tsconfig compartidos), `supabase/` (migraciones). Un solo `pnpm lint && pnpm typecheck && pnpm test && pnpm build` en la raíz.
+- **Gateway (`apps/api`):** el código de `josecoded-api` se mueve a este repo con su propio `wrangler deploy`; rutas existentes intactas; se **añaden** `proposals/generate`, `notify/lead` y el grupo `radar/*` (§13.5), y el origen nuevo en CORS. `knowledge.json` se actualiza con el perfil nuevo. Radar añade al gateway un **Cron Trigger** de Workers (avisos y sondeo de correo) y **KV** para tokens OAuth de Google (§13.6).
+- **Worker de Omen:** sin cambios. Se usa `n8n/trigger/<workflow>` para automatizaciones opcionales y, desde scripts locales, `ai/blog/*`. Radar usa n8n de Omen para orquestar los conectores por scraping y la lectura IMAP de Proton (§13.5); el worker `ai` de Omen es respaldo de Workers AI para redactar (D22).
+- **Supabase:** tablas heredadas intactas. Migraciones **aditivas**: `blog_comments` (slug, user_id, body, status, parent_id) con RLS; columna `leads.ai_proposal jsonb` y `leads.source`; política de insert anónimo de `leads` restringida a los campos del formulario; **tablas `radar_*` (§13.4, Anexo C)**. `list_tables` y `get_advisors` antes; aplicar en producción solo con OK de Jose en la sesión.
+- **Repo:** monorepo pnpm workspaces: `apps/web`, `apps/api`, `packages/config` (eslint, tsconfig compartidos), **`packages/radar-connectors`** (interfaz común y conectores, §13.5), `supabase/` (migraciones). Un solo `pnpm lint && pnpm typecheck && pnpm test && pnpm build` en la raíz.
 - **Entornos:** preview por rama (Workers preview) y producción en josecoded.com. Deploy a producción con OK explícito de Jose.
 
 ## 6. Decisiones
@@ -125,22 +139,26 @@ navegador
 | D9 | Panel admin propio en `/admin` (solo Jose, `staff_members.role='admin'`): leads con propuestas IA, moderación, portal cliente, chat con takeover. Aviso de leads por Telegram: Edge Function `notify` (evento `lead.created`) como vía primaria, n8n opcional (decisión P3, 2026-09-17) | R9. El CRM comercial (propuestas, seguimiento) sigue en Notion vía skills; el admin es operativo, no comercial | Ver leads solo en Notion; email |
 | D10 | Comentarios solo con cuenta (Google/GitHub/email), estado `pending`/`approved`/`rejected`, moderación en admin; publicación posterior a moderación (cola de aprobación, Q2) | R10 | Comentarios anónimos; servicio externo (Giscus: exige GitHub y no sirve a Marta) |
 | D11 | **Umami autoalojado en Omen** (contenedor nuevo, `stats.josecoded.com` por Cloudflare Tunnel) con eventos `whatsapp_click`, `contact_submit`, `proposal_generated`, `proposal_sent`, `chat_started`, `call_booked`. Cloudflare Web Analytics activo como complemento (un script, sin cookies, sin coste) | R11. Cloudflare Web Analytics no tiene eventos personalizados ni embudos; Umami sí, sin cookies ni banner | GA4 (banner y peso) |
-| D12 | Oscuro únicamente, tech elegante, "que no parezca hecho por IA": `ux` y `ui` proponen 2–3 direcciones; prohibido: gradientes morados genéricos, glassmorphism de plantilla, Inter + texto degradado, iconos brillantes, copy vacío. Sin 3D | R8 | Claro por defecto (v0); HUD "Reactor" de P8 se toma como antecedente, no como punto de partida |
+| D12 | Oscuro únicamente, tech elegante, "que no parezca hecho por IA"; prohibido: gradientes morados genéricos, glassmorphism de plantilla, Inter + texto degradado, iconos brillantes, copy vacío. **La prohibición de 3D se acota en D16**: WebGL solo en `GlyphScene` | R8 | Claro por defecto (v0); HUD "Reactor" de P8 se toma como antecedente, no como punto de partida |
 | D13 | Precios de packs y extras con fuente única `Comercial/tarifas.md` (con fecha de vigencia) → `pricing.json` en el repo con script de sincronización manual. `pricing.json` contiene packs, extras, regla de ampliación (diferencia de lista) y regla de afiliados (2 meses / 10 % / 20 % sobre el primer pedido sin IVA); los regalos por pack se excluyen del JSON público. Propuestas y presupuestos ya emitidos conservan sus precios en Notion | R8. Una sola fuente para web, generador, área de clientes y skills comerciales; los precios cambian con el tiempo sin reescribir código | Precios escritos a mano en la página; histórico de versiones en tarifas.md |
-| D15 | **Programa de afiliados en la web v1**, dentro del área interna: código por usuario, enlace `?ref=CODIGO` guardado en cookie de 30 días y volcado al `lead` al crearse (formulario, generador o chat); al marcar el lead como cerrado y cobrado en admin se genera la recompensa por regla (cliente: 2 meses de mantenimiento; no cliente: 10 %; premium: 20 %; base = primer pedido sin IVA); el pago es manual y el admin lo marca como abonado. Un lead, un afiliado; sin autoreferidos | R12 (decisión de Jose 2026-09-14). Programa simple, verificable y visible para el afiliado sin construir pasarela de pagos | Llevarlo a mano en Notion; post-lanzamiento |
 | D14 | Monorepo `apps/web` + `apps/api`; josedev congelado como referencia | R9 | Dejar el gateway en josedev; repo propio |
-| D15 | i18n es/en; `es` sin prefijo, `en` en `/en`; blog puede tener artículos solo en un idioma (alternates solo cuando existe la traducción) | R6 | Solo es |
+| D15 | **Programa de afiliados en la web v1**, dentro del área interna: código por usuario, enlace `?ref=CODIGO` guardado en cookie de 30 días y volcado al `lead` al crearse (formulario, generador o chat); al marcar el lead como cerrado y cobrado en admin se genera la recompensa por regla (cliente: 2 meses de mantenimiento; no cliente: 10 %; premium: 20 %; base = primer pedido sin IVA); el pago es manual y el admin lo marca como abonado. Un lead, un afiliado; sin autoreferidos | R12 (decisión de Jose 2026-09-14). Programa simple, verificable y visible para el afiliado sin construir pasarela de pagos | Llevarlo a mano en Notion; post-lanzamiento |
+| D15b | i18n es/en; `es` sin prefijo, `en` en `/en`; blog puede tener artículos solo en un idioma (alternates solo cuando existe la traducción). (Antes numerada D15 por duplicado; se renombra sin cambiar el contenido) | R6 | Solo es |
+| D16 | **Hero split tipo Resend con escena Three.js de partículas-glifo, intro de caída por sesión, fondo grano + rayo estático, navegación clásica** (detalle en §12). Prototipo aprobado `docs/superpowers/design/ref/hero-lab-3/` | Decisión de Jose del 2026-09-19 tras ver los prototipos. Es la única pieza WebGL de la web y la que da el "wow" técnico pedido en R14 sin renunciar a claridad | Shell IDE-lite con hero compilar → minimizar (UX v2.1); formatos terminal/scroll/objeto (`ref/heros/`); túnel de código (`hero-lab-2`); luz volumétrica + código DOM (`hero-lab`); foco de luz dinámico (`FocusLight`); prohibición genérica de partículas/ondas de v1.4 (R14), superada por este prototipo concreto |
+| D17 | **Radar entra en v1** aunque retrase el lanzamiento (§13) | Decisión explícita de Jose del 2026-09-19: la búsqueda de empleo y encargos es el uso interno con más valor inmediato para él; hacerlo dentro de la plataforma reutiliza admin, auth, gateway, Supabase, Telegram y n8n | Lanzar el público primero y Radar después (habría sido la recomendación de plazo; queda anotada por si el plazo se dispara, ver §13.9); herramienta aparte fuera de la web |
+| D18–D26 | Decisiones de Radar (envío solo con confirmación, conectores enchufables, LinkedIn con sesión propia y límites, IA, correo, calendario, avisos, fuente de verdad, dónde corre cada pieza) | Ver tabla de §13.8 | Ver §13.8 |
 
 ## 7. Restricciones
 
 - No se reescriben `josecoded-api`, `josecoded-worker` ni el esquema de Supabase. Solo cambios **aditivos** (rutas nuevas, migraciones nuevas, configuración). Contratos existentes intocables.
 - Variables heredadas: `NEXT_PUBLIC_JOSECODED_API_URL`, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
-- El navegador nunca habla con el worker de Omen; el token interno no toca el frontend. Servicios preexistentes de Omen intocables; Umami es un contenedor nuevo.
+- El navegador nunca habla con el worker de Omen; el token interno no toca el frontend. Servicios preexistentes de Omen intocables; Umami, Proton Bridge y el navegador headless de Radar son contenedores nuevos.
 - Cuenta Cloudflare: `developerjose12@gmail.com` (account `d26022a34346cb759178a720bace386d`). Supabase `josecoded` (`nrgrmymsjtgayzejtawa`), plan gratuito, uno de los dos proyectos activos.
 - Marca canónica `josecoded`; entidad única (Person + Organization + WebSite); no reintroducir "Jose Dev".
-- Producción y migraciones: OK explícito de Jose en la sesión. Gmail solo borradores. Notion solo desde skills comerciales.
+- Producción y migraciones: OK explícito de Jose en la sesión. **Gmail solo borradores, nunca envío** (también en Radar). Notion solo desde skills comerciales (Radar solo refleja, D24). **Calendario: nunca crear ni modificar eventos sin confirmación de Jose** (D23).
 - `pnpm` únicamente. Accesibilidad WCAG 2.2 AA. Móvil primero.
-- Precios y textos comerciales dependen de `Comercial/tarifas.md` y `Comercial/voz.md` en el vault (los exige también `/propuesta`).
+- Precios y textos comerciales dependen de `Comercial/tarifas.md` y `Comercial/voz.md` en el vault (los exige también `/propuesta`). Radar depende además de `Comercial/voz.md` para redactar cartas y propuestas, y del perfil de búsqueda (§13.10, Q10).
+- **Radar:** ninguna credencial de plataforma (cookies de sesión de LinkedIn, tokens de InfoJobs/Upwork, refresh token de Google, contraseña de Proton Bridge) toca el frontend ni el repo; viven en `wrangler secret`, en el credential store de n8n o en `.env` de Omen fuera del repo. El sistema no rellena contraseñas ni resuelve captchas: cuando una plataforma los pide, entrega el enlace a Jose (modo asistido).
 
 ## 8. SEO tradicional + GEO (requisito de primer nivel)
 
@@ -148,7 +166,7 @@ navegador
 - Toda ruta pública: `title` único ≤ 60 car., `description` ≤ 155, canonical, `alternates` es/en con `x-default`, OG/Twitter image generada.
 - `sitemap.xml` con ambos idiomas y `lastmod`; `robots.txt`; 301 desde las URLs públicas de josedev que tengan equivalente (`/services`, `/sobre-mi`, `/en/...`); `/blog/<slug>` antiguos y `/foro/*` → 410 (Q4).
 - HTML semántico, un `h1` por página, imágenes con `alt` y dimensiones, `next/image` con AVIF/WebP.
-- Rendimiento: CWV en verde con GSAP activo (animaciones fuera del hilo crítico, `will-change` medido, `ScrollTrigger` con `matchMedia`).
+- Rendimiento: CWV en verde con GSAP y `GlyphScene` activos (animaciones fuera del hilo crítico, `will-change` medido, `ScrollTrigger` con `matchMedia`, Three.js tras el LCP, §12).
 - Palabras clave objetivo por página validadas con Semrush (`keyword_research` en `es`) antes de escribir copy.
 
 **GEO (criterios):**
@@ -163,21 +181,31 @@ navegador
 
 | Riesgo | Impacto | Mitigación |
 |---|---|---|
-| Alcance grande sin MVP | Lanzamiento tardío | Orden del plan por valor: home + negocios + generador + contacto primero; portal y admin después; cada rama pasa `/puerta-calidad`; preview público para que Jose vea avance |
+| Alcance grande sin MVP, **ampliado con Radar** | Lanzamiento tardío | Orden del plan por valor: home + negocios + generador + contacto primero; portal y admin después; Radar al final como grupo de ramas propio con sus migraciones aplicadas pronto (§13.9); cada rama pasa `/puerta-calidad`; preview público para que Jose vea avance. Si el plazo se dispara, Jose puede reabrir D17 (§13.9) |
 | OpenNext incompatible con la versión de Next | Bloquea despliegue | Tarea 0: hello world real en Workers con Server Actions y `@supabase/ssr`; fallback Vercel |
+| **Escena Three.js del hero empeora LCP/INP o pesa demasiado** | CWV en rojo, Lighthouse < 90; el hero deja de ser demostración y pasa a ser lastre | Presupuesto y reglas de §12 (Three.js en diferido tras LCP, ≤ 200 KB gz para el bundle de la escena, LCP = título, no canvas); tarea de medición en el plan antes de dar por cerrado el hero; vídeo/poster de respaldo en móvil y sin WebGL; `prefers-reduced-motion` y `saveData` → fotograma estático |
 | Precio inventado por la IA | Propuesta engañosa, lead perdido | Precio solo por reglas (D5); el texto dice "orientativo, sujeto a propuesta" |
 | Abuso del generador y del chat (coste Workers AI) | Coste y ruido | Turnstile, rate limit por IP y por usuario, cuota diaria en el gateway, alerta en Telegram |
 | Contenido real insuficiente | Web genérica (fallo de P8) | Inventario de contenido y capturas como tarea del plan antes de `ux` |
 | Cláusula de confidencialidad sobre 3catinfo | Legal | Decidido (Q6): nombre visible, sin métricas ni stack; ficha con campos ocultables |
 | Programa de afiliados sin control | Recompensas indebidas (autoreferidos, leads falsos) | Un lead, un afiliado; sin autoreferidos (mismo email/usuario); la recompensa solo nace al marcar el lead cobrado a mano en admin |
-| Omen apagado | Sin analítica ni Telegram (el sitio sigue) | `notify/lead` reintenta y, si falla, email vía Edge Function `notify`; Umami tolera huecos |
-| Supabase pausado por inactividad | Auth, leads y comentarios rotos | Ping semanal (launchd/n8n) + alerta; formulario con fallback a email |
-| Estética "hecha por IA" | Rechazo de Jose y de Dani | `ui` entrega 2–3 direcciones con lista negra explícita (D12); `usuario-ejemplo` y `ui` revisan la implementación |
+| Omen apagado | Sin analítica ni Telegram (el sitio sigue); **en Radar, sin conectores por scraping ni correo Proton** | `notify/lead` reintenta y, si falla, email vía Edge Function `notify`; Umami tolera huecos. Radar: los conectores por API (InfoJobs, Tecnoempleo, Upwork, Indeed vía Mac) y Gmail, Calendar y avisos corren en el gateway o en el Mac, no en Omen; la bandeja marca "última pasada hace X h" por plataforma |
+| Supabase pausado por inactividad | Auth, leads y comentarios rotos | Ping semanal (launchd/n8n) + alerta; formulario con fallback a email. Con Radar el proyecto recibe escrituras diarias, lo que reduce el riesgo |
+| Estética "hecha por IA" | Rechazo de Jose y de Dani | Prototipo aprobado (D16) como referencia obligatoria; `usuario-ejemplo` y `ui` revisan la implementación contra él |
 | Ramas largas con Supabase Auth y RLS nuevas | Fugas entre clientes | `revisor-seguridad` en cada rama con RLS; tests de RLS con dos usuarios |
+| **Radar: bloqueo o restricción de la cuenta de LinkedIn por scraping** (viola sus condiciones de uso) | Pérdida temporal o definitiva de la cuenta que Jose usa para captar clientes y empleo | Decisión consciente de Jose (D20) con límites estrictos: sesión propia, ≤ 1 pasada/día, ≤ 30 ofertas por pasada, ritmo humano con pausas aleatorias, solo lectura de listados y fichas, nunca Easy Apply ni mensajes; interruptor por plataforma en admin; ante captcha o "verificación de seguridad", el conector se detiene y avisa; alternativa sin riesgo lista para activar: alertas de empleo de LinkedIn por correo parseadas (§13.8) |
+| **Radar: Indeed no tiene API pública de búsqueda para nuevos integradores; el conector oficial es un MCP que solo funciona dentro de una sesión de Claude** | Sin descubrimiento automático de Indeed si la vía no se ejecuta | Conector Indeed ejecutado desde la automatización launchd del Mac (`claude -p` + skill, patrón ya existente en claude-config), que hace POST al gateway; si el Mac está apagado, la pasada se recupera al despertar; scraping de Indeed descartado (condiciones de uso y captchas agresivos) |
+| Radar: captchas y verificaciones en formularios externos | No se puede enviar sin Jose | Modo asistido por diseño: se abre el enlace con todo preparado (texto en portapapeles / material descargado); nunca se intenta resolver el captcha |
+| Radar: candidaturas de baja calidad (CV o carta genéricos, alucinaciones sobre experiencia) | Daño a la reputación de Jose | El material se genera desde un CV maestro y un perfil versionados (solo hechos que constan), con reglas: no inventar empleadores, fechas ni tecnologías; Jose ve y puede editar el material antes de confirmar; puntuación explicable (motivos visibles); prueba de `usuario-ejemplo` como reclutador sobre 5 candidaturas generadas |
+| Radar: privacidad de correos (Gmail y Proton contienen mucho más que candidaturas) | Exposición de correo personal a la IA y a la base de datos | Solo se leen mensajes que cumplen filtros previos (remitentes/dominios de plataformas y empresas con candidatura, o hilos que responden a un correo de candidatura); se guarda referencia (`message_id`, remitente, asunto, fecha, extracto ≤ 500 caracteres), no el cuerpo completo; sin adjuntos; Proton solo vía Bridge local en Omen; tablas `radar_*` solo admin; borrado de vínculos desde admin |
+| Radar: coste y dependencia de Proton (plan de pago obligatorio para Bridge) | Coste mensual; si Jose no lo contrata, Proton queda fuera | Proton diferible: el módulo funciona solo con Gmail; el conector IMAP de Proton se activa cuando exista el plan (Q12) |
+| Radar: tres runtimes (gateway, Omen, Mac) | Complejidad operativa | Todos escriben por el mismo endpoint idempotente `POST /api/v1/radar/ingest` con `external_id` único por plataforma; la bandeja muestra la salud de cada conector; el núcleo no sabe dónde corre cada uno |
+| Radar: cuotas y aprobación de APIs (InfoJobs, Upwork) | Un conector puede tardar semanas en tener credenciales | Conectores independientes: v1 se lanza con los que tengan credenciales; el resto se añade sin tocar el núcleo (D19). Jose solicita las credenciales antes del plan (Q14) |
 
 ## 10. Criterios de aceptación de v1
 
 - Sin scroll, en móvil, se entiende qué hace Jose, para quién y dos formas de contacto; `usuario-ejemplo` (Marta y Dani) sin abandonos en sus rutas de §2.
+- **Hero (D16):** en escritorio con WebGL, la escena carga después del LCP (el título es el elemento LCP, verificado en Lighthouse), morfa móvil → web → chip y responde al arrastre; la intro se reproduce una vez por sesión y termina con cualquier interacción; con `prefers-reduced-motion`, sin WebGL o en móviles con respaldo, se ve el vídeo/poster y nunca una columna vacía; el bundle de la escena ≤ 200 KB gz; CWV en verde en móvil 4G con el hero real.
 - Generador: descripción → propuesta con alcance y "desde X €" correcto según `pricing.json`; enviar crea `lead` con `ai_proposal` y Jose recibe Telegram en < 1 min.
 - Chat: usuario con Google puede conversar; Jose ve la conversación en admin y toma el control.
 - Blog: artículo MDX renderizado con JSON-LD `BlogPosting`; comentar exige cuenta; moderación cambia el estado y la vista pública.
@@ -185,8 +213,17 @@ navegador
 - Ampliación: un cliente con P2 solicita P3 y ve 1.100 € (diferencia de lista según `pricing.json`); la solicitud aparece en admin.
 - Afiliados: visita con `?ref=CODIGO` → lead creado con `affiliate_code`; al marcarlo cerrado y cobrado en admin con base 1.400 € se genera recompensa de 140 € (no cliente), 280 € (premium) o 2 meses de mantenimiento (cliente); el afiliado la ve en su área como pendiente y como abonada tras marcarla Jose.
 - `/admin` inaccesible sin `staff_members.role='admin'` (comprobado sin middleware).
+- **Radar (§13):**
+  - Una pasada de cada conector activo deja ofertas nuevas en `radar_offers` con `external_id` único, sin duplicados en pasadas repetidas (test de idempotencia); una oferta puntuada muestra puntuación 0–100 y ≥ 3 motivos legibles.
+  - Para una oferta con puntuación ≥ umbral, el sistema genera CV adaptado, carta o propuesta y, si la plataforma lo admite, el formulario prellenado; el material queda en `radar_materials` y Jose puede editarlo en admin antes de confirmar.
+  - Confirmar desde admin y desde Telegram (botón inline) pasa la candidatura a `sent` solo si el conector tiene envío propio y este responde OK; si no, pasa a `sent` únicamente cuando Jose marca "enviada" tras abrir el enlace asistido. **Test negativo:** ninguna ruta del sistema puede pasar a `sent` sin un evento `confirmed_by_jose` previo en `radar_application_events`.
+  - Un correo de prueba de rechazo (remitente de la plataforma, referencia de la oferta) recibido en Gmail queda vinculado a su candidatura y la pasa a `rejected` con el enlace al hilo; Proton igual cuando Bridge esté activo.
+  - Un plazo o entrevista confirmado por Jose crea el evento en el calendario "Radar" de Google y aparece en el calendario habitual de Jose; sin confirmación, no se crea nada (test).
+  - Los avisos por Telegram de plazo a 24 h y seguimiento vencido (7 días sin respuesta) llegan a la hora configurada; el borrador de seguimiento aparece en Gmail sin enviarse.
+  - Interruptor por plataforma; la bandeja muestra la última pasada y el último error de cada conector; el conector de LinkedIn se detiene solo ante captcha o verificación.
+  - `radar_*` inaccesibles para cualquier usuario que no sea admin (test RLS con cuenta de cliente).
 - SEO/GEO: todos los criterios de §8 verificados; redirecciones 301 probadas; `llms.txt` generado.
-- Umami registra los seis eventos; Cloudflare Web Analytics activo.
+- Umami registra los seis eventos (más `intro_played`, `path_open`, `scene_drag`, `booking_open` de UX v3); Cloudflare Web Analytics activo.
 - `pnpm lint && pnpm typecheck && pnpm test && pnpm build` en verde; `/puerta-calidad` pasa en todas las ramas; Lighthouse móvil ≥ 90/95/100.
 
 ## 11. Preguntas abiertas (resueltas el 2026-09-13)
@@ -203,32 +240,230 @@ navegador
 | Q8 | Quién monta Umami | Tarea `infra` del plan (`implementador-infra`), OK de Jose antes de exponer `stats.josecoded.com` |
 | Q9 | Modelo de Workers AI | Se mantiene Llama 3.3 70B para generador y chat |
 
-## 12. Decisiones de UX, UI e integraciones (batería del 2026-09-17, R13)
+Las preguntas abiertas de v1.5 (Radar) están en §13.10.
+
+## 12. Decisiones de UX, UI e integraciones (batería del 2026-09-17, R13; hero cerrado el 2026-09-19, D16)
 
 **UX**
 - Home sin scroll: tesis en una frase + dos vías con el mismo peso (Empresas / Negocios).
-- Navegación: Empresas · Negocios · Proyectos · Blog · Sobre mí + CTA Contacto. Chat y área privada como accesos secundarios (cabecera/pie). Móvil: desplegable.
+- Navegación **clásica**: cabecera fija con Empresas · Negocios · Proyectos · Blog · Sobre mí + ES/EN + Entrar + CTA Contacto. Chat y área privada como accesos secundarios (cabecera/pie). Móvil: hoja "Menú" plana. (El shell IDE-lite de UX v2.1 —árbol, pestañas, barra de título, línea de estado— queda descartado; detalle en UX v3 §3.)
 - Generador de propuesta: chat guiado de 3–4 preguntas (tipo de negocio, qué debe hacer la web, ¿vende o reserva online?, plazo) → propuesta. Nunca página en blanco.
 - Acción primaria de contacto: Negocios → WhatsApp; Empresas → formulario/email y reserva de llamada (calendario).
 
-**UI** (redefinida el 2026-09-17 tras rechazar Jose las tres direcciones y la demo de motion; R14)
+**UI: referencias y criterio (R14, 2026-09-17)**
 - Referencias: **limpieza y claridad de raycast.com** (pero menos negro: con color, verde o morado) + **efectos de scroll, animaciones al pulsar y transiciones de página de igloo.inc, lusion.co y activetheory.net**, sin marear. Elementos interactivos, no simples tarjetas.
-- "Futurista pero elegante, muy tecnológico sin recargar; wow de diseño y animación". El wow debe venir de: (1) **profundidad y materiales** (capas, luz volumétrica, vidrio/metal, sensación 3D sin 3D real), (2) **transiciones morph entre secciones** (la interfaz se transforma, nada se recarga), (3) **detalle microscópico** en cada hover, foco y cambio de estado.
-- Hero: de fondo, **código que se sobreescribe alternando sus letras, lento y no todo de golpe**; el título hace lo mismo pero resuelve rápido en el título final. El fondo no debe quitar atención a las llamadas a la acción.
-- Rechazado: ejecución plana sin profundidad ni acabado; tipografía y composición "de web normal"; partículas, ondas, retículas y visual generativo decorativo; el foco de luz estático.
-- Solo modo oscuro (no negro puro). Tipografías con roles distintos (titulares / texto / UI). Motion GSAP + scroll suave con barra propia, desactivable por `prefers-reduced-motion`.
-- Aprobación: `ui` estudia las referencias en el navegador, entrega **un prototipo único de la home** (IDE-lite de UX v2.1) en HTML real y se itera con Jose hasta aprobar antes del plan.
+- "Futurista pero elegante, muy tecnológico sin recargar; wow de diseño y animación". El wow viene de: (1) **profundidad y materiales** (capas, luz, sensación 3D), (2) **transiciones morph entre secciones**, (3) **detalle microscópico** en cada hover, foco y cambio de estado.
+- Solo modo oscuro (no negro puro). Tipografías con roles distintos (titulares / texto / UI). Motion GSAP, desactivable por `prefers-reduced-motion`.
+- Sigue rechazado: ejecución plana sin profundidad ni acabado; tipografía y composición "de web normal"; retícula decorativa y deriva de brillo (existen en el prototipo, apagadas); parallax de fondo; gradientes animados; inclinaciones o escalas al hover; foco de luz dinámico. La prohibición de "partículas y ondas" de v1.4 era sobre el visual generativo decorativo de las tres direcciones descartadas; el prototipo `hero-lab-3` la supera porque las partículas son **caracteres reales de código** que forman objetos con significado (móvil, web, chip IA) y no un fondo.
+
+**Hero: decisión del 2026-09-19 (D16), prototipo `docs/superpowers/design/ref/hero-lab-3/` (`index.html`, `styles.css`, `app.js`)**
+- **Composición split tipo Resend.** Izquierda: badge con punto verde ("Disponible para proyectos ›" → Contacto), título (`h1`, nombre de Jose en dos líneas), subtítulo (≤ 48 caracteres por línea), CTA primaria `[[ Ver proyectos ]]` y enlace de texto `> Una web para mi negocio →`. Derecha (escritorio) o encima del texto (móvil): la escena.
+- **Escena `GlyphScene` (Three.js):** nube de 9.000 (escritorio) / 5.000 (móvil) **partículas-glifo con caracteres reales de código** (atlas de JetBrains Mono), morado base con un 14 % de toques verdes, que **morfa móvil → web → chip IA con cerebro de nodos dentro** (hold 3,5 s, morph 1,6 s con dispersión y desfase por partícula), con **respiración** (±2,5 %) y **ondas de código** (28 % de las partículas se expanden y desvanecen, periodo 4 s). **Rotación** lenta continua; en el estado chip se queda de frente con un **vaivén** suave. **Arrastre** con el puntero para girar (con inercia) y **paralaje** leve siguiendo el puntero. Etiqueta monoespaciada "móvil · web · IA · chip" con el estado activo en verde.
+- **Intro de primera visita por sesión (`IntroFall`):** solo en `/` y `/en`, una vez por sesión de navegador (`sessionStorage.intro_seen`); cada carácter visible del primer viewport (cabecera, badge, título, subtítulo, CTAs) y cada partícula **caen desde arriba y aterrizan entre 0,4 y 1,2 s**, mostrando glifos de código mientras caen y destellando en verde al fijarse; cualquier tecla, clic, toque o scroll la termina en ≤ 200 ms; el texto real es accesible desde 0 ms. Detalle en UX v3 §3.6.
+- **Fondo (`Backdrop`):** grano fino + **rayo de luz estático** (más dos radiales suaves de acento y verde). Nada se mueve. Retícula y deriva disponibles en el prototipo, apagadas.
+- **Resto de la web:** deriva del hero (UX v3 §3.7): `CompileReveal` v3 en los `h2`, transición de página, miniaturas de la escena en los paneles de vías (solo escritorio, compartiendo renderer o como imagen). Sin más WebGL.
+- **Requisitos técnicos que fija esta spec (el diseño técnico los concreta):**
+  1. **Three.js importado en diferido tras el LCP**: el HTML del hero (texto, badge, CTAs) se sirve estático y es el LCP; la escena se carga con `next/dynamic`/`import()` cuando el título ya está pintado y el hilo principal libre (`requestIdleCallback` o tras `LCP`), con `preload` del chunk. Una sola instancia de WebGL por página. Sin CDN externa: `three` se empaqueta desde npm con importación selectiva.
+  2. **Respaldo en móvil y sin WebGL (patrón Resend):** un **vídeo corto en bucle (≤ 400 KB, sin audio, `playsinline`, con `poster`) o un poster estático** generado a partir de la misma nube, en la misma columna, sin salto de layout. Es el estado por defecto en móvil, sin WebGL, con `prefers-reduced-motion`, `saveData` o `deviceMemory < 4`. La escena en vivo en móvil solo se activa si la tarea de medición del plan demuestra CWV en verde en 4G con ella; si no, móvil = vídeo/poster y la intro de partículas solo ocurre donde hay escena (las letras caen igual).
+  3. **Presupuesto:** bundle de la escena (Three.js + shaders + nubes) ≤ 200 KB gz, cargado fuera del camino crítico; JS total de la home ≤ 350 KB gz sin contar la escena; escena a 60 fps en escritorio y sin bloquear INP (cálculo de nubes en el arranque de la escena, no en el hilo de hidratación; pausa con `IntersectionObserver` fuera de viewport y con pestaña oculta). CWV en verde con la escena activa (métrica de §1).
+  4. **`prefers-reduced-motion`:** sin intro, sin morph, sin respiración ni ondas; poster estático; los `h2` se pintan sin `CompileReveal`. Se escribe `intro_seen` igual.
+  5. **Accesibilidad:** escena con `role="img"` y `aria-label`; caracteres animados en contenedor `aria-hidden` con el texto real accesible; el `h1` es un solo elemento; el arrastre horizontal en móvil no secuestra el scroll vertical.
+  6. **Aprobación:** el prototipo aprobado es la referencia; `ui` traslada el mismo lenguaje al resto de la home y de las páginas (pendiente en `ESTADO.md`) y `ux`/`diseño técnico` se actualizan a partir de esta sección.
 
 **Integraciones externas (además de Supabase, gateway, worker de Omen, n8n→Telegram, Umami)**
 - GitHub: actividad y repos públicos (API pública, cacheada en build/ISR) como prueba real para Dani.
 - Stores: App Store / Google Play, valoraciones y enlaces en fichas de apps.
 - Calendario: Cal.com (preferido, open source, embebible) o Calendly para "reserva 20 min" en la vía Empresas.
+- Radar (§13.6): conector MCP de Indeed, API de InfoJobs, feed de Tecnoempleo, API de Upwork, scraping con sesión propia de LinkedIn y Workana, Gmail API, Proton Bridge, Google Calendar API, Telegram Bot API.
 - Jose está abierto a más propuestas: el diseño técnico lista candidatas con coste/beneficio.
 
 **Tests**
-- Vitest (lógica, componentes, `pricing.json`, reglas de afiliados/ampliación) + integración (rutas del gateway, RLS) + Playwright E2E en flujos críticos (generador, contacto, auth, área privada, admin) + snapshot de JSON-LD + Lighthouse CI en build.
+- Vitest (lógica, componentes, `pricing.json`, reglas de afiliados/ampliación, **puntuación y máquina de estados de Radar, conectores con fixtures**) + integración (rutas del gateway, RLS) + Playwright E2E en flujos críticos (generador, contacto, auth, área privada, admin, **bandeja de Radar y confirmación**) + snapshot de JSON-LD + Lighthouse CI en build (**con la escena del hero real**).
 
 **Documento previo a implementación (pedido por Jose):** pantallas, componentes por pantalla, subpantallas y páginas de error (404, 500, sin permisos, offline), funcionalidades, stack, restricciones, flujos, tests, preview de estilos aprobada, integraciones con API/worker y con plataformas externas. Se consolida en `docs/superpowers/design/` antes del plan.
+
+## 13. Radar: caza de empleo y encargos freelance (v1.5, decisiones de Jose del 2026-09-19)
+
+### 13.1 Objetivo y métricas
+
+**Objetivo:** que Jose no busque trabajo: que el trabajo le llegue puntuado y con la candidatura preparada, y que él solo decida. Radar descubre ofertas de empleo y encargos freelance en varias plataformas, las puntúa contra su perfil, prepara el material (CV adaptado, carta o propuesta, formulario prellenado), pide **confirmación de un clic** (admin o Telegram) y entonces **envía donde hay API o formulario propio, o abre el enlace externo con todo preparado**. Después sigue cada candidatura por correo, lleva su calendario y avisa de plazos. **Nunca envía sin confirmación** (D18).
+
+**Qué no es:** no es un bot de "auto-apply" masivo; no sustituye el criterio de Jose; no es un CRM comercial (los clientes siguen en Notion; los leads de la web, en `leads`).
+
+**Métricas (a 3 meses):**
+- ≥ 20 ofertas relevantes/semana descubiertas (puntuación ≥ 60) entre todas las plataformas activas; ≤ 10 % de duplicados entre plataformas sin detectar.
+- ≥ 5 candidaturas o propuestas confirmadas/semana; tiempo de Jose por candidatura confirmada ≤ 3 min (medido desde "preparada" hasta "confirmada", con edición incluida).
+- 100 % de los correos de plataformas y de empresas con candidatura abierta vinculados automáticamente; 0 correos ajenos vinculados por error (revisión semanal de Jose).
+- 0 envíos sin confirmación (invariante verificado por test y por el historial).
+- 0 plazos perdidos: todo `deadline` confirmado tiene aviso 24 h antes.
+- Tasa de respuesta (contactado + entrevista) / enviadas: se mide desde el día 1 para comparar plataformas y ajustar la puntuación; no hay objetivo numérico en v1.
+
+### 13.2 Flujos
+
+Actores: **conector** (una plataforma), **núcleo** (gateway + Supabase), **IA** (puntuar y redactar), **Jose** (admin o Telegram), **correo** (Gmail, Proton), **calendario** (Google Calendar), **avisos** (Telegram).
+
+1. **Descubrir.** Cada conector activo corre en su horario (§13.5) con las consultas del perfil de búsqueda (roles, palabras clave, ubicación/remoto, tipo: empleo o freelance) y entrega ofertas normalizadas (`external_id`, url, título, empresa/cliente, ubicación, modalidad, salario o presupuesto, descripción, fecha de publicación, plazo si existe, tipo de envío que admite) al núcleo por `POST /api/v1/radar/ingest`. El núcleo hace upsert en `radar_offers` por (`platform`, `external_id`), detecta duplicados entre plataformas (misma empresa + título normalizado + fecha ± 7 días → `duplicate_of`) y marca la oferta como `discovered`.
+2. **Puntuar.** Para cada oferta nueva, la IA compara descripción y requisitos con el perfil de Jose (`content/radar/profile.json` + CV maestro) y devuelve `score` 0–100 y `reasons[]` (≥ 3 motivos legibles: encaje de stack, modalidad, salario/tarifa, sector, idioma, señales negativas). Reglas duras antes del modelo (sin coste): descartar automáticamente si incumple exclusiones del perfil (presencial fuera de zona, salario bajo el mínimo, sectores excluidos, idiomas no cubiertos) → estado `discarded` con motivo `rule:<nombre>`. La puntuación es explicable y editable: Jose puede subir o bajar el umbral y marcar "no me interesa" (alimenta una lista de exclusiones simple, no un modelo).
+3. **Preparar.** Para ofertas con `score ≥ umbral` (por defecto 60; configurable) el núcleo crea la `radar_application` en `discovered` y encola la preparación: la IA genera **CV adaptado** (reordena y destaca desde el CV maestro; no inventa), **carta o propuesta** (empleo: carta; freelance: propuesta con enfoque, plan y tarifa desde el perfil de tarifas), y, si el conector lo admite, el **formulario prellenado** (mapa campo → valor). Todo se guarda en `radar_materials` con `version` y `generated_by`. Estado → `prepared`. Se manda el aviso "Candidatura preparada: {título} en {empresa}, {score}/100" con botones **Confirmar · Editar · Descartar** (Telegram inline keyboard) y aparece en la bandeja.
+4. **Confirmar.** Jose pulsa Confirmar (Telegram → webhook del gateway con token secreto y `chat_id` verificado; o admin → Server Action). Se registra `confirmed_by_jose` en `radar_application_events` (con origen `telegram|admin`). Estado → `pending_confirm` solo si Jose eligió "Editar" y aún no confirmó; si confirma directamente, pasa a envío. **Invariante:** ninguna transición a `sent` sin evento `confirmed_by_jose`.
+5. **Enviar o asistir.** Si el conector tiene `canSubmit` (API o formulario propio de la plataforma con envío verificado en pruebas), el núcleo llama a `submit()`; con respuesta OK → `sent` con `submitted_at` y `receipt` (id o URL de confirmación). Si el envío falla (error, captcha, cambio de formulario) → se mantiene `prepared` con `last_error`, aviso a Jose y **paso a modo asistido**. Modo asistido (LinkedIn, Indeed y todo lo que no tenga envío propio): Jose recibe el enlace directo a la oferta y un enlace a `/admin/radar/[id]` con el material listo para copiar (botones "copiar carta", "descargar CV.pdf") y, cuando lo haya enviado, marca **"Enviada"** → `sent` con `submitted_via='assisted'`. En Telegram el flujo asistido es: Confirmar → mensaje con enlace + "Marcar enviada".
+6. **Seguir por correo.** Cada 30 min el núcleo consulta Gmail (API, solo lectura) y, si Bridge está activo, n8n consulta Proton (IMAP) con filtros: remitentes/dominios de plataformas (`radar_platforms.email_domains`), dominios de empresas con candidatura abierta, hilos que responden a un `message_id` de candidatura y asuntos con referencia de oferta. Los candidatos pasan a la IA con el contexto de candidaturas abiertas y devuelve `{application_id | null, kind: rejected|contacted|interview|offer|info, confidence}`. Con `confidence ≥ 0,8` se vincula (`radar_emails`) y se aplica la transición con `actor='email'`; con menos, se vincula como `info` y se pide a Jose que clasifique (un botón). Se guarda referencia, extracto y enlace al hilo, no el cuerpo entero.
+7. **Calendario.** Cuando un correo o Jose indican entrevista, llamada o plazo, el núcleo propone el evento (título, fecha, duración, enlace de videollamada si viene en el correo) y Jose confirma (Telegram/admin) → se crea en el calendario secundario "Radar" de Google Calendar (visible en el calendario habitual de Jose) y en `radar_application_events` con `google_event_id`. Los eventos del calendario "Radar" se leen cada hora para reflejar cambios hechos a mano por Jose. **Nunca se crea, mueve ni borra un evento sin confirmación** (D23, regla global).
+8. **Avisos y automatizaciones.** Cron diario (08:00 Europe/Madrid): plazos en < 24 h, seguimientos vencidos (candidatura `sent` o `contacted` sin novedad en 7 días → propone **borrador de seguimiento en Gmail**, nunca enviado, con la voz de Jose), entrevistas de hoy, resumen de la semana (lunes). Todo por Telegram vía Edge Function `notify` (eventos `radar.*`) o directamente desde el gateway. n8n en Omen puede añadir automatizaciones opcionales (reflejo en Notion, D24).
+
+Estados de conector: cada pasada deja `last_run_at`, `last_ok_at`, `last_error` en `radar_platforms`; la bandeja muestra "LinkedIn: última pasada hace 3 h · OK" o "detenido: verificación de seguridad".
+
+### 13.3 Estados y transiciones
+
+Estados de `radar_applications.status` (decisión de Jose): `discovered`, `prepared`, `pending_confirm`, `sent`, `contacted`, `interview`, `offer`, `rejected`, `discarded`.
+
+| Desde | Hacia | Quién | Condición |
+|---|---|---|---|
+| — | `discovered` | núcleo | oferta con `score ≥ umbral` (o Jose "preparar" a mano sobre una oferta bajo umbral) |
+| `discovered` | `prepared` | IA | material generado y validado (CV, carta/propuesta, formulario si aplica) |
+| `discovered`, `prepared` | `discarded` | Jose, regla | "No me interesa", exclusión, oferta caducada (`expired`) o duplicada |
+| `prepared` | `pending_confirm` | Jose | pulsa "Editar": queda a la espera de su confirmación tras editar |
+| `prepared`, `pending_confirm` | `sent` | núcleo (tras `confirmed_by_jose`) | envío propio OK (`submitted_via='connector'`) o Jose marca "Enviada" tras el modo asistido (`submitted_via='assisted'`). **Sin `confirmed_by_jose` no hay transición** |
+| `sent` | `contacted` | correo, Jose | respuesta humana de la empresa o plataforma (no rechazo) |
+| `sent`, `contacted` | `interview` | correo, Jose | entrevista o llamada propuesta (crea propuesta de evento) |
+| `interview` | `offer` | correo, Jose | oferta recibida |
+| `sent`, `contacted`, `interview`, `offer` | `rejected` | correo, Jose | rechazo explícito o silencio > 45 días (regla, marcada `auto`) |
+| `rejected`, `discarded` | `discovered`/`prepared` | Jose | reabrir (raro; queda en el historial) |
+
+Estados terminales: `rejected`, `discarded`, `offer` (con `outcome: accepted|declined` como campo aparte, no como estado). Toda transición escribe una fila en `radar_application_events` (`kind='status_change'`, `from`, `to`, `actor`, `source_id`) y las hechas por `email` o `rule` son reversibles desde admin en un clic ("no era esto"). Las ofertas (`radar_offers`) tienen su propio ciclo mínimo: `active` → `expired` (fecha límite pasada o ausente en dos pasadas consecutivas) → se descartan las candidaturas no enviadas.
+
+### 13.4 Modelo de datos (tablas aditivas `radar_*`, solo admin)
+
+Todas con RLS `staff_role_of((select auth.uid())) = 'admin'` para select/insert/update/delete del admin; las escrituras de conectores, IA, correo y cron entran por el gateway con service role. Sin FK a tablas heredadas salvo ninguna (Radar es autónomo). Índices en toda FK y en (`platform_id`, `external_id`) único.
+
+| Tabla | Campos principales |
+|---|---|
+| `radar_platforms` | `id`, `code` (`indeed`, `linkedin`, `infojobs`, `tecnoempleo`, `workana`, `malt`, `upwork`), `name`, `kind` (`jobs`, `freelance`, `both`), `access` (`api`, `mcp`, `feed`, `scrape`), `can_submit` bool, `enabled` bool, `schedule` (cron o texto), `runtime` (`gateway`, `omen`, `mac`), `limits` jsonb (p. ej. `{"runs_per_day":1,"max_offers":30}`), `email_domains` text[], `last_run_at`, `last_ok_at`, `last_error`, `config` jsonb (sin secretos) |
+| `radar_offers` | `id`, `platform_id`, `external_id`, `url`, `title`, `company`, `location`, `remote` (`remote`, `hybrid`, `onsite`, `unknown`), `kind` (`job`, `gig`), `compensation` jsonb (`{min,max,currency,period}` o `{budget,hourly}`), `description` text, `requirements` text[], `posted_at`, `deadline_at`, `submit_mode` (`connector`, `assisted`), `raw` jsonb (respuesta original recortada), `fingerprint` (empresa+título normalizados), `duplicate_of` (self FK), `status` (`active`, `expired`), `discovered_at`, `last_seen_at` |
+| `radar_scores` (o columnas en `radar_offers`; el diseño técnico decide) | `offer_id`, `score` int, `reasons` jsonb[], `rule_hits` text[], `model`, `profile_version`, `scored_at` |
+| `radar_applications` | `id`, `offer_id` (único), `status` (§13.3), `submitted_at`, `submitted_via` (`connector`, `assisted`), `receipt` jsonb, `outcome` (`accepted`, `declined`, null), `notes` text (Jose), `next_action_at` (para seguimientos), `last_activity_at`, `created_at`, `updated_at` |
+| `radar_materials` | `id`, `application_id`, `kind` (`cv`, `cover_letter`, `proposal`, `form_payload`, `answers`), `format` (`md`, `pdf`, `json`), `content` text o `storage_path` (bucket privado `radar-materials`), `version` int, `generated_by` (`ai`, `jose`), `model`, `approved` bool, `created_at` |
+| `radar_application_events` | `id`, `application_id`, `kind` (`status_change`, `confirmed_by_jose`, `note`, `deadline`, `interview`, `call`, `followup_draft`, `reminder_sent`, `error`), `from_status`, `to_status`, `actor` (`jose`, `ai`, `email`, `rule`, `connector`, `cron`), `source` (`admin`, `telegram`, `gmail`, `proton`, `calendar`), `source_id` (id del mensaje, del evento, etc.), `at` timestamptz (fecha del evento, p. ej. la entrevista), `google_event_id`, `payload` jsonb, `created_at` |
+| `radar_emails` | `id`, `application_id` (nullable hasta clasificar), `account` (`gmail`, `proton`), `message_id`, `thread_id`, `from_address`, `subject`, `received_at`, `excerpt` (≤ 500 car.), `link` (URL del hilo en Gmail o `mailto`/referencia en Proton), `classification` (`rejected`, `contacted`, `interview`, `offer`, `info`, `unrelated`), `confidence` numeric, `reviewed_by_jose` bool |
+| `radar_profile_versions` (opcional) | `version`, `content` jsonb, `created_at`: copia del `profile.json` usado para puntuar, para explicar puntuaciones antiguas. Alternativa: solo `profile_version` en `radar_scores` y el JSON en git |
+
+Perfil de búsqueda y CV maestro: `content/radar/profile.json` (roles, palabras clave, exclusiones, ubicación, modalidad, salario mínimo, tarifa mínima, idiomas, sectores, disponibilidad) y `content/radar/cv.master.es.md` / `cv.master.en.md` en el repo, versionados. Son la única fuente de hechos para la IA.
+
+Bucket privado `radar-materials` (PDFs de CV generados), políticas solo admin.
+
+### 13.5 Arquitectura de conectores y dónde corre cada pieza
+
+**Interfaz común** (`packages/radar-connectors`, TypeScript, sin dependencias de runtime concreto):
+
+```ts
+interface RadarConnector {
+  code: PlatformCode;
+  capabilities: { discover: true; detail: boolean; prepareForm: boolean; submit: boolean; track: boolean; access: 'api'|'mcp'|'feed'|'scrape' };
+  discover(query: SearchQuery, ctx: Ctx): Promise<OfferDraft[]>;      // listado normalizado
+  detail?(externalId: string, ctx: Ctx): Promise<OfferDraft>;         // ficha completa
+  prepareForm?(offer: Offer, materials: Materials): Promise<FormPayload>; // mapa campo → valor
+  submit?(application: Application, payload: FormPayload, ctx: Ctx): Promise<Receipt>; // solo tras confirmed_by_jose
+  track?(application: Application, ctx: Ctx): Promise<TrackUpdate | null>; // estado en la plataforma, si lo expone
+}
+```
+
+El núcleo (gateway) solo conoce la interfaz y la tabla `radar_platforms`. Añadir una plataforma = un fichero nuevo en el paquete + una fila en `radar_platforms` + credenciales en su runtime. **Ninguna plataforma toca el núcleo** (D19). Los conectores que corren fuera del gateway (Omen, Mac) usan la misma interfaz y entregan por `POST /api/v1/radar/ingest` (idempotente, autenticado con `RADAR_INGEST_TOKEN`).
+
+**Conectores iniciales, vía de acceso real y dónde corren** (verificado lo marcado; lo demás se confirma en la tarea 0 de Radar):
+
+| Plataforma | Descubrir / detallar | Enviar | Runtime | Notas honestas |
+|---|---|---|---|---|
+| **Indeed** | Conector MCP oficial (`search_jobs`, `get_job_details`, `get_company_data`, `get_resume`), **verificado**: busca por palabras clave, ubicación y país y devuelve enlaces de solicitud; no expone envío. La API pública de búsqueda de Indeed no está disponible para nuevos integradores | **Asistido** (enlace) | **Mac de Jose** (launchd, `claude -p` con skill `/radar-indeed`, patrón de `automation/run-skill.sh`): el MCP solo existe dentro de una sesión de Claude | Sin scraping (condiciones de uso y captchas). Si el Mac duerme, la pasada se ejecuta al despertar |
+| **LinkedIn** (empleo y freelance/Services) | **Scraping con sesión propia** de Jose desde un navegador headless en Omen (cookies en el credential store de n8n; nunca en el repo) | **Asistido** siempre. Easy Apply automatizado y mensajes: fuera | **Omen** (n8n + contenedor de navegador, IP doméstica) | Viola las condiciones de LinkedIn; riesgo real de restricción de cuenta. Límites: ≤ 1 pasada/día, ≤ 30 ofertas/pasada, pausas aleatorias 3–12 s, solo listados y fichas, parada automática ante captcha/verificación, interruptor en admin. Alternativa sin riesgo lista: alertas de empleo de LinkedIn por correo parseadas por el flujo de correo (D20) |
+| **InfoJobs** | API oficial (`api.infojobs.net`, credenciales de aplicación; búsqueda y detalle de ofertas). Candidatura por API: existe en su documentación con autorización del candidato; **a verificar en tarea 0** | `connector` si la API lo permite tras la verificación; si no, asistido | **Gateway** (cron) | Requiere alta de aplicación por Jose (Q14) |
+| **Tecnoempleo** | Feed RSS/XML público de ofertas + ficha HTML | Asistido | **Gateway** (cron) | Sin API; el feed es la vía menos frágil |
+| **Upwork** | API GraphQL oficial (requiere solicitud de API key y OAuth2 de la cuenta de Jose): búsqueda de trabajos y detalle | Asistido (enviar propuestas por API no está permitido para freelancers) | **Gateway** (cron) | Aprobación de API key puede tardar; conector opcional en el lanzamiento (Q14) |
+| **Workana** | Sin API pública; listados públicos sin login → scraping ligero con límites | Asistido | **Omen** | Mismo marco de límites que LinkedIn, sin sesión |
+| **Malt** | Sin API; los proyectos llegan como propuestas al freelancer por correo/plataforma | Asistido (responder en Malt) | **Correo** (§13.2 paso 6): los correos de Malt crean la oferta y la candidatura en `contacted` | Malt funciona al revés (te buscan): Radar solo lo sigue, no lo rastrea |
+
+**Dónde corre cada pieza del núcleo:**
+
+| Pieza | Dónde | Por qué |
+|---|---|---|
+| Ingesta, deduplicación, puntuación, preparación, máquina de estados, confirmación, envío por conector, webhook de Telegram | **Gateway** (`apps/api`, `/api/v1/radar/*`) | Siempre disponible, sin Omen; comparte auth, Supabase service role, Workers AI y AI Gateway |
+| Cron (avisos diarios, sondeo de Gmail cada 30 min, lectura del calendario cada hora, conectores por API/feed, caducidad de ofertas) | **Cron Triggers de Workers** en el gateway | Sin depender de Omen ni del Mac |
+| Tokens OAuth de Google (Gmail + Calendar, refresh token) y `RADAR_INGEST_TOKEN`, `TELEGRAM_WEBHOOK_SECRET` | `wrangler secret` + KV para el access token en caché | Nunca en el frontend ni en el repo |
+| Conectores por scraping (LinkedIn, Workana), Proton Bridge + lectura IMAP, reflejo opcional en Notion | **Omen** (n8n + contenedores nuevos) | Necesitan IP residencial, sesión de navegador y un proceso persistente; Bridge solo corre en local |
+| Conector Indeed (MCP) | **Mac** (launchd + `claude -p`) | El MCP solo vive en una sesión de Claude |
+| Bandeja y detalle (`/admin/radar`, `/admin/radar/[id]`, `/admin/radar/plataformas`) | `apps/web` (RSC + Server Actions sobre Supabase con la sesión admin; acciones que disparan IA o envío llaman al gateway) | Mismo guard del admin (`staff_members.role='admin'`) |
+| PDFs de CV | Generación en el gateway (HTML → PDF vía Browser Rendering de Cloudflare, o en Omen si el plan Free no lo cubre; el diseño técnico decide) a `radar-materials` | El material debe existir aunque Omen esté apagado; si no es viable en Workers Free, PDF bajo demanda en el navegador de Jose (impresión a PDF del CV en HTML) como respaldo |
+
+### 13.6 Integraciones
+
+| Integración | Uso | Credenciales y límites |
+|---|---|---|
+| Conector MCP de Indeed | Descubrir y detallar; datos de empresa para los motivos de puntuación; `get_resume` como contraste del CV maestro | Cuenta de Claude de Jose (ya autenticada); ejecución solo desde el Mac; resultados con enlaces intactos |
+| Gmail API | Lectura filtrada (`messages.list` con `q` por remitentes/dominios/asuntos y fecha; `messages.get` formato `metadata` + `snippet`), **borradores** de seguimiento (`drafts.create`). **Nunca `send`** | OAuth 2.0 con app en modo prueba y el usuario de Jose; scopes `gmail.readonly` y `gmail.compose`; refresh token en `wrangler secret` |
+| Proton Mail vía Proton Bridge | Lectura IMAP de la bandeja de entrada de Proton con los mismos filtros; sin envío | Requiere plan Proton de pago; contenedor en Omen (Bridge headless) + nodo IMAP de n8n; contraseña de Bridge en `.env` de Omen fuera del repo |
+| Google Calendar API | Calendario secundario "Radar" en la cuenta de Jose: crear eventos **solo tras confirmación**; leer cada hora para reflejar cambios | Mismo OAuth que Gmail (scope `calendar.events` limitado al calendario Radar); `google_event_id` en `radar_application_events` |
+| Telegram Bot API | Avisos (Edge Function `notify`, eventos `radar.prepared`, `radar.deadline`, `radar.followup_due`, `radar.email_linked`, `radar.connector_error`) y **confirmación con botones inline** (`callback_query` → webhook `POST /api/v1/radar/telegram` con `X-Telegram-Bot-Api-Secret-Token`; solo se aceptan callbacks del `chat_id` de Jose, verificado contra `staff_members.telegram_chat_id`) | Bot existente; webhook nuevo en el gateway |
+| Workers AI + AI Gateway (Llama 3.3 70B, Q9) | Puntuar (JSON mode), redactar CV adaptado, carta, propuesta y clasificar correos | Mismo binding que D5; caché y tope de gasto en AI Gateway; respaldo: worker `ai` de Omen (`/ai/summarize`, `/ai/chat`) cuando Workers AI falle o para redacción larga (D22) |
+| n8n (Omen) | Orquestar conectores por scraping, IMAP de Proton, reflejo opcional en Notion; **no** es la vía primaria de avisos ni de confirmación | Webhooks con secreto; credenciales en el credential store de n8n |
+| Notion (opcional, D24) | Reflejo de solo escritura de candidaturas en una base "Radar" para verlas junto al CRM | Lo escribe n8n desde eventos del gateway; nunca es fuente de verdad; se puede apagar |
+| Supabase | Fuente de verdad (`radar_*`), bucket `radar-materials`, RLS admin | Service role solo en el gateway |
+
+Rutas nuevas del gateway (aditivas, todas con auth admin JWT o `RADAR_INGEST_TOKEN` según origen): `POST /radar/ingest`, `POST /radar/offers/:id/score`, `POST /radar/applications/:id/prepare`, `POST /radar/applications/:id/confirm`, `POST /radar/applications/:id/mark-sent`, `POST /radar/applications/:id/discard`, `POST /radar/events/propose`, `POST /radar/events/:id/confirm`, `POST /radar/telegram` (webhook), `GET /radar/platforms/health`, más el handler `scheduled` para los cron.
+
+### 13.7 Riesgos y límites honestos (resumen; los transversales están en §9)
+
+- **LinkedIn:** el scraping incumple sus condiciones de uso aunque sea con sesión propia y lectura; LinkedIn detecta patrones (volumen, horarios, headless) y restringe cuentas, a veces sin aviso. Los límites reducen el riesgo, no lo eliminan. Jose lo acepta (D20) sabiendo que la cuenta es también su canal comercial. La alternativa segura (alertas por correo) queda implementada como conector `linkedin-email` y puede sustituir al scraping con un interruptor.
+- **Indeed:** solo vía MCP dentro de Claude; depende del Mac encendido y de la sesión de Claude autenticada; el volumen por consulta es limitado y no hay envío. Scraping descartado.
+- **InfoJobs y Upwork:** requieren alta o aprobación de aplicación; los límites de cuota se conocen al obtener credenciales; el envío por API de InfoJobs es una hipótesis a verificar en la tarea 0 de Radar.
+- **Captchas y verificaciones:** no se resuelven nunca; ante uno, el conector se detiene y avisa. Los envíos por formulario externo son, por definición, asistidos.
+- **Calidad de las candidaturas:** una carta genérica hace más daño que no enviar. La IA solo reordena y redacta a partir de hechos versionados; Jose ve el material antes de confirmar; `usuario-ejemplo` como reclutador evalúa 5 candidaturas antes de dar por buena la rama.
+- **Privacidad del correo:** Gmail y Proton contienen la vida de Jose. Radar lee solo mensajes que pasan filtros previos (remitentes, dominios, hilos de candidaturas), guarda referencias y extractos, nunca cuerpos completos ni adjuntos, y todo se borra desde admin. El modelo de IA que clasifica recibe solo el extracto y la lista de candidaturas abiertas.
+- **Proton:** Bridge exige plan de pago (Mail Plus o superior) y un proceso persistente; si Jose no lo contrata, Proton queda fuera y Radar funciona con Gmail (Q12).
+- **Google OAuth:** app en modo prueba (usuarios de prueba) obliga a renovar el consentimiento cada 7 días salvo que se publique la app o se use una cuenta Workspace; el diseño técnico elige la vía y el plan la deja resuelta antes de la rama de correo.
+- **Tres runtimes:** gateway, Omen y Mac. Es el precio de usar cada vía oficial donde existe; se mitiga con un único endpoint de ingesta idempotente y salud por conector visible en admin.
+- **Coste:** Workers AI por puntuación (cientos de llamadas/semana, pequeñas) y por redacción (decenas, largas): cabe en el tope de AI Gateway; Proton Mail Plus ≈ 4–5 €/mes; Browser Rendering para PDF puede exigir Workers Paid (5 $/mes) o hacerse en Omen.
+
+### 13.8 Decisiones de Radar (D18–D26)
+
+| # | Decisión | Razón | Descartado |
+|---|---|---|---|
+| D18 | **Envío solo tras confirmación de un clic** de Jose (admin o Telegram); donde hay API o formulario propio se envía; si no, se abre el enlace con todo preparado; nunca 100 % automático | Decisión de Jose. Protege reputación y cuentas; hace explícito el criterio humano | Auto-apply masivo; modo "confirmación por lotes" sin ver cada candidatura |
+| D19 | **Conectores enchufables** con interfaz común (`discover`, `detail`, `prepareForm`, `submit`, `track`) y capacidades declaradas; el núcleo solo conoce `radar_platforms` | Decisión de Jose. Las plataformas cambian; añadir una no debe tocar el núcleo | Lógica por plataforma en el gateway; un solo scraper genérico |
+| D20 | **LinkedIn por scraping con sesión propia y límites estrictos**, solo lectura, parada ante captcha, interruptor; conector alternativo `linkedin-email` (alertas por correo) listo | Decisión de Jose asumiendo el riesgo de bloqueo. P7 de josedev lo excluía; se supera | Sin LinkedIn; solo alertas por correo (queda como respaldo); Easy Apply automatizado |
+| D21 | **Indeed por el conector MCP oficial ejecutado desde el Mac** (launchd + `claude -p`), envío asistido | Es la única vía oficial disponible; ya existe el patrón de automatización en claude-config | Scraping de Indeed; API Publisher (cerrada) |
+| D22 | **IA: Workers AI (Llama 3.3 70B) con AI Gateway** para puntuar, redactar y clasificar correos; worker `ai` de Omen como respaldo | Sin depender de Omen; mismo binding y modelo que el resto (Q9); coste acotado | Claude API (otra credencial y coste); solo Ollama en Omen |
+| D23 | **Calendario "Radar" secundario en Google Calendar**, sincronizado con el de Jose; creación y cambios solo con confirmación; lectura horaria | Decisión de Jose; regla global de no tocar eventos proactivamente | Calendario propio en Supabase sin Google; Cal.com |
+| D24 | **Fuente de verdad: Supabase (`radar_*`)**; Notion reflejo opcional vía n8n, apagable | Decisión de Jose. Evita acoplar el módulo a un conector | Notion como fuente de verdad; Notion obligatorio |
+| D25 | **Correo: Gmail API (lectura filtrada + borradores) y Proton vía Bridge en Omen (IMAP, lectura)**; vínculo por reglas + IA con umbral de confianza; nunca envío | Decisión de Jose. Cubre sus dos cuentas; Gmail sigue la regla global de "solo borradores" | Reenvío automático de Proton a Gmail (expone el correo); leer todo el buzón |
+| D26 | **Avisos y confirmación por Telegram**: Edge Function `notify` para avisos, webhook en el gateway para los botones; cron en Workers para plazos y seguimientos; borradores de seguimiento en Gmail | Sin depender de Omen; reutiliza el bot y la Edge Function existentes | Confirmación solo en admin; n8n como único orquestador de avisos |
+
+### 13.9 Impacto en alcance y plazo de v1
+
+- **Alcance:** Radar es el módulo privado más grande de v1: 7 tablas nuevas, un paquete de conectores (7 conectores iniciales, de los que 2–3 pueden llegar después del lanzamiento sin tocar el núcleo), ~10 rutas nuevas y cron en el gateway, 3 pantallas de admin (bandeja, detalle con material editable, plataformas), integración OAuth con Google, webhook de Telegram, 2 contenedores nuevos y workflows en Omen, y una automatización nueva en el Mac.
+- **Estimación relativa (esfuerzo, con el resto de v1 = 100):** Radar ≈ **35–45** adicionales. Comparable a la suma de "generador de propuesta + área de clientes + admin actual". Desglose orientativo: núcleo y máquina de estados 8, IA (puntuar, preparar, clasificar) 6, bandeja y detalle en admin 7, conectores 10–15 (LinkedIn y los scrapers son la mitad), correo + calendario + OAuth 6, infra en Omen y Mac 3, tests y puerta 4.
+- **Plazo:** con D17, el lanzamiento de v1 se retrasa aproximadamente lo que dure ese 35–45 % adicional. Recomendación de orden para no bloquear el resto: (1) migraciones `radar_*` y paquete de conectores con fixtures pronto (no dependen de la UI); (2) rama "núcleo + bandeja + Telegram" con un conector de bajo riesgo (Tecnoempleo o InfoJobs) para cerrar el flujo completo; (3) Gmail + Calendar; (4) Indeed (Mac) y LinkedIn (Omen); (5) Proton, Upwork y Workana cuando haya credenciales o plan. **Válvula de escape** (no decidida, solo anotada): como Radar vive solo en `/admin`, si el plazo se dispara Jose podría abrir el público con Radar en las fases (1)–(2) y completar el resto en la misma producción; eso reabriría D17 y lo decide Jose, no el plan.
+- **Puerta de calidad:** `/puerta-calidad` por rama como el resto; `revisor-seguridad` con especial atención a secretos, webhook de Telegram, RLS de `radar_*` y filtros de correo; `usuario-ejemplo` encarna a Jose (operador) y a un reclutador que recibe el material.
+
+### 13.10 Preguntas abiertas imprescindibles para Jose (máx. 6)
+
+| # | Pregunta | Por qué bloquea | Recomendación |
+|---|---|---|---|
+| Q10 | **Perfil de búsqueda:** roles y palabras clave (es/en), remoto / híbrido / presencial y zona, salario mínimo bruto anual para empleo, tarifa mínima por hora y presupuesto mínimo por encargo freelance, idiomas, sectores o empresas excluidas, disponibilidad (fecha) | Sin esto no hay reglas duras ni puntuación; es el `profile.json` | Rellenar una plantilla de 12 campos que el plan entrega en `content/radar/profile.json`; se puede ajustar luego desde el repo |
+| Q11 | **Cuenta de Google y calendario:** ¿Gmail y Calendar sobre `developerjose12@gmail.com` u otra cuenta? ¿Calendario "Radar" como secundario de esa cuenta? ¿Acepta crear el proyecto OAuth en Google Cloud (app en modo prueba) y reconsentir cada 7 días, o prefiere publicar la app? | Decide el OAuth, los scopes y el trabajo de Jose en consola | Cuenta de Cloudflare (`developerjose12@gmail.com`), calendario secundario, app en modo prueba en v1 |
+| Q12 | **Proton:** ¿contrata Proton Mail Plus ahora para Bridge, o Proton queda diferido y v1 arranca solo con Gmail? | Proton Bridge exige plan de pago y un contenedor en Omen | Diferir: lanzar con Gmail y activar Proton cuando el resto esté en producción |
+| Q13 | **LinkedIn:** ¿confirma el scraping con su sesión (riesgo de restricción de la cuenta que usa también para clientes) con los límites de D20, o empieza por el conector de alertas por correo y activa el scraping después? ¿Cuántas ofertas/día y a qué hora? | Es la decisión con más riesgo del módulo y afecta a la infra de Omen | Empezar con alertas por correo + scraping apagado; activarlo tras 2 semanas de rodaje |
+| Q14 | **Credenciales de plataformas:** ¿tiene cuentas activas en InfoJobs, Tecnoempleo, Upwork, Workana y Malt? ¿Da de alta la aplicación en la API de InfoJobs y solicita la API key de Upwork antes del plan? | Los conectores por API no se pueden probar sin credenciales; Upwork tarda | Solicitar ambas ya; el plan marca Upwork como conector que puede llegar tras el lanzamiento |
+| Q15 | **Materiales base:** ¿existe un CV maestro actualizado (es y, si procede, en)? ¿Dónde vive (vault, PDF, LinkedIn)? ¿Quiere que la carta y la propuesta usen `Comercial/voz.md` tal cual o una voz más formal para empleo? ¿Datos de contacto y enlaces a usar en formularios (teléfono, portfolio, GitHub, LinkedIn)? | Sin CV maestro no hay CV adaptado ni formularios prellenados; la voz define las plantillas | Convertir el CV actual a `content/radar/cv.master.es.md` en la primera tarea del plan; voz de `voz.md` con registro "formal-cercano" para empleo |
+
+
+**Resueltas el 2026-09-19 (batería con Jose):**
+
+| # | Decisión |
+|---|---|
+| Q11 | Gmail personal de Jose por API y Google Calendar (calendario secundario "Radar") sincronizado con el móvil. OAuth en modo prueba en v1 |
+| Q12 | Proton Mail **diferido**: v1 arranca solo con Gmail; el conector de correo es enchufable y Proton Bridge se añade después |
+| Q13 | LinkedIn: primero **alertas de empleo por correo** leídas por el Radar; scraping con sesión propia apagado durante 2 semanas de rodaje y activable después con los límites de D20 |
+| Q14 | Cuentas en InfoJobs, Tecnoempleo, Upwork, Workana y Malt: Jose las crea cuando toque; el Radar arranca con las que existan (Indeed por MCP + alertas de LinkedIn por correo) |
+| Q10, Q15 | Pendientes de Jose: perfil de búsqueda (`content/radar/profile.json`) y CV maestro es/en (`content/radar/cv.master.*.md`) |
 
 ## Anexo A — Contratos conservados del gateway (`apps/api`, montado en `/api/v1`)
 
@@ -237,11 +472,11 @@ navegador
 - `admin-chat/*`: `GET thread`, `POST messages`, `POST meeting`, `POST n8n/inbound`. `admin-chat/admin/*`: `GET conversations`, `GET/POST :id/messages`, `POST :id/ai`, `POST :id/read` (solo admin: `staff_members.role='admin'`).
 - `forum/*`: intactas, sin consumidor.
 - Middlewares: `requestId`, `securityHeaders`, CORS por origen (añadir preview y producción nuevos), rate limit fijo y de escritura.
-- **Nuevas (aditivas):** `POST /api/v1/proposals/generate`, `POST /api/v1/notify/lead`.
+- **Nuevas (aditivas):** `POST /api/v1/proposals/generate`, `POST /api/v1/notify/lead`, grupo `/api/v1/radar/*` (§13.6) y handler `scheduled` (Cron Triggers) para Radar.
 
 ## Anexo B — Worker de Omen (`josecoded-worker`, solo vía gateway)
 
-`GET /health` (público); con token interno: `ai/status`, `ai/chat`, `ai/admin-chat`, `ai/blog/generate`, `ai/blog/improve`, `ai/summarize`, `n8n/status`, `n8n/trigger/:workflow`, `storage/list|upload|file/:area/:filename`, `system/status`. Sin cambios.
+`GET /health` (público); con token interno: `ai/status`, `ai/chat`, `ai/admin-chat`, `ai/blog/generate`, `ai/blog/improve`, `ai/summarize`, `n8n/status`, `n8n/trigger/:workflow`, `storage/list|upload|file/:area/:filename`, `system/status`. Sin cambios. Radar usa `ai/summarize` y `ai/chat` como respaldo de Workers AI (D22) y `n8n/trigger/radar-*` para los workflows de scraping, IMAP de Proton y reflejo en Notion; los contenedores nuevos de Radar en Omen (Proton Bridge, navegador headless) no forman parte del worker.
 
 ## Anexo C — Supabase
 
@@ -250,3 +485,5 @@ Heredadas e intactas (esquema real verificado el 2026-09-17 en el diseño técni
 Aditivas (solo se añade, nunca se altera lo heredado): `blog_comments`; `affiliates` (user_id, code, level `standard|premium`, created_at); columna `leads.affiliate_code` (nullable); `affiliate_rewards` (affiliate_id, lead_id, type `maintenance_months|percent`, amount, status `pending|paid`, paid_at); `upgrade_requests` (client_id, from_pack, to_pack, extras[], computed_price, status). RLS: cada usuario ve solo sus filas; Jose (`staff_members.role='admin'`) ve todo. `pack_templates` y `pack_extras` heredadas se alinean con `pricing.json` mediante el script de sincronización (no se editan a mano).
 
 Aditivas previstas: `blog_comments` + RLS; `leads.ai_proposal jsonb`, `leads.source text`; política de insert anónimo en `leads` acotada. Todas con `list_tables` y `get_advisors` antes y después, y OK de Jose para producción.
+
+**Aditivas de Radar (v1.5, §13.4):** `radar_platforms`, `radar_offers`, `radar_scores` (o columnas en `radar_offers`), `radar_applications`, `radar_materials`, `radar_application_events`, `radar_emails`, `radar_profile_versions` (opcional); bucket privado `radar-materials`. RLS: solo `staff_role_of((select auth.uid())) = 'admin'`; sin políticas para `authenticated` ni `anon`; escrituras de conectores, IA, correo y cron vía gateway con service role. Índices en todas las FK y único en (`platform_id`, `external_id`). Eventos aditivos de la Edge Function `notify`: `radar.prepared`, `radar.deadline`, `radar.followup_due`, `radar.email_linked`, `radar.connector_error`. Antes de la migración: `list_tables` para confirmar que no existe ninguna tabla `radar_*` (verificación pendiente en la tarea 0 de Radar; a 2026-09-17 no constaba ninguna) y `get_advisors` antes y después; aplicar en producción solo con OK de Jose.

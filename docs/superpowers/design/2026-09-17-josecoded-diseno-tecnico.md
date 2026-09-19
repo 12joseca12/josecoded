@@ -1,11 +1,14 @@
 # joseCoded — diseño técnico (previo a implementación)
 
-**Fecha:** 2026-09-17 · **Perfil:** web · **Base:** spec v1.2 (`docs/superpowers/specs/2026-09-13-josecoded-plataforma.md`), `Comercial/tarifas.md` v2 (vigencia 2026-09-14), código real de `josedev/josecoded-api` y `josecoded-worker`, migraciones de `josedev/supabase/migrations` (28 ficheros, hasta `20260720120000`).
-**Estado:** v1.1 (2026-09-17, tarde): esquema, RLS, triggers, Edge Function y advisors **verificados contra producción** (`nrgrmymsjtgayzejtawa`, `ACTIVE_HEALTHY`) en solo lectura; decisiones P1–P6 de Jose incorporadas (spec v1.3); §1, §2 y §3 alineados con la UX v2 (`docs/superpowers/design/2026-09-17-josecoded-ux.md`: shell IDE-lite, hero de presentación, sin decoración generativa). No se ha implementado ni aplicado nada. Versiones comprobadas en npm el 2026-09-17.
+**Fecha:** 2026-09-17 · **Perfil:** web · **Base:** spec v1.5.1 (`docs/superpowers/specs/2026-09-13-josecoded-plataforma.md`: §12/D16 hero, §13 Radar con Q11–Q14 resueltas), UX v3.1 (`docs/superpowers/design/2026-09-17-josecoded-ux.md`: §3 navegación clásica, §4.1 hero + `HeroMedia`, §7.12–7.18 y §9.10–9.14 Radar, §13.19 a–g), prototipo aprobado `docs/superpowers/design/ref/hero-lab-3/`, `Comercial/tarifas.md` v2 (vigencia 2026-09-14), código real de `josedev/josecoded-api` y `josecoded-worker`, migraciones de `josedev/supabase/migrations` (28 ficheros, hasta `20260720120000`).
+**Estado:** v1.2.1 (2026-09-19): (1) **hero** `GlyphScene` + `HeroMedia` + `IntroFall` (§1.6, §8.6) sustituye al `HeroIntro` compilar → minimizar; (2) **navegación clásica** (§1.6.1) sustituye al shell IDE-lite: sin árbol, pestañas, barra de título ni línea de estado; (3) **Radar** completo (§11: migraciones `radar_*` con SQL, endpoints del gateway, cron, conectores, OAuth de Google, webhook de Telegram, materiales y PDF, parser de correos, runtimes, tests); (4) decisiones a–g de UX §13.19 resueltas (§11.11); (5) preguntas P11–P15 nuevas. Lo verificado contra producción en v1.1 (esquema, 47 migraciones remotas, advisors) sigue vigente; **no se ha vuelto a consultar Supabase** y ninguna tabla `radar_*` constaba a 2026-09-17. Versiones de v1.1 comprobadas en npm el 2026-09-17; las nuevas de v1.2 (`three`, `fast-xml-parser`, `@cloudflare/puppeteer`) se fijan en su tarea 0 (§1.2). No se ha implementado ni aplicado nada.
 
-> Este documento cubre stack, funcionalidades, integraciones, datos, restricciones, tests, variables y riesgos. Pantallas, componentes, subpantallas y páginas de error van en el documento de `ux`/`ui` (`docs/superpowers/design/`), que se consolida con este antes del plan.
+> Este documento cubre stack, funcionalidades, integraciones, datos, restricciones, tests, variables y riesgos. Pantallas, componentes, subpantallas y páginas de error van en el documento de `ux`/`ui` (`docs/superpowers/design/`), que se consolida con este antes del plan. Historial: v1.0 (borrador), v1.1 (verificación contra producción, UX v2), **v1.2 (hero D16, navegación clásica, Radar §13)**.
 
 ---
+
+
+**Resueltas el 2026-09-19 (Jose):** P11 sí (LCP = título o poster, tope 1,2 s) · P12 sí (Telegram del Radar directo desde el gateway; `lead.created` sigue por la Edge Function) · P13 sí (sin Lenis; scroll nativo con `scrollbar-color`; GSAP + ScrollTrigger) · P14 sí (proyecto OAuth en la cuenta de Gmail de Jose; refresh token cifrado en KV; reautorización desde admin) · P15: **webhook directo a n8n en Omen, pero nunca expuesto a terceros**: ingress dedicado en Cloudflare Tunnel protegido con **Cloudflare Access (service token que solo posee el gateway)** + firma HMAC por llamada con secreto compartido; sin ambos, Cloudflare rechaza antes de llegar a Omen; el worker de Omen no se toca.
 
 ## 0. Hallazgos que corrigen la spec (leer primero)
 
@@ -39,33 +42,55 @@ josecoded/
 ├─ .github/workflows/           # ci.yml, preview.yml, deploy-production.yml, supabase-ping.yml
 ├─ apps/
 │  ├─ web/                      # Next.js 16 App Router → Cloudflare Workers vía OpenNext
-│  │  ├─ app/[locale]/...       # rutas públicas y privadas (ver §2)
+│  │  ├─ app/[locale]/...       # rutas públicas y privadas (ver §2); (public)/layout.tsx = Backdrop + SiteHeader + main + SiteFooter (§1.6.1)
 │  │  ├─ app/api/...            # route handlers (webhooks, auth callback, feeds)
+│  │  ├─ components/hero/       # HeroSplit, FallText, HeroMedia, HeroSceneGate, IntroFall, SceneStateLabel (§1.6)
+│  │  ├─ components/radar/      # 20 componentes de UX §3.10 (bandeja, detalle, plataformas, perfil, calendario)
 │  │  ├─ content/               # blog MDX, proyectos, servicios, FAQ (versionado)
 │  │  ├─ messages/{es,en}.json  # next-intl
 │  │  ├─ public/                # fuentes, og generadas, iconos
-│  │  ├─ scripts/               # build-time: github.ts, stores.ts, og.ts, llms.ts, images.ts
+│  │  ├─ public/hero/           # video.webm, video.mp4, poster.avif/webp, mini-chip.avif, mini-phone.avif, media.json (generados por packages/glyph-scene, commiteados; §1.6.3)
+│  │  ├─ scripts/               # build-time: github.ts, stores.ts, og.ts, llms.ts, images.ts, build-info.ts, check-hero-bundle.ts
 │  │  ├─ e2e/                   # Playwright
 │  │  ├─ open-next.config.ts · wrangler.jsonc · next.config.ts · lighthouserc.json
 │  └─ api/                      # josecoded-api movido tal cual (Hono, Cloudflare Worker)
-│     ├─ src/ (existente) + src/modules/{proposals,leads,notify}.routes.ts (nuevos)
-│     ├─ wrangler.jsonc         # + bindings nuevos aditivos
+│     ├─ src/ (existente) + src/modules/{proposals,leads,notify,affiliates}.routes.ts (nuevos)
+│     ├─ src/modules/radar/     # radar.routes.ts, ingest, applications, emails, events, platforms, telegram, google (§11.2–11.7)
+│     ├─ src/scheduled.ts       # handler `scheduled` de los Cron Triggers de Radar (§11.3)
+│     ├─ wrangler.jsonc         # + bindings nuevos aditivos (QUOTA_KV, RADAR_KV, BROWSER, ratelimits, triggers.crons)
 │     └─ vitest.config.ts       # @cloudflare/vitest-pool-workers
 ├─ packages/
 │  ├─ pricing/                  # pricing.json + reglas + tipos + script de sync
 │  │  ├─ pricing.json
 │  │  ├─ src/{index,schema,upgrade,affiliate,proposal-price}.ts
 │  │  └─ scripts/{sync-from-tarifas.ts, sync-db.ts}
+│  ├─ glyph-scene/              # escena Three.js del hero, sin React (§1.6.2)
+│  │  ├─ src/{index,params,rng,atlas,clouds,shaders,scene,intro,worker}.ts
+│  │  ├─ render/index.html      # página de captura para vídeo/poster (§1.6.3)
+│  │  └─ scripts/render-media.ts# Playwright headless + ffmpeg + sharp → apps/web/public/hero/
+│  ├─ radar-core/               # núcleo de Radar sin runtime concreto (§11.1, §11.8, §11.9)
+│  │  ├─ content/{profile.json,profile.meta.json,cv.master.es.md,cv.master.en.md}   # única fuente de hechos (spec §13.4)
+│  │  ├─ src/{types,state-machine,scoring/{rules,ai-score},dedup,materials/{cv,cover,proposal,form},email/{query,linker,classify},telegram/{callback,messages},schemas}.ts
+│  │  └─ test/fixtures/{emails,offers}/  # correos reales anonimizados y respuestas de plataformas
+│  ├─ radar-connectors/         # interfaz RadarConnector + conectores (§11.4)
+│  │  ├─ src/{index,types}.ts + src/connectors/{indeed,linkedin-email,linkedin,infojobs,tecnoempleo,workana,malt-email,upwork}.ts
+│  │  ├─ bin/ingest.ts          # CLI: valida OfferDraft[] (stdin o fichero) y hace POST /radar/ingest (Mac y Omen)
+│  │  ├─ bin/runner.ts          # CLI Node + Playwright para Omen: `radar-runner run --platform workana`
+│  │  └─ test/fixtures/         # RSS, JSON y HTML grabados por plataforma
 │  └─ config/                   # eslint, tsconfig, prettier compartidos
+├─ infra/                       # solo referencia versionada; lo aplica implementador-infra con OK de Jose
+│  ├─ omen/radar-runner/{Dockerfile,compose.yml,.env.example}   # contenedor Node 22 + Chromium (§11.9)
+│  ├─ omen/n8n/{radar-run,radar-email-proton,radar-notion}.json # workflows exportados
+│  └─ mac/com.jose.josecoded.radar-indeed.plist                 # launchd 08:00 → run-skill.sh "/radar-indeed" (§11.4)
 └─ supabase/
    ├─ schema/baseline.sql       # dump de solo lectura del esquema heredado (public, private, storage, vault; sin datos). H6
-   ├─ migrations/               # SOLO nuevas: 20260917*.sql (§6.2)
+   ├─ migrations/               # SOLO nuevas: 20260917*.sql (§6.2) y 20260919*.sql (Radar, §11.1)
    ├─ functions/notify/         # Edge Function heredada (copiada de producción, v4) + evento lead.created (aditivo)
    ├─ seed/seed.sql             # usuarios y datos de prueba para tests RLS (solo local)
    └─ config.toml               # [functions.notify] verify_jwt = false; auth.email otp habilitado
 ```
 
-`apps/api` se mueve con `git mv` desde `josedev/josecoded-api` conservando historial (`git subtree`/`filter-repo` no hace falta: josedev queda congelado como referencia). El worker de Omen **no** entra en el monorepo (repo propio `josecoded-worker`, sin cambios).
+`apps/api` se mueve con `git mv` desde `josedev/josecoded-api` conservando historial (`git subtree`/`filter-repo` no hace falta: josedev queda congelado como referencia). El worker de Omen **no** entra en el monorepo (repo propio `josecoded-worker`, **sin cambios tampoco por Radar**: el gateway llama a n8n por webhook directo, como ya hace `admin-chat`, §11.9). La skill `/radar-indeed` vive en `claude-config` (`skills/radar-indeed/SKILL.md`), no aquí; el plist de `infra/mac/` es su copia de referencia.
 
 ### 1.2 Versiones (comprobadas en npm 2026-09-17)
 
@@ -80,21 +105,26 @@ josecoded/
 | | `wrangler` | 4.133.0 | Mismo en `apps/api` (hoy `^4.87`, se sube; aditivo) |
 | | `tailwindcss` + `@tailwindcss/postcss` | 4.3.3 | |
 | | `shadcn` (CLI) | 4.21.0 | Componentes copiados al repo y re-tematizados por `ui` |
-| | `gsap` + `@gsap/react` | 3.15.0 / 2.1.2 | Plugins usados (todos gratuitos desde gsap 3.13): `ScrollTrigger` (`FocusLight`), `Flip` (minimización del hero), `ScrambleTextPlugin` (estado `compiling`). Sin Observer ni SplitText |
-| | `lenis` | 1.3.26 | Smooth scroll **sobre el panel central** (`wrapper`/`content` de Lenis), no sobre `window`: en escritorio solo ese contenedor hace scroll (UX §12). Sincronizado con `ScrollTrigger.update` vía `gsap.ticker` |
+| | `gsap` + `@gsap/react` | 3.15.0 / 2.1.2 | **Solo núcleo + `ScrollTrigger`** (`CompileReveal` v3 por lotes, `PageTransition`). `Flip` y `ScrambleTextPlugin` salen (el hero ya no se minimiza ni compila); la resolución de glifos de `CompileReveal` la hace el mismo módulo sin dependencias de `IntroFall` (§1.6.6). Cargado con `next/dynamic` tras el primer paint |
+| | ~~`lenis`~~ | — | **Eliminado** (v1.2): sin panel central, el scroll es el de `window`; UX v3.1 §3.7 no lo pide y §12 solo lo regula "si se usa". Menos JS y sin riesgo de secuestro del scroll en móvil (P13) |
+| | `three` | **a fijar en la tarea 0 del hero** (prototipo: 0.170.0) | Solo en `packages/glyph-scene`, importación selectiva desde `three` y `three/addons/postprocessing/*`; nunca en el chunk inicial (§1.6.2, test §8.6). Sin React Three Fiber |
 | | `next-intl` | 4.14.5 | Peer `next ^16`. Sin `proxy.ts` (ver 1.4) |
 | | `@next/mdx` + `@mdx-js/loader` + `@mdx-js/react` | 16.3.5 / 3.1.x | Compilación en build; ver decisión 1.5 |
 | | `rehype-pretty-code` + `shiki` | 0.14.5 / 4.4.3 | Código en el blog, en build |
 | | `@supabase/ssr` + `@supabase/supabase-js` | 0.12.7 / 2.116.0 | Peer `supabase-js ^2.114` |
 | | `@marsidev/react-turnstile` | 1.6.1 | Widget Turnstile |
 | | `@calcom/embed-react` | 1.5.3 | Reserva 20 min (vía Empresas) |
-| | ~~`ogl`~~ | — | **Eliminado** (UX v2: sin decoración generativa; ver 1.6) |
-| | `lucide-react` | 1.47.0 | Iconos de UI (no de fichero: UX §3.1); los "jc" propios se dibujan como SVG en el repo |
+| | ~~`ogl`~~ | — | **Eliminado** (v1.1). En v1.2 el único WebGL es `three` en `GlyphScene` (D16) |
+| | `lucide-react` | 1.47.0 | Iconos de UI; los "jc" propios se dibujan como SVG en el repo |
 | | `zod` | 4.6.5 | Validación de env, formularios, frontmatter y `pricing.json` |
 | API | `hono` | 4.13.8 | Hoy 4.12.16; subida menor |
 | | `zod` | 4.6.5 | Hoy 4.4.2 |
 | | `@supabase/supabase-js` | 2.116.0 | Hoy 2.105.4 |
 | | `@cloudflare/workers-types` | 5.20260917.1 | |
+| | `fast-xml-parser` | a fijar (tarea 0 Radar) | Feed RSS de Tecnoempleo en el gateway (§11.4); ~10 KB. El HTML de fichas se extrae con `HTMLRewriter` nativo, sin cheerio |
+| | `@cloudflare/puppeteer` | a fijar (tarea 0 Radar) | PDF del CV con el binding `BROWSER` (Browser Rendering, §11.7); cliente fino, no incluye Chromium |
+| Glyph-scene | `three` | ver arriba | Paquete sin React; `esbuild` (dev) para `render/` y el worker de nubes |
+| Radar (Omen/Mac) | `playwright` | 1.63.0 (ya en tests) | `bin/runner.ts` en el contenedor `radar-runner` (LinkedIn, Workana); nunca en el gateway |
 | Pricing | `zod` | 4.6.5 | Esquema de `pricing.json` |
 | Tests | `vitest` | **4.1.11** | No 5.x: `@cloudflare/vitest-pool-workers` 0.22.0 exige `vitest ^4.1` |
 | | `@cloudflare/vitest-pool-workers` | 0.22.0 | Gateway en workerd real |
@@ -150,22 +180,125 @@ Next 16 renombra `middleware.ts` a `proxy.ts` y **lo ejecuta en runtime Node** (
 
 Plugins: `remark-gfm`, `rehype-slug`, `rehype-autolink-headings`, `rehype-pretty-code` (tema único oscuro). Índice del blog: `scripts/content-index.ts` genera `content/generated/blog-index.json` (slug, locale, title, description, date, tags, readingTime, hasTranslation) en `prebuild`; lo consumen listado, sitemap, RSS y `llms.txt`.
 
-### 1.6 Motion y shell (alineado con UX v2 §3.6–3.7)
+### 1.6 Hero (`GlyphScene`, `HeroMedia`, `IntroFall`), navegación clásica y motion (spec §12/D16, UX v3.1 §3, §4.1)
 
-**Sin canvas, WebGL ni shaders.** La UX v2 prohíbe partículas, ondas, retículas, gradientes animados y parallax; `ogl` y el Canvas 2D salen del stack. Todo el motion es GSAP sobre DOM, con tres recursos y un flujo de entrada:
+**Un solo WebGL en toda la web**: la escena de partículas-glifo del hero de la home. Todo lo demás es DOM + CSS + GSAP núcleo. El prototipo `ref/hero-lab-3/` es la referencia visual y de parámetros; este apartado dice cómo se empaqueta, cuándo se carga, qué se sirve cuando no hay escena y cómo se comprueba.
 
-| Pieza | Implementación | Estado sin JS / reduced-motion |
+#### 1.6.1 Navegación clásica: qué cambia frente al IDE-lite (v1.1)
+
+| Ámbito | v1.1 (IDE-lite) | v1.2 (clásica, UX v3.1 §3) |
 |---|---|---|
-| `HeroIntro` (§3.6 UX) | Máquina de estados `boot → compiling → typing → hold → minimizing → ready` en un componente cliente. `compiling`: `ScrambleTextPlugin` con `chars` fijo y `revealDelay` para converger de izquierda a derecha (determinista: `seed` derivado del nombre). `minimizing`: `Flip.fit` del `h1` al hueco de `TitleBar`. Tiempos: escritorio ≤ 3.300 ms, móvil ≤ 2.400 ms. Cualquier `pointerdown`, `keydown`, `wheel`, `touchstart` o `scroll` → `gsap.globalTimeline` a `ready` en ≤ 200 ms | El HTML se sirve en estado `ready` (SSG). Un `<script>` inline en `<head>` (≤ 300 bytes, sin dependencias) lee `localStorage.hero_seen` y, si no es la fecha de hoy, no estamos en `prefers-reduced-motion` y la ruta es `/` o `/en`, pone `data-hero="boot"` en `<html>` **antes del primer paint**; el CSS de `boot` oculta el contenido y muestra el hero a pantalla completa, así no hay parpadeo ni desajuste de hidratación (`suppressHydrationWarning` en `<html>`). Con GSAP bloqueado, un `setTimeout(400)` en el inline script devuelve `ready` |
-| `hero_seen` | `localStorage.hero_seen = 'AAAA-MM-DD'` (zona del navegador), escrito al llegar a `ready` o al saltar. `try/catch`: sin `localStorage` se comporta como primera visita solo en `/` | Con reduced-motion se escribe igual y no hay animación |
-| `CompileReveal` | Por bloque: `h2` con una línea monoespaciada `section: <título>` que se resuelve en ≤ 300 ms al entrar en viewport (`ScrollTrigger` `once: true`) | Desactivado: el `h2` se pinta directamente |
-| `FocusLight` | Un solo elemento `aria-hidden` con `mix-blend-mode`/`radial-gradient` cuya posición sigue el bloque centrado (`ScrollTrigger` con `scrub`) y, en escritorio, la tarjeta bajo el puntero (`pointermove` con `gsap.quickTo`). Sin escalas ni inclinaciones | Fijo en el bloque activo |
-| Transición de página | `ViewTransition` de React 19 en `app/[locale]/template.tsx`: salida 120 ms opacidad, entrada 160 ms `translateY(8px)`; pestaña activa sin animación | Sin transición |
-| Lenis | `new Lenis({ wrapper: panelEl, content: panelInnerEl, autoRaf: false })` solo en escritorio (≥ 1024 px); `gsap.ticker.add(t => lenis.raf(t*1000))`; `lenis.on('scroll', ScrollTrigger.update)`; anclas con `lenis.scrollTo('#comentarios')`; en móvil Lenis no se instancia (UX §12: sin secuestro del scroll) | `prefers-reduced-motion` → no se instancia |
+| Rutas | Mapa de sitio de UX §2 | **Sin cambios**: mismas rutas públicas, privadas y de admin (+ `/admin/radar/*`, §11). `/` y `/en` siguen siendo las únicas con escena |
+| Layout público | `AppShell` (`SiteTree` + `TitleBar` + `Tabs` + panel central con scroll propio + `StatusLine`) | `app/[locale]/(public)/layout.tsx` = `<Backdrop/>` + `<SiteHeader/>` + `<main id="contenido">` + `<SiteFooter/>`. El scroll es el de `window` |
+| Componentes eliminados | `AppShell`, `SiteTree`, `TitleBar`, `StatusLine`, `Tabs`, `HeroIntro`, `SectionIndex`, `FocusLight`, `content/generated/site-tree.json` | — (no se crean) |
+| Componentes nuevos | — | `SiteHeader` (RSC) + islas cliente `HeaderScrollState` (sentinela de 80 px con `IntersectionObserver` → `data-scrolled` para el fondo translúcido), `MobileMenuSheet` (shadcn `Sheet`/Radix Dialog, foco atrapado, Escape, `aria-current`), `LangSwitch`, `UserMenu` (lee la sesión con `createBrowserClient` **tras montar**; las páginas SSG no saben si hay sesión y pintan "Entrar" hasta entonces); `SiteFooter` (RSC, columna "Esta web" desde `build-info.json`); `Backdrop` (dos `div` `aria-hidden` fijos: grano SVG 180 px / 3,5 % `overlay` + rayo 214° / 14 % / blur 48 px / 10 % con máscara al 55 %; sin JS; retícula y deriva **no se implementan**) |
+| Estado de cliente | `localStorage.hero_seen`, `localStorage.tree_collapsed`, `sessionStorage.tabs`, `localStorage.locale_pref`, `sessionStorage.audience` | **Se eliminan** `hero_seen`, `tree_collapsed` y `tabs`. Quedan `sessionStorage.intro_seen` (`'1'`, §1.6.4), `localStorage.locale_pref`, `sessionStorage.audience`. Ninguno se lee en servidor; ninguna cookie nueva salvo `ref` y las de sesión |
+| Datos del build | `StatusLine` (rama, commit, LCP) | `SiteFooter` "Esta web" (rama · commit · fecha · LCP) y `BuildFacts` en la home (§2.1). Misma fuente `build-info.json`, misma regla "falla la build si falta" |
+| Atajos de teclado | `Ctrl/Cmd+W` en pestañas | Ninguno propio; "Saltar al contenido" primero en el orden de tabulación |
+| Scroll suave | Lenis en el panel central | **Fuera** (§1.2). Anclas nativas con `scroll-margin-top: 80px` |
+| Transición de página | `ViewTransition` en `template.tsx` | Igual (120 ms salida / 160 ms entrada + 8 px); la hoja "Menú" usa la misma curva en CSS |
 
-Reglas de rendimiento (las verifica `revisor` y Lighthouse CI): GSAP y sus plugins se cargan con `next/dynamic` tras el primer paint; `gsap.matchMedia('(prefers-reduced-motion: no-preference)')` envuelve todo; `will-change` solo durante `minimizing`; el hero no bloquea LCP (el `h1` con el nombre final está en el HTML; el scramble solo cambia texto ya pintado).
+#### 1.6.2 `GlyphScene`: paquete `packages/glyph-scene`
 
-Shell IDE-lite (UX §3): `AppShell` es un layout server (`app/[locale]/(public)/layout.tsx`) con `SiteTree` (RSC, árbol estático desde `content/generated/site-tree.json`; la rama Blog lista los 5 últimos del índice de MDX; la rama Proyectos las fichas), `TitleBar`, `StatusLine` y, en escritorio, `Tabs` (cliente: `sessionStorage.tabs`, máx. 6, cada pestaña es una ruta real; `Ctrl/Cmd+W` solo con foco en la pestaña). Estados de cliente y dónde viven: `localStorage.hero_seen`, `localStorage.tree_collapsed`, `localStorage.locale_pref` (conmutador es/en), `sessionStorage.tabs`, `sessionStorage.audience` (`negocio|empresa`, UX §4.10). Ninguno se lee en servidor; ninguna cookie nueva salvo `ref` (afiliados) y las de sesión de Supabase.
+**Por qué un paquete y sin React Three Fiber.** La escena es un único `THREE.Points` con un `ShaderMaterial` (más dos clones para ondas y reflejo) y un bucle imperativo con estado propio (`hold/morph`, arrastre, intro). R3F aportaría un reconciliador (+~35 KB gz), `useFrame` y JSX para exactamente un mesh: coste sin beneficio, y complicaría la captura headless (§1.6.3), que necesita la misma escena sin React. El paquete no importa React: lo consume `apps/web` por `import()` y `scripts/render-media.ts` por Playwright. Descartado también un `three` por CDN (spec §12.1: se empaqueta desde npm).
+
+**API pública (`src/index.ts`):**
+
+```ts
+export interface GlyphSceneOptions {
+  canvas: HTMLCanvasElement; stage: HTMLElement;     // stage = columna del hero (para posición/escala y arrastre)
+  count?: number;                                    // 9000 escritorio · 5000 móvil (HERO_LIVE_MOBILE)
+  seed?: number;                                     // PRNG determinista (mulberry32); build y runtime comparten seed=1
+  params?: Partial<Params>; capture?: boolean;       // capture: dt fijo, sin intro, parámetros de bucle perfecto (§1.6.3)
+  onState?(index: 0 | 1 | 2): void;                  // etiqueta "móvil · web · IA · chip"
+}
+export interface GlyphScene {
+  start(): void; stop(): void; pause(): void; resume(): void;   // rAF
+  playIntro(t0: DOMHighResTimeStamp): void; skipIntro(): void;  // uIntroT (§1.6.4)
+  step(dt: number): void;                                       // un frame determinista (captura y tests)
+  layout(): void; dispose(): void;                              // resize / liberar GPU
+}
+export function createGlyphScene(o: GlyphSceneOptions): Promise<GlyphScene>; // resuelve cuando las nubes están calculadas
+export { PARAMS, paramsHash } from './params';                  // hash sha256 de params + clouds (freshness de medios)
+```
+
+Módulos: `params.ts` (los valores aprobados del prototipo: `hold 3.5, morph 1.6, rot .18, size 16, bright 1, green 14 %, rain .7, scatter .6, breath .025, wperiod 4, wamp .6, bloom .3, bloomth .72, focus 6.2, mirror .45`), `rng.ts` (mulberry32; **el prototipo usa `Math.random`, aquí todo pasa por el PRNG con semilla** para que poster, vídeo, sprites y escena viva sean la misma geometría), `atlas.ts` (canvas 16×8 × 64 px con JetBrains Mono; espera a `document.fonts.load('600 46px "JetBrains Mono"')` antes de pintar, con `ui-monospace` de respaldo), `clouds.ts` (`cloudCode`, `cloudPhone`, `cloudWeb`, `cloudChipBrain` puras: `(n, rng) → Float32Array`), `shaders.ts` (vertex/fragment del prototipo como strings), `scene.ts` (renderer, composer, material, bucle de estados, arrastre con inercia, paralaje, vaivén del chip, pausa), `intro.ts` (solo el lado de la escena: `uIntroT`), `worker.ts` (calcula las cuatro nubes en un **Web Worker** y las transfiere; si `Worker` no existe, `clouds` se calculan en `requestIdleCallback` por trozos de una nube).
+
+**Importación selectiva de `three`:** `WebGLRenderer, Scene, PerspectiveCamera, Group, Points, BufferGeometry, BufferAttribute, ShaderMaterial, CanvasTexture, Vector2, AdditiveBlending, LinearMipmapLinearFilter, UniformsUtils` desde `three`; `EffectComposer, RenderPass, UnrealBloomPass, OutputPass` desde `three/addons/postprocessing/*`. `sideEffects: false` respetado por el paquete; Turbopack elimina el resto.
+
+**Presupuesto (spec §12.3): chunk de la escena ≤ 200 KB gz.** Estimación honesta: `three` con `WebGLRenderer` ≈ 110–130 KB gz, postprocesado (bloom) ≈ 12–15 KB, worker + nubes + shaders + paquete ≈ 8 KB → **≈ 130–155 KB gz**. Margen para el bloom; si la medición de la tarea del hero supera 200 KB, **el bloom es lo primero que sale** (`PARAMS.bloom = 0` → `renderer.render` directo; el halo se aproxima en el fragment shader con un `smoothstep` radial). JS de la home sin escena ≤ 350 KB gz. La comprobación es un test de CI (§8.6), no una estimación.
+
+**Secuencia de carga (spec §12.1):**
+
+1. HTML estático (SSG): texto del hero, badge, CTA, `HeroMedia` con el **poster en el HTML en todos los viewports** (`<img fetchpriority="high">` + `<link rel="preload" as="image">`) y la etiqueta de estado. El poster ocupa la caja `aspect-ratio: 1/1` de la escena: **nunca hay columna vacía**, tampoco en escritorio mientras `three` se descarga. Consecuencia: en escritorio el LCP puede ser el poster (≤ 60 KB, precargado) y no el `h1`; ambos son estáticos y el criterio real (Three fuera del camino crítico, LCP ≤ 1,2 s escritorio / ≤ 2,5 s móvil 4G) se mantiene. **P11** lo deja anotado para Jose.
+2. `HeroSceneGate` (isla cliente, ~1 KB) decide el modo con la tabla de UX §4.1: `scene` si `WebGL2` disponible (`canvas.getContext('webgl2')` de prueba), `matchMedia('(min-width: 900px)')` (o `NEXT_PUBLIC_HERO_LIVE_MOBILE === 'true'`), sin `prefers-reduced-motion`, `navigator.connection?.saveData !== true` y `(navigator.deviceMemory ?? 8) >= 4`; si no, `video` (móvil, sin WebGL, `deviceMemory < 4`) o `poster` (`saveData`, reduced-motion). Sin JS: `poster`.
+3. En modo `scene`: **descarga** del chunk con `import('@josecoded/glyph-scene')` en cuanto existe una entrada `largest-contentful-paint` (`PerformanceObserver` con `buffered: true`; en la práctica ya existe al hidratar) o a los 1 500 ms como tope; **construcción** (`createGlyphScene`, nubes en el worker, atlas) en `requestIdleCallback` (`setTimeout(0)` de respaldo). La descarga adelantada hace de "preload" del chunk sin necesitar el nombre del fichero (Turbopack lo hashea).
+4. El canvas (`position: fixed; inset: 0; z-index: 0; pointer-events: none`, como el prototipo, para que reflejo y ondas desborden la columna) entra con opacidad 0 → 1 en 1 s; al terminar, el poster pasa a `visibility: hidden` (sigue reservando la caja). `stage.getBoundingClientRect()` fija posición y escala del grupo (`layout()` en `resize`).
+5. Arrastre: `pointerdown/move/up` en el `stage` (`touch-action: pan-y` para que en móvil el vertical siga siendo scroll, spec §12.5); paralaje con `pointermove` pasivo en `window`. Evento Umami `scene_drag` la primera vez por página.
+6. Pausa: `IntersectionObserver` sobre el `stage` (`threshold: 0`) y `visibilitychange` → `pause()`/`resume()`; fuera de la home, el componente no existe (`dispose()` al desmontar).
+
+**Miniaturas de `PathPanel` (UX §4.1 bloque 3): sprites, no segundo WebGL.** `render-media.ts` genera `mini-chip.avif` y `mini-phone.avif` como hojas de 24 fotogramas (256 px, 12 fps: respiración + morph corto y vuelta) desde las mismas nubes; en escritorio el panel anima el `background-position` con `steps(24)` al hover/foco y se detiene al salir; en móvil y con reduced-motion muestra el fotograma 0. Descartado compartir el renderer con `scissor` (la columna del hero es un canvas fijo y los paneles están bajo el pliegue: dos regiones de recorte en un canvas `fixed` que además se pausa fuera de viewport) y un segundo contexto WebGL (spec §12.1: uno por página).
+
+#### 1.6.3 `HeroMedia`: vídeo y poster generados desde la propia escena
+
+Markup servido (RSC):
+
+```html
+<div class="hero-media" style="aspect-ratio:1/1" role="img" aria-label="Partículas de código que forman un móvil, una web y un chip de IA">
+  <picture class="hero-media__poster"><source srcset="/hero/poster.avif" type="image/avif"><img src="/hero/poster.webp" width="720" height="720" fetchpriority="high" decoding="async" alt=""></picture>
+  <video class="hero-media__video" muted playsinline loop preload="none" poster="/hero/poster.webp" aria-hidden="true" hidden></video>
+  <canvas class="hero-media__canvas" hidden></canvas>   <!-- solo lo usa modo scene -->
+</div>
+```
+
+El `<video>` **no lleva `<source>` en el HTML**: en modo `video`, `HeroSceneGate` añade `webm` (VP9) y `mp4` (H.264) tras el LCP, llama a `load()` en idle, quita `hidden` y reproduce; el poster sigue debajo hasta `canplay` y entonces se oculta **sin fundido** (UX §4.1). Así `saveData` y reduced-motion no descargan nada y sin JS solo hay poster. Se pausa fuera de viewport y con la pestaña oculta (mismo observer que la escena). La etiqueta de estado se sincroniza con `currentTime` según el ciclo (3,5 + 1,6 s por estado); con poster, "móvil" activo.
+
+**Generación (`packages/glyph-scene/scripts/render-media.ts`, `pnpm hero:media`; salida commiteada en `apps/web/public/hero/`):**
+
+| Paso | Cómo | Criterio |
+|---|---|---|
+| Captura | Playwright Chromium headless (`--use-angle=swiftshader --enable-unsafe-swiftshader`), viewport 720×720, DPR 1, carga `render/index.html` (ESM del paquete compilado con `esbuild`) con `createGlyphScene({ capture: true, seed: 1, count: 9000 })`; bucle `for f in 0..458: scene.step(1/30); canvas.toDataURL('image/png')` → `frames/%04d.png` | 459 fotogramas = 15,3 s (3 × (3,5 + 1,6)); dt fijo → determinista, sin depender del reloj ni de la GPU |
+| Bucle perfecto | En `capture` los parámetros cambian solo en lo que impide cerrar el bucle: `rot: 0` (la rotación continua de 0,18 rad/s no es múltiplo de 2π en 15,3 s), vaivén senoidal de ±0,22 rad con periodo 5,1 s (3 ciclos), respiración a 3 ciclos exactos (`2π·3/15,3`), ondas con periodo 3,825 s (4 ciclos), mutación de glifos con `uTime` módulo 15,3 | El script compara el fotograma 0 con el 458: **PSNR ≥ 35 dB** o falla |
+| Vídeo | `ffmpeg -framerate 30 -i frames/%04d.png -c:v libvpx-vp9 -crf 38 -b:v 0 -an video.webm` y `-c:v libx264 -pix_fmt yuv420p -crf 30 -preset slow -movflags +faststart -an video.mp4` | Cada fichero **≤ 400 KB** (spec §12.2); si no, el script baja a 640×640 y `crf +2` una vez y, si sigue fuera, falla con el tamaño obtenido |
+| Poster | Fotograma 15 (estado "móvil", respiración neutra) → `sharp` → `poster.avif` (q 50) y `poster.webp` (q 78) | **≤ 60 KB** cada uno |
+| Sprites | Estados 2 (chip) y 0 (móvil): 24 fotogramas a 256 px en una tira horizontal → AVIF | ≤ 80 KB cada uno |
+| Manifiesto | `media.json`: `{ generatedAt, paramsHash, seed, files: { name: bytes } }` | CI (`hero:media:check`) recalcula `paramsHash` desde `params.ts` + `clouds.ts` + `shaders.ts` y **falla si no coincide**: cambiar la escena obliga a regenerar los medios |
+
+Descartado `MediaRecorder` en un navegador real: tiempos de frame variables (no hay bucle exacto ni PSNR verificable), solo VP8/VP9, ficheros mayores y no reproducible en CI. La captura corre en el Mac (ffmpeg por Homebrew) o en CI (`apt install ffmpeg`, SwiftShader ≈ 200 ms/frame → ~2 min); no forma parte de `pnpm build`.
+
+#### 1.6.4 `IntroFall`: intro de caída sin dependencias (UX §3.6)
+
+**Problema a resolver:** la intro mueve cada carácter del primer viewport y React hidrata esos mismos nodos. Si un script partiera el texto en `span` antes de hidratar, React 19 detectaría el desajuste de estructura y repintaría el subárbol en mitad de la animación. **Decisión: el texto ya se sirve partido desde el servidor.**
+
+- `FallText` (RSC) envuelve badge, `h1`, subtítulo, los dos CTA y, solo en la home, marca, enlaces, "Entrar" y "Contacto" de `SiteHeader`. Renderiza `<span class="sr-only">{texto}</span><span aria-hidden="true"><span class="w"><span class="ch" data-ch="J">J</span>…</span> </span>`: palabras indivisibles (`.w`, `white-space: nowrap`) y caracteres (`.ch`). Coste: ~300 caracteres → ~+3 KB gz de HTML. Sin JS o en visitas siguientes, las letras finales ya están en su sitio; el lector de pantalla lee el `sr-only` desde 0 ms; el `h1` es un solo elemento (spec §12.5).
+- Inline `<script>` en `<head>` (≤ 400 bytes, sin dependencias, solo en `/` y `/en`): si `sessionStorage.intro_seen` no existe (o `?intro=1`), no hay `prefers-reduced-motion` y `matchMedia` existe → `document.documentElement.dataset.intro = 'pending'` **antes del primer paint**; escribe `intro_seen = '1'` (`try/catch`); `setTimeout(2500)` de seguridad que quita `pending` si el JS de la página no llega. CSS: `[data-intro=pending] .ch { visibility: hidden }` (el poster y el fondo son visibles desde 0 ms; los `.ch` ocultos no cuentan para LCP, el poster sí).
+- `IntroFall` (isla cliente, ~2,5 KB min, **sin GSAP**): al montar, si `dataset.intro === 'pending'`: (1) asigna a cada `.ch` `start = −(0,35 + r·0,75)·innerHeight`, `landT = 0,4 + r·0,8` (PRNG con semilla fija: la misma caída en cada test), `transform: translateY(start)`, clase `is-falling`, glifo aleatorio de `GLYPHS`; añade `is-forming` a badge y botones; (2) quita `pending`; (3) bucle `rAF` idéntico a `tickChars` del prototipo (velocidad constante, aterrizaje con `is-wet` 0,14–0,30 s, letra definitiva, `is-forming` fuera al aterrizar el último carácter del contenedor); (4) `finish()` ante `pointerdown`, `keydown`, `wheel`, `touchstart` o `scroll` (capturados en `window`, `once`): todas las letras a su sitio en el mismo frame (≤ 200 ms), `scene.skipIntro()`, evento `intro_played { skipped: true, reduced, mode }`; al terminar sin saltar, `intro_played { skipped: false, … }`. Al final restaura `will-change` y deja el DOM tal como lo sirvió el servidor (sin mutaciones de estructura: solo `style`, `class` y `textContent` de `.ch`, que React no vuelve a tocar porque el hero no re-renderiza).
+- **Sincronía con la escena (escritorio, modo `scene`):** UX pide que letras y partículas caigan "en el mismo instante" y la spec que Three llegue tras el LCP. Regla: `IntroFall` espera a `min(sceneReady, 1 200 ms)` desde su montaje; la descarga del chunk arranca en la hidratación (§1.6.2 paso 3: el LCP ya ha ocurrido). En un escritorio normal la escena está lista en 0,4–0,8 s y ambas caídas comparten `t0` (`scene.playIntro(t0)`); si tarda más de 1,2 s, las letras caen solas y la escena entra después con su fundido, sin rain de partículas (`uIntroT = 100`). Mientras espera, el poster está visible y las letras ocultas: nada legible se pierde porque la propia intro tampoco muestra nada legible antes de 400 ms.
+- **Intro reducida** (móvil sin escena viva): la misma `IntroFall` con `mode = 'letters'` (sin esperar a la escena); el poster o vídeo no participa.
+- Modo de la intro para Umami: `intro_played.mode ∈ 'full' | 'letters' | 'none'`.
+
+#### 1.6.5 `prefers-reduced-motion` (spec §12.4)
+
+El inline script no marca `pending` y `HeroSceneGate` devuelve `poster`; `IntroFall` y `GlyphScene` no se instancian; el `<video>` no recibe `<source>`; `CompileReveal` no se registra (los `h2` se pintan); `PageTransition` no anima; los sprites de `PathPanel` quedan en el fotograma 0. `intro_seen` se escribe igual. Todo con `matchMedia('(prefers-reduced-motion: reduce)')` en JS y `@media` en CSS (los `.ch` nunca se ocultan bajo reduced-motion).
+
+#### 1.6.6 Resto del motion (UX §3.7)
+
+| Recurso | Implementación | Reduced motion |
+|---|---|---|
+| `CompileReveal` v3 | Los `h2` públicos se sirven con `FallText` (sin cabecera). Un módulo `compile-reveal.ts` reutiliza `GLYPHS` y el destello `is-wet` de `IntroFall`: al entrar en viewport (`ScrollTrigger.batch`, `once: true`) resuelve las letras de izquierda a derecha en ≤ 300 ms (`i·300/n` ms cada una). Sin caída. No toca el `sr-only` | Sin animación |
+| `PageTransition` | `ViewTransition` de React 19 en `app/[locale]/template.tsx`: 120 ms salida (opacidad), 160 ms entrada (`translateY(8px)`); la cabecera está fuera del `template` y no se mueve | Cambio directo |
+| Hover y foco | Solo CSS: `box-shadow` inset 1 px + halo de acento, texto secundario → pleno, `translateY(1px)` al pulsar. Sin escalas ni inclinaciones | Igual (no es movimiento) |
+| GSAP | `gsap` + `ScrollTrigger` por `next/dynamic` tras el primer paint, envuelto en `gsap.matchMedia('(prefers-reduced-motion: no-preference)')` | No se carga |
+
+#### 1.6.7 Cómo se testea el hero (detalle en §8.6)
+
+1. **Three no entra en el bundle inicial**: `scripts/check-hero-bundle.ts` tras `next build` lee `.next/app-build-manifest.json`, toma los chunks de `app/[locale]/page` y falla si alguno contiene `WebGLRenderer` o `three.module`; localiza los chunks que sí lo contienen (los de `import()`) y falla si su suma gz supera **200 KB**. Corre en `ci.yml`.
+2. **Lighthouse CI** (`lighthouserc.json`): `/` y `/en` en preset móvil (3 pasadas, 4G simulado) y escritorio; asserts `largest-contentful-paint ≤ 2500` (móvil) / `≤ 1200` (escritorio), `total-blocking-time ≤ 200`, `cumulative-layout-shift ≤ 0.1`, y el audit `largest-contentful-paint-element` debe ser `h1` o `img.hero-media__poster` (nunca el canvas ni el vídeo).
+3. **Orden de carga** (Playwright): en escritorio, `performance.getEntriesByType('resource')` muestra que la petición del chunk con `three` empieza **después** de la entrada `largest-contentful-paint`.
+4. **Medios**: `hero:media:check` (hash) y tamaños del manifiesto (≤ 400 / ≤ 60 / ≤ 80 KB) en CI.
+5. **Intro y modos**: E2E de §8.2 (primera visita, salto con `Tab`, segunda visita sin intro, `?intro=1`, reduced-motion = poster, móvil = vídeo sin descarga previa al LCP, `saveData` = solo poster).
+6. **Unidad**: `clouds.test.ts` (determinismo con semilla, tamaños `n·3`, cotas), `hero-gate.test.ts` (tabla de UX §4.1 → `scene|video|poster` con `navigator`/`matchMedia` simulados), `intro-fall.test.ts` (happy-dom + temporizadores falsos: todos los `landT` ∈ [0,4, 1,2] s; `finish()` deja todo aterrizado en un frame; `sr-only` intacto).
+7. **A mano en la puerta** (`qa`): 60 fps en escritorio y un Android de gama media con `HERO_LIVE_MOBILE` (Lighthouse en CI no tiene GPU).
 
 ### 1.7 Auth y guards sin middleware
 
@@ -178,7 +311,7 @@ Shell IDE-lite (UX §3): `AppShell` es un layout server (`app/[locale]/(public)/
 
 | Workflow | Disparador | Pasos |
 |---|---|---|
-| `ci.yml` | push, PR | `pnpm i --frozen-lockfile` → `turbo lint typecheck test` → `pnpm --filter web build` (OpenNext) → Playwright contra `wrangler dev` local → tests RLS contra `supabase start` (Docker) → Lighthouse CI contra `wrangler dev` |
+| `ci.yml` | push, PR | `pnpm i --frozen-lockfile` → `turbo lint typecheck test` (incluye `packages/glyph-scene`, `radar-core`, `radar-connectors` y el gateway en workerd) → `pnpm --filter web build` (OpenNext) → `check:hero-bundle` + `hero:media:check` (§1.6.7) → Playwright contra `wrangler dev` local (web y api con `scheduled` simulado) → tests RLS y de triggers contra `supabase start` (Docker) → Lighthouse CI contra `wrangler dev` |
 | `preview.yml` | PR | `wrangler versions upload` de web y api (api solo si cambió) → comenta URLs; `CORS_ORIGINS` del gateway de preview incluye el sufijo `.workers.dev` (§3.6) |
 | `deploy-production.yml` | `workflow_dispatch` (Jose) | `wrangler deploy` web y/o api; nunca migraciones |
 | `content-refresh.yml` | cron diario 04:00 | Ejecuta `scripts/github.ts`, `scripts/stores.ts` y `scripts/perf.ts` (Lighthouse contra producción → `perf.json`); si cambia algo en `content/generated/*`, commit `chore(content): refresh generated data` + build + **`wrangler deploy` de la web** (**decisión de Jose, P4**: única excepción acotada al gate de producción; cualquier otro diff aborta el deploy) |
@@ -196,9 +329,9 @@ Leyenda: **RSC** (Server Component estático o dinámico), **SA** (Server Action
 
 | Módulo | Función | Servido por |
 |---|---|---|
-| Shell IDE-lite (UX §3) | `AppShell`: barra de título (hero minimizado), árbol del sitio (3 niveles, hoja "Menú" en móvil), pestañas en escritorio (máx. 6, `sessionStorage`), panel central, línea de estado con datos del build y accesos (Menú · Contacto · Chat) | Layout RSC estático; `Tabs`, plegado del árbol y conmutador de idioma como islas cliente; datos del build por BT (§2.1) |
-| Hero de presentación (UX §3.6) | `HeroIntro`: una vez al día (`localStorage.hero_seen`), solo en `/` y `/en`, ≤ 3,3 s escritorio / ≤ 2,4 s móvil, saltable, sin animación con reduced-motion; evento `hero_played {skipped, ms}` | HTML en estado `ready` + script inline en `<head>` que decide `boot` antes del paint (§1.6); GSAP cargado tras el paint |
-| Home | Presentación con hechos, índice de secciones (un hecho por sección), 3 proyectos, "Cómo está hecha esta web" (datos del build), último artículo, contacto | RSC estático; datos GitHub/stores/build por BT |
+| Navegación clásica (UX §3) | `SiteHeader` fija (marca · Empresas · Negocios · Proyectos · Blog · Sobre mí · ES/EN · Entrar/avatar · `[Contacto]`), hoja "Menú" plana en móvil, `SiteFooter` con "Esta web" (datos del build), `Backdrop` fijo (grano + rayo) | Layout RSC estático; islas cliente `HeaderScrollState`, `MobileMenuSheet`, `LangSwitch`, `UserMenu` (§1.6.1); datos del build por BT (§2.1) |
+| Hero split (UX §3.6, §4.1; spec D16) | `HeroSplit`: badge + `h1` + subtítulo + `[[ Ver proyectos ]]` + `> Una web para mi negocio →`; columna con `GlyphScene` (escritorio) o `HeroMedia` (vídeo/poster; móvil, sin WebGL, `saveData`, reduced-motion); `IntroFall` una vez por sesión (`sessionStorage.intro_seen`), solo en `/` y `/en`, cualquier interacción la termina; evento `intro_played {skipped, reduced, mode}` | HTML estático con `FallText` y poster (LCP); `HeroSceneGate` decide el modo; `three` por `import()` tras el LCP; medios generados en build por `packages/glyph-scene` (§1.6.2–1.6.4) |
+| Home | Hero split, `ProofStrip` (5 hechos), dos `PathPanel` con sprites de la escena en escritorio, 3 proyectos, `BuildFacts` (esquema en texto + datos del build), último artículo, contacto con "Quién te responde" | RSC estático; datos GitHub/stores/build por BT; sprites por `hero:media` |
 | Empresas | Servicios, stack, forma de trabajar, CV PDF, reserva 20 min (Cal.com), formulario | RSC estático; embed Cal.com (cliente, lazy); formulario → SA `submitContact` → GW `POST /api/v1/leads` |
 | Negocios | Packs P1–P4 y extras desde `pricing.json`, proceso, FAQ (`FAQPage`), CTA generador y WhatsApp | RSC estático; `@josecoded/pricing` en build |
 | Generador de propuesta | Chat guiado 3–4 preguntas → propuesta (pack, extras, alcance, "desde X €") → enviar → lead | Cliente (estado del chat) → GW `POST /api/v1/proposals/generate` (Workers AI + pricing) → GW `POST /api/v1/leads` con `ai_proposal` |
@@ -219,13 +352,13 @@ La UX exige datos reales, nunca en vivo y nunca inventados. Los genera `apps/web
 
 | Dato | Dónde se muestra | Fuente | Cuándo se genera |
 |---|---|---|---|
-| Rama y commit corto | `StatusLine` (escritorio) | `GITHUB_REF_NAME` / `GITHUB_SHA` en CI; `git rev-parse` en local | Cada build |
-| Fecha de publicación | `StatusLine`, "Cómo está hecha" | Reloj de CI en el build de producción (`deploy-production.yml` / `content-refresh.yml`) | Cada build de producción; en preview muestra "preview" |
+| Rama y commit corto | `SiteFooter` "Esta web" | `GITHUB_REF_NAME` / `GITHUB_SHA` en CI; `git rev-parse` en local | Cada build |
+| Fecha de publicación | `SiteFooter` "Esta web", `BuildFacts` | Reloj de CI en el build de producción (`deploy-production.yml` / `content-refresh.yml`) | Cada build de producción; en preview muestra "preview" |
 | Versión de Next.js | "Cómo está hecha" | `pnpm-lock.yaml` (`next@`) | Cada build |
 | Rutas del gateway | "Cómo está hecha" | `apps/api/src/routes-manifest.ts` (export tipado que registra cada ruta; el conteo se lee de ahí, no por regex) | Cada build |
 | Tablas y políticas RLS | "Cómo está hecha" | Parseo de `supabase/schema/baseline.sql` + `supabase/migrations/*.sql` (`create table` / `create policy` en `public`) | Cada build |
 | Tests | "Cómo está hecha" | `vitest run --reporter=json` y `playwright test --list --reporter=json` en el paso previo de CI → `test-counts.json` | Cada build en CI (en local, último valor commiteado) |
-| LCP, INP, Lighthouse | `StatusLine` (LCP), `ProofStrip` ("carga en menos de 1 s" si LCP < 1 s; frase alternativa si no), "Cómo está hecha" | `content/generated/perf.json`: Lighthouse CI móvil contra **producción** en `content-refresh.yml` (mediana de 3 pasadas) | Diario; el primer valor se mide contra la preview de la rama y se commitea a mano. El dato lleva su fecha ("medido el 17 sep") |
+| LCP, INP, Lighthouse | `SiteFooter` "Esta web" (LCP), `ProofStrip` ("carga en menos de 1 s" si LCP < 1 s; frase alternativa si no), `BuildFacts` | `content/generated/perf.json`: Lighthouse CI móvil contra **producción** en `content-refresh.yml` (mediana de 3 pasadas, **con la escena y los medios reales**) | Diario; el primer valor se mide contra la preview de la rama y se commitea a mano. El dato lleva su fecha ("medido el 17 sep") |
 | Repos públicos, actividad, valoraciones de stores | `ProofStrip`, `GitHubActivity`, `StoreBadges` | `content/generated/github.json`, `stores.json` (§5.1, §5.2) | Diario (`content-refresh.yml`) y en cada build |
 
 Regla: `content/generated/` está versionado; un script que falla no rompe la build si existe el valor anterior, salvo `build-info.json` (rama, commit, versión, rutas, tablas), que siempre se puede calcular.
@@ -245,6 +378,12 @@ Regla: `content/generated/` está versionado; un script que falla no rompe la bu
 | Admin: chat | Conversaciones, mensajes, takeover (`ai` on/off), marcar leído | Cliente → GW `admin-chat/admin/*` con JWT de Jose |
 | Admin: reenviar aviso | Botón "avisar por Telegram" de un lead | SA → GW `POST /api/v1/notify/lead` (JWT admin) |
 | Admin: estado de Omen | Semáforo `system/status` | RSC → GW `GET /api/v1/system/status` (JWT) → OM |
+| **Radar: bandeja** `/admin/radar` (UX §7.12) | Contadores, filtros en URL, tabla/tarjetas, acciones rápidas (Confirmar · Posponer · Descartar), hoja "Correos por revisar" (`?correos=revisar`), `RadarAlerts`, pausa | RSC dinámico → SB (`radar_*` con RLS admin) para lecturas; SA → GW `radar/*` para confirmar, posponer, descartar, vincular, reactivar (§11.2); `RadarPauseSwitch` → SA → SB `radar_settings` |
+| **Radar: detalle** `/admin/radar/[id]` (UX §7.13) | Puntuación explicada, oferta, `MaterialEditor` con versiones, decisión por estado, calendario, correos, notas, historial reversible | RSC → SB; guardar versión de material → SA → SB insert `radar_materials` (RLS admin); regenerar, confirmar, marcar enviada, PDF, borrador de seguimiento, eventos → SA → GW |
+| **Radar: plataformas** `/admin/radar/plataformas` (UX §7.14) | Salud por conector, alta/edición en hoja, `SecretRef` (solo nombres), Ejecutar ahora, Probar, Reactivar, reautorizar Google | RSC → SB + GW `GET radar/platforms/health`; alta/edición/pausa → SA → SB `radar_platforms`; ejecutar/probar/reactivar/Google → SA → GW |
+| **Radar: perfil** `/admin/radar/perfil` (UX §7.15) | `profile.json` y CV maestro en solo lectura (desde `@josecoded/radar-core`), ajustes rápidos (umbral, exclusiones, disponibilidad) | RSC lee el paquete y `radar_settings`; SA → SB update `radar_settings`; repuntuar → SA → GW |
+| **Radar: calendario** `/admin/radar/calendario` (UX §7.16) | Mes · Semana · Agenda desde `radar_application_events`; crear/editar/descartar propuestos | RSC → SB; crear en Google → SA → GW `radar/events/:id/confirm` |
+| **Radar: Telegram** (UX §7.17) | Avisos con botones, edición del mensaje al decidir | GW: Bot API directo + webhook `POST /api/v1/radar/telegram` (§11.6) |
 
 ---
 
@@ -370,8 +509,8 @@ El endpoint público `POST /api/v1/notify/lead` (JWT admin, `assertAdmin` existe
 
 - `CORS_ORIGINS` pasa a admitir entradas con comodín de subdominio: `https://josecoded.com,https://www.josecoded.com,https://*.josecoded-web.<subdominio>.workers.dev,http://localhost:3000`. Cambio en `src/index.ts:20-39`: si la entrada empieza por `https://*.` se compara por sufijo de host. Lista exacta para el resto.
 - `allowHeaders` añade `x-josecoded-server-key` (solo la usa el servidor, pero el preflight de fetch desde Workers no aplica; se añade por coherencia).
-- `wrangler.jsonc`: `routes: [{ pattern:'api.josecoded.com', custom_domain:true }]`; `ratelimits` añade `LEADS_RATE_LIMITER` (1002, 5/60) y `AFFILIATE_RATE_LIMITER` (1003, 30/60); `kv_namespaces: [{ binding:'QUOTA_KV', id }]`; `API_MODE` sigue `development` hasta que Jose decida el cutover (pendiente heredado, `DEPLOY.md §4`); **todo binding nuevo se declara también en `envSchema` (`src/config/env.ts`) o `parseEnv` lo elimina**.
-- Montaje: `proposalsRoutes`, `leadsRoutes`, `notifyRoutes`, `affiliatesRoutes` se registran en `src/modules/v1.routes.ts` **antes** de `protectedV1Routes` (línea 25), porque este aplica `requireUser` a `*`.
+- `wrangler.jsonc`: `routes: [{ pattern:'api.josecoded.com', custom_domain:true }]`; `ratelimits` añade `LEADS_RATE_LIMITER` (1002, 5/60), `AFFILIATE_RATE_LIMITER` (1003, 30/60) y `RADAR_RATE_LIMITER` (1004, 60/60, ingesta y webhook); `kv_namespaces: [{ binding:'QUOTA_KV', id }, { binding:'RADAR_KV', id }]`; `browser: { binding:'BROWSER' }` (PDF, §11.7); `triggers: { crons: ['*/5 * * * *', '*/30 * * * *', '0 6 * * *', '0 7 * * *'] }` (§11.3); `API_MODE` sigue `development` hasta que Jose decida el cutover (pendiente heredado, `DEPLOY.md §4`); **todo binding nuevo se declara también en `envSchema` (`src/config/env.ts`) o `parseEnv` lo elimina**.
+- Montaje: `proposalsRoutes`, `leadsRoutes`, `notifyRoutes`, `affiliatesRoutes` y `radarRoutes` (§11.2) se registran en `src/modules/v1.routes.ts` **antes** de `protectedV1Routes` (línea 25), porque este aplica `requireUser` a `*`. `src/index.ts` pasa a exportar `{ fetch: app.fetch, scheduled }` (`src/scheduled.ts`) en lugar de `app` a secas; cambio aditivo que los tests heredados no notan (`app.request` sigue igual).
 - Deuda heredada que se corrige de paso (aditiva, sin tocar contratos): `toUpstreamFail` deja de mencionar "Android emulator" en timeouts; `app.onError` deja de exponer `error.message` en `details` fuera de `API_MODE=development`.
 
 ---
@@ -391,7 +530,9 @@ Contrato real (`josecoded-worker/src`): Fastify 5 en `http://localhost:4000` de 
 
 Umami no pasa por el worker: el navegador habla con `stats.josecoded.com` (túnel propio, §5.6). Si Omen está apagado, el script de Umami falla silenciosamente (`async`, sin bloquear render) y Cloudflare Web Analytics sigue midiendo.
 
-Cambios en Omen: **ninguno en el worker**. Un contenedor nuevo (Umami) y un túnel nuevo. Recomendación aparte para `implementador-infra` (fuera de este proyecto, con OK de Jose): quitar `Requires=docker.service` de la unidad systemd del worker y confirmar que está instalada como servicio (el snapshot de 2026-06-01 decía que corría con `pnpm start` manual).
+**Radar (v1.2) tampoco usa el worker de Omen**: los conectores por scraping corren en el contenedor nuevo `radar-runner`, disparados por n8n vía webhook directo desde el gateway (`N8N_RADAR_WEBHOOK_URL`, mismo patrón que `N8N_CHAT_WEBHOOK_URL`) y entregan por `POST /api/v1/radar/ingest` (§11.4, §11.9). El único uso del worker por Radar es el respaldo `ai/chat` cuando Workers AI falla (D22), por la ruta existente.
+
+Cambios en Omen: **ninguno en el worker**. Contenedores nuevos: Umami (túnel nuevo), `radar-runner` (sin puertos publicados) y, diferido, Proton Bridge. Workflows n8n nuevos: `radar-run`, `radar-notion` (opcional), `radar-email-proton` (diferido). Recomendación aparte para `implementador-infra` (fuera de este proyecto, con OK de Jose): quitar `Requires=docker.service` de la unidad systemd del worker y confirmar que está instalada como servicio (el snapshot de 2026-06-01 decía que corría con `pnpm start` manual).
 
 ---
 
@@ -438,7 +579,7 @@ Integración: página Empresas con embed **lazy** (se carga al hacer clic en "Re
 
 - Tarea `infra` (con OK de Jose antes de exponer): `docker compose` nuevo `umami` (imagen `ghcr.io/umami-software/umami:postgresql-latest`, Postgres 16 propio, puerto local 3001) + **túnel nuevo** `josecoded-umami` con ingress `stats.josecoded.com → http://localhost:3001` (túnel separado para no editar la config del túnel existente `josecoded-worker`, que pertenece a un servicio preexistente).
 - Web: `<Script src="https://stats.josecoded.com/script.js" data-website-id={NEXT_PUBLIC_UMAMI_WEBSITE_ID} data-domains="josecoded.com" strategy="afterInteractive" />`. Sin cookies, sin banner.
-- Eventos (`lib/analytics.ts` → `window.umami?.track(name, data)`), alineados con UX §11 y aprobados por Jose: `whatsapp_click {origin, pack?, ref?}`, `contact_submit {via}`, `proposal_generated {pack, questions, source:'ai'|'rules'}`, `proposal_sent {pack, has_ref}`, `chat_started`, `call_booked` (desde el RH del webhook de Cal.com, con `@umami/node` en servidor, sin PII), `hero_played {skipped, ms}`, `section_open {section}`, `booking_open`, `referral_copy`. Los mismos nombres se comprueban en Playwright interceptando `POST /api/send`.
+- Eventos (`lib/analytics.ts` → `window.umami?.track(name, data)`), alineados con UX v3.1 §11 y aprobados por Jose: `whatsapp_click {origin, pack?, ref?}`, `contact_submit {via}`, `proposal_generated {pack, questions, source:'ai'|'rules'}`, `proposal_sent {pack, has_ref}`, `chat_started`, `call_booked` (desde el RH del webhook de Cal.com, con `@umami/node` en servidor, sin PII), `intro_played {skipped, reduced, mode:'full'|'letters'|'none'}`, `path_open {path:'companies'|'business'}`, `scene_drag`, `booking_open {origin}`, `referral_copy`. Los mismos nombres se comprueban en Playwright interceptando `POST /api/send`. **Radar no se mide con Umami** (UX §11): sus métricas salen de `radar_*` (§11.10).
 - Si Omen está apagado: el script no carga; `track` es no-op (`?.`).
 
 ### 5.7 Cloudflare Web Analytics
@@ -707,6 +848,8 @@ La regla (10 % / 20 % / 2 meses) la calcula la SA con `@josecoded/pricing` y la 
 
 **`20260917100800_realtime_admin_chat_conversations.sql`** (opcional): `alter publication supabase_realtime add table public.admin_chat_conversations;` para que la bandeja del admin se actualice sin polling. Solo si el admin lo necesita en la implementación.
 
+**Migraciones de Radar (`20260919100000` … `20260919100500`)**: SQL completo, RLS, trigger de guarda, RPC y bucket en **§11.1**. Se aplican después de las anteriores y con la misma regla (una a una, `list_tables` + `get_advisors` antes y después, OK de Jose).
+
 ### 6.3 RLS por rol (resumen)
 
 | Tabla | anon | authenticated (propio) | admin |
@@ -741,15 +884,16 @@ Criterio de aceptación de cada migración nueva: `get_advisors` después no añ
 ## 7. Restricciones (consolidadas)
 
 1. **Sin middleware/proxy Node** en `apps/web`: guards en layouts + re-comprobación en cada SA/RH; i18n por rewrites.
-2. **El navegador nunca habla con Omen** (`worker.josecoded.com`) ni con n8n; solo el gateway con `WORKER_INTERNAL_TOKEN`. Umami es la única URL de Omen expuesta al navegador, en su propio túnel y sin datos privados.
-3. **Cambios solo aditivos** en `apps/api` (rutas, bindings, middleware CORS con comodín), `josecoded-worker` (ninguno), Supabase (columnas, tablas, funciones, vista, un evento en la Edge Function). Ninguna tabla, columna, política ni trigger heredado se altera o borra. Las 28 migraciones heredadas se copian byte a byte.
-4. **RLS** en toda tabla nueva; `service_role` solo en el gateway y en scripts locales; `apps/web` opera siempre con la sesión del usuario (publishable key). `get_advisors` (security + performance) antes y después de cada migración.
-5. **Secretos**: nunca en `NEXT_PUBLIC_*` ni en el repo; `wrangler secret put` por Worker; `.dev.vars` y `.env.local` ignorados; CI con secretos de GitHub. Rotar `WORKER_INTERNAL_TOKEN`, token de Telegram y key de Resend (pendientes heredados) antes del lanzamiento.
-6. **Producción con OK explícito en la sesión**: `wrangler deploy` (web y api), `supabase db push`/`apply_migration`, `supabase functions deploy`, `pricing:sync-db`, exponer `stats.josecoded.com`, cambiar `API_MODE`, alta de dominio `api.josecoded.com`. Las migraciones las aplica el controlador, no un subagente.
-7. **Servicios de Omen intocables**: worker, n8n, Ollama, Samba, túnel `josecoded-worker`. Umami = contenedor y túnel nuevos.
+2. **El navegador nunca habla con Omen** (`worker.josecoded.com`) ni con n8n; solo el gateway con `WORKER_INTERNAL_TOKEN` (worker) o `N8N_*_WEBHOOK_SECRET` (webhooks de n8n). Umami es la única URL de Omen expuesta al navegador, en su propio túnel y sin datos privados. El contenedor `radar-runner` de Omen solo habla **hacia** el gateway (`POST /radar/ingest`), nunca al revés.
+3. **Cambios solo aditivos** en `apps/api` (rutas, bindings, cron, middleware CORS con comodín), `josecoded-worker` (ninguno, tampoco por Radar), Supabase (columnas, tablas, funciones, vista, trigger de guarda en `radar_applications`, bucket, un evento en la Edge Function). Ninguna tabla, columna, política ni trigger heredado se altera o borra. Las migraciones heredadas no se copian (H6).
+4. **RLS** en toda tabla nueva; `service_role` solo en el gateway y en scripts locales; `apps/web` opera siempre con la sesión del usuario (publishable key). `radar_*`: **solo admin**, sin ninguna política que conceda algo a `anon` ni a un `authenticated` sin rol admin (§11.1). `get_advisors` (security + performance) antes y después de cada migración.
+5. **Secretos**: nunca en `NEXT_PUBLIC_*` ni en el repo; `wrangler secret put` por Worker; `.dev.vars` y `.env.local` ignorados; CI con secretos de GitHub. Radar: ninguna credencial de plataforma, token de Google, token del bot ni contraseña de Bridge toca `apps/web` ni el repo; el admin solo muestra **nombres** de secretos (`SecretRef`); el refresh token de Google vive **cifrado en KV** (§11.5). Rotar `WORKER_INTERNAL_TOKEN`, token de Telegram y key de Resend (pendientes heredados) antes del lanzamiento.
+6. **Producción con OK explícito en la sesión**: `wrangler deploy` (web y api), `supabase db push`/`apply_migration`, `supabase functions deploy`, `pricing:sync-db`, exponer `stats.josecoded.com`, cambiar `API_MODE`, alta de dominio `api.josecoded.com`, `setWebhook` del bot de Telegram, alta del contenedor `radar-runner` y de los workflows n8n en Omen, instalación del plist de launchd en el Mac. Las migraciones las aplica el controlador, no un subagente.
+7. **Servicios de Omen intocables**: worker, n8n (los workflows de Radar se **añaden**, no se editan otros), Ollama, Samba, túnel `josecoded-worker`. Umami y `radar-runner` = contenedores nuevos; Proton Bridge = contenedor nuevo, diferido (Q12).
 8. `pnpm` únicamente; TypeScript estricto; WCAG 2.2 AA; móvil primero; solo oscuro; marca `josecoded` (nunca "Jose Dev": el prompt heredado del gateway `ai-reply.ts:4-7` dice "Jose Dev" y **se corrige** junto con `knowledge.json`, cambio aditivo previsto en la spec).
-9. Precios y textos comerciales solo desde `Comercial/tarifas.md` → `pricing.json` y `Comercial/voz.md`.
-10. Gmail solo borradores; Notion solo desde skills comerciales; ninguna de las dos se toca desde la web.
+9. Precios y textos comerciales solo desde `Comercial/tarifas.md` → `pricing.json` y `Comercial/voz.md`; cartas y propuestas de Radar usan `voz.md` en registro formal-cercano (Q15) y **solo hechos** de `profile.json` y los CV maestros.
+10. Gmail: Radar **lee con filtros previos** (§11.8) y **solo crea borradores**; nunca `send`. Google Calendar: **nada se crea, mueve ni borra sin un clic de Jose** (D23; `googleCalendar.*` exige el flag de confirmación, §11.5). Notion solo desde skills comerciales y, opcionalmente, como reflejo de Radar escrito por n8n (D24); la web no la toca.
+11. **Radar: ningún envío sin `confirmed_by_jose`** (D18). La invariante vive en tres sitios: máquina de estados en TypeScript, trigger `private.radar_guard_sent()` en Postgres y test negativo (§11.10). Captchas y verificaciones no se resuelven nunca: el conector se detiene y avisa.
 
 ---
 
@@ -764,6 +908,11 @@ Criterio de aceptación de cada migración nueva: `get_advisors` después no añ
 | `apps/web` componentes | Formularios (estados vacío/carga/error), generador (máquina de estados de 4 pasos), comentarios (pendiente visible solo al autor) | happy-dom + Testing Library | — |
 | `apps/api` | Todas las rutas nuevas en **workerd real** (`@cloudflare/vitest-pool-workers`): Turnstile mockeado con `fetchMock`, `AI.run` sustituido por binding falso, KV y rate limit reales de Miniflare | workers | `proposals/generate` con IA que devuelve JSON válido → `pack:'P2', priceFrom:1650`; IA devuelve JSON inválido → `source:'rules'`; 11.ª petición del día → 429 `quota_exceeded`; `leads` con `affiliateCode` del propio email → 409 y lead creado sin afiliado; `leads` sin Turnstile ni server key → 403; `notifyLead` con worker 200/`ok:false` → respaldo Edge llamado |
 | `apps/api` heredado | Los 13 ficheros Jest existentes se migran a Vitest (`jest.fn`→`vi.fn`, mismo `app.request`) y deben seguir en verde; es el test de no-regresión de los contratos conservados | workers | — |
+| `packages/glyph-scene` | `clouds` (semilla → mismos `Float32Array`), `rng`, `paramsHash` estable, `scene.step()` en un canvas falso (`happy-dom` + `webgl` stub: solo se comprueba la máquina de estados `hold/morph`, `uProg`, `uIntroT` y el vaivén del chip, no píxeles) | node / happy-dom | `step(3.5)` deja `phase='morph'`; 3 × (3,5 + 1,6) s devuelve `uProg` a 0; `skipIntro()` → `uIntroT = 100` |
+| `apps/web` hero | `HeroSceneGate` (tabla UX §4.1), `IntroFall`, `CompileReveal`, `check-hero-bundle.ts` sobre un manifiesto de ejemplo | happy-dom / node | Ver §8.6 |
+| `packages/radar-core` | Máquina de estados (todas las transiciones de spec §13.3 y las prohibidas), **invariante `sent`**, reglas duras de puntuación, `dedup` (fingerprint y ventana ±7 días), `email/query` (construcción del `q` de Gmail), `email/linker` (reglas antes de la IA), `telegram/callback` (firma y verificación, ≤ 64 bytes), esquemas zod de `OfferDraft`, `profile.json` y salidas JSON de la IA | node | Ver §11.10 |
+| `packages/radar-connectors` | Cada conector con fixtures grabadas (RSS, JSON, HTML) → `OfferDraft[]` normalizados (snapshot); límites y parada ante captcha con un `fetch` falso; `bin/ingest` (validación + POST con reintento) | node | Ver §11.10 |
+| `apps/api` Radar | Rutas `radar/*`, webhook de Telegram, OAuth de Google, `scheduled` en **workerd real** con `AI` falso, `fetchMock` para Google/Telegram/plataformas, KV y `BROWSER` simulados | workers | Ver §11.10 |
 
 ### 8.2 E2E (Playwright 1.63, contra `wrangler dev` en CI y contra preview antes de merge)
 
@@ -773,14 +922,18 @@ Criterio de aceptación de cada migración nueva: `get_advisors` después no añ
 | Generador → propuesta → enviar | businessType "restaurante", needs "carta y reservas online", salesMode `bookings`, timeline `one_month`; Turnstile en modo test (`1x00000000000000000000AA`) | Propuesta muestra "P2" y "desde 1.400 €"; al enviar, existe lead con `fuente='web_proposal'`, `ai_proposal.pack='P2'`; eventos Umami `proposal_generated` y `proposal_sent` interceptados |
 | Contacto | nombre "Marta", email `marta@example.com`, mensaje | 201, lead `fuente='web_form'`, `contact_submit` |
 | Afiliado | visita `/negocios?ref=ANA-TEST` → `RefNotice` una vez → contacto | cookie `ref=ANA-TEST` (30 días); una segunda visita con `?ref=BOB-TEST` no la sobrescribe; lead con `affiliate_code='ANA-TEST'`; con email del propio afiliado → lead creado con código y `meta.self_referral_suspect=true`, visible en el detalle del admin |
-| Hero de presentación | primera visita a `/` (sin `hero_seen`), viewport 1280×800 y 390×844 | estado `boot` antes del primer paint (sin parpadeo del contenido), llega a `ready` en ≤ 3,3 s / ≤ 2,4 s; `localStorage.hero_seen` = hoy; recarga → sin animación; `Tab` durante `compiling` → `ready` en ≤ 200 ms; evento `hero_played {skipped}`; ruta interior `/negocios` nunca anima |
+| Hero: intro y modos (§1.6) | primera visita a `/` (sin `intro_seen`), viewports 1280×800 y 390×844; variantes con `?intro=1`, `prefers-reduced-motion`, `saveData` (CDP `Network.emulateNetworkConditions` + `navigator.connection` stub) y móvil | `html[data-intro=pending]` antes del primer paint (captura de `document.documentElement.dataset` en `page.addInitScript` + `evaluateOnNewDocument`); todos los `.ch` con su letra final en ≤ 1,5 s; `sessionStorage.intro_seen = '1'`; recarga → sin `pending` y sin `.is-falling`; `Tab` durante la caída → todo aterrizado en ≤ 200 ms y `intro_played {skipped:true}`; escritorio: petición del chunk con `three` posterior a la entrada LCP, canvas visible (`opacity 1`) y poster oculto a los ≤ 3 s; móvil: no hay canvas, el `<video>` recibe `<source>` tras el LCP y reproduce; `saveData`: sin petición de `video.*`; reduced-motion: solo poster, sin `pending`, sin `<source>`; ruta interior `/negocios` nunca marca `pending` |
 | Auth | Email+password de seed (Google/GitHub no se automatizan) | login, `/area-clientes` accesible, logout, `/area-clientes` redirige |
 | Área de clientes | usuario A (cliente P2) | ve su proyecto, no ve el del cliente B (URL directa → 404); solicita P3 → "1.100 €"; aparece en admin como `pending` |
 | Admin | Jose de seed (`staff_members.role='admin'`) | `/admin` con usuario normal → 404; con Jose → bandeja; marcar lead cobrado con `monto` 1 400 y afiliado `standard` → recompensa 140 € `pending`; marcar abonada → afiliado la ve `paid` |
 | Blog | artículo de seed | JSON-LD `BlogPosting` presente; comentar sin sesión → CTA login; con sesión → "pendiente" visible solo al autor; admin aprueba → visible anónimo |
 | Chat | usuario de seed; gateway con `AI` falso | mensaje aparece; respuesta del asistente llega por realtime; admin ve la conversación y desactiva IA |
 | SEO | — | `/services` → 301 a `/empresas`; `/blog/viejo-slug` → 410; `/foro/x` → 410; `/en/...` con `hreflang`; `sitemap.xml` incluye ambos idiomas; `robots.txt` permite `GPTBot` y bloquea `/admin` |
-| Reduced motion | `prefers-reduced-motion: reduce` | Lenis no instanciado, hero directamente en `ready` (sin "Repetir presentación"), `CompileReveal` y transiciones desactivados, `FocusLight` fijo; navegación por teclado completa |
+| Reduced motion | `prefers-reduced-motion: reduce` | Poster estático en el hero, sin intro, sin canvas ni `<source>` de vídeo; `CompileReveal` y transiciones desactivados; sprites de `PathPanel` en el fotograma 0; navegación por teclado completa |
+| Radar: confirmar desde admin (asistida) | seed: plataforma `tecnoempleo` (asistida), oferta con candidatura `prepared` y materiales v1 aprobados; Jose de seed | `/admin/radar` muestra "Pendientes de ti 1"; `[[ Confirmar ]]` abre `ConfirmSendModal` con "se abrirá la oferta"; confirmar → subestado "Confirmada · por marcar enviada", evento `confirmed_by_jose {source:'admin'}` en el historial, pestaña nueva con la URL de la oferta; `[[ Marcar enviada ]]` → `sent`, `submitted_via='assisted'`; intentar `mark-sent` por API sin confirmar (petición directa) → 409 `radar_not_confirmed` |
+| Radar: confirmar desde Telegram (webhook simulado) | misma seed con plataforma `infojobs` (`can_submit=true`) y `INFOJOBS_*` falsos en `wrangler dev` (`fetchMock` de la API de InfoJobs → recibo `4F7Q`); `telegram_msg` de la candidatura sembrado | El test construye un `Update` con `callback_query.from.id` = `telegram_chat_id` de Jose y `callback_data` firmado con la clave de test (`1|c|<id>|<hmac8>`) y lo envía a `POST /api/v1/radar/telegram` con `X-Telegram-Bot-Api-Secret-Token` → 200; `editMessageText` invocado con "Enviada … recibo 4F7Q"; en `/admin/radar/[id]` el historial muestra "Confirmada por Jose desde Telegram" y "Enviada por conector"; el mismo `Update` reenviado → "Esta candidatura ya está sent" sin cambios; `from.id` distinto → 200, sin efecto, fila `error` en logs; secreto incorrecto → 401 |
+| Radar: correo vinculado y evento de calendario | fixture anonimizada `gmail/infojobs-entrevista.json` servida por `FixtureMailSource` (`RADAR_MAIL_SOURCE=fixtures` solo en dev/CI) | `POST /api/v1/radar/emails/poll` (admin) → `radar_emails` con `classification='interview'`, `confidence ≥ 0,8`, candidatura pasa a `interview` con `actor='email'`; el detalle muestra el correo (solo asunto y extracto) y un `EventProposalCard` "Propuesto"; `[[ Crear en el calendario Radar ]]` → `google_event_id` (Google simulado) y "Ver en Google Calendar"; sin ese clic, ninguna llamada a `calendar/v3/events` (se afirma sobre `fetchMock`); `[ No era esto ]` → correo `unrelated`, estado vuelve a `sent`, evento `reverted_by` |
+| Radar: RLS y guarda | cuenta `ana@test` (cliente) y `bob@test` | Cualquier `select`/`insert` de Ana o Bob sobre las 10 tablas `radar_*` devuelve 0 filas o error; el bucket `radar-materials` no lista nada; con `service_role`, `update radar_applications set status='sent'` sin evento previo lanza `radar_not_confirmed` (trigger) |
 
 ### 8.3 Snapshots de JSON-LD
 
@@ -792,9 +945,23 @@ Criterio de aceptación de cada migración nueva: `get_advisors` después no añ
 
 ### 8.5 Lighthouse CI
 
-`lighthouserc.json`: URLs `/`, `/negocios`, `/empresas`, `/proyectos`, `/blog/<seed>`, `/en`; preset móvil, 3 pasadas; asserts `categories:performance >= 0.9`, `accessibility >= 0.95`, `seo == 1`, `best-practices >= 0.9`, `largest-contentful-paint <= 2500`, `cumulative-layout-shift <= 0.1`, `total-blocking-time <= 200`; falla el PR si no cumple. Corre contra `wrangler dev` (workerd local) para aproximar el runtime real.
+`lighthouserc.json`: URLs `/`, `/negocios`, `/empresas`, `/proyectos`, `/blog/<seed>`, `/en`; preset móvil (4G simulado: `rttMs 150`, `throughputKbps 1600`, `cpuSlowdownMultiplier 4`), 3 pasadas; asserts `categories:performance >= 0.9`, `accessibility >= 0.95`, `seo == 1`, `best-practices >= 0.9`, `largest-contentful-paint <= 2500`, `cumulative-layout-shift <= 0.1`, `total-blocking-time <= 200`; falla el PR si no cumple. Corre contra `wrangler dev` (workerd local) para aproximar el runtime real. **v1.2:** `/` y `/en` se auditan además en preset escritorio (`largest-contentful-paint <= 1200`) y, en ambos presets, el audit `largest-contentful-paint-element` se compara con `h1` o `img.hero-media__poster` (script `lhci:assert-lcp-element` sobre el JSON de resultados; falla si el elemento es `canvas` o `video`). Los medios de `HeroMedia` son los reales del repo.
 
-### 8.6 Qué no se testea y por qué
+### 8.6 Hero: bundle, orden de carga y medios (v1.2)
+
+| Comprobación | Herramienta | Falla si |
+|---|---|---|
+| `three` fuera del chunk inicial | `apps/web/scripts/check-hero-bundle.ts` tras `next build`: chunks de `app/[locale]/page` en `.next/app-build-manifest.json` | Algún chunk inicial contiene `WebGLRenderer` o `three.module` |
+| Presupuesto de la escena | Mismo script: suma gz (`zlib.gzipSync`) de los chunks que contienen `WebGLRenderer` + el worker de nubes | > 200 KB gz (spec §12.3). Salida con el desglose por chunk para decidir si sale el bloom |
+| JS de la home sin escena | Mismo script: suma gz de los chunks iniciales de `/` | > 350 KB gz |
+| Medios al día | `pnpm --filter glyph-scene hero:media:check` | `paramsHash` de `media.json` ≠ hash de `params.ts` + `clouds.ts` + `shaders.ts`, o algún fichero supera su tope (400 / 60 / 80 KB) |
+| Orden de carga | Playwright (fila "Hero" de §8.2) | `startTime` del recurso `three` < `startTime` de la entrada LCP |
+| LCP element | Lighthouse CI (§8.5) | Elemento LCP ≠ `h1` ni poster |
+| Intro determinista | Vitest `intro-fall.test.ts` (happy-dom, `vi.useFakeTimers`, PRNG con semilla) | Algún `landT` fuera de [0,4, 1,2] s; `finish()` deja algún `.ch` sin su letra; el `sr-only` cambia |
+| Gate de modos | Vitest `hero-gate.test.ts` | Alguna fila de la tabla de UX §4.1 devuelve otro modo |
+| Bucle del vídeo | `render-media.ts` | PSNR(frame 0, frame 458) < 35 dB |
+
+### 8.7 Qué no se testea y por qué
 
 - El worker de Omen: repo aparte, sin cambios, sin tests propios; se testea el **contrato** desde el gateway con `fetchMock` (formato `{ok, data}` real documentado en §4).
 - Login OAuth real de Google/GitHub en E2E: depende de terceros y captchas; se cubre con email+password y con una prueba manual en la puerta de calidad.
@@ -856,9 +1023,44 @@ Ninguna en runtime. `scripts/sync-from-tarifas.ts` lee `TARIFAS_PATH` (default l
 
 Heredadas: `NOTIFY_SHARED_SECRET`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `TELEGRAM_BOT_TOKEN`, `RESEND_API_KEY`. Nueva: `ADMIN_NOTIFY_EMAIL` (destino del email de respaldo de leads). `vault` con `notify_shared_secret`.
 
+### `apps/web` — añadidas en v1.2
+
+| Nombre | Tipo | Uso |
+|---|---|---|
+| `NEXT_PUBLIC_HERO_LIVE_MOBILE` | var pública (`false`) | Escena viva en móvil (decisión c, §11.11); solo se pone a `true` tras la tarea de medición |
+| `NEXT_PUBLIC_HERO_MEDIA_VERSION` | var pública (generada de `media.json`) | Cache-busting de `/hero/*` |
+
+### `apps/api` — añadidas en v1.2 (Radar; todas en `envSchema`)
+
+| Nombre | Tipo | Uso |
+|---|---|---|
+| `RADAR_INGEST_TOKEN` (+ `RADAR_INGEST_TOKEN_PREV` opcional) | secret | Ingesta y `/job` desde Mac, Omen y n8n (§11.2); rotación con solape 24 h |
+| `TELEGRAM_BOT_TOKEN` | secret | Avisos y edición de mensajes de Radar (§11.6); mismo bot que la Edge Function |
+| `TELEGRAM_WEBHOOK_SECRET` | secret | `X-Telegram-Bot-Api-Secret-Token` del webhook |
+| `RADAR_CALLBACK_HMAC_KEY` | secret | Firma de `callback_data` |
+| `RADAR_KV_KEY` | secret (32 bytes base64) | AES-GCM de los refresh tokens en `RADAR_KV` |
+| `GOOGLE_OAUTH_CLIENT_ID` / `GOOGLE_OAUTH_CLIENT_SECRET` | var / secret | OAuth de Gmail + Calendar (§11.5) |
+| `INFOJOBS_CLIENT_ID` / `INFOJOBS_CLIENT_SECRET` | var / secret | Conector `infojobs` |
+| `UPWORK_CLIENT_ID` / `UPWORK_CLIENT_SECRET` | var / secret | Conector `upwork` (opcional en el lanzamiento) |
+| `N8N_RADAR_WEBHOOK_URL` / `N8N_RADAR_WEBHOOK_SECRET` | var / secret | Disparo de `radar-run` (y `radar-notion`) en n8n de Omen |
+| `RADAR_BATCH_SCORE`, `RADAR_BATCH_PREPARE`, `RADAR_THRESHOLD_DEFAULT` | var (`8`, `2`, `60`) | Lotes del sweep y umbral inicial |
+| `RADAR_MAIL_SOURCE` | var (`gmail`; `fixtures` solo en dev/CI) | `MailSource` activa |
+| `RADAR_KV` | binding KV | `google:*`, `upwork:*`, `google:state:*`, `tg:cb:*`, `tg:retry:*`, `tg:chat` |
+| `BROWSER` | binding Browser Rendering | PDF del CV (§11.7) |
+| `RADAR_RATE_LIMITER` | binding ratelimit (1004, 60/60) | Ingesta, webhook, callback de Google |
+| `triggers.crons` | wrangler | `*/5 * * * *`, `*/30 * * * *`, `0 6 * * *`, `0 7 * * *` (§11.3) |
+
+### `packages/radar-core`
+
+Ninguna en runtime. `scripts/sync-voice.ts` lee `VOZ_PATH` (por defecto el vault en iCloud) y escribe `content/voice.radar.md`; `prebuild` escribe `content/profile.meta.json` (hash, commit, fecha).
+
 ### Omen
 
-Sin cambios en el worker. Umami: `.env` del compose (`DATABASE_URL`, `APP_SECRET`) en `/srv/josecoded-data/umami/`, fuera del repo.
+Sin cambios en el worker. Umami: `.env` del compose (`DATABASE_URL`, `APP_SECRET`) en `/srv/josecoded-data/umami/`, fuera del repo. **Radar (v1.2):** `radar-runner`: `.env` en `/srv/josecoded-data/radar-runner/` con `RADAR_API_URL`, `RADAR_INGEST_TOKEN`, `RADAR_RUNNER_TOKEN`; credencial `LINKEDIN_LI_AT` en el credential store de n8n (nunca en `.env` ni en disco del runner); workflows `radar-run`, `radar-notion` (opcional; `NOTION_TOKEN` en n8n), `radar-email-proton` (diferido; `PROTON_BRIDGE_PASSWORD` en `.env` del contenedor de Bridge cuando exista).
+
+### Mac de Jose
+
+`~/.config/josecoded/radar.env` (`chmod 600`): `RADAR_API_URL=https://api.josecoded.com`, `RADAR_INGEST_TOKEN`. Lo lee `bin/ingest.ts`; la skill `/radar-indeed` no recibe el token (solo invoca el CLI). Plist en `~/Library/LaunchAgents/com.jose.josecoded.radar-indeed.plist`, logs en `~/Library/Logs/claude-config/radar-indeed-*.log`.
 
 ---
 
@@ -880,8 +1082,573 @@ Sin cambios en el worker. Umami: `.env` del compose (`DATABASE_URL`, `APP_SECRET
 | Scraping de Google Play deja de funcionar | Alta a medio plazo | Dato desactualizado | Valor commiteado como respaldo, build no rompe, aviso en CI |
 | Estética "IA" | Media | Rechazo | Fuera de este doc: `ui` con 3 direcciones en HTML real y lista negra (D12) |
 | Deriva `tarifas.md` ↔ `pricing.json` | Media | Precio erróneo en web | Test de deriva en `packages/pricing` que parsea el `tarifas.md` real (solo en el Mac; en CI se salta si el vault no está) + `pricingVersion` en cada propuesta y solicitud |
+| **Chunk de `three` supera 200 KB gz** (v1.2) | Media | Rompe el presupuesto de D16; el hero pasa de demostración a lastre | Medición real en la tarea del hero (`check-hero-bundle`); orden de renuncias: bloom (−12–15 KB) → reflejo → ondas; nunca se sube el presupuesto |
+| **`IntroFall` y la hidratación** (v1.2) | Baja | Flash del texto final o repintado de React en mitad de la caída | Texto partido en el servidor (`FallText`), gate inline antes del paint, el cliente no muta estructura (§1.6.4); test E2E de "sin flash" con captura del estado antes del primer paint |
+| **Workers Free: CPU por invocación y límites de cron** (v1.2) | Media | Sweeps de Radar cortados a mitad; puntuaciones o preparaciones que nunca terminan | Lotes pequeños (8/2), lock blando de 10 min y trabajo idempotente: un tick cortado no pierde nada; constantes `RADAR_BATCH_*`; si aun así no cabe, Workers Paid (5 $/mes) es la salida acotada, anotada como decisión pendiente de Jose |
+| **Google en modo prueba caduca cada 7 días** (v1.2) | Alta (segura) | Correo y calendario parados hasta reautorizar | Recordatorio en Telegram el día 6 con botón `url` a reautorizar; alerta R8; el resto de Radar sigue; publicar la app queda descartado (verificación de pago) |
+| **Browser Rendering no disponible o sin cuota en Free** (v1.2) | Media | Sin PDF automático del CV | Gate en la tarea 0 de Radar; impresión desde el navegador con la misma hoja de estilos como respaldo sin Omen |
+| **MCP de Indeed no ejecutable en `claude -p`** (v1.2) | Media | Sin pasada automática de Indeed | Gate en la tarea 0; `/radar-indeed` a mano en sesión (misma ingesta); Indeed queda "Esperando al Mac" sin afectar al resto |
+| **Restricción de la cuenta de LinkedIn** (v1.2) | Media (con scraping activo) | Pérdida del canal comercial de Jose | Scraping apagado 2 semanas (Q13); `linkedin-email` desde el día 1; límites D20 no editables al alza; parada ante `checkpoint`; interruptor y "He comprobado la sesión" para reactivar |
+| **Privacidad del correo** (v1.2) | Baja | Datos ajenos a Radar en la base o en la IA | Filtros previos, solo metadatos + snippet ≤ 500, cuerpo solo para remitentes de alertas y sin persistir, sin adjuntos, borrado desde admin; los 3 correos ajenos de las fixtures son el test |
 
-### Preguntas abiertas para Jose — resueltas el 2026-09-17
+---
+
+## 11. Radar (spec §13, D17–D26, Q11–Q14; UX v3.1 §7.12–7.18, §9.10–9.14, §13.19)
+
+Radar es un módulo del admin con **cuatro runtimes** y un solo núcleo. El núcleo (máquina de estados, puntuación, preparación, confirmación, envío, correo, calendario, avisos) vive en el **gateway** (`apps/api`, siempre disponible) sobre Supabase con service role; los conectores que necesitan navegador o sesión corren en **Omen** (`radar-runner`); Indeed corre en el **Mac** (launchd + `claude -p`); y las alertas por correo entran por **Gmail**. Todo lo externo escribe por un único endpoint idempotente (`POST /api/v1/radar/ingest`). Tres invariantes, cada una con su test: **sin `confirmed_by_jose` no hay `sent`** (D18), **nada en Google Calendar sin clic de Jose** (D23) y **Gmail nunca envía** (regla global).
+
+### 11.1 Modelo de datos y migraciones `radar_*`
+
+**Decisiones sobre el modelo de la spec §13.4:** `radar_scores` es tabla propia (una fila por puntuación; `is_current` marca la vigente; repuntuar con otro perfil conserva la anterior para explicar puntuaciones viejas). Se añaden `radar_settings` (fila única: umbral, exclusiones rápidas, disponibilidad, pausa, estado de Google; UX §7.15 los guarda en Supabase) y `radar_runs` (una fila por pasada; da la idempotencia de la ingesta y el "hace 2 h · OK · 14 ofertas, 3 nuevas" de UX §7.14). `radar_profile_versions` se mantiene como **copia automática** que escribe el gateway cuando detecta un `profile.json` nuevo (hash), no una edición desde admin (decisión a, §11.11). Sin FK a tablas heredadas. Todas con RLS de solo admin; el gateway escribe con service role. Diez tablas, un bucket, un trigger de guarda, dos RPC.
+
+**Ficheros** (`supabase/migrations/`, numeración `20260919…`; se aplican **una a una con `apply_migration`**, con `list_tables` antes para confirmar que no existe ninguna `radar_*` y `get_advisors` antes y después; **OK de Jose en la sesión**):
+
+**`20260919100000_radar_settings_platforms_runs.sql`**
+```sql
+create or replace function private.radar_set_updated_at() returns trigger language plpgsql as $$
+begin new.updated_at := now(); return new; end $$;
+revoke all on function private.radar_set_updated_at() from public, anon, authenticated;
+
+create table public.radar_settings (
+  id               smallint primary key default 1 check (id = 1),
+  threshold        smallint not null default 60 check (threshold between 40 and 90),
+  quick_exclusions jsonb not null default '{"companies":[],"keywords":[]}'::jsonb,
+  availability_from date,
+  paused_at        timestamptz,
+  pause_email      boolean not null default false,
+  profile_version  text,                                   -- hash del profile.json vigente (radar_profile_versions.profile_version)
+  google_status    text not null default 'unauthorized' check (google_status in ('unauthorized','ok','expired','error')),
+  google_account   text,
+  google_calendar_id text,                                 -- id del calendario secundario "Radar"
+  google_authorized_at timestamptz,
+  google_last_ok_at timestamptz,
+  gmail_last_poll_at timestamptz,
+  calendar_last_sync_at timestamptz,
+  email_ignored_domains text[] not null default '{}',
+  updated_at       timestamptz not null default now()
+);
+insert into public.radar_settings (id) values (1);
+create trigger trg_radar_settings_updated before update on public.radar_settings for each row execute function private.radar_set_updated_at();
+
+create table public.radar_platforms (
+  id            uuid primary key default gen_random_uuid(),
+  code          text not null unique check (code ~ '^[a-z0-9-]{2,32}$'),   -- indeed | linkedin | linkedin-email | infojobs | tecnoempleo | workana | malt-email | upwork
+  name          text not null,
+  kind          text not null check (kind in ('jobs','freelance','both')),
+  access        text not null check (access in ('api','mcp','feed','scrape','email')),
+  runtime       text not null check (runtime in ('gateway','omen','mac','email')),
+  can_submit    boolean not null default false,
+  enabled       boolean not null default false,
+  schedule      text,                                      -- cron de 5 campos en UTC; null en conectores por correo
+  limits        jsonb not null default '{}'::jsonb,        -- {"runs_per_day":1,"max_offers":30,"min_pause_ms":3000,"max_pause_ms":12000}
+  email_domains text[] not null default '{}',
+  config        jsonb not null default '{}'::jsonb,        -- consultas propias, filtros; NUNCA secretos
+  status        text not null default 'idle' check (status in ('idle','running','error','blocked','no_credentials','waiting_runtime')),
+  next_run_at   timestamptz,
+  last_run_at   timestamptz,
+  last_ok_at    timestamptz,
+  last_error    text,
+  run_requested_at timestamptz,                            -- "Ejecutar ahora" en Omen: se limpia al recibir la ingesta
+  runs_today    smallint not null default 0,
+  runs_today_date date,
+  created_at    timestamptz not null default now(),
+  updated_at    timestamptz not null default now()
+);
+create index idx_radar_platforms_due on public.radar_platforms (next_run_at) where enabled and runtime in ('gateway','omen');
+create trigger trg_radar_platforms_updated before update on public.radar_platforms for each row execute function private.radar_set_updated_at();
+
+create table public.radar_runs (
+  id          uuid primary key default gen_random_uuid(),
+  platform_id uuid not null references public.radar_platforms(id) on delete cascade,
+  run_key     text not null,                               -- idempotencia: lo genera el conector (uuid); único por plataforma
+  runtime     text not null check (runtime in ('gateway','omen','mac','email')),
+  started_at  timestamptz not null,
+  finished_at timestamptz,
+  status      text not null check (status in ('ok','error','blocked','partial')),
+  found       int not null default 0,
+  created     int not null default 0,
+  updated     int not null default 0,
+  duplicates  int not null default 0,
+  error       text,
+  created_at  timestamptz not null default now(),
+  unique (platform_id, run_key)
+);
+create index idx_radar_runs_platform_started on public.radar_runs (platform_id, started_at desc);
+```
+
+**`20260919100100_radar_offers_scores.sql`**
+```sql
+create table public.radar_offers (
+  id             uuid primary key default gen_random_uuid(),
+  platform_id    uuid not null references public.radar_platforms(id) on delete restrict,
+  external_id    text not null check (char_length(external_id) between 1 and 200),
+  url            text not null,
+  title          text not null check (char_length(title) between 1 and 300),
+  company        text,
+  company_domain text,                                     -- para vincular correos (§11.8)
+  location       text,
+  remote         text not null default 'unknown' check (remote in ('remote','hybrid','onsite','unknown')),
+  kind           text not null check (kind in ('job','gig')),
+  compensation   jsonb,                                    -- {min,max,currency,period:'year'|'month'|'hour'|'fixed'}
+  description    text check (char_length(description) <= 20000),
+  requirements   text[] not null default '{}',
+  language       text check (language in ('es','en','other')),
+  posted_at      timestamptz,
+  deadline_at    timestamptz,
+  submit_mode    text not null default 'assisted' check (submit_mode in ('connector','assisted')),
+  raw            jsonb,                                    -- respuesta original recortada (≤ 16 KB, lo recorta el gateway)
+  fingerprint    text not null,                            -- normalize(company) || '|' || normalize(title), calculado en TS (§11.2)
+  duplicate_of   uuid references public.radar_offers(id) on delete set null,
+  status         text not null default 'active' check (status in ('active','expired')),
+  score_status   text not null default 'pending' check (score_status in ('pending','scored','discarded_by_rule','duplicate','error')),
+  processing_at  timestamptz,                              -- lock blando de la cola (§11.3)
+  discovered_at  timestamptz not null default now(),
+  last_seen_at   timestamptz not null default now(),
+  missing_runs   smallint not null default 0,              -- pasadas consecutivas en las que no ha aparecido
+  unique (platform_id, external_id)
+);
+create index idx_radar_offers_fingerprint on public.radar_offers (fingerprint);
+create index idx_radar_offers_queue on public.radar_offers (discovered_at) where status = 'active' and score_status = 'pending';
+create index idx_radar_offers_duplicate_of on public.radar_offers (duplicate_of) where duplicate_of is not null;
+create index idx_radar_offers_discovered on public.radar_offers (discovered_at desc);
+create index idx_radar_offers_deadline on public.radar_offers (deadline_at) where status = 'active' and deadline_at is not null;
+
+create table public.radar_scores (
+  id              uuid primary key default gen_random_uuid(),
+  offer_id        uuid not null references public.radar_offers(id) on delete cascade,
+  score           smallint not null check (score between 0 and 100),
+  reasons         jsonb not null default '[]'::jsonb,      -- [{sign:'+'|'-', text, weight:1..3}], ≥ 3 cuando puntúa la IA
+  rule_hits       text[] not null default '{}',            -- 'rule:onsite_out_of_zone', 'rule:salary_below_min', ...
+  rule_adjust     smallint not null default 0,
+  model           text,
+  profile_version text not null,
+  is_current      boolean not null default true,
+  scored_at       timestamptz not null default now()
+);
+create index idx_radar_scores_offer on public.radar_scores (offer_id, scored_at desc);
+create unique index uq_radar_scores_current on public.radar_scores (offer_id) where is_current;
+```
+
+**`20260919100200_radar_applications_materials_events.sql`**
+```sql
+create table public.radar_applications (
+  id               uuid primary key default gen_random_uuid(),
+  offer_id         uuid not null unique references public.radar_offers(id) on delete restrict,
+  status           text not null default 'discovered' check (status in ('discovered','prepared','pending_confirm','sent','contacted','interview','offer','rejected','discarded')),
+  prepare_status   text not null default 'pending' check (prepare_status in ('pending','running','done','error')),
+  prepare_error    text,
+  prepare_attempts smallint not null default 0,
+  processing_at    timestamptz,
+  submitted_at     timestamptz,
+  submitted_via    text check (submitted_via in ('connector','assisted')),
+  receipt          jsonb,
+  outcome          text check (outcome in ('accepted','declined')),
+  notes            text,
+  next_action_at   timestamptz,                            -- posponer y seguimiento (UX §7.12–7.13)
+  deadline_at      timestamptz,                            -- copia editable del plazo de la oferta
+  telegram_msg     jsonb,                                  -- {chat_id, message_id} del último aviso con botones vivos
+  last_activity_at timestamptz not null default now(),
+  created_at       timestamptz not null default now(),
+  updated_at       timestamptz not null default now(),
+  check (submitted_via is null or submitted_at is not null)
+);
+create index idx_radar_applications_status on public.radar_applications (status, last_activity_at desc);
+create index idx_radar_applications_next_action on public.radar_applications (next_action_at) where next_action_at is not null;
+create index idx_radar_applications_prepare_queue on public.radar_applications (created_at) where status = 'discovered' and prepare_status in ('pending','error');
+create trigger trg_radar_applications_updated before update on public.radar_applications for each row execute function private.radar_set_updated_at();
+
+create table public.radar_materials (
+  id               uuid primary key default gen_random_uuid(),
+  application_id   uuid not null references public.radar_applications(id) on delete cascade,
+  kind             text not null check (kind in ('cv','cover_letter','proposal','form_payload','answers')),
+  format           text not null check (format in ('md','pdf','json')),
+  locale           text not null check (locale in ('es','en')),
+  content          text,                                   -- md o json; null en pdf
+  storage_path     text,                                   -- bucket radar-materials/<application_id>/cv-v<N>.pdf
+  version          int not null check (version >= 1),
+  generated_by     text not null check (generated_by in ('ai','jose')),
+  model            text,
+  instruction      text check (char_length(instruction) <= 300),
+  approved         boolean not null default false,        -- true al guardar Jose; la IA deja false
+  unverified_facts jsonb not null default '[]'::jsonb,     -- hechos no presentes en el CV maestro (bloquean la confirmación)
+  diff_summary     jsonb,                                  -- "qué cambió respecto al maestro"
+  created_at       timestamptz not null default now(),
+  unique (application_id, kind, format, version),
+  check ((format = 'pdf') = (storage_path is not null))
+);
+create index idx_radar_materials_app on public.radar_materials (application_id, kind, version desc);
+
+create table public.radar_application_events (
+  id             uuid primary key default gen_random_uuid(),
+  application_id uuid not null references public.radar_applications(id) on delete cascade,
+  kind           text not null check (kind in ('status_change','confirmed_by_jose','snoozed','note','deadline','interview','call','followup_draft','reminder_sent','notified','email_linked','calendar_sync','error')),
+  from_status    text,
+  to_status      text,
+  actor          text not null check (actor in ('jose','ai','email','rule','connector','cron','system')),
+  source         text check (source in ('admin','telegram','gmail','proton','calendar','connector','cron')),
+  source_id      text,                                     -- id del callback, del mensaje, del evento de Google, ...
+  at             timestamptz,                              -- fecha del hecho (entrevista, llamada, plazo)
+  duration_min   int,
+  proposed       boolean not null default false,           -- evento de calendario propuesto, aún sin clic de Jose
+  google_event_id text,
+  reverted_by    uuid references public.radar_application_events(id) on delete set null,
+  payload        jsonb not null default '{}'::jsonb,
+  created_at     timestamptz not null default now()
+);
+create index idx_radar_events_app_created on public.radar_application_events (application_id, created_at desc);
+create index idx_radar_events_calendar on public.radar_application_events (at) where kind in ('interview','call','deadline');
+create index idx_radar_events_google on public.radar_application_events (google_event_id) where google_event_id is not null;
+create index idx_radar_events_reverted_by on public.radar_application_events (reverted_by) where reverted_by is not null;
+
+-- Invariante D18 en la base de datos: nadie (ni service role) pasa a 'sent' sin un confirmed_by_jose posterior al último cambio de estado.
+create or replace function private.radar_guard_sent() returns trigger language plpgsql security definer set search_path = public as $$
+declare v_last_change timestamptz; v_confirm timestamptz;
+begin
+  if new.status = 'sent' and old.status is distinct from 'sent' then
+    select max(created_at) into v_last_change from public.radar_application_events where application_id = new.id and kind = 'status_change';
+    select max(created_at) into v_confirm     from public.radar_application_events where application_id = new.id and kind = 'confirmed_by_jose';
+    if v_confirm is null or (v_last_change is not null and v_confirm < v_last_change) then
+      raise exception 'radar_not_confirmed' using errcode = 'P0001', hint = 'Falta confirmed_by_jose posterior al último status_change';
+    end if;
+    if new.submitted_at is null then new.submitted_at := now(); end if;
+  end if;
+  return new;
+end $$;
+revoke all on function private.radar_guard_sent() from public, anon, authenticated;
+create trigger trg_radar_guard_sent before update of status on public.radar_applications for each row execute function private.radar_guard_sent();
+```
+
+**`20260919100300_radar_emails_profile_versions.sql`**
+```sql
+create table public.radar_emails (
+  id                       uuid primary key default gen_random_uuid(),
+  application_id           uuid references public.radar_applications(id) on delete set null,
+  suggested_application_id uuid references public.radar_applications(id) on delete set null,
+  account                  text not null check (account in ('gmail','proton')),
+  message_id               text not null,
+  thread_id                text,
+  in_reply_to              text,
+  from_address             text not null,
+  from_domain              text not null,
+  subject                  text,
+  received_at              timestamptz not null,
+  excerpt                  text check (char_length(excerpt) <= 500),   -- snippet; nunca el cuerpo
+  link                     text,                                          -- https://mail.google.com/mail/u/0/#all/<thread_id> o referencia Proton
+  classification           text not null default 'info' check (classification in ('rejected','contacted','interview','offer','info','unrelated')),
+  confidence               numeric(3,2) not null default 0 check (confidence between 0 and 1),
+  classified_by            text check (classified_by in ('rule','ai','jose')),
+  reviewed_by_jose         boolean not null default false,
+  seen_by_jose             boolean not null default false,
+  created_at               timestamptz not null default now(),
+  unique (account, message_id)
+);
+create index idx_radar_emails_app on public.radar_emails (application_id, received_at desc) where application_id is not null;
+create index idx_radar_emails_suggested on public.radar_emails (suggested_application_id) where suggested_application_id is not null;
+create index idx_radar_emails_review on public.radar_emails (received_at desc) where reviewed_by_jose = false and classification <> 'unrelated' and (application_id is null or confidence < 0.8);
+create index idx_radar_emails_thread on public.radar_emails (account, thread_id) where thread_id is not null;
+create index idx_radar_emails_domain on public.radar_emails (from_domain);
+
+create table public.radar_profile_versions (
+  version         serial primary key,
+  profile_version text not null unique,                    -- sha256 corto (8 hex) de profile.json
+  content         jsonb not null,
+  git_commit      text,
+  created_at      timestamptz not null default now()
+);
+```
+
+**`20260919100400_radar_rls_rpc.sql`**
+```sql
+-- RLS: solo admin. Ninguna política concede nada a anon; authenticated solo si staff_role_of = 'admin'. service_role (gateway) no pasa por RLS.
+do $$
+declare t text;
+begin
+  foreach t in array array['radar_settings','radar_platforms','radar_runs','radar_offers','radar_scores','radar_applications','radar_materials','radar_application_events','radar_emails','radar_profile_versions'] loop
+    execute format('alter table public.%I enable row level security', t);
+    execute format('revoke all on public.%I from anon', t);
+    execute format('grant select, insert, update, delete on public.%I to authenticated', t);
+    execute format($p$create policy "%s admin all" on public.%I for all to authenticated
+                     using (private.staff_role_of((select auth.uid())) = 'admin')
+                     with check (private.staff_role_of((select auth.uid())) = 'admin')$p$, t, t);
+  end loop;
+end $$;
+grant usage, select on sequence public.radar_profile_versions_version_seq to authenticated;
+
+-- Cola de trabajo sin Queues (plan Free): reclamar filas con lock blando; solo service role.
+create or replace function public.radar_claim_work(p_kind text, p_limit int) returns setof uuid language plpgsql security definer set search_path = public as $$
+begin
+  if p_kind = 'score' then
+    return query update public.radar_offers o set processing_at = now()
+      where o.id in (select id from public.radar_offers where status = 'active' and score_status = 'pending'
+                       and (processing_at is null or processing_at < now() - interval '10 minutes')
+                     order by discovered_at limit p_limit for update skip locked)
+      returning o.id;
+  elsif p_kind = 'prepare' then
+    return query update public.radar_applications a set processing_at = now(), prepare_status = 'running'
+      where a.id in (select id from public.radar_applications where status = 'discovered' and prepare_status in ('pending','error') and prepare_attempts < 6
+                       and (processing_at is null or processing_at < now() - interval '10 minutes')
+                     order by created_at limit p_limit for update skip locked)
+      returning a.id;
+  else raise exception 'unknown kind %', p_kind; end if;
+end $$;
+revoke all on function public.radar_claim_work(text, int) from public, anon, authenticated;
+
+-- Cierre de pasada: marca ausentes y caduca (§11.2 paso 5). Solo service role.
+create or replace function public.radar_finish_run(p_platform_id uuid, p_seen uuid[], p_full_listing boolean) returns void language plpgsql security definer set search_path = public as $$
+begin
+  if p_full_listing then
+    update public.radar_offers set missing_runs = missing_runs + 1
+      where platform_id = p_platform_id and status = 'active' and not (id = any (p_seen));
+  end if;
+  update public.radar_offers set status = 'expired'
+    where status = 'active' and (missing_runs >= 2 or (deadline_at is not null and deadline_at < now()));
+end $$;
+revoke all on function public.radar_finish_run(uuid, uuid[], boolean) from public, anon, authenticated;
+```
+
+**`20260919100500_radar_storage.sql`**
+```sql
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+  values ('radar-materials', 'radar-materials', false, 10485760, array['application/pdf','text/markdown','application/json']);
+create policy "radar-materials admin select" on storage.objects for select to authenticated
+  using (bucket_id = 'radar-materials' and private.staff_role_of((select auth.uid())) = 'admin');
+create policy "radar-materials admin insert" on storage.objects for insert to authenticated
+  with check (bucket_id = 'radar-materials' and private.staff_role_of((select auth.uid())) = 'admin');
+create policy "radar-materials admin delete" on storage.objects for delete to authenticated
+  using (bucket_id = 'radar-materials' and private.staff_role_of((select auth.uid())) = 'admin');
+```
+
+**Advisors esperados tras aplicar:** ninguno nuevo de seguridad (todas las políticas con `(select auth.uid())`, funciones `security definer` con `search_path` fijado y revocadas a `public`/`anon`/`authenticated`); ninguna FK sin índice (comprobado columna a columna arriba); `unused_index` nuevos hasta que haya tráfico (esperado). Seed local (`supabase/seed/seed.sql`): las 8 plataformas con `enabled=false` salvo `tecnoempleo` y `linkedin-email`, 6 ofertas, 3 candidaturas (`prepared` asistida, `prepared` con envío propio, `sent`), materiales v1, 4 correos (uno por clasificar), 1 evento propuesto.
+
+### 11.2 Endpoints del gateway `/api/v1/radar/*`
+
+Cuatro modos de autenticación, en este orden de comprobación: (a) **JWT admin** (`assertAdmin` existente; lo usan los Server Actions de `apps/web` con el `access_token` de la sesión de Jose); (b) **`Authorization: Bearer <RADAR_INGEST_TOKEN>`** (conectores externos: Mac, Omen, n8n; comparación en tiempo constante); (c) **`X-Telegram-Bot-Api-Secret-Token`** (solo el webhook); (d) **`state` firmado en KV** (solo el callback de Google). Rate limit `RADAR_RATE_LIMITER` (60/60 s por IP) en (b), (c) y (d). Envelope y códigos de §3 más los aditivos `radar_invalid_transition`, `radar_not_confirmed`, `radar_material_unverified`, `radar_form_incomplete`, `radar_missing_profile`, `radar_paused`. Todos los cuerpos con zod en `packages/radar-core/src/schemas.ts` (compartidos con `bin/ingest.ts`).
+
+| Método y ruta | Auth | Body | `data` | Errores |
+|---|---|---|---|---|
+| `POST /radar/ingest` | b (o a) | `{ platform, run:{ key:uuid, runtime, startedAt, finishedAt?, status:'ok'\|'error'\|'blocked'\|'partial', error?≤2000, found?, fullListing?:bool }, offers: OfferDraft[] ≤ 200 }` | `{ runId, received, created, updated, duplicates, queuedForScoring, replay:bool }` | 400, 401, 404 (`platform`), 409 `radar_paused` / `conflict{reason:'platform_disabled'}`, 429 |
+| `GET /radar/platforms/:code/job` | b | — | `{ run:bool, reason?, runKey, queries: SearchQuery[], limits, config, runsToday }` | 401, 404 |
+| `GET /radar/platforms/health` | a | — | `{ platforms:[{code,status,lastRunAt,lastOkAt,lastError,nextRunAt,runsToday,lastRun:{found,created}}], omen:'ok'\|'down', mac:{lastIngestAt}, google:{status,expiresAt}, telegram:{failed24h} }` | 401, 403 |
+| `POST /radar/platforms/:code/run` | a | — | `{ started:bool, runtime }` gateway: ejecuta ya (≤ 25 s) o encola; omen: webhook n8n y `run_requested_at`; mac: 409 | 403, 404, 409 `conflict{reason:'runs_from_mac'\|'runs_per_day'}` , 502 (n8n) |
+| `POST /radar/platforms/:code/test` | a | `{ config?, queries? }` | `{ offers:[{title,company,url}] ≤ 3 }` (no ingesta) | 400, 403, 502 `upstream_error{detail}` |
+| `POST /radar/platforms/:code/reactivate` | a | `{ sessionChecked: true }` | `{ status:'idle' }` | 400 (`sessionChecked` falso), 403 |
+| `POST /radar/offers/:id/score` | a | `{ force?:bool }` | `{ score, reasons, ruleHits, profileVersion }` | 403, 404, 502 (IA) |
+| `POST /radar/offers/:id/prepare` | a | — ("Preparar de todos modos") | `{ applicationId }` | 403, 404, 409 `conflict` (ya existe) |
+| `POST /radar/applications/:id/prepare` | a | `{ kinds?:Kind[], instruction?≤300, locale?:'es'\|'en' }` (regenerar) | `{ materials:[{id,kind,version}] }` o 202 `{ queued:true }` si supera 25 s | 400 `radar_missing_profile{locale}`, 403, 404, 409 `radar_invalid_transition{status}` (terminal), 502 |
+| `POST /radar/applications/:id/confirm` | a (Telegram usa el mismo servicio) | `{ source:'admin', acknowledgeUnverified?:bool }` | `{ status:'sent', submittedVia:'connector', receipt }` o `{ status:'prepared', mode:'assisted', offerUrl, error? }` | 400 `radar_material_unverified{facts}` / `radar_form_incomplete{fields}`, 403, 404, 409 `radar_invalid_transition{status}` |
+| `POST /radar/applications/:id/mark-sent` | a | `{ sentAt?, note? }` | `{ status:'sent', submittedVia:'assisted' }` | 403, 404, 409 `radar_not_confirmed` / `radar_invalid_transition` |
+| `POST /radar/applications/:id/snooze` | a | `{ until: iso, source:'admin' }` | `{ nextActionAt }` | 400 (pasado), 403, 409 (terminal) |
+| `POST /radar/applications/:id/discard` | a | `{ reason:'not_interested'\|'compensation'\|'location'\|'sent_elsewhere'\|'duplicate'\|'other', note?, excludeCompany?:bool }` | `{ status:'discarded', undoUntil }` | 403, 404, 409 |
+| `POST /radar/applications/:id/reopen` | a | `{ to?:'discovered'\|'prepared' }` (deshacer = `to` del evento de descarte) | `{ status }` | 403, 404, 409 |
+| `POST /radar/applications/:id/status` | a | `{ to:'contacted'\|'interview'\|'offer'\|'rejected', outcome?:'accepted'\|'declined' }` | `{ status }` | 403, 404, 409 `radar_invalid_transition` |
+| `POST /radar/applications/:id/events/:eventId/revert` | a | — ("No era esto") | `{ status, revertedEventId }` | 403, 404, 409 (el evento no es de `email`/`rule` o ya revertido) |
+| `POST /radar/applications/:id/followup-draft` | a | — | `{ draftId, draftUrl }` | 403, 404, 409 (estado no `sent`/`contacted`), 502 `upstream_error{reason:'google_expired'}` |
+| `POST /radar/materials/:id/pdf` | a | — | `{ materialId, storagePath, signedUrl (1 h) }` | 403, 404, 503 `upstream_error{reason:'browser_rendering_unavailable'}` → impresión en navegador |
+| `POST /radar/events/propose` | a | `{ applicationId, kind:'interview'\|'call'\|'deadline', at, durationMin?, title?, url?, sourceEmailId? }` | `{ eventId, proposed:true }` | 400, 403, 404 |
+| `POST /radar/events/:id/confirm` | a | `{ at?, durationMin?, title? }` (overrides) | `{ eventId, googleEventId, htmlLink }` | 403, 404, 409 (ya confirmado o descartado), 502 `{reason:'google_expired'}` |
+| `POST /radar/events/:id/discard` | a | — | `{ eventId }` | 403, 404 |
+| `POST /radar/events/:id/propose-change` | a | `{ at, durationMin? }` | `{ eventId (nuevo, proposed, payload.replaces) }` | 403, 404 |
+| `POST /radar/emails/poll` | a | — (manual) | `{ fetched, linked, review, unrelated }` | 403, 502 `{reason:'google_expired'}` |
+| `POST /radar/emails/ingest` | b | `{ account:'proton', messages: MailMeta[] ≤ 100 }` (n8n, diferido) | `{ received, linked, review }` | 400, 401 |
+| `POST /radar/emails/fetch` | a | `{ account:'gmail', messageId? , threadUrl? }` | `{ emailId }` (crea la fila sin vincular) | 400, 403, 404, 502 |
+| `POST /radar/emails/:id/link` | a | `{ applicationId, classification }` | `{ emailId, status (de la candidatura) }` | 403, 404, 409 |
+| `POST /radar/emails/:id/unrelated` | a | — | `{ emailId, suggestIgnoreDomain?:string }` | 403, 404 |
+| `POST /radar/google/authorize` | a | — | `{ url }` (Google, con `state`) | 403 |
+| `GET /radar/google/callback?code&state` | d | — | 302 a `${SITE_URL}/admin/radar/plataformas?google=ok` (o `=error&reason=`) | 400 (`state` inválido) |
+| `POST /radar/google/calendar` | a | — (crea "Radar" si no existe) | `{ calendarId }` | 403, 502 |
+| `POST /radar/telegram` | c | `Update` de Telegram | `{ ok:true }` siempre 200 (Telegram reintenta con otro código) | 401 (secreto) |
+
+**Ingesta, paso a paso (`radar/ingest.service.ts`):** (1) auth y rate limit; (2) plataforma por `code` (404); si `radar_settings.paused_at` o `!enabled` → 409 (el conector debió consultar `/job` antes; el 409 evita ingestas de pasadas viejas); (3) `radar_runs` por `(platform_id, run_key)`: si ya existe y tiene `finished_at`, devuelve sus contadores con `replay:true` (idempotencia de reintentos del Mac/Omen); (4) por oferta: `fingerprint = norm(company) + '|' + norm(title)` (`norm` = minúsculas, sin tildes, sin puntuación, espacios colapsados; en TS, sin `unaccent`), `raw` recortado a 16 KB, upsert `on conflict (platform_id, external_id) do update set last_seen_at = now(), missing_runs = 0, deadline_at = coalesce(excluded.deadline_at, deadline_at), raw = excluded.raw, description = case when char_length(excluded.description) > char_length(description) then excluded.description else description end, status = 'active'`; filas nuevas quedan `score_status = 'pending'`; (5) **duplicados entre plataformas** solo para filas nuevas: otra `radar_offers` con el mismo `fingerprint`, distinta plataforma, `coalesce(posted_at, discovered_at)` a ±7 días y sin `duplicate_of` → `duplicate_of = la más antigua`, `score_status = 'duplicate'` (no se puntúa; la bandeja muestra "Dup." en la candidatura de la original si la hay); (6) `radar_finish_run(platform_id, seen, run.fullListing)` (ausentes y caducidad); (7) actualiza `radar_platforms` (`status`, `last_run_at`, `last_ok_at`, `last_error`, `runs_today`, `run_requested_at = null`, `next_run_at` desde `schedule`); si `run.status = 'blocked'` → `status = 'blocked'`, `enabled` se mantiene pero no se vuelve a programar hasta `reactivate`, aviso `radar.connector_error` (R2); (8) responde y deja en `ctx.waitUntil` una pasada corta de puntuación (`sweep({ score: 5, prepare: 0 })`) para que las mejores ofertas se puntúen sin esperar al cron.
+
+**Confirmación, paso a paso (`radar/applications.service.ts#confirm`)**, común a admin y Telegram: (1) carga candidatura + oferta + plataforma + última versión de cada `kind` de material + eventos; (2) precondiciones: `status ∈ {prepared, pending_confirm}` (si no, 409 con el estado, que Telegram convierte en "Esta candidatura ya está {estado}"); `cv` y (`cover_letter` si `kind='job'` | `proposal` si `'gig'`) existen; ningún `unverified_facts` pendiente salvo `acknowledgeUnverified` (400 con la lista); si el conector tiene `prepareForm`, `form_payload` sin campos `required` vacíos (400 con los nombres); (3) inserta `confirmed_by_jose { source, source_id, payload:{ materials:{kind:version}, acknowledged } }`; (4) si `platform.can_submit && connector.submit && offer.submit_mode = 'connector'` → `submit()` con `AbortSignal.timeout(25000)`: OK → `transition('sent', actor:'connector')` (el trigger comprueba el evento), `submitted_via='connector'`, `receipt`; fallo → evento `error { stage:'submit', message }`, la candidatura sigue `prepared` y la respuesta lleva `mode:'assisted'` + `offerUrl` (UX R11); (5) si es asistida → respuesta `mode:'assisted'` + `offerUrl`; (6) en ambos casos edita el mensaje de Telegram si `telegram_msg` existe (§11.6) y `last_activity_at = now()`. El subestado "Confirmada · por marcar enviada" se deriva en lectura: existe `confirmed_by_jose` posterior al último `status_change` y el estado sigue `prepared`/`pending_confirm`. `mark-sent` exige exactamente esa condición (si no, 409 `radar_not_confirmed`; el trigger lo repetiría igualmente).
+
+**Transiciones (`packages/radar-core/src/state-machine.ts`):** tabla literal de spec §13.3 como `const TRANSITIONS: Record<Status, Partial<Record<Status, Actor[]>>>`; `transition(app, to, ctx)` valida origen/destino/actor, para `to='sent'` exige `hasConfirmation(events)`, escribe `status_change` con `from`, `to`, `actor`, `source`, `source_id`, y en `actor ∈ {email, rule}` deja el evento reversible (`revert` pone `reverted_by`, restaura `from_status` y, si venía de un correo, lo marca `unrelated`). Las transiciones automáticas por correo son **solo hacia delante** (`sent → contacted|interview|rejected`, `contacted → interview|rejected`, `interview → offer|rejected`) y nunca a `sent`.
+
+### 11.3 Cron Triggers (Workers) y cola de trabajo
+
+Sin Queues (plan Free, P1): la cola son las propias tablas (`score_status`, `prepare_status`, `processing_at`) y un barrido periódico que reclama lotes pequeños con `radar_claim_work` (lock blando de 10 min, `skip locked`). Cada invocación hace poco trabajo de CPU (las llamadas a IA, Google y plataformas son I/O) para caber en el límite del plan; si una tarea 0 midiera que no cabe, los lotes se reducen por constante (`RADAR_BATCH_*`) antes de plantear Workers Paid.
+
+| Cron (UTC) | Qué hace, en este orden, con límites por tick |
+|---|---|
+| `*/5 * * * *` **sweep** | (1) lee `radar_settings`; si `paused_at` → salta 2–4; (2) **plataformas del gateway vencidas** (`runtime='gateway' and enabled and next_run_at <= now()`, ≤ 2 por tick): `discover` inline (≤ 50 ofertas) → servicio de ingesta; **plataformas de Omen vencidas**: `POST N8N_RADAR_WEBHOOK_URL` `{ platform, runKey }` con `x-josecoded-webhook-secret` y `run_requested_at = now()` (si a los 30 min no ha llegado ingesta → `status='waiting_runtime'`, alerta R5 una vez); Mac: nada; (3) **puntuar** ≤ 8 ofertas reclamadas: reglas duras (`rules.ts`: exclusiones del perfil, presencial fuera de zona, salario/tarifa bajo mínimo, idioma no cubierto, `quick_exclusions`) → `discarded_by_rule` con `rule_hits`, sin coste; el resto → Workers AI (JSON mode, §11.7) → `radar_scores` (`is_current`, la anterior a `false`); si `score ≥ threshold` y no es duplicado → `radar_applications` en `discovered` (`prepare_status='pending'`); error de IA → `score_status='error'` y reintento en el siguiente tick (≤ 6 intentos, luego alerta R7); (4) **preparar** ≤ 2 candidaturas reclamadas (redacción larga): materiales v1 → `prepared` → Telegram `radar.prepared` + evento `notified`; error → `prepare_status='error'`, `prepare_attempts+1`, reintento cada 10 min (R7 tras 6); (5) **pospuestas vencidas** (`next_action_at <= now()`, estado `prepared`/`pending_confirm`, último evento `snoozed` sin `reminder_sent` posterior) → reenvía `radar.prepared` completo (UX §7.12) y `reminder_sent`; (6) **reintentos de Telegram** (KV `tg:retry:*`, ≤ 3, backoff 5/15/45 min); (7) **caducidad**: `radar_finish_run` global (sin `seen`) y descarte automático de candidaturas `discovered/prepared/pending_confirm` cuyas ofertas pasaron a `expired` (`actor='rule'`, `payload.reason='expired'`, reversible); (8) **versión de perfil**: si `profile.meta.json.hash` (empaquetado en el gateway) ≠ `radar_settings.profile_version` → inserta `radar_profile_versions` y actualiza el setting (la bandeja mostrará "12 ofertas con perfil anterior") |
+| `*/30 * * * *` **correo** | Si `google_status='ok'` y no (`paused_at` y `pause_email`): sondeo de Gmail (§11.8, ≤ 150 mensajes por tick); en los ticks de minuto `:00`, además **lectura del calendario "Radar"** (`events.list` con `updatedMin = calendar_last_sync_at`, `singleEvents=true`) → refleja cambios de hora/duración en `radar_application_events` (`payload.moved_in_google_at`) y cancelaciones (`payload.deleted_in_google=true`; no borra nada local). En `invalid_grant` → `google_status='expired'`, alerta R8 y Telegram (una vez) |
+| `0 6 * * *` y `0 7 * * *` **diario** | Ambos disparos calculan la hora local (`Intl.DateTimeFormat('es-ES', { timeZone:'Europe/Madrid', hour:'numeric', hour12:false })`) y solo actúan si es **08:00 en Madrid** (uno de los dos según el horario de verano; el otro es no-op): (1) `runs_today` a 0; (2) **plazos < 24 h** en candidaturas no terminales (`deadline_at` o evento `deadline`) → `radar.deadline` (con botones si está pendiente de decisión) + `reminder_sent` una vez por plazo; (3) **seguimientos vencidos**: `sent`/`contacted` con `last_activity_at < now() − 7 d` y sin `followup_draft` en 7 d → borrador en Gmail (§11.8) + `radar.followup_due`; (4) **entrevistas de hoy** + **resumen diario** (`Hoy: …`); (5) lunes: **resumen semanal** (contadores de la semana por plataforma, desde `radar_*`); (6) **silencio > 45 días** en `sent`/`contacted`/`interview` → `rejected` (`actor='rule'`, reversible); (7) **Google a punto de caducar**: `google_authorized_at + 6 d` → Telegram "El acceso a Google caduca mañana" con enlace a reautorizar (§11.5); (8) si Radar está en pausa, solo 2, 4 (reducido) y 7 |
+
+`scheduled(event, env, ctx)` en `src/scheduled.ts` despacha por `event.cron`; cada bloque va en `try/catch` propio con `console.error` estructurado (Workers Logs) para que un fallo no pare el resto. Parser de cron de 5 campos (`*`, `*/n`, listas, valores) propio en `radar-core/src/cron.ts` (los presets de UX §7.14 caben; sin dependencia de `cron-parser`).
+
+### 11.4 Conectores: interfaz `RadarConnector` y conectores iniciales
+
+```ts
+// packages/radar-connectors/src/types.ts  (sin dependencias de runtime)
+export type PlatformCode = 'indeed' | 'linkedin' | 'linkedin-email' | 'infojobs' | 'tecnoempleo' | 'workana' | 'malt-email' | 'upwork';
+export type Runtime = 'gateway' | 'omen' | 'mac' | 'email';
+export type Access = 'api' | 'mcp' | 'feed' | 'scrape' | 'email';
+
+export interface SearchQuery { roles: string[]; keywords: string[]; locations: string[]; remote: ('remote'|'hybrid'|'onsite')[]; kind: 'job'|'gig'|'both'; languages: ('es'|'en')[]; sinceDays: number; maxOffers: number }
+export interface Limits { runsPerDay: number; maxOffers: number; minPauseMs?: number; maxPauseMs?: number; maxPages?: number }
+export interface SecretRef { name: string; where: 'wrangler' | 'kv-oauth' | 'n8n' | 'omen-env' | 'mac-env'; required: boolean; help: string }  // lo que muestra SecretRef en admin
+export interface ConnectorCtx { fetch: typeof fetch; secrets: Record<string, string | undefined>; limits: Limits; now(): Date; sleep(ms: number): Promise<void>; log(level: 'info'|'warn'|'error', msg: string, data?: unknown): void; signal: AbortSignal; rng(): number }
+export interface OfferDraft { externalId: string; url: string; title: string; company?: string; companyDomain?: string; location?: string; remote?: 'remote'|'hybrid'|'onsite'|'unknown'; kind: 'job'|'gig'; compensation?: { min?: number; max?: number; currency?: string; period?: 'year'|'month'|'hour'|'fixed' }; description?: string; requirements?: string[]; language?: 'es'|'en'|'other'; postedAt?: string; deadlineAt?: string; submitMode?: 'connector'|'assisted'; initialStatus?: 'contacted'; raw?: unknown }
+export interface FormPayload { fields: { name: string; label: string; value: string; required: boolean; mapped: boolean; type: 'text'|'textarea'|'select'|'file'|'bool' }[]; attachments: { field: string; materialKind: 'cv' }[] }
+export interface Receipt { id?: string; url?: string; at: string }
+export interface TrackUpdate { status?: 'contacted'|'interview'|'rejected'; note?: string; at: string }
+export interface MailMessage { from: string; subject: string; date: string; html?: string; text?: string; messageId: string }
+
+export interface RadarConnector {
+  code: PlatformCode; name: string; kind: 'jobs'|'freelance'|'both'; runtime: Runtime; access: Access;
+  capabilities: { discover: boolean; detail: boolean; prepareForm: boolean; submit: boolean; track: boolean; parseEmail: boolean };
+  secrets: SecretRef[];
+  defaults: { schedule: string | null; limits: Limits; emailDomains: string[] };
+  discover?(q: SearchQuery, ctx: ConnectorCtx): Promise<OfferDraft[]>;
+  detail?(externalId: string, ctx: ConnectorCtx): Promise<Partial<OfferDraft>>;
+  prepareForm?(offer: Offer, materials: Materials, profile: Profile): Promise<FormPayload>;
+  submit?(app: Application, payload: FormPayload, ctx: ConnectorCtx): Promise<Receipt>;   // solo lo invoca confirm() tras confirmed_by_jose
+  track?(app: Application, ctx: ConnectorCtx): Promise<TrackUpdate | null>;
+  parseEmail?(msg: MailMessage, ctx: ConnectorCtx): Promise<OfferDraft[]>;               // conectores por correo
+  detectBlock?(input: { url: string; status: number; html?: string }): 'captcha' | 'verification' | null;   // scraping
+}
+export const connectors: Record<PlatformCode, RadarConnector>;   // registro; el núcleo solo conoce esto y radar_platforms (D19)
+```
+
+El gateway solo importa `connectors` y `radar_platforms`; añadir una plataforma = fichero nuevo + fila + secretos en su runtime (D19). Los conectores de `runtime ≠ 'gateway'` ejecutan **el mismo código** en Node (`bin/runner.ts` en Omen) o se implementan como skill (Indeed) y entregan por `bin/ingest.ts` → `POST /radar/ingest`.
+
+| Conector | Acceso / runtime | `discover` · `detail` | Envío | Secretos (`SecretRef`) | Límites por defecto | Fixture | Notas de la tarea 0 de Radar |
+|---|---|---|---|---|---|---|---|
+| `indeed` | MCP oficial · **Mac** | La skill `/radar-indeed` (claude-config) llama a `search_jobs` por cada consulta del perfil (país ES, remoto, ≤ 3 consultas × ≤ 30 resultados) y `get_job_details` para ids nuevos (caché local `seen.json`, 30 días); escribe `OfferDraft[]` y ejecuta `pnpm --filter @josecoded/radar-connectors ingest --platform indeed --file …`. `indeed.ts` en el paquete solo normaliza y valida (no llama al MCP) | Asistido | `RADAR_API_URL`, `RADAR_INGEST_TOKEN` (`mac-env`: `~/.config/josecoded/radar.env`) | 1/día, 90 | JSON del MCP anonimizado | **Verificar que el conector MCP de Indeed está disponible en `claude -p`** (es un conector de claude.ai); si no, `/radar-indeed` se ejecuta a mano en una sesión de Jose y la ingesta funciona igual |
+| `linkedin-email` | correo · **email** (sondeo de Gmail) | `parseEmail`: remitentes `jobalerts-noreply@linkedin.com`, `jobs-noreply@linkedin.com`; el sondeo pide `format=full` **solo** para estos remitentes, extrae tarjetas (título, empresa, ubicación, `currentJobId` → `externalId`, url limpia sin `trk`) y descarta el cuerpo | Asistido | ninguno propio | — (según lleguen alertas) | 3 HTML reales anonimizados de alertas | Activo desde el día 1 (Q13). Jose activa las alertas diarias en LinkedIn al Gmail (`ESTADO.md`) |
+| `linkedin` | scraping con sesión · **Omen**, **apagado por defecto** (Q13: 2 semanas de rodaje) | Playwright con `storageState` construido desde la cookie `li_at` (credencial de n8n → cuerpo del `POST /run` al runner; nunca en disco); listados `/jobs/search/?keywords=…&f_WT=2` y fichas; **solo lectura** | Asistido | `LINKEDIN_LI_AT` (`n8n`) | **1/día, 30 ofertas, pausas 3–12 s aleatorias, ≤ 3 páginas**; `limits` no editables por encima (UX §7.14) | HTML de listado y ficha anonimizados | `detectBlock`: URL con `/checkpoint/`, `/authwall`, `/uas/login` o selector `#captcha-internal` → `blocked` + `radar.connector_error`; reactivar exige `sessionChecked` |
+| `infojobs` | API oficial · **gateway** | `GET https://api.infojobs.net/api/9/offer?q=…&province=…&teleworking=…` (Basic `client_id:client_secret`), `GET /api/7/offer/{id}` | **Hipótesis**: `can_submit=false` hasta verificar en la tarea 0 si la candidatura por API exige OAuth del candidato; si se confirma → `submit` + `prepareForm` (campos de la oferta) | `INFOJOBS_CLIENT_ID`, `INFOJOBS_CLIENT_SECRET` (`wrangler`) | cada 6 h, 50 | JSON de búsqueda y detalle | Jose da de alta la aplicación (Q14) |
+| `tecnoempleo` | feed + ficha · **gateway** | RSS por consulta (URL exacta del feed a fijar en la tarea 0; `fast-xml-parser`), ficha HTML con `HTMLRewriter` (descripción, requisitos, plazo) | Asistido | ninguno | cada 6 h, 50 | XML del feed y HTML de ficha | Conector de menor riesgo: **el primero que se implementa** para cerrar el flujo completo (spec §13.9) |
+| `workana` | scraping público · **Omen** | Playwright sobre `https://www.workana.com/jobs?language=es&category=it-programming&query=…` sin login; fichas | Asistido | ninguno | 2/día, 40, pausas 3–12 s | HTML | `detectBlock` por 403/429 y captcha |
+| `malt-email` | correo · **email** | `parseEmail`: remitentes `@malt.es`/`@malt.com` con "Nueva propuesta de proyecto" → `OfferDraft` con `initialStatus:'contacted'` (Malt funciona al revés: la oferta nace ya en contacto) | Asistido (responder en Malt) | ninguno | — | 2 correos anonimizados | Sin `discover` |
+| `upwork` | GraphQL oficial · **gateway** | `marketplaceJobPostingsSearch` con OAuth2 (refresh token en KV cifrado, mismo mecanismo que Google, §11.5) | Asistido (las propuestas por API no están permitidas) | `UPWORK_CLIENT_ID`, `UPWORK_CLIENT_SECRET` (`wrangler`), token (`kv-oauth`) | cada 6 h, 50 | JSON GraphQL | **Opcional en el lanzamiento** (Q14): aprobación de API key |
+
+**Omen (`radar-runner`)**: contenedor `node:22` + Playwright Chromium (`infra/omen/radar-runner/`, compose en `/srv/josecoded-data/radar-runner/`), sin puertos publicados: expone `POST :4100/run { platform, runKey, secrets? }` solo en la red de Docker de n8n, protegido con `RADAR_RUNNER_TOKEN`. Workflow n8n `radar-run` (webhook con `x-josecoded-webhook-secret`, llamado por el gateway) → lee la credencial que toque → `HTTP Request` al runner → el runner ejecuta `connectors[code].discover` con `limits` de `/job`, respeta `detectBlock` y **entrega por su cuenta** a `POST /radar/ingest` (`RADAR_INGEST_TOKEN` en el `.env` del contenedor). Si Omen está apagado, el webhook falla (`upstream_error`) y la plataforma queda `waiting_runtime` (R5); nada más se ve afectado.
+
+**Mac (`indeed`)**: `infra/mac/com.jose.josecoded.radar-indeed.plist` (`StartCalendarInterval` 08:00; si el Mac dormía, launchd lo ejecuta al despertar) → `~/Documents/GitHub/claude-config/automation/run-skill.sh radar-indeed "/radar-indeed" guarded` (mismo patrón y logs que `cerebro-update`). La skill comprueba `GET /radar/platforms/indeed/job` antes de buscar (pausa, `runs_per_day`) y termina siempre con una ingesta (`status: ok|error`) para que la bandeja muestre "última pasada"; si la ingesta falla (sin red), `bin/ingest.ts` deja el JSON en `pending/` y lo reintenta en la siguiente ejecución (`run_key` estable → idempotente).
+
+### 11.5 Google: OAuth, Gmail y Calendar (Q11: Gmail personal, modo prueba)
+
+- **Proyecto**: Google Cloud "josecoded-radar" (lo crea Jose): pantalla de consentimiento *External* en **modo prueba** con su Gmail como usuario de prueba; cliente OAuth "Web application" con redirect `https://api.josecoded.com/api/v1/radar/google/callback` (y `http://localhost:8787/...` para dev). Publicar la app exigiría verificación de Google y evaluación de seguridad de pago por los scopes restringidos de Gmail: descartado; el precio del modo prueba es el **refresh token de 7 días**.
+- **Scopes**: `openid email` (cuenta), `https://www.googleapis.com/auth/gmail.readonly`, `https://www.googleapis.com/auth/gmail.compose` (borradores; el código no contiene ninguna llamada a `send`, y el test lo afirma), `https://www.googleapis.com/auth/calendar.events`. Este último cubre todos los calendarios: el código solo usa `radar_settings.google_calendar_id` (calendario secundario "Radar", creado por `POST /radar/google/calendar` con `calendars.insert { summary:'Radar', timeZone:'Europe/Madrid' }`) y nunca `primary`; el test lo afirma sobre `fetchMock`.
+- **Flujo**: SA `authorizeGoogle` → `POST /radar/google/authorize` (JWT) → el gateway guarda `state` (nonce) en `RADAR_KV` (`google:state:<nonce>`, TTL 10 min) y devuelve la URL (`access_type=offline`, `prompt=consent`, `include_granted_scopes`) → la SA hace `redirect(url)` → Google → `GET /radar/google/callback` valida `state`, intercambia `code`, obtiene `email` (`userinfo`), **cifra el refresh token con AES-GCM-256** (clave `RADAR_KV_KEY`, IV aleatorio por escritura) y lo guarda en `RADAR_KV` `google:refresh` (sin TTL); `access` en `google:access` con TTL `expires_in − 60`; `radar_settings.google_status='ok'`, `google_account`, `google_authorized_at`; 302 a `/admin/radar/plataformas?google=ok`. Por qué KV y no `wrangler secret`: la reautorización desde admin (decisión d) escribe el token en runtime, y los secrets de Wrangler no se escriben en runtime; el cifrado con una clave que sí vive en `wrangler secret` mantiene el token ilegible sin ella.
+- **Uso**: `googleFetch(path, init)` obtiene el access token (KV o refresh); ante 401 refresca una vez; ante `invalid_grant` (token de 7 días caducado o revocado) → borra `google:*`, `google_status='expired'`, alerta R8 en admin y Telegram (una vez); todo lo que dependa de Google espera (correo, calendario, borradores) y el resto de Radar sigue. Recordatorio el día 6 (§11.3).
+- **Calendar**: `createCalendarEvent(evt, confirmation)` (`google.service.ts`) lanza si `confirmation.source ∉ {'admin','telegram'}` o falta `confirmation.at`; solo lo llaman `POST /radar/events/:id/confirm` y la acción `k` de Telegram. Crea `events.insert(calendarId, { summary, start, end, description: enlace al detalle, conferenceData si el correo traía enlace })` → `google_event_id`, `proposed=false`, `payload.html_link`. Cambios: `propose-change` crea un evento propuesto con `payload.replaces`; su `confirm` hace `events.patch`. Descartar un propuesto no toca Google. Lectura horaria: §11.3.
+
+### 11.6 Telegram: avisos con botones y webhook
+
+- **Desde el gateway, no desde la Edge Function** (decisión, P12): editar mensajes y responder callbacks exige conocer `message_id` y `callback_query.id`, que solo tiene quien envía y quien recibe; una sola vía evita dos formatos. El gateway recibe `TELEGRAM_BOT_TOKEN` (el mismo bot; la Edge Function conserva el suyo para `lead.created`). `chat_id` = `staff_members.telegram_chat_id` del admin (service role; caché KV 1 h). Textos en `radar-core/src/telegram/messages.ts`, literalmente los de UX §7.17 (≤ 8 líneas, sin emojis, sin cuerpos de correo).
+- **`callback_data` (≤ 64 bytes, límite de Telegram)**: `1|<a>|<id32>|<sig8>` = versión, acción, uuid sin guiones, 8 hex de `HMAC-SHA256(RADAR_CALLBACK_HMAC_KEY, '1|a|id32')` → 46 bytes. Acciones: `c` confirmar · `p` menú posponer · `p1`/`p3`/`pL` mañana 08:00 / 3 días / lunes 08:00 · `d` descartar · `u` deshacer descarte (10 min) · `m` marcar enviada · `r` reintentar envío · `k` crear evento propuesto (id = evento) · `x` descartar evento · `n` "no era esto" (id = correo) · `e1`…`e4` clasificar correo (contactado / entrevista / rechazo / no es de Radar; id = correo) · `z` pausar conector (id = plataforma). "Ver y editar", "Ver candidatura", "Reautorizar Google" son botones `url`, no callbacks (con `next` de login).
+- **Webhook `POST /radar/telegram`**: (1) `X-Telegram-Bot-Api-Secret-Token` = `TELEGRAM_WEBHOOK_SECRET` (comparación constante) o 401; (2) solo `callback_query` (el `setWebhook` lleva `allowed_updates=["callback_query"]`); (3) `from.id` ≠ `chat_id` del admin → 200, `answerCallbackQuery` vacío, `console.warn` con el id (spec §13.6); (4) firma inválida o `message.date` > 30 días → 200 ignorado; (5) idempotencia por `callback_query.id` en KV (TTL 24 h): repetido → 200 sin efecto; (6) ejecuta la acción con **los mismos servicios que admin** (`source:'telegram'`, `source_id = callback_query.id`); (7) `answerCallbackQuery` (texto corto) y `editMessageText`/`editMessageReplyMarkup` según la tabla de UX §7.17. Presupuesto: responder a Telegram en < 10 s; un `submit` largo se hace en `ctx.waitUntil` tras editar a "Confirmada 09:12 · Enviando…" y se edita de nuevo al terminar. Un callback sobre una candidatura que ya cambió → "Esta candidatura ya está {estado}." (del 409 del servicio).
+- **Un solo mensaje vivo por decisión**: `radar_applications.telegram_msg` guarda `{chat_id, message_id}`; cualquier decisión (admin o Telegram) edita ese mensaje ("Confirmada desde admin 09:12") y borra los botones. Al posponer, el aviso vuelve como mensaje nuevo (y `telegram_msg` se reemplaza).
+- **Alta del webhook**: `setWebhook { url:'https://api.josecoded.com/api/v1/radar/telegram', secret_token, allowed_updates:['callback_query'] }` la ejecuta el controlador con OK de Jose (producción); en dev, `wrangler dev` + túnel temporal o tests con `Update` fabricados (no hace falta Telegram real).
+- **Entregas fallidas** (R14): `sendMessage` no 2xx → KV `tg:retry:<uuid>` con el payload; reintentos en el sweep (≤ 3); tras el último, evento `error { telegram:true }` en la candidatura; `RadarAlerts` cuenta esos eventos de las últimas 24 h sin `notified` posterior.
+
+### 11.7 Materiales con Workers AI y PDF
+
+- **Fuentes de hechos** (spec §13.4): `packages/radar-core/content/profile.json` (validado con zod; plantilla de 12 campos para Q10), `cv.master.es.md` / `cv.master.en.md` con **ids de sección** (`<!-- id: exp-3catinfo -->` por experiencia, proyecto, formación, habilidad) y `voice.radar.md` (registro formal-cercano derivado de `Comercial/voz.md` por `pnpm radar:sync-voice`, con test de deriva como `pricing`; Q15). `profile.meta.json` (`prebuild`: hash sha256 corto + commit + fecha) es la `profile_version`. El gateway los empaqueta en el build; la web los lee para `/admin/radar/perfil`.
+- **Modelo**: Llama 3.3 70B por AI Gateway (`AI_GATEWAY_ID`, caché y tope de gasto; D22, Q9). Coste orientativo: puntuar ≈ 1,5 k tokens de entrada / 200 de salida ≈ 0,001 $; preparar ≈ 6 k / 2 k ≈ 0,006 $. Respaldo: worker `ai` de Omen (`/ai/chat`) cuando Workers AI devuelva 5xx dos veces seguidas (D22); si tampoco → R7 y el editor manual.
+- **Puntuar** (JSON mode): entrada = oferta (título, empresa, ubicación, modalidad, compensación, descripción ≤ 4 k tokens, requisitos) + perfil (roles, keywords, mínimos, idiomas, exclusiones) + resumen del CV maestro (≤ 600 tokens); salida `{ score: 0..100, reasons: [{ sign:'+'|'-', text ≤ 120, weight: 1..3 }] (3..8), language:'es'|'en'|'other' }`; `temperature 0.1`; score final = `clamp(score + rule_adjust)` con ajustes suaves declarados en `profile.json.weights` (p. ej. `remote:+5`, `hybrid_out_of_zone:-15`). Salida inválida → reintento una vez → `score_status='error'`.
+- **CV adaptado: la IA reordena y selecciona, no redacta experiencia.** Salida JSON `{ order: sectionId[], highlight: { sectionId: bulletId[] }, summary ≤ 500, omit: sectionId[] }`; `materials/cv.ts` **ensambla el Markdown desde el maestro** con ese JSON (texto de cada sección literal del maestro). Solo `summary` es texto libre y pasa el **verificador de hechos**: tecnologías, empleadores, productos, años y cifras que aparezcan en `summary` deben existir en el maestro o en `profile.json` (diccionario extraído del maestro en build); lo que no, va a `unverified_facts` y **bloquea la confirmación** hasta editar o aprobar con la casilla (UX §7.13). `diff_summary` = secciones reordenadas/destacadas/omitidas.
+- **Carta (empleo) / propuesta (freelance)**: texto libre (≤ 220 / ≤ 350 palabras) con `voice.radar.md`, la oferta y los hechos; misma verificación de hechos; la propuesta incluye enfoque, plan en 3 pasos y tarifa **desde `profile.json.rates`** (nunca del modelo). Idioma = `offer.language` si `es|en`, si no el del perfil; sin CV maestro en ese idioma → 400 `radar_missing_profile` (R15).
+- **Formulario y respuestas**: `connector.prepareForm` mapea campos de la plataforma a `profile.json.contact` (teléfono, portfolio, GitHub, LinkedIn), materiales (carta) y adjuntos (CV PDF); preguntas abiertas → `answers` (≤ 600 caracteres cada una, verificadas). Campos no mapeables quedan `mapped:false` al final ("Rellénalo tú").
+- **Versiones**: v1 `ai` (`approved=false`, confirmable si no hay hechos sin verificar); "Guardar" en admin inserta vN+1 `jose` (`approved=true`) por SA con RLS admin; "Regenerar" → `POST /applications/:id/prepare { kinds, instruction }` inserta vN+1 `ai` con `instruction`. Nada se borra.
+- **PDF: Browser Rendering en el gateway; impresión en el navegador como respaldo** (decisión f). `POST /radar/materials/:id/pdf` → Markdown → HTML con `cv.css` (la misma hoja de la previsualización y de `@media print`) → `@cloudflare/puppeteer` sobre el binding `BROWSER` → `page.pdf({ format:'A4', printBackground:true })` → `storage.upload('radar-materials/<application_id>/cv-v<N>.pdf')` (service role) → fila `radar_materials` `format='pdf'` misma versión → URL firmada 1 h. **Gate en la tarea 0 de Radar:** confirmar que Browser Rendering está disponible en la cuenta en plan Free (cuota diaria de minutos de navegador; un CV tarda ≈ 3 s) y que `@cloudflare/puppeteer` cabe en el worker. Si no está o se agota la cuota → 503 `browser_rendering_unavailable` y la UI ofrece `/admin/radar/[id]/cv/print?v=N` (vista con `cv.css` y `window.print()`, UX §7.13). Descartados: PDF en Omen (debe funcionar con Omen apagado) y librerías de PDF en el worker (`@react-pdf/renderer` y similares: tamaño y APIs de Node).
+
+### 11.8 Correo: `MailSource`, filtros, vinculación y cola "por revisar"
+
+```ts
+export interface MailSource {
+  account: 'gmail' | 'proton';
+  list(q: MailQuery, since: Date, max: number): Promise<{ id: string; threadId?: string }[]>;
+  get(id: string): Promise<MailMeta>;                                      // cabeceras + snippet ≤ 500; nunca el cuerpo
+  getBody(id: string): Promise<MailMessage>;                               // SOLO para remitentes de alertas (parseEmail); se descarta tras parsear
+  createDraft(d: { to: string; subject: string; body: string; threadId?: string }): Promise<{ id: string; url: string }>;
+}
+```
+
+Implementaciones: `GmailSource` (gateway, REST con `googleFetch`), `ProtonBridgeSource` (**diferida, Q12**: n8n con nodo IMAP contra Bridge en Omen entrega `MailMeta[]` a `POST /radar/emails/ingest`; en v1 existen la interfaz, el endpoint, el esquema y un test con fixture, no el workflow) y `FixtureMailSource` (dev/CI, `RADAR_MAIL_SOURCE=fixtures`). La clasificación y el vínculo viven en el gateway y son los mismos para las tres.
+
+**Sondeo (cada 30 min):** `q` de Gmail = `newer_than:3d` **y** (`from:(dominio1 OR dominio2 …)` **o** `subject:(…)`), donde los dominios son `radar_platforms.email_domains` de plataformas habilitadas + conectores de correo, `company_domain` de candidaturas abiertas (`sent`…`offer`), y dominios de correos ya vinculados a candidaturas abiertas; los asuntos son `external_id` y títulos de candidaturas abiertas (≤ 25, truncados); más `rfc822msgid:` de hilos vinculados. `messages.list` ≤ 3 páginas de 50; `messages.get?format=metadata&metadataHeaders=From,To,Subject,Date,Message-ID,In-Reply-To,References` → fila en `radar_emails` (`unique (account, message_id)` da la idempotencia; `gmail_last_poll_at − 1 h` como `after:`). **Nunca se lee el buzón entero**; nunca adjuntos; el cuerpo solo para remitentes de alertas (`linkedin-email`, `malt-email`) y no se guarda.
+
+**Vinculación, en orden:** (1) `thread_id`, `In-Reply-To` o `References` coinciden con un correo ya vinculado → misma candidatura; (2) remitente de dominio de plataforma y asunto o extracto contienen el `external_id` o el título normalizado (Jaro-Winkler ≥ 0,9) de una candidatura abierta → esa; (3) dominio del remitente = `company_domain` de **exactamente una** candidatura abierta → esa; (4) **IA** (JSON mode): `{ from, subject, date, excerpt }` + lista de candidaturas abiertas (≤ 40: id, título, empresa, plataforma, estado, `sent_at`) + la candidatura fijada por 1–3 si la hubo → `{ application_id | null, kind: 'rejected'|'contacted'|'interview'|'offer'|'info'|'unrelated', confidence: 0..1, event?: { kind:'interview'|'call', at, durationMin?, url? } }`. Reglas de aplicación: `confidence ≥ 0,8` y `kind ∈ {contacted, interview, offer, rejected}` → vínculo + transición hacia delante (`actor='email'`, reversible) + `radar.email_linked` con `[No era esto]`; `event` → evento **propuesto** (§11.5); `confidence < 0,8` o `application_id = null` → `classification='info'`, `suggested_application_id`, cola "por revisar" (`?correos=revisar`, UX §9.12) + Telegram "¿Qué es?" con `e1…e4`; `unrelated ≥ 0,8` → `unrelated` (se guarda la referencia para no reprocesar; no se muestra); tres `unrelated` del mismo dominio → propuesta de ignorarlo (`email_ignored_domains`, acción en admin). El modelo recibe solo extracto y lista, nunca cuerpos (spec §13.7).
+
+**Vincular a mano** (UX §9.12): `link` fija `classification`, `confidence = 1`, `classified_by='jose'`, `reviewed_by_jose`, aplica la transición con `actor='jose'`; `fetch` obtiene por id o URL de hilo un mensaje que no pasó los filtros (`messages.get` en `metadata`) y crea la fila sin vincular. **Borrar** un correo: SA con RLS admin (`delete`), sin cascada.
+
+**Borrador de seguimiento** (§11.3 diario y botón en el detalle): `drafts.create` con `threadId` del último correo vinculado (si lo hay), `To` = último remitente humano (no `noreply`), asunto `Re: …`, cuerpo por IA (≤ 120 palabras, `voice.radar.md`, verificado) → evento `followup_draft { draftId, url }` y Telegram `radar.followup_due`. **No existe código que llame a `drafts.send` ni `messages.send`**; el `fetchMock` de los tests del gateway falla ante cualquier URL de Gmail que contenga `/send`.
+
+### 11.9 Runtimes, secretos y degradación
+
+| Pieza | Runtime | Secretos (dónde) | Si el runtime está apagado |
+|---|---|---|---|
+| Núcleo: ingesta, dedup, puntuación, preparación, estados, confirmación, envío por conector, cron, Telegram, Google, PDF | **Gateway** `apps/api` | `RADAR_INGEST_TOKEN`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBHOOK_SECRET`, `RADAR_CALLBACK_HMAC_KEY`, `RADAR_KV_KEY`, `GOOGLE_OAUTH_CLIENT_SECRET`, `INFOJOBS_CLIENT_SECRET`, `UPWORK_CLIENT_SECRET`, `N8N_RADAR_WEBHOOK_SECRET` (`wrangler secret`); vars `GOOGLE_OAUTH_CLIENT_ID`, `INFOJOBS_CLIENT_ID`, `UPWORK_CLIENT_ID`, `N8N_RADAR_WEBHOOK_URL`, `RADAR_BATCH_SCORE=8`, `RADAR_BATCH_PREPARE=2`; bindings `RADAR_KV` (tokens OAuth cifrados, `state`, caché, reintentos), `BROWSER`, `AI`, `RADAR_RATE_LIMITER`; crons | No aplica: es la parte siempre disponible. Si Workers AI falla → respaldo Omen → R7 |
+| Bandeja, detalle, plataformas, perfil, calendario | `apps/web` (RSC + SA) | Ninguno de Radar (solo la sesión de Jose y `SERVER_KEY` ya existente) | — |
+| `radar-runner` (LinkedIn, Workana) + workflows n8n `radar-run`, `radar-notion` (opcional), `radar-email-proton` (diferido) | **Omen** | `.env` del compose: `RADAR_API_URL`, `RADAR_INGEST_TOKEN`, `RADAR_RUNNER_TOKEN`; credencial `LINKEDIN_LI_AT` en n8n; (Proton: `PROTON_BRIDGE_PASSWORD`, diferido) | Plataformas de Omen en `waiting_runtime` (R5), alerta y Telegram una vez; **nada más se detiene**: gateway, Mac, correo, calendario y avisos siguen |
+| `/radar-indeed` | **Mac** (launchd) | `~/.config/josecoded/radar.env`: `RADAR_API_URL`, `RADAR_INGEST_TOKEN`; sesión del CLI `claude` | Indeed "Esperando al Mac" (R6); la pasada se ejecuta al despertar; ingestas pendientes se reintentan |
+| Gmail, Calendar, borradores | Gateway ↔ Google | Refresh token cifrado en `RADAR_KV` (§11.5) | `google_status='expired'`: correo y calendario esperan, `RadarAlerts` R8, reautorizar desde admin |
+| Telegram | Gateway ↔ Bot API | `TELEGRAM_BOT_TOKEN` | Reintentos; la bandeja es la fuente (R14) |
+| Supabase | Gateway y web | `SUPABASE_SERVICE_ROLE_KEY` (ya existente) | Todo Radar se detiene (como el resto del admin); `supabase-ping.yml` avisa. Las escrituras diarias de Radar reducen el riesgo de pausa por inactividad |
+
+Reglas: **ningún secreto de Radar toca `apps/web` ni el repo**; el admin muestra nombres y estado (`SecretRef`: el gateway responde `configured: boolean` por nombre en `platforms/health`, nunca valores). Omen y Mac solo conocen `RADAR_INGEST_TOKEN` (alcance: ingesta y `/job`; no puede confirmar, enviar ni leer). Rotación: `RADAR_INGEST_TOKEN` y `TELEGRAM_WEBHOOK_SECRET` se rotan cambiando el secret en el gateway y en Omen/Mac en la misma sesión (dos valores válidos durante 24 h: `RADAR_INGEST_TOKEN_PREV`).
+
+### 11.10 Tests de Radar
+
+**Unidad (`packages/radar-core`, node):**
+- `state-machine.test.ts`: todas las transiciones permitidas de spec §13.3 pasan; las no listadas lanzan `InvalidTransition`; **invariante**: `transition(app, 'sent')` sin `confirmed_by_jose` posterior al último `status_change` lanza `radar_not_confirmed` (con un evento anterior a un `status_change` posterior también lanza); `revert` de un `status_change` por `email` restaura `from_status`, marca `reverted_by` y falla sobre eventos de `jose`.
+- `scoring/rules.test.ts`: fixtures de ofertas × `profile.json` de test → `rule_hits` esperados (`onsite_out_of_zone`, `salary_below_min`, `language_not_covered`, `sector_excluded`, `company_quick_excluded`) y descarte; `rule_adjust` según `weights`.
+- `dedup.test.ts`: mismo `fingerprint` en dos plataformas a ±7 días → `duplicate_of` a la más antigua; a 9 días → no; tildes y puntuación no cuentan.
+- `email/query.test.ts`: el `q` generado contiene todos los dominios y asuntos esperados y no supera 1 500 caracteres.
+- `email/linker.test.ts`: fixtures anonimizadas (§11.10 abajo) → regla que vincula (1–3) o `null` para la IA; la respuesta de la IA simulada con `confidence 0,79` no cambia estado y va a revisión; `0,8` con `kind='rejected'` sobre `sent` cambia a `rejected`; `kind='contacted'` sobre `interview` (hacia atrás) **no** cambia.
+- `telegram/callback.test.ts`: `encode` ≤ 64 bytes para todas las acciones; `verify` rechaza firma alterada, versión distinta y id malformado.
+- `cron.test.ts`: `next('0 7 * * *', now)`, `*/30`, listas; presets de UX §7.14.
+- `materials/cv.test.ts`: ensamblado desde el maestro con un JSON de `order/highlight/omit` → Markdown esperado; el verificador marca "Kotlin, 2019" como no verificado si no está en el maestro y no marca "React Native, 2022" si está.
+- `schemas.test.ts`: `OfferDraft` (200 ofertas máx., `raw` recortado), `profile.json` (plantilla válida; falta un campo obligatorio → error legible).
+
+**Conectores (`packages/radar-connectors`, node):** por conector, `discover` con `fetch` falso que sirve la fixture → `OfferDraft[]` en snapshot (ids, urls limpias, compensación parseada, fechas ISO); `linkedin-email`/`malt-email`: `parseEmail` sobre HTML anonimizado → ofertas; `linkedin`/`workana`: `detectBlock` ante fixture de checkpoint → `blocked` y el runner detiene la pasada sin seguir a la página 2; límites: con `maxOffers 30` nunca devuelve 31 ni pide una cuarta página; pausas: `ctx.sleep` invocado entre peticiones con valores en [3 000, 12 000] ms; `bin/ingest`: JSON inválido → salida 2 sin POST; POST 5xx → reintento y fichero en `pending/`.
+
+**Gateway (`apps/api`, workerd real con `@cloudflare/vitest-pool-workers`; `AI` falso con salidas fijas; `fetchMock` estricto para Google, Telegram, InfoJobs, n8n, Tecnoempleo):**
+- `ingest`: token inválido → 401; plataforma desconocida → 404; en pausa → 409; **mismo payload dos veces** → segunda con `created 0, updated N, replay:false` y la misma `run_key` finalizada → `replay:true`; duplicado entre plataformas → `duplicate_of` y `score_status='duplicate'`; 201 ofertas → 400.
+- `sweep` (`SELF.scheduled({ cron:'*/5 * * * *' })`): puntúa ≤ 8 (IA falsa: 82 → candidatura `discovered`; 40 → sin candidatura), prepara ≤ 2 (materiales v1 + `sendMessage` con teclado de 3 botones y `telegram_msg` guardado), caduca ofertas con `missing_runs ≥ 2`, reintenta Telegram desde KV.
+- `confirm`: asistida → `confirmed_by_jose` + `mode:'assisted'`; con envío propio y `fetchMock` OK → `sent` + `receipt`; con `fetchMock` 500 → sigue `prepared`, evento `error`, `mode:'assisted'`; `unverified_facts` sin `acknowledgeUnverified` → 400; `mark-sent` sin confirmación → 409; `mark-sent` tras confirmar → `sent`/`assisted`; el trigger de Postgres se cubre en la suite de BD (abajo).
+- `telegram`: secreto incorrecto → 401; `from.id` ajeno → 200 sin efecto; firma inválida → 200 sin efecto; `c` válido → confirma y `editMessageText` con el texto de UX; el mismo `callback_query.id` dos veces → una sola confirmación; `p1` → `next_action_at` mañana 08:00 Madrid y evento `snoozed`; `d` + `u` en < 10 min → vuelve a `prepared`; `k` → `events.insert` llamado **una vez y solo aquí**.
+- `google`: `authorize` devuelve URL con `state` en KV; `callback` con `state` desconocido → 400; con `code` válido (fetchMock) → refresh cifrado en KV (el valor en KV no contiene el token en claro), `google_status='ok'`; `googleFetch` con `invalid_grant` → `expired` + alerta; `createCalendarEvent` sin confirmación lanza; ninguna llamada a `/send` en toda la suite (assert global sobre `fetchMock`).
+- `emails/poll` con `FixtureMailSource`: 12 fixtures → 8 vinculadas por regla, 3 a la IA (una `interview 0,92` → estado + evento propuesto; una `0,55` → revisión), 1 `unrelated`; `linkedin-email`: alerta con 5 tarjetas → 5 ofertas ingeridas y el cuerpo no queda en ninguna tabla; segundo `poll` → 0 nuevas (idempotencia por `message_id`).
+- `materials/:id/pdf`: `BROWSER` simulado → fila `pdf` y `storage.upload` con la ruta esperada; sin binding → 503 con `browser_rendering_unavailable`.
+
+**Base de datos (`supabase start`, `apps/web/tests/rls.test.ts` ampliado):** Ana (cliente) y Bob (afiliado) obtienen 0 filas y errores de RLS en las 10 tablas y en `storage.objects` del bucket; Jose lee y escribe; con service role, `update radar_applications set status='sent'` sin `confirmed_by_jose` → error `radar_not_confirmed`; con el evento → pasa y `submitted_at` se rellena; `radar_claim_work('score', 5)` desde `authenticated` → permiso denegado.
+
+**E2E (Playwright, §8.2):** confirmar desde admin (asistida) y marcar enviada; confirmar desde Telegram con webhook simulado (envío propio con recibo); correo → evento propuesto → crear en Google (simulado) y "No era esto"; bandeja con filtros en URL desde un enlace; plataformas: alta con `SecretRef` sin valores y `[ Probar ]` con fixture; perfil: cambiar umbral → toast y `radar_settings`; pausa/reanudar.
+
+**Fixtures reales anonimizadas:** Jose aporta ≥ 12 correos reales (`.eml` o export de Gmail) de: InfoJobs ("candidatura vista", "descartado"), alerta de LinkedIn, mensaje de reclutador de LinkedIn, Tecnoempleo, propuesta de Malt, empresa (invitación a entrevista con enlace de Meet, rechazo, oferta) y 3 ajenos (newsletter, factura, personal). `packages/radar-core/scripts/anonymize-email.ts` sustituye nombres, direcciones, teléfonos, URLs con tokens y firmas por marcadores estables (`Empresa A`, `persona.a@empresa-a.test`), conserva estructura, asunto normalizado y fechas relativas, y escribe `test/fixtures/emails/*.json`; nunca se commitea un `.eml` original (`.gitignore`). Los 3 ajenos deben acabar `unrelated` o sin vínculo: es el test de privacidad.
+
+**Métricas de §13.1** (sin Umami): consultas SQL en el Resumen del admin y en el resumen semanal: ofertas con `score ≥ 60` por semana y plataforma, candidaturas confirmadas por semana (`confirmed_by_jose`), tiempo mediano `prepared → confirmed_by_jose`, correos vinculados automáticamente vs por Jose, envíos sin confirmación (siempre 0: `count(*)` de `sent` sin evento, que el trigger hace imposible), plazos con `reminder_sent`, tasa de respuesta.
+
+### 11.11 Decisiones de este apartado (incluye UX §13.19 a–g)
+
+| # | Decisión | Razón | Descartado |
+|---|---|---|---|
+| a | Perfil en admin **solo lectura + ajustes rápidos** en `radar_settings`; `radar_profile_versions` es una copia automática que hace el gateway al detectar un `profile.json` nuevo | El JSON del repo sigue siendo la verdad (spec §13.4); los ajustes que cambian a diario no exigen commit | Edición completa desde admin escribiendo `radar_profile_versions` |
+| b | Posponer = `next_action_at` + evento **`kind='snoozed'`** (`payload.until`) | Consultable sin mirar `payload`; el sweep lo distingue de notas | `note` + `payload.snoozed_until` |
+| c | `NEXT_PUBLIC_HERO_LIVE_MOBILE` (build-time, `false`) + **tarea de medición** en el plan: Lighthouse móvil 4G sobre la preview con `?hero=live` (solo preview) 5 pasadas; se activa si p75 de LCP ≤ 2,5 s, TBT ≤ 200 ms y CLS ≤ 0,1 con la escena de 5 000 partículas | D16 §12.2 | Activar sin medir |
+| d | Reautorización de Google desde admin: SA → `POST /radar/google/authorize` → redirect → callback en el gateway → vuelta a `/admin/radar/plataformas?google=ok` con toast; token cifrado en KV | Modo prueba caduca cada 7 días (Q11); Jose no debe tocar consola ni terminal | Token en `wrangler secret` (no escribible en runtime) |
+| e | "Correos por revisar" como `?correos=revisar` en `/admin/radar` (RSC lee `searchParams`, hoja cliente) | UX §13.19e; enlazable desde Telegram | Ruta propia |
+| f | PDF con Browser Rendering (binding `BROWSER`) + impresión en navegador como respaldo; gate en la tarea 0 | §11.7 | PDF en Omen; librerías de PDF en el worker |
+| g | Botones de Telegram: Confirmar · Posponer · Descartar + botón `url` "Ver y editar" | UX §7.17; "Editar" es abrir el detalle | Botón "Editar" como callback |
+| h | **Telegram de Radar directo desde el gateway** (Bot API), no vía Edge Function `notify` | Edición de mensajes y callbacks necesitan `message_id`; una sola vía. La Edge Function sigue para `lead.created` (P12) | Todo por `notify` |
+| i | **n8n por webhook directo** (`N8N_RADAR_WEBHOOK_URL` + secreto), como ya hace `admin-chat`; el worker de Omen no cambia | Spec §7 "worker sin cambios"; el patrón existe (P15) | Ampliar la allowlist `n8n.service.ts` del worker |
+| j | `radar_scores` tabla propia con `is_current`; `radar_settings` y `radar_runs` añadidas | Explicar puntuaciones antiguas; ajustes rápidos en Supabase; idempotencia y salud por pasada | Columnas de score en `radar_offers` |
+| k | Perfil, CV maestros y voz en `packages/radar-core/content/` (empaquetados en gateway y web); `content/radar/` de la spec se resuelve a esa ruta | El gateway (Workers) no lee ficheros en runtime; ambos apps necesitan los mismos hechos | Ficheros en `apps/web/content/` (inaccesibles para el gateway) |
+| l | CV adaptado = **JSON de reordenación** sobre el maestro + verificador de hechos; solo `summary`, carta, propuesta y respuestas son texto libre y también se verifican | "No inventar" pasa a ser comprobable (spec §13.7) | Reescritura libre del CV por el modelo |
+| m | Cola = tablas + `radar_claim_work` + cron cada 5 min; lotes 8/2 | Sin Queues en Free (P1); idempotente y observable en admin | Queues (Paid); `waitUntil` largo |
+| n | Proton diferido pero previsto: `MailSource`, `POST /radar/emails/ingest` y fixture existen; el workflow IMAP y Bridge no | Q12 | Implementar Bridge en v1 |
+| o | Fingerprint y deduplicación en TypeScript (sin `unaccent`) | Sin extensiones nuevas en Supabase | Trigger en Postgres |
+| p | Todos los scrapers (LinkedIn, Workana) en Omen, ninguno en el gateway; el gateway solo hace API y feeds | IP residencial y navegador real; Workers no tiene navegador salvo Browser Rendering (reservado al PDF) | Scraping con `fetch` desde Workers |
+
+---
+
+## 12. Preguntas abiertas para Jose
+
+### 12.1 Resueltas el 2026-09-17
 
 | # | Pregunta | Decisión |
 |---|---|---|
@@ -892,15 +1659,25 @@ Sin cambios en el worker. Umami: `.env` del compose (`DATABASE_URL`, `APP_SECRET
 | P5 | Dominio del gateway | Alta de `api.josecoded.com` como custom domain del worker `josecoded-api`. `NEXT_PUBLIC_JOSECODED_API_URL=https://api.josecoded.com`. La URL `workers.dev` sigue respondiendo durante la transición |
 | P6 | Umami `call_booked` y AI Gateway | Aprobados: sexto evento en D11 y Cloudflare AI Gateway delante del generador en D5 |
 
-### Preguntas nuevas tras la verificación (2026-09-17, tarde)
+### 12.2 Tras la verificación (2026-09-17, tarde)
 
 - **P7.** Valor actual de `NEXT_PUBLIC_JOSECODED_API_URL` en producción de josedev (URL `workers.dev` del gateway) para el 301 y la lista CORS de transición.
 - **P8.** Resend: ¿hay cuenta y dominio `josecoded.com` verificado? Si no, el email de respaldo de `lead.created` se omite en v1 (Telegram basta) y solo se rebrandea `EMAIL_FROM`.
 - **P9.** Dos tareas de dashboard de Supabase antes de la rama de auth: plantilla de email OTP con `{{ .Token }}` (código de 6 cifras, UX §5) y activar "Leaked password protection" (advisor).
-- **P10.** El doc de `ux` sigue nombrando `admin_superusers` (§2.3, §7, §8.4) y describe el insert de leads por "RLS anónima" y `leads.status=closed` (§9.1, §9.9): pedir a `ux` que lo alinee con H1, H2 y §6.2 (`staff_members.role='admin'`, gateway `POST /leads`, `estado='cerrado'` + `paid_at`, RPC `admin_close_lead_paid`).
+- **P10.** El doc de `ux` sigue nombrando `admin_superusers` (§2.3, §7, §8.4) y describe el insert de leads por "RLS anónima" y `leads.status=closed` (§9.1, §9.9): pedir a `ux` que lo alinee con H1, H2 y §6.2 (`staff_members.role='admin'`, gateway `POST /leads`, `estado='cerrado'` + `paid_at`, RPC `admin_close_lead_paid`). *(UX v3.1 ya lo corrige.)*
+
+### 12.3 Nuevas en v1.2 (2026-09-19) — máx. 5, con recomendación
+
+| # | Pregunta | Por qué importa | Recomendación |
+|---|---|---|---|
+| **P11** | **Poster del hero en el HTML también en escritorio** (§1.6.2 paso 1): garantiza que la columna nunca esté vacía mientras `three` se descarga, pero hace probable que el LCP en escritorio sea el poster (≤ 60 KB, precargado, ~0,5–0,9 s) y no el `h1`, que es lo que dice literalmente la spec §10. ¿Aceptas "LCP = título **o** poster" con el tope de 1,2 s en escritorio? | Cambia el assert de Lighthouse (§8.5) y una frase de la spec §10 | **Sí**: el objetivo real (Three fuera del camino crítico, LCP < 1,2 s) se cumple y se evita el hueco de 0,5–1 s en la columna |
+| **P12** | **Telegram de Radar directo desde el gateway** (§11.6): el token del bot pasa a vivir en dos sitios (Edge Function `notify` para `lead.created`, gateway para Radar). ¿OK, o prefieres mover también `lead.created` al gateway y dejar la Edge Function solo para email? | Dónde se rota el token; D26 dice "Edge Function para avisos" | **Sí al gateway para Radar** y dejar `lead.created` como está (P3 ya decidido); revisar a los 3 meses si merece unificar |
+| **P13** | **Quitar Lenis y reducir GSAP a núcleo + ScrollTrigger** (§1.2, §1.6.6): la spec §5 aún lista "GSAP + @gsap/react + ScrollTrigger" (compatible) pero la UX v2 tenía Lenis en el panel; con navegación clásica el scroll es nativo. ¿Confirmas sin scroll suave? | −~12 KB gz y menos riesgo en móvil; afecta a la "sensación" que Jose pidió (igloo/lusion) | **Sí**: el wow viene de la escena y las transiciones, no del scroll; se puede reintroducir después sin tocar nada más |
+| **P14** | **Google Cloud y token en KV**: crear el proyecto OAuth con `developerjose12@gmail.com` (cuenta de Cloudflare) o con el Gmail personal que Radar va a leer (Q11)? Y ¿aceptas que el refresh token viva **cifrado en KV** (clave en `wrangler secret`) para poder reautorizar desde admin cada 7 días sin terminal? | Bloquea la rama de correo/calendario; tarea de Jose en consola de Google (~20 min) | Proyecto en la **misma cuenta de Gmail que se lee** (el usuario de prueba y el dueño coinciden; menos fricción en consentimiento); **sí** a KV cifrado |
+| **P15** | **n8n por webhook directo desde el gateway** (`N8N_RADAR_WEBHOOK_URL`, como `admin-chat`) en lugar de ampliar la allowlist `n8n/trigger/*` del worker de Omen: ¿confirmas que la URL de webhooks de n8n que usa `N8N_CHAT_WEBHOOK_URL` es alcanzable desde el gateway (túnel) y sirve para `radar-run`? | Decide si `josecoded-worker` queda de verdad sin cambios y cómo se expone el runner | **Sí, webhook directo**; si la URL de n8n no es pública, alta de un ingress `n8n.josecoded.com` en un túnel nuevo (tarea `infra`, sin tocar el túnel existente) |
 
 ## Anexo — notas para `ESTADO.md`, la nota del vault y el ADR (no aplicadas)
 
-- **Vault (`Proyectos/josecoded.md`)**: decisiones de este documento: admin = `staff_members.role='admin'` (no existe `admin_superusers`); leads públicos solo vía gateway con service role (sin insert anónimo; el admin inserta a mano por política propia); i18n por rewrites sin proxy; `@next/mdx` en build; **sin canvas ni WebGL** (motion GSAP: ScrambleText, Flip, ScrollTrigger; Lenis solo en el panel central de escritorio); Edge Function `notify` como vía primaria del aviso de lead; Cal.com; Umami en túnel propio; afiliados/ampliaciones por Supabase con RLS; migraciones heredadas no se copian (baseline + `apply_migration` por MCP); Vitest 4.1 + pool-workers; RSS en v1.
-- **`ESTADO.md`**: pendientes de Jose: alta `api.josecoded.com`; rotar `WORKER_INTERNAL_TOKEN`, token de Telegram y key de Resend; activar CF Web Analytics; crear widget Turnstile; cuenta Cal.com con webhook; plantilla OTP y leaked-password en Supabase (P9); responder P7–P8; `ux` corrige `admin_superusers` y el flujo de leads (P10). Línea base de advisors anotada (§6.5). Siguiente paso: `ui` (3 direcciones en HTML real) → plan del `arquitecto`.
-- **ADR (codebase-memory, tras el primer commit con código)**: "Leads públicos se crean únicamente desde el gateway con service role; `leads` solo tiene política de INSERT para admin" · "Sin proxy.ts: i18n por rewrites, guards en layouts + SA" · "Sin ISR: contenido público SSG, datos externos y del build en `content/generated/`" · "Triggers heredados de `leads` (cierre crea `clients`, exige `monto`) se conservan; el cierre cobrado va por RPC `admin_close_lead_paid`" · "Historial de migraciones remoto (47 versiones) ≠ ficheros de josedev (28): baseline dump + solo migraciones nuevas, aplicadas con `apply_migration`" · "`affiliate_leads_view` es SECURITY DEFINER a propósito (sin PII para afiliados)".
+- **Vault (`Proyectos/josecoded.md`)**: decisiones de este documento: admin = `staff_members.role='admin'` (no existe `admin_superusers`); leads públicos solo vía gateway con service role; i18n por rewrites sin proxy; `@next/mdx` en build; **WebGL solo en `GlyphScene`** (paquete propio sin React Three Fiber, `three` por `import()` tras el LCP, ≤ 200 KB gz con el bloom como primera renuncia; vídeo/poster/sprites generados desde la misma escena con semilla fija y bucle verificado por PSNR; `IntroFall` en DOM sin GSAP con texto partido desde el servidor; poster en el HTML en todos los viewports, P11); **navegación clásica** (sin Lenis, GSAP solo núcleo + ScrollTrigger, P13); Edge Function `notify` como vía primaria del aviso de lead; Cal.com; Umami en túnel propio; afiliados/ampliaciones por Supabase con RLS; migraciones heredadas no se copian (baseline + `apply_migration` por MCP); Vitest 4.1 + pool-workers; RSS en v1; **Radar**: núcleo en el gateway con cron y cola en tablas (sin Queues), 10 tablas `radar_*` solo admin + trigger `radar_guard_sent`, conectores enchufables con el mismo código en gateway/Omen/Mac, Telegram directo desde el gateway con `callback_data` firmado (P12), Google OAuth en modo prueba con refresh token cifrado en KV y reautorización desde admin (P14), n8n por webhook directo (P15), CV adaptado por reordenación verificable, PDF con Browser Rendering + impresión de respaldo, Proton previsto y diferido.
+- **`ESTADO.md`**: pendientes de Jose: alta `api.josecoded.com`; rotar `WORKER_INTERNAL_TOKEN`, token de Telegram y key de Resend; activar CF Web Analytics; crear widget Turnstile; cuenta Cal.com con webhook; plantilla OTP y leaked-password en Supabase (P9); responder P7–P8 y **P11–P15**; **Radar**: proyecto OAuth de Google (P14), `profile.json` y CV maestros con ids de sección (Q10, Q15), ≥ 12 correos reales para fixtures (§11.10), alertas de LinkedIn al Gmail, alta en InfoJobs/Upwork (Q14), comprobar que el MCP de Indeed funciona en `claude -p` (§11.4); **hero**: nombre a mostrar (UX §18) porque cambia el `h1` y el presupuesto móvil. Siguiente paso: `ui` (sistema visual sobre UX v3.1 y el prototipo) → plan del `arquitecto` con las tareas 0 (OpenNext, hero: medición de bundle y medios; Radar: InfoJobs `submit`, Browser Rendering en Free, MCP de Indeed headless, feed de Tecnoempleo).
+- **ADR (codebase-memory, tras el primer commit con código)**: los de v1.1 más: "Único WebGL de la web: `packages/glyph-scene` (sin R3F), cargado por `import()` tras el LCP; medios de respaldo generados desde la misma escena con semilla fija" · "`IntroFall`: texto partido en el servidor (`FallText`) + gate inline en `<head>`; el cliente solo cambia `style`/`class`/`textContent` de `.ch`" · "Radar: la invariante `sent ⇒ confirmed_by_jose` vive en la máquina de estados TS, en el trigger `private.radar_guard_sent()` y en un test negativo" · "Radar: cola de trabajo en tablas (`radar_claim_work`) + Cron Triggers; sin Queues" · "Radar: Telegram directo desde el gateway; `callback_data` = `1|a|id32|hmac8`" · "Radar: refresh token de Google cifrado (AES-GCM) en `RADAR_KV`, clave en `wrangler secret`" · "Radar: `radar_*` sin ninguna política para `anon` ni para `authenticated` sin rol admin; el gateway escribe con service role" · "Radar: `josecoded-worker` sin cambios; n8n por webhook directo".

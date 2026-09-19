@@ -1,9 +1,13 @@
 /* hero-lab 3 · partículas-glifo (caracteres reales de código) que morfan: código (lluvia Matrix) → móvil → web → IA → código.
    Three.js por ESM. Morph en el vertex shader entre 4 nubes de destino. Morado base, toques verdes. */
 import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const P = { hold: 3.5, morph: 1.6, rot: .18, size: 16, bright: .8, green: 14, rain: .7, scatter: .6, breath: .025, wperiod: 4, wamp: .6 };
+const P = { hold: 3.5, morph: 1.6, rot: .18, size: 16, bright: 1.0, green: 14, rain: .7, scatter: .6, breath: .025, wperiod: 4, wamp: .6, bloom: .3, bloomth: .72, focus: 6.2, mirror: .45 };
 const N = innerWidth < 640 ? 5000 : 9000;
 
 /* ---------- atlas de glifos: 16×8 caracteres de código en JetBrains Mono ---------- */
@@ -32,14 +36,14 @@ function cloudCode(n) {          // columnas: x/z en rejilla, y aleatoria (la ll
 }
 /* Muestreador de dispositivos: lista de formas 2D (en el plano z) con pesos → puntos.
    seg: línea gruesa; rect: contorno; fill: relleno; dot: cúmulo. Coordenadas centradas. */
-function sampleShapes(n, shapes, depth) {
+function sampleShapes(n, shapes, depth, meta) {
   const a = new Float32Array(n * 3);
   const total = shapes.reduce((acc, sh) => acc + sh.w, 0);
   for (let i = 0; i < n; i++) {
     let r = Math.random() * total, sh = shapes[0];
     for (const c of shapes) { if (r < c.w) { sh = c; break; } r -= c.w; }
     let x = 0, y = 0, z = depth / 2 + 0.01;
-    if (sh.t === 'seg') { const u = Math.random(); x = sh.x1 + (sh.x2 - sh.x1) * u + rnd(-sh.th, sh.th); y = sh.y1 + (sh.y2 - sh.y1) * u + rnd(-sh.th, sh.th); }
+    if (sh.t === 'seg') { const u = Math.random(); x = sh.x1 + (sh.x2 - sh.x1) * u + rnd(-sh.th, sh.th); y = sh.y1 + (sh.y2 - sh.y1) * u + rnd(-sh.th, sh.th); if (meta && sh.trace) { meta.kind[i] = 1; meta.param[i] = u; } }
     else if (sh.t === 'rect') { const per = 2 * (sh.w2 + sh.h2), u = Math.random() * per; const px = sh.x, py = sh.y, W = sh.w2, H = sh.h2;
       if (u < W) { x = px - W / 2 + u; y = py + H / 2; } else if (u < W + H) { x = px + W / 2; y = py + H / 2 - (u - W); } else if (u < 2 * W + H) { x = px + W / 2 - (u - W - H); y = py - H / 2; } else { x = px - W / 2; y = py - H / 2 + (u - 2 * W - H); }
       if (sh.side) z = rnd(-depth / 2, depth / 2); }
@@ -134,9 +138,11 @@ function cloudChipBrain(n) {
   const R = 0.78;                                                                        // pistas del cerebro a los bordes
   for (let i = 0; i < 12; i++) { const ang = i * Math.PI / 6 + Math.PI / 12; const ex = Math.cos(ang) * R, ey = Math.sin(ang) * R;
     const tx = Math.abs(Math.cos(ang)) > Math.abs(Math.sin(ang)) ? Math.sign(Math.cos(ang)) * (S / 2 - 0.16) : ex * 1.6, ty = Math.abs(Math.cos(ang)) > Math.abs(Math.sin(ang)) ? ey * 1.6 : Math.sign(Math.sin(ang)) * (S / 2 - 0.16);
-    sh.push({ t: 'seg', x1: ex, y1: ey, x2: tx, y2: ty, th: 0.01, w: 1.3 }); sh.push({ t: 'dot', x: tx, y: ty, r: 0.035, w: 0.5 }); }
+    sh.push({ t: 'seg', x1: ex, y1: ey, x2: tx, y2: ty, th: 0.01, w: 1.6, trace: true }); sh.push({ t: 'dot', x: tx, y: ty, r: 0.035, w: 0.5 }); }
   const nChip = Math.floor(n * 0.42), nBrain = n - nChip;
-  const chip = sampleShapes(nChip, sh, d), brain = cloudBrain(nBrain);
+  const meta = { kind: new Float32Array(n), param: new Float32Array(n) };
+  const chip = sampleShapes(nChip, sh, d, meta), brain = cloudBrain(nBrain);
+  cloudChipBrain.meta = meta;
   const a = new Float32Array(n * 3);
   a.set(chip, 0);
   for (let i = 0; i < nBrain; i++) { a[(nChip + i) * 3] = brain[i * 3] * 0.6; a[(nChip + i) * 3 + 1] = brain[i * 3 + 1] * 0.6 - 0.02; a[(nChip + i) * 3 + 2] = brain[i * 3 + 2] * 0.35 + d / 2 + 0.1; }
@@ -145,11 +151,14 @@ function cloudChipBrain(n) {
 
 /* ---------- escena ---------- */
 const canvas = document.getElementById('three');
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true, powerPreference: 'high-performance' });
-renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5)); renderer.setClearColor(0x05060f, 1);
+const composer = new EffectComposer(renderer);
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 50); camera.position.set(0, 0, 6.2);
 const group = new THREE.Group(); scene.add(group);
+const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.3, 0.3, 0.72);
+composer.addPass(new RenderPass(scene, camera)); composer.addPass(bloom); composer.addPass(new OutputPass());
 
 const geo = new THREE.BufferGeometry();
 const tRain = cloudCode(N), t0 = cloudPhone(N), t1 = cloudWeb(N), t2 = cloudChipBrain(N);
@@ -157,15 +166,17 @@ geo.setAttribute('position', new THREE.BufferAttribute(t0.slice(), 3));
 geo.setAttribute('aRain', new THREE.BufferAttribute(tRain, 3)); geo.setAttribute('aT0', new THREE.BufferAttribute(t0, 3)); geo.setAttribute('aT1', new THREE.BufferAttribute(t1, 3)); geo.setAttribute('aT2', new THREE.BufferAttribute(t2, 3));
 const seed = new Float32Array(N), glyph = new Float32Array(N), col = new Float32Array(N);
 for (let i = 0; i < N; i++) { seed[i] = Math.random(); glyph[i] = Math.floor(Math.random() * CHARS.length); col[i] = Math.random(); }
+geo.setAttribute('aKind', new THREE.BufferAttribute(cloudChipBrain.meta.kind, 1)); geo.setAttribute('aParam', new THREE.BufferAttribute(cloudChipBrain.meta.param, 1));
 geo.setAttribute('aSeed', new THREE.BufferAttribute(seed, 1)); geo.setAttribute('aGlyph', new THREE.BufferAttribute(glyph, 1)); geo.setAttribute('aCol', new THREE.BufferAttribute(col, 1));
 
 const mat = new THREE.ShaderMaterial({
   transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
-  uniforms: { uTime: { value: 0 }, uProg: { value: 0 }, uIntroT: { value: 100 }, uWave: { value: 0 }, uWavePeriod: { value: 4.0 }, uWaveAmp: { value: 0.6 }, uBreath: { value: 0.025 }, uSize: { value: P.size }, uBright: { value: P.bright }, uGreen: { value: P.green / 100 }, uRain: { value: P.rain }, uScatter: { value: P.scatter }, uAtlas: { value: glyphAtlas() }, uDpr: { value: renderer.getPixelRatio() } },
+  uniforms: { uTime: { value: 0 }, uProg: { value: 0 }, uIntroT: { value: 100 }, uWave: { value: 0 }, uWavePeriod: { value: 4.0 }, uWaveAmp: { value: 0.6 }, uBreath: { value: 0.025 }, uMirror: { value: 0 }, uFocus: { value: 6.2 }, uSize: { value: P.size }, uBright: { value: P.bright }, uGreen: { value: P.green / 100 }, uRain: { value: P.rain }, uScatter: { value: P.scatter }, uAtlas: { value: glyphAtlas() }, uDpr: { value: renderer.getPixelRatio() } },
   vertexShader: `
-    attribute vec3 aRain, aT0, aT1, aT2; attribute float aSeed, aGlyph, aCol;
-    uniform float uTime, uProg, uSize, uRain, uScatter, uDpr, uIntroT, uWave, uWavePeriod, uWaveAmp, uBreath;
+    attribute vec3 aRain, aT0, aT1, aT2; attribute float aSeed, aGlyph, aCol, aKind, aParam;
+    uniform float uTime, uProg, uSize, uRain, uScatter, uDpr, uIntroT, uWave, uWavePeriod, uWaveAmp, uBreath, uMirror, uFocus;
     varying float vGlyph, vCol, vSeed, vFade, vAlpha;
+    varying float vSoft;
     float ease(float t){ return t*t*(3.0-2.0*t); }
     void main(){
       float s = floor(uProg); float f = fract(uProg);
@@ -198,22 +209,30 @@ const mat = new THREE.ShaderMaterial({
       vec3 dropP = vec3(p.x + (fract(aSeed * 17.7) - 0.5) * 0.05, yR, p.z);
       float head = (1.0 - landed) * 1.1 + exp(-abs(p.y - yR) * 6.0) * 1.6;   // gota brillante + destello al aterrizar
       p = mix(dropP, p, landed);
-      vAlpha = wAlpha;
+      // pistas del chip: pulso que viaja del cerebro a los pines, al ritmo de la respiración
+      float chipW = (si == 2 ? 1.0 - t : 0.0) + (sj == 2 ? t : 0.0);
+      float tracePulse = aKind > 0.5 ? exp(-abs(fract(uTime / 1.25 + aSeed * 0.15) - aParam) * 9.0) * 1.8 * chipW : 0.0;
+      // reflejo: copia espejada bajo el objeto, atenuada con la profundidad hacia abajo
+      float refl = 1.0;
+      if (uMirror > 0.5) { p.y = -2.9 - p.y; refl = smoothstep(-4.4, -1.6, p.y) * 0.32; }
+      vAlpha = wAlpha * refl;
       vec4 mv = modelViewMatrix * vec4(p, 1.0);
+      // profundidad de campo falsa: lejos del plano focal, más grande y más tenue
+      vSoft = clamp((abs(-mv.z - uFocus) - 0.6) / 3.0, 0.0, 1.0);   // zona nítida de ±0,6 alrededor del foco
       gl_Position = projectionMatrix * mv;
       float depth = -mv.z;
-      gl_PointSize = uSize * uDpr * (5.0 / depth) * (0.75 + 0.5 * fract(aSeed * 5.1));
+      gl_PointSize = uSize * uDpr * (5.0 / depth) * (0.75 + 0.5 * fract(aSeed * 5.1)) * (1.0 + vSoft * 0.9);
       vGlyph = aGlyph; vCol = aCol; vSeed = aSeed;
       // brillo: cabezas de lluvia durante la intro, pulso después
       // compensación de densidad: en código (volumen) cada partícula brilla más; en móvil/web (superficie) menos
       float dA = (si == 2) ? 0.9 : 0.45;
       float dB = (sj == 2) ? 0.9 : 0.45;
       float dens = mix(dA, dB, t);
-      vFade = (0.30 + 0.20 * (sin(uTime * (1.0 + aSeed) + aSeed * 30.0) * 0.5 + 0.5) + head * 1.4 + mid * 0.5) * dens;
+      vFade = (0.30 + 0.20 * (sin(uTime * (1.0 + aSeed) + aSeed * 30.0) * 0.5 + 0.5) + head * 1.4 + mid * 0.5 + tracePulse) * dens;
     }`,
   fragmentShader: `
     uniform sampler2D uAtlas; uniform float uBright, uGreen, uTime;
-    varying float vGlyph, vCol, vSeed, vFade, vAlpha;
+    varying float vGlyph, vCol, vSeed, vFade, vAlpha, vSoft;
     void main(){
       // el glifo cambia de vez en cuando (mutación lenta)
       float g = mod(vGlyph + floor(uTime * (0.4 + vSeed * 0.8) + vSeed * 9.0), 128.0);
@@ -221,17 +240,20 @@ const mat = new THREE.ShaderMaterial({
       // atlas con flipY: v=1 es la parte superior; gl_PointCoord.y crece hacia abajo → glifo derecho
       vec2 uv = vec2((cell.x + gl_PointCoord.x) / 16.0, 1.0 - (cell.y + gl_PointCoord.y) / 8.0);
       float a = texture2D(uAtlas, uv).r;
-      if (a < 0.2) discard;
+      a = mix(a, a * 0.55 + 0.1 * smoothstep(0.5, 0.0, length(gl_PointCoord - 0.5)), vSoft); // desenfocado: glifo difuso
+      if (a < 0.12) discard;
       vec3 purple = vec3(0.65, 0.54, 0.98); vec3 lav = vec3(0.86, 0.80, 1.0); vec3 green = vec3(0.20, 0.83, 0.60);
       vec3 c = mix(purple, lav, vCol * 0.5);
       if (vCol < uGreen) c = green;
-      gl_FragColor = vec4(c * vFade * uBright * vAlpha, a * 0.9 * vAlpha);
+      gl_FragColor = vec4(c * vFade * uBright * vAlpha * (1.0 - vSoft * 0.3), a * 0.9 * vAlpha * (1.0 - vSoft * 0.3));
     }`,
 });
 const points = new THREE.Points(geo, mat); group.add(points);
 const waveMat = mat.clone(); waveMat.uniforms = THREE.UniformsUtils.clone(mat.uniforms); waveMat.uniforms.uAtlas.value = mat.uniforms.uAtlas.value; waveMat.uniforms.uWave.value = 1; waveMat.uniforms.uSize.value = P.size * 0.7;
 const waveGeo = geo.clone(); waveGeo.setDrawRange(0, Math.floor(N * 0.28));
 const waves = new THREE.Points(waveGeo, waveMat); group.add(waves);
+const mirrorMat = mat.clone(); mirrorMat.uniforms = THREE.UniformsUtils.clone(mat.uniforms); mirrorMat.uniforms.uAtlas.value = mat.uniforms.uAtlas.value; mirrorMat.uniforms.uMirror.value = 1;
+const mirror = new THREE.Points(geo, mirrorMat); group.add(mirror);
 
 /* ---------- ciclo de estados ---------- */
 let state = 0, phase = 'hold', pt = 0, prog = 0;
@@ -257,7 +279,7 @@ addEventListener('pointermove', (e) => { tiltX = (e.clientX / innerWidth - .5); 
 /* ---------- bucle ---------- */
 let rightX = 0, rightY = 0, objScale = 1;
 function resize() {
-  const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+  const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); composer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix();
   const r = stage.getBoundingClientRect(); const vh = 2 * camera.position.z * Math.tan(camera.fov * Math.PI / 360), vw = vh * camera.aspect;
   rightX = ((r.left + r.width / 2) / w - 0.5) * vw; rightY = (0.5 - (r.top + r.height / 2) / h) * vh;
   objScale = Math.min(1, (r.height / h) * vh / 4.4, (r.width / w) * vw / 3.6);
@@ -280,9 +302,11 @@ function frame(now) {
   const k = intro.k;  // 0 = lluvia centrada a pantalla completa, 1 = objeto en su columna
   group.position.set(rightX * k, rightY * k, 0); group.scale.setScalar(1 + (objScale - 1) * k);
   mat.uniforms.uIntroT.value = intro.t; waveMat.uniforms.uIntroT.value = intro.t;
-  for (const u of ['uTime', 'uProg', 'uBright', 'uGreen', 'uRain', 'uScatter', 'uBreath', 'uWavePeriod', 'uWaveAmp']) waveMat.uniforms[u].value = mat.uniforms[u].value;
+  for (const u of ['uTime', 'uProg', 'uBright', 'uGreen', 'uRain', 'uScatter', 'uBreath', 'uWavePeriod', 'uWaveAmp', 'uSize', 'uFocus']) { waveMat.uniforms[u].value = u === 'uSize' ? mat.uniforms.uSize.value * 0.7 : mat.uniforms[u].value; mirrorMat.uniforms[u].value = mat.uniforms[u].value; }
+  mirrorMat.uniforms.uIntroT.value = intro.t; mirror.visible = P.mirror > 0; mirrorMat.uniforms.uBright.value = mat.uniforms.uBright.value * P.mirror;
   mat.uniforms.uTime.value = now / 1000;
-  renderer.render(scene, camera);
+  bloom.strength = P.bloom; bloom.threshold = P.bloomth; mat.uniforms.uFocus.value = P.focus;
+  if (P.bloom > 0) composer.render(); else renderer.render(scene, camera);
   frames++; if (now - fpsT > 1000) { fpsEl.textContent = frames; frames = 0; fpsT = now; }
   requestAnimationFrame(frame);
 }

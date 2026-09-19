@@ -40,7 +40,7 @@ h1 { margin: 28px 0 0; font-family: var(--font-title); font-weight: 700; letter-
 .hero__right { position: relative; aspect-ratio: 1 / 1; max-height: 78svh; width: 100%; justify-self: center; cursor: grab; }
 .hero__right:active { cursor: grabbing; }
 #three { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; opacity: 0; transition: opacity 1s var(--ease); pointer-events: none; }
-.hero { position: relative; z-index: 1; }
+.hero { position: relative; z-index: 2; }
 .rain { position: fixed; inset: 0; z-index: 5; pointer-events: none; width: 100%; height: 100%; }
 #three.is-on { opacity: 1; }
 .stateLabel { position: absolute; left: 50%; bottom: 6px; transform: translateX(-50%); display: flex; gap: 14px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--text-3); }
@@ -72,7 +72,7 @@ h1 { margin: 28px 0 0; font-family: var(--font-title); font-weight: 700; letter-
 .btn--primary.is-forming { color: var(--text); }
 
 /* ---------- capas de fondo (detalle mínimo) ---------- */
-.bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.bg { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
 .bg > div { position: absolute; inset: 0; }
 .bg > div[hidden] { display: none; }
 .bg__grain { opacity: calc(var(--grain-op) / 100); mix-blend-mode: overlay;
@@ -83,10 +83,10 @@ h1 { margin: 28px 0 0; font-family: var(--font-title); font-weight: 700; letter-
   background-size: var(--grid-gap) var(--grid-gap); background-position: center;
   mask-image: radial-gradient(circle var(--grid-r) at 74% 46%, #000 0%, transparent 100%);
   -webkit-mask-image: radial-gradient(circle var(--grid-r) at 74% 46%, #000 0%, transparent 100%); }
-.bg__ray { opacity: calc(var(--ray-op) / 100); filter: blur(var(--ray-blur)); transform: scale(1.3);
+.bg__ray { opacity: calc(var(--ray-op) / 100); filter: blur(var(--ray-blur)); transform: scale(1.3); mix-blend-mode: screen;
   background: linear-gradient(var(--ray-a), transparent calc(50% - var(--ray-w) * 1%), rgb(var(--accent-rgb) / .9) 50%, transparent calc(50% + var(--ray-w) * 1%));
   mask-image: linear-gradient(180deg, #000 0%, #000 55%, transparent 100%); -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 55%, transparent 100%); }
-.bg__drift { background: radial-gradient(70% 60% at 74% 46%, rgb(var(--accent-rgb) / .35), transparent 65%);
+.bg__drift { mix-blend-mode: screen; background: radial-gradient(70% 60% at 74% 46%, rgb(var(--accent-rgb) / .35), transparent 65%);
   animation: drift var(--drift-t) ease-in-out infinite; }
 @keyframes drift { 0%, 100% { opacity: 0; } 50% { opacity: calc(var(--drift-amp) / 100); } }
 @media (prefers-reduced-motion: reduce) { .bg__drift { animation: none; } }

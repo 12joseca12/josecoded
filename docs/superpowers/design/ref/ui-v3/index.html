@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>josecoded · UI v3 · referencia (home + admin Radar)</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+<script>
+/* gate inline (≤ 400 B en producción): marca la intro antes del primer paint, solo en la home y una vez por sesión */
+(function () {
+  try {
+    var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var force = /[?&]intro/.test(location.search);
+    var seen = sessionStorage.getItem('intro_seen');
+    var isHome = !location.hash || location.hash === '#home';
+    if (isHome && !reduce && (force || !seen)) { document.documentElement.dataset.intro = 'pending'; sessionStorage.setItem('intro_seen', '1'); }
+    setTimeout(function () { delete document.documentElement.dataset.intro; }, 2500);
+  } catch (e) {}
+})();
+</script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/" } }</script>
+</head>
+<body>
+<a class="skip" href="#contenido">Saltar al contenido</a>
+
+<div class="bg" aria-hidden="true"><div class="bg__ray"></div><div class="bg__grain"></div></div>
+<canvas id="three" aria-hidden="true"></canvas>
+
+<!-- ============================ HOME ============================ -->
+<div class="view is-active" id="view-home" data-view="home">
+<header class="nav" id="nav">
+  <a class="nav__brand" href="#home" data-fall>josecoded</a>
+  <nav aria-label="Principal"><ul class="nav__links" data-fall>
+    <li><a href="#">Empresas</a></li><li><a href="#">Negocios</a></li><li><a href="#">Proyectos</a></li><li><a href="#">Blog</a></li><li><a href="#">Sobre mí</a></li>
+  </ul></nav>
+  <div class="nav__right" data-fall>
+    <button class="nav__lang" type="button" aria-label="Cambiar idioma: English">EN</button>
+    <a class="nav__enter" href="#">Entrar</a>
+    <a class="btn btn--primary btn--sm" href="#">Contacto</a>
+    <button class="nav__menu" type="button" id="menu-open" aria-haspopup="dialog" aria-controls="menu" aria-expanded="false">Menú <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menú" hidden>
+  <div class="menu__top"><span class="nav__brand">josecoded</span><button class="btn btn--ghost btn--md" type="button" id="menu-close">Cerrar</button></div>
+  <ul><li><a href="#">Empresas</a></li><li><a href="#">Negocios</a></li><li><a href="#">Proyectos</a></li><li><a href="#">Blog</a></li><li><a href="#">Sobre mí</a></li></ul>
+  <div class="menu__sep"></div>
+  <a class="btn btn--primary" href="#">Contacto</a>
+  <div class="menu__sec"><a href="#">Chat con el asistente</a><a href="#">Área de clientes</a></div>
+  <div class="menu__foot"><a href="#">Entrar</a><span class="nav__lang" style="display:inline">ES · <span class="dim">EN</span></span></div>
+</div>
+
+<main id="contenido">
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero__left">
+    <a class="badge" href="#" data-fall><span class="dot" aria-hidden="true"></span> Disponible para proyectos <span class="badge__arrow" aria-hidden="true">›</span></a>
+    <h1 id="hero-title" data-fall>Jose Carlos<br>Sánchez</h1>
+    <p class="sub" data-fall>Hago apps y webs que se publican y se usan. Para empresas: desarrollo web, móvil e IA. Para tu negocio: una web con precio cerrado.</p>
+    <div class="ctas" data-fall><a class="btn btn--primary" href="#">Ver proyectos</a><a class="btn btn--link" href="#">Una web para mi negocio <span class="arrow">→</span></a></div>
+  </div>
+  <div class="hero__right" id="stage">
+    <div class="hero-media" id="hero-media" role="img" aria-label="Partículas de código que forman un móvil, una web y un chip de IA"><img id="poster" alt="" width="720" height="720" decoding="async"></div>
+    <div class="cycle is-static" id="cycle" aria-hidden="true"><span class="is-active"></span><span></span><span></span></div>
+  </div>
+</section>
+
+<section class="block block--tight" aria-label="Prueba real">
+  <div class="proof">
+    <a href="#"><span class="eyebrow">apps publicadas</span><strong>3 en App Store y Google Play</strong></a>
+    <div><span class="eyebrow">esta web</span><strong>carga en menos de 1 s</strong></div>
+    <a href="#"><span class="eyebrow">código público</span><strong>14 repos en GitHub</strong></a>
+    <a href="#"><span class="eyebrow">precio cerrado</span><strong>webs para negocios desde 900 €</strong></a>
+    <div><span class="eyebrow">respuesta</span><strong>en menos de 24 h laborables</strong></div>
+  </div>
+</section>
+
+<section class="block" aria-label="Dos vías">
+  <div class="paths">
+    <article class="path panel panel--hover path--companies">
+      <div>
+        <span class="eyebrow">empresas</span>
+        <h3><a href="#">Trabajo con empresas</a></h3>
+        <ul><li>Web (Next.js), móvil (React Native) e IA integrada</li><li>40 €/h o feature cerrada 150 €</li><li>Disponible desde el 15 de octubre</li></ul>
+        <div class="path__links"><span class="path__main">Ver cómo trabajo <span class="arrow">→</span></span><a class="path__sec" href="#">Reservar 20 min</a></div>
+      </div>
+      <div class="mini" aria-hidden="true"><img id="mini-chip-a" alt=""><img id="mini-chip-b" alt=""><span class="mini__ph">chip</span></div>
+    </article>
+    <article class="path panel panel--hover path--business">
+      <div>
+        <span class="eyebrow">negocios</span>
+        <h3><a href="#">Webs para tu negocio</a></h3>
+        <ul><li>4 packs, de 900 a 4.200 €, sin IVA</li><li>De 1 a 3 semanas, precio y plazo cerrados</li><li>Dominio y hosting a tu nombre</li></ul>
+        <div class="path__links"><span class="path__main">Ver packs y precios <span class="arrow">→</span></span><a class="path__sec" href="#">Escribir por WhatsApp</a></div>
+      </div>
+      <div class="mini" aria-hidden="true"><img id="mini-phone-a" alt=""><img id="mini-phone-b" alt=""><span class="mini__ph">móvil</span></div>
+    </article>
+  </div>
+</section>
+
+<section class="block" aria-labelledby="h-proyectos">
+  <div class="block__head"><div><h2 id="h-proyectos" data-reveal>Proyectos</h2><p class="block__lead">Apps y webs con enlace a stores, web o código.</p></div><a class="btn btn--secondary btn--md" href="#">Ver todos</a></div>
+  <div class="projects">
+    <article class="project panel panel--hover">
+      <div class="phone" aria-hidden="true"><div class="phone__screen"><div class="phone__ui"><i class="h"></i><i></i><i class="g"></i><b></b><i></i><i style="width:80%"></i><b></b><i></i><i class="g"></i><b></b></div></div></div>
+      <div><span class="eyebrow project__type">app · publicada</span><h3><a href="#">HazmeFila</a></h3><p>Colas y turnos para comercios. Expo + Supabase; primer commit en junio de 2026.</p>
+        <div class="project__proofs"><span class="tag tag--outline">App Store</span><span class="tag tag--outline">Google Play</span><span class="tag tag--outline">Código</span></div></div>
+    </article>
+    <article class="project panel panel--hover">
+      <div class="phone" aria-hidden="true"><div class="phone__screen"><div class="phone__ui"><i class="h"></i><b></b><i></i><i style="width:60%"></i><b></b><i class="g"></i><i></i><b></b></div></div></div>
+      <div><span class="eyebrow project__type">web · en producción</span><h3><a href="#">Oportunix</a></h3><p>Mystery boxes y subastas. Next.js 16 + Firebase; febrero de 2026.</p>
+        <div class="project__proofs"><span class="tag tag--outline">Web publicada</span><span class="tag tag--outline">Código</span></div></div>
+    </article>
+    <article class="project panel panel--hover">
+      <div class="phone" aria-hidden="true"><div class="phone__screen"><div class="phone__ui"><i class="h"></i><i></i><i></i><b></b><i class="g"></i><i style="width:75%"></i><b></b><i></i><b></b></div></div></div>
+      <div><span class="eyebrow project__type">app · publicada</span><h3><a href="#">3catinfo</a></h3><p>App de noticias multiplataforma con tiempo real, sin conexión y sincronización.</p>
+        <div class="project__proofs"><span class="tag tag--outline">App Store</span><span class="tag tag--outline">Google Play</span></div></div>
+    </article>
+  </div>
+</section>
+
+<section class="block" aria-labelledby="h-build">
+  <h2 id="h-build" data-reveal>Cómo está hecha esta web</h2>
+  <p class="block__lead" style="margin-bottom:28px">Esta web la he hecho yo con las mismas herramientas que uso en los proyectos.</p>
+  <div class="build">
+    <div>
+<pre class="d"><b>navegador</b> ──▶ <b>Cloudflare Workers</b> (Next.js, OpenNext)
+                  │
+                  ├─▶ <b>gateway Hono</b> (<i>api.josecoded.com</i>, 9 rutas)
+                  │       ├─▶ <b>Supabase</b> (Postgres + Auth, 24 tablas, 41 RLS)
+                  │       └─▶ <b>servidor propio</b> (Fastify: IA, n8n, storage)
+                  └─▶ <b>Umami</b> (analítica sin cookies)</pre>
+<pre class="m"><b>navegador</b> ─▶ <b>Workers</b> (Next.js)
+  ├─▶ <b>gateway Hono</b> (9 rutas)
+  │    ├─▶ <b>Supabase</b> (24 tablas)
+  │    └─▶ <b>servidor propio</b> (Fastify)
+  └─▶ <b>Umami</b></pre>
+    </div>
+    <div>
+      <ul class="facts">
+        <li>Next.js 16 en Cloudflare Workers</li><li>Gateway Hono con 9 rutas</li><li>Backend Fastify en servidor propio</li><li>Supabase: 24 tablas, 41 políticas RLS</li>
+        <li>212 tests (Vitest, Playwright)</li><li>Lighthouse 98 · LCP 1,1 s · INP 48 ms, medidos en build</li><li>rama <code>main</code> · commit <code>a1b2c3d</code> · publicado 19 sep 2026</li>
+      </ul>
+      <div class="build__links"><a class="btn btn--link" href="#">Leer cómo está hecha <span class="arrow">→</span></a><a class="btn btn--link" href="#">Código en GitHub <span class="arrow">→</span></a></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" aria-labelledby="h-post">
+  <h2 id="h-post" data-reveal style="margin-bottom:24px">Último artículo</h2>
+  <div class="lastpost">
+    <article class="post panel panel--hover">
+      <div class="post__meta"><time datetime="2026-09-17">17 sep 2026</time><span>·</span><span>8 min</span><span>·</span><span class="tag tag--outline">Next.js</span><span class="tag tag--outline">Cloudflare</span><span class="tag tag--outline">ES · EN</span></div>
+      <h3><a href="#">Cómo está hecha josecoded.com</a></h3>
+      <p>Next.js en Workers con OpenNext, un gateway Hono, Supabase y un servidor propio. Qué decidí, qué medí y qué cambiaría.</p>
+    </article>
+    <a class="btn btn--link" href="#">Ver el blog <span class="arrow">→</span></a>
+  </div>
+</section>
+
+<section class="block" aria-labelledby="h-talk">
+  <div class="talk">
+    <div>
+      <h2 id="h-talk" data-reveal>Hablamos</h2>
+      <div class="talk__ways"><a class="btn btn--secondary" href="#">Escribir por WhatsApp</a><a class="btn btn--secondary" href="#">Reservar 20 min</a></div>
+      <div class="talk__links"><a class="btn btn--link" href="#">Formulario</a><a class="btn btn--link" href="#">Preguntar al asistente</a></div>
+      <p class="talk__note">Respondo en menos de 24 h laborables.</p>
+    </div>
+    <aside class="who panel" aria-label="Quién te responde">
+      <div class="who__portrait" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"><circle cx="12" cy="8.5" r="4"/><path d="M4 20.5c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg></div>
+      <div><h3>Jose Carlos Sánchez</h3><p>Desarrollador full-stack freelance · Alicante, España</p><a href="#">Sobre mí →</a></div>
+    </aside>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="footer__in">
+    <div><h4>Secciones</h4><ul><li><a href="#">Empresas</a></li><li><a href="#">Negocios</a></li><li><a href="#">Proyectos</a></li><li><a href="#">Blog</a></li><li><a href="#">Sobre mí</a></li><li><a href="#">Chat con el asistente</a></li><li><a href="#">Área de clientes</a></li></ul></div>
+    <div><h4>Contacto</h4><ul><li><a href="#">WhatsApp</a></li><li><a href="#">hola@josecoded.com</a></li><li><a href="#">LinkedIn</a></li><li><a href="#">GitHub</a></li><li><a href="#">App Store · Google Play</a></li></ul></div>
+    <div><h4>Legal</h4><ul><li><a href="#">Aviso legal</a></li><li><a href="#">Privacidad</a></li><li><a href="#">Cookies</a></li></ul></div>
+    <div><h4>Esta web</h4><div class="footer__web"><span><b>main</b> · a1b2c3d</span><span>publicado 19 sep 2026</span><span>LCP 1,1 s en móvil</span><span>Next.js en Cloudflare Workers · Supabase · servidor propio</span><a href="#">Código en GitHub →</a><a href="#">Cómo está hecha →</a></div></div>
+  </div>
+  <div class="footer__copy">© Jose Carlos Sánchez · Alicante, España</div>
+</footer>
+</div>
+
+<!-- ============================ ADMIN · RADAR · BANDEJA ============================ -->
+<div class="view" id="view-radar" data-view="radar">
+<div class="admin">
+  <aside class="side" aria-label="Admin">
+    <div class="side__brand">josecoded <span>admin</span></div>
+    <a href="#">Resumen</a>
+    <a href="#">Leads <span class="n">3</span></a>
+    <a href="#radar" aria-current="page">Radar <span class="n hot">4</span></a>
+    <a href="#">Comentarios <span class="n">2</span></a>
+    <a href="#">Clientes</a>
+    <a href="#">Ampliaciones <span class="n">1</span></a>
+    <a href="#">Afiliados</a>
+    <a href="#">Chat <span class="n">1</span></a>
+    <div class="side__user"><span class="avatar">JC</span> Jose · Salir</div>
+  </aside>
+  <main class="main" id="contenido-radar">
+    <div class="admin__top">
+      <div><h1>Radar</h1><p class="admin__meta"><span>Última pasada:</span><b>InfoJobs</b> hace 2 h · <b>Tecnoempleo</b> hace 2 h · <b>LinkedIn</b> hace 3 h · <b>Indeed</b> hace 26 h</p></div>
+      <button class="switch" type="button" role="switch" aria-checked="true" id="pause"><span class="switch__track" aria-hidden="true"></span><span id="pause-label">Radar activo</span></button>
+    </div>
+    <nav class="seg seg--tap subnav" aria-label="Radar"><a href="#radar" aria-current="page">Bandeja <span class="chip__n">4</span></a><a href="#">Calendario</a><a href="#">Plataformas</a><a href="#">Perfil</a></nav>
+    <div class="alerts">
+      <div class="alert alert--red" role="status"><p>LinkedIn detenido: verificación de seguridad a las 07:31. No se resuelve sola.</p><a class="btn btn--outline btn--md" href="#">Ver plataforma</a></div>
+      <div class="alert alert--amber" role="status"><p>3 correos por clasificar.</p><button class="btn btn--outline btn--md" type="button">Revisar</button></div>
+    </div>
+    <div class="counters" role="group" aria-label="Estados">
+      <button class="chip chip--tap" type="button" aria-pressed="true">Pendientes de ti <span class="chip__n">4</span></button>
+      <button class="chip chip--tap" type="button" aria-pressed="false">Descubiertas <span class="chip__n">12</span></button>
+      <button class="chip chip--tap" type="button" aria-pressed="false">Enviadas <span class="chip__n">6</span></button>
+      <button class="chip chip--tap" type="button" aria-pressed="false">En contacto <span class="chip__n">2</span></button>
+      <button class="chip chip--tap" type="button" aria-pressed="false">Entrevistas <span class="chip__n">1</span></button>
+      <button class="chip chip--tap" type="button" aria-pressed="false">Ofertas <span class="chip__n">0</span></button>
+      <button class="chip chip--tap" type="button" aria-pressed="false">Cerradas <span class="chip__n">9</span></button>
+    </div>
+    <div class="filters">
+      <button class="btn btn--outline btn--md filters-m" type="button">Filtros · 2</button>
+      <select class="select select--sm" aria-label="Tipo"><option>Tipo: todo</option><option>Empleo</option><option>Freelance</option></select>
+      <select class="select select--sm" aria-label="Plataforma"><option>Plataforma</option></select>
+      <select class="select select--sm" aria-label="Puntuación"><option>Puntuación ≥ 60</option><option>Todas</option><option>≥ 80</option><option>Bajo umbral</option></select>
+      <select class="select select--sm" aria-label="Descubierta"><option>Descubierta: 7 días</option><option>Hoy</option><option>30 días</option></select>
+      <label class="check"><input type="checkbox"> Con correo nuevo</label>
+      <span class="grow"></span>
+      <input class="input" type="search" placeholder="Buscar título o empresa" aria-label="Buscar">
+      <select class="select select--sm select--order" aria-label="Orden"><option>Orden: puntuación</option><option>Plazo</option><option>Más recientes</option><option>Última actividad</option></select>
+    </div>
+    <div class="inbox">
+      <table class="table">
+        <thead><tr><th scope="col">Punt.</th><th scope="col">Candidatura</th><th scope="col">Oferta</th><th scope="col">Estado · plazo · correo</th><th scope="col"><span class="sr-only">Acciones</span></th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="score score--high"><span class="score__n">82</span><span class="score__t">alto</span></span></td>
+            <td class="title-cell"><a href="#radar-detalle">Senior React Native</a><small>Acme · <span title="19 sep 2026, 06:12">hace 3 h</span></small></td>
+            <td><div class="chips"><span class="tag">InfoJobs</span><span class="tag">Empleo</span><span class="tag">Remoto</span><span class="tag">45–55 k€</span></div></td>
+            <td><div class="state"><span class="tag tag--violet">Preparada</span><span class="signals"><span class="dl dl--amber">Vence en 2 d</span> <span class="mailtag">1 correo nuevo</span></span></div></td>
+            <td><div class="actions"><button class="btn btn--primary btn--sm" type="button" data-confirm aria-label="Confirmar Senior React Native en Acme">Confirmar</button><button class="btn btn--ghost btn--sm" type="button" data-snooze aria-label="Posponer Senior React Native en Acme">Posponer</button><button class="btn btn--ghost btn--sm" type="button" aria-label="Descartar Senior React Native en Acme">Descartar</button></div></td>
+          </tr>
+          <tr>
+            <td><span class="score score--mid"><span class="score__n">79</span><span class="score__t">medio</span></span></td>
+            <td class="title-cell"><a href="#radar-detalle">Full-stack Next.js</a><small>Beta SL · <span title="18 sep 2026, 07:15">ayer</span></small></td>
+            <td><div class="chips"><span class="tag">LinkedIn</span><span class="tag">Empleo</span><span class="tag">Híbrido</span><span class="tag">50 k€</span></div></td>
+            <td><div class="state"><span class="tag tag--violet">Por confirmar</span><span class="signals"><span class="dl">Sin plazo</span></span></div></td>
+            <td><div class="actions"><button class="btn btn--primary btn--sm" type="button" data-confirm aria-label="Confirmar Full-stack Next.js en Beta SL">Confirmar</button><button class="btn btn--ghost btn--sm" type="button" data-snooze aria-label="Posponer Full-stack Next.js en Beta SL">Posponer</button><button class="btn btn--ghost btn--sm" type="button" aria-label="Descartar Full-stack Next.js en Beta SL">Descartar</button></div></td>
+          </tr>
+          <tr>
+            <td><span class="score score--mid"><span class="score__n">74</span><span class="score__t">medio</span></span></td>
+            <td class="title-cell"><a href="#radar-detalle">App Expo para reservas</a><small>cliente particular · <span title="19 sep 2026, 09:12">hace 20 min</span></small></td>
+            <td><div class="chips"><span class="tag">Workana</span><span class="tag">Freelance</span><span class="tag">1.200 € fijo</span></div></td>
+            <td><div class="state"><span class="tag tag--green">Confirmada</span><small>por marcar enviada</small><span class="signals"><span class="dl dl--red">Vence hoy</span></span></div></td>
+            <td><div class="actions"><button class="btn btn--primary btn--sm" type="button" aria-label="Marcar enviada App Expo para reservas">Marcar enviada</button><a class="btn btn--outline btn--sm" href="#radar-detalle" aria-label="Abrir App Expo para reservas">Abrir</a></div></td>
+          </tr>
+          <tr>
+            <td><span class="score score--mid"><span class="score__n">71</span><span class="score__t">medio</span></span></td>
+            <td class="title-cell"><a href="#radar-detalle">Dev móvil</a><small>Gamma · <span title="19 sep 2026, 08:30">hace 1 h</span></small></td>
+            <td><div class="chips"><span class="tag">Tecnoempleo</span><span class="tag">Empleo</span><span class="tag">Sin dato</span></div></td>
+            <td><div class="state"><span class="tag">Enviada</span><small>17 sep</small><span class="signals"><span class="dl">—</span> <span class="mailtag mailtag--review">Por clasificar</span></span></div></td>
+            <td><div class="actions"><button class="btn btn--secondary btn--sm" type="button" aria-label="Clasificar correo de Dev móvil en Gamma">Clasificar</button><a class="btn btn--outline btn--sm" href="#radar-detalle" aria-label="Abrir Dev móvil en Gamma">Abrir</a></div></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="cards">
+        <article class="rcard">
+          <div class="rcard__top"><span class="score score--high"><span class="score__n">82</span><span class="score__t">alto</span></span><span class="mailtag">1 correo nuevo</span></div>
+          <h3><a href="#radar-detalle">Senior React Native</a></h3>
+          <p class="rcard__meta">Acme · InfoJobs · Empleo · Remoto · 45–55 k€</p>
+          <div class="rcard__state"><span class="tag tag--violet">Preparada</span><span class="dl dl--amber">Vence en 2 d</span><span class="dl">hace 3 h</span></div>
+          <div class="rcard__acts"><button class="btn btn--primary" type="button" data-confirm>Confirmar</button><button class="btn btn--outline" type="button" data-snooze>Posponer</button><button class="btn btn--ghost" type="button">Descartar</button></div>
+        </article>
+        <article class="rcard">
+          <div class="rcard__top"><span class="score score--mid"><span class="score__n">79</span><span class="score__t">medio</span></span></div>
+          <h3><a href="#radar-detalle">Full-stack Next.js</a></h3>
+          <p class="rcard__meta">Beta SL · LinkedIn · Empleo · Híbrido Madrid · 50 k€</p>
+          <div class="rcard__state"><span class="tag tag--violet">Por confirmar</span><span class="dl">Sin plazo</span><span class="dl">ayer</span></div>
+          <div class="rcard__acts"><button class="btn btn--primary" type="button" data-confirm>Confirmar</button><button class="btn btn--outline" type="button" data-snooze>Posponer</button><button class="btn btn--ghost" type="button">Descartar</button></div>
+        </article>
+        <article class="rcard">
+          <div class="rcard__top"><span class="score score--mid"><span class="score__n">74</span><span class="score__t">medio</span></span><span class="dl dl--red">Vence hoy</span></div>
+          <h3><a href="#radar-detalle">App Expo para reservas</a></h3>
+          <p class="rcard__meta">cliente particular · Workana · Freelance · 1.200 € fijo</p>
+          <div class="rcard__state"><span class="tag tag--green">Confirmada</span><span class="dim">por marcar enviada</span></div>
+          <div class="rcard__acts"><button class="btn btn--primary" type="button">Marcar enviada</button><a class="btn btn--outline" href="#radar-detalle">Abrir</a></div>
+        </article>
+        <article class="rcard">
+          <div class="rcard__top"><span class="score score--mid"><span class="score__n">71</span><span class="score__t">medio</span></span><span class="mailtag mailtag--review">Por clasificar</span></div>
+          <h3><a href="#radar-detalle">Dev móvil</a></h3>
+          <p class="rcard__meta">Gamma · Tecnoempleo · Empleo · Sin dato</p>
+          <div class="rcard__state"><span class="tag">Enviada</span><span class="dim">17 sep</span></div>
+          <div class="rcard__acts"><button class="btn btn--secondary" type="button">Clasificar</button><a class="btn btn--outline" href="#radar-detalle">Abrir</a></div>
+        </article>
+      </div>
+      <div class="pager"><span>4 de 4 · página 1</span><button class="btn btn--ghost btn--sm" type="button" disabled>Siguiente</button></div>
+    </div>
+  </main>
+  <nav class="bottombar" aria-label="Admin"><a href="#">Leads<span class="n">3</span></a><a href="#radar" aria-current="page">Radar<span class="n">4</span></a><a href="#">Clientes</a><a href="#">Más</a></nav>
+</div>
+</div>
+
+<!-- ============================ ADMIN · RADAR · DETALLE ============================ -->
+<div class="view" id="view-radar-detalle" data-view="radar-detalle">
+<div class="admin">
+  <aside class="side" aria-label="Admin">
+    <div class="side__brand">josecoded <span>admin</span></div>
+    <a href="#">Resumen</a><a href="#">Leads <span class="n">3</span></a><a href="#radar" aria-current="page">Radar <span class="n hot">4</span></a><a href="#">Comentarios <span class="n">2</span></a><a href="#">Clientes</a><a href="#">Ampliaciones <span class="n">1</span></a><a href="#">Afiliados</a><a href="#">Chat <span class="n">1</span></a>
+    <div class="side__user"><span class="avatar">JC</span> Jose · Salir</div>
+  </aside>
+  <main class="main main--detail">
+    <a class="detail__back" href="#radar">← Radar</a>
+    <div class="detail__head">
+      <div>
+        <h1>Senior React Native</h1>
+        <p class="dim">Acme · <span class="tag tag--violet">Preparada</span></p>
+        <div class="chips"><span class="tag">InfoJobs</span><span class="tag">Empleo</span><span class="tag">Remoto</span><span class="tag">45–55 k€</span><span class="tag tag--outline">publicada hace 3 d</span><span class="tag tag--amber">Vence en 2 d</span></div>
+        <p style="margin-top:12px"><a class="btn btn--link" href="#">Ver la oferta en InfoJobs ↗</a></p>
+      </div>
+      <span class="score score--high score--lg"><span class="score__n">82</span><span class="score__t">alto · 82/100</span></span>
+    </div>
+    <div class="detail">
+      <div style="display:grid;gap:16px">
+        <section class="sect panel" aria-labelledby="h-why">
+          <h2 id="h-why">Por qué 82/100 <button class="btn btn--ghost btn--sm" type="button">Repuntuar</button></h2>
+          <ul class="reasons">
+            <li class="plus"><span class="sign">+</span>React Native, 4 años (pide 3)<span class="w">+18</span></li>
+            <li class="plus"><span class="sign">+</span>Remoto<span class="w">+12</span></li>
+            <li class="plus"><span class="sign">+</span>Salario 45–55 k€ sobre el mínimo (45 k€)<span class="w">+8</span></li>
+            <li class="minus"><span class="sign">−</span>Pide inglés C1; perfil B2<span class="w">−10</span></li>
+            <li class="minus"><span class="sign">−</span>Sector banca, no excluido<span class="w">−4</span></li>
+          </ul>
+          <p class="saved">puntuada con perfil v4 · Llama 3.3 70B · 18 sep 07:12</p>
+          <div class="decision__row"><button class="btn btn--outline btn--md" type="button">No me interesa</button><a class="btn btn--link" href="#">Ajustar umbral</a></div>
+        </section>
+        <section class="sect panel offer" aria-labelledby="h-offer">
+          <h2 id="h-offer">Oferta <button class="btn btn--ghost btn--sm" type="button">Ver completa</button></h2>
+          <p class="clamp">Buscamos una persona senior en React Native para liderar la app de banca móvil de Acme (iOS y Android, 400.000 usuarios). Trabajarás con un equipo de 6 personas, TypeScript, Expo, Supabase y una API GraphQL. Remoto desde España, con dos viajes al año a Madrid. Pedimos 3 años de React Native, inglés C1 y experiencia publicando en las stores. Ofrecemos 45–55 k€, 23 días de vacaciones y presupuesto de formación.</p>
+          <div class="chips"><span class="tag tag--outline">React Native</span><span class="tag tag--outline">TypeScript</span><span class="tag tag--outline">Expo</span><span class="tag tag--outline">Supabase</span><span class="tag tag--outline">inglés C1</span></div>
+        </section>
+        <section class="sect panel" aria-labelledby="h-mat">
+          <h2 id="h-mat">Materiales <button class="btn btn--outline btn--sm edit-laptop" type="button">Editar en el portátil</button></h2>
+          <div class="tabs" role="tablist"><button role="tab" aria-selected="false">CV adaptado</button><button role="tab" aria-selected="true">Carta</button><button role="tab" aria-selected="false">Formulario <span class="chip__n">8</span></button><button role="tab" aria-selected="false">Respuestas</button></div>
+          <div class="versionbar"><label class="sr-only" for="ver">Versión</label><select class="select select--sm" id="ver" style="width:auto"><option>v2 · tú · hace 10 min</option><option>v1 · IA · hace 3 h</option></select><button class="btn btn--ghost btn--sm" type="button">Regenerar</button><span class="saved" style="margin-left:auto">⌘S guarda</span></div>
+          <div class="editor">
+            <div class="field"><label for="carta">Carta (Markdown)</label><textarea class="textarea textarea--mono" id="carta" spellcheck="false"># Carta
+
+Hola,
+
+Os escribo por la oferta de **Senior React Native** para la app de banca de **Acme**. Llevo cuatro años publicando apps con React Native y Expo: HazmeFila (colas para comercios, Supabase) y 3catinfo (noticias, 400.000 descargas) están en las stores.
+
+Con **Supabase y GraphQL** he montado backends de producción, y tengo experiencia liderando equipos pequeños. Mi inglés es B2: leo y escribo documentación técnica sin problema.
+
+Un saludo,
+Jose Carlos</textarea></div>
+            <details class="preview-toggle" open><summary>Ver cómo queda ▾</summary>
+              <div class="preview" aria-label="Previsualización">
+                <h4>Carta</h4>
+                <p>Hola,</p>
+                <p>Os escribo por la oferta de <mark class="ref" title="Referencia a la oferta">Senior React Native</mark> para <mark class="ref" title="Referencia a la oferta">la app de banca de Acme</mark>. Llevo cuatro años publicando apps con React Native y Expo: HazmeFila (colas para comercios, Supabase) y 3catinfo (noticias, <mark class="ref ref--bad" title="No consta en el CV maestro">400.000 descargas</mark>) están en las stores.</p>
+                <p>Con <mark class="ref" title="Referencia a la oferta">Supabase y GraphQL</mark> he montado backends de producción, y tengo experiencia liderando equipos pequeños. Mi inglés es B2: leo y escribo documentación técnica sin problema.</p>
+                <p>Un saludo,<br>Jose Carlos</p>
+              </div>
+            </details>
+          </div>
+          <div class="tcheck tcheck--bad" role="status"><span class="dot"></span><span><b>3 referencias concretas a Acme y a la oferta</b> · 1 dato no consta en el CV maestro (“400.000 descargas”): edítalo o apruébalo para poder enviar.</span></div>
+          <label class="check"><input type="checkbox"> Apruebo “400.000 descargas” como hecho que puedo defender</label>
+          <details class="changes"><summary>Qué cambió respecto al CV maestro ▸</summary><p class="dim" style="font-size:13px">Sección “Apps publicadas” subida al primer lugar; “Supabase” destacada en el resumen; “Node/NestJS” resumida en una línea.</p></details>
+          <div class="editor__actions"><button class="btn btn--ghost btn--md" type="button">Copiar</button><button class="btn btn--outline btn--md" type="button">Descargar PDF</button><button class="btn btn--primary btn--md" type="button">Guardar</button></div>
+        </section>
+        <section class="sect panel" aria-labelledby="h-hist">
+          <h2 id="h-hist">Historial</h2>
+          <ul class="timeline">
+            <li><time>19 sep 11:02</time><span>Correo de rrhh@acme.es «Entrevista técnica» · clasificado como Entrevista (0,92) · evento propuesto</span><button class="btn btn--ghost btn--sm" type="button">No era esto</button></li>
+            <li><time>19 sep 09:40</time><span>Carta v2 guardada por Jose</span><span></span></li>
+            <li><time>18 sep 07:15</time><span>Preparada (IA: CV v1, carta v1)</span><span></span></li>
+            <li><time>18 sep 07:12</time><span>Descubierta en InfoJobs · 82/100 · perfil v4</span><span></span></li>
+          </ul>
+        </section>
+      </div>
+      <aside class="detail__aside">
+        <section class="sect panel decision decision--card" aria-labelledby="h-dec">
+          <h2 id="h-dec">Decisión</h2>
+          <p>Al confirmar se enviará por la API de InfoJobs con CV v2 (PDF), carta v2 y formulario (8 campos). No se puede deshacer en la plataforma.</p>
+          <div class="decision__row"><button class="btn btn--primary" type="button" disabled data-tip="1 dato por confirmar en la carta">Confirmar y enviar</button></div>
+          <p class="error"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg> 1 dato por confirmar · sin bloqueos de formulario</p>
+          <div class="decision__row"><button class="btn btn--outline btn--md" type="button" data-snooze>Posponer</button><button class="btn btn--ghost btn--md" type="button">Descartar</button></div>
+          <dl class="kv"><dt>plazo</dt><dd>24 sep <a href="#" class="dim">· editar</a></dd><dt>seguimiento</dt><dd>26 sep <a href="#" class="dim">· editar</a></dd></dl>
+          <button class="btn btn--ghost btn--md" type="button" style="justify-self:start">Preparar borrador de seguimiento</button>
+        </section>
+        <section class="sect panel" aria-labelledby="h-cal">
+          <h2 id="h-cal">Calendario <button class="btn btn--ghost btn--sm" type="button">Nuevo evento</button></h2>
+          <div class="event panel panel--dashed">
+            <div class="event__title"><span>Entrevista técnica</span><span class="tag tag--violet">Propuesto</span></div>
+            <p class="event__meta">jue 25 sep 10:00 · 45 min · Meet · del correo del 19 sep</p>
+            <div class="decision__row"><button class="btn btn--primary btn--md" type="button">Crear en el calendario Radar</button><button class="btn btn--ghost btn--md" type="button">Editar</button><button class="btn btn--ghost btn--md" type="button">Descartar</button></div>
+          </div>
+        </section>
+        <section class="sect panel" aria-labelledby="h-mail">
+          <h2 id="h-mail">Correos (1) <button class="btn btn--ghost btn--sm" type="button">Vincular correo</button></h2>
+          <div class="mail">
+            <div class="mail__top"><span class="tag tag--new">Nuevo</span><span>19 sep</span><span>Gmail</span><span>rrhh@acme.es</span></div>
+            <span class="mail__subject">Entrevista técnica</span>
+            <span class="mail__x">Hola Jose, nos gustaría proponerte una entrevista técnica el jueves 25 a las 10:00 por Meet…</span>
+            <div class="mail__acts"><span class="tag tag--green">Entrevista · 0,92</span><a class="btn btn--link" href="#">Abrir hilo</a><button class="btn btn--ghost btn--sm" type="button">No era esto</button></div>
+          </div>
+        </section>
+        <section class="sect panel" aria-labelledby="h-notes">
+          <h2 id="h-notes">Notas <span class="saved">Guardado 09:14</span></h2>
+          <textarea class="textarea" aria-label="Notas" style="min-height:96px">Preguntar por el equipo de QA y por el calendario de releases.</textarea>
+        </section>
+      </aside>
+    </div>
+    <div class="decbar" aria-label="Decisión">
+      <p>Se enviará por la API de InfoJobs con CV v2, carta v2 y 8 campos. 1 dato por confirmar.</p>
+      <div class="decbar__row"><button class="btn btn--primary" type="button" disabled>Confirmar envío</button><button class="btn btn--outline" type="button" data-snooze>Posponer</button><button class="btn btn--ghost" type="button">Descartar</button></div>
+    </div>
+  </main>
+  <nav class="bottombar" aria-label="Admin"><a href="#">Leads<span class="n">3</span></a><a href="#radar" aria-current="page">Radar<span class="n">4</span></a><a href="#">Clientes</a><a href="#">Más</a></nav>
+</div>
+</div>
+
+<!-- ============================ KIT DE ESTADOS ============================ -->
+<div class="view" id="view-kit" data-view="kit">
+<main class="kit">
+  <div><h2>Color</h2>
+    <div class="swatches">
+      <div class="sw" style="background:var(--bg)"><b>--bg</b>#05060f</div>
+      <div class="sw" style="background:var(--bg-2)"><b>--bg-2</b>#090a15</div>
+      <div class="sw" style="background:var(--surface-1)"><b>--surface-1</b>white 3 %</div>
+      <div class="sw" style="background:var(--surface-3)"><b>--surface-3</b>white 8 %</div>
+      <div class="sw" style="background:var(--popover)"><b>--popover</b>#10111c</div>
+      <div class="sw" style="background:var(--violet);color:var(--text-inverse)"><b>--violet</b>#a78bfa · 7,4:1</div>
+      <div class="sw" style="background:var(--green);color:var(--green-ink)"><b>--green</b>#34d399 · 10,5:1</div>
+      <div class="sw" style="background:var(--amber);color:#241a05"><b>--amber</b>#fbbf24 · 12,1:1</div>
+      <div class="sw" style="background:var(--red);color:var(--red-ink)"><b>--red</b>#f87171 · 7,3:1</div>
+      <div class="sw" style="color:var(--text)"><b>--text</b>17,7:1</div>
+      <div class="sw" style="color:var(--text-2)"><b>--text-2</b>66 % · 7,8:1</div>
+      <div class="sw" style="color:var(--text-3)"><b>--text-3</b>56 % · 5,8:1</div>
+    </div></div>
+  <div><h2>Botones</h2>
+    <span class="kit__label">variantes</span>
+    <div class="kit__row"><button class="btn btn--primary" type="button">Primario</button><button class="btn btn--secondary" type="button">Secundario</button><button class="btn btn--outline" type="button">Outline</button><button class="btn btn--ghost" type="button">Ghost</button><button class="btn btn--destructive" type="button">Destructivo</button><a class="btn btn--link" href="#">Enlace <span class="arrow">→</span></a></div>
+    <span class="kit__label" style="margin-top:16px">estados y tamaños</span>
+    <div class="kit__row"><button class="btn btn--primary" type="button" disabled>Desactivado</button><button class="btn btn--primary is-loading" type="button">Enviando</button><button class="btn btn--secondary is-loading" type="button">Cargando</button><button class="btn btn--primary btn--md" type="button">md · 44</button><button class="btn btn--primary btn--sm" type="button">sm · 38</button><button class="btn btn--outline btn--icon" type="button" aria-label="Copiar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a1 1 0 0 1 1-1h9"/></svg></button></div>
+  </div>
+  <div><h2>Chips, tags y badges de Radar</h2>
+    <div class="kit__row"><button class="chip" type="button" aria-pressed="true">Clínica o consulta</button><button class="chip" type="button" aria-pressed="false">Restaurante o bar</button><button class="chip" type="button" disabled>Desactivado</button><span class="tag">InfoJobs</span><span class="tag tag--violet">Preparada</span><span class="tag tag--green">Enviada</span><span class="tag tag--amber">Pausado</span><span class="tag tag--red">Detenido por error</span><span class="tag tag--outline">Código</span><span class="tag tag--new">Nuevo</span></div>
+    <div class="kit__row" style="margin-top:12px"><span class="score score--high"><span class="score__n">82</span><span class="score__t">alto</span></span><span class="score score--mid"><span class="score__n">74</span><span class="score__t">medio</span></span><span class="score score--low"><span class="score__n">52</span><span class="score__t">bajo</span></span><span class="dl">Vence en 5 d</span><span class="dl dl--amber">Vence en 2 d</span><span class="dl dl--red">Vence hoy</span><span class="dl dl--dead">Caducada</span><span class="dl">Sin plazo</span><span class="mailtag">1 correo nuevo</span><span class="mailtag mailtag--review">Por clasificar</span></div>
+  </div>
+  <div><h2>Formularios</h2>
+    <div class="kit__grid">
+      <div class="field"><label for="k1">Nombre</label><input class="input" id="k1" placeholder="Marta García"></div>
+      <div class="field"><label for="k2">Email</label><input class="input" id="k2" aria-invalid="true" value="marta@"><span class="error">Revisa el email: falta el dominio.</span></div>
+      <div class="field"><label for="k3">Teléfono (opcional)</label><input class="input" id="k3" disabled placeholder="Desactivado"></div>
+      <div class="field"><label for="k4">Qué necesitas</label><select class="select" id="k4"><option>Web</option><option>App</option><option>IA</option></select></div>
+      <div class="field"><span class="label">Código de 6 cifras</span><div class="otp"><input inputmode="numeric" maxlength="1" aria-label="cifra 1" value="4"><input inputmode="numeric" maxlength="1" aria-label="cifra 2" value="8"><input inputmode="numeric" maxlength="1" aria-label="cifra 3"><input inputmode="numeric" maxlength="1" aria-label="cifra 4"><input inputmode="numeric" maxlength="1" aria-label="cifra 5"><input inputmode="numeric" maxlength="1" aria-label="cifra 6"></div><span class="help">Caduca en 10 min.</span></div>
+      <div class="field"><span class="label">Interruptor y casillas</span><button class="switch" type="button" role="switch" aria-checked="true"><span class="switch__track"></span>Radar activo</button><label class="check"><input type="checkbox" checked> He leído la política de privacidad</label><label class="check"><input type="radio" name="p" checked> P2 Pedidos / reservas · actual</label></div>
+    </div>
+  </div>
+  <div><h2>Segmento, tabs, alerta, vacío, carga</h2>
+    <div class="kit__row"><div class="seg" role="tablist"><button role="tab" aria-selected="true">Tengo un negocio</button><button role="tab" aria-selected="false">Somos una empresa</button></div><div class="tabs" role="tablist" style="border:0"><button role="tab" aria-selected="true">Resumen</button><button role="tab" aria-selected="false">Tareas <span class="chip__n">4</span></button><button role="tab" aria-selected="false">Material</button></div></div>
+    <div class="kit__grid" style="margin-top:16px">
+      <div class="alert" role="status"><p>Guardado. Se aplica a las ofertas nuevas; para las activas, Repuntuar.</p></div>
+      <div class="alert alert--red" role="status"><p>No he podido guardar tus datos.</p><button class="btn btn--outline btn--md" type="button">Reintentar</button></div>
+      <div class="empty">Nada que decidir. 12 candidaturas en curso.<br><button class="btn btn--secondary btn--md" type="button">Quitar filtros</button></div>
+      <div style="display:grid;gap:10px"><div class="skeleton" style="height:18px;width:60%"></div><div class="skeleton" style="height:14px"></div><div class="skeleton" style="height:14px;width:80%"></div><div class="skeleton" style="height:44px;border-radius:999px;width:140px"></div></div>
+    </div>
+  </div>
+  <div><h2>PackCard, PriceTag, ProposalCard y burbujas</h2>
+    <div class="kit__grid">
+      <article class="pack panel panel--hover"><span class="eyebrow">P2</span><h3>Pedidos / reservas</h3><p>Web con carta o catálogo, reservas de mesa o citas y gestión básica.</p><div class="price"><small>Desde</small><strong>1.400 €</strong><span class="iva">sin IVA</span></div><span class="pack__term">2 semanas</span><a class="more" href="#">Pedir propuesta con este pack →</a></article>
+      <article class="proposal"><span class="eyebrow">propuesta orientativa</span><h3 style="font-size:20px">P2 Pedidos / reservas</h3><p class="dim" style="font-size:14px">Web con carta, reservas de mesa y gestión de citas.</p><ul><li>Carta con fotos y precios</li><li>Reservas con confirmación por WhatsApp</li><li>Gestión de citas y avisos</li></ul><div class="price"><small>Desde</small><strong>1.400 €</strong><span class="iva">sin IVA</span></div><span class="pack__term">Plazo: 2 semanas</span><p class="note">Orientativo. El precio cerrado va en la propuesta que te mando.</p><ul class="proposal__extras" style="list-style:none;padding:0"><li><span>Que te encuentren en Google, básico (SEO)</span><span class="mono">+250 €</span></li><li><span class="tag tag--outline">Opcional · no incluido</span></li></ul></article>
+      <div style="display:grid;gap:10px"><div class="bubble">Te hago cuatro preguntas y te digo qué web te haría y desde cuánto. Sin compromiso.<br><br>¿Qué tipo de negocio tienes?</div><div class="bubble bubble--me">Clínica dental</div><div class="kit__row"><button class="chip" type="button" aria-pressed="false">Mostrar lo que hago</button><button class="chip" type="button" aria-pressed="true">Reservas o citas</button><button class="chip" type="button" aria-pressed="false">Aparecer en Google</button></div></div>
+    </div>
+  </div>
+</main>
+</div>
+
+<!-- ============================ OVERLAYS ============================ -->
+<div class="overlay" id="confirm" role="dialog" aria-modal="true" aria-labelledby="c-title" aria-describedby="c-body" hidden>
+  <div class="modal">
+    <h2 id="c-title">Confirmar envío</h2>
+    <p class="modal__meta">Senior React Native · Acme · InfoJobs · 82/100 · vence 24 sep</p>
+    <div class="modal__body" id="c-body">
+      <p>Al confirmar se enviará por la API de InfoJobs con:</p>
+      <ul><li>CV adaptado v2 (tú, hace 10 min) → PDF</li><li>Carta v2 (tú)</li><li>Formulario: 8 campos, 0 sin valor</li></ul>
+      <p><strong>No se puede deshacer en la plataforma.</strong></p>
+      <p class="tcheck"><span class="dot"></span><span>Visto hace 10 min · 3 referencias a Acme · sin bloqueos</span></p>
+      <a class="btn btn--link" href="#radar-detalle">Ver el material antes</a>
+    </div>
+    <div class="modal__actions"><button class="btn btn--ghost btn--md" type="button" data-close>Cancelar</button><button class="btn btn--primary btn--md" type="button" id="confirm-send">Confirmar y enviar</button></div>
+  </div>
+</div>
+<div class="sheet" id="snooze" role="dialog" aria-modal="true" aria-labelledby="s-title" hidden>
+  <div class="sheet__grip" aria-hidden="true"></div>
+  <h2 id="s-title">¿Hasta cuándo?</h2>
+  <div class="kit__row"><button class="chip chip--tap" type="button" aria-pressed="true">Mañana 08:00</button><button class="chip chip--tap" type="button" aria-pressed="false">3 días</button><button class="chip chip--tap" type="button" aria-pressed="false">Lunes</button><button class="chip chip--tap" type="button" aria-pressed="false">Fecha…</button></div>
+  <p class="alert alert--amber" style="margin-top:14px"><span>La oferta vence el 24 sep. Un lunes ya sería tarde.</span></p>
+  <div class="modal__actions"><button class="btn btn--ghost btn--md" type="button" data-close>Cancelar</button><button class="btn btn--primary btn--md" type="button" data-close data-toast="Pospuesta hasta mañana 08:00.">Posponer</button></div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden><span id="toast-text"></span><button class="btn btn--ghost btn--sm" type="button" id="toast-undo">Deshacer</button></div>
+
+<div class="refswitch" role="group" aria-label="Vista de la referencia (solo en este fichero)">
+  <button type="button" data-go="home" aria-current="true">home</button><button type="button" data-go="radar">radar</button><button type="button" data-go="radar-detalle">detalle</button><button type="button" data-go="kit">kit</button>
+</div>
+
+<script src="ui.js"></script>
+<script type="module">
+/* GlyphScene · copia funcional de ref/hero-lab-3/app.js sin panel de ajustes, con: API window.__scene, stills para los PathPanel,
+   poster generado en móvil (stand-in del AVIF de producción) y pausa fuera de viewport. En producción vive en packages/glyph-scene (diseño técnico §1.6.2). */
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const mobile = matchMedia('(max-width: 899px)').matches;
+const liveMobile = /[?&]live/.test(location.search);            // stand-in de HERO_LIVE_MOBILE
+const P = { hold: 3.5, morph: 1.6, rot: .18, size: 16, bright: 1.0, green: 14, rain: .7, scatter: .6, breath: .025, wperiod: 4, wamp: .6, bloom: .3, bloomth: .72, focus: 6.2, mirror: .45 };
+const N = mobile ? 5000 : 9000;
+const CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789{}[]()<>=;:.,/*+-_$#@!?&|\\\'"`~^%'.slice(0, 128);
+await document.fonts.load('600 46px "JetBrains Mono"').catch(() => {});
+function glyphAtlas() {
+  const cols = 16, rows = 8, cell = 64; const c = document.createElement('canvas'); c.width = cols * cell; c.height = rows * cell;
+  const x = c.getContext('2d'); x.font = `600 ${cell * 0.72}px "JetBrains Mono", ui-monospace, monospace`; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillStyle = '#fff';
+  for (let i = 0; i < CHARS.length; i++) x.fillText(CHARS[i], (i % cols) * cell + cell / 2, Math.floor(i / cols) * cell + cell / 2 + 2);
+  const t = new THREE.CanvasTexture(c); t.minFilter = THREE.LinearMipmapLinearFilter; t.generateMipmaps = true; return t;
+}
+let s = 1; const rnd01 = () => { s = (s + 0x6D2B79F5) | 0; let t = Math.imul(s ^ (s >>> 15), 1 | s); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };  // mulberry32, semilla 1
+const rnd = (a, b) => a + rnd01() * (b - a);
+function cloudCode(n) { const a = new Float32Array(n * 3), cols = 34, depth = 7; for (let i = 0; i < n; i++) { const c = i % cols, d = Math.floor(i / cols) % depth; a[i * 3] = (c / (cols - 1) - .5) * 3.4 + rnd(-.03, .03); a[i * 3 + 1] = rnd(-1.9, 1.9); a[i * 3 + 2] = (d / (depth - 1) - .5) * 1.6 + rnd(-.05, .05); } return a; }
+function sampleShapes(n, shapes, depth, meta) {
+  const a = new Float32Array(n * 3); const total = shapes.reduce((acc, sh) => acc + sh.w, 0);
+  for (let i = 0; i < n; i++) {
+    let r = rnd01() * total, sh = shapes[0]; for (const c of shapes) { if (r < c.w) { sh = c; break; } r -= c.w; }
+    let x = 0, y = 0, z = depth / 2 + 0.01;
+    if (sh.t === 'seg') { const u = rnd01(); x = sh.x1 + (sh.x2 - sh.x1) * u + rnd(-sh.th, sh.th); y = sh.y1 + (sh.y2 - sh.y1) * u + rnd(-sh.th, sh.th); if (meta && sh.trace) { meta.kind[i] = 1; meta.param[i] = u; } }
+    else if (sh.t === 'rect') { const per = 2 * (sh.w2 + sh.h2), u = rnd01() * per; const px = sh.x, py = sh.y, W = sh.w2, H = sh.h2;
+      if (u < W) { x = px - W / 2 + u; y = py + H / 2; } else if (u < W + H) { x = px + W / 2; y = py + H / 2 - (u - W); } else if (u < 2 * W + H) { x = px + W / 2 - (u - W - H); y = py - H / 2; } else { x = px - W / 2; y = py - H / 2 + (u - 2 * W - H); }
+      if (sh.side) z = rnd(-depth / 2, depth / 2); }
+    else if (sh.t === 'fill') { x = sh.x + rnd(-sh.w2 / 2, sh.w2 / 2); y = sh.y + rnd(-sh.h2 / 2, sh.h2 / 2); if (sh.back) z = -depth / 2 - 0.01; }
+    else if (sh.t === 'dot') { const ang = rnd01() * 6.283, rr = Math.sqrt(rnd01()) * sh.r; x = sh.x + Math.cos(ang) * rr; y = sh.y + Math.sin(ang) * rr; }
+    a[i * 3] = x; a[i * 3 + 1] = y; a[i * 3 + 2] = z;
+  }
+  return a;
+}
+function cloudPhone(n) {
+  const W = 1.3, H = 2.6, d = 0.14, sh = [];
+  sh.push({ t: 'rect', x: 0, y: 0, w2: W, h2: H, w: 16, side: true }); sh.push({ t: 'rect', x: 0, y: 0, w2: W - 0.12, h2: H - 0.12, w: 8 }); sh.push({ t: 'fill', x: 0, y: 0, w2: W - 0.16, h2: H - 0.16, w: 10 }); sh.push({ t: 'fill', x: 0, y: 0, w2: W, h2: H, w: 5, back: true });
+  sh.push({ t: 'seg', x1: -0.16, y1: H / 2 - 0.13, x2: 0.16, y2: H / 2 - 0.13, th: 0.02, w: 5 }); sh.push({ t: 'seg', x1: -W / 2 + 0.14, y1: H / 2 - 0.3, x2: -W / 2 + 0.38, y2: H / 2 - 0.3, th: 0.012, w: 2 }); sh.push({ t: 'seg', x1: W / 2 - 0.36, y1: H / 2 - 0.3, x2: W / 2 - 0.14, y2: H / 2 - 0.3, th: 0.012, w: 2 });
+  for (let r = 0; r < 5; r++) for (let c = 0; c < 4; c++) sh.push({ t: 'dot', x: -W / 2 + 0.26 + c * 0.26, y: H / 2 - 0.62 - r * 0.3, r: 0.075, w: 1.3 });
+  sh.push({ t: 'seg', x1: -W / 2 + 0.16, y1: -H / 2 + 0.36, x2: W / 2 - 0.16, y2: -H / 2 + 0.36, th: 0.01, w: 2 });
+  for (let c = 0; c < 4; c++) sh.push({ t: 'dot', x: -W / 2 + 0.26 + c * 0.26, y: -H / 2 + 0.2, r: 0.08, w: 1.5 });
+  sh.push({ t: 'seg', x1: -0.22, y1: -H / 2 + 0.06, x2: 0.22, y2: -H / 2 + 0.06, th: 0.008, w: 1.5 });
+  return sampleShapes(n, sh, d);
+}
+function cloudWeb(n) {
+  const W = 3.2, H = 2.1, d = 0.08, sh = [], top = H / 2;
+  sh.push({ t: 'rect', x: 0, y: 0, w2: W, h2: H, w: 14, side: true }); sh.push({ t: 'fill', x: 0, y: 0, w2: W, h2: H, w: 6, back: true }); sh.push({ t: 'seg', x1: -W / 2, y1: top - 0.26, x2: W / 2, y2: top - 0.26, th: 0.008, w: 4 });
+  for (let c = 0; c < 3; c++) sh.push({ t: 'dot', x: -W / 2 + 0.14 + c * 0.11, y: top - 0.13, r: 0.03, w: 1.2 });
+  sh.push({ t: 'rect', x: 0.15, y: top - 0.13, w2: 1.6, h2: 0.12, w: 5 }); sh.push({ t: 'seg', x1: -W / 2 + 0.2, y1: top - 0.5, x2: -W / 2 + 0.6, y2: top - 0.5, th: 0.012, w: 2 });
+  for (let c = 0; c < 4; c++) sh.push({ t: 'seg', x1: W / 2 - 1.5 + c * 0.34, y1: top - 0.5, x2: W / 2 - 1.3 + c * 0.34, y2: top - 0.5, th: 0.01, w: 1 });
+  sh.push({ t: 'seg', x1: -W / 2 + 0.2, y1: top - 0.85, x2: -W / 2 + 1.5, y2: top - 0.85, th: 0.035, w: 5 }); sh.push({ t: 'seg', x1: -W / 2 + 0.2, y1: top - 1.02, x2: -W / 2 + 1.1, y2: top - 1.02, th: 0.035, w: 4 });
+  sh.push({ t: 'seg', x1: -W / 2 + 0.2, y1: top - 1.22, x2: -W / 2 + 1.4, y2: top - 1.22, th: 0.01, w: 2 }); sh.push({ t: 'seg', x1: -W / 2 + 0.2, y1: top - 1.32, x2: -W / 2 + 1.2, y2: top - 1.32, th: 0.01, w: 2 });
+  sh.push({ t: 'rect', x: -W / 2 + 0.42, y: top - 1.55, w2: 0.44, h2: 0.14, w: 3 }); sh.push({ t: 'rect', x: W / 2 - 0.85, y: top - 1.05, w2: 1.2, h2: 0.8, w: 7 }); sh.push({ t: 'fill', x: W / 2 - 0.85, y: top - 1.05, w2: 1.2, h2: 0.8, w: 3 });
+  for (let c = 0; c < 3; c++) sh.push({ t: 'rect', x: -W / 2 + 0.55 + c * 1.05, y: -H / 2 + 0.22, w2: 0.9, h2: 0.26, w: 3 });
+  return sampleShapes(n, sh, d);
+}
+function cloudBrain(n) {
+  const surf = (u, v) => { const cu = Math.cos(u), su = Math.sin(u), cv = Math.cos(v), sv = Math.sin(v); const fold = 1 + 0.045 * Math.sin(7 * u + 2 * v) * Math.cos(5 * v) + 0.03 * Math.sin(11 * v + 3 * u);
+    let x = 1.25 * cu * cv * fold + 0.05, y = 0.95 * sv * fold + 0.12, z = 0.85 * su * cv * fold; if (y < -0.42) y = -0.42 + (y + 0.42) * 0.25; if (y > 0.5 && Math.abs(z) < 0.12) y -= 0.09 * (1 - Math.abs(z) / 0.12); return [x, y, z]; };
+  const pts = [];
+  for (let i = 0; i < 900; i++) { const u = rnd01() * 6.283, v = Math.asin(rnd01() * 2 - 1); pts.push(surf(u, v)); }
+  for (let i = 0; i < 160; i++) { const u = rnd01() * 6.283, v = Math.asin(rnd01() * 2 - 1); const cu = Math.cos(u), su = Math.sin(u), cv = Math.cos(v), sv = Math.sin(v); pts.push([-0.78 + 0.46 * cu * cv, -0.58 + 0.3 * sv, 0.38 * su * cv]); }
+  for (let i = 0; i < 40; i++) pts.push([-0.28 + rnd(-0.1, 0.1), -0.62 - rnd01() * 0.42, rnd(-0.1, 0.1)]);
+  const nodes = []; for (const p of pts) { if (nodes.length >= 120) break; if (nodes.every((q) => Math.hypot(p[0] - q[0], p[1] - q[1], p[2] - q[2]) > 0.24)) nodes.push(p); }
+  const edges = []; for (let k = 0; k < nodes.length; k++) for (let j = k + 1; j < nodes.length; j++) { const d = Math.hypot(nodes[k][0] - nodes[j][0], nodes[k][1] - nodes[j][1], nodes[k][2] - nodes[j][2]); if (d < 0.46) edges.push([k, j]); }
+  const a = new Float32Array(n * 3);
+  for (let i = 0; i < n; i++) { if (rnd01() < 0.32) { const nd = nodes[i % nodes.length]; a[i * 3] = nd[0] + rnd(-.05, .05); a[i * 3 + 1] = nd[1] + rnd(-.05, .05); a[i * 3 + 2] = nd[2] + rnd(-.05, .05); } else { const e = edges[i % edges.length], t = rnd01(); const A = nodes[e[0]], B = nodes[e[1]]; a[i * 3] = A[0] + (B[0] - A[0]) * t; a[i * 3 + 1] = A[1] + (B[1] - A[1]) * t; a[i * 3 + 2] = A[2] + (B[2] - A[2]) * t; } }
+  return a;
+}
+function cloudChipBrain(n) {
+  const S = 2.5, d = 0.12, sh = [], pinsPerSide = 9;
+  sh.push({ t: 'rect', x: 0, y: 0, w2: S, h2: S, w: 16, side: true }); sh.push({ t: 'rect', x: 0, y: 0, w2: S - 0.22, h2: S - 0.22, w: 6 }); sh.push({ t: 'fill', x: 0, y: 0, w2: S, h2: S, w: 5, back: true });
+  for (let i = 0; i < pinsPerSide; i++) { const o = -S / 2 + 0.25 + i * ((S - 0.5) / (pinsPerSide - 1));
+    sh.push({ t: 'seg', x1: o, y1: S / 2, x2: o, y2: S / 2 + 0.22, th: 0.02, w: 1.2 }); sh.push({ t: 'seg', x1: o, y1: -S / 2, x2: o, y2: -S / 2 - 0.22, th: 0.02, w: 1.2 }); sh.push({ t: 'seg', x1: S / 2, y1: o, x2: S / 2 + 0.22, y2: o, th: 0.02, w: 1.2 }); sh.push({ t: 'seg', x1: -S / 2, y1: o, x2: -S / 2 - 0.22, y2: o, th: 0.02, w: 1.2 }); }
+  for (let i = 0; i < 4; i++) { const sx = i % 2 ? 1 : -1, sy = i < 2 ? 1 : -1; sh.push({ t: 'seg', x1: sx * (S / 2 - 0.2), y1: sy * (S / 2 - 0.34), x2: sx * (S / 2 - 0.2), y2: sy * (S / 2 - 0.2), th: 0.012, w: 0.6 }); sh.push({ t: 'seg', x1: sx * (S / 2 - 0.34), y1: sy * (S / 2 - 0.2), x2: sx * (S / 2 - 0.2), y2: sy * (S / 2 - 0.2), th: 0.012, w: 0.6 }); }
+  const R = 0.78;
+  for (let i = 0; i < 12; i++) { const ang = i * Math.PI / 6 + Math.PI / 12; const ex = Math.cos(ang) * R, ey = Math.sin(ang) * R;
+    const tx = Math.abs(Math.cos(ang)) > Math.abs(Math.sin(ang)) ? Math.sign(Math.cos(ang)) * (S / 2 - 0.16) : ex * 1.6, ty = Math.abs(Math.cos(ang)) > Math.abs(Math.sin(ang)) ? ey * 1.6 : Math.sign(Math.sin(ang)) * (S / 2 - 0.16);
+    sh.push({ t: 'seg', x1: ex, y1: ey, x2: tx, y2: ty, th: 0.01, w: 1.6, trace: true }); sh.push({ t: 'dot', x: tx, y: ty, r: 0.035, w: 0.5 }); }
+  const nChip = Math.floor(n * 0.42), nBrain = n - nChip; const meta = { kind: new Float32Array(n), param: new Float32Array(n) };
+  const chip = sampleShapes(nChip, sh, d, meta), brain = cloudBrain(nBrain); cloudChipBrain.meta = meta;
+  const a = new Float32Array(n * 3); a.set(chip, 0);
+  for (let i = 0; i < nBrain; i++) { a[(nChip + i) * 3] = brain[i * 3] * 0.6; a[(nChip + i) * 3 + 1] = brain[i * 3 + 1] * 0.6 - 0.02; a[(nChip + i) * 3 + 2] = brain[i * 3 + 2] * 0.35 + d / 2 + 0.1; }
+  return a;
+}
+
+/* ---------- escena ---------- */
+const canvas = document.getElementById('three');
+const stage = document.getElementById('stage'), media = document.getElementById('hero-media'), poster = document.getElementById('poster');
+let renderer = null;
+const hasGL = (() => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) { return false; } })();   // HeroSceneGate: sin WebGL no se instancia el renderer (y no hay avisos en consola)
+if (hasGL) { try { renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: 'high-performance' }); } catch (e) { renderer = null; } }
+if (!renderer) { poster.remove(); media.style.background = 'radial-gradient(50% 50% at 50% 50%, rgb(167 139 250 / .18), transparent 70%)'; window.__scene = { ready: true, playIntro() {}, skipIntro() {}, mode: 'poster' }; window.dispatchEvent(new Event('scene:ready')); }
+if (renderer) {
+renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5)); renderer.setClearColor(0x05060f, 1);
+const composer = new EffectComposer(renderer); const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 50); camera.position.set(0, 0, 6.2);
+const group = new THREE.Group(); scene.add(group);
+const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), P.bloom, 0.3, P.bloomth);
+composer.addPass(new RenderPass(scene, camera)); composer.addPass(bloom); composer.addPass(new OutputPass());
+const geo = new THREE.BufferGeometry();
+const tRain = cloudCode(N), t0 = cloudPhone(N), t1 = cloudWeb(N), t2 = cloudChipBrain(N);
+geo.setAttribute('position', new THREE.BufferAttribute(t0.slice(), 3));
+geo.setAttribute('aRain', new THREE.BufferAttribute(tRain, 3)); geo.setAttribute('aT0', new THREE.BufferAttribute(t0, 3)); geo.setAttribute('aT1', new THREE.BufferAttribute(t1, 3)); geo.setAttribute('aT2', new THREE.BufferAttribute(t2, 3));
+const seed = new Float32Array(N), glyph = new Float32Array(N), col = new Float32Array(N);
+for (let i = 0; i < N; i++) { seed[i] = rnd01(); glyph[i] = Math.floor(rnd01() * CHARS.length); col[i] = rnd01(); }
+geo.setAttribute('aKind', new THREE.BufferAttribute(cloudChipBrain.meta.kind, 1)); geo.setAttribute('aParam', new THREE.BufferAttribute(cloudChipBrain.meta.param, 1));
+geo.setAttribute('aSeed', new THREE.BufferAttribute(seed, 1)); geo.setAttribute('aGlyph', new THREE.BufferAttribute(glyph, 1)); geo.setAttribute('aCol', new THREE.BufferAttribute(col, 1));
+const vertexShader = `
+    attribute vec3 aRain, aT0, aT1, aT2; attribute float aSeed, aGlyph, aCol, aKind, aParam;
+    uniform float uTime, uProg, uSize, uRain, uScatter, uDpr, uIntroT, uWave, uWavePeriod, uWaveAmp, uBreath, uMirror, uFocus;
+    varying float vGlyph, vCol, vSeed, vFade, vAlpha; varying float vSoft;
+    float ease(float t){ return t*t*(3.0-2.0*t); }
+    void main(){
+      float s = floor(uProg); float f = fract(uProg); int si = int(mod(s, 3.0)); int sj = int(mod(s + 1.0, 3.0));
+      vec3 A = si==0?aT0:si==1?aT1:aT2; vec3 B = sj==0?aT0:sj==1?aT1:aT2;
+      float t = clamp((f - aSeed * 0.25) / 0.75, 0.0, 1.0); t = ease(t); vec3 p = mix(A, B, t);
+      float mid = sin(t * 3.14159); vec3 n = vec3(fract(aSeed*13.7)-.5, fract(aSeed*29.3)-.5, fract(aSeed*41.9)-.5) * 2.0;
+      p += n * mid * uScatter * (0.4 + 0.6 * fract(aSeed * 3.3));
+      p *= 1.0 + uBreath * sin(uTime * 1.25 + aSeed * 0.3);
+      float wAlpha = 1.0;
+      if (uWave > 0.5) { float wi = floor(aSeed * 3.0); float ph = fract(uTime / uWavePeriod + wi / 3.0); p *= 1.0 + uWaveAmp * ph * ph; wAlpha = pow(1.0 - ph, 1.6) * smoothstep(0.0, 0.08, ph) * 0.55 * smoothstep(1.3, 2.3, uIntroT); }
+      float startY = 2.8 + fract(aSeed * 9.1) * 2.6; float landT = 0.4 + fract(aSeed * 7.13) * 0.8; float speedI = (startY - p.y) / landT; float yR = startY - uIntroT * speedI;
+      float landed = smoothstep(0.0, 0.5, p.y - yR); vec3 dropP = vec3(p.x + (fract(aSeed * 17.7) - 0.5) * 0.05, yR, p.z);
+      float head = (1.0 - landed) * 1.1 + exp(-abs(p.y - yR) * 6.0) * 1.6; p = mix(dropP, p, landed);
+      float chipW = (si == 2 ? 1.0 - t : 0.0) + (sj == 2 ? t : 0.0);
+      float tracePulse = aKind > 0.5 ? exp(-abs(fract(uTime / 1.25 + aSeed * 0.15) - aParam) * 9.0) * 1.8 * chipW : 0.0;
+      float refl = 1.0; if (uMirror > 0.5) { p.y = -2.9 - p.y; refl = smoothstep(-4.4, -1.6, p.y) * 0.32; }
+      vAlpha = wAlpha * refl; vec4 mv = modelViewMatrix * vec4(p, 1.0);
+      vSoft = clamp((abs(-mv.z - uFocus) - 0.6) / 3.0, 0.0, 1.0); gl_Position = projectionMatrix * mv; float depth = -mv.z;
+      gl_PointSize = uSize * uDpr * (5.0 / depth) * (0.75 + 0.5 * fract(aSeed * 5.1)) * (1.0 + vSoft * 0.9);
+      vGlyph = aGlyph; vCol = aCol; vSeed = aSeed;
+      float dA = (si == 2) ? 0.9 : 0.45; float dB = (sj == 2) ? 0.9 : 0.45; float dens = mix(dA, dB, t);
+      vFade = (0.30 + 0.20 * (sin(uTime * (1.0 + aSeed) + aSeed * 30.0) * 0.5 + 0.5) + head * 1.4 + mid * 0.5 + tracePulse) * dens;
+    }`;
+const fragmentShader = `
+    uniform sampler2D uAtlas; uniform float uBright, uGreen, uTime; varying float vGlyph, vCol, vSeed, vFade, vAlpha, vSoft;
+    void main(){
+      float g = mod(vGlyph + floor(uTime * (0.4 + vSeed * 0.8) + vSeed * 9.0), 128.0); vec2 cell = vec2(mod(g, 16.0), floor(g / 16.0));
+      vec2 uv = vec2((cell.x + gl_PointCoord.x) / 16.0, 1.0 - (cell.y + gl_PointCoord.y) / 8.0); float a = texture2D(uAtlas, uv).r;
+      a = mix(a, a * 0.55 + 0.1 * smoothstep(0.5, 0.0, length(gl_PointCoord - 0.5)), vSoft); if (a < 0.12) discard;
+      vec3 purple = vec3(0.65, 0.54, 0.98); vec3 lav = vec3(0.86, 0.80, 1.0); vec3 green = vec3(0.20, 0.83, 0.60);
+      vec3 c = mix(purple, lav, vCol * 0.5); if (vCol < uGreen) c = green;
+      gl_FragColor = vec4(c * vFade * uBright * vAlpha * (1.0 - vSoft * 0.3), a * 0.9 * vAlpha * (1.0 - vSoft * 0.3));
+    }`;
+const mat = new THREE.ShaderMaterial({ transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, vertexShader, fragmentShader,
+  uniforms: { uTime: { value: 0 }, uProg: { value: 0 }, uIntroT: { value: 100 }, uWave: { value: 0 }, uWavePeriod: { value: P.wperiod }, uWaveAmp: { value: P.wamp }, uBreath: { value: P.breath }, uMirror: { value: 0 }, uFocus: { value: P.focus }, uSize: { value: P.size }, uBright: { value: P.bright }, uGreen: { value: P.green / 100 }, uRain: { value: P.rain }, uScatter: { value: P.scatter }, uAtlas: { value: glyphAtlas() }, uDpr: { value: renderer.getPixelRatio() } } });
+const points = new THREE.Points(geo, mat); group.add(points);
+const waveMat = mat.clone(); waveMat.uniforms = THREE.UniformsUtils.clone(mat.uniforms); waveMat.uniforms.uAtlas.value = mat.uniforms.uAtlas.value; waveMat.uniforms.uWave.value = 1; waveMat.uniforms.uSize.value = P.size * 0.7;
+const waveGeo = geo.clone(); waveGeo.setDrawRange(0, Math.floor(N * 0.28)); const waves = new THREE.Points(waveGeo, waveMat); group.add(waves);
+const mirrorMat = mat.clone(); mirrorMat.uniforms = THREE.UniformsUtils.clone(mat.uniforms); mirrorMat.uniforms.uAtlas.value = mat.uniforms.uAtlas.value; mirrorMat.uniforms.uMirror.value = 1;
+const mirror = new THREE.Points(geo, mirrorMat); group.add(mirror);
+function syncUniforms(now) {
+  for (const u of ['uTime', 'uProg', 'uBright', 'uGreen', 'uRain', 'uScatter', 'uBreath', 'uWavePeriod', 'uWaveAmp', 'uSize', 'uFocus', 'uIntroT']) { waveMat.uniforms[u].value = u === 'uSize' ? mat.uniforms.uSize.value * 0.7 : mat.uniforms[u].value; mirrorMat.uniforms[u].value = mat.uniforms[u].value; }
+  mirrorMat.uniforms.uBright.value = mat.uniforms.uBright.value * P.mirror;
+}
+
+/* ---------- stills (stand-in de poster AVIF y sprites de PathPanel) ---------- */
+function still(state, size, rotY, rotX) {
+  const rt = new THREE.WebGLRenderTarget(size, size); const cam = new THREE.PerspectiveCamera(38, 1, 0.1, 50); cam.position.set(0, 0, 6.2);
+  const saved = { p: group.position.clone(), s: group.scale.clone(), r: group.rotation.clone(), w: waves.visible, m: mirror.visible, prog: mat.uniforms.uProg.value, t: mat.uniforms.uTime.value, i: mat.uniforms.uIntroT.value };
+  group.position.set(0, 0, 0); group.scale.setScalar(1.05); group.rotation.set(rotX, rotY, 0); waves.visible = false; mirror.visible = false;
+  mat.uniforms.uProg.value = state; mat.uniforms.uTime.value = 3.1; mat.uniforms.uIntroT.value = 100;
+  renderer.setRenderTarget(rt); renderer.setClearColor(0x000000, 0); renderer.clear(); renderer.render(scene, cam); renderer.setRenderTarget(null); renderer.setClearColor(0x05060f, 1);   // fondo transparente: el poster (AVIF con alfa en producción) se funde con el Backdrop
+  const px = new Uint8Array(size * size * 4); renderer.readRenderTargetPixels(rt, 0, 0, size, size, px);
+  const c = document.createElement('canvas'); c.width = size; c.height = size; const x = c.getContext('2d'); const img = x.createImageData(size, size);
+  for (let y = 0; y < size; y++) img.data.set(px.subarray((size - 1 - y) * size * 4, (size - y) * size * 4), y * size * 4);
+  x.putImageData(img, 0, 0); rt.dispose();
+  group.position.copy(saved.p); group.scale.copy(saved.s); group.rotation.copy(saved.r); waves.visible = saved.w; mirror.visible = saved.m; mat.uniforms.uProg.value = saved.prog; mat.uniforms.uTime.value = saved.t; mat.uniforms.uIntroT.value = saved.i;
+  return c.toDataURL('image/webp', .82);
+}
+function makeStills() {
+  document.getElementById('mini-chip-a').src = still(2, 256, 0, 0); document.getElementById('mini-chip-b').src = still(2.55, 256, 0.3, 0.05);
+  document.getElementById('mini-phone-a').src = still(0, 256, -0.35, 0.08); document.getElementById('mini-phone-b').src = still(0.5, 256, -0.1, 0.05);
+  document.querySelectorAll('.mini__ph').forEach((e) => e.remove());
+}
+
+/* ---------- móvil sin flag o reduced motion: poster (estado móvil) y nada más; escritorio: escena viva ---------- */
+if ((mobile && !liveMobile) || reduce) {
+  poster.src = still(0, 720, -0.3, 0.06); makeStills(); document.getElementById('cycle').classList.add('is-static');
+  renderer.dispose(); canvas.remove();
+  window.__scene = { ready: true, playIntro() {}, skipIntro() {}, mode: 'poster' };
+  window.dispatchEvent(new Event('scene:ready'));
+} else { live(); }
+
+function live() {
+/* ---------- ciclo de estados ---------- */
+let state = 0, phase = 'hold', pt = 0, prog = 0; const cycle = [...document.querySelectorAll('#cycle span')]; document.getElementById('cycle').classList.remove('is-static');
+function setCycle(active) { cycle.forEach((c, i) => { c.classList.toggle('is-active', i === active); c.classList.toggle('is-done', i !== active && (phase === 'morph' ? i === state : false)); }); }
+setCycle(0);
+function advance(dt) {
+  if (intro.t < 1.5) { pt = 0; return; } pt += dt;
+  if (phase === 'hold') { prog = state; if (pt >= P.hold) { phase = 'morph'; pt = 0; } }
+  else { const f = Math.min(1, pt / P.morph); prog = state + f; if (f >= 1) { state = (state + 1) % 3; phase = 'hold'; pt = 0; prog = state; setCycle(state); } }
+  mat.uniforms.uProg.value = prog;
+}
+/* ---------- arrastre y paralaje ---------- */
+let dragging = false, lastX = 0, lastY = 0, velX = 0, velY = 0, rotY = 0, rotX = 0, tiltX = 0, tiltY = 0;
+stage.addEventListener('pointerdown', (e) => { dragging = true; lastX = e.clientX; lastY = e.clientY; stage.setPointerCapture(e.pointerId); });
+stage.addEventListener('pointermove', (e) => { if (dragging) { velX = (e.clientX - lastX) * 0.006; velY = (e.clientY - lastY) * 0.004; rotY += velX; rotX += velY; lastX = e.clientX; lastY = e.clientY; } });
+stage.addEventListener('pointerup', () => { dragging = false; }); stage.addEventListener('pointercancel', () => { dragging = false; });
+addEventListener('pointermove', (e) => { tiltX = (e.clientX / innerWidth - .5); tiltY = (e.clientY / innerHeight - .5); }, { passive: true });
+/* ---------- bucle ---------- */
+let rightX = 0, rightY = 0, objScale = 1, paused = false, homeActive = true;
+function resize() {
+  const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); composer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix();
+  const r = stage.getBoundingClientRect(); const vh = 2 * camera.position.z * Math.tan(camera.fov * Math.PI / 360), vw = vh * camera.aspect;
+  rightX = ((r.left + r.width / 2) / w - 0.5) * vw; rightY = (0.5 - (r.top + r.height / 2) / h) * vh;
+  objScale = Math.min(1, (r.height / h) * vh / 4.4, (r.width / w) * vw / 3.6);
+}
+resize(); addEventListener('resize', resize, { passive: true }); addEventListener('scroll', resize, { passive: true });
+let last = performance.now();
+function frame(now) {
+  requestAnimationFrame(frame);
+  if (paused || !homeActive) { last = now; return; }
+  const dt = Math.min(0.05, (now - last) / 1000); last = now; advance(dt);
+  if (!dragging) { velX *= 0.92; velY *= 0.92;
+    const chipNow = state === 2 && phase === 'hold' || (phase === 'morph' && ((state + 1) % 3 === 2 && pt / P.morph > 0.4 || state === 2 && pt / P.morph < 0.6));
+    if (chipNow) { const base = Math.round(rotY / (2 * Math.PI)) * 2 * Math.PI, target = base + Math.sin(now / 1000 * 0.45) * 0.38; rotY += (target - rotY) * 0.035 + velX; rotX += (0 - rotX) * 0.05 + velY; }
+    else { rotY += velX + P.rot * dt; rotX += velY; rotX *= 0.98; } }
+  group.rotation.y = rotY + tiltX * 0.25; group.rotation.x = rotX + tiltY * 0.18;
+  const k = intro.k; group.position.set(rightX * k, rightY * k, 0); group.scale.setScalar(1 + (objScale - 1) * k);
+  mat.uniforms.uIntroT.value = intro.t; mat.uniforms.uTime.value = now / 1000; syncUniforms(now); mirror.visible = P.mirror > 0;
+  composer.render();
+}
+new IntersectionObserver(([e]) => { paused = !e.isIntersecting; }, { threshold: 0 }).observe(stage);
+document.addEventListener('visibilitychange', () => { paused = document.hidden || paused; if (!document.hidden) paused = false; });
+addEventListener('view:change', (e) => { homeActive = e.detail === 'home'; canvas.style.display = homeActive ? '' : 'none'; if (homeActive) resize(); });
+
+/* ---------- intro (lado de la escena) ---------- */
+const intro = { k: 1, t: 100 };
+function playIntro(t0) { intro.t = 0; const tick = (now) => { intro.t = (now - t0) / 1000; if (intro.t < 3) requestAnimationFrame(tick); else intro.t = 100; }; requestAnimationFrame(tick); }
+function skipIntro() { intro.t = 100; }
+poster.src = still(0, 720, -0.3, 0.06); makeStills();
+requestAnimationFrame(frame);
+requestAnimationFrame(() => { canvas.classList.add('is-on'); setTimeout(() => media.classList.add('is-hidden'), 1000); });
+window.__scene = { ready: true, playIntro, skipIntro, mode: 'scene' };
+window.dispatchEvent(new Event('scene:ready'));
+}
+}
+</script>
+</body>
+</html>
