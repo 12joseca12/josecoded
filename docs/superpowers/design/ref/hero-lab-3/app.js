@@ -4,7 +4,6 @@ import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
-import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const P = { hold: 3.5, morph: 1.6, rot: .18, size: 16, bright: 1.0, green: 14, rain: .7, scatter: .6, breath: .025, wperiod: 4, wamp: .6, bloom: .3, bloomth: .72, focus: 6.2, mirror: .45 };
@@ -153,12 +152,13 @@ function cloudChipBrain(n) {
 const canvas = document.getElementById('three');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: 'high-performance' });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5)); renderer.setClearColor(0x05060f, 1);
+renderer.outputColorSpace = THREE.LinearSRGBColorSpace;   // sin conversión de color: el composer no levanta los negros
 const composer = new EffectComposer(renderer);
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 50); camera.position.set(0, 0, 6.2);
 const group = new THREE.Group(); scene.add(group);
 const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.3, 0.3, 0.72);
-composer.addPass(new RenderPass(scene, camera)); composer.addPass(bloom); composer.addPass(new OutputPass());
+composer.addPass(new RenderPass(scene, camera)); composer.addPass(bloom);
 
 const geo = new THREE.BufferGeometry();
 const tRain = cloudCode(N), t0 = cloudPhone(N), t1 = cloudWeb(N), t2 = cloudChipBrain(N);

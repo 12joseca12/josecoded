@@ -1,0 +1,109 @@
+/* josecoded · demo comparativa de estilo · lo que DIFERENCIA a las tres variantes.
+   Mismo contenido, misma estructura, mismos tokens de color y tipografía.
+   Cambian: intensidad del vidrio, reparto morado/verde, presencia de la monoespaciada y parámetros de motion.
+   Todas las longitudes, en rem/em/%. */
+
+/* ---------------------------------------------------------- valores comunes a las tres */
+:root {
+  --glass-sat: 120%;
+  --edge-primary: 0 0 0 1px rgb(var(--violet-rgb) / .6), inset 0 1px 0 rgb(255 255 255 / .35), inset 0 -1px 0 rgb(0 0 0 / .18), 0 .625rem 1.875rem -.625rem rgb(var(--violet-rgb) / .7);
+  --edge-primary-hover: 0 0 0 1px rgb(var(--violet-rgb) / .9), inset 0 1px 0 rgb(255 255 255 / .45), inset 0 -1px 0 rgb(0 0 0 / .18), 0 .875rem 2.5rem -.625rem rgb(var(--violet-rgb) / .9);
+  --shadow-overlay: 0 1.5rem 3.75rem -1.25rem rgb(0 0 0 / .75), inset 0 0 0 1px var(--line), inset 0 1px 0 rgb(255 255 255 / .05);
+  --num-color: var(--green);
+}
+
+/* ============================================================ V1 · CRISTAL
+   Vidrio marcado (blur alto, bordes claros). Verde presente en cifras y detalles.
+   Motion amplio dentro de lo acordado: desplazamiento en el máximo del rango y spotlight notorio. */
+[data-v="v1"] {
+  --glass-bg: rgb(255 255 255 / .055);
+  --glass-blur: 1.25rem;
+  --glass-sat: 135%;
+  --edge-surface: inset 0 0 0 1px rgb(242 238 252 / .16), inset 0 1px 0 rgb(255 255 255 / .08);
+  --edge-surface-hover: inset 0 0 0 1px rgb(var(--acc-rgb) / .5), inset 0 1px 0 rgb(255 255 255 / .10), 0 0 1.75rem -.5rem rgb(var(--acc-rgb) / .65);
+  --edge-halo: inset 0 0 0 1px rgb(var(--violet-rgb) / .45), 0 0 1.5rem -.5rem rgb(var(--violet-rgb) / .6);
+  --edge-halo-hover: inset 0 0 0 1px rgb(var(--violet-rgb) / .8), 0 0 1.875rem -.375rem rgb(var(--violet-rgb) / .8);
+  --rise: 1.75rem;            /* máximo del rango acordado (~1,5 rem) */
+  --spot-op: .16;             /* spotlight notorio */
+  --spot-size: 22rem;
+  --num-color: var(--green);  /* verde en todas las cifras */
+}
+/* detalles muy pequeños en verde: viñetas de hechos, punto del badge, cantos de tabla */
+[data-v="v1"] .facts li::before { background: var(--green); }
+[data-v="v1"] .postcard__meta .tag--outline { color: var(--green); box-shadow: inset 0 0 0 1px rgb(var(--green-rgb) / .35); }
+[data-v="v1"] .schema em { color: var(--green); }
+
+/* ============================================================ V2 · TALLER
+   Vidrio sutil: casi solo canto de luz, blur bajo. Mono por todas partes.
+   Verde reservado a datos verificables. Motion contenido. */
+[data-v="v2"] {
+  --glass-bg: rgb(255 255 255 / .022);
+  --glass-blur: .25rem;
+  --glass-sat: 105%;
+  --edge-surface: inset 0 1px 0 rgb(255 255 255 / .10), inset 0 0 0 1px rgb(242 238 252 / .07);
+  --edge-surface-hover: inset 0 1px 0 rgb(255 255 255 / .16), inset 0 0 0 1px rgb(var(--acc-rgb) / .38);
+  --edge-halo: inset 0 0 0 1px rgb(var(--violet-rgb) / .3), inset 0 1px 0 rgb(255 255 255 / .12);
+  --edge-halo-hover: inset 0 0 0 1px rgb(var(--violet-rgb) / .6), inset 0 1px 0 rgb(255 255 255 / .16);
+  --rise: .75rem;             /* mínimo del rango */
+  --spot-op: .05;             /* spotlight leve */
+  --spot-size: 12rem;
+  --num-color: var(--text);   /* verde solo donde el dato es comprobable (abajo) */
+}
+/* mono aún más presente: etiquetas en todos los bloques y metadatos en monoespaciada */
+[data-v="v2"] .m-extra { display: block; }
+[data-v="v2"] .pcard__facts,
+[data-v="v2"] .who p,
+[data-v="v2"] .help,
+[data-v="v2"] .foot__legal { font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: .01em; }
+[data-v="v2"] .proof__v { font-family: var(--font-mono); font-size: var(--fs-sm); }
+[data-v="v2"] .path__facts { font-size: var(--fs-sm); }
+[data-v="v2"] .block__h { letter-spacing: -.02em; }
+/* verde solo en datos verificables: ProofStrip, BuildFacts y encaje de la tabla */
+[data-v="v2"] .proof .num,
+[data-v="v2"] .build .num,
+[data-v="v2"] .score { --num-color: var(--green); color: var(--green); }
+[data-v="v2"] .facts li::before { background: rgb(242 238 252 / .3); }
+[data-v="v2"] .path__facts li::before { background: rgb(var(--violet-rgb) / .7); }
+
+/* ============================================================ V3 · SEÑAL
+   Vidrio medio. Alternancia real morado/verde por bloques.
+   Motion con más carácter: barrido de glifos también en los titulares y en las cifras. */
+[data-v="v3"] {
+  --glass-bg: rgb(255 255 255 / .038);
+  --glass-blur: .75rem;
+  --glass-sat: 120%;
+  --edge-surface: inset 0 0 0 1px rgb(242 238 252 / .11), inset 0 1px 0 rgb(255 255 255 / .05);
+  --edge-surface-hover: inset 0 0 0 1px rgb(var(--acc-rgb) / .45), inset 0 1px 0 rgb(255 255 255 / .07), 0 0 1.5rem -.5rem rgb(var(--acc-rgb) / .6);
+  --edge-halo: inset 0 0 0 1px rgb(var(--violet-rgb) / .45), 0 0 1.5rem -.5rem rgb(var(--violet-rgb) / .6);
+  --edge-halo-hover: inset 0 0 0 1px rgb(var(--violet-rgb) / .8), 0 0 1.875rem -.375rem rgb(var(--violet-rgb) / .8);
+  --rise: 1.5rem;
+  --spot-op: .11;
+  --spot-size: 17rem;
+  --num-color: var(--acc);    /* la cifra toma el acento del bloque */
+}
+/* alternancia por bloque: el acento del bloque reescribe --acc y todo lo que cuelga de él */
+[data-v="v3"] [data-accent="green"] {
+  --acc: var(--green); --acc-rgb: var(--green-rgb); --acc-text: var(--green); --acc-soft: var(--green-soft);
+}
+[data-v="v3"] [data-accent="green"] .block__h { color: var(--text); }
+[data-v="v3"] [data-accent="green"] .btn--primary { color: var(--green-ink); background: var(--green);
+  box-shadow: 0 0 0 1px rgb(var(--green-rgb) / .6), inset 0 1px 0 rgb(255 255 255 / .35), inset 0 -1px 0 rgb(0 0 0 / .18), 0 .625rem 1.875rem -.625rem rgb(var(--green-rgb) / .7); }
+[data-v="v3"] [data-accent="green"] .btn--primary:hover { box-shadow: 0 0 0 1px rgb(var(--green-rgb) / .9), inset 0 1px 0 rgb(255 255 255 / .45), inset 0 -1px 0 rgb(0 0 0 / .18), 0 .875rem 2.5rem -.625rem rgb(var(--green-rgb) / .9); }
+/* la alternancia tiene que verse sin hover: etiquetas mono, tags de prueba, enlaces de panel y
+   cabeceras de tabla toman el acento del bloque (ambos pasan AA: #c4b5fd 10,9:1 · #34d399 10,5:1) */
+[data-v="v3"] .eyebrow,
+[data-v="v3"] th,
+[data-v="v3"] .path__main,
+[data-v="v3"] .foot h4 { color: var(--acc-text); }
+[data-v="v3"] .tag--outline { color: var(--acc-text); box-shadow: inset 0 0 0 1px rgb(var(--acc-rgb) / .38); }
+[data-v="v3"] .postcard__meta { color: var(--text-3); }
+[data-v="v3"] .schema em { color: var(--acc-text); }
+
+/* ---------------------------------------------------------- elementos solo-mono de V2 */
+.m-extra { display: none; }
+
+/* El estado deshabilitado gana siempre al relleno de acento (si no, en un bloque verde de V3
+   el primario deshabilitado queda con tinta oscura sobre superficie oscura: 1,2:1). */
+[data-v] .btn[disabled], [data-v] .btn[aria-disabled="true"] {
+  background: rgb(255 255 255 / .08); color: var(--text-2);
+  box-shadow: inset 0 0 0 1px var(--line); opacity: .45; cursor: not-allowed; }

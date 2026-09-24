@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="es" data-v="v1">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>joseCoded · tres variantes de estilo (Cristal · Taller · Señal)</title>
+<meta name="description" content="Demo comparativa: mismo contenido y misma estructura, tres sistemas visuales. Base: hero aprobado ref/hero-lab-3 y UI v3.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css?v=2">
+<link rel="stylesheet" href="css/variants.css?v=2">
+<script>
+/* Se ejecuta antes de pintar: marca que hay JS (el revelado al entrar solo se activa con JS,
+   para que sin JavaScript nada se quede en opacidad 0), fija la variante de la URL sin parpadeo
+   y activa el modo de movimiento reducido (del sistema o forzado con ?rm=1). */
+(function () {
+  var d = document.documentElement, q = location.search;
+  d.classList.add('js');
+  var m = q.match(/[?&]v=(v[123])/); if (m) d.setAttribute('data-v', m[1]);
+  try { if (matchMedia('(prefers-reduced-motion: reduce)').matches || /[?&]rm=1/.test(q)) d.classList.add('rm'); } catch (e) {}
+})();
+</script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/" } }</script>
+</head>
+<body>
+
+<a class="skip" href="#main">Saltar al contenido</a>
+
+<!-- ============================ conmutador de variantes (solo demo) ============================ -->
+<div class="switch">
+  <span>variante</span>
+  <div class="switch__seg" role="group" aria-label="Variante visual">
+    <button class="switch__b" type="button" data-variant="v1" aria-pressed="true">V1 · Cristal</button>
+    <button class="switch__b" type="button" data-variant="v2" aria-pressed="false">V2 · Taller</button>
+    <button class="switch__b" type="button" data-variant="v3" aria-pressed="false">V3 · Señal</button>
+  </div>
+  <span class="switch__note">teclas 1 · 2 · 3 &nbsp;·&nbsp; datos de muestra</span>
+  <span class="switch__spacer"></span>
+  <a class="switch__full" href="?v=v1&amp;full=1">pantalla completa <span class="arrow" aria-hidden="true">→</span></a>
+</div>
+<a class="back" href="?v=v1">← volver a comparar</a>
+
+<!-- ============================ fondo y escena ============================ -->
+<div class="bg" aria-hidden="true">
+  <div class="bg__ray"></div>
+  <div class="bg__grain"></div>
+</div>
+<canvas id="scene" aria-hidden="true"></canvas>
+
+<!-- ============================ cabecera ============================ -->
+<header class="hdr">
+  <a class="hdr__brand" href="#" data-sweep>josecoded</a>
+  <nav class="hdr__nav" aria-label="Principal">
+    <a href="#" data-sweep>Empresas</a>
+    <a href="#" data-sweep>Negocios</a>
+    <a href="#" data-sweep aria-current="page">Proyectos</a>
+    <a href="#" data-sweep>Blog</a>
+    <a href="#" data-sweep>Sobre mí</a>
+  </nav>
+  <div class="hdr__right">
+    <span class="lang">EN</span>
+    <a class="hdr__enter" href="#" data-sweep>Entrar</a>
+    <a class="btn btn--primary btn--sm" href="#" data-sweep>Contacto</a>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============================ 1 · hero split ============================ -->
+<section class="hero" data-accent="violet">
+  <div class="hero__left">
+    <a class="badge" href="#" data-sweep><span class="dot"></span> Disponible para proyectos <span class="badge__arrow" aria-hidden="true">›</span></a>
+    <h1>Jose Carlos<br>Sánchez</h1>
+    <p class="hero__sub">Hago apps y webs que se publican y se usan. Para empresas: desarrollo web, móvil e IA. Para tu negocio: una web con precio cerrado.</p>
+    <div class="hero__ctas">
+      <a class="btn btn--primary btn--lg" href="#" data-sweep>Ver proyectos</a>
+      <a class="btn btn--link" href="#" data-sweep>Una web para mi negocio <span class="arrow" aria-hidden="true">→</span></a>
+    </div>
+  </div>
+  <div class="hero__media" role="img" aria-label="Partículas de código que se transforman en un móvil, una web y un chip con una red neuronal">
+    <!-- respaldo estático: en producción es el poster AVIF del estado "móvil" de la escena -->
+    <div class="hero__poster" aria-hidden="true">{ } [ ] ( ) &lt; &gt; = ; : / *
++ - _ $ # @ ! ? &amp; | ^ % ~ `
+0 1 2 3 4 5 6 7 8 9 a b c
+d e f g h i j k l m n o p
+q r s t u v w x y z A B C
+{ } [ ] ( ) &lt; &gt; = ; : / *
++ - _ $ # @ ! ? &amp; | ^ % ~</div>
+    <div class="hero__cycle" aria-hidden="true"><i class="is-on"></i><i></i><i></i></div>
+  </div>
+</section>
+
+<!-- ============================ 2 · franja de prueba ============================ -->
+<section class="block proof" data-accent="green">
+  <div class="wrap">
+    <p class="eyebrow" style="margin-bottom:var(--sp-4)">prueba real · datos de muestra</p>
+    <div class="proof__grid" data-reveal>
+      <a class="proof__i" href="#" data-sweep>
+        <span class="eyebrow">apps publicadas</span>
+        <span class="proof__v"><span class="num sample" data-count="4" title="dato de muestra">0</span> en App Store y Google&nbsp;Play <span class="arrow" aria-hidden="true">→</span></span>
+      </a>
+      <div class="proof__i">
+        <span class="eyebrow">esta web</span>
+        <span class="proof__v">LCP <span class="num sample" data-count="0.9" data-dec="1" title="dato de muestra">0</span> s en escritorio</span>
+      </div>
+      <a class="proof__i" href="#" data-sweep>
+        <span class="eyebrow">código público</span>
+        <span class="proof__v"><span class="num sample" data-count="18" title="dato de muestra">0</span> repos en GitHub <span class="arrow" aria-hidden="true">→</span></span>
+      </a>
+      <div class="proof__i">
+        <span class="eyebrow">precio cerrado</span>
+        <span class="proof__v">webs desde <span class="num sample" data-count="900" title="dato de muestra">0</span> €</span>
+      </div>
+      <div class="proof__i">
+        <span class="eyebrow">respuesta</span>
+        <span class="proof__v">en menos de <span class="num sample" data-count="24" title="dato de muestra">0</span> h laborables</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 3 · dos vías ============================ -->
+<section class="block" data-accent="violet">
+  <div class="wrap">
+    <div class="paths" data-reveal>
+      <article class="path glass card">
+        <p class="eyebrow">empresas</p>
+        <h3><a href="#" data-sweep>Trabajo con empresas</a></h3>
+        <ul class="path__facts">
+          <li><span>Web (Next.js), móvil (React Native) e IA integrada</span></li>
+          <li><span><span class="mono sample" title="dato de muestra">40 €/h</span> o feature cerrada <span class="mono sample" title="dato de muestra">150 €</span></span></li>
+          <li><span>Disponible desde octubre</span></li>
+        </ul>
+        <p class="path__main">Ver cómo trabajo <span class="arrow" aria-hidden="true">→</span></p>
+        <a class="path__sec" href="#" data-sweep>Reservar 20 min</a>
+        <div class="path__thumb" aria-hidden="true"> ┌┴┴┴┴┴┴┐
+─┤ ╳─╳─╳ ├─
+─┤ │ AI │ ├─
+─┤ ╳─╳─╳ ├─
+ └┬┬┬┬┬┬┘</div>
+      </article>
+
+      <article class="path glass card">
+        <p class="eyebrow">negocios</p>
+        <h3><a href="#" data-sweep>Webs para tu negocio</a></h3>
+        <ul class="path__facts">
+          <li><span><span class="mono sample" title="dato de muestra">4 packs</span>, de <span class="mono sample" title="dato de muestra">900</span> a <span class="mono sample" title="dato de muestra">4.200 €</span>, sin IVA</span></li>
+          <li><span>De 1 a 3 semanas, precio y plazo cerrados</span></li>
+          <li><span>Dominio y hosting a tu nombre</span></li>
+        </ul>
+        <p class="path__main">Ver packs y precios <span class="arrow" aria-hidden="true">→</span></p>
+        <a class="path__sec" href="#" data-sweep>Escribir por WhatsApp</a>
+        <div class="path__thumb" aria-hidden="true">┌────────┐
+│ ▔▔  ▔▔ │
+│ ██████ │
+│ ▁▁  ▁▁ │
+│ ▁▁▁▁▁▁ │
+└────────┘</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 4 · proyectos ============================ -->
+<section class="block projects" data-accent="green">
+  <div class="wrap">
+    <div class="block__head" data-reveal>
+      <h2 class="block__h">Proyectos</h2>
+      <p class="lead">Apps y webs con enlace a stores, web o código.</p>
+    </div>
+    <div class="projects__grid" data-reveal>
+
+      <article class="pcard glass card">
+        <div class="device" aria-hidden="true">
+          <div class="device__screen">
+            <div class="device__shot">
+              <i class="w40"></i><div class="blk"></div><i class="w80"></i><i class="w60"></i>
+              <i class="acc w40"></i><div class="blk"></div><i class="w80"></i><i class="w60"></i><i class="w40"></i>
+              <div class="blk"></div><i class="w80"></i>
+            </div>
+          </div>
+        </div>
+        <div>
+          <p class="eyebrow">app móvil · publicada</p>
+          <h3><a href="#" data-sweep>Rutas del Valle</a></h3>
+          <p class="pcard__facts">React Native · <span class="sample" title="dato de muestra">12.400 descargas</span> · 2025</p>
+          <p class="pcard__proof">
+            <span class="tag tag--outline">App Store</span>
+            <span class="tag tag--outline">Google Play</span>
+          </p>
+        </div>
+      </article>
+
+      <article class="pcard glass card">
+        <div class="device" aria-hidden="true">
+          <div class="device__screen">
+            <div class="device__shot">
+              <i class="w60"></i><i class="acc w40"></i><div class="blk"></div><i class="w80"></i>
+              <i class="w60"></i><div class="blk"></div><i class="w40"></i><i class="w80"></i>
+              <i class="acc w60"></i><div class="blk"></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <p class="eyebrow">app móvil · publicada</p>
+          <h3><a href="#" data-sweep>Turno Claro</a></h3>
+          <p class="pcard__facts">Expo + Supabase · <span class="sample" title="dato de muestra">4,6 ★ en stores</span> · 2026</p>
+          <p class="pcard__proof">
+            <span class="tag tag--outline">Google Play</span>
+            <span class="tag tag--outline">Código</span>
+          </p>
+        </div>
+      </article>
+
+      <article class="pcard glass card">
+        <div class="device device--browser" aria-hidden="true">
+          <div class="device__screen">
+            <div class="device__bar"><i></i><i></i><i></i></div>
+            <div class="device__shot">
+              <i class="acc w40"></i><i class="w80"></i><div class="blk"></div><i class="w60"></i><i class="w40"></i>
+            </div>
+          </div>
+        </div>
+        <div>
+          <p class="eyebrow">web · publicada</p>
+          <h3><a href="#" data-sweep>3catinfo</a></h3>
+          <p class="pcard__facts">Next.js en Workers · <span class="sample" title="dato de muestra">LCP 0,8 s</span> · 2025</p>
+          <p class="pcard__proof">
+            <span class="tag tag--outline">Web publicada</span>
+          </p>
+        </div>
+      </article>
+
+    </div>
+    <p style="margin-top:var(--sp-6)"><a class="btn btn--secondary" href="#" data-sweep>Ver todos <span class="arrow" aria-hidden="true">→</span></a></p>
+  </div>
+</section>
+
+<!-- ============================ 5 · cómo está hecha esta web ============================ -->
+<section class="block build" data-accent="violet">
+  <div class="wrap">
+    <div class="block__head" data-reveal>
+      <h2 class="block__h">Cómo está hecha esta web</h2>
+      <p class="lead">Esta web la he hecho yo con las mismas herramientas que uso en los proyectos.</p>
+    </div>
+    <div class="build__grid" data-reveal>
+      <pre class="schema" aria-label="Esquema de arquitectura">navegador ──▶ <b>Cloudflare Workers</b> (Next.js, OpenNext)
+                  │
+                  ├─▶ <b>gateway Hono</b> (<em>api.josecoded.com</em>, 34 rutas)
+                  │       ├─▶ <b>Supabase</b> (Postgres + Auth, 21 tablas, 48 RLS)
+                  │       └─▶ <b>servidor propio</b> (Fastify: IA, n8n, storage)
+                  └─▶ <b>Umami</b> (analítica sin cookies)</pre>
+      <div>
+        <p class="eyebrow m-extra" style="margin-bottom:var(--sp-3)">hechos de build · datos de muestra</p>
+        <ul class="facts">
+          <li><span>Next.js 15 en Cloudflare Workers</span></li>
+          <li><span>Gateway Hono con <span class="num sample" data-count="34" title="dato de muestra">0</span> rutas</span></li>
+          <li><span>Supabase: <span class="num sample" data-count="21" title="dato de muestra">0</span> tablas, <span class="num sample" data-count="48" title="dato de muestra">0</span> políticas RLS</span></li>
+          <li><span><span class="num sample" data-count="312" title="dato de muestra">0</span> tests (Vitest, Playwright)</span></li>
+          <li><span>LCP <span class="num sample" data-count="0.9" data-dec="1" title="dato de muestra">0</span> s · INP <span class="num sample" data-count="42" title="dato de muestra">0</span> ms, medidos en build</span></li>
+          <li><span>rama <code>main</code> · commit <code>a1b2c3d</code> · publicado el 22 sep 2026</span></li>
+        </ul>
+        <p style="margin-top:var(--sp-5);display:flex;flex-wrap:wrap;gap:var(--sp-5)">
+          <a class="btn btn--link" href="#" data-sweep>Leer cómo está hecha <span class="arrow" aria-hidden="true">→</span></a>
+          <a class="btn btn--link" href="#" data-sweep>Código en GitHub <span class="arrow" aria-hidden="true">→</span></a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 6 · último artículo ============================ -->
+<section class="block" data-accent="green">
+  <div class="wrap">
+    <div class="block__head" data-reveal>
+      <h2 class="block__h">Último artículo</h2>
+    </div>
+    <div class="post__row" data-reveal>
+      <article class="postcard glass card">
+        <p class="postcard__meta">
+          <span>18 sep 2026</span> · <span>7 min</span>
+          <span class="tag tag--outline">Cloudflare</span>
+          <span class="tag tag--outline">ES</span>
+        </p>
+        <h3><a href="#" data-sweep>Mover una app Next.js de Vercel a Cloudflare Workers sin romper nada</a></h3>
+        <p>Qué cambia de verdad al pasar a OpenNext: caché, streaming, límites de CPU y lo que tuve que reescribir en el gateway.</p>
+      </article>
+      <a class="btn btn--link" href="#" data-sweep>Ver el blog <span class="arrow" aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 7 · hablamos ============================ -->
+<section class="block" data-accent="violet">
+  <div class="wrap">
+    <div class="block__head" data-reveal>
+      <h2 class="block__h">Hablamos</h2>
+    </div>
+    <div class="talk__grid" data-reveal>
+      <div>
+        <p class="lead">Cuéntame qué necesitas y te digo si encaja, qué cuesta y cuándo lo tienes.</p>
+        <div class="talk__ctas">
+          <a class="btn btn--secondary btn--lg" href="#" data-sweep>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+            Escribir por WhatsApp
+          </a>
+          <a class="btn btn--secondary btn--lg" href="#" data-sweep>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            Reservar 20 min
+          </a>
+        </div>
+        <p class="talk__links">
+          <a class="btn btn--link" href="#" data-sweep>Formulario <span class="arrow" aria-hidden="true">→</span></a>
+          <a class="btn btn--link" href="#" data-sweep>Preguntar al asistente <span class="arrow" aria-hidden="true">→</span></a>
+        </p>
+        <p class="help" style="margin-top:var(--sp-3)">Respondo en menos de 24 h laborables.</p>
+      </div>
+      <div class="who glass">
+        <div class="who__portrait" aria-hidden="true">JS</div>
+        <div>
+          <p class="eyebrow m-extra">quién te responde</p>
+          <h3>Jose Carlos Sánchez</h3>
+          <p>Desarrollador full-stack freelance · Valencia, España</p>
+          <a class="btn btn--link" href="#" data-sweep>Sobre mí <span class="arrow" aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 8 · tira de componentes ============================ -->
+<section class="block kit" data-accent="green">
+  <div class="wrap">
+    <div class="block__head" data-reveal>
+      <h2 class="block__h">Detalle de componentes</h2>
+      <p class="lead">Los mismos primitivos en cada variante, con sus estados. Todos los datos son de muestra.</p>
+    </div>
+
+    <div class="kit__grid" data-reveal>
+
+      <div class="kit__cell glass">
+        <span class="eyebrow">botones</span>
+        <div class="kit__row">
+          <button class="btn btn--primary" type="button">Ver proyectos</button>
+          <button class="btn btn--secondary" type="button">Reservar 20 min</button>
+          <button class="btn btn--ghost" type="button">Cancelar</button>
+          <button class="btn btn--destructive" type="button">Detener Radar</button>
+        </div>
+        <div class="kit__row" style="margin-top:var(--sp-4)">
+          <button class="btn btn--primary is-loading" type="button" aria-busy="true">Guardando</button>
+          <button class="btn btn--primary" type="button" disabled>Enviar</button>
+          <a class="btn btn--link" href="#" data-sweep>Enlace con flecha <span class="arrow" aria-hidden="true">→</span></a>
+        </div>
+      </div>
+
+      <div class="kit__cell glass">
+        <span class="eyebrow">chips y tags de estado</span>
+        <div class="kit__row">
+          <button class="chip" type="button" aria-pressed="true">Todas <span class="chip__n">24</span></button>
+          <button class="chip" type="button" aria-pressed="false">Preparadas <span class="chip__n">7</span></button>
+          <button class="chip" type="button" aria-pressed="false">Enviadas <span class="chip__n">11</span></button>
+          <button class="chip" type="button" disabled>Archivadas <span class="chip__n">0</span></button>
+        </div>
+        <div class="kit__row" style="margin-top:var(--sp-4)">
+          <span class="tag">Borrador</span>
+          <span class="tag tag--violet">Preparada</span>
+          <span class="tag tag--green">Enviada</span>
+          <span class="tag tag--amber">Plazo &lt; 48 h</span>
+          <span class="tag tag--red">Rechazada</span>
+          <span class="tag tag--new">Nuevo</span>
+        </div>
+        <div class="kit__row" style="margin-top:var(--sp-4)">
+          <a class="badge" href="#" data-sweep><span class="dot"></span> Disponible para proyectos <span class="badge__arrow" aria-hidden="true">›</span></a>
+          <span class="badge"><span class="dot dot--amber"></span> Agenda completa hasta nov</span>
+        </div>
+      </div>
+
+      <div class="kit__cell glass">
+        <span class="eyebrow">campos</span>
+        <div class="field">
+          <label for="k-mail">Correo</label>
+          <input class="input" id="k-mail" type="email" placeholder="tu@empresa.com" value="marta@floristeria.es">
+          <span class="help">Solo lo uso para responderte.</span>
+        </div>
+        <div class="field">
+          <label for="k-role">Tipo de proyecto</label>
+          <select class="select" id="k-role">
+            <option>Web para mi negocio</option>
+            <option>App móvil</option>
+            <option>Integración con IA</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="k-url">Web actual</label>
+          <input class="input" id="k-url" type="url" value="floristeria" aria-invalid="true" aria-describedby="k-url-e">
+          <span class="error" id="k-url-e">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+            Falta el dominio completo, por ejemplo floristeria.es
+          </span>
+        </div>
+        <div class="field">
+          <label for="k-msg">Qué necesitas</label>
+          <textarea class="textarea" id="k-msg" placeholder="Dos líneas bastan."></textarea>
+        </div>
+      </div>
+
+      <div class="kit__cell glass">
+        <span class="eyebrow">superposiciones</span>
+        <div class="modal" role="group" aria-label="Ejemplo de modal">
+          <h3>Enviar candidatura</h3>
+          <p class="modal__meta">radar · 3 documentos · plazo 24 sep</p>
+          <p>Se enviará el CV adaptado y la carta a <strong>Nubeware S.L.</strong>. Después no se puede editar el envío.</p>
+          <div class="modal__actions">
+            <button class="btn btn--ghost" type="button">Cancelar</button>
+            <button class="btn btn--primary" type="button">Enviar ahora</button>
+          </div>
+        </div>
+        <div class="toast" style="margin-top:var(--sp-5)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m20 6-11 11-5-5"/></svg>
+          Candidatura enviada
+          <a class="toast__a" href="#" data-sweep>Deshacer</a>
+        </div>
+        <div class="alert" style="margin-top:var(--sp-4)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg>
+          Dos candidaturas vencen en menos de 48 h.
+          <a class="btn btn--link" href="#" style="margin-left:auto" data-sweep>Revisar <span class="arrow" aria-hidden="true">→</span></a>
+        </div>
+      </div>
+
+      <div class="kit__cell glass kit__wide">
+        <span class="eyebrow">tabla (bandeja de Radar)</span>
+        <div class="tablebox">
+          <table>
+            <caption class="sr-only">Cuatro candidaturas de muestra</caption>
+            <thead>
+              <tr><th scope="col">Empresa</th><th scope="col">Puesto</th><th scope="col">Estado</th><th scope="col">Encaje</th><th scope="col">Plazo</th><th scope="col" class="right">Acción</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="name">Nubeware S.L.</span></td>
+                <td>Full-stack senior</td>
+                <td><span class="tag tag--violet">Preparada</span></td>
+                <td><span class="score">86</span></td>
+                <td class="mono">24 sep</td>
+                <td class="right"><a class="btn btn--link" href="#" data-sweep>Abrir <span class="arrow" aria-hidden="true">→</span></a></td>
+              </tr>
+              <tr>
+                <td><span class="name">Delta Motion</span></td>
+                <td>React Native</td>
+                <td><span class="tag tag--green">Enviada</span></td>
+                <td><span class="score">79</span></td>
+                <td class="mono">hace 3 d</td>
+                <td class="right"><a class="btn btn--link" href="#" data-sweep>Abrir <span class="arrow" aria-hidden="true">→</span></a></td>
+              </tr>
+              <tr>
+                <td><span class="name">Ágora Salud</span></td>
+                <td>Ingeniero de plataforma</td>
+                <td><span class="tag tag--amber">Plazo &lt; 48 h</span></td>
+                <td><span class="score">71</span></td>
+                <td class="mono">23 sep</td>
+                <td class="right"><a class="btn btn--link" href="#" data-sweep>Abrir <span class="arrow" aria-hidden="true">→</span></a></td>
+              </tr>
+              <tr>
+                <td><span class="name">Kernel Labs</span></td>
+                <td>Backend Node</td>
+                <td><span class="tag">Borrador</span></td>
+                <td><span class="score">58</span></td>
+                <td class="mono">—</td>
+                <td class="right"><a class="btn btn--link" href="#" data-sweep>Abrir <span class="arrow" aria-hidden="true">→</span></a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="kit__cell glass">
+        <span class="eyebrow">estado vacío</span>
+        <div class="empty" data-glyph="{ }">
+          <p><strong>Todavía no hay candidaturas preparadas.</strong> En cuanto el Radar encuentre una oferta que encaje, aparecerá aquí con su carta y su CV adaptados.</p>
+          <button class="btn btn--secondary" type="button">Ajustar el umbral de encaje</button>
+        </div>
+      </div>
+
+      <div class="kit__cell glass">
+        <span class="eyebrow">carga</span>
+        <div style="display:grid;gap:var(--sp-3)">
+          <div class="skel" style="width:40%"></div>
+          <div class="skel" style="width:85%"></div>
+          <div class="skel" style="width:70%"></div>
+          <div class="skel" style="width:55%"></div>
+          <div class="skel" style="width:2.75rem;height:2.75rem;border-radius:var(--r-pill)"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================ pie ============================ -->
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot__grid">
+      <div>
+        <h4>joseCoded</h4>
+        <ul>
+          <li><a href="#" data-sweep>Empresas</a></li>
+          <li><a href="#" data-sweep>Negocios</a></li>
+          <li><a href="#" data-sweep>Proyectos</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Escribir</h4>
+        <ul>
+          <li><a href="#" data-sweep>Contacto</a></li>
+          <li><a href="#" data-sweep>WhatsApp</a></li>
+          <li><a href="#" data-sweep>Reservar 20 min</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Leer</h4>
+        <ul>
+          <li><a href="#" data-sweep>Blog</a></li>
+          <li><a href="#" data-sweep>Sobre mí</a></li>
+          <li><a href="#" data-sweep>Aviso legal</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Esta web</h4>
+        <div class="foot__build">
+          <span><b>main</b> · a1b2c3d</span>
+          <span>publicado 22 sep 2026</span>
+          <span>LCP 0,9 s · INP 42 ms</span>
+          <span>Next.js · Workers · Supabase</span>
+        </div>
+      </div>
+    </div>
+    <p class="foot__legal">
+      <span>© 2026 Jose Carlos Sánchez</span>
+      <span>·</span>
+      <span>Demo de estilo · todos los datos son de muestra</span>
+    </p>
+  </div>
+</footer>
+
+<div class="sweep" aria-hidden="true"></div>
+
+<script src="js/scene.js"></script>
+<script src="js/app.js?v=2"></script>
+<script type="module">
+  /* La escena vive en un módulo inline para que la demo se abra también por file://
+     (un módulo externo relativo lo bloquea CORS; un import https absoluto no). */
+  if (!window.__reduceMotion) {
+    try {
+      const THREE = await import('three');
+      const { EffectComposer } = await import('three/addons/postprocessing/EffectComposer.js');
+      const { RenderPass } = await import('three/addons/postprocessing/RenderPass.js');
+      const { UnrealBloomPass } = await import('three/addons/postprocessing/UnrealBloomPass.js');
+      window.GlyphScene.init(THREE, EffectComposer, RenderPass, UnrealBloomPass, window.__sceneOpts);
+      window.GlyphScene.setGreen(document.documentElement.dataset.v === 'v3' ? 0.26 : 0.14);
+    } catch (e) {
+      /* sin WebGL o sin red: se queda el poster estático */
+      document.querySelector('.hero__poster').style.display = 'grid';
+      console.warn('escena no disponible, se usa el poster', e);
+    }
+  }
+</script>
+</body>
+</html>

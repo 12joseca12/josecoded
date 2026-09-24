@@ -1,37 +1,67 @@
 # Estado — josecoded
 
+> Traspaso escrito el 2026-09-24. Todo el diseño está cerrado y commiteado; falta empezar a implementar.
+
 ## Ahora
-Diseño completo (2026-09-19): spec v1.5.2, UX v3.2, diseño técnico v1.2.1, UI v3 (`ref/ui-v3/`) y plan de v1 con 97 tareas en 10 fases (`docs/superpowers/plans/2026-09-19-josecoded-v1.md`). Hero aprobado en `ref/hero-lab-3/`. Falta `/plan-eng-review` y arrancar la fase 0.
+
+Fase de diseño terminada, **sin una línea de código de la aplicación todavía**. Lo que existe:
+
+| Documento | Ruta | Versión |
+|---|---|---|
+| Spec | `docs/superpowers/specs/2026-09-13-josecoded-plataforma.md` | v1.5.2 |
+| UX (45 pantallas + 33 estados) | `docs/superpowers/design/2026-09-17-josecoded-ux.md` | v3.2 |
+| Diseño técnico | `docs/superpowers/design/2026-09-17-josecoded-diseno-tecnico.md` | v1.2.1 |
+| Sistema visual | `docs/superpowers/design/2026-09-17-josecoded-ui.md` | v3 |
+| Plan (97 tareas, 10 fases, 9 gates) | `docs/superpowers/plans/2026-09-19-josecoded-v1.md` | — |
+
+Prototipos navegables (servir con `python3 -m http.server 8765 --directory docs/superpowers/design/ref`):
+- `ref/hero-lab-3/` — **hero aprobado**: split tipo Resend, partículas-glifo que morfan móvil → web → chip IA, intro por caída, bloom, reflejo. Panel de ajustes con `c`.
+- `ref/estilo/` — tres variantes de estilo; **Jose eligió "Cristal" (V1)**. Incluye la transición de página nueva (fundido a negro + cortina de glifos).
+- `ref/eje/` — recorrido 3D de la home con dos formas del eje (A hélice de ADN / B columna de anillos). **Pendiente de que Jose elija.**
+- `ref/ui-v3/`, `ref/heros/`, `ref/colores-v2.html`, `hero-lab`, `hero-lab-2` — histórico, ya superados.
+
+Grafos de código (graphify, 2026-09-24): `josecoded-api` 338 nodos · `josecoded-worker` 174 nodos, ambos con `GRAPH_REPORT.md` y `graph.html` en su `graphify-out/`. El grafo de `josecoded` sigue siendo el de documentación (530 nodos) porque aún no hay código propio.
 
 ## Pendientes
-- [ ] Jose: proyecto OAuth de Google (Gmail lectura + borradores, Calendar) en su cuenta; ≥ 12 correos reales anonimizados para fixtures del parser; comprobar que el MCP de Indeed responde en `claude -p`; nombre a mostrar en el hero.
-- [ ] Jose: elegir fondo (F1/F2/F3) y secundario (S1/S2/S3) de `ref/colores-v2.html` y dar feedback de la demo de motion; pasar el resultado de Stitch.
-- [ ] `ui`: prototipo único de la home IDE-lite sobre UX v2.1 con la pareja elegida; iterar hasta aprobación de Jose; rehacer `2026-09-17-josecoded-ui.md` (motivos generativos y motion superados).
-- [ ] Jose: los 14 `{{DATO}}` de UX §18 (nombre, ciudad, años, estado de apps, certificaciones, contacto, GitHub, stores).
-- [ ] Jose: URL `workers.dev` actual del gateway; cuenta/dominio en Resend; plantilla OTP y "leaked password protection" en Supabase (diseño técnico P7–P10).
-- [ ] Consolidar el documento previo a implementación (pantallas, componentes, errores, flujos, stack, integraciones, tests, preview aprobada) y pasar a plan del `arquitecto`.
-- [ ] Jose (Radar): perfil de búsqueda (roles, keywords, modalidad, zona, salario/tarifa mínimos, idiomas, exclusiones, disponibilidad) y CV maestro es/en actualizado; crear cuentas en InfoJobs/Tecnoempleo/Upwork/Workana/Malt cuando toque; activar alertas de empleo de LinkedIn por correo al Gmail.
-- [ ] Jose: corregir los tres ejemplos provisionales de `Comercial/voz.md` (redactados por Claude) o sustituirlos por textos reales.
-- [ ] Jose: alta de OAuth Google/GitHub en el dashboard de Supabase, antes de la rama de auth.
-- [ ] Inventario de contenido real (proyectos, textos, métricas) antes de `ux`.
-- [ ] Tarea 0: validar Next.js + OpenNext en Cloudflare Workers sin middleware Node (fallback Vercel).
+
+**Decisiones de Jose (bloquean el diseño final de la home)**
+- [ ] Elegir forma del eje en `ref/eje/`: A (hélice) o B (anillos), y si el recorrido lateral y los nodos como raíl de progreso le convencen.
+- [ ] Pasar los valores del panel del hero (`c` en `ref/hero-lab-3/`) para fijarlos en código y quitar el panel. Se copian con:
+      `copy(JSON.stringify(Object.fromEntries([...document.querySelectorAll('#panel input')].map(e => [e.id || e.dataset.var, e.type === 'checkbox' ? e.checked : +e.value]))))`
+- [ ] Detalles de estilo: cuánta monoespaciada, intensidad del spotlight de hover, badge del hero a 44 px en móvil, duración de la transición de página (≈1 s).
+
+**Insumos de Jose (bloquean tareas concretas del plan)**
+- [ ] Los 14 `{{DATO}}` de UX §18: nombre a mostrar, ciudad, años, estado real de 3catinfo/HazmeFila/Oportunix, certificaciones, WhatsApp y email, usuario de GitHub, enlaces de stores.
+- [ ] Radar: `content/radar/profile.json` (roles, keywords, modalidad, zona, salario y tarifa mínimos, idiomas, exclusiones, disponibilidad) y CV maestro es/en.
+- [ ] Radar: proyecto OAuth de Google (Gmail lectura + borradores, Calendar), alertas de empleo de LinkedIn al Gmail, ≥ 12 correos reales anonimizados para fixtures, cuentas en InfoJobs/Tecnoempleo/Upwork/Workana/Malt cuando toquen.
+- [ ] Supabase: alta de OAuth Google/GitHub, plantilla del código OTP, activar "leaked password protection".
+- [ ] Cloudflare: alta de `api.josecoded.com` como custom domain; pasar la URL `workers.dev` actual del gateway.
+- [ ] Corregir los tres ejemplos provisionales de `Comercial/voz.md` (los redactó Claude).
+
+**Trabajo de diseño que queda**
+- [ ] Rehacer UX §2 y §4.1 y UI v3 con la estructura nueva de la home (recorrido 3D con eje), una vez Jose elija forma. Afecta también a la fase 2 del plan.
+- [ ] Páginas derivadas aún sin diseñar: stack/CV y tarifas para negocios. En el área privada, al crear cuenta el usuario indica su objetivo y se personaliza la experiencia.
+- [ ] `/plan-eng-review` del plan (obligatorio: toca dinero e integraciones externas).
+
+**Suelto**
+- [ ] `.gitignore` de `josedev` y `josecoded-worker` modificados (añadido `graphify-out/`) y **sin commitear**.
+- [ ] graphify marca `ref/ui-v3/tokens.css` como sensible (falso positivo por la palabra "token") y lo deja fuera del grafo.
 
 ## Siguiente paso
-`/plan-eng-review` del plan → fase 0 (6 validaciones en paralelo con `implementador-web`) → fase 1 → ramas `feat/radar-core` en paralelo con fases 2–6. Gates de producción solo con OK de Jose.
+
+1. Jose elige forma del eje y pasa los valores del hero.
+2. `ux` + `ui` actualizan home (UX §4.1, UI v3) a la estructura de recorrido con eje.
+3. `/plan-eng-review` y arranque de la **fase 0** del plan: seis validaciones en paralelo con `implementador-web` (OpenNext en Workers Free, bundle del hero ≤ 200 KB gz y generación de medios, `submit` de InfoJobs, Browser Rendering, MCP de Indeed en `claude -p`, feed de Tecnoempleo). Ninguna toca producción.
+4. Fase 1 (monorepo `apps/web` + `apps/api`, `packages/pricing`, CI) y, en paralelo con las fases 2–6, la rama `feat/radar-core`.
+
+Gates que no se cruzan sin OK explícito de Jose en la misma sesión: migraciones y deploys a producción, contratar servicios, tocar servicios preexistentes de Omen.
 
 ## Decisiones recientes
-- 2026-09-19: diseño técnico v1.2.1 (hero `glyph-scene` sin R3F, medios generados desde la escena, `IntroFall`; Radar completo). P11–P15: LCP título o poster ≤ 1,2 s; sin Lenis; Telegram del Radar desde el gateway; token de Google cifrado en KV; n8n por webhook con Cloudflare Access service token + HMAC (nunca expuesto). Hero: subtítulo por audiencia sin tecnologías (alternativa B), CTAs como el prototipo.
-- 2026-09-19: **módulo Radar en v1** (caza de empleo y encargos freelance): agente que descubre, puntúa y prepara candidaturas; envío solo tras confirmación de Jose (admin o Telegram); conectores enchufables (Indeed por MCP desde el Mac, LinkedIn por alertas de correo y scraping con límites tras rodaje, InfoJobs/Tecnoempleo, Workana/Malt/Upwork); Gmail por API (Proton diferido); Google Calendar secundario "Radar"; Telegram para avisos y confirmación; Supabase fuente de verdad, Notion espejo opcional. Spec v1.5 §13, UX v3.1 §7.12–7.18. Estimación +35–45 % sobre v1.
-- 2026-09-19: **hero decidido** (split tipo Resend): izquierda badge + título + subtítulo + CTA; derecha escena Three.js de partículas-glifo (caracteres reales, morado con toques verdes) que morfa móvil → web → IA (chip con cerebro de nodos dentro, siempre de frente) con respiración y ondas de código. Intro de primera visita por sesión: cada letra (nav, badge, título, subtítulo, CTAs) y cada partícula caen desde arriba y aterrizan entre 0,4 y 1,2 s. Fondo: grano fino + rayo de luz suave (retícula y deriva disponibles, apagadas). Prototipo: `docs/superpowers/design/ref/hero-lab-3/`. Descartados: formatos IDE-lite/terminal/scroll/objeto (`ref/heros/`), túnel de código (`hero-lab-2`), luz volumétrica + código DOM (`hero-lab`).
-- 2026-09-17: batería UX/UI/integraciones/tests (spec §12): home = la aplicación en sí (IDE-lite, sin dividir audiencias), hero de presentación con entrada código→título→minimizar una vez al día, motion sobrio con sentido técnico (CompileReveal, FocusLight, transición), visual generativo descartado tras ver las direcciones, textos con hechos sin frases vacías, colores verde + complementario, es/en, GitHub + stores + Cal.com, tests unit+integración+E2E.
-- 2026-09-17: decisiones técnicas P1–P6: Workers Free; Supabase restaurado por el controlador con OK; `notify` primaria y n8n opcional; `api.josecoded.com`; deploy diario solo si cambian datos generados; `call_booked` y AI Gateway. Admin real = `staff_members.role='admin'`; leads solo vía gateway.
-- 2026-09-14: tarifas v2 (`Comercial/tarifas.md`, con fecha de vigencia): packs web P1 900 / P2 1.400 / P3 2.500 / P4 4.200 €; extras mantenimiento 49 / 149 €/mes, SEO 250 / 600 €, GEO 300 €, ciberseguridad 250 €; regalos por pack no oficiales; ampliación = diferencia de lista sin descuento.
-- 2026-09-14: programa de afiliados en la web v1 dentro del área interna de clientes/afiliados (D15): `?ref=CODIGO` → lead atribuido; cliente 2 meses de mantenimiento, no cliente 10 %, premium (a mano) 20 %, sobre el primer pedido sin IVA; pago manual marcado en admin. Spec v1.1.
-- 2026-09-13: proyecto creado con `/nuevo-proyecto`.
-- 2026-09-13: spec v1. Dos audiencias con igual peso (empresas que contratan / negocios locales); Jose se presenta como freelance, sin marca de agencia. Persona principal: dueña de negocio local.
-- 2026-09-13: sin MVP; producto final v1 completo, cuanto antes. SEO + GEO como requisito de primer nivel.
-- 2026-09-13: foro eliminado; se conservan chat IA, blog (MDX en repo, comentarios solo con cuenta) y portal cliente. Panel admin propio (leads, moderación, portal, chat). Leads → Supabase + Telegram vía n8n.
-- 2026-09-13: showcase técnico: generador de propuesta con IA (precio por reglas desde tarifas, nunca por LLM), GSAP. Descartados 3D, datos en vivo, sección I+D.
-- 2026-09-13: preguntas abiertas cerradas: chat con cuenta; comentarios en cola de aprobación; blog desde cero (slugs viejos → 410); SEO para toda España sin ciudad; 3catinfo con nombre pero sin métricas ni stack; Umami como tarea infra del plan; Llama 3.3 70B.
-- 2026-09-13: insumos comerciales creados en el vault (`Comercial/tarifas.md`, `condiciones.md`, `voz.md`): 40 €/h, 150 €/feature, web básica 900 €, reservas/catálogo 1.400 €, app 4.000/6.000 €, mantenimiento 49 €/mes sin hosting; pago 40/30/30; 2 rondas, 30 días de garantía; legales incluidos.
-- 2026-09-13: stack Next.js App Router + Tailwind v4 + shadcn + GSAP; Cloudflare Workers vía OpenNext; monorepo pnpm con `josecoded-api` movido a `apps/api`. Solo modo oscuro. Analítica Umami en Omen + Cloudflare Web Analytics.
+
+- **2026-09-24**: indexados con graphify `josecoded-api` y `josecoded-worker`; el grafo de `josecoded` se deja como está (documentación) hasta que haya código.
+- **2026-09-22**: estilo cerrado. Vidrio, píldora + 16–18 px, morado en acción/enlaces/foco/datos y **verde como segundo acento libre**; Sora/Manrope/JetBrains Mono con mono muy presente; **densidad media y unidades relativas en todo** (regla de proyecto); campos hundidos, tablas con separador fino, marcos de dispositivo, iconos Lucide, vacíos con glifo grande. Motion: entrada una sola vez, sin pinning, hero que se deshace al 50 % de viewport y se rehace al subir, hover con canto + flecha + luz que sigue al cursor, cifras que cuentan una vez, reduced-motion con fundidos. Variante elegida: **Cristal**. Transición de página: **fundido a negro + cortina de glifos** (no el barrido que ocupaba la pantalla de golpe).
+- **2026-09-22**: la home pasa a ser un **recorrido continuo en 3D**: el hero se deshace y sus glifos forman un eje vertical que rota con el scroll, se desplaza (centro → izquierda → derecha) y tiene un nodo por sección (Presentación · Qué hago · Stack · Proyectos · Las dos vías · Contacto), con el contenido en paneles de vidrio.
+- **2026-09-19**: hero aprobado (D16) y **módulo Radar en v1** (D17–D26): caza de empleo y encargos freelance, envío **solo tras confirmación de Jose**, conectores enchufables, Gmail por API (Proton diferido), Calendar secundario, Telegram, Supabase como fuente de verdad. Estimación +35–45 % sobre el resto de v1. Plan de 97 tareas.
+- **2026-09-17**: navegación clásica (se descartó el shell IDE-lite). Esquema real de Supabase verificado: el admin es `staff_members.role='admin'` (no existe `admin_superusers`) y los leads solo se crean vía gateway.
+- **2026-09-14**: tarifas v2 en el vault (packs P1 900 / P2 1.400 / P3 2.500 / P4 4.200 €, extras, mantenimiento 49/149 €/mes) y programa de afiliados (2 meses / 10 % / 20 %).
+- **2026-09-13**: dos audiencias de igual peso (empresas que contratan y negocios locales), Jose como freelance sin marca de agencia; sin MVP, producto final v1; SEO + GEO de primer nivel; monorepo en Cloudflare Workers con OpenNext.

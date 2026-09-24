@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>eje · recorrido 3D continuo de la home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script>/* marca el modo de movimiento reducido antes del primer pintado; ?reduce=1 lo fuerza para revisarlo */
+if (matchMedia('(prefers-reduced-motion: reduce)').matches || /[?&]reduce=1/.test(location.search)) document.documentElement.dataset.reduce = '1';</script>
+<link rel="stylesheet" href="styles.css?v=6">
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/" } }</script>
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+
+<header class="nav">
+  <span class="nav__brand">josecoded</span>
+  <nav class="nav__links" aria-label="Principal"><a href="#sec-4">Empresas</a><a href="#sec-4">Negocios</a><a href="#sec-3">Proyectos</a><a href="#sec-2">Stack</a></nav>
+  <span class="nav__right"><a class="btn btn--primary btn--sm" href="#sec-5">Contacto</a></span>
+</header>
+
+<div class="bg" aria-hidden="true">
+  <div class="bg__drift" id="bg-drift"></div>
+  <div class="bg__ray" id="bg-ray"></div>
+  <div class="bg__grid" id="bg-grid"></div>
+  <div class="bg__grain" id="bg-grain"></div>
+</div>
+<canvas id="three" aria-hidden="true"></canvas>
+
+<div class="switch" role="group" aria-label="Forma del eje">
+  <span class="switch__label" aria-hidden="true">eje</span>
+  <button type="button" class="switch__btn is-on" data-variant="0" aria-pressed="true">A · Hélice</button>
+  <button type="button" class="switch__btn" data-variant="1" aria-pressed="false">B · Anillos</button>
+</div>
+
+<nav class="axisnav" id="axisnav" aria-label="Recorrido de la home"></nav>
+
+<main id="main">
+
+  <section class="hero" id="hero">
+    <div class="hero__left">
+      <a class="badge" href="#sec-5"><span class="dot"></span> Disponible para proyectos <span class="badge__arrow">›</span></a>
+      <h1>Jose Carlos<br>Sánchez</h1>
+      <p class="sub">Hago apps y webs que se publican y se usan. Para empresas: desarrollo web, móvil e IA. Para tu negocio: una web con precio cerrado.</p>
+      <div class="ctas"><a class="btn btn--primary" href="#sec-3">Ver proyectos</a><a class="btn btn--link" href="#sec-4">Una web para mi negocio →</a></div>
+    </div>
+    <div class="hero__right" id="stage" role="img" aria-label="Partículas de código que se transforman en un móvil, una web y un chip con una red neuronal"></div>
+    <p class="hero__hint" aria-hidden="true">baja y el objeto se convierte en el eje</p>
+  </section>
+
+  <section class="sec sec--center" id="sec-0" data-node="0" aria-labelledby="t-0">
+    <div class="panel-glass panel-glass--wide">
+      <p class="kicker">presentación</p>
+      <h2 id="t-0" class="h2">Lo que se puede comprobar</h2>
+      <p class="lead">Cinco datos verificables antes de cualquier explicación. Desarrollador full-stack freelance, España.</p>
+      <ul class="proof">
+        <li><span class="proof__k">apps publicadas</span><span class="proof__v">6 en App Store y Google Play</span></li>
+        <li><span class="proof__k">esta web</span><span class="proof__v">carga en menos de 1 s (LCP 0,8 s)</span></li>
+        <li><span class="proof__k">código público</span><span class="proof__v">18 repos en GitHub</span></li>
+        <li><span class="proof__k">precio cerrado</span><span class="proof__v">webs para negocios desde 900 €</span></li>
+        <li><span class="proof__k">respuesta</span><span class="proof__v">en menos de 24 h laborables</span></li>
+      </ul>
+      <p class="sample">Datos de muestra: en producción salen de la build y de la API de GitHub.</p>
+    </div>
+  </section>
+
+  <section class="sec sec--right" id="sec-1" data-node="1" aria-labelledby="t-1">
+    <div class="panel-glass">
+      <p class="kicker">qué hago</p>
+      <h2 id="t-1" class="h2">Apps y webs que se publican</h2>
+      <p class="lead">Tres frentes, el mismo criterio: que salga a producción y alguien lo use.</p>
+      <ul class="facts">
+        <li><b>Móvil</b> — React Native y Expo. Publicación y mantenimiento en App Store y Google Play.</li>
+        <li><b>Web</b> — Next.js sobre Cloudflare Workers. Rápida, medida en cada build.</li>
+        <li><b>IA integrada</b> — asistentes y automatizaciones conectadas a tus datos, en tu infraestructura.</li>
+      </ul>
+      <p><a class="lnk" href="#sec-4">Ver cómo trabajo →</a></p>
+    </div>
+  </section>
+
+  <section class="sec sec--right" id="sec-2" data-node="2" aria-labelledby="t-2">
+    <div class="panel-glass">
+      <p class="kicker">habilidades y stack</p>
+      <h2 id="t-2" class="h2">Cómo está hecha esta web</h2>
+      <p class="lead">Esta web la he hecho yo con las mismas herramientas que uso en los proyectos.</p>
+      <pre class="arch" aria-label="Esquema de arquitectura">navegador ─▶ Workers (Next.js)
+               ├─▶ gateway Hono
+               │     ├─▶ Supabase
+               │     └─▶ Fastify propio
+               └─▶ Umami (sin cookies)</pre>
+      <ul class="chips">
+        <li>TypeScript</li><li>Next.js</li><li>React Native</li><li>Hono</li><li>Supabase</li><li>Fastify</li><li>Workers</li>
+      </ul>
+      <p class="facts-inline">24 tablas · 31 RLS · 186 tests · LCP 0,8 s</p>
+      <p class="sample">Datos de muestra: en producción se generan en CI.</p>
+    </div>
+  </section>
+
+  <section class="sec sec--left" id="sec-3" data-node="3" aria-labelledby="t-3">
+    <div class="panel-glass panel-glass--wide">
+      <p class="kicker">proyectos</p>
+      <h2 id="t-3" class="h2">Proyectos</h2>
+      <p class="lead">Apps y webs con enlace a stores, web o código.</p>
+      <ul class="cards">
+        <li class="card">
+          <div class="device" aria-hidden="true"><span class="device__notch"></span><span class="device__screen"><i style="width:62%"></i><i style="width:88%"></i><i style="width:74%"></i><i class="is-accent" style="width:44%"></i><i style="width:80%"></i></span></div>
+          <h3 class="card__t">Proyecto de muestra A</h3>
+          <p class="card__d">App de gestión para tiendas. React Native, Supabase. Publicada en las dos stores.</p>
+          <p class="card__l"><a class="lnk" href="#sec-3">App Store →</a> <a class="lnk" href="#sec-3">Google Play →</a></p>
+        </li>
+        <li class="card">
+          <h3 class="card__t">Proyecto de muestra B</h3>
+          <p class="card__d">Web de reservas con pasarela de pago y panel propio. Next.js sobre Workers.</p>
+          <p class="card__l"><a class="lnk" href="#sec-3">Ver web →</a> <a class="lnk" href="#sec-3">Código →</a></p>
+        </li>
+        <li class="card">
+          <h3 class="card__t">Proyecto de muestra C</h3>
+          <p class="card__d">Asistente interno sobre documentación privada. Fastify, embeddings, n8n.</p>
+          <p class="card__l"><a class="lnk" href="#sec-3">Ver caso →</a></p>
+        </li>
+      </ul>
+      <p><a class="lnk" href="#sec-3">Ver todos los proyectos →</a></p>
+      <p class="sample">Datos de muestra: títulos, textos y capturas son de relleno.</p>
+    </div>
+  </section>
+
+  <section class="sec sec--left" id="sec-4" data-node="4" aria-labelledby="t-4">
+    <div class="panel-glass panel-glass--wide">
+      <p class="kicker">para empresas · para tu negocio</p>
+      <h2 id="t-4" class="h2">Dos vías, el mismo peso</h2>
+      <div class="paths">
+        <div class="path">
+          <p class="kicker">negocios</p>
+          <h3 class="path__t">Webs para tu negocio</h3>
+          <ul class="facts">
+            <li>4 packs, de 900 a 4.200 €, sin IVA</li>
+            <li>De 1 a 3 semanas, precio y plazo cerrados</li>
+            <li>Dominio y hosting a tu nombre</li>
+          </ul>
+          <p><a class="btn btn--primary btn--sm" href="#sec-5">Ver packs y precios</a></p>
+          <p><a class="lnk" href="#sec-5">Escribir por WhatsApp →</a></p>
+        </div>
+        <div class="path">
+          <p class="kicker">empresas</p>
+          <h3 class="path__t">Trabajo con empresas</h3>
+          <ul class="facts">
+            <li>Web (Next.js), móvil (React Native) e IA integrada</li>
+            <li>40 €/h o feature cerrada desde 150 €</li>
+            <li>Disponible para proyectos</li>
+          </ul>
+          <p><a class="btn btn--ghost btn--sm" href="#sec-5">Ver cómo trabajo</a></p>
+          <p><a class="lnk" href="#sec-5">Reservar 20 min →</a></p>
+        </div>
+      </div>
+      <p class="sample">Datos de muestra: packs, tarifas y disponibilidad son de relleno.</p>
+    </div>
+  </section>
+
+  <section class="sec sec--center" id="sec-5" data-node="5" aria-labelledby="t-5">
+    <div class="panel-glass">
+      <p class="kicker">contacto</p>
+      <h2 id="t-5" class="h2">Hablamos</h2>
+      <p class="lead">Respondo en menos de 24 h laborables.</p>
+      <div class="ctas">
+        <a class="btn btn--primary" href="#sec-5">Escribir por WhatsApp</a>
+        <a class="btn btn--ghost" href="#sec-5">Reservar 20 min</a>
+      </div>
+      <p class="linkrow"><a class="lnk" href="#sec-5">Formulario →</a> <a class="lnk" href="#sec-5">Preguntar al asistente →</a></p>
+      <p class="who"><span class="who__av" aria-hidden="true">JC</span> <span>Jose Carlos Sánchez · Desarrollador full-stack freelance · España <a class="lnk" href="#sec-5">Sobre mí →</a></span></p>
+    </div>
+  </section>
+
+  <footer class="pie" id="pie">
+    <div class="pie__in">
+      <p class="pie__brand">josecoded</p>
+      <div class="pie__cols">
+        <div><p class="kicker">secciones</p><a class="lnk" href="#sec-3">Proyectos</a> <a class="lnk" href="#sec-2">Stack</a> <a class="lnk" href="#sec-4">Empresas</a> <a class="lnk" href="#sec-4">Negocios</a></div>
+        <div><p class="kicker">contacto</p><a class="lnk" href="#sec-5">WhatsApp</a> <a class="lnk" href="#sec-5">Formulario</a> <a class="lnk" href="#sec-5">Reservar 20 min</a></div>
+        <div><p class="kicker">legal</p><a class="lnk" href="#pie">Aviso legal</a> <a class="lnk" href="#pie">Privacidad</a> <a class="lnk" href="#pie">Cookies</a></div>
+      </div>
+      <p class="pie__note">Prototipo de diseño · datos de muestra · <kbd>c</kbd> abre los controles</p>
+    </div>
+  </footer>
+
+</main>
+
+<aside class="panel" id="panel" hidden>
+  <div class="panel__row"><b>eje</b><span><button id="replay" type="button">Intro</button> <button id="toTop" type="button">Arriba</button></span></div>
+  <div class="panel__row panel__variant">
+    <button type="button" class="switch__btn is-on" data-variant="0">A hélice</button>
+    <button type="button" class="switch__btn" data-variant="1">B anillos</button>
+  </div>
+  <label>velocidad de rotación <input type="range" id="rot" min="0" max="2.5" step="0.05" value="1"><output>1</output></label>
+  <label>densidad de partículas <input type="range" id="dens" min="0.15" max="1" step="0.01" value="1"><output>1</output></label>
+  <label>separación de nodos <input type="range" id="sep" min="1.8" max="5" step="0.1" value="3"><output>3</output></label>
+  <label>amplitud lateral <input type="range" id="lat" min="0" max="1.6" step="0.05" value="1"><output>1</output></label>
+  <label>brillo <input type="range" id="bright" min="0.2" max="2" step="0.05" value="1"><output>1</output></label>
+  <label>tamaño de glifo <input type="range" id="size" min="6" max="34" step="1" value="15"><output>15</output></label>
+  <label>bloom <input type="range" id="bloom" min="0" max="1.2" step="0.05" value="0.32"><output>0.32</output></label>
+  <label class="chk"><input type="checkbox" id="forceOn"> progreso de scroll forzado</label>
+  <label>progreso <input type="range" id="scrollp" min="0" max="1" step="0.002" value="0"><output>0</output></label>
+  <p class="panel__fps"><span id="fps">–</span> fps · <span id="count">–</span> partículas · nodo <span id="knode">–</span></p>
+</aside>
+
+<p class="filewarn" id="filewarn" hidden>Este prototipo carga Three.js como módulo ES: ábrelo por <code>http://localhost:8765/eje/</code>. Con <code>file://</code> el navegador bloquea los módulos.</p>
+
+<script>if (location.protocol === 'file:') document.getElementById('filewarn').hidden = false;</script>
+<script src="app.js?v=7" type="module"></script>
+</body>
+</html>
