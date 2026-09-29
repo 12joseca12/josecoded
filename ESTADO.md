@@ -10,7 +10,7 @@ Servir con `python3 -m http.server 8765 --directory docs/superpowers/design/ref`
 Qué tiene la v6:
 - **Hero** aprobado (split + GlyphScene: glifos que morfan móvil → web → chip IA). La nube vive solo en el hero.
 - **Orden tras el hero** (y de la cabecera): Sobre mí · Empresas · Negocios · Proyectos · Blog · cierre «¿Empezamos?».
-- **Cabecera**: ⌘K, **Chat** (punto verde), **Login** destacado en violeta. «Contacto» fuera de la cabecera (sigue en cierre, badge y ⌘K) — *pendiente de confirmar*.
+- **Cabecera**: ⌘K, **Chat** (punto verde), **Login** destacado en violeta. «Contacto» fuera de la cabecera (sigue en cierre y ⌘K) — confirmado 2026-09-29.
 - **Cada sección es una escena** a pantalla con un bento de 3 celdas sin huecos; Negocios con los 4 packs (900 / 1.400 / 2.500 / 4.200 € desde, sin IVA). **Proyectos es un carrusel fijado** horizontal (CSS `animation-timeline`).
 - **Un gesto = una escena**: rueda/trackpad/teclado/enlaces deslizan ~0,8 s a la siguiente; en Proyectos, una tarjeta por gesto. Solo en escritorio con puntero fino y si la escena cabe; si no, scroll nativo.
 - **Transiciones por elemento** ligadas al scroll (entra: sube + nitidez; sale: retrocede + se apaga). Celdas grandes se amplían con View Transitions (Esc cierra).
@@ -38,9 +38,10 @@ Documentos (anteriores a la v6, hay que actualizarlos):
 ## Pendientes
 
 **Confirmaciones de Jose (cierran el diseño)**
-- [ ] Badge «Disponible para proyectos» sobre el nombre en el hero: ¿se queda o se quita? (impeccable lo desaconseja como eyebrow).
-- [ ] «Contacto» fuera de la cabecera: ¿vale así?
-- [ ] ¿«Salvo en la home» del indicador de sección significaba «nunca en el hero» (implementado) u otra cosa?
+- [x] Badge «Disponible para proyectos»: quitado del hero (2026-09-29).
+- [x] «Contacto» fuera de la cabecera: confirmado.
+- [x] Indicador de sección: «nunca en el hero», como está implementado.
+- [ ] A 320 px el botón de menú de la cabecera se sale 8 px por la derecha (preexistente; entra en la revisión de acabado).
 
 **Cerrar el diseño (siguiente sesión)**
 - [ ] Revisión de acabado de impeccable sobre `home-v6` (finish reviewer) y fixes.
@@ -63,7 +64,7 @@ Documentos (anteriores a la v6, hay que actualizarlos):
 
 ## Siguiente paso
 
-1. Jose responde las tres confirmaciones.
+1. ~~Jose responde las tres confirmaciones.~~ Hecho 2026-09-29.
 2. Revisión de acabado de `home-v6` + fixes → documentador → `DESIGN.md`.
 3. Actualizar UX §4.1, spec §12 y fase 2 del plan; `/plan-eng-review`.
 4. Fase 0 del plan (seis validaciones técnicas sin tocar producción) y fase 1 (monorepo, `packages/pricing`, CI).

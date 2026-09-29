@@ -448,7 +448,7 @@ function splitChars(el) {
 }
 let drops = null;
 function prepareChars() {
-  const els = ['.badge', '.hero__title', '.hero__sub', '.hero__ctas'].map((q) => document.querySelector(q));
+  const els = ['.hero__title', '.hero__sub', '.hero__ctas'].map((q) => document.querySelector(q));
   els.forEach((el) => { if (!el.hasAttribute('aria-label')) el.setAttribute('aria-label', el.textContent.replace(/\s+/g, ' ').trim()); });
   const vh = innerHeight;
   drops = els.flatMap(splitChars).map((el) => { const start = -(0.35 + Math.random() * 0.75) * vh, landT = 0.4 + Math.random() * 0.8; return { el, start, speed: -start / landT, y: start, landed: false, flash: 0 }; });
