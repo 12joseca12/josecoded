@@ -176,7 +176,7 @@ main, .foot { position: relative; z-index: 2; }
 .key.is-down { transform: translateY(2px); box-shadow: inset 0 1px 0 rgb(185 173 255 / 0.2), inset 0 -1px 0 rgb(5 3 20 / 0.7), 0 0 0 1px rgb(157 140 255 / 0.5), 0 4px 10px -6px rgb(5 3 20 / 0.9); }
 
 /* ---------- responsive base ---------- */
-@media (max-width: 1080px) { .nav__links { display: none; } }
+@media (max-width: 1080px) { .nav__links { display: none; } .nav__menu { display: grid; } }
 @media (max-width: 900px) {
   .hero { grid-template-columns: 1fr; padding-top: 5.5rem; gap: 0.5rem; align-content: start; }
   .hero__stage { order: -1; max-height: 38svh; justify-self: center; aspect-ratio: 1; width: auto; height: 38svh; }
