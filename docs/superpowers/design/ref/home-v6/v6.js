@@ -146,3 +146,30 @@ const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersec
 cards.forEach((c) => io.observe(c));
 setActive(0);
 icons();
+
+/* =================== indicador de sección (líneas a la derecha) ===================
+   Emil: cambio de estado frecuente → 200 ms ease-out, solo transform/color. Aparece al salir del hero (250 ms) y se va al volver. */
+{
+  const secs = [...document.querySelectorAll('main > section:not(.hero)')];
+  const names = { 'sobre-mi': 'Sobre mí', empresas: 'Empresas', negocios: 'Negocios', proyectos: 'Proyectos', blog: 'Blog', hablamos: 'Contacto' };
+  const pager = document.createElement('nav');
+  pager.className = 'pager'; pager.setAttribute('aria-label', 'Secciones');
+  pager.innerHTML = secs.map((s) => `<button type="button" aria-label="${names[s.id] || s.id}" data-id="${s.id}"><i aria-hidden="true"></i></button>`).join('');
+  document.body.append(pager);
+  const btns = [...pager.querySelectorAll('button')];
+  btns.forEach((b) => b.addEventListener('click', () => { const t = document.getElementById(b.dataset.id); const y = t.getBoundingClientRect().top + scrollY; reduce ? scrollTo(0, y) : glide(y); }));
+  const hero = document.querySelector('.hero');
+  const update = () => {
+    const mid = innerHeight / 2;
+    const inHero = hero.getBoundingClientRect().bottom > mid;
+    pager.classList.toggle('is-on', !inHero);
+    const cur = secs.findIndex((s) => { const r = s.getBoundingClientRect(); return r.top <= mid && r.bottom > mid; });
+    btns.forEach((b, i) => b.setAttribute('aria-current', i === cur));
+  };
+  // se oculta si el margen derecho no deja sitio (menos de 2,25 rem)
+  const fit = () => { const cs = getComputedStyle(pager); const rg = parseFloat(cs.right) * 2; pager.classList.toggle('is-cramped', rg < 36); };
+  addEventListener('scroll', update, { passive: true }); addEventListener('resize', () => { fit(); update(); }, { passive: true });
+  // respaldo: IntersectionObserver también se entera del scroll programático (paginado, enlaces)
+  const ioP = new IntersectionObserver(update, { rootMargin: '-50% 0px -50% 0px' }); [hero, ...secs].forEach((s) => ioP.observe(s));
+  fit(); update();
+}

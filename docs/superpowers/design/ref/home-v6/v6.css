@@ -205,3 +205,21 @@ html.paging { scroll-snap-type: none; scroll-behavior: auto; }
 
 
 [hidden] { display: none !important; }
+
+/* =================== indicador de sección: líneas en el margen derecho, sin texto =================== */
+.pager {
+  --rg: max(var(--pad-scene), calc((100vw - var(--max)) / 2 + var(--pad-scene)));   /* ancho real del margen derecho */
+  position: fixed; top: 50%; right: calc(var(--rg) / 2); z-index: 20;
+  display: grid; gap: 0.25rem; justify-items: center;
+  transform: translate(50%, -50%); opacity: 0; pointer-events: none;
+  transition: opacity 250ms var(--ease-out), transform 250ms var(--ease-out);
+}
+.pager.is-on { opacity: 1; pointer-events: auto; }
+.pager:not(.is-on) { transform: translate(calc(50% + 8px), -50%); }
+.pager button { display: grid; place-items: center; width: 2.25rem; height: 1.125rem; }   /* zona táctil mayor que la línea */
+.pager i { display: block; width: 1.5rem; height: 2px; border-radius: 2px; background: rgb(157 140 255 / 0.3); transform: scaleX(0.55); transform-origin: center; transition: transform 200ms var(--ease-out), background-color 200ms ease, height 200ms ease; }
+.pager button[aria-current="true"] i { transform: scaleX(1); height: 3px; background: var(--violet-soft); }
+@media (hover: hover) and (pointer: fine) { .pager button:not([aria-current="true"]):hover i { transform: scaleX(0.8); background: rgb(157 140 255 / 0.6); } }
+.pager button:focus-visible { outline-offset: 0; }
+.pager.is-cramped { display: none; }   /* margen demasiado estrecho: no se pisa el contenido */
+@media (prefers-reduced-motion: reduce) { .pager, .pager i { transition: opacity 150ms ease; } .pager:not(.is-on) { transform: translate(50%, -50%); } }
