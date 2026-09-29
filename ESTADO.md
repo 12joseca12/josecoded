@@ -53,7 +53,7 @@ Documentos (anteriores a la v6, hay que actualizarlos):
 - [ ] Reescribir UX §2 y §4.1 (home) y marcar UI v3 como superado; ajustar la fase 2 del plan a la v6 (paginado, carrusel fijado, View Transitions, container queries).
 - [ ] Alinear spec §12 con lo decidido: nube solo en el hero (ya coincide), cabecera nueva (Chat + Login), orden de secciones.
 - [ ] `/plan-eng-review` del plan (obligatorio: dinero e integraciones externas).
-- [ ] **Indicaciones de cómo trabajar** antes de escribir código real (pide Jose): documento de convenciones de trabajo del proyecto.
+- [x] **Indicaciones de cómo trabajar** antes de escribir código real: `docs/working-agreements.md` + reglas duras en `CLAUDE.md` (2026-09-29). Falta el paso manual de Jose: proteger `main` en GitHub (§9).
 - [ ] **Decisión de componentes de la home**: inventario de componentes de la v6 y cuáles pasan a la app real y cómo.
 - [ ] **Pantallas independientes**: listado de pantallas fuera de la home y **contenidos** de cada una.
 - [ ] Páginas derivadas sin diseñar: stack/CV, tarifas para negocios; personalización del área privada según objetivo del usuario.
@@ -80,6 +80,19 @@ Gates que no se cruzan sin OK explícito de Jose en la misma sesión: migracione
 
 ## Decisiones recientes
 
+- **2026-09-29 (convenciones de trabajo, `docs/working-agreements.md`; resumen en `CLAUDE.md`):**
+  1. Estilos: CSS Modules por componente que consumen solo tokens; sin Tailwind ni shadcn; stylelint prohíbe literales fuera del fichero de tokens.
+  2. Tokens: `.impeccable/design.json` genera `tokens.css` con test de deriva; la guía de qué token usar vive en `DESIGN.md`.
+  3. Motion: CSS nativo primero; JS propio mínimo en TypeScript; GSAP solo con justificación.
+  4. Navegadores: Baseline 2024 + `@supports` para `animation-timeline`, View Transitions y `backdrop-filter`; tabla de fallbacks obligatorios que `qa` comprueba en Safari.
+  5. Fidelidad: prototipo `home-v6` 1:1 (estructura y valores como tokens); React solo compone; desvíos marcados `deviation:` y decididos por Jose en el navegador.
+  6. Validación: capturas app/prototipo a 360, 900 y 1440 comparadas por diff; `ui` revisa; Jose aprueba en preview antes del merge.
+  7. Tests de UI: sin unit test en componentes sin lógica; TDD solo en lo que tiene comportamiento.
+  8. Unidades: relativas para todo lo que escala con el texto, breakpoints en `rem`; `px` solo en hairlines, trazos, sombras, desenfoques y offsets de motion.
+  9. Integración: PR por rama, squash merge, `main` protegida (paso manual de Jose en GitHub).
+  10. Contenidos: un JSON de literales por idioma en `messages/{es,en}.json` (hechos bajo `facts.*`, sin `facts.json` aparte); ningún literal en componentes; `i18n:check` lista `{{DATO}}` y claves faltantes.
+  11. Dependencias: pnpm siempre, nunca npm; solo las del plan; una extra con justificación de peso y alternativa nativa, la decide `revisor`.
+  12. Documento: `docs/working-agreements.md` completo + 10 reglas duras en `CLAUDE.md`. Quedan obsoletas la tarea 2.2 del plan (Tailwind, shadcn, Sora/Manrope) y el GSAP de la spec §5; pendiente decidir `packages/glyph-scene` frente a `scene.js` de la v6 (working-agreements §12).
 - **2026-09-29**: indicador de sección con líneas en el margen derecho (sin texto, activa más larga y violeta, oculto en el hero). Paginado por gesto, layout adaptativo por container queries y vida por celda. Repo indexado en codebase-memory con ADR.
 - **2026-09-26/27**: Jose elige el **bento**, con secciones claras a pantalla, transiciones suaves y **Proyectos como carrusel fijado** → `home-v6`. Quitada «Esta web la he hecho yo». Resúmenes de cada página tras el hero en orden Sobre mí · Empresas · Negocios · Proyectos · Blog, igual que la cabecera; cabecera con Chat y Login destacado.
 - **2026-09-25**: el hero se conserva; lo demás se rehace al estilo Raycast con un solo gesto por sección (fuera chorros, barridos, bordes iluminados, imanes y nube viajera: «básico y lioso»).
