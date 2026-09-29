@@ -23,9 +23,12 @@
     <button class="cmdk" type="button" id="cmdk-open" aria-haspopup="dialog"><i data-lucide="search" aria-hidden="true"></i><span>Buscar</span><kbd>⌘K</kbd></button>
     <a class="nav__lang" href="#" hreflang="en" lang="en">EN</a>
     <a class="nav__chat" href="#" aria-label="Abrir el chat"><span class="live" aria-hidden="true"></span><i data-lucide="message-square" aria-hidden="true"></i><span>Chat</span></a>
-    <a class="btn btn--solid btn--sm" href="#"><i data-lucide="log-in" aria-hidden="true"></i>Login</a>
-    <button class="nav__menu" type="button" aria-label="Abrir menú"><i data-lucide="menu" aria-hidden="true"></i></button>
+    <a class="btn btn--solid btn--sm" href="#" aria-label="Login"><i data-lucide="log-in" aria-hidden="true"></i><span>Login</span></a>
+    <button class="nav__menu" id="menu-btn" type="button" aria-label="Menú" aria-expanded="false" aria-controls="menu"><i class="m-open" data-lucide="menu" aria-hidden="true"></i><i class="m-close" data-lucide="x" aria-hidden="true"></i></button>
   </div>
+  <nav class="menu" id="menu" aria-label="Menú" hidden>
+    <a href="#sobre-mi">Sobre mí</a><a href="#empresas">Empresas</a><a href="#negocios">Negocios</a><a href="#proyectos">Proyectos</a><a href="#blog">Blog</a><a href="#hablamos">Contacto</a>
+  </nav>
 </header>
 <div class="field" id="field" aria-hidden="true"><div class="field__pool"></div><i class="beam beam--3"></i><i class="beam beam--1"></i><i class="beam beam--2"></i></div>
 <div class="grain" aria-hidden="true"></div>
@@ -41,6 +44,7 @@
       </div>
     </div>
     <div class="hero__stage" id="stage" role="img" aria-label="Caracteres de código que forman, por turnos, un móvil, una web y un chip de IA">
+      <img class="hero__static" src="glyph-phone-alpha.png" alt="" loading="lazy">
       <ol class="cycle" aria-hidden="true"><li></li><li></li><li></li></ol>
     </div>
   </section>
@@ -50,8 +54,7 @@
     <div class="bento-wrap"><div class="bento">
         <article class="cell surface cell--big cell--tall" style="--span:7" tabindex="-1">
           <header class="cell__head"><span class="cell__ic"><i data-lucide="user" aria-hidden="true"></i></span><h3>Sobre mí</h3><button class="cell__open" type="button" aria-label="Ampliar Sobre mí"><i data-lucide="maximize-2" aria-hidden="true"></i></button><button class="cell__close" type="button" aria-label="Cerrar"><i data-lucide="x" aria-hidden="true"></i></button></header>
-          <div class="cell__body"><div class="about"><span class="avatar" aria-hidden="true">JC</span><div><p class="about__name">Jose Carlos Sánchez</p><p class="muted">Desarrollador full-stack freelance · <span class="todo">{{DATO: ciudad}}</span></p></div></div>
-<p class="lead">Hago apps y webs que se publican y se usan, de la idea al despliegue. Trabajo con empresas y con negocios locales, sin agencia de por medio.</p>
+          <div class="cell__body"><div class="about"><div class="photo" aria-hidden="true"><span class="todo">{{DATO: foto real de Jose}}</span></div><div class="about__text"><p class="about__name">Jose Carlos Sánchez</p><p class="muted">Desarrollador full-stack freelance · <span class="todo">{{DATO: ciudad}}</span></p><p class="lead">Hago apps y webs que se publican y se usan, de la idea al despliegue. Trabajo con empresas y con negocios locales, sin agencia de por medio.</p></div></div>
 <a class="go" href="#">Conóceme<i data-lucide="arrow-right" aria-hidden="true"></i></a></div><div class="cell__more"><p class="muted">Aquí se abre la página completa.</p><a class="btn btn--solid btn--sm" href="#">Ir a Sobre mí</a></div>
         </article>
         <article class="cell surface " style="--span:5">
@@ -69,7 +72,7 @@
     <div class="bento-wrap"><div class="bento">
         <article class="cell surface cell--big cell--tall" style="--span:7" tabindex="-1">
           <header class="cell__head"><span class="cell__ic"><i data-lucide="building-2" aria-hidden="true"></i></span><h3>Servicios</h3><button class="cell__open" type="button" aria-label="Ampliar Servicios"><i data-lucide="maximize-2" aria-hidden="true"></i></button><button class="cell__close" type="button" aria-label="Cerrar"><i data-lucide="x" aria-hidden="true"></i></button></header>
-          <div class="cell__body"><ul class="plist plist--live"><span class="plist__hl" aria-hidden="true"></span><li><span class="ic"><i data-lucide="app-window"></i></span><span>Web con Next.js</span><span class="meta">producto y marketing</span></li><li><span class="ic"><i data-lucide="smartphone"></i></span><span>Apps con React Native</span><span class="meta">iOS y Android</span></li><li><span class="ic"><i data-lucide="sparkles"></i></span><span>IA integrada</span><span class="meta">asistentes y automatizaciones</span></li></ul>
+          <div class="cell__body"><ul class="plist plist--live"><span class="plist__hl" aria-hidden="true"></span><li><span class="ic"><i data-lucide="app-window"></i></span><span class="svc"><span>Web con Next.js</span><span class="give"><span class="todo">{{DATO: entregable de la web}}</span></span></span><span class="meta">producto y marketing</span></li><li><span class="ic"><i data-lucide="smartphone"></i></span><span class="svc"><span>Apps con React Native</span><span class="give"><span class="todo">{{DATO: entregable de la app}}</span></span></span><span class="meta">iOS y Android</span></li><li><span class="ic"><i data-lucide="sparkles"></i></span><span class="svc"><span>IA integrada</span><span class="give"><span class="todo">{{DATO: entregable de la IA}}</span></span></span><span class="meta">asistentes y automatizaciones</span></li></ul>
 <a class="go" href="#">Ver cómo trabajo<i data-lucide="arrow-right" aria-hidden="true"></i></a></div><div class="cell__more"><p class="muted">Aquí se abre la página completa.</p><a class="btn btn--solid btn--sm" href="#">Ir a Servicios</a></div>
         </article>
         <article class="cell surface cell--tint" style="--span:5">
@@ -106,19 +109,19 @@
       <div class="tour__track">
           <article class="tcard surface" data-i="0">
             <div class="tcard__art" aria-hidden="true"><img src="glyph-phone-alpha.png" alt="" loading="lazy"></div>
-            <div class="tcard__copy"><p class="tcard__kicker"><i data-lucide="smartphone" aria-hidden="true"></i>App</p><h3 class="tcard__name">HazmeFila</h3><p class="lead"><span class="todo">{{DATO: qué hace, en una frase}}</span></p><a class="go" href="#">Ver proyecto<i data-lucide="arrow-right" aria-hidden="true"></i></a></div>
+            <div class="tcard__copy"><h3 class="tcard__name">HazmeFila</h3><p class="lead"><span class="todo">{{DATO: qué hace, en una frase}}</span></p><p class="tcard__meta"><i data-lucide="smartphone" aria-hidden="true"></i>App</p><a class="go" href="#">Ver proyecto<i data-lucide="arrow-right" aria-hidden="true"></i></a></div>
           </article>
           <article class="tcard surface" data-i="1">
             <div class="tcard__art" aria-hidden="true"><img src="glyph-web2-alpha.png" alt="" loading="lazy"></div>
-            <div class="tcard__copy"><p class="tcard__kicker"><i data-lucide="briefcase" aria-hidden="true"></i>Web</p><h3 class="tcard__name">Oportunix</h3><p class="lead"><span class="todo">{{DATO: qué hace, en una frase}}</span></p><a class="go" href="#">Ver proyecto<i data-lucide="arrow-right" aria-hidden="true"></i></a></div>
+            <div class="tcard__copy"><h3 class="tcard__name">Oportunix</h3><p class="lead"><span class="todo">{{DATO: qué hace, en una frase}}</span></p><p class="tcard__meta"><i data-lucide="globe" aria-hidden="true"></i>Web</p><a class="go" href="#">Ver proyecto<i data-lucide="arrow-right" aria-hidden="true"></i></a></div>
           </article>
           <article class="tcard surface" data-i="2">
             <div class="tcard__art" aria-hidden="true"><img src="glyph-web2-alpha.png" alt="" loading="lazy"></div>
-            <div class="tcard__copy"><p class="tcard__kicker"><i data-lucide="store" aria-hidden="true"></i>Web</p><h3 class="tcard__name">Webs de comercios</h3><p class="lead"><span class="todo">{{DATO: qué hace, en una frase}}</span></p><a class="go" href="#">Ver proyecto<i data-lucide="arrow-right" aria-hidden="true"></i></a></div>
+            <div class="tcard__copy"><h3 class="tcard__name">Webs de comercios</h3><p class="lead"><span class="todo">{{DATO: qué hace, en una frase}}</span></p><p class="tcard__meta"><i data-lucide="globe" aria-hidden="true"></i>Web</p><a class="go" href="#">Ver proyecto<i data-lucide="arrow-right" aria-hidden="true"></i></a></div>
           </article>
           <article class="tcard surface" data-i="3">
             <div class="tcard__art" aria-hidden="true"><img src="glyph-phone-alpha.png" alt="" loading="lazy"></div>
-            <div class="tcard__copy"><p class="tcard__kicker"><i data-lucide="smartphone" aria-hidden="true"></i>App</p><h3 class="tcard__name">3catinfo</h3><p class="lead"><span class="todo">{{DATO: qué hace, en una frase}}</span></p><a class="go" href="#">Ver proyecto<i data-lucide="arrow-right" aria-hidden="true"></i></a></div>
+            <div class="tcard__copy"><h3 class="tcard__name">3catinfo</h3><p class="lead"><span class="todo">{{DATO: qué hace, en una frase}}</span></p><p class="tcard__meta"><i data-lucide="smartphone" aria-hidden="true"></i>App</p><a class="go" href="#">Ver proyecto<i data-lucide="arrow-right" aria-hidden="true"></i></a></div>
           </article>
       </div>
       <div class="rail" aria-hidden="true"><div class="rail__links"><span data-i="0">HazmeFila</span><span data-i="1">Oportunix</span><span data-i="2">Webs de comercios</span><span data-i="3">3catinfo</span></div><div class="rail__bar"><span></span></div></div>

@@ -340,7 +340,7 @@ function boot() {
   function targetFor(s) {
     const kind = s.dataset.scene, side = s.dataset.side;
     if (kind === 'off') return { x: heroX, y: heroY + vh * 0.35, scale: heroScale * 0.9, bright: 0, mirror: 0, state: null };   // la nube vive solo en el hero
-    if (kind === 'cycle') return { x: heroX, y: heroY, scale: heroScale, bright: 1, mirror: narrow() ? 0 : 1, state: null };
+    if (kind === 'cycle') return { x: heroX, y: heroY, scale: heroScale, bright: narrow() ? 0.55 : 1, mirror: narrow() ? 0 : 1, state: null };
     if (narrow()) return { x: 0, y: 0.2 * vh, scale: sideScale * 0.9, bright: 0, mirror: 0, state: null };   // en móvil la escena vive solo en el hero: nunca bajo texto ni botones
     const x = side === 'left' ? -vw * 0.27 : side === 'right' ? vw * 0.27 : 0;
     if (kind === 'doors') {   // anclada al hueco real entre las dos puertas, no al centro de pantalla
@@ -379,7 +379,7 @@ function boot() {
   addEventListener('pointermove', (e) => { tiltX = e.clientX / innerWidth - 0.5; tiltY = e.clientY / innerHeight - 0.5; }, { passive: true });
 
   /* ---------- bucle (pausa con la pestaña oculta) ---------- */
-  const cur = { x: heroX, y: heroY, scale: heroScale, bright: 1, mirror: 1 };
+  const cur = { x: heroX, y: heroY, scale: heroScale, bright: narrow() ? 0.55 : 1, mirror: 1 };
   const field = document.getElementById('field'); let fx = 0, fy = 0;
   let last = performance.now(), running = true;
   document.addEventListener('visibilitychange', () => { running = !document.hidden; if (running) { last = performance.now(); requestAnimationFrame(frame); } });
