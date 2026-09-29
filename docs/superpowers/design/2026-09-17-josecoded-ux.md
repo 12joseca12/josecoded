@@ -1,6 +1,6 @@
 # joseCoded — diseño de experiencia (UX) v3
 
-**Fecha:** 2026-09-17 · **Versión:** 3.2 (2026-09-19: validación de v3.1 con `usuario-ejemplo` como Jose operador, reclutadora y Marta —los tres PASAN—; confirmación por Telegram con bloqueos, "visto" y segundo paso; pausa con fecha; edición de material en móvil; vinculación de correo por enlace de Gmail; control de plantilla; etiqueta de la escena fuera de producción; dos alternativas de hero para Jose; §16.4 y §21 con los cambios; v3.1: **Radar** en `/admin` —bandeja, detalle, plataformas, perfil, calendario y confirmación por Telegram— según spec v1.5 §13, y **hero en móvil** alineado con D16 —vídeo/poster de la misma escena e intro reducida—; §1.3, §2.3, §3.6, §3.7, §3.9, §3.10, §4.1, §7.12–7.18, §9.10–9.14, §10.8 y §20 con los cambios; v3.0: navegación clásica y hero split con partículas-glifo según el prototipo aprobado `ref/hero-lab-3/`; se retira el shell IDE-lite; §3, §3.6, §3.7, §4.1 reescritos, resto ajustado, §19 con los cambios; v2.1: alineada con el esquema real de Supabase, diseño técnico v1.1 §0 H1–H8 y §3.3; v2.0: shell IDE-lite, hero de presentación, textos con hechos; v1.1 validada con `usuario-ejemplo`, §16) · **Perfil:** web · **Spec:** `docs/superpowers/specs/2026-09-13-josecoded-plataforma.md` (v1.5) · **Precios:** `Comercial/tarifas.md` (v2, vigencia 2026-09-14) · **Voz:** `Comercial/voz.md`.
+**Fecha:** 2026-09-17 · **Versión:** **4.0 (2026-09-29: home según `ref/home-v6/` —§2 y §4.1 reescritos—, UI v3 superada por `DESIGN.md`, páginas interiores según `2026-09-29-pantallas-y-contenidos.md` v1.0 —§3, §4.2–4.10, §5.4 y §6.1 con notas «superado por»—, §22 con los cambios)**; 3.2 (2026-09-19: validación de v3.1 con `usuario-ejemplo` como Jose operador, reclutadora y Marta —los tres PASAN—; confirmación por Telegram con bloqueos, "visto" y segundo paso; pausa con fecha; edición de material en móvil; vinculación de correo por enlace de Gmail; control de plantilla; etiqueta de la escena fuera de producción; dos alternativas de hero para Jose; §16.4 y §21 con los cambios; v3.1: **Radar** en `/admin` —bandeja, detalle, plataformas, perfil, calendario y confirmación por Telegram— según spec v1.5 §13, y **hero en móvil** alineado con D16 —vídeo/poster de la misma escena e intro reducida—; §1.3, §2.3, §3.6, §3.7, §3.9, §3.10, §4.1, §7.12–7.18, §9.10–9.14, §10.8 y §20 con los cambios; v3.0: navegación clásica y hero split con partículas-glifo según el prototipo aprobado `ref/hero-lab-3/`; se retira el shell IDE-lite; §3, §3.6, §3.7, §4.1 reescritos, resto ajustado, §19 con los cambios; v2.1: alineada con el esquema real de Supabase, diseño técnico v1.1 §0 H1–H8 y §3.3; v2.0: shell IDE-lite, hero de presentación, textos con hechos; v1.1 validada con `usuario-ejemplo`, §16) · **Perfil:** web · **Spec:** `docs/superpowers/specs/2026-09-13-josecoded-plataforma.md` (v1.5) · **Precios:** `Comercial/tarifas.md` (v2, vigencia 2026-09-14) · **Voz:** `Comercial/voz.md`.
 
 Este documento describe todas las pantallas, subpantallas, componentes, estados, páginas de error, flujos y textos de interfaz de josecoded v1, para que `ui` defina el sistema visual y el `arquitecto` escriba el plan sin adivinar. Respeta las decisiones de §11, §12 (D16) y §13 (D18–D26) de la spec y la decisión del hero del 2026-09-19 (`ESTADO.md`); no las reabre.
 
@@ -8,7 +8,8 @@ Convenciones:
 - **Mobile-first.** Cada wireframe es la vista móvil (≈ 390 px); la nota "Escritorio" indica cómo se reorganiza a partir de ≈ 1024 px.
 - **Una acción primaria por pantalla**, marcada como `[[ Primaria ]]`. Secundarias como `[ Secundaria ]`. Enlaces como `> enlace`.
 - **Sin fotos** (salvo la decisión abierta del retrato, §13.4) **y sin decoración generativa fuera del lenguaje del hero.** La única "decoración" es la escena de partículas-glifo del hero y sus miniaturas (§3.7, §4.1), más el fondo fijo de grano y rayo. Sin retículas, sin parallax. El motion se limita a cinco recursos con sentido técnico (§3.7). Los bloques marcados `== bloque ==` son secciones de scroll con `CompileReveal` en su `h2`.
-- **Navegación clásica** (§3): cabecera fija con cinco enlaces + Entrar + Contacto, hoja "Menú" en móvil, pie común. Los wireframes de §4 muestran la línea `(cabecera)` como abreviatura de la cabecera de §3.2.
+- **Navegación clásica** (§3): cabecera fija con cinco enlaces; **desde v4.0 el orden y los controles son los de la v6** (Sobre mí · Empresas · Negocios · Proyectos · Blog; idioma → ⌘K → Chat → Login; **sin «Contacto» en la barra**), menú ☰ disclosure en móvil, pie común. Los wireframes de §4 muestran la línea `(cabecera)` como abreviatura.
+- **Sistema visual:** `DESIGN.md` + `.impeccable/design.json` (v6). El documento `2026-09-17-josecoded-ui.md` v3 queda superado. Motion en CSS nativo con TypeScript propio (working-agreements §3); las menciones a `CompileReveal` y GSAP en §3.7 y §4.x son históricas.
 - **Textos con hechos:** cada frase de interfaz dice algo verificable. Lo que no consta en las fuentes va como `{{DATO: …}}` y se lista en §18 para que Jose lo rellene. Prohibido: "soluciones", "ayudo a", "sin complicaciones", "de alto rendimiento", "profesional", "innovador".
 - Rutas: `es` sin prefijo, `en` con `/en`. `/admin` solo en español.
 - Los "regalos por pack" de tarifas.md **no aparecen en ninguna pantalla pública ni privada**; solo viven en la propuesta de Notion.
@@ -57,94 +58,67 @@ No es audiencia, pero usa `/admin` a diario desde móvil y escritorio. Radar (§
 
 ---
 
-## 2. Mapa de sitio
+## 2. Mapa de sitio (v4.0, 2026-09-29)
+
+> Reescrito según `2026-09-29-pantallas-y-contenidos.md` v1.0 §1 (numeración P/A de ese documento) y la home v6. Todas las rutas existen en **es y en** desde el lanzamiento, área privada incluida (spec D31); admin y Radar solo en español.
 
 ### 2.1 Público
 
-| Pantalla | Ruta es | Ruta en | Acceso | i18n |
-|---|---|---|---|---|
-| Home | `/` | `/en` | público | sí |
-| Trabajo con empresas | `/empresas` | `/en/companies` | público | sí |
-| Webs para tu negocio | `/negocios` | `/en/business` | público | sí |
-| Generador de propuesta | `/propuesta` | `/en/proposal` | público (Turnstile) | sí |
-| Proyectos | `/proyectos` | `/en/projects` | público | sí |
-| Ficha de proyecto | `/proyectos/[slug]` | `/en/projects/[slug]` | público | sí |
-| Blog | `/blog` | `/en/blog` | público | sí (artículos pueden existir en un solo idioma) |
-| Artículo | `/blog/[slug]` | `/en/blog/[slug]` | público; comentar con cuenta | sí |
-| Sobre mí | `/sobre-mi` | `/en/about` | público | sí |
-| Contacto | `/contacto` | `/en/contact` | público (Turnstile) | sí |
-| Chat con el asistente | `/chat` | `/en/chat` | cuenta | sí |
-| Aviso legal | `/legal/aviso-legal` | `/en/legal/notice` | público | sí |
-| Privacidad | `/legal/privacidad` | `/en/legal/privacy` | público | sí |
-| Cookies | `/legal/cookies` | `/en/legal/cookies` | público | sí |
-| Entrar | `/auth/login` | `/en/auth/login` | público | sí |
-| Crear cuenta | `/auth/registro` | `/en/auth/sign-up` | público | sí |
-| Introduce el código | `/auth/codigo` | `/en/auth/code` | público | sí |
-| Callback OAuth | `/auth/callback` | (misma) | técnico | — |
-| Mi cuenta | `/perfil` | `/en/profile` | cuenta | sí |
+| # | Pantalla | Ruta es | Ruta en | Modo | Acceso | Estado |
+|---|---|---|---|---|---|---|
+| — | Home («bento por escenas», §4.1) | `/` | `/en` | Persuadir | público | v6 cerrada |
+| P1 | Webs para tu negocio (comparador de packs, «¿Necesitas una app?», barra fija móvil) | `/negocios` | `/en/business` | Persuadir | público | a medias (pantallas §3 P1) |
+| P2 | Generador de propuesta (puede devolver un pack de app) | `/propuesta` | `/en/proposal` | Operar | público (Turnstile) | definida (§4.4) |
+| P3 | Contacto / Hablamos (selector negocio/empresa) | `/contacto` | `/en/contact` | Persuadir | público (Turnstile) | a medias (§4.10; sin Contacto en la cabecera) |
+| P4 | Trabajo con empresas (solo trabajo y freelancing; 40 €/h y feature cerrada desde 150 €) | `/empresas` | `/en/companies` | Persuadir | público | a medias (§4.2; sin packs) |
+| P6 | Sobre mí, con la sección «Stack y formación» | `/sobre-mi` · `/sobre-mi#stack` | `/en/about` · `/en/about#stack` | Persuadir | público | a medias (§4.9; profundidad media, PDF es/en) |
+| P7 | Proyectos (índice con filtro Todos · Apps · Webs) | `/proyectos` | `/en/projects` | Persuadir | público | a medias (§4.5; josecoded.com incluido) |
+| P8 | Caso de estudio de proyecto | `/proyectos/[slug]` | `/en/projects/[slug]` | Leer | público | a medias (§4.6 era ficha; pasa a caso medio) |
+| P9 | Blog (solo con ≥ 3 artículos reales; si no, 404 y oculto en cabecera, menú, ⌘K y pie) | `/blog` | `/en/blog` | Leer | público | definida (§4.7) |
+| P10 | Artículo | `/blog/[slug]` | `/en/blog/[slug]` | Leer | público; comentar con cuenta | definida (§4.8) |
+| P11 | Chat con el asistente | `/chat` | `/en/chat` | Operar | cuenta | definida (§4.11; antesala con `ChatBubble` v6) |
+| P12 | Entrar | `/auth/login` | `/en/auth/login` | Operar | público | definida (§5.1) |
+| P13 | Crear cuenta | `/auth/registro` | `/en/auth/sign-up` | Operar | público | definida (§5.2) |
+| P14 | Introduce el código | `/auth/codigo` | `/en/auth/code` | Operar | público | definida (§5.3) |
+| P15 | Callback OAuth (guarda la señal de origen del área, §2.2) | `/auth/callback` | (misma) | — | técnico | definida (§5.4) |
+| P17 | Mi cuenta | `/perfil` | `/en/profile` | Operar | cuenta | definida (§4.13) |
+| P18 | Legales (aviso, privacidad, cookies) | `/legal/aviso-legal` · `/legal/privacidad` · `/legal/cookies` | `/en/legal/notice` · `/en/legal/privacy` · `/en/legal/cookies` | Leer | público | definida (§4.12) |
+| P19 | Errores 404 · 410 · 500 · 403 · mantenimiento | cualquiera | cualquiera | — | todos | definida (§8; falta la versión visual v6) |
+| — | Newsletter (`/newsletter`, `/newsletter/confirmar`, `/newsletter/baja`) | `/newsletter/*` | `/en/newsletter/*` | Operar | público | **fase 10 post-lanzamiento**, spec `2026-09-29-josecoded-newsletter.md` (solo es en v1 según esa spec) |
 
-Redirecciones heredadas: `/services` → `/empresas`; `/sobre-mi` se mantiene; `/en/services` → `/en/companies`; `/blog/<slug antiguo>` y `/foro/*` → **410**. `/auth` (josedev) → `/auth/login`.
+P5 «Stack y CV» y P16 «Objetivo de la cuenta» no existen: el stack es una sección de P6 y la personalización del área es automática.
+
+Piezas que no son pantalla pero necesitan diseño (pantallas §1.3): Reservar 20 min (Cal.com), WhatsApp prellenado por origen e idioma, CV en PDF es/en, **cierre corto** al final de cada página, paleta ⌘K fuera de la home (comandos a rutas; busca proyectos y artículos), celda ampliada → página (hueco `more`), barra fija de Negocios (móvil), toasts / banner sin conexión / skeletons / vacíos.
+
+Redirecciones heredadas: `/services` → `/empresas`; `/sobre-mi` se mantiene; `/en/services` → `/en/companies`; `/blog/<slug antiguo>` y `/foro/*` → **410**; `/auth` (josedev) → `/auth/login`.
 
 ### 2.2 Área interna `/area-clientes` (cuenta)
 
-Cualquier usuario con cuenta entra. Las secciones de proyecto solo aparecen si su usuario está enlazado a `clients.user_id`; "Recomiéndame" (programa de afiliados) aparece siempre (D15: todo usuario del área puede ser afiliado; un no cliente cobra el 10 %).
+Cualquier usuario con cuenta entra. **La portada (A1) se personaliza automáticamente** por señales, en este orden de prioridad (pantallas §1.4): (1) es cliente (`clients.user_id`) → su proyecto; (2) tiene propuesta o lead (por email o `user_id`) → «Tu propuesta» + WhatsApp; (3) llegó con `?ref` (cookie de 30 días al crear la cuenta) → Recomiéndame arriba + «¿Quieres una web?»; (4) página de origen (`sessionStorage.audience` enviada en `next` o en el callback) → variante `negocio`, `empresa` o `blog`; (5) sin señal → dos puertas del mismo peso. La señal de origen se guarda la primera vez (tabla aditiva `user_profiles`, DT §1.12); la personalización ordena y destaca, **nunca oculta** Recomiéndame, Mi cuenta ni la vía de contacto. No se pregunta nada.
 
-| Pantalla | Ruta es | Ruta en | Visible para |
-|---|---|---|---|
-| Inicio del área (mi proyecto) | `/area-clientes` | `/en/client-area` | todos (estado distinto si no es cliente) |
-| Tareas | `/area-clientes/tareas` | `/en/client-area/tasks` | clientes |
-| Detalle de tarea | `/area-clientes/tareas/[id]` | `/en/client-area/tasks/[id]` | clientes |
-| Material (assets) | `/area-clientes/material` | `/en/client-area/files` | clientes |
-| Pack y extras | `/area-clientes/pack` | `/en/client-area/plan` | clientes |
-| Solicitar ampliación | `/area-clientes/pack/ampliar` | `/en/client-area/plan/upgrade` | clientes |
-| Recomiéndame (afiliados) | `/area-clientes/recomiendame` | `/en/client-area/referrals` | todos |
+| # | Pantalla | Ruta es | Ruta en | Visible para |
+|---|---|---|---|---|
+| A1 | Inicio del área (personalizado) | `/area-clientes` | `/en/client-area` | todos |
+| A2 | Tareas | `/area-clientes/tareas` | `/en/client-area/tasks` | clientes |
+| A3 | Detalle de tarea | `/area-clientes/tareas/[id]` | `/en/client-area/tasks/[id]` | clientes |
+| A4 | Material (assets) | `/area-clientes/material` | `/en/client-area/files` | clientes |
+| A5 | Pack y extras | `/area-clientes/pack` | `/en/client-area/plan` | clientes |
+| A6 | Solicitar ampliación | `/area-clientes/pack/ampliar` | `/en/client-area/plan/upgrade` | clientes |
+| A7 | Recomiéndame (afiliados) | `/area-clientes/recomiendame` | `/en/client-area/referrals` | todos |
 
-Profundidad máxima: área → tareas → detalle (3 niveles). "Pack → ampliar" es el tercer nivel de esa rama.
+Profundidad máxima: área → tareas → detalle (3 niveles). Se llega desde Login, el pie («Área de clientes»), ⌘K y el menú del avatar. Tras entrar se redirige a `next` si existe (comentar, chat).
 
 ### 2.3 Admin `/admin` (solo `staff_members.role = 'admin'`, solo es)
 
-| Pantalla | Ruta |
-|---|---|
-| Resumen | `/admin` |
-| Leads | `/admin/leads` |
-| Detalle de lead | `/admin/leads/[id]` |
-| Comentarios (moderación) | `/admin/comentarios` |
-| Clientes | `/admin/clientes` |
-| Ficha de cliente (pestañas: resumen, tareas, material, pack y extras) | `/admin/clientes/[id]` |
-| Nueva tarea / editar tarea (hoja lateral dentro de la ficha) | `/admin/clientes/[id]?tarea=nueva` · `?tarea=[taskId]` |
-| Ampliaciones | `/admin/ampliaciones` |
-| Afiliados | `/admin/afiliados` |
-| Detalle de afiliado (leads y recompensas) | `/admin/afiliados/[id]` |
-| Chat: conversaciones | `/admin/chat` |
-| Chat: conversación con takeover | `/admin/chat/[id]` |
-| Radar: bandeja de candidaturas (filtros en la URL; hoja "Correos por revisar" `?correos=revisar`) | `/admin/radar` |
-| Radar: detalle de candidatura (oferta, puntuación, materiales, decisión, calendario, correos, historial) | `/admin/radar/[id]` |
-| Radar: plataformas (conectores) · alta y edición en hoja | `/admin/radar/plataformas` · `?nueva=1` · `?plataforma=[code]` |
-| Radar: perfil de búsqueda y materiales base | `/admin/radar/perfil` |
-| Radar: calendario (mes, semana, agenda) | `/admin/radar/calendario` |
-
-Radar cuelga de `/admin` con una subnavegación por segmento (Bandeja · Calendario · Plataformas · Perfil) que no cuenta como nivel: admin → Radar → detalle son los tres niveles. Telegram (§7.17) no es una pantalla: cada mensaje enlaza a una de estas rutas.
+Sin cambios respecto a v3.2 (Resumen, Leads, Comentarios, Clientes, Ampliaciones, Afiliados, Chat, Radar con bandeja · detalle · plataformas · perfil · calendario). Se retoma con el sistema v6 a partir de §7. **Fase 10** añade `/admin/newsletter`, `/admin/newsletter/[id]`, `/admin/newsletter/temas` (spec de newsletter §5).
 
 ### 2.4 Páginas y estados de error
 
-| Caso | Ruta / lugar | Código |
-|---|---|---|
-| No encontrado | `/404` (cualquier ruta) | 404 |
-| Contenido retirado (blog antiguo, foro) | `/blog/<slug viejo>`, `/foro/*` | 410 |
-| Error del servidor | `error.tsx` global y por segmento | 500 |
-| Sin permisos | `/admin/*` sin fila en `staff_members` con `role = 'admin'`; recurso ajeno en el área | 403 (página) |
-| Sesión caducada | redirección a `/auth/login?next=…&reason=expired` (SSR) o toast inline (cliente) | — |
-| Sin conexión (navegador) | banner global + estados inline | — |
-| Servicio no disponible (gateway o Omen caídos) | estado inline en generador, chat, contacto | 502/503 |
-| Límite de uso del generador o del chat | estado inline | 429 |
-| Verificación Turnstile fallida | estado inline en formularios | — |
-| Supabase pausado (auth/leads caídos) | formulario con fallback a email; login con aviso | — |
-| Mantenimiento programado | página estática opcional | 503 |
-| Radar: conector detenido, captcha, correo sin vincular, Omen apagado, Mac dormido, IA sin respuesta, acceso a Google caducado, envío fallido, oferta caducada | estados inline en `/admin/radar/*` (§7.18) | — |
-
----
+Sin cambios respecto a v3.2 (tabla de §8), con dos añadidos: `/blog` responde **404** cuando hay menos de 3 artículos reales (spec D33) y los errores 404/500 enlazan a `/contacto` (P3) en vez de a un «Contacto» de la cabecera.
 
 ## 3. Shell público: navegación clásica, hero split y estructura común
+
+> **v4.0 — superado parcialmente por la home v6.** Lo vigente de este apartado es la decisión de navegación clásica (§3.1) y los flujos; lo demás se lee con estas correcciones, sin reescribirlo: **cabecera** = orden Sobre mí · Empresas · Negocios · Proyectos · Blog y, a la derecha, idioma → ⌘K → Chat → Login (**sin «Contacto»**; §3.2 queda como histórico); **menú móvil** = disclosure nativo de 17rem bajo el botón ☰ con el idioma dentro (no una hoja shadcn a pantalla completa); **pie** = secciones · Área de clientes · Legal · revisión con fecha (§3.5, sin la columna «Esta web»); **fondo** = campo de luz (tres haces y un charco) + grano al 4,5 % de la v6, no el «rayo estático» de `hero-lab-3`; **intro** (§3.6) vigente con la mecánica de `scene.js:425-481` de la v6; **motion** (§3.7): `CompileReveal`, GSAP y las miniaturas de `PathPanel` **no existen**; el vocabulario es el de `DESIGN.md` «Movimiento» (entradas y salidas ligadas al scroll, paginado, celda ampliada, transiciones de estado 150–260 ms, hover solo con puntero fino). Detalle en el contrato `.impeccable/surfaces/docs-superpowers-design-ref-home-v6-index-html.md`.
 
 Decisión de Jose (2026-09-19): **hero split tipo Resend con escena de partículas-glifo y navegación clásica**. Se descarta el shell IDE-lite de v2 (árbol, pestañas, barra de título como hero minimizado, línea de estado). Prototipo aprobado: `ref/hero-lab-3/` (`index.html`, `styles.css`, `app.js`). Una sola interfaz para Marta y Dani; no se divide a las audiencias: cada bloque de la home habla a las dos.
 
@@ -384,320 +358,71 @@ Barra lateral con contadores en escritorio: Resumen · Leads · **Radar** (pendi
 
 Formato por pantalla: objetivo · jerarquía · componentes · acción primaria única · secundarias · estados · wireframe móvil · escritorio · eventos. Todas las páginas públicas comparten `SiteHeader`, `Backdrop` y `SiteFooter` (§3); el `GlyphScene` solo existe en la home.
 
-### 4.1 Home `/` (Inicio)
+### 4.1 Home `/` (Inicio) — v4.0, prototipo `ref/home-v6/`
 
-**Objetivo:** que sin scroll se entienda quién es Jose, qué hace y cómo hablar con él (spec §1), y que con scroll cada audiencia encuentre su vía sin que la página se parta en dos. Marta: vía Negocios y WhatsApp en dos toques. Dani: proyectos verificables, cómo está hecha esta web, cómo trabaja Jose.
+> Reescrito el 2026-09-29. Fuente de verdad: `docs/superpowers/design/ref/home-v6/` (se sirve con `python3 -m http.server 8765 --directory docs/superpowers/design/ref` → `http://localhost:8765/home-v6/`, `?intro` fuerza la caída), contrato `.impeccable/surfaces/docs-superpowers-design-ref-home-v6-index-html.md`, sistema `DESIGN.md`, inventario `2026-09-29-componentes-home-v6.md`. Este apartado describe la experiencia; no repite tokens ni componentes. La versión v3.2 (`ProofStrip`, `PathPanel`, `BuildFacts`, «Quién te responde», «Esta web la he hecho yo») queda superada y vive en el historial de git.
 
-**Jerarquía (orden de bloques):**
+**Objetivo:** sin scroll se entiende quién es Jose, qué construye y las dos salidas (Proyectos para Dani, «Una web para mi negocio» para Marta); con scroll, cada escena resume una página y lleva a ella. Nada de métricas; precios «desde» sí.
 
-| # | Bloque | Para quién | Por qué va aquí |
-|---|---|---|---|
-| 1 | Hero split (`HeroSplit` + `GlyphScene`) | Ambas | Tesis, nombre, dos salidas (Proyectos / Una web para mi negocio) |
-| 2 | Franja de prueba real (`ProofStrip`) | Ambas | Cinco hechos verificables antes de cualquier explicación |
-| 3 | Dos vías (`PathPanel` × 2) | Ambas, cada una con su panel | La spec pide "dos vías con el mismo peso"; el hero las apunta, aquí se explican |
-| 4 | Proyectos (`ProjectCard` × 3) | Dani primero, Marta como prueba | Lo que existe y se puede comprobar |
-| 5 | Cómo está hecha esta web (`BuildFacts`) | Dani; Marta lee "esta web la he hecho yo" | Demostración con la propia web (spec §1 A) |
-| 6 | Último artículo (`PostCard`) | Dani | Señal de actividad |
-| 7 | Contacto + "Quién te responde" | Ambas | Cierre con las dos vías y una cara real antes de escribir |
-| 8 | Pie | — | §3.5 |
+**Estructura (una escena por pantalla, mismo orden que la cabecera):**
 
-Todos los bloques comparten el lenguaje del hero: mismo fondo (grano + rayo), `h2` con `CompileReveal`, superficies con borde fino y halo de acento al hover, monoespaciada solo en etiquetas cortas (`proof`, `estado de la escena`, datos del build). **Nada de "índice de secciones"**: la navegación es la cabecera; los bloques son contenido.
+| # | Escena | Titular a dos tonos | Bento (3 celdas, sin huecos) | Salida |
+|---|---|---|---|---|
+| 0 | **Hero** | `h1` nombre en dos líneas (sin badge ni eyebrow) + subtítulo con las dos audiencias | Split 5/7: texto + escenario de la nube con tres barras de ciclo | `[[ Ver proyectos ]]` → escena Proyectos; `> Una web para mi negocio →` → `/negocios` |
+| 1 | **Sobre mí** | «Quién hay detrás. *Una persona, no una agencia.*» | Celda principal (ampliable): foto real `{{DATO}}`, nombre, rol · ciudad, entradilla, «Conóceme»; celda «Con qué trabajo»: marquesina doble del stack → `/sobre-mi#stack`; celda «Trato directo»: mini chat que se escribe + «Escríbeme» → `/contacto` | `/sobre-mi` |
+| 2 | **Empresas** | «Trabajo con empresas. *Web, móvil e IA para tu producto.*» | Celda principal (ampliable): lista de Servicios con selección deslizante (Web · Apps · IA, con entregable `{{DATO}}`; cada fila enlaza a `/empresas#<servicio>`); celda **Tarifas**: selector 40 €/h · feature cerrada desde 150 € con cifra `aria-live`; celda «Cómo trabajo»: texto + `[Reservar 20 min]` + «Ver cómo trabajo →» | `/empresas` |
+| 3 | **Negocios** | «Webs para tu negocio. *Cuatro packs con precio cerrado.*» | Celda principal (hero, ampliable): fila de packs 900 / 1.400 / 2.500 / 4.200 € «desde» con barra deslizante (cada pack enlaza a `/negocios#p<n>`); celda «Propuesta al momento»: campo con ejemplos que se escriben → `/propuesta` con el texto; celda «Qué incluye»: checks verdes que se dibujan | `/negocios` |
+| 4 | **Proyectos** (carrusel fijado) | «Proyectos en uso. *Con enlace a la store, a la web o al código.*» + «Ver todos →» | Tarjetas grandes con arte de glifos: HazmeFila (App), Oportunix (Web), Webs de comercios (Web), 3catinfo (App); cada una con tipo, entradilla `{{DATO}}` y «Ver proyecto →». Raíl con nombres y progreso (`aria-hidden`) | `/proyectos`, `/proyectos/[slug]` |
+| 5 | **Blog** | «Lo que voy aprendiendo. *Artículos sobre lo que construyo.*» | Celda grande con el último artículo (título fluido, fecha, entradilla, «Leer») + dos celdas con los siguientes. **Solo existe con ≥ 3 artículos reales** (spec D33) | `/blog`, `/blog/[slug]` |
+| 6 | **Cierre «¿Empezamos?»** | «¿Empezamos? *Cuéntame qué necesitas.*» | `[[ Escribir por WhatsApp ]]` + `[ Reservar 20 min ]` + pista «o pulsa ⌘ K y busca lo que quieras» (tecla grande, oculta sin puntero fino) | `wa.me`, Cal.com, ⌘K |
+| 7 | Pie | — | Secciones · Área de clientes · Legal · revisión con fecha | — |
 
-**Acción primaria:** `[[ Ver proyectos ]]` en el hero (única primaria de la página). El resto son secundarias o enlaces: `> Una web para mi negocio →` (hero), badge "Disponible para proyectos" (→ `/contacto`), enlaces de cada panel, `[ Ver todos ]`, `[ Escribir por WhatsApp ]` y `[ Reservar 20 min ]` en el cierre.
+**Acción primaria:** `[[ Ver proyectos ]]` en el hero. El resto son enlaces con flecha o botones secundarios; WhatsApp es el único botón sólido del cierre.
 
-#### Bloque 1 — Hero split
+**Cabecera** (§3, corregida): marca · Sobre mí · Empresas · Negocios · Proyectos · Blog · idioma → ⌘K → Chat (punto verde) → Login. El enlace activo sigue a la escena visible (`aria-current`). En ≤ 67.5rem, ☰ con el idioma dentro y Contacto destacado al final; ≤ 56.25rem, buscador y chat solo icono; ≤ 22.5rem, Login solo icono.
 
-Contenido (prototipo aprobado):
-- **Badge** con punto verde: "Disponible para proyectos ›" → `/contacto` (hereda segmento, §4.10). Si `{{DATO: disponibilidad}}` es "no disponible", el badge dice "Agenda completa hasta {mes}" con punto ámbar y sigue enlazando a Contacto; si Jose no quiere mostrarlo, el badge no se renderiza y el título sube.
-- **Título** (`h1`): `{{DATO: nombre a mostrar}}` (el prototipo usa "Jose Carlos Sánchez" en dos líneas).
-- **Subtítulo:** "Desarrollador full-stack. Apps móviles, webs y sistemas con IA que se publican y se usan. React Native, Next.js, TypeScript, Supabase." (≤ 48 caracteres por línea; 3 líneas en móvil).
-- **CTA:** `[[ Ver proyectos ]]` → `/proyectos`; `> Una web para mi negocio →` → `/negocios`. Los dos con el mismo alto de línea; el segundo es enlace de texto, no botón, para que solo haya una primaria y aun así Marta lo vea al lado.
-- **Escena** (`GlyphScene`) **y su respaldo** (`HeroMedia`, spec §12 D16): en escritorio, columna derecha cuadrada (≤ 78 svh) con la escena viva. En móvil la columna va **encima** del texto, con altura máxima 38 svh (el prototipo usa 52; se reduce para que título y CTA queden por encima del pliegue en 375×667; presupuesto abajo) y **por defecto muestra un vídeo en bucle o el poster de la misma escena**, no la escena viva. La etiqueta "móvil · web · IA · chip" del prototipo es **interna** (sirve para afinar la escena) y **no se muestra en producción**; como mucho, un indicador sin palabras (tres puntos o una línea de progreso del ciclo) que `ui` decide (§13.3); Marta no debe leer "chip" bajo una animación (§16.4). La escena viva se arrastra con el puntero (en móvil, si se activa, el arrastre horizontal gira y el vertical hace scroll); el vídeo y el poster no se arrastran.
+**Comportamiento de scroll y gestos**
 
-Intro y estados de la escena: §3.6 y §3.7.
-
-**Qué muestra la columna de escena según el dispositivo (D16):**
-
-| Condición | Columna de escena | Intro (primera visita de sesión) |
-|---|---|---|
-| Escritorio con WebGL, sin `prefers-reduced-motion`, sin `saveData`, `deviceMemory ≥ 4` | Escena viva (9.000 partículas) | Completa: letras + partículas (§3.6) |
-| **Móvil (< 900 px), por defecto** | **Vídeo en bucle con poster** | **Reducida: solo letras** |
-| Sin WebGL (cualquier tamaño) | Vídeo con poster | Reducida |
-| `deviceMemory < 4` | Vídeo con poster | Reducida |
-| `saveData` | Poster (no se descarga el vídeo) | Reducida |
-| `prefers-reduced-motion` | Poster | Ninguna |
-| Sin JS | Poster | Ninguna |
-| Móvil con `HERO_LIVE_MOBILE` activo y el resto de condiciones de escritorio | Escena viva (5.000 partículas) | Completa |
-
-- **Vídeo:** ≤ 400 KB, sin audio, `muted playsinline loop autoplay`, `preload="none"`; generado en build desde la misma nube con el ciclo completo (móvil → web → chip IA con respiración y ondas; 15,3 s = 3 × (3,5 + 1,6) s) para que el bucle no salte. **Poster:** fotograma del estado "móvil", ≤ 60 KB (AVIF con respaldo WebP), en el HTML estático con `fetchpriority="high"` y `preload`; en móvil es, junto con el título, candidato a LCP y se pinta en el primer render. El vídeo se carga tras el LCP (`load()` en idle) y sustituye al poster **sin fundido** en cuanto puede reproducirse; se pausa fuera del viewport y con la pestaña oculta.
-- **Sin salto de layout:** la columna reserva `aspect-ratio: 1 / 1` y su alto máximo desde el HTML; poster, vídeo y canvas ocupan exactamente la misma caja.
-- **Indicador de estado (si `ui` lo mantiene, sin palabras):** con vídeo, se sincroniza con `currentTime` según los tiempos del ciclo; con poster, fijo en el primer estado; sin JS, no se pinta. La etiqueta con texto del prototipo queda solo en `ref/hero-lab-3/`.
-- **Accesibilidad:** poster con `role="img"` y el mismo `aria-label` que la escena; vídeo con `aria-label`, sin controles y sin `autoplay` bajo `prefers-reduced-motion`; el texto del hero nunca depende de la columna.
-- **`HERO_LIVE_MOBILE`:** flag que solo se activa si la tarea de medición del plan demuestra CWV en verde en 4G con la escena viva en móvil; hasta entonces, móvil = vídeo/poster.
-
-**Layout móvil del split (375 px).** Orden: columna de escena (`order: -1`) → badge → título → subtítulo → fila de CTA. Presupuesto vertical hasta el pliegue en 375×667, con los márgenes del prototipo ajustados para móvil:
-
-| Pieza | Alto |
+| Contexto | Comportamiento |
 |---|---|
-| Cabecera fija + margen superior del hero | 88 px |
-| Columna de escena (≤ 38 svh; cuadrada, 253 × 253) con la etiqueta dentro | 253 px |
-| Separación | 24 px |
-| Badge | 34 px |
-| Título `h1` (2 líneas a 41 px × 0,98) + margen superior 20 px | 100 px |
-| Subtítulo (3 líneas × 24 px) + margen 16 px | 88 px |
-| Fila de CTA (botón 50 px) + margen 24 px | 74 px |
-| **Total** | **661 px ≤ 667** |
+| Escritorio, puntero fino, sin reduced motion, escena cabe en el viewport | **Un gesto = una escena**: rueda/trackpad (umbral 24, bloqueo 700 ms), ↑↓, AvPág/RePág, Espacio, Inicio, Fin → siguiente parada con deslizamiento 600–950 ms interrumpible. Escenas más altas que la pantalla: paradas cada 85 %. Proyectos: una tarjeta por gesto. Espacio y flechas se ceden a controles y campos. Se desactiva con menú, paleta o celda abiertos |
+| Sin puntero fino (táctil) | Scroll nativo con `scroll-snap-type: y proximity` |
+| Sin `animation-timeline` (Safari sin soporte) | Piezas en su estado final; Proyectos apilado en columna |
+| Pantalla más alta que ancha, o reduced motion | Proyectos apilado en columna; sin paginado ni snap |
 
-Reglas: `[[ Ver proyectos ]]` y `> Una web para mi negocio →` van **en la misma fila** en móvil (botón con padding horizontal 20 px ≈ 140 px; enlace a 14 px ≈ 175 px; gap 16 px; caben en 343 px), así la salida de Marta queda sobre el pliegue. Si el nombre a mostrar (§18, dato 1) ocupa tres líneas o el idioma alarga los textos, el enlace baja de línea y la columna de escena se reduce a **34 svh** en alturas ≤ 700 px (`@media (max-height: 700px)`) para que la fila de CTA siga por encima del pliegue. `ui` lo verifica en 375×667 y 390×844 (§13.3).
+**Transiciones por elemento**: cada titular, celda y pieza del cierre entra ligada al scroll (sube 40 px, de 0.985 a 1, de 6 px de blur a nítido) y sale retrocediendo (24 px, 0.97, 25 %). Nunca queda desenfocada mientras se lee.
 
-**Alternativas de titular y CTA para Jose (§16.4, M7; no se cambia nada hasta que decida).** `usuario-ejemplo` como Marta señala que el subtítulo actual habla a Dani (nombres de tecnologías) y que `[[ Ver proyectos ]]` domina sobre su salida. Es decisión de Jose (§13.20); `ux` deja dos opciones listas, ambas dentro del presupuesto vertical de arriba:
+**Celda ampliada (genérica):** la celda principal de cada escena (Sobre mí, Empresas, Negocios) se amplía por clic o por el botón Ampliar con View Transition de 380 ms a una lámina fija con velo. `role="dialog"`, `aria-modal`, foco atrapado, resto `inert`, cabecera atenuada, scroll bloqueado, indicador oculto. El hueco `more` muestra un resumen (primer bloque de la página destino, sin copy nuevo) y el enlace «Ir a …». Cierra con Esc, Cerrar, clic en el velo o al saltar desde ⌘K; el foco vuelve a quien la abrió. Sin View Transitions o con reduced motion: cambio inmediato.
 
-**(A) Dos CTA con el mismo peso.** Texto como ahora; `[[ Ver proyectos ]]` y `[[ Una web para mi negocio ]]` como dos botones iguales (mismo tamaño y estilo, el segundo sin relleno pero con borde). Rompe la regla "una primaria por pantalla" de forma deliberada: la spec pide dos vías con el mismo peso y el hero es la única pantalla donde las dos audiencias llegan a la vez. En móvil, apilados (50 + 12 + 50 px → +38 px sobre el presupuesto: se compensa con la columna de escena a 34 svh en alturas ≤ 700 px).
+**Indicador de sección:** líneas sin texto centradas en el margen derecho, una por escena (1–6); activa más larga y violeta; cada línea es un botón con nombre accesible que desliza a su escena. **Nunca en el hero**, ni durante el carrusel fijado, ni con celda ampliada; no se dibuja si el margen < 2.25rem.
 
-```
-(A) Móvil 375 px
-│      (vídeo/poster de la escena)     │ ≤ 34 svh si alto ≤ 700
-│  (● Disponible para proyectos ›)     │
-│  Jose Carlos                         │
-│  Sánchez                             │
-│  Desarrollador full-stack. Apps      │
-│  móviles, webs y sistemas con IA que │
-│  se publican y se usan. React Native,│
-│  Next.js, TypeScript, Supabase.      │
-│  [[ Ver proyectos ]]                 │
-│  [[ Una web para mi negocio ]]       │ ← mismo peso, con borde
-```
+**Paleta ⌘K:** `<dialog>` modal sin animación; grupos «Ir a» (escenas de la home y páginas) y «Acciones» (WhatsApp, reservar, chat, idioma); búsqueda sin tildes; ↑ ↓ ↵ Esc; Ctrl+K en Windows. Si hay celda ampliada, la cierra antes de saltar. Fuera de la home, los «Ir a» apuntan a rutas y busca proyectos y artículos por título.
 
-**(B) Subtítulo para las dos audiencias, CTA como ahora.** Subtítulo sin nombres de tecnologías, una frase por audiencia (≤ 48 caracteres por línea, 3 líneas): "Hago apps y webs que se publican y se usan. Para empresas: desarrollo web, móvil e IA. Para tu negocio: una web con precio cerrado." Las tecnologías bajan a la franja de prueba y a `/empresas`, donde Dani las busca. CTA `[[ Ver proyectos ]]` + `> Una web para mi negocio →` en la misma fila, como ahora.
+**Hero: qué muestra el escenario según el dispositivo (spec §12, D16 con la decisión 4 del inventario)**
 
-```
-(B) Móvil 375 px
-│      (vídeo/poster de la escena)     │ ≤ 38 svh
-│  (● Disponible para proyectos ›)     │
-│  Jose Carlos                         │
-│  Sánchez                             │
-│  Hago apps y webs que se publican y  │
-│  se usan. Para empresas: web, móvil e│
-│  IA. Para tu negocio: una web con    │
-│  precio cerrado.                     │
-│  [[ Ver proyectos ]] Una web para mi │
-│                      negocio →       │
-```
-
-Recomendación de `ux`: **B**, porque resuelve la fricción de Marta sin dos primarias y mantiene el prototipo aprobado; A solo si Jose quiere que Marta vea un botón. Se puede combinar (B + A). El texto de B es una propuesta; la frase final la fija `redactor` con `voz.md`.
-
-**Intro reducida (móvil sin escena viva, primera visita de sesión).** Caen solo las letras del primer viewport (cabecera, badge, título, subtítulo, CTA) con las mismas reglas de §3.6: aterrizan entre 0,4 y 1,2 s, muestran glifos de código mientras caen, destellan en verde al fijarse y cualquier toque, tecla o scroll las lleva al estado final en ≤ 200 ms. El poster o el vídeo está visible desde 0 ms y no participa: sin lluvia de partículas y sin fundido del canvas; a 1,2 s la composición está completa (no hay espera de 1,5 s ni ciclo que arrancar, salvo el propio bucle del vídeo). Se escribe `intro_seen` igual. Con `prefers-reduced-motion` no hay intro reducida.
-
-Descartado: un vídeo que incluya la caída de partículas en sus primeros 1,2 s (exigiría dos codificaciones o un `seek` antes de reproducir en visitas sin intro, y el poster de "partículas cayendo" perjudicaría el LCP); y un fundido del poster después de que aterricen las letras (un elemento grande que aparece a 1,6 s se convierte en el LCP y lo empeora).
-
-#### Bloque 2 — Franja de prueba real (`ProofStrip`)
-
-Una fila (escritorio) o rejilla 2×3 (móvil) de cinco hechos cortos, cada uno con etiqueta monoespaciada pequeña arriba y valor en tipografía de texto. Solo datos que constan; el que falte, no se pinta y la fila se reparte.
-
-| Etiqueta | Valor | Fuente |
+| Condición | Modo | Detalle |
 |---|---|---|
-| apps publicadas | `{n}` en App Store y Google Play (enlace a `/proyectos?tipo=apps`) | `{{DATO 4–6}}` |
-| esta web | carga en menos de 1 s (o "LCP {x} s") | LCP medido en CI |
-| código público | `{n}` repos en GitHub | API GitHub en build |
-| precio cerrado | webs para negocios desde 900 € | `pricing.json` |
-| respuesta | en menos de 24 h laborables | `voz.md` |
+| Escritorio (≥ 56.25rem), WebGL2, sin reduced motion, sin `saveData` | `scene` | Nube viva de Geist Mono (9.000 glifos) que cicla móvil → web → chip; arrastre con puntero fino; se apaga fuera del hero. Carga tras el LCP; el póster ocupa la caja hasta entonces |
+| Móvil o tablet (< 56.25rem) | `video` | **Vídeo en bucle + póster generados desde la misma escena** (≤ 400 KB / ≤ 60 KB). **Sin WebGL en móvil**, sin flag ni medición |
+| `prefers-reduced-motion`, `saveData` o sin JS | `poster` | Póster estático del móvil en glifos, sin barras ni arrastre; el campo de luz queda quieto |
 
-Sin motion propio (entra con la página). Cada celda es enlace si tiene destino; si no, texto.
+**Intro de primera visita por sesión** (§3.6 vigente): los caracteres del hero caen desde arriba y aterrizan con destello verde en 0,4–1,2 s; cualquier tecla, clic, toque o rueda la termina en ≤ 200 ms; el texto real es accesible desde 0 ms; `?intro` la fuerza. Con reduced motion no hay intro.
 
-#### Bloque 3 — Dos vías (`PathPanel` × 2)
+**Vida en las celdas (un gesto con propósito por celda; todo se detiene con reduced motion):** luz de 22rem bajo el cursor (solo puntero fino), marquesina doble del stack (38 y 44 s, pausa en hover; la única de la web), mini chat que se escribe mientras está a la vista (22 ms/carácter, repite cada 5 s), selección deslizante en Servicios y Packs (240–260 ms), selector de tarifa con cifra que entra con desenfoque, checks que se dibujan una vez al llegar (420 ms, escalonados 120 ms), arte de glifos que flota 8 px en 6 s en la tarjeta activa, subrayado que crece bajo el título de artículo.
 
-Dos paneles del mismo tamaño, lado a lado en escritorio (50/50) y apilados en móvil (Negocios primero, porque Marta entra desde el móvil; en escritorio Empresas a la izquierda, porque Dani entra desde escritorio). Cada panel: etiqueta monoespaciada arriba (`empresas` / `negocios`), título, tres hechos, enlace principal con flecha y un enlace secundario. **El panel entero es el enlace principal** (el `a` del título se extiende con un pseudoelemento); el secundario es un `a` independiente con `z-index` por encima, para no anidar enlaces. Foco visible en el panel completo.
+**Estados de la página:** primera visita → intro; después → estado final. Sin datos: un bloque con `{{DATO}}` sin cubrir no se renderiza (foto, entradillas de proyectos, entregables, plazo de respuesta). Sin 3 artículos → la escena Blog no existe y el indicador tiene 5 líneas. Sin conexión → la home es estática; solo `RefNotice` y eventos dejan de funcionar. Sin WhatsApp `{{DATO}}` → el cierre muestra `[[ Reservar 20 min ]]` como sólido y el formulario (`/contacto`) como enlace.
 
-**Miniatura de escena:** en escritorio, la esquina derecha de cada panel muestra una miniatura de partículas-glifo en su estado (Empresas: **chip IA**; Negocios: **móvil** con una web sencilla). Respiran; al hover o foco del panel hacen un morph corto hacia el siguiente estado y vuelven. Comparten renderer con el hero (una sola instancia de WebGL) o se sirven como sprite de fotogramas: lo decide `ui` con el implementador (§13.3). **En móvil, y con reduced motion, la miniatura es una imagen estática** generada en build desde la misma nube. Si no hay imagen, el panel funciona igual sin miniatura: el contenido es el texto.
+**Escritorio (1440 px):** las escenas son de 100svh con contenedor de 82rem; el bento pasa a 12 columnas (7 + 5, 12 + 7 + 5, 6 + 3 + 3; la celda alta ocupa dos filas). **Móvil (390 px):** el escenario sube encima del texto (min(38svh, 100 %); 34svh si alto < 700 px); bento de una columna; sin paginado, sin indicador (margen < 2.25rem), Proyectos apilado; barra de menú ☰. Probado de 360×640 a 1920×1080 sin desbordes.
 
-```
-┌ empresas ─────────────────────────┐  ┌ negocios ────────────────────────┐
-│ Trabajo con empresas       [chip] │  │ Webs para tu negocio     [móvil] │
-│ · Web (Next.js), móvil (React     │  │ · 4 packs, de 900 a 4.200 €,     │
-│   Native) e IA integrada          │  │   sin IVA                        │
-│ · 40 €/h o feature cerrada 150 €  │  │ · De 1 a 3 semanas, precio y     │
-│ · {{DATO: disponibilidad}}        │  │   plazo cerrados                 │
-│                                   │  │ · Dominio y hosting a tu nombre  │
-│ Ver cómo trabajo →                │  │ Ver packs y precios →            │
-│ > Reservar 20 min                 │  │ > Escribir por WhatsApp          │
-└───────────────────────────────────┘  └──────────────────────────────────┘
-```
+**Accesibilidad:** `h1` único; escenario con `role="img"` y descripción; marquesina con `aria-label` completo y copias `aria-hidden`; cifras de tarifa en `aria-live="polite"`; celda ampliada modal; filas de Servicios y Packs son **enlaces** (no `tabindex` sin acción); `SegmentedControl` con semántica de tablist + `aria-controls` o radios; menú disclosure; objetivos ≥ 2.75rem; anillo de foco de 2 px; paginado con teclado que cede Espacio y flechas a los controles.
 
-Enlaces: Empresas → `/empresas`; secundario → `/empresas#hablamos` (abre `CalEmbed`). Negocios → `/negocios`; secundario → `wa.me` con el mensaje de origen `home` (§9.3). Evento `path_open {path: companies|business}` y `whatsapp_click {origin: home}`.
+**Eventos (Umami, §11):** `intro_played {skipped, reduced, mode}`, `scene_drag`, `whatsapp_click {origin:'home'}`, `booking_open {origin:'home'}`, `path_open` pasa a `scene_open {scene}` al ampliar una celda (decisión de `ux`, §14), `palette_open`.
 
-#### Bloque 4 — Proyectos
-
-`h2` "Proyectos" + una línea: "Apps y webs con enlace a stores, web o código." + `ProjectCard` × 3 ordenadas por número de pruebas verificables (§4.5; 3catinfo nunca la primera) + `[ Ver todos ]`. Tarjetas en tres columnas (escritorio) o una (móvil); la captura va en marco de móvil y, en escritorio, hace scroll al pasar el puntero. Sin proyectos con pruebas → el bloque no se renderiza.
-
-#### Bloque 5 — Cómo está hecha esta web (`BuildFacts`)
-
-`h2` "Cómo está hecha esta web" + dos columnas en escritorio (esquema | hechos), una en móvil (esquema arriba).
-
-**Esquema de arquitectura en texto** (cuatro nodos, monoespaciada, sin gráficos decorativos):
-
-```
-navegador ──▶ Cloudflare Workers (Next.js, OpenNext)
-                  │
-                  ├─▶ gateway Hono (api.josecoded.com, {n} rutas)
-                  │       ├─▶ Supabase (Postgres + Auth, {n} tablas, {n} RLS)
-                  │       └─▶ servidor propio (Fastify: IA, n8n, storage)
-                  └─▶ Umami (analítica sin cookies)
-```
-
-**Hechos** (`FactList`, datos generados en CI; si falta uno, la build falla, nunca placeholders): Next.js {v} en Cloudflare Workers · Gateway Hono con {n} rutas · Backend Fastify en servidor propio · Supabase: {n} tablas, {n} políticas RLS · {n} tests (Vitest, Playwright) · Lighthouse {score} · LCP {lcp} s · INP {inp} ms, medidos en build · rama `{rama}` · commit `{commit}` · publicado {fecha}. Enlaces: `> Leer cómo está hecha` (artículo del blog) y `> Código en GitHub` (`{{DATO 12}}`, solo si el repo es público).
-
-Para Marta, una frase antes del esquema: "Esta web la he hecho yo con las mismas herramientas que uso en los proyectos." (hecho, no promesa).
-
-#### Bloque 6 — Último artículo
-
-`h2` "Último artículo" + un `PostCard` + `> Ver el blog`. Solo si hay al menos un artículo en el idioma; si no, el bloque no se renderiza (nunca "próximamente").
-
-#### Bloque 7 — Contacto y "Quién te responde"
-
-`h2` "Hablamos" + dos columnas en escritorio, apiladas en móvil:
-- **Vías:** `[ Escribir por WhatsApp ]` (secundaria fuerte; para Marta) y `[ Reservar 20 min ]` (para Dani), `> Formulario` (`/contacto`), `> Preguntar al asistente` (`/chat`). Texto: "Respondo en menos de 24 h laborables."
-- **Quién te responde:** retrato pequeño (decisión abierta §13.4: es la única foto del sitio; si no hay foto, se omite el retrato y queda el texto) + `{{DATO: nombre}}` · Desarrollador full-stack freelance · `{{DATO: ciudad}}`, España + `> Sobre mí`.
-
-**Estados de la página:** primera visita de la sesión → intro completa (escritorio con escena viva) o reducida (móvil, sin WebGL, `deviceMemory < 4`, `saveData`); resto → estado final. `prefers-reduced-motion` o sin JS → poster estático, sin intro, mismo contenido. La tabla de condiciones está en el bloque 1. Sin datos de build → la build falla. Sin proyectos con pruebas / sin artículos / sin `{{DATO}}` cubierto → el bloque afectado no se renderiza (spec §1). Sin conexión → la home es estática y se sirve igual; solo `RefNotice` y eventos dejan de funcionar.
-
-```
-Móvil (375 px), estado final
-┌──────────────────────────────────────┐
-│ josecoded          [Contacto]  Menú  │
-├──────────────────────────────────────┤
-│                                      │
-│      (vídeo/poster de la escena;     │ ≤ 38 svh (34 si alto ≤ 700)
-│       escena viva solo con flag)     │
-│       (indicador sin palabras, opc.) │
-│  (● Disponible para proyectos ›)     │
-│  Jose Carlos                         │ h1
-│  Sánchez                             │
-│  Desarrollador full-stack. Apps      │
-│  móviles, webs y sistemas con IA que │
-│  se publican y se usan. React Native,│
-│  Next.js, TypeScript, Supabase.      │
-│  [[ Ver proyectos ]] Una web para mi │ ← misma fila; Marta: 1 toque
-│                      negocio →       │   (≈ 661 px hasta aquí en 375×667)
-├──────────────────────────────────────┤
-│  apps publicadas   esta web          │ ProofStrip 2×3
-│  {n} en stores     carga en < 1 s    │
-│  código público    precio cerrado    │
-│  {n} repos         desde 900 €       │
-│  respuesta                           │
-│  en < 24 h laborables                │
-├──────────────────────────────────────┤
-│ ┌ negocios ────────────────────────┐ │ PathPanel (Negocios primero)
-│ │ Webs para tu negocio    [imagen] │ │
-│ │ · 4 packs, de 900 a 4.200 €      │ │
-│ │ · 1 a 3 semanas, precio cerrado  │ │
-│ │ · Dominio y hosting a tu nombre  │ │
-│ │ Ver packs y precios →            │ │
-│ │ > Escribir por WhatsApp          │ │
-│ └──────────────────────────────────┘ │
-│ ┌ empresas ────────────────────────┐ │
-│ │ Trabajo con empresas    [imagen] │ │
-│ │ · Web, móvil e IA integrada      │ │
-│ │ · 40 €/h · feature cerrada 150 € │ │
-│ │ · {{DATO: disponibilidad}}       │ │
-│ │ Ver cómo trabajo →               │ │
-│ │ > Reservar 20 min                │ │
-│ └──────────────────────────────────┘ │
-├──────────────────────────────────────┤
-│  Proyectos                           │ h2 CompileReveal
-│  Apps y webs con enlace a stores,    │
-│  web o código.                       │
-│  [ProjectCard 1]                     │
-│  [ProjectCard 2]                     │
-│  [ProjectCard 3]                     │
-│  [ Ver todos ]                       │
-├──────────────────────────────────────┤
-│  Cómo está hecha esta web            │
-│  Esta web la he hecho yo con las     │
-│  mismas herramientas que uso en los  │
-│  proyectos.                          │
-│  navegador ─▶ Workers (Next.js)      │ esquema mono
-│    ├─▶ gateway Hono ({n} rutas)      │
-│    │    ├─▶ Supabase ({n} tablas)    │
-│    │    └─▶ servidor propio (Fastify)│
-│    └─▶ Umami                         │
-│  · {n} tests · LCP {x} s · INP {y} ms│
-│  · main · a1b2c3d · publicado {fecha}│
-│  > Leer cómo está hecha              │
-│  > Código en GitHub                  │
-├──────────────────────────────────────┤
-│  Último artículo                     │
-│  [PostCard]          > Ver el blog   │
-├──────────────────────────────────────┤
-│  Hablamos                            │
-│  [ Escribir por WhatsApp ]           │
-│  [ Reservar 20 min ]                 │
-│  > Formulario  > Preguntar al asist. │
-│  Respondo en menos de 24 h laborables│
-│  ┌────┐ Jose Carlos Sánchez          │ Quién te responde
-│  │foto│ Full-stack freelance ·       │
-│  └────┘ {{DATO: ciudad}}  > Sobre mí │
-├──────────────────────────────────────┤
-│  pie (§3.5)                          │
-└──────────────────────────────────────┘
-```
-
-```
-Escritorio (≥ 1024 px), estado final
-┌──────────────────────────────────────────────────────────────────────────┐
-│ josecoded   Empresas Negocios Proyectos Blog Sobre mí     ES · Entrar · [Contacto] │
-├──────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
-│  (● Disponible para proyectos ›)        ┌──────────────────────────────┐ │
-│                                         │                              │ │
-│  Jose Carlos                            │     escena de partículas     │ │
-│  Sánchez                                │     (móvil → web → chip IA)  │ │
-│                                         │                              │ │
-│  Desarrollador full-stack. Apps         │                              │ │
-│  móviles, webs y sistemas con IA que    │                              │ │
-│  se publican y se usan. React Native,   │      móvil · web · IA · chip │ │
-│  Next.js, TypeScript, Supabase.         └──────────────────────────────┘ │
-│  [[ Ver proyectos ]]  Una web para mi negocio →                          │
-│                                                                          │
-├──────────────────────────────────────────────────────────────────────────┤
-│  apps publicadas   esta web          código público   precio cerrado   respuesta │
-│  {n} en stores     carga en < 1 s    {n} repos        desde 900 €      < 24 h lab.│
-├──────────────────────────────────────────────────────────────────────────┤
-│ ┌ empresas ──────────────────────┐  ┌ negocios ──────────────────────┐   │
-│ │ Trabajo con empresas    (chip) │  │ Webs para tu negocio   (móvil) │   │
-│ │ · Web, móvil e IA integrada    │  │ · 4 packs, 900–4.200 € sin IVA │   │
-│ │ · 40 €/h · feature 150 €       │  │ · 1–3 semanas, precio cerrado  │   │
-│ │ · {{DATO: disponibilidad}}     │  │ · Dominio y hosting a tu nombre│   │
-│ │ Ver cómo trabajo →             │  │ Ver packs y precios →          │   │
-│ │ > Reservar 20 min              │  │ > Escribir por WhatsApp        │   │
-│ └────────────────────────────────┘  └────────────────────────────────┘   │
-├──────────────────────────────────────────────────────────────────────────┤
-│  Proyectos                                                               │
-│  [ProjectCard 1]      [ProjectCard 2]      [ProjectCard 3]   [ Ver todos]│
-├──────────────────────────────────────────────────────────────────────────┤
-│  Cómo está hecha esta web                                                │
-│  navegador ─▶ Workers (Next.js)          · Next.js {v} en Cloudflare     │
-│    ├─▶ gateway Hono ({n} rutas)          · Gateway Hono, {n} rutas       │
-│    │    ├─▶ Supabase ({n} tablas, RLS)   · Supabase: {n} tablas, {n} RLS │
-│    │    └─▶ servidor propio (Fastify)    · {n} tests · Lighthouse {s}    │
-│    └─▶ Umami                             · LCP {x} s · INP {y} ms        │
-│                                          · main · a1b2c3d · {fecha}      │
-│                                          > Leer cómo está hecha          │
-│                                          > Código en GitHub              │
-├──────────────────────────────────────────────────────────────────────────┤
-│  Último artículo        [PostCard]                          > Ver el blog│
-├──────────────────────────────────────────────────────────────────────────┤
-│  Hablamos                                  ┌────┐ Jose Carlos Sánchez    │
-│  [ Escribir por WhatsApp ] [ Reservar 20 ] │foto│ Full-stack freelance   │
-│  > Formulario  > Preguntar al asistente    └────┘ {{DATO: ciudad}}       │
-│  Respondo en menos de 24 h laborables.            > Sobre mí             │
-├──────────────────────────────────────────────────────────────────────────┤
-│  pie: Secciones · Contacto · Legal · Esta web                            │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
-**Eventos:** `intro_played`, `path_open {path}`, `whatsapp_click {origin: home}`, `booking_open {origin: home}`, `scene_drag` (una vez por sesión, para saber si alguien toca la escena).
+**Validación:** `usuario-ejemplo` con Marta (390×844: hero → «Una web para mi negocio» en un toque; escena Negocios → packs y WhatsApp) y Dani (1440: hero → Proyectos → Sobre mí; ⌘K). Capturas comparadas app/prototipo a 360, 900 y 1440 (working-agreements §5) y aprobación de Jose en preview.
 
 ### 4.2 Trabajo con empresas `/empresas`
+> **v4.0:** superado en parte por `2026-09-29-pantallas-y-contenidos.md` P4: **solo trabajo y freelancing**, sin packs; tarifas 40 €/h y feature cerrada desde 150 € (confirmadas); un entregable por servicio `{{DATO}}`; stack resumido con enlace a `/sobre-mi#stack`; sin `GitHubActivity` ni contadores; **sin pinning ni pasos activos por scroll** (escena con scroll libre); cierre corto con `[Reservar 20 min]`. Lo que sigue es el punto de partida.
+
 
 **Objetivo:** que Dani sepa qué contrata (web, móvil, IA integrada), con qué stack, cómo trabaja Jose y cómo hablar; descargar CV.
 
@@ -756,6 +481,8 @@ Escritorio (≥ 1024 px), estado final
 **Escritorio:** servicios en tres columnas; "Cómo trabajo" con pinning y pasos que se marcan como activos al hacer scroll (texto e indicador, sin foco de luz); pruebas en dos columnas (stores + GitHub); `CalEmbed` inline en el cierre, a la derecha del texto.
 
 ### 4.3 Webs para tu negocio `/negocios`
+> **v4.0:** superado en parte por pantallas P1: `PackCompare` (comparador de los 4 packs; un pack por vista en móvil) en vez de cuatro `PackCard`; bloque «¿Necesitas una app?» (MVP 4.000 € · ampliada 6.000 €); sin pinning; barra fija móvil se mantiene; cierre corto con WhatsApp. Lo que sigue es el punto de partida.
+
 
 **Objetivo:** que Marta vea en el primer scroll los cuatro packs con precio "desde", entienda el proceso y elija entre generar una propuesta o escribir por WhatsApp.
 
@@ -830,6 +557,8 @@ Escritorio (≥ 1024 px), estado final
 **Eventos:** `whatsapp_click` (con `pack` si viene de una tarjeta), clic en "Pedir propuesta".
 
 ### 4.4 Generador de propuesta `/propuesta`
+> **v4.0:** vigente. Añadidos de pantallas P2: bilingüe (responde en el idioma de la página), la clasificación puede devolver un pack de app (muestra el bloque de apps de P1 en vez de un pack web), `ProposalPrompt` de la home viaja con el texto a esta ruta.
+
 
 **Objetivo:** Marta describe su negocio en 3–4 preguntas guiadas y recibe una propuesta con pack, alcance y "desde X €"; si le encaja, la envía y se crea un lead cualificado. Nunca una página en blanco (spec §12).
 
@@ -912,6 +641,8 @@ Estado Propuesta:
 **Eventos:** `proposal_generated` (con pack), `proposal_sent`, `whatsapp_click` (origen `proposal`).
 
 ### 4.5 Proyectos `/proyectos`
+> **v4.0:** superado en parte por pantallas P7: filtro Todos · Apps · Webs; `ProjectCard` v6 apilada con arte de glifos; **josecoded.com como proyecto** (nunca primero; 3catinfo nunca primero); sin valoraciones ni contadores.
+
 
 **Objetivo:** Dani verifica trabajo real; Marta ve que Jose ha hecho cosas que existen.
 
@@ -945,6 +676,8 @@ Estado Propuesta:
 **Escritorio:** rejilla de dos o tres columnas; al pasar el ratón, el marco de móvil hace scroll de capturas (idea del carrusel de josedev), scroll-driven en la ficha.
 
 ### 4.6 Ficha de proyecto `/proyectos/[slug]`
+> **v4.0:** superado por pantallas P8: **caso de estudio medio** (cabecera con enlace de prueba, capturas, reto, qué hice, stack ocultable, resultado verificable sin métricas, anterior/siguiente, cierre corto). Frontmatter MDX con bloques `challenge`, `work`, `result`. `StoreBadges` sin valoración.
+
 
 **Objetivo:** prueba verificable de un proyecto. Campos ocultables (3catinfo: sin métricas ni stack, Q6).
 
@@ -980,6 +713,8 @@ Estado Propuesta:
 **Escritorio:** dos columnas: texto a la izquierda (sticky), capturas a la derecha que avanzan con el scroll.
 
 ### 4.7 Blog `/blog`
+> **v4.0:** «nunca se publica vacío» pasa a **mínimo 3 artículos reales** (spec D33): con menos, `/blog` responde 404 y desaparece de cabecera, menú, ⌘K, pie y escena de la home. Artículos en un solo idioma marcados «Solo en inglés» / «Only in Spanish».
+
 
 **Objetivo:** lectura técnica (Dani) y señales de actividad. Artículos MDX del repo.
 
@@ -1054,6 +789,8 @@ Estado Propuesta:
 **Escritorio:** columna de lectura centrada (≈ 70 caracteres), índice sticky a la izquierda, sin barra lateral derecha.
 
 ### 4.9 Sobre mí `/sobre-mi`
+> **v4.0:** superado en parte por pantallas P6: profundidad media (foto real, historia corta, trayectoria con fechas, cómo trabajo, enlaces), **sección «Stack y formación» (`#stack`)** con «Descargar CV (PDF)» es/en generado del CV maestro de Radar; sin pinning ni trayectoria ligada al scroll; sin contadores de GitHub.
+
 
 **Objetivo:** confianza para Marta (persona real, en España, con proyectos), perfil para Dani (`ProfilePage`).
 
@@ -1097,6 +834,8 @@ Estado Propuesta:
 **Escritorio:** retrato y titular a la izquierda, texto a la derecha; trayectoria como línea horizontal scroll-driven.
 
 ### 4.10 Contacto `/contacto`
+> **v4.0:** vigente y ampliado por pantallas P3: «Contacto» ya no está en la cabecera; se llega desde el **cierre corto** de cada página, el cierre de la home, ⌘K, el menú ☰ y los errores. Selector negocio/empresa con segmento inicial por `?via` → `sessionStorage.audience` → negocio. La misma señal `audience` alimenta la personalización del área (§2.2).
+
 
 **Objetivo:** una sola página con la vía correcta según audiencia. Selector "Tengo un negocio / Somos una empresa" que cambia la primaria (spec §12). **Segmento inicial por origen**, con esta prioridad: 1) `?via=negocio|empresa` (override explícito); 2) segmento recordado en `sessionStorage` (`audience`), que se fija al visitar `/empresas` (→ empresa), `/negocios` (→ negocio), una ficha de proyecto con `audience` en su frontmatter, o al cambiar el segmento a mano; 3) sin nada → `negocio` (persona principal). Los enlaces "Contacto" del pie y del menú no llevan `?via`: heredan el recuerdo.
 
@@ -1270,6 +1009,8 @@ Misma plantilla; h1 "Crear cuenta"; los botones de Google/GitHub crean la cuenta
 ```
 
 ### 5.4 Callback `/auth/callback`
+> **v4.0:** además de intercambiar el código y redirigir a `next`, registra la señal de origen del área (§2.2, pantallas §1.4) si no había ninguna guardada.
+
 
 Solo para OAuth. Pantalla de un segundo: "Entrando…" con `Skeleton`. Éxito → redirige a `next` (por defecto `/area-clientes` si es cliente, `/chat` si venía del chat, `/` si no). Error → 5.1 con banner "No se ha completado el acceso. Prueba de nuevo o entra con email".
 
@@ -1280,6 +1021,8 @@ Solo para OAuth. Pantalla de un segundo: "Entrando…" con `Skeleton`. Éxito �
 Guard en el layout server-side: sin sesión → `/auth/login?next=/area-clientes&reason=…`. Cada consulta pasa por RLS: el cliente solo ve filas con su `user_id`. Recursos ajenos por URL → página "Sin permisos" (§8.4).
 
 ### 6.1 Inicio del área (mi proyecto) `/area-clientes`
+> **v4.0:** superado en parte por pantallas §1.4 y A1: la portada se **personaliza automáticamente** por señales (cliente → propuesta/lead → `?ref` → página de origen → neutra) con tres variantes de copy nuevas (propuesta, empresa, sin señal); nunca oculta Recomiéndame, Mi cuenta ni la vía de contacto. Bilingüe. Lo que sigue (cliente / no cliente) es la base de las variantes 1 y 5.
+
 
 **Objetivo:** Marta ve de un vistazo en qué fase está su web, qué le toca hacer y cómo hablar con Jose.
 
@@ -3156,3 +2899,12 @@ Origen: validación de v3.1 con `usuario-ejemplo` (§16.4). Sin pantallas nuevas
 
 **Para el controlador:** `arquitecto` cierra §13.19 (a–j); Jose decide §13.20 (hero A / B / nada) y §13.21 (indicador); `ui` recoge §13.16–13.18 y §13.21; tras el plan, `usuario-ejemplo` vuelve a pasar §7.17 y §9.11 como Jose operador.
 
+## 22. Cambios v4.0 (2026-09-29)
+
+- **§2 reescrito** con el mapa de `2026-09-29-pantallas-y-contenidos.md` v1.0 (numeración P/A), todo bilingüe incluida el área, personalización automática de A1, blog condicionado a 3 artículos, newsletter como fase 10.
+- **§4.1 reescrito** según `ref/home-v6/`: bento por escenas, paginado por gesto, transiciones ligadas al scroll, celda ampliada genérica, indicador de sección, paleta ⌘K, hero con vídeo + póster en móvil y WebGL solo en escritorio.
+- **§3 marcado como superado parcialmente** (cabecera sin Contacto, menú disclosure, fondo de la v6, sin `CompileReveal` ni GSAP).
+- **§4.2, §4.3, §4.5, §4.6, §4.7, §4.9, §4.10, §5.4 y §6.1** con nota «superado por» que remite al documento de pantallas sin duplicarlo.
+- **UI v3 (`2026-09-17-josecoded-ui.md`) superada** por `DESIGN.md` + `.impeccable/design.json` + contrato de la home v6.
+- Eventos: `path_open` → `scene_open {scene}`; nuevo `palette_open`.
+- Pendiente de `ux`: `/impeccable shape` y wireframes de P1 en adelante en el orden de pantallas §4 (siguiente paso de ese documento).
