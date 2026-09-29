@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-24T22:02:05+00:00",
+  "generatedAt": "2026-09-29T21:30:12+00:00",
   "title": "Design System: josecoded",
   "extensions": {
     "colorMeta": {
@@ -17,36 +17,6 @@
           "#9e9dab",
           "#c3c2d1",
           "#eeecfc"
-        ]
-      },
-      "bg-2": {
-        "role": "neutral",
-        "displayName": "Índigo elevado",
-        "canonical": "oklch(15.7% 0.033 288)",
-        "tonalRamp": [
-          "#0b0918",
-          "#232133",
-          "#3e3d51",
-          "#5c5b70",
-          "#7c7b91",
-          "#9d9cb3",
-          "#c2c1d9",
-          "#edecff"
-        ]
-      },
-      "surface-2": {
-        "role": "neutral",
-        "displayName": "Superficie alta",
-        "canonical": "oklch(24.8% 0.081 283)",
-        "tonalRamp": [
-          "#0a022b",
-          "#201c49",
-          "#3a3969",
-          "#57578a",
-          "#7677ad",
-          "#9798d0",
-          "#bcbef8",
-          "#e6e8ff"
         ]
       },
       "ink": {
@@ -201,7 +171,7 @@
       },
       "green": {
         "role": "secondary",
-        "displayName": "Verde disponible",
+        "displayName": "Verde vivo",
         "canonical": "oklch(79.3% 0.180 154)",
         "tonalRamp": [
           "#001900",
@@ -213,247 +183,228 @@
           "#49e58c",
           "#7cffb6"
         ]
+      },
+      "card": {
+        "role": "neutral",
+        "displayName": "Tarjeta",
+        "canonical": "rgb(22 19 48 / 0.84)",
+        "tonalRamp": [
+          "rgb(22 19 48 / 0.50)",
+          "rgb(22 19 48 / 0.60)",
+          "rgb(22 19 48 / 0.70)",
+          "rgb(22 19 48 / 0.78)",
+          "rgb(22 19 48 / 0.84)",
+          "rgb(22 19 48 / 0.90)",
+          "rgb(22 19 48 / 0.95)",
+          "rgb(22 19 48 / 1.00)"
+        ]
+      },
+      "card-line": {
+        "role": "neutral",
+        "displayName": "Filete de tarjeta",
+        "canonical": "rgb(157 140 255 / 0.18)",
+        "tonalRamp": [
+          "rgb(157 140 255 / 0.08)",
+          "rgb(157 140 255 / 0.10)",
+          "rgb(157 140 255 / 0.12)",
+          "rgb(157 140 255 / 0.15)",
+          "rgb(157 140 255 / 0.18)",
+          "rgb(157 140 255 / 0.22)",
+          "rgb(157 140 255 / 0.26)",
+          "rgb(157 140 255 / 0.30)"
+        ]
+      },
+      "overlay": {
+        "role": "neutral",
+        "displayName": "Capa superpuesta",
+        "canonical": "rgb(14 12 32 / 0.97)",
+        "tonalRamp": [
+          "rgb(14 12 32 / 0.60)",
+          "rgb(14 12 32 / 0.70)",
+          "rgb(14 12 32 / 0.80)",
+          "rgb(14 12 32 / 0.86)",
+          "rgb(14 12 32 / 0.90)",
+          "rgb(14 12 32 / 0.94)",
+          "rgb(14 12 32 / 0.97)",
+          "rgb(14 12 32 / 1.00)"
+        ]
       }
     },
     "typographyMeta": {
       "display": {
         "displayName": "Display",
-        "purpose": "Nombre en el hero, dos líneas."
+        "purpose": "El nombre en el hero, en dos líneas. Sin badge ni eyebrow encima."
       },
       "display-closing": {
         "displayName": "Display de cierre",
-        "purpose": "Titular del bloque de contacto."
+        "purpose": "«¿Empezamos?» en la última escena, a dos tonos."
       },
       "headline": {
         "displayName": "Headline",
-        "purpose": "h2 de cada bloque; se resuelven glifo a glifo una vez."
+        "purpose": "Titular de cada escena, a dos tonos; escala con el ancho y el alto."
+      },
+      "project-name": {
+        "displayName": "Nombre de proyecto",
+        "purpose": "Nombre en la tarjeta del carrusel, escalado por cqi; sin antetítulo."
+      },
+      "figure": {
+        "displayName": "Cifra",
+        "purpose": "Precios de tarifa y de packs."
       },
       "title": {
         "displayName": "Title",
-        "purpose": "Títulos de las puertas."
-      },
-      "title-sm": {
-        "displayName": "Title pequeño",
-        "purpose": "Nombre del proyecto en la ventana."
+        "purpose": "Título de artículo en las celdas del blog."
       },
       "lede": {
         "displayName": "Lede",
-        "purpose": "Entradilla bajo cada h2 en lavanda, máx. 40ch."
+        "purpose": "Subtítulo del hero, máximo 34ch."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "Entradillas dentro de las celdas, máximo 52ch."
       },
       "body": {
         "displayName": "Body",
         "purpose": "Texto corrido con ss01 y cv11."
       },
-      "label": {
-        "displayName": "Label",
-        "purpose": "Navegación, pies, enlaces secundarios."
+      "cell-title": {
+        "displayName": "Título de celda",
+        "purpose": "Nombre de cada celda junto a su icono."
       },
       "label-button": {
-        "displayName": "Label de botón",
-        "purpose": "Texto de botones."
+        "displayName": "Etiqueta de botón",
+        "purpose": "Botones sólidos y fantasma."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Navegación y pie."
+      },
+      "small": {
+        "displayName": "Small",
+        "purpose": "Notas, metadatos, botones pequeños, chat."
       },
       "caption": {
         "displayName": "Caption",
-        "purpose": "Etiquetas de tipo y grupos de la paleta."
-      },
-      "mono": {
-        "displayName": "Mono",
-        "purpose": "Esquema de arquitectura, código y glifos transitorios (chorros, títulos y etiquetas que se compilan)."
+        "purpose": "Grupos y pistas de la paleta, nombres de pack."
       },
       "mono-key": {
         "displayName": "Mono de tecla",
-        "purpose": "kbd y selector de idioma."
+        "purpose": "kbd; solo atajos reales."
       }
     },
     "shadows": [
       {
-        "name": "hairline",
+        "name": "filete",
         "value": "inset 0 0 0 1px rgb(157 140 255 / 0.12)",
-        "purpose": "Contorno de reposo; sustituye a border."
+        "purpose": "Contorno de reposo de controles pequeños, teclas, chips y separadores."
       },
       {
-        "name": "hairline-strong",
+        "name": "filete-fuerte",
         "value": "inset 0 0 0 1px rgb(157 140 255 / 0.22)",
-        "purpose": "Controles, hover, ventana y botón fantasma."
+        "purpose": "Botón fantasma, chat, selector, capas superpuestas y hover."
       },
       {
-        "name": "top-light",
-        "value": "inset 0 1px 0 rgb(185 173 255 / 0.08)",
-        "purpose": "Canto iluminado de las puertas; en ventana y paleta, blanco al 0.06–0.07."
+        "name": "tarjeta",
+        "value": "inset 0 0 0 1px rgb(157 140 255 / 0.18), inset 0 1px 0 rgb(185 173 255 / 0.07), 0 30px 60px -30px rgb(5 3 20 / 0.95)",
+        "purpose": "Toda celda y tarjeta de proyecto en reposo."
       },
       {
-        "name": "button-violet",
-        "value": "inset 0 1px 0 rgb(255 255 255 / 0.28), inset 0 -2px 0 rgb(13 11 31 / 0.22), 0 10px 28px -12px rgb(91 75 255 / 0.9)",
-        "purpose": "Botón primario violeta; única sombra de color."
+        "name": "tarjeta-hover",
+        "value": "inset 0 0 0 1px rgb(157 140 255 / 0.22), inset 0 1px 0 rgb(185 173 255 / 0.1), 0 30px 60px -30px rgb(5 3 20 / 0.95)",
+        "purpose": "Celda ampliable bajo el cursor."
       },
       {
-        "name": "door",
-        "value": "inset 0 0 0 1px rgb(157 140 255 / 0.12), inset 0 1px 0 rgb(185 173 255 / 0.08), 0 30px 60px -30px rgb(5 3 20 / 0.95)",
-        "purpose": "Puertas sobre la escena."
+        "name": "tarjeta-foco",
+        "value": "inset 0 0 0 1px rgb(157 140 255 / 0.22), inset 0 1px 0 rgb(185 173 255 / 0.09), 0 40px 80px -40px rgb(5 3 20 / 0.95)",
+        "purpose": "Tarjeta activa del carrusel de Proyectos."
       },
       {
-        "name": "window",
-        "value": "inset 0 0 0 1px rgb(157 140 255 / 0.22), inset 0 1px 0 rgb(255 255 255 / 0.06), 0 50px 100px -40px rgb(5 3 20 / 0.95), 0 0 0 1px rgb(5 3 20 / 0.6)",
-        "purpose": "Ventana tipo lanzador."
+        "name": "boton-violeta",
+        "value": "inset 0 1px 0 rgb(255 255 255 / 0.28), inset 0 -2px 0 rgb(13 11 31 / 0.22), 0 10px 24px -12px rgb(5 3 20 / 0.9)",
+        "purpose": "Botón sólido: canto claro y caída índigo."
       },
       {
-        "name": "palette",
+        "name": "capa-superpuesta",
         "value": "inset 0 0 0 1px rgb(157 140 255 / 0.22), inset 0 1px 0 rgb(255 255 255 / 0.07), 0 40px 80px -20px rgb(5 3 20 / 0.9)",
-        "purpose": "Paleta de comandos."
+        "purpose": "Menú y paleta."
       },
       {
-        "name": "key",
+        "name": "tecla",
         "value": "inset 0 -1px 0 rgb(0 0 0 / 0.4), inset 0 0 0 1px rgb(157 140 255 / 0.12)",
-        "purpose": "Teclas kbd."
-      },
-      {
-        "name": "lit-edge",
-        "value": "1px masked ring: radial-gradient(18rem circle at var(--mx) var(--my), rgb(185 173 255 / 0.9), rgb(124 108 255 / 0.35) 40%, transparent 70%)",
-        "purpose": "Canto encendido bajo el cursor en tarjetas .lit."
-      },
-      {
-        "name": "lit-glow",
-        "value": "radial-gradient(28rem circle at var(--mx) var(--my), rgb(124 108 255 / 0.14), transparent 60%)",
-        "purpose": "Resplandor interior que acompaña al canto encendido."
-      },
-      {
-        "name": "light-field",
-        "value": "3 beams: linear-gradient(90deg, transparent, rgb(91 75 255 / 0.35–0.5) 45%, rgb(157 140 255 / 0.3–0.5) 52%, transparent), blur(5vmax), rotate 26–38deg, opacity 0.3 / 0.2 / 0.14 · pool: radial-gradient(closest-side, rgb(91 75 255 / 0.1), transparent) · mix-blend-mode: screen",
-        "purpose": "Campo de luz fijo y contenido que sigue a la nube."
-      },
-      {
-        "name": "scanline",
-        "value": "height 1px; background: linear-gradient(90deg, transparent, #b9adff 20%, #fff 50%, #b9adff 80%, transparent); box-shadow: 0 0 12px 1px rgb(157 140 255 / 0.7)",
-        "purpose": "Línea de barrido que recorre un componente mientras se imprime; se funde al terminar."
-      },
-      {
-        "name": "focus-ring",
-        "value": "outline: 2px solid #b9adff; outline-offset: 3px",
-        "purpose": "Foco visible global; en puertas, inset 0 0 0 2px violet-soft."
-      },
-      {
-        "name": "backdrop-blur",
-        "value": "nav 14px saturate(1.2) sobre rgb(7 6 15 / 0.7) · door 18px · window 20px · palette 24px · modal backdrop 4px",
-        "purpose": "Vidrio solo sobre la escena o el campo de luz."
+        "purpose": "kbd."
       }
     ],
     "motion": [
       {
         "name": "ease-out",
         "value": "cubic-bezier(0.23, 1, 0.32, 1)",
-        "purpose": "Curva por defecto de salidas, flechas, pulsación y aparición de la escena."
+        "purpose": "Apariciones y cambios de estado de 150 a 260 ms."
       },
       {
-        "name": "color-transition",
-        "value": "150ms ease",
-        "purpose": "Color, fondo y filete en hover."
+        "name": "ease-slide",
+        "value": "cubic-bezier(0.77, 0, 0.175, 1)",
+        "purpose": "Lo que se desliza: resaltado de lista (240 ms), barra de packs (260 ms), pulgar del selector (240 ms)."
+      },
+      {
+        "name": "page-glide",
+        "value": "600–950 ms, ease-in-out cuártico",
+        "purpose": "Paginado por gesto entre escenas y enlaces internos; interrumpible."
+      },
+      {
+        "name": "view-transition-cell",
+        "value": "380ms cubic-bezier(0.32, 0.72, 0, 1)",
+        "purpose": "Celda que se amplía y se recoge."
+      },
+      {
+        "name": "scene-in",
+        "value": "view() entry 0%–75%: translateY(40px) scale(0.985) blur(6px) → none",
+        "purpose": "Entrada ligada al scroll de titulares, celdas y cierre."
+      },
+      {
+        "name": "scene-out",
+        "value": "view() exit 25%–100%: → translateY(-24px) scale(0.97), opacidad 0.25",
+        "purpose": "Salida ligada al scroll."
       },
       {
         "name": "press",
-        "value": "transform: scale(0.97), 160ms ease-out",
-        "purpose": "Pulsación de botones no magnéticos; en los magnéticos la pulsación es 0.96 por muelle."
+        "value": "scale(0.97) 160ms ease-out",
+        "purpose": "Pulsación de botones."
       },
       {
-        "name": "nav-surface",
-        "value": "200ms ease",
-        "purpose": "Cabecera gana fondo tras 80 px."
+        "name": "menu-in",
+        "value": "180ms ease-out, translateY(-0.375rem) scale(0.98) → none",
+        "purpose": "Apertura del menú ☰; sin animación con reduced motion."
       },
       {
-        "name": "scene-fade",
-        "value": "opacity 1.2s ease-out",
-        "purpose": "Aparición del lienzo WebGL."
-      },
-      {
-        "name": "scene-cycle",
-        "value": "hold 3.5s · morph 1.6s · directed morph 1.1s",
-        "purpose": "Ciclo móvil → web → chip del hero y morph dirigido en las puertas."
-      },
-      {
-        "name": "heading-resolve",
-        "value": "520ms + 14ms/char, ease-out cúbico, una vez",
-        "purpose": "h2 que se resuelven glifo a glifo al entrar en pantalla."
-      },
-      {
-        "name": "intro-drop",
-        "value": "≤3s, una vez por sesión, cancelable con cualquier entrada",
-        "purpose": "Caída de caracteres del hero con destello verde de 140–300 ms al aterrizar."
-      },
-      {
-        "name": "availability-ping",
-        "value": "2.4s ease-out infinite",
-        "purpose": "Pulso del punto verde de disponibilidad."
-      },
-      {
-        "name": "palette-open",
-        "value": "none",
-        "purpose": "La paleta se abre sin animación porque se invoca con teclado."
-      },
-      {
-        "name": "arrow-nudge",
-        "value": "translateX(3px) enlaces · translateX(5px) puertas, 200ms ease-out",
-        "purpose": "Flecha en hover con puntero fino."
-      },
-      {
-        "name": "lit-fade",
-        "value": "opacity 300ms ease",
-        "purpose": "Encendido y apagado del canto de las tarjetas .lit."
-      },
-      {
-        "name": "link-resolve",
-        "value": "260ms lineal, en cada entrada del puntero",
-        "purpose": "La salida de las puertas se resuelve en glifos violeta alto al entrar el puntero en la puerta."
-      },
-      {
-        "name": "magnetic-spring",
-        "value": "stiffness 260 · damping 22 · pull 0.22x / 0.30y · zone 1.6× + 24px · press 0.96",
-        "purpose": "Botones magnéticos; transform escrito por JS en rAF."
-      },
-      {
-        "name": "follow",
-        "value": "k = 1 − e^(−3.2·dt); field pointer bias 5–6 %, rotate ≤ 4deg",
-        "purpose": "Seguimiento amortiguado de la nube al bloque activo y del campo de luz a la nube."
-      },
-      {
-        "name": "label-decompose",
-        "value": "220ms lineal, en cada entrada del puntero",
-        "purpose": "Etiqueta del botón sólido, enlaces con flecha y enlace alternativo de las puertas se descompone en glifos violeta alto y se recompone."
-      },
-      {
-        "name": "compile-stream",
-        "value": "≤2200 glifos por componente, ring buffer 9000 · reparto en orden 0.32s + 0.06s jitter · vuelo 0.6–0.85s ease-out cúbico en arco · destello verde al aterrizar, fundido 0.45s",
-        "purpose": "Chorros de glifos de la nube al contorno de puertas, ventana y esquema; solo ≥900 px con WebGL, una vez por visita, contenedor al 25 % visible."
-      },
-      {
-        "name": "compile-print",
-        "value": "clip-path inset(0 0 100% 0) → inset(0), 620ms cubic-bezier(0.23, 1, 0.32, 1); scanline fade 200ms ease-out; título en glifos 420ms; stagger 140ms",
-        "purpose": "Impresión de arriba abajo del componente, arranca al 80 % del vuelo de los chorros (o sola en móvil / sin WebGL)."
-      },
-      {
-        "name": "reduced-motion",
-        "value": "prefers-reduced-motion: reduce",
-        "purpose": "Sin escena, intro, resolución de h2, compilación (sin recorte ni chorros), descomposición de etiquetas, imán, canto que siga ni pulso; campo quieto en translate(18vw, -6vh); scroll sin suavizado."
+        "name": "glyph-cycle",
+        "value": "3,5 s reposo + 1,6 s morph",
+        "purpose": "Ciclo móvil → web → chip de la nube del hero."
       }
     ],
     "breakpoints": [
       {
-        "name": "nav-collapse",
-        "value": "1080px"
+        "name": "login-icon",
+        "value": "22.5rem"
       },
       {
-        "name": "single-column",
+        "name": "hero-stack",
         "value": "900px"
       },
       {
-        "name": "scene-density",
-        "value": "640px"
+        "name": "menu",
+        "value": "1080px"
       },
       {
-        "name": "compact",
-        "value": "600px"
+        "name": "bento-2",
+        "value": "@container bento 34rem"
       },
       {
-        "name": "short-narrow",
-        "value": "900px × 700px (max-height)"
+        "name": "bento-12",
+        "value": "@container bento 52rem"
+      },
+      {
+        "name": "tour-pinned",
+        "value": "min-aspect-ratio 1/1 + animation-timeline + no-preference"
       }
     ]
   },
@@ -462,167 +413,195 @@
       "name": "Botón violeta",
       "kind": "button",
       "refersTo": "button-solid",
-      "description": "Acción primaria única de cada vista. Violeta sólido con texto índigo; magnético con puntero fino y etiqueta que se descompone en glifos 220 ms al entrar.",
+      "description": "Acción primaria única de cada vista. Violeta sólido con texto índigo, canto superior claro y caída índigo.",
       "html": "<a class=\"ds-btn ds-btn-solid\" href=\"#\">Ver proyectos</a>",
-      "css": ":host{--bg:#07060f;--bg-2:#0c0a1a;--surface-2:#1d1946;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--beam:#5b4bff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;min-height:3rem;padding:0 1.375rem;border-radius:999px;font:550 0.9375rem/1 var(--font);letter-spacing:-0.005em;white-space:nowrap;border:0;cursor:pointer;text-decoration:none;transition:transform 160ms var(--ease-out),background-color 150ms ease,box-shadow 150ms ease;} .ds-btn:active{transform:scale(0.97);} .ds-btn:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;} .ds-btn-solid{background:var(--violet);color:var(--ink);box-shadow:inset 0 1px 0 rgb(255 255 255 / 0.28),inset 0 -2px 0 rgb(13 11 31 / 0.22),0 10px 28px -12px rgb(91 75 255 / 0.9);} @media (hover:hover) and (pointer:fine){.ds-btn-solid:hover{background:var(--violet-hi);}}"
+      "css": ":host{--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;min-height:3rem;padding:0 1.375rem;border-radius:999px;font:550 0.9375rem/1 var(--font);letter-spacing:-0.005em;white-space:nowrap;border:0;cursor:pointer;text-decoration:none;transition:transform 160ms var(--ease-out),background-color 150ms ease,box-shadow 150ms ease;} .ds-btn:active{transform:scale(0.97);} .ds-btn:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;} .ds-btn-solid{background:var(--violet);color:var(--ink);box-shadow:inset 0 1px 0 rgb(255 255 255 / 0.28),inset 0 -2px 0 rgb(13 11 31 / 0.22),0 10px 24px -12px rgb(5 3 20 / 0.9);} .ds-btn-solid:hover{background:var(--violet-hi);} "
     },
     {
       "name": "Botón fantasma",
       "kind": "button",
       "refersTo": "button-ghost",
-      "description": "Acción alternativa junto al primario (p. ej. Reservar 20 min).",
+      "description": "Acción hermana del sólido, solo a su lado (Reservar 20 min en el cierre).",
       "html": "<a class=\"ds-btn ds-btn-ghost\" href=\"#\">Reservar 20 min</a>",
-      "css": ":host{--bg:#07060f;--bg-2:#0c0a1a;--surface-2:#1d1946;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--beam:#5b4bff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;min-height:3rem;padding:0 1.375rem;border-radius:999px;font:550 0.9375rem/1 var(--font);letter-spacing:-0.005em;white-space:nowrap;border:0;cursor:pointer;text-decoration:none;transition:transform 160ms var(--ease-out),background-color 150ms ease,box-shadow 150ms ease;} .ds-btn:active{transform:scale(0.97);} .ds-btn:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;} .ds-btn-ghost{color:var(--text);background:rgb(124 108 255 / 0.1);box-shadow:inset 0 0 0 1px var(--line-2);} @media (hover:hover) and (pointer:fine){.ds-btn-ghost:hover{background:rgb(124 108 255 / 0.18);}}"
+      "css": ":host{--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;min-height:3rem;padding:0 1.375rem;border-radius:999px;font:550 0.9375rem/1 var(--font);letter-spacing:-0.005em;white-space:nowrap;border:0;cursor:pointer;text-decoration:none;transition:transform 160ms var(--ease-out),background-color 150ms ease,box-shadow 150ms ease;} .ds-btn:active{transform:scale(0.97);} .ds-btn:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;} .ds-btn-ghost{color:var(--text);background:rgb(124 108 255 / 0.1);box-shadow:inset 0 0 0 1px var(--line-2);} .ds-btn-ghost:hover{background:rgb(124 108 255 / 0.18);}"
     },
     {
       "name": "Enlace con flecha",
       "kind": "custom",
       "refersTo": "link-arrow",
-      "description": "Salida secundaria en violeta suave, en la misma fila que el botón primario.",
-      "html": "<a class=\"ds-link\" href=\"#\">Una web para mi negocio<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg></a>",
-      "css": ":host{--bg:#07060f;--bg-2:#0c0a1a;--surface-2:#1d1946;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--beam:#5b4bff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-link{display:inline-flex;align-items:center;gap:0.375rem;font:500 1rem var(--font);color:var(--violet-soft);text-decoration:none;} .ds-link svg{transition:transform 200ms var(--ease-out);} .ds-link:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;border-radius:0.375rem;} @media (hover:hover) and (pointer:fine){.ds-link:hover svg{transform:translateX(3px);}}"
-    },
-    {
-      "name": "Disparador ⌘K",
-      "kind": "input",
-      "refersTo": "cmdk-trigger",
-      "description": "Abre la paleta de comandos desde la cabecera.",
-      "html": "<button class=\"ds-cmdk\" type=\"button\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg><span>Buscar</span><kbd class=\"ds-kbd\">⌘K</kbd></button>",
-      "css": ":host{--bg:#07060f;--bg-2:#0c0a1a;--surface-2:#1d1946;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--beam:#5b4bff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-kbd{font:500 0.6875rem/1 var(--mono);color:var(--text-2);padding:0.25rem 0.375rem;border-radius:0.3125rem;background:rgb(157 140 255 / 0.1);box-shadow:inset 0 -1px 0 rgb(0 0 0 / 0.4),inset 0 0 0 1px var(--line);} .ds-cmdk{display:inline-flex;align-items:center;gap:0.5rem;height:2.25rem;padding:0 0.5rem 0 0.75rem;border:0;border-radius:0.625rem;font:400 0.875rem var(--font);color:var(--text-3);background:rgb(157 140 255 / 0.06);box-shadow:inset 0 0 0 1px var(--line);cursor:pointer;transition:color 150ms ease,box-shadow 150ms ease;} .ds-cmdk span{min-width:6.5rem;text-align:left;} .ds-cmdk:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;} @media (hover:hover) and (pointer:fine){.ds-cmdk:hover{color:var(--text-2);box-shadow:inset 0 0 0 1px var(--line-2);}}"
+      "description": "Salida secundaria del hero y de las celdas; la flecha avanza 3 px en hover.",
+      "html": "<a class=\"ds-go\" href=\"#\">Ver cómo trabajo<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg></a>",
+      "css": ":host{--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-go{display:inline-flex;align-items:center;gap:0.375rem;font:550 1rem/1.55 var(--font);color:var(--violet-soft);text-decoration:none;} .ds-go svg{transition:transform 200ms var(--ease-out);} .ds-go:hover svg{transform:translateX(3px);} .ds-go:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;border-radius:0.375rem;}"
     },
     {
       "name": "Cabecera",
       "kind": "nav",
-      "refersTo": null,
-      "description": "Cabecera fija; gana índigo casi negro al 70 % con desenfoque tras 80 px de scroll.",
-      "html": "<header class=\"ds-nav\"><a class=\"ds-nav-brand\" href=\"#\">josecoded</a><nav class=\"ds-nav-links\"><a href=\"#\">Empresas</a><a href=\"#\">Negocios</a><a href=\"#\">Proyectos</a><a href=\"#\">Blog</a></nav><a class=\"ds-nav-cta\" href=\"#\">Contacto</a></header>",
-      "css": ":host{--bg:#07060f;--bg-2:#0c0a1a;--surface-2:#1d1946;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--beam:#5b4bff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-nav{display:flex;align-items:center;gap:2rem;height:4rem;padding:0 1.5rem;background:rgb(7 6 15 / 0.7);backdrop-filter:blur(14px) saturate(1.2);box-shadow:inset 0 -1px 0 var(--line);font-family:var(--font);color:var(--text);} .ds-nav a{text-decoration:none;} .ds-nav-brand{font:600 1rem/1 var(--font);letter-spacing:-0.02em;color:var(--text);} .ds-nav-links{display:flex;gap:1.75rem;font-size:0.875rem;} .ds-nav-links a{color:var(--text-2);transition:color 150ms ease;} .ds-nav-cta{margin-left:auto;display:inline-flex;align-items:center;min-height:2.25rem;padding:0 0.875rem;border-radius:999px;background:var(--violet);color:var(--ink);font:550 0.8125rem/1 var(--font);box-shadow:inset 0 1px 0 rgb(255 255 255 / 0.28),0 10px 28px -12px rgb(91 75 255 / 0.9);} .ds-nav a:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;border-radius:0.375rem;} @media (hover:hover) and (pointer:fine){.ds-nav-links a:hover{color:var(--text);} .ds-nav-cta:hover{background:var(--violet-hi);}}"
+      "description": "Marca y secciones a la izquierda; a la derecha, idioma → buscador ⌘K → Chat → Login. Contacto no va en la barra.",
+      "html": "<header class=\"ds-nav\"><a class=\"ds-brand\" href=\"#\">josecoded</a><nav class=\"ds-links\"><a href=\"#\" aria-current=\"true\">Sobre mí</a><a href=\"#\">Empresas</a><a href=\"#\">Negocios</a><a href=\"#\">Proyectos</a><a href=\"#\">Blog</a></nav><div class=\"ds-right\"><a class=\"ds-lang\" href=\"#\" lang=\"en\">EN</a><button class=\"ds-cmdk\" type=\"button\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg><span>Buscar</span><kbd class=\"ds-kbd\">⌘K</kbd></button><a class=\"ds-chat\" href=\"#\"><span class=\"ds-live\"></span><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z\"/></svg><span>Chat</span></a><a class=\"ds-btn ds-btn-solid ds-btn-sm\" href=\"#\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4\"/><polyline points=\"10 17 15 12 10 7\"/><line x1=\"15\" x2=\"3\" y1=\"12\" y2=\"12\"/></svg><span>Login</span></a></div></header>",
+      "css": ":host{--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;min-height:3rem;padding:0 1.375rem;border-radius:999px;font:550 0.9375rem/1 var(--font);letter-spacing:-0.005em;white-space:nowrap;border:0;cursor:pointer;text-decoration:none;transition:transform 160ms var(--ease-out),background-color 150ms ease,box-shadow 150ms ease;} .ds-btn:active{transform:scale(0.97);} .ds-btn:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;} .ds-btn-solid{background:var(--violet);color:var(--ink);box-shadow:inset 0 1px 0 rgb(255 255 255 / 0.28),inset 0 -2px 0 rgb(13 11 31 / 0.22),0 10px 24px -12px rgb(5 3 20 / 0.9);} .ds-btn-solid:hover{background:var(--violet-hi);} .ds-btn-sm{min-height:2.25rem;padding:0 0.875rem;font-size:0.8125rem;} .ds-nav{display:flex;align-items:center;gap:2rem;height:4rem;padding:0 1.5rem;background:rgb(7 6 15 / 0.7);box-shadow:inset 0 -1px 0 var(--line);font-family:var(--font);} .ds-brand{font:600 1rem/1 var(--font);letter-spacing:-0.02em;color:var(--text);text-decoration:none;} .ds-links{display:flex;gap:1.75rem;font-size:0.875rem;} .ds-links a{color:var(--text-2);text-decoration:none;transition:color 150ms ease;} .ds-links a:hover,.ds-links a[aria-current=\"true\"]{color:var(--text);} .ds-right{margin-left:auto;display:flex;align-items:center;gap:1rem;font-size:0.875rem;} .ds-lang{font:500 0.75rem/1 var(--mono);color:var(--text-2);text-decoration:none;} .ds-lang:hover{color:var(--text);} .ds-cmdk{display:inline-flex;align-items:center;gap:0.5rem;height:2.25rem;padding:0 0.5rem 0 0.75rem;border:0;border-radius:0.625rem;font:400 0.875rem var(--font);color:var(--text-3);background:rgb(157 140 255 / 0.06);box-shadow:inset 0 0 0 1px var(--line);cursor:pointer;transition:color 150ms ease,box-shadow 150ms ease;} .ds-cmdk span{min-width:6.5rem;text-align:left;} .ds-cmdk:hover{color:var(--text-2);box-shadow:inset 0 0 0 1px var(--line-2);} .ds-kbd{font:500 0.6875rem/1 var(--mono);color:var(--text-2);padding:0.25rem 0.375rem;border-radius:0.3125rem;background:rgb(157 140 255 / 0.1);box-shadow:inset 0 -1px 0 rgb(0 0 0 / 0.4),inset 0 0 0 1px var(--line);} .ds-chat{display:inline-flex;align-items:center;gap:0.5rem;height:2.25rem;padding:0 0.875rem;border-radius:999px;font:550 0.8125rem/1 var(--font);color:var(--text);text-decoration:none;background:rgb(124 108 255 / 0.1);box-shadow:inset 0 0 0 1px var(--line-2);transition:background-color 150ms ease;} .ds-chat:hover{background:rgb(124 108 255 / 0.18);} .ds-live{width:6px;height:6px;border-radius:50%;background:var(--green);} .ds-nav a:focus-visible,.ds-nav button:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;border-radius:0.375rem;}"
     },
     {
-      "name": "Puerta con luz y canto",
+      "name": "Celda de bento",
       "kind": "card",
-      "refersTo": "door",
-      "description": "Una de las dos vías de igual peso. Vidrio índigo casi negro; entra compilándose y el canto se enciende bajo el cursor (aquí aproximado con hover, en el build sigue al puntero).",
-      "html": "<article class=\"ds-door ds-lit\"><h3><a href=\"#\">Webs para tu negocio</a></h3><p class=\"ds-door-for\">Clínicas, restaurantes, tiendas y talleres.</p><ul><li>Cuatro packs con precio cerrado, <b>desde 900 €</b> sin IVA.</li><li>De 1 a 3 semanas, con plazo cerrado.</li></ul><span class=\"ds-door-go\">Ver packs y precios<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg></span></article>",
-      "css": ":host{--bg:#07060f;--bg-2:#0c0a1a;--surface-2:#1d1946;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--beam:#5b4bff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-lit{position:relative;isolation:isolate;} .ds-lit::before{content:\"\";position:absolute;inset:0;border-radius:inherit;pointer-events:none;padding:1px;background:radial-gradient(18rem circle at 30% 0%,rgb(185 173 255 / 0.9),rgb(124 108 255 / 0.35) 40%,transparent 70%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);opacity:0;transition:opacity 300ms ease;} .ds-lit::after{content:\"\";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:-1;background:radial-gradient(28rem circle at 30% 0%,rgb(124 108 255 / 0.14),transparent 60%);opacity:0;transition:opacity 300ms ease;} @media (hover:hover) and (pointer:fine){.ds-lit:hover::before,.ds-lit:hover::after{opacity:1;}} .ds-door{max-width:26rem;padding:2rem;border-radius:1.25rem;font-family:var(--font);color:var(--text);background:rgb(14 12 32 / 0.8);backdrop-filter:blur(18px);box-shadow:inset 0 0 0 1px var(--line),inset 0 1px 0 rgb(185 173 255 / 0.08),0 30px 60px -30px rgb(5 3 20 / 0.95);} .ds-door h3{margin:0;font-size:1.5rem;font-weight:600;letter-spacing:-0.03em;} .ds-door h3 a{color:inherit;text-decoration:none;} .ds-door h3 a::after{content:\"\";position:absolute;inset:0;border-radius:inherit;} .ds-door h3 a:focus-visible{outline:none;} .ds-door:has(a:focus-visible){box-shadow:inset 0 0 0 2px var(--violet-soft);} .ds-door-for{margin:0.375rem 0 0;color:var(--text-3);font-size:0.9375rem;} .ds-door ul{margin:1.5rem 0 0;padding:1.25rem 0 0;list-style:none;display:grid;gap:0.75rem;box-shadow:inset 0 1px 0 var(--line);font-size:0.9375rem;color:var(--text-2);} .ds-door li{position:relative;padding-left:1rem;} .ds-door li::before{content:\"\";position:absolute;left:0;top:0.62em;width:0.3125rem;height:0.3125rem;border-radius:50%;background:var(--violet);} .ds-door b{color:var(--text);font-weight:600;} .ds-door-go{margin-top:1.75rem;display:inline-flex;align-items:center;gap:0.375rem;font-weight:550;color:var(--violet-soft);} .ds-door-go svg{transition:transform 200ms var(--ease-out);} @media (hover:hover) and (pointer:fine){.ds-door:hover .ds-door-go svg{transform:translateX(5px);}}"
+      "refersTo": "cell",
+      "description": "Unidad del bento: superficie card con filete card-line, icono y título de celda, entradilla y salida. La celda principal se amplía.",
+      "html": "<article class=\"ds-cell\"><header class=\"ds-cell-head\"><span class=\"ds-cell-ic\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/></svg></span><h3>Sobre mí</h3><button class=\"ds-cell-open\" type=\"button\" aria-label=\"Ampliar Sobre mí\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"15 3 21 3 21 9\"/><polyline points=\"9 21 3 21 3 15\"/><line x1=\"21\" x2=\"14\" y1=\"3\" y2=\"10\"/><line x1=\"3\" x2=\"10\" y1=\"21\" y2=\"14\"/></svg></button></header><p class=\"ds-lead\">Hago apps y webs que se publican y se usan, de la idea al despliegue.</p><a class=\"ds-go\" href=\"#\">Conóceme<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg></a></article>",
+      "css": ":host{--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-cell{display:grid;gap:1rem;padding:clamp(1.125rem,0.6rem + 1.6vmin,2.25rem);border-radius:clamp(1rem,0.6rem + 1vmin,1.5rem);background:var(--card);backdrop-filter:blur(18px);color:var(--text);font-family:var(--font);box-shadow:inset 0 0 0 1px var(--card-line),inset 0 1px 0 rgb(185 173 255 / 0.07),0 30px 60px -30px rgb(5 3 20 / 0.95);transition:box-shadow 200ms ease;cursor:pointer;} .ds-cell:hover{box-shadow:inset 0 0 0 1px var(--line-2),inset 0 1px 0 rgb(185 173 255 / 0.1),0 30px 60px -30px rgb(5 3 20 / 0.95);} .ds-cell-head{display:flex;align-items:center;gap:0.75rem;} .ds-cell-head h3{margin:0;font-size:0.9375rem;font-weight:550;color:var(--text-2);} .ds-cell-ic{display:grid;place-items:center;width:2rem;height:2rem;border-radius:0.5rem;background:rgb(157 140 255 / 0.12);color:var(--violet-soft);} .ds-cell-open{margin-left:auto;display:grid;place-items:center;width:2.25rem;height:2.25rem;border:0;border-radius:0.625rem;background:none;color:var(--text-3);cursor:pointer;transition:color 150ms ease,background-color 150ms ease;} .ds-cell:hover .ds-cell-open{color:var(--text);background:rgb(157 140 255 / 0.1);} .ds-cell-open:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;} .ds-lead{margin:0;font-size:clamp(0.9375rem,0.85rem + 0.35vmin,1.0625rem);line-height:1.55;color:var(--text-2);max-width:52ch;} .ds-go{display:inline-flex;align-items:center;gap:0.375rem;font-weight:550;color:var(--violet-soft);text-decoration:none;justify-self:start;} .ds-go svg{transition:transform 200ms var(--ease-out);} .ds-go:hover svg{transform:translateX(3px);} .ds-go:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;border-radius:0.375rem;}"
     },
     {
-      "name": "Ventana tipo lanzador",
+      "name": "Tarjeta de proyecto",
+      "kind": "card",
+      "refersTo": "project-card",
+      "description": "Tarjeta del carrusel fijado: arte de glifos sobre el resplandor del haz y nombre sin antetítulo; el tipo va debajo como metadato.",
+      "html": "<article class=\"ds-tcard\"><div class=\"ds-tcard-art\" aria-hidden=\"true\"><span>{ } &lt;/&gt; =&gt;</span></div><div class=\"ds-tcard-copy\"><h3 class=\"ds-tcard-name\">HazmeFila</h3><p class=\"ds-lead\">Qué hace, en una frase.</p><p class=\"ds-meta\">App</p><a class=\"ds-go\" href=\"#\">Ver proyecto<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg></a></div></article>",
+      "css": ":host{--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-tcard{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));gap:clamp(1rem,2.5vmin,2rem);padding:clamp(1.125rem,0.6rem + 1.6vmin,2.25rem);border-radius:clamp(1.125rem,0.8rem + 1vmin,1.75rem);background:var(--card);color:var(--text);font-family:var(--font);box-shadow:inset 0 0 0 1px var(--line-2),inset 0 1px 0 rgb(185 173 255 / 0.09),0 40px 80px -40px rgb(5 3 20 / 0.95);} .ds-tcard-art{display:grid;place-items:center;min-height:9rem;background:radial-gradient(60% 55% at 50% 45%,rgb(91 75 255 / 0.22),transparent 70%);font:500 1.5rem/1 var(--mono);color:var(--violet-soft);} .ds-tcard-copy{display:grid;align-content:center;gap:0.875rem;} .ds-tcard-name{margin:0;font-size:clamp(1.75rem,1rem + 5cqi,3rem);font-weight:600;letter-spacing:-0.04em;line-height:1;} .ds-lead{margin:0;color:var(--text-2);line-height:1.55;} .ds-meta{margin:0;font-size:0.8125rem;color:var(--text-3);} .ds-go{display:inline-flex;align-items:center;gap:0.375rem;font-weight:550;color:var(--violet-soft);text-decoration:none;justify-self:start;} .ds-go:hover svg{transform:translateX(3px);} .ds-go svg{transition:transform 200ms var(--ease-out);} .ds-go:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;border-radius:0.375rem;}"
+    },
+    {
+      "name": "Selector segmentado",
+      "kind": "chip",
+      "refersTo": "segmented",
+      "description": "Dos modalidades (Por horas / Por feature); el pulgar violeta se desliza en 240 ms.",
+      "html": "<div class=\"ds-seg\" role=\"tablist\" aria-label=\"Modalidad\"><span class=\"ds-seg-thumb\"></span><button role=\"tab\" aria-selected=\"true\">Por horas</button><button role=\"tab\" aria-selected=\"false\">Por feature</button></div>",
+      "css": ":host{--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-seg{position:relative;display:inline-grid;grid-template-columns:1fr 1fr;padding:0.25rem;border-radius:999px;background:rgb(7 6 15 / 0.5);box-shadow:inset 0 0 0 1px var(--line-2);} .ds-seg button{position:relative;z-index:1;min-height:2.25rem;padding:0 1rem;border:0;border-radius:999px;background:none;cursor:pointer;font:550 0.8125rem var(--font);color:var(--text-2);transition:color 180ms ease;} .ds-seg button[aria-selected=\"true\"]{color:var(--ink);} .ds-seg button:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;} .ds-seg-thumb{position:absolute;top:0.25rem;bottom:0.25rem;left:0.25rem;width:calc(50% - 0.25rem);border-radius:999px;background:var(--violet);transition:transform 240ms cubic-bezier(0.77,0,0.175,1);} .ds-seg:has(button[aria-selected=\"true\"]:last-of-type) .ds-seg-thumb{transform:translateX(100%);}"
+    },
+    {
+      "name": "Lista con selección deslizante",
       "kind": "custom",
-      "refersTo": "launcher-window",
-      "description": "Lista y detalle de proyectos navegable con flechas; también tarjeta con canto encendido.",
-      "html": "<div class=\"ds-win ds-lit\"><div class=\"ds-win-bar\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg><span class=\"ds-win-q\">Proyectos</span></div><ul class=\"ds-win-list\" role=\"listbox\" aria-label=\"Proyectos\"><li role=\"option\" aria-selected=\"true\" tabindex=\"0\"><span class=\"ds-pi\">H</span>HazmeFila<span class=\"ds-pt\">App</span></li><li role=\"option\" aria-selected=\"false\" tabindex=\"-1\"><span class=\"ds-pi\">O</span>Oportunix<span class=\"ds-pt\">Web</span></li></ul><div class=\"ds-win-foot\"><span>josecoded / proyectos</span><span><kbd class=\"ds-kbd\">↵</kbd> abrir ficha</span></div></div>",
-      "css": ":host{--bg:#07060f;--bg-2:#0c0a1a;--surface-2:#1d1946;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--beam:#5b4bff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-kbd{font:500 0.6875rem/1 var(--mono);color:var(--text-2);padding:0.25rem 0.375rem;border-radius:0.3125rem;background:rgb(157 140 255 / 0.1);box-shadow:inset 0 -1px 0 rgb(0 0 0 / 0.4),inset 0 0 0 1px var(--line);} .ds-lit{position:relative;isolation:isolate;} .ds-lit::before{content:\"\";position:absolute;inset:0;border-radius:inherit;pointer-events:none;padding:1px;background:radial-gradient(18rem circle at 30% 0%,rgb(185 173 255 / 0.9),rgb(124 108 255 / 0.35) 40%,transparent 70%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);opacity:0;transition:opacity 300ms ease;} .ds-lit::after{content:\"\";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:-1;background:radial-gradient(28rem circle at 30% 0%,rgb(124 108 255 / 0.14),transparent 60%);opacity:0;transition:opacity 300ms ease;} @media (hover:hover) and (pointer:fine){.ds-lit:hover::before,.ds-lit:hover::after{opacity:1;}} .ds-win{max-width:28rem;border-radius:1rem;overflow:hidden;font-family:var(--font);color:var(--text);background:rgb(13 11 30 / 0.86);backdrop-filter:blur(20px);box-shadow:inset 0 0 0 1px var(--line-2),inset 0 1px 0 rgb(255 255 255 / 0.06),0 50px 100px -40px rgb(5 3 20 / 0.95),0 0 0 1px rgb(5 3 20 / 0.6);} .ds-win-bar{height:3.5rem;display:flex;align-items:center;gap:0.75rem;padding:0 1.25rem;box-shadow:inset 0 -1px 0 var(--line);color:var(--text-3);} .ds-win-q{color:var(--text);} .ds-win-list{margin:0;padding:0.5rem;list-style:none;} .ds-win-list li{display:grid;grid-template-columns:2rem 1fr auto;align-items:center;gap:0.625rem;min-height:2.75rem;padding:0 0.75rem;border-radius:0.5rem;cursor:pointer;color:var(--text-2);transition:background-color 120ms ease,color 120ms ease;} .ds-pi{display:grid;place-items:center;width:1.75rem;height:1.75rem;border-radius:0.4375rem;background:rgb(157 140 255 / 0.1);box-shadow:inset 0 0 0 1px var(--line);font-size:0.75rem;font-weight:600;} .ds-pt{font-size:0.75rem;font-weight:500;color:var(--text-3);} .ds-win-list li[aria-selected=true]{background:rgb(124 108 255 / 0.16);color:var(--text);box-shadow:inset 0 0 0 1px rgb(157 140 255 / 0.18);} .ds-win-list li[aria-selected=true] .ds-pi{background:var(--violet);color:var(--ink);box-shadow:none;} .ds-win-list li:focus-visible{outline:2px solid var(--violet-soft);outline-offset:-2px;} .ds-win-foot{display:flex;justify-content:space-between;align-items:center;height:2.5rem;padding:0 1.25rem;font-size:0.75rem;color:var(--text-3);box-shadow:inset 0 1px 0 var(--line);background:rgb(7 6 15 / 0.5);} @media (hover:hover) and (pointer:fine){.ds-win-list li:hover{color:var(--text);}}"
+      "refersTo": "list-item",
+      "description": "Servicios: la fila elegida tiene resaltado violeta al 14 % con filete y su icono en violeta sólido.",
+      "html": "<ul class=\"ds-plist\"><li class=\"is-sel\" tabindex=\"0\"><span class=\"ds-ic\">W</span><span>Web con Next.js</span><span class=\"ds-meta\">producto y marketing</span></li><li tabindex=\"0\"><span class=\"ds-ic\">A</span><span>Apps con React Native</span><span class=\"ds-meta\">iOS y Android</span></li><li tabindex=\"0\"><span class=\"ds-ic\">IA</span><span>IA integrada</span><span class=\"ds-meta\">asistentes</span></li></ul>",
+      "css": ":host{--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-plist{display:grid;gap:0.25rem;margin:0;padding:0;list-style:none;font-family:var(--font);} .ds-plist li{display:grid;grid-template-columns:2rem minmax(0,1fr) auto;align-items:center;gap:0.75rem;min-height:2.75rem;padding:0 0.75rem;border-radius:0.625rem;color:var(--text-2);transition:color 160ms ease,background-color 240ms cubic-bezier(0.77,0,0.175,1);} .ds-plist li:hover,.ds-plist li:focus-visible,.ds-plist li.is-sel{color:var(--text);background:rgb(124 108 255 / 0.14);box-shadow:inset 0 0 0 1px rgb(157 140 255 / 0.2);outline:none;} .ds-ic{display:grid;place-items:center;width:1.75rem;height:1.75rem;border-radius:0.4375rem;background:rgb(157 140 255 / 0.1);color:var(--violet-soft);font:500 0.6875rem var(--mono);transition:background-color 160ms ease,color 160ms ease;} .ds-plist li.is-sel .ds-ic,.ds-plist li:hover .ds-ic{background:var(--violet);color:var(--ink);} .ds-meta{font-size:0.8125rem;color:var(--text-3);}"
     },
     {
       "name": "Tecla",
       "kind": "chip",
       "refersTo": "kbd",
-      "description": "Atajo de teclado real; solo en Geist Mono.",
-      "html": "<span><kbd class=\"ds-kbd\">↑</kbd> <kbd class=\"ds-kbd\">↓</kbd> <kbd class=\"ds-kbd\">⌘K</kbd></span>",
-      "css": ":host{--bg:#07060f;--bg-2:#0c0a1a;--surface-2:#1d1946;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--beam:#5b4bff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-kbd{font:500 0.6875rem/1 var(--mono);color:var(--text-2);padding:0.25rem 0.375rem;border-radius:0.3125rem;background:rgb(157 140 255 / 0.1);box-shadow:inset 0 -1px 0 rgb(0 0 0 / 0.4),inset 0 0 0 1px var(--line);} "
+      "description": "Solo para atajos reales (⌘K, ↑, ↓, ↵, esc).",
+      "html": "<span class=\"ds-row\"><kbd class=\"ds-kbd\">⌘K</kbd><kbd class=\"ds-kbd\">esc</kbd><kbd class=\"ds-kbd\">↵</kbd></span>",
+      "css": ":host{--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-row{display:inline-flex;gap:0.375rem;} .ds-kbd{font:500 0.6875rem/1 var(--mono);color:var(--text-2);padding:0.25rem 0.375rem;border-radius:0.3125rem;background:rgb(157 140 255 / 0.1);box-shadow:inset 0 -1px 0 rgb(0 0 0 / 0.4),inset 0 0 0 1px var(--line);}"
     },
     {
-      "name": "Esquema",
-      "kind": "custom",
-      "refersTo": "scheme",
-      "description": "Bloque de código mono con comentarios en terciario; tarjeta con canto encendido.",
-      "html": "<pre class=\"ds-scheme ds-lit\"><code>navegador ──▶ Cloudflare Workers  <span class=\"c\">Next.js · OpenNext</span>\n                 └─▶ Umami             <span class=\"c\">sin cookies</span></code></pre>",
-      "css": ":host{--bg:#07060f;--bg-2:#0c0a1a;--surface-2:#1d1946;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--beam:#5b4bff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-lit{position:relative;isolation:isolate;} .ds-lit::before{content:\"\";position:absolute;inset:0;border-radius:inherit;pointer-events:none;padding:1px;background:radial-gradient(18rem circle at 30% 0%,rgb(185 173 255 / 0.9),rgb(124 108 255 / 0.35) 40%,transparent 70%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);opacity:0;transition:opacity 300ms ease;} .ds-lit::after{content:\"\";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:-1;background:radial-gradient(28rem circle at 30% 0%,rgb(124 108 255 / 0.14),transparent 60%);opacity:0;transition:opacity 300ms ease;} @media (hover:hover) and (pointer:fine){.ds-lit:hover::before,.ds-lit:hover::after{opacity:1;}} .ds-scheme{margin:0;padding:1.25rem 1.5rem;border-radius:0.75rem;background:rgb(13 11 30 / 0.86);box-shadow:inset 0 0 0 1px var(--line);font:400 0.8125rem/1.75 var(--mono);color:var(--text);overflow-x:auto;} .ds-scheme .c{color:var(--text-3);}"
+      "name": "Indicador de sección",
+      "kind": "nav",
+      "description": "Líneas sin texto en el margen derecho; la activa más larga, de 3 px y violeta suave. Nunca en el hero.",
+      "html": "<nav class=\"ds-pager\" aria-label=\"Secciones\"><button type=\"button\" aria-label=\"Sobre mí\"><i></i></button><button type=\"button\" aria-label=\"Empresas\" aria-current=\"true\"><i></i></button><button type=\"button\" aria-label=\"Negocios\"><i></i></button><button type=\"button\" aria-label=\"Proyectos\"><i></i></button><button type=\"button\" aria-label=\"Blog\"><i></i></button><button type=\"button\" aria-label=\"Contacto\"><i></i></button></nav>",
+      "css": ":host{--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-pager{display:inline-grid;gap:0.25rem;justify-items:center;} .ds-pager button{display:grid;place-items:center;width:2.25rem;height:1.125rem;border:0;background:none;cursor:pointer;padding:0;} .ds-pager i{display:block;width:1.5rem;height:2px;border-radius:2px;background:rgb(157 140 255 / 0.3);transform:scaleX(0.55);transition:transform 200ms var(--ease-out),background-color 200ms ease,height 200ms ease;} .ds-pager button[aria-current=\"true\"] i{transform:scaleX(1);height:3px;background:var(--violet-soft);} .ds-pager button:not([aria-current=\"true\"]):hover i{transform:scaleX(0.8);background:rgb(157 140 255 / 0.6);} .ds-pager button:focus-visible{outline:2px solid var(--violet-soft);outline-offset:0;border-radius:0.375rem;}"
     }
   ],
   "narrative": {
     "northStar": "El lanzador de código",
-    "overview": "Un sistema tech limpio y preciso, con el acabado de un lanzador de escritorio, donde el índigo no es un acento sino el material de la página. El fondo es un índigo casi negro atravesado por un campo de luz contenido: haces violeta tenues y difusos que siguen al objeto por la página y un poco al cursor, sin lavar la superficie. El objeto es la nube de glifos: caracteres reales de código, lavanda con núcleo violeta, que recorren la página en un único lienzo fijo y forman en cada bloque lo que ese bloque ofrece (móvil, web, chip). Cuando llega a un componente, la nube lo compila: lanza chorros de glifos que trazan su contorno y el componente se imprime de arriba abajo. La interfaz, texto lavanda, superficies de vidrio índigo y filetes violeta, responde a esa luz sin competir con ella.\n\nLa densidad es media: bloques amplios separados por mucho aire vertical y, dentro de cada bloque, una interfaz compacta tipo aplicación (ventana con lista y detalle, paleta de comandos, atajos de teclado). La web se lee como una herramienta bien hecha, no como un folleto. El teclado es ciudadano de primera: ⌘K abre una paleta que lleva a cualquier sitio. Con puntero fino la interfaz se nota viva al tacto: el canto de las tarjetas se enciende bajo el cursor y los botones principales se dejan atraer con un muelle; sus etiquetas se descomponen en glifos un instante al entrar el puntero.\n\nRechazos confirmados en el propio build y en PRODUCT.md: la rejilla de tarjetas iguales, el vidrio decorativo sin escena debajo, los halos morados sueltos detrás de tarjetas o texto, la franja de métricas, el negro puro y cualquier metáfora de objeto físico. El índigo sustituye al grafito anterior a petición de Jose (24-09: «fondo muerto, textos y botones demasiado blancos») y después se oscureció a índigo casi negro con el campo de luz y las superficies más contenidos.",
+    "overview": "Un sistema tech limpio y preciso, con el acabado de un lanzador de escritorio, donde el índigo no es un acento sino el material de la página. El fondo es un índigo casi negro con grano fino y un campo de luz contenido: haces violeta difusos que nacen junto a la nube de glifos del hero y se inclinan un poco hacia el cursor. La nube (caracteres reales de código que forman por turnos un móvil, una web y un chip) es el único objeto vivo de la web y vive solo en el hero. Todo lo demás es interfaz: texto lavanda, tarjetas de vidrio índigo con filete violeta y una sola acción violeta sólida por vista.\n\nTras el hero, la home se lee como una secuencia de escenas a pantalla completa: Sobre mí, Empresas, Negocios, Proyectos, Blog y el cierre. Cada escena es un titular a dos tonos y un bento de tres celdas sin huecos que se reorganiza según el ancho de su propio contenedor. Proyectos es un carrusel horizontal fijado. Con puntero fino, un gesto de rueda o de teclado lleva a la siguiente escena. La densidad es media: mucho aire entre escenas y, dentro de cada celda, una interfaz compacta tipo aplicación (lista con selección deslizante, selector segmentado, mini conversación, atajos). El teclado es ciudadano de primera: ⌘K abre una paleta que lleva a cualquier sitio.\n\nRechazos confirmados por Jose y por PRODUCT.md: glassmorphism de plantilla, gradientes morados genéricos, Inter con texto degradado, iconos brillantes, copy vacío, parallax de fondo, gradientes animados, inclinaciones o escalas al hacer hover, aspecto «de web normal», la franja de métricas, el negro puro, las metáforas de objeto físico, WebGL fuera del hero, el badge o eyebrow en el hero y los antetítulos sobre los nombres de proyecto.",
     "keyCharacteristics": [
-      "Índigo casi negro con grano fino y un campo de luz violeta contenido que sigue al objeto; nunca negro puro.",
-      "Una sola nube de glifos de código como único objeto; la luz es su sombra proyectada, no un segundo elemento vivo.",
-      "La web se compila: la nube traza en glifos el contorno de cada componente y este se imprime con una línea de barrido, una vez por visita.",
-      "Geist para todo; Geist Mono solo para código, atajos y glifos.",
-      "Filetes de 1 px violeta translúcido dibujados como sombra interior, nunca como borde.",
+      "Índigo casi negro con grano al 4,5 % y un campo de luz violeta contenido; nunca negro puro.",
+      "Una sola nube de glifos WebGL, solo en el hero; los glifos reaparecen como arte estático en Proyectos y en ningún otro sitio.",
+      "Una escena por pantalla: titular a dos tonos más un bento de tres celdas que decide su rejilla por container queries.",
+      "Geist para todo; Geist Mono solo en teclas, idioma y glifos.",
+      "Tarjetas de vidrio índigo algo más claras que el fondo con filete violeta interior de 1 px, nunca `border`.",
       "Acción primaria en violeta sólido con texto índigo; texto en lavanda, nunca en blanco.",
-      "Canto encendido bajo el cursor y botones magnéticos solo con puntero fino y sin reduced-motion."
+      "Medidas en unidades relativas y fluidas (rem, clamp con vw, svh, vmin y cqi)."
     ],
     "rules": [
       {
         "name": "The Indigo Floor Rule",
-        "body": "El fondo es índigo (bg) con grano al 4,5 %. Nunca #000 en fondos ni overlays: la cabecera con scroll es rgb(7 6 15 / 0.7), el fondo del modal rgb(8 6 22 / 0.6) y las sombras de caída usan índigo casi negro rgb(5 3 20).",
+        "body": "El fondo es índigo (bg) con grano al 4,5 %. Nunca #000 en fondos ni velos: la cabecera con scroll es rgb(7 6 15 / 0.7), el velo de la celda ampliada rgb(7 6 15 / 0.72), el de la paleta rgb(8 6 22 / 0.6), y las sombras de caída usan rgb(5 3 20).",
         "section": "colors"
       },
       {
         "name": "The Lavender Text Rule",
-        "body": "El texto nunca es blanco puro: lavanda (text) para lo principal y sus dos escalones para lo demás. El blanco solo aparece como brillo al 5–28 % en cantos iluminados y como núcleo de 1 px de la línea de barrido: luz, nunca texto.",
+        "body": "El texto nunca es blanco puro: lavanda (text) para lo principal y sus dos escalones para lo demás. El blanco solo aparece como brillo del 7 al 28 % en la arista superior de botones y capas: luz, nunca texto.",
         "section": "colors"
       },
       {
-        "name": "The Violet Action Rule",
-        "body": "La acción primaria es violeta sólido con texto índigo; el hover sube a violeta alto. Los enlaces y salidas secundarias van en violeta suave. Ninguna superficie grande se rellena de violeta opaco.",
+        "name": "The One Violet Action Rule",
+        "body": "La acción primaria es violeta sólido con texto índigo; el hover sube a violeta alto. Las salidas secundarias son enlaces con flecha en violeta suave. Ninguna superficie grande se rellena de violeta opaco: el violeta sólido se limita a botones, pulgar del selector e iconos seleccionados.",
         "section": "colors"
       },
       {
         "name": "The Green Means Live Rule",
-        "body": "El verde marca solo disponibilidad y aterrizaje. Si algo verde no está \"vivo\", sobra.",
+        "body": "El verde marca solo algo vivo o hecho: chat disponible, lo que incluye un pack y el aterrizaje de la intro. Si algo verde no está «vivo», sobra.",
         "section": "colors"
       },
       {
         "name": "The One Family Rule",
-        "body": "Geist para todo. Geist Mono solo para código, atajos de teclado, el esquema, el selector de idioma y los glifos (escena, chorros, h2, títulos que se compilan y etiquetas que se descomponen). Ningún otro tipo de letra.",
+        "body": "Geist para todo. Geist Mono solo en teclas, el enlace de idioma, los marcadores {{DATO}} y los glifos (nube, intro, arte de Proyectos). Ningún otro tipo de letra.",
+        "section": "typography"
+      },
+      {
+        "name": "The Two-Tone Headline Rule",
+        "body": "Todo titular de escena y el del cierre se escriben en dos frases: la primera en lavanda (text) dice qué es, la segunda en lavanda terciaria (text-3) dice para quién o con qué. Se mantiene en todas las escenas; el h1 del hero es la única excepción porque es un nombre.",
         "section": "typography"
       },
       {
         "name": "The Tight Display Rule",
-        "body": "Cuanto más grande, más apretado: display a -0.045em, headline a -0.04em, title a -0.03em, marca y títulos pequeños a -0.02em. El texto corrido va con tracking normal.",
+        "body": "Cuanto más grande, más apretado: display, cierre y cifras a -0.045em, headline y nombre de proyecto a -0.04em, title a -0.03em, marca a -0.02em. El texto corrido va con tracking normal.",
         "section": "typography"
       },
       {
-        "name": "The One Living Thing Rule",
-        "body": "Hay un único lienzo WebGL fijo detrás del contenido y un solo objeto vivo. El campo de luz no es un segundo elemento: sigue al objeto con el mismo amortiguado y solo se desvía un poco hacia el cursor. Los chorros de la compilación no son un segundo objeto: salen de la nube, dibujan un contorno y se apagan. En la ventana de proyectos la nube se atenúa al 5 %. Bajo 900 px la nube vive solo en el hero y nunca queda bajo texto ni botones.",
+        "name": "The No Kicker Rule",
+        "body": "Ningún titular lleva antetítulo: sin badge ni eyebrow sobre el h1 del hero, sin kicker sobre los h2 de escena y sin antetítulo sobre el nombre de un proyecto. El tipo de proyecto (App, Web) va debajo, como metadato con icono.",
+        "section": "typography"
+      },
+      {
+        "name": "The Relative Units Rule",
+        "body": "Medidas, tipografía, espaciados y radios se escriben en unidades relativas (rem, %, ch, vw, svh, vmin, cqi) y, cuando escalan, con clamp. Los píxeles se reservan para los hairlines de 1 px.",
+        "section": "layout"
+      },
+      {
+        "name": "The One Scene Per Screen Rule",
+        "body": "Cada sección es una escena: titular a dos tonos y un bento de tres celdas sin huecos. Nunca una rejilla de tarjetas iguales ni una franja de métricas.",
         "section": "layout"
       },
       {
         "name": "The Inset Hairline Rule",
-        "body": "Los contornos se dibujan con sombra interior de 1 px, nunca con `border`. El canto encendido es un pseudoelemento enmascarado encima del filete, así que tampoco mueve el layout.",
+        "body": "Los contornos se dibujan con sombra interior de 1 px, nunca con `border`, así que no mueven el layout.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Lifted Card Rule",
+        "body": "Las tarjetas se separan del fondo por superficie (card) y filete (card-line), no por sombras más duras ni por halos. Su estilo no cambia; si hace falta más separación, se ajustan esos dos tokens.",
         "section": "elevation"
       },
       {
         "name": "The Glass Over Light Rule",
-        "body": "`backdrop-filter` solo en láminas que flotan sobre la escena o el campo de luz: cabecera con scroll (14 px), puertas (18 px), ventana de proyectos (20 px), paleta (24 px) y su fondo (4 px). Nunca en piezas sin escena debajo ni como adorno.",
+        "body": "`backdrop-filter` solo en láminas que flotan sobre la escena o el campo de luz: cabecera con scroll (14 px), tarjetas (18 px), menú y paleta (24 px) y sus velos (4 a 6 px). Nunca en piezas sin luz debajo ni como adorno.",
         "section": "elevation"
       },
       {
-        "name": "The Light Belongs To The Object Rule",
-        "body": "Los haces y el charco de luz violeta viven solo en la capa de campo, que sigue a la nube. Fuera de ella, la luz violeta solo aparece como respuesta: el canto bajo el cursor, la sombra del botón primario, el resplandor de la captura y la línea de barrido mientras un componente se imprime. No se añaden halos ni degradados violeta estáticos detrás de tarjetas o titulares.",
+        "name": "The Light Belongs To The Glyphs Rule",
+        "body": "La luz violeta pertenece a los glifos: el campo de luz sigue a la nube, y el único resplandor radial fijo está detrás del arte de glifos de Proyectos. Fuera de eso, el violeta solo aparece como respuesta (la luz de 22rem que sigue al cursor dentro de una celda, al 9 %) o como tinte tonal dentro de dos celdas señaladas (degradado diagonal del 14 o del 20 % que se funde en card antes de la mitad). Nada de halos detrás de tarjetas o titulares.",
         "section": "elevation"
       },
       {
-        "name": "The Web Compiles Rule",
-        "body": "Los componentes de contenido (puertas, ventana, esquema) entran compilándose, nunca con fundidos, deslizamientos ni escalas: primero el código traza el contorno, luego la pieza se imprime de arriba abajo. Ocurre una sola vez por componente y visita, el texto real está siempre en el DOM, y solo los glifos, el destello verde y la línea de barrido participan; no se añade otra coreografía de entrada.",
+        "name": "The Discreet Glyphs Rule",
+        "body": "Los glifos son un detalle discreto: la nube viva en el hero y el arte estático de las tarjetas de Proyectos, nada más por ahora. No se añaden a titulares, botones, enlaces ni entradas de componentes.",
         "section": "components"
       }
     ],
     "dos": [
-      "Do usar índigo (bg) como fondo y vidrio índigo translúcido con filete violeta para las láminas que flotan sobre la escena.",
-      "Do dibujar todo contorno como sombra interior de 1 px al 12 % o al 22 % de violeta claro.",
-      "Do usar el botón violeta sólido con texto índigo para la única acción primaria de cada vista y el enlace con flecha en violeta suave para la secundaria.",
-      "Do escribir el texto en lavanda (text, text-2, text-3), nunca en blanco.",
-      "Do limitar hover, canto encendido, imán y descomposición de etiquetas a `(hover: hover) and (pointer: fine)`, y usar ease-out cubic-bezier(0.23, 1, 0.32, 1) con 150–200 ms en las salidas.",
-      "Do mover el campo de luz y los botones magnéticos solo por `transform`, cada uno en su propia capa.",
-      "Do dar a cada acción de teclado su atajo visible con kbd, y abrir lo que se invoca con teclado sin animación.",
-      "Do sustituir todo movimiento con `prefers-reduced-motion`: sin intro, sin escena, sin resolución de h2, sin compilación, sin imán, sin luz que siga, sin pulso.",
-      "Do hacer entrar los componentes de contenido por compilación (contorno en glifos y luego impresión de arriba abajo en 620 ms), una vez por visita, con 140 ms entre piezas hermanas.",
-      "Do usar iconos Lucide con trazo 1.75 a 1.05em."
+      "**Do** usar índigo (bg) como fondo, card y card-line para las tarjetas y overlay para lo que flota encima de todo.",
+      "**Do** dibujar todo contorno como sombra interior de 1 px, nunca con `border`.",
+      "**Do** usar el botón violeta sólido con texto índigo para la única acción primaria de cada vista y el enlace con flecha en violeta suave para la secundaria.",
+      "**Do** escribir el texto en lavanda (text, text-2, text-3), nunca en blanco.",
+      "**Do** escribir cada titular de escena a dos tonos: qué es en lavanda, para quién o con qué en lavanda terciaria.",
+      "**Do** componer cada sección como una escena de 100svh con un bento de tres celdas que decide su rejilla por container queries.",
+      "**Do** escribir medidas en unidades relativas y fluidas (rem, clamp con vw, svh, vmin, cqi); px solo para hairlines.",
+      "**Do** limitar hover y luces que siguen al cursor a `(hover: hover) and (pointer: fine)`.",
+      "**Do** dar a cada acción de teclado su atajo visible con kbd, y abrir sin animación lo que se invoca con teclado.",
+      "**Do** sustituir todo movimiento con `prefers-reduced-motion` por su estado final, y la nube por su imagen estática.",
+      "**Do** usar iconos Lucide monocromos con trazo 1.75 a 1.05em."
     ],
     "donts": [
-      "Don't usar #000 ni negro puro en fondos u overlays, ni blanco puro en texto.",
-      "Don't poner halos ni degradados violeta estáticos detrás de tarjetas o titulares: la luz violeta pertenece al campo que sigue al objeto y a las respuestas al cursor.",
-      "Don't rellenar superficies grandes de violeta opaco; el violeta sólido es para el botón primario, las viñetas y el icono seleccionado.",
-      "Don't usar verde para nada que no sea disponibilidad o el aterrizaje de glifos.",
-      "Don't añadir un segundo objeto vivo, ni poner la escena bajo texto o botones en pantallas estrechas.",
-      "Don't dar a los componentes de contenido fundidos, deslizamientos o escalas de entrada, ni repetir la compilación en la misma visita.",
-      "Don't usar vidrio sin escena o luz debajo.",
-      "Don't inclinar ni escalar al hacer hover; las únicas escalas son la pulsación (0.97, o 0.96 en los magnéticos) y el desplazamiento magnético de las acciones.",
-      "Don't montar rejillas de tarjetas iguales ni franjas de métricas o contadores.",
-      "Don't poner antetítulos sobre los h2."
+      "**Don't** poner badge ni eyebrow en el hero, ni antetítulos (kickers) sobre los h2 o sobre los nombres de proyecto.",
+      "**Don't** poner «Contacto» en la barra de la cabecera; vive en el cierre, la paleta y el menú.",
+      "**Don't** usar #000 ni negro puro en fondos o velos, ni blanco puro en texto.",
+      "**Don't** llevar la nube WebGL fuera del hero ni añadir glifos fuera del hero y del arte de Proyectos.",
+      "**Don't** poner halos ni degradados violeta detrás de tarjetas o titulares, ni animar degradados.",
+      "**Don't** rellenar superficies grandes de violeta opaco.",
+      "**Don't** usar verde para nada que no esté vivo o hecho.",
+      "**Don't** inclinar ni escalar al hacer hover; las únicas escalas son la pulsación (0.97), las entradas ligadas al scroll y la tarjeta en foco del carrusel.",
+      "**Don't** montar rejillas de tarjetas iguales ni franjas de métricas o contadores.",
+      "**Don't** usar glassmorphism de plantilla, parallax de fondo, Inter con texto degradado ni iconos brillantes.",
+      "**Don't** cambiar el estilo de las tarjetas para separarlas del fondo; se ajustan card y card-line."
     ]
   }
 }
