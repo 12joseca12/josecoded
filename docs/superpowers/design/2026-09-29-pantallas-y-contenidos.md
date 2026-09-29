@@ -219,7 +219,7 @@ Se lee en dos o tres minutos. Para cada proyecto, Jose aporta unos dos párrafos
 | 6 | Resultado | Solo hechos verificables (publicada, en uso, qué permite), sin métricas | **`{{DATO}}`** o se omite |
 | 7 | Anterior / siguiente y cierre corto | «Hablar de un proyecto así» → P3 (sin `?via`: hereda el recuerdo) | Hay |
 
-**Caso josecoded.com**: es el único con casi todo el contenido ya escrito en el repo (spec, diseño técnico, `DESIGN.md`, contrato de la home). Reto: una web que sirva a dos audiencias y sea a la vez la prueba de oficio. Qué hice: la escena de glifos, el bento por escenas, el gateway y el backend en el servidor propio, el generador con IA y precio por reglas, Radar. Enlace al código solo si el repo es público (`{{DATO}}`). `redactor` lo escribe a partir de esos documentos y Jose lo valida.
+**Caso josecoded.com**: es el único con casi todo el contenido ya escrito en el repo (spec, diseño técnico, `DESIGN.md`, contrato de la home). Reto: una web que sirva a dos audiencias y sea a la vez la prueba de oficio. Qué hice: la escena de glifos, el bento por escenas, el gateway y el backend en el servidor propio, el generador con IA y precio por reglas, Radar. **Decidido el 2026-09-30: el repo es privado**; el caso enlaza solo a la web (`webUrl`), sin `repoUrl`, y explica la arquitectura (gateway en Workers, Fastify en Omen, Supabase, n8n, Umami) en texto. `redactor` lo escribe a partir de esos documentos y Jose lo valida.
 
 ### P9 Blog y P10 Artículo
 
@@ -287,7 +287,7 @@ Todos los de texto se piden **en español y en inglés**.
   - certificaciones y empleos;
   - WhatsApp y email;
   - usuario de GitHub y cuentas de stores;
-  - si el repo de josecoded será público.
+  - ~~si el repo de josecoded será público~~ (resuelto 2026-09-30: privado).
 
 ---
 
