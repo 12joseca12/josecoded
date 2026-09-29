@@ -91,7 +91,7 @@ Nombres de fichero en kebab-case, componentes en PascalCase, identificadores en 
 
 **Mecánica.**
 
-- `pnpm --filter web visual` → Playwright captura, por escena, `wrangler dev` de la app y el prototipo servido, en los tres anchos y con alto fijo (`812`, `1100`, `900` respectivamente), `prefers-reduced-motion: reduce` para que la comparación sea determinista, y guarda el diff en `apps/web/e2e/visual/__diff__/` (ignorado por git). Tolerancia inicial `maxDiffPixelRatio: 0.02`; la fija la tarea que monte el script y se ajusta solo con OK de Jose.
+- `pnpm --filter web visual` → Playwright captura, por escena, `wrangler dev` de la app y el prototipo servido, en los tres anchos y con alto fijo (`812`, `1100`, `900` respectivamente), `prefers-reduced-motion: reduce` para que la comparación sea determinista, y guarda el diff en `apps/web/e2e/visual/__diff__/` (ignorado por git). **Tolerancia fijada por Jose el 2026-09-30: `maxDiffPixelRatio: 0.02` (2 % por escena y ancho)**; se ajusta solo con OK de Jose y la tarea 2.13 del plan la codifica.
 - Cada tarea con UI termina adjuntando al PR las tres capturas de la app y el porcentaje de diff por escena. Un diff por encima de la tolerancia no bloquea el commit, pero sí la puerta de la rama.
 - En `/puerta-calidad`, `ui` (modo revisión con `/impeccable audit` y `/impeccable critique`) revisa el diff y emite «fiel», «desvío aceptable» o «no pasa». Después Jose abre la preview del PR (`preview.yml`) y aprueba en el navegador. Sin ese OK no hay merge.
 - El estado por defecto de un desvío es «pendiente de Jose», no «aceptado por el agente».
@@ -147,6 +147,8 @@ Lo que el prototipo tenga en px fuera de esta lista (por ejemplo `24px` de paddi
 
 **Paso manual de Jose (no lo hace ningún agente):** proteger `main` en GitHub → Settings → Branches → «Add rule» para `main`: *Require a pull request before merging*, *Require status checks to pass* (seleccionar el job `ci`), *Require branches to be up to date*, *Do not allow bypassing*, y desactivar *Allow force pushes* y *Allow deletions*. Hasta que esté hecho, los agentes no hacen `push` a `main` en ningún caso.
 
+**Excepción única (decisión de Jose, 2026-09-30): auto-merge del bot de la newsletter en ramas `newsletter/*`.** La regla de `main` se completa así: *Require a pull request before merging* sigue activo para todo, pero **sin exigir revisión humana** (0 aprobaciones requeridas) para que el auto-merge por squash funcione cuando el job `ci` y el check `newsletter-content-only` (solo cambios bajo `content/blog/{es,en}/`) están en verde; *Do not allow bypassing* se mantiene (el bot no salta nada: pasa por PR y checks). El clic de Jose en «Aprobar y lanzar» del admin es la revisión y el OK de despliegue de contenido (spec de newsletter S8/S16). Cualquier otra rama sigue con `revisor`, `/puerta-calidad` y OK de Jose en preview antes del merge: eso lo garantiza el proceso, no la regla de GitHub, así que ningún agente mergea sin esos pasos aunque GitHub lo permita.
+
 Nunca se hace `git push --force` sobre una rama compartida ni se reescribe historia de `main`.
 
 ## 10. Contenidos: un JSON de literales por idioma, ningún texto en componentes
@@ -192,5 +194,5 @@ Tareas y decisiones que estas convenciones dejan obsoletas o abren:
 6. Capturas comparadas a 360/900/1440 en cada tarea con UI; `ui` revisa; Jose aprueba en preview antes del merge.
 7. TDD solo en lo que tiene comportamiento; sin unit tests de componentes visuales.
 8. Unidades relativas, breakpoints en `rem`; `px` solo en hairlines, sombras, desenfoques y offsets de motion.
-9. PR por rama, squash, `main` protegida por Jose; nunca push a `main`.
+9. PR por rama, squash, `main` protegida por Jose; nunca push a `main`; auto-merge solo del bot de la newsletter en `newsletter/*` con checks en verde.
 10. Textos solo en `messages/{es,en}.json`; pnpm siempre; dependencias solo las del plan.
