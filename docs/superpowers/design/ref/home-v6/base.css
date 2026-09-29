@@ -70,7 +70,7 @@ main, .foot { position: relative; z-index: 2; }
 .menu a { display: flex; align-items: center; min-height: 2.75rem; padding: 0 0.75rem; border-radius: 0.5rem; color: var(--text-2); font-size: 0.9375rem; }
 .menu a:last-child { margin-top: 0.375rem; color: var(--text); background: rgb(124 108 255 / 0.12); }
 .menu a:active { background: rgb(124 108 255 / 0.16); color: var(--text); }
-@keyframes menu-in { from { opacity: 0; transform: translateY(-6px) scale(0.98); } }
+@keyframes menu-in { from { opacity: 0; transform: translateY(-0.375rem) scale(0.98); } }
 @media (min-width: 1081px) { .menu { display: none; } }
 @media (hover: hover) and (pointer: fine) { .menu a:hover { background: rgb(124 108 255 / 0.16); color: var(--text); } }
 @media (prefers-reduced-motion: reduce) { .menu { animation: none; } }

@@ -46,7 +46,8 @@ const syncMode = () => root.classList.toggle('paging', pagingOn());
 syncMode(); fine.addEventListener?.('change', syncMode);
 let lockUntil = 0, acc = 0, lastWheel = 0;
 addEventListener('wheel', (e) => {
-  if (!pagingOn() || e.ctrlKey || overlayOpen()) return;
+  if (menuOpen()) closeMenu(false);   // la rueda cierra el menú y el gesto sigue
+  if (!pagingOn() || e.ctrlKey || open || document.querySelector('dialog[open]')) return;
   e.preventDefault();
   const now = performance.now();
   if (now - lastWheel > 220) acc = 0;            // nuevo gesto
@@ -83,7 +84,7 @@ matchMedia('(min-width: 1081px)').addEventListener?.('change', (e) => { if (e.ma
 /* =================== celda que se amplía (View Transitions) =================== */
 const scrim = Object.assign(document.createElement('div'), { className: 'scrim', hidden: true });
 document.getElementById('main').append(scrim); // same stacking context as the open cell (main has z-index: 2)
-let open = null, opener = null;
+let open = null, opener = null, syncPager = () => {};
 // celda modal de verdad: todo lo que no es la celda (ni el scrim ni la paleta) queda inerte; la cabecera además se atenúa (base.css)
 let shielded = [];
 const shield = (cell) => { for (let n = cell; n && n !== document.body; n = n.parentElement) for (const s of n.parentElement.children) if (s !== n && s !== scrim && s.tagName !== 'SCRIPT' && s.tagName !== 'DIALOG' && !s.inert) { s.inert = true; shielded.push(s); } };
@@ -97,9 +98,9 @@ function expand(cell) {
 }
 function collapse() {
   if (!open) return; const cell = open;
-  const t = vt(() => { cell.classList.remove('is-open'); scrim.hidden = true; open = null; unshield(); root.style.overflow = ''; });
+  const t = vt(() => { cell.classList.remove('is-open'); scrim.hidden = true; open = null; unshield(); syncPager(); root.style.overflow = ''; });
   const done = () => { cell.style.viewTransitionName = ''; cell.removeAttribute('role'); cell.removeAttribute('aria-modal'); opener?.focus?.({ preventScroll: true }); };
-  t?.finished ? t.finished.then(done) : done();
+  return t?.finished ? t.finished.then(done, done) : Promise.resolve(done());
 }
 document.querySelectorAll('.cell--big').forEach((cell) => {
   cell.addEventListener('click', (e) => { if (e.target.closest('a, label, button, [role=tab], .pack')) { if (e.target.closest('.cell__open')) expand(cell); return; } expand(cell); });
@@ -112,7 +113,8 @@ document.querySelectorAll('.cell--big').forEach((cell) => {
   });
 });
 scrim.addEventListener('click', collapse);
-addEventListener('keydown', (e) => { if (e.key === 'Escape') { if (menuOpen()) closeMenu(); else collapse(); } });
+addEventListener('overlay:close', (e) => { if (open) e.detail.wait = collapse(); });
+addEventListener('keydown', (e) => { if (e.key === 'Escape') { if (menuOpen()) closeMenu(); else if (!document.querySelector('dialog[open]')) collapse(); } });
 
 /* =================== vida en el bento =================== */
 // luz bajo el cursor (se escribe en la propia celda, no en un ancestro)
@@ -196,5 +198,5 @@ icons();
   addEventListener('scroll', update, { passive: true }); addEventListener('resize', () => { fit(); update(); }, { passive: true });
   // respaldo: IntersectionObserver también se entera del scroll programático (paginado, enlaces)
   const ioP = new IntersectionObserver(update, { rootMargin: '-50% 0px -50% 0px' }); [hero, ...secs].forEach((s) => ioP.observe(s));
-  fit(); update();
+  syncPager = update; fit(); update();
 }

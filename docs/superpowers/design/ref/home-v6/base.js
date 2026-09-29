@@ -50,7 +50,11 @@ function renderPal() {
   icons(); mark();
 }
 function mark() { pres.querySelectorAll('[role=option]').forEach((li) => li.setAttribute('aria-selected', li.id === 'pc' + sel)); pq.setAttribute('aria-activedescendant', 'pc' + sel); document.getElementById('pc' + sel)?.scrollIntoView({ block: 'nearest' }); }
-function go(i) { const c = shown[i]; if (!c) return; pal.close(); if (c.href !== '#') location.hash = c.href; }
+function go(i) {   // si hay una celda ampliada, se cierra primero (v6.js escucha overlay:close) y después se salta
+  const c = shown[i]; if (!c) return; pal.close(); if (c.href === '#') return;
+  const ev = new CustomEvent('overlay:close', { detail: { wait: null } }); dispatchEvent(ev);
+  (ev.detail.wait || Promise.resolve()).then(() => { location.hash = c.href; });
+}
 function openPal() { if (pal.open) return; pq.value = ''; sel = 0; renderPal(); pal.showModal(); pq.focus(); }
 document.getElementById('cmdk-open').addEventListener('click', openPal);
 const kc = document.getElementById('keyCmd'), kk = document.getElementById('keyK');
