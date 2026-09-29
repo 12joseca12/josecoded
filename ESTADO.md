@@ -1,6 +1,6 @@
 # Estado — josecoded
 
-> Traspaso del 2026-09-29. **Diseño de la home prácticamente cerrado en `ref/home-v6`**; faltan dos confirmaciones de Jose, la revisión de acabado y volcarlo a los documentos. Sin código de aplicación todavía.
+> Traspaso del 2026-09-29 (noche). **Diseño de la home cerrado en `ref/home-v6` y documentos al día**: spec v1.6, UX v4.0, diseño técnico v1.3, plan v2.0 (con la newsletter como fase 10). Falta `/plan-eng-review` y después arrancan las fases 0 y 1. Sin código de aplicación todavía.
 
 ## Ahora
 
@@ -19,19 +19,23 @@ Qué tiene la v6:
 - **Adaptativo sin medidas mágicas**: clamp con vw/svh/vmin + container queries (bento 1 → 2 → 12 columnas según su contenedor). Probado de 360×640 a 1920×1080 sin desbordes.
 - Pendiente de datos reales: todo lo marcado `{{DATO}}` (ciudad, descripciones de proyectos, artículos del blog, plazo de respuesta).
 
-Fuentes de verdad de diseño: `PRODUCT.md` (producto), `DESIGN.md` + `.impeccable/design.json` (sistema; **documentado hasta la versión índigo de home-v4, falta volcar la v6**), contrato en `.impeccable/surfaces/`. Figma con exploraciones: https://www.figma.com/design/aGt6l1dnVUB8tmhU8ctn4f.
+Fuentes de verdad de diseño: `PRODUCT.md` (producto), `DESIGN.md` + `.impeccable/design.json` (sistema v6, volcado el 2026-09-29; **faltan los tokens de INV §5, que completa la tarea 1.10 del plan**), contrato en `.impeccable/surfaces/`. Figma con exploraciones: https://www.figma.com/design/aGt6l1dnVUB8tmhU8ctn4f.
 
 Histórico de prototipos (no usar como base): `home-v5/` (variantes A/B/C que llevaron a la v6), `home-v4/` (ventana con dock), `hero-lab-3/` (hero aprobado original), `estilo/`, `eje/`, `ui-v3/`, `heros/`, `hero-lab`, `hero-lab-2`.
 
-Documentos (anteriores a la v6, hay que actualizarlos):
+Documentos (al día con la v6 desde el 2026-09-29):
 
 | Documento | Ruta | Versión |
 |---|---|---|
-| Spec | `docs/superpowers/specs/2026-09-13-josecoded-plataforma.md` | v1.5.2 |
-| UX | `docs/superpowers/design/2026-09-17-josecoded-ux.md` | v3.2 |
-| Diseño técnico | `docs/superpowers/design/2026-09-17-josecoded-diseno-tecnico.md` | v1.2.1 |
-| Sistema visual | `docs/superpowers/design/2026-09-17-josecoded-ui.md` | v3 (superado por DESIGN.md) |
-| Plan | `docs/superpowers/plans/2026-09-19-josecoded-v1.md` | 97 tareas |
+| Spec | `docs/superpowers/specs/2026-09-13-josecoded-plataforma.md` | **v1.6** (D27–D33, §12 v6) |
+| Spec newsletter | `docs/superpowers/specs/2026-09-29-josecoded-newsletter.md` | v1 (fase 10 del plan; Q1–Q6 pendientes de Jose) |
+| UX | `docs/superpowers/design/2026-09-17-josecoded-ux.md` | **v4.0** (§2 y §4.1 v6; interiores → documento de pantallas) |
+| Diseño técnico | `docs/superpowers/design/2026-09-17-josecoded-diseno-tecnico.md` | **v1.3** (§1.6.2 v6, §1.9–1.12 nuevos) |
+| Sistema visual | `DESIGN.md` + `.impeccable/design.json` | v6 (`2026-09-17-josecoded-ui.md` v3 superado) |
+| Componentes home | `docs/superpowers/design/2026-09-29-componentes-home-v6.md` | v1.1 |
+| Pantallas y contenidos | `docs/superpowers/design/2026-09-29-pantallas-y-contenidos.md` | v1.0 |
+| Convenciones | `docs/working-agreements.md` | v1.0 |
+| Plan | `docs/superpowers/plans/2026-09-19-josecoded-v1.md` | **v2.0** (fase 2 v6, 1.10 tokens bloqueante, fase 3 en orden de pantallas, fase 10 newsletter) |
 
 Índices: codebase-memory `Users-jose-Documents-GitHub-josecoded` (indexado 2026-09-29, con ADR de diseño); graphify se regenera en cada commit (hook).
 
@@ -48,11 +52,14 @@ Documentos (anteriores a la v6, hay que actualizarlos):
 - [x] Decisiones de Jose sobre la revisión (2026-09-29): titular a dos tonos se queda; tarjetas se quedan como están pero algo más separadas del fondo (hecho: superficie más clara + borde más visible, tokens `--card`/`--card-line`); glifos se quedan como detalle discreto; aire en Sobre mí se resuelve al diseñar ese apartado.
 - [x] Cabecera en orden idioma → buscador → chat → login; en ≤ 1080px el idioma va dentro del menú ☰.
 - [x] Hero a 320×812 se desbordaba 5px (escenario de 38svh): acotado al ancho.
-- [ ] `{{DATO}}` nuevos: foto real de Jose (celda Sobre mí) y entregable por servicio (Empresas).
-- [ ] Volcar la v6 a `DESIGN.md` y `.impeccable/design.json` (documentador de impeccable) y al contrato de `.impeccable/surfaces/`.
-- [ ] Reescribir UX §2 y §4.1 (home) y marcar UI v3 como superado; ajustar la fase 2 del plan a la v6 (paginado, carrusel fijado, View Transitions, container queries).
-- [ ] Alinear spec §12 con lo decidido: nube solo en el hero (ya coincide), cabecera nueva (Chat + Login), orden de secciones.
-- [ ] `/plan-eng-review` del plan (obligatorio: dinero e integraciones externas).
+- [ ] `{{DATO}}` nuevos: foto real de Jose (celda Sobre mí), entregable por servicio (Empresas), textos en inglés de todo lo que aporte Jose, capturas y reto/trabajo/resultado por proyecto, CV maestro es/en, datos del titular para el aviso legal, respuestas de la FAQ de Empresas, tres artículos del blog, cuenta de Cal.com.
+- [x] Volcar la v6 a `DESIGN.md` y `.impeccable/design.json` y al contrato de `.impeccable/surfaces/` (2026-09-29). Quedan los tokens de INV §5 → tarea 1.10 del plan.
+- [x] UX §2 y §4.1 reescritos, UI v3 superada, fase 2 del plan reescrita contra la v6 (2026-09-29, plan v2.0).
+- [x] Spec §12 alineada (v1.6): home v6, cabecera Chat + Login sin Contacto, orden de secciones, stack visual D27, Baseline 2024 D28, pantallas D30, bilingüe D31, área D32, blog D33.
+- [x] Diseño técnico v1.3: `glyph-scene` desde `scene.js` v6 (vídeo en móvil, WebGL solo escritorio), tokens `design.json` → `tokens.css`, `lib/motion/`, `i18n:check`, `user_profiles` + `area_lead_summary()` para la personalización del área.
+- [x] Spec de newsletter integrada como fase 10 del plan (sin cambiar sus decisiones; notas de encaje en el plan).
+- [ ] **`/plan-eng-review` del plan v2.0** (obligatorio: dinero e integraciones externas). Lo lanza el controlador. Focos: Cal.com, Turnstile, WhatsApp, Workers AI, migraciones (`user_profiles`, RPC `security definer`), y toda la fase 10 (Brevo, GitHub REST + auto-merge, DNS, Claude CLI en Omen, RGPD).
+- [ ] Preguntas nuevas para Jose (del paso 5): idioma del email de newsletter para suscriptores `en` (NL Q2 ampliada); si el repo de josecoded será público; tolerancia de las capturas comparadas (2 %) y umbral/bloqueo del paginado si molesta en trackpad.
 - [x] **Indicaciones de cómo trabajar** antes de escribir código real: `docs/working-agreements.md` + reglas duras en `CLAUDE.md` (2026-09-29). Falta el paso manual de Jose: proteger `main` en GitHub (§9).
 - [x] **Decisión de componentes de la home**: `docs/superpowers/design/2026-09-29-componentes-home-v6.md` (decisiones cerradas en su §3).
 - [x] **Pantallas independientes**: mapa, contenidos y orden en `docs/superpowers/design/2026-09-29-pantallas-y-contenidos.md` v1.0 (2026-09-29). Incluye las páginas derivadas: stack/CV (sección en Sobre mí + PDF), tarifas de negocio (comparador en `/negocios`) y personalización automática del área.
@@ -60,7 +67,9 @@ Documentos (anteriores a la v6, hay que actualizarlos):
 **Insumos de Jose (bloquean tareas del plan)**
 - [ ] Los `{{DATO}}`: nombre a mostrar, ciudad, años, estado y descripción de 3catinfo/HazmeFila/Oportunix, certificaciones, WhatsApp y email, usuario de GitHub, enlaces de stores, plazo de respuesta real, artículos del blog.
 - [ ] Radar: `content/radar/profile.json` y CV maestro es/en; proyecto OAuth de Google; alertas de LinkedIn; ≥ 12 correos reales anonimizados; cuentas en InfoJobs/Tecnoempleo/Upwork/Workana/Malt.
-- [ ] Supabase: OAuth Google/GitHub, plantilla OTP, «leaked password protection».
+- [ ] Supabase: OAuth Google/GitHub, plantilla OTP **en es y en**, «leaked password protection».
+- [ ] GitHub: proteger `main` (working-agreements §9) antes del primer merge; permitir el auto-merge del bot de la newsletter con checks en verde (fase 10).
+- [ ] Newsletter (fase 10, tras el lanzamiento): cuenta de Brevo y dominio autenticado, registros DNS, PAT fine-grained, `claude setup-token` para Omen (Q1), lista de fuentes (Q6), política de privacidad, 3–5 temas iniciales; respuestas a Q1–Q6 de su spec.
 - [ ] Cloudflare: `api.josecoded.com` como custom domain y URL `workers.dev` del gateway. Los servidores MCP de Cloudflare necesitan autorizarse (`/mcp` en una sesión interactiva).
 - [ ] Corregir los ejemplos provisionales de `Comercial/voz.md`.
 
@@ -74,12 +83,20 @@ Documentos (anteriores a la v6, hay que actualizarlos):
 2. ~~Revisión de acabado + fixes~~ hecho. Jose valida en navegador y decide lo pendiente de la revisión → documentador → `DESIGN.md` + contrato v6 en `.impeccable/surfaces/`.
 3. ~~Pantallas independientes y contenidos~~ hecho (2026-09-29).
 4. ~~Componentes de la home~~ hecho (2026-09-29).
-5. **Actualizar spec, UX y plan + `/plan-eng-review`**: UX §4.1, spec §12, fase 2 del plan y todo lo del §7 «Impacto en spec y plan» de `2026-09-29-pantallas-y-contenidos.md`.
-6. Fase 0 del plan (seis validaciones técnicas sin tocar producción) y fase 1 (monorepo, `packages/pricing`, CI).
+5. ~~Actualizar spec, UX, diseño técnico y plan~~ hecho (2026-09-29: spec v1.6, UX v4.0, DT v1.3, plan v2.0 con la newsletter en fase 10). **Falta `/plan-eng-review`** (lo lanza el controlador).
+6. **Fase 0 del plan** (seis validaciones técnicas sin tocar producción; 0.2 ya con `scene.js` de la v6) y **fase 1** (monorepo con `design-tokens` y stylelint, `packages/pricing` con packs de app, migraciones incluida `user_profiles`, CI; **1.10 tokens completos antes de cualquier UI**).
+7. Fase 2: port 1:1 de `home-v6` escena a escena, con capturas comparadas y aprobación de Jose entre escenas.
 
 Gates que no se cruzan sin OK explícito de Jose en la misma sesión: migraciones y deploys a producción, contratar servicios, tocar servicios preexistentes de Omen.
 
 ## Decisiones recientes
+
+- **2026-09-29 (paso 5, documentos al día; `arquitecto`):**
+  1. Spec v1.6: D27 stack visual (CSS Modules + tokens, motion CSS + TS, sin Tailwind/shadcn/GSAP), D28 Baseline 2024, D29 home v6, D30 pantallas y contenidos, D31 todo bilingüe, D32 área personalizada, D33 blog ≥ 3 artículos; §12 reescrita; lanzamiento sigue siendo todo junto.
+  2. **Tarifas de Empresas confirmadas por Jose**: 40 €/h y feature cerrada desde 150 € se mantienen como formas de contratar (no packs); la celda Tarifas de la home no cambia; los packs de app van en Negocios.
+  3. DT v1.3: `packages/glyph-scene` = port de `ref/home-v6/scene.js` a TS sin código muerto (Geist Mono, bloom 0.22, reflejo 0.35, verde 0); **WebGL solo en escritorio**, móvil vídeo + póster (desaparece `HERO_LIVE_MOBILE`); arte de Proyectos regenerado ≤ 60 KB; `design.json` → `tokens.css` con test de deriva y stylelint; `lib/motion/` como módulos puros; `messages/{es,en}.json` + `i18n:check`; **personalización del área con tabla aditiva `user_profiles` (señal de origen write-once, RLS propia) y RPC `security definer` `area_lead_summary()`**; cliente y lead se calculan en cada petición; `leads` sigue sin lectura para `authenticated`.
+  4. Plan v2.0: fase 2 reescrita (paginado = hook, carrusel = componente, celda ampliada genérica, bento JSX, capturas comparadas en 2.13); 2.2 v1 eliminada; nueva **1.10 bloqueante** (tokens de INV §5); fase 3 en el orden de pantallas con prototipo validado por Jose antes de construir; 3.13 (componentes de interiores) y 3.14 (CV maestro → PDF); 4.2 regla de 3 artículos; 5.1 personalización; 9.3 retirada (sin métricas); **fase 10 newsletter** con las ramas de su spec §14 y notas de encaje (sin cambiar sus decisiones).
+  5. UX v4.0: §2 y §4.1 v6; §3 y §4.2–4.10, §5.4, §6.1 con «superado por» hacia el documento de pantallas; UI v3 superada por `DESIGN.md`.
 
 - **2026-09-29 (pantallas independientes, `docs/superpowers/design/2026-09-29-pantallas-y-contenidos.md` v1.0):**
   1. Alcance: todo junto, como la spec (Radar y área incluidos); la prioridad del documento es orden de diseño y construcción, no de lanzamiento.
