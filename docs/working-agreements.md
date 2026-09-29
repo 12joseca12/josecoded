@@ -104,7 +104,7 @@ Nombres de fichero en kebab-case, componentes en PascalCase, identificadores en 
 
 | Rasgo | Con soporte | Sin soporte |
 |---|---|---|
-| `animation-timeline: view()` / `scroll()` | Entradas y salidas por elemento y carrusel de Proyectos ligados al scroll | Los elementos están en su estado final desde el principio; Proyectos es un scroll horizontal nativo con `scroll-snap-type: x mandatory` |
+| `animation-timeline: view()` / `scroll()` | Entradas y salidas por elemento y carrusel de Proyectos ligados al scroll | Los elementos están en su estado final desde el principio; las tarjetas de Proyectos se apilan en columna, como en el prototipo (también en pantallas más altas que anchas y con reduced motion) |
 | View Transitions (`document.startViewTransition`) | La celda grande se amplía con morph | La celda se amplía sin transición (cambio de estado inmediato); Esc sigue cerrando |
 | `scroll-snap-type: y proximity` + paginado JS | Un gesto = una escena | Scroll nativo; el indicador de sección sigue funcionando por `IntersectionObserver` |
 | `backdrop-filter` | Cabecera y paleta translúcidas | Fondo opaco con el mismo token (`--bg` al 100 %) |
@@ -175,7 +175,7 @@ Una dependencia que trae estilos propios (kits de UI, librerías de componentes 
 
 Tareas y decisiones que estas convenciones dejan obsoletas o abren:
 
-- **Tarea 2.2 del plan** («Tokens de diseño, tipografías, Tailwind v4, shadcn base y `Backdrop`»): obsoleta. Contradice §1 (sin Tailwind ni shadcn), §2 (tokens generados desde `design.json`, no escritos en `@theme`) y las tipografías (Geist y Geist Mono según `DESIGN.md`, no Sora/Manrope/JetBrains). El `Backdrop` con grano y rayo es de la v4; la v6 no lo tiene. Se sustituye por: tarea de `packages/design-tokens` + `tokens.css` + stylelint, y tarea de fuentes con `next/font`.
+- **Tarea 2.2 del plan** («Tokens de diseño, tipografías, Tailwind v4, shadcn base y `Backdrop`»): obsoleta. Contradice §1 (sin Tailwind ni shadcn), §2 (tokens generados desde `design.json`, no escritos en `@theme`) y las tipografías (Geist y Geist Mono según `DESIGN.md`, no Sora/Manrope/JetBrains). El `Backdrop` de la v4 (grano al 3,5 % y un rayo a 214°) no se porta. La v6 tiene su propio fondo, que sí se porta: el campo de luz `.field` (tres haces y un charco) y el grano `.grain` al 4,5 % (`home-v6/index.html:34-35`, `base.css:44-45` y `base.css:137-144`). Se sustituye por: tarea de `packages/design-tokens` + `tokens.css` + stylelint, y tarea de fuentes con `next/font`.
 - **Spec §5 «GSAP + `@gsap/react` + ScrollTrigger»**: superado por §3. Se anota en la spec al alinearla con la v6.
 - **`packages/glyph-scene` (tareas 2.5a, 2.5b, 2.6) frente a `scene.js` de la v6**: decisión pendiente. Los dos son Three.js, pero el plan prevé un paquete con `params`, `atlas`, `worker`, `render-media` y presupuesto de 200 KB gz, y la v6 usa un `scene.js` monolítico derivado de hero-lab-3 con posters PNG (`glyph-*-alpha.png`, 250–300 KB cada uno, fuera del presupuesto de poster de 60 KB). Hay que decidir si el paquete se construye desde `scene.js` (portarlo y trocearlo) o desde el plan, y regenerar los medios. Lo decide el arquitecto al ajustar la fase 2, con Jose si cambia lo visible.
 - **Tareas 2.3 y 2.10** (cabecera, footer, `ProofStrip`, `PathPanel`): la estructura de la home ya no es esa; se reescriben contra las escenas de la v6.
