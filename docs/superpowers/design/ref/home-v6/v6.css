@@ -1,0 +1,120 @@
+/* home v6 · bento por escenas.
+   taste: bento con celdas exactas por sección, una sección por pantalla, Proyectos como carrusel fijado.
+   Emil: la transición entre escenas va ligada al scroll (continua e interrumpible, fuera del hilo principal); el scroll se asienta en cada escena. */
+
+/* el scroll se asienta al principio de cada escena (proximity: nunca atrapa al usuario) */
+html { scroll-snap-type: y proximity; }
+.hero, .scene, .tour, .close { scroll-snap-align: start; }
+
+/* ---------- escena ---------- */
+.scene { min-height: 100svh; max-width: var(--max); margin: 0 auto; padding: 7.5rem var(--gutter) 4rem; display: grid; align-content: center; gap: 2.5rem; }
+.scene__head { display: flex; align-items: end; justify-content: space-between; gap: 2rem; }
+.scene__head .sec-title { max-width: 20ch; }
+.bento { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 1.25rem; }
+
+/* ---------- celda ---------- */
+.cell { grid-column: span var(--span, 6); display: grid; align-content: start; gap: 1.5rem; padding: clamp(1.5rem, 2.4vw, 2.25rem); border-radius: 1.5rem; min-height: 13rem; }
+.cell--big { cursor: pointer; }
+.cell--tint { background: linear-gradient(160deg, rgb(124 108 255 / 0.14), rgb(14 12 32 / 0.82) 60%); }
+.cell--hero { background: linear-gradient(135deg, rgb(124 108 255 / 0.2), rgb(14 12 32 / 0.85) 55%); }
+.cell--strip { min-height: 0; }
+.cell--tall { grid-row: span 2; }
+.cell--tall .cell__body { align-content: space-between; height: 100%; }
+.cell__head { display: flex; align-items: center; gap: 0.75rem; }
+.cell__ic { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 0.5rem; background: rgb(157 140 255 / 0.12); color: var(--violet-soft); }
+.cell--hero .cell__ic { background: var(--violet); color: var(--ink); }
+.cell__head h3 { margin: 0; font-size: 0.9375rem; font-weight: 550; color: var(--text-2); }
+.cell__open, .cell__close { margin-left: auto; display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: 0.625rem; color: var(--text-3); transition: color 150ms ease, background-color 150ms ease; }
+.cell__close { display: none; }
+.cell__body { display: grid; gap: 1.25rem; align-content: start; }
+.cell__more { display: none; gap: 1rem; justify-items: start; padding-top: 1.25rem; box-shadow: inset 0 1px 0 var(--line); }
+.cell--hero .muted, .cell--hero .pack small, .cell--tint .muted { color: var(--text-2); }
+@media (hover: hover) and (pointer: fine) {
+  .cell--big:hover { box-shadow: inset 0 0 0 1px var(--line-2), inset 0 1px 0 rgb(185 173 255 / 0.1), 0 30px 60px -30px rgb(5 3 20 / 0.95); }
+  .cell--big:hover .cell__open { color: var(--text); background: rgb(157 140 255 / 0.1); }
+}
+
+/* piezas de contenido propias de v6 */
+.rate { display: grid; grid-template-columns: 1fr 1fr; }
+.rate > div { display: grid; gap: 0.25rem; padding-right: 1rem; }
+.rate > div + div { padding-left: 1.25rem; box-shadow: inset 1px 0 0 var(--line-2); }
+.rate b { font-size: clamp(1.75rem, 2.6vw, 2.25rem); font-weight: 600; letter-spacing: -0.03em; }
+.strip { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; }
+.checks { display: grid; gap: 0.75rem; margin: 0; padding: 0; list-style: none; font-size: 1rem; color: var(--text); }
+.checks li { display: flex; align-items: center; gap: 0.625rem; }
+.checks svg.lucide { color: var(--green); }
+.post__title { margin: 0; font-size: clamp(1.375rem, 2vw, 1.75rem); font-weight: 600; letter-spacing: -0.03em; line-height: 1.15; }
+.post__title--sm { font-size: 1.125rem; }
+.cell--hero .packs .pack b { font-size: clamp(1.75rem, 3vw, 2.5rem); letter-spacing: -0.035em; }
+
+/* ---------- celda ampliada (View Transitions) ---------- */
+.cell.is-open { position: fixed; inset: 5.5rem max(1rem, 8vw) 2rem; z-index: 40; overflow: auto; cursor: auto; grid-column: auto; background: rgb(14 12 32 / 0.97); }
+.cell.is-open .cell__open { display: none; } .cell.is-open .cell__close { display: grid; margin-left: auto; }
+.cell.is-open .cell__more { display: grid; }
+.scrim { position: fixed; inset: 0; z-index: 35; background: rgb(7 6 15 / 0.72); backdrop-filter: blur(6px); }
+::view-transition-group(*) { animation-duration: 380ms; animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1); }
+::view-transition-old(cell), ::view-transition-new(cell) { height: 100%; width: 100%; object-fit: cover; }
+
+/* ---------- transición entre escenas, ligada al scroll ----------
+   La escena que llega sube 40 px y pasa de desenfocada a nítida; la que se va retrocede y se apaga.
+   Solo transform, opacity y un blur corto; nunca parte de un estado invisible si el navegador no lo soporta. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .scene > .scene__head, .scene > .bento, .close > * {
+      animation: scene-in linear both, scene-out linear both;
+      animation-timeline: view(), view();
+      animation-range: entry 0% entry 90%, exit 10% exit 90%;
+    }
+    .scene > .bento { animation-range: entry 10% cover 40%, exit 5% exit 85%; }
+    .bento > .cell:nth-child(2) { animation: cell-lag linear both; animation-timeline: view(); animation-range: entry 20% cover 40%; }
+    .bento > .cell:nth-child(3) { animation: cell-lag linear both; animation-timeline: view(); animation-range: entry 30% cover 45%; }
+  }
+}
+@keyframes scene-in { from { opacity: 0; transform: translateY(40px) scale(0.985); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+@keyframes scene-out { from { opacity: 1; transform: none; } to { opacity: 0.25; transform: translateY(-24px) scale(0.97); } }
+@keyframes cell-lag { from { opacity: 0.2; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+
+/* ---------- Proyectos: carrusel fijado dentro del recorrido ---------- */
+.tour { position: relative; height: 420svh; view-timeline-name: --tour; view-timeline-axis: block; }
+.tour__sticky { position: sticky; top: 0; height: 100svh; overflow: hidden; display: grid; grid-template-rows: auto 1fr auto; grid-template-columns: 100%; gap: 2rem; padding: 7.5rem 0 2.5rem; }
+.tour__head { width: 100%; max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
+.tour__track { justify-self: start; align-self: center; display: flex; gap: 1.5rem; width: max-content; padding: 0 max(var(--gutter), calc((100vw - var(--max)) / 2 + var(--gutter))); animation: pan linear both; animation-timeline: --tour; animation-range: contain 0% contain 100%; will-change: transform; }
+@keyframes pan { from { transform: translateX(0); } to { transform: translateX(calc(-100% + 100vw)); } }
+.tcard { width: min(68vw, 56rem); height: min(56svh, 30rem); display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 2rem; padding: clamp(1.5rem, 2.6vw, 2.25rem); border-radius: 1.75rem; opacity: 0.4; transform: scale(0.96); transition: opacity 360ms ease, transform 360ms cubic-bezier(0.23, 1, 0.32, 1); }
+.tcard.is-active { opacity: 1; transform: none; box-shadow: inset 0 0 0 1px var(--line-2), inset 0 1px 0 rgb(185 173 255 / 0.09), 0 40px 80px -40px rgb(5 3 20 / 0.95); }
+.tcard__art { display: grid; place-items: center; background: radial-gradient(60% 55% at 50% 45%, rgb(91 75 255 / 0.22), transparent 70%); overflow: hidden; }
+.tcard__art img { width: 88%; height: 88%; object-fit: contain; }
+.tcard__copy { display: grid; align-content: center; gap: 1.125rem; min-width: 0; }
+.tcard__kicker { margin: 0; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; font-weight: 550; color: var(--violet-soft); }
+.tcard__name { margin: 0; font-size: clamp(2rem, 3.4vw, 3rem); font-weight: 600; letter-spacing: -0.04em; line-height: 1; }
+.rail { width: min(36rem, 84vw); justify-self: center; display: grid; gap: 0.75rem; }
+.rail__links { display: flex; justify-content: space-between; }
+.rail__links span { font-size: 0.8125rem; color: var(--text-3); transition: color 200ms ease; }
+.rail__links span.is-on { color: var(--text); }
+.rail__bar { height: 2px; border-radius: 2px; background: rgb(157 140 255 / 0.16); overflow: hidden; }
+.rail__bar span { display: block; height: 100%; background: var(--violet-soft); transform-origin: left; animation: grow linear both; animation-timeline: --tour; animation-range: contain 0% contain 100%; }
+@keyframes grow { from { transform: scaleX(0.04); } to { transform: scaleX(1); } }
+
+/* cierre como última escena */
+.close { min-height: 100svh; display: grid; align-content: center; }
+
+/* ---------- sin scroll-driven, móvil o movimiento reducido: todo en columna, sin fijar ---------- */
+@supports not (animation-timeline: view()) { .tour { height: auto; } .tour__sticky { position: static; height: auto; overflow: visible; } .tour__track { flex-direction: column; width: auto; animation: none; align-items: center; } .tcard { opacity: 1; transform: none; height: auto; } .rail { display: none; } }
+@media (max-width: 900px), (prefers-reduced-motion: reduce) {
+  .tour { height: auto; } .tour__sticky { position: static; height: auto; overflow: visible; padding: 5rem 0 3rem; }
+  .tour__track { flex-direction: column; width: auto; padding: 0 var(--gutter); animation: none; align-items: stretch; }
+  .tcard { width: 100%; height: auto; opacity: 1; transform: none; }
+  .rail { display: none; }
+}
+@media (max-width: 900px) {
+  html { scroll-snap-type: none; }
+  .scene { min-height: auto; padding: 5rem var(--gutter) 3rem; }
+  .scene__head { flex-direction: column; align-items: start; gap: 1rem; }
+  .bento { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+  .cell { grid-column: auto; grid-row: auto; min-height: 0; padding: 1.25rem; }
+  .strip { flex-direction: column; align-items: start; }
+  .tcard { grid-template-columns: minmax(0, 1fr); } .tcard__art { height: 12rem; }
+  .cell.is-open { inset: 4.5rem 0.75rem 0.75rem; }
+  .close { min-height: auto; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-snap-type: none; } ::view-transition-group(*) { animation: none; } }
