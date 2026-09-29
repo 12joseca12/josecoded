@@ -1,0 +1,30 @@
+/* C · Carrusel fijado — taste: horizontal pan fijado. Firma: el scroll vertical recorre las cinco páginas en horizontal (CSS scroll-driven, fuera del hilo principal). */
+.tour { position: relative; height: 480svh; view-timeline-name: --tour; view-timeline-axis: block; }
+.tour__sticky { position: sticky; top: 0; height: 100svh; overflow: hidden; display: grid; grid-template-rows: 1fr auto; grid-template-columns: 100%; align-items: center; padding: 5rem 0 2rem; }
+.tour__track { justify-self: start; display: flex; gap: 2rem; width: max-content; padding: 0 10vw; animation: pan linear both; animation-timeline: --tour; animation-range: contain 0% contain 100%; will-change: transform; }
+@keyframes pan { from { transform: translateX(0); } to { transform: translateX(calc(-100% + 100vw)); } }
+.tcard { width: min(76vw, 64rem); height: min(66svh, 34rem); display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 2rem; padding: clamp(1.5rem, 3vw, 2.5rem); border-radius: 1.75rem; opacity: 0.4; transform: scale(0.95); transition: opacity 360ms ease, transform 360ms cubic-bezier(0.23, 1, 0.32, 1); scroll-margin: 0; }
+.tcard.is-active { opacity: 1; transform: none; box-shadow: inset 0 0 0 1px var(--line-2), inset 0 1px 0 rgb(185 173 255 / 0.09), 0 40px 80px -40px rgb(5 3 20 / 0.95); }
+.tcard__art { display: grid; place-items: center; background: radial-gradient(60% 55% at 50% 45%, rgb(91 75 255 / 0.22), transparent 70%); overflow: hidden; }
+.tcard__art img { width: 88%; height: 88%; object-fit: contain; }
+.tcard__copy { display: grid; align-content: center; gap: 1.25rem; min-width: 0; }
+.tcard__kicker { margin: 0; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; font-weight: 550; color: var(--violet-soft); }
+.tcard__body { display: grid; gap: 1rem; }
+.rail { width: min(40rem, 84vw); justify-self: center; display: grid; gap: 0.75rem; }
+.rail__links { display: flex; justify-content: space-between; }
+.rail__links a { font-size: 0.8125rem; color: var(--text-3); transition: color 200ms ease; }
+.rail__links a[aria-current="true"] { color: var(--text); }
+.rail__bar { height: 2px; border-radius: 2px; background: rgb(157 140 255 / 0.16); overflow: hidden; }
+.rail__bar span { display: block; height: 100%; background: var(--violet-soft); transform-origin: left; animation: grow linear both; animation-timeline: --tour; animation-range: contain 0% contain 100%; }
+@keyframes grow { from { transform: scaleX(0.02); } to { transform: scaleX(1); } }
+@media (hover: hover) and (pointer: fine) { .rail__links a:hover { color: var(--text); } }
+
+/* sin scroll-driven animations, en móvil o con reduced-motion: las cinco tarjetas en columna */
+@supports not (animation-timeline: view()) { .tour { height: auto; } .tour__sticky { position: static; height: auto; overflow: visible; padding: 4rem 0; } .tour__track { flex-direction: column; width: auto; padding: 0 var(--gutter); animation: none; align-items: center; } .tcard { opacity: 1; transform: none; height: auto; } .rail { display: none; } }
+@media (max-width: 900px), (prefers-reduced-motion: reduce) {
+  .tour { height: auto; } .tour__sticky { position: static; height: auto; overflow: visible; padding: 4rem 0; }
+  .tour__track { flex-direction: column; width: auto; padding: 0 var(--gutter); animation: none; align-items: center; }
+  .tcard { width: 100%; height: auto; opacity: 1; transform: none; }
+  .rail { display: none; }
+}
+@media (max-width: 900px) { .tcard { grid-template-columns: minmax(0, 1fr); } .tcard__art { height: 12rem; } }

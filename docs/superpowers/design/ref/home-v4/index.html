@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07060F">
+<title>josecoded · home v4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/" } }</script>
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+
+<header class="nav" id="nav">
+  <a class="nav__brand" href="#top" aria-label="josecoded, inicio">josecoded</a>
+  <nav class="nav__links" aria-label="Principal">
+    <a href="#ventana" data-tab="empresas">Empresas</a><a href="#ventana" data-tab="negocios">Negocios</a><a href="#ventana" data-tab="proyectos">Proyectos</a><a href="#">Blog</a><a href="#">Sobre mí</a>
+  </nav>
+  <div class="nav__right">
+    <button class="cmdk" type="button" id="cmdk-open" aria-haspopup="dialog">
+      <i data-lucide="search" aria-hidden="true"></i><span>Buscar</span><kbd>⌘K</kbd>
+    </button>
+    <a class="nav__lang" href="#" hreflang="en" lang="en">EN</a>
+    <a class="nav__muted" href="#">Entrar</a>
+    <a class="btn btn--solid btn--sm" href="#hablamos">Contacto</a>
+    <button class="nav__menu" type="button" aria-label="Abrir menú"><i data-lucide="menu" aria-hidden="true"></i></button>
+  </div>
+</header>
+
+<div class="field" id="field" aria-hidden="true"><div class="field__pool"></div><i class="beam beam--3"></i><i class="beam beam--1"></i><i class="beam beam--2"></i></div>
+<div class="grain" aria-hidden="true"></div>
+<canvas id="scene" aria-hidden="true"></canvas>
+
+<main id="main">
+  <!-- 1 · Hero -->
+  <section class="hero" id="top" data-scene="cycle" data-side="right">
+    <div class="hero__copy">
+      <a class="badge" href="#hablamos"><span class="dot" aria-hidden="true"></span>Disponible para proyectos<i data-lucide="chevron-right" aria-hidden="true"></i></a>
+      <h1 class="hero__title">Jose Carlos<br>Sánchez</h1>
+      <p class="hero__sub">Hago apps y webs que se publican y se usan. <span class="hi">Para empresas:</span> desarrollo web, móvil e IA. <span class="hi">Para tu negocio:</span> una web con precio cerrado.</p>
+      <div class="hero__ctas">
+        <a class="btn btn--solid" href="#ventana" data-tab="proyectos">Ver proyectos</a>
+        <a class="link" href="#ventana" data-tab="negocios">Una web para mi negocio<i data-lucide="arrow-right" aria-hidden="true"></i></a>
+      </div>
+    </div>
+    <div class="hero__stage" id="stage" role="img" aria-label="Caracteres de código que forman, por turnos, un móvil, una web y un chip de IA">
+      <ol class="cycle" aria-hidden="true"><li></li><li></li><li></li></ol>
+    </div>
+  </section>
+
+  <!-- 2 · La ventana: una sola pieza viva, al estilo de Raycast -->
+  <section class="rc" id="ventana" data-scene="off">
+    <header class="rc__head">
+      <h2 class="rc__title">Todo lo que hago, en una ventana.</h2>
+      <p class="rc__lede">Elige por dónde empezar. <span>Cada pestaña es una demo real de lo que encontrarás.</span></p>
+    </header>
+
+    <div class="stagewin">
+      <div class="glow" id="glow" aria-hidden="true"></div>
+      <div class="win" id="win">
+        <div class="win__bar">
+          <i data-lucide="search" aria-hidden="true"></i>
+          <span class="win__query" id="winQuery">Pide tu web</span>
+          <span class="win__crumb" id="winCrumb">Negocios</span>
+        </div>
+        <div class="win__view" id="winView" aria-live="polite"></div>
+        <div class="win__foot">
+          <span class="win__brand"><span class="mark" aria-hidden="true">jc</span>josecoded</span>
+          <span class="win__actions" id="winActions"></span>
+        </div>
+      </div>
+
+      <div class="dock" role="tablist" aria-label="Qué quieres ver">
+        <button class="dock__btn" role="tab" id="t-negocios" aria-controls="winView" data-tab="negocios"><i data-lucide="store" aria-hidden="true"></i><span class="dock__tip">Negocios <kbd>1</kbd></span></button>
+        <button class="dock__btn" role="tab" id="t-empresas" aria-controls="winView" data-tab="empresas"><i data-lucide="building-2" aria-hidden="true"></i><span class="dock__tip">Empresas <kbd>2</kbd></span></button>
+        <button class="dock__btn" role="tab" id="t-proyectos" aria-controls="winView" data-tab="proyectos"><i data-lucide="layout-grid" aria-hidden="true"></i><span class="dock__tip">Proyectos <kbd>3</kbd></span></button>
+        <button class="dock__btn" role="tab" id="t-asistente" aria-controls="winView" data-tab="asistente"><i data-lucide="sparkles" aria-hidden="true"></i><span class="dock__tip">Asistente <kbd>4</kbd></span></button>
+      </div>
+      <p class="rc__caption" id="winCaption">Webs para tu negocio. <span>Descríbela y te digo qué pack encaja y desde cuánto, al momento.</span></p>
+    </div>
+  </section>
+
+  <!-- 3 · Cómo está hecha: la arquitectura, con peticiones de verdad recorriéndola -->
+  <section class="rc build" id="build" data-scene="off">
+    <header class="rc__head">
+      <h2 class="rc__title">Esta web la he hecho yo.</h2>
+      <p class="rc__lede">Con las mismas piezas que uso en tus proyectos. <span>Así viaja cada petición.</span></p>
+    </header>
+    <div class="arch" id="arch" role="img" aria-label="Esquema: el navegador llama a Cloudflare Workers con Next.js; Workers llama al gateway, que usa Supabase y un servidor propio con IA y n8n; la analítica va a Umami sin cookies.">
+      <svg class="arch__wires" aria-hidden="true"><path id="w1" /><path id="w2" /><path id="w3" /><path id="w4" /><path id="w5" /></svg>
+      <div class="node" id="n-nav" style="--x:8%;--y:50%"><i data-lucide="monitor" aria-hidden="true"></i><b>Navegador</b></div>
+      <div class="node node--hot" id="n-cf" style="--x:34%;--y:50%"><i data-lucide="cloud" aria-hidden="true"></i><b>Cloudflare Workers</b><small>Next.js · OpenNext</small></div>
+      <div class="node" id="n-gw" style="--x:62%;--y:26%"><i data-lucide="network" aria-hidden="true"></i><b>Gateway</b><small>api.josecoded.com</small></div>
+      <div class="node" id="n-um" style="--x:62%;--y:76%"><i data-lucide="chart-line" aria-hidden="true"></i><b>Umami</b><small>sin cookies</small></div>
+      <div class="node node--sm" id="n-sb" style="--x:89%;--y:10%"><i data-lucide="database" aria-hidden="true"></i><b>Supabase</b></div>
+      <div class="node node--sm" id="n-sv" style="--x:89%;--y:42%"><i data-lucide="server" aria-hidden="true"></i><b>Servidor propio</b><small>IA · n8n</small></div>
+    </div>
+    <a class="link build__more" href="#">Leer cómo está hecha<i data-lucide="arrow-right" aria-hidden="true"></i></a>
+  </section>
+
+  <!-- 4 · Cierre -->
+  <section class="rc close" id="hablamos" data-scene="off">
+    <h2 class="close__title">¿Empezamos? <span>Cuéntame qué necesitas.</span></h2>
+    <div class="close__ctas">
+      <a class="btn btn--solid btn--lg" href="#"><i data-lucide="message-circle" aria-hidden="true"></i>Escribir por WhatsApp</a>
+      <a class="btn btn--ghost btn--lg" href="#"><i data-lucide="calendar" aria-hidden="true"></i>Reservar 20 min</a>
+    </div>
+    <p class="close__hint">o pulsa <kbd class="key" id="keyCmd">⌘</kbd><kbd class="key" id="keyK">K</kbd> y busca lo que quieras</p>
+    <p class="close__who">Jose Carlos Sánchez · desarrollador full-stack freelance · <span class="todo">{{DATO: ciudad}}</span></p>
+  </section>
+</main>
+
+<footer class="foot">
+  <span class="foot__brand">josecoded</span>
+  <nav aria-label="Pie"><a href="#">Empresas</a><a href="#">Negocios</a><a href="#">Proyectos</a><a href="#">Blog</a><a href="#">Sobre mí</a><a href="#">Área de clientes</a><a href="#">Legal</a></nav>
+  <span class="foot__rev">rev. <time datetime="2026-09-24">24 sep 2026</time></span>
+</footer>
+
+<!-- Paleta de comandos -->
+<dialog class="palette" id="palette" aria-label="Ir a">
+  <form method="dialog" class="palette__box">
+    <div class="palette__input"><i data-lucide="search" aria-hidden="true"></i><input id="pq" type="text" placeholder="Ir a… o busca «precio», «whatsapp», «proyectos»" autocomplete="off" aria-controls="pres" aria-autocomplete="list"><kbd>esc</kbd></div>
+    <ul class="palette__list" id="pres" role="listbox"></ul>
+    <div class="palette__foot"><span><kbd>↑</kbd><kbd>↓</kbd> mover</span><span><kbd>↵</kbd> abrir</span></div>
+  </form>
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="ui.js" type="module"></script>
+<script src="scene.js" type="module"></script>
+</body>
+</html>

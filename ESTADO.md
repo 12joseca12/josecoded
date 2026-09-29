@@ -1,6 +1,6 @@
 # Estado — josecoded
 
-> Traspaso escrito el 2026-09-24. Todo el diseño está cerrado y commiteado; falta empezar a implementar.
+> Actualizado el 2026-09-24 (tarde): **dirección visual rehecha con impeccable + Emil**. Home v4 construida como prototipo; Cristal queda superado.
 
 ## Ahora
 
@@ -14,6 +14,12 @@ Fase de diseño terminada, **sin una línea de código de la aplicación todaví
 | Sistema visual | `docs/superpowers/design/2026-09-17-josecoded-ui.md` | v3 |
 | Plan (97 tareas, 10 fases, 9 gates) | `docs/superpowers/plans/2026-09-19-josecoded-v1.md` | — |
 
+**Nuevo (2026-09-24):**
+- `PRODUCT.md` (raíz): verdad de producto para impeccable.
+- `ref/home-v5/` — **(26-09) tres variantes** (`index.html` elige): A índice de comandos, B bento de páginas con View Transitions, C carrusel fijado con CSS scroll-driven. Hero conservado; tras él, resúmenes en orden Sobre mí · Empresas · Negocios · Proyectos · Blog (mismo orden en la cabecera). Cabecera: ⌘K, Chat y **Login** destacado; «Contacto» sale de la cabecera (sigue en cierre, badge y ⌘K). Quitada la sección «Esta web la he hecho yo». **Pendiente: que Jose elija variante.**
+- `ref/home-v4/` — **(25-09) hero conservado; resto reconstruido al estilo Raycast**: ventana con dock de 4 pestañas (Negocios: generador escribiéndose y resultado «Web con reservas · desde 1.400 €»; Empresas; Proyectos; Asistente), luz tras la ventana según pestaña, atajos 1-4; arquitectura con peticiones viajando por los cables (SMIL, pausada fuera de vista); cierre con teclas ⌘ K que se hunden al pulsar el atajo. Fuera: nube viajera, chorros, barrido, bordes iluminados, imanes, etiquetas en glifos. Copia previa en `*.pre-raycast.*`. Formatos en Figma: https://www.figma.com/design/aGt6l1dnVUB8tmhU8ctn4f. **Antes:** home nueva a nivel estudio (listón raycast.com + igloo.inc, sin metáforas). **«La web se compila» (noche):** fondo casi negro índigo #07060F; al llegar a cada bloque la nube lanza chorros de glifos que trazan el borde de cada componente y este se imprime con línea de barrido (móvil: solo impresión). **Revisión índigo previa:** fondo #0D0B1F con campo de luz violeta que sigue al objeto, texto lavanda, primario violeta #7C6CFF, tarjetas con luz y canto, botones magnéticos. Geist/Geist Mono, paleta ⌘K, ventana de proyectos tipo Raycast, nube de glifos guiada por scroll (hero cicla; en Dos vías responde al hover: Empresas → chip, Negocios → móvil). Sin métricas. Contrato en `.impeccable/surfaces/`, capturas en `.impeccable/review/`. Revisión de acabado: 2 rondas, disposición final `fix` con 2 puntos abiertos (abajo).
+- `DESIGN.md` + `.impeccable/design.json`: sistema documentado desde home-v4 (lo genera el documentador de impeccable).
+
 Prototipos navegables (servir con `python3 -m http.server 8765 --directory docs/superpowers/design/ref`):
 - `ref/hero-lab-3/` — **hero aprobado**: split tipo Resend, partículas-glifo que morfan móvil → web → chip IA, intro por caída, bloom, reflejo. Panel de ajustes con `c`.
 - `ref/estilo/` — tres variantes de estilo; **Jose eligió "Cristal" (V1)**. Incluye la transición de página nueva (fundido a negro + cortina de glifos).
@@ -25,7 +31,13 @@ Grafos de código (graphify, 2026-09-24): `josecoded-api` 338 nodos · `josecode
 ## Pendientes
 
 **Decisiones de Jose (bloquean el diseño final de la home)**
-- [ ] Elegir forma del eje en `ref/eje/`: A (hélice) o B (anillos), y si el recorrido lateral y los nodos como raíl de progreso le convencen.
+- [ ] Validar home-v4 en el navegador (`/home-v4/`, `?intro` para ver la caída).
+- [ ] Badge «Disponible para proyectos» sobre el h1: aprobado en D16 pero impeccable lo prohíbe como eyebrow. ¿Se queda, o el punto verde pasa a la fila de CTA / junto a Contacto?
+- [ ] Plazo de respuesta real (la promesa «24 h laborables» no está en `voz.md`); queda como `{{DATO}}`.
+- [ ] Nube fuera del hero en escritorio (decisión del 22-09) frente a «WebGL solo en el hero» de la spec: confirmar cuál manda y alinear spec y PRODUCT.md.
+- [ ] Haces del fondo que se mueven y luz que sigue al cursor: los eligió en la opción índigo, pero chocan con las prohibiciones de R14 (parallax de fondo, gradientes animados, foco dinámico). Confirmar.
+- [ ] Verde en la nube: D16 aprobó 14 % de glifos verdes; home-v4 lo deja solo en el destello de aterrizaje. Confirmar.
+- [x] ~~Elegir forma del eje en `ref/eje/`~~: superado; en home-v4 la propia nube recorre la página por bloques.
 - [ ] Pasar los valores del panel del hero (`c` en `ref/hero-lab-3/`) para fijarlos en código y quitar el panel. Se copian con:
       `copy(JSON.stringify(Object.fromEntries([...document.querySelectorAll('#panel input')].map(e => [e.id || e.dataset.var, e.type === 'checkbox' ? e.checked : +e.value]))))`
 - [ ] Detalles de estilo: cuánta monoespaciada, intensidad del spotlight de hover, badge del hero a 44 px en móvil, duración de la transición de página (≈1 s).
@@ -57,6 +69,8 @@ Grafos de código (graphify, 2026-09-24): `josecoded-api` 338 nodos · `josecode
 Gates que no se cruzan sin OK explícito de Jose en la misma sesión: migraciones y deploys a producción, contratar servicios, tocar servicios preexistentes de Omen.
 
 ## Decisiones recientes
+
+- **2026-09-24 (tarde)**: con las skills nuevas (impeccable + Emil) se reabre el estilo conservando los glifos. Tras dos tiradas de direcciones (metáforas de objeto: placa, plano, carteles), Jose las rechaza por «se notan IA, feas y poco tech» y fija: **nivel estudio sin metáforas**, listón raycast.com + igloo.inc, estándar de la categoría ejecutado a fondo; **nada de métricas** en la web (precios «desde» sí). Registrado en `PRODUCT.md` como preferencia fija.
 
 - **2026-09-24**: indexados con graphify `josecoded-api` y `josecoded-worker`; el grafo de `josecoded` se deja como está (documentación) hasta que haya código.
 - **2026-09-22**: estilo cerrado. Vidrio, píldora + 16–18 px, morado en acción/enlaces/foco/datos y **verde como segundo acento libre**; Sora/Manrope/JetBrains Mono con mono muy presente; **densidad media y unidades relativas en todo** (regla de proyecto); campos hundidos, tablas con separador fino, marcos de dispositivo, iconos Lucide, vacíos con glifo grande. Motion: entrada una sola vez, sin pinning, hero que se deshace al 50 % de viewport y se rehace al subir, hover con canto + flecha + luz que sigue al cursor, cifras que cuentan una vez, reduced-motion con fundidos. Variante elegida: **Cristal**. Transición de página: **fundido a negro + cortina de glifos** (no el barrido que ocupaba la pantalla de golpe).

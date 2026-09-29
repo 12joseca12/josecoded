@@ -1,2 +1,7 @@
 graphify-out/
 .gstack/
+
+# impeccable: capturas de revisión y cachés regenerables
+.impeccable/review/
+.impeccable/questions/
+.impeccable/hook.cache.json
