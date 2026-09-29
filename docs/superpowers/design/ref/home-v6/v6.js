@@ -68,7 +68,7 @@ document.addEventListener('click', (e) => {
 
 /* =================== celda que se amplía (View Transitions) =================== */
 const scrim = Object.assign(document.createElement('div'), { className: 'scrim', hidden: true });
-document.body.append(scrim);
+document.getElementById('main').append(scrim); // same stacking context as the open cell (main has z-index: 2)
 let open = null, opener = null;
 const vt = (fn) => (!reduce && document.startViewTransition ? document.startViewTransition(fn) : (fn(), null));
 function expand(cell) {
