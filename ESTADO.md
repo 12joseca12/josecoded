@@ -45,12 +45,17 @@ Documentos (anteriores a la v6, hay que actualizarlos):
 
 **Cerrar el diseño (siguiente sesión)**
 - [x] Revisión de acabado de impeccable sobre `home-v6` y fixes (2026-09-29, commits 79e2516, dfa775f, 412a789, 07afeb9; revisor aprobado). Capturas en `.impeccable/review/v6/` (ignorado por git).
-- [ ] Decisiones de Jose que dejó la revisión (no aplicadas): titular a dos tonos repetido en las seis escenas; degradados violeta de `cell--tint`/`cell--hero` y `backdrop-filter` de `.surface` (rozan los antirreferentes de PRODUCT.md); glifos solo en hero y Proyectos; aire bajo el texto en la celda Sobre mí.
+- [x] Decisiones de Jose sobre la revisión (2026-09-29): titular a dos tonos se queda; tarjetas se quedan como están pero algo más separadas del fondo (hecho: superficie más clara + borde más visible, tokens `--card`/`--card-line`); glifos se quedan como detalle discreto; aire en Sobre mí se resuelve al diseñar ese apartado.
+- [x] Cabecera en orden idioma → buscador → chat → login; en ≤ 1080px el idioma va dentro del menú ☰.
+- [x] Hero a 320×812 se desbordaba 5px (escenario de 38svh): acotado al ancho.
 - [ ] `{{DATO}}` nuevos: foto real de Jose (celda Sobre mí) y entregable por servicio (Empresas).
 - [ ] Volcar la v6 a `DESIGN.md` y `.impeccable/design.json` (documentador de impeccable) y al contrato de `.impeccable/surfaces/`.
 - [ ] Reescribir UX §2 y §4.1 (home) y marcar UI v3 como superado; ajustar la fase 2 del plan a la v6 (paginado, carrusel fijado, View Transitions, container queries).
 - [ ] Alinear spec §12 con lo decidido: nube solo en el hero (ya coincide), cabecera nueva (Chat + Login), orden de secciones.
 - [ ] `/plan-eng-review` del plan (obligatorio: dinero e integraciones externas).
+- [ ] **Indicaciones de cómo trabajar** antes de escribir código real (pide Jose): documento de convenciones de trabajo del proyecto.
+- [ ] **Decisión de componentes de la home**: inventario de componentes de la v6 y cuáles pasan a la app real y cómo.
+- [ ] **Pantallas independientes**: listado de pantallas fuera de la home y **contenidos** de cada una.
 - [ ] Páginas derivadas sin diseñar: stack/CV, tarifas para negocios; personalización del área privada según objetivo del usuario.
 
 **Insumos de Jose (bloquean tareas del plan)**

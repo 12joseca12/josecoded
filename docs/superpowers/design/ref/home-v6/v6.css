@@ -40,8 +40,8 @@ html.paging { scroll-snap-type: none; scroll-behavior: auto; }
 /* ---------- celda ---------- */
 .cell { container: cell / inline-size; display: grid; align-content: start; gap: clamp(0.875rem, 2svh, 1.5rem); padding: var(--pad-cell); border-radius: clamp(1rem, 0.6rem + 1vmin, 1.5rem); }
 .cell--big { cursor: pointer; }
-.cell--tint { background: linear-gradient(160deg, rgb(124 108 255 / 0.14), rgb(14 12 32 / 0.82) 60%); }
-.cell--hero { background: linear-gradient(135deg, rgb(124 108 255 / 0.2), rgb(14 12 32 / 0.85) 55%); }
+.cell--tint { background: linear-gradient(160deg, rgb(124 108 255 / 0.14), var(--card) 60%); }
+.cell--hero { background: linear-gradient(135deg, rgb(124 108 255 / 0.2), var(--card) 55%); }
 .cell--tall { grid-template-rows: auto 1fr; }   /* la celda alta reparte: cuerpo arriba, enlace anclado abajo */
 .cell--tall .cell__body { align-content: space-between; }
 .cell__head { display: flex; align-items: center; gap: 0.75rem; }
@@ -151,8 +151,8 @@ html.paging { scroll-snap-type: none; scroll-behavior: auto; }
 @media (hover: hover) and (pointer: fine) {
   .cell { background-image: radial-gradient(22rem circle at var(--mx, 50%) var(--my, -30%), rgb(157 140 255 / var(--lit, 0)), transparent 60%); transition: box-shadow 200ms ease; }
   .cell:hover { --lit: 0.09; }
-  .cell--tint { background-image: radial-gradient(22rem circle at var(--mx, 50%) var(--my, -30%), rgb(157 140 255 / var(--lit, 0)), transparent 60%), linear-gradient(160deg, rgb(124 108 255 / 0.14), rgb(14 12 32 / 0.82) 60%); }
-  .cell--hero { background-image: radial-gradient(26rem circle at var(--mx, 50%) var(--my, -30%), rgb(157 140 255 / var(--lit, 0)), transparent 60%), linear-gradient(135deg, rgb(124 108 255 / 0.2), rgb(14 12 32 / 0.85) 55%); }
+  .cell--tint { background-image: radial-gradient(22rem circle at var(--mx, 50%) var(--my, -30%), rgb(157 140 255 / var(--lit, 0)), transparent 60%), linear-gradient(160deg, rgb(124 108 255 / 0.14), var(--card) 60%); }
+  .cell--hero { background-image: radial-gradient(26rem circle at var(--mx, 50%) var(--my, -30%), rgb(157 140 255 / var(--lit, 0)), transparent 60%), linear-gradient(135deg, rgb(124 108 255 / 0.2), var(--card) 55%); }
 }
 
 /* stack: dos bandas que se desplazan en sentidos opuestos (la única marquesina de la página) */
