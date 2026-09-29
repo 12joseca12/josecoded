@@ -41,10 +41,12 @@ Documentos (anteriores a la v6, hay que actualizarlos):
 - [x] Badge «Disponible para proyectos»: quitado del hero (2026-09-29).
 - [x] «Contacto» fuera de la cabecera: confirmado.
 - [x] Indicador de sección: «nunca en el hero», como está implementado.
-- [ ] A 320 px el botón de menú de la cabecera se sale 8 px por la derecha (preexistente; entra en la revisión de acabado).
+- [x] A 320 px el botón de menú se salía 8 px: arreglado (Login solo icono en ≤ 22.5rem).
 
 **Cerrar el diseño (siguiente sesión)**
-- [ ] Revisión de acabado de impeccable sobre `home-v6` (finish reviewer) y fixes.
+- [x] Revisión de acabado de impeccable sobre `home-v6` y fixes (2026-09-29, commits 79e2516, dfa775f, 412a789, 07afeb9; revisor aprobado). Capturas en `.impeccable/review/v6/` (ignorado por git).
+- [ ] Decisiones de Jose que dejó la revisión (no aplicadas): titular a dos tonos repetido en las seis escenas; degradados violeta de `cell--tint`/`cell--hero` y `backdrop-filter` de `.surface` (rozan los antirreferentes de PRODUCT.md); glifos solo en hero y Proyectos; aire bajo el texto en la celda Sobre mí.
+- [ ] `{{DATO}}` nuevos: foto real de Jose (celda Sobre mí) y entregable por servicio (Empresas).
 - [ ] Volcar la v6 a `DESIGN.md` y `.impeccable/design.json` (documentador de impeccable) y al contrato de `.impeccable/surfaces/`.
 - [ ] Reescribir UX §2 y §4.1 (home) y marcar UI v3 como superado; ajustar la fase 2 del plan a la v6 (paginado, carrusel fijado, View Transitions, container queries).
 - [ ] Alinear spec §12 con lo decidido: nube solo en el hero (ya coincide), cabecera nueva (Chat + Login), orden de secciones.
@@ -65,7 +67,7 @@ Documentos (anteriores a la v6, hay que actualizarlos):
 ## Siguiente paso
 
 1. ~~Jose responde las tres confirmaciones.~~ Hecho 2026-09-29.
-2. Revisión de acabado de `home-v6` + fixes → documentador → `DESIGN.md`.
+2. ~~Revisión de acabado + fixes~~ hecho. Jose valida en navegador y decide lo pendiente de la revisión → documentador → `DESIGN.md` + contrato v6 en `.impeccable/surfaces/`.
 3. Actualizar UX §4.1, spec §12 y fase 2 del plan; `/plan-eng-review`.
 4. Fase 0 del plan (seis validaciones técnicas sin tocar producción) y fase 1 (monorepo, `packages/pricing`, CI).
 
