@@ -54,9 +54,8 @@ Documentos (anteriores a la v6, hay que actualizarlos):
 - [ ] Alinear spec §12 con lo decidido: nube solo en el hero (ya coincide), cabecera nueva (Chat + Login), orden de secciones.
 - [ ] `/plan-eng-review` del plan (obligatorio: dinero e integraciones externas).
 - [x] **Indicaciones de cómo trabajar** antes de escribir código real: `docs/working-agreements.md` + reglas duras en `CLAUDE.md` (2026-09-29). Falta el paso manual de Jose: proteger `main` en GitHub (§9).
-- [ ] **Decisión de componentes de la home**: inventario de componentes de la v6 y cuáles pasan a la app real y cómo.
-- [ ] **Pantallas independientes**: listado de pantallas fuera de la home y **contenidos** de cada una.
-- [ ] Páginas derivadas sin diseñar: stack/CV, tarifas para negocios; personalización del área privada según objetivo del usuario.
+- [x] **Decisión de componentes de la home**: `docs/superpowers/design/2026-09-29-componentes-home-v6.md` (decisiones cerradas en su §3).
+- [x] **Pantallas independientes**: mapa, contenidos y orden en `docs/superpowers/design/2026-09-29-pantallas-y-contenidos.md` v1.0 (2026-09-29). Incluye las páginas derivadas: stack/CV (sección en Sobre mí + PDF), tarifas de negocio (comparador en `/negocios`) y personalización automática del área.
 
 **Insumos de Jose (bloquean tareas del plan)**
 - [ ] Los `{{DATO}}`: nombre a mostrar, ciudad, años, estado y descripción de 3catinfo/HazmeFila/Oportunix, certificaciones, WhatsApp y email, usuario de GitHub, enlaces de stores, plazo de respuesta real, artículos del blog.
@@ -73,13 +72,28 @@ Documentos (anteriores a la v6, hay que actualizarlos):
 
 1. ~~Jose responde las tres confirmaciones.~~ Hecho 2026-09-29.
 2. ~~Revisión de acabado + fixes~~ hecho. Jose valida en navegador y decide lo pendiente de la revisión → documentador → `DESIGN.md` + contrato v6 en `.impeccable/surfaces/`.
-3. Actualizar UX §4.1, spec §12 y fase 2 del plan; `/plan-eng-review`.
-4. Fase 0 del plan (seis validaciones técnicas sin tocar producción) y fase 1 (monorepo, `packages/pricing`, CI).
+3. ~~Pantallas independientes y contenidos~~ hecho (2026-09-29).
+4. ~~Componentes de la home~~ hecho (2026-09-29).
+5. **Actualizar spec, UX y plan + `/plan-eng-review`**: UX §4.1, spec §12, fase 2 del plan y todo lo del §7 «Impacto en spec y plan» de `2026-09-29-pantallas-y-contenidos.md`.
+6. Fase 0 del plan (seis validaciones técnicas sin tocar producción) y fase 1 (monorepo, `packages/pricing`, CI).
 
 Gates que no se cruzan sin OK explícito de Jose en la misma sesión: migraciones y deploys a producción, contratar servicios, tocar servicios preexistentes de Omen.
 
 ## Decisiones recientes
 
+- **2026-09-29 (pantallas independientes, `docs/superpowers/design/2026-09-29-pantallas-y-contenidos.md` v1.0):**
+  1. Alcance: todo junto, como la spec (Radar y área incluidos); la prioridad del documento es orden de diseño y construcción, no de lanzamiento.
+  2. Interiores: escenas con scroll libre (titular a dos tonos y bentos, sin 100svh ni paginado).
+  3. Inglés: todas las páginas en es y en desde el lanzamiento, Negocios y área incluidas.
+  4. Contacto: página `/contacto` con selector negocio/empresa y cierre corto en cada página.
+  5. Sobre mí: profundidad media.
+  6. Stack y CV: sección «Stack y formación» en Sobre mí + PDF es/en desde el CV maestro de Radar.
+  7. Proyecto: caso de estudio medio.
+  8. josecoded.com: caso propio en Proyectos.
+  9. Tarifas de negocio: comparador dentro de `/negocios`.
+  10. Packs de app (4.000 / 6.000 €): en Negocios («¿Necesitas una app?»); Empresas solo trabajo y freelancing, sin packs.
+  11. Área privada: personalización automática (cliente → propuesta/lead → `?ref` → página de origen → neutra), sin preguntar.
+  12. Blog: sale con un mínimo de 3 artículos reales; si no, se ocultan la sección y la entrada de la cabecera.
 - **2026-09-29 (convenciones de trabajo, `docs/working-agreements.md`; resumen en `CLAUDE.md`):**
   1. Estilos: CSS Modules por componente que consumen solo tokens; sin Tailwind ni shadcn; stylelint prohíbe literales fuera del fichero de tokens.
   2. Tokens: `.impeccable/design.json` genera `tokens.css` con test de deriva; la guía de qué token usar vive en `DESIGN.md`.
