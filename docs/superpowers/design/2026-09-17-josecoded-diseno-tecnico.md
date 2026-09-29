@@ -1,7 +1,7 @@
 # joseCoded — diseño técnico (previo a implementación)
 
 **Fecha:** 2026-09-17 · **Perfil:** web · **Base:** spec v1.5.1 (`docs/superpowers/specs/2026-09-13-josecoded-plataforma.md`: §12/D16 hero, §13 Radar con Q11–Q14 resueltas), UX v3.1 (`docs/superpowers/design/2026-09-17-josecoded-ux.md`: §3 navegación clásica, §4.1 hero + `HeroMedia`, §7.12–7.18 y §9.10–9.14 Radar, §13.19 a–g), prototipo aprobado `docs/superpowers/design/ref/hero-lab-3/`, `Comercial/tarifas.md` v2 (vigencia 2026-09-14), código real de `josedev/josecoded-api` y `josecoded-worker`, migraciones de `josedev/supabase/migrations` (28 ficheros, hasta `20260720120000`).
-**Estado:** v1.2.1 (2026-09-19): (1) **hero** `GlyphScene` + `HeroMedia` + `IntroFall` (§1.6, §8.6) sustituye al `HeroIntro` compilar → minimizar; (2) **navegación clásica** (§1.6.1) sustituye al shell IDE-lite: sin árbol, pestañas, barra de título ni línea de estado; (3) **Radar** completo (§11: migraciones `radar_*` con SQL, endpoints del gateway, cron, conectores, OAuth de Google, webhook de Telegram, materiales y PDF, parser de correos, runtimes, tests); (4) decisiones a–g de UX §13.19 resueltas (§11.11); (5) preguntas P11–P15 nuevas. Lo verificado contra producción en v1.1 (esquema, 47 migraciones remotas, advisors) sigue vigente; **no se ha vuelto a consultar Supabase** y ninguna tabla `radar_*` constaba a 2026-09-17. Versiones de v1.1 comprobadas en npm el 2026-09-17; las nuevas de v1.2 (`three`, `fast-xml-parser`, `@cloudflare/puppeteer`) se fijan en su tarea 0 (§1.2). No se ha implementado ni aplicado nada.
+**Estado:** **v1.3 (2026-09-29)**: (0) estilos con CSS Modules + tokens generados desde `.impeccable/design.json` (§1.9), motion en CSS nativo con `lib/motion/` en TypeScript y **sin GSAP, Tailwind ni shadcn** (§1.10), Baseline 2024 con `@supports`; (0b) `GlyphScene` con los parámetros de la **v6** (`ref/home-v6/scene.js`), portado a TypeScript sin código muerto, **vídeo + póster en móvil y WebGL solo en escritorio** (§1.6.2–1.6.3; desaparecen `HERO_LIVE_MOBILE` y las miniaturas de `PathPanel`); (0c) i18n con `messages/{es,en}.json` e `i18n:check`, todo bilingüe incluida el área (§1.11); (0d) personalización automática del área con la tabla aditiva `user_profiles` y la RPC `area_lead_summary()` (§1.12, §6.2); (0e) tests de deriva de tokens, stylelint, capturas comparadas y módulos de motion (§8). Lo no citado sigue como en v1.2.1. Anterior: v1.2.1 (2026-09-19): (1) **hero** `GlyphScene` + `HeroMedia` + `IntroFall` (§1.6, §8.6) sustituye al `HeroIntro` compilar → minimizar; (2) **navegación clásica** (§1.6.1) sustituye al shell IDE-lite: sin árbol, pestañas, barra de título ni línea de estado; (3) **Radar** completo (§11: migraciones `radar_*` con SQL, endpoints del gateway, cron, conectores, OAuth de Google, webhook de Telegram, materiales y PDF, parser de correos, runtimes, tests); (4) decisiones a–g de UX §13.19 resueltas (§11.11); (5) preguntas P11–P15 nuevas. Lo verificado contra producción en v1.1 (esquema, 47 migraciones remotas, advisors) sigue vigente; **no se ha vuelto a consultar Supabase** y ninguna tabla `radar_*` constaba a 2026-09-17. Versiones de v1.1 comprobadas en npm el 2026-09-17; las nuevas de v1.2 (`three`, `fast-xml-parser`, `@cloudflare/puppeteer`) se fijan en su tarea 0 (§1.2). No se ha implementado ni aplicado nada.
 
 > Este documento cubre stack, funcionalidades, integraciones, datos, restricciones, tests, variables y riesgos. Pantallas, componentes, subpantallas y páginas de error van en el documento de `ux`/`ui` (`docs/superpowers/design/`), que se consolida con este antes del plan. Historial: v1.0 (borrador), v1.1 (verificación contra producción, UX v2), **v1.2 (hero D16, navegación clásica, Radar §13)**.
 
@@ -44,12 +44,18 @@ josecoded/
 │  ├─ web/                      # Next.js 16 App Router → Cloudflare Workers vía OpenNext
 │  │  ├─ app/[locale]/...       # rutas públicas y privadas (ver §2); (public)/layout.tsx = Backdrop + SiteHeader + main + SiteFooter (§1.6.1)
 │  │  ├─ app/api/...            # route handlers (webhooks, auth callback, feeds)
-│  │  ├─ components/hero/       # HeroSplit, FallText, HeroMedia, HeroSceneGate, IntroFall, SceneStateLabel (§1.6)
+│  │  ├─ components/{ui,layout,hero,scenes,home,forms,admin,radar}/<name>/{<name>.tsx,<name>.module.css,index.ts}  # §1.9; inventario en 2026-09-29-componentes-home-v6.md
+│  │  ├─ styles/tokens.css      # GENERADO por packages/design-tokens (pnpm tokens:build); nunca a mano (§1.9)
+│  │  ├─ styles/globals.css     # import tokens + reset + fuentes + reduced-motion + :focus-visible + .sr-only + .skip (working-agreements §1)
+│  │  ├─ lib/motion/            # paging, palette, expand-cell, cursor-light, slide-marker, typewriter, in-view-once, active-section, disclosure, keycap (§1.10)
 │  │  ├─ components/radar/      # 20 componentes de UX §3.10 (bandeja, detalle, plataformas, perfil, calendario)
 │  │  ├─ content/               # blog MDX, proyectos, servicios, FAQ (versionado)
-│  │  ├─ messages/{es,en}.json  # next-intl
+│  │  ├─ messages/{es,en}.json  # next-intl; todo literal visible y los hechos bajo facts.* (§1.11)
+│  │  ├─ scripts/i18n-check.ts  # lista {{DATO}} y claves faltantes (§1.11)
+│  │  ├─ e2e/visual/            # capturas app/prototipo a 360/900/1440 (§8.8); __diff__/ ignorado
 │  │  ├─ public/                # fuentes, og generadas, iconos
-│  │  ├─ public/hero/           # video.webm, video.mp4, poster.avif/webp, mini-chip.avif, mini-phone.avif, media.json (generados por packages/glyph-scene, commiteados; §1.6.3)
+│  │  ├─ public/hero/           # video.webm, video.mp4, poster.avif/webp, media.json (generados por packages/glyph-scene, commiteados; §1.6.3). Sin sprites (v1.3)
+│  │  ├─ public/art/            # glyph-phone.avif, glyph-web.avif: arte estático de las tarjetas de Proyectos, regenerado ≤ 60 KB desde la escena
 │  │  ├─ scripts/               # build-time: github.ts, stores.ts, og.ts, llms.ts, images.ts, build-info.ts, check-hero-bundle.ts
 │  │  ├─ e2e/                   # Playwright
 │  │  ├─ open-next.config.ts · wrangler.jsonc · next.config.ts · lighthouserc.json
@@ -64,7 +70,8 @@ josecoded/
 │  │  ├─ pricing.json
 │  │  ├─ src/{index,schema,upgrade,affiliate,proposal-price}.ts
 │  │  └─ scripts/{sync-from-tarifas.ts, sync-db.ts}
-│  ├─ glyph-scene/              # escena Three.js del hero, sin React (§1.6.2)
+│  ├─ design-tokens/            # design.json → tokens.css; scripts/build.ts, test/drift.test.ts (§1.9)
+│  ├─ glyph-scene/              # escena Three.js del hero, sin React; port de ref/home-v6/scene.js (§1.6.2)
 │  │  ├─ src/{index,params,rng,atlas,clouds,shaders,scene,intro,worker}.ts
 │  │  ├─ render/index.html      # página de captura para vídeo/poster (§1.6.3)
 │  │  └─ scripts/render-media.ts# Playwright headless + ffmpeg + sharp → apps/web/public/hero/
@@ -77,7 +84,7 @@ josecoded/
 │  │  ├─ bin/ingest.ts          # CLI: valida OfferDraft[] (stdin o fichero) y hace POST /radar/ingest (Mac y Omen)
 │  │  ├─ bin/runner.ts          # CLI Node + Playwright para Omen: `radar-runner run --platform workana`
 │  │  └─ test/fixtures/         # RSS, JSON y HTML grabados por plataforma
-│  └─ config/                   # eslint, tsconfig, prettier compartidos
+│  └─ config/                   # eslint, stylelint.config.mjs, tsconfig, prettier compartidos
 ├─ infra/                       # solo referencia versionada; lo aplica implementador-infra con OK de Jose
 │  ├─ omen/radar-runner/{Dockerfile,compose.yml,.env.example}   # contenedor Node 22 + Chromium (§11.9)
 │  ├─ omen/n8n/{radar-run,radar-email-proton,radar-notion}.json # workflows exportados
@@ -103,11 +110,12 @@ josecoded/
 | | `react` / `react-dom` | 19.3.0 | |
 | | `@opennextjs/cloudflare` | 1.20.6 | Peer: `next >=16.3.3`, `wrangler ^4.125` |
 | | `wrangler` | 4.133.0 | Mismo en `apps/api` (hoy `^4.87`, se sube; aditivo) |
-| | `tailwindcss` + `@tailwindcss/postcss` | 4.3.3 | |
-| | `shadcn` (CLI) | 4.21.0 | Componentes copiados al repo y re-tematizados por `ui` |
-| | `gsap` + `@gsap/react` | 3.15.0 / 2.1.2 | **Solo núcleo + `ScrollTrigger`** (`CompileReveal` v3 por lotes, `PageTransition`). `Flip` y `ScrambleTextPlugin` salen (el hero ya no se minimiza ni compila); la resolución de glifos de `CompileReveal` la hace el mismo módulo sin dependencias de `IntroFall` (§1.6.6). Cargado con `next/dynamic` tras el primer paint |
+| | ~~`tailwindcss`~~ | — | **Eliminado** (v1.3, spec D27): CSS Modules por componente que consumen solo `var(--token)` |
+| | ~~`shadcn`~~ | — | **Eliminado** (v1.3): primitivas con `<dialog>`/`popover` nativos; Radix Primitives sin estilos solo con justificación (working-agreements §11) |
+| | `stylelint` + `stylelint-config-standard` | última estable | Prohíbe literales fuera de `styles/tokens.css` y `px` fuera de las excepciones (§1.9); falla la CI |
+| | ~~`gsap` + `@gsap/react`~~ | — | **Eliminado por defecto** (v1.3, spec D27): el motion es CSS nativo + `lib/motion/` en TypeScript (§1.10). Solo entra para una pieza concreta con justificación (peso gz, por qué no vale la alternativa nativa) aprobada por `revisor`; `CompileReveal` desaparece |
 | | ~~`lenis`~~ | — | **Eliminado** (v1.2): sin panel central, el scroll es el de `window`; UX v3.1 §3.7 no lo pide y §12 solo lo regula "si se usa". Menos JS y sin riesgo de secuestro del scroll en móvil (P13) |
-| | `three` | **a fijar en la tarea 0 del hero** (prototipo: 0.170.0) | Solo en `packages/glyph-scene`, importación selectiva desde `three` y `three/addons/postprocessing/*`; nunca en el chunk inicial (§1.6.2, test §8.6). Sin React Three Fiber |
+| | `three` | **a fijar en la tarea 0 del hero** (prototipo v6: `importmap` a la última 0.17x/0.18x) | Solo en `packages/glyph-scene`, importación selectiva desde `three` y `three/addons/postprocessing/*`; nunca en el chunk inicial (§1.6.2, test §8.6). Sin React Three Fiber |
 | | `next-intl` | 4.14.5 | Peer `next ^16`. Sin `proxy.ts` (ver 1.4) |
 | | `@next/mdx` + `@mdx-js/loader` + `@mdx-js/react` | 16.3.5 / 3.1.x | Compilación en build; ver decisión 1.5 |
 | | `rehype-pretty-code` + `shiki` | 0.14.5 / 4.4.3 | Código en el blog, en build |
@@ -115,7 +123,7 @@ josecoded/
 | | `@marsidev/react-turnstile` | 1.6.1 | Widget Turnstile |
 | | `@calcom/embed-react` | 1.5.3 | Reserva 20 min (vía Empresas) |
 | | ~~`ogl`~~ | — | **Eliminado** (v1.1). En v1.2 el único WebGL es `three` en `GlyphScene` (D16) |
-| | `lucide-react` | 1.47.0 | Iconos de UI; los "jc" propios se dibujan como SVG en el repo |
+| | `lucide-react` | 1.47.0 | Iconos de UI por import nombrado (sin UMD de CDN como `base.js`); trazo 1.75, 1.05em (`DESIGN.md`) |
 | | `zod` | 4.6.5 | Validación de env, formularios, frontmatter y `pricing.json` |
 | API | `hono` | 4.13.8 | Hoy 4.12.16; subida menor |
 | | `zod` | 4.6.5 | Hoy 4.4.2 |
@@ -182,7 +190,7 @@ Plugins: `remark-gfm`, `rehype-slug`, `rehype-autolink-headings`, `rehype-pretty
 
 ### 1.6 Hero (`GlyphScene`, `HeroMedia`, `IntroFall`), navegación clásica y motion (spec §12/D16, UX v3.1 §3, §4.1)
 
-**Un solo WebGL en toda la web**: la escena de partículas-glifo del hero de la home. Todo lo demás es DOM + CSS + GSAP núcleo. El prototipo `ref/hero-lab-3/` es la referencia visual y de parámetros; este apartado dice cómo se empaqueta, cuándo se carga, qué se sirve cuando no hay escena y cómo se comprueba.
+**Un solo WebGL en toda la web**: la escena de glifos del hero de la home. Todo lo demás es DOM + CSS nativo + TypeScript propio (§1.10). **Desde v1.3 el prototipo de referencia es `ref/home-v6/`** (`scene.js` para la escena e intro; `hero-lab-3` queda como antecedente aprobado de la composición). Este apartado dice cómo se empaqueta, cuándo se carga, qué se sirve cuando no hay escena y cómo se comprueba.
 
 #### 1.6.1 Navegación clásica: qué cambia frente al IDE-lite (v1.1)
 
@@ -191,12 +199,12 @@ Plugins: `remark-gfm`, `rehype-slug`, `rehype-autolink-headings`, `rehype-pretty
 | Rutas | Mapa de sitio de UX §2 | **Sin cambios**: mismas rutas públicas, privadas y de admin (+ `/admin/radar/*`, §11). `/` y `/en` siguen siendo las únicas con escena |
 | Layout público | `AppShell` (`SiteTree` + `TitleBar` + `Tabs` + panel central con scroll propio + `StatusLine`) | `app/[locale]/(public)/layout.tsx` = `<Backdrop/>` + `<SiteHeader/>` + `<main id="contenido">` + `<SiteFooter/>`. El scroll es el de `window` |
 | Componentes eliminados | `AppShell`, `SiteTree`, `TitleBar`, `StatusLine`, `Tabs`, `HeroIntro`, `SectionIndex`, `FocusLight`, `content/generated/site-tree.json` | — (no se crean) |
-| Componentes nuevos | — | `SiteHeader` (RSC) + islas cliente `HeaderScrollState` (sentinela de 80 px con `IntersectionObserver` → `data-scrolled` para el fondo translúcido), `MobileMenuSheet` (shadcn `Sheet`/Radix Dialog, foco atrapado, Escape, `aria-current`), `LangSwitch`, `UserMenu` (lee la sesión con `createBrowserClient` **tras montar**; las páginas SSG no saben si hay sesión y pintan "Entrar" hasta entonces); `SiteFooter` (RSC, columna "Esta web" desde `build-info.json`); `Backdrop` (dos `div` `aria-hidden` fijos: grano SVG 180 px / 3,5 % `overlay` + rayo 214° / 14 % / blur 48 px / 10 % con máscara al 55 %; sin JS; retícula y deriva **no se implementan**) |
+| Componentes nuevos | — | **v1.3 (inventario `2026-09-29-componentes-home-v6.md` §1.3):** `SiteHeader` (RSC) + isla `HeaderScrollState` (sentinela de 80 px con `IntersectionObserver` → `is-scrolled`); orden a la derecha `LangSwitch` → `SearchTrigger` (⌘K) → `ChatTrigger` → `Button` «Login»; **sin «Contacto» en la barra**; `MobileMenu` = **disclosure nativo** (`aria-expanded`/`aria-controls`, panel de 17rem, `lib/motion/disclosure.ts`; *sustituye a la hoja shadcn de v1.2*), `CommandPalette` (`<dialog>` modal, `lib/motion/palette.ts`, import dinámico al primer ⌘K), `UserMenu` (lee la sesión con `createBrowserClient` **tras montar**; las páginas SSG pintan «Login» hasta entonces); `SiteFooter` (RSC: secciones, Área de clientes, Legal, revisión con fecha desde `build-info.json`); `Backdrop` v6 (campo de luz `.field` con tres haces y un charco en `screen` + grano `.grain` al 4,5 %; en la home sigue a la nube solo por `transform`; en el resto y con reduced motion, quieto; *sustituye al grano 3,5 % + rayo 214° de v1.2*) |
 | Estado de cliente | `localStorage.hero_seen`, `localStorage.tree_collapsed`, `sessionStorage.tabs`, `localStorage.locale_pref`, `sessionStorage.audience` | **Se eliminan** `hero_seen`, `tree_collapsed` y `tabs`. Quedan `sessionStorage.intro_seen` (`'1'`, §1.6.4), `localStorage.locale_pref`, `sessionStorage.audience`. Ninguno se lee en servidor; ninguna cookie nueva salvo `ref` y las de sesión |
-| Datos del build | `StatusLine` (rama, commit, LCP) | `SiteFooter` "Esta web" (rama · commit · fecha · LCP) y `BuildFacts` en la home (§2.1). Misma fuente `build-info.json`, misma regla "falla la build si falta" |
+| Datos del build | `StatusLine` (rama, commit, LCP) | **v1.3:** solo la fecha de revisión del pie sale de `build-info.json`; `BuildFacts` y la columna «Esta web» **no existen** (sin métricas en la web; josecoded.com es un caso de estudio en Proyectos). `build-info.json` sigue generándose (falla la build si falta) para el pie, el caso de estudio y `llms.txt` |
 | Atajos de teclado | `Ctrl/Cmd+W` en pestañas | Ninguno propio; "Saltar al contenido" primero en el orden de tabulación |
 | Scroll suave | Lenis en el panel central | **Fuera** (§1.2). Anclas nativas con `scroll-margin-top: 80px` |
-| Transición de página | `ViewTransition` en `template.tsx` | Igual (120 ms salida / 160 ms entrada + 8 px); la hoja "Menú" usa la misma curva en CSS |
+| Transición de página | `ViewTransition` en `template.tsx` | Igual (120 ms salida / 160 ms entrada + 8 px) con tokens `--dur-*`/`--ease-out`; la celda ampliada usa View Transitions propias (`vt-cell`, 380 ms, §1.10) |
 
 #### 1.6.2 `GlyphScene`: paquete `packages/glyph-scene`
 
@@ -207,10 +215,10 @@ Plugins: `remark-gfm`, `rehype-slug`, `rehype-autolink-headings`, `rehype-pretty
 ```ts
 export interface GlyphSceneOptions {
   canvas: HTMLCanvasElement; stage: HTMLElement;     // stage = columna del hero (para posición/escala y arrastre)
-  count?: number;                                    // 9000 escritorio · 5000 móvil (HERO_LIVE_MOBILE)
+  count?: number;                                    // 9000 escritorio; 5000 solo para generar el vídeo de móvil
   seed?: number;                                     // PRNG determinista (mulberry32); build y runtime comparten seed=1
   params?: Partial<Params>; capture?: boolean;       // capture: dt fijo, sin intro, parámetros de bucle perfecto (§1.6.3)
-  onState?(index: 0 | 1 | 2): void;                  // etiqueta "móvil · web · IA · chip"
+  onState?(index: 0 | 1 | 2, progress: number): void;  // barras de ciclo (CycleBars, tres trazos de 2 px)
 }
 export interface GlyphScene {
   start(): void; stop(): void; pause(): void; resume(): void;   // rAF
@@ -222,22 +230,24 @@ export function createGlyphScene(o: GlyphSceneOptions): Promise<GlyphScene>; // 
 export { PARAMS, paramsHash } from './params';                  // hash sha256 de params + clouds (freshness de medios)
 ```
 
-Módulos: `params.ts` (los valores aprobados del prototipo: `hold 3.5, morph 1.6, rot .18, size 16, bright 1, green 14 %, rain .7, scatter .6, breath .025, wperiod 4, wamp .6, bloom .3, bloomth .72, focus 6.2, mirror .45`), `rng.ts` (mulberry32; **el prototipo usa `Math.random`, aquí todo pasa por el PRNG con semilla** para que poster, vídeo, sprites y escena viva sean la misma geometría), `atlas.ts` (canvas 16×8 × 64 px con JetBrains Mono; espera a `document.fonts.load('600 46px "JetBrains Mono"')` antes de pintar, con `ui-monospace` de respaldo), `clouds.ts` (`cloudCode`, `cloudPhone`, `cloudWeb`, `cloudChipBrain` puras: `(n, rng) → Float32Array`), `shaders.ts` (vertex/fragment del prototipo como strings), `scene.ts` (renderer, composer, material, bucle de estados, arrastre con inercia, paralaje, vaivén del chip, pausa), `intro.ts` (solo el lado de la escena: `uIntroT`), `worker.ts` (calcula las cuatro nubes en un **Web Worker** y las transfiere; si `Worker` no existe, `clouds` se calculan en `requestIdleCallback` por trozos de una nube).
+**Origen del código (v1.3, decisión 3 del inventario de componentes):** `packages/glyph-scene` se construye **portando `ref/home-v6/scene.js` a TypeScript**, troceado en los módulos de abajo, **sin el código muerto** del inventario §4.1 (sistema de chorros `compileBurst`/`streams`, puertas `.door`, ramas `doors`/`dim`/`phone` y `data-side` de `targetFor`, `P.directedMorph`, evento `scene:ready`, rama `vCol < uGreen` del shader, comentarios de la v4/v5) y con PRNG de semilla. **Parámetros de la v6** (`scene.js:11`; los de `hero-lab-3` —JetBrains Mono, bloom 0.3, reflejo 0.45, verde 14 %, `cloudCode`, `rain`— quedan superados):
+
+Módulos: `params.ts` (`PARAMS = { hold: 3.5, morph: 1.6, rot: 0.18, size: 16, green: 0, scatter: 0.6, breath: 0.025, wperiod: 4, wamp: 0.6, bloom: 0.22, bloomth: 0.72, focus: 6.2, mirror: 0.35 }`, `COUNT = { desktop: 9000, mobile: 5000 }` —el móvil solo se usa para generar el vídeo—, `CYCLE = [PHONE, WEB, CHIP]`; `paramsHash()`), `rng.ts` (mulberry32; **el prototipo usa `Math.random`, aquí todo pasa por el PRNG con semilla** para que poster, vídeo, arte de Proyectos y escena viva sean la misma geometría), `atlas.ts` (canvas 16×8 × 64 px, `CHARS` de `scene.js:16`, fuente **`500 46px "Geist Mono"`** con `ui-monospace` de respaldo; espera a `document.fonts.load` antes de pintar), `clouds.ts` (`cloudPhone`, `cloudWeb`, `cloudChipBrain` —con `cloudBrain` interna— puras: `(n, rng) → Float32Array`; **sin `cloudCode`**), `shaders.ts` (vertex/fragment de `scene.js:160-228` como strings, con los colores lavanda/violeta/verde de la línea 219 y sin la rama `uGreen`), `scene.ts` (renderer con `setClearColor(bg)`, composer con `UnrealBloomPass(strength 0.22, radius 0.3, threshold 0.72)`, `Points` + clones de onda y reflejo (`uMirror`, brillo `P.mirror`), máquina `hold/morph` de tres estados en ciclo, arrastre con inercia en el `stage` (solo puntero fino), inclinación al cursor, `targetFor` reducido a `cycle` (hero) y `off` (fuera del hero: brillo 0 y la nube se queda en su sitio), campo de luz `.field` seguido por `transform` con amortiguado `k = 1 − e^(−3.2·dt)` y 5–6 % de desvío al cursor, pausa con `visibilitychange` e `IntersectionObserver`, `layout`, `dispose`, `debug()` de solo lectura), `intro.ts` (solo el lado de la escena: `uIntroT`; la caída de letras vive en `apps/web/lib/motion/intro-fall.ts`, §1.6.4), `worker.ts` (calcula las tres nubes en un **Web Worker** y las transfiere; sin `Worker`, por trozos en `requestIdleCallback`).
 
 **Importación selectiva de `three`:** `WebGLRenderer, Scene, PerspectiveCamera, Group, Points, BufferGeometry, BufferAttribute, ShaderMaterial, CanvasTexture, Vector2, AdditiveBlending, LinearMipmapLinearFilter, UniformsUtils` desde `three`; `EffectComposer, RenderPass, UnrealBloomPass, OutputPass` desde `three/addons/postprocessing/*`. `sideEffects: false` respetado por el paquete; Turbopack elimina el resto.
 
-**Presupuesto (spec §12.3): chunk de la escena ≤ 200 KB gz.** Estimación honesta: `three` con `WebGLRenderer` ≈ 110–130 KB gz, postprocesado (bloom) ≈ 12–15 KB, worker + nubes + shaders + paquete ≈ 8 KB → **≈ 130–155 KB gz**. Margen para el bloom; si la medición de la tarea del hero supera 200 KB, **el bloom es lo primero que sale** (`PARAMS.bloom = 0` → `renderer.render` directo; el halo se aproxima en el fragment shader con un `smoothstep` radial). JS de la home sin escena ≤ 350 KB gz. La comprobación es un test de CI (§8.6), no una estimación.
+**Presupuesto (spec §12.3): chunk de la escena ≤ 200 KB gz.** Estimación honesta: `three` con `WebGLRenderer` ≈ 110–130 KB gz, postprocesado (bloom 0.22) ≈ 12–15 KB, worker + nubes + shaders + paquete ≈ 8 KB → **≈ 130–155 KB gz**; quitar el código muerto de la v6 (chorros con 9 000 puntos reservados) también ahorra tiempo de frame. Margen para el bloom; si la medición de la tarea del hero supera 200 KB, **el bloom es lo primero que sale** (`PARAMS.bloom = 0` → `renderer.render` directo; el halo se aproxima en el fragment shader con un `smoothstep` radial). JS de la home sin escena ≤ 350 KB gz. La comprobación es un test de CI (§8.6), no una estimación.
 
 **Secuencia de carga (spec §12.1):**
 
 1. HTML estático (SSG): texto del hero, badge, CTA, `HeroMedia` con el **poster en el HTML en todos los viewports** (`<img fetchpriority="high">` + `<link rel="preload" as="image">`) y la etiqueta de estado. El poster ocupa la caja `aspect-ratio: 1/1` de la escena: **nunca hay columna vacía**, tampoco en escritorio mientras `three` se descarga. Consecuencia: en escritorio el LCP puede ser el poster (≤ 60 KB, precargado) y no el `h1`; ambos son estáticos y el criterio real (Three fuera del camino crítico, LCP ≤ 1,2 s escritorio / ≤ 2,5 s móvil 4G) se mantiene. **P11** lo deja anotado para Jose.
-2. `HeroSceneGate` (isla cliente, ~1 KB) decide el modo con la tabla de UX §4.1: `scene` si `WebGL2` disponible (`canvas.getContext('webgl2')` de prueba), `matchMedia('(min-width: 900px)')` (o `NEXT_PUBLIC_HERO_LIVE_MOBILE === 'true'`), sin `prefers-reduced-motion`, `navigator.connection?.saveData !== true` y `(navigator.deviceMemory ?? 8) >= 4`; si no, `video` (móvil, sin WebGL, `deviceMemory < 4`) o `poster` (`saveData`, reduced-motion). Sin JS: `poster`.
+2. `HeroSceneGate` (isla cliente, ~1 KB) decide el modo con la tabla de UX v4.0 §4.1 (**decisión 4 del inventario: WebGL solo en escritorio**): `scene` si `WebGL2` disponible (`canvas.getContext('webgl2')` de prueba), `matchMedia('(min-width: 56.25rem)')`, sin `prefers-reduced-motion`, `navigator.connection?.saveData !== true` y `(navigator.deviceMemory ?? 8) >= 4`; `video` bajo 56.25rem, sin WebGL2 o con `deviceMemory < 4`; `poster` con `saveData`, reduced-motion o sin JS. **No existe `HERO_LIVE_MOBILE` ni tarea de medición en móvil** (v1.2 la tenía; superada).
 3. En modo `scene`: **descarga** del chunk con `import('@josecoded/glyph-scene')` en cuanto existe una entrada `largest-contentful-paint` (`PerformanceObserver` con `buffered: true`; en la práctica ya existe al hidratar) o a los 1 500 ms como tope; **construcción** (`createGlyphScene`, nubes en el worker, atlas) en `requestIdleCallback` (`setTimeout(0)` de respaldo). La descarga adelantada hace de "preload" del chunk sin necesitar el nombre del fichero (Turbopack lo hashea).
 4. El canvas (`position: fixed; inset: 0; z-index: 0; pointer-events: none`, como el prototipo, para que reflejo y ondas desborden la columna) entra con opacidad 0 → 1 en 1 s; al terminar, el poster pasa a `visibility: hidden` (sigue reservando la caja). `stage.getBoundingClientRect()` fija posición y escala del grupo (`layout()` en `resize`).
 5. Arrastre: `pointerdown/move/up` en el `stage` (`touch-action: pan-y` para que en móvil el vertical siga siendo scroll, spec §12.5); paralaje con `pointermove` pasivo en `window`. Evento Umami `scene_drag` la primera vez por página.
 6. Pausa: `IntersectionObserver` sobre el `stage` (`threshold: 0`) y `visibilitychange` → `pause()`/`resume()`; fuera de la home, el componente no existe (`dispose()` al desmontar).
 
-**Miniaturas de `PathPanel` (UX §4.1 bloque 3): sprites, no segundo WebGL.** `render-media.ts` genera `mini-chip.avif` y `mini-phone.avif` como hojas de 24 fotogramas (256 px, 12 fps: respiración + morph corto y vuelta) desde las mismas nubes; en escritorio el panel anima el `background-position` con `steps(24)` al hover/foco y se detiene al salir; en móvil y con reduced-motion muestra el fotograma 0. Descartado compartir el renderer con `scissor` (la columna del hero es un canvas fijo y los paneles están bajo el pliegue: dos regiones de recorte en un canvas `fixed` que además se pausa fuera de viewport) y un segundo contexto WebGL (spec §12.1: uno por página).
+**Arte de glifos de Proyectos (v1.3; sustituye a las miniaturas de `PathPanel`, que ya no existen):** `render-media.ts` genera además `apps/web/public/art/glyph-phone.avif` y `glyph-web.avif` (fotograma de reposo de los estados móvil y web, fondo transparente, proporción 801/722, **≤ 60 KB cada uno**) desde las mismas nubes; sustituyen a los `glyph-*-alpha.png` de 250–300 KB del prototipo. Son imágenes estáticas `aria-hidden` en `ProjectCard` (flotan 8 px en 6 s solo en la tarjeta activa, por CSS); `glyph-chip-alpha.png` no se usa. Sin segundo contexto WebGL (spec §12.1: uno por página).
 
 #### 1.6.3 `HeroMedia`: vídeo y poster generados desde la propia escena
 
@@ -251,7 +261,7 @@ Markup servido (RSC):
 </div>
 ```
 
-El `<video>` **no lleva `<source>` en el HTML**: en modo `video`, `HeroSceneGate` añade `webm` (VP9) y `mp4` (H.264) tras el LCP, llama a `load()` en idle, quita `hidden` y reproduce; el poster sigue debajo hasta `canplay` y entonces se oculta **sin fundido** (UX §4.1). Así `saveData` y reduced-motion no descargan nada y sin JS solo hay poster. Se pausa fuera de viewport y con la pestaña oculta (mismo observer que la escena). La etiqueta de estado se sincroniza con `currentTime` según el ciclo (3,5 + 1,6 s por estado); con poster, "móvil" activo.
+El `<video>` **no lleva `<source>` en el HTML**: en modo `video` (**todo móvil y tablet**, v1.3), `HeroSceneGate` añade `webm` (VP9) y `mp4` (H.264) tras el LCP, llama a `load()` en idle, quita `hidden` y reproduce; el poster sigue debajo hasta `canplay` y entonces se oculta **sin fundido**. Así `saveData` y reduced-motion no descargan nada y sin JS solo hay poster. Se pausa fuera de viewport y con la pestaña oculta (mismo observer que la escena). Las tres barras de ciclo (`CycleBars`) se sincronizan con `currentTime` según el ciclo (3,5 + 1,6 s por estado); con poster no se muestran. El vídeo se genera con `count: 5000` y los mismos parámetros de la v6.
 
 **Generación (`packages/glyph-scene/scripts/render-media.ts`, `pnpm hero:media`; salida commiteada en `apps/web/public/hero/`):**
 
@@ -261,12 +271,14 @@ El `<video>` **no lleva `<source>` en el HTML**: en modo `video`, `HeroSceneGate
 | Bucle perfecto | En `capture` los parámetros cambian solo en lo que impide cerrar el bucle: `rot: 0` (la rotación continua de 0,18 rad/s no es múltiplo de 2π en 15,3 s), vaivén senoidal de ±0,22 rad con periodo 5,1 s (3 ciclos), respiración a 3 ciclos exactos (`2π·3/15,3`), ondas con periodo 3,825 s (4 ciclos), mutación de glifos con `uTime` módulo 15,3 | El script compara el fotograma 0 con el 458: **PSNR ≥ 35 dB** o falla |
 | Vídeo | `ffmpeg -framerate 30 -i frames/%04d.png -c:v libvpx-vp9 -crf 38 -b:v 0 -an video.webm` y `-c:v libx264 -pix_fmt yuv420p -crf 30 -preset slow -movflags +faststart -an video.mp4` | Cada fichero **≤ 400 KB** (spec §12.2); si no, el script baja a 640×640 y `crf +2` una vez y, si sigue fuera, falla con el tamaño obtenido |
 | Poster | Fotograma 15 (estado "móvil", respiración neutra) → `sharp` → `poster.avif` (q 50) y `poster.webp` (q 78) | **≤ 60 KB** cada uno |
-| Sprites | Estados 2 (chip) y 0 (móvil): 24 fotogramas a 256 px en una tira horizontal → AVIF | ≤ 80 KB cada uno |
+| Arte de Proyectos | Estados 0 (móvil) y 1 (web) en reposo, 801×722 con alfa → `public/art/glyph-{phone,web}.avif` | ≤ 60 KB cada uno |
 | Manifiesto | `media.json`: `{ generatedAt, paramsHash, seed, files: { name: bytes } }` | CI (`hero:media:check`) recalcula `paramsHash` desde `params.ts` + `clouds.ts` + `shaders.ts` y **falla si no coincide**: cambiar la escena obliga a regenerar los medios |
 
-Descartado `MediaRecorder` en un navegador real: tiempos de frame variables (no hay bucle exacto ni PSNR verificable), solo VP8/VP9, ficheros mayores y no reproducible en CI. La captura corre en el Mac (ffmpeg por Homebrew) o en CI (`apt install ffmpeg`, SwiftShader ≈ 200 ms/frame → ~2 min); no forma parte de `pnpm build`.
+El `aria-label` del escenario es el de la v6: «Caracteres de código que forman, por turnos, un móvil, una web y un chip de IA» (desde `messages`). Descartado `MediaRecorder` en un navegador real: tiempos de frame variables (no hay bucle exacto ni PSNR verificable), solo VP8/VP9, ficheros mayores y no reproducible en CI. La captura corre en el Mac (ffmpeg por Homebrew) o en CI (`apt install ffmpeg`, SwiftShader ≈ 200 ms/frame → ~2 min); no forma parte de `pnpm build`.
 
 #### 1.6.4 `IntroFall`: intro de caída sin dependencias (UX §3.6)
+
+> v1.3: la referencia de la mecánica es `ref/home-v6/scene.js:425-481` (`splitChars`, `prepareChars`, `tickChars`, `finishChars`, `playIntro`; glifos `GL`, destello verde `var(--green)` al aterrizar). Se porta a `apps/web/lib/motion/intro-fall.ts` con PRNG de semilla y los tokens de duración. Lo de abajo sigue vigente salvo que menciona el badge (ya no existe) y la marca/enlaces de la cabecera: en la v6 caen los caracteres del `h1`, el subtítulo y los CTA del hero.
 
 **Problema a resolver:** la intro mueve cada carácter del primer viewport y React hidrata esos mismos nodos. Si un script partiera el texto en `span` antes de hidratar, React 19 detectaría el desajuste de estructura y repintaría el subárbol en mitad de la animación. **Decisión: el texto ya se sirve partido desde el servidor.**
 
@@ -279,16 +291,23 @@ Descartado `MediaRecorder` en un navegador real: tiempos de frame variables (no 
 
 #### 1.6.5 `prefers-reduced-motion` (spec §12.4)
 
-El inline script no marca `pending` y `HeroSceneGate` devuelve `poster`; `IntroFall` y `GlyphScene` no se instancian; el `<video>` no recibe `<source>`; `CompileReveal` no se registra (los `h2` se pintan); `PageTransition` no anima; los sprites de `PathPanel` quedan en el fotograma 0. `intro_seen` se escribe igual. Todo con `matchMedia('(prefers-reduced-motion: reduce)')` en JS y `@media` en CSS (los `.ch` nunca se ocultan bajo reduced-motion).
+El inline script no marca `pending` y `HeroSceneGate` devuelve `poster`; `IntroFall` y `GlyphScene` no se instancian; el `<video>` no recibe `<source>`; `PageTransition` no anima; y, según `DESIGN.md` «Reduced motion»: sin paginado ni snap, sin transiciones ligadas al scroll, sin View Transitions, sin carrusel fijado (tarjetas en columna), sin marquesina (pastillas en bloque), sin escritura automática, sin flotación ni deslizamientos, menú sin animación, indicador que solo funde. El JS lee `matchMedia` una vez y expone `reduce` (working-agreements §3). `intro_seen` se escribe igual. Todo con `matchMedia('(prefers-reduced-motion: reduce)')` en JS y `@media` en CSS (los `.ch` nunca se ocultan bajo reduced-motion).
 
-#### 1.6.6 Resto del motion (UX §3.7)
+#### 1.6.6 Resto del motion (v1.3: `DESIGN.md` «Movimiento», working-agreements §3; supera la tabla de v1.2 con `CompileReveal` y GSAP)
 
 | Recurso | Implementación | Reduced motion |
 |---|---|---|
-| `CompileReveal` v3 | Los `h2` públicos se sirven con `FallText` (sin cabecera). Un módulo `compile-reveal.ts` reutiliza `GLYPHS` y el destello `is-wet` de `IntroFall`: al entrar en viewport (`ScrollTrigger.batch`, `once: true`) resuelve las letras de izquierda a derecha en ≤ 300 ms (`i·300/n` ms cada una). Sin caída. No toca el `sr-only` | Sin animación |
-| `PageTransition` | `ViewTransition` de React 19 en `app/[locale]/template.tsx`: 120 ms salida (opacidad), 160 ms entrada (`translateY(8px)`); la cabecera está fuera del `template` y no se mueve | Cambio directo |
-| Hover y foco | Solo CSS: `box-shadow` inset 1 px + halo de acento, texto secundario → pleno, `translateY(1px)` al pulsar. Sin escalas ni inclinaciones | Igual (no es movimiento) |
-| GSAP | `gsap` + `ScrollTrigger` por `next/dynamic` tras el primer paint, envuelto en `gsap.matchMedia('(prefers-reduced-motion: no-preference)')` | No se carga |
+| Entradas y salidas por elemento | CSS `animation-timeline: view()` en `.scene__head`, `.cell`, piezas del cierre (sube 40 px, 0.985 → 1, blur 6 px → 0; salida 24 px, 0.97, 25 %), bajo `@supports (animation-timeline: view())`; sin soporte, estado final | Estado final |
+| Paginado por gesto | `lib/motion/paging.ts` (`stops()`, `glide()` 600–950 ms cuártica, umbral de rueda 24 / bloqueo 700 ms, filtro de teclas, interrupción) montado por `usePagedScroll` en una isla sin markup, solo con `(pointer: fine)`; sin puntero fino, `scroll-snap-type: y proximity` en CSS | Sin paginado ni snap |
+| Celda ampliada | `lib/motion/expand-cell.ts` (shield/unshield, trampa de foco, retorno, orden Esc) + `document.startViewTransition` con `view-transition-name` por celda (`vt-cell`, 380 ms, `cubic-bezier(0.32, 0.72, 0, 1)`); sin soporte, cambio inmediato | Cambio inmediato |
+| Carrusel fijado de Proyectos | CSS: sección de 420svh, `position: sticky`, pista con `animation-timeline: scroll()`; `lib/motion/center-active.ts` marca la tarjeta activa por `IntersectionObserver`; condición `@supports (animation-timeline: scroll()) and (orientation: landscape)` | Tarjetas apiladas |
+| Vida en celdas | `cursor-light.ts` (un listener delegado por bento, escribe `--mx`/`--my`), `slide-marker.ts` (Servicios y Packs), `typewriter.ts` (mini chat y campo de propuesta, con temporizadores inyectables), `in-view-once.ts` (checks), marquesina en CSS puro | Estado final |
+| Cabecera, menú, paleta, indicador | `HeaderScrollState` (sentinela), `disclosure.ts`, `palette.ts`, `active-section.ts` (IntersectionObserver; reglas de visibilidad y margen del indicador) | Menú sin animación; indicador solo funde |
+| `PageTransition` | `ViewTransition` de React 19 en `app/[locale]/template.tsx`: 120 ms salida (opacidad), 160 ms entrada (`translateY(8px)`) con tokens | Cambio directo |
+| Hover y foco | Solo CSS bajo `(hover: hover) and (pointer: fine)`: filete, luz, color o avance de flecha 3 px; pulsación `scale(0.97)` 160 ms. Sin inclinaciones ni escalas de tarjeta | Igual (no es movimiento) |
+| GSAP | **No se carga.** Entra solo para una pieza concreta con justificación (peso gz medido con `check:hero-bundle`, alternativa nativa descartada) aprobada por `revisor` | — |
+
+Reglas comunes: duraciones, easings y distancias son tokens (`--dur-*`, `--ease-out`, `--ease-slide`) también en TypeScript (`getComputedStyle(root).getPropertyValue`); solo `transform` y `opacity` en continuo; cada `@supports` lleva comentario con el rasgo y el fallback; nunca se detecta el navegador por user agent.
 
 #### 1.6.7 Cómo se testea el hero (detalle en §8.6)
 
@@ -298,7 +317,7 @@ El inline script no marca `pending` y `HeroSceneGate` devuelve `poster`; `IntroF
 4. **Medios**: `hero:media:check` (hash) y tamaños del manifiesto (≤ 400 / ≤ 60 / ≤ 80 KB) en CI.
 5. **Intro y modos**: E2E de §8.2 (primera visita, salto con `Tab`, segunda visita sin intro, `?intro=1`, reduced-motion = poster, móvil = vídeo sin descarga previa al LCP, `saveData` = solo poster).
 6. **Unidad**: `clouds.test.ts` (determinismo con semilla, tamaños `n·3`, cotas), `hero-gate.test.ts` (tabla de UX §4.1 → `scene|video|poster` con `navigator`/`matchMedia` simulados), `intro-fall.test.ts` (happy-dom + temporizadores falsos: todos los `landT` ∈ [0,4, 1,2] s; `finish()` deja todo aterrizado en un frame; `sr-only` intacto).
-7. **A mano en la puerta** (`qa`): 60 fps en escritorio y un Android de gama media con `HERO_LIVE_MOBILE` (Lighthouse en CI no tiene GPU).
+7. **A mano en la puerta** (`qa`): 60 fps en escritorio (Lighthouse en CI no tiene GPU) y reproducción del vídeo en un Android de gama media y en iOS Safari (con los fallbacks de working-agreements §6).
 
 ### 1.7 Auth y guards sin middleware
 
@@ -320,6 +339,68 @@ El inline script no marca `pending` y `HeroSceneGate` devuelve `poster`; `IntroF
 Secretos de CI: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `SUPABASE_ACCESS_TOKEN` (solo para `supabase start`, no toca producción), `GITHUB_TOKEN` (propio de Actions, para `scripts/github.ts`).
 
 ---
+
+### 1.9 Estilos y tokens: `design.json` → `tokens.css`, CSS Modules, stylelint (v1.3; working-agreements §1, §2, §8)
+
+- **Fuente única de tokens:** `.impeccable/design.json` (v6). `pnpm tokens:build` ejecuta `packages/design-tokens/scripts/build.ts`, que lee `colors`, `typography`, `rounded`, `spacing`, `components` y `extensions.{shadows,motion,breakpoints,alphas,blurs,layers,gradients}` y escribe `apps/web/styles/tokens.css` con cabecera `/* GENERATED by packages/design-tokens — do not edit */` y un solo bloque `:root { --bg: …; --text: …; --card: …; --r-pill: 9999rem; --dur-fast: 150ms; --ease-out: cubic-bezier(0.23, 1, 0.32, 1); --z-header: 30; --bp-menu: 67.5rem; … }`. Nombres = claves de `design.json` en kebab-case con prefijo semántico por grupo (`--r-*` radios, `--sp-*` espaciado, `--dur-*`, `--ease-*`, `--z-*`, `--bp-*`, `--shadow-*`, `--blur-*`, `--tint-*`/`--scrim`/`--header-scrolled` para alfas por uso, `--grad-*`). Las tipografías se emiten como grupos (`--font-display-size`, `--font-display-weight`, `--font-display-leading`, `--font-display-tracking`). Los breakpoints se emiten también como fichero `apps/web/styles/breakpoints.ts` (`export const bp = { menu: '67.5rem', … }`) porque las media queries no admiten `var()`.
+- **Test de deriva:** `packages/design-tokens/test/drift.test.ts` regenera en memoria y compara con el fichero commiteado; falla si difieren o si `design.json` tiene algún token de la lista obligatoria sin valor (§5 del inventario de componentes). Corre en `pnpm test` y en CI.
+- **Tokens que faltan** (tarea bloqueante de la fase 1 del plan): alfas de violeta (6–60 %), blanco (5–28 %) e índigo (50–72 %) **por uso**; sombras de botón, tecla, tecla grande (reposo y pulsada) y capa superpuesta; desenfoques 4, 6, 14, 18, 24 px y 5vmax; duraciones 90, 150, 160, 180, 200, 240, 250, 260, 360, 380, 420 ms, 6 s, 38 s, 44 s; `ease-out`, `ease-slide`, `vt-cell`; límites del glide (600/950 ms) y parámetros de la rueda (24 / 700 ms); capas 0, 1, 2, 20, 30, 31, 35, 40; breakpoints en rem (22.5, 43.75, 56.25, 67.5) y de contenedor (15, 24, 26, 34, 40, 52 rem); degradados (tecla grande, hueco de foto, tintes de celda 160°/14 % y 135°/20 %, resplandor del arte); `--r-pill`, `--size-dot`, `--r-bubble-tail`, `--gap-cell`, luz de celda (22/26 rem, 9 %).
+- **CSS Modules:** cada componente `components/<área>/<name>/<name>.module.css` consume solo `var(--token)`; literales permitidos: `0`, `auto`, `100%`, `1fr`, `minmax`, `span`, y `px` únicamente en hairlines, trazos, sombras, desenfoques y offsets de motion (working-agreements §8). Selectores planos (un nivel), sin `!important`, contornos con `box-shadow: inset` (nunca `border`), container queries para bento y celdas, media queries solo para viewport con breakpoints en rem. Composición de roles de texto con `composes` desde `styles/typography.module.css`.
+- **`globals.css`:** solo `@import './tokens.css'`, reset, `next/font` (Geist 400–600 con `font-feature-settings: "ss01", "cv11"`, Geist Mono 500), `prefers-reduced-motion`, `:focus-visible` (anillo 2 px violeta suave, 3 px de separación), `::selection`, `.sr-only`, `.skip`, `[hidden]`.
+- **stylelint** (`packages/config/stylelint.config.mjs`, exportado por `@josecoded/config`): `declaration-property-value-disallowed-list` para color, fondo, bordes, `fill`/`stroke`, `box-shadow`, tipografía, radios, `gap`, `padding*`, `margin*`, `transition*`, `animation*` (rechaza `#`, `rgb(`, `hsl(`, `oklch(`, números con unidad y nombres de fuente fuera de `var(`/`calc(` con tokens), `unit-disallowed-list: ['px']` con las excepciones por propiedad, `selector-max-compound-selectors: 2`, `declaration-no-important`, `property-disallowed-list: ['border', 'border-color', …]` salvo `border-width` en trazos. Solo `apps/web/styles/tokens.css` queda excluido. Falla la CI.
+- **Fidelidad:** el prototipo `home-v6` se porta 1:1 (estructura, clases y valores → tokens); desvíos con `deviation:` en el commit y decisión de Jose en el navegador (working-agreements §4).
+
+### 1.10 Motion: módulos puros en `apps/web/lib/motion/` (v1.3; working-agreements §3)
+
+Cada módulo exporta funciones puras o una fábrica `create<X>(el, opts): { destroy }` sin JSX; el componente cliente correspondiente (isla pequeña) los invoca desde `useEffect` y nunca mezcla cálculo y DOM en el mismo módulo. Todos leen `reduce = matchMedia('(prefers-reduced-motion: reduce)').matches` una vez y los tokens de duración con `readToken(name)` (`getComputedStyle(document.documentElement).getPropertyValue`), nunca números repetidos.
+
+| Módulo | Origen en la v6 | API mínima | Test (Vitest, happy-dom, temporizadores falsos) |
+|---|---|---|---|
+| `paging.ts` | `v6.js:9-74` | `stops(sections, viewportH, ratio=0.85)`, `nextStop(current, dir)`, `glide(to, { min, max })`, `shouldHandleKey(e)`, `createPagedScroll(root)` | paradas intermedias cada 85 %; una por tarjeta en el carrusel; interrupción por gesto contrario; cede Espacio/flechas a `input`, `textarea`, `[role=tab]`, `dialog` |
+| `palette.ts` | `base.js:18-72` | `normalize(q)` (sin tildes), `filter(cmds, q)`, `group(cmds)`, `reduce(state, action)` (↑ ↓ ↵ Esc, ⌘K/Ctrl+K alternan) | filtrado sin tildes, agrupación, índice seleccionado, estado vacío |
+| `expand-cell.ts` | `v6.js:84-117`, `base.js:53-56` | `openCell(cell, { onClose })` → `{ close }`: `inert` al resto, trampa de foco, bloqueo de scroll, retorno de foco, `startViewTransition` si existe | orden Esc menú → paleta → celda; foco vuelve al disparador; sin View Transitions cambia de inmediato |
+| `cursor-light.ts` | `v6.js:120-123` | `attachCursorLight(bento)` (un listener delegado; escribe `--mx`/`--my` en la celda bajo el puntero) | coordenadas relativas; desactivado con `reduce` o sin `(pointer: fine)` |
+| `slide-marker.ts` | `v6.js:125-139` | `createSlideMarker(list, marker, { axis, gap })`: posición y tamaño del marcador, reposicionado en `resize` | `PackStrip` (barra) y `SlidingList` (resaltado) comparten el módulo |
+| `typewriter.ts` | `v6.js:149-161`, `base.js:74-81` | `createTypewriter(el, texts, { typeMs, eraseMs, pauseMs, timers })`, `pause/resume` | escribe a 22/38 ms, borra a 16 ms, se para fuera de vista y al enfocar (`ProposalPrompt`) |
+| `in-view-once.ts` | `v6.js:163-166` | `onceInView(el, cb, threshold)` | dispara una vez; con `reduce`, dispara al montar |
+| `active-section.ts` | `v6.js:176-202`, `base.js:11-16` | `observeActiveSection(sections, cb)`, `indicatorVisibility({ inHero, inTour, cellOpen, marginRem })` | oculto en hero/carrusel/celda abierta; no se dibuja con margen < 2.25rem (comparado con el token, no con px) |
+| `center-active.ts` | `v6.js:168-173` | `observeCenterActive(track, cb)` | índice activo por intersección con el centro |
+| `disclosure.ts` | `v6.js:76-82` | `createDisclosure(button, panel, { closeOnWheel, closeAbove })` | todas las vías de cierre (Esc, elegir, tocar/enfocar fuera, rueda, pasar de 67.5rem) y retorno de foco |
+| `keycap.ts` | `base.js:60-65` | `bindKeycap(keys)`: `is-down` mientras ⌘/Ctrl y K están pulsadas | keydown/keyup reales |
+| `intro-fall.ts` | `scene.js:425-481` | `planFall`, `runIntro` (§1.6.4) | landT ∈ [0,4, 1,2]; `finish()` en un frame |
+| `hero-gate.ts` | `scene.js:12`, §1.6.2 | `decideHeroMode(ctx): 'scene' \| 'video' \| 'poster'` | tabla de UX v4.0 §4.1 |
+
+Los componentes que los montan (`PagedScroll`, `CommandPalette`, `ExpandedCell`, `CursorLight`, `PackStrip`, `SlidingList`, `SegmentedControl`, `MiniChat`, `ProposalPrompt`, `CheckList`, `SectionIndicator`, `ProjectsTour`, `MobileMenu`, `KeyCap`, `IntroFall`, `HeroSceneGate`) son islas `'use client'` de pocas líneas; su markup es RSC siempre que sea posible (inventario §1). El `Bento` es composición manual en JSX (`<Bento><BentoCell span={7} tall>…</BentoCell></Bento>`; decisión 2) con un test por escena que comprueba tres celdas y `span` que suman 12 por fila.
+
+### 1.11 i18n: `messages/{es,en}.json` e `i18n:check` (v1.3; amplía §1.4; working-agreements §10; spec D31)
+
+- **Todo texto visible** vive en `apps/web/messages/es.json` y `en.json` (next-intl): interfaz, `aria-label`, `alt`, `title`, placeholders, mensajes de error, comandos de la paleta (etiquetas, pistas, palabras clave), nombres del indicador, textos del mini chat y ejemplos del campo de propuesta. **Hechos** (nombre a mostrar, ciudad, años, contactos, usuario de GitHub, enlaces de stores, plazo de respuesta) bajo `facts.*` del mismo catálogo; **no existe `facts.json`**. Claves por pantalla y componente en inglés (`home.scenes.about.title`); el mismo texto en dos sitios es una sola clave. Excepciones sin `t()`: marca `josecoded`, atajos `⌘K`, códigos.
+- **Precios nunca en `messages`:** salen de `@josecoded/pricing` y se formatean con `Intl.NumberFormat` por locale (`formatPrice`).
+- **Textos largos** (fichas de proyectos y casos de estudio, servicios, FAQ, legales, blog) en `content/` como MDX/JSON por idioma; `messages/` es para interfaz y hechos.
+- **`{{DATO}}`:** valor `"{{DATO: qué es}}"` en ambos idiomas; `hasDato()` decide si el bloque se renderiza (nunca en producción).
+- **Área privada, OTP y WhatsApp** también en los dos idiomas: `pathnames` de `/area-clientes/*` ya localizados (UX §2.2); plantilla OTP de Supabase con los dos textos; `wa.me` prellenado según `locale` y origen. Generador y chat responden en el idioma de la página (`locale` en el body de `proposals/generate` y en `admin-chat`).
+- **`pnpm --filter web i18n:check`** (`apps/web/scripts/i18n-check.ts`, con test): lista (1) claves con `{{DATO` en cualquier idioma y (2) claves presentes en un idioma y ausentes en el otro; código de salida ≠ 0 si hay faltantes. En `pnpm test` siempre; en CI informativo hasta `release/v1` y bloqueante desde entonces. ESLint `react/jsx-no-literals` (con la lista de excepciones) falla la CI.
+- **Admin y Radar** siguen solo en español (sin `en.json` para `admin.*`; el layout de `/admin` fija `locale='es'`).
+
+### 1.12 Personalización automática del área: `user_profiles` y `area_lead_summary()` (v1.3; spec D32; pantallas §1.4)
+
+**Decisión.** No existe tabla de perfil en el esquema heredado (verificado en §6.1: los usuarios solo están en `auth.users`). Se crea la tabla aditiva **`public.user_profiles`** (una fila por usuario, creada al primer login) con la señal de origen, y una **RPC `security definer` `area_lead_summary()`** que devuelve a un usuario autenticado solo un resumen de *su* propuesta o lead (por `user_id` o `contact_email = auth.email()`), porque `leads` no tiene ni tendrá política de lectura para `authenticated` (H2). Las señales «es cliente» y «tiene lead» **no se persisten**: se calculan en cada petición (`clients.user_id` con la RLS heredada; `area_lead_summary()`); así la prioridad 1 > 2 se cumple siempre con los hechos actuales.
+
+| Columna de `user_profiles` | Tipo | Notas |
+|---|---|---|
+| `user_id` | `uuid` PK → `auth.users(id)` on delete cascade | |
+| `first_audience` | `text` check in (`business`, `company`, `blog`, `referral`) null | Solo se escribe si está a null (primera señal gana). `referral` cuando había cookie `ref` al crear la cuenta; `business`/`company`/`blog` desde `sessionStorage.audience` enviada en `next` o al callback. **Nunca se guarda la URL de origen**, solo la categoría |
+| `first_audience_source` | `text` check in (`ref`, `origin`) null | Qué señal la fijó |
+| `locale` | `text` check in (`es`,`en`) | Idioma preferido del área (cambia desde Mi cuenta) |
+| `created_at`, `updated_at` | `timestamptz` | `moddatetime` |
+
+**RLS:** `select`/`insert`/`update` de la propia fila (`(select auth.uid()) = user_id`); `update` solo puede pasar `first_audience` de null a valor (trigger `private.user_profiles_guard()` rechaza sobrescrituras); admin `select` todo (`private.staff_role_of((select auth.uid())) = 'admin'`); sin políticas para `anon`. `area_lead_summary()` devuelve `{ pack_code, price_from, estado, created_at, is_app }` de la fila más reciente que cumpla `user_id = auth.uid()` o `contact_email = auth.email()`; se ejecuta como `security definer` con `search_path` fijado y `revoke all from public; grant execute to authenticated`. Migración `20260929100000_user_profiles.sql` en §6.2; tests en §8.4 (Ana lee su fila y no la de Bob; Bob no sobrescribe `first_audience`; `area_lead_summary()` de Bob sin lead devuelve vacío; Ana no lee `leads` directamente sigue en verde).
+
+**Prioridad en `apps/web/lib/area/audience.ts`** (función pura con test por señal y por prioridad): `resolveAreaVariant({ client, lead, profile }) → 'client' | 'proposal' | 'referral' | 'business' | 'company' | 'blog' | 'neutral'`. La página `/area-clientes` (RSC) llama a `getMyClient()`, `area_lead_summary()` y `getMyProfile()` en paralelo y compone los bloques; nunca oculta Recomiéndame, Mi cuenta ni la vía de contacto.
+
+**Privacidad:** finalidad nueva «personalización de la portada del área por señal de origen» en `/legal/privacidad`; base jurídica interés legítimo con dato mínimo (una categoría); se borra con la cuenta (cascade). `sessionStorage.audience` no es cookie (política de cookies sin cambios). La cookie `ref` ya está declarada (30 días).
+
+**Descartado:** guardar la señal en `auth.users.raw_user_meta_data` (sin RLS granular, editable por el propio cliente con `updateUser`); política de lectura de `leads` para el propio email (expondría `notas`, `monto`, `ai_proposal` completo); preguntar el objetivo al registrarse (Jose lo rechazó).
 
 ## 2. Funcionalidades por módulo y quién las sirve
 
@@ -540,6 +621,7 @@ Cambios en Omen: **ninguno en el worker**. Contenedores nuevos: Umami (túnel nu
 
 ### 5.1 GitHub (prueba real para Dani)
 
+- **v1.3:** la web pública **no muestra contadores** (sin métricas: spec §12, pantallas §0.1): solo el enlace «Código en GitHub» y los enlaces por proyecto. `scripts/github.ts` queda para `llms.txt` y el caso de estudio (lista de repos públicos, sin cifras). El calendario de contribuciones y `GitHubActivity` no se implementan.
 - Datos: repos públicos de `12joseca12` (nombre, descripción, lenguaje, estrellas, `pushed_at`, topics) y actividad reciente (eventos públicos: push, PR, release) + calendario de contribuciones (GraphQL `contributionsCollection`, **requiere token**).
 - API: REST `GET /users/12joseca12/repos?sort=pushed&per_page=30`, `GET /users/12joseca12/events/public?per_page=50`; GraphQL para el calendario. Límites: 60 req/h sin auth, 5 000/h con PAT.
 - Estrategia: **solo en build** (`scripts/github.ts` → `content/generated/github.json`, con `GITHUB_TOKEN` de Actions). Sin llamadas en runtime ni ISR. Frescura: `content-refresh.yml` diario (04:00) regenera, commitea y **despliega la web solo si el diff se limita a `content/generated/*`** (decisión de Jose, P4; §1.8).
@@ -550,7 +632,7 @@ Cambios en Omen: **ninguno en el worker**. Contenedores nuevos: Umami (túnel nu
 - App Store: **iTunes Lookup API** pública, sin auth: `https://itunes.apple.com/lookup?id=<trackId>&country=es` devuelve `averageUserRating`, `userRatingCount`, `version`, `currentVersionReleaseDate`, `screenshotUrls`, `trackViewUrl`. Límite ~20 llamadas/min. Suficiente.
 - Google Play: **no hay API pública** de fichas. Opciones: (a) `google-play-scraper` 10.1.3 en build (scraping no oficial de la página pública; puede romperse); (b) datos a mano en `content/projects/*.json`. **Decisión: (a) con (b) como valor de respaldo**: el script rellena `rating`, `ratingsCount`, `installs`, `updated`; si falla, se mantiene el último valor commiteado y se avisa en el log de CI. Nunca se muestra un dato vacío ni "0 valoraciones".
 - Caché: igual que GitHub, `content/generated/stores.json` en build. Enlaces a stores siempre estáticos desde `content/projects/*.json` (`appStoreId`, `playPackage`).
-- 3catinfo: la ficha tiene `hideMetrics: true` (Q6): se muestran nombre y enlaces, no valoraciones ni instalaciones. Las fichas admiten `hideStack`.
+- 3catinfo: la ficha tiene `hideMetrics: true` (Q6): se muestran nombre y enlaces, no valoraciones ni instalaciones. Las fichas admiten `hideStack`. **v1.3:** ninguna ficha muestra valoraciones ni instalaciones (`StoreLinks` sin cifras); `stores.json` se conserva para `SoftwareApplication` JSON-LD (solo nombre y enlace).
 
 ### 5.3 Cal.com vs Calendly (decisión: Cal.com)
 
@@ -595,7 +677,7 @@ Activar en el dashboard para la zona `josecoded.com` (tarea de Jose, 2 min). Com
 | **Stripe** (señal 40 % o mantenimiento mensual) | Cobro sin transferencia; mantenimiento recurrente automático | Alto: Checkout + webhooks + facturación/IVA + conciliación con Notion; toca dinero (gate) | **No en v1**: el pago es 40/30/30 por transferencia según `condiciones.md`; añadir pagos exige spec propia y `/plan-eng-review` |
 | **WhatsApp Business API** (Cloud API) | Mensajes desde la web con plantilla y trazabilidad | Alto: verificación de Meta, número dedicado, plantillas aprobadas, coste por conversación | **No**: `wa.me/<número>?text=` con evento Umami cumple el objetivo de Marta a coste cero |
 | **LinkedIn** (API) | Mostrar posts/recomendaciones en Sobre mí | Alto: la API de perfil no es pública; Marketing API exige app aprobada | **No**: enlace `sameAs` + posts curados a mano en `content/` (los genera `/linkedin-post`) |
-| **RSS + newsletter** | RSS: alcance para Dani y agregadores; newsletter: retención | RSS bajo (una ruta estática, `app/feed.xml/route.ts` en build); newsletter medio (proveedor, doble opt-in, RGPD) | **RSS sí en v1** (coste casi cero, ayuda a GEO); **newsletter no** hasta tener ≥ 10 artículos |
+| **RSS + newsletter** | RSS: alcance para Dani y agregadores; newsletter: retención | RSS bajo (una ruta estática, `app/feed.xml/route.ts` en build); newsletter medio (proveedor, doble opt-in, RGPD) | **RSS sí en v1**; **newsletter: spec propia `2026-09-29-josecoded-newsletter.md` (fase 10 post-lanzamiento)**, que supera el «no hasta ≥ 10 artículos» de v1.2 por decisión de Jose |
 
 Extra sin coste, no cuenta como candidata: **Cloudflare AI Gateway** delante de Workers AI (`env.AI.run(..., { gateway:{ id } })`) para logs, caché de respuestas idénticas y límite de gasto del generador. Se activa en la tarea del generador si Jose lo aprueba (un clic en el dashboard).
 
@@ -625,6 +707,51 @@ Trigger heredado relevante: al poner `leads.estado='cerrado'`, `leads_financial_
 **Cómo se aplican (H6):** en producción, el controlador ejecuta cada fichero con `apply_migration(name, query)` del MCP (queda registrado en `supabase_migrations.schema_migrations`), tras `list_tables` + `get_advisors` y con OK de Jose en la sesión. Nunca `supabase db push`. En local/CI, `supabase start` aplica `supabase/schema/baseline.sql` (como `20260917000000_baseline.sql`, solo en el entorno local mediante `supabase/config.toml` `[db.migrations] schema_paths`) y después las nuevas. Todas las políticas nuevas usan `(select auth.uid())` (advisor `auth_rls_initplan`) y toda FK nueva lleva índice (advisor `unindexed_foreign_keys`).
 
 Numeración `YYYYMMDDHHMMSS`, ficheros en `supabase/migrations/`:
+
+**`20260929100000_user_profiles.sql`** (v1.3, §1.12; se aplica en el mismo gate que las de 20260917)
+```sql
+create table public.user_profiles (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  first_audience text check (first_audience in ('business','company','blog','referral')),
+  first_audience_source text check (first_audience_source in ('ref','origin')),
+  locale text not null default 'es' check (locale in ('es','en')),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+create trigger user_profiles_updated_at before update on public.user_profiles
+  for each row execute function moddatetime(updated_at);
+alter table public.user_profiles enable row level security;
+create policy "own profile select" on public.user_profiles for select to authenticated
+  using ((select auth.uid()) = user_id);
+create policy "own profile insert" on public.user_profiles for insert to authenticated
+  with check ((select auth.uid()) = user_id);
+create policy "own profile update" on public.user_profiles for update to authenticated
+  using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
+create policy "admin reads profiles" on public.user_profiles for select to authenticated
+  using (private.staff_role_of((select auth.uid())) = 'admin');
+create function private.user_profiles_guard() returns trigger language plpgsql as $$
+begin
+  if old.first_audience is not null and new.first_audience is distinct from old.first_audience then
+    raise exception 'first_audience is write-once' using errcode = 'P0001';
+  end if;
+  return new;
+end $$;
+create trigger user_profiles_guard before update on public.user_profiles
+  for each row execute function private.user_profiles_guard();
+create function public.area_lead_summary()
+returns table (pack_code text, price_from numeric, estado text, created_at timestamptz, is_app boolean)
+language sql security definer set search_path = public, pg_temp stable as $$
+  select l.ai_proposal->>'pack', (l.ai_proposal->>'priceFrom')::numeric, l.estado, l.created_at,
+         coalesce((l.ai_proposal->>'isApp')::boolean, false)
+  from public.leads l
+  where l.user_id = auth.uid() or lower(l.contact_email) = lower(auth.email())
+  order by l.created_at desc limit 1
+$$;
+revoke all on function public.area_lead_summary() from public;
+grant execute on function public.area_lead_summary() to authenticated;
+```
+Añade además `alter table public.leads add column user_id uuid references auth.users(id)` (nullable, índice `leads_user_id_idx`), que el gateway rellena en `POST /leads` cuando llega el JWT del visitante (opcional). Comprobación previa: `user_profiles` y `area_lead_summary` no existen en producción (verificar con `list_tables` y `pg_proc` en el gate).
+
 
 **`20260917100000_leads_web_fields.sql`**
 ```sql
@@ -860,6 +987,8 @@ La regla (10 % / 20 % / 2 meses) la calcula la SA con `@josecoded/pricing` y la 
 | `upgrade_requests` | — | select/insert (`pending`) de su cliente | select/update todo |
 | `leads` (+ columnas nuevas) | — | (afiliado: solo vía vista) | select/update todo; **insert** (política nueva `admin insert leads`); insert público solo service role (gateway) |
 | `clients.invite_email` | — | RPC `claim_client_access` | update |
+| `user_profiles` (v1.3) | — | select/insert/update propio (`first_audience` write-once por trigger) | select todo |
+| `leads` vía `area_lead_summary()` (v1.3) | — | resumen de su propio lead (`security definer`, 5 campos) | — |
 
 Tests RLS con tres cuentas (§8.4) cubren cada fila de esta tabla.
 
@@ -909,7 +1038,11 @@ Criterio de aceptación de cada migración nueva: `get_advisors` después no añ
 | `apps/api` | Todas las rutas nuevas en **workerd real** (`@cloudflare/vitest-pool-workers`): Turnstile mockeado con `fetchMock`, `AI.run` sustituido por binding falso, KV y rate limit reales de Miniflare | workers | `proposals/generate` con IA que devuelve JSON válido → `pack:'P2', priceFrom:1650`; IA devuelve JSON inválido → `source:'rules'`; 11.ª petición del día → 429 `quota_exceeded`; `leads` con `affiliateCode` del propio email → 409 y lead creado sin afiliado; `leads` sin Turnstile ni server key → 403; `notifyLead` con worker 200/`ok:false` → respaldo Edge llamado |
 | `apps/api` heredado | Los 13 ficheros Jest existentes se migran a Vitest (`jest.fn`→`vi.fn`, mismo `app.request`) y deben seguir en verde; es el test de no-regresión de los contratos conservados | workers | — |
 | `packages/glyph-scene` | `clouds` (semilla → mismos `Float32Array`), `rng`, `paramsHash` estable, `scene.step()` en un canvas falso (`happy-dom` + `webgl` stub: solo se comprueba la máquina de estados `hold/morph`, `uProg`, `uIntroT` y el vaivén del chip, no píxeles) | node / happy-dom | `step(3.5)` deja `phase='morph'`; 3 × (3,5 + 1,6) s devuelve `uProg` a 0; `skipIntro()` → `uIntroT = 100` |
-| `apps/web` hero | `HeroSceneGate` (tabla UX §4.1), `IntroFall`, `CompileReveal`, `check-hero-bundle.ts` sobre un manifiesto de ejemplo | happy-dom / node | Ver §8.6 |
+| `apps/web` hero | `HeroSceneGate` (tabla UX v4.0 §4.1), `IntroFall`, `check-hero-bundle.ts` sobre un manifiesto de ejemplo | happy-dom / node | Ver §8.6 |
+| `apps/web` motion (v1.3) | Los módulos de `lib/motion/` (§1.10) con temporizadores falsos y `IntersectionObserver` simulado; `Bento` (tres celdas, `span` = 12 por fila) | happy-dom | `stops()` cada 85 %; `filter()` sin tildes; `openCell` deja `inert` y devuelve el foco; `indicatorVisibility` oculta en hero |
+| `packages/design-tokens` (v1.3) | `build.ts` sobre un `design.json` de ejemplo; test de deriva contra el commiteado; lista obligatoria de tokens (§1.9) | node | `--r-pill: 9999rem`; falta `--dur-scene` → falla |
+| `apps/web` i18n (v1.3) | `i18n-check.ts`: `{{DATO`, claves faltantes, código de salida; `hasDato()` | node | `home.x` solo en `es` → falla |
+| `apps/web` área (v1.3) | `resolveAreaVariant()`: una prueba por señal y por prioridad | node | cliente + lead → `client`; lead + ref → `proposal`; solo ref → `referral`; origen `business` → `business`; nada → `neutral` |
 | `packages/radar-core` | Máquina de estados (todas las transiciones de spec §13.3 y las prohibidas), **invariante `sent`**, reglas duras de puntuación, `dedup` (fingerprint y ventana ±7 días), `email/query` (construcción del `q` de Gmail), `email/linker` (reglas antes de la IA), `telegram/callback` (firma y verificación, ≤ 64 bytes), esquemas zod de `OfferDraft`, `profile.json` y salidas JSON de la IA | node | Ver §11.10 |
 | `packages/radar-connectors` | Cada conector con fixtures grabadas (RSS, JSON, HTML) → `OfferDraft[]` normalizados (snapshot); límites y parada ante captcha con un `fetch` falso; `bin/ingest` (validación + POST con reintento) | node | Ver §11.10 |
 | `apps/api` Radar | Rutas `radar/*`, webhook de Telegram, OAuth de Google, `scheduled` en **workerd real** con `AI` falso, `fetchMock` para Google/Telegram/plataformas, KV y `BROWSER` simulados | workers | Ver §11.10 |
@@ -929,7 +1062,10 @@ Criterio de aceptación de cada migración nueva: `get_advisors` después no añ
 | Blog | artículo de seed | JSON-LD `BlogPosting` presente; comentar sin sesión → CTA login; con sesión → "pendiente" visible solo al autor; admin aprueba → visible anónimo |
 | Chat | usuario de seed; gateway con `AI` falso | mensaje aparece; respuesta del asistente llega por realtime; admin ve la conversación y desactiva IA |
 | SEO | — | `/services` → 301 a `/empresas`; `/blog/viejo-slug` → 410; `/foro/x` → 410; `/en/...` con `hreflang`; `sitemap.xml` incluye ambos idiomas; `robots.txt` permite `GPTBot` y bloquea `/admin` |
-| Reduced motion | `prefers-reduced-motion: reduce` | Poster estático en el hero, sin intro, sin canvas ni `<source>` de vídeo; `CompileReveal` y transiciones desactivados; sprites de `PathPanel` en el fotograma 0; navegación por teclado completa |
+| Reduced motion | `prefers-reduced-motion: reduce` | Poster estático en el hero, sin intro, sin canvas ni `<source>` de vídeo; sin paginado, sin `animation-timeline`, Proyectos apilado, marquesina en bloque; navegación por teclado completa |
+| Home por escena (v1.3, working-agreements §7) | una prueba por escena (Sobre mí, Empresas, Negocios, Proyectos, Blog, cierre) en 1440 y 390 | texto real accesible, `h1` único, navegación por teclado (Tab llega a cada enlace y celda; Esc cierra la celda ampliada; ⌘K abre la paleta), sin errores de consola, indicador ausente en el hero, modo móvil sin paginado |
+| Fallbacks (v1.3) | Playwright WebKit (Safari) | tarjetas de Proyectos apiladas; celda se amplía sin transición; scroll nativo; cabecera opaca |
+| Área personalizada (v1.3) | Ana (cliente), Bob (`?ref` al registrarse), usuario nuevo desde `/negocios` | Ana ve su proyecto; Bob ve Recomiéndame arriba; el tercero ve packs resumidos; los tres ven Mi cuenta y contacto |
 | Radar: confirmar desde admin (asistida) | seed: plataforma `tecnoempleo` (asistida), oferta con candidatura `prepared` y materiales v1 aprobados; Jose de seed | `/admin/radar` muestra "Pendientes de ti 1"; `[[ Confirmar ]]` abre `ConfirmSendModal` con "se abrirá la oferta"; confirmar → subestado "Confirmada · por marcar enviada", evento `confirmed_by_jose {source:'admin'}` en el historial, pestaña nueva con la URL de la oferta; `[[ Marcar enviada ]]` → `sent`, `submitted_via='assisted'`; intentar `mark-sent` por API sin confirmar (petición directa) → 409 `radar_not_confirmed` |
 | Radar: confirmar desde Telegram (webhook simulado) | misma seed con plataforma `infojobs` (`can_submit=true`) y `INFOJOBS_*` falsos en `wrangler dev` (`fetchMock` de la API de InfoJobs → recibo `4F7Q`); `telegram_msg` de la candidatura sembrado | El test construye un `Update` con `callback_query.from.id` = `telegram_chat_id` de Jose y `callback_data` firmado con la clave de test (`1|c|<id>|<hmac8>`) y lo envía a `POST /api/v1/radar/telegram` con `X-Telegram-Bot-Api-Secret-Token` → 200; `editMessageText` invocado con "Enviada … recibo 4F7Q"; en `/admin/radar/[id]` el historial muestra "Confirmada por Jose desde Telegram" y "Enviada por conector"; el mismo `Update` reenviado → "Esta candidatura ya está sent" sin cambios; `from.id` distinto → 200, sin efecto, fila `error` en logs; secreto incorrecto → 401 |
 | Radar: correo vinculado y evento de calendario | fixture anonimizada `gmail/infojobs-entrevista.json` servida por `FixtureMailSource` (`RADAR_MAIL_SOURCE=fixtures` solo en dev/CI) | `POST /api/v1/radar/emails/poll` (admin) → `radar_emails` con `classification='interview'`, `confidence ≥ 0,8`, candidatura pasa a `interview` con `actor='email'`; el detalle muestra el correo (solo asunto y extracto) y un `EventProposalCard` "Propuesto"; `[[ Crear en el calendario Radar ]]` → `google_event_id` (Google simulado) y "Ver en Google Calendar"; sin ese clic, ninguna llamada a `calendar/v3/events` (se afirma sobre `fetchMock`); `[ No era esto ]` → correo `unrelated`, estado vuelve a `sent`, evento `reverted_by` |
@@ -961,7 +1097,13 @@ Criterio de aceptación de cada migración nueva: `get_advisors` después no añ
 | Gate de modos | Vitest `hero-gate.test.ts` | Alguna fila de la tabla de UX §4.1 devuelve otro modo |
 | Bucle del vídeo | `render-media.ts` | PSNR(frame 0, frame 458) < 35 dB |
 
+### 8.8 Capturas comparadas app/prototipo (v1.3; working-agreements §5)
+
+`pnpm --filter web visual` (`apps/web/e2e/visual/visual.spec.ts`, proyecto Playwright aparte): levanta `wrangler dev` y sirve `docs/superpowers/design/ref` con `python3 -m http.server 8765`; por escena de la home (y por pantalla interior cuando exista su prototipo en `ref/`), captura la app y el prototipo en **360×812, 900×1100 y 1440×900**, con `prefers-reduced-motion: reduce`, fuentes cargadas (`document.fonts.ready`) y `{{DATO}}` iguales, y compara con `toHaveScreenshot`-like propio (pixelmatch) escribiendo el diff en `apps/web/e2e/visual/__diff__/` (ignorado). Tolerancia inicial `maxDiffPixelRatio: 0.02` (solo cambia con OK de Jose). Salida: tabla `escena × ancho → % de diff` que la tarea adjunta al PR. Un diff sobre la tolerancia no bloquea el commit pero sí la puerta de la rama; `ui` lo revisa y Jose aprueba en preview.
+
 ### 8.7 Qué no se testea y por qué
+
+- Componentes de presentación sin comportamiento (celda, escena, indicador, tarjeta, `globals.css`, `tokens.css` salvo el test de deriva): los cubren E2E, capturas comparadas y la revisión de accesibilidad (working-agreements §7). Un test que solo comprueba clases o valores de estilo se rechaza.
 
 - El worker de Omen: repo aparte, sin cambios, sin tests propios; se testea el **contrato** desde el gateway con `fetchMock` (formato `{ok, data}` real documentado en §4).
 - Login OAuth real de Google/GitHub en E2E: depende de terceros y captchas; se cubre con email+password y con una prueba manual en la puerta de calidad.
@@ -1027,7 +1169,7 @@ Heredadas: `NOTIFY_SHARED_SECRET`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, 
 
 | Nombre | Tipo | Uso |
 |---|---|---|
-| `NEXT_PUBLIC_HERO_LIVE_MOBILE` | var pública (`false`) | Escena viva en móvil (decisión c, §11.11); solo se pone a `true` tras la tarea de medición |
+| ~~`NEXT_PUBLIC_HERO_LIVE_MOBILE`~~ | — | **Eliminada en v1.3**: WebGL solo en escritorio; móvil siempre vídeo + póster |
 | `NEXT_PUBLIC_HERO_MEDIA_VERSION` | var pública (generada de `media.json`) | Cache-busting de `/hero/*` |
 
 ### `apps/api` — añadidas en v1.2 (Radar; todas en `envSchema`)
@@ -1629,7 +1771,7 @@ Reglas: **ningún secreto de Radar toca `apps/web` ni el repo**; el admin muestr
 |---|---|---|---|
 | a | Perfil en admin **solo lectura + ajustes rápidos** en `radar_settings`; `radar_profile_versions` es una copia automática que hace el gateway al detectar un `profile.json` nuevo | El JSON del repo sigue siendo la verdad (spec §13.4); los ajustes que cambian a diario no exigen commit | Edición completa desde admin escribiendo `radar_profile_versions` |
 | b | Posponer = `next_action_at` + evento **`kind='snoozed'`** (`payload.until`) | Consultable sin mirar `payload`; el sweep lo distingue de notas | `note` + `payload.snoozed_until` |
-| c | `NEXT_PUBLIC_HERO_LIVE_MOBILE` (build-time, `false`) + **tarea de medición** en el plan: Lighthouse móvil 4G sobre la preview con `?hero=live` (solo preview) 5 pasadas; se activa si p75 de LCP ≤ 2,5 s, TBT ≤ 200 ms y CLS ≤ 0,1 con la escena de 5 000 partículas | D16 §12.2 | Activar sin medir |
+| c | ~~`NEXT_PUBLIC_HERO_LIVE_MOBILE` + tarea de medición~~ **Superada en v1.3**: móvil = vídeo + póster siempre; WebGL solo en escritorio (decisión 4 del inventario de componentes, 2026-09-29) | D16 §12.2 | Escena viva en móvil |
 | d | Reautorización de Google desde admin: SA → `POST /radar/google/authorize` → redirect → callback en el gateway → vuelta a `/admin/radar/plataformas?google=ok` con toast; token cifrado en KV | Modo prueba caduca cada 7 días (Q11); Jose no debe tocar consola ni terminal | Token en `wrangler secret` (no escribible en runtime) |
 | e | "Correos por revisar" como `?correos=revisar` en `/admin/radar` (RSC lee `searchParams`, hoja cliente) | UX §13.19e; enlazable desde Telegram | Ruta propia |
 | f | PDF con Browser Rendering (binding `BROWSER`) + impresión en navegador como respaldo; gate en la tarea 0 | §11.7 | PDF en Omen; librerías de PDF en el worker |
@@ -1677,6 +1819,8 @@ Reglas: **ningún secreto de Radar toca `apps/web` ni el repo**; el admin muestr
 | **P15** | **n8n por webhook directo desde el gateway** (`N8N_RADAR_WEBHOOK_URL`, como `admin-chat`) en lugar de ampliar la allowlist `n8n/trigger/*` del worker de Omen: ¿confirmas que la URL de webhooks de n8n que usa `N8N_CHAT_WEBHOOK_URL` es alcanzable desde el gateway (túnel) y sirve para `radar-run`? | Decide si `josecoded-worker` queda de verdad sin cambios y cómo se expone el runner | **Sí, webhook directo**; si la URL de n8n no es pública, alta de un ingress `n8n.josecoded.com` en un túnel nuevo (tarea `infra`, sin tocar el túnel existente) |
 
 ## Anexo — notas para `ESTADO.md`, la nota del vault y el ADR (no aplicadas)
+
+**Añadidas en v1.3 (2026-09-29):** vault: «estilos con CSS Modules y tokens generados desde `design.json` (sin Tailwind/shadcn/GSAP); motion CSS + `lib/motion/` en TS; Baseline 2024; `glyph-scene` portado de la v6 sin código muerto, vídeo en móvil y WebGL solo en escritorio; todo bilingüe con `i18n:check`; área personalizada con `user_profiles` + `area_lead_summary()`». ADR: «Tokens: `design.json` es la única fuente; `tokens.css` generado con test de deriva; stylelint prohíbe literales» · «Motion: CSS nativo primero; módulos puros en `lib/motion/`; GSAP solo con justificación aprobada por `revisor`» · «Hero: WebGL solo en escritorio; móvil vídeo + póster generados desde la misma escena; sin `HERO_LIVE_MOBILE`» · «Área: señal de origen write-once en `user_profiles`; cliente y lead se calculan en cada petición; `leads` sigue sin lectura para `authenticated` (RPC `security definer` con 5 campos)» · «Sin métricas en la web: GitHub y stores solo como enlaces».
 
 - **Vault (`Proyectos/josecoded.md`)**: decisiones de este documento: admin = `staff_members.role='admin'` (no existe `admin_superusers`); leads públicos solo vía gateway con service role; i18n por rewrites sin proxy; `@next/mdx` en build; **WebGL solo en `GlyphScene`** (paquete propio sin React Three Fiber, `three` por `import()` tras el LCP, ≤ 200 KB gz con el bloom como primera renuncia; vídeo/poster/sprites generados desde la misma escena con semilla fija y bucle verificado por PSNR; `IntroFall` en DOM sin GSAP con texto partido desde el servidor; poster en el HTML en todos los viewports, P11); **navegación clásica** (sin Lenis, GSAP solo núcleo + ScrollTrigger, P13); Edge Function `notify` como vía primaria del aviso de lead; Cal.com; Umami en túnel propio; afiliados/ampliaciones por Supabase con RLS; migraciones heredadas no se copian (baseline + `apply_migration` por MCP); Vitest 4.1 + pool-workers; RSS en v1; **Radar**: núcleo en el gateway con cron y cola en tablas (sin Queues), 10 tablas `radar_*` solo admin + trigger `radar_guard_sent`, conectores enchufables con el mismo código en gateway/Omen/Mac, Telegram directo desde el gateway con `callback_data` firmado (P12), Google OAuth en modo prueba con refresh token cifrado en KV y reautorización desde admin (P14), n8n por webhook directo (P15), CV adaptado por reordenación verificable, PDF con Browser Rendering + impresión de respaldo, Proton previsto y diferido.
 - **`ESTADO.md`**: pendientes de Jose: alta `api.josecoded.com`; rotar `WORKER_INTERNAL_TOKEN`, token de Telegram y key de Resend; activar CF Web Analytics; crear widget Turnstile; cuenta Cal.com con webhook; plantilla OTP y leaked-password en Supabase (P9); responder P7–P8 y **P11–P15**; **Radar**: proyecto OAuth de Google (P14), `profile.json` y CV maestros con ids de sección (Q10, Q15), ≥ 12 correos reales para fixtures (§11.10), alertas de LinkedIn al Gmail, alta en InfoJobs/Upwork (Q14), comprobar que el MCP de Indeed funciona en `claude -p` (§11.4); **hero**: nombre a mostrar (UX §18) porque cambia el `h1` y el presupuesto móvil. Siguiente paso: `ui` (sistema visual sobre UX v3.1 y el prototipo) → plan del `arquitecto` con las tareas 0 (OpenNext, hero: medición de bundle y medios; Radar: InfoJobs `submit`, Browser Rendering en Free, MCP de Indeed headless, feed de Tecnoempleo).
