@@ -59,7 +59,7 @@ Documentos (al día con la v6 desde el 2026-09-29):
 - [x] Diseño técnico v1.3: `glyph-scene` desde `scene.js` v6 (vídeo en móvil, WebGL solo escritorio), tokens `design.json` → `tokens.css`, `lib/motion/`, `i18n:check`, `user_profiles` + `area_lead_summary()` para la personalización del área.
 - [x] Spec de newsletter integrada como fase 10 del plan (sin cambiar sus decisiones; notas de encaje en el plan).
 - [ ] **`/plan-eng-review` del plan v2.0** (obligatorio: dinero e integraciones externas). Lo lanza el controlador. Focos: Cal.com, Turnstile, WhatsApp, Workers AI, migraciones (`user_profiles`, RPC `security definer`), y toda la fase 10 (Brevo, GitHub REST + auto-merge, DNS, Claude CLI en Omen, RGPD).
-- [ ] Preguntas nuevas para Jose (del paso 5): idioma del email de newsletter para suscriptores `en` (NL Q2 ampliada); si el repo de josecoded será público; tolerancia de las capturas comparadas (2 %) y umbral/bloqueo del paginado si molesta en trackpad.
+- [x] Preguntas del paso 5 respondidas por Jose (2026-09-30): newsletter **bilingüe** (spec v1.1), repo **privado**, tolerancia de capturas **2 %**, auto-merge solo en `newsletter/*`; n8n evaluado como orquestador y descartado (spec de newsletter §7.5). Sigue abierta solo la del paginado en trackpad (se decide en el navegador en 2.16).
 - [x] **Indicaciones de cómo trabajar** antes de escribir código real: `docs/working-agreements.md` + reglas duras en `CLAUDE.md` (2026-09-29). Falta el paso manual de Jose: proteger `main` en GitHub (§9).
 - [x] **Decisión de componentes de la home**: `docs/superpowers/design/2026-09-29-componentes-home-v6.md` (decisiones cerradas en su §3).
 - [x] **Pantallas independientes**: mapa, contenidos y orden en `docs/superpowers/design/2026-09-29-pantallas-y-contenidos.md` v1.0 (2026-09-29). Incluye las páginas derivadas: stack/CV (sección en Sobre mí + PDF), tarifas de negocio (comparador en `/negocios`) y personalización automática del área.
@@ -68,8 +68,8 @@ Documentos (al día con la v6 desde el 2026-09-29):
 - [ ] Los `{{DATO}}`: nombre a mostrar, ciudad, años, estado y descripción de 3catinfo/HazmeFila/Oportunix, certificaciones, WhatsApp y email, usuario de GitHub, enlaces de stores, plazo de respuesta real, artículos del blog.
 - [ ] Radar: `content/radar/profile.json` y CV maestro es/en; proyecto OAuth de Google; alertas de LinkedIn; ≥ 12 correos reales anonimizados; cuentas en InfoJobs/Tecnoempleo/Upwork/Workana/Malt.
 - [ ] Supabase: OAuth Google/GitHub, plantilla OTP **en es y en**, «leaked password protection».
-- [ ] GitHub: proteger `main` (working-agreements §9) antes del primer merge; permitir el auto-merge del bot de la newsletter con checks en verde (fase 10).
-- [ ] Newsletter (fase 10, tras el lanzamiento): cuenta de Brevo y dominio autenticado, registros DNS, PAT fine-grained, `claude setup-token` para Omen (Q1), lista de fuentes (Q6), política de privacidad, 3–5 temas iniciales; respuestas a Q1–Q6 de su spec.
+- [ ] GitHub: proteger `main` (working-agreements §9) antes del primer merge; la excepción de auto-merge solo para `newsletter/*` con checks `ci` + `newsletter-content-only` en verde y 0 revisiones requeridas (fase 10, tarea 10.6).
+- [ ] Newsletter (fase 10, tras el lanzamiento): cuenta de Brevo y dominio autenticado, registros DNS, PAT fine-grained, `claude setup-token` para Omen (Q1), lista de fuentes (Q6), política de privacidad, 3–5 temas iniciales. Q1–Q6 de su spec **resueltas el 2026-09-30** (recomendaciones aceptadas; Q5: pie con nombre + baja + enlace al aviso legal, NIF y domicilio solo en el aviso legal, valores en la fase de datos) y auto-merge del PR de contenido confirmado (el clic de Aprobar es el OK).
 - [ ] Cloudflare: `api.josecoded.com` como custom domain y URL `workers.dev` del gateway. Los servidores MCP de Cloudflare necesitan autorizarse (`/mcp` en una sesión interactiva).
 - [ ] Corregir los ejemplos provisionales de `Comercial/voz.md`.
 
@@ -90,6 +90,12 @@ Documentos (al día con la v6 desde el 2026-09-29):
 Gates que no se cruzan sin OK explícito de Jose en la misma sesión: migraciones y deploys a producción, contratar servicios, tocar servicios preexistentes de Omen.
 
 ## Decisiones recientes
+
+- **2026-09-30 (respuestas de Jose a las cuatro preguntas del paso 5):**
+  1. **Newsletter bilingüe:** cada número genera post y email en es y en en el mismo trabajo de Claude; el suscriptor recibe el de su idioma de alta (`locale` en la suscripción, cambiable desde preferencias); Jose revisa y aprueba las dos versiones en el admin; dos campañas de Brevo por número (una lista, atributo `LOCALE`); PR con dos ficheros; ratio de edición por idioma; LinkedIn solo es. Spec de newsletter **v1.1** (S4, Q2 reabierta; Q1, Q3–Q6 con las recomendaciones) y fase 10 del plan actualizadas.
+  2. **Repo de josecoded privado:** el caso de estudio enlaza solo a la web y explica la arquitectura, sin `repoUrl` (spec §4, pantallas P8, plan 3.4).
+  3. **Tolerancia del diff de capturas: 2 %** (`maxDiffPixelRatio: 0.02`), fijada en working-agreements §5 y tarea 2.13.
+  4. **Auto-merge solo en `newsletter/*`** con `ci` + `newsletter-content-only` en verde y 0 revisiones requeridas; regla escrita en working-agreements §9 (S16). **n8n como orquestador o bot: evaluado y descartado** (spec de newsletter §7.5): no puede ejecutar la CLI de Claude sin cambiar el contenedor de n8n (prohibido) y crons, PR, Brevo y Telegram ya viven gratis y sin depender de Omen en el gateway y en `notify`; n8n solo como workflows opcionales. Ahorro admitido: el runner como segundo servicio en el `compose.yml` de `radar-runner`.
 
 - **2026-09-29 (paso 5, documentos al día; `arquitecto`):**
   1. Spec v1.6: D27 stack visual (CSS Modules + tokens, motion CSS + TS, sin Tailwind/shadcn/GSAP), D28 Baseline 2024, D29 home v6, D30 pantallas y contenidos, D31 todo bilingüe, D32 área personalizada, D33 blog ≥ 3 artículos; §12 reescrita; lanzamiento sigue siendo todo junto.
