@@ -1,6 +1,6 @@
 # Estado — josecoded
 
-> Traspaso del 2026-09-29 (noche). **Diseño de la home cerrado en `ref/home-v6` y documentos al día**: spec v1.6, UX v4.0, diseño técnico v1.3, plan v2.0 (con la newsletter como fase 10). `/plan-eng-review` hecho el 2026-09-30 y sus 41 hallazgos aplicados (plan v2.1, DT v1.4, spec v1.7, newsletter v1.2, working-agreements v1.1). Siguiente: fase 0. Sin código de aplicación todavía.
+> **Etapa de diseño y planificación cerrada el 2026-09-30** (`/cierre`). Home v6 documentada, convenciones de trabajo, inventario de componentes, pantallas y contenidos, spec v1.7, DT v1.4, newsletter v1.2, plan v2.1 con `/plan-eng-review` CLEAR. Siguiente: batería de stack y metodologías de producción y luego fase 0. Sin código de aplicación todavía.
 
 ## Ahora
 
@@ -85,13 +85,16 @@ Documentos (al día con la v6 desde el 2026-09-29):
 3. ~~Pantallas independientes y contenidos~~ hecho (2026-09-29).
 4. ~~Componentes de la home~~ hecho (2026-09-29).
 5. ~~Actualizar spec, UX, diseño técnico y plan + `/plan-eng-review`~~ hecho (2026-09-30: plan v2.1 con los 41 hallazgos).
-6. **Fase 0 del plan** (0.1 con `cpuTime` p95 y caché de assets; 0.2 con `scene.js` de la v6; 0.3–0.6 Radar) y **fase 1** en dos ramas: `chore/monorepo-base` (1.1, 1.4 `pricing` bilingüe, 1.5, **1.10 tokens antes de cualquier UI**) y `chore/supabase` (1.2, 1.3, 1.6, 1.7 cron único + preview, 1.8 migraciones + RPCs, 1.9 gate con «Confirm email» y SMTP).
-7. Fase 2: port 1:1 de `home-v6` escena a escena, con capturas comparadas (2 %) y aprobación de Jose entre escenas. Al cerrarla, **fijar la fecha de válvula** y la tabla del hito «contenido completo».
-8. Orden de fases: 0 → 1a → 1b → 2 → hito de contenido → 3 → 4 → 5 → 6 → 8.1 → 9 (lanzamiento) → **7 Radar** → 10 Newsletter.
+6. **Batería de stack y metodologías de producción** (pide Jose, 2026-09-30) antes de la fase 0: principios SOLID con componentes únicos con variantes (un `Button` con variantes, no muchos botones), accesibilidad asegurada, literales + tokens + **tipado unificado en un fichero de types**. Salida: working-agreements v1.2 y ajustes del plan.
+7. **Fase 0 del plan** (0.1 con `cpuTime` p95 y caché de assets; 0.2 con `scene.js` de la v6; 0.3–0.6 Radar) y **fase 1** en dos ramas: `chore/monorepo-base` (1.1, 1.4 `pricing` bilingüe, 1.5, **1.10 tokens antes de cualquier UI**) y `chore/supabase` (1.2, 1.3, 1.6, 1.7 cron único + preview, 1.8 migraciones + RPCs, 1.9 gate con «Confirm email» y SMTP).
+8. Fase 2: port 1:1 de `home-v6` escena a escena, con capturas comparadas (2 %) y aprobación de Jose entre escenas. Al cerrarla, **fijar la fecha de válvula** y la tabla del hito «contenido completo».
+9. Orden de fases: 0 → 1a → 1b → 2 → hito de contenido → 3 → 4 → 5 → 6 → 8.1 → 9 (lanzamiento) → **7 Radar** → 10 Newsletter.
 
 Gates que no se cruzan sin OK explícito de Jose en la misma sesión: migraciones y deploys a producción, contratar servicios, tocar servicios preexistentes de Omen.
 
 ## Decisiones recientes
+
+- **2026-09-30 (cierre de etapa; principios de producción pedidos por Jose):** SOLID aplicado a la UI: un componente por concepto con variantes (p. ej. un único `Button` con variantes visuales), sin componentes duplicados para lo mismo; accesibilidad asegurada como requisito, no como revisión final; literales en `messages/`, estilos en tokens y **tipos unificados en un fichero de types**. Se concretan en la batería de stack y metodologías antes de la fase 0.
 
 - **2026-09-30 (`/plan-eng-review` del plan v2.0, 41 hallazgos decididos por Jose):** recomendaciones aceptadas salvo lo indicado. Claves: **lanzamiento todo junto con válvula por fecha y Radar como última etapa** (spec D34; fecha al cerrar la fase 2); **correos de Auth desde @josecoded.com** con SMTP propio y «Confirm email» obligatorio, RPC de usuario solo con email confirmado (D35); generador con Turnstile antes que cuota, cuotas atómicas en Supabase (`increment_quota`), propuesta firmada HMAC, guarda determinista y evals manuales; leads idempotentes; contrato único del código de afiliado (prefijo elegido, código desconocido no bloquea); `request_upgrade()` en BD; precios de pack en la migración `pack_codes` y `sync-db` que genera SQL; Worker `josecoded-api-preview`; **un único cron `*/5`** con despachador y Radar en tres trabajos; AI Gateway con presupuestos; GitHub App `josecoded-bot` y `deploy-content.yml` con guarda `last-deployed`; newsletter con grants por columna, trigger de transición, `send_lock` y runner endurecido; cookie `ref` con aceptación explícita; `pricing.json` bilingüe; CV con `<!-- id: -->` y campos públicos cerrados; fase 1 en dos ramas; catálogos por pantalla; puerta visual con `mask` y solo la home contra prototipo; **prototipos solo para home, Negocios y Contacto**; **WebGL en tablets grandes aceptado como desvío**; Workers Free hasta medir `cpuTime` en 0.1; hito «contenido completo» antes de la fase 3; NOT in scope explícito. Documentos: plan **v2.1**, DT **v1.4** (§0b), spec **v1.7**, newsletter **v1.2**, working-agreements **v1.1**.
 
