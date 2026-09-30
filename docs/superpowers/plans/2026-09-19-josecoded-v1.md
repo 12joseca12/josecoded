@@ -2,8 +2,8 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Fecha:** 2026-09-19 · **Perfil:** web · **Versión:** **2.0 (2026-09-29)** · **Autor:** `arquitecto`
-**Insumos:** spec **v1.6** (`docs/superpowers/specs/2026-09-13-josecoded-plataforma.md`), UX **v4.0** (`docs/superpowers/design/2026-09-17-josecoded-ux.md`), diseño técnico **v1.3** (`docs/superpowers/design/2026-09-17-josecoded-diseno-tecnico.md`, en adelante **DT**), `docs/working-agreements.md` v1.0 (**normativo**: si una tarea lo contradice, manda él), `DESIGN.md` + `.impeccable/design.json` (sistema visual v6), inventario `docs/superpowers/design/2026-09-29-componentes-home-v6.md` v1.1 (**INV**), pantallas `docs/superpowers/design/2026-09-29-pantallas-y-contenidos.md` v1.0 (**PANT**), prototipo `docs/superpowers/design/ref/home-v6/`, spec de newsletter `docs/superpowers/specs/2026-09-29-josecoded-newsletter.md` v1 (fase 10), `ESTADO.md`, `Comercial/tarifas.md` v2. El documento de `ui` v3 (`2026-09-17-josecoded-ui.md`) **queda superado** por `DESIGN.md` y no es insumo de ninguna tarea.
+**Fecha:** 2026-09-19 · **Perfil:** web · **Versión:** **2.1 (2026-09-30, tras `/plan-eng-review`)** · 2.0 (2026-09-29) · **Autor:** `arquitecto`
+**Insumos:** spec **v1.7** (`docs/superpowers/specs/2026-09-13-josecoded-plataforma.md`), UX **v4.0** (`docs/superpowers/design/2026-09-17-josecoded-ux.md`), diseño técnico **v1.4** (§0b recoge los cambios del eng review) (`docs/superpowers/design/2026-09-17-josecoded-diseno-tecnico.md`, en adelante **DT**), `docs/working-agreements.md` v1.0 (**normativo**: si una tarea lo contradice, manda él), `DESIGN.md` + `.impeccable/design.json` (sistema visual v6), inventario `docs/superpowers/design/2026-09-29-componentes-home-v6.md` v1.1 (**INV**), pantallas `docs/superpowers/design/2026-09-29-pantallas-y-contenidos.md` v1.0 (**PANT**), prototipo `docs/superpowers/design/ref/home-v6/`, spec de newsletter `docs/superpowers/specs/2026-09-29-josecoded-newsletter.md` **v1.2** (fase 10), `docs/working-agreements.md` **v1.1**, `ESTADO.md`, `Comercial/tarifas.md` v2. El documento de `ui` v3 (`2026-09-17-josecoded-ui.md`) **queda superado** por `DESIGN.md` y no es insumo de ninguna tarea.
 
 ## Changelog v2.0 (2026-09-29)
 
@@ -22,6 +22,54 @@
 
 **Tech Stack:** pnpm 11.2.2 · Node 22 · turbo 2.10 · Next 16.3.5 · React 19.3 · `@opennextjs/cloudflare` 1.20.6 · wrangler 4.133 · **CSS Modules + tokens generados desde `.impeccable/design.json` (`packages/design-tokens`) + stylelint** · **motion en CSS nativo + `lib/motion/` en TypeScript (sin GSAP, Tailwind ni shadcn; spec D27)** · Baseline 2024 con `@supports` (D28) · three (versión fijada en 0.2) · next-intl 4.14 · `@next/mdx` · `@supabase/ssr` 0.12 / `supabase-js` 2.116 · Hono 4.13 · zod 4.6 · Vitest 4.1.11 + `@cloudflare/vitest-pool-workers` 0.22 · Playwright 1.63 (Chromium + WebKit) · Lighthouse CI 0.15 · TypeScript 5.9.3. Versiones completas en DT §1.2.
 
+## Changelog v2.1 (2026-09-30, 41 hallazgos de `/plan-eng-review` decididos por Jose)
+
+Se acepta la opción recomendada salvo donde se indica. Cada punto dice en qué tarea aterriza; el detalle técnico está en DT v1.4 §0b, la spec v1.7 (D34, D35), la spec de newsletter v1.2 y working-agreements v1.1. Las adendas por tarea llevan la marca **«v2.1 (eng review)»**.
+
+| # | Decisión | Tareas |
+|---|---|---|
+| 1 | `claim_client_access` y `area_lead_summary` exigen email confirmado, `revoke from anon`, `limit 1 for update`; test con usuario sin confirmar; 1.9 comprueba «Confirm email». **SMTP propio en Supabase Auth** desde @josecoded.com (DNS e insumo) | 1.8, 1.9, 4.1, 3.12 |
+| 2 | `deploy-content.yml` con guarda `last-deployed`; CI reducido para `newsletter/*` | 1.9, 10.2 |
+| 3 | GitHub App `josecoded-bot`; check de alcance en todos los PR; fusión por el gateway si el plan de GitHub no lo permite | 1.9, 10.0, 10.2, 10.6 |
+| 4 | Newsletter: grants por columna, inserts solo service role, trigger de transición, «revisado» vía gateway, reset al editar, tests negativos | 10.1, 10.2, 10.4 |
+| 5 | **Todo junto con válvula por fecha; Radar última etapa** (fecha al cerrar la fase 2) | Orden de fases, camino crítico, 9.4, 9.6 |
+| 6 | 0.1 mide `cpuTime` p95 < 10 ms y la caché de assets de OpenNext | 0.1 |
+| 7 | Contrato único del código de afiliado; trigger solo si nulo; `extensions.gen_random_bytes`; código desconocido → lead con `meta.invalid_ref`; `(ref XXX)` en WhatsApp; un campo `ref` en Cal.com | 1.4, 1.8, 3.3, 3.8, 3.11 |
+| 8 | Generador: Turnstile antes que cuota; RPC `increment_quota`; propuesta firmada HMAC; fallo del contador deja pasar | 1.8, 3.7, 3.8, 3.9 |
+| 9 | Worker `josecoded-api-preview` con secretos propios; rotar Telegram y Resend antes de 3.12; `WORKER_INTERNAL_TOKEN_PREV` | 1.7, 1.9, 3.12 |
+| 10 | RPC `request_upgrade()`; sin insert directo | 1.8, 5.4 |
+| 11 | Códigos y precios en `pack_codes`; `sync-db` genera SQL; mapeo revisado | 1.4, 1.8, 1.9, 9.4 |
+| 12 | `supabase-ping.yml` con Telegram directo | 1.9 |
+| 13 | Chat con rate limit y cuota; AI Gateway obligatorio con presupuestos; avisos agrupados | 3.7, 4.4, 6.6 |
+| 14 | Cookie `ref` con aceptación explícita; sin ella, `sessionStorage`; políticas actualizadas | 3.11, 3.6 |
+| 15 | `schema.ts` único para `.md`/`.mdx`; `import()` doble; YAML por librería; test con `.md`; aviso si `blogEnabled` es falso | 4.2, 10.1, 10.2 |
+| 16 | `send_lock`; campañas no `draft` = enviadas; cupo con `GET /v3/account`; `week_key` única; test de barridos simultáneos | 10.1, 10.2 |
+| 17 | Iframe `sandbox=""`; escapado con tests; CSP en admin/newsletter; secreto del webhook en cabecera | 10.2, 10.4 |
+| 18 | Timeout 20 min < lock 30 min; `claim_token`/`attempt`; `rate_limit` no cuenta; compose propio | 10.1, 10.3 |
+| 19 | `idempotency_key` en leads; dedup de avisos; barrido de `via='none'`; CANCELLED/RESCHEDULED | 1.8, 3.8, 3.11 |
+| 20 | Contrato `ai_proposal` con test; `isApp` en modelo y reglas; `ensureProfile` idempotente; email verificado para la señal por `contact_email` | 1.4, 3.7, 3.8, 4.1, 5.1 |
+| 21 | `pricing.json` bilingüe con test; reglas en es/en con precedencia P4 > P3 > P2 > P1; `admin-chat-assistant.service.ts` en 4.4 | 1.4, 3.7, 4.4 |
+| 22 | CV: convención `<!-- id: -->`, `loadCvMaster` en `radar-core`, `cv.css`, campos públicos cerrados, `noindex` | 3.14, 7.1, 7.21 |
+| 23 | Fase 1 en `chore/monorepo-base` y `chore/supabase`; catálogos por pantalla; `tokens.css` solo por su tarea dueña | Ramas, 1.x, 2.1 |
+| 24 | Coherencia: 3.8 con Supabase local; DT §8.1 alineado; 12 eventos; 26 tablas; sin `perf.ts` | 2.4, 2.12, 3.1, 3.8, 9.2 |
+| 25 | Puerta visual: `mask`, desvíos registrados, fuentes locales, job solo en PR de UI, solo la home contra prototipo | 2.13, 3.x |
+| 26 | Guarda determinista en el gateway; evals manuales (propuestas, chat, newsletter, Radar) | 3.7, 4.4, 7.30, 10.1 |
+| 27 | `performance.mark` vs LCP; móvil sin `canvas`; E2E de paginado, OTP por buzón local y señal de origen | 2.17, 4.1, 5.1 |
+| 28 | **WebGL en tablets grandes: desvío aceptado**; `qa` en iPad | 2.8, puerta fase 2 |
+| 29 | `supabase-js` diferido; 0.1 valida `check-hero-bundle` con Turbopack | 0.1, 2.3, 2.9 |
+| 30 | `paramsHash` completo; póster a 9 000; regenerar solo si cambia | 2.5a, 2.6 |
+| 31 | `React.cache()`, `Promise.all`, RPC `admin_counters()` | 1.8, 6.1 |
+| 32 | CORS `https://*-josecoded-web.jose.workers.dev` con tests límite | 1.7 |
+| 33 | Código de afiliado con prefijo elegido, sufijo más largo, `validate` más estricto; nivel `client` derivado | 1.4, 1.8, 3.8, 5.5, 6.2 |
+| 34 | JSON-LD `minPrice`, `valueAddedTaxIncluded:false`, `unitCode:'HUR'` | 2.11 |
+| 35 | Un único cron `*/5` con despachador `nextRun`; Radar de 4 a 3 trabajos (DT §0b) | 1.7, 7.17, 7.23, 10.2 |
+| 36 | Test de subpeticiones (< 40) por tick; lotes dinámicos | 7.17 |
+| 37 | `api.josecoded.com` en 3.12; smoke de `v1`, `forum`, `admin-chat` tras cada deploy del gateway | 3.12, 1.9 |
+| 38 | Seguir en Free; Paid solo con la medida de 0.1 | 0.1, NOT in scope |
+| 39 | Hito «contenido completo» antes de la fase 3 | Nueva sección antes de la fase 3 |
+| 40 | Prototipos solo para home, Negocios y Contacto | 3.13, fase 3 |
+| 41 | Radar última etapa; newsletter tras el lanzamiento | Orden de fases |
+
 ## Restricciones globales (aplican a todas las tareas)
 
 - **Nada heredado se reescribe**: `josecoded-api` (rutas `v1`, `v1-protected`, `forum`, `admin-chat`, `health`, `system` intactas), `josecoded-worker` (sin cambios, ni por Radar), esquema Supabase (solo migraciones aditivas), dominio y cuenta Cloudflare. Contratos existentes intocables (spec §7, DT §7).
@@ -38,6 +86,22 @@
 - **Precios** solo desde `packages/pricing/pricing.json` (generado de `Comercial/tarifas.md` v2, vigencia 2026-09-14). El "desde" nunca suma extras (DT H8).
 - Aplicar `vercel-react-best-practices` en todo React y pasar `web-design-guidelines` antes de cerrar cualquier tarea con UI.
 
+## What already exists (no se reescribe; se consume)
+
+- **`josecoded-api`** (gateway Hono en Workers): rutas `v1`, `v1-protected`, `forum` (intacto, sin consumidor), `admin-chat` (+ `admin-chat/admin/*`, takeover), `health`, `system`; middlewares `requestId`, `securityHeaders`, CORS, rate limit; binding `AI_RATE_LIMITER` declarado. Se mueve a `apps/api` (1.2) y solo recibe rutas, bindings y cron aditivos.
+- **`josecoded-worker`** en Omen (Fastify, `worker.josecoded.com`): módulos `ai/*` (chat, blog, summarize), `n8n/*` (trigger de workflows), `storage/*`, `system/*`, `health`. Sin cambios en todo el plan.
+- **Supabase `josecoded`**: 21 tablas heredadas (`staff_members` con Jose admin y `telegram_chat_id`, `leads` con sus 6 triggers, `clients`, `client_tasks`, `client_task_comments`, `client_assets`, `client_pack_extras`, `pack_templates`, `pack_extras`, `admin_chat_*`, `blog_posts`, `forum_*`), 47 políticas con `private.staff_role_of()`, esquema `private.*` (`notify_event()` por `pg_net`), bucket privado `client-assets` (25 MiB), Edge Function `notify` v4 (Telegram + Resend), `vault.notify_shared_secret`. Solo migraciones aditivas.
+- Dominio `josecoded.com`, cuenta Cloudflare, bot de Telegram, cuenta de Resend (dominio a verificar).
+
+## NOT in scope (decidido el 2026-09-30)
+
+- **Workers Paid**: no se contrata por defecto; se decide con la medida de `cpuTime` de la tarea 0.1 (Free o, si no cabe, Paid frente a Vercel con datos).
+- **WebGL en tablets grandes**: desvío aceptado por Jose (reciben modo `scene`); `qa` lo prueba en iPad y, si no rinde, `(pointer: fine)` en el gate es un cambio de una línea.
+- **Conectores opcionales de Radar**: scraping de LinkedIn (7.13, apagado dos semanas), Upwork (7.15) y Malt por correo (7.14) pueden llegar tras el lanzamiento; no bloquean nada.
+- **PDF por Browser Rendering** (7.21): solo si 0.4 lo confirma en Free; el respaldo (impresión en navegador) es la vía por defecto.
+- **`build-info` con recuento de tablas y políticas** como dato público: no se muestra (sin métricas); el JSON conserva los campos solo para el pie y `llms.txt`.
+- Programación de envíos, segmentación y editor WYSIWYG de la newsletter (NL §5), pagos online, WhatsApp Business API, Sentry (DT §5.8).
+
 ## Cómo se ejecuta este plan
 
 - **Una tarea = una invocación** de `implementador-web` (o `implementador-infra` en la fase 8), con TDD: test que falla → implementación mínima → test en verde → commit. Después de cada tarea, `revisor` (solo lectura) sobre el diff; los hallazgos se corrigen antes de la siguiente.
@@ -52,13 +116,14 @@
 | Fase | Rama | Puerta |
 |---|---|---|
 | 0 | `spike/t0-opennext`, `spike/t0-hero`, `spike/t0-radar` (no se mergean; los resultados van a `docs/superpowers/specs/2026-09-19-tarea0-resultados.md` en `main`) | `revisor` sobre el documento de resultados |
-| 1 | `chore/monorepo` | `/puerta-calidad` (sin UI: `qa` + `revisor-seguridad`) |
+| 1a | `chore/monorepo-base` (1.1, 1.4, 1.5, 1.10) | `revisor` sobre la rama; **sin puerta** (v2.1) |
+| 1b | `chore/supabase` (1.2, 1.3, 1.6, 1.7, 1.8, 1.9) | `/puerta-calidad` (sin UI: `qa` + `revisor-seguridad`) |
 | 2 | `feat/shell-home` (+ `feat/glyph-scene` en paralelo, se mergea en `feat/shell-home` antes de 2.8) | `/puerta-calidad` completa + `ui` sobre el diff de capturas + **OK de Jose en preview** |
 | 3 | `feat/public-pages` (3.1, 3.13, 3.2–3.6, 3.14), `feat/generator-leads` (3.7–3.12) | `/puerta-calidad` completa (Marta y Dani) + OK de Jose en preview |
 | 4 | `feat/auth-blog-chat` | `/puerta-calidad` completa (Dani) |
 | 5 | `feat/client-area` | `/puerta-calidad` completa (cliente) |
 | 6 | `feat/admin` | `/puerta-calidad` completa (Jose operador) |
-| 7 | `feat/radar-core` (paquetes + migraciones), `feat/radar-connectors`, `feat/radar-api`, `feat/radar-admin`, `feat/radar-mail-calendar` | `/puerta-calidad` por rama; `usuario-ejemplo` como Jose operador y como reclutadora |
+| 7 (**última etapa**, tras 9.6 salvo que llegue antes de la fecha de válvula) | `feat/radar-core` (paquetes + migraciones), `feat/radar-connectors`, `feat/radar-api`, `feat/radar-admin`, `feat/radar-mail-calendar` | `/puerta-calidad` por rama; `usuario-ejemplo` como Jose operador y como reclutadora |
 | 8 | `infra/omen` (ficheros de referencia en `infra/`; lo aplica `implementador-infra` en Omen con OK) | `revisor-seguridad` |
 | 9 | `release/v1` | `/puerta-calidad` final sobre la preview con todo mergeado |
 | 10 | `spike/t10-claude-runner`, `feat/newsletter-core`, `feat/newsletter-api`, `feat/newsletter-runner` + `infra/newsletter-runner`, `feat/newsletter-admin`, `feat/newsletter-public` (post-lanzamiento, spec de newsletter §14) | `/puerta-calidad` por rama; `revisor-seguridad` en tokens, webhooks, RLS, Markdown y PAT |
@@ -68,20 +133,24 @@
 | Fase | Tareas | Estimación | Notas |
 |---|---|---|---|
 | 0 Validaciones | 6 | M | Todas en paralelo; 0.1 bloquea todo lo demás; 0.2 bloquea 2.5–2.9; 0.3–0.6 bloquean conectores concretos |
-| 1 Monorepo | 10 | M | 1.9 es GATE (migraciones no-Radar en producción); **1.10 (tokens) bloquea toda la fase 2** |
+| 1 Monorepo (1a base + 1b supabase) | 10 | M | 1.9 es GATE (migraciones no-Radar en producción); **1.10 (tokens) bloquea toda la fase 2**; 1a sin puerta |
 | 2 Shell + home v6 + hero + i18n + SEO/GEO | 18 | XL | `packages/glyph-scene` (2.5a, 2.5b, 2.6) en paralelo con 2.1–2.4; escenas en el orden del prototipo con validación de Jose entre ellas |
 | 3 Páginas públicas + generador + leads + contacto | 14 | L | Orden de PANT §4; 3.7–3.8 (gateway) en paralelo con 3.13/3.3 |
 | 4 Auth + blog + chat | 4 | L | 4.1 bloquea 5.x, 6.x y 7.25+ |
 | 5 Área de clientes + afiliados | 5 | M | |
 | 6 Admin | 6 | L | 6.1 bloquea 7.25+ |
-| 7 Radar | 31 | XL | 7.1–7.5 y 7.8–7.15 (paquetes) pueden empezar tras la fase 1; 7.16+ (gateway) tras 7.7; 7.25+ (web) tras 6.1 |
+| 7 Radar (**última etapa**) | 31 | XL | Tras 9.6 (o en carril B si hay capacidad, sin bloquear el lanzamiento); 7.16+ (gateway) tras 7.7; 7.25+ (web) tras 6.1 |
 | 8 Infra Omen | 3 | S | Tras 1.x; cada tarea con OK de Jose |
 | 9 Lanzamiento | 5 | M | 9.6 GATE (9.3 retirada) |
 | 10 Newsletter (post-lanzamiento) | 7 | L | Tras 9.6; tarea 10.0 (spike) primero; gates de migraciones, secretos, Omen y DNS |
 
-**Camino crítico** (todo lo demás se solapa): 0.1 → 1.1 → **1.10** → 1.5 → 2.1 → 2.2 → 2.3 → 2.8 (que espera a 2.5b + 2.6 + 2.7) → 2.10 → 2.13 → 2.14 → 2.15 → 2.16 → 2.17 → 3.13 → 3.3 → 3.10 → 3.9 → 4.1 → 6.1 → 7.7 → 7.16 → 7.17 → 7.18 → 7.19 → 7.25 → 7.26 → 7.30 → 7.31 → 9.5 → 9.6. Radar es ≈ 40 % del total (spec §13.9) y va al final del camino; lo que lo acorta es arrancar `feat/radar-core` y `feat/radar-connectors` justo después de la fase 1, en paralelo con las fases 2–6.
+**Orden de ejecución de fases (v2.1, decisión 5/41: Radar es la última etapa):** 0 → 1a → 1b → 2 → **hito «contenido completo»** → 3 → 4 → 5 → 6 → 8.1 (Umami) → 9 (lanzamiento con válvula por fecha) → **7 Radar + 8.2/8.3** → 10 Newsletter. Los números de fase se conservan para no romper referencias. Radar se queda en el proyecto y su núcleo (7.1–7.8) puede adelantarse en un carril paralelo si hay capacidad, pero **lo público no espera por él**: la **fecha de válvula** se fija al cerrar la fase 2 con datos (velocidad real de las tareas 0–2 y estado del hito de contenido) y se anota en `ESTADO.md`; si llega sin Radar, 9.6 lanza sin Radar y Radar se completa sobre la misma producción (vive solo en `/admin`). Sustituye a la «válvula de escape» de v1/v2.0.
 
-**Válvula de escape (spec §13.9, no decidida):** como Radar solo vive en `/admin`, si el plazo se dispara Jose podría abrir el público con las fases 0–6 + 8.1 + 9 y con Radar solo hasta 7.19 + 7.25 (núcleo, migraciones, un conector y bandeja con Telegram), completando el resto sobre la misma producción. Eso reabriría D17 y **lo decide Jose, no este plan**. El orden de las tareas de la fase 7 ya está pensado para que ese corte sea limpio.
+**Camino crítico real** (todo lo demás se solapa): 0.1 → 1.1 → **1.10** → 1.5 → 1.8 → 1.9 → 2.1 → 2.2 → 2.3 → 2.8 (espera a 2.5b + 2.6 + 2.7) → 2.10 → 2.13 → 2.14 → 2.15 → 2.16 → 2.17 → **hito de contenido** → 3.13 → 3.3 → 3.8 → 3.10 → 3.2 → 3.9 → 3.4 → 3.5 → 3.6 → 3.12 → 4.1 → 4.2 → 5.1 → 6.1 → 6.2 → 9.1 → 9.4 → 9.5 → 9.6. Radar (7.x, 8.2, 8.3) y la newsletter (10.x) van después de 9.6.
+
+**Carriles de worktree** (una rama viva por carril; `superpowers:using-git-worktrees`): **A** web pública (`feat/shell-home` → `feat/public-pages` → `feat/generator-leads` → `feat/auth-blog-chat` → `feat/client-area` → `feat/admin` → `release/v1`); **B** paquetes sin UI en paralelo desde 1a (`feat/glyph-scene`, `packages/pricing` bilingüe, `radar-core` 7.1–7.5 si hay capacidad); **C** gateway (`chore/supabase`, 3.7–3.8, `feat/radar-api`, `feat/newsletter-api`); **D** infra (`infra/omen`). Nunca dos carriles tocan `tokens.css`, `messages/` de la misma pantalla ni `supabase/migrations/` a la vez. Radar es ≈ 40 % del total (spec §13.9) y va al final del camino; lo que lo acorta es arrancar `feat/radar-core` y `feat/radar-connectors` justo después de la fase 1, en paralelo con las fases 2–6.
+
+**Válvula por fecha (spec D34, decidida):** ver «Orden de ejecución de fases». Si Radar llega parcialmente antes de la fecha, el corte limpio sigue siendo 7.1–7.8 + 7.16–7.19 + 7.25 (núcleo, migraciones, un conector y bandeja con Telegram).
 
 ## Insumos que faltan de Jose y dónde bloquean
 
@@ -154,6 +223,8 @@ Cada tarea 0 produce una sección en `docs/superpowers/specs/2026-09-19-tarea0-r
 ### Tarea 0.1 — OpenNext en Workers Free sin middleware Node
 
 **Agente:** implementador-web · **Rama:** `spike/t0-opennext` · **Gate:** no (crea un Worker de pruebas `josecoded-web-t0` con `wrangler versions upload`; no toca producción; avisar a Jose de que existe y borrarlo al terminar) · **Depende de:** —
+
+> **v2.1 (eng review):** además de a–f, medir **`cpuTime` p95 < 10 ms** (Workers Free) en `/`, `/negocios` y una ruta privada con sesión (`/area-clientes`) sobre 50 peticiones (`wrangler tail --format json` o Workers Logs), y probar la **caché incremental de assets estáticos de OpenNext** (`incrementalCache` sobre el binding `ASSETS` para SSG, sin R2). Validar también que `apps/web/scripts/check-hero-bundle.ts` lee el manifiesto que produce **Turbopack** (nombres y rutas de chunks) con un chunk `import()` de prueba. Si `cpuTime` no llega, **Jose decide con los datos entre Workers Paid y Vercel**; hasta entonces, Free. Anotar cifras en §0.1 del documento de resultados.
 
 **Objetivo:** demostrar con un despliegue real que Next 16.3.5 + `@opennextjs/cloudflare` 1.20.6 funciona en Workers Free con todo lo que la web necesita y sin `proxy.ts` (DT §1.3 "Tarea 0").
 
@@ -347,6 +418,8 @@ it('feed has ≥ 10 items with title, link and pubDate', () => {
 
 **Agente:** implementador-web · **Gate:** no · **Depende de:** 0.1 (decide Workers o Vercel para `apps/web`, no afecta al esqueleto)
 
+> **v2.1 (eng review):** la fase 1 se parte en dos ramas: **`chore/monorepo-base`** (1.1, 1.4, 1.5, 1.10; `revisor` sobre la rama, sin puerta) y **`chore/supabase`** (1.2, 1.3, 1.6, 1.7, 1.8, 1.9; con puerta). Esta tarea añade `apps/web/messages/{es,en}/` como **carpetas por pantalla** (`common`, `home`, `business`, `companies`, `about`, `projects`, `blog`, `contact`, `proposal`, `auth`, `area`, `newsletter`) fusionadas en `i18n/request.ts`. Ningún `package.json` usa `npm`/`npx`.
+
 **Objetivo:** raíz pnpm + turbo con scripts únicos, `packages/config` compartido (eslint, **stylelint**, tsconfig, prettier) y el esqueleto de `packages/design-tokens` (DT §1.1, §1.2, §1.9; working-agreements §12).
 
 **Ficheros:**
@@ -433,6 +506,8 @@ it('base tsconfig is strict', () => {
 
 **Agente:** implementador-web · **Gate:** no (escribe solo el repo) · **Depende de:** 1.1
 
+> **v2.1 (eng review):** (a) **`pricing.json` bilingüe**: `name`, `includes[]`, `label`, `description`, `forWhom` como `{ es, en }` (textos de `redactor`), con un test que exige los dos idiomas en cada pack, extra y app; `parseTarifas` lee las columnas es/en de `tarifas.md` (o `tarifas.md` + `tarifas.en.md`, decide `comercial`); (b) **contrato único del código de afiliado** en `src/affiliate-code.ts` (`AFFILIATE_CODE_RE = /^[A-Z0-9]{3,12}-[A-Z0-9]{6}$/`, `normalizeCode`, `isValidCode`, `suggestPrefix(name)`) exportado para gateway, web y SQL (la regex se copia literal a la migración con un test que compara ambas); (c) **contrato `ai_proposal`** en `src/proposal.ts` (zod: `{ pack: PackCode | AppCode, priceFrom, isApp, pricingVersion, extras, source, summary, scope }`) con fixture compartido; (d) `scripts/sync-db.ts` **genera `supabase/generated/pricing-sync.sql`** (UPDATE por `code` de `pack_templates`/`pack_extras`) en lugar de escribir en la BD; sin service role en disco; (e) `computeAffiliateReward` recibe `level: 'client'|'standard'|'premium'` donde `client` lo deriva la RPC `admin_close_lead_paid` (afiliado con fila en `clients`).
+
 **Objetivo:** una sola fuente de precios en código, con las cuatro reglas que consumen web, gateway, admin y área de clientes (spec D13, DT §1.1, §8.1).
 
 **Ficheros:**
@@ -512,6 +587,8 @@ it.skipIf(!existsSync(TARIFAS))('pricing.json equals tarifas.md', () => {
 
 **Agente:** implementador-web · **Gate:** no · **Depende de:** 0.1, 1.1
 
+> **v2.1 (eng review):** `env.server` **sin** `SUPABASE_SERVICE_ROLE_KEY`; `env.client` sin cambios. La rama es `chore/monorepo-base`.
+
 **Objetivo:** promover el spike 0.1 a `apps/web` real: configuración de DT §1.3–§1.4, validación de env con zod, y la matriz de URLs como test E2E permanente.
 
 **Ficheros:**
@@ -582,11 +659,13 @@ it('baseline contains no data', () => { expect(sql).not.toMatch(/^INSERT INTO/m)
 
 **Agente:** implementador-web · **Gate:** no · **Depende de:** 1.3
 
+> **v2.1 (eng review):** (a) **CORS de previews**: la lista es `https://josecoded.com,https://www.josecoded.com,https://*-josecoded-web.jose.workers.dev,http://localhost:3000`; `isAllowedOrigin` acepta `https://*-<resto>` como «prefijo `[a-z0-9]+` + guion + resto exacto» y `https://*.<host>` como sufijo con punto; tests de límite: `https://josecoded-web.jose.workers.dev` → false, `https://evil-josecoded-web.jose.workers.dev` → true (es un preview real; los previews no tienen datos de producción), `https://x.jose.workers.dev` → false, `https://abc-josecoded-web.jose.workers.dev.evil.com` → false; (b) **un único Cron Trigger `*/5 * * * *`** en `wrangler.jsonc` y `src/scheduled.ts` como despachador sobre `private.scheduled_jobs` con `nextRun` (parser de `radar-core/src/cron.ts` con `tz`; hasta 7.3, una copia mínima en `apps/api/src/utils/cron.ts` que 7.3 sustituye) y presupuesto de ≤ 40 subpeticiones por invocación (`SubrequestBudget` que envuelve `fetch` y `env.AI.run` y lanza `budget_exhausted`); test: dos trabajos vencidos se ejecutan en orden y el tercero espera si el presupuesto se agota; (c) `wrangler.jsonc` con `env.preview` = Worker **`josecoded-api-preview`** (secretos, `RADAR_KV` y rate limiters propios); `worker.service.ts` acepta `WORKER_INTERNAL_TOKEN` o `WORKER_INTERNAL_TOKEN_PREV`; (d) `envSchema` sin `QUOTA_KV` (sustituido por la RPC `increment_quota`, 1.8) y con `AI_GATEWAY_ID` **obligatorio** desde 3.7, `GITHUB_APP_*`, `WORKER_INTERNAL_TOKEN_PREV`.
+
 **Objetivo:** cambios aditivos del gateway que todas las rutas nuevas necesitan (DT §3.6).
 
 **Ficheros:**
 - Crear: `apps/api/src/routes-manifest.ts` (`export const routes = [...] as const` con `{ method, path, module }` de cada ruta registrada; lo lee `build-info.ts` de la web), `apps/api/src/scheduled.ts` (`export async function scheduled(event, env, ctx) {}` que despacha por `event.cron` a handlers registrados en un `Map`; vacío hasta 7.17), `apps/api/src/utils/cors-origins.ts`, `apps/api/src/utils/cors-origins.test.ts`, `apps/api/src/routes-manifest.test.ts`.
-- Modificar: `apps/api/src/index.ts` (usar `isAllowedOrigin` en el CORS; `export default { fetch: app.fetch, scheduled }`; `app.onError` sin `error.message` en `details` fuera de `API_MODE=development`), `apps/api/src/utils/*` donde esté `toUpstreamFail` (quitar "Android emulator" del texto), `apps/api/src/config/env.ts` (`envSchema` con `TURNSTILE_SECRET_KEY`, `SERVER_KEY`, `NOTIFY_SHARED_SECRET`, `N8N_LEAD_WEBHOOK_ENABLED`, `PROPOSALS_DAILY_LIMIT_IP`, `PROPOSALS_DAILY_LIMIT_ALL`, `AI_PROPOSAL_MODEL`, `AI_GATEWAY_ID`, `ALLOWED_TURNSTILE_HOSTNAMES`, `QUOTA_KV`, `LEADS_RATE_LIMITER`, `AFFILIATE_RATE_LIMITER` — todos opcionales por ahora), `apps/api/wrangler.jsonc` (`ratelimits` 1002 y 1003 de DT §3.6; `kv_namespaces: [{ binding:'QUOTA_KV', id:'<se crea en 3.12>' }]` con un id de preview local).
+- Modificar: `apps/api/src/index.ts` (usar `isAllowedOrigin` en el CORS; `export default { fetch: app.fetch, scheduled }`; `app.onError` sin `error.message` en `details` fuera de `API_MODE=development`), `apps/api/src/utils/*` donde esté `toUpstreamFail` (quitar "Android emulator" del texto), `apps/api/src/config/env.ts` (`envSchema` con `TURNSTILE_SECRET_KEY`, `SERVER_KEY`, `NOTIFY_SHARED_SECRET`, `N8N_LEAD_WEBHOOK_ENABLED`, `PROPOSALS_DAILY_LIMIT_IP`, `PROPOSALS_DAILY_LIMIT_ALL`, `AI_PROPOSAL_MODEL`, `AI_GATEWAY_ID`, `ALLOWED_TURNSTILE_HOSTNAMES`, `LEADS_RATE_LIMITER`, `AFFILIATE_RATE_LIMITER`, `GITHUB_APP_ID`, `GITHUB_APP_INSTALLATION_ID`, `GITHUB_APP_PRIVATE_KEY`, `WORKER_INTERNAL_TOKEN_PREV` — todos opcionales por ahora; **sin `QUOTA_KV`**, v2.1), `apps/api/wrangler.jsonc` (`ratelimits` 1002, 1003 y 1004 de DT §3.6/§0b; `triggers.crons: ['*/5 * * * *']`; `env.preview` con `name: josecoded-api-preview`).
 
 **Pasos:**
 - [ ] 1. Tests que fallan:
@@ -621,6 +700,8 @@ it('manifest lists inherited routes', () => {
 ### Tarea 1.8 — Migraciones aditivas no-Radar + tests RLS con tres cuentas (local)
 
 **Agente:** implementador-web · **Gate:** no (solo local) · **Depende de:** 1.6
+
+> **v2.1 (eng review):** migraciones que cambian o se añaden (SQL en DT §6.2 y §0b): **`pack_codes`** añade `price` y `weeks` y hace el `UPDATE` por slug (`landing`→P1 900/1, `gestion-logica`→P2 1400/2, `crm-cms`→P3 2500/2, `automatizaciones`→P4 4200/3) y sobreescribe los `name`; **`affiliates`**: trigger `set_affiliate_code()` solo si `new.code is null`, `extensions.gen_random_bytes`, `search_path = public, extensions`, regex del contrato de 1.4 como `check`; **`upgrade_requests`**: RPC `security definer request_upgrade(p_to_pack_code, p_extras)` que deduce `client_id` y `from_pack_code`, calcula el precio en la BD (diferencia de lista con `pack_templates.price` + extras) y **sin política de insert directo**; **`client_access_claim`**: exige `email_confirmed_at is not null`, `for update skip locked limit 1`, `revoke execute from anon, public`; **`leads_web_fields`**: `idempotency_key text unique`, `user_id uuid` (índice); **`user_profiles`**: `area_lead_summary()` exige email confirmado y filtra `ai_proposal is not null and fuente='web_proposal'`; **nuevas** `20260930100000_quota_counters.sql` (`private.quota_counters` + `public.increment_quota(p_key, p_limit, p_ttl) returns boolean`, service role), `20260930100100_scheduled_jobs.sql` (`private.scheduled_jobs` sembrada con los trabajos de DT §0b), `20260930100200_admin_counters.sql` (`public.admin_counters()` solo admin). Seed: cuarta cuenta **`sin@test` sin confirmar**; `ANA-TEST01`/`BOB-TEST01` fijados por el seed (el trigger no los sobreescribe). Tests RLS añadidos: `sin@test` no puede `claim_client_access` ni ver `area_lead_summary`; `ana` no puede insertar `upgrade_requests` directamente pero sí vía `request_upgrade` (precio 1100 calculado en BD); `increment_quota` solo con service role; `admin_counters` 404 para `ana`. Rama `chore/supabase`.
 
 **Objetivo:** escribir las 10 migraciones de DT §6.2 (9 de v1 + `user_profiles`) y probarlas con `supabase start` y tres cuentas (DT §8.4).
 
@@ -673,6 +754,8 @@ describe('admin', () => {
 
 **Agente:** implementador-web (workflows) + **controlador** (migraciones, con OK de Jose) · **Gate:** **SÍ** (producción: `apply_migration` ×9 y `supabase functions deploy notify`) · **Depende de:** 1.5, 1.7, 1.8
 
+> **v2.1 (eng review):** (a) la rama es `chore/supabase`; (b) el gate comprueba en producción que **Auth tiene «Confirm email» activo** y, si Jose ya tiene la cuenta SMTP, configura **SMTP propio** (`cuenta@josecoded.com`, DT §0b) en Auth → si no, queda como insumo y 3.12 lo cierra; (c) revisa el `UPDATE` de `pack_codes` contra `pricing.json` antes de aplicarlo (mapeo de módulos acumulativos, DT §0b); (d) `apply_migration` ×12 (9 de v2 + `quota_counters`, `scheduled_jobs`, `admin_counters`); (e) `preview.yml` despliega **`josecoded-api-preview`** (secretos propios) y la web de preview apunta a él; (f) `supabase-ping.yml` avisa por **Telegram directo** con `TELEGRAM_PING_TOKEN`/`TELEGRAM_PING_CHAT_ID` en los secretos de GitHub, sin pasar por `notify`; (g) `ci.yml` incluye el job **`newsletter-content-only`** (lógica en el YAML: autor `josecoded-bot[bot]` → rama `newsletter/*` y solo `apps/web/content/blog/{es,en}/*.md`; humano → nunca `newsletter/*`) y el CI reducido para `newsletter/*`; **`deploy-content.yml`** (push a `main` con `paths: apps/web/content/blog/**`, guarda `last-deployed`, aborta con Telegram si hay código sin desplegar) y `deploy-production.yml` mueve la etiqueta `last-deployed` y ejecuta el **smoke del gateway** (`/api/v1/health`, una ruta `forum` de lectura, `admin-chat/thread` → 401) tras cada deploy del api; (h) 26 tablas esperadas en el baseline regenerado (21 + `blog_comments`, `affiliates`, `affiliate_rewards`, `upgrade_requests`, `user_profiles`).
+
 **Objetivo:** los cuatro workflows de DT §1.8 y las migraciones aplicadas en producción para que las fases 3–6 puedan probarse en preview contra datos reales.
 
 **Ficheros:**
@@ -691,6 +774,8 @@ describe('admin', () => {
 ### Tarea 1.10 — **BLOQUEANTE de la fase 2**: tokens completos en `.impeccable/design.json`, `pnpm tokens:build` → `tokens.css` y test de deriva
 
 **Agente:** implementador-web (con `ui` para nombrar los tokens) · **Rama:** `chore/monorepo` · **Gate:** no · **Depende de:** 1.1 · **Insumos:** INV §5 (lista de tokens que faltan), `DESIGN.md` (nombres y reglas), prototipo `home-v6/{base,v6}.css` (valores), DT §1.9, working-agreements §2
+
+> **v2.1 (eng review):** rama `chore/monorepo-base`. **`tokens.css` lo regenera solo su tarea dueña** (esta y, después, la tarea que añade un token con `deviation:`); cualquier otra tarea que lo modifique falla en revisión (regla en `CLAUDE.md`).
 
 **Objetivo:** que `.impeccable/design.json` contenga **todos** los tokens que los componentes de la home necesitan, con nombre semántico por uso (no por porcentaje), y que `apps/web/styles/tokens.css` se genere desde él con un test de deriva. Ningún componente de la fase 2 se porta antes, porque los CSS Modules solo pueden consumir tokens.
 
@@ -747,6 +832,8 @@ it('committed tokens.css equals a fresh build', () => {
 ### Tarea 2.1 — i18n: catálogos `messages/{es,en}.json`, `pathnames`, metadatos con `alternates` e `i18n:check`
 
 **Agente:** implementador-web · **Rama:** `feat/shell-home` · **Gate:** no · **Depende de:** 1.5
+
+> **v2.1 (eng review):** los catálogos son carpetas por pantalla (`messages/{es,en}/<pantalla>.json`, 1.1); `i18n-check` compara fichero a fichero y lista el fichero que falta en un idioma.
 
 **Objetivo:** estructura de `messages/{es,en}.json` por pantalla y componente (claves en inglés, `home.scenes.about.title`), hechos bajo `facts.*` (sin `facts.json`), helper único de metadatos con canonical y `alternates` es/en + `x-default` (spec §8, DT §1.4), rutas localizadas de UX v4.0 §2 (área incluida) y el script `i18n:check` (DT §1.11).
 
@@ -829,6 +916,8 @@ it('renders a link when href is given and a disabled button otherwise', () => {
 
 **Agente:** implementador-web · **Rama:** `feat/shell-home` · **Gate:** no · **Depende de:** 2.1, 2.2 · **Insumo:** INV §1.2 (`NavLinks`, `LangSwitch`, `SearchTrigger`, `ChatTrigger`) y §1.3 (`SiteHeader`, `MobileMenu`, `SiteFooter`); `base.css:51-82, 115-119, 148-152, 194-207`; `base.js:7-16`; `v6.js:76-82`; DT §1.6.1, §1.10 (`disclosure.ts`, `active-section.ts`)
 
+> **v2.1 (eng review):** `UserMenu` **no importa `@supabase/supabase-js` en el chunk inicial**: lo carga con `import()` al abrir el menú o al montar si existe la cookie `sb-*-auth-token`; `check-hero-bundle` (2.9) falla si `supabase-js` aparece en un chunk inicial de la home.
+
 > Sustituye a la 2.3 de la v1 (cabecera con «Contacto» y hoja shadcn). La paleta ⌘K se monta en 2.16.
 
 **Objetivo:** cabecera v6 (orden Sobre mí · Empresas · Negocios · Proyectos · Blog; derecha idioma → ⌘K → Chat → Login; **sin Contacto**; `is-scrolled` tras 80 px por sentinela; ≤ 67.5rem menú ☰ con idioma dentro y Contacto destacado por prop; ≤ 56.25rem buscador y chat solo icono; ≤ 22.5rem Login solo icono), menú móvil como disclosure nativo con todas las vías de cierre, pie v6, layout público y `template.tsx` con `ViewTransition`.
@@ -885,6 +974,8 @@ it('is a disclosure with aria-controls, marks current page and highlights contac
 
 **Agente:** implementador-web · **Rama:** `feat/shell-home` · **Gate:** no · **Depende de:** 1.7 (`routes-manifest`), 1.8 (migraciones)
 
+> **v2.1 (eng review):** `build-info` mantiene el recuento de tablas (26 tras 1.9) y políticas solo para el pie y `llms.txt`; no se muestra como cifra en ninguna página (NOT in scope).
+
 **Objetivo:** `content/generated/build-info.json` con rama, commit, fecha, versión de Next, número de rutas del gateway y de tablas/políticas; la build **falla** si falta un campo (DT §2.1). **v2.0:** ya no alimenta ninguna franja de métricas (no existen `BuildFacts` ni «Esta web»): lo consumen la fecha de revisión del pie, el caso de estudio de josecoded.com (3.4) y `llms.txt`. `test-counts.ts` y `perf.json` **se retiran** (sin métricas en la web).
 
 **Ficheros:** `apps/web/scripts/build-info.ts`, `build-info.test.ts`, `apps/web/content/generated/build-info.json`, `apps/web/lib/content/build-info.ts` (`getBuildInfo()` con zod). Modificar `apps/web/package.json` (`prebuild: "tsx scripts/build-info.ts"`).
@@ -910,6 +1001,8 @@ it('throws when a source is missing', async () => { await expect(computeBuildInf
 ### Tarea 2.5a — `packages/glyph-scene`: `params`, `rng`, `clouds`, `glyphs`, `paramsHash` (módulos puros, valores de la v6)
 
 **Agente:** implementador-web · **Rama:** `feat/glyph-scene` · **Gate:** no · **Depende de:** 0.2 (versión de `three`, decisión del bloom) · **Referencia:** `ref/home-v6/scene.js:11-135` (**no** `hero-lab-3/app.js`)
+
+> **v2.1 (eng review):** `paramsHash()` = sha256 corto de `params.ts` + `clouds.ts` + `shaders.ts` + **`scene.ts` + `atlas.ts` + los parámetros de captura (`CAPTURE`) + la versión de `three` del lockfile**; `params.test.ts` comprueba que cambiar `CAPTURE` cambia el hash.
 
 **Objetivo:** geometría determinista sin WebGL, portada de `scene.js` de la v6, para que póster, vídeo, arte de Proyectos y escena viva compartan las mismas nubes (DT v1.3 §1.6.2).
 
@@ -1002,6 +1095,8 @@ it('off mode dims the cloud and keeps it in place; skipIntro sets uIntroT to 100
 
 **Agente:** implementador-web · **Rama:** `feat/glyph-scene` · **Gate:** no · **Depende de:** 2.5b, 0.2
 
+> **v2.1 (eng review):** el **póster se genera con `count: 9000`** (el vídeo con 5 000); `render-media.ts` **solo regenera si `paramsHash` cambia** respecto a `media.json` (`--force` para forzar); `check-media` valida el hash ampliado.
+
 **Objetivo:** producir y commitear `apps/web/public/hero/{video.webm,video.mp4,poster.avif,poster.webp,media.json}` y `apps/web/public/art/{glyph-phone,glyph-web}.avif` (≤ 60 KB; sustituyen a los `glyph-*-alpha.png` de 250–300 KB del prototipo) con los topes de DT §1.6.3 y un check de frescura en CI. **v2.0:** ya no hay sprites de `PathPanel`.
 
 **Ficheros:** `packages/glyph-scene/render/index.html`, `scripts/render-media.ts` (captura 459 frames a 720×720 con `count: 5000` para el vídeo, PSNR, vídeo VP9/H.264, póster frame 15, arte de proyectos en reposo 801×722 con alfa, `media.json`), `scripts/check-media.ts`, `test/check-media.test.ts`; los medios.
@@ -1082,6 +1177,8 @@ it('finish() lands everything in one frame and keeps final letters', () => {
 
 **Agente:** implementador-web · **Rama:** `feat/shell-home` (tras mergear `feat/glyph-scene`) · **Gate:** no · **Depende de:** 2.5b, 2.6, 2.7 · **Insumos:** nombre a mostrar (`facts.displayName`), subtítulo alternativa B fijado por `redactor`; INV §1.3 (`HeroSplit`, `HeroStage`, `GlyphScene`, `CycleBars`, `Backdrop`); `index.html:34-50`; `base.css:100-112, 195-200, 208`; `scene.js:306-423`
 
+> **v2.1 (eng review):** **desvío aceptado por Jose (28): WebGL en tablets grandes** (≥ 56.25rem, puntero grueso) recibe modo `scene`; se registra en `apps/web/e2e/visual/deviations.json`; `qa` lo prueba en iPad en la puerta de la fase 2 y, si no rinde, se añade `(pointer: fine)` al gate. Añadir `performance.mark('scene:import-start')` justo antes del `import()` en `load-scene.ts`.
+
 **Objetivo:** la escena 0 de UX v4.0 §4.1 con **tres modos**: `scene` (escritorio ≥ 56.25rem con WebGL2), `video` (todo móvil y tablet: **WebGL solo en escritorio**, decisión 4 de INV §3), `poster` (reduced motion, `saveData`, sin JS); póster en el HTML en todos los viewports; `three` por `import()` tras el LCP; canvas con fundido; campo de luz que sigue a la nube. **Sin badge**, sin `HERO_LIVE_MOBILE`, sin `?hero=live`.
 
 **Ficheros:** `components/hero/hero-split/…` (RSC: `h1` con `FallText`, subtítulo con las dos audiencias en `text` 500, `Button` «Ver proyectos» → `#proyectos`, `ArrowLink` «Una web para mi negocio» → `/negocios`), `components/hero/hero-stage/…` (markup de DT §1.6.3: `<picture>` póster `fetchpriority="high"`, `<video hidden preload="none">` sin `<source>`, `<canvas hidden>`, `role="img"` con `aria-label` de messages; `min(38svh, 100%)` bajo 56.25rem, 34svh bajo 43.75rem de alto), `components/hero/hero-scene-gate/…` (isla ~1 KB), `components/hero/cycle-bars/…`, `lib/motion/hero-gate.ts` (`decideHeroMode`), `lib/motion/hero-gate.test.ts`, `lib/hero/load-scene.ts` (LCP → `import('@josecoded/glyph-scene')` → idle → `createGlyphScene` → fundido 1 s → póster `visibility:hidden`; `IntersectionObserver` + `visibilitychange`; `setMode('off')` fuera del hero; mueve `.field` por `transform`; `scene_drag` una vez), `app/[locale]/page.tsx` (home con `HeroSplit` + `IntroGateScript` + `IntroFall`), `messages/*.json` (`hero.*`).
@@ -1113,6 +1210,8 @@ it.each([
 ### Tarea 2.9 — `check-hero-bundle`, Lighthouse CI y `lhci:assert-lcp-element`
 
 **Agente:** implementador-web · **Rama:** `feat/shell-home` · **Gate:** no · **Depende de:** 2.8
+
+> **v2.1 (eng review):** `check-hero-bundle` comprueba también que **`@supabase/supabase-js` no está en ningún chunk inicial** de la home (2.3) y funciona sobre el manifiesto de Turbopack validado en 0.1.
 
 Sin cambios respecto a la v1 salvo el elemento LCP admitido (`h1` o `img.hero-stage__poster`) y las URLs (`/`, `/en`; las de la fase 3 cuando existan). Ficheros: `apps/web/scripts/check-hero-bundle.ts` + test sobre `tests/fixtures/app-build-manifest.json`, `apps/web/lighthouserc.json` (móvil 4G ×3: `performance ≥ 0.9`, `accessibility ≥ 0.95`, `seo == 1`, `best-practices ≥ 0.9`, LCP ≤ 2500, CLS ≤ 0.1, TBT ≤ 200; escritorio LCP ≤ 1200), `apps/web/scripts/lhci-assert-lcp-element.ts`; `ci.yml` con `check:hero-bundle`, `hero:media:check`, `lhci autorun`, `lhci:assert-lcp-element`.
 
@@ -1177,6 +1276,8 @@ it('types at typeMs per char and stops when paused', () => {
 
 **Agente:** implementador-web · **Rama:** `feat/shell-home` · **Gate:** no · **Depende de:** 2.1, 2.10 · **Insumos:** nombre, usuario de GitHub, cuentas de stores, LinkedIn (`facts.*`)
 
+> **v2.1 (eng review):** JSON-LD de packs con `priceSpecification: { '@type':'PriceSpecification', minPrice, priceCurrency:'EUR', valueAddedTaxIncluded:false }` (sin `price`); la tarifa por horas como `UnitPriceSpecification` con `price: 40`, `unitCode: 'HUR'`, `valueAddedTaxIncluded:false`; el test comprueba `minPrice === 1400` y `unitCode === 'HUR'`.
+
 Sin cambios de fondo respecto a la v1: `apps/web/lib/seo/jsonld.ts` (`personJsonLd`, `organizationJsonLd`, `webSiteJsonLd` con `SearchAction`, `profilePageJsonLd`, `serviceOfferJsonLd(pack)` con `priceSpecification` desde `pricing`, `faqJsonLd`, `softwareApplicationJsonLd` (solo nombre y enlaces), `blogPostingJsonLd`), `tests/jsonld.test.ts` (snapshots + shapes), `app/sitemap.ts`, `app/robots.ts` (permite `GPTBot`, `ClaudeBot`, `PerplexityBot`, `Google-Extended`, `OAI-SearchBot`; bloquea `/admin`, `/area-clientes`, `/auth`), `scripts/og.ts` (satori + resvg → `public/og/<slug>.png`, con la tipografía Geist y los colores de `tokens.css`), `scripts/llms.ts` (`public/llms.txt` y `llms-full.txt` desde `messages`, `content/` y `blog-index`, sin `{{DATO`), `components/seo/json-ld.tsx`; `app/[locale]/layout.tsx` con `Person` + `Organization` + `WebSite`; `prebuild` encadena `build-info`, `og`, `llms`.
 
 **Pasos:** 1. Test `jsonld.test.ts` (Person con `sameAs` https y sin «Jose Dev»; `WebSite.potentialAction = SearchAction`; `serviceOfferJsonLd(pricing.packs[1]).offers.priceSpecification.price = 1400`, `areaServed = 'ES'`; snapshots). 2. FAIL. 3. Implementar. 4. PASS; `robots.txt` y `sitemap.xml` correctos en `wrangler dev`; `llms.txt` sin `{{DATO`. 5. Commit: `git commit -m "feat(web): site-wide JSON-LD, sitemap, robots, generated OG images and llms.txt"`.
@@ -1186,6 +1287,8 @@ Sin cambios de fondo respecto a la v1: `apps/web/lib/seo/jsonld.ts` (`personJson
 ### Tarea 2.12 — Analítica en cliente: `lib/analytics.ts` y eventos de la home
 
 **Agente:** implementador-web · **Rama:** `feat/shell-home` · **Gate:** no · **Depende de:** 2.8, 2.10
+
+> **v2.1 (eng review):** el `EventMap` tiene **12 nombres**: `whatsapp_click {origin, pack?, ref?}`, `contact_submit`, `proposal_generated`, `proposal_sent`, `chat_started`, `call_booked`, `intro_played`, `scene_open`, `scene_drag`, `booking_open`, `referral_copy`, `palette_open` (DT §5.6 v1.4).
 
 **Objetivo:** `track()` seguro sin Umami cargado y los eventos de la home v6: `intro_played {skipped, reduced, mode}`, `scene_drag`, `scene_open {scene}` (al ampliar una celda; sustituye a `path_open`), `palette_open`, `whatsapp_click {origin:'home'}`, `booking_open {origin:'home'}` (DT §5.6 + UX v4.0 §4.1). El `EventMap` tiene 12 nombres (los 11 de DT §5.6 con `path_open` → `scene_open`, más `palette_open`).
 
@@ -1204,7 +1307,7 @@ it('is a no-op without umami and forwards when present', () => {
   expect((window as any).umami.track).toHaveBeenCalledWith('scene_open', { scene: 'business' });
 });
 it('rejects unknown event names at type level', () => { // @ts-expect-error
-  track('path_open'); });
+  track('unknown_event'); });
 ```
 - [ ] 2. → FAIL. 3. Implementar con `EventMap`. 4. → PASS. 5. Commit: `git commit -m "feat(web): typed analytics tracker and home events"`.
 
@@ -1213,6 +1316,8 @@ it('rejects unknown event names at type level', () => { // @ts-expect-error
 ### Tarea 2.13 — Capturas comparadas app/prototipo: `pnpm --filter web visual` (working-agreements §5, DT §8.8)
 
 **Agente:** implementador-web · **Rama:** `feat/shell-home` · **Gate:** no · **Depende de:** 2.10 (primera escena que comparar), `preview.yml`
+
+> **v2.1 (eng review):** (a) cada objetivo de `targets.ts` lleva **`mask: string[]`** (selectores) para los bloques con `{{DATO}}` y para los desvíos aceptados, registrados en **`apps/web/e2e/visual/deviations.json`** (`{ target, selector, commit, approvedBy:'jose', date }`); (b) las fuentes del prototipo (Geist, Geist Mono) se sirven **en local** desde `docs/superpowers/design/ref/fonts/` (copiarlas allí en esta tarea; sin CDN); (c) el job `visual` de `ci.yml` corre **solo en PR que tocan** `apps/web/components/**`, `apps/web/styles/**`, `apps/web/app/**` o `apps/web/messages/**`; (d) **solo la home se compara contra el prototipo**; los objetivos de páginas interiores usan `toHaveScreenshot` contra su primera versión aprobada por Jose (referencias en `e2e/visual/__refs__/`, commiteadas) y no contra `ref/`.
 
 > Sustituye a la 2.13 de la v1 («Medición del hero en móvil, `HERO_LIVE_MOBILE`»), superada: móvil es siempre vídeo + póster.
 
@@ -1372,6 +1477,8 @@ it('indicator is hidden in hero, tour and with an open cell, and when the margin
 
 **Agente:** implementador-web · **Rama:** `feat/shell-home` · **Gate:** no · **Depende de:** 2.16, 2.12, 2.13
 
+> **v2.1 (eng review):** (a) en escritorio, la prueba de orden compara la entrada LCP con **`performance.mark('scene:import-start')`** (2.8), no con el nombre del recurso; (b) en móvil se afirma que **no existe ningún `<canvas>`** y que el `<source>` del vídeo se añade después de la entrada LCP; (c) **E2E del paginado**: `page.mouse.wheel(0, 200)` en 1440×900 lleva exactamente a la escena siguiente y un segundo gesto contrario durante el `glide` lo interrumpe; en 390×844 la rueda no pagina.
+
 **Objetivo:** las filas «Hero: intro y modos», «Home por escena», «Fallbacks» y «Reduced motion» de DT v1.3 §8.2 como tests Playwright (Chromium + WebKit), más la comprobación de que el chunk de `three` llega después del LCP.
 
 **Ficheros:** `apps/web/e2e/hero.spec.ts`, `apps/web/e2e/home.spec.ts` (un `test` por escena: texto accesible real, `h1` único, teclado —Tab llega a cada enlace y celda, Esc cierra la celda, ⌘K abre—, sin errores de consola, indicador ausente en el hero, móvil sin paginado), `apps/web/e2e/fallbacks.spec.ts` (WebKit: Proyectos apilado, celda sin transición, cabecera opaca), `apps/web/e2e/helpers/{reduced-motion,save-data,umami}.ts`, `playwright.config.ts` (proyectos `chromium` y `webkit`).
@@ -1423,9 +1530,32 @@ test('indicator is absent in the hero and present in scenes', async ({ page }) =
 **Cierre de la fase 2:** `revisor` sobre `feat/shell-home`; `ui` en modo revisión (`/impeccable audit` y `/impeccable critique`) sobre el diff de capturas de 2.13 y emite «fiel» / «desvío aceptable» / «no pasa» por escena; `/puerta-calidad` completa (`usuario-ejemplo` con Marta y Dani en la home; `revisor-accesibilidad` con la intro, `role="img"`, celda modal, teclado; `qa` con 60 fps en escritorio, vídeo en Android de gama media e iOS Safari con la tabla de fallbacks de working-agreements §6); **Jose aprueba la preview del PR en el navegador**; merge a `main`.
 
 ---
+## Hito «contenido completo» (v2.1, hallazgo 39) · antes de la fase 3
+
+La fase 3 no arranca con huecos: **lista cerrada de insumos con responsable y fecha**, que el controlador convierte en tabla en `ESTADO.md` al cerrar la fase 2 y que la **fecha de válvula** tiene en cuenta. Mientras falte un insumo, su bloque no se renderiza (regla `{{DATO}}`), pero la puerta de la fase 3 no se cierra sin la lista completa o sin la decisión explícita de Jose de publicar sin ese bloque.
+
+| Insumo | Responsable | Bloquea | Fecha (la fija Jose al cerrar la fase 2) |
+|---|---|---|---|
+| Nombre a mostrar, ciudad, años, disponibilidad, desde cuándo freelance | Jose | hero, Sobre mí, Empresas | |
+| Foto real | Jose | celda Sobre mí, P6 | |
+| Historia corta, principios y trayectoria (empleos, fechas) en es y en | Jose + `redactor` | P6 | |
+| Entregable por servicio (es/en) y respuestas de la FAQ de Empresas | Jose + `redactor` | 2.14, 3.2 | |
+| «Incluye» de cada pack y de las apps en lenguaje llano (es/en) | `redactor` (Jose valida) | 3.3, 3.9, `pricing.json` bilingüe | |
+| Estado, enlaces, capturas, reto/trabajo/resultado de HazmeFila, Oportunix, 3catinfo y webs de comercios (es/en) | Jose + `redactor` | 3.4, 2.15 | |
+| Caso josecoded.com (es/en) | `redactor` desde los documentos del repo (Jose valida) | 3.4 | |
+| CV maestro es/en con `<!-- id: -->` y qué entra del stack; certificaciones con organismo y año | Jose | 3.14, 3.5, 7.x | |
+| WhatsApp, email profesional, usuario de GitHub, enlaces de stores, plazo de respuesta | Jose | 3.3, 3.10, 2.16 | |
+| Cuenta de Cal.com y evento «20 min» | Jose | 3.2, 3.10, 3.12 | |
+| Datos del titular (nombre legal, NIF, domicilio) y textos legales validados (es/en) | Jose | 3.6 | |
+| Cuenta SMTP para Auth (@josecoded.com) y dominio verificado en Resend | Jose | 3.12, 4.1 | |
+| Tres artículos reales (o los tres candidatos escritos) | Jose + `redactor` | 4.2, 2.15 | |
+| `Comercial/voz.md` con ejemplos reales | Jose | todo el copy | |
+
+---
+
 ## Fase 3 — Páginas públicas, generador, leads vía gateway, contacto, Cal.com, Turnstile · Estimación L · ramas `feat/public-pages` (3.1–3.6) y `feat/generator-leads` (3.7–3.12)
 
-> **v2.0.** Pantallas y contenidos: **PANT** §1–§3 (P1–P19) y UX v4.0 (§4.2–4.13 con sus notas «superado por»). Lenguaje de las interiores: escenas con **scroll libre** (`Scene` sin `fill`, sin `usePagedScroll`, sin indicador ni carrusel), titular a dos tonos y bentos; modo Leer y Operar con columna de lectura o herramienta. Componentes: los de INV reutilizados (PANT §2, columna R) y los nuevos (columna N) hechos una vez, antes de la primera página que los necesite (3.13). **Todo bilingüe**: cada tarea de pantalla entrega `messages/es.json` y `en.json` (copy de interfaz por `redactor`; los `{{DATO}}` de Jose en ambos idiomas) y termina con `pnpm --filter web i18n:check`. Cada pantalla se **diseña antes de construirse**: `ux` (`/impeccable shape` + wireframe) → `usuario-ejemplo` → `ui` (prototipo en `docs/superpowers/design/ref/<pantalla>/` con el sistema v6) → **Jose valida en el navegador** → implementación 1:1 → `pnpm --filter web visual` contra ese prototipo → `ui` revisa → **Jose aprueba en preview**. Precios solo desde `@josecoded/pricing`; sin métricas.
+> **v2.0.** Pantallas y contenidos: **PANT** §1–§3 (P1–P19) y UX v4.0 (§4.2–4.13 con sus notas «superado por»). Lenguaje de las interiores: escenas con **scroll libre** (`Scene` sin `fill`, sin `usePagedScroll`, sin indicador ni carrusel), titular a dos tonos y bentos; modo Leer y Operar con columna de lectura o herramienta. Componentes: los de INV reutilizados (PANT §2, columna R) y los nuevos (columna N) hechos una vez, antes de la primera página que los necesite (3.13). **Todo bilingüe**: cada tarea de pantalla entrega `messages/es.json` y `en.json` (copy de interfaz por `redactor`; los `{{DATO}}` de Jose en ambos idiomas) y termina con `pnpm --filter web i18n:check`. **v2.1 (hallazgo 40): solo Negocios (P1) y Contacto (P3) tienen prototipo de `ui` en `ref/`** (además de la home); `ux` hace `/impeccable shape` y wireframe de todas, y **el resto de pantallas se construye directamente con `DESIGN.md`, PANT y los componentes de 3.13**, con la aprobación de Jose en la preview como validación (working-agreements §4–§5 v1.1). Flujo con prototipo (P1, P3): `ux` → `usuario-ejemplo` → `ui` (prototipo) → Jose valida en el navegador → implementación 1:1 → `visual` contra su referencia → `ui` revisa → Jose aprueba en preview. Flujo sin prototipo: `ux` → implementación con `DESIGN.md` → captura de referencia propia (`__refs__/`) → `ui` revisa → Jose aprueba en preview. Precios solo desde `@josecoded/pricing`; sin métricas.
 >
 > **Orden de construcción (PANT §4; no es orden de lanzamiento, que sigue siendo todo junto):**
 >
@@ -1446,10 +1576,12 @@ test('indicator is absent in the hero and present in scenes', async ({ page }) =
 
 **Agente:** implementador-web · **Rama:** `feat/public-pages` · **Gate:** no · **Depende de:** 2.4 · **Insumos:** datos §18 (4–8, 12, 14, 15), `GITHUB_TOKEN` en Actions
 
+> **v2.1 (eng review):** `rankProjects` y los JSON de proyectos: `stores.json` y `github.json` solo alimentan enlaces y JSON-LD. `content-refresh.yml` **sin `perf.ts`**.
+
 **Objetivo:** `content/` como única fuente de fichas y textos largos, con esquema zod, y los datos externos (GitHub, stores) generados en build con respaldo commiteado (DT §5.1, §5.2).
 
 **Ficheros:**
-- Crear: `apps/web/content/projects/{tres-cat-info,hazmefila,oportunix,josecoded}.json` (+ `webs-*.json` si Jose aporta webs de comercios), `content/projects/schema.ts` (`{ slug, name, type:'app'|'web', oneLiner:{es,en}, status:'published'|'in-use'|'private', proofs:{ appStoreId?, playPackage?, webUrl?, repoUrl? }, hideMetrics?, hideStack?, stack?, year, screenshots[], art:'phone'|'web' }`), `content/projects/cases/<slug>.{es,en}.mdx` (caso de estudio medio con `export const metadata` validado: bloques `challenge`, `work`, `result`; PANT P8), `content/services/{companies,business}.{es,en}.md` (Empresas: tres servicios con `deliverable` `{{DATO}}`), `content/faq/{business,companies}.{es,en}.json`, `scripts/github.ts` (REST + GraphQL → `content/generated/github.json`; fallback al commiteado), `scripts/stores.ts` (iTunes Lookup + `google-play-scraper` → `content/generated/stores.json`; fallback), `scripts/content-index.ts` (esqueleto para blog; ordena proyectos por número de pruebas verificables → `content/generated/projects-index.json`), `.github/workflows/content-refresh.yml` (cron 04:00: scripts + `perf.ts` (9.3) → commit `chore(content): refresh generated data` → build → **`wrangler deploy` web solo si el diff se limita a `content/generated/*`**, decisión P4), tests `content/projects/schema.test.ts`, `scripts/content-index.test.ts`.
+- Crear: `apps/web/content/projects/{tres-cat-info,hazmefila,oportunix,josecoded}.json` (+ `webs-*.json` si Jose aporta webs de comercios), `content/projects/schema.ts` (`{ slug, name, type:'app'|'web', oneLiner:{es,en}, status:'published'|'in-use'|'private', proofs:{ appStoreId?, playPackage?, webUrl?, repoUrl? }, hideMetrics?, hideStack?, stack?, year, screenshots[], art:'phone'|'web' }`), `content/projects/cases/<slug>.{es,en}.mdx` (caso de estudio medio con `export const metadata` validado: bloques `challenge`, `work`, `result`; PANT P8), `content/services/{companies,business}.{es,en}.md` (Empresas: tres servicios con `deliverable` `{{DATO}}`), `content/faq/{business,companies}.{es,en}.json`, `scripts/github.ts` (REST + GraphQL → `content/generated/github.json`; fallback al commiteado), `scripts/stores.ts` (iTunes Lookup + `google-play-scraper` → `content/generated/stores.json`; fallback), `scripts/content-index.ts` (esqueleto para blog; ordena proyectos por número de pruebas verificables → `content/generated/projects-index.json`), `.github/workflows/content-refresh.yml` (cron 04:00: scripts → commit `chore(content): refresh generated data` → build → **`wrangler deploy` web solo si el diff se limita a `content/generated/*`**, decisión P4), tests `content/projects/schema.test.ts`, `scripts/content-index.test.ts`.
 
 **Pasos:**
 - [ ] 1. Tests que fallan:
@@ -1484,6 +1616,8 @@ it('every project file validates and 3catinfo hides metrics and stack', () => {
 
 **Agente:** implementador-web · **Rama:** `feat/public-pages` · **Gate:** no · **Depende de:** 3.13, 3.10 (`ContactForm`, `CalEmbed`), 3.1, 2.11 · **Insumos:** PANT P4; entregable por servicio `{{DATO}}` (es/en); respuestas de la FAQ (disponibilidad, puesto fijo); enlaces de stores y GitHub; `NEXT_PUBLIC_CAL_LINK`; prototipo `ref/empresas/` validado por Jose
 
+> **v2.1 (eng review):** sin prototipo propio en `ref/` (se construye con `DESIGN.md`, PANT P4 y los componentes de 3.13; aprobación de Jose en preview). Los textos de servicios y tarifas salen de `pricing.json` bilingüe.
+
 **Objetivo:** PANT P4, bloques 1–8: `PageHead` con el titular de la escena («Trabajo con empresas. Web, móvil e IA para tu producto.») + párrafo citable + `[Reservar 20 min]` + «Descargar CV →» (solo si existe el PDF de 3.14); Servicios (Web · Apps · IA) con `SlidingList` de INV, entregable y enlace al caso de ejemplo; **Tarifas: `SegmentedControl` + `RateFigure` con 40 €/h y feature cerrada desde 150 € (confirmado 2026-09-29; sin packs de web ni de app: viven en Negocios)**; Cómo trabajo (`ProcessSteps`); Con qué trabajo (resumen + «Ver stack y formación →» a `/sobre-mi#stack`); Pruebas (enlaces a stores y «Código en GitHub», **sin contadores**); Preguntas (`FAQ` con `FAQPage`); cierre corto con `[Reservar 20 min]` + «Escribir por formulario →» (`/contacto?via=empresa`) + «Preguntar al asistente →». `Service` + `Offer` JSON-LD.
 
 **Ficheros:** `app/[locale]/(public)/empresas/page.tsx`, `components/companies/{services-list,rates,proof-links}/…`, `messages/*.json` (`companies.*` es/en), `e2e/companies.spec.ts`.
@@ -1508,6 +1642,8 @@ it('shows the two company rates from pricing and never a pack', () => {
 ### Tarea 3.3 — `/negocios` (P1: comparador de packs, «¿Necesitas una app?», barra fija)
 
 **Agente:** implementador-web · **Rama:** `feat/public-pages` · **Gate:** no · **Depende de:** 3.13, 3.1, 1.4 · **Insumos:** PANT P1 (bloques 1–9 y barra fija); textos llanos del «incluye» de cada pack y de las apps (`redactor` con `voz.md`, es/en; Jose valida); WhatsApp `{{DATO}}`; prototipo `ref/negocios/` validado por Jose
+
+> **v2.1 (eng review):** (a) `WhatsAppButton`: el texto prellenado termina en «(ref XXX)» cuando hay código de afiliado aceptado y el evento `whatsapp_click` lleva `ref`; (b) `PackCompare` y `AppOffer` leen `name.{locale}`, `includes.{locale}` de `pricing.json` bilingüe (1.4); (c) el prototipo `ref/negocios/` de 3.13 es la referencia visual de esta pantalla.
 
 **Objetivo:** PANT P1: `PageHead` (titular de la escena + párrafo citable + `[Escribir por WhatsApp]` + «Pedir propuesta orientativa →»); **`PackCompare`** con los cuatro packs desde `pricing` (qué incluye, plazo, precio «desde», «Pedir propuesta con este pack →» → `/propuesta?pack=P2`; **en móvil, un pack por vista con selector y `PackStrip` como índice**, nunca tabla con scroll horizontal; anclas `#p1`–`#p4` a las que enlaza la escena de la home); «Precios desde, sin IVA. Dominio y hosting a tu nombre.»; `ProposalPrompt` (INV) → `/propuesta?q=`; **`AppOffer`** («¿Necesitas una app?»: MVP desde 4.000 € · 6 semanas; ampliada desde 6.000 € · 8 semanas, desde `pricing.apps`, sin jerga, WhatsApp prellenado «app»); `ExtraList` (mantenimiento con selector mensual, SEO, GEO, seguridad); `ProcessSteps` (hablamos → presupuesto cerrado → 40/30/30 → publicada + 30 días); «Webs hechas» (`ProjectCard` de webs de comercios; sin datos, no se renderiza); `FAQ` con `FAQPage`; cierre corto con WhatsApp; **`StickyCtaBar`** móvil (WhatsApp + Propuesta; la única barra fija del sitio). Sin «recomendado» ni regalos.
 
@@ -1603,6 +1739,8 @@ it('renders only entries with a real date and in chronological order', () => {
 
 **Agente:** implementador-web · **Rama:** `feat/public-pages` · **Gate:** no · **Depende de:** 3.13, 2.3 · **Insumos:** textos legales validados por Jose (se portan los de josedev con marca `josecoded`, en es y en); datos del titular
 
+> **v2.1 (eng review):** política de **cookies**: la cookie `ref` solo se escribe **tras aceptación explícita** en `RefNotice` (3.11); sin ella, el código vive en `sessionStorage` y caduca con la sesión. Política de **privacidad**: finalidad «atribución de recomendaciones (afiliados) y detección de autoreferido» y «personalización del área». Sin prototipo propio.
+
 **Objetivo:** PANT P18–P19 y UX §8: aviso legal, privacidad y cookies en es/en como MDX estático con `Prose` + `Toc` (privacidad con las finalidades nuevas: personalización del área por señal de origen, spec D32; la española es la que vale legalmente y la inglesa lo dice); `ErrorPage` v6 para 404, 410, 500, 403 y mantenimiento con el código sobre el título y enlaces útiles (`/contacto`, no «Contacto» de la cabecera); `OfflineBanner`. Con `{{DATO}}` del titular (nombre legal, NIF, domicilio) sin cubrir, las legales no se publican.
 
 **Ficheros:** `content/legal/{aviso-legal,privacidad,cookies}.{es,en}.mdx`, `app/[locale]/(public)/legal/[doc]/page.tsx`, `app/[locale]/not-found.tsx`, `app/[locale]/error.tsx`, `app/global-error.tsx`, `components/shared/{error-page,offline-banner}.tsx`, `e2e/errors.spec.ts`.
@@ -1619,10 +1757,12 @@ it('renders only entries with a real date and in chronological order', () => {
 
 **Agente:** implementador-web · **Rama:** `feat/generator-leads` · **Gate:** no · **Depende de:** 1.7, 1.4
 
+> **v2.1 (eng review):** orden y piezas nuevas (DT §0b): (1) `verifyTurnstile` **antes** que cualquier contador; (2) `nativeRateLimit`; (3) cuota por IP y global con la **RPC `increment_quota`** (1.8) en lugar de `QUOTA_KV`; si la RPC falla, **se deja pasar** y se registra `quota_unavailable` (test «el contador lanza un error → 200»); (4) `env.AI.run(..., { gateway: { id: env.AI_GATEWAY_ID } })` **obligatorio** con `cf-aig-metadata: { consumer:'proposals' }` y el presupuesto de DT §0b; (5) **guarda determinista** `guardModelOutput(output, locale)`: si la salida contiene `€`, cifras que parezcan precio, URLs, «gratis/regalo/free» o texto en otro idioma → cae a reglas (`source:'rules'`); (6) precio por reglas. **`proposalToken`** = HMAC-SHA256 con `SERVER_KEY` de `{ pack, extras, priceFrom, isApp, pricingVersion, locale, exp }` en la respuesta, sin KV. `isApp` y `APP_MVP`/`APP_PLUS` en el JSON schema del modelo y en `classifyByRules` (palabras clave **es y en**: «app», «aplicación móvil», «iOS», «Android», «store», «mobile app»); **precedencia P4 > P3 > P2 > P1** y los cuatro casos del test alineados (añadir «app para pedir cita» → `APP_MVP`). **Evals manuales**: `apps/api/evals/proposals.jsonl` (~30 casos es/en con 5 inyecciones) y script `pnpm --filter api eval -- evals/proposals.jsonl` contra `wrangler dev --remote`; resultado en el PR antes del merge.
+
 **Objetivo:** el generador de propuestas de DT §3.2 en workerd, con clasificación por IA (JSON mode) y precio por reglas, fallback por reglas, Turnstile, rate limit y cuota diaria.
 
 **Ficheros:**
-- Crear: `apps/api/src/services/turnstile.service.ts` (`verifyTurnstile(env, token, ip, { action, hostnames })`), `src/services/quota.service.ts` (`checkQuota(env.QUOTA_KV, key, limit, ttl)`), `src/services/proposal-classifier.ts` (prompt de sistema con `includes` de `pricing.json`; `classifyByRules(answers)`; JSON schema literal de DT §3.2), `src/modules/proposals.routes.ts`, `src/schemas/proposals.schema.ts`, tests `proposals.routes.test.ts`, `proposal-classifier.test.ts`, `turnstile.service.test.ts`.
+- Crear: `apps/api/src/services/turnstile.service.ts` (`verifyTurnstile(env, token, ip, { action, hostnames })`), `src/services/quota.service.ts` (`checkQuota(env, key, limit, ttl)` → RPC `increment_quota`; deja pasar si falla), `src/services/output-guard.ts` (`guardModelOutput`), `src/services/proposal-token.ts` (HMAC), `src/services/proposal-classifier.ts` (prompt de sistema con `includes` de `pricing.json`; `classifyByRules(answers)`; JSON schema literal de DT §3.2), `src/modules/proposals.routes.ts`, `src/schemas/proposals.schema.ts`, tests `proposals.routes.test.ts`, `proposal-classifier.test.ts`, `turnstile.service.test.ts`.
 - Modificar: `src/modules/v1.routes.ts` (montar **antes** de `protectedV1Routes`), `routes-manifest.ts`, `wrangler.jsonc` (`QUOTA_KV`), `package.json` (`@josecoded/pricing` como dependencia workspace).
 
 **Interfaces (produce):** request/response exactos de DT §3.2 (`{ locale, turnstileToken, answers:{businessType, needs, salesMode, timeline, extrasInterest?}, preselectedPack? }` → `{ proposalId, pricingVersion, pack:{code,name,price,weeks,includes}, priceFrom, recommendedExtras[], summary, scope[], questions[], source:'ai'|'rules', disclaimer }`); errores `bot_check_failed` 403, `rate_limited`/`quota_exceeded` 429, `upstream_error` 502.
@@ -1664,13 +1804,15 @@ it('failed Turnstile → 403 bot_check_failed', async () => {
   const r = await post(); expect(r.status).toBe(403); expect((await r.json()).error.code).toBe('bot_check_failed');
 });
 ```
-- [ ] 2. → FAIL. 3. Implementar según DT §3.2 (pasos 1–6); `AI` falso en `vitest.config.ts` (`miniflare.bindings` o `wrappedBindings`) que devuelve `env.AI.__next`; `AI_GATEWAY_ID` opcional en `env.AI.run(..., { gateway:{ id } })`; el `proposalId` se guarda 24 h en `QUOTA_KV`. 4. → PASS (heredados + nuevos). 5. Commit: `git commit -m "feat(api): AI proposal generator with rule-based pricing, Turnstile, rate limit and daily quota"`.
+- [ ] 2. → FAIL. 3. Implementar según DT §3.2 (pasos 1–6); `AI` falso en `vitest.config.ts` (`miniflare.bindings` o `wrappedBindings`) que devuelve `env.AI.__next`; `AI_GATEWAY_ID` **obligatorio** en `env.AI.run(..., { gateway:{ id } })`; la propuesta viaja como `proposalToken` firmado (sin KV). 4. → PASS (heredados + nuevos). 5. Commit: `git commit -m "feat(api): AI proposal generator with rule-based pricing, Turnstile, rate limit and daily quota"`.
 
 **Hecho cuando:** tests en verde; una prueba de humo manual con el modelo real en `wrangler dev --remote` antes del merge (DT §8.7).
 
 ### Tarea 3.8 — Gateway: `POST /api/v1/leads`, `notifyLead`, `POST /notify/lead`, `GET /affiliates/validate`; Edge Function `lead.created`
 
 **Agente:** implementador-web · **Rama:** `feat/generator-leads` · **Gate:** no (el deploy de la función y los secretos van en 3.12) · **Depende de:** 3.7, 1.8, 1.9
+
+> **v2.1 (eng review):** (a) tests **contra `supabase start`** (`SUPABASE_URL=http://127.0.0.1:54321`) con `fetchMock.enableNetConnect(/127\.0\.0\.1/)` y helper `readLead(id)` (service role solo en CI/local, `tests/helpers/db.ts`); (b) **`idempotency_key`** obligatoria (`calcom:<uid>` o UUID del cliente): repetida → 200 con el `leadId` existente; (c) `proposalToken` verificado (HMAC) y **re-tarificado** con `pricing`; `ai_proposal` con el contrato de 1.4 y **test de contrato** con la Edge Function (`supabase/functions/notify/index.test.ts` lee el mismo fixture); (d) **código de afiliado desconocido → 201 sin afiliado y `meta.invalid_ref`** (sustituye al 400 del test); autoreferido → 201 con `meta.self_referral_suspect` (sin 409); `GET /affiliates/validate` a 10/min por IP; (e) `notifyLead` deduplica por `lead_id` (`meta.notify.sent_at`) y el trabajo `leads.notify_retry` del cron único reintenta los `via='none'` de 24 h; (f) `leads.user_id` se rellena si llega JWT.
 
 **Objetivo:** creación de leads solo desde el gateway con service role, aviso primario por Edge Function y opcional por n8n, atribución de afiliado con detección de autoreferido (DT §3.3–3.5, H2, H3).
 
@@ -1709,6 +1851,8 @@ it('GET /affiliates/validate', async () => { expect((await (await SELF.fetch('ht
 ### Tarea 3.9 — Web: generador de propuesta `/propuesta` (`GuidedChat` + `ProposalCard`)
 
 **Agente:** implementador-web · **Rama:** `feat/generator-leads` · **Gate:** no · **Depende de:** 3.7, 3.8, 2.3 · **Insumos:** `ui` (`GuidedChat`, `ProposalCard` §13.12), UX §4.4, §9.1, §10.3
+
+> **v2.1 (eng review):** guarda el `proposalToken` en el estado de la máquina y lo envía en `sendProposal`; genera un `idempotencyKey` (UUID) al entrar en `sending` y lo reutiliza en reintentos; la `ProposalCard` muestra `AppOffer` si `isApp`.
 
 **Objetivo:** chat guiado de 4 pasos (tipo de negocio con chips, necesidades multiselección, ¿vende o reserva?, plazo) → propuesta (pack, alcance, "desde X €", extras opcionales, preguntas) → enviar (nombre + email/teléfono + Turnstile `proposal_send`) → lead `web_proposal`. Nunca página en blanco; `?pack=` preselecciona; `?q=` (texto de `ProposalPrompt`) precarga la primera respuesta; **si la clasificación apunta a una app, la `ProposalCard` muestra el bloque de apps (`AppOffer` de 3.3) en vez de un pack web** (PANT P2; `ai_proposal.isApp`); **bilingüe**: el gateway recibe `locale` y responde en el idioma de la página; errores inline (429, 502, Turnstile). `ChatBubble` y `ChoiceChips` con el sistema v6 (INV). Prototipo `ref/propuesta/` validado por Jose antes de construir.
 
@@ -1760,6 +1904,8 @@ test('restaurant with bookings → P2 from 1.400 €, send creates a lead and tr
 
 **Agente:** implementador-web · **Rama:** `feat/generator-leads` · **Gate:** no · **Depende de:** 3.8, 3.13, 3.3 (`WhatsAppButton`) · **Insumos:** PANT P3 y §1.3 («cierre corto»); WhatsApp, email, GitHub, plazo de respuesta y cuenta de Cal.com `{{DATO}}`; prototipo `ref/contacto/` validado por Jose
 
+> **v2.1 (eng review):** el formulario genera `idempotencyKey` por envío; sin prototipo en `ref/contacto/` no se construye (P3 sí tiene prototipo, 3.13).
+
 **Objetivo:** PANT P3: cabecera «¿Empezamos? Cuéntame qué necesitas.»; `SegmentedControl` **Tengo un negocio / Somos una empresa** (segmento inicial por `?via` → `sessionStorage.audience` → negocio); vía negocio: `[Escribir por WhatsApp]` primario + «Pedir propuesta orientativa →» + `Disclosure` «Prefiero dejar mis datos» con el formulario plegado; vía empresa: `ContactForm` abierto (primaria Enviar) + `CalEmbed` (INV/DT §5.3, lazy) + `CopyField` con el email; datos (email, LinkedIn, GitHub, «Respondo en menos de {{DATO}}»); SA `submitContact` → gateway `POST /leads` (`source:'web_form'`, `locale`); si el gateway responde 5xx, fallback `mailto:` + WhatsApp. **`ClosingCompact`**: versión compacta de `Closing` (una frase, la primaria de la persona de la página, «Otras formas de hablar →» a `/contacto`), usada por 3.2–3.5 y 4.2. La misma señal `audience` la usa la personalización del área (5.1).
 
 **Ficheros:** `app/[locale]/(public)/contacto/page.tsx`, `app/[locale]/(public)/contacto/actions.ts` (`submitContact(formData)`: zod, `turnstileToken`, `POST /leads`, `{ ok } | { error:'gateway_down'|'bot'|'invalid' }`), `components/contact/{contact-form,cal-embed,copy-field}/…`, `components/scenes/closing-compact/…`, `components/shared/disclosure/…` (sobre `lib/motion/disclosure.ts`), `lib/audience.ts` (`resolveAudience(search, session): 'business'|'company'`) + test, `components/contact/contact-form/contact-form.test.tsx`, `components/contact/cal-embed/cal-embed.test.tsx`, `e2e/contact.spec.ts`.
@@ -1809,6 +1955,8 @@ it('does not load Cal until the user asks for it', async () => {
 
 **Agente:** implementador-web · **Rama:** `feat/generator-leads` · **Gate:** no · **Depende de:** 3.8
 
+> **v2.1 (eng review):** (a) **`RefNotice` con aceptación explícita** («Aceptar» escribe la cookie `ref` de 30 días; «Ahora no» deja el código en `sessionStorage.ref` para esa sesión y no vuelve a preguntar); `captureRef` devuelve `{ pending: code }` y la cookie solo se escribe desde la acción de aceptar; test: sin aceptar no hay `Set-Cookie`; (b) Cal.com: **un solo campo `ref`** (metadata del embed → `responses.ref`; se elimina `notes`); `BOOKING_CANCELLED` y `BOOKING_RESCHEDULED` actualizan `leads.meta.calcom` sin crear lead; `idempotency_key = calcom:<uid>`; `call_booked` deduplicado por `uid`.
+
 **Objetivo:** `POST /api/webhooks/calcom` con HMAC del body raw → lead `calcom` con `x-josecoded-server-key`; evento `call_booked` en servidor (`@umami/node`, sin PII); `?ref=CODIGO` → cookie `ref` 30 días (primera gana) + `RefNotice` una vez (DT §5.3, §2 "Afiliados").
 
 **Ficheros:** `app/api/webhooks/calcom/route.ts`, `lib/calcom/verify.ts` (`verifySignature(raw, header, secret)`), `lib/calcom/verify.test.ts`, `tests/fixtures/calcom-booking-created.json`, `components/shared/ref-capture.tsx`, `lib/affiliates/ref-cookie.ts` (`captureRef(search, existingCookie): { set?: string; notice: boolean }`), `lib/affiliates/ref-cookie.test.ts`, `components/shared/ref-notice.tsx`, `e2e/affiliate-ref.spec.ts`.
@@ -1843,9 +1991,11 @@ it('stores a well-formed code once and ignores later codes and junk', () => {
 
 **Agente:** controlador (con OK de Jose); `implementador-web` prepara el checklist · **Gate:** **SÍ** · **Depende de:** 3.7–3.11 mergeadas o listas en la rama
 
+> **v2.1 (eng review):** se adelantan a este gate: **alta de `api.josecoded.com`** como custom domain del gateway y `NEXT_PUBLIC_JOSECODED_API_URL` (antes en 9.4), **rotación del token de Telegram y de la key de Resend** (antes en 9.4), **SMTP propio en Supabase Auth** (`cuenta@josecoded.com`; insumo de Jose) y `AI_GATEWAY_ID` (AI Gateway creado en el dashboard con los presupuestos por consumidor de DT §0b). Los secretos van al Worker de producción **y** a `josecoded-api-preview` con valores distintos. Tras el deploy, el smoke de `v1`, `forum` y `admin-chat` (1.9).
+
 **Pasos (cada uno con OK explícito de Jose en la sesión):**
 - [ ] 1. Jose crea el widget Turnstile (dominios `josecoded.com`, `*.workers.dev`, `localhost`) y la cuenta Cal.com con el evento "20 min" y el webhook `BOOKING_CREATED` apuntando a `https://josecoded.com/api/webhooks/calcom` (la URL existirá al lanzar; hasta entonces, a la preview).
-- [ ] 2. `wrangler kv namespace create QUOTA_KV` (anotar id en `apps/api/wrangler.jsonc`).
+- [ ] 2. Crear el AI Gateway en el dashboard (`AI_GATEWAY_ID`) con los presupuestos por consumidor de DT §0b; alta de `api.josecoded.com`; rotar el token de Telegram y la key de Resend; SMTP propio en Supabase Auth (v2.1; sin `QUOTA_KV`).
 - [ ] 3. `wrangler secret put` en `josecoded-api`: `TURNSTILE_SECRET_KEY`, `SERVER_KEY`, `NOTIFY_SHARED_SECRET` (mismo valor que `vault.notify_shared_secret`); en `josecoded-web`: `TURNSTILE_SECRET_KEY`, `SERVER_KEY`, `CALCOM_WEBHOOK_SECRET`. Vars públicas en ambos `wrangler.jsonc`.
 - [ ] 4. `supabase functions deploy notify` (si no se hizo en 1.9) y `ADMIN_NOTIFY_EMAIL` en el env de la función (opcional, P8).
 - [ ] 5. Anotar en `ESTADO.md` qué se configuró (nombres, nunca valores).
@@ -1857,6 +2007,8 @@ it('stores a well-formed code once and ignores later codes and junk', () => {
 ### Tarea 3.13 — Componentes compartidos de las páginas interiores y prototipo de P1 validado por Jose
 
 **Agente:** `ux` (shape + wireframe) → `usuario-ejemplo` → `ui` (prototipo) → **Jose** → implementador-web · **Rama:** `feat/public-pages` · **Gate:** no · **Depende de:** 2.10, 2.14, 2.16 (`Closing`), 2.13 · **Insumos:** PANT §2 («componentes nuevos compartidos»), §0 (lenguaje de las interiores), §8 (siguiente paso); INV §2 (reutilización fuera de la home)
+
+> **v2.1 (eng review):** **alcance reducido (hallazgo 40)**: `ui` prototipa **solo P1 Negocios y P3 Contacto** (`ref/negocios/`, `ref/contacto/`); `ux` hace shape y wireframe de todas las pantallas; los componentes compartidos se construyen igual y sirven a las pantallas sin prototipo. Añadir a `deviations.json` cualquier desvío aceptado.
 
 **Objetivo:** fijar el lenguaje de las páginas interiores con la primera pantalla (P1 Negocios) **antes de escribir su código**, y construir una sola vez los componentes que comparten todas: `PageHead` (cabecera de página interior con titular a dos tonos, párrafo citable y acciones), `FAQ` (acordeón nativo `<details>` con `FAQPage`), `ProcessSteps`, `EmptyState`, `ErrorState`, `Skeleton`, `Toast` (propio, sin Sonner: dependencia fuera del plan), `StatusBadge`, `Prose` (cuerpo MDX con los estilos del blog), `Toc`, `ErrorPage`, y la variante `Scene` sin `fill` + `Bento` en modo operar (sin `CursorLight`).
 
@@ -1873,6 +2025,8 @@ it('stores a well-formed code once and ignores later codes and junk', () => {
 ### Tarea 3.14 — CV maestro es/en → PDF descargable (`public/cv/`) compartido con Radar
 
 **Agente:** implementador-web · **Rama:** `feat/public-pages` · **Gate:** no · **Depende de:** 3.13, 7.1 (`packages/radar-core/content/cv.master.{es,en}.md` con ids de sección; si 7.1 no ha llegado, esta tarea crea la plantilla en el mismo sitio y 7.1 la adopta) · **Insumos:** CV maestro de Jose es/en (Q15); qué entra del stack y certificaciones (PANT §3.1)
+
+> **v2.1 (eng review):** (a) convención única del CV maestro: **`<!-- id: stack -->`, `<!-- id: formacion -->`, `<!-- id: experiencia -->`** (comentarios HTML); (b) **un solo analizador `loadCvMaster()` en `packages/radar-core/src/cv/load.ts`** (7.1 lo adopta; si 7.1 no existe aún, esta tarea lo crea allí con su test); (c) `packages/radar-core/cv/cv.css` compartido por este PDF y los de Radar; (d) **lista cerrada de campos públicos** (`PUBLIC_CV_FIELDS = ['name','email','linkedin','github']`) con test de que el PDF público no contiene teléfono, dirección ni NIF; (e) `X-Robots-Tag: noindex` para `/cv/*.pdf` (`_headers` de OpenNext) con test E2E.
 
 **Objetivo:** una sola fuente de verdad (el CV maestro de Radar) para la sección «Stack y formación» (3.5), el PDF descargable y los materiales de Radar (7.21). Script de build que renderiza `cv.master.{es,en}.md` a HTML con los tokens (versión imprimible, A4) y a PDF con Playwright Chromium headless en el Mac/CI → `apps/web/public/cv/jose-carlos-sanchez.{es,en}.pdf` (commiteados; ≤ 300 KB) y `content/generated/cv-index.json` (secciones stack y formación para 3.5). Sin CV maestro real, se genera desde la plantilla con `{{DATO}}` y **no se publica** (el enlace de 3.2, 3.5 y la home no se renderiza).
 
@@ -1904,6 +2058,8 @@ Pantallas: PANT P9–P15, P17 y UX v4.0 §5, §4.7–4.8, §4.11, §4.13, §9.4�
 ### Tarea 4.1 — Auth con `@supabase/ssr`: guards, login/registro/OTP, callback, perfil
 
 **Agente:** implementador-web · **Gate:** no · **Depende de:** 2.3, 1.8 · **Insumos de Jose (para la prueba manual, no para los tests):** OAuth Google/GitHub en Supabase, plantilla OTP con `{{ .Token }}`, leaked password protection (DT P9)
+
+> **v2.1 (eng review):** (a) plantillas de Supabase Auth (confirmación, OTP, recuperación) en es y en con el remitente **`cuenta@josecoded.com`** (SMTP propio configurado en 1.9/3.12; en local, Inbucket/Mailpit); (b) `ensureProfile` = `insert … on conflict do nothing` + `update … where first_audience is null`; la señal por `contact_email` solo cuenta con email confirmado (lo garantiza `area_lead_summary`); (c) **E2E de login por OTP leyendo el código del buzón local** (`http://127.0.0.1:54324`) y E2E de la señal de origen de extremo a extremo (`/negocios` → registro → `/area-clientes` con `PackStrip`).
 
 **Objetivo:** una cuenta de visitante para chat, comentarios y área; guards sin middleware (DT §1.7); email por código OTP de 6 cifras (UX §5.3); **v2.0:** el callback y las SA de login registran la **señal de origen del área** (DT §1.12): si hay cookie `ref` → `first_audience='referral'`; si no, `sessionStorage.audience` enviada en `next`/`?audience=` → `business`/`company`/`blog`; solo si la fila de `user_profiles` no tiene valor (write-once).
 
@@ -1938,6 +2094,8 @@ it('passes admins', async () => { globalThis.__user = { id:'u' }; globalThis.__s
 ### Tarea 4.2 — Blog en MDX: contenido, índice, listado, artículo, RSS, `BlogPosting`
 
 **Agente:** implementador-web · **Gate:** no · **Depende de:** 2.11, 2.1
+
+> **v2.1 (eng review):** (a) **un único `content/blog/schema.ts`** valida tanto el frontmatter YAML de `.md` (`gray-matter`) como el `export const metadata` de `.mdx`; el `import()` por slug resuelve **las dos extensiones**; test de `content-index` con un `.md` de fixture; (b) el YAML del frontmatter se serializa y parsea con la librería `yaml` (nunca a mano); (c) los números de la newsletter cuentan para `blogEnabled`.
 
 **Objetivo:** blog compilado en build con `@next/mdx` (DT §1.5), artículos en `content/blog/{es,en}/<slug>.mdx` (y `.md` puro para los que genere la newsletter, fase 10) con `export const metadata` validada por zod, índice en `prebuild`, RSS (`app/feed.xml/route.ts`), `llms-full.txt` con el contenido. **v2.0, regla de los 3 artículos (spec D33):** `content-index.ts` calcula `blogEnabled = artículos reales (sin {{DATO}}) ≥ 3` por sitio (no por idioma); con `false`, `/blog` y `/blog/[slug]` responden 404, y `NavLinks`, `MobileMenu`, `CommandPalette`, `SiteFooter` y la escena Blog de la home (2.15) omiten el blog. Artículos en un solo idioma marcados «Solo en inglés» / «Only in Spanish».
 
@@ -1997,6 +2155,8 @@ it('asks to sign in when anonymous', () => { render(<CommentThread comments={[]}
 
 **Agente:** implementador-web · **Gate:** no · **Depende de:** 4.1, 1.7
 
+> **v2.1 (eng review):** (a) el gateway añade a `admin-chat/*` **`nativeRateLimit` 10/min por `user_id`** (binding 1004) y **cuota diaria por usuario** con `increment_quota` (`chat:<yyyymmdd>:<user_id>`, 60); (b) `env.AI.run` con AI Gateway y `consumer:'chat'`; (c) **`admin-chat-assistant.service.ts`** se actualiza aquí (prompt «josecoded», `locale`, sin «Jose Dev») con sus tests heredados; (d) avisos de Telegram del chat **agrupados** (un mensaje por conversación cada 10 min); (e) evals manuales `evals/chat.jsonl` (15 preguntas trampa) antes del merge.
+
 **Objetivo:** UX §4.11, §9.6 y PANT P11: hilo (`ChatThread` con `ChatBubble` de la home), `ChatComposer`, `MeetingSheet`, `StatusBand`, antesala `AuthGateCard` sin cuenta con dos o tres intercambios reales de ejemplo (`{{DATO}}`), respuestas por realtime en `admin_chat_messages`; **bilingüe**: el asistente responde en el idioma de la página (`locale` en el body; cambio aditivo del prompt); el gateway conserva el contrato y solo cambia, de forma aditiva, `knowledge.json` (perfil nuevo con los `{{DATO}}` resueltos, sin "Jose Dev") y el prompt de `ai-reply.ts` (DT §7.8).
 
 **Ficheros:** `app/[locale]/(public)/chat/page.tsx` (`requireUser`), `components/chat/{thread,composer,meeting-picker}.tsx`, `lib/chat/api.ts` (`getThread`, `postMessage`, `postMeeting` con el `access_token` de la sesión), `lib/chat/realtime.ts`, `components/chat/thread.test.tsx`, `e2e/chat.spec.ts`; `apps/api/src/knowledge/knowledge.json` (contenido nuevo), `apps/api/src/services/ai-reply.ts` (texto del prompt: "josecoded"), y sus tests heredados actualizados (`knowledge.test.ts`, `ai-reply.test.ts`).
@@ -2024,6 +2184,8 @@ Pantallas: PANT A1–A7 y §1.4 (personalización automática), UX v4.0 §2.2, �
 ### Tarea 5.1 — Shell del área, inicio del área y reclamar acceso
 
 **Agente:** implementador-web · **Gate:** no · **Depende de:** 4.1, 1.8
+
+> **v2.1 (eng review):** `resolveAreaVariant` sin cambios; la señal «lead» solo llega si `area_lead_summary()` la devuelve (email confirmado). E2E de la señal de origen de extremo a extremo (4.1).
 
 **Objetivo:** `app/[locale]/(private)/area-clientes/layout.tsx` (`requireUser`, `AppShell` con Mi proyecto · Tareas · Material · Pack · Recomiéndame; las de proyecto solo si `clients.user_id = auth.uid()`), y la **portada personalizada automáticamente** (spec D32, DT §1.12, PANT §1.4): `resolveAreaVariant({ client, lead, profile })` → `client` (proyecto: fase, «Te toca a ti», novedades, hablar con Jose) · `proposal` («Tu propuesta»: pack o app recomendada, precio «desde», estado, WhatsApp; desde `area_lead_summary()`) · `referral` (Recomiéndame arriba + «¿Quieres una web?») · `business` (`PackStrip` resumido, Pedir propuesta, WhatsApp) · `company` (CV PDF, Reservar 20 min, chat, proyectos destacados) · `blog` (vuelve al artículo) · `neutral` (dos puertas del mismo peso). **Nunca oculta** Recomiéndame, Mi cuenta ni la vía de contacto. `claimClientAccess` ya llamado en 4.1.
 
@@ -2074,6 +2236,8 @@ it.each([
 
 **Agente:** implementador-web · **Gate:** no · **Depende de:** 5.1, 1.4
 
+> **v2.1 (eng review):** la SA llama a la **RPC `request_upgrade(p_to_pack_code, p_extras)`** (1.8), que calcula el precio en la BD; la web muestra el precio con `computeUpgrade` y un test comprueba que ambos coinciden (1100 para P2→P3). No hay insert directo en `upgrade_requests`.
+
 **Objetivo:** UX §6.5–6.6: pack contratado y extras (`client_pack_extras`), solicitud de ampliación con precio por `computeUpgrade` (diferencia de lista) → `upgrade_requests` (RLS), pendiente visible al cliente.
 
 **Ficheros:** `.../pack/page.tsx`, `.../pack/ampliar/page.tsx`, `.../pack/actions.ts` (`requestUpgrade`), `components/area/{pack-summary,upgrade-form}.tsx`, `components/area/upgrade-form.test.tsx`, `e2e/client-area.spec.ts` (ampliar).
@@ -2097,6 +2261,8 @@ it('P2 client choosing P3 sees 1.100 € and submits computed price', () => {
 
 **Agente:** implementador-web · **Gate:** no · **Depende de:** 5.1, 1.8
 
+> **v2.1 (eng review):** `ensureAffiliate` permite **elegir el prefijo** (3–12 alfanuméricos; por defecto el nombre de pila normalizado con `suggestPrefix`) y el trigger genera el sufijo de 6; el enlace copiado lleva `?ref=<código>`; test del contrato único (1.4).
+
 **Objetivo:** UX §6.7: SA `ensureAffiliate` (insert `affiliates` propio; el código lo genera el trigger), enlace `https://josecoded.com/?ref=CODIGO` con copiar (`referral_copy`), leads atribuidos desde `affiliate_leads_view` (estado y fecha, sin contacto), recompensas (`affiliate_rewards`: pendiente/abonada), explicación de las tres reglas desde `pricing.json`.
 
 **Ficheros:** `.../recomiendame/page.tsx`, `.../recomiendame/actions.ts`, `components/area/{referral-link,referral-leads,rewards-list}.tsx`, `components/area/referral-link.test.tsx`, `e2e/client-area.spec.ts` (ampliar).
@@ -2113,6 +2279,8 @@ Pantallas: UX §7.1–7.11, §3.9 (shell del admin con barra móvil Leads · Rad
 ### Tarea 6.1 — Layout del admin, guard, shell y Resumen `/admin`
 
 **Agente:** implementador-web · **Gate:** no · **Depende de:** 4.1, 1.7
+
+> **v2.1 (eng review):** Resumen con **`React.cache()`** por petición (`getSession`, `getAdminCounters`), **`Promise.all`** y la RPC **`admin_counters()`** (1.8) en una sola consulta; test: una llamada a la RPC por render.
 
 **Objetivo:** `app/[locale]/(private)/admin/layout.tsx` con `requireAdmin()` (404 sin rol, DT §1.7), navegación (escritorio lateral; móvil barra inferior), Resumen con 5 contadores (leads nuevos, comentarios pendientes, ampliaciones pendientes, recompensas pendientes, chats sin leer), "Radar hoy" (placeholder hasta 7.25), semáforo de Omen (`GET /api/v1/system/status` con el JWT de Jose; 502 → "Omen sin conexión").
 
@@ -2140,6 +2308,8 @@ E2E: `/admin` con Ana → 404; con Jose → "Resumen" y los cinco contadores.
 ### Tarea 6.2 — Leads: bandeja, detalle, lead manual, cerrar cobrado + recompensa
 
 **Agente:** implementador-web · **Gate:** no · **Depende de:** 6.1, 1.4, 1.8, 3.8
+
+> **v2.1 (eng review):** «Cerrar cobrado» llama a `admin_close_lead_paid`, que deriva el nivel `client` comprobando `clients` del afiliado (DT §0b); test: afiliado con cliente → recompensa `maintenance_months`.
 
 **Objetivo:** UX §7.2–7.3, §9.3, §9.9: bandeja filtrable por `estado`/`fuente`, detalle con `ProposalCard` (reutilizada de 3.9), afiliado, `meta.notify` y "Reenviar aviso" (`POST /notify/lead`), nuevo lead manual (SA `createManualLead`, `fuente='whatsapp'`), cambio de estado, "Marcar cerrado y cobrado" (modal con base = `monto` editable, recompensa calculada por `computeAffiliateReward`, casilla "Generar recompensa igualmente" desmarcada si `self_referral_suspect`) → RPC `admin_close_lead_paid`.
 
@@ -2196,6 +2366,8 @@ it('no affiliate → generate false', () => expect(buildClosePaidArgs({ id:'l' }
 
 **Agente:** implementador-web · **Gate:** no · **Depende de:** 6.1, 4.4
 
+> **v2.1 (eng review):** los avisos de Telegram de conversaciones llegan agrupados (4.4); el admin muestra el contador de mensajes desde el último aviso.
+
 **Objetivo:** UX §7.10–7.11: conversaciones (`GET admin-chat/admin/conversations`), conversación con mensajes, respuesta manual (`POST …/messages`), interruptor IA (`POST …/ai`), marcar leído; realtime en `admin_chat_messages`. Opcional: migración `20260917100800_realtime_admin_chat_conversations.sql` si la bandeja necesita actualizarse sin recarga (se aplica en el gate 7.7 junto con Radar).
 
 **Ficheros:** `.../admin/chat/page.tsx`, `.../chat/[id]/page.tsx`, `components/admin/chat/{conversation-list,conversation-view,takeover-switch}.tsx`, `components/admin/chat/takeover-switch.test.tsx`, `e2e/chat.spec.ts` (ampliar: admin ve la conversación y desactiva IA).
@@ -2214,6 +2386,8 @@ Las ramas `feat/radar-core` (7.1–7.7) y `feat/radar-connectors` (7.8–7.15) *
 ### Tarea 7.1 — `packages/radar-core`: tipos, esquemas zod, plantillas de perfil/CV/voz, `profile.meta`
 
 **Agente:** implementador-web · **Rama:** `feat/radar-core` · **Gate:** no · **Depende de:** 1.1 · **Insumos:** `profile.json` real (Q10) y CV maestro (Q15) de Jose — hasta entonces plantillas con `{{DATO}}`
+
+> **v2.1 (eng review):** `packages/radar-core/src/cv/load.ts` (`loadCvMaster()`, convención `<!-- id: -->`) y `cv/cv.css` son la única fuente para 3.14, 7.5 y 7.21 (si 3.14 se hizo antes, ya existen aquí).
 
 **Objetivo:** la única fuente de hechos de Radar y los esquemas que comparten gateway, web, CLI y tests (DT §11.1 "Perfil", §11.7, §11.11 k).
 
@@ -2675,6 +2849,8 @@ it('GET /job returns queries and limits and respects runs_per_day', async () => 
 
 **Agente:** implementador-web · **Rama:** `feat/radar-api` · **Gate:** no · **Depende de:** 7.16, 7.2, 7.5
 
+> **v2.1 (eng review):** (a) el `sweep` **no es un cron propio**: es el trabajo `radar.sweep` del despachador único (1.7) y comparte el presupuesto de ≤ 40 subpeticiones por tick; (b) **test que cuenta `fetch` y `env.AI.run` por tick** con fixtures (< 40) y **lotes dinámicos** (`RADAR_BATCH_SCORE` se calcula del presupuesto restante); (c) reducción de Radar a **tres trabajos** (DT §0b): `radar.sweep` */5, `radar.mail` cada 60 min con la lectura del calendario dentro, `radar.daily` a las 08:00 Madrid vía `nextRun` con `tz` (sin doble disparo).
+
 **Ficheros:** `src/scheduled.ts` (despacho por `event.cron` con `try/catch` por bloque), `src/modules/radar/sweep.service.ts` (`sweep(env, ctx, { score, prepare })`: pasos 1–8 de DT §11.3 `*/5`), `scoring.service.ts` (`scoreOffer(env, offer, profile, settings)`: reglas → IA JSON mode → `radar_scores` `is_current`), `prepare.service.ts` (`prepareApplication(env, appId, opts)`: plan de CV → `assembleCv` → `verifyFacts`; carta/propuesta; `form_payload` si `prepareForm`; `radar_materials` v1; → `prepared`; Telegram `radar.prepared` vía 7.19 (aquí una interfaz `notifier` inyectable)), `ai.service.ts` (`runJson(env, prompt, schema, { retries:1 })` con AI Gateway y respaldo `worker.josecoded.com/ai/chat` tras 2 fallos 5xx), tests `sweep.test.ts`, `scoring.service.test.ts`, `prepare.service.test.ts`.
 
 **Pasos:**
@@ -2864,6 +3040,8 @@ it('followup-draft creates a Gmail draft (never send) with the voice and an even
 
 **Agente:** implementador-web · **Rama:** `feat/radar-mail-calendar` · **Gate:** no · **Depende de:** 7.20, 7.22, 7.19
 
+> **v2.1 (eng review):** el cron diario y el de correo/calendario pasan a ser los trabajos `radar.daily` y `radar.mail` del despachador único (7.17); esta tarea solo implementa su contenido.
+
 **Ficheros:** `src/modules/radar/daily.service.ts` (bloques 1–8 de DT §11.3 `0 6/0 7` con comprobación de 08:00 Europe/Madrid), `calendar.service.ts` (`proposeEvent`, `confirmEvent` → `createCalendarEvent`, `discardEvent`, `proposeChange`, `syncFromGoogle(updatedMin)`), `events.routes.ts` (`POST /events/propose`, `POST /events/:id/confirm`, `POST /events/:id/discard`, `POST /events/:id/propose-change`), `scheduled.ts` (bloques `*/30` y diarios), tests `daily.service.test.ts`, `events.routes.test.ts`, `calendar.service.test.ts`.
 
 **Pasos:**
@@ -2975,6 +3153,8 @@ it('shows tabs, versions, unverified facts and saves a new version', async () =>
 
 **Agente:** implementador-web (E2E) + `usuario-ejemplo` (reclutadora) · **Rama:** `feat/radar-admin` · **Gate:** no · **Depende de:** 7.25–7.29
 
+> **v2.1 (eng review):** evals manuales con casos repetibles en `apps/api/evals/radar.jsonl` (puntuación y redacción sobre 10 ofertas fijas) además de la validación de calidad de candidaturas.
+
 **Ficheros:** `apps/web/e2e/radar.spec.ts` (las 5 filas de Radar de DT §8.2: confirmar desde admin asistida + marcar enviada + `mark-sent` directo → 409; confirmar desde Telegram con webhook simulado → recibo `4F7Q` + historial + reenvío idempotente + `from.id` ajeno; correo vinculado → evento propuesto → crear en Google simulado → "No era esto"; bandeja con filtros desde URL; plataformas: alta con `SecretRef` y `Probar` con fixture; perfil: umbral → toast; pausa/reanudar), `apps/web/tests/rls-radar.test.ts` (ya en 7.6; añadir `storage.objects` con Ana), `docs/superpowers/design/2026-09-xx-radar-candidaturas-validacion.md` (informe de `usuario-ejemplo` como reclutadora sobre 5 candidaturas generadas con el CV maestro real: veredicto por candidatura, hechos inventados = 0).
 
 **Pasos:** 1. Escribir los E2E (fallan hasta ajustar). 2. `pnpm --filter web e2e -- radar` → PASS. 3. `usuario-ejemplo` (reclutadora) evalúa 5 candidaturas: si alguna tiene hechos inventados o carta genérica (< 2 referencias), se corrigen prompts/verificador (7.17/7.21) y se repite. 4. Commit: `git commit -m "test(web): radar e2e (admin, telegram, mail, calendar, platforms, pause) and recruiter validation report"`.
@@ -2984,6 +3164,8 @@ it('shows tabs, versions, unverified facts and saves a new version', async () =>
 ### Tarea 7.31 — **GATE**: Radar en producción (secretos, KV, crons, Telegram, Google, Mac)
 
 **Agente:** controlador con OK de Jose (y Jose en consolas) · **Gate:** **SÍ** · **Depende de:** ramas de Radar mergeadas, 8.2–8.3 para Omen
+
+> **v2.1 (eng review):** `api.josecoded.com` ya existe desde 3.12; aquí solo se añaden los secretos de Radar. Radar es la última etapa: este gate puede ir después del lanzamiento (D34).
 
 **Pasos (cada uno con OK explícito):**
 - [ ] 1. Jose: proyecto Google Cloud "josecoded-radar" (consentimiento External en prueba, su Gmail como usuario de prueba, cliente OAuth Web con redirect `https://api.josecoded.com/api/v1/radar/google/callback`); alta de aplicación InfoJobs si procede; alertas de LinkedIn al Gmail.
@@ -3048,6 +3230,8 @@ Regla inquebrantable: servicios preexistentes de Omen (worker, n8n, Ollama, Samb
 
 **Agente:** implementador-web · **Gate:** no · **Depende de:** 3.x, 4.2; insumo P7 (URL `workers.dev` del gateway de josedev)
 
+> **v2.1 (eng review):** sin cambios; se ejecuta en el carril A tras la fase 6, **antes** de Radar.
+
 **Ficheros:** `apps/web/next.config.ts` (`redirects`: `/services` → `/empresas` 301, `/en/services` → `/en/companies` 301, `/auth` → `/auth/login` 301; `/es/:path*` → `/:path*` 308 ya existe), `apps/web/app/[locale]/(public)/blog/[slug]/page.tsx` y `app/[locale]/foro/[[...rest]]/page.tsx` (410 para slugs antiguos de josedev listados en `content/legacy/blog-slugs.json` y para todo `/foro/*`: `new Response(null, { status: 410 })` vía route handler `app/gone/route.ts` + rewrite), `content/legacy/blog-slugs.json` (exportado de `blog_posts` con `select slug` — solo lectura), `e2e/seo.spec.ts`, `apps/api/wrangler.jsonc` (`CORS_ORIGINS` con el `workers.dev` antiguo durante la transición).
 
 **Pasos:**
@@ -3068,7 +3252,9 @@ test('sitemap has both locales and robots allows AI crawlers and blocks private 
 
 **Agente:** implementador-web · **Gate:** no · **Depende de:** 8.1 (`website id`), 2.12; Jose activa CF Web Analytics
 
-**Ficheros:** `app/[locale]/layout.tsx` (`<Script src="https://stats.josecoded.com/script.js" data-website-id data-domains="josecoded.com" strategy="afterInteractive" />`; beacon de CF solo si `NEXT_PUBLIC_CF_BEACON_TOKEN`), `lib/analytics.ts` (`window.onerror` → `client_error { message, source }` sin PII), `e2e/analytics.spec.ts` (intercepta `POST **/api/send` y comprueba que en un recorrido completo se emiten `intro_played`, `path_open`, `scene_drag`, `whatsapp_click`, `contact_submit`, `proposal_generated`, `proposal_sent`, `chat_started`, `booking_open`, `referral_copy`; `call_booked` se comprueba en el test del RH de Cal.com con `@umami/node` mockeado).
+> **v2.1 (eng review):** **12 eventos** con `scene_open` y `palette_open` (2.12): la lista del E2E se actualiza; `path_open` no existe.
+
+**Ficheros:** `app/[locale]/layout.tsx` (`<Script src="https://stats.josecoded.com/script.js" data-website-id data-domains="josecoded.com" strategy="afterInteractive" />`; beacon de CF solo si `NEXT_PUBLIC_CF_BEACON_TOKEN`), `lib/analytics.ts` (`window.onerror` → `client_error { message, source }` sin PII), `e2e/analytics.spec.ts` (intercepta `POST **/api/send` y comprueba que en un recorrido completo se emiten `intro_played`, `scene_open`, `palette_open`, `scene_drag`, `whatsapp_click`, `contact_submit`, `proposal_generated`, `proposal_sent`, `chat_started`, `booking_open`, `referral_copy`; `call_booked` se comprueba en el test del RH de Cal.com con `@umami/node` mockeado).
 
 **Pasos:** 1. E2E que falla. 2. Implementar. 3. PASS. 4. Commit: `git commit -m "feat(web): Umami and Cloudflare Web Analytics scripts with event verification"`.
 
@@ -3079,6 +3265,8 @@ Sin métricas en la web (spec §12, `DESIGN.md`): no hay `ProofStrip` ni cifra d
 ### Tarea 9.4 — **GATE**: preparación del cutover
 
 **Agente:** controlador con OK de Jose · **Gate:** **SÍ** · **Depende de:** todas las ramas mergeadas en `release/v1`
+
+> **v2.1 (eng review):** (a) `pricing:sync-db` ya no escribe: el controlador aplica **`supabase/generated/pricing-sync.sql`** con `apply_migration` tras revisar el diff; (b) `api.josecoded.com`, la rotación de Telegram/Resend y el SMTP ya se hicieron en 3.12; aquí solo se rota `WORKER_INTERNAL_TOKEN` (con `_PREV` 24 h) y se confirma `API_MODE`; (c) **fecha de válvula**: si Radar no está, se lanza sin él (D34) y `ESTADO.md` lo anota.
 
 **Pasos (cada uno con OK):**
 - [ ] 1. `pricing:sync-db` (escribe `pack_templates`/`pack_extras` por `code` en producción; imprime diff y pide confirmación).
@@ -3102,6 +3290,8 @@ Sin métricas en la web (spec §12, `DESIGN.md`): no hay `ProofStrip` ni cifra d
 ### Tarea 9.6 — **GATE**: lanzamiento y cierre
 
 **Agente:** controlador con OK de Jose · **Gate:** **SÍ** · **Depende de:** 9.5
+
+> **v2.1 (eng review):** el lanzamiento no espera a Radar (D34): el smoke de Radar solo si 7.x está mergeado; si no, el paso 2 lo omite y Radar se despliega después con su propio gate 7.31. Tras el deploy, `deploy-production.yml` mueve `last-deployed`.
 
 **Pasos:**
 - [ ] 1. Merge `release/v1` → `main`; `deploy-production.yml` con `web` y `api` (`routes` de `josecoded.com` en `apps/web/wrangler.jsonc`; el Worker antiguo de josedev deja de recibir la ruta).
@@ -3134,6 +3324,8 @@ Sin métricas en la web (spec §12, `DESIGN.md`): no hay `ProofStrip` ni cifra d
 
 **Agente:** implementador-web (+ `implementador-infra` para Omen) · **Gate:** no (solo lectura y pruebas; sin secretos en el repo) · **Depende de:** respuesta de Jose a NL Q1 · **Fuente:** NL §14.1, §7
 
+> **v2.1 (eng review):** además del runner y Brevo: (a) comprobar el **plan de GitHub** del repo privado; si es Free (sin reglas por rama con auto-merge), la fusión la hará el gateway por API (10.2); (b) crear la **GitHub App `josecoded-bot`** (permisos `contents:write`, `pull_requests:write` solo en `josecoded`) y anotar `GITHUB_APP_ID`/`INSTALLATION_ID` (la clave privada va a `wrangler secret`, nunca al repo).
+
 **Pasos:** 1. En Omen (con OK de Jose para un contenedor de prueba efímero) o en el Mac: `claude -p --output-format json` con token de `claude setup-token` en un contenedor sin TTY; medir tiempo y tamaño de una generación real con el prompt v1 de NL §7.4. 2. Comprobar que Brevo permite campañas por API en el plan gratuito con el remitente autenticado (llamada de prueba a `GET /v3/account`; sin enviar nada). 3. Documentar en `docs/superpowers/specs/2026-MM-DD-tarea10-resultados.md` (veredicto: Omen viable / solo Mac; tiempos; límites de Brevo). 4. Commit del documento en `main`.
 
 **Hecho cuando:** hay veredicto sobre S1 (Omen o Mac) y sobre Brevo. **Fallback:** runner solo en el Mac (S1 invertido, como prevé NL §7.2).
@@ -3141,6 +3333,8 @@ Sin métricas en la web (spec §12, `DESIGN.md`): no hay `ProofStrip` ni cifra d
 ### Tarea 10.1 — `feat/newsletter-core`: `packages/newsletter-core`, migraciones `newsletter_*`, tests RLS e invariantes + **GATE** migraciones
 
 **Agente:** implementador-web + controlador (migraciones con OK de Jose) · **Gate:** **SÍ** (producción) · **Depende de:** 10.0, 1.8 · **Fuente:** NL §8.1, §9, §9.1–9.2, §13.5
+
+> **v2.1 (eng review):** (a) **grants por columna**: `revoke update (status, reviewed, approved_at, approved_by, brevo_campaign_ids, blog_pr_number, blog_urls, blog_published_at, send_lock, error) on newsletter_issues from authenticated`; inserts en `newsletter_issue_events` y `newsletter_jobs` solo service role; (b) trigger **`private.newsletter_guard_transition()` `BEFORE UPDATE`** que valida cada transición de NL §9.1 y exige `reviewed.es && reviewed.en` para `approved`; (c) `send_lock uuid` en `newsletter_issues`; `unique (week_key) where status in ('approved','publishing_blog','blog_published','sending_email','sent')`; (d) `newsletter_jobs.claim_token uuid` y `attempt int`; (e) **tests negativos** de cada regla (edición directa de `status` → error; insert de evento como `authenticated` → error; `approved` sin doble revisión → error; dos `send_lock` simultáneos → uno solo gana); (f) `content/blog/schema.ts` único con `.md` (4.2) y `buildPostFile` serializa el frontmatter con `yaml`; (g) `lint` de cargas maliciosas en cada campo (`<script>`, `javascript:`, HTML crudo) y `renderEmailHtml` escapa siempre (tests con fixtures maliciosas); (h) evals manuales `evals/newsletter.jsonl` (5–6 temas con juez de traducción es→en).
 
 **Ficheros:** `packages/newsletter-core/src/{types,schemas,state-machine,render-markdown,render-email,render-linkedin,build-post-file,lint}.ts` (esquemas con `post.{es,en}`, `email.{es,en}`, `slug` único; `renderEmailHtml(issue, locale)`, `buildPostFile(issue, locale)`, `lint(issue, locale)` + `lintParallelStructure(issue)`), `prompts/issue.v1.md` (bilingüe: español completo y después traducción fiel), tests; `supabase/migrations/2026MMDD_newsletter_*.sql` (tablas de NL §9, trigger `newsletter_guard_sent`, función `newsletter_claim_job`); ampliar `apps/web/tests/rls.test.ts` (cliente y anónimo no leen ninguna `newsletter_*`).
 
@@ -3150,6 +3344,8 @@ Sin métricas en la web (spec §12, `DESIGN.md`): no hay `ProofStrip` ni cifra d
 
 **Agente:** implementador-web + controlador (deploy y secretos con OK) · **Gate:** **SÍ** · **Depende de:** 10.1, 1.7 · **Fuente:** NL §8.2, §6.2, §6.4, §8.4, §10, §11
 
+> **v2.1 (eng review):** (a) `POST /issues/:id/review` (`locale`) es la única vía para `reviewed`; editar o regenerar un idioma lo pone a `false`; (b) **`send_lock` atómico** al entrar en `sending_email`, campañas de Brevo no `draft` = enviadas, **`GET /v3/account`** antes de enviar para comprobar el cupo de es+en, `approve` rechaza una segunda `week_key` y pasa el `auto` a `superseded` también desde `approved`; test con **dos barridos simultáneos**; (c) **GitHub App** (`github-content.service` firma el JWT de la app y pide token de instalación) y, si 10.0 dice que el plan no permite auto-merge, **`mergePullRequest()`** por API tras comprobar el diff (`GET /pulls/{n}/files` cumple el patrón) y los checks (`GET /commits/{sha}/check-runs` todos `success`); (d) los trabajos de la newsletter son entradas de `private.scheduled_jobs` del cron único (1.7), no `triggers.crons`; (e) `result` exige `claim_token` y `attempt`; `errorClass:'rate_limit'` con `retry_after` no cuenta como intento y avisa una vez; lock 30 min; (f) webhook de Brevo con secreto en **cabecera** si Brevo lo permite; (g) al aprobar, aviso en la respuesta si `blogEnabled` es falso.
+
 **Ficheros:** `apps/api/src/modules/newsletter/*.routes.ts` (tabla de NL §8.2), `src/services/{brevo,github-content,feeds,issue-state}.service.ts`, `src/scheduled.ts` (lunes 07:00, jueves 09:00, domingo 22:00 Madrid; cada 6 h feeds; sweep */5; diario stats), `envSchema` (secretos de NL §10), `supabase/functions/notify/index.ts` (`newsletter.draft_ready`, `newsletter.failed`, `newsletter.sent`, sin botones), `content/newsletter/sources.json` (lista de NL §8.4 pendiente de Q6), tests en workerd con `fetchMock` estricto (Brevo, GitHub, feeds) y contra `supabase start`.
 
 **Pasos:** 1. Tests que fallan (NL §13.1, 13.2, 13.6, 13.7, 13.9, 13.11, 13.12: `approve` exige `status='ready'`, `reviewed` en ambos idiomas, lint verde en ambos y sin `{{DATO}}`; el PR lleva exactamente dos ficheros; el sweep exige 200 en `/blog/<slug>` y `/en/blog/<slug>`; dos campañas por segmento `LOCALE` con `brevo_campaign_ids.<locale>` persistido antes de cada `sendNow` y un idioma sin suscriptores se salta; idempotencia de `claim`; runner no puede aprobar ni leer suscriptores; caducidad dominical devuelve el tema a `queued`). 2. FAIL. 3. Implementar. 4. PASS. 5. **Pedir OK a Jose**: `wrangler secret put` (`BREVO_API_KEY`, `BREVO_WEBHOOK_SECRET`, `NEWSLETTER_RUNNER_TOKEN`, `NEWSLETTER_TOKEN_KEY`, `GITHUB_CONTENT_TOKEN`), vars, `supabase functions deploy notify`, `triggers.crons`. 6. Commit: `git commit -m "feat(api): newsletter routes, Brevo/GitHub/feeds services, crons and notify events"`.
@@ -3158,6 +3354,8 @@ Sin métricas en la web (spec §12, `DESIGN.md`): no hay `ProofStrip` ni cifra d
 
 **Agente:** implementador-web (paquete) + `implementador-infra` (Omen, con OK) · **Gate:** **SÍ** · **Depende de:** 10.2, 10.0 · **Fuente:** NL §7.2–7.4, §11
 
+> **v2.1 (eng review):** **compose propio** `infra/omen/newsletter-runner/compose.yml` (aunque comparta la red de `radar-runner`); el runner limita cada trabajo a **20 min en total** (dos intentos de ≤ 9 min), envía `claim_token` y `attempt` en `result` y trata `rate_limit` con `retry_after` sin contar intento.
+
 **Ficheros:** `packages/newsletter-runner/src/{index,claim,run-claude,report}.ts` + tests (bucle de sondeo cada 2 min, `timeout` 20 min, `claude -p "$(cat prompt.md)" --output-format json --allowedTools WebSearch,WebFetch --max-turns 12 [--model $NEWSLETTER_CLAUDE_MODEL]`, validación zod, un reintento estricto, `errorClass`), `infra/omen/newsletter-runner/{Dockerfile,compose.yml,.env.example,README.md,check.sh}` (sin `ports:`, `restart: unless-stopped`, volumen `/srv/josecoded-data/newsletter-runner/`; **opción de ahorro aceptada: declararlo como segundo servicio en `infra/omen/radar-runner/compose.yml` si 8.2 ya existe, misma red y logs**; n8n **no** interviene, NL §7.5), `infra/mac/com.jose.josecoded.newsletter-runner.plist` (no instalado por defecto).
 
 **Pasos:** 1. Tests del runner con `claude` falso (salida válida, inválida, timeout, auth). 2. FAIL. 3. Implementar. 4. PASS. 5. `implementador-infra`: `check.sh` (estado previo), **OK de Jose**, `docker compose up -d`, latido visible en `GET /api/v1/newsletter/health`, `check.sh` final (preexistentes intactos). 6. Commit: `git commit -m "feat(newsletter): claude runner package and Omen container reference"`.
@@ -3165,6 +3363,8 @@ Sin métricas en la web (spec §12, `DESIGN.md`): no hay `ProofStrip` ni cifra d
 ### Tarea 10.4 — `feat/newsletter-admin`: cola de temas, lista y detalle de números con tres pestañas, ajustes, RGPD (con `ux` y `ui` previos)
 
 **Agente:** `ux` → `usuario-ejemplo` (Jose operador en móvil) → `ui` (prototipo `ref/admin-newsletter/`, Jose valida) → implementador-web · **Gate:** no · **Depende de:** 10.2, 6.1 · **Fuente:** NL §5.1, §5.3, §6.1, §6.3, §12
+
+> **v2.1 (eng review):** (a) preview del email en `<iframe sandbox="" srcdoc>`; (b) **CSP estricta** en `/admin/newsletter/*` (`default-src 'self'; frame-src 'self'; script-src 'self' 'nonce-<n>'; img-src 'self' data: https:`) con test E2E de que la preview no ejecuta scripts; (c) «Marcar revisado» llama al gateway (10.2), nunca escribe `reviewed` desde la web; al guardar una edición, la UI muestra que el idioma vuelve a «sin revisar».
 
 **Ficheros:** `app/[locale]/(private)/admin/newsletter/{page,[id]/page,temas/page,ajustes/page}.tsx`, Server Actions (edición con `version` optimista → `newsletter_issue_versions` con `locale`; `markReviewed(locale)`), `components/admin/newsletter/{issue-list,issue-detail,locale-switch,tab-blog,tab-email,tab-linkedin,this-week,topic-queue,subscriber-tools}/…` (CSS Modules v6; **selector es/en en Blog y Email con estado «revisado» por idioma**; preview del email en `iframe srcdoc` con `renderEmailHtml(issue, locale)`; botones Copiar / Descargar imagen / Abrir LinkedIn y Web Share API en móvil; «Aprobar y lanzar» activo solo con los dos idiomas revisados, segundo paso con N (es) + M (en) y 10 s de margen), tests de comportamiento (conflicto de versión, contador de palabras, segundo paso, **aprobar bloqueado sin doble revisión**) y E2E (NL §13.3, 13.4, 13.10).
 
@@ -3182,7 +3382,9 @@ Sin métricas en la web (spec §12, `DESIGN.md`): no hay `ProofStrip` ni cifra d
 
 **Agente:** controlador con OK de Jose · **Gate:** **SÍ** · **Depende de:** 10.1–10.5 mergeadas · **Fuente:** NL §14.6, §10 (correo saliente y DNS)
 
-**Pasos (cada uno con OK explícito de Jose):** 1. Jose crea los registros DNS de NL §10 (SPF combinado, DKIM de Brevo, `_dmarc` con `p=none` el primer mes) y autentica el dominio en Brevo; anotar en `ESTADO.md` (nombres, nunca valores). 2. Lista de Brevo (`NEWSLETTER_BREVO_LIST_ID`) con el atributo `LOCALE`, dos plantillas transaccionales (es/en) y webhook firmado apuntando a `POST /api/v1/newsletter/brevo/webhook`. 3. PAT fine-grained de GitHub (solo `josecoded`, `contents` + `pull_requests`, 1 año) como `GITHUB_CONTENT_TOKEN`; regla de `main` con la excepción de auto-merge para `newsletter/*` exactamente como working-agreements §9 (0 revisiones requeridas, checks `ci` + `newsletter-content-only`, sin bypass). 4. Primer número real de prueba a una lista interna con un contacto `es` y otro `en` (Jose): revisar ambos → aprobar → PR con dos ficheros → auto-merge → posts vivos → dos campañas; comprobar que cada contacto recibe solo su idioma. 5. `/puerta-calidad` de la etapa (`revisor-seguridad` en tokens, webhooks, RLS, sanitización del Markdown y alcance del PAT; `usuario-ejemplo` como Jose operador en móvil desde el Telegram hasta «Aprobar»). 6. `/cierre` de la etapa; `ESTADO.md`, nota del vault, ADR (NL §17).
+> **v2.1 (eng review):** sin PAT: la **GitHub App `josecoded-bot`** ya existe (10.0); si el plan de GitHub no admite la regla de auto-merge por rama, no se configura en GitHub y fusiona el gateway (10.2). `deploy-content.yml` y `last-deployed` ya están desde 1.9.
+
+**Pasos (cada uno con OK explícito de Jose):** 1. Jose crea los registros DNS de NL §10 (SPF combinado, DKIM de Brevo, `_dmarc` con `p=none` el primer mes) y autentica el dominio en Brevo; anotar en `ESTADO.md` (nombres, nunca valores). 2. Lista de Brevo (`NEWSLETTER_BREVO_LIST_ID`) con el atributo `LOCALE`, dos plantillas transaccionales (es/en) y webhook firmado apuntando a `POST /api/v1/newsletter/brevo/webhook`. 3. GitHub App `josecoded-bot` instalada (10.0) con `GITHUB_APP_PRIVATE_KEY` en `wrangler secret`; regla de `main` con la excepción de auto-merge para `newsletter/*` exactamente como working-agreements §9 (0 revisiones requeridas, checks `ci` + `newsletter-content-only`, sin bypass). 4. Primer número real de prueba a una lista interna con un contacto `es` y otro `en` (Jose): revisar ambos → aprobar → PR con dos ficheros → auto-merge → posts vivos → dos campañas; comprobar que cada contacto recibe solo su idioma. 5. `/puerta-calidad` de la etapa (`revisor-seguridad` en tokens, webhooks, RLS, sanitización del Markdown y permisos de la GitHub App; `usuario-ejemplo` como Jose operador en móvil desde el Telegram hasta «Aprobar»). 6. `/cierre` de la etapa; `ESTADO.md`, nota del vault, ADR (NL §17).
 
 **Hecho cuando:** los 13 criterios de NL §13 (v1.1, bilingües) pasan en producción y Jose ha recibido y aprobado un número real en los dos idiomas.
 
@@ -3194,12 +3396,15 @@ Sin métricas en la web (spec §12, `DESIGN.md`): no hay `ProofStrip` ni cifra d
 
 **`ESTADO.md`:** "Ahora": plan v2.0 listo (2026-09-29), pendiente `/plan-eng-review`; después arrancan las tareas 0 (0.1–0.6 en paralelo) y la fase 1 con **1.10 (tokens) antes de cualquier UI**. "Pendientes" nuevos: los insumos de la tabla "Insumos que faltan" con la tarea que bloquean (incluidos los textos en inglés, la foto, los casos de estudio, el CV maestro y los de la fase 10); proteger `main` en GitHub. "Siguiente paso": `/plan-eng-review` → fase 0 → fase 1.
 
+**Añadido v2.1 (2026-09-30) al vault y al ADR:** «Lanzamiento todo junto con válvula por fecha; Radar última etapa (D34)» · «Auth desde @josecoded.com con SMTP propio; RPC de usuario solo con email confirmado (D35)» · «Generador: Turnstile → cuota atómica en Supabase → IA con AI Gateway → guarda determinista → reglas; propuesta firmada con HMAC» · «Un único cron `*/5` con despachador `nextRun`; Radar en tres trabajos; presupuesto de 40 subpeticiones por tick» · «GitHub App `josecoded-bot`; auto-merge solo `newsletter/*`; `deploy-content.yml` con guarda `last-deployed`» · «Cookie `ref` solo con aceptación explícita» · «Hito de contenido completo antes de la fase 3» · «Prototipos solo home, Negocios y Contacto» · «WebGL en tablets grandes: desvío aceptado».
+
 **Añadido v2.0 al vault y al ADR:** «Plan v2.0 (2026-09-29): fase 2 = port 1:1 de `home-v6` con tokens generados, motion CSS + `lib/motion/`, capturas comparadas y aprobación de Jose por escena; fase 3 en el orden de PANT §4 con prototipo validado por Jose antes de construir cada pantalla; todo bilingüe; área personalizada por señales con `user_profiles`; blog condicionado a 3 artículos; fase 10 newsletter post-lanzamiento con `/plan-eng-review` propio». ADR: «Tarea 1.10: `design.json` completo es precondición de toda UI» · «Sin `HERO_LIVE_MOBILE`: WebGL solo en escritorio» · «Sin métricas en la web: `perf.json`, `test-counts` y contadores retirados».
 
 **ADR (codebase-memory, al indexar el monorepo tras la fase 1):** los del Anexo del DT más: "Plan v1: tareas 0 con fallback explícito (Vercel, bloom fuera, poster solo, asistido, impresión, Indeed manual, HTML de Tecnoempleo)" · "Migraciones en producción una a una con `apply_migration` por el controlador; baseline regenerado tras cada gate" · "Ramas de Radar por subsistema; mínimo operativo = 7.1–7.8 + 7.16–7.19 + 7.25 (válvula de escape)" · "Tests del gateway en workerd contra `supabase start`; `AI` falso con cola; `fetchMock` estricto con assert global de ausencia de `/send`".
 
 ## Auto-revisión del plan
 
+- **Cobertura v2.1:** los 41 hallazgos tienen tarea (tabla del changelog v2.1); ninguna referencia a `QUOTA_KV`, `GITHUB_CONTENT_TOKEN`, `path_open`, `perf.ts` ni `HERO_LIVE_MOBILE` queda como vigente.
 - **Cobertura v2.0:** spec v1.6 D27–D33 → 1.1/1.10 (tokens, stylelint), 2.x (home v6, Baseline 2024 con WebKit en 2.15/2.17), 3.x (pantallas de PANT: P1 3.3, P3 3.10, P4 3.2, P2 3.9, P7/P8 3.4, P6 3.5 + 3.14, P18/P19 3.6), 4.1 (señal de origen), 4.2 (D33), 5.1 (D32), todo bilingüe (2.1 `i18n:check` y cada tarea de pantalla), newsletter (fase 10). Working-agreements §12: 2.2 v1 eliminada; GSAP fuera (2.7, DT §1.6.6); `glyph-scene` desde `scene.js` (2.5a/2.5b); 2.3 y 2.10 reescritas; 2.14 v1 → 2.17 con capturas y fallbacks; 1.1 con `design-tokens`, stylelint y scripts. INV §6: 1.10 bloqueante y DT §1.6.2 reescrito. PANT §7: todas las filas tienen tarea (Contacto 3.10, Stack y CV 3.5/3.14, packs de app 3.3/3.9 + `pricing.apps`, tarifas de Empresas confirmadas en 3.2, comparador 3.3, personalización 1.8/4.1/5.1, bilingüe transversal, casos 3.4, blog 4.2/2.15, interiores con scroll libre 3.13).
 - **Cobertura de la spec (v1):** §4 público (1–12) → fases 2–4 y 9.1; privado (13–15) → fases 5–7; transversal (Umami, Telegram, reduced-motion, AA) → 2.12/9.2, 3.8/7.19, 2.7–2.8, puertas; infra de Radar → fase 8; §8 SEO/GEO → 2.11, 3.x (JSON-LD por página), 4.2 (RSS, `BlogPosting`), 9.1, 9.5 (baseline GEO); §10 criterios de aceptación → cada uno tiene un test nombrado (hero 2.9/2.14; generador 3.9; chat 4.4/6.6; blog 4.2–4.3; portal 5.1; ampliación 5.4; afiliados 3.11/5.5/6.2; admin 6.1; Radar 7.6/7.18/7.19/7.22/7.23/7.30; SEO 9.1; Umami 9.2; comandos y Lighthouse 2.9/9.5); §13 Radar completo (§13.2 pasos 1–8 → 7.16, 7.17, 7.18, 7.19, 7.22, 7.23; §13.5 conectores → 7.8–7.15; §13.6 integraciones → 7.19–7.23; §13.9 orden y válvula). DT §1.6 hero → 2.5–2.9, 2.17. UX §2 mapa de sitio: todas las rutas tienen tarea (legales 3.6, perfil 4.1, `/chat` 4.4, área 5.x, admin 6.x, Radar 7.25–7.29). **Hueco conocido:** la migración opcional de realtime `20260917100800` se decide en 6.6 y se aplica en 7.7.
 - **Placeholders:** ningún "TBD"/"TODO"; donde el contenido completo ya existe en el DT (SQL de §6.2 y §11.1, endpoints de §3 y §11.2, interfaces de §1.6.2, §11.4 y §11.8) el plan lo referencia como "copiar literalmente" con la sección exacta.

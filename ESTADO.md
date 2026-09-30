@@ -1,6 +1,6 @@
 # Estado — josecoded
 
-> Traspaso del 2026-09-29 (noche). **Diseño de la home cerrado en `ref/home-v6` y documentos al día**: spec v1.6, UX v4.0, diseño técnico v1.3, plan v2.0 (con la newsletter como fase 10). Falta `/plan-eng-review` y después arrancan las fases 0 y 1. Sin código de aplicación todavía.
+> Traspaso del 2026-09-29 (noche). **Diseño de la home cerrado en `ref/home-v6` y documentos al día**: spec v1.6, UX v4.0, diseño técnico v1.3, plan v2.0 (con la newsletter como fase 10). `/plan-eng-review` hecho el 2026-09-30 y sus 41 hallazgos aplicados (plan v2.1, DT v1.4, spec v1.7, newsletter v1.2, working-agreements v1.1). Siguiente: fase 0. Sin código de aplicación todavía.
 
 ## Ahora
 
@@ -27,15 +27,15 @@ Documentos (al día con la v6 desde el 2026-09-29):
 
 | Documento | Ruta | Versión |
 |---|---|---|
-| Spec | `docs/superpowers/specs/2026-09-13-josecoded-plataforma.md` | **v1.6** (D27–D33, §12 v6) |
-| Spec newsletter | `docs/superpowers/specs/2026-09-29-josecoded-newsletter.md` | v1 (fase 10 del plan; Q1–Q6 pendientes de Jose) |
+| Spec | `docs/superpowers/specs/2026-09-13-josecoded-plataforma.md` | **v1.7** (D27–D35, §12 v6, válvula por fecha) |
+| Spec newsletter | `docs/superpowers/specs/2026-09-29-josecoded-newsletter.md` | **v1.2** (bilingüe, GitHub App, grants por columna; Q1–Q6 resueltas) |
 | UX | `docs/superpowers/design/2026-09-17-josecoded-ux.md` | **v4.0** (§2 y §4.1 v6; interiores → documento de pantallas) |
-| Diseño técnico | `docs/superpowers/design/2026-09-17-josecoded-diseno-tecnico.md` | **v1.3** (§1.6.2 v6, §1.9–1.12 nuevos) |
+| Diseño técnico | `docs/superpowers/design/2026-09-17-josecoded-diseno-tecnico.md` | **v1.4** (§0b: cambios del eng review) |
 | Sistema visual | `DESIGN.md` + `.impeccable/design.json` | v6 (`2026-09-17-josecoded-ui.md` v3 superado) |
 | Componentes home | `docs/superpowers/design/2026-09-29-componentes-home-v6.md` | v1.1 |
 | Pantallas y contenidos | `docs/superpowers/design/2026-09-29-pantallas-y-contenidos.md` | v1.0 |
-| Convenciones | `docs/working-agreements.md` | v1.0 |
-| Plan | `docs/superpowers/plans/2026-09-19-josecoded-v1.md` | **v2.0** (fase 2 v6, 1.10 tokens bloqueante, fase 3 en orden de pantallas, fase 10 newsletter) |
+| Convenciones | `docs/working-agreements.md` | v1.1 |
+| Plan | `docs/superpowers/plans/2026-09-19-josecoded-v1.md` | **v2.1** (41 hallazgos del eng review aplicados; Radar última etapa; hito de contenido; NOT in scope) |
 
 Índices: codebase-memory `Users-jose-Documents-GitHub-josecoded` (indexado 2026-09-29, con ADR de diseño); graphify se regenera en cada commit (hook).
 
@@ -58,7 +58,7 @@ Documentos (al día con la v6 desde el 2026-09-29):
 - [x] Spec §12 alineada (v1.6): home v6, cabecera Chat + Login sin Contacto, orden de secciones, stack visual D27, Baseline 2024 D28, pantallas D30, bilingüe D31, área D32, blog D33.
 - [x] Diseño técnico v1.3: `glyph-scene` desde `scene.js` v6 (vídeo en móvil, WebGL solo escritorio), tokens `design.json` → `tokens.css`, `lib/motion/`, `i18n:check`, `user_profiles` + `area_lead_summary()` para la personalización del área.
 - [x] Spec de newsletter integrada como fase 10 del plan (sin cambiar sus decisiones; notas de encaje en el plan).
-- [ ] **`/plan-eng-review` del plan v2.0** (obligatorio: dinero e integraciones externas). Lo lanza el controlador. Focos: Cal.com, Turnstile, WhatsApp, Workers AI, migraciones (`user_profiles`, RPC `security definer`), y toda la fase 10 (Brevo, GitHub REST + auto-merge, DNS, Claude CLI en Omen, RGPD).
+- [x] `/plan-eng-review` del plan v2.0 hecho (2026-09-30): 41 hallazgos decididos por Jose y aplicados en plan v2.1, DT v1.4, spec v1.7, newsletter v1.2 y working-agreements v1.1.
 - [x] Preguntas del paso 5 respondidas por Jose (2026-09-30): newsletter **bilingüe** (spec v1.1), repo **privado**, tolerancia de capturas **2 %**, auto-merge solo en `newsletter/*`; n8n evaluado como orquestador y descartado (spec de newsletter §7.5). Sigue abierta solo la del paginado en trackpad (se decide en el navegador en 2.16).
 - [x] **Indicaciones de cómo trabajar** antes de escribir código real: `docs/working-agreements.md` + reglas duras en `CLAUDE.md` (2026-09-29). Falta el paso manual de Jose: proteger `main` en GitHub (§9).
 - [x] **Decisión de componentes de la home**: `docs/superpowers/design/2026-09-29-componentes-home-v6.md` (decisiones cerradas en su §3).
@@ -67,7 +67,8 @@ Documentos (al día con la v6 desde el 2026-09-29):
 **Insumos de Jose (bloquean tareas del plan)**
 - [ ] Los `{{DATO}}`: nombre a mostrar, ciudad, años, estado y descripción de 3catinfo/HazmeFila/Oportunix, certificaciones, WhatsApp y email, usuario de GitHub, enlaces de stores, plazo de respuesta real, artículos del blog.
 - [ ] Radar: `content/radar/profile.json` y CV maestro es/en; proyecto OAuth de Google; alertas de LinkedIn; ≥ 12 correos reales anonimizados; cuentas en InfoJobs/Tecnoempleo/Upwork/Workana/Malt.
-- [ ] Supabase: OAuth Google/GitHub, plantilla OTP **en es y en**, «leaked password protection».
+- [ ] Supabase: OAuth Google/GitHub, plantilla OTP **en es y en**, «leaked password protection», **«Confirm email» activo y cuenta SMTP propia para Auth (`cuenta@josecoded.com`)** (D35; gate 1.9/3.12).
+- [ ] GitHub App `josecoded-bot` (newsletter, tarea 10.0) y comprobar el plan de GitHub del repo privado; `TELEGRAM_PING_TOKEN` en los secretos de Actions; AI Gateway con presupuestos por consumidor (3.12).
 - [ ] GitHub: proteger `main` (working-agreements §9) antes del primer merge; la excepción de auto-merge solo para `newsletter/*` con checks `ci` + `newsletter-content-only` en verde y 0 revisiones requeridas (fase 10, tarea 10.6).
 - [ ] Newsletter (fase 10, tras el lanzamiento): cuenta de Brevo y dominio autenticado, registros DNS, PAT fine-grained, `claude setup-token` para Omen (Q1), lista de fuentes (Q6), política de privacidad, 3–5 temas iniciales. Q1–Q6 de su spec **resueltas el 2026-09-30** (recomendaciones aceptadas; Q5: pie con nombre + baja + enlace al aviso legal, NIF y domicilio solo en el aviso legal, valores en la fase de datos) y auto-merge del PR de contenido confirmado (el clic de Aprobar es el OK).
 - [ ] Cloudflare: `api.josecoded.com` como custom domain y URL `workers.dev` del gateway. Los servidores MCP de Cloudflare necesitan autorizarse (`/mcp` en una sesión interactiva).
@@ -83,13 +84,16 @@ Documentos (al día con la v6 desde el 2026-09-29):
 2. ~~Revisión de acabado + fixes~~ hecho. Jose valida en navegador y decide lo pendiente de la revisión → documentador → `DESIGN.md` + contrato v6 en `.impeccable/surfaces/`.
 3. ~~Pantallas independientes y contenidos~~ hecho (2026-09-29).
 4. ~~Componentes de la home~~ hecho (2026-09-29).
-5. ~~Actualizar spec, UX, diseño técnico y plan~~ hecho (2026-09-29: spec v1.6, UX v4.0, DT v1.3, plan v2.0 con la newsletter en fase 10). **Falta `/plan-eng-review`** (lo lanza el controlador).
-6. **Fase 0 del plan** (seis validaciones técnicas sin tocar producción; 0.2 ya con `scene.js` de la v6) y **fase 1** (monorepo con `design-tokens` y stylelint, `packages/pricing` con packs de app, migraciones incluida `user_profiles`, CI; **1.10 tokens completos antes de cualquier UI**).
-7. Fase 2: port 1:1 de `home-v6` escena a escena, con capturas comparadas y aprobación de Jose entre escenas.
+5. ~~Actualizar spec, UX, diseño técnico y plan + `/plan-eng-review`~~ hecho (2026-09-30: plan v2.1 con los 41 hallazgos).
+6. **Fase 0 del plan** (0.1 con `cpuTime` p95 y caché de assets; 0.2 con `scene.js` de la v6; 0.3–0.6 Radar) y **fase 1** en dos ramas: `chore/monorepo-base` (1.1, 1.4 `pricing` bilingüe, 1.5, **1.10 tokens antes de cualquier UI**) y `chore/supabase` (1.2, 1.3, 1.6, 1.7 cron único + preview, 1.8 migraciones + RPCs, 1.9 gate con «Confirm email» y SMTP).
+7. Fase 2: port 1:1 de `home-v6` escena a escena, con capturas comparadas (2 %) y aprobación de Jose entre escenas. Al cerrarla, **fijar la fecha de válvula** y la tabla del hito «contenido completo».
+8. Orden de fases: 0 → 1a → 1b → 2 → hito de contenido → 3 → 4 → 5 → 6 → 8.1 → 9 (lanzamiento) → **7 Radar** → 10 Newsletter.
 
 Gates que no se cruzan sin OK explícito de Jose en la misma sesión: migraciones y deploys a producción, contratar servicios, tocar servicios preexistentes de Omen.
 
 ## Decisiones recientes
+
+- **2026-09-30 (`/plan-eng-review` del plan v2.0, 41 hallazgos decididos por Jose):** recomendaciones aceptadas salvo lo indicado. Claves: **lanzamiento todo junto con válvula por fecha y Radar como última etapa** (spec D34; fecha al cerrar la fase 2); **correos de Auth desde @josecoded.com** con SMTP propio y «Confirm email» obligatorio, RPC de usuario solo con email confirmado (D35); generador con Turnstile antes que cuota, cuotas atómicas en Supabase (`increment_quota`), propuesta firmada HMAC, guarda determinista y evals manuales; leads idempotentes; contrato único del código de afiliado (prefijo elegido, código desconocido no bloquea); `request_upgrade()` en BD; precios de pack en la migración `pack_codes` y `sync-db` que genera SQL; Worker `josecoded-api-preview`; **un único cron `*/5`** con despachador y Radar en tres trabajos; AI Gateway con presupuestos; GitHub App `josecoded-bot` y `deploy-content.yml` con guarda `last-deployed`; newsletter con grants por columna, trigger de transición, `send_lock` y runner endurecido; cookie `ref` con aceptación explícita; `pricing.json` bilingüe; CV con `<!-- id: -->` y campos públicos cerrados; fase 1 en dos ramas; catálogos por pantalla; puerta visual con `mask` y solo la home contra prototipo; **prototipos solo para home, Negocios y Contacto**; **WebGL en tablets grandes aceptado como desvío**; Workers Free hasta medir `cpuTime` en 0.1; hito «contenido completo» antes de la fase 3; NOT in scope explícito. Documentos: plan **v2.1**, DT **v1.4** (§0b), spec **v1.7**, newsletter **v1.2**, working-agreements **v1.1**.
 
 - **2026-09-30 (respuestas de Jose a las cuatro preguntas del paso 5):**
   1. **Newsletter bilingüe:** cada número genera post y email en es y en en el mismo trabajo de Claude; el suscriptor recibe el de su idioma de alta (`locale` en la suscripción, cambiable desde preferencias); Jose revisa y aprueba las dos versiones en el admin; dos campañas de Brevo por número (una lista, atributo `LOCALE`); PR con dos ficheros; ratio de edición por idioma; LinkedIn solo es. Spec de newsletter **v1.1** (S4, Q2 reabierta; Q1, Q3–Q6 con las recomendaciones) y fase 10 del plan actualizadas.
