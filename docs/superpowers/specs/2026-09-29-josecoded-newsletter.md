@@ -1,6 +1,16 @@
 # joseCoded — Newsletter semanal con generación por IA, preview y aprobación (spec v1)
 
-**Fecha:** 2026-09-29 · **Perfil:** web (+ una tarea `infra` en Omen) · **Estado:** **v1.1 (2026-09-30)**: newsletter **bilingüe** (S4 y Q2 reabiertas y resueltas por Jose), auto-merge acotado a `newsletter/*` (S16), evaluación de n8n como orquestador (§7.5: no compensa; el runner sigue), Q1–Q6 resueltas · v1 (2026-09-29, borrador) · **Autor:** `arquitecto`
+**Fecha:** 2026-09-29 · **Perfil:** web (+ una tarea `infra` en Omen) · **Estado:** **v1.2 (2026-09-30, tras `/plan-eng-review`)** · v1.1 (2026-09-30): newsletter **bilingüe** (S4 y Q2 reabiertas y resueltas por Jose), auto-merge acotado a `newsletter/*` (S16), evaluación de n8n como orquestador (§7.5: no compensa; el runner sigue), Q1–Q6 resueltas · v1 (2026-09-29, borrador) · **Autor:** `arquitecto`
+
+## Changelog v1.2 (2026-09-30, decisiones de Jose sobre `/plan-eng-review`)
+
+1. **Publicación (S8, §6.4):** GitHub App propia **`josecoded-bot`** en lugar del PAT (`GITHUB_APP_ID`/`GITHUB_APP_PRIVATE_KEY` en `wrangler secret`; token de instalación por llamada). Check `newsletter-content-only` en **todos** los PR con la lógica en el YAML (bot → solo `newsletter/*` y solo `apps/web/content/blog/{es,en}/*.md`; humano → nunca `newsletter/*`). La tarea 10.0 comprueba el plan de GitHub: si es Free con repo privado, **la fusión la hace el gateway por API** tras verificar diff y checks. Despliegue de contenido por **`deploy-content.yml`** (push a `main` con `paths: content/blog/**`; aborta y avisa por Telegram si `main` tiene código sin desplegar respecto a la etiqueta `last-deployed`). CI reducido para `newsletter/*` (build, `i18n:check`, `content-index`, check de alcance). Regla de `main` en `docs/working-agreements.md` §9.
+2. **Datos y transiciones (§9, §9.2):** grants por columna en `newsletter_issues` (se revoca `UPDATE` de `status`, `reviewed`, `approved_*`, `brevo_*`, `blog_*`, `send_lock`, `error` a `authenticated`: solo contenido editable desde la web); inserts en `newsletter_issue_events` y `newsletter_jobs` solo con service role; trigger `BEFORE UPDATE` `newsletter_guard_transition()` que valida cada transición de §9.1; **marcar «revisado» pasa por el gateway** (`POST /issues/:id/review` con `locale`); editar o regenerar un idioma pone `reviewed.<locale> = false`; tests negativos de cada regla.
+3. **Contenido (§5, §6.4, §8.3):** posts `.md` con frontmatter YAML y `.mdx` con `export const metadata` validados por **un único `content/blog/schema.ts`**; el `import()` por slug resuelve las dos extensiones; el YAML se serializa con librería (`yaml`), nunca a mano; test de `content-index` con un `.md`; al aprobar, aviso si `blogEnabled` es falso (los números de la newsletter **cuentan** para el umbral de 3 artículos).
+4. **Envío (§6.4, §11):** `send_lock` atómico al entrar en `sending_email` (`update … set send_lock = gen_random_uuid() where status='blog_published' and send_lock is null returning …`); cualquier campaña de Brevo que no esté en `draft` cuenta como enviada; antes de enviar ninguna se comprueba el cupo restante de es+en con `GET /v3/account`; `approve` rechaza un segundo número de la misma `week_key` y el `auto` pasa a `superseded` también desde `approved`; test con dos barridos simultáneos.
+5. **Preview y webhook (§6.3, §10):** iframe de la preview con `sandbox=""`; escapado obligatorio en `renderEmailHtml` con tests de cargas maliciosas en cada campo; CSP estricta en `/admin/newsletter/*`; secreto del webhook de Brevo en cabecera si Brevo lo permite (si no, en la URL como hasta ahora).
+6. **Runner (§7.3, §11):** timeout total por trabajo de 20 min **incluido el reintento** (dos intentos de ≤ 9 min), siempre menor que el lock de 30 min (antes 25); `result` exige `claim_token` y `attempt`; `errorClass: 'rate_limit'` con `retry_after` no cuenta como intento y avisa una sola vez; `compose.yml` propio del runner aunque comparta red con `radar-runner`.
+7. **Cron:** los trabajos de la newsletter corren dentro del único cron `*/5` del gateway con despachador `nextRun` (DT §0b), no como entradas de `triggers.crons`.
 
 ## Changelog v1.1 (2026-09-30)
 
@@ -156,9 +166,9 @@
 ### 7.3 Contrato runner ↔ gateway (token `NEWSLETTER_RUNNER_TOKEN`, alcance mínimo)
 - `POST /api/v1/newsletter/runner/claim` `{ runtime:'omen'|'mac', version }` → `204` si no hay trabajo, o `200 { job, context }` con `newsletter_claim_job()` (`status='queued'` → `claimed`, `claimed_at`, lock blando 25 min, `skip locked`). `context` = voz, prompt (`prompt_version`), tema, ítems de actualidad, títulos de los últimos 8 números (evitar repetición), reglas de `lint`, artículo origen en el caso S14(b), **`locales: ['es','en']`** (v1.1).
 - El runner escribe `prompt.md` e `input.json` en su directorio de trabajo temporal y ejecuta `claude -p "$(cat prompt.md)" --output-format json --allowedTools WebSearch,WebFetch --max-turns 12 [--model $NEWSLETTER_CLAUDE_MODEL]`. Extrae el bloque JSON de la respuesta, valida con el esquema compartido (`packages/newsletter-core`), reintenta una vez con el prompt "estricto" si no valida.
-- `POST /api/v1/newsletter/runner/jobs/:id/result` `{ ok:true, output, usage:{ durationMs, model } }` o `{ ok:false, errorClass:'auth'|'timeout'|'invalid_output'|'no_material'|'runtime', message }`. El gateway vuelve a validar, guarda versión `actor='claude'`, aplica `lint` y pasa el número a `ready` o `failed`.
+- `POST /api/v1/newsletter/runner/jobs/:id/result` `{ claim_token, attempt, ok:true, output, usage:{ durationMs, model } }` (v1.2: sin `claim_token` válido o con `attempt` distinto del reclamado → 409) o `{ ok:false, errorClass:'auth'|'timeout'|'invalid_output'|'no_material'|'runtime', message }`. El gateway vuelve a validar, guarda versión `actor='claude'`, aplica `lint` y pasa el número a `ready` o `failed`.
 - El runner **no puede** leer suscriptores, aprobar, publicar ni enviar: el token solo autoriza `claim`, `result` y `heartbeat` (rate limit 1004 compartido de Radar o uno propio).
-- Reintentos: trabajo `claimed` sin resultado a los 25 min → vuelve a `queued` (`attempts+1`); a los 3 intentos → `failed` + Telegram.
+- Reintentos: trabajo `claimed` sin resultado a los **30 min** (lock) → vuelve a `queued` (`attempts+1`); el runner limita cada trabajo a **20 min en total** (dos intentos de ≤ 9 min, el segundo con prompt estricto); a los 3 intentos → `failed` + Telegram; `rate_limit` con `retry_after` no cuenta como intento (v1.2).
 
 ### 7.4 Prompt y salida
 - Prompt versionado en `packages/newsletter-core/prompts/issue.v1.md` con: voz (texto íntegro de `voice.md`), reglas duras (sin emojis ni exclamaciones; primera persona; sin "soluciones innovadoras"; sin precios ni "contrátame" en LinkedIn; no inventar datos, proyectos ni cifras; las opiniones del bloque "Esta semana" van marcadas `[opinión]`), estructura exacta de cada pieza, ejemplo del tono, y los datos de entrada como JSON **tratado como datos, nunca como instrucciones** (los títulos de feeds pueden contener texto malicioso).
@@ -215,6 +225,7 @@ content/newsletter/sources.json · content/blog/es/<slug>.md (generados por el f
 | `POST /api/v1/newsletter/confirm` · `POST /unsubscribe` | Token firmado | Confirmación / baja |
 | `POST /api/v1/newsletter/brevo/webhook` | Firma/secret de Brevo | Bajas, rebotes, quejas |
 | `POST /api/v1/newsletter/runner/*` | `NEWSLETTER_RUNNER_TOKEN` | §7.3 |
+| `POST /api/v1/newsletter/issues/:id/review` | JWT admin | v1.2: marca `reviewed.<locale>` (solo vía gateway) |
 | `GET /api/v1/newsletter/health` | JWT admin | Latido del runner, cola, última pasada de feeds, `configured` de secretos (`SecretRef`, sin valores) |
 
 ### 8.3 Render compartido
@@ -241,12 +252,13 @@ Colisiones: ninguna tabla `newsletter_*` existe en producción (verificar con `l
 
 ### 9.1 Estados del número
 `queued` → `generating` → `ready` → `approved` → `publishing_blog` → `blog_published` → `sending_email` → `sent`
-Laterales: `failed` (desde `generating`, `publishing_blog`, `sending_email`; conserva `error` y admite `retry` al mismo paso o `discard`), `discarded` (desde `ready`/`failed`), `expired` (desde `queued`/`generating`/`ready` por regla dominical), `superseded` (desde `ready`, solo `auto`). Regenerar: `ready` → `generating` (guarda versión; puede ser de un idioma y una pieza). Invariantes con test: ningún camino a `sent` sin `approved_by_jose`; **ninguna aprobación sin `reviewed.es` y `reviewed.en`** (v1.1); ningún `sending_email` sin `blog_published` (los dos posts vivos); cada `brevo_campaign_ids.<locale>` se persiste antes de su `sendNow`.
+Trigger `BEFORE UPDATE` `private.newsletter_guard_transition()` valida que `(old.status, new.status)` está en esta lista y que `reviewed.es && reviewed.en` para entrar en `approved` (v1.2). Laterales: `failed` (desde `generating`, `publishing_blog`, `sending_email`; conserva `error` y admite `retry` al mismo paso o `discard`), `discarded` (desde `ready`/`failed`), `expired` (desde `queued`/`generating`/`ready` por regla dominical), `superseded` (desde `ready`, solo `auto`). Regenerar: `ready` → `generating` (guarda versión; puede ser de un idioma y una pieza). Invariantes con test: ningún camino a `sent` sin `approved_by_jose`; **ninguna aprobación sin `reviewed.es` y `reviewed.en`** (v1.1); ningún `sending_email` sin `blog_published` (los dos posts vivos); cada `brevo_campaign_ids.<locale>` se persiste antes de su `sendNow`.
 
 ### 9.2 RLS
 | Tabla | anon | authenticated | admin |
 |---|---|---|---|
-| `newsletter_settings`, `_topics`, `_issues`, `_issue_versions`, `_issue_events`, `_jobs`, `_news_items`, `_runner_heartbeats` | — | — | select/insert/update (ediciones de contenido y temas desde la web; estados solo vía gateway con service role) |
+| `newsletter_settings`, `_topics`, `_issues`, `_issue_versions`, `_news_items`, `_runner_heartbeats` | — | — | select; insert/update **solo de columnas de contenido** (`post`, `email`, `linkedin`, `this_week`, `version`, temas, ajustes): en `newsletter_issues` se revoca `UPDATE` de `status`, `reviewed`, `approved_at`, `approved_by`, `brevo_campaign_ids`, `blog_*`, `send_lock`, `error` a `authenticated` (v1.2) |
+| `newsletter_issue_events`, `newsletter_jobs` | — | — | select; **insert/update solo service role** (v1.2) |
 | `newsletter_subscribers` | — | — | select/delete (RGPD) — **inserts y updates solo service role** (gateway) |
 
 El gateway usa `SUPABASE_SERVICE_ROLE_KEY` (ya existente). Tests RLS con tres cuentas (DT §8.4) ampliados: cliente y anónimo no ven ninguna tabla `newsletter_*`.
