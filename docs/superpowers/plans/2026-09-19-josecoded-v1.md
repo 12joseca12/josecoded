@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Fecha:** 2026-09-19 · **Perfil:** web · **Versión:** **2.1 (2026-09-30, tras `/plan-eng-review`)** · 2.0 (2026-09-29) · **Autor:** `arquitecto`
+**Fecha:** 2026-09-19 · **Perfil:** web · **Versión:** **2.2 (2026-09-30, batería de stack y metodologías; working-agreements v1.2)** · 2.1 (2026-09-30, tras `/plan-eng-review`) · 2.0 (2026-09-29) · **Autor:** `arquitecto`
 **Insumos:** spec **v1.7** (`docs/superpowers/specs/2026-09-13-josecoded-plataforma.md`), UX **v4.0** (`docs/superpowers/design/2026-09-17-josecoded-ux.md`), diseño técnico **v1.4** (§0b recoge los cambios del eng review) (`docs/superpowers/design/2026-09-17-josecoded-diseno-tecnico.md`, en adelante **DT**), `docs/working-agreements.md` v1.0 (**normativo**: si una tarea lo contradice, manda él), `DESIGN.md` + `.impeccable/design.json` (sistema visual v6), inventario `docs/superpowers/design/2026-09-29-componentes-home-v6.md` v1.1 (**INV**), pantallas `docs/superpowers/design/2026-09-29-pantallas-y-contenidos.md` v1.0 (**PANT**), prototipo `docs/superpowers/design/ref/home-v6/`, spec de newsletter `docs/superpowers/specs/2026-09-29-josecoded-newsletter.md` **v1.2** (fase 10), `docs/working-agreements.md` **v1.1**, `ESTADO.md`, `Comercial/tarifas.md` v2. El documento de `ui` v3 (`2026-09-17-josecoded-ui.md`) **queda superado** por `DESIGN.md` y no es insumo de ninguna tarea.
 
 ## Changelog v2.0 (2026-09-29)
@@ -21,6 +21,25 @@
 **Architecture:** Monorepo pnpm con `apps/web` (Next.js 16 App Router en Workers vía OpenNext, sin middleware Node), `apps/api` (el gateway Hono existente, movido, con rutas aditivas y Cron Triggers), `packages/{config,pricing,glyph-scene,radar-core,radar-connectors}` y `supabase/` (baseline de solo lectura + migraciones aditivas). El único WebGL es `packages/glyph-scene`, cargado por `import()` tras el LCP. Radar vive en el gateway (núcleo, cron, Telegram, Google) con conectores enchufables que también corren en Omen (`radar-runner`) y en el Mac (`/radar-indeed`).
 
 **Tech Stack:** pnpm 11.2.2 · Node 22 · turbo 2.10 · Next 16.3.5 · React 19.3 · `@opennextjs/cloudflare` 1.20.6 · wrangler 4.133 · **CSS Modules + tokens generados desde `.impeccable/design.json` (`packages/design-tokens`) + stylelint** · **motion en CSS nativo + `lib/motion/` en TypeScript (sin GSAP, Tailwind ni shadcn; spec D27)** · Baseline 2024 con `@supports` (D28) · three (versión fijada en 0.2) · next-intl 4.14 · `@next/mdx` · `@supabase/ssr` 0.12 / `supabase-js` 2.116 · Hono 4.13 · zod 4.6 · Vitest 4.1.11 + `@cloudflare/vitest-pool-workers` 0.22 · Playwright 1.63 (Chromium + WebKit) · Lighthouse CI 0.15 · TypeScript 5.9.3. Versiones completas en DT §1.2.
+
+## Changelog v2.2 (2026-09-30, batería de stack y metodologías de producción)
+
+Jose respondió las 12 preguntas eligiendo la opción recomendada en todas; en «Lint extra» marcó fronteras de import, orden de imports y `jscpd`, y **no** las reglas TypeScript extra. Normativa en `docs/working-agreements.md` v1.2 (§14–§17, §11 y §13); aquí solo aterriza por tarea con la marca **«v2.2 (stack)»**. **La fase 0 no cambia** (los spikes no se mergean y no crean tipos ni componentes compartidos).
+
+| # | Decisión | Tareas |
+|---|---|---|
+| 1 | `packages/types` (`@josecoded/types`): barrel + un fichero por dominio; ningún tipo compartido fuera | 1.1, 7.1 (`radar.ts` reexportado), 10.1 |
+| 2 | zod como fuente en las fronteras (`packages/types/src/schemas/`), tipos por `z.infer` | 1.1, 1.4, 1.5, 3.7, 3.8, 3.9, 3.10 |
+| 3 | `supabase gen types --local` → `packages/types/src/database.ts` commiteado + test de deriva; helpers `db.ts` | 1.6 (y cada migración: 1.8, 7.6, 10.1) |
+| 4 | Claves tipadas: `AppConfig` de next-intl y `tokens.ts` (`TokenName`, `readToken`) | 1.5, 1.10 |
+| 5 | Variantes como uniones + `data-*`; sin CVA/clsx; regla de partición por rol/raíz/slots | 2.2 (y todo componente posterior) |
+| 6 | Polimorfismo por `href` con unión discriminada | 2.2 |
+| 7 | A11y por componente: contrato en la tarea, `lib/a11y/`, `vitest-axe` + `@axe-core/playwright` bloqueantes | 2.2, 2.17 y todo E2E de escena o pantalla |
+| 8 | Estado en cliente sin librería: `ShellProvider` único | 2.2 (provider), 2.16 (paleta y menú lo consumen) |
+| 9 | Formularios: Server Actions + `useActionState` + `Form`/`Field` | 3.9, 3.10 (y 4.x, 5.x, 6.x, 7.25–7.29, 10.4, 10.5 reutilizan) |
+| 10 | Gateway nuevo con puertos y adaptadores, `buildDeps(env)`, falsas en memoria; heredado intacto | 1.2, 1.3, 3.7, 3.8, 7.16–7.24, 10.2 |
+| 11 | Catálogo `/dev/ui` en la app (sin Storybook), 404 en producción | 2.2 |
+| 12 | Lint: `no-restricted-imports` de fronteras, `eslint-plugin-import-x`, `jscpd` en CI; sin reglas TS extra | 1.1 |
 
 ## Changelog v2.1 (2026-09-30, 41 hallazgos de `/plan-eng-review` decididos por Jose)
 
@@ -418,6 +437,8 @@ it('feed has ≥ 10 items with title, link and pubDate', () => {
 
 **Agente:** implementador-web · **Gate:** no · **Depende de:** 0.1 (decide Workers o Vercel para `apps/web`, no afecta al esqueleto)
 
+> **v2.2 (stack):** (a) crear **`packages/types`** (`@josecoded/types`, sin deps de runtime, `zod` como peer) con `src/index.ts` (barrel) y `src/{ui,content,api,i18n,tokens,db}.ts` vacíos salvo los tipos base (`Locale`, `Href`, `FormState<T>`), `src/schemas/index.ts` y `test/barrel.test.ts` (todo fichero de dominio está reexportado); `tsconfig.base.json` con `paths` → `@josecoded/types`. (b) `eslint.config.mjs` de `@josecoded/config` añade `eslint-plugin-import-x` (`import-x/order` con grupos builtin · external · `@josecoded/**` · parent/sibling · type, `no-duplicates`, `no-cycle` maxDepth 4) y `no-restricted-imports` con la lista de working-agreements §14.5 (messages JSON, `database.ts`, `tokens.css`, `three` fuera de glyph-scene, `@supabase/supabase-js` fuera de `lib/supabase/` y `apps/api/src/adapters/`, adaptadores desde rutas); test `packages/config/test/eslint.test.ts` que lint-ea un fixture con cada import prohibido y espera error. **No** se añaden `consistent-type-imports`, `no-explicit-any` como error ni prohibiciones de `React.FC`/enums (Jose no las marcó). (c) `ci.yml`: paso `pnpm dlx jscpd@latest apps packages --min-lines 30 --min-tokens 120 --threshold 0 --ignore "**/*.test.*,**/database.ts,**/tokens.*,**/content/**"` dentro del job `lint`. (d) `devDependencies` de `apps/web` (cuando exista, 1.5): `vitest-axe`, `@axe-core/playwright` (lista blanca de working-agreements §11).
+
 > **v2.1 (eng review):** la fase 1 se parte en dos ramas: **`chore/monorepo-base`** (1.1, 1.4, 1.5, 1.10; `revisor` sobre la rama, sin puerta) y **`chore/supabase`** (1.2, 1.3, 1.6, 1.7, 1.8, 1.9; con puerta). Esta tarea añade `apps/web/messages/{es,en}/` como **carpetas por pantalla** (`common`, `home`, `business`, `companies`, `about`, `projects`, `blog`, `contact`, `proposal`, `auth`, `area`, `newsletter`) fusionadas en `i18n/request.ts`. Ningún `package.json` usa `npm`/`npx`.
 
 **Objetivo:** raíz pnpm + turbo con scripts únicos, `packages/config` compartido (eslint, **stylelint**, tsconfig, prettier) y el esqueleto de `packages/design-tokens` (DT §1.1, §1.2, §1.9; working-agreements §12).
@@ -468,6 +489,8 @@ it('base tsconfig is strict', () => {
 
 **Agente:** implementador-web · **Gate:** no · **Depende de:** 1.1
 
+> **v2.2 (stack):** el código heredado se mueve **tal cual** (sin puertos ni adaptadores: working-agreements §17.1 solo aplica a módulos nuevos). Crear vacíos `src/adapters/`, `src/deps.ts` (`buildDeps(env): Deps` con solo `clock` por ahora) y el middleware `withDeps` que deja `c.var.deps`; se registra pero ninguna ruta heredada lo usa. `no-restricted-imports` excluye `src/modules/{v1,v1-protected,forum,admin-chat,health,system}/**` y `src/services/*` heredados mediante `overrides` con comentario «heredado, intocable».
+
 **Objetivo:** el gateway vive en `apps/api` con sus 13 suites Jest en verde, `wrangler` 4.133 y TypeScript 5.9.3 (DT §1.1, §1.2; `git subtree` no hace falta: josedev queda congelado).
 
 **Ficheros:**
@@ -487,6 +510,8 @@ it('base tsconfig is strict', () => {
 ### Tarea 1.3 — Tests del gateway en Vitest + `@cloudflare/vitest-pool-workers`
 
 **Agente:** implementador-web · **Gate:** no · **Depende de:** 1.2
+
+> **v2.2 (stack):** además de la migración Jest → Vitest, crear `apps/api/test/fakes/` con `clock.fake.ts` y el patrón de sobreescritura de `deps` en tests (`env.__deps` leído por `withDeps` solo cuando `env.TEST === '1'`) con un test que lo demuestra sobre `health`. Las falsas de Supabase, Telegram, AI, Turnstile y Brevo llegan con cada adaptador (3.7, 3.8, 7.16+, 10.2).
 
 **Objetivo:** migrar los 13 ficheros Jest a Vitest 4.1 corriendo en workerd real, para que las rutas nuevas y las heredadas compartan runner (DT §8.1 "heredado"). Decisión reversible: si un fichero se resiste tras 30 min, se deja en Jest y se documenta.
 
@@ -587,6 +612,8 @@ it.skipIf(!existsSync(TARIFAS))('pricing.json equals tarifas.md', () => {
 
 **Agente:** implementador-web · **Gate:** no · **Depende de:** 0.1, 1.1
 
+> **v2.2 (stack):** (a) los esquemas de `env` viven en `@josecoded/types/schemas/env.ts` y `lib/env.ts` solo los ejecuta; `EnvClient`/`EnvServer` por `z.infer`. (b) `apps/web/global.d.ts` declara `AppConfig` de next-intl (`Locale: 'es' | 'en'`, `Messages: typeof import('./messages/es').default`) sobre un `messages/es.ts` que compone las carpetas por pantalla; test de tipos `tests/i18n-keys.test-d.ts` (`expectTypeOf`) en el que `t('nav.nope')` no compila. (c) `env.client.NEXT_PUBLIC_DEV_UI` opcional (`'1'` en `.dev.vars` de ejemplo y en `preview.yml`, ausente en producción) para el catálogo `/dev/ui` de 2.2.
+
 > **v2.1 (eng review):** `env.server` **sin** `SUPABASE_SERVICE_ROLE_KEY`; `env.client` sin cambios. La rama es `chore/monorepo-base`.
 
 **Objetivo:** promover el spike 0.1 a `apps/web` real: configuración de DT §1.3–§1.4, validación de env con zod, y la matriz de URLs como test E2E permanente.
@@ -619,6 +646,8 @@ it('env fails fast when a public var is missing', async () => {
 ### Tarea 1.6 — `supabase/`: baseline de solo lectura, config local, seed y test de deriva
 
 **Agente:** implementador-web · **Gate:** no (lectura de producción con `supabase db dump --linked`; avisar a Jose de que se lee el esquema) · **Depende de:** 1.1
+
+> **v2.2 (stack):** tras `supabase start`, `pnpm --filter types db:types` ejecuta `supabase gen types typescript --local > packages/types/src/database.ts` (**nunca `--linked`**); se commitea. `packages/types/src/db.ts` expone `Database`, `Tables<T>`, `TablesInsert<T>`, `TablesUpdate<T>`, `Enums<T>`. Test `packages/types/test/database-drift.test.ts`: regenera en memoria y compara byte a byte (se salta con aviso si `SUPABASE_LOCAL` no responde; en CI es bloqueante porque Supabase local ya está arrancado para RLS). Toda tarea con migración (1.8, 4.x, 7.6, 10.1) termina regenerando el fichero.
 
 **Objetivo:** que `supabase start` local y CI reproduzcan el esquema real sin copiar las 47 migraciones remotas (DT H6, §6.2, §8.4).
 
@@ -775,6 +804,8 @@ describe('admin', () => {
 
 **Agente:** implementador-web (con `ui` para nombrar los tokens) · **Rama:** `chore/monorepo` · **Gate:** no · **Depende de:** 1.1 · **Insumos:** INV §5 (lista de tokens que faltan), `DESIGN.md` (nombres y reglas), prototipo `home-v6/{base,v6}.css` (valores), DT §1.9, working-agreements §2
 
+> **v2.2 (stack):** `packages/design-tokens/src/emit.ts` emite también `apps/web/styles/tokens.ts`: `export type TokenName = '--bg' | …` (todas las custom properties emitidas) y `export function readToken(name: TokenName): string` (`getComputedStyle(document.documentElement).getPropertyValue(name).trim()`), más `export const tokens = { bg: '--bg', … } as const satisfies Record<string, TokenName>`. El test de deriva cubre los tres ficheros (`tokens.css`, `breakpoints.ts`, `tokens.ts`). `@josecoded/types/tokens.ts` reexporta `TokenName`; `lib/motion/` solo lee tokens con `readToken` (test de que ningún módulo de motion contiene `getPropertyValue` directo).
+
 > **v2.1 (eng review):** rama `chore/monorepo-base`. **`tokens.css` lo regenera solo su tarea dueña** (esta y, después, la tarea que añade un token con `deviation:`); cualquier otra tarea que lo modifique falla en revisión (regla en `CLAUDE.md`).
 
 **Objetivo:** que `.impeccable/design.json` contenga **todos** los tokens que los componentes de la home necesitan, con nombre semántico por uso (no por porcentaje), y que `apps/web/styles/tokens.css` se genere desde él con un test de deriva. Ningún componente de la fase 2 se porta antes, porque los CSS Modules solo pueden consumir tokens.
@@ -883,6 +914,8 @@ it('lists pending facts and keys missing in either locale', () => {
 ### Tarea 2.2 — `globals.css`, fuentes Geist, `Backdrop` v6 y primitivas `components/ui`
 
 **Agente:** implementador-web · **Rama:** `feat/shell-home` · **Gate:** no · **Depende de:** 1.5, **1.10** (tokens completos) · **Insumo:** INV §1.1 (primitivas), `DESIGN.md` (Colors, Typography, Shapes, Elevation), `base.css:1-45, 85-96, 137-144, 155-161, 179-191, 215-216`
+
+> **v2.2 (stack):** (a) **Contrato de variantes** (working-agreements §15): `ButtonVariant`, `ButtonSize`, `IconTileSize`, `IconTileTone`, `SurfaceRadius`, `SurfaceLayer`, `ArrowLinkEmphasis`, `TwoToneHeadingLevel/Size`, `LangSwitchVariant` en `@josecoded/types/ui.ts`; cada primitiva vuelca `data-variant`/`data-size`/`data-tone` y su `.module.css` selecciona por atributo; sin CVA ni `clsx`; una clase raíz por componente; test de tipos de que `variant: 'primary'` no compila. (b) **Polimorfismo por `href`** en `Button`, `ArrowLink`, `ChatTrigger` y `CommandItem` con la unión discriminada de §15.3 (test de tipos: `onClick` con `href` no compila; test de render: con `href` es `<a>` de next-intl, sin él `<button type="button">`). (c) **`lib/a11y/`**: `focus-trap.ts`, `inert-others.ts`, `roving-tabindex.ts`, `return-focus.ts`, `announce.ts` con tests de Vitest (Tab/Shift+Tab cíclicos, `inert` restaurado, flechas con `loop`, foco devuelto al disparador, una sola región `aria-live`). (d) **Contrato a11y** por primitiva (bloque «A11y» de §16.1) copiado de INV §1.1 y §4.5; `vitest-axe` en los tests de las primitivas con comportamiento (`KeyCap`, `LangSwitch` segmented). (e) **`ShellProvider`** (`components/layout/shell-provider.tsx`, `useShell()`: `palette`, `menu`, `openCell` + acciones) con test de reducer; 2.3, 2.10 y 2.16 lo consumen en lugar de estado propio. (f) **Catálogo `/dev/ui`**: `app/[locale]/(dev)/ui/page.tsx` monta cada primitiva × variantes × tamaños × estados (`data-hover`, focus-visible, disabled, reduced motion); `notFound()` si `env.client.NEXT_PUBLIC_DEV_UI !== '1'`; excluida del `sitemap`; E2E `e2e/dev-ui.spec.ts` con `AxeBuilder` (wcag2a/aa, 2.1, 2.2) sin violaciones `serious`/`critical` y `toHaveScreenshot` por primitiva a 360 y 1440. Toda primitiva o variante nueva de tareas posteriores se añade aquí en su misma tarea.
 
 > Sustituye a la tarea 2.2 de la v1 («Tokens de diseño, tipografías, Tailwind v4, shadcn base y `Backdrop`»), obsoleta por working-agreements §12. Los tokens ya no se escriben aquí: los genera 1.10.
 
@@ -1477,6 +1510,8 @@ it('indicator is hidden in hero, tour and with an open cell, and when the margin
 
 **Agente:** implementador-web · **Rama:** `feat/shell-home` · **Gate:** no · **Depende de:** 2.16, 2.12, 2.13
 
+> **v2.2 (stack):** cada prueba de escena (y la del hero) termina con `new AxeBuilder({ page }).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']).analyze()` y `expect(violations.filter(v => ['serious','critical'].includes(v.impact))).toEqual([])`; las `moderate` se vuelcan al informe del PR (`test-results/axe-<escena>.json`). Se ejecuta en escritorio 1440, móvil 360 y con `prefers-reduced-motion: reduce`. Helper único `e2e/helpers/axe.ts` (`expectNoAxeViolations(page, { name })`) que reutilizan **todos** los E2E de pantallas (3.x), área (5.x), admin (6.x), Radar (7.30) y newsletter (10.4, 10.5): es bloqueante desde esta tarea, no informativo.
+
 > **v2.1 (eng review):** (a) en escritorio, la prueba de orden compara la entrada LCP con **`performance.mark('scene:import-start')`** (2.8), no con el nombre del recurso; (b) en móvil se afirma que **no existe ningún `<canvas>`** y que el `<source>` del vídeo se añade después de la entrada LCP; (c) **E2E del paginado**: `page.mouse.wheel(0, 200)` en 1440×900 lleva exactamente a la escena siguiente y un segundo gesto contrario durante el `glide` lo interrumpe; en 390×844 la rueda no pagina.
 
 **Objetivo:** las filas «Hero: intro y modos», «Home por escena», «Fallbacks» y «Reduced motion» de DT v1.3 §8.2 como tests Playwright (Chromium + WebKit), más la comprobación de que el chunk de `three` llega después del LCP.
@@ -1757,6 +1792,8 @@ it('renders only entries with a real date and in chronological order', () => {
 
 **Agente:** implementador-web · **Rama:** `feat/generator-leads` · **Gate:** no · **Depende de:** 1.7, 1.4
 
+> **v2.2 (stack):** puertos `TurnstileVerifier`, `QuotaStore`, `AiClient`, `ProposalsRepo` en `@josecoded/types/api.ts`; adaptadores `turnstile.adapter.ts`, `kv-quota.adapter.ts` (+ RPC `increment_quota` vía `supabase.adapter.ts`), `workers-ai.adapter.ts` en `apps/api/src/adapters/`, cada uno con test de contrato en workerd (`fetchMock`) y falsa en `test/fakes/`. `createProposalsService(deps)` se testea con las falsas (clasificador determinista, cuota agotada, Turnstile inválido) sin HTTP; la ruta solo valida con `proposalRequestSchema` de `@josecoded/types/schemas/proposals.ts` y llama al servicio. `buildDeps` se amplía con estos adaptadores.
+
 > **v2.1 (eng review):** orden y piezas nuevas (DT §0b): (1) `verifyTurnstile` **antes** que cualquier contador; (2) `nativeRateLimit`; (3) cuota por IP y global con la **RPC `increment_quota`** (1.8) en lugar de `QUOTA_KV`; si la RPC falla, **se deja pasar** y se registra `quota_unavailable` (test «el contador lanza un error → 200»); (4) `env.AI.run(..., { gateway: { id: env.AI_GATEWAY_ID } })` **obligatorio** con `cf-aig-metadata: { consumer:'proposals' }` y el presupuesto de DT §0b; (5) **guarda determinista** `guardModelOutput(output, locale)`: si la salida contiene `€`, cifras que parezcan precio, URLs, «gratis/regalo/free» o texto en otro idioma → cae a reglas (`source:'rules'`); (6) precio por reglas. **`proposalToken`** = HMAC-SHA256 con `SERVER_KEY` de `{ pack, extras, priceFrom, isApp, pricingVersion, locale, exp }` en la respuesta, sin KV. `isApp` y `APP_MVP`/`APP_PLUS` en el JSON schema del modelo y en `classifyByRules` (palabras clave **es y en**: «app», «aplicación móvil», «iOS», «Android», «store», «mobile app»); **precedencia P4 > P3 > P2 > P1** y los cuatro casos del test alineados (añadir «app para pedir cita» → `APP_MVP`). **Evals manuales**: `apps/api/evals/proposals.jsonl` (~30 casos es/en con 5 inyecciones) y script `pnpm --filter api eval -- evals/proposals.jsonl` contra `wrangler dev --remote`; resultado en el PR antes del merge.
 
 **Objetivo:** el generador de propuestas de DT §3.2 en workerd, con clasificación por IA (JSON mode) y precio por reglas, fallback por reglas, Turnstile, rate limit y cuota diaria.
@@ -1812,6 +1849,8 @@ it('failed Turnstile → 403 bot_check_failed', async () => {
 
 **Agente:** implementador-web · **Rama:** `feat/generator-leads` · **Gate:** no (el deploy de la función y los secretos van en 3.12) · **Depende de:** 3.7, 1.8, 1.9
 
+> **v2.2 (stack):** puertos `LeadsRepo`, `AffiliatesRepo`, `Notifier`; adaptadores `supabase.adapter.ts` (repos) y `telegram.adapter.ts`; `createLeadsService(deps)` (idempotencia, afiliado desconocido no bloquea, `notifyLead`) con tests sobre falsas en memoria; los tests contra `supabase start` de v2.1 quedan como tests de contrato de `supabase.adapter.ts`. Esquemas `leadSchema`, `leadResponseSchema` en `@josecoded/types/schemas/leads.ts`; `apps/web` importa el mismo tipo `Lead` (sin duplicar el contrato en la web).
+
 > **v2.1 (eng review):** (a) tests **contra `supabase start`** (`SUPABASE_URL=http://127.0.0.1:54321`) con `fetchMock.enableNetConnect(/127\.0\.0\.1/)` y helper `readLead(id)` (service role solo en CI/local, `tests/helpers/db.ts`); (b) **`idempotency_key`** obligatoria (`calcom:<uid>` o UUID del cliente): repetida → 200 con el `leadId` existente; (c) `proposalToken` verificado (HMAC) y **re-tarificado** con `pricing`; `ai_proposal` con el contrato de 1.4 y **test de contrato** con la Edge Function (`supabase/functions/notify/index.test.ts` lee el mismo fixture); (d) **código de afiliado desconocido → 201 sin afiliado y `meta.invalid_ref`** (sustituye al 400 del test); autoreferido → 201 con `meta.self_referral_suspect` (sin 409); `GET /affiliates/validate` a 10/min por IP; (e) `notifyLead` deduplica por `lead_id` (`meta.notify.sent_at`) y el trabajo `leads.notify_retry` del cron único reintenta los `via='none'` de 24 h; (f) `leads.user_id` se rellena si llega JWT.
 
 **Objetivo:** creación de leads solo desde el gateway con service role, aviso primario por Edge Function y opcional por n8n, atribución de afiliado con detección de autoreferido (DT §3.3–3.5, H2, H3).
@@ -1851,6 +1890,8 @@ it('GET /affiliates/validate', async () => { expect((await (await SELF.fetch('ht
 ### Tarea 3.9 — Web: generador de propuesta `/propuesta` (`GuidedChat` + `ProposalCard`)
 
 **Agente:** implementador-web · **Rama:** `feat/generator-leads` · **Gate:** no · **Depende de:** 3.7, 3.8, 2.3 · **Insumos:** `ui` (`GuidedChat`, `ProposalCard` §13.12), UX §4.4, §9.1, §10.3
+
+> **v2.2 (stack):** el envío final (`sendProposal`) es un Server Action con `useActionState` y `FormState<SendProposalInput>`; los campos de contacto del último paso usan `Form`/`Field` de 3.10 (que se implementa **antes** o en la misma rama: reordenar si hace falta) y el esquema `sendProposalSchema` de `@josecoded/types/schemas/proposals.ts` (el mismo que valida el gateway). Estado de la máquina de pasos con `useReducer` local; nada en `ShellProvider`. `vitest-axe` en el test de `GuidedChat`; bloque «A11y» (pasos anunciados con `aria-live`, foco al primer control de cada paso).
 
 > **v2.1 (eng review):** guarda el `proposalToken` en el estado de la máquina y lo envía en `sendProposal`; genera un `idempotencyKey` (UUID) al entrar en `sending` y lo reutiliza en reintentos; la `ProposalCard` muestra `AppOffer` si `isApp`.
 
@@ -1903,6 +1944,8 @@ test('restaurant with bookings → P2 from 1.400 €, send creates a lead and tr
 ### Tarea 3.10 — Web: `/contacto` (P3: selector negocio/empresa, `ContactForm`, `CalEmbed`, `CopyField`) y `ClosingCompact` para todas las páginas
 
 **Agente:** implementador-web · **Rama:** `feat/generator-leads` · **Gate:** no · **Depende de:** 3.8, 3.13, 3.3 (`WhatsAppButton`) · **Insumos:** PANT P3 y §1.3 («cierre corto»); WhatsApp, email, GitHub, plazo de respuesta y cuenta de Cal.com `{{DATO}}`; prototipo `ref/contacto/` validado por Jose
+
+> **v2.2 (stack):** crea **`components/forms/form/`** y **`components/forms/field/`** (working-agreements §17.3): `Form` monta `useActionState`, `aria-live` de error general y botón con `pending`; `Field` con `kind: 'text' | 'email' | 'tel' | 'textarea' | 'select' | 'checkbox' | 'radio-group' | 'hidden'` (`FieldKind` en `@josecoded/types/ui.ts`) pinta label, ayuda, error, `aria-describedby`, `aria-invalid`, `autocomplete`. `submitContact` devuelve `FormState<ContactInput>` con `fieldErrors` desde `contactSchema` (`@josecoded/types/schemas/leads.ts`). Tests: `Field` con `vitest-axe` para cada `kind` y estado de error; `Form` sin JS (E2E con `javaScriptEnabled: false` envía y muestra errores del servidor). Ambos entran en `/dev/ui`. Sin react-hook-form.
 
 > **v2.1 (eng review):** el formulario genera `idempotencyKey` por envío; sin prototipo en `ref/contacto/` no se construye (P3 sí tiene prototipo, 3.13).
 
@@ -2387,6 +2430,8 @@ Las ramas `feat/radar-core` (7.1–7.7) y `feat/radar-connectors` (7.8–7.15) *
 
 **Agente:** implementador-web · **Rama:** `feat/radar-core` · **Gate:** no · **Depende de:** 1.1 · **Insumos:** `profile.json` real (Q10) y CV maestro (Q15) de Jose — hasta entonces plantillas con `{{DATO}}`
 
+> **v2.2 (stack):** los tipos y esquemas se escriben en `@josecoded/types` (`src/radar.ts`, `src/schemas/radar.ts`); `radar-core/src/types.ts` y `schemas.ts` solo reexportan (compatibilidad con el resto de la fase 7 tal como está escrita). Tras 7.6, regenerar `database.ts` (v2.2, 1.6).
+
 > **v2.1 (eng review):** `packages/radar-core/src/cv/load.ts` (`loadCvMaster()`, convención `<!-- id: -->`) y `cv/cv.css` son la única fuente para 3.14, 7.5 y 7.21 (si 3.14 se hizo antes, ya existen aquí).
 
 **Objetivo:** la única fuente de hechos de Radar y los esquemas que comparten gateway, web, CLI y tests (DT §11.1 "Perfil", §11.7, §11.11 k).
@@ -2797,6 +2842,8 @@ it('never exceeds maxOffers', async () => { /* 3 páginas de 20 → 40 con maxOf
 ### Tarea 7.16 — Gateway Radar: módulo, modos de auth, `POST /radar/ingest`, `GET /platforms/:code/job`, `GET /platforms/health`
 
 **Agente:** implementador-web · **Rama:** `feat/radar-api` · **Gate:** no · **Depende de:** 7.7, 7.3, 7.8, 1.7
+
+> **v2.2 (stack), aplica a 7.16–7.24:** todo el módulo `radar/*` sigue working-agreements §17.1: puertos `RadarRepo`, `MailSource`, `CalendarClient`, `PlatformClient` (InfoJobs), `BrowserRenderer`, `Notifier`, `AiClient`, `Clock` en `@josecoded/types/api.ts`; adaptadores en `src/adapters/` (`supabase.adapter.ts` ampliado, `google.adapter.ts`, `infojobs.adapter.ts`, `browser-rendering.adapter.ts`, `n8n.adapter.ts`) con test de contrato en workerd y falsa en `test/fakes/`; los servicios (`ingest`, `sweep`, `applications`, `telegram`, `materials`, `mail`) son fábricas `create<X>Service(deps)` testeadas con las falsas; `scheduled.ts` y las rutas solo componen sobre `c.var.deps`. Los tests de `fetchMock` que ya describen 7.16–7.24 pasan a ser los tests de contrato de cada adaptador; los invariantes (`sent ⇒ confirmed_by_jose`, Gmail solo borradores, Calendar sin clic) se prueban además contra las falsas.
 
 **Objetivo:** el núcleo de ingesta idempotente de DT §11.2 en workerd, con service role, dedup en TS y `radar_finish_run`.
 
@@ -3343,6 +3390,8 @@ Sin métricas en la web (spec §12, `DESIGN.md`): no hay `ProofStrip` ni cifra d
 ### Tarea 10.2 — `feat/newsletter-api`: rutas del gateway, servicios (Brevo, GitHub, feeds), crons y eventos `newsletter.*` en `notify` + **GATE** función y secretos
 
 **Agente:** implementador-web + controlador (deploy y secretos con OK) · **Gate:** **SÍ** · **Depende de:** 10.1, 1.7 · **Fuente:** NL §8.2, §6.2, §6.4, §8.4, §10, §11
+
+> **v2.2 (stack):** `brevo.adapter.ts`, `github.adapter.ts`, `feeds.adapter.ts` (+ puertos `Mailer`, `ContentRepo`, `FeedSource` en `@josecoded/types/api.ts`), falsas en memoria y servicios `createIssuesService(deps)`, `createSendService(deps)` (respeta `send_lock`) testeados sin HTTP; las rutas de NL §8.2 componen sobre `c.var.deps`. Tipos y esquemas de la newsletter en `@josecoded/types/{newsletter.ts,schemas/newsletter.ts}` (10.1 los crea; `newsletter-core` reexporta).
 
 > **v2.1 (eng review):** (a) `POST /issues/:id/review` (`locale`) es la única vía para `reviewed`; editar o regenerar un idioma lo pone a `false`; (b) **`send_lock` atómico** al entrar en `sending_email`, campañas de Brevo no `draft` = enviadas, **`GET /v3/account`** antes de enviar para comprobar el cupo de es+en, `approve` rechaza una segunda `week_key` y pasa el `auto` a `superseded` también desde `approved`; test con **dos barridos simultáneos**; (c) **GitHub App** (`github-content.service` firma el JWT de la app y pide token de instalación) y, si 10.0 dice que el plan no permite auto-merge, **`mergePullRequest()`** por API tras comprobar el diff (`GET /pulls/{n}/files` cumple el patrón) y los checks (`GET /commits/{sha}/check-runs` todos `success`); (d) los trabajos de la newsletter son entradas de `private.scheduled_jobs` del cron único (1.7), no `triggers.crons`; (e) `result` exige `claim_token` y `attempt`; `errorClass:'rate_limit'` con `retry_after` no cuenta como intento y avisa una vez; lock 30 min; (f) webhook de Brevo con secreto en **cabecera** si Brevo lo permite; (g) al aprobar, aviso en la respuesta si `blogEnabled` es falso.
 
