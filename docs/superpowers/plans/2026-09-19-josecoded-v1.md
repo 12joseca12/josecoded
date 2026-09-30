@@ -433,6 +433,8 @@ it('feed has ≥ 10 items with title, link and pubDate', () => {
 ---
 > **v2.3 (2026-09-30, Jose):** las tareas **0.3–0.6 (Radar) se mueven al inicio de la fase 7** y se ejecutan justo antes de construir Radar; la fase 0 queda en **0.1 y 0.2**. Resultado de 0.2 en `docs/superpowers/specs/2026-09-19-tarea0-resultados.md` (rama `spike/t0-hero`): chunk 139,7 KiB gz con bloom (tope 200), póster 25 KB; **tope del vídeo subido a 700 KB** (spec §12.2) porque a 400 KB los glifos salían borrosos.
 
+> **v2.3 (resultados de fase 0, 2026-09-30):** **0.2 cerrada** (Jose aprueba el vídeo a 700 KB: webm crf 56 / mp4 crf 36; 2.5c y 2.6 parten de ahí). **0.1 local OK** (12/12 en `wrangler dev --local`, ~1,12 MiB gz); pendiente `cpuTime` p95 remoto con `wrangler login` + OK de Jose, **bloquea solo la decisión Workers/Vercel de 1.5**. Cambios que entran en tareas: **1.1/`preview.yml`/`deploy-production.yml`** usan `opennextjs-cloudflare upload`/`deploy` (incluyen `populateCache`), nunca `wrangler versions upload` a secas; **1.5** caché incremental `static-assets-incremental-cache`, **slugs traducidos en inglés** con `pathnames` de next-intl (`/en/business`, `/en/about`, `/en/contact`, `/en/projects`…; la variante sin traducir redirige, sin duplicados) y barra final con 308 → sin barra (se ajusta el test que esperaba 200 en `/en/`); **2.9** `check-hero-bundle` lee el HTML prerrenderizado y los source maps (`productionBrowserSourceMaps` solo en el build de la comprobación), fixture con un mini `.next` (prototipo en `spike/t0-opennext:apps/web/scripts/check-hero-bundle.mjs`).
+
 ## Fase 1 — Monorepo, `apps/api` movido, `packages/pricing`, CI · Estimación M · rama `chore/monorepo`
 
 ### Tarea 1.1 — Esqueleto del monorepo
