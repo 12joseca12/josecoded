@@ -94,6 +94,8 @@ Gates que no se cruzan sin OK explícito de Jose en la misma sesión: migracione
 
 ## Decisiones recientes
 
+- **2026-09-30 (fase 0):** spike 0.2 hecho en `spike/t0-hero` (chunk `glyph-scene` 139,7 KiB gz con bloom, póster 25 KB, captura reproducible PSNR 39,6). **Tope del vídeo del hero en móvil subido a 700 KB** tras verlo Jose en el navegador (a 400 KB los glifos salían borrosos). **0.3–0.6 (Radar) movidas al inicio de la fase 7.** 0.1 solo en local hasta que Jose haga `wrangler login` y dé OK al Worker de pruebas `josecoded-web-t0`.
+
 - **2026-09-30 (batería de stack y metodologías de producción, 12 respuestas de Jose; recomendada en todas):** normativa en working-agreements v1.2 (§14–§17), reglas duras 11–13 en `CLAUDE.md`, plan v2.2 (fase 0 sin cambios).
   1. **Tipos:** `packages/types` (`@josecoded/types`) con barrel y un fichero por dominio (`ui`, `content`, `api`, `db`, `i18n`, `tokens`, `radar`, `newsletter`); ningún tipo compartido fuera del paquete.
   2. **zod como fuente en las fronteras** (`packages/types/src/schemas/`) y tipos por `z.infer`; los internos a mano. Sin `satisfies` ni duplicar.
