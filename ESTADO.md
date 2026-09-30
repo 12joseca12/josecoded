@@ -94,6 +94,8 @@ Gates que no se cruzan sin OK explícito de Jose en la misma sesión: migracione
 
 ## Decisiones recientes
 
+- **2026-09-30 (spike 0.1, parte local, rama `spike/t0-opennext`):** 12/12 tests en `wrangler dev --local`; Worker ~1,12 MiB gz (tope 2,5); caché de assets estáticos de OpenNext funciona (variante por defecto) y **en CI hay que usar `opennextjs-cloudflare upload`/`deploy`, no `wrangler versions upload` a secas** (afecta a 1.1 y `preview.yml`); **`check-hero-bundle` (2.9) debe leer el HTML prerrenderizado + source maps**, Turbopack no genera `app-build-manifest.json`; barra final: se mantiene 308 → sin barra y se ajusta el test (decisión técnica). Pendiente: `cpuTime` p95 remoto (necesita `wrangler login` + OK de Jose) y decisión de slugs en inglés. Tope del vídeo 700 KB aplicado en el spike (webm 671 KB, mp4 622 KB, SSIM 0,92–0,93).
+
 - **2026-09-30 (fase 0):** spike 0.2 hecho en `spike/t0-hero` (chunk `glyph-scene` 139,7 KiB gz con bloom, póster 25 KB, captura reproducible PSNR 39,6). **Tope del vídeo del hero en móvil subido a 700 KB** tras verlo Jose en el navegador (a 400 KB los glifos salían borrosos). **0.3–0.6 (Radar) movidas al inicio de la fase 7.** 0.1 solo en local hasta que Jose haga `wrangler login` y dé OK al Worker de pruebas `josecoded-web-t0`.
 
 - **2026-09-30 (batería de stack y metodologías de producción, 12 respuestas de Jose; recomendada en todas):** normativa en working-agreements v1.2 (§14–§17), reglas duras 11–13 en `CLAUDE.md`, plan v2.2 (fase 0 sin cambios).
