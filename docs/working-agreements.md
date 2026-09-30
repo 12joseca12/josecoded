@@ -1,5 +1,6 @@
 # josecoded — convenciones de trabajo
 
+> **Versión 1.2 (2026-09-30, tarde: batería de stack y metodologías de producción, 12 respuestas de Jose, todas la opción recomendada salvo las reglas TypeScript extra de lint, que no marcó).** Añade §14 Tipos, §15 Componentes con variantes, §16 Accesibilidad por componente, §17 Servicios, estado y formularios; amplía la lista blanca de §11 y las reglas duras 11–13 de §13. Impacto en el plan: v2.2 (changelog al inicio del plan).
 > Versión 1.1 (2026-09-30: §4, §5 y §9 ajustados con las decisiones de Jose sobre `/plan-eng-review`; tolerancia 2 % y auto-merge de la newsletter). Versión 1.0, 2026-09-29. Decidido por Jose en la batería de preguntas del 2026-09-29 (12 respuestas, anotadas en `ESTADO.md`). Este documento es normativo: si una tarea del plan lo contradice, manda este documento y la tarea se corrige. Es el «cómo se trabaja»; el «qué» está en la spec y en la nota del vault.
 
 ## 0. Lo que ya estaba decidido (solo enlaces)
@@ -174,6 +175,17 @@ Nunca se hace `git push --force` sobre una rama compartida ni se reescribe histo
 
 Una dependencia que trae estilos propios (kits de UI, librerías de componentes con CSS) se rechaza por defecto: choca con §1.
 
+**Lista blanca añadida en v1.2** (decididas por Jose el 2026-09-30; no necesitan justificación en su tarea, solo fijar versión):
+
+| Paquete | Dónde | Para qué | Bundle |
+|---|---|---|---|
+| `vitest-axe` | `devDependencies` de `apps/web` | Reglas de axe en los tests de Vitest de componentes con comportamiento (§16) | 0 (solo test) |
+| `@axe-core/playwright` | `devDependencies` de `apps/web` | Auditoría axe en el E2E de cada escena y pantalla (§16) | 0 (solo test) |
+| `eslint-plugin-import-x` | `@josecoded/config` | `import-x/order`, `no-duplicates`, `no-cycle` (§14.5) | 0 (lint) |
+| `jscpd` | solo `pnpm dlx jscpd` en CI, sin instalar en el repo | Detector de bloques duplicados (§15.4) | 0 (CI) |
+
+Siguen fuera y se descartaron con nombre: CVA / `class-variance-authority`, `clsx`, `@radix-ui/react-slot`, `react-hook-form`, `zustand`, Storybook. Si alguna vuelve, pasa por la regla general de este apartado.
+
 ## 12. Impacto en el plan (no se reescribe aquí; se hace en el paso de ajuste de la fase 2)
 
 Tareas y decisiones que estas convenciones dejan obsoletas o abren:
@@ -184,6 +196,7 @@ Tareas y decisiones que estas convenciones dejan obsoletas o abren:
 - **Tareas 2.3 y 2.10** (cabecera, footer, `ProofStrip`, `PathPanel`): la estructura de la home ya no es esa; se reescriben contra las escenas de la v6.
 - **Tarea 2.14** (E2E de la home): añadir la captura comparada de §5 y el fallback de §6.
 - **Tarea 1.1** (esqueleto): añadir `packages/design-tokens`, `stylelint` en `@josecoded/config` y los scripts `tokens:build`, `visual`, `i18n:check`.
+- **v1.2 (plan v2.2):** 1.1 crea `packages/types`, las reglas ESLint de §14.5 y el job `jscpd`; 1.5 añade `AppConfig` de next-intl; 1.6 genera `database.ts` con test de deriva; 1.10 emite `tokens.ts`; 1.2/1.3, 3.7, 3.8, 7.16–7.24 y 10.2 aplican puertos y adaptadores (§17.1) en los módulos nuevos; 2.2 fija el contrato de variantes, `lib/a11y/` y `/dev/ui`; 3.9/3.10 usan `Form`/`Field`; 2.17 y todo E2E de escena o pantalla pasan axe. La fase 0 no cambia.
 
 ## 13. Reglas duras (las que van en `CLAUDE.md`)
 
@@ -197,3 +210,67 @@ Tareas y decisiones que estas convenciones dejan obsoletas o abren:
 8. Unidades relativas, breakpoints en `rem`; `px` solo en hairlines, sombras, desenfoques y offsets de motion.
 9. PR por rama, squash, `main` protegida por Jose; nunca push a `main`; auto-merge solo del bot de la newsletter en `newsletter/*` con checks en verde.
 10. Textos solo en `messages/{es,en}.json`; pnpm siempre; dependencias solo las del plan.
+11. Tipos compartidos solo en `@josecoded/types` (un fichero por dominio, barrel único); zod es la fuente en las fronteras y los tipos se infieren; `database.ts`, claves de `messages` y nombres de token tipados y generados (§14).
+12. Un componente por concepto con variantes (`variant`, `size`, `tone` como uniones de `@josecoded/types` volcadas a `data-*`); polimorfismo por `href`; se parte solo si cambia el rol, el elemento raíz o los slots; catálogo `/dev/ui` fuera de producción (§15).
+13. Accesibilidad por componente: contrato a11y en la tarea, helpers en `lib/a11y/`, axe en Vitest (comportamiento) y en E2E (escenas y pantallas) como bloqueante; gateway nuevo con puertos y adaptadores (`buildDeps(env)`); estado en cliente sin librería; formularios con Server Actions + `Form`/`Field` (§16, §17).
+
+## 14. Tipos: `@josecoded/types` como única fuente, zod en las fronteras
+
+**Decisión (2026-09-30).** Todo tipo que use más de un fichero vive en `packages/types` (`@josecoded/types`). Es un paquete sin dependencias de runtime (solo `zod` como peer para los esquemas), con un barrel `src/index.ts` y **un fichero por dominio**: `ui.ts` (props y variantes de primitivas), `content.ts` (proyectos, servicios, FAQ, blog, CV), `api.ts` (contratos web↔gateway: `ai_proposal`, leads, afiliados, chat), `database.ts` (generado), `i18n.ts` (locales, `Href`, claves), `tokens.ts` (reexporta el generado por design-tokens), `radar.ts` (a partir de la fase 7; sustituye a `radar-core/src/types.ts`, que pasa a reexportar) y `newsletter.ts` (fase 10). Un solo import en todo el monorepo: `import type { ButtonProps, Lead } from '@josecoded/types'`.
+
+**Reglas.**
+
+1. **Ninguna `interface` ni `type` exportada fuera de `packages/types`** salvo tipos privados de un módulo (no exportados) y los `Props` de un componente que solo usa ese componente; en cuanto un segundo fichero lo necesita, se mueve al paquete. `no-restricted-syntax` no lo puede vigilar del todo: lo revisa `revisor` en cada tarea con la pregunta «¿este tipo existe ya?».
+2. **zod es la fuente en las fronteras.** Todo lo que entra de fuera del proceso (JSON de `content/`, `pricing.json`, `design.json`, formularios, `env`, cuerpos y respuestas del gateway, frontmatter MDX, webhooks) tiene su esquema en `packages/types/src/schemas/<dominio>.ts` y su tipo es `export type Lead = z.infer<typeof leadSchema>` en el fichero de dominio. Los tipos puramente internos (props de UI, estados de `lib/motion/`, uniones de variantes) se escriben a mano. Nunca dos definiciones del mismo contrato; nunca `satisfies z.ZodType<X>` para «enlazar» un tipo a mano (elegido y descartado).
+3. **`database.ts` se genera**, no se escribe: `supabase gen types typescript --local > packages/types/src/database.ts` en la tarea 1.6 contra `supabase start`, **nunca contra producción**; se commitea y `packages/types/test/database-drift.test.ts` regenera en memoria (con Supabase local arrancado; en CI ya lo está para los tests RLS) y compara. Nadie importa `database.ts` directamente: `packages/types/src/db.ts` expone `Database`, `Tables<'leads'>`, `TablesInsert<…>`, `Enums<'radar_status'>`, y los clientes se crean como `createServerClient<Database>(…)`. Cada migración nueva (1.8, 4.x, 7.6, 10.1) regenera el fichero en la misma tarea.
+4. **Claves tipadas.** next-intl con `AppConfig` global en `apps/web/global.d.ts`: `declare module 'next-intl' { interface AppConfig { Locale: 'es' | 'en'; Messages: typeof import('./messages/es').default; } }` (con la fusión por pantalla de la tarea 1.1 expuesta como un `es.ts` que compone las carpetas) → `t('home.scenes.about.title')` autocompleta y una clave inexistente no compila. `packages/design-tokens` emite además `apps/web/styles/tokens.ts` con `export type TokenName = '--bg' | '--dur-fast' | …` y `readToken(name: TokenName): string`; `lib/motion/` solo lee tokens por esa función. Ambos se reexportan desde `@josecoded/types` (`i18n.ts`, `tokens.ts`).
+5. **Lint de fronteras** en `@josecoded/config` (`eslint.config.mjs`), decidido por Jose (tres de las cuatro opciones; las reglas TypeScript extra —`consistent-type-imports`, `no-explicit-any` como error, prohibir `React.FC` y enums— **no** entran; se mantiene lo que trae `eslint-config-next` + `typescript-eslint` recomendado):
+   - `no-restricted-imports`: prohibido importar `**/messages/*.json` (usar `useTranslations`/`getTranslations`), `@josecoded/types/src/database` (usar `db.ts`), `**/styles/tokens.css` fuera de `globals.css`, `three` y `three/addons/*` fuera de `packages/glyph-scene`, `@supabase/supabase-js` fuera de `lib/supabase/` y de los adaptadores del gateway (§17.1), y cualquier `apps/api/src/adapters/*` desde una ruta (las rutas reciben `deps`).
+   - `eslint-plugin-import-x`: `import-x/order` con grupos `builtin`, `external`, `@josecoded/**`, `parent`/`sibling`, `type` al final, líneas en blanco entre grupos y orden alfabético; `import-x/no-duplicates`; `import-x/no-cycle` (maxDepth 4). Prettier no ordena imports; esta regla evita diffs ruidosos entre agentes.
+   - Todo falla la CI en `pnpm lint`.
+
+**Vigilancia.** `pnpm typecheck` con `strict` + `noUncheckedIndexedAccess` (ya en 1.1); test de deriva de `database.ts`; `revisor` comprueba en cada tarea que no aparece un tipo compartido fuera del paquete ni un esquema zod sin su `z.infer` exportado.
+
+## 15. Componentes: uno por concepto, variantes por `data-*`, polimorfismo por `href`
+
+**Decisión (2026-09-30).** Un concepto de interfaz = un componente con variantes; nunca `PrimaryButton` y `GhostButton`. Las variantes son **uniones de tipos** en `@josecoded/types` (`ButtonVariant = 'solid' | 'ghost'`, `ButtonSize = 'sm' | 'md' | 'lg'`), el componente las vuelca a atributos `data-variant`, `data-size`, `data-tone` y el CSS Module selecciona por atributo (`.btn[data-variant='ghost']`). Sin CVA, sin `clsx`, sin concatenar clases; una sola clase raíz por componente. Valores por defecto en un solo sitio (la firma del componente), nunca repetidos en el CSS.
+
+**Reglas.**
+
+1. **Antes de crear un componente se busca el concepto** en el inventario (`docs/superpowers/design/2026-09-29-componentes-home-v6.md` §1) y en `components/ui/`. Si existe, se añade una variante; la tarea lo dice explícitamente («añade `tone: 'danger'` a `Button`»). Un componente nuevo con el mismo rol y el mismo elemento raíz que otro se rechaza en revisión.
+2. **Regla de partición.** Un componente se divide solo cuando una «variante» cambiaría (a) el rol ARIA o la semántica, (b) el elemento raíz, o (c) los slots que acepta. Nunca por estilo. Por eso `Button` y `ArrowLink` son dos componentes (rol distinto), y `IconTile` con `tone: soft | solid` es uno.
+3. **Polimorfismo por `href`, con unión discriminada.** `type ButtonProps = ButtonBase & ({ href: Href; type?: never; onClick?: never; disabled?: never } | { href?: never; type?: 'button' | 'submit'; onClick?: …; disabled?: boolean })`. Con `href` renderiza `Link` de next-intl; sin él, `<button>`. El tipo impide `onClick` en un enlace y `disabled` en un `<a>` (un enlace «deshabilitado» se expresa con `aria-disabled` y sin `href`, decisión de `ux` caso a caso). Sin prop `as` genérica ni `asChild`/`Slot` (descartados). Mismo patrón para `ArrowLink`, `ChatTrigger`, `CommandItem` y `NavLinks`.
+4. **Catálogo `/dev/ui` en la propia app**, sin Storybook: `app/[locale]/(dev)/ui/page.tsx` monta cada primitiva de `components/ui` y de `components/forms` con todas sus variantes × tamaños × estados (reposo, hover forzado con `data-hover`, `:focus-visible`, disabled, `aria-invalid`, reduced motion) y datos de ejemplo con `{{DATO}}`. Solo existe cuando `env.client.NEXT_PUBLIC_DEV_UI === '1'` (activa en `wrangler dev` y en la preview de PR; ausente en producción: la ruta devuelve 404 y no entra en el `sitemap`). Sirve para la aprobación de Jose en preview (§5), para axe (§16) y para una captura de referencia por primitiva (`toHaveScreenshot`). Cada primitiva nueva o variante nueva se añade al catálogo en la misma tarea; es su documentación junto con el JSDoc de sus props.
+5. **Duplicación vigilada por `jscpd`** en CI (`pnpm dlx jscpd apps packages --min-lines 30 --min-tokens 120 --threshold 0 --ignore '**/*.test.*,**/database.ts,**/tokens.*,**/content/**'`): un bloque duplicado falla el job `lint`. Un `Field` o un `Button` copiado se detecta antes de la revisión.
+
+## 16. Accesibilidad por componente, no al final
+
+**Decisión (2026-09-30).** WCAG 2.2 AA (ya en el plan) se asegura **en cada tarea de componente**, no solo en la puerta. Tres capas: contrato a11y escrito en la tarea, helpers compartidos en `lib/a11y/`, y axe automatizado en Vitest y Playwright. `revisor-accesibilidad` en `/puerta-calidad` sigue siendo la última red, no la primera.
+
+**Reglas.**
+
+1. **Contrato a11y en la tarea.** Toda tarea del plan que crea o cambia un componente lleva un bloque «A11y» con: rol y elemento raíz, nombre accesible (de dónde sale: `messages`, `aria-labelledby`), teclado (teclas y orden de tabulación), gestión del foco (dónde entra, dónde vuelve), estados anunciados (`aria-expanded`, `aria-current`, `aria-live`, `aria-invalid` + `aria-describedby`), comportamiento con `prefers-reduced-motion`, y contraste (tokens usados, ya validados en `DESIGN.md`). `revisor` lo comprueba punto por punto contra el código. Para las primitivas de la home el contrato sale del inventario (§1.1–1.2 y §4.5).
+2. **`apps/web/lib/a11y/`**: módulos puros con test de Vitest, únicos en el repo: `focus-trap.ts` (`trapFocus(container) → release`), `inert-others.ts` (`inertSiblings(el) → restore`), `roving-tabindex.ts` (`createRovingTabindex(list, { orientation, loop })`, para `SegmentedControl` tablist, paleta y menú), `return-focus.ts`, `announce.ts` (región `aria-live` única). `lib/motion/expand-cell.ts` y `disclosure.ts` los consumen; ningún componente reimplementa una trampa de foco.
+3. **axe en Vitest** (`vitest-axe`, `expect(await axe(container)).toHaveNoViolations()`) en el test de todo componente con comportamiento (§7): paleta, celda ampliada, `SegmentedControl`, `MobileMenu`, `Form`/`Field`, `ProposalPrompt`, `GuidedChat`, componentes del admin y de Radar. Los componentes sin test (visuales) se cubren en E2E.
+4. **axe en E2E** (`@axe-core/playwright`): cada prueba de escena de la home (2.17), cada pantalla interior, el área privada, el admin y `/dev/ui` ejecutan `new AxeBuilder({ page }).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']).analyze()` y fallan con violaciones `serious` o `critical`; las `moderate` se listan en el informe del PR. Se ejecuta con y sin `prefers-reduced-motion` y en 360 px. Es bloqueante desde la primera escena (no informativo).
+5. **Sigue vigente**: `jsx-a11y` de `eslint-config-next`; E2E por escena con navegación por teclado y `h1` único (§7); `revisor-accesibilidad` navega la app real en la puerta. La prueba manual con VoiceOver es opcional y la hace Jose en la preview cuando quiera; no sustituye a lo anterior.
+
+## 17. Servicios, estado en cliente y formularios
+
+### 17.1 Gateway nuevo con puertos y adaptadores (solo módulos nuevos)
+
+**Decisión (2026-09-30).** Los módulos **nuevos** del gateway (`proposals`, `leads`, `notify`, `affiliates`, `radar/*`, `newsletter/*`) se escriben con puertos y adaptadores ligeros; los heredados (`v1`, `v1-protected`, `forum`, `admin-chat`, `health`, `system`) **no se tocan** (restricción global). Sin contenedor DI ni clases: funciones y objetos.
+
+- **Puertos** (interfaces) en `@josecoded/types` (`api.ts`): `LeadsRepo`, `ProposalsRepo`, `QuotaStore`, `Notifier` (Telegram), `Mailer` (Brevo/Resend), `AiClient` (Workers AI / AI Gateway), `TurnstileVerifier`, `Clock`, `RadarRepo`, `MailSource`, `CalendarClient`, `ContentRepo` (GitHub).
+- **Adaptadores** en `apps/api/src/adapters/<nombre>.adapter.ts`: `supabase.adapter.ts` (implementa los repos con `@supabase/supabase-js`), `kv-quota.adapter.ts`, `telegram.adapter.ts`, `brevo.adapter.ts`, `workers-ai.adapter.ts`, `turnstile.adapter.ts`, `google.adapter.ts`, `github.adapter.ts`, `system-clock.ts`. Son los únicos ficheros que importan SDKs o hacen `fetch` a terceros (lo vigila `no-restricted-imports`, §14.5). Cada uno tiene su **test de contrato** en workerd con `fetchMock` (lo que hoy hace el plan), y una **doble falsa en memoria** en `apps/api/test/fakes/<nombre>.fake.ts` que respeta el mismo puerto.
+- **`apps/api/src/deps.ts`**: `buildDeps(env: Env): Deps` construye una vez por petición el objeto con todos los adaptadores reales; un middleware de Hono lo deja en `c.var.deps`. Las rutas solo componen: leen la petición, validan con zod (`@josecoded/types/schemas`), llaman a un servicio y devuelven. Los **servicios** son fábricas `createLeadsService(deps: Pick<Deps, 'leads' | 'notifier' | 'clock'>)` con funciones puras respecto a `deps`; se testean en Vitest normal con las falsas (rápido, sin HTTP), y las rutas con `SELF.fetch` y `buildDeps` sobrescrito por `env.__deps` de test.
+- Las reglas de negocio ya puras (cuotas, máquina de estados de Radar, precios) siguen en sus módulos sin `deps`.
+
+### 17.2 Estado en cliente: sin librería
+
+- Datos: URL, RSC y Server Actions con `revalidatePath`; nunca se duplica en cliente lo que ya sabe el servidor. Estado local con `useState`/`useReducer` dentro de la isla. Estado compartido del shell en **un solo `ShellProvider`** (`components/layout/shell-provider.tsx`) con `{ palette, menu, openCell }` y sus acciones; se consume con `useShell()`. Nada más va en Context; Zustand y contextos múltiples quedan descartados (el hero no puede pagar re-renders del árbol). `lib/motion/` sigue gestionando su propio estado interno.
+
+### 17.3 Formularios: Server Actions + `Form`/`Field`
+
+- Todo formulario (contacto, generador, newsletter, auth, área, admin, Radar) es un Server Action con `useActionState`, validación **solo en servidor** con el esquema zod de `@josecoded/types/schemas` y respuesta tipada `FormState<T> = { status: 'idle' | 'ok' | 'error'; fieldErrors?: Partial<Record<keyof T, string>>; formError?: string }`. Funciona sin JS; con JS muestra estado `pending` y errores por campo sin recargar.
+- `components/forms/form/` y `components/forms/field/`: `Form` monta `useActionState`, el `aria-live` de errores generales y el botón de envío con `pending`; `Field` es **un componente con variantes** (`kind: 'text' | 'email' | 'tel' | 'textarea' | 'select' | 'checkbox' | 'radio-group' | 'hidden'`) que pinta label, ayuda, error, `id`/`name`, `aria-describedby`, `aria-invalid` y `autocomplete` siempre igual. Ninguna pantalla escribe un `<input>` fuera de `Field` (salvo `ProposalPrompt`, que es un campo especial del inventario y consume los mismos helpers). react-hook-form queda descartado también para el admin y Radar.

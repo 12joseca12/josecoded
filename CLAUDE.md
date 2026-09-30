@@ -37,6 +37,9 @@ Brief (qué y por qué): nota del vault `Proyectos/josecoded.md`. Estado voláti
 8. Unidades relativas para todo lo que escala con el texto, breakpoints en `rem`; `px` solo en hairlines, trazos, sombras, desenfoques y offsets de motion.
 9. PR por rama, squash merge, `main` protegida (la configura Jose en GitHub); nunca push a `main`.
 10. Textos solo en `messages/{es,en}.json` (ningún literal en componentes; `i18n:check` lista `{{DATO}}` y claves faltantes). **pnpm siempre, nunca npm/npx.** Dependencias solo las del plan; una extra, con justificación de peso y alternativa nativa, la decide `revisor`.
+11. Tipos compartidos solo en `@josecoded/types` (un fichero por dominio, barrel único); zod es la fuente en las fronteras y los tipos se infieren; `database.ts` (Supabase), claves de `messages` y nombres de token tipados y generados (working-agreements §14).
+12. Un componente por concepto con variantes (`variant`/`size`/`tone` como uniones volcadas a `data-*`, sin CVA ni clsx); polimorfismo por `href`; se parte solo si cambia rol, elemento raíz o slots; catálogo `/dev/ui` fuera de producción; `jscpd` en CI (§15).
+13. Accesibilidad por componente: contrato a11y en cada tarea, helpers únicos en `lib/a11y/`, axe bloqueante en Vitest y E2E. Gateway nuevo con puertos y adaptadores (`buildDeps(env)`), estado en cliente sin librería (`ShellProvider`), formularios con Server Actions + `Form`/`Field` (§16, §17).
 
 ## Estado durable
 - ADR de codebase-memory (proyecto indexado tras el primer commit con código).
