@@ -5,3 +5,5 @@ graphify-out/
 .impeccable/review/
 .impeccable/questions/
 .impeccable/hook.cache.json
+
+.claude/worktrees/
