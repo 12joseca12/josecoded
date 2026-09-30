@@ -1,6 +1,6 @@
 # josecoded — convenciones de trabajo
 
-> Versión 1.0, 2026-09-29. Decidido por Jose en la batería de preguntas del 2026-09-29 (12 respuestas, anotadas en `ESTADO.md`). Este documento es normativo: si una tarea del plan lo contradice, manda este documento y la tarea se corrige. Es el «cómo se trabaja»; el «qué» está en la spec y en la nota del vault.
+> Versión 1.1 (2026-09-30: §4, §5 y §9 ajustados con las decisiones de Jose sobre `/plan-eng-review`; tolerancia 2 % y auto-merge de la newsletter). Versión 1.0, 2026-09-29. Decidido por Jose en la batería de preguntas del 2026-09-29 (12 respuestas, anotadas en `ESTADO.md`). Este documento es normativo: si una tarea del plan lo contradice, manda este documento y la tarea se corrige. Es el «cómo se trabaja»; el «qué» está en la spec y en la nota del vault.
 
 ## 0. Lo que ya estaba decidido (solo enlaces)
 
@@ -75,7 +75,7 @@ Nombres de fichero en kebab-case, componentes en PascalCase, identificadores en 
 
 ## 4. Fidelidad al prototipo: estructura y valores 1:1
 
-**Decisión.** La referencia es `docs/superpowers/design/ref/home-v6/` (`index.html`, `base.css`, `v6.css`, `base.js`, `v6.js`). El implementador porta la estructura del DOM, las clases y los valores tal cual; los valores pasan a tokens (§2) y React solo compone.
+**Decisión.** La referencia es `docs/superpowers/design/ref/home-v6/` (`index.html`, `base.css`, `v6.css`, `base.js`, `v6.js`). El implementador porta la estructura del DOM, las clases y los valores tal cual; los valores pasan a tokens (§2) y React solo compone. **v1.1:** solo tienen prototipo en `ref/` la home (hecha), **Negocios** y **Contacto**; el resto de pantallas se construye directamente con `DESIGN.md`, el documento de pantallas y la aprobación de Jose en la preview (§5).
 
 **Reglas.**
 
@@ -87,11 +87,12 @@ Nombres de fichero en kebab-case, componentes en PascalCase, identificadores en 
 
 ## 5. Validación visual: capturas comparadas y aprobación en preview
 
-**Decisión.** Cada escena o pantalla se valida con capturas automáticas de la app y del prototipo a **360, 900 y 1440 px**, comparadas por diff; `ui` revisa el diff y **Jose aprueba en la URL de preview antes del merge** de la rama.
+**Decisión.** La **home** se valida con capturas automáticas de la app y del prototipo a **360, 900 y 1440 px**, comparadas por diff con tolerancia del 2 %; las **páginas interiores** (con prototipo —Negocios, Contacto— o sin él) se validan con la aprobación de Jose en la preview y con capturas de referencia propias (`toHaveScreenshot` contra la primera versión aprobada). En todos los casos `ui` revisa y **Jose aprueba en la URL de preview antes del merge** de la rama.
 
 **Mecánica.**
 
 - `pnpm --filter web visual` → Playwright captura, por escena, `wrangler dev` de la app y el prototipo servido, en los tres anchos y con alto fijo (`812`, `1100`, `900` respectivamente), `prefers-reduced-motion: reduce` para que la comparación sea determinista, y guarda el diff en `apps/web/e2e/visual/__diff__/` (ignorado por git). **Tolerancia fijada por Jose el 2026-09-30: `maxDiffPixelRatio: 0.02` (2 % por escena y ancho)**; se ajusta solo con OK de Jose y la tarea 2.13 del plan la codifica.
+- Cada objetivo de `targets.ts` lleva `mask` (selectores) para los bloques con `{{DATO}}` y para los **desvíos aceptados**, que se registran en `apps/web/e2e/visual/deviations.json` con el commit `deviation:` y la fecha del OK de Jose. Las fuentes del prototipo se sirven en local (sin CDN). El job `visual` de CI corre solo en PR que tocan interfaz (`components`, `styles`, `app`, `messages`).
 - Cada tarea con UI termina adjuntando al PR las tres capturas de la app y el porcentaje de diff por escena. Un diff por encima de la tolerancia no bloquea el commit, pero sí la puerta de la rama.
 - En `/puerta-calidad`, `ui` (modo revisión con `/impeccable audit` y `/impeccable critique`) revisa el diff y emite «fiel», «desvío aceptable» o «no pasa». Después Jose abre la preview del PR (`preview.yml`) y aprueba en el navegador. Sin ese OK no hay merge.
 - El estado por defecto de un desvío es «pendiente de Jose», no «aceptado por el agente».
@@ -147,7 +148,7 @@ Lo que el prototipo tenga en px fuera de esta lista (por ejemplo `24px` de paddi
 
 **Paso manual de Jose (no lo hace ningún agente):** proteger `main` en GitHub → Settings → Branches → «Add rule» para `main`: *Require a pull request before merging*, *Require status checks to pass* (seleccionar el job `ci`), *Require branches to be up to date*, *Do not allow bypassing*, y desactivar *Allow force pushes* y *Allow deletions*. Hasta que esté hecho, los agentes no hacen `push` a `main` en ningún caso.
 
-**Excepción única (decisión de Jose, 2026-09-30): auto-merge del bot de la newsletter en ramas `newsletter/*`.** La regla de `main` se completa así: *Require a pull request before merging* sigue activo para todo, pero **sin exigir revisión humana** (0 aprobaciones requeridas) para que el auto-merge por squash funcione cuando el job `ci` y el check `newsletter-content-only` (solo cambios bajo `content/blog/{es,en}/`) están en verde; *Do not allow bypassing* se mantiene (el bot no salta nada: pasa por PR y checks). El clic de Jose en «Aprobar y lanzar» del admin es la revisión y el OK de despliegue de contenido (spec de newsletter S8/S16). Cualquier otra rama sigue con `revisor`, `/puerta-calidad` y OK de Jose en preview antes del merge: eso lo garantiza el proceso, no la regla de GitHub, así que ningún agente mergea sin esos pasos aunque GitHub lo permita.
+**Excepción única (decisión de Jose, 2026-09-30): auto-merge del bot de la newsletter en ramas `newsletter/*`.** El bot es una **GitHub App propia `josecoded-bot`** (no un PAT) con `contents:write` y `pull_requests:write` solo en este repo. La regla de `main` se completa así: *Require a pull request before merging* sigue activo para todo, pero **sin exigir revisión humana** (0 aprobaciones requeridas) para que el auto-merge por squash funcione cuando el job `ci` y el check **`newsletter-content-only`** están en verde; *Do not allow bypassing* se mantiene (el bot no salta nada: pasa por PR y checks). El check corre en **todos** los PR con la lógica en el YAML: si el autor es `josecoded-bot[bot]`, la rama debe empezar por `newsletter/` y el diff solo puede contener `apps/web/content/blog/{es,en}/*.md`; si el autor es humano, la rama **nunca** puede empezar por `newsletter/`. Si el plan de GitHub (Free con repo privado) no permite la regla por rama, **la fusión la hace el gateway por API** tras comprobar el diff y los checks (spec de newsletter v1.2). El despliegue de contenido lo hace `deploy-content.yml` (push a `main` con cambios en `content/blog/**`), que aborta y avisa si `main` lleva código sin desplegar respecto a la etiqueta `last-deployed`. El clic de Jose en «Aprobar y lanzar» del admin es la revisión y el OK de despliegue de contenido (spec de newsletter S8/S16). Cualquier otra rama sigue con `revisor`, `/puerta-calidad` y OK de Jose en preview antes del merge: eso lo garantiza el proceso, no la regla de GitHub, así que ningún agente mergea sin esos pasos aunque GitHub lo permita.
 
 Nunca se hace `git push --force` sobre una rama compartida ni se reescribe historia de `main`.
 
