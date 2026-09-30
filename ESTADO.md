@@ -1,6 +1,6 @@
 # Estado — josecoded
 
-> **Etapa de diseño y planificación cerrada el 2026-09-30** (`/cierre`). Home v6 documentada, convenciones de trabajo, inventario de componentes, pantallas y contenidos, spec v1.7, DT v1.4, newsletter v1.2, plan v2.1 con `/plan-eng-review` CLEAR. Siguiente: batería de stack y metodologías de producción y luego fase 0. Sin código de aplicación todavía.
+> **Etapa de diseño y planificación cerrada el 2026-09-30** (`/cierre`). Home v6 documentada, convenciones de trabajo, inventario de componentes, pantallas y contenidos, spec v1.7, DT v1.4, newsletter v1.2, plan v2.1 con `/plan-eng-review` CLEAR. **Batería de stack y metodologías de producción respondida el 2026-09-30 (tarde)**: working-agreements **v1.2**, `CLAUDE.md` con las reglas duras 11–13 y plan **v2.2**. Siguiente: **fase 0**. Sin código de aplicación todavía.
 
 ## Ahora
 
@@ -34,8 +34,8 @@ Documentos (al día con la v6 desde el 2026-09-29):
 | Sistema visual | `DESIGN.md` + `.impeccable/design.json` | v6 (`2026-09-17-josecoded-ui.md` v3 superado) |
 | Componentes home | `docs/superpowers/design/2026-09-29-componentes-home-v6.md` | v1.1 |
 | Pantallas y contenidos | `docs/superpowers/design/2026-09-29-pantallas-y-contenidos.md` | v1.0 |
-| Convenciones | `docs/working-agreements.md` | v1.1 |
-| Plan | `docs/superpowers/plans/2026-09-19-josecoded-v1.md` | **v2.1** (41 hallazgos del eng review aplicados; Radar última etapa; hito de contenido; NOT in scope) |
+| Convenciones | `docs/working-agreements.md` | **v1.2** (§14 tipos, §15 componentes con variantes, §16 a11y por componente, §17 servicios/estado/formularios) |
+| Plan | `docs/superpowers/plans/2026-09-19-josecoded-v1.md` | **v2.2** (adendas «v2.2 (stack)» en 1.1–1.3, 1.5, 1.6, 1.10, 2.2, 2.17, 3.7–3.10, 7.1, 7.16–7.24, 10.2; fase 0 sin cambios) |
 
 Índices: codebase-memory `Users-jose-Documents-GitHub-josecoded` (indexado 2026-09-29, con ADR de diseño); graphify se regenera en cada commit (hook).
 
@@ -85,14 +85,29 @@ Documentos (al día con la v6 desde el 2026-09-29):
 3. ~~Pantallas independientes y contenidos~~ hecho (2026-09-29).
 4. ~~Componentes de la home~~ hecho (2026-09-29).
 5. ~~Actualizar spec, UX, diseño técnico y plan + `/plan-eng-review`~~ hecho (2026-09-30: plan v2.1 con los 41 hallazgos).
-6. **Batería de stack y metodologías de producción** (pide Jose, 2026-09-30) antes de la fase 0: principios SOLID con componentes únicos con variantes (un `Button` con variantes, no muchos botones), accesibilidad asegurada, literales + tokens + **tipado unificado en un fichero de types**. Salida: working-agreements v1.2 y ajustes del plan.
-7. **Fase 0 del plan** (0.1 con `cpuTime` p95 y caché de assets; 0.2 con `scene.js` de la v6; 0.3–0.6 Radar) y **fase 1** en dos ramas: `chore/monorepo-base` (1.1, 1.4 `pricing` bilingüe, 1.5, **1.10 tokens antes de cualquier UI**) y `chore/supabase` (1.2, 1.3, 1.6, 1.7 cron único + preview, 1.8 migraciones + RPCs, 1.9 gate con «Confirm email» y SMTP).
+6. ~~Batería de stack y metodologías de producción~~ hecha (2026-09-30: 12 respuestas → working-agreements v1.2, `CLAUDE.md` reglas 11–13, plan v2.2).
+7. **Fase 0 del plan** (siguiente paso) (0.1 con `cpuTime` p95 y caché de assets; 0.2 con `scene.js` de la v6; 0.3–0.6 Radar) y **fase 1** en dos ramas: `chore/monorepo-base` (1.1, 1.4 `pricing` bilingüe, 1.5, **1.10 tokens antes de cualquier UI**) y `chore/supabase` (1.2, 1.3, 1.6, 1.7 cron único + preview, 1.8 migraciones + RPCs, 1.9 gate con «Confirm email» y SMTP).
 8. Fase 2: port 1:1 de `home-v6` escena a escena, con capturas comparadas (2 %) y aprobación de Jose entre escenas. Al cerrarla, **fijar la fecha de válvula** y la tabla del hito «contenido completo».
 9. Orden de fases: 0 → 1a → 1b → 2 → hito de contenido → 3 → 4 → 5 → 6 → 8.1 → 9 (lanzamiento) → **7 Radar** → 10 Newsletter.
 
 Gates que no se cruzan sin OK explícito de Jose en la misma sesión: migraciones y deploys a producción, contratar servicios, tocar servicios preexistentes de Omen.
 
 ## Decisiones recientes
+
+- **2026-09-30 (batería de stack y metodologías de producción, 12 respuestas de Jose; recomendada en todas):** normativa en working-agreements v1.2 (§14–§17), reglas duras 11–13 en `CLAUDE.md`, plan v2.2 (fase 0 sin cambios).
+  1. **Tipos:** `packages/types` (`@josecoded/types`) con barrel y un fichero por dominio (`ui`, `content`, `api`, `db`, `i18n`, `tokens`, `radar`, `newsletter`); ningún tipo compartido fuera del paquete.
+  2. **zod como fuente en las fronteras** (`packages/types/src/schemas/`) y tipos por `z.infer`; los internos a mano. Sin `satisfies` ni duplicar.
+  3. **Tipos de Supabase:** `supabase gen types --local` → `packages/types/src/database.ts` commiteado con test de deriva (nunca contra producción); helpers `Tables<>`/`Enums<>` en `db.ts`; se regenera en cada migración.
+  4. **Claves tipadas:** `AppConfig` de next-intl (autocompletado y error de compilación en `t()`) y `tokens.ts` generado por design-tokens con `TokenName` + `readToken` para `lib/motion/`.
+  5. **Variantes:** uniones de tipos + `data-variant`/`data-size`/`data-tone` y CSS Module por atributo; sin CVA ni `clsx`. Un componente se parte solo si cambia rol ARIA, elemento raíz o slots, nunca por estilo.
+  6. **Polimorfismo por `href`** con unión discriminada (con `href` → `Link`, sin él → `<button>`); sin `as` ni `asChild`/`Slot`.
+  7. **A11y por componente:** contrato «A11y» en cada tarea, helpers únicos en `lib/a11y/` (focus-trap, inert, roving tabindex, return-focus, announce), `vitest-axe` en componentes con comportamiento y `@axe-core/playwright` bloqueante en todo E2E de escena o pantalla. VoiceOver manual opcional.
+  8. **Estado en cliente sin librería:** URL/RSC/Server Actions para datos, `useState` local, un solo `ShellProvider` (`palette`, `menu`, `openCell`). Zustand descartado.
+  9. **Formularios:** Server Actions + `useActionState` + zod en servidor; `Form`/`Field` propios (`Field` con variantes `kind`); react-hook-form descartado también en admin y Radar.
+  10. **Gateway nuevo con puertos y adaptadores:** interfaces en `@josecoded/types/api.ts`, `apps/api/src/adapters/*.adapter.ts` (únicos que importan SDKs o hacen `fetch`), `buildDeps(env)` en `c.var.deps`, servicios `create<X>Service(deps)` testeados con falsas en memoria; `fetchMock` queda para los tests de contrato de adaptadores. Módulos heredados intactos.
+  11. **Catálogo `/dev/ui`** en la propia app (todas las primitivas × variantes × estados), solo con `NEXT_PUBLIC_DEV_UI=1` (dev y preview), 404 en producción; sin Storybook. Documentación = JSDoc de props + catálogo.
+  12. **Lint extra:** `no-restricted-imports` de fronteras (messages JSON, `database.ts`, `tokens.css`, `three`, `supabase-js`, adaptadores desde rutas), `eslint-plugin-import-x` (order, no-duplicates, no-cycle) y `jscpd` con `pnpm dlx` en CI. **No** entran las reglas TypeScript extra (`consistent-type-imports`, `no-explicit-any` error, prohibir `React.FC`/enums).
+  - Lista blanca de dependencias ampliada (§11): `vitest-axe`, `@axe-core/playwright`, `eslint-plugin-import-x`, `jscpd` (solo CI). Descartados con nombre: CVA, clsx, `@radix-ui/react-slot`, react-hook-form, Zustand, Storybook.
 
 - **2026-09-30 (cierre de etapa; principios de producción pedidos por Jose):** SOLID aplicado a la UI: un componente por concepto con variantes (p. ej. un único `Button` con variantes visuales), sin componentes duplicados para lo mismo; accesibilidad asegurada como requisito, no como revisión final; literales en `messages/`, estilos en tokens y **tipos unificados en un fichero de types**. Se concretan en la batería de stack y metodologías antes de la fase 0.
 
