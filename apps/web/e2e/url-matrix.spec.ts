@@ -33,6 +33,25 @@ test('the redirects point at the canonical URL', async ({ request }) => {
   expect(await location('/negocios/')).toBe('/negocios');
 });
 
+test('every non-canonical URL reaches its canonical form in one hop', async ({ request }) => {
+  for (const [from, to] of [
+    ['/es/', '/'],
+    ['/es/negocios/', '/negocios'],
+    ['/en/negocios/', '/en/business'],
+    ['/en/negocios', '/en/business'],
+    ['/en/', '/en'],
+    ['/negocios/', '/negocios'],
+  ] as const) {
+    const res = await request.get(from, { maxRedirects: 0 });
+    expect(res.status(), from).toBe(308);
+    const location = new URL(res.headers()['location'] ?? '', 'http://x').pathname;
+    expect(location, from).toBe(to);
+    // the target itself must not redirect again
+    const next = await request.get(to, { maxRedirects: 0 });
+    expect(next.status(), `${from} -> ${to}`).toBe(200);
+  }
+});
+
 test('translated slugs redirect even when the page does not exist yet', async ({ request }) => {
   for (const [from, to] of [
     ['/en/sobre-mi', '/en/about'],

@@ -45,13 +45,28 @@ export function buildLocaleRules(pathnames: Pathnames): {
     { source: SPANISH_CATCH_ALL, destination: '/es/:path' },
   ];
 
+  const permanent = <T extends RewriteRule>(rules: T[]) =>
+    rules.map((rule) => ({ ...rule, permanent: true as const }));
+
+  // Trailing slashes are handled here (next.config sets skipTrailingSlashRedirect) so that each
+  // URL reaches its canonical form in ONE hop: `/es/` -> `/`, `/en/negocios/` -> `/en/business`.
   const redirects: RedirectRule[] = [
-    // one canonical Spanish URL: /es/negocios -> /negocios
-    ...withSubpaths('/es', '/').map((rule) => ({ ...rule, permanent: true as const })),
-    // the untranslated English variant redirects: /en/negocios -> /en/business (no duplicates)
+    ...permanent([
+      { source: '/es/', destination: '/' },
+      { source: '/es/:path+/', destination: '/:path+' },
+    ]),
     ...translated.flatMap(({ es, en }) =>
-      withSubpaths(`/en${es}`, `/en${en}`).map((rule) => ({ ...rule, permanent: true as const })),
+      permanent([
+        { source: `/en${es}/`, destination: `/en${en}` },
+        { source: `/en${es}/:path+/`, destination: `/en${en}/:path+` },
+      ]),
     ),
+    // one canonical Spanish URL: /es/negocios -> /negocios
+    ...permanent(withSubpaths('/es', '/')),
+    // the untranslated English variant redirects: /en/negocios -> /en/business (no duplicates)
+    ...translated.flatMap(({ es, en }) => permanent(withSubpaths(`/en${es}`, `/en${en}`))),
+    // any other trailing slash: /negocios/ -> /negocios, /en/ -> /en
+    ...permanent([{ source: '/:path+/', destination: '/:path+' }]),
   ];
 
   return { rewrites, redirects };

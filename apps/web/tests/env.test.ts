@@ -1,5 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { envClientSchema, envServerSchema } from '@josecoded/types';
+
 const valid = {
   NEXT_PUBLIC_SITE_URL: 'https://josecoded.com',
   NEXT_PUBLIC_JOSECODED_API_URL: 'https://api.josecoded.com',
@@ -61,11 +63,19 @@ describe('env', () => {
     expect(env.server.SERVER_KEY).toBe('x');
   });
 
-  it('has no service role key in the web env', async () => {
-    stubValidEnv();
-    vi.stubEnv('SUPABASE_SERVICE_ROLE_KEY', 'secret');
-    const { env } = await import('../lib/env');
-    expect(JSON.stringify(env.client)).not.toMatch(/service/i);
-    expect('SUPABASE_SERVICE_ROLE_KEY' in env.client).toBe(false);
+  it('has no service role key in the web env schemas', () => {
+    for (const schema of [envClientSchema, envServerSchema]) {
+      expect(Object.keys(schema.shape).filter((key) => /service/i.test(key))).toEqual([]);
+    }
+    expect(Object.keys(envServerSchema.shape)).not.toContain('SUPABASE_SERVICE_ROLE_KEY');
+  });
+
+  it('never exposes server secrets under a NEXT_PUBLIC_ name', () => {
+    expect(Object.keys(envServerSchema.shape).filter((k) => k.startsWith('NEXT_PUBLIC_'))).toEqual(
+      [],
+    );
+    expect(Object.keys(envClientSchema.shape).every((k) => k.startsWith('NEXT_PUBLIC_'))).toBe(
+      true,
+    );
   });
 });

@@ -85,6 +85,16 @@ describe('translated English slugs (pathnames)', () => {
     }
   });
 
+  it('sends trailing-slash variants straight to the canonical URL, specific rules first', () => {
+    expect(redirects).toContainEqual({ source: '/es/', destination: '/', permanent: true });
+    expect(redirects).toContainEqual({
+      source: '/en/negocios/',
+      destination: '/en/business',
+      permanent: true,
+    });
+    expect(redirects.findIndex((r) => r.source === '/:path+/')).toBe(redirects.length - 1);
+  });
+
   it('rewrites the Spanish default locale without prefix, excluding en, api, _next and files', () => {
     expect(rewrites).toContainEqual({ source: '/', destination: '/es' });
     const catchAll = rewrites.find((r) => r.destination === '/es/:path');

@@ -13,6 +13,8 @@ const config: NextConfig = {
   transpilePackages: ['@josecoded/types', '@josecoded/pricing'],
   // no image optimizer in the worker: images are generated at build time (task 2.x)
   images: { unoptimized: true },
+  // trailing slashes are redirected by our own rules (one hop to the canonical URL)
+  skipTrailingSlashRedirect: true,
   // i18n without middleware/proxy (DT §1.4): rewrites and redirects derived from `pathnames`
   async rewrites() {
     return { beforeFiles: rewrites, afterFiles: [], fallback: [] };
