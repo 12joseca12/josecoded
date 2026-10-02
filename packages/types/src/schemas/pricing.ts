@@ -64,8 +64,12 @@ export const pricingSchema = z
   })
   .superRefine((value, ctx) => {
     const expectCodes = (path: string, got: string[], want: readonly string[]) => {
-      if (got.join() !== want.join()) {
-        ctx.addIssue({ code: 'custom', path: [path], message: `expected ${want.join(', ')}` });
+      if ([...got].sort().join() !== [...want].sort().join()) {
+        ctx.addIssue({
+          code: 'custom',
+          path: [path],
+          message: `expected exactly ${want.join(', ')}`,
+        });
       }
     };
     expectCodes(

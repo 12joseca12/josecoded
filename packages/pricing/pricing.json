@@ -1,0 +1,228 @@
+{
+  "version": "2026-09-14",
+  "hourly": 40,
+  "feature": 150,
+  "packs": [
+    {
+      "code": "P1",
+      "name": {
+        "es": "Web básica",
+        "en": "{{DATO: pack P1 name (en)}}"
+      },
+      "price": 900,
+      "weeks": 1,
+      "includes": {
+        "es": [
+          "Web de presentación + contacto + SEO base + textos legales. Sin gestión ni pedidos"
+        ],
+        "en": [
+          "{{DATO: pack P1 includes (en)}}"
+        ]
+      },
+      "forWhom": {
+        "es": "{{DATO: pack P1 forWhom (es)}}",
+        "en": "{{DATO: pack P1 forWhom (en)}}"
+      }
+    },
+    {
+      "code": "P2",
+      "name": {
+        "es": "Pedidos / reservas",
+        "en": "{{DATO: pack P2 name (en)}}"
+      },
+      "price": 1400,
+      "weeks": 2,
+      "includes": {
+        "es": [
+          "P1 + pedidos o reservas + gestión básica (subir, modificar, eliminar productos o citas). Sin panel interno"
+        ],
+        "en": [
+          "{{DATO: pack P2 includes (en)}}"
+        ]
+      },
+      "forWhom": {
+        "es": "{{DATO: pack P2 forWhom (es)}}",
+        "en": "{{DATO: pack P2 forWhom (en)}}"
+      }
+    },
+    {
+      "code": "P3",
+      "name": {
+        "es": "Gestión",
+        "en": "{{DATO: pack P3 name (en)}}"
+      },
+      "price": 2500,
+      "weeks": 2,
+      "includes": {
+        "es": [
+          "P2 + panel interno con roles: pedidos, clientes, stock, agenda, exportaciones, facturación básica o integración con una herramienta del cliente"
+        ],
+        "en": [
+          "{{DATO: pack P3 includes (en)}}"
+        ]
+      },
+      "forWhom": {
+        "es": "{{DATO: pack P3 forWhom (es)}}",
+        "en": "{{DATO: pack P3 forWhom (en)}}"
+      }
+    },
+    {
+      "code": "P4",
+      "name": {
+        "es": "Gestión + automatizaciones",
+        "en": "{{DATO: pack P4 name (en)}}"
+      },
+      "price": 4200,
+      "weeks": 3,
+      "includes": {
+        "es": [
+          "P3 + automatizaciones en n8n (avisos, emails, WhatsApp, sincronización con herramientas, informes) + IA (respuestas, clasificación, resúmenes)"
+        ],
+        "en": [
+          "{{DATO: pack P4 includes (en)}}"
+        ]
+      },
+      "forWhom": {
+        "es": "{{DATO: pack P4 forWhom (es)}}",
+        "en": "{{DATO: pack P4 forWhom (en)}}"
+      }
+    }
+  ],
+  "apps": [
+    {
+      "code": "APP_MVP",
+      "name": {
+        "es": "App MVP",
+        "en": "{{DATO: app APP_MVP name (en)}}"
+      },
+      "price": 4000,
+      "weeks": 6,
+      "includes": {
+        "es": [
+          "React Native/Expo, iOS + Android, 3–5 pantallas, auth, backend simple (Supabase), publicación en stores"
+        ],
+        "en": [
+          "{{DATO: app APP_MVP includes (en)}}"
+        ]
+      },
+      "forWhom": {
+        "es": "{{DATO: app APP_MVP forWhom (es)}}",
+        "en": "{{DATO: app APP_MVP forWhom (en)}}"
+      }
+    },
+    {
+      "code": "APP_PLUS",
+      "name": {
+        "es": "App ampliada",
+        "en": "{{DATO: app APP_PLUS name (en)}}"
+      },
+      "price": 6000,
+      "weeks": 8,
+      "includes": {
+        "es": [
+          "MVP + notificaciones, pagos o integración con API del cliente"
+        ],
+        "en": [
+          "{{DATO: app APP_PLUS includes (en)}}"
+        ]
+      },
+      "forWhom": {
+        "es": "{{DATO: app APP_PLUS forWhom (es)}}",
+        "en": "{{DATO: app APP_PLUS forWhom (en)}}"
+      }
+    }
+  ],
+  "extras": [
+    {
+      "code": "maintenance_basic",
+      "label": {
+        "es": "Mantenimiento básico",
+        "en": "{{DATO: extra maintenance_basic label (en)}}"
+      },
+      "description": {
+        "es": "Copias, actualizaciones de dependencias y seguridad, 1 tanda de cambios de contenido al mes. Sin hosting",
+        "en": "{{DATO: extra maintenance_basic description (en)}}"
+      },
+      "price": 49,
+      "billing": "monthly"
+    },
+    {
+      "code": "maintenance_extended",
+      "label": {
+        "es": "Mantenimiento extendido",
+        "en": "{{DATO: extra maintenance_extended label (en)}}"
+      },
+      "description": {
+        "es": "Básico + soporte prioritario (24 h laborables) + 3 tandas de cambios + informe mensual + 2 h de desarrollo/mes acumulables",
+        "en": "{{DATO: extra maintenance_extended description (en)}}"
+      },
+      "price": 149,
+      "billing": "monthly"
+    },
+    {
+      "code": "seo_basic",
+      "label": {
+        "es": "SEO básico",
+        "en": "{{DATO: extra seo_basic label (en)}}"
+      },
+      "description": {
+        "es": "Metadatos, Google Business, sitemap, velocidad",
+        "en": "{{DATO: extra seo_basic description (en)}}"
+      },
+      "price": 250,
+      "billing": "one_off"
+    },
+    {
+      "code": "seo_full",
+      "label": {
+        "es": "SEO completo",
+        "en": "{{DATO: extra seo_full label (en)}}"
+      },
+      "description": {
+        "es": "SEO básico + keywords, 5 páginas optimizadas, enlazado interno, informe",
+        "en": "{{DATO: extra seo_full description (en)}}"
+      },
+      "price": 600,
+      "billing": "one_off"
+    },
+    {
+      "code": "geo",
+      "label": {
+        "es": "GEO",
+        "en": "{{DATO: extra geo label (en)}}"
+      },
+      "description": {
+        "es": "Optimización para IA de buscadores y agentes: datos estructurados, llms.txt, contenido citable, directorios",
+        "en": "{{DATO: extra geo description (en)}}"
+      },
+      "price": 300,
+      "billing": "one_off"
+    },
+    {
+      "code": "security_audit",
+      "label": {
+        "es": "Análisis de ciberseguridad",
+        "en": "{{DATO: extra security_audit label (en)}}"
+      },
+      "description": {
+        "es": "Revisión de cabeceras, dependencias, formularios, permisos y copias; informe con correcciones aplicadas",
+        "en": "{{DATO: extra security_audit description (en)}}"
+      },
+      "price": 250,
+      "billing": "one_off"
+    }
+  ],
+  "upgradeRule": "list_difference",
+  "affiliate": {
+    "client": {
+      "maintenanceMonths": 2
+    },
+    "standard": {
+      "percent": 10
+    },
+    "premium": {
+      "percent": 20
+    },
+    "base": "first_order_ex_vat"
+  }
+}

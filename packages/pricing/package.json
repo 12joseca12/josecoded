@@ -1,0 +1,30 @@
+{
+  "name": "@josecoded/pricing",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "pricing:sync": "node scripts/sync-from-tarifas.ts",
+    "pricing:sync-db": "node scripts/sync-db.ts",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@josecoded/types": "workspace:*"
+  },
+  "peerDependencies": {
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@josecoded/config": "workspace:*",
+    "@types/node": "22.20.2",
+    "eslint": "10.10.0",
+    "typescript": "5.9.3",
+    "vitest": "4.1.11",
+    "zod": "4.6.5"
+  }
+}
