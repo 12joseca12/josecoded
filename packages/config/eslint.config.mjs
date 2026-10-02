@@ -21,6 +21,7 @@ const restrictions = {
     group: ['**/messages/**/*.json'],
     message: 'Use useTranslations/getTranslations; never import messages JSON directly.',
     dynamic: '/messages\\/.*\\.json$/',
+    dynamicTemplate: '/messages\\//',
   },
   database: {
     group: ['@josecoded/types/src/database', '**/types/src/database'],
@@ -67,11 +68,20 @@ const restrict = (ids) => {
     ],
     'no-restricted-syntax': [
       'error',
-      ...picked.flatMap((r) =>
-        'dynamic' in r
+      ...picked.flatMap((r) => [
+        ...('dynamic' in r
           ? [{ selector: `ImportExpression[source.value=${r.dynamic}]`, message: r.message }]
-          : [],
-      ),
+          : []),
+        // import(`../messages/${locale}.json`): the path lives in a template literal quasi
+        ...('dynamicTemplate' in r
+          ? [
+              {
+                selector: `ImportExpression > TemplateLiteral > TemplateElement[value.raw=${r.dynamicTemplate}]`,
+                message: r.message,
+              },
+            ]
+          : []),
+      ]),
     ],
   };
 };

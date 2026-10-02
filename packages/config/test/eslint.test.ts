@@ -123,6 +123,16 @@ describe('dynamic import() boundaries (no-restricted-syntax)', () => {
     ],
   ];
 
+  it('rejects a template-literal import() of messages outside i18n', async () => {
+    const code = 'export const m = (l: string) => import(`../messages/${l}.json`);';
+    expect(await rules(code, 'apps/web/lib/x.ts')).toContain('no-restricted-syntax');
+  });
+
+  it('allows a template-literal import() of messages in i18n/request', async () => {
+    const code = 'export const m = (l: string) => import(`../messages/${l}.json`);';
+    expect(await rules(code, 'apps/web/i18n/request.ts')).not.toContain('no-restricted-syntax');
+  });
+
   it.each(dynamicForbidden)('rejects import() of %s', async (_label, code, filePath) => {
     expect(await rules(code, filePath)).toContain('no-restricted-syntax');
   });
