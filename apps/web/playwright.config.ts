@@ -1,6 +1,7 @@
 import { defineConfig } from '@playwright/test';
 
-// The URL matrix runs against the LOCAL preview: `wrangler dev --local` serving `.open-next`
+// The URL matrix runs against the LOCAL preview: `opennextjs-cloudflare preview` (populates the
+// incremental cache like production, then wrangler dev) serving `.open-next`
 // (run `pnpm --filter web build` first). Nothing is uploaded to Cloudflare.
 // PW_CHANNEL=chrome uses the system Chrome (no browser download); CI uses bundled Chromium.
 const port = 8788;
@@ -15,7 +16,7 @@ export default defineConfig({
     channel: process.env.PW_CHANNEL || undefined,
   },
   webServer: {
-    command: `pnpm exec wrangler dev --local --ip 127.0.0.1 --port ${port}`,
+    command: `pnpm exec opennextjs-cloudflare preview -- --ip 127.0.0.1 --port ${port}`,
     url: `http://127.0.0.1:${port}`,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,

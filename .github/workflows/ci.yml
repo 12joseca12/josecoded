@@ -79,3 +79,19 @@ jobs:
       - run: pnpm build
       # Later tasks add here: check:hero-bundle + hero:media:check (2.9), Playwright against
       # `wrangler dev` (1.5), RLS tests against `supabase start` (1.8), Lighthouse CI (2.9).
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm --filter @josecoded/web exec playwright install --with-deps chromium
+      # The URL matrix runs against the LOCAL preview (`opennextjs-cloudflare preview`, which
+      # populates the cache like production). Nothing is uploaded to Cloudflare.
+      - run: pnpm e2e

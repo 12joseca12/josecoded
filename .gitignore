@@ -31,3 +31,4 @@ apps/web/e2e/visual/__diff__/
 next-env.d.ts
 test-results/
 playwright-report/
+*.tsbuildinfo
