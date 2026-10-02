@@ -1,0 +1,4 @@
+{
+  "extends": "@josecoded/config/tsconfig.base.json",
+  "include": ["scripts", "test"]
+}
