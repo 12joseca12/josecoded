@@ -142,6 +142,9 @@ importers:
       '@josecoded/config':
         specifier: workspace:*
         version: link:../config
+      '@types/node':
+        specifier: 22.20.2
+        version: 22.20.2
       eslint:
         specifier: 10.10.0
         version: 10.10.0
@@ -151,6 +154,9 @@ importers:
       vitest:
         specifier: 4.1.11
         version: 4.1.11(@types/node@22.20.2)(happy-dom@20.14.5)(vite@8.3.2(@types/node@22.20.2)(esbuild@0.28.1)(terser@5.16.9)(yaml@2.9.1))
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
 
   packages/pricing:
     dependencies:

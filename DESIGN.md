@@ -105,7 +105,7 @@ rounded:
   lg: "1rem"
   cell: "clamp(1rem, 0.6rem + 1vmin, 1.5rem)"
   tcard: "clamp(1.125rem, 0.8rem + 1vmin, 1.75rem)"
-  pill: "999px"
+  pill: "9999rem"
 spacing:
   gutter: "clamp(1rem, 4vw, 3.5rem)"
   pad-scene: "clamp(1rem, 0.5rem + 3vw, 3.5rem)"
@@ -443,3 +443,16 @@ Un gesto con propósito por celda: marquesina doble del stack en sentidos opuest
 - **Don't** montar rejillas de tarjetas iguales ni franjas de métricas o contadores.
 - **Don't** usar glassmorphism de plantilla, parallax de fondo, Inter con texto degradado ni iconos brillantes.
 - **Don't** cambiar el estilo de las tarjetas para separarlas del fondo; se ajustan card y card-line.
+
+## Tokens consumibles (tarea 1.10)
+
+`.impeccable/design.json` es la fuente única de tokens; `pnpm tokens:build` genera `apps/web/styles/{tokens.css,breakpoints.ts,tokens.ts}` y un test de deriva impide editarlos a mano. Los valores salen 1:1 de `docs/superpowers/design/ref/home-v6/{base,v6}.css`. Prefijos por grupo:
+
+- Colores sin prefijo (`--bg`, `--violet`…), más `--pending` y `--scrollbar`. Familias `--font-sans` y `--font-mono`; cada rol tipográfico emite `--font-<rol>-{size,weight,leading,tracking,features}`.
+- `--r-*` radios (la píldora es `--r-pill: 9999rem`, no `999px`), `--sp-*` espaciado, `--size-dot`.
+- Alfas por uso sin prefijo de grupo: `--tint-*` (rellenos), `--edge-*` y `--pager-*` (filetes y líneas), `--bg-segmented`, `--bg-prompt`, `--header-scrolled`, `--scrim`, `--palette-backdrop`, `--beam-{1,2,3}-{a,b}`.
+- `--shadow-*` (hairline, hairline-strong, card, card-hover, card-focus, button, overlay, key, keycap, keycap-down, selected-row), `--blur-*`, `--grad-*` y `--glow-art`, `--light-*`.
+- Movimiento: `--dur-*`, `--ease-*` (los easings en palabra clave del prototipo también son tokens: `--ease-standard`, `--ease-key`, `--ease-linear`, `--ease-float`, `--ease-blink`), `--glide-*`, `--wheel-*`, `--stagger-draw`, `--delay-draw`.
+- `--z-*` capas; `--bp-*` (alto y ancho de viewport) y `--cq-*` (container queries), siempre en `rem` y exportados también como `bp` y `cq` desde `styles/breakpoints.ts` porque las media queries no admiten `var()`.
+
+Añadidos sobre la lista del plan, todos presentes en el prototipo: `dur-state` (200 ms, 12 usos), `dur-blink`, `dur-scene`, `delay-draw`, `z-skip`, los easings en palabra clave, `grad-field-pool`, `grad-mask-fade`, `sp-gap-cell-body`, `pending` y `scrollbar`.

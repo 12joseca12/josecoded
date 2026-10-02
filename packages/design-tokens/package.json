@@ -4,16 +4,20 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node -e \"console.log('design-tokens: skeleton, generator arrives in task 1.10')\"",
-    "tokens:build": "node -e \"console.log('design-tokens: skeleton, tokens:build arrives in task 1.10')\"",
+    "tokens:build": "node scripts/build.ts",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@josecoded/config": "workspace:*",
+    "@types/node": "22.20.2",
     "eslint": "10.10.0",
     "typescript": "5.9.3",
-    "vitest": "4.1.11"
+    "vitest": "4.1.11",
+    "zod": "4.6.5"
   }
 }

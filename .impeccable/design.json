@@ -2,6 +2,156 @@
   "schemaVersion": 2,
   "generatedAt": "2026-09-29T21:30:12+00:00",
   "title": "Design System: josecoded",
+  "colors": {
+    "bg": "#07060f",
+    "ink": "#07060f",
+    "text": "#ece9ff",
+    "text-2": "#a9a3d6",
+    "text-3": "#8c86bd",
+    "line": "rgb(157 140 255 / 0.12)",
+    "line-2": "rgb(157 140 255 / 0.22)",
+    "card": "rgb(22 19 48 / 0.84)",
+    "card-line": "rgb(157 140 255 / 0.18)",
+    "overlay": "rgb(14 12 32 / 0.97)",
+    "violet": "#7c6cff",
+    "violet-hi": "#9d8cff",
+    "violet-soft": "#b9adff",
+    "beam": "#5b4bff",
+    "green": "#3ddc84",
+    "pending": "#e9c46a",
+    "scrollbar": "#2c2660"
+  },
+  "fontFamilies": {
+    "sans": "\"Geist\", ui-sans-serif, system-ui, sans-serif",
+    "mono": "\"Geist Mono\", ui-monospace, \"SF Mono\", monospace"
+  },
+  "typography": {
+    "display": {
+      "family": "sans",
+      "fontSize": "clamp(3rem, 6.4vw, 5.75rem)",
+      "fontWeight": 600,
+      "lineHeight": 0.96,
+      "letterSpacing": "-0.045em"
+    },
+    "display-closing": {
+      "family": "sans",
+      "fontSize": "clamp(2.25rem, 1rem + 4vw + 2svh, 5rem)",
+      "fontWeight": 600,
+      "lineHeight": 1,
+      "letterSpacing": "-0.045em"
+    },
+    "headline": {
+      "family": "sans",
+      "fontSize": "clamp(1.75rem, 0.9rem + 1.4vw + 1.6svh, 3rem)",
+      "fontWeight": 600,
+      "lineHeight": 1.04,
+      "letterSpacing": "-0.04em"
+    },
+    "project-name": {
+      "family": "sans",
+      "fontSize": "clamp(1.75rem, 1rem + 5cqi, 3rem)",
+      "fontWeight": 600,
+      "lineHeight": 1,
+      "letterSpacing": "-0.04em"
+    },
+    "figure": {
+      "family": "sans",
+      "fontSize": "clamp(2rem, 1.2rem + 5cqi, 3.5rem)",
+      "fontWeight": 600,
+      "lineHeight": 1,
+      "letterSpacing": "-0.045em"
+    },
+    "title": {
+      "family": "sans",
+      "fontSize": "clamp(1.125rem, 0.9rem + 2cqi, 1.75rem)",
+      "fontWeight": 600,
+      "lineHeight": 1.15,
+      "letterSpacing": "-0.03em"
+    },
+    "lede": {
+      "family": "sans",
+      "fontSize": "clamp(1.0625rem, 1.35vw, 1.25rem)",
+      "fontWeight": 400,
+      "lineHeight": 1.5
+    },
+    "lead": {
+      "family": "sans",
+      "fontSize": "clamp(0.9375rem, 0.85rem + 0.35vmin, 1.0625rem)",
+      "fontWeight": 400,
+      "lineHeight": 1.55
+    },
+    "body": {
+      "family": "sans",
+      "fontSize": "1rem",
+      "fontWeight": 400,
+      "lineHeight": 1.55,
+      "fontFeature": "\"ss01\", \"cv11\""
+    },
+    "cell-title": {
+      "family": "sans",
+      "fontSize": "0.9375rem",
+      "fontWeight": 550
+    },
+    "label-button": {
+      "family": "sans",
+      "fontSize": "0.9375rem",
+      "fontWeight": 550,
+      "letterSpacing": "-0.005em"
+    },
+    "label": {
+      "family": "sans",
+      "fontSize": "0.875rem",
+      "fontWeight": 400
+    },
+    "small": {
+      "family": "sans",
+      "fontSize": "0.8125rem",
+      "fontWeight": 400
+    },
+    "caption": {
+      "family": "sans",
+      "fontSize": "0.75rem",
+      "fontWeight": 400
+    },
+    "mono-key": {
+      "family": "mono",
+      "fontSize": "0.6875rem",
+      "fontWeight": 500,
+      "lineHeight": 1
+    }
+  },
+  "rounded": {
+    "key": "0.3125rem",
+    "icon": "0.4375rem",
+    "sm": "0.5rem",
+    "md": "0.625rem",
+    "bubble": "0.875rem",
+    "lg": "1rem",
+    "cell": "clamp(1rem, 0.6rem + 1vmin, 1.5rem)",
+    "tcard": "clamp(1.125rem, 0.8rem + 1vmin, 1.75rem)",
+    "pill": "9999rem",
+    "bubble-tail": "0.25rem"
+  },
+  "spacing": {
+    "gutter": "clamp(1rem, 4vw, 3.5rem)",
+    "pad-scene": "clamp(1rem, 0.5rem + 3vw, 3.5rem)",
+    "pad-top": "clamp(4.75rem, 3rem + 7svh, 7.5rem)",
+    "gap-scene": "clamp(1.25rem, 3svh, 2.5rem)",
+    "gap-bento": "clamp(0.75rem, 0.4rem + 1.2vmin, 1.25rem)",
+    "pad-cell": "clamp(1.125rem, 0.6rem + 1.6vmin, 2.25rem)",
+    "container": "82rem",
+    "xs": "0.25rem",
+    "sm": "0.5rem",
+    "md": "0.75rem",
+    "lg": "1rem",
+    "xl": "1.5rem",
+    "2xl": "2rem",
+    "gap-cell": "clamp(0.875rem, 2svh, 1.5rem)",
+    "gap-cell-body": "clamp(0.875rem, 2svh, 1.25rem)"
+  },
+  "sizes": {
+    "dot": "0.375rem"
+  },
   "extensions": {
     "colorMeta": {
       "bg": {
@@ -292,46 +442,561 @@
         "purpose": "kbd; solo atajos reales."
       }
     },
+    "alphas": [
+      {
+        "name": "tint-cmdk",
+        "value": "rgb(157 140 255 / 0.06)",
+        "purpose": "Fondo del disparador ⌘K."
+      },
+      {
+        "name": "tint-chip",
+        "value": "rgb(157 140 255 / 0.08)",
+        "purpose": "Chips, marquesina y idioma actual del menú."
+      },
+      {
+        "name": "tint-kbd",
+        "value": "rgb(157 140 255 / 0.1)",
+        "purpose": "Tecla kbd, icono de lista y hover del botón de ampliar celda."
+      },
+      {
+        "name": "tint-icon",
+        "value": "rgb(157 140 255 / 0.12)",
+        "purpose": "Icono de celda."
+      },
+      {
+        "name": "tint-rail",
+        "value": "rgb(157 140 255 / 0.16)",
+        "purpose": "Pista de la barra de progreso del carrusel."
+      },
+      {
+        "name": "edge-selected",
+        "value": "rgb(157 140 255 / 0.2)",
+        "purpose": "Filete de la fila seleccionada y barras en reposo del ciclo del hero."
+      },
+      {
+        "name": "pager-idle",
+        "value": "rgb(157 140 255 / 0.3)",
+        "purpose": "Línea del indicador de sección en reposo."
+      },
+      {
+        "name": "pager-hover",
+        "value": "rgb(157 140 255 / 0.6)",
+        "purpose": "Línea del indicador de sección bajo el cursor."
+      },
+      {
+        "name": "edge-key-down",
+        "value": "rgb(157 140 255 / 0.5)",
+        "purpose": "Anillo de la tecla grande pulsada."
+      },
+      {
+        "name": "tint-ghost",
+        "value": "rgb(124 108 255 / 0.1)",
+        "purpose": "Botón fantasma y píldora de chat."
+      },
+      {
+        "name": "tint-current",
+        "value": "rgb(124 108 255 / 0.12)",
+        "purpose": "Enlace de contacto del menú y primera fila de lista."
+      },
+      {
+        "name": "tint-selected",
+        "value": "rgb(124 108 255 / 0.14)",
+        "purpose": "Resaltado deslizante de lista y arranque del tinte de celda."
+      },
+      {
+        "name": "tint-hover",
+        "value": "rgb(124 108 255 / 0.16)",
+        "purpose": "Fila de menú y paleta en hover, activa o seleccionada."
+      },
+      {
+        "name": "tint-ghost-hover",
+        "value": "rgb(124 108 255 / 0.18)",
+        "purpose": "Hover del botón fantasma y de la píldora de chat."
+      },
+      {
+        "name": "tint-cell-hero",
+        "value": "rgb(124 108 255 / 0.2)",
+        "purpose": "Arranque del degradado de la celda destacada y burbuja propia del mini chat."
+      },
+      {
+        "name": "tint-selection",
+        "value": "rgb(124 108 255 / 0.45)",
+        "purpose": "Selección de texto (::selection)."
+      },
+      {
+        "name": "tint-bubble-other",
+        "value": "rgb(255 255 255 / 0.05)",
+        "purpose": "Burbuja ajena del mini chat."
+      },
+      {
+        "name": "bg-segmented",
+        "value": "rgb(7 6 15 / 0.5)",
+        "purpose": "Fondo del selector segmentado."
+      },
+      {
+        "name": "bg-prompt",
+        "value": "rgb(7 6 15 / 0.6)",
+        "purpose": "Fondo del campo de propuesta."
+      },
+      {
+        "name": "header-scrolled",
+        "value": "rgb(7 6 15 / 0.7)",
+        "purpose": "Cabecera al hacer scroll."
+      },
+      {
+        "name": "scrim",
+        "value": "rgb(7 6 15 / 0.72)",
+        "purpose": "Velo bajo la celda ampliada."
+      },
+      {
+        "name": "palette-backdrop",
+        "value": "rgb(8 6 22 / 0.6)",
+        "purpose": "Velo de la paleta ⌘K."
+      },
+      {
+        "name": "beam-1-a",
+        "value": "rgb(91 75 255 / 0.5)",
+        "purpose": "Haz 1, borde exterior."
+      },
+      {
+        "name": "beam-1-b",
+        "value": "rgb(157 140 255 / 0.5)",
+        "purpose": "Haz 1, núcleo."
+      },
+      {
+        "name": "beam-2-a",
+        "value": "rgb(91 75 255 / 0.35)",
+        "purpose": "Haz 2, borde exterior."
+      },
+      {
+        "name": "beam-2-b",
+        "value": "rgb(124 108 255 / 0.4)",
+        "purpose": "Haz 2, núcleo."
+      },
+      {
+        "name": "beam-3-a",
+        "value": "rgb(61 40 200 / 0.35)",
+        "purpose": "Haz 3, borde exterior."
+      },
+      {
+        "name": "beam-3-b",
+        "value": "rgb(91 75 255 / 0.3)",
+        "purpose": "Haz 3, núcleo."
+      }
+    ],
     "shadows": [
       {
-        "name": "filete",
+        "name": "hairline",
         "value": "inset 0 0 0 1px rgb(157 140 255 / 0.12)",
         "purpose": "Contorno de reposo de controles pequeños, teclas, chips y separadores."
       },
       {
-        "name": "filete-fuerte",
+        "name": "hairline-strong",
         "value": "inset 0 0 0 1px rgb(157 140 255 / 0.22)",
         "purpose": "Botón fantasma, chat, selector, capas superpuestas y hover."
       },
       {
-        "name": "tarjeta",
+        "name": "card",
         "value": "inset 0 0 0 1px rgb(157 140 255 / 0.18), inset 0 1px 0 rgb(185 173 255 / 0.07), 0 30px 60px -30px rgb(5 3 20 / 0.95)",
         "purpose": "Toda celda y tarjeta de proyecto en reposo."
       },
       {
-        "name": "tarjeta-hover",
+        "name": "card-hover",
         "value": "inset 0 0 0 1px rgb(157 140 255 / 0.22), inset 0 1px 0 rgb(185 173 255 / 0.1), 0 30px 60px -30px rgb(5 3 20 / 0.95)",
         "purpose": "Celda ampliable bajo el cursor."
       },
       {
-        "name": "tarjeta-foco",
+        "name": "card-focus",
         "value": "inset 0 0 0 1px rgb(157 140 255 / 0.22), inset 0 1px 0 rgb(185 173 255 / 0.09), 0 40px 80px -40px rgb(5 3 20 / 0.95)",
         "purpose": "Tarjeta activa del carrusel de Proyectos."
       },
       {
-        "name": "boton-violeta",
+        "name": "button",
         "value": "inset 0 1px 0 rgb(255 255 255 / 0.28), inset 0 -2px 0 rgb(13 11 31 / 0.22), 0 10px 24px -12px rgb(5 3 20 / 0.9)",
         "purpose": "Botón sólido: canto claro y caída índigo."
       },
       {
-        "name": "capa-superpuesta",
+        "name": "overlay",
         "value": "inset 0 0 0 1px rgb(157 140 255 / 0.22), inset 0 1px 0 rgb(255 255 255 / 0.07), 0 40px 80px -20px rgb(5 3 20 / 0.9)",
         "purpose": "Menú y paleta."
       },
       {
-        "name": "tecla",
+        "name": "key",
         "value": "inset 0 -1px 0 rgb(0 0 0 / 0.4), inset 0 0 0 1px rgb(157 140 255 / 0.12)",
         "purpose": "kbd."
+      },
+      {
+        "name": "keycap",
+        "value": "inset 0 1px 0 rgb(185 173 255 / 0.25), inset 0 -3px 0 rgb(5 3 20 / 0.7), 0 0 0 1px rgb(157 140 255 / 0.22), 0 8px 16px -8px rgb(5 3 20 / 0.9)",
+        "purpose": "Tecla grande del cierre, en reposo."
+      },
+      {
+        "name": "keycap-down",
+        "value": "inset 0 1px 0 rgb(185 173 255 / 0.2), inset 0 -1px 0 rgb(5 3 20 / 0.7), 0 0 0 1px rgb(157 140 255 / 0.5), 0 4px 10px -6px rgb(5 3 20 / 0.9)",
+        "purpose": "Tecla grande pulsada."
+      },
+      {
+        "name": "selected-row",
+        "value": "inset 0 0 0 1px rgb(157 140 255 / 0.2)",
+        "purpose": "Filete del resaltado deslizante de lista."
+      }
+    ],
+    "blurs": [
+      {
+        "name": "backdrop",
+        "value": "4px",
+        "purpose": "Fondo de la paleta ⌘K."
+      },
+      {
+        "name": "scrim",
+        "value": "6px",
+        "purpose": "Velo bajo la celda ampliada."
+      },
+      {
+        "name": "header",
+        "value": "14px",
+        "purpose": "Cabecera con scroll."
+      },
+      {
+        "name": "surface",
+        "value": "18px",
+        "purpose": "Superficie de vidrio."
+      },
+      {
+        "name": "overlay",
+        "value": "24px",
+        "purpose": "Menú ☰ y paleta."
+      },
+      {
+        "name": "beam",
+        "value": "5vmax",
+        "purpose": "Haces del campo de luz."
+      }
+    ],
+    "durations": [
+      {
+        "name": "key",
+        "value": "90ms",
+        "purpose": "Tecla grande."
+      },
+      {
+        "name": "fast",
+        "value": "150ms",
+        "purpose": "Color y fondo de controles."
+      },
+      {
+        "name": "press",
+        "value": "160ms",
+        "purpose": "Pulsación de botones y selección de fila."
+      },
+      {
+        "name": "menu",
+        "value": "180ms",
+        "purpose": "Apertura del menú y color del selector."
+      },
+      {
+        "name": "arrow",
+        "value": "200ms",
+        "purpose": "Flecha de los enlaces."
+      },
+      {
+        "name": "state",
+        "value": "200ms",
+        "purpose": "Cabecera, indicador de sección y estados de hover (añadido en 1.10: el prototipo usa 200 ms en 12 sitios)."
+      },
+      {
+        "name": "slide",
+        "value": "240ms",
+        "purpose": "Resaltado de lista, pulgar del selector y burbujas."
+      },
+      {
+        "name": "pager",
+        "value": "250ms",
+        "purpose": "Aparición del indicador de sección."
+      },
+      {
+        "name": "slide-lg",
+        "value": "260ms",
+        "purpose": "Barra de packs."
+      },
+      {
+        "name": "swap",
+        "value": "260ms",
+        "purpose": "Cifra de tarifa al cambiar de segmento."
+      },
+      {
+        "name": "underline",
+        "value": "260ms",
+        "purpose": "Subrayado del título de artículo."
+      },
+      {
+        "name": "card",
+        "value": "360ms",
+        "purpose": "Tarjeta del carrusel."
+      },
+      {
+        "name": "vt",
+        "value": "380ms",
+        "purpose": "View Transition de la celda."
+      },
+      {
+        "name": "draw",
+        "value": "420ms",
+        "purpose": "Trazo de los checks."
+      },
+      {
+        "name": "float",
+        "value": "6s",
+        "purpose": "Flotación del arte de proyecto."
+      },
+      {
+        "name": "marquee-a",
+        "value": "38s",
+        "purpose": "Marquesina de la banda directa."
+      },
+      {
+        "name": "marquee-b",
+        "value": "44s",
+        "purpose": "Marquesina de la banda inversa."
+      },
+      {
+        "name": "blink",
+        "value": "1s",
+        "purpose": "Cursor del campo de propuesta (añadido en 1.10)."
+      },
+      {
+        "name": "scene",
+        "value": "1.2s",
+        "purpose": "Fundido de entrada de la escena WebGL (añadido en 1.10)."
+      }
+    ],
+    "easings": [
+      {
+        "name": "out",
+        "value": "cubic-bezier(0.23, 1, 0.32, 1)",
+        "purpose": "Apariciones y cambios de estado de 150 a 260 ms."
+      },
+      {
+        "name": "slide",
+        "value": "cubic-bezier(0.77, 0, 0.175, 1)",
+        "purpose": "Lo que se desliza: resaltado de lista, barra de packs, pulgar del selector."
+      },
+      {
+        "name": "vt",
+        "value": "cubic-bezier(0.32, 0.72, 0, 1)",
+        "purpose": "View Transition de la celda."
+      },
+      {
+        "name": "standard",
+        "value": "ease",
+        "purpose": "Colores y fondos (la palabra clave `ease` del prototipo; añadido en 1.10 para que los módulos no escriban easing literal)."
+      },
+      {
+        "name": "key",
+        "value": "ease-out",
+        "purpose": "Tecla grande (palabra clave `ease-out`, distinta del token `ease-out`; añadido en 1.10)."
+      },
+      {
+        "name": "linear",
+        "value": "linear",
+        "purpose": "Marquesina y animaciones ligadas al scroll (añadido en 1.10)."
+      },
+      {
+        "name": "float",
+        "value": "ease-in-out",
+        "purpose": "Flotación del arte (añadido en 1.10)."
+      },
+      {
+        "name": "blink",
+        "value": "steps(1)",
+        "purpose": "Parpadeo del cursor (añadido en 1.10)."
+      }
+    ],
+    "scroll": [
+      {
+        "name": "glide-min",
+        "value": "600ms",
+        "purpose": "Duración mínima del glide entre escenas (v6.js:34)."
+      },
+      {
+        "name": "glide-max",
+        "value": "950ms",
+        "purpose": "Duración máxima del glide entre escenas (v6.js:34)."
+      },
+      {
+        "name": "wheel-threshold",
+        "value": "24",
+        "purpose": "Acumulado de rueda (px) que dispara un cambio de escena, sin unidad (v6.js:56)."
+      },
+      {
+        "name": "wheel-lock",
+        "value": "700ms",
+        "purpose": "Bloqueo tras un cambio de escena por rueda (v6.js:56)."
+      },
+      {
+        "name": "stagger-draw",
+        "value": "120ms",
+        "purpose": "Escalonado del trazo de los checks."
+      },
+      {
+        "name": "delay-draw",
+        "value": "100ms",
+        "purpose": "Retardo del primer check (añadido en 1.10)."
+      }
+    ],
+    "layers": [
+      {
+        "name": "canvas",
+        "value": "0",
+        "purpose": "Escena WebGL."
+      },
+      {
+        "name": "field",
+        "value": "1",
+        "purpose": "Grano y campo de luz."
+      },
+      {
+        "name": "content",
+        "value": "2",
+        "purpose": "Contenido y pie."
+      },
+      {
+        "name": "pager",
+        "value": "20",
+        "purpose": "Indicador de sección."
+      },
+      {
+        "name": "header",
+        "value": "30",
+        "purpose": "Cabecera."
+      },
+      {
+        "name": "menu",
+        "value": "31",
+        "purpose": "Menú ☰."
+      },
+      {
+        "name": "scrim",
+        "value": "35",
+        "purpose": "Velo bajo la celda ampliada."
+      },
+      {
+        "name": "open",
+        "value": "40",
+        "purpose": "Celda ampliada."
+      },
+      {
+        "name": "skip",
+        "value": "60",
+        "purpose": "Enlace «saltar al contenido» (añadido en 1.10)."
+      }
+    ],
+    "viewport": [
+      {
+        "name": "login-icon",
+        "value": "22.5rem",
+        "purpose": "Login solo con icono."
+      },
+      {
+        "name": "hero-stack",
+        "value": "43.75rem",
+        "purpose": "Alto máximo para encoger el hero apilado (era 700px, de alto)."
+      },
+      {
+        "name": "compact",
+        "value": "56.25rem",
+        "purpose": "Layout compacto: hero apilado y packs en dos columnas (era 900px)."
+      },
+      {
+        "name": "menu",
+        "value": "67.5rem",
+        "purpose": "Cabecera con menú ☰ (era 1080px)."
+      }
+    ],
+    "containers": [
+      {
+        "name": "card-stack",
+        "value": "15rem",
+        "purpose": "Mínimo de columna de la tarjeta de proyecto (auto-fit)."
+      },
+      {
+        "name": "prompt-stack",
+        "value": "24rem",
+        "purpose": "Campo de propuesta apilado."
+      },
+      {
+        "name": "list-meta",
+        "value": "26rem",
+        "purpose": "Oculta el meta de las listas."
+      },
+      {
+        "name": "bento-2",
+        "value": "34rem",
+        "purpose": "Bento en dos columnas."
+      },
+      {
+        "name": "packs-dividers",
+        "value": "40rem",
+        "purpose": "Packs con divisores verticales."
+      },
+      {
+        "name": "bento-12",
+        "value": "52rem",
+        "purpose": "Bento de 12 columnas."
+      }
+    ],
+    "gradients": [
+      {
+        "name": "grad-keycap",
+        "value": "linear-gradient(180deg, #1f1a44, #151233)",
+        "purpose": "Tecla grande."
+      },
+      {
+        "name": "grad-photo",
+        "value": "linear-gradient(160deg, #221d4d, #151233)",
+        "purpose": "Hueco de foto."
+      },
+      {
+        "name": "grad-cell-tint",
+        "value": "linear-gradient(160deg, rgb(124 108 255 / 0.14), var(--card) 60%)",
+        "purpose": "Tinte de celda (160°, 14 %)."
+      },
+      {
+        "name": "grad-cell-hero",
+        "value": "linear-gradient(135deg, rgb(124 108 255 / 0.2), var(--card) 55%)",
+        "purpose": "Celda destacada (135°, 20 %)."
+      },
+      {
+        "name": "glow-art",
+        "value": "radial-gradient(60% 55% at 50% 45%, rgb(91 75 255 / 0.22), transparent 70%)",
+        "purpose": "Resplandor detrás del arte de Proyectos (22 %)."
+      },
+      {
+        "name": "grad-field-pool",
+        "value": "radial-gradient(closest-side, rgb(91 75 255 / 0.1), transparent)",
+        "purpose": "Charco del campo de luz (añadido en 1.10)."
+      },
+      {
+        "name": "grad-mask-fade",
+        "value": "linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent)",
+        "purpose": "Máscara de bordes de la marquesina (añadido en 1.10)."
+      }
+    ],
+    "lights": [
+      {
+        "name": "cell",
+        "value": "22rem",
+        "purpose": "Radio de la luz que sigue al cursor en una celda."
+      },
+      {
+        "name": "cell-hero",
+        "value": "26rem",
+        "purpose": "Radio de la luz en la celda destacada."
+      },
+      {
+        "name": "alpha",
+        "value": "0.09",
+        "purpose": "Opacidad de la luz con la celda bajo el cursor."
       }
     ],
     "motion": [
@@ -388,11 +1053,15 @@
       },
       {
         "name": "hero-stack",
-        "value": "900px"
+        "value": "43.75rem (alto)"
+      },
+      {
+        "name": "compact",
+        "value": "56.25rem"
       },
       {
         "name": "menu",
-        "value": "1080px"
+        "value": "67.5rem"
       },
       {
         "name": "bento-2",

@@ -1,2 +1,2 @@
-// Re-exports TokenName / readToken emitted by @josecoded/design-tokens. Filled by task 1.10.
-export {};
+// Names of the design tokens, generated from .impeccable/design.json by @josecoded/design-tokens.
+export type { TokenName } from '../../../apps/web/styles/tokens';
