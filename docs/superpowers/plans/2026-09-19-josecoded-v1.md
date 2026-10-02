@@ -437,6 +437,8 @@ it('feed has ≥ 10 items with title, link and pubDate', () => {
 
 > **v2.4 (2026-10-02, Jose): `apps/web` se despliega en Workers Free** (junto al gateway). **No se escribe código de medición de CPU** (fuera la medida de `cpuTime` de la 0.1 y cualquier script `cpu:measure`); el rendimiento se analiza con la web construida y en producción, y solo entonces se valoraría Paid. La fase 0 queda **cerrada** (0.1 local y 0.2). Hasta tener credenciales de Cloudflare en CI, las aprobaciones de Jose se hacen en local (`pnpm dev`/`opennextjs-cloudflare preview` en el navegador del panel) y `preview.yml`/`deploy-production.yml` quedan desactivados; el criterio de 1.5 «tests contra la URL de preview» pasa a «contra el preview local».
 
+> **v2.4 (revisión de 1.1, 2026-10-02):** las carpetas `apps/web/messages/{es,en}/<pantalla>/` fusionadas en `i18n/request.ts` (adenda v2.1 de 1.1) **se hacen en la 1.5**, donde nace `apps/web`. Se mantiene ESLint 10 con `settings.react.version` leído de `react/package.json`; la 1.5 (`pnpm lint` sobre la `apps/web` real) es la prueba de fuego y solo si revienta una regla activa se reabre bajar a ESLint 9. jscpd fijado a versión exacta en CI.
+
 ## Fase 1 — Monorepo, `apps/api` movido, `packages/pricing`, CI · Estimación M · rama `chore/monorepo`
 
 ### Tarea 1.1 — Esqueleto del monorepo
