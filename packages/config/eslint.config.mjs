@@ -128,7 +128,11 @@ const importRules = {
       'error',
       {
         groups: ['builtin', 'external', ['parent', 'sibling', 'index'], 'type'],
-        pathGroups: [{ pattern: '@josecoded/**', group: 'external', position: 'after' }],
+        pathGroups: [
+          { pattern: '@josecoded/**', group: 'external', position: 'after' },
+          // project alias (apps/web): after the workspace packages, before relative imports
+          { pattern: '@/**', group: 'parent', position: 'before' },
+        ],
         pathGroupsExcludedImportTypes: ['builtin', 'type'],
         'newlines-between': 'always',
         alphabetize: { order: 'asc', caseInsensitive: true },

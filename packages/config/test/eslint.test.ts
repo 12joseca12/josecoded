@@ -186,6 +186,31 @@ describe('import-x', () => {
     expect(await rules(code, 'packages/types/src/x.ts')).not.toContain('import-x/order');
   });
 
+  it('puts the @/ alias after workspace packages and before relative imports', async () => {
+    const good = [
+      "import { z } from 'zod';",
+      '',
+      "import { thing } from '@josecoded/types';",
+      '',
+      "import { env } from '@/lib/env';",
+      '',
+      "import { a } from './a';",
+      '',
+      'console.log(z, thing, env, a);',
+      '',
+    ].join('\n');
+    expect(await rules(good, 'apps/web/lib/x.ts')).not.toContain('import-x/order');
+    const bad = [
+      "import { a } from './a';",
+      '',
+      "import { env } from '@/lib/env';",
+      '',
+      'console.log(env, a);',
+      '',
+    ].join('\n');
+    expect(await rules(bad, 'apps/web/lib/x.ts')).toContain('import-x/order');
+  });
+
   it('flags duplicate imports', async () => {
     const code = "import { a } from 'zod';\nimport { b } from 'zod';\nconsole.log(a, b);\n";
     expect(await rules(code, 'packages/types/src/x.ts')).toContain('import-x/no-duplicates');
