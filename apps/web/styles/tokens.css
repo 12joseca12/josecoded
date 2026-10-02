@@ -17,11 +17,12 @@
   --beam: #5b4bff;
   --green: #3ddc84;
   --pending: #e9c46a;
-  --scrollbar: #2c2660;
+  --scrollbar-thumb: #2c2660;
 
   /* fonts */
   --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, "SF Mono", monospace;
+  --font-emphasis-weight: 500;
 
   /* typography */
   --font-display-size: clamp(3rem, 6.4vw, 5.75rem);
@@ -69,12 +70,40 @@
   --font-small-weight: 400;
   --font-caption-size: 0.75rem;
   --font-caption-weight: 400;
-  --font-mono-key-size: 0.6875rem;
-  --font-mono-key-weight: 500;
-  --font-mono-key-leading: 1;
+  --font-mono-kbd-size: 0.6875rem;
+  --font-mono-kbd-weight: 500;
+  --font-mono-kbd-leading: 1;
+  --font-brand-size: 1rem;
+  --font-brand-weight: 600;
+  --font-brand-leading: 1;
+  --font-brand-tracking: -0.02em;
+  --font-mono-lang-size: 0.75rem;
+  --font-mono-lang-weight: 500;
+  --font-mono-lang-leading: 1;
+  --font-bubble-size: 0.875rem;
+  --font-bubble-weight: 400;
+  --font-bubble-leading: 1.45;
+  --font-figure-pack-size: 1.5rem;
+  --font-figure-pack-weight: 600;
+  --font-figure-pack-tracking: -0.02em;
+  --font-figure-pack-hero-size: clamp(1.5rem, 1rem + 2.2cqi, 2.5rem);
+  --font-figure-pack-hero-weight: 600;
+  --font-figure-pack-hero-tracking: -0.035em;
+  --font-keycap-size: 1rem;
+  --font-keycap-weight: 500;
+  --font-keycap-leading: 1;
+  --font-display-compact-size: clamp(2.5rem, 11vw, 3.5rem);
+  --font-display-compact-weight: 600;
+  --font-display-compact-leading: 0.96;
+  --font-display-compact-tracking: -0.045em;
+  --font-title-sm-size: 1.125rem;
+  --font-title-sm-weight: 600;
+  --font-title-sm-leading: 1.15;
+  --font-title-sm-tracking: -0.03em;
+  --font-pending-size: 0.85em;
 
   /* rounded */
-  --r-key: 0.3125rem;
+  --r-kbd: 0.3125rem;
   --r-icon: 0.4375rem;
   --r-sm: 0.5rem;
   --r-md: 0.625rem;
@@ -84,8 +113,19 @@
   --r-tcard: clamp(1.125rem, 0.8rem + 1vmin, 1.75rem);
   --r-pill: 9999rem;
   --r-bubble-tail: 0.25rem;
+  --r-focus: 0.375rem;
 
   /* spacing */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.25rem;
+  --sp-6: 1.5rem;
+  --sp-7: 1.75rem;
+  --sp-8: 2rem;
+  --sp-10: 2.5rem;
+  --sp-16: 4rem;
   --sp-gutter: clamp(1rem, 4vw, 3.5rem);
   --sp-pad-scene: clamp(1rem, 0.5rem + 3vw, 3.5rem);
   --sp-pad-top: clamp(4.75rem, 3rem + 7svh, 7.5rem);
@@ -93,17 +133,24 @@
   --sp-gap-bento: clamp(0.75rem, 0.4rem + 1.2vmin, 1.25rem);
   --sp-pad-cell: clamp(1.125rem, 0.6rem + 1.6vmin, 2.25rem);
   --sp-container: 82rem;
-  --sp-xs: 0.25rem;
-  --sp-sm: 0.5rem;
-  --sp-md: 0.75rem;
-  --sp-lg: 1rem;
-  --sp-xl: 1.5rem;
-  --sp-2xl: 2rem;
   --sp-gap-cell: clamp(0.875rem, 2svh, 1.5rem);
   --sp-gap-cell-body: clamp(0.875rem, 2svh, 1.25rem);
+  --sp-0-5: 0.125rem;
+  --sp-1-5: 0.375rem;
+  --sp-2-5: 0.625rem;
+  --sp-3-5: 0.875rem;
 
   /* sizes */
   --size-dot: 0.375rem;
+  --size-hit: 2.75rem;
+  --size-control-sm: 2.25rem;
+  --size-control-md: 2.5rem;
+  --size-control-lg: 3rem;
+  --size-control-xl: 3.5rem;
+
+  /* focus */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 3px;
 
   /* alphas */
   --tint-cmdk: rgb(157 140 255 / 0.06);
@@ -114,13 +161,13 @@
   --edge-selected: rgb(157 140 255 / 0.2);
   --pager-idle: rgb(157 140 255 / 0.3);
   --pager-hover: rgb(157 140 255 / 0.6);
-  --edge-key-down: rgb(157 140 255 / 0.5);
+  --edge-keycap-down: rgb(157 140 255 / 0.5);
   --tint-ghost: rgb(124 108 255 / 0.1);
   --tint-current: rgb(124 108 255 / 0.12);
   --tint-selected: rgb(124 108 255 / 0.14);
   --tint-hover: rgb(124 108 255 / 0.16);
   --tint-ghost-hover: rgb(124 108 255 / 0.18);
-  --tint-cell-hero: rgb(124 108 255 / 0.2);
+  --tint-emphasis: rgb(124 108 255 / 0.2);
   --tint-selection: rgb(124 108 255 / 0.45);
   --tint-bubble-other: rgb(255 255 255 / 0.05);
   --bg-segmented: rgb(7 6 15 / 0.5);
@@ -136,17 +183,17 @@
   --beam-3-b: rgb(91 75 255 / 0.3);
 
   /* shadows */
-  --shadow-hairline: inset 0 0 0 1px rgb(157 140 255 / 0.12);
-  --shadow-hairline-strong: inset 0 0 0 1px rgb(157 140 255 / 0.22);
-  --shadow-card: inset 0 0 0 1px rgb(157 140 255 / 0.18), inset 0 1px 0 rgb(185 173 255 / 0.07), 0 30px 60px -30px rgb(5 3 20 / 0.95);
-  --shadow-card-hover: inset 0 0 0 1px rgb(157 140 255 / 0.22), inset 0 1px 0 rgb(185 173 255 / 0.1), 0 30px 60px -30px rgb(5 3 20 / 0.95);
-  --shadow-card-focus: inset 0 0 0 1px rgb(157 140 255 / 0.22), inset 0 1px 0 rgb(185 173 255 / 0.09), 0 40px 80px -40px rgb(5 3 20 / 0.95);
+  --shadow-hairline: inset 0 0 0 1px var(--line);
+  --shadow-hairline-strong: inset 0 0 0 1px var(--line-2);
+  --shadow-card: inset 0 0 0 1px var(--card-line), inset 0 1px 0 rgb(185 173 255 / 0.07), 0 30px 60px -30px rgb(5 3 20 / 0.95);
+  --shadow-card-hover: inset 0 0 0 1px var(--line-2), inset 0 1px 0 rgb(185 173 255 / 0.1), 0 30px 60px -30px rgb(5 3 20 / 0.95);
+  --shadow-card-focus: inset 0 0 0 1px var(--line-2), inset 0 1px 0 rgb(185 173 255 / 0.09), 0 40px 80px -40px rgb(5 3 20 / 0.95);
   --shadow-button: inset 0 1px 0 rgb(255 255 255 / 0.28), inset 0 -2px 0 rgb(13 11 31 / 0.22), 0 10px 24px -12px rgb(5 3 20 / 0.9);
-  --shadow-overlay: inset 0 0 0 1px rgb(157 140 255 / 0.22), inset 0 1px 0 rgb(255 255 255 / 0.07), 0 40px 80px -20px rgb(5 3 20 / 0.9);
-  --shadow-key: inset 0 -1px 0 rgb(0 0 0 / 0.4), inset 0 0 0 1px rgb(157 140 255 / 0.12);
-  --shadow-keycap: inset 0 1px 0 rgb(185 173 255 / 0.25), inset 0 -3px 0 rgb(5 3 20 / 0.7), 0 0 0 1px rgb(157 140 255 / 0.22), 0 8px 16px -8px rgb(5 3 20 / 0.9);
-  --shadow-keycap-down: inset 0 1px 0 rgb(185 173 255 / 0.2), inset 0 -1px 0 rgb(5 3 20 / 0.7), 0 0 0 1px rgb(157 140 255 / 0.5), 0 4px 10px -6px rgb(5 3 20 / 0.9);
-  --shadow-selected-row: inset 0 0 0 1px rgb(157 140 255 / 0.2);
+  --shadow-overlay: inset 0 0 0 1px var(--line-2), inset 0 1px 0 rgb(255 255 255 / 0.07), 0 40px 80px -20px rgb(5 3 20 / 0.9);
+  --shadow-kbd: inset 0 -1px 0 rgb(0 0 0 / 0.4), inset 0 0 0 1px var(--line);
+  --shadow-keycap: inset 0 1px 0 rgb(185 173 255 / 0.25), inset 0 -3px 0 rgb(5 3 20 / 0.7), 0 0 0 1px var(--line-2), 0 8px 16px -8px rgb(5 3 20 / 0.9);
+  --shadow-keycap-down: inset 0 1px 0 rgb(185 173 255 / 0.2), inset 0 -1px 0 rgb(5 3 20 / 0.7), 0 0 0 1px var(--edge-keycap-down), 0 4px 10px -6px rgb(5 3 20 / 0.9);
+  --shadow-selected-row: inset 0 0 0 1px var(--edge-selected);
 
   /* blurs */
   --blur-backdrop: 4px;
@@ -155,13 +202,14 @@
   --blur-surface: 18px;
   --blur-overlay: 24px;
   --blur-beam: 5vmax;
+  --saturate-header: 1.2;
 
   /* durations */
-  --dur-key: 90ms;
-  --dur-fast: 150ms;
+  --dur-keycap: 90ms;
+  --dur-hover: 150ms;
   --dur-press: 160ms;
   --dur-menu: 180ms;
-  --dur-arrow: 200ms;
+  --dur-nudge: 200ms;
   --dur-state: 200ms;
   --dur-slide: 240ms;
   --dur-pager: 250ms;
@@ -175,14 +223,16 @@
   --dur-marquee-a: 38s;
   --dur-marquee-b: 44s;
   --dur-blink: 1s;
-  --dur-scene: 1.2s;
+  --dur-canvas-in: 1.2s;
+  --dur-stagger-draw: 120ms;
+  --dur-delay-draw: 100ms;
 
   /* easings */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-slide: cubic-bezier(0.77, 0, 0.175, 1);
   --ease-vt: cubic-bezier(0.32, 0.72, 0, 1);
   --ease-standard: ease;
-  --ease-key: ease-out;
+  --ease-keycap: ease-out;
   --ease-linear: linear;
   --ease-float: ease-in-out;
   --ease-blink: steps(1);
@@ -190,10 +240,9 @@
   /* scroll */
   --glide-min: 600ms;
   --glide-max: 950ms;
+  --glide-rate: 0.15;
   --wheel-threshold: 24;
   --wheel-lock: 700ms;
-  --stagger-draw: 120ms;
-  --delay-draw: 100ms;
 
   /* layers */
   --z-canvas: 0;
@@ -208,7 +257,7 @@
 
   /* viewport */
   --bp-login-icon: 22.5rem;
-  --bp-hero-stack: 43.75rem;
+  --bp-short: 43.75rem;
   --bp-compact: 56.25rem;
   --bp-menu: 67.5rem;
 
@@ -223,8 +272,8 @@
   /* gradients */
   --grad-keycap: linear-gradient(180deg, #1f1a44, #151233);
   --grad-photo: linear-gradient(160deg, #221d4d, #151233);
-  --grad-cell-tint: linear-gradient(160deg, rgb(124 108 255 / 0.14), var(--card) 60%);
-  --grad-cell-hero: linear-gradient(135deg, rgb(124 108 255 / 0.2), var(--card) 55%);
+  --grad-cell-tint: linear-gradient(160deg, var(--tint-selected), var(--card) 60%);
+  --grad-cell-hero: linear-gradient(135deg, var(--tint-emphasis), var(--card) 55%);
   --glow-art: radial-gradient(60% 55% at 50% 45%, rgb(91 75 255 / 0.22), transparent 70%);
   --grad-field-pool: radial-gradient(closest-side, rgb(91 75 255 / 0.1), transparent);
   --grad-mask-fade: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);

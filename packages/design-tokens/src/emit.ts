@@ -34,7 +34,9 @@ function typographyTokens(design: Design): Token[] {
   for (const [role, t] of Object.entries(design.typography)) {
     const base = `font-${role}`;
     tokens.push({ name: `${base}-size`, value: t.fontSize, group: 'typography' });
-    tokens.push({ name: `${base}-weight`, value: String(t.fontWeight), group: 'typography' });
+    if (t.fontWeight !== undefined) {
+      tokens.push({ name: `${base}-weight`, value: String(t.fontWeight), group: 'typography' });
+    }
     if (t.lineHeight !== undefined) {
       tokens.push({ name: `${base}-leading`, value: String(t.lineHeight), group: 'typography' });
     }
@@ -53,13 +55,19 @@ function collect(design: Design): Token[] {
   return [
     ...fromRecord('colors', '', design.colors),
     ...fromRecord('fonts', 'font-', design.fontFamilies),
+    ...Object.entries(design.fontWeights).map(([name, value]) => ({
+      name: `font-${name}-weight`,
+      value,
+      group: 'fonts',
+    })),
     ...typographyTokens(design),
     ...fromRecord('rounded', 'r-', design.rounded),
     ...fromRecord('spacing', 'sp-', design.spacing),
     ...fromRecord('sizes', 'size-', design.sizes),
+    ...fromRecord('focus', '', design.focus),
     ...fromEntries('alphas', '', x.alphas),
     ...fromEntries('shadows', 'shadow-', x.shadows),
-    ...fromEntries('blurs', 'blur-', x.blurs),
+    ...fromEntries('blurs', '', x.blurs),
     ...fromEntries('durations', 'dur-', x.durations),
     ...fromEntries('easings', 'ease-', x.easings),
     ...fromEntries('scroll', '', x.scroll),
@@ -76,6 +84,11 @@ function assertValid(tokens: Token[]) {
   for (const token of tokens) {
     if (seen.has(token.name)) throw new Error(`design.json: duplicate token --${token.name}`);
     seen.add(token.name);
+    if (/[;{}]/.test(token.value)) {
+      throw new Error(
+        `design.json: --${token.name} contains ';', '{' or '}', which would break the CSS`,
+      );
+    }
     if (
       (token.group === 'viewport' || token.group === 'containers') &&
       !/^[\d.]+rem$/.test(token.value)
@@ -105,19 +118,19 @@ function cssOf(tokens: Token[]): string {
 const quote = (key: string) => (/^[A-Za-z_$][\w$]*$/.test(key) ? key : `'${key}'`);
 
 function breakpointsOf(tokens: Token[]): string {
-  const entry = (prefix: string) =>
+  const entry = (group: string, prefix: string) =>
     tokens
-      .filter((t) => t.name.startsWith(prefix))
+      .filter((t) => t.group === group)
       .map((t) => `  ${quote(t.name.slice(prefix.length))}: '${t.value}',`);
   return [
     `// ${HEADER}`,
     '// Media queries cannot use var(): breakpoints are also exported for TypeScript.',
     'export const bp = {',
-    ...entry('bp-'),
+    ...entry('viewport', 'bp-'),
     '} as const;',
     '',
     'export const cq = {',
-    ...entry('cq-'),
+    ...entry('containers', 'cq-'),
     '} as const;',
     '',
   ].join('\n');

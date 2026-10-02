@@ -16,7 +16,7 @@ const entries = z.array(entry);
 const typographyRole = z.object({
   family: z.enum(['sans', 'mono']),
   fontSize: text,
-  fontWeight: z.number(),
+  fontWeight: z.number().optional(),
   lineHeight: z.number().optional(),
   letterSpacing: text.optional(),
   fontFeature: text.optional(),
@@ -25,10 +25,12 @@ const typographyRole = z.object({
 export const designSchema = z.object({
   colors: group,
   fontFamilies: z.object({ sans: text, mono: text }),
+  fontWeights: group,
   typography: z.record(z.string(), typographyRole),
   rounded: group,
   spacing: group,
   sizes: group,
+  focus: group,
   extensions: z.object({
     alphas: entries,
     shadows: entries,

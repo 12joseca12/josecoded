@@ -6,6 +6,7 @@ const minimal = {
   schemaVersion: 2,
   colors: { bg: '#07060f', 'text-2': '#a9a3d6' },
   fontFamilies: { sans: '"Geist", sans-serif', mono: '"Geist Mono", monospace' },
+  fontWeights: { emphasis: '500' },
   typography: {
     display: {
       family: 'sans',
@@ -19,11 +20,15 @@ const minimal = {
   rounded: { pill: '9999rem' },
   spacing: { gutter: 'clamp(1rem, 4vw, 3.5rem)', '2xl': '2rem' },
   sizes: { dot: '0.375rem' },
+  focus: { 'focus-ring-width': '2px' },
   extensions: {
     alphas: [{ name: 'tint-chip', value: 'rgb(157 140 255 / 0.08)' }],
     shadows: [{ name: 'card', value: 'inset 0 0 0 1px red' }],
-    blurs: [{ name: 'header', value: '14px' }],
-    durations: [{ name: 'fast', value: '150ms' }],
+    blurs: [
+      { name: 'blur-header', value: '14px' },
+      { name: 'saturate-header', value: '1.2' },
+    ],
+    durations: [{ name: 'hover', value: '150ms' }],
     easings: [{ name: 'out', value: 'cubic-bezier(0.23, 1, 0.32, 1)' }],
     scroll: [{ name: 'glide-min', value: '600ms' }],
     layers: [{ name: 'header', value: '30' }],
@@ -54,7 +59,10 @@ describe('emitTokens', () => {
       '--tint-chip: rgb(157 140 255 / 0.08);',
       '--shadow-card: inset 0 0 0 1px red;',
       '--blur-header: 14px;',
-      '--dur-fast: 150ms;',
+      '--saturate-header: 1.2;',
+      '--font-emphasis-weight: 500;',
+      '--focus-ring-width: 2px;',
+      '--dur-hover: 150ms;',
       '--ease-out: cubic-bezier(0.23, 1, 0.32, 1);',
       '--glide-min: 600ms;',
       '--z-header: 30;',
@@ -102,6 +110,19 @@ describe('emitTokens', () => {
 
   it('rejects an invalid design.json naming the problem', () => {
     expect(() => emitTokens({ ...minimal, colors: { bg: 12 } })).toThrow(/colors/);
+  });
+
+  it('exports bp and cq from their groups, not from name prefixes', () => {
+    const tricky = structuredClone(minimal);
+    tricky.extensions.scroll.push({ name: 'bp-fake', value: '1rem' });
+    const { breakpointsTs } = emitTokens(tricky);
+    expect(breakpointsTs).not.toContain('fake');
+  });
+
+  it.each([';', '{', '}'])('refuses a value containing %s', (char) => {
+    const bad = structuredClone(minimal);
+    bad.colors.bg = `#000${char} color: red`;
+    expect(() => emitTokens(bad)).toThrow(/break the CSS/);
   });
 
   it('refuses a px breakpoint', () => {

@@ -19,7 +19,7 @@
     "beam": "#5b4bff",
     "green": "#3ddc84",
     "pending": "#e9c46a",
-    "scrollbar": "#2c2660"
+    "scrollbar-thumb": "#2c2660"
   },
   "fontFamilies": {
     "sans": "\"Geist\", ui-sans-serif, system-ui, sans-serif",
@@ -113,15 +113,70 @@
       "fontSize": "0.75rem",
       "fontWeight": 400
     },
-    "mono-key": {
+    "mono-kbd": {
       "family": "mono",
       "fontSize": "0.6875rem",
       "fontWeight": 500,
       "lineHeight": 1
+    },
+    "brand": {
+      "family": "sans",
+      "fontSize": "1rem",
+      "fontWeight": 600,
+      "lineHeight": 1,
+      "letterSpacing": "-0.02em"
+    },
+    "mono-lang": {
+      "family": "mono",
+      "fontSize": "0.75rem",
+      "fontWeight": 500,
+      "lineHeight": 1
+    },
+    "bubble": {
+      "family": "sans",
+      "fontSize": "0.875rem",
+      "fontWeight": 400,
+      "lineHeight": 1.45
+    },
+    "figure-pack": {
+      "family": "sans",
+      "fontSize": "1.5rem",
+      "fontWeight": 600,
+      "letterSpacing": "-0.02em"
+    },
+    "figure-pack-hero": {
+      "family": "sans",
+      "fontSize": "clamp(1.5rem, 1rem + 2.2cqi, 2.5rem)",
+      "fontWeight": 600,
+      "letterSpacing": "-0.035em"
+    },
+    "keycap": {
+      "family": "sans",
+      "fontSize": "1rem",
+      "fontWeight": 500,
+      "lineHeight": 1
+    },
+    "display-compact": {
+      "family": "sans",
+      "fontSize": "clamp(2.5rem, 11vw, 3.5rem)",
+      "fontWeight": 600,
+      "lineHeight": 0.96,
+      "letterSpacing": "-0.045em"
+    },
+    "title-sm": {
+      "family": "sans",
+      "fontSize": "1.125rem",
+      "fontWeight": 600,
+      "lineHeight": 1.15,
+      "letterSpacing": "-0.03em"
+    },
+    "pending": {
+      "family": "mono",
+      "fontSize": "0.85em"
     }
   },
   "rounded": {
-    "key": "0.3125rem",
+    "kbd": "0.3125rem",
     "icon": "0.4375rem",
     "sm": "0.5rem",
     "md": "0.625rem",
@@ -130,7 +185,8 @@
     "cell": "clamp(1rem, 0.6rem + 1vmin, 1.5rem)",
     "tcard": "clamp(1.125rem, 0.8rem + 1vmin, 1.75rem)",
     "pill": "9999rem",
-    "bubble-tail": "0.25rem"
+    "bubble-tail": "0.25rem",
+    "focus": "0.375rem"
   },
   "spacing": {
     "gutter": "clamp(1rem, 4vw, 3.5rem)",
@@ -140,17 +196,30 @@
     "gap-bento": "clamp(0.75rem, 0.4rem + 1.2vmin, 1.25rem)",
     "pad-cell": "clamp(1.125rem, 0.6rem + 1.6vmin, 2.25rem)",
     "container": "82rem",
-    "xs": "0.25rem",
-    "sm": "0.5rem",
-    "md": "0.75rem",
-    "lg": "1rem",
-    "xl": "1.5rem",
-    "2xl": "2rem",
     "gap-cell": "clamp(0.875rem, 2svh, 1.5rem)",
-    "gap-cell-body": "clamp(0.875rem, 2svh, 1.25rem)"
+    "gap-cell-body": "clamp(0.875rem, 2svh, 1.25rem)",
+    "0-5": "0.125rem",
+    "1": "0.25rem",
+    "1-5": "0.375rem",
+    "2": "0.5rem",
+    "2-5": "0.625rem",
+    "3": "0.75rem",
+    "3-5": "0.875rem",
+    "4": "1rem",
+    "5": "1.25rem",
+    "6": "1.5rem",
+    "7": "1.75rem",
+    "8": "2rem",
+    "10": "2.5rem",
+    "16": "4rem"
   },
   "sizes": {
-    "dot": "0.375rem"
+    "dot": "0.375rem",
+    "hit": "2.75rem",
+    "control-sm": "2.25rem",
+    "control-md": "2.5rem",
+    "control-lg": "3rem",
+    "control-xl": "3.5rem"
   },
   "extensions": {
     "colorMeta": {
@@ -437,7 +506,7 @@
         "displayName": "Caption",
         "purpose": "Grupos y pistas de la paleta, nombres de pack."
       },
-      "mono-key": {
+      "mono-kbd": {
         "displayName": "Mono de tecla",
         "purpose": "kbd; solo atajos reales."
       }
@@ -484,7 +553,7 @@
         "purpose": "Línea del indicador de sección bajo el cursor."
       },
       {
-        "name": "edge-key-down",
+        "name": "edge-keycap-down",
         "value": "rgb(157 140 255 / 0.5)",
         "purpose": "Anillo de la tecla grande pulsada."
       },
@@ -514,9 +583,9 @@
         "purpose": "Hover del botón fantasma y de la píldora de chat."
       },
       {
-        "name": "tint-cell-hero",
+        "name": "tint-emphasis",
         "value": "rgb(124 108 255 / 0.2)",
-        "purpose": "Arranque del degradado de la celda destacada y burbuja propia del mini chat."
+        "purpose": "Énfasis: arranque del degradado de la celda destacada y burbuja propia del mini chat."
       },
       {
         "name": "tint-selection",
@@ -587,27 +656,27 @@
     "shadows": [
       {
         "name": "hairline",
-        "value": "inset 0 0 0 1px rgb(157 140 255 / 0.12)",
+        "value": "inset 0 0 0 1px var(--line)",
         "purpose": "Contorno de reposo de controles pequeños, teclas, chips y separadores."
       },
       {
         "name": "hairline-strong",
-        "value": "inset 0 0 0 1px rgb(157 140 255 / 0.22)",
+        "value": "inset 0 0 0 1px var(--line-2)",
         "purpose": "Botón fantasma, chat, selector, capas superpuestas y hover."
       },
       {
         "name": "card",
-        "value": "inset 0 0 0 1px rgb(157 140 255 / 0.18), inset 0 1px 0 rgb(185 173 255 / 0.07), 0 30px 60px -30px rgb(5 3 20 / 0.95)",
+        "value": "inset 0 0 0 1px var(--card-line), inset 0 1px 0 rgb(185 173 255 / 0.07), 0 30px 60px -30px rgb(5 3 20 / 0.95)",
         "purpose": "Toda celda y tarjeta de proyecto en reposo."
       },
       {
         "name": "card-hover",
-        "value": "inset 0 0 0 1px rgb(157 140 255 / 0.22), inset 0 1px 0 rgb(185 173 255 / 0.1), 0 30px 60px -30px rgb(5 3 20 / 0.95)",
+        "value": "inset 0 0 0 1px var(--line-2), inset 0 1px 0 rgb(185 173 255 / 0.1), 0 30px 60px -30px rgb(5 3 20 / 0.95)",
         "purpose": "Celda ampliable bajo el cursor."
       },
       {
         "name": "card-focus",
-        "value": "inset 0 0 0 1px rgb(157 140 255 / 0.22), inset 0 1px 0 rgb(185 173 255 / 0.09), 0 40px 80px -40px rgb(5 3 20 / 0.95)",
+        "value": "inset 0 0 0 1px var(--line-2), inset 0 1px 0 rgb(185 173 255 / 0.09), 0 40px 80px -40px rgb(5 3 20 / 0.95)",
         "purpose": "Tarjeta activa del carrusel de Proyectos."
       },
       {
@@ -617,72 +686,77 @@
       },
       {
         "name": "overlay",
-        "value": "inset 0 0 0 1px rgb(157 140 255 / 0.22), inset 0 1px 0 rgb(255 255 255 / 0.07), 0 40px 80px -20px rgb(5 3 20 / 0.9)",
+        "value": "inset 0 0 0 1px var(--line-2), inset 0 1px 0 rgb(255 255 255 / 0.07), 0 40px 80px -20px rgb(5 3 20 / 0.9)",
         "purpose": "Menú y paleta."
       },
       {
-        "name": "key",
-        "value": "inset 0 -1px 0 rgb(0 0 0 / 0.4), inset 0 0 0 1px rgb(157 140 255 / 0.12)",
+        "name": "kbd",
+        "value": "inset 0 -1px 0 rgb(0 0 0 / 0.4), inset 0 0 0 1px var(--line)",
         "purpose": "kbd."
       },
       {
         "name": "keycap",
-        "value": "inset 0 1px 0 rgb(185 173 255 / 0.25), inset 0 -3px 0 rgb(5 3 20 / 0.7), 0 0 0 1px rgb(157 140 255 / 0.22), 0 8px 16px -8px rgb(5 3 20 / 0.9)",
+        "value": "inset 0 1px 0 rgb(185 173 255 / 0.25), inset 0 -3px 0 rgb(5 3 20 / 0.7), 0 0 0 1px var(--line-2), 0 8px 16px -8px rgb(5 3 20 / 0.9)",
         "purpose": "Tecla grande del cierre, en reposo."
       },
       {
         "name": "keycap-down",
-        "value": "inset 0 1px 0 rgb(185 173 255 / 0.2), inset 0 -1px 0 rgb(5 3 20 / 0.7), 0 0 0 1px rgb(157 140 255 / 0.5), 0 4px 10px -6px rgb(5 3 20 / 0.9)",
+        "value": "inset 0 1px 0 rgb(185 173 255 / 0.2), inset 0 -1px 0 rgb(5 3 20 / 0.7), 0 0 0 1px var(--edge-keycap-down), 0 4px 10px -6px rgb(5 3 20 / 0.9)",
         "purpose": "Tecla grande pulsada."
       },
       {
         "name": "selected-row",
-        "value": "inset 0 0 0 1px rgb(157 140 255 / 0.2)",
+        "value": "inset 0 0 0 1px var(--edge-selected)",
         "purpose": "Filete del resaltado deslizante de lista."
       }
     ],
     "blurs": [
       {
-        "name": "backdrop",
+        "name": "blur-backdrop",
         "value": "4px",
         "purpose": "Fondo de la paleta ⌘K."
       },
       {
-        "name": "scrim",
+        "name": "blur-scrim",
         "value": "6px",
         "purpose": "Velo bajo la celda ampliada."
       },
       {
-        "name": "header",
+        "name": "blur-header",
         "value": "14px",
         "purpose": "Cabecera con scroll."
       },
       {
-        "name": "surface",
+        "name": "blur-surface",
         "value": "18px",
         "purpose": "Superficie de vidrio."
       },
       {
-        "name": "overlay",
+        "name": "blur-overlay",
         "value": "24px",
         "purpose": "Menú ☰ y paleta."
       },
       {
-        "name": "beam",
+        "name": "blur-beam",
         "value": "5vmax",
         "purpose": "Haces del campo de luz."
+      },
+      {
+        "name": "saturate-header",
+        "value": "1.2",
+        "purpose": "Saturación del fondo de la cabecera con scroll: backdrop-filter: blur(var(--blur-header)) saturate(var(--saturate-header))."
       }
     ],
     "durations": [
       {
-        "name": "key",
+        "name": "keycap",
         "value": "90ms",
         "purpose": "Tecla grande."
       },
       {
-        "name": "fast",
+        "name": "hover",
         "value": "150ms",
-        "purpose": "Color y fondo de controles."
+        "purpose": "Color y fondo de controles al pasar el cursor."
       },
       {
         "name": "press",
@@ -695,9 +769,9 @@
         "purpose": "Apertura del menú y color del selector."
       },
       {
-        "name": "arrow",
+        "name": "nudge",
         "value": "200ms",
-        "purpose": "Flecha de los enlaces."
+        "purpose": "Desplazamiento de 3 px de la flecha de los enlaces."
       },
       {
         "name": "state",
@@ -765,9 +839,19 @@
         "purpose": "Cursor del campo de propuesta (añadido en 1.10)."
       },
       {
-        "name": "scene",
+        "name": "canvas-in",
         "value": "1.2s",
         "purpose": "Fundido de entrada de la escena WebGL (añadido en 1.10)."
+      },
+      {
+        "name": "stagger-draw",
+        "value": "120ms",
+        "purpose": "Escalonado del trazo de los checks."
+      },
+      {
+        "name": "delay-draw",
+        "value": "100ms",
+        "purpose": "Retardo del primer check (añadido en 1.10)."
       }
     ],
     "easings": [
@@ -792,7 +876,7 @@
         "purpose": "Colores y fondos (la palabra clave `ease` del prototipo; añadido en 1.10 para que los módulos no escriban easing literal)."
       },
       {
-        "name": "key",
+        "name": "keycap",
         "value": "ease-out",
         "purpose": "Tecla grande (palabra clave `ease-out`, distinta del token `ease-out`; añadido en 1.10)."
       },
@@ -824,6 +908,11 @@
         "purpose": "Duración máxima del glide entre escenas (v6.js:34)."
       },
       {
+        "name": "glide-rate",
+        "value": "0.15",
+        "purpose": "Milisegundos de glide por píxel de distancia, sin unidad (v6.js:34: min(950, 600 + dist × 0.15))."
+      },
+      {
         "name": "wheel-threshold",
         "value": "24",
         "purpose": "Acumulado de rueda (px) que dispara un cambio de escena, sin unidad (v6.js:56)."
@@ -832,16 +921,6 @@
         "name": "wheel-lock",
         "value": "700ms",
         "purpose": "Bloqueo tras un cambio de escena por rueda (v6.js:56)."
-      },
-      {
-        "name": "stagger-draw",
-        "value": "120ms",
-        "purpose": "Escalonado del trazo de los checks."
-      },
-      {
-        "name": "delay-draw",
-        "value": "100ms",
-        "purpose": "Retardo del primer check (añadido en 1.10)."
       }
     ],
     "layers": [
@@ -898,9 +977,9 @@
         "purpose": "Login solo con icono."
       },
       {
-        "name": "hero-stack",
+        "name": "short",
         "value": "43.75rem",
-        "purpose": "Alto máximo para encoger el hero apilado (era 700px, de alto)."
+        "purpose": "Pantalla baja (alto máximo): encoge el hero apilado (era 700px, de alto)."
       },
       {
         "name": "compact",
@@ -958,12 +1037,12 @@
       },
       {
         "name": "grad-cell-tint",
-        "value": "linear-gradient(160deg, rgb(124 108 255 / 0.14), var(--card) 60%)",
+        "value": "linear-gradient(160deg, var(--tint-selected), var(--card) 60%)",
         "purpose": "Tinte de celda (160°, 14 %)."
       },
       {
         "name": "grad-cell-hero",
-        "value": "linear-gradient(135deg, rgb(124 108 255 / 0.2), var(--card) 55%)",
+        "value": "linear-gradient(135deg, var(--tint-emphasis), var(--card) 55%)",
         "purpose": "Celda destacada (135°, 20 %)."
       },
       {
@@ -1002,27 +1081,27 @@
     "motion": [
       {
         "name": "ease-out",
-        "value": "cubic-bezier(0.23, 1, 0.32, 1)",
-        "purpose": "Apariciones y cambios de estado de 150 a 260 ms."
+        "value": "--ease-out",
+        "purpose": "Apariciones y cambios de estado de --dur-hover a --dur-slide-lg."
       },
       {
         "name": "ease-slide",
-        "value": "cubic-bezier(0.77, 0, 0.175, 1)",
-        "purpose": "Lo que se desliza: resaltado de lista (240 ms), barra de packs (260 ms), pulgar del selector (240 ms)."
+        "value": "--ease-slide",
+        "purpose": "Lo que se desliza: resaltado de lista (--dur-slide), barra de packs (--dur-slide-lg), pulgar del selector (--dur-slide)."
       },
       {
         "name": "page-glide",
-        "value": "600–950 ms, ease-in-out cuártico",
+        "value": "--glide-min … --glide-max con --glide-rate por píxel; ease-in-out cuártico calculado en TS",
         "purpose": "Paginado por gesto entre escenas y enlaces internos; interrumpible."
       },
       {
         "name": "view-transition-cell",
-        "value": "380ms cubic-bezier(0.32, 0.72, 0, 1)",
+        "value": "--dur-vt con --ease-vt",
         "purpose": "Celda que se amplía y se recoge."
       },
       {
         "name": "scene-in",
-        "value": "view() entry 0%–75%: translateY(40px) scale(0.985) blur(6px) → none",
+        "value": "view() entry 0%–75%: translateY(40px) scale(0.985) blur(var(--blur-scrim)) → none",
         "purpose": "Entrada ligada al scroll de titulares, celdas y cierre."
       },
       {
@@ -1032,48 +1111,18 @@
       },
       {
         "name": "press",
-        "value": "scale(0.97) 160ms ease-out",
+        "value": "scale(0.97) con --dur-press y --ease-out",
         "purpose": "Pulsación de botones."
       },
       {
         "name": "menu-in",
-        "value": "180ms ease-out, translateY(-0.375rem) scale(0.98) → none",
+        "value": "--dur-menu con --ease-out, translateY(-0.375rem) scale(0.98) → none",
         "purpose": "Apertura del menú ☰; sin animación con reduced motion."
       },
       {
         "name": "glyph-cycle",
-        "value": "3,5 s reposo + 1,6 s morph",
+        "value": "3,5 s reposo + 1,6 s morph (parámetros de packages/glyph-scene)",
         "purpose": "Ciclo móvil → web → chip de la nube del hero."
-      }
-    ],
-    "breakpoints": [
-      {
-        "name": "login-icon",
-        "value": "22.5rem"
-      },
-      {
-        "name": "hero-stack",
-        "value": "43.75rem (alto)"
-      },
-      {
-        "name": "compact",
-        "value": "56.25rem"
-      },
-      {
-        "name": "menu",
-        "value": "67.5rem"
-      },
-      {
-        "name": "bento-2",
-        "value": "@container bento 34rem"
-      },
-      {
-        "name": "bento-12",
-        "value": "@container bento 52rem"
-      },
-      {
-        "name": "tour-pinned",
-        "value": "min-aspect-ratio 1/1 + animation-timeline + no-preference"
       }
     ]
   },
@@ -1084,7 +1133,7 @@
       "refersTo": "button-solid",
       "description": "Acción primaria única de cada vista. Violeta sólido con texto índigo, canto superior claro y caída índigo.",
       "html": "<a class=\"ds-btn ds-btn-solid\" href=\"#\">Ver proyectos</a>",
-      "css": ":host{--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;min-height:3rem;padding:0 1.375rem;border-radius:999px;font:550 0.9375rem/1 var(--font);letter-spacing:-0.005em;white-space:nowrap;border:0;cursor:pointer;text-decoration:none;transition:transform 160ms var(--ease-out),background-color 150ms ease,box-shadow 150ms ease;} .ds-btn:active{transform:scale(0.97);} .ds-btn:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;} .ds-btn-solid{background:var(--violet);color:var(--ink);box-shadow:inset 0 1px 0 rgb(255 255 255 / 0.28),inset 0 -2px 0 rgb(13 11 31 / 0.22),0 10px 24px -12px rgb(5 3 20 / 0.9);} .ds-btn-solid:hover{background:var(--violet-hi);} "
+      "css": ":host{--r-pill:9999rem;--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font-sans:\"Geist\",ui-sans-serif,system-ui,sans-serif;--font-mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;min-height:3rem;padding:0 1.375rem;border-radius:var(--r-pill);font:550 0.9375rem/1 var(--font-sans);letter-spacing:-0.005em;white-space:nowrap;border:0;cursor:pointer;text-decoration:none;transition:transform 160ms var(--ease-out),background-color 150ms ease,box-shadow 150ms ease;} .ds-btn:active{transform:scale(0.97);} .ds-btn:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;} .ds-btn-solid{background:var(--violet);color:var(--ink);box-shadow:inset 0 1px 0 rgb(255 255 255 / 0.28),inset 0 -2px 0 rgb(13 11 31 / 0.22),0 10px 24px -12px rgb(5 3 20 / 0.9);} .ds-btn-solid:hover{background:var(--violet-hi);} "
     },
     {
       "name": "Botón fantasma",
@@ -1092,7 +1141,7 @@
       "refersTo": "button-ghost",
       "description": "Acción hermana del sólido, solo a su lado (Reservar 20 min en el cierre).",
       "html": "<a class=\"ds-btn ds-btn-ghost\" href=\"#\">Reservar 20 min</a>",
-      "css": ":host{--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;min-height:3rem;padding:0 1.375rem;border-radius:999px;font:550 0.9375rem/1 var(--font);letter-spacing:-0.005em;white-space:nowrap;border:0;cursor:pointer;text-decoration:none;transition:transform 160ms var(--ease-out),background-color 150ms ease,box-shadow 150ms ease;} .ds-btn:active{transform:scale(0.97);} .ds-btn:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;} .ds-btn-ghost{color:var(--text);background:rgb(124 108 255 / 0.1);box-shadow:inset 0 0 0 1px var(--line-2);} .ds-btn-ghost:hover{background:rgb(124 108 255 / 0.18);}"
+      "css": ":host{--r-pill:9999rem;--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font-sans:\"Geist\",ui-sans-serif,system-ui,sans-serif;--font-mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;min-height:3rem;padding:0 1.375rem;border-radius:var(--r-pill);font:550 0.9375rem/1 var(--font-sans);letter-spacing:-0.005em;white-space:nowrap;border:0;cursor:pointer;text-decoration:none;transition:transform 160ms var(--ease-out),background-color 150ms ease,box-shadow 150ms ease;} .ds-btn:active{transform:scale(0.97);} .ds-btn:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;} .ds-btn-ghost{color:var(--text);background:rgb(124 108 255 / 0.1);box-shadow:inset 0 0 0 1px var(--line-2);} .ds-btn-ghost:hover{background:rgb(124 108 255 / 0.18);}"
     },
     {
       "name": "Enlace con flecha",
@@ -1100,14 +1149,14 @@
       "refersTo": "link-arrow",
       "description": "Salida secundaria del hero y de las celdas; la flecha avanza 3 px en hover.",
       "html": "<a class=\"ds-go\" href=\"#\">Ver cómo trabajo<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg></a>",
-      "css": ":host{--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-go{display:inline-flex;align-items:center;gap:0.375rem;font:550 1rem/1.55 var(--font);color:var(--violet-soft);text-decoration:none;} .ds-go svg{transition:transform 200ms var(--ease-out);} .ds-go:hover svg{transform:translateX(3px);} .ds-go:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;border-radius:0.375rem;}"
+      "css": ":host{--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font-sans:\"Geist\",ui-sans-serif,system-ui,sans-serif;--font-mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-go{display:inline-flex;align-items:center;gap:0.375rem;font:550 1rem/1.55 var(--font-sans);color:var(--violet-soft);text-decoration:none;} .ds-go svg{transition:transform 200ms var(--ease-out);} .ds-go:hover svg{transform:translateX(3px);} .ds-go:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;border-radius:0.375rem;}"
     },
     {
       "name": "Cabecera",
       "kind": "nav",
       "description": "Marca y secciones a la izquierda; a la derecha, idioma → buscador ⌘K → Chat → Login. Contacto no va en la barra.",
       "html": "<header class=\"ds-nav\"><a class=\"ds-brand\" href=\"#\">josecoded</a><nav class=\"ds-links\"><a href=\"#\" aria-current=\"true\">Sobre mí</a><a href=\"#\">Empresas</a><a href=\"#\">Negocios</a><a href=\"#\">Proyectos</a><a href=\"#\">Blog</a></nav><div class=\"ds-right\"><a class=\"ds-lang\" href=\"#\" lang=\"en\">EN</a><button class=\"ds-cmdk\" type=\"button\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg><span>Buscar</span><kbd class=\"ds-kbd\">⌘K</kbd></button><a class=\"ds-chat\" href=\"#\"><span class=\"ds-live\"></span><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z\"/></svg><span>Chat</span></a><a class=\"ds-btn ds-btn-solid ds-btn-sm\" href=\"#\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4\"/><polyline points=\"10 17 15 12 10 7\"/><line x1=\"15\" x2=\"3\" y1=\"12\" y2=\"12\"/></svg><span>Login</span></a></div></header>",
-      "css": ":host{--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;min-height:3rem;padding:0 1.375rem;border-radius:999px;font:550 0.9375rem/1 var(--font);letter-spacing:-0.005em;white-space:nowrap;border:0;cursor:pointer;text-decoration:none;transition:transform 160ms var(--ease-out),background-color 150ms ease,box-shadow 150ms ease;} .ds-btn:active{transform:scale(0.97);} .ds-btn:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;} .ds-btn-solid{background:var(--violet);color:var(--ink);box-shadow:inset 0 1px 0 rgb(255 255 255 / 0.28),inset 0 -2px 0 rgb(13 11 31 / 0.22),0 10px 24px -12px rgb(5 3 20 / 0.9);} .ds-btn-solid:hover{background:var(--violet-hi);} .ds-btn-sm{min-height:2.25rem;padding:0 0.875rem;font-size:0.8125rem;} .ds-nav{display:flex;align-items:center;gap:2rem;height:4rem;padding:0 1.5rem;background:rgb(7 6 15 / 0.7);box-shadow:inset 0 -1px 0 var(--line);font-family:var(--font);} .ds-brand{font:600 1rem/1 var(--font);letter-spacing:-0.02em;color:var(--text);text-decoration:none;} .ds-links{display:flex;gap:1.75rem;font-size:0.875rem;} .ds-links a{color:var(--text-2);text-decoration:none;transition:color 150ms ease;} .ds-links a:hover,.ds-links a[aria-current=\"true\"]{color:var(--text);} .ds-right{margin-left:auto;display:flex;align-items:center;gap:1rem;font-size:0.875rem;} .ds-lang{font:500 0.75rem/1 var(--mono);color:var(--text-2);text-decoration:none;} .ds-lang:hover{color:var(--text);} .ds-cmdk{display:inline-flex;align-items:center;gap:0.5rem;height:2.25rem;padding:0 0.5rem 0 0.75rem;border:0;border-radius:0.625rem;font:400 0.875rem var(--font);color:var(--text-3);background:rgb(157 140 255 / 0.06);box-shadow:inset 0 0 0 1px var(--line);cursor:pointer;transition:color 150ms ease,box-shadow 150ms ease;} .ds-cmdk span{min-width:6.5rem;text-align:left;} .ds-cmdk:hover{color:var(--text-2);box-shadow:inset 0 0 0 1px var(--line-2);} .ds-kbd{font:500 0.6875rem/1 var(--mono);color:var(--text-2);padding:0.25rem 0.375rem;border-radius:0.3125rem;background:rgb(157 140 255 / 0.1);box-shadow:inset 0 -1px 0 rgb(0 0 0 / 0.4),inset 0 0 0 1px var(--line);} .ds-chat{display:inline-flex;align-items:center;gap:0.5rem;height:2.25rem;padding:0 0.875rem;border-radius:999px;font:550 0.8125rem/1 var(--font);color:var(--text);text-decoration:none;background:rgb(124 108 255 / 0.1);box-shadow:inset 0 0 0 1px var(--line-2);transition:background-color 150ms ease;} .ds-chat:hover{background:rgb(124 108 255 / 0.18);} .ds-live{width:6px;height:6px;border-radius:50%;background:var(--green);} .ds-nav a:focus-visible,.ds-nav button:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;border-radius:0.375rem;}"
+      "css": ":host{--r-pill:9999rem;--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font-sans:\"Geist\",ui-sans-serif,system-ui,sans-serif;--font-mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;min-height:3rem;padding:0 1.375rem;border-radius:var(--r-pill);font:550 0.9375rem/1 var(--font-sans);letter-spacing:-0.005em;white-space:nowrap;border:0;cursor:pointer;text-decoration:none;transition:transform 160ms var(--ease-out),background-color 150ms ease,box-shadow 150ms ease;} .ds-btn:active{transform:scale(0.97);} .ds-btn:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;} .ds-btn-solid{background:var(--violet);color:var(--ink);box-shadow:inset 0 1px 0 rgb(255 255 255 / 0.28),inset 0 -2px 0 rgb(13 11 31 / 0.22),0 10px 24px -12px rgb(5 3 20 / 0.9);} .ds-btn-solid:hover{background:var(--violet-hi);} .ds-btn-sm{min-height:2.25rem;padding:0 0.875rem;font-size:0.8125rem;} .ds-nav{display:flex;align-items:center;gap:2rem;height:4rem;padding:0 1.5rem;background:rgb(7 6 15 / 0.7);box-shadow:inset 0 -1px 0 var(--line);font-family:var(--font-sans);} .ds-brand{font:600 1rem/1 var(--font-sans);letter-spacing:-0.02em;color:var(--text);text-decoration:none;} .ds-links{display:flex;gap:1.75rem;font-size:0.875rem;} .ds-links a{color:var(--text-2);text-decoration:none;transition:color 150ms ease;} .ds-links a:hover,.ds-links a[aria-current=\"true\"]{color:var(--text);} .ds-right{margin-left:auto;display:flex;align-items:center;gap:1rem;font-size:0.875rem;} .ds-lang{font:500 0.75rem/1 var(--font-mono);color:var(--text-2);text-decoration:none;} .ds-lang:hover{color:var(--text);} .ds-cmdk{display:inline-flex;align-items:center;gap:0.5rem;height:2.25rem;padding:0 0.5rem 0 0.75rem;border:0;border-radius:0.625rem;font:400 0.875rem var(--font-sans);color:var(--text-3);background:rgb(157 140 255 / 0.06);box-shadow:inset 0 0 0 1px var(--line);cursor:pointer;transition:color 150ms ease,box-shadow 150ms ease;} .ds-cmdk span{min-width:6.5rem;text-align:left;} .ds-cmdk:hover{color:var(--text-2);box-shadow:inset 0 0 0 1px var(--line-2);} .ds-kbd{font:500 0.6875rem/1 var(--font-mono);color:var(--text-2);padding:0.25rem 0.375rem;border-radius:0.3125rem;background:rgb(157 140 255 / 0.1);box-shadow:inset 0 -1px 0 rgb(0 0 0 / 0.4),inset 0 0 0 1px var(--line);} .ds-chat{display:inline-flex;align-items:center;gap:0.5rem;height:2.25rem;padding:0 0.875rem;border-radius:var(--r-pill);font:550 0.8125rem/1 var(--font-sans);color:var(--text);text-decoration:none;background:rgb(124 108 255 / 0.1);box-shadow:inset 0 0 0 1px var(--line-2);transition:background-color 150ms ease;} .ds-chat:hover{background:rgb(124 108 255 / 0.18);} .ds-live{width:6px;height:6px;border-radius:50%;background:var(--green);} .ds-nav a:focus-visible,.ds-nav button:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;border-radius:0.375rem;}"
     },
     {
       "name": "Celda de bento",
@@ -1115,7 +1164,7 @@
       "refersTo": "cell",
       "description": "Unidad del bento: superficie card con filete card-line, icono y título de celda, entradilla y salida. La celda principal se amplía.",
       "html": "<article class=\"ds-cell\"><header class=\"ds-cell-head\"><span class=\"ds-cell-ic\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/></svg></span><h3>Sobre mí</h3><button class=\"ds-cell-open\" type=\"button\" aria-label=\"Ampliar Sobre mí\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"15 3 21 3 21 9\"/><polyline points=\"9 21 3 21 3 15\"/><line x1=\"21\" x2=\"14\" y1=\"3\" y2=\"10\"/><line x1=\"3\" x2=\"10\" y1=\"21\" y2=\"14\"/></svg></button></header><p class=\"ds-lead\">Hago apps y webs que se publican y se usan, de la idea al despliegue.</p><a class=\"ds-go\" href=\"#\">Conóceme<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg></a></article>",
-      "css": ":host{--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-cell{display:grid;gap:1rem;padding:clamp(1.125rem,0.6rem + 1.6vmin,2.25rem);border-radius:clamp(1rem,0.6rem + 1vmin,1.5rem);background:var(--card);backdrop-filter:blur(18px);color:var(--text);font-family:var(--font);box-shadow:inset 0 0 0 1px var(--card-line),inset 0 1px 0 rgb(185 173 255 / 0.07),0 30px 60px -30px rgb(5 3 20 / 0.95);transition:box-shadow 200ms ease;cursor:pointer;} .ds-cell:hover{box-shadow:inset 0 0 0 1px var(--line-2),inset 0 1px 0 rgb(185 173 255 / 0.1),0 30px 60px -30px rgb(5 3 20 / 0.95);} .ds-cell-head{display:flex;align-items:center;gap:0.75rem;} .ds-cell-head h3{margin:0;font-size:0.9375rem;font-weight:550;color:var(--text-2);} .ds-cell-ic{display:grid;place-items:center;width:2rem;height:2rem;border-radius:0.5rem;background:rgb(157 140 255 / 0.12);color:var(--violet-soft);} .ds-cell-open{margin-left:auto;display:grid;place-items:center;width:2.25rem;height:2.25rem;border:0;border-radius:0.625rem;background:none;color:var(--text-3);cursor:pointer;transition:color 150ms ease,background-color 150ms ease;} .ds-cell:hover .ds-cell-open{color:var(--text);background:rgb(157 140 255 / 0.1);} .ds-cell-open:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;} .ds-lead{margin:0;font-size:clamp(0.9375rem,0.85rem + 0.35vmin,1.0625rem);line-height:1.55;color:var(--text-2);max-width:52ch;} .ds-go{display:inline-flex;align-items:center;gap:0.375rem;font-weight:550;color:var(--violet-soft);text-decoration:none;justify-self:start;} .ds-go svg{transition:transform 200ms var(--ease-out);} .ds-go:hover svg{transform:translateX(3px);} .ds-go:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;border-radius:0.375rem;}"
+      "css": ":host{--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font-sans:\"Geist\",ui-sans-serif,system-ui,sans-serif;--font-mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-cell{display:grid;gap:1rem;padding:clamp(1.125rem,0.6rem + 1.6vmin,2.25rem);border-radius:clamp(1rem,0.6rem + 1vmin,1.5rem);background:var(--card);backdrop-filter:blur(18px);color:var(--text);font-family:var(--font-sans);box-shadow:inset 0 0 0 1px var(--card-line),inset 0 1px 0 rgb(185 173 255 / 0.07),0 30px 60px -30px rgb(5 3 20 / 0.95);transition:box-shadow 200ms ease;cursor:pointer;} .ds-cell:hover{box-shadow:inset 0 0 0 1px var(--line-2),inset 0 1px 0 rgb(185 173 255 / 0.1),0 30px 60px -30px rgb(5 3 20 / 0.95);} .ds-cell-head{display:flex;align-items:center;gap:0.75rem;} .ds-cell-head h3{margin:0;font-size:0.9375rem;font-weight:550;color:var(--text-2);} .ds-cell-ic{display:grid;place-items:center;width:2rem;height:2rem;border-radius:0.5rem;background:rgb(157 140 255 / 0.12);color:var(--violet-soft);} .ds-cell-open{margin-left:auto;display:grid;place-items:center;width:2.25rem;height:2.25rem;border:0;border-radius:0.625rem;background:none;color:var(--text-3);cursor:pointer;transition:color 150ms ease,background-color 150ms ease;} .ds-cell:hover .ds-cell-open{color:var(--text);background:rgb(157 140 255 / 0.1);} .ds-cell-open:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;} .ds-lead{margin:0;font-size:clamp(0.9375rem,0.85rem + 0.35vmin,1.0625rem);line-height:1.55;color:var(--text-2);max-width:52ch;} .ds-go{display:inline-flex;align-items:center;gap:0.375rem;font-weight:550;color:var(--violet-soft);text-decoration:none;justify-self:start;} .ds-go svg{transition:transform 200ms var(--ease-out);} .ds-go:hover svg{transform:translateX(3px);} .ds-go:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;border-radius:0.375rem;}"
     },
     {
       "name": "Tarjeta de proyecto",
@@ -1123,7 +1172,7 @@
       "refersTo": "project-card",
       "description": "Tarjeta del carrusel fijado: arte de glifos sobre el resplandor del haz y nombre sin antetítulo; el tipo va debajo como metadato.",
       "html": "<article class=\"ds-tcard\"><div class=\"ds-tcard-art\" aria-hidden=\"true\"><span>{ } &lt;/&gt; =&gt;</span></div><div class=\"ds-tcard-copy\"><h3 class=\"ds-tcard-name\">HazmeFila</h3><p class=\"ds-lead\">Qué hace, en una frase.</p><p class=\"ds-meta\">App</p><a class=\"ds-go\" href=\"#\">Ver proyecto<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg></a></div></article>",
-      "css": ":host{--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-tcard{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));gap:clamp(1rem,2.5vmin,2rem);padding:clamp(1.125rem,0.6rem + 1.6vmin,2.25rem);border-radius:clamp(1.125rem,0.8rem + 1vmin,1.75rem);background:var(--card);color:var(--text);font-family:var(--font);box-shadow:inset 0 0 0 1px var(--line-2),inset 0 1px 0 rgb(185 173 255 / 0.09),0 40px 80px -40px rgb(5 3 20 / 0.95);} .ds-tcard-art{display:grid;place-items:center;min-height:9rem;background:radial-gradient(60% 55% at 50% 45%,rgb(91 75 255 / 0.22),transparent 70%);font:500 1.5rem/1 var(--mono);color:var(--violet-soft);} .ds-tcard-copy{display:grid;align-content:center;gap:0.875rem;} .ds-tcard-name{margin:0;font-size:clamp(1.75rem,1rem + 5cqi,3rem);font-weight:600;letter-spacing:-0.04em;line-height:1;} .ds-lead{margin:0;color:var(--text-2);line-height:1.55;} .ds-meta{margin:0;font-size:0.8125rem;color:var(--text-3);} .ds-go{display:inline-flex;align-items:center;gap:0.375rem;font-weight:550;color:var(--violet-soft);text-decoration:none;justify-self:start;} .ds-go:hover svg{transform:translateX(3px);} .ds-go svg{transition:transform 200ms var(--ease-out);} .ds-go:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;border-radius:0.375rem;}"
+      "css": ":host{--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font-sans:\"Geist\",ui-sans-serif,system-ui,sans-serif;--font-mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-tcard{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));gap:clamp(1rem,2.5vmin,2rem);padding:clamp(1.125rem,0.6rem + 1.6vmin,2.25rem);border-radius:clamp(1.125rem,0.8rem + 1vmin,1.75rem);background:var(--card);color:var(--text);font-family:var(--font-sans);box-shadow:inset 0 0 0 1px var(--line-2),inset 0 1px 0 rgb(185 173 255 / 0.09),0 40px 80px -40px rgb(5 3 20 / 0.95);} .ds-tcard-art{display:grid;place-items:center;min-height:9rem;background:radial-gradient(60% 55% at 50% 45%,rgb(91 75 255 / 0.22),transparent 70%);font:500 1.5rem/1 var(--font-mono);color:var(--violet-soft);} .ds-tcard-copy{display:grid;align-content:center;gap:0.875rem;} .ds-tcard-name{margin:0;font-size:clamp(1.75rem,1rem + 5cqi,3rem);font-weight:600;letter-spacing:-0.04em;line-height:1;} .ds-lead{margin:0;color:var(--text-2);line-height:1.55;} .ds-meta{margin:0;font-size:0.8125rem;color:var(--text-3);} .ds-go{display:inline-flex;align-items:center;gap:0.375rem;font-weight:550;color:var(--violet-soft);text-decoration:none;justify-self:start;} .ds-go:hover svg{transform:translateX(3px);} .ds-go svg{transition:transform 200ms var(--ease-out);} .ds-go:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;border-radius:0.375rem;}"
     },
     {
       "name": "Selector segmentado",
@@ -1131,7 +1180,7 @@
       "refersTo": "segmented",
       "description": "Dos modalidades (Por horas / Por feature); el pulgar violeta se desliza en 240 ms.",
       "html": "<div class=\"ds-seg\" role=\"tablist\" aria-label=\"Modalidad\"><span class=\"ds-seg-thumb\"></span><button role=\"tab\" aria-selected=\"true\">Por horas</button><button role=\"tab\" aria-selected=\"false\">Por feature</button></div>",
-      "css": ":host{--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-seg{position:relative;display:inline-grid;grid-template-columns:1fr 1fr;padding:0.25rem;border-radius:999px;background:rgb(7 6 15 / 0.5);box-shadow:inset 0 0 0 1px var(--line-2);} .ds-seg button{position:relative;z-index:1;min-height:2.25rem;padding:0 1rem;border:0;border-radius:999px;background:none;cursor:pointer;font:550 0.8125rem var(--font);color:var(--text-2);transition:color 180ms ease;} .ds-seg button[aria-selected=\"true\"]{color:var(--ink);} .ds-seg button:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;} .ds-seg-thumb{position:absolute;top:0.25rem;bottom:0.25rem;left:0.25rem;width:calc(50% - 0.25rem);border-radius:999px;background:var(--violet);transition:transform 240ms cubic-bezier(0.77,0,0.175,1);} .ds-seg:has(button[aria-selected=\"true\"]:last-of-type) .ds-seg-thumb{transform:translateX(100%);}"
+      "css": ":host{--r-pill:9999rem;--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font-sans:\"Geist\",ui-sans-serif,system-ui,sans-serif;--font-mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-seg{position:relative;display:inline-grid;grid-template-columns:1fr 1fr;padding:0.25rem;border-radius:var(--r-pill);background:rgb(7 6 15 / 0.5);box-shadow:inset 0 0 0 1px var(--line-2);} .ds-seg button{position:relative;z-index:1;min-height:2.25rem;padding:0 1rem;border:0;border-radius:var(--r-pill);background:none;cursor:pointer;font:550 0.8125rem var(--font-sans);color:var(--text-2);transition:color 180ms ease;} .ds-seg button[aria-selected=\"true\"]{color:var(--ink);} .ds-seg button:focus-visible{outline:2px solid var(--violet-soft);outline-offset:3px;} .ds-seg-thumb{position:absolute;top:0.25rem;bottom:0.25rem;left:0.25rem;width:calc(50% - 0.25rem);border-radius:var(--r-pill);background:var(--violet);transition:transform 240ms cubic-bezier(0.77,0,0.175,1);} .ds-seg:has(button[aria-selected=\"true\"]:last-of-type) .ds-seg-thumb{transform:translateX(100%);}"
     },
     {
       "name": "Lista con selección deslizante",
@@ -1139,7 +1188,7 @@
       "refersTo": "list-item",
       "description": "Servicios: la fila elegida tiene resaltado violeta al 14 % con filete y su icono en violeta sólido.",
       "html": "<ul class=\"ds-plist\"><li class=\"is-sel\" tabindex=\"0\"><span class=\"ds-ic\">W</span><span>Web con Next.js</span><span class=\"ds-meta\">producto y marketing</span></li><li tabindex=\"0\"><span class=\"ds-ic\">A</span><span>Apps con React Native</span><span class=\"ds-meta\">iOS y Android</span></li><li tabindex=\"0\"><span class=\"ds-ic\">IA</span><span>IA integrada</span><span class=\"ds-meta\">asistentes</span></li></ul>",
-      "css": ":host{--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-plist{display:grid;gap:0.25rem;margin:0;padding:0;list-style:none;font-family:var(--font);} .ds-plist li{display:grid;grid-template-columns:2rem minmax(0,1fr) auto;align-items:center;gap:0.75rem;min-height:2.75rem;padding:0 0.75rem;border-radius:0.625rem;color:var(--text-2);transition:color 160ms ease,background-color 240ms cubic-bezier(0.77,0,0.175,1);} .ds-plist li:hover,.ds-plist li:focus-visible,.ds-plist li.is-sel{color:var(--text);background:rgb(124 108 255 / 0.14);box-shadow:inset 0 0 0 1px rgb(157 140 255 / 0.2);outline:none;} .ds-ic{display:grid;place-items:center;width:1.75rem;height:1.75rem;border-radius:0.4375rem;background:rgb(157 140 255 / 0.1);color:var(--violet-soft);font:500 0.6875rem var(--mono);transition:background-color 160ms ease,color 160ms ease;} .ds-plist li.is-sel .ds-ic,.ds-plist li:hover .ds-ic{background:var(--violet);color:var(--ink);} .ds-meta{font-size:0.8125rem;color:var(--text-3);}"
+      "css": ":host{--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font-sans:\"Geist\",ui-sans-serif,system-ui,sans-serif;--font-mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-plist{display:grid;gap:0.25rem;margin:0;padding:0;list-style:none;font-family:var(--font-sans);} .ds-plist li{display:grid;grid-template-columns:2rem minmax(0,1fr) auto;align-items:center;gap:0.75rem;min-height:2.75rem;padding:0 0.75rem;border-radius:0.625rem;color:var(--text-2);transition:color 160ms ease,background-color 240ms cubic-bezier(0.77,0,0.175,1);} .ds-plist li:hover,.ds-plist li:focus-visible,.ds-plist li.is-sel{color:var(--text);background:rgb(124 108 255 / 0.14);box-shadow:inset 0 0 0 1px rgb(157 140 255 / 0.2);outline:none;} .ds-ic{display:grid;place-items:center;width:1.75rem;height:1.75rem;border-radius:0.4375rem;background:rgb(157 140 255 / 0.1);color:var(--violet-soft);font:500 0.6875rem var(--font-mono);transition:background-color 160ms ease,color 160ms ease;} .ds-plist li.is-sel .ds-ic,.ds-plist li:hover .ds-ic{background:var(--violet);color:var(--ink);} .ds-meta{font-size:0.8125rem;color:var(--text-3);}"
     },
     {
       "name": "Tecla",
@@ -1147,14 +1196,14 @@
       "refersTo": "kbd",
       "description": "Solo para atajos reales (⌘K, ↑, ↓, ↵, esc).",
       "html": "<span class=\"ds-row\"><kbd class=\"ds-kbd\">⌘K</kbd><kbd class=\"ds-kbd\">esc</kbd><kbd class=\"ds-kbd\">↵</kbd></span>",
-      "css": ":host{--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-row{display:inline-flex;gap:0.375rem;} .ds-kbd{font:500 0.6875rem/1 var(--mono);color:var(--text-2);padding:0.25rem 0.375rem;border-radius:0.3125rem;background:rgb(157 140 255 / 0.1);box-shadow:inset 0 -1px 0 rgb(0 0 0 / 0.4),inset 0 0 0 1px var(--line);}"
+      "css": ":host{--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font-sans:\"Geist\",ui-sans-serif,system-ui,sans-serif;--font-mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-row{display:inline-flex;gap:0.375rem;} .ds-kbd{font:500 0.6875rem/1 var(--font-mono);color:var(--text-2);padding:0.25rem 0.375rem;border-radius:0.3125rem;background:rgb(157 140 255 / 0.1);box-shadow:inset 0 -1px 0 rgb(0 0 0 / 0.4),inset 0 0 0 1px var(--line);}"
     },
     {
       "name": "Indicador de sección",
       "kind": "nav",
       "description": "Líneas sin texto en el margen derecho; la activa más larga, de 3 px y violeta suave. Nunca en el hero.",
       "html": "<nav class=\"ds-pager\" aria-label=\"Secciones\"><button type=\"button\" aria-label=\"Sobre mí\"><i></i></button><button type=\"button\" aria-label=\"Empresas\" aria-current=\"true\"><i></i></button><button type=\"button\" aria-label=\"Negocios\"><i></i></button><button type=\"button\" aria-label=\"Proyectos\"><i></i></button><button type=\"button\" aria-label=\"Blog\"><i></i></button><button type=\"button\" aria-label=\"Contacto\"><i></i></button></nav>",
-      "css": ":host{--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font:\"Geist\",ui-sans-serif,system-ui,sans-serif;--mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-pager{display:inline-grid;gap:0.25rem;justify-items:center;} .ds-pager button{display:grid;place-items:center;width:2.25rem;height:1.125rem;border:0;background:none;cursor:pointer;padding:0;} .ds-pager i{display:block;width:1.5rem;height:2px;border-radius:2px;background:rgb(157 140 255 / 0.3);transform:scaleX(0.55);transition:transform 200ms var(--ease-out),background-color 200ms ease,height 200ms ease;} .ds-pager button[aria-current=\"true\"] i{transform:scaleX(1);height:3px;background:var(--violet-soft);} .ds-pager button:not([aria-current=\"true\"]):hover i{transform:scaleX(0.8);background:rgb(157 140 255 / 0.6);} .ds-pager button:focus-visible{outline:2px solid var(--violet-soft);outline-offset:0;border-radius:0.375rem;}"
+      "css": ":host{--bg:#07060f;--ink:#07060f;--text:#ece9ff;--text-2:#a9a3d6;--text-3:#8c86bd;--line:rgb(157 140 255 / 0.12);--line-2:rgb(157 140 255 / 0.22);--card:rgb(22 19 48 / 0.84);--card-line:rgb(157 140 255 / 0.18);--violet:#7c6cff;--violet-hi:#9d8cff;--violet-soft:#b9adff;--green:#3ddc84;--font-sans:\"Geist\",ui-sans-serif,system-ui,sans-serif;--font-mono:\"Geist Mono\",ui-monospace,\"SF Mono\",monospace;--ease-out:cubic-bezier(0.23,1,0.32,1);} .ds-pager{display:inline-grid;gap:0.25rem;justify-items:center;} .ds-pager button{display:grid;place-items:center;width:2.25rem;height:1.125rem;border:0;background:none;cursor:pointer;padding:0;} .ds-pager i{display:block;width:1.5rem;height:2px;border-radius:2px;background:rgb(157 140 255 / 0.3);transform:scaleX(0.55);transition:transform 200ms var(--ease-out),background-color 200ms ease,height 200ms ease;} .ds-pager button[aria-current=\"true\"] i{transform:scaleX(1);height:3px;background:var(--violet-soft);} .ds-pager button:not([aria-current=\"true\"]):hover i{transform:scaleX(0.8);background:rgb(157 140 255 / 0.6);} .ds-pager button:focus-visible{outline:2px solid var(--violet-soft);outline-offset:0;border-radius:0.375rem;}"
     }
   ],
   "narrative": {
@@ -1272,5 +1321,12 @@
       "**Don't** usar glassmorphism de plantilla, parallax de fondo, Inter con texto degradado ni iconos brillantes.",
       "**Don't** cambiar el estilo de las tarjetas para separarlas del fondo; se ajustan card y card-line."
     ]
+  },
+  "focus": {
+    "focus-ring-width": "2px",
+    "focus-ring-offset": "3px"
+  },
+  "fontWeights": {
+    "emphasis": "500"
   }
 }

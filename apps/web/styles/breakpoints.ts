@@ -2,7 +2,7 @@
 // Media queries cannot use var(): breakpoints are also exported for TypeScript.
 export const bp = {
   'login-icon': '22.5rem',
-  'hero-stack': '43.75rem',
+  short: '43.75rem',
   compact: '56.25rem',
   menu: '67.5rem',
 } as const;

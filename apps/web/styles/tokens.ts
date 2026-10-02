@@ -18,9 +18,10 @@ export type TokenName =
   | '--beam'
   | '--green'
   | '--pending'
-  | '--scrollbar'
+  | '--scrollbar-thumb'
   | '--font-sans'
   | '--font-mono'
+  | '--font-emphasis-weight'
   | '--font-display-size'
   | '--font-display-weight'
   | '--font-display-leading'
@@ -66,10 +67,38 @@ export type TokenName =
   | '--font-small-weight'
   | '--font-caption-size'
   | '--font-caption-weight'
-  | '--font-mono-key-size'
-  | '--font-mono-key-weight'
-  | '--font-mono-key-leading'
-  | '--r-key'
+  | '--font-mono-kbd-size'
+  | '--font-mono-kbd-weight'
+  | '--font-mono-kbd-leading'
+  | '--font-brand-size'
+  | '--font-brand-weight'
+  | '--font-brand-leading'
+  | '--font-brand-tracking'
+  | '--font-mono-lang-size'
+  | '--font-mono-lang-weight'
+  | '--font-mono-lang-leading'
+  | '--font-bubble-size'
+  | '--font-bubble-weight'
+  | '--font-bubble-leading'
+  | '--font-figure-pack-size'
+  | '--font-figure-pack-weight'
+  | '--font-figure-pack-tracking'
+  | '--font-figure-pack-hero-size'
+  | '--font-figure-pack-hero-weight'
+  | '--font-figure-pack-hero-tracking'
+  | '--font-keycap-size'
+  | '--font-keycap-weight'
+  | '--font-keycap-leading'
+  | '--font-display-compact-size'
+  | '--font-display-compact-weight'
+  | '--font-display-compact-leading'
+  | '--font-display-compact-tracking'
+  | '--font-title-sm-size'
+  | '--font-title-sm-weight'
+  | '--font-title-sm-leading'
+  | '--font-title-sm-tracking'
+  | '--font-pending-size'
+  | '--r-kbd'
   | '--r-icon'
   | '--r-sm'
   | '--r-md'
@@ -79,6 +108,17 @@ export type TokenName =
   | '--r-tcard'
   | '--r-pill'
   | '--r-bubble-tail'
+  | '--r-focus'
+  | '--sp-1'
+  | '--sp-2'
+  | '--sp-3'
+  | '--sp-4'
+  | '--sp-5'
+  | '--sp-6'
+  | '--sp-7'
+  | '--sp-8'
+  | '--sp-10'
+  | '--sp-16'
   | '--sp-gutter'
   | '--sp-pad-scene'
   | '--sp-pad-top'
@@ -86,15 +126,20 @@ export type TokenName =
   | '--sp-gap-bento'
   | '--sp-pad-cell'
   | '--sp-container'
-  | '--sp-xs'
-  | '--sp-sm'
-  | '--sp-md'
-  | '--sp-lg'
-  | '--sp-xl'
-  | '--sp-2xl'
   | '--sp-gap-cell'
   | '--sp-gap-cell-body'
+  | '--sp-0-5'
+  | '--sp-1-5'
+  | '--sp-2-5'
+  | '--sp-3-5'
   | '--size-dot'
+  | '--size-hit'
+  | '--size-control-sm'
+  | '--size-control-md'
+  | '--size-control-lg'
+  | '--size-control-xl'
+  | '--focus-ring-width'
+  | '--focus-ring-offset'
   | '--tint-cmdk'
   | '--tint-chip'
   | '--tint-kbd'
@@ -103,13 +148,13 @@ export type TokenName =
   | '--edge-selected'
   | '--pager-idle'
   | '--pager-hover'
-  | '--edge-key-down'
+  | '--edge-keycap-down'
   | '--tint-ghost'
   | '--tint-current'
   | '--tint-selected'
   | '--tint-hover'
   | '--tint-ghost-hover'
-  | '--tint-cell-hero'
+  | '--tint-emphasis'
   | '--tint-selection'
   | '--tint-bubble-other'
   | '--bg-segmented'
@@ -130,7 +175,7 @@ export type TokenName =
   | '--shadow-card-focus'
   | '--shadow-button'
   | '--shadow-overlay'
-  | '--shadow-key'
+  | '--shadow-kbd'
   | '--shadow-keycap'
   | '--shadow-keycap-down'
   | '--shadow-selected-row'
@@ -140,11 +185,12 @@ export type TokenName =
   | '--blur-surface'
   | '--blur-overlay'
   | '--blur-beam'
-  | '--dur-key'
-  | '--dur-fast'
+  | '--saturate-header'
+  | '--dur-keycap'
+  | '--dur-hover'
   | '--dur-press'
   | '--dur-menu'
-  | '--dur-arrow'
+  | '--dur-nudge'
   | '--dur-state'
   | '--dur-slide'
   | '--dur-pager'
@@ -158,21 +204,22 @@ export type TokenName =
   | '--dur-marquee-a'
   | '--dur-marquee-b'
   | '--dur-blink'
-  | '--dur-scene'
+  | '--dur-canvas-in'
+  | '--dur-stagger-draw'
+  | '--dur-delay-draw'
   | '--ease-out'
   | '--ease-slide'
   | '--ease-vt'
   | '--ease-standard'
-  | '--ease-key'
+  | '--ease-keycap'
   | '--ease-linear'
   | '--ease-float'
   | '--ease-blink'
   | '--glide-min'
   | '--glide-max'
+  | '--glide-rate'
   | '--wheel-threshold'
   | '--wheel-lock'
-  | '--stagger-draw'
-  | '--delay-draw'
   | '--z-canvas'
   | '--z-field'
   | '--z-content'
@@ -183,7 +230,7 @@ export type TokenName =
   | '--z-open'
   | '--z-skip'
   | '--bp-login-icon'
-  | '--bp-hero-stack'
+  | '--bp-short'
   | '--bp-compact'
   | '--bp-menu'
   | '--cq-card-stack'
@@ -225,9 +272,10 @@ export const tokens = {
   beam: '--beam',
   green: '--green',
   pending: '--pending',
-  scrollbar: '--scrollbar',
+  'scrollbar-thumb': '--scrollbar-thumb',
   'font-sans': '--font-sans',
   'font-mono': '--font-mono',
+  'font-emphasis-weight': '--font-emphasis-weight',
   'font-display-size': '--font-display-size',
   'font-display-weight': '--font-display-weight',
   'font-display-leading': '--font-display-leading',
@@ -273,10 +321,38 @@ export const tokens = {
   'font-small-weight': '--font-small-weight',
   'font-caption-size': '--font-caption-size',
   'font-caption-weight': '--font-caption-weight',
-  'font-mono-key-size': '--font-mono-key-size',
-  'font-mono-key-weight': '--font-mono-key-weight',
-  'font-mono-key-leading': '--font-mono-key-leading',
-  'r-key': '--r-key',
+  'font-mono-kbd-size': '--font-mono-kbd-size',
+  'font-mono-kbd-weight': '--font-mono-kbd-weight',
+  'font-mono-kbd-leading': '--font-mono-kbd-leading',
+  'font-brand-size': '--font-brand-size',
+  'font-brand-weight': '--font-brand-weight',
+  'font-brand-leading': '--font-brand-leading',
+  'font-brand-tracking': '--font-brand-tracking',
+  'font-mono-lang-size': '--font-mono-lang-size',
+  'font-mono-lang-weight': '--font-mono-lang-weight',
+  'font-mono-lang-leading': '--font-mono-lang-leading',
+  'font-bubble-size': '--font-bubble-size',
+  'font-bubble-weight': '--font-bubble-weight',
+  'font-bubble-leading': '--font-bubble-leading',
+  'font-figure-pack-size': '--font-figure-pack-size',
+  'font-figure-pack-weight': '--font-figure-pack-weight',
+  'font-figure-pack-tracking': '--font-figure-pack-tracking',
+  'font-figure-pack-hero-size': '--font-figure-pack-hero-size',
+  'font-figure-pack-hero-weight': '--font-figure-pack-hero-weight',
+  'font-figure-pack-hero-tracking': '--font-figure-pack-hero-tracking',
+  'font-keycap-size': '--font-keycap-size',
+  'font-keycap-weight': '--font-keycap-weight',
+  'font-keycap-leading': '--font-keycap-leading',
+  'font-display-compact-size': '--font-display-compact-size',
+  'font-display-compact-weight': '--font-display-compact-weight',
+  'font-display-compact-leading': '--font-display-compact-leading',
+  'font-display-compact-tracking': '--font-display-compact-tracking',
+  'font-title-sm-size': '--font-title-sm-size',
+  'font-title-sm-weight': '--font-title-sm-weight',
+  'font-title-sm-leading': '--font-title-sm-leading',
+  'font-title-sm-tracking': '--font-title-sm-tracking',
+  'font-pending-size': '--font-pending-size',
+  'r-kbd': '--r-kbd',
   'r-icon': '--r-icon',
   'r-sm': '--r-sm',
   'r-md': '--r-md',
@@ -286,6 +362,17 @@ export const tokens = {
   'r-tcard': '--r-tcard',
   'r-pill': '--r-pill',
   'r-bubble-tail': '--r-bubble-tail',
+  'r-focus': '--r-focus',
+  'sp-1': '--sp-1',
+  'sp-2': '--sp-2',
+  'sp-3': '--sp-3',
+  'sp-4': '--sp-4',
+  'sp-5': '--sp-5',
+  'sp-6': '--sp-6',
+  'sp-7': '--sp-7',
+  'sp-8': '--sp-8',
+  'sp-10': '--sp-10',
+  'sp-16': '--sp-16',
   'sp-gutter': '--sp-gutter',
   'sp-pad-scene': '--sp-pad-scene',
   'sp-pad-top': '--sp-pad-top',
@@ -293,15 +380,20 @@ export const tokens = {
   'sp-gap-bento': '--sp-gap-bento',
   'sp-pad-cell': '--sp-pad-cell',
   'sp-container': '--sp-container',
-  'sp-xs': '--sp-xs',
-  'sp-sm': '--sp-sm',
-  'sp-md': '--sp-md',
-  'sp-lg': '--sp-lg',
-  'sp-xl': '--sp-xl',
-  'sp-2xl': '--sp-2xl',
   'sp-gap-cell': '--sp-gap-cell',
   'sp-gap-cell-body': '--sp-gap-cell-body',
+  'sp-0-5': '--sp-0-5',
+  'sp-1-5': '--sp-1-5',
+  'sp-2-5': '--sp-2-5',
+  'sp-3-5': '--sp-3-5',
   'size-dot': '--size-dot',
+  'size-hit': '--size-hit',
+  'size-control-sm': '--size-control-sm',
+  'size-control-md': '--size-control-md',
+  'size-control-lg': '--size-control-lg',
+  'size-control-xl': '--size-control-xl',
+  'focus-ring-width': '--focus-ring-width',
+  'focus-ring-offset': '--focus-ring-offset',
   'tint-cmdk': '--tint-cmdk',
   'tint-chip': '--tint-chip',
   'tint-kbd': '--tint-kbd',
@@ -310,13 +402,13 @@ export const tokens = {
   'edge-selected': '--edge-selected',
   'pager-idle': '--pager-idle',
   'pager-hover': '--pager-hover',
-  'edge-key-down': '--edge-key-down',
+  'edge-keycap-down': '--edge-keycap-down',
   'tint-ghost': '--tint-ghost',
   'tint-current': '--tint-current',
   'tint-selected': '--tint-selected',
   'tint-hover': '--tint-hover',
   'tint-ghost-hover': '--tint-ghost-hover',
-  'tint-cell-hero': '--tint-cell-hero',
+  'tint-emphasis': '--tint-emphasis',
   'tint-selection': '--tint-selection',
   'tint-bubble-other': '--tint-bubble-other',
   'bg-segmented': '--bg-segmented',
@@ -337,7 +429,7 @@ export const tokens = {
   'shadow-card-focus': '--shadow-card-focus',
   'shadow-button': '--shadow-button',
   'shadow-overlay': '--shadow-overlay',
-  'shadow-key': '--shadow-key',
+  'shadow-kbd': '--shadow-kbd',
   'shadow-keycap': '--shadow-keycap',
   'shadow-keycap-down': '--shadow-keycap-down',
   'shadow-selected-row': '--shadow-selected-row',
@@ -347,11 +439,12 @@ export const tokens = {
   'blur-surface': '--blur-surface',
   'blur-overlay': '--blur-overlay',
   'blur-beam': '--blur-beam',
-  'dur-key': '--dur-key',
-  'dur-fast': '--dur-fast',
+  'saturate-header': '--saturate-header',
+  'dur-keycap': '--dur-keycap',
+  'dur-hover': '--dur-hover',
   'dur-press': '--dur-press',
   'dur-menu': '--dur-menu',
-  'dur-arrow': '--dur-arrow',
+  'dur-nudge': '--dur-nudge',
   'dur-state': '--dur-state',
   'dur-slide': '--dur-slide',
   'dur-pager': '--dur-pager',
@@ -365,21 +458,22 @@ export const tokens = {
   'dur-marquee-a': '--dur-marquee-a',
   'dur-marquee-b': '--dur-marquee-b',
   'dur-blink': '--dur-blink',
-  'dur-scene': '--dur-scene',
+  'dur-canvas-in': '--dur-canvas-in',
+  'dur-stagger-draw': '--dur-stagger-draw',
+  'dur-delay-draw': '--dur-delay-draw',
   'ease-out': '--ease-out',
   'ease-slide': '--ease-slide',
   'ease-vt': '--ease-vt',
   'ease-standard': '--ease-standard',
-  'ease-key': '--ease-key',
+  'ease-keycap': '--ease-keycap',
   'ease-linear': '--ease-linear',
   'ease-float': '--ease-float',
   'ease-blink': '--ease-blink',
   'glide-min': '--glide-min',
   'glide-max': '--glide-max',
+  'glide-rate': '--glide-rate',
   'wheel-threshold': '--wheel-threshold',
   'wheel-lock': '--wheel-lock',
-  'stagger-draw': '--stagger-draw',
-  'delay-draw': '--delay-draw',
   'z-canvas': '--z-canvas',
   'z-field': '--z-field',
   'z-content': '--z-content',
@@ -390,7 +484,7 @@ export const tokens = {
   'z-open': '--z-open',
   'z-skip': '--z-skip',
   'bp-login-icon': '--bp-login-icon',
-  'bp-hero-stack': '--bp-hero-stack',
+  'bp-short': '--bp-short',
   'bp-compact': '--bp-compact',
   'bp-menu': '--bp-menu',
   'cq-card-stack': '--cq-card-stack',
