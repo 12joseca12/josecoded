@@ -3,21 +3,45 @@
   "tasks": {
     "lint": {},
     "typecheck": {},
-    "test": { "dependsOn": ["^build"] },
+    "test": {
+      "dependsOn": ["^build"],
+      "passThroughEnv": ["TARIFAS_PATH"]
+    },
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", ".open-next/**", "dist/**"]
+      "outputs": [".next/**", ".open-next/**", "dist/**"],
+      "env": ["NEXT_PUBLIC_*"]
     },
-    "e2e": { "cache": false },
-    "dev": { "cache": false, "persistent": true },
-    "tokens:build": { "cache": false },
-    "visual": { "cache": false },
+    "e2e": {
+      "cache": false,
+      "dependsOn": ["build"],
+      "env": ["NEXT_PUBLIC_*"],
+      "passThroughEnv": ["PW_CHANNEL", "CI"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "tokens:build": {
+      "cache": false
+    },
+    "visual": {
+      "cache": false
+    },
     "i18n:check": {},
-    "pricing:sync": { "cache": false },
-    "pricing:sync-db": { "cache": false },
-    "hero:media": { "cache": false },
+    "pricing:sync": {
+      "cache": false
+    },
+    "pricing:sync-db": {
+      "cache": false
+    },
+    "hero:media": {
+      "cache": false
+    },
     "hero:media:check": {},
     "check:hero-bundle": {},
-    "lhci": { "cache": false }
+    "lhci": {
+      "cache": false
+    }
   }
 }
