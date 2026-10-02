@@ -3,9 +3,14 @@
 // no-restricted-imports, import-x (order, no-duplicates, no-cycle), jsx-no-literals.
 // NOT included on purpose: consistent-type-imports, no-explicit-any as error, bans on
 // React.FC / enums (Jose did not pick them).
+import { createRequire } from 'node:module';
+
 import nextCoreWebVitals from 'eslint-config-next/core-web-vitals';
 import { createNodeResolver, importX } from 'eslint-plugin-import-x';
 import tseslint from 'typescript-eslint';
+
+// React version read from the installed package (needs `react` resolvable from this package).
+const reactVersion = createRequire(import.meta.url)('react/package.json').version;
 
 const webFiles = ['apps/web/**/*.{js,jsx,mjs,ts,tsx,mts,cts}'];
 
@@ -15,11 +20,17 @@ const restrictions = {
   messages: {
     group: ['**/messages/**/*.json'],
     message: 'Use useTranslations/getTranslations; never import messages JSON directly.',
+    dynamic: '/messages\\/.*\\.json$/',
   },
   database: {
-    group: ['@josecoded/types/src/database', '**/types/src/database', '**/database'],
+    group: ['@josecoded/types/src/database', '**/types/src/database'],
     message:
       'Import Database, Tables<> and friends from @josecoded/types (db.ts), not database.ts.',
+  },
+  // inside packages/types only db.ts (and the drift test) may touch the generated file
+  databaseLocal: {
+    group: ['./database', './database.ts', '../database', '../src/database'],
+    message: 'Only db.ts and the drift test import the generated database.ts.',
   },
   tokens: {
     group: ['**/styles/tokens.css'],
@@ -28,11 +39,13 @@ const restrictions = {
   three: {
     group: ['three', 'three/*'],
     message: 'three is allowed only inside packages/glyph-scene.',
+    dynamic: '/^three(\\/|$)/',
   },
   supabase: {
     group: ['@supabase/supabase-js'],
     message:
       'supabase-js is allowed only in apps/web/lib/supabase/ and apps/api/src/adapters/ (use the typed clients).',
+    dynamic: '/^@supabase\\/supabase-js$/',
   },
   adapters: {
     group: ['**/adapters/*', '**/adapters'],
@@ -40,10 +53,28 @@ const restrictions = {
   },
 };
 
-/** @param {Array<keyof typeof restrictions>} ids */
-const restrict = (ids) => ({
-  'no-restricted-imports': ['error', { patterns: ids.map((id) => restrictions[id]) }],
-});
+/**
+ * Static imports go through no-restricted-imports; dynamic `import()` through
+ * no-restricted-syntax (same exceptions by `files`).
+ * @param {Array<keyof typeof restrictions>} ids
+ */
+const restrict = (ids) => {
+  const picked = ids.map((id) => restrictions[id]);
+  return {
+    'no-restricted-imports': [
+      'error',
+      { patterns: picked.map(({ group, message }) => ({ group, message })) },
+    ],
+    'no-restricted-syntax': [
+      'error',
+      ...picked.flatMap((r) =>
+        'dynamic' in r
+          ? [{ selector: `ImportExpression[source.value=${r.dynamic}]`, message: r.message }]
+          : [],
+      ),
+    ],
+  };
+};
 
 const everywhere = ['messages', 'database', 'tokens', 'three', 'supabase'];
 const without = (/** @type {string} */ id) => everywhere.filter((x) => x !== id);
@@ -52,6 +83,12 @@ const boundaries = [
   { files: ['**/*.{js,jsx,mjs,ts,tsx,mts,cts}'], rules: restrict(everywhere) },
   // gateway routes: all of the above plus «no adapters»
   { files: ['apps/api/src/modules/**'], rules: restrict([...everywhere, 'adapters']) },
+  // generated database.ts: only db.ts and the drift test may import it
+  { files: ['packages/types/**'], rules: restrict([...everywhere, 'databaseLocal']) },
+  {
+    files: ['packages/types/src/db.ts', 'packages/types/test/database-drift.test.ts'],
+    rules: restrict(everywhere),
+  },
   // the only places where each thing is legitimate
   { files: ['apps/web/messages/**', 'apps/web/i18n/**'], rules: restrict(without('messages')) },
   { files: ['packages/glyph-scene/**'], rules: restrict(without('three')) },
@@ -102,7 +139,7 @@ web.push({
   files: webFiles,
   // eslint-plugin-react 7.37 cannot auto-detect the version under ESLint 10 (it calls the removed
   // context.getFilename), so the version is explicit. Revisit when the plugin supports ESLint 10.
-  settings: { react: { version: '19.3' } },
+  settings: { react: { version: reactVersion } },
   // App Router only: there is no pages/ directory for this rule to check.
   rules: { '@next/next/no-html-link-for-pages': 'off' },
 });

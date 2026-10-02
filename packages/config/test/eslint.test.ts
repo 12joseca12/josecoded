@@ -76,6 +76,81 @@ describe('no-restricted-imports (working-agreements 14.5)', () => {
   });
 });
 
+describe('generated database.ts', () => {
+  const restricted = (ids: string[]) =>
+    ids.filter((id) => id === 'no-restricted-imports' || id === 'no-restricted-syntax');
+
+  it('rejects ./database from any packages/types file except db.ts', async () => {
+    const code = "import type { Database } from './database';\nexport type D = Database;\n";
+    expect(await rules(code, 'packages/types/src/ui.ts')).toContain('no-restricted-imports');
+  });
+
+  it('allows ./database from packages/types/src/db.ts', async () => {
+    const code = "import type { Database } from './database';\nexport type D = Database;\n";
+    expect(restricted(await rules(code, 'packages/types/src/db.ts'))).toEqual([]);
+  });
+
+  it('allows ../src/database from the drift test', async () => {
+    const code = "import type { Database } from '../src/database';\nexport type D = Database;\n";
+    expect(restricted(await rules(code, 'packages/types/test/database-drift.test.ts'))).toEqual([]);
+  });
+
+  it('does not flag an unrelated ../lib/database in apps/web', async () => {
+    const code = "import { q } from '../lib/database';\nexport const x = q;\n";
+    expect(restricted(await rules(code, 'apps/web/components/x/x.ts'))).toEqual([]);
+  });
+
+  it('rejects the generated file through the package path from apps/web', async () => {
+    const code =
+      "import type { Database } from '@josecoded/types/src/database';\nexport type D = Database;\n";
+    expect(await rules(code, 'apps/web/lib/x.ts')).toContain('no-restricted-imports');
+  });
+});
+
+describe('dynamic import() boundaries (no-restricted-syntax)', () => {
+  const dynamicForbidden: [string, string, string][] = [
+    ['three', "export const m = () => import('three');", 'apps/web/lib/x.ts'],
+    ['three addons', "export const m = () => import('three/addons/x.js');", 'apps/web/lib/x.ts'],
+    [
+      'messages JSON',
+      "export const m = () => import('../messages/es/home.json');",
+      'apps/web/lib/x.ts',
+    ],
+    [
+      'supabase-js',
+      "export const m = () => import('@supabase/supabase-js');",
+      'apps/web/components/x.ts',
+    ],
+  ];
+
+  it.each(dynamicForbidden)('rejects import() of %s', async (_label, code, filePath) => {
+    expect(await rules(code, filePath)).toContain('no-restricted-syntax');
+  });
+
+  const dynamicAllowed: [string, string, string][] = [
+    [
+      'three in glyph-scene',
+      "export const m = () => import('three');",
+      'packages/glyph-scene/src/scene.ts',
+    ],
+    [
+      'messages JSON in i18n/request',
+      "export const m = () => import('../messages/es/home.json');",
+      'apps/web/i18n/request.ts',
+    ],
+    [
+      'supabase-js in lib/supabase',
+      "export const m = () => import('@supabase/supabase-js');",
+      'apps/web/lib/supabase/x.ts',
+    ],
+    ['an unrelated module', "export const m = () => import('./three-utils');", 'apps/web/lib/x.ts'],
+  ];
+
+  it.each(dynamicAllowed)('allows import() of %s', async (_label, code, filePath) => {
+    expect(await rules(code, filePath)).not.toContain('no-restricted-syntax');
+  });
+});
+
 describe('import-x', () => {
   it('flags wrong import order (relative before external)', async () => {
     const code = "import { a } from './a';\nimport { z } from 'zod';\nconsole.log(a, z);\n";
