@@ -608,7 +608,7 @@ Prompt de sistema (resumen; el texto vive en `src/services/proposal-classifier.t
   contact: { name: string 1..120, email: string email, phone?: string 6..30, company?: string ≤120 },
   message?: string ≤2000,
   proposalId?: string,                 // obligatorio si source='web_proposal'; el gateway recupera la propuesta de KV y la re-tarifica
-  affiliateCode?: string /^[A-Z0-9]{8}$/,
+  affiliateCode?: string AFFILIATE_CODE_RE (de @josecoded/pricing, §0b),
   turnstileToken?: string,             // obligatorio salvo con x-josecoded-server-key
   meta?: { path: string, userAgent?: string }
 }
@@ -829,7 +829,7 @@ create policy "admin insert leads" on public.leads for insert to authenticated
 ```sql
 alter table public.pack_templates add column code text unique check (code ~ '^P[1-4]$');
 alter table public.pack_extras    add column code text unique;
--- El script pricing:sync-db rellena code/nombre/precio_base/descripcion por orden (1..4 ↔ P1..P4) y crea los extras.
+-- Superado por §0b: códigos y precios van en esta migración por slug; pricing:sync-db solo genera SQL (supabase/generated/pricing-sync.sql) que aplica el controlador, sin service role.
 ```
 
 **`20260917100200_blog_comments.sql`**
@@ -871,7 +871,7 @@ create policy "comments admin delete" on public.blog_comments for delete to auth
 create table public.affiliates (
   id         uuid primary key default gen_random_uuid(),
   user_id    uuid not null unique references auth.users(id) on delete cascade,
-  code       text not null unique check (code ~ '^[A-Z]{2,6}-[A-Z0-9]{4}$'),   -- formato UX: DANI-3B7K, MARTA-7F2K
+  code       text not null unique check (code ~ '^[A-Z0-9]{3,12}-[A-Z0-9]{6}$'),   -- contrato único §0b (AFFILIATE_CODE_RE): DANI-3B7K2Q, MARTA-7F2KX9
   level      text not null default 'standard' check (level in ('standard','premium')),
   created_at timestamptz not null default now()
 );
@@ -1056,7 +1056,7 @@ Criterio de aceptación de cada migración nueva: `get_advisors` después no añ
 
 ### 6.5 Sincronización con `pricing.json`
 
-`pnpm pricing:sync-db` (`packages/pricing/scripts/sync-db.ts`, se ejecuta a mano en el Mac con `SUPABASE_SERVICE_ROLE_KEY` de `.env.local`, nunca en CI): `upsert` en `pack_templates` por `code` (`nombre`, `descripcion`, `precio_base`, `orden`, `activo`) y en `pack_extras` por `code` (`nombre`, `descripcion`, `precio`, `activo`). Imprime el diff y pide confirmación. Es escritura en producción: **OK de Jose en sesión**.
+`pnpm pricing:sync-db` (`packages/pricing/scripts/sync-db.ts`, §0b): **genera** `supabase/generated/pricing-sync.sql` (updates por `code` con `raise` si no hay fila; extras por upsert; números y códigos validados; nunca escribe `{{DATO}}`) y no se conecta a nada; lo aplica el controlador con `apply_migration` tras `list_tables`. Sin `SUPABASE_SERVICE_ROLE_KEY` en disco.
 
 ---
 
@@ -1104,7 +1104,7 @@ Criterio de aceptación de cada migración nueva: `get_advisors` después no añ
 | Home sin scroll (móvil 390×844) | — | Tesis, dos vías y CTA visibles sin scroll; `h1` único; sin errores de consola |
 | Generador → propuesta → enviar | businessType "restaurante", needs "carta y reservas online", salesMode `bookings`, timeline `one_month`; Turnstile en modo test (`1x00000000000000000000AA`) | Propuesta muestra "P2" y "desde 1.400 €"; al enviar, existe lead con `fuente='web_proposal'`, `ai_proposal.pack='P2'`; eventos Umami `proposal_generated` y `proposal_sent` interceptados |
 | Contacto | nombre "Marta", email `marta@example.com`, mensaje | 201, lead `fuente='web_form'`, `contact_submit` |
-| Afiliado | visita `/negocios?ref=ANA-TEST` → `RefNotice` una vez → contacto | cookie `ref=ANA-TEST` (30 días); una segunda visita con `?ref=BOB-TEST` no la sobrescribe; lead con `affiliate_code='ANA-TEST'`; con email del propio afiliado → lead creado con código y `meta.self_referral_suspect=true`, visible en el detalle del admin |
+| Afiliado | visita `/negocios?ref=ANA-TEST01` → `RefNotice` una vez → contacto | cookie `ref=ANA-TEST01` (30 días); una segunda visita con `?ref=BOB-TEST02` no la sobrescribe; lead con `affiliate_code='ANA-TEST01'`; con email del propio afiliado → lead creado con código y `meta.self_referral_suspect=true`, visible en el detalle del admin |
 | Hero: intro y modos (§1.6) | primera visita a `/` (sin `intro_seen`), viewports 1280×800 y 390×844; variantes con `?intro=1`, `prefers-reduced-motion`, `saveData` (CDP `Network.emulateNetworkConditions` + `navigator.connection` stub) y móvil | `html[data-intro=pending]` antes del primer paint (captura de `document.documentElement.dataset` en `page.addInitScript` + `evaluateOnNewDocument`); todos los `.ch` con su letra final en ≤ 1,5 s; `sessionStorage.intro_seen = '1'`; recarga → sin `pending` y sin `.is-falling`; `Tab` durante la caída → todo aterrizado en ≤ 200 ms y `intro_played {skipped:true}`; escritorio: petición del chunk con `three` posterior a la entrada LCP, canvas visible (`opacity 1`) y poster oculto a los ≤ 3 s; móvil: no hay canvas, el `<video>` recibe `<source>` tras el LCP y reproduce; `saveData`: sin petición de `video.*`; reduced-motion: solo poster, sin `pending`, sin `<source>`; ruta interior `/negocios` nunca marca `pending` |
 | Auth | Email+password de seed (Google/GitHub no se automatizan) | login, `/area-clientes` accesible, logout, `/area-clientes` redirige |
 | Área de clientes | usuario A (cliente P2) | ve su proyecto, no ve el del cliente B (URL directa → 404); solicita P3 → "1.100 €"; aparece en admin como `pending` |
@@ -1209,7 +1209,7 @@ Nuevas (todas declaradas en `envSchema`):
 
 ### `packages/pricing`
 
-Ninguna en runtime. `scripts/sync-from-tarifas.ts` lee `TARIFAS_PATH` (default la ruta del vault en iCloud) y escribe `pricing.json`; `sync-db.ts` usa `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` de `.env.local`.
+Ninguna en runtime. `scripts/sync-from-tarifas.ts` lee `TARIFAS_PATH` (default la ruta del vault en iCloud) y escribe `pricing.json`; `sync-db.ts` no usa variables: genera SQL (§0b).
 
 ### Supabase (Edge Function `notify`)
 
