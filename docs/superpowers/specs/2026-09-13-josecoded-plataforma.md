@@ -10,7 +10,7 @@
 4. **Cookie `ref` con consentimiento explícito** (`RefNotice` con «Aceptar»); sin aceptación, el código solo vale para esa sesión (`sessionStorage`). Política de cookies y privacidad actualizadas (finalidad: atribución de afiliados y detección de autoreferido).
 5. **GitHub App propia `josecoded-bot`** para la newsletter en lugar de un PAT; check de alcance en todos los PR; si el plan de GitHub no permite auto-merge en repo privado, fusiona el gateway por API (spec de newsletter v1.2).
 6. **Un único Cron Trigger `*/5`** en el gateway con despachador (límite de 5 crons en Free) y los trabajos de Radar reducidos a tres; presupuesto de subpeticiones por tick; AI Gateway obligatorio con presupuesto por consumidor.
-7. **Workers Free se mantiene**; la tarea 0.1 mide `cpuTime` y la caché de assets; Paid o Vercel solo con datos. **Desvío aceptado:** WebGL en tablets grandes (`qa` lo prueba en iPad).
+7. **Workers Free para web y gateway** (decisión de Jose 2026-10-02): sin código de medición de CPU; el rendimiento se analiza con la web construida y en producción. **Desvío aceptado:** WebGL en tablets grandes (`qa` lo prueba en iPad).
 8. **Hito «contenido completo»** antes de la fase 3 con lista cerrada de insumos, responsable y fecha; prototipos de `ui` solo para la home, Negocios y Contacto; el resto se construye con `DESIGN.md` y aprobación en preview.
 9. `pricing.json` bilingüe; JSON-LD con `minPrice`, `valueAddedTaxIncluded: false` y `unitCode: 'HUR'`; CV con convención única y campos públicos cerrados; PDF con `noindex`.
 

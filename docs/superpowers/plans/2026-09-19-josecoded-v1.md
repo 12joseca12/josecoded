@@ -52,7 +52,7 @@ Se acepta la opción recomendada salvo donde se indica. Cada punto dice en qué 
 | 3 | GitHub App `josecoded-bot`; check de alcance en todos los PR; fusión por el gateway si el plan de GitHub no lo permite | 1.9, 10.0, 10.2, 10.6 |
 | 4 | Newsletter: grants por columna, inserts solo service role, trigger de transición, «revisado» vía gateway, reset al editar, tests negativos | 10.1, 10.2, 10.4 |
 | 5 | **Todo junto con válvula por fecha; Radar última etapa** (fecha al cerrar la fase 2) | Orden de fases, camino crítico, 9.4, 9.6 |
-| 6 | 0.1 mide `cpuTime` p95 < 10 ms y la caché de assets de OpenNext | 0.1 |
+| 6 | ~~0.1 mide `cpuTime`~~ (retirado v2.4: sin medición; se analiza en producción); caché de assets de OpenNext | 0.1 |
 | 7 | Contrato único del código de afiliado; trigger solo si nulo; `extensions.gen_random_bytes`; código desconocido → lead con `meta.invalid_ref`; `(ref XXX)` en WhatsApp; un campo `ref` en Cal.com | 1.4, 1.8, 3.3, 3.8, 3.11 |
 | 8 | Generador: Turnstile antes que cuota; RPC `increment_quota`; propuesta firmada HMAC; fallo del contador deja pasar | 1.8, 3.7, 3.8, 3.9 |
 | 9 | Worker `josecoded-api-preview` con secretos propios; rotar Telegram y Resend antes de 3.12; `WORKER_INTERNAL_TOKEN_PREV` | 1.7, 1.9, 3.12 |
@@ -114,7 +114,7 @@ Se acepta la opción recomendada salvo donde se indica. Cada punto dice en qué 
 
 ## NOT in scope (decidido el 2026-09-30)
 
-- **Workers Paid**: no se contrata por defecto; se decide con la medida de `cpuTime` de la tarea 0.1 (Free o, si no cabe, Paid frente a Vercel con datos).
+- **Workers Paid**: no se contrata. **Decisión de Jose (2026-10-02): `apps/web` en Workers Free, sin código de medición de CPU; el rendimiento se analiza con la web construida y en producción.**
 - **WebGL en tablets grandes**: desvío aceptado por Jose (reciben modo `scene`); `qa` lo prueba en iPad y, si no rinde, `(pointer: fine)` en el gate es un cambio de una línea.
 - **Conectores opcionales de Radar**: scraping de LinkedIn (7.13, apagado dos semanas), Upwork (7.15) y Malt por correo (7.14) pueden llegar tras el lanzamiento; no bloquean nada.
 - **PDF por Browser Rendering** (7.21): solo si 0.4 lo confirma en Free; el respaldo (impresión en navegador) es la vía por defecto.
@@ -243,7 +243,7 @@ Cada tarea 0 produce una sección en `docs/superpowers/specs/2026-09-19-tarea0-r
 
 **Agente:** implementador-web · **Rama:** `spike/t0-opennext` · **Gate:** no (crea un Worker de pruebas `josecoded-web-t0` con `wrangler versions upload`; no toca producción; avisar a Jose de que existe y borrarlo al terminar) · **Depende de:** —
 
-> **v2.1 (eng review):** además de a–f, medir **`cpuTime` p95 < 10 ms** (Workers Free) en `/`, `/negocios` y una ruta privada con sesión (`/area-clientes`) sobre 50 peticiones (`wrangler tail --format json` o Workers Logs), y probar la **caché incremental de assets estáticos de OpenNext** (`incrementalCache` sobre el binding `ASSETS` para SSG, sin R2). Validar también que `apps/web/scripts/check-hero-bundle.ts` lee el manifiesto que produce **Turbopack** (nombres y rutas de chunks) con un chunk `import()` de prueba. Si `cpuTime` no llega, **Jose decide con los datos entre Workers Paid y Vercel**; hasta entonces, Free. Anotar cifras en §0.1 del documento de resultados.
+> **v2.1 (eng review), retirado en v2.4:** la medida de `cpuTime` ya no forma parte de 0.1. **Decisión de Jose (2026-10-02): `apps/web` en Workers Free, sin código de medición de CPU; el rendimiento se analiza con la web construida y en producción.**
 
 **Objetivo:** demostrar con un despliegue real que Next 16.3.5 + `@opennextjs/cloudflare` 1.20.6 funciona en Workers Free con todo lo que la web necesita y sin `proxy.ts` (DT §1.3 "Tarea 0").
 
@@ -435,7 +435,7 @@ it('feed has ≥ 10 items with title, link and pubDate', () => {
 
 > **v2.3 (resultados de fase 0, 2026-09-30):** **0.2 cerrada** (Jose aprueba el vídeo a 700 KB: webm crf 56 / mp4 crf 36; 2.5c y 2.6 parten de ahí). **0.1 local OK** (12/12 en `wrangler dev --local`, ~1,12 MiB gz); pendiente `cpuTime` p95 remoto con `wrangler login` + OK de Jose, **bloquea solo la decisión Workers/Vercel de 1.5**. Cambios que entran en tareas: **1.1/`preview.yml`/`deploy-production.yml`** usan `opennextjs-cloudflare upload`/`deploy` (incluyen `populateCache`), nunca `wrangler versions upload` a secas; **1.5** caché incremental `static-assets-incremental-cache`, **slugs traducidos en inglés** con `pathnames` de next-intl (`/en/business`, `/en/about`, `/en/contact`, `/en/projects`…; la variante sin traducir redirige, sin duplicados) y barra final con 308 → sin barra (se ajusta el test que esperaba 200 en `/en/`); **2.9** `check-hero-bundle` lee el HTML prerrenderizado y los source maps (`productionBrowserSourceMaps` solo en el build de la comprobación), fixture con un mini `.next` (prototipo en `spike/t0-opennext:apps/web/scripts/check-hero-bundle.mjs`).
 
-> **v2.4 (2026-10-02, Jose): se construye primero y se decide después dónde desplegar.** Se elimina la medida de `cpuTime` de la 0.1 (la fase 0 queda **cerrada**: 0.1 local y 0.2). La elección **Workers Free / Workers Paid / Vercel para `apps/web`** pasa a un paso explícito **«Decisión de despliegue»** antes de la fase 9, medido sobre la app real (home + una ruta con sesión). Mientras tanto: (1) el código se mantiene portable (Next estándar, sin middleware Node ni APIs exclusivas de un proveedor en `apps/web`; los bindings de Cloudflare solo en `apps/api`, que sigue en Workers); (2) **las aprobaciones de Jose se hacen en local** (`pnpm dev`/`opennextjs-cloudflare preview` en el navegador del panel) y `preview.yml`/`deploy-production.yml` de 1.1 quedan **desactivados** hasta la decisión; (3) el criterio de 1.5 «tests contra la URL de preview» pasa a «contra el preview local».
+> **v2.4 (2026-10-02, Jose): `apps/web` se despliega en Workers Free** (junto al gateway). **No se escribe código de medición de CPU** (fuera la medida de `cpuTime` de la 0.1 y cualquier script `cpu:measure`); el rendimiento se analiza con la web construida y en producción, y solo entonces se valoraría Paid. La fase 0 queda **cerrada** (0.1 local y 0.2). Hasta tener credenciales de Cloudflare en CI, las aprobaciones de Jose se hacen en local (`pnpm dev`/`opennextjs-cloudflare preview` en el navegador del panel) y `preview.yml`/`deploy-production.yml` quedan desactivados; el criterio de 1.5 «tests contra la URL de preview» pasa a «contra el preview local».
 
 ## Fase 1 — Monorepo, `apps/api` movido, `packages/pricing`, CI · Estimación M · rama `chore/monorepo`
 
