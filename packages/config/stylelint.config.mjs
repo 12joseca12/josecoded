@@ -7,11 +7,16 @@ const colorProps =
 
 // Properties that must be a token (or a keyword), never a raw number or name.
 const tokenOnlyProps =
-  '/^(font-family|font-size|font-weight|line-height|letter-spacing|border-radius|border-(top|bottom)-(left|right)-radius)$/';
+  '/^(font|font-family|font-size|font-weight|line-height|letter-spacing|border-radius|border-(top|bottom)-(left|right)-radius)$/';
 
 // Properties where a length / time literal means a missing token.
 const scaleProps =
   '/^(gap|row-gap|column-gap|padding(-.+)?|margin(-.+)?|transition(-.+)?|animation(-.+)?)$/';
+
+// Easing must come from --ease-* tokens, never a keyword or a curve written inline.
+const motionProps = '/^(transition(-.+)?|animation(-.+)?)$/';
+const easingLiteral =
+  '/(?<![\\w-])(ease|ease-in|ease-out|ease-in-out|linear|step-start|step-end)(?![\\w-])|cubic-bezier\\(|steps\\(|linear\\(/';
 
 const colorLiteral = '/(#[0-9a-f]{3,8}\\b|\\b(rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\\()/i';
 const lengthOrTimeLiteral =
@@ -44,8 +49,10 @@ export default {
     'declaration-property-value-disallowed-list': [
       {
         [colorProps]: [colorLiteral],
-        [tokenOnlyProps]: [notATokenOrKeyword],
+        // a literal hidden inside calc()/clamp()/min()/max() is still a literal
+        [tokenOnlyProps]: [notATokenOrKeyword, lengthOrTimeLiteral],
         [scaleProps]: [lengthOrTimeLiteral],
+        [motionProps]: [easingLiteral],
       },
     ],
     'color-named': 'never',

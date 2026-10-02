@@ -41,6 +41,29 @@ describe('stylelint: no literals outside tokens', () => {
     );
   });
 
+  it.each([
+    '.a { font-size: clamp(2rem, 5vw, 4rem); }',
+    '.a { border-radius: calc(1rem * 2); }',
+    '.a { font: 500 1rem/1 Geist; }',
+    '.a { transition: opacity var(--dur-fast) ease; }',
+    '.a { transition: opacity var(--dur-fast) cubic-bezier(0.23, 1, 0.32, 1); }',
+    '.a { animation: slide var(--dur-slow) linear; }',
+  ])('rejects hidden literals: %s', async (css) => {
+    expect(await lint(css)).toContain('declaration-property-value-disallowed-list');
+  });
+
+  it.each([
+    '.a { font-size: clamp(var(--fs-min), var(--fs-fluid), var(--fs-max)); }',
+    '.a { font-size: var(--font-display-size); }',
+    '.a { border-radius: calc(var(--r-card) * 2); }',
+    '.a { font: var(--font-body); }',
+    '.a { transition: opacity var(--dur-fast) var(--ease-out); }',
+    '.a { animation: slide var(--dur-slow) var(--ease-linear); }',
+    '.a { animation-name: ease-in-slide; }',
+  ])('accepts the token equivalent: %s', async (css) => {
+    expect(await lint(css)).toEqual([]);
+  });
+
   it('accepts calc() over tokens and structural values', async () => {
     expect(
       await lint(
