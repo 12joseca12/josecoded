@@ -1,6 +1,10 @@
 // working-agreements §1 and §8, design-technical §1.9.
 // Components consume only var(--token); literals are allowed only where §8 says so.
 
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+
 // Properties whose value can only be colour literals or colour functions.
 const colorProps =
   '/^(color|background(-color|-image)?|border-(top|right|bottom|left)?-?color|outline-color|fill|stroke|caret-color|text-decoration-color|box-shadow|text-shadow)$/';
@@ -36,7 +40,8 @@ const pxAllowedIn = [
 
 /** @type {import('stylelint').Config} */
 export default {
-  extends: ['stylelint-config-standard'],
+  // resolved from this package, so any workspace can reuse the config
+  extends: [require.resolve('stylelint-config-standard')],
   ignoreFiles: [
     '**/node_modules/**',
     '**/.next/**',
