@@ -9,8 +9,4 @@ export type Locale = 'es' | 'en';
  * Polymorphic components (`Button`, `Link`) discriminate on this by `href` (working-agreements §15).
  */
 export type Href =
-  | `/${string}`
-  | `#${string}`
-  | `https://${string}`
-  | `mailto:${string}`
-  | `tel:${string}`;
+  `/${string}` | `#${string}` | `https://${string}` | `mailto:${string}` | `tel:${string}`;
