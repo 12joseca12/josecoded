@@ -26,7 +26,34 @@ describe('buildSyncSql', () => {
     expect(sql.match(/update public\.pack_templates/g)).toHaveLength(4);
     expect(sql.match(/insert into public\.pack_extras/g)).toHaveLength(6);
     expect(sql).toContain('on conflict (code) do update');
-    expect(sql).toMatch(/begin;[\s\S]*commit;/);
+    // apply_migration already wraps the file in a transaction
+    expect(sql).not.toMatch(/^\s*(begin|commit);/im);
+  });
+
+  it('raises when a pack row is missing instead of passing silently', () => {
+    const sql = buildSyncSql(finalSpanish());
+    expect(sql.match(/do \$sync\$/g)).toHaveLength(4);
+    expect(sql.match(/if not found then/g)).toHaveLength(4);
+    expect(sql).toContain("raise exception 'pack_templates has no row with code %', 'P1'");
+  });
+
+  it('validates what it interpolates', () => {
+    const bad = (mutate: (p: PricingData) => void) => {
+      const copy = finalSpanish();
+      mutate(copy);
+      return () => buildSyncSql(copy);
+    };
+    expect(
+      bad((p) => (p.packs[0]!.price = '0; drop table leads; --' as unknown as number)),
+    ).toThrow(/invalid price of P1/);
+    expect(bad((p) => (p.packs[1]!.price = 1400.5))).toThrow(/invalid price/);
+    expect(bad((p) => (p.packs[1]!.weeks = 0))).toThrow(/invalid weeks/);
+    expect(bad((p) => (p.packs[2]!.code = "P3'; drop table leads; --" as 'P3'))).toThrow(
+      /invalid pack code/,
+    );
+    expect(bad((p) => (p.extras[0]!.code = 'geo; x' as 'geo'))).toThrow(/invalid extra code/);
+    expect(bad((p) => (p.extras[0]!.price = Number.NaN))).toThrow(/invalid price/);
+    expect(bad((p) => (p.extras[0]!.description.es = 'x $sync$ y'))).toThrow(/dollar-quote/);
   });
 
   it('carries the prices and weeks of pricing.json', () => {

@@ -100,6 +100,8 @@ describe('computeUpgrade', () => {
   it('pack difference plus extras', () => {
     expect(computeUpgrade('P1', 'P2', ['geo', 'security_audit']).price).toBe(500 + 300 + 250);
   });
+  it('dedupes repeated extras', () =>
+    expect(computeUpgrade('P2', null, ['geo', 'geo']).price).toBe(300));
   it('P3→P3 throws', () => expect(() => computeUpgrade('P3', 'P3', [])).toThrow(UpgradeError));
   it('P3→P2 throws', () => expect(() => computeUpgrade('P3', 'P2', [])).toThrow(UpgradeError));
   it('nothing requested throws', () =>
