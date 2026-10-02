@@ -25,7 +25,7 @@ jobs:
       - run: pnpm lint
       # Duplicated blocks (working-agreements §15.4). Not installed in the repo: pnpm dlx.
       - run: >-
-          pnpm dlx jscpd@latest apps packages
+          pnpm dlx jscpd@5.4.0 apps packages
           --min-lines 30 --min-tokens 120 --threshold 0
           --ignore "**/*.test.*,**/database.ts,**/tokens.*,**/content/**,**/node_modules/**"
 
