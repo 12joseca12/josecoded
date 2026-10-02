@@ -9,21 +9,21 @@ Monorepo pnpm + turbo de la plataforma josecoded (web, gateway, paquetes compart
 
 ## Comandos
 
-| Comando                                                              | Qué hace                                                           |
-| -------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `pnpm install`                                                       | Instala todo el workspace                                          |
-| `pnpm dev`                                                           | `turbo run dev` (apps con servidor de desarrollo)                  |
-| `pnpm lint`                                                          | ESLint + stylelint por paquete (`@josecoded/config`)               |
-| `pnpm typecheck`                                                     | `tsc --noEmit` por paquete (`strict` + `noUncheckedIndexedAccess`) |
-| `pnpm test`                                                          | Vitest por paquete                                                 |
-| `pnpm build`                                                         | `turbo run build`                                                  |
-| `pnpm e2e`                                                           | Playwright (llega con `apps/web`, tarea 1.5)                       |
-| `pnpm tokens:build`                                                  | `design.json` → `tokens.css` (esqueleto; llega en la 1.10)         |
-| `pnpm visual`                                                        | Capturas comparadas app/prototipo (esqueleto; tarea 2.13)          |
-| `pnpm i18n:check`                                                    | Claves faltantes y `{{DATO}}` (esqueleto; tarea 2.1)               |
-| `pnpm pricing:sync`, `pnpm pricing:sync-db`                          | Precios desde `Comercial/tarifas.md` (tarea 1.4)                   |
-| `pnpm hero:media`, `pnpm hero:media:check`, `pnpm check:hero-bundle` | Medios y presupuesto del hero (fase 2)                             |
-| `pnpm lhci`                                                          | Lighthouse CI (tarea 2.9)                                          |
+| Comando                                                              | Qué hace                                                                                                                    |
+| -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm install`                                                       | Instala todo el workspace                                                                                                   |
+| `pnpm dev`                                                           | `turbo run dev` (apps con servidor de desarrollo)                                                                           |
+| `pnpm lint`                                                          | ESLint + stylelint por paquete (`@josecoded/config`)                                                                        |
+| `pnpm typecheck`                                                     | `tsc --noEmit` por paquete (`strict` + `noUncheckedIndexedAccess`)                                                          |
+| `pnpm test`                                                          | Vitest por paquete                                                                                                          |
+| `pnpm build`                                                         | `turbo run build`                                                                                                           |
+| `pnpm e2e`                                                           | Playwright contra el preview local (`wrangler dev --local`); construye antes. `PW_CHANNEL=chrome` usa el Chrome del sistema |
+| `pnpm tokens:build`                                                  | `design.json` → `tokens.css` (esqueleto; llega en la 1.10)                                                                  |
+| `pnpm visual`                                                        | Capturas comparadas app/prototipo (esqueleto; tarea 2.13)                                                                   |
+| `pnpm i18n:check`                                                    | Claves faltantes y `{{DATO}}` (esqueleto; tarea 2.1)                                                                        |
+| `pnpm pricing:sync`, `pnpm pricing:sync-db`                          | Precios desde `Comercial/tarifas.md` (tarea 1.4)                                                                            |
+| `pnpm hero:media`, `pnpm hero:media:check`, `pnpm check:hero-bundle` | Medios y presupuesto del hero (fase 2)                                                                                      |
+| `pnpm lhci`                                                          | Lighthouse CI (tarea 2.9)                                                                                                   |
 
 Por paquete: `pnpm --filter <nombre> test -- <patrón>`.
 

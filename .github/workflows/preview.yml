@@ -20,6 +20,8 @@ jobs:
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      # exposes the /dev/ui catalogue (task 2.2) in previews only; absent in deploy-production.yml
+      NEXT_PUBLIC_DEV_UI: '1'
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
