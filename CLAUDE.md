@@ -17,8 +17,8 @@ Brief (qué y por qué): nota del vault `Proyectos/josecoded.md`. Estado voláti
 - Referencia de lo anterior: repo `josedev` (`~/Documents/GitHub/josedev`, indexado en codebase-memory como `Users-jose-Documents-GitHub-josedev`, con ADR). No se evoluciona; se consulta.
 
 ## Comandos
-- Instalar: `pnpm install` · Dev: `pnpm dev` · Test: `pnpm test` · Lint+types: `pnpm lint && pnpm typecheck` · Build: `pnpm build`.
-(Ajustar si el proyecto usa otros.)
+- Instalar: `pnpm install` · Dev: `pnpm dev` · Test: `pnpm test` · Lint (eslint + stylelint): `pnpm lint` · Types: `pnpm typecheck` · Build: `pnpm build` · E2E: `pnpm e2e`.
+- Más scripts raíz (todos `turbo run`, se rellenan en sus tareas): `tokens:build`, `visual`, `i18n:check`, `pricing:sync`, `pricing:sync-db`, `hero:media`, `hero:media:check`, `check:hero-bundle`, `lhci`. Por paquete: `pnpm --filter <nombre> test -- <patrón>`. Detalle en `README.md`.
 
 ## Reglas del proyecto
 - Agentes: `implementador-web` implementa; `revisor` revisa cada tarea; `/puerta-calidad` antes de merge.
