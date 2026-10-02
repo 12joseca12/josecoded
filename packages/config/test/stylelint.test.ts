@@ -45,8 +45,8 @@ describe('stylelint: no literals outside tokens', () => {
     '.a { font-size: clamp(2rem, 5vw, 4rem); }',
     '.a { border-radius: calc(1rem * 2); }',
     '.a { font: 500 1rem/1 Geist; }',
-    '.a { transition: opacity var(--dur-fast) ease; }',
-    '.a { transition: opacity var(--dur-fast) cubic-bezier(0.23, 1, 0.32, 1); }',
+    '.a { transition: opacity var(--dur-hover) ease; }',
+    '.a { transition: opacity var(--dur-hover) cubic-bezier(0.23, 1, 0.32, 1); }',
     '.a { animation: slide var(--dur-slow) linear; }',
   ])('rejects hidden literals: %s', async (css) => {
     expect(await lint(css)).toContain('declaration-property-value-disallowed-list');
@@ -57,7 +57,7 @@ describe('stylelint: no literals outside tokens', () => {
     '.a { font-size: var(--font-display-size); }',
     '.a { border-radius: calc(var(--r-card) * 2); }',
     '.a { font: var(--font-body); }',
-    '.a { transition: opacity var(--dur-fast) var(--ease-out); }',
+    '.a { transition: opacity var(--dur-hover) var(--ease-out); }',
     '.a { animation: slide var(--dur-slow) var(--ease-linear); }',
     '.a { animation-name: ease-in-slide; }',
   ])('accepts the token equivalent: %s', async (css) => {
@@ -67,7 +67,7 @@ describe('stylelint: no literals outside tokens', () => {
   it('accepts calc() over tokens and structural values', async () => {
     expect(
       await lint(
-        '.a { padding: calc(var(--sp-2) * 2); margin: 0 auto; gap: 0; width: 100%; transition: opacity var(--dur-fast) var(--ease-out); }',
+        '.a { padding: calc(var(--sp-2) * 2); margin: 0 auto; gap: 0; width: 100%; transition: opacity var(--dur-hover) var(--ease-out); }',
       ),
     ).toEqual([]);
   });

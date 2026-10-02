@@ -17,6 +17,13 @@ it('every required token exists in design.json and is emitted', () => {
   expect(missing).toEqual([]);
 });
 
+it('every emitted token is in the required list (inverse check)', () => {
+  const { names } = emitTokens(design);
+  const listed = new Set(required.map((token) => `--${token}`));
+  expect(names.filter((name) => !listed.has(name))).toEqual([]);
+  expect(required).toHaveLength(names.length);
+});
+
 it('has no duplicated names in the required list', () => {
   expect(new Set(required).size).toBe(required.length);
 });

@@ -18,7 +18,7 @@ const minimal = {
     body: { family: 'sans', fontSize: '1rem', fontWeight: 400, fontFeature: '"ss01", "cv11"' },
   },
   rounded: { pill: '9999rem' },
-  spacing: { gutter: 'clamp(1rem, 4vw, 3.5rem)', '2xl': '2rem' },
+  spacing: { gutter: 'clamp(1rem, 4vw, 3.5rem)', '8': '2rem' },
   sizes: { dot: '0.375rem' },
   focus: { 'focus-ring-width': '2px' },
   extensions: {
@@ -54,7 +54,7 @@ describe('emitTokens', () => {
       '--font-sans: "Geist", sans-serif;',
       '--r-pill: 9999rem;',
       '--sp-gutter: clamp(1rem, 4vw, 3.5rem);',
-      '--sp-2xl: 2rem;',
+      '--sp-8: 2rem;',
       '--size-dot: 0.375rem;',
       '--tint-chip: rgb(157 140 255 / 0.08);',
       '--shadow-card: inset 0 0 0 1px red;',

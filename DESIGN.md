@@ -190,7 +190,8 @@ sizes:
 focus:
   focus-ring-width: "2px"
   focus-ring-offset: "3px"
-  font-emphasis-weight: "500"
+fontWeights:
+  emphasis: "500"
 components:
   button-solid:
     backgroundColor: "{colors.violet}"
@@ -290,7 +291,7 @@ components:
     textColor: "{colors.text-2}"
     rounded: "{rounded.lg}"
     padding: "0.5rem"
-    width: "min(17rem, calc(100vw - 2 * var(--gutter)))"
+    width: "min(17rem, calc(100vw - 2 * var(--sp-gutter)))"
   palette:
     backgroundColor: "{colors.overlay}"
     textColor: "{colors.text}"
