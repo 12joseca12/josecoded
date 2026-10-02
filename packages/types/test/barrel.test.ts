@@ -2,10 +2,13 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, expectTypeOf, it } from 'vitest';
+
+import type { FormState } from '../src';
 
 const src = join(dirname(fileURLToPath(import.meta.url)), '..', 'src');
 const barrel = readFileSync(join(src, 'index.ts'), 'utf8');
+const schemasBarrel = readFileSync(join(src, 'schemas', 'index.ts'), 'utf8');
 
 describe('@josecoded/types barrel', () => {
   const domainFiles = readdirSync(src)
@@ -22,5 +25,25 @@ describe('@josecoded/types barrel', () => {
 
   it('re-exports the schemas index', () => {
     expect(barrel).toContain("export * from './schemas';");
+  });
+
+  it('re-exports every schemas/*.ts file from schemas/index.ts', () => {
+    const schemaFiles = readdirSync(join(src, 'schemas'))
+      .filter((f) => f.endsWith('.ts') && f !== 'index.ts')
+      .map((f) => f.replace(/\.ts$/, ''));
+    for (const name of schemaFiles) {
+      expect(schemasBarrel).toContain(`export * from './${name}';`);
+    }
+  });
+});
+
+describe('FormState (working-agreements §17.3)', () => {
+  it('has the documented shape', () => {
+    type Lead = { email: string; name: string };
+    expectTypeOf<FormState<Lead>>().toEqualTypeOf<{
+      status: 'idle' | 'ok' | 'error';
+      fieldErrors?: Partial<Record<keyof Lead, string>>;
+      formError?: string;
+    }>();
   });
 });

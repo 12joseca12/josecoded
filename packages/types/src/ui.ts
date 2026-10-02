@@ -1,5 +1,6 @@
-/** State returned by a Server Action driven by `useActionState` (working-agreements §17). */
-export type FormState<T = undefined> =
-  | { status: 'idle' }
-  | { status: 'success'; data: T }
-  | { status: 'error'; message?: string; fieldErrors?: Partial<Record<string, string[]>> };
+/** State returned by a Server Action driven by `useActionState` (working-agreements §17.3). */
+export type FormState<T> = {
+  status: 'idle' | 'ok' | 'error';
+  fieldErrors?: Partial<Record<keyof T, string>>;
+  formError?: string;
+};
