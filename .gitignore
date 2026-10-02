@@ -7,3 +7,22 @@ graphify-out/
 .impeccable/hook.cache.json
 
 .claude/worktrees/
+
+# dependencias y cachés de build
+node_modules/
+.turbo/
+.next/
+.open-next/
+.wrangler/
+dist/
+coverage/
+
+# secretos y datos locales
+.dev.vars
+.env.local
+*.eml
+
+# generados que no se versionan
+**/pending/
+frames/
+apps/web/e2e/visual/__diff__/

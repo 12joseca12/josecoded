@@ -1,0 +1,23 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "lint": {},
+    "typecheck": {},
+    "test": { "dependsOn": ["^build"] },
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", ".open-next/**", "dist/**"]
+    },
+    "e2e": { "cache": false },
+    "dev": { "cache": false, "persistent": true },
+    "tokens:build": { "cache": false },
+    "visual": { "cache": false },
+    "i18n:check": {},
+    "pricing:sync": { "cache": false },
+    "pricing:sync-db": { "cache": false },
+    "hero:media": { "cache": false },
+    "hero:media:check": {},
+    "check:hero-bundle": {},
+    "lhci": { "cache": false }
+  }
+}
