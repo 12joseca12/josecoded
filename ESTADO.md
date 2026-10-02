@@ -86,13 +86,15 @@ Documentos (al día con la v6 desde el 2026-09-29):
 4. ~~Componentes de la home~~ hecho (2026-09-29).
 5. ~~Actualizar spec, UX, diseño técnico y plan + `/plan-eng-review`~~ hecho (2026-09-30: plan v2.1 con los 41 hallazgos).
 6. ~~Batería de stack y metodologías de producción~~ hecha (2026-09-30: 12 respuestas → working-agreements v1.2, `CLAUDE.md` reglas 11–13, plan v2.2).
-7. **Fase 0 del plan** (siguiente paso) (0.1 con `cpuTime` p95 y caché de assets; 0.2 con `scene.js` de la v6; 0.3–0.6 Radar) y **fase 1** en dos ramas: `chore/monorepo-base` (1.1, 1.4 `pricing` bilingüe, 1.5, **1.10 tokens antes de cualquier UI**) y `chore/supabase` (1.2, 1.3, 1.6, 1.7 cron único + preview, 1.8 migraciones + RPCs, 1.9 gate con «Confirm email» y SMTP).
+7. ~~Fase 0~~ cerrada (2026-10-02: 0.1 local, 0.2 con vídeo 700 KB; Radar 0.3–0.6 a la fase 7; despliegue se decide antes de la fase 9). **Siguiente: fase 1a** en `chore/monorepo-base` (1.1 → 1.4 pricing bilingüe → 1.5 → 1.10 tokens) y después 1b `chore/supabase`.
 8. Fase 2: port 1:1 de `home-v6` escena a escena, con capturas comparadas (2 %) y aprobación de Jose entre escenas. Al cerrarla, **fijar la fecha de válvula** y la tabla del hito «contenido completo».
 9. Orden de fases: 0 → 1a → 1b → 2 → hito de contenido → 3 → 4 → 5 → 6 → 8.1 → 9 (lanzamiento) → **7 Radar** → 10 Newsletter.
 
 Gates que no se cruzan sin OK explícito de Jose en la misma sesión: migraciones y deploys a producción, contratar servicios, tocar servicios preexistentes de Omen.
 
 ## Decisiones recientes
+
+- **2026-10-02 (Jose):** **se construye primero y se decide después dónde desplegar** `apps/web` (Workers Free / Paid / Vercel), con medida sobre la app real en un paso «Decisión de despliegue» antes de la fase 9. Fase 0 cerrada sin medida de CPU. Código portable; aprobaciones en local hasta entonces; workflows de preview y producción desactivados. Ya no hace falta `wrangler login` por ahora.
 
 - **2026-09-30:** Jose aprueba el vídeo del hero a 700 KB (0.2 cerrada) y decide **slugs traducidos en inglés** (`/en/business`, `/en/about`…). Anotado en el plan (nota v2.3 antes de la fase 1).
 
