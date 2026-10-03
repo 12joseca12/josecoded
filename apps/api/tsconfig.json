@@ -1,0 +1,7 @@
+{
+  "extends": "@josecoded/config/tsconfig.worker.json",
+  "compilerOptions": {
+    "types": ["@cloudflare/workers-types", "node", "jest"]
+  },
+  "include": ["src"]
+}
