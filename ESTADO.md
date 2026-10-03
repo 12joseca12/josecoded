@@ -103,6 +103,8 @@ Gates que no se cruzan sin OK explícito de Jose en la misma sesión: migracione
 
 ## Decisiones recientes
 
+- **2026-10-03:** **GitHub Free** con repo privado: no hay protección de ramas. Se sigue con PR por rama y squash por disciplina, con `revisor` como control; protección solo si se pasa a Pro. `main` se subió una única vez con los 44 commits de diseño antes del primer PR (OK de Jose). pnpm 11 en CI exige `allowBuilds` explícito en `pnpm-workspace.yaml` (en el Mac de Jose está `dangerouslyAllowAllBuilds` global, por eso en local no fallaba).
+
 - **2026-10-03 — Fase 1a terminada en `chore/monorepo-base`** (tareas 1.1, 1.4, 1.5, 1.10; cada una con `revisor` PASA). **Puerta de calidad: PASA en la vuelta 2** (qa, revisor-seguridad, revisor-accesibilidad, usuario-ejemplo, ui). Arreglos de la puerta: 500 en rutas españolas profundas, 404 localizado con título y enlace, `<title>` en páginas, tokens de trazo y círculo, Next 16.3.6 (GHSA-vcvr-r3jv-pc5j), sin `x-powered-by`, fronteras de ESLint endurecidas (+ `@eslint-community/eslint-plugin-eslint-comments`), `undici ^7.29.1`, `.gitignore` de entornos. 251 tokens. Config `web-preview` en `.claude/launch.json` para aprobaciones en local.
 
 - **2026-10-03 (Jose):** la página **404 se mantiene por idioma** (es/en según la URL), aunque el HTML de servidor sea un shell que completa el cliente al hidratar (sin JS se ve vacía; cada URL inexistente se renderiza en el Worker). Descartado el 404 estático bilingüe que proponía el `revisor`. Deuda aceptada y documentada.
