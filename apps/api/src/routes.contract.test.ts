@@ -79,6 +79,43 @@ describe('legacy route surface stays mounted', () => {
   });
 });
 
+describe('exact route surface', () => {
+  // `app.routes` lists every handler and middleware registered, so removing, renaming or remounting a route
+  // changes this snapshot. Updating it is a contract change and needs a reason in the commit.
+  it('matches the committed snapshot', () => {
+    const surface = [...new Set(app.routes.map((r) => `${r.method} ${r.path}`))].sort();
+    expect(surface).toMatchSnapshot();
+  });
+
+  it('keeps the routes the clients call in the surface', () => {
+    const surface = new Set(app.routes.map((r) => `${r.method} ${r.path}`));
+    for (const route of [
+      'GET /health',
+      'GET /system/status',
+      'GET /api/v1/health',
+      'GET /api/v1/auth/me',
+      'GET /api/v1/system/status',
+      'GET /api/v1/forum/thematics',
+      'GET /api/v1/admin-chat/thread',
+      'GET /api/v1/admin-chat/admin/conversations',
+    ]) {
+      expect(surface.has(route)).toBe(true);
+    }
+  });
+
+  it('the auth gate is a wildcard: unknown paths under /api/v1 also answer 401, so only the surface proves a route exists', async () => {
+    const res = await call('GET', '/api/v1/does-not-exist');
+    expect(res.status).toBe(401);
+    // a malformed Authorization header is rejected by the gate itself, without calling Supabase
+    const bad = await call('GET', '/api/v1/auth/me', { headers: { Authorization: 'Basic abc' } });
+    expect(bad.status).toBe(401);
+    expect(await bad.json()).toMatchObject({
+      ok: false,
+      error: { code: 'unauthorized', message: 'Invalid authorization header' },
+    });
+  });
+});
+
 describe('error envelope and headers', () => {
   it('unknown routes answer 404 with the not_found envelope', async () => {
     const res = await call('GET', '/nope');
@@ -95,12 +132,34 @@ describe('error envelope and headers', () => {
     expect(res.status).toBe(500);
     const json = (await res.json()) as Envelope;
     expect(json.error?.code).toBe('internal_error');
+    // the cause (which variables are missing) is not echoed to the client
+    expect(json).not.toHaveProperty('error.details');
+    expect(JSON.stringify(json)).not.toMatch(/Invalid environment|SUPABASE|WORKER/);
   });
 
   it('sets a request id and the security headers on every response', async () => {
     const res = await call('GET', '/health');
     expect(res.headers.get('x-request-id')).toBeTruthy();
     expect(res.headers.get('x-content-type-options')).toBe('nosniff');
+  });
+
+  it('CORS preflight: allows the methods and headers of the contract', async () => {
+    const res = await call('OPTIONS', '/api/v1/forum/entries/a/b/comments/1', {
+      headers: {
+        Origin: 'http://localhost:3000',
+        'Access-Control-Request-Method': 'PUT',
+        'Access-Control-Request-Headers': 'authorization,content-type',
+      },
+    });
+    expect(res.status).toBeLessThan(300);
+    expect(res.headers.get('access-control-allow-origin')).toBe('http://localhost:3000');
+    const methods = (res.headers.get('access-control-allow-methods') ?? '').split(',').map((m) => m.trim());
+    expect(methods).toEqual(expect.arrayContaining(['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']));
+    const headers = (res.headers.get('access-control-allow-headers') ?? '')
+      .toLowerCase()
+      .split(',')
+      .map((h) => h.trim());
+    expect(headers).toEqual(expect.arrayContaining(['content-type', 'authorization']));
   });
 
   it('CORS: allows a configured origin and nothing else', async () => {
