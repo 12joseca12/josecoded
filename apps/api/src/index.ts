@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-import type { Env } from './types/env.types';
+import type { AppEnv } from './deps';
+import { withDeps } from './middlewares/with-deps';
 import { healthRoutes } from './modules/health.routes';
 import { systemRoutes } from './modules/system.routes';
 import { devWorkerProxyRoutes } from './modules/dev-worker-proxy.routes';
@@ -12,10 +13,12 @@ import {
 } from './middlewares/security.middleware';
 import { fail } from './utils/api-response';
 
-const app = new Hono<{ Bindings: Env }>();
+const app = new Hono<AppEnv>();
 
 app.use('*', requestId);
 app.use('*', securityHeaders);
+// New modules read c.var.deps (working-agreements §17.1); no legacy route uses it.
+app.use('*', withDeps);
 
 app.use('*', async (c, next) => {
   const env = parseEnv(c.env);

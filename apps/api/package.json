@@ -12,6 +12,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@josecoded/types": "workspace:*",
     "@supabase/supabase-js": "2.117.2",
     "hono": "4.13.12",
     "zod": "4.6.5"
