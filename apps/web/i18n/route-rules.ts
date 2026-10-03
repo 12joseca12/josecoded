@@ -13,7 +13,9 @@ export interface RedirectRule extends RewriteRule {
 }
 
 // Spanish has no prefix: everything that is not /en, /api, /_next or a file goes to /es.
-const SPANISH_CATCH_ALL = '/:path((?!en(?:/|$)|api|_next|.*\\..*).*)';
+// One rule per depth, never a single `:path(.*)` param: a destination param that contains
+// slashes is encoded by OpenNext on workerd and the request ends in a 500 (/negocios/x, /a/b/c).
+const FIRST_SEGMENT = ':first((?!en$|api$|_next$)[^/.]+)';
 
 /**
  * A path and everything below it. Two explicit rules instead of `:path*`: OpenNext on workerd
@@ -42,7 +44,8 @@ export function buildLocaleRules(pathnames: Pathnames): {
     // /en/business/... is served by the Spanish-named folder /en/negocios/...
     ...translated.flatMap(({ es, en }) => withSubpaths(`/en${en}`, `/en${es}`)),
     { source: '/', destination: '/es' },
-    { source: SPANISH_CATCH_ALL, destination: '/es/:path' },
+    { source: `/${FIRST_SEGMENT}`, destination: '/es/:first' },
+    { source: `/${FIRST_SEGMENT}/:rest+`, destination: '/es/:first/:rest+' },
   ];
 
   const permanent = <T extends RewriteRule>(rules: T[]) =>

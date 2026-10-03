@@ -95,9 +95,25 @@ describe('translated English slugs (pathnames)', () => {
     expect(redirects.findIndex((r) => r.source === '/:path+/')).toBe(redirects.length - 1);
   });
 
-  it('rewrites the Spanish default locale without prefix, excluding en, api, _next and files', () => {
+  it('rewrites the Spanish default locale at any depth, excluding en, api, _next and files', () => {
     expect(rewrites).toContainEqual({ source: '/', destination: '/es' });
-    const catchAll = rewrites.find((r) => r.destination === '/es/:path');
-    expect(catchAll?.source).toBe('/:path((?!en(?:/|$)|api|_next|.*\\..*).*)');
+    const one = rewrites.find((r) => r.destination === '/es/:first');
+    const deep = rewrites.find((r) => r.destination === '/es/:first/:rest+');
+    expect(one).toBeDefined();
+    expect(deep).toBeDefined();
+    // a destination param must never carry slashes (that is what produced the 500)
+    expect(rewrites.some((r) => r.destination === '/es/:path')).toBe(false);
+  });
+
+  it('first-segment pattern accepts Spanish segments and refuses en, api, _next and dots', () => {
+    const pattern = /^(?!en$|api$|_next$)[^/.]+$/;
+    for (const ok of ['negocios', 'a', 'sobre-mi', 'entrada'])
+      expect(pattern.test(ok), ok).toBe(true);
+    for (const no of ['en', 'api', '_next', 'favicon.ico', 'robots.txt']) {
+      expect(pattern.test(no), no).toBe(false);
+    }
+    expect(rewrites.find((r) => r.destination === '/es/:first')?.source).toContain(
+      '(?!en$|api$|_next$)[^/.]+',
+    );
   });
 });

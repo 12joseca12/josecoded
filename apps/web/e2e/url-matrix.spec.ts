@@ -13,6 +13,11 @@ const cases: [path: string, status: number, lang?: string][] = [
   ['/en/no-existe', 404],
   ['/en/', 308],
   ['/negocios/', 308],
+  // deep Spanish paths must 404, never 500
+  ['/negocios/x', 404],
+  ['/a/b/c', 404],
+  ['/legal/aviso-legal', 404],
+  ['/en/a/b', 404],
 ];
 
 for (const [path, status, lang] of cases) {
