@@ -13,8 +13,12 @@ const valid = {
   NEXT_PUBLIC_HERO_MEDIA_VERSION: '1',
 };
 
+// Optional vars are cleared so the outer environment (e.g. CI's job env) cannot leak in.
+const optional = ['NEXT_PUBLIC_UMAMI_WEBSITE_ID', 'NEXT_PUBLIC_DEV_UI'] as const;
+
 function stubValidEnv() {
   for (const [key, value] of Object.entries(valid)) vi.stubEnv(key, value);
+  for (const key of optional) vi.stubEnv(key, undefined);
 }
 
 afterEach(() => {
