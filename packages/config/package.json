@@ -17,7 +17,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "eslint-config-next": "16.3.5",
+    "eslint-config-next": "16.3.6",
     "eslint-plugin-import-x": "4.17.1",
     "stylelint-config-standard": "40.0.0",
     "typescript-eslint": "8.70.0"
@@ -25,7 +25,7 @@
   "devDependencies": {
     "@types/node": "22.20.2",
     "eslint": "10.10.0",
-    "next": "16.3.5",
+    "next": "16.3.6",
     "react": "19.3.0",
     "stylelint": "17.16.0",
     "typescript": "5.9.3",

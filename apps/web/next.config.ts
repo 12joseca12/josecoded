@@ -13,6 +13,8 @@ const config: NextConfig = {
   transpilePackages: ['@josecoded/types', '@josecoded/pricing'],
   // no image optimizer in the worker: images are generated at build time (task 2.x)
   images: { unoptimized: true },
+  // do not advertise the framework
+  poweredByHeader: false,
   // next dev must not write AGENTS.md / CLAUDE.md into the app
   agentRules: false,
 
