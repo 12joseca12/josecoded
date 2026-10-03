@@ -126,7 +126,6 @@ export type TokenName =
   | '--sp-gap-scene'
   | '--sp-gap-bento'
   | '--sp-pad-cell'
-  | '--sp-container'
   | '--sp-gap-cell'
   | '--sp-gap-cell-body'
   | '--sp-0-5'
@@ -139,8 +138,10 @@ export type TokenName =
   | '--size-control-md'
   | '--size-control-lg'
   | '--size-control-xl'
+  | '--size-container'
   | '--focus-ring-width'
   | '--focus-ring-offset'
+  | '--focus-ring-color'
   | '--stroke-line'
   | '--stroke-line-active'
   | '--tint-cmdk'
@@ -383,7 +384,6 @@ export const tokens = {
   'sp-gap-scene': '--sp-gap-scene',
   'sp-gap-bento': '--sp-gap-bento',
   'sp-pad-cell': '--sp-pad-cell',
-  'sp-container': '--sp-container',
   'sp-gap-cell': '--sp-gap-cell',
   'sp-gap-cell-body': '--sp-gap-cell-body',
   'sp-0-5': '--sp-0-5',
@@ -396,8 +396,10 @@ export const tokens = {
   'size-control-md': '--size-control-md',
   'size-control-lg': '--size-control-lg',
   'size-control-xl': '--size-control-xl',
+  'size-container': '--size-container',
   'focus-ring-width': '--focus-ring-width',
   'focus-ring-offset': '--focus-ring-offset',
+  'focus-ring-color': '--focus-ring-color',
   'stroke-line': '--stroke-line',
   'stroke-line-active': '--stroke-line-active',
   'tint-cmdk': '--tint-cmdk',

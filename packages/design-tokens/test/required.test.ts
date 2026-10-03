@@ -133,6 +133,7 @@ it('uses none of the names retired by the 1.10 review', () => {
     '--font-mono-key-size',
     '--stagger-draw',
     '--delay-draw',
+    '--sp-container',
   ]) {
     expect(names, old).not.toContain(old);
   }

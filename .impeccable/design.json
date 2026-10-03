@@ -196,7 +196,6 @@
     "gap-scene": "clamp(1.25rem, 3svh, 2.5rem)",
     "gap-bento": "clamp(0.75rem, 0.4rem + 1.2vmin, 1.25rem)",
     "pad-cell": "clamp(1.125rem, 0.6rem + 1.6vmin, 2.25rem)",
-    "container": "82rem",
     "gap-cell": "clamp(0.875rem, 2svh, 1.5rem)",
     "gap-cell-body": "clamp(0.875rem, 2svh, 1.25rem)",
     "0-5": "0.125rem",
@@ -220,7 +219,8 @@
     "control-sm": "2.25rem",
     "control-md": "2.5rem",
     "control-lg": "3rem",
-    "control-xl": "3.5rem"
+    "control-xl": "3.5rem",
+    "container": "82rem"
   },
   "extensions": {
     "colorMeta": {
@@ -448,6 +448,36 @@
           "rgb(14 12 32 / 0.97)",
           "rgb(14 12 32 / 1.00)"
         ]
+      },
+      "pending": {
+        "role": "tertiary",
+        "displayName": "Pendiente (ámbar)",
+        "canonical": "oklch(83.4% 0.117 87)",
+        "tonalRamp": [
+          "#260600",
+          "#412100",
+          "#5c3c00",
+          "#795800",
+          "#987506",
+          "#b79336",
+          "#d7b358",
+          "#f8d379"
+        ]
+      },
+      "scrollbar-thumb": {
+        "role": "neutral",
+        "displayName": "Pulgar de la barra de scroll",
+        "canonical": "oklch(31.1% 0.099 284)",
+        "tonalRamp": [
+          "#11023a",
+          "#251e57",
+          "#3d3975",
+          "#575593",
+          "#7372b3",
+          "#9090d4",
+          "#afaff5",
+          "#cfcfff"
+        ]
       }
     },
     "typographyMeta": {
@@ -510,6 +540,42 @@
       "mono-kbd": {
         "displayName": "Mono de tecla",
         "purpose": "kbd; solo atajos reales."
+      },
+      "brand": {
+        "displayName": "Marca",
+        "purpose": "El nombre josecoded en la cabecera y el pie."
+      },
+      "mono-lang": {
+        "displayName": "Mono de idioma",
+        "purpose": "El enlace de idioma ES/EN de la cabecera."
+      },
+      "bubble": {
+        "displayName": "Burbuja",
+        "purpose": "Texto de las burbujas del mini chat."
+      },
+      "figure-pack": {
+        "displayName": "Cifra de pack",
+        "purpose": "Precio «desde» de cada pack."
+      },
+      "figure-pack-hero": {
+        "displayName": "Cifra de pack destacada",
+        "purpose": "Precio de pack en la celda destacada, escalado por su ancho."
+      },
+      "keycap": {
+        "displayName": "Tecla grande",
+        "purpose": "Las teclas ⌘ y K del cierre."
+      },
+      "display-compact": {
+        "displayName": "Display compacto",
+        "purpose": "El nombre del hero bajo el ancho compacto."
+      },
+      "title-sm": {
+        "displayName": "Title pequeño",
+        "purpose": "Título de artículo en las celdas pequeñas."
+      },
+      "pending": {
+        "displayName": "Pendiente",
+        "purpose": "Marcadores {{DATO}} aún sin contenido real."
       }
     },
     "alphas": [
@@ -777,7 +843,7 @@
       {
         "name": "state",
         "value": "200ms",
-        "purpose": "Cabecera, indicador de sección y estados de hover (añadido en 1.10: el prototipo usa 200 ms en 12 sitios)."
+        "purpose": "Cabecera, indicador de sección y estados de hover."
       },
       {
         "name": "slide",
@@ -837,12 +903,12 @@
       {
         "name": "blink",
         "value": "1s",
-        "purpose": "Cursor del campo de propuesta (añadido en 1.10)."
+        "purpose": "Cursor del campo de propuesta."
       },
       {
         "name": "canvas-in",
         "value": "1.2s",
-        "purpose": "Fundido de entrada de la escena WebGL (añadido en 1.10)."
+        "purpose": "Fundido de entrada de la escena WebGL."
       },
       {
         "name": "stagger-draw",
@@ -852,7 +918,7 @@
       {
         "name": "delay-draw",
         "value": "100ms",
-        "purpose": "Retardo del primer check (añadido en 1.10)."
+        "purpose": "Retardo del primer check."
       }
     ],
     "easings": [
@@ -874,54 +940,54 @@
       {
         "name": "standard",
         "value": "ease",
-        "purpose": "Colores y fondos (la palabra clave `ease` del prototipo; añadido en 1.10 para que los módulos no escriban easing literal)."
+        "purpose": "Colores y fondos: la palabra clave `ease`, para que los módulos no escriban easing literal."
       },
       {
         "name": "keycap",
         "value": "ease-out",
-        "purpose": "Tecla grande (palabra clave `ease-out`, distinta del token `ease-out`; añadido en 1.10)."
+        "purpose": "Tecla grande: la palabra clave `ease-out`, distinta del token `ease-out`."
       },
       {
         "name": "linear",
         "value": "linear",
-        "purpose": "Marquesina y animaciones ligadas al scroll (añadido en 1.10)."
+        "purpose": "Marquesina y animaciones ligadas al scroll."
       },
       {
         "name": "float",
         "value": "ease-in-out",
-        "purpose": "Flotación del arte (añadido en 1.10)."
+        "purpose": "Flotación del arte."
       },
       {
         "name": "blink",
         "value": "steps(1)",
-        "purpose": "Parpadeo del cursor (añadido en 1.10)."
+        "purpose": "Parpadeo del cursor."
       }
     ],
     "scroll": [
       {
         "name": "glide-min",
         "value": "600ms",
-        "purpose": "Duración mínima del glide entre escenas (v6.js:34)."
+        "purpose": "Duración mínima del glide entre escenas."
       },
       {
         "name": "glide-max",
         "value": "950ms",
-        "purpose": "Duración máxima del glide entre escenas (v6.js:34)."
+        "purpose": "Duración máxima del glide entre escenas."
       },
       {
         "name": "glide-rate",
         "value": "0.15",
-        "purpose": "Milisegundos de glide por píxel de distancia, sin unidad (v6.js:34: min(950, 600 + dist × 0.15))."
+        "purpose": "Milisegundos de glide por píxel de distancia, sin unidad: min(glide-max, glide-min + distancia × glide-rate)."
       },
       {
         "name": "wheel-threshold",
         "value": "24",
-        "purpose": "Acumulado de rueda (px) que dispara un cambio de escena, sin unidad (v6.js:56)."
+        "purpose": "Acumulado de rueda (px) que dispara un cambio de escena, sin unidad."
       },
       {
         "name": "wheel-lock",
         "value": "700ms",
-        "purpose": "Bloqueo tras un cambio de escena por rueda (v6.js:56)."
+        "purpose": "Bloqueo tras un cambio de escena por rueda."
       }
     ],
     "layers": [
@@ -968,7 +1034,7 @@
       {
         "name": "skip",
         "value": "60",
-        "purpose": "Enlace «saltar al contenido» (añadido en 1.10)."
+        "purpose": "Enlace «saltar al contenido»."
       }
     ],
     "viewport": [
@@ -980,17 +1046,17 @@
       {
         "name": "short",
         "value": "43.75rem",
-        "purpose": "Pantalla baja (alto máximo): encoge el hero apilado (era 700px, de alto)."
+        "purpose": "Pantalla baja (alto máximo): encoge el hero apilado."
       },
       {
         "name": "compact",
         "value": "56.25rem",
-        "purpose": "Layout compacto: hero apilado y packs en dos columnas (era 900px)."
+        "purpose": "Layout compacto: hero apilado y packs en dos columnas."
       },
       {
         "name": "menu",
         "value": "67.5rem",
-        "purpose": "Cabecera con menú ☰ (era 1080px)."
+        "purpose": "Cabecera con menú ☰."
       }
     ],
     "containers": [
@@ -1054,12 +1120,12 @@
       {
         "name": "grad-field-pool",
         "value": "radial-gradient(closest-side, rgb(91 75 255 / 0.1), transparent)",
-        "purpose": "Charco del campo de luz (añadido en 1.10)."
+        "purpose": "Charco del campo de luz."
       },
       {
         "name": "grad-mask-fade",
         "value": "linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent)",
-        "purpose": "Máscara de bordes de la marquesina (añadido en 1.10)."
+        "purpose": "Máscara de bordes de la marquesina."
       }
     ],
     "lights": [
@@ -1325,7 +1391,8 @@
   },
   "focus": {
     "focus-ring-width": "2px",
-    "focus-ring-offset": "3px"
+    "focus-ring-offset": "3px",
+    "focus-ring-color": "var(--violet-soft)"
   },
   "strokes": {
     "stroke-line": "2px",

@@ -71,7 +71,7 @@ Nombres de fichero en kebab-case, componentes en PascalCase, identificadores en 
 - GSAP solo entra para una pieza concreta que CSS y el JS propio no resuelvan, con justificación en la tarea (qué no se puede hacer, cuánto pesa gz) y aprobación del `revisor` (§11). La tarea 2.x de la spec que decía «GSAP + ScrollTrigger» queda superada (§12).
 - El JS de motion vive en `apps/web/lib/motion/` como módulos puros con tests (§7): `paging.ts` (paradas, `glide`, interrupción), `palette.ts`, `expand-cell.ts`, `cursor-light.ts`. Los componentes los invocan desde `useEffect` en un Client Component pequeño; nunca se mezclan cálculo y DOM en el mismo módulo.
 - Todo movimiento respeta `prefers-reduced-motion` como dice `PRODUCT.md`: fundidos, sin intro, sin morph, poster estático. El JS lee `matchMedia` una vez y expone `reduce` como en `base.js`.
-- Duraciones, easings y distancias son tokens (`--ease-out`, `--dur-fast: 150ms`, `--dur-scene: 800ms`, etc.), también en TypeScript: se leen con `getComputedStyle(root).getPropertyValue`, no se repiten como números en el código.
+- Duraciones, easings y distancias son tokens (`--ease-out`, `--dur-hover: 150ms`, `--dur-canvas-in: 1.2s`, etc.), también en TypeScript: se leen con `getComputedStyle(root).getPropertyValue`, no se repiten como números en el código.
 - Solo `transform` y `opacity` se animan en continuo; nada que provoque layout en cada frame.
 
 ## 4. Fidelidad al prototipo: estructura y valores 1:1

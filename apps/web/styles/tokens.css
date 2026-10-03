@@ -133,7 +133,6 @@
   --sp-gap-scene: clamp(1.25rem, 3svh, 2.5rem);
   --sp-gap-bento: clamp(0.75rem, 0.4rem + 1.2vmin, 1.25rem);
   --sp-pad-cell: clamp(1.125rem, 0.6rem + 1.6vmin, 2.25rem);
-  --sp-container: 82rem;
   --sp-gap-cell: clamp(0.875rem, 2svh, 1.5rem);
   --sp-gap-cell-body: clamp(0.875rem, 2svh, 1.25rem);
   --sp-0-5: 0.125rem;
@@ -148,10 +147,12 @@
   --size-control-md: 2.5rem;
   --size-control-lg: 3rem;
   --size-control-xl: 3.5rem;
+  --size-container: 82rem;
 
   /* focus */
   --focus-ring-width: 2px;
   --focus-ring-offset: 3px;
+  --focus-ring-color: var(--violet-soft);
 
   /* strokes */
   --stroke-line: 2px;
