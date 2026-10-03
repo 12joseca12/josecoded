@@ -95,13 +95,17 @@ Documentos (al día con la v6 desde el 2026-09-29):
 4. ~~Componentes de la home~~ hecho (2026-09-29).
 5. ~~Actualizar spec, UX, diseño técnico y plan + `/plan-eng-review`~~ hecho (2026-09-30: plan v2.1 con los 41 hallazgos).
 6. ~~Batería de stack y metodologías de producción~~ hecha (2026-09-30: 12 respuestas → working-agreements v1.2, `CLAUDE.md` reglas 11–13, plan v2.2).
-7. ~~Fase 0~~ cerrada (2026-10-02: 0.1 local, 0.2 con vídeo 700 KB; Radar 0.3–0.6 a la fase 7; web en Workers Free, rendimiento se analiza en producción). **Siguiente: fase 1a** en `chore/monorepo-base` (1.1 → 1.4 pricing bilingüe → 1.5 → 1.10 tokens) y después 1b `chore/supabase`.
+7. ~~Fase 0~~ cerrada. ~~Fase 1a~~ terminada y con puerta de calidad PASA (2026-10-03) en `chore/monorepo-base`, pendiente de PR y merge. **Siguiente: fase 1b** `chore/supabase` (1.2, 1.3, 1.6, 1.7 cron único + preview, 1.8 migraciones + RPCs, 1.9 gate con «Confirm email» y SMTP).
 8. Fase 2: port 1:1 de `home-v6` escena a escena, con capturas comparadas (2 %) y aprobación de Jose entre escenas. Al cerrarla, **fijar la fecha de válvula** y la tabla del hito «contenido completo».
 9. Orden de fases: 0 → 1a → 1b → 2 → hito de contenido → 3 → 4 → 5 → 6 → 8.1 → 9 (lanzamiento) → **7 Radar** → 10 Newsletter.
 
 Gates que no se cruzan sin OK explícito de Jose en la misma sesión: migraciones y deploys a producción, contratar servicios, tocar servicios preexistentes de Omen.
 
 ## Decisiones recientes
+
+- **2026-10-03:** **GitHub Free** con repo privado: no hay protección de ramas. Se sigue con PR por rama y squash por disciplina, con `revisor` como control; protección solo si se pasa a Pro. `main` se subió una única vez con los 44 commits de diseño antes del primer PR (OK de Jose). pnpm 11 en CI exige `allowBuilds` explícito en `pnpm-workspace.yaml` (en el Mac de Jose está `dangerouslyAllowAllBuilds` global, por eso en local no fallaba).
+
+- **2026-10-03 — Fase 1a terminada en `chore/monorepo-base`** (tareas 1.1, 1.4, 1.5, 1.10; cada una con `revisor` PASA). **Puerta de calidad: PASA en la vuelta 2** (qa, revisor-seguridad, revisor-accesibilidad, usuario-ejemplo, ui). Arreglos de la puerta: 500 en rutas españolas profundas, 404 localizado con título y enlace, `<title>` en páginas, tokens de trazo y círculo, Next 16.3.6 (GHSA-vcvr-r3jv-pc5j), sin `x-powered-by`, fronteras de ESLint endurecidas (+ `@eslint-community/eslint-plugin-eslint-comments`), `undici ^7.29.1`, `.gitignore` de entornos. 251 tokens. Config `web-preview` en `.claude/launch.json` para aprobaciones en local.
 
 - **2026-10-03 (Jose):** la página **404 se mantiene por idioma** (es/en según la URL), aunque el HTML de servidor sea un shell que completa el cliente al hidratar (sin JS se ve vacía; cada URL inexistente se renderiza en el Worker). Descartado el 404 estático bilingüe que proponía el `revisor`. Deuda aceptada y documentada.
 

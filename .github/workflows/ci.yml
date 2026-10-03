@@ -1,0 +1,97 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+# Public build-time variables (not secrets): apps/web validates them with zod and fails the build
+# if one is missing. Same values as apps/web/.env.example.
+env:
+  NEXT_PUBLIC_SITE_URL: http://localhost:3000
+  NEXT_PUBLIC_JOSECODED_API_URL: http://localhost:8787
+  NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_local
+  NEXT_PUBLIC_TURNSTILE_SITE_KEY: 1x00000000000000000000AA
+  NEXT_PUBLIC_CAL_LINK: josecoded/20min
+  NEXT_PUBLIC_WHATSAPP_NUMBER: '34600000000'
+  NEXT_PUBLIC_HERO_MEDIA_VERSION: '1'
+  NEXT_PUBLIC_DEV_UI: '1'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      # Duplicated blocks (working-agreements §15.4). Not installed in the repo: pnpm dlx.
+      - run: >-
+          pnpm dlx jscpd@5.4.0 apps packages
+          --min-lines 30 --min-tokens 120 --threshold 0
+          --ignore "**/*.test.*,**/database.ts,**/tokens.*,**/content/**,**/node_modules/**"
+
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      # Later tasks add here: check:hero-bundle + hero:media:check (2.9), Playwright against
+      # `wrangler dev` (1.5), RLS tests against `supabase start` (1.8), Lighthouse CI (2.9).
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm --filter @josecoded/web exec playwright install --with-deps chromium
+      # The URL matrix runs against the LOCAL preview (`opennextjs-cloudflare preview`, which
+      # populates the cache like production). Nothing is uploaded to Cloudflare.
+      - run: pnpm e2e

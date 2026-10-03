@@ -1,0 +1,5 @@
+# Server secrets for `wrangler dev` / `opennextjs-cloudflare preview` (copy to .dev.vars, ignored by git).
+# SUPABASE_SERVICE_ROLE_KEY is NOT used by the web: the service role lives only in the gateway.
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+SERVER_KEY=dev-only-change-me
+CALCOM_WEBHOOK_SECRET=dev-only-change-me

@@ -6,6 +6,12 @@
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "8765", "--directory", "docs/superpowers/design/ref"],
       "port": 8765
+    },
+    {
+      "name": "web-preview",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "web", "exec", "opennextjs-cloudflare", "preview", "--", "--ip", "127.0.0.1", "--port", "8788"],
+      "port": 8788
     }
   ]
 }

@@ -1,0 +1,33 @@
+# DISABLED until Cloudflare credentials exist in CI (CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID).
+# Production deploys are a GATE: only with Jose's explicit OK in the session, never migrations.
+#
+# To enable: remove `if: ${{ false }}` from the job and add the secrets. Uses
+# `opennextjs-cloudflare deploy` (it runs populateCache), NEVER a bare `wrangler deploy`
+# for the web app. The trigger stays manual on purpose.
+name: Deploy production (disabled)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    if: ${{ false }}
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter web exec opennextjs-cloudflare build
+      - run: pnpm --filter web exec opennextjs-cloudflare deploy
+      # Gateway deploy (`apps/api`, plain wrangler) and the post-deploy smoke tests: task 1.9.

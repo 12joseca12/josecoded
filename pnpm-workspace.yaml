@@ -1,0 +1,13 @@
+packages:
+  - 'apps/*'
+  - 'packages/*'
+overrides:
+  undici: '^7.29.1'
+# Build scripts allowed explicitly (pnpm 11 blocks them by default and fails in CI).
+# Native binaries/postinstall checks needed by Next, OpenNext/wrangler (workerd, esbuild) and the ESLint import resolver.
+allowBuilds:
+  '@parcel/watcher': true
+  '@swc/core': true
+  esbuild: true
+  unrs-resolver: true
+  workerd: true

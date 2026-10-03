@@ -1,0 +1,10 @@
+{
+  "name": "josecoded-web",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": { "directory": ".open-next/assets", "binding": "ASSETS" },
+  "preview_urls": true,
+  "observability": { "enabled": true },
+  // No `routes` until task 9.6 (custom domain josecoded.com). Target: Workers Free.
+}

@@ -154,7 +154,7 @@ josecoded/
 | Gestor | `pnpm` (`packageManager`) | 11.2.2 | La instalada en el Mac de Jose. Corepack la fija en CI |
 | Node | `.nvmrc` | 22 | Mínimo del worker de Omen (`engines >=22`); OpenNext y Wrangler lo soportan. En local corre Node 26 sin problema |
 | Monorepo | `turbo` | 2.10.13 | Caché local y remoto opcional; `pnpm build` en raíz ejecuta todo |
-| Web | `next` | 16.3.5 | Soportado por OpenNext (`>=16.3.3`) |
+| Web | `next` | 16.3.6 | Soportado por OpenNext (`>=16.3.3`). 16.3.6 corrige GHSA-vcvr-r3jv-pc5j |
 | | `react` / `react-dom` | 19.3.0 | |
 | | `@opennextjs/cloudflare` | 1.20.6 | Peer: `next >=16.3.3`, `wrangler ^4.125` |
 | | `wrangler` | 4.133.0 | Mismo en `apps/api` (hoy `^4.87`, se sube; aditivo) |
@@ -165,7 +165,7 @@ josecoded/
 | | ~~`lenis`~~ | — | **Eliminado** (v1.2): sin panel central, el scroll es el de `window`; UX v3.1 §3.7 no lo pide y §12 solo lo regula "si se usa". Menos JS y sin riesgo de secuestro del scroll en móvil (P13) |
 | | `three` | **a fijar en la tarea 0 del hero** (prototipo v6: `importmap` a la última 0.17x/0.18x) | Solo en `packages/glyph-scene`, importación selectiva desde `three` y `three/addons/postprocessing/*`; nunca en el chunk inicial (§1.6.2, test §8.6). Sin React Three Fiber |
 | | `next-intl` | 4.14.5 | Peer `next ^16`. Sin `proxy.ts` (ver 1.4) |
-| | `@next/mdx` + `@mdx-js/loader` + `@mdx-js/react` | 16.3.5 / 3.1.x | Compilación en build; ver decisión 1.5 |
+| | `@next/mdx` + `@mdx-js/loader` + `@mdx-js/react` | 16.3.6 / 3.1.x | Compilación en build; ver decisión 1.5 |
 | | `rehype-pretty-code` + `shiki` | 0.14.5 / 4.4.3 | Código en el blog, en build |
 | | `@supabase/ssr` + `@supabase/supabase-js` | 0.12.7 / 2.116.0 | Peer `supabase-js ^2.114` |
 | | `@marsidev/react-turnstile` | 1.6.1 | Widget Turnstile |
@@ -188,7 +188,7 @@ josecoded/
 | | `@lhci/cli` | 0.15.1 | |
 | | `@testing-library/react` + `happy-dom` | 16.3.3 / 20.14.5 | Componentes |
 | Calidad | `typescript` | **5.9.3** | No 7.x (port nativo, tooling aún desigual); `apps/api` baja de `^6.0.3` a 5.9.3 y se verifica con `typecheck` en la tarea 0 |
-| | `eslint` + `eslint-config-next` + `typescript-eslint` | 10.10.0 / 16.3.5 / 8.70.0 | |
+| | `eslint` + `eslint-config-next` + `typescript-eslint` | 10.10.0 / 16.3.6 (GHSA-vcvr-r3jv-pc5j) / 8.70.0 | |
 | | `prettier` | 3.9.7 | |
 | Build scripts | `sharp` | 0.35.4 | Optimización de imágenes en build (no en el worker) |
 | | `satori` + `@resvg/resvg-js` | última estable | OG images en build |

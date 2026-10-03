@@ -1,0 +1,10 @@
+{
+  "pack": "P2",
+  "priceFrom": 1400,
+  "isApp": false,
+  "pricingVersion": "2026-09-14",
+  "extras": ["seo_basic", "maintenance_basic"],
+  "source": "rules",
+  "summary": "fixture summary",
+  "scope": ["scope one", "scope two", "scope three"]
+}

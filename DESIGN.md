@@ -17,6 +17,8 @@ colors:
   violet-soft: "#b9adff"
   beam: "#5b4bff"
   green: "#3ddc84"
+  pending: "#e9c46a"
+  scrollbar-thumb: "#2c2660"
 typography:
   display:
     fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
@@ -91,13 +93,59 @@ typography:
     fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
     fontSize: "0.75rem"
     fontWeight: 400
-  mono-key:
+  mono-kbd:
     fontFamily: "Geist Mono, ui-monospace, SF Mono, monospace"
     fontSize: "0.6875rem"
     fontWeight: 500
     lineHeight: 1
+  brand:
+    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1rem"
+    fontWeight: 600
+    lineHeight: 1
+    letterSpacing: "-0.02em"
+  mono-lang:
+    fontFamily: "Geist Mono, ui-monospace, SF Mono, monospace"
+    fontSize: "0.75rem"
+    fontWeight: 500
+    lineHeight: 1
+  bubble:
+    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "0.875rem"
+    fontWeight: 400
+    lineHeight: 1.45
+  figure-pack:
+    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1.5rem"
+    fontWeight: 600
+    letterSpacing: "-0.02em"
+  figure-pack-hero:
+    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "clamp(1.5rem, 1rem + 2.2cqi, 2.5rem)"
+    fontWeight: 600
+    letterSpacing: "-0.035em"
+  keycap:
+    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1rem"
+    fontWeight: 500
+    lineHeight: 1
+  display-compact:
+    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "clamp(2.5rem, 11vw, 3.5rem)"
+    fontWeight: 600
+    lineHeight: 0.96
+    letterSpacing: "-0.045em"
+  title-sm:
+    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1.125rem"
+    fontWeight: 600
+    lineHeight: 1.15
+    letterSpacing: "-0.03em"
+  pending:
+    fontFamily: "Geist Mono, ui-monospace, SF Mono, monospace"
+    fontSize: "0.85em"
 rounded:
-  key: "0.3125rem"
+  kbd: "0.3125rem"
   icon: "0.4375rem"
   sm: "0.5rem"
   md: "0.625rem"
@@ -105,7 +153,10 @@ rounded:
   lg: "1rem"
   cell: "clamp(1rem, 0.6rem + 1vmin, 1.5rem)"
   tcard: "clamp(1.125rem, 0.8rem + 1vmin, 1.75rem)"
-  pill: "999px"
+  pill: "9999rem"
+  bubble-tail: "0.25rem"
+  circle: "50%"
+  focus: "0.375rem"
 spacing:
   gutter: "clamp(1rem, 4vw, 3.5rem)"
   pad-scene: "clamp(1rem, 0.5rem + 3vw, 3.5rem)"
@@ -113,13 +164,68 @@ spacing:
   gap-scene: "clamp(1.25rem, 3svh, 2.5rem)"
   gap-bento: "clamp(0.75rem, 0.4rem + 1.2vmin, 1.25rem)"
   pad-cell: "clamp(1.125rem, 0.6rem + 1.6vmin, 2.25rem)"
+  gap-cell: "clamp(0.875rem, 2svh, 1.5rem)"
+  gap-cell-body: "clamp(0.875rem, 2svh, 1.25rem)"
+  0-5: "0.125rem"
+  1: "0.25rem"
+  1-5: "0.375rem"
+  2: "0.5rem"
+  2-5: "0.625rem"
+  3: "0.75rem"
+  3-5: "0.875rem"
+  4: "1rem"
+  5: "1.25rem"
+  6: "1.5rem"
+  7: "1.75rem"
+  8: "2rem"
+  10: "2.5rem"
+  16: "4rem"
+sizes:
   container: "82rem"
-  xs: "0.25rem"
-  sm: "0.5rem"
-  md: "0.75rem"
-  lg: "1rem"
-  xl: "1.5rem"
-  2xl: "2rem"
+  dot: "0.375rem"
+  hit: "2.75rem"
+  control-sm: "2.25rem"
+  control-md: "2.5rem"
+  control-lg: "3rem"
+  control-xl: "3.5rem"
+focus:
+  focus-ring-width: "2px"
+  focus-ring-offset: "3px"
+  focus-ring-color: "{colors.violet-soft}"
+strokes:
+  stroke-line: "2px"
+  stroke-line-active: "3px"
+fontWeights:
+  emphasis: "500"
+alphas:
+  tint-cmdk: "rgb(157 140 255 / 0.06)"
+  tint-chip: "rgb(157 140 255 / 0.08)"
+  tint-kbd: "rgb(157 140 255 / 0.1)"
+  tint-icon: "rgb(157 140 255 / 0.12)"
+  tint-rail: "rgb(157 140 255 / 0.16)"
+  edge-selected: "rgb(157 140 255 / 0.2)"
+  pager-idle: "rgb(157 140 255 / 0.3)"
+  pager-hover: "rgb(157 140 255 / 0.6)"
+  edge-keycap-down: "rgb(157 140 255 / 0.5)"
+  tint-ghost: "rgb(124 108 255 / 0.1)"
+  tint-current: "rgb(124 108 255 / 0.12)"
+  tint-selected: "rgb(124 108 255 / 0.14)"
+  tint-hover: "rgb(124 108 255 / 0.16)"
+  tint-ghost-hover: "rgb(124 108 255 / 0.18)"
+  tint-emphasis: "rgb(124 108 255 / 0.2)"
+  tint-selection: "rgb(124 108 255 / 0.45)"
+  tint-bubble-other: "rgb(255 255 255 / 0.05)"
+  bg-segmented: "rgb(7 6 15 / 0.5)"
+  bg-prompt: "rgb(7 6 15 / 0.6)"
+  header-scrolled: "rgb(7 6 15 / 0.7)"
+  scrim: "rgb(7 6 15 / 0.72)"
+  palette-backdrop: "rgb(8 6 22 / 0.6)"
+  beam-1-a: "rgb(91 75 255 / 0.5)"
+  beam-1-b: "rgb(157 140 255 / 0.5)"
+  beam-2-a: "rgb(91 75 255 / 0.35)"
+  beam-2-b: "rgb(124 108 255 / 0.4)"
+  beam-3-a: "rgb(61 40 200 / 0.35)"
+  beam-3-b: "rgb(91 75 255 / 0.3)"
 components:
   button-solid:
     backgroundColor: "{colors.violet}"
@@ -127,48 +233,48 @@ components:
     typography: "{typography.label-button}"
     rounded: "{rounded.pill}"
     padding: "0 1.375rem"
-    height: "3rem"
+    height: "{sizes.control-lg}"
   button-solid-hover:
     backgroundColor: "{colors.violet-hi}"
     textColor: "{colors.ink}"
   button-ghost:
-    backgroundColor: "rgb(124 108 255 / 0.1)"
+    backgroundColor: "{alphas.tint-ghost}"
     textColor: "{colors.text}"
     typography: "{typography.label-button}"
     rounded: "{rounded.pill}"
     padding: "0 1.375rem"
-    height: "3rem"
+    height: "{sizes.control-lg}"
   button-ghost-hover:
-    backgroundColor: "rgb(124 108 255 / 0.18)"
+    backgroundColor: "{alphas.tint-ghost-hover}"
   button-sm:
     rounded: "{rounded.pill}"
     padding: "0 0.875rem"
-    height: "2.25rem"
+    height: "{sizes.control-sm}"
   button-lg:
     rounded: "{rounded.pill}"
     padding: "0 1.75rem"
-    height: "3.5rem"
+    height: "{sizes.control-xl}"
   link-arrow:
     textColor: "{colors.violet-soft}"
   cmdk-trigger:
-    backgroundColor: "rgb(157 140 255 / 0.06)"
+    backgroundColor: "{alphas.tint-cmdk}"
     textColor: "{colors.text-3}"
     typography: "{typography.label}"
     rounded: "{rounded.md}"
     padding: "0 0.5rem 0 0.75rem"
-    height: "2.25rem"
+    height: "{sizes.control-sm}"
   chat-pill:
-    backgroundColor: "rgb(124 108 255 / 0.1)"
+    backgroundColor: "{alphas.tint-ghost}"
     textColor: "{colors.text}"
     typography: "{typography.small}"
     rounded: "{rounded.pill}"
     padding: "0 0.875rem"
-    height: "2.25rem"
+    height: "{sizes.control-sm}"
   kbd:
-    backgroundColor: "rgb(157 140 255 / 0.1)"
+    backgroundColor: "{alphas.tint-kbd}"
     textColor: "{colors.text-2}"
-    typography: "{typography.mono-key}"
-    rounded: "{rounded.key}"
+    typography: "{typography.mono-kbd}"
+    rounded: "{rounded.kbd}"
     padding: "0.25rem 0.375rem"
   cell:
     backgroundColor: "{colors.card}"
@@ -181,10 +287,10 @@ components:
     rounded: "{rounded.cell}"
     padding: "{spacing.pad-cell}"
   cell-icon:
-    backgroundColor: "rgb(157 140 255 / 0.12)"
+    backgroundColor: "{alphas.tint-icon}"
     textColor: "{colors.violet-soft}"
     rounded: "{rounded.sm}"
-    size: "2rem"
+    size: "{spacing.8}"
   project-card:
     backgroundColor: "{colors.card}"
     textColor: "{colors.text}"
@@ -195,22 +301,22 @@ components:
     textColor: "{colors.text-2}"
     rounded: "{rounded.md}"
     padding: "0 0.75rem"
-    height: "2.75rem"
+    height: "{sizes.hit}"
   list-item-selected:
-    backgroundColor: "rgb(124 108 255 / 0.14)"
+    backgroundColor: "{alphas.tint-selected}"
     textColor: "{colors.text}"
   segmented:
-    backgroundColor: "rgb(7 6 15 / 0.5)"
+    backgroundColor: "{alphas.bg-segmented}"
     textColor: "{colors.text-2}"
     typography: "{typography.small}"
     rounded: "{rounded.pill}"
-    padding: "0.25rem"
+    padding: "{spacing.1}"
   segmented-thumb:
     backgroundColor: "{colors.violet}"
     textColor: "{colors.ink}"
     rounded: "{rounded.pill}"
   chip:
-    backgroundColor: "rgb(157 140 255 / 0.08)"
+    backgroundColor: "{alphas.tint-chip}"
     textColor: "{colors.text-2}"
     rounded: "{rounded.pill}"
     padding: "0.5rem 0.875rem"
@@ -218,8 +324,8 @@ components:
     backgroundColor: "{colors.overlay}"
     textColor: "{colors.text-2}"
     rounded: "{rounded.lg}"
-    padding: "0.5rem"
-    width: "min(17rem, calc(100vw - 2 * var(--gutter)))"
+    padding: "{spacing.2}"
+    width: "min(17rem, calc(100vw - 2 * {spacing.gutter}))"
   palette:
     backgroundColor: "{colors.overlay}"
     textColor: "{colors.text}"
@@ -290,25 +396,26 @@ Una paleta índigo casi monocroma: fondo y superficies de la misma familia de ma
 **Character:** Una sola familia geométrica y técnica, apretada en los titulares y relajada en el texto. Se activan las alternativas `ss01` y `cv11` en todo el documento. Pesos entre 400 y 600, con 550 para botones y títulos de celda.
 
 ### Hierarchy
-- **Display** (600, 0.96): el nombre en el hero, en dos líneas con `text-wrap: balance`. Bajo 900 px baja a clamp(2.5rem, 11vw, 3.5rem).
+- **Display** (600, 0.96): el nombre en el hero, en dos líneas con `text-wrap: balance`. Bajo 56.25rem (900 px) pasa al rol **Display compacto** (`display-compact`, clamp(2.5rem, 11vw, 3.5rem), mismos peso, interlineado y tracking).
 - **Display de cierre** (600, 1): «¿Empezamos?» en la última escena, a dos tonos, máximo 22ch.
 - **Headline** (600, 1.04): el titular de cada escena, a dos tonos, máximo 22ch. Su tamaño depende del ancho y del alto a la vez, para que una pantalla baja no se desborde.
 - **Nombre de proyecto** (600, 1): el nombre en cada tarjeta del carrusel, escalado por el ancho de la tarjeta (cqi).
-- **Cifra** (600, 1): precios de tarifa; los de los packs van de 1.5rem a clamp(1.5rem, 1rem + 2.2cqi, 2.5rem) en la celda destacada, a -0.035em.
-- **Title** (600, 1.15): título de artículo; 1.125rem en las celdas pequeñas.
+- **Cifra** (600, 1): precios de tarifa, a -0.045em. **Cifra de pack** (`figure-pack`, 600, 1.5rem, -0.02em) y **cifra de pack destacada** (`figure-pack-hero`, 600, clamp(1.5rem, 1rem + 2.2cqi, 2.5rem), -0.035em) en la celda destacada.
+- **Title** (600, 1.15, -0.03em): título de artículo. **Title pequeño** (`title-sm`, 1.125rem): el de las celdas pequeñas.
 - **Lede** (400, 1.5): subtítulo del hero, máximo 34ch, con las dos audiencias en lavanda a 500.
 - **Lead** (400, 1.55): entradillas dentro de las celdas, máximo 52ch, en lavanda secundaria.
 - **Body** (400, 1rem, 1.55): texto corrido.
 - **Título de celda** (550, 0.9375rem): el nombre de cada celda junto a su icono, en lavanda secundaria.
 - **Label** (0.875rem): navegación y pie. **Small** (0.8125rem): notas, metadatos, botones pequeños. **Caption** (0.75rem): grupos y pistas de la paleta, nombres de pack.
-- **Mono de tecla** (500, 0.6875rem): kbd; el enlace de idioma va en Geist Mono 500 a 0.75rem.
+- **Mono de tecla** (`mono-kbd`, 500, 0.6875rem): kbd. **Mono de idioma** (`mono-lang`, 500, 0.75rem, 1): el enlace de idioma.
+- **Marca** (`brand`, 600, 1rem, 1, -0.02em): el nombre en la cabecera y el pie. **Burbuja** (`bubble`, 400, 0.875rem, 1.45): mini chat. **Tecla grande** (`keycap`, 500, 1rem, 1): ⌘K del cierre. **Pendiente** (`pending`, mono 0.85em): marcadores {{DATO}}. **Énfasis** (`--font-emphasis-weight`, 500): las dos audiencias del subtítulo.
 
 ### Named Rules
 **The One Family Rule.** Geist para todo. Geist Mono solo en teclas, el enlace de idioma, los marcadores {{DATO}} y los glifos (nube, intro, arte de Proyectos). Ningún otro tipo de letra.
 
 **The Two-Tone Headline Rule.** Todo titular de escena y el del cierre se escriben en dos frases: la primera en lavanda (text) dice qué es, la segunda en lavanda terciaria (text-3) dice para quién o con qué. Se mantiene en todas las escenas; el h1 del hero es la única excepción porque es un nombre.
 
-**The Tight Display Rule.** Cuanto más grande, más apretado: display, cierre y cifras a -0.045em, headline y nombre de proyecto a -0.04em, title a -0.03em, marca a -0.02em. El texto corrido va con tracking normal.
+**The Tight Display Rule.** Cuanto más grande, más apretado: display, cierre y cifras de tarifa a -0.045em, headline y nombre de proyecto a -0.04em, cifra de pack destacada a -0.035em, title a -0.03em, cifra de pack y marca a -0.02em. El texto corrido va con tracking normal.
 
 **The No Kicker Rule.** Ningún titular lleva antetítulo: sin badge ni eyebrow sobre el h1 del hero, sin kicker sobre los h2 de escena y sin antetítulo sobre el nombre de un proyecto. El tipo de proyecto (App, Web) va debajo, como metadato con icono.
 
@@ -356,7 +463,7 @@ Híbrido: la profundidad real la ponen la nube y el campo de luz; la interfaz so
 
 ## Shapes
 
-Esquinas suaves y escalonadas por tamaño: cuanto mayor es la pieza, mayor el radio. Tecla (key), icono de fila (icon), icono de celda, filas del menú y de la paleta (sm), buscador, filas de lista y tecla grande (md), burbujas del mini chat (bubble, con la esquina del lado del emisor a 0.25rem), menú, paleta y hueco de foto (lg), celdas fluidas (cell) y tarjetas de proyecto algo más redondas (tcard). Botones, chat, selector, chips y marquesina son píldoras; el punto del chat es un círculo. Las líneas del indicador de sección, las barras del ciclo y del raíl son trazos de 2 px con extremos redondeados. Los haces del campo de luz son elipses muy alargadas (22 × 170vmax), desenfocadas 5vmax e inclinadas entre 26° y 38°.
+Esquinas suaves y escalonadas por tamaño: cuanto mayor es la pieza, mayor el radio. Tecla (kbd), icono de fila (icon), icono de celda, filas del menú y de la paleta (sm), buscador, filas de lista y tecla grande (md), burbujas del mini chat (bubble, con la esquina del lado del emisor a 0.25rem), menú, paleta y hueco de foto (lg), celdas fluidas (cell) y tarjetas de proyecto algo más redondas (tcard). Botones, chat, selector, chips y marquesina son píldoras; el punto del chat es un círculo. Las líneas del indicador de sección, las barras del ciclo y del raíl son trazos de 2 px (`--stroke-line`; 3 px, `--stroke-line-active`, la línea activa del indicador) con extremos redondeados. Los haces del campo de luz son elipses muy alargadas (22 × 170vmax), desenfocadas 5vmax e inclinadas entre 26° y 38°.
 
 ## Components
 
@@ -443,3 +550,20 @@ Un gesto con propósito por celda: marquesina doble del stack en sentidos opuest
 - **Don't** montar rejillas de tarjetas iguales ni franjas de métricas o contadores.
 - **Don't** usar glassmorphism de plantilla, parallax de fondo, Inter con texto degradado ni iconos brillantes.
 - **Don't** cambiar el estilo de las tarjetas para separarlas del fondo; se ajustan card y card-line.
+
+## Tokens consumibles (tarea 1.10)
+
+`.impeccable/design.json` es la fuente única de tokens; `pnpm tokens:build` genera `apps/web/styles/{tokens.css,breakpoints.ts,tokens.ts}` (251 custom properties) y un test de deriva impide editarlos a mano. Los valores salen 1:1 de `docs/superpowers/design/ref/home-v6/{base,v6}.css`. Prefijos por grupo:
+
+- **Colores** sin prefijo (`--bg`, `--violet`…), más `--pending` y `--scrollbar-thumb`. Familias `--font-sans` y `--font-mono`; cada rol tipográfico emite `--font-<rol>-{size,weight,leading,tracking,features}` y `--font-emphasis-weight` (500).
+- **Radios** `--r-*` (`--r-kbd`, `--r-bubble-tail`, `--r-focus`, `--r-circle` 50 % y la píldora `--r-pill: 9999rem`, no `999px`).
+- **Espaciado** `--sp-*`: escala numérica en rem (`--sp-0-5` 0.125, `--sp-1` 0.25, `--sp-1-5` 0.375, `--sp-2` 0.5, `--sp-2-5` 0.625, `--sp-3` 0.75, `--sp-3-5` 0.875, `--sp-4` 1, `--sp-5` 1.25, `--sp-6` 1.5, `--sp-7` 1.75, `--sp-8` 2, `--sp-10` 2.5, `--sp-16` 4) y semánticos fluidos (`--sp-gutter`, `--sp-pad-scene`, `--sp-pad-top`, `--sp-pad-cell`, `--sp-gap-scene`, `--sp-gap-bento`, `--sp-gap-cell`, `--sp-gap-cell-body`). Sustituye a `sp-xs…2xl`. El ancho máximo ya no es un espaciado: es `--size-container`.
+- **Tamaños** `--size-container` (82rem, el ancho máximo de la página), `--size-dot`, `--size-hit` (2.75rem), `--size-control-{sm,md,lg,xl}` (2.25, 2.5, 3, 3.5rem). **Trazos**: `--stroke-line` 2px (barras del ciclo, del carrusel y del indicador) y `--stroke-line-active` 3px (línea activa del indicador). **Foco**: `--focus-ring-width` 2px, `--focus-ring-offset` 3px, `--focus-ring-color` (alias de `--violet-soft`) y `--r-focus`, tomados del `:focus-visible` del prototipo.
+- **Alfas por uso** sin prefijo de grupo: `--tint-*` (rellenos; `--tint-emphasis` es el énfasis de la celda destacada), `--edge-*` y `--pager-*` (filetes y líneas; `--edge-keycap-down`), `--bg-segmented`, `--bg-prompt`, `--header-scrolled`, `--scrim`, `--palette-backdrop`, `--beam-{1,2,3}-{a,b}`.
+- **Sombras** `--shadow-*` (hairline, hairline-strong, card, card-hover, card-focus, button, overlay, kbd, keycap, keycap-down, selected-row), compuestas con `var()` de sus tokens base (`--line`, `--line-2`, `--card-line`, `--edge-selected`, `--edge-keycap-down`); degradados `--grad-*` y `--glow-art` (`--grad-cell-tint` y `--grad-cell-hero` usan `--tint-selected`, `--tint-emphasis` y `--card`); `--light-*`; desenfoques `--blur-*` más `--saturate-header` (1.2).
+- **Movimiento:** `--dur-*` (`--dur-hover`, `--dur-nudge`, `--dur-keycap`, `--dur-canvas-in`, `--dur-stagger-draw`, `--dur-delay-draw`…), `--ease-*` (los easings en palabra clave del prototipo también son tokens: `--ease-standard`, `--ease-keycap`, `--ease-linear`, `--ease-float`, `--ease-blink`), `--glide-min`, `--glide-max`, `--glide-rate` (0.15), `--wheel-threshold`, `--wheel-lock`.
+- **Capas** `--z-*`; **viewport** `--bp-*` (`--bp-short` es el alto máximo de pantalla baja, `--bp-compact` el ancho compacto) y **contenedores** `--cq-*`, siempre en `rem` y exportados también como `bp` y `cq` desde `styles/breakpoints.ts` porque las media queries no admiten `var()`.
+
+Renombres de la revisión de `ui`: `dur-scene` → `dur-canvas-in`, `dur-fast` → `dur-hover`, `dur-arrow` → `dur-nudge`, `dur-key` → `dur-keycap`, `ease-key` → `ease-keycap`, `edge-key-down` → `edge-keycap-down`, `r-key` → `r-kbd`, `shadow-key` → `shadow-kbd`, rol `mono-key` → `mono-kbd`, `scrollbar` → `scrollbar-thumb`, `tint-cell-hero` → `tint-emphasis`, `bp-hero-stack` → `bp-short`.
+
+Añadidos sobre la lista del plan, todos presentes en el prototipo: `dur-state` (200 ms, 12 usos), `dur-blink`, `dur-canvas-in`, `dur-delay-draw`, `z-skip`, los easings en palabra clave, `grad-field-pool`, `grad-mask-fade`, `sp-gap-cell-body`, `pending` y `scrollbar-thumb`.

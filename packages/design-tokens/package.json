@@ -1,0 +1,23 @@
+{
+  "name": "@josecoded/design-tokens",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "tokens:build": "node scripts/build.ts",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@josecoded/config": "workspace:*",
+    "@types/node": "22.20.2",
+    "eslint": "10.10.0",
+    "typescript": "5.9.3",
+    "vitest": "4.1.11",
+    "zod": "4.6.5"
+  }
+}
