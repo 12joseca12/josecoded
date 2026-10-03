@@ -74,6 +74,15 @@ Documentos (al día con la v6 desde el 2026-09-29):
 - [ ] Cloudflare: `api.josecoded.com` como custom domain y URL `workers.dev` del gateway. Los servidores MCP de Cloudflare necesitan autorizarse (`/mcp` en una sesión interactiva).
 - [ ] Corregir los ejemplos provisionales de `Comercial/voz.md`.
 
+**De la puerta de calidad de la fase 1a (2026-10-03), no bloquean la rama:**
+- [ ] Tarea de **cabeceras de seguridad** antes de la fase 9 (CSP con nonce, HSTS en dominio propio, `frame-ancestors 'none'`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`) con test E2E (revisor-seguridad M2).
+- [ ] Acciones de GitHub fijadas por **SHA** + Dependabot; jscpd como devDependency fijada en lockfile (seguridad B2).
+- [ ] `preview_urls: true` en `apps/web/wrangler.jsonc`: decidir en 1.9 (Access sobre previews o `noindex` y sin rutas sensibles como `/dev/ui`) (seguridad B5).
+- [ ] Precios: cubrir los 36 `{{DATO}}` de `pricing.json` (inglés y «para quién») y que la pantalla diga «desde» y «sin IVA» antes de mostrarlos (3.3; usuario-ejemplo).
+- [ ] `/business` sin `/en` da 404: valorar redirección a `/en/business` (usuario-ejemplo).
+- [ ] Fase 2: media queries con sintaxis de rango (`width <= 67.5rem` / `width > 67.5rem`); tokens semánticos para huecos fluidos con `svh`/`vmin` (`.scene`, `.tour__sticky`, `.tcard`, `.close`) y paddings del hero/botón; decidir `color-mix` vs color relativo para la luz de `Cell` (ui).
+- [ ] A11y fase 2: zona táctil del pager ≥ 24 px (44 recomendado) con pseudo-elemento; `--pager-idle` 1,61:1 necesita indicador no cromático o alfa ~0,55; pulgar de scroll a ~3:1 (`#5a4fb0` o `--pager-hover`); helper axe en 2.17 incluyendo los 404 (revisor-accesibilidad).
+
 **Suelto**
 - [ ] Accesibilidad: al descomponer etiquetas en glifos (home-v4) el nombre accesible puede leerse con basura; en v6 ya no se usa, confirmar al implementar.
 - [ ] `.gitignore` de `josedev` y `josecoded-worker` con `graphify-out/` sin commitear.
@@ -93,6 +102,8 @@ Documentos (al día con la v6 desde el 2026-09-29):
 Gates que no se cruzan sin OK explícito de Jose en la misma sesión: migraciones y deploys a producción, contratar servicios, tocar servicios preexistentes de Omen.
 
 ## Decisiones recientes
+
+- **2026-10-03 (Jose):** la página **404 se mantiene por idioma** (es/en según la URL), aunque el HTML de servidor sea un shell que completa el cliente al hidratar (sin JS se ve vacía; cada URL inexistente se renderiza en el Worker). Descartado el 404 estático bilingüe que proponía el `revisor`. Deuda aceptada y documentada.
 
 - **2026-10-02 (Jose):** **`apps/web` en Workers Free** (junto al gateway), **sin código de medición de CPU**: el rendimiento se analiza con la web construida y en producción. Fase 0 cerrada. Aprobaciones en local hasta tener credenciales de Cloudflare en CI; workflows de preview y producción desactivados de momento.
 

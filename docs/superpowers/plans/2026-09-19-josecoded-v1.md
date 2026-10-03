@@ -437,6 +437,8 @@ it('feed has ≥ 10 items with title, link and pubDate', () => {
 
 > **v2.4 (2026-10-02, Jose): `apps/web` se despliega en Workers Free** (junto al gateway). **No se escribe código de medición de CPU** (fuera la medida de `cpuTime` de la 0.1 y cualquier script `cpu:measure`); el rendimiento se analiza con la web construida y en producción, y solo entonces se valoraría Paid. La fase 0 queda **cerrada** (0.1 local y 0.2). Hasta tener credenciales de Cloudflare en CI, las aprobaciones de Jose se hacen en local (`pnpm dev`/`opennextjs-cloudflare preview` en el navegador del panel) y `preview.yml`/`deploy-production.yml` quedan desactivados; el criterio de 1.5 «tests contra la URL de preview» pasa a «contra el preview local».
 
+> **v2.4 (revisión de 1.1, 2026-10-02):** las carpetas `apps/web/messages/{es,en}/<pantalla>/` fusionadas en `i18n/request.ts` (adenda v2.1 de 1.1) **se hacen en la 1.5**, donde nace `apps/web`. Se mantiene ESLint 10 con `settings.react.version` leído de `react/package.json`; la 1.5 (`pnpm lint` sobre la `apps/web` real) es la prueba de fuego y solo si revienta una regla activa se reabre bajar a ESLint 9. jscpd fijado a versión exacta en CI.
+
 ## Fase 1 — Monorepo, `apps/api` movido, `packages/pricing`, CI · Estimación M · rama `chore/monorepo`
 
 ### Tarea 1.1 — Esqueleto del monorepo
@@ -742,7 +744,7 @@ it('manifest lists inherited routes', () => {
 
 **Ficheros:**
 - Crear: `supabase/migrations/20260917100000_leads_web_fields.sql`, `20260917100100_pack_codes.sql`, `20260917100200_blog_comments.sql`, `20260917100300_affiliates.sql`, `20260917100400_affiliate_rewards.sql`, `20260917100500_upgrade_requests.sql`, `20260917100600_client_access_claim.sql`, `20260917100650_admin_close_lead_paid.sql`, `20260917100700_notify_lead_event.sql` (comentario), **`20260929100000_user_profiles.sql`** (v2.0: tabla `user_profiles` write-once, RPC `area_lead_summary()` y columna `leads.user_id`; DT §1.12), **copiando literalmente el SQL de DT §6.2**; `apps/web/tests/rls.test.ts`; `apps/web/tests/helpers/supabase-test-clients.ts` (`clientFor('jose'|'ana'|'bob'|'anon')` con login por password contra `http://127.0.0.1:54321`).
-- Modificar: `supabase/seed/seed.sql` (Ana afiliada `standard` con código `ANA-TEST`, Bob afiliado `premium` `BOB-TEST`, 2 leads (uno con `affiliate_code='ANA-TEST'`), 1 recompensa `pending`, 2 comentarios `pending`/`approved`, `clients.invite_email`), `supabase/functions/notify/index.ts` (nuevo `case 'lead.created'` y `case 'system.ping_failed'`; `EMAIL_FROM = 'josecoded <no-reply@josecoded.com>'`; `ADMIN_NOTIFY_EMAIL` opcional).
+- Modificar: `supabase/seed/seed.sql` (Ana afiliada `standard` con código `ANA-TEST01`, Bob afiliado `premium` `BOB-TEST02`, 2 leads (uno con `affiliate_code='ANA-TEST01'`), 1 recompensa `pending`, 2 comentarios `pending`/`approved`, `clients.invite_email`), `supabase/functions/notify/index.ts` (nuevo `case 'lead.created'` y `case 'system.ping_failed'`; `EMAIL_FROM = 'josecoded <no-reply@josecoded.com>'`; `ADMIN_NOTIFY_EMAIL` opcional).
 
 **Pasos:**
 - [ ] 1. Test que falla (los inserts de seed fallan porque no existen las tablas):
@@ -860,6 +862,8 @@ it('committed tokens.css equals a fresh build', () => {
 **Cierre de la fase 1:** `revisor` sobre `chore/monorepo`; `/puerta-calidad` (sin UI: `qa` prueba `wrangler dev` de api y web, `revisor-seguridad` revisa CORS, `envSchema`, RLS —incluida `user_profiles`— y workflows). **Jose protege `main` en GitHub antes del primer merge** (working-agreements §9). Merge a `main`. Arrancan en paralelo `feat/radar-core` (7.1–7.6) y `feat/glyph-scene` (2.5a).
 
 ---
+> **v2.4 (decisiones de `ui` sobre tokens, 2026-10-02) para los componentes de la fase 2:** barra deslizante de packs = JS solo escribe `--pack-y` (offsetTop + offsetHeight en px) y el CSS suma el hueco con `top: calc(var(--pack-y) + var(--sp-1-5))` (sin `+6` en JS); umbral del indicador de sección medido sobre el botón (`right * 2 < button.offsetWidth`), sin constante 36; trazos de 2–3 px (pager, ciclo, raíl, packs) con `border-radius: var(--r-pill)`; `outline-offset` de los packs = `calc(var(--sp-1-5) - var(--focus-ring-width))`; tiempos del ciclo de glifos y parámetros de `scene.js` son configuración de `packages/glyph-scene`, no tokens. **Para Jose / `revisor-accesibilidad` (decidir en el navegador):** pulgar de la barra de scroll `#2c2660` sobre fondo da 1,49:1 (1.4.11 pide 3:1 si cuenta como control propio) y zona táctil del botón del pager 2,25 × 1,125rem (comprobar 2.5.8 o subir el alto sin cambiar la línea).
+
 ## Fase 2 — Shell público, home v6 («bento por escenas»), i18n es/en, SEO + GEO · Estimación XL · ramas `feat/shell-home` y `feat/glyph-scene`
 
 > **v2.0 (2026-09-29): fase reescrita contra `ref/home-v6/`.** Referencia obligatoria y única: el prototipo `docs/superpowers/design/ref/home-v6/` (`index.html`, `base.css`, `v6.css`, `base.js`, `v6.js`, `scene.js`), que se porta **1:1** (working-agreements §4); sistema visual `DESIGN.md` + `.impeccable/design.json`; inventario de componentes `2026-09-29-componentes-home-v6.md` (en adelante **INV**, con `fichero:línea` del prototipo por componente); UX v4.0 §4.1; DT v1.3 §1.6, §1.9–1.11. Antes de portar una escena, el implementador sirve el prototipo (`python3 -m http.server 8765 --directory docs/superpowers/design/ref`) y lee el DOM real. Las escenas se portan **en el orden del prototipo** (hero → Sobre mí → Empresas → Negocios → Proyectos → Blog → cierre) y no se abre la siguiente sin cerrar la validación visual (2.13) de la anterior.
@@ -1883,11 +1887,11 @@ it('rejects without turnstile or server key', async () => { const r = await SELF
 it('accepts server key for calcom', async () => { const r = await SELF.fetch('http://x/api/v1/leads', { method:'POST', headers:{ 'content-type':'application/json', 'x-josecoded-server-key': env.SERVER_KEY }, body: JSON.stringify(lead({ source:'calcom', turnstileToken: undefined })) }); expect(r.status).toBe(201); });
 it('requires email or phone', async () => { const r = await SELF.fetch('http://x/api/v1/leads', { method:'POST', headers:{ 'content-type':'application/json' }, body: JSON.stringify(lead({ contact:{ name:'X' } })) }); expect(r.status).toBe(400); });
 it('self-referral is stored with the code and flagged, not rejected', async () => {
-  const r = await SELF.fetch('http://x/api/v1/leads', { method:'POST', headers:{ 'content-type':'application/json' }, body: JSON.stringify(lead({ affiliateCode:'ANA-TEST', contact:{ name:'Ana', email:'ana@test' } })) });
-  expect(r.status).toBe(201); const row = await readLead((await r.json()).data.leadId); expect(row.affiliate_code).toBe('ANA-TEST'); expect(row.meta.self_referral_suspect).toBe(true);
+  const r = await SELF.fetch('http://x/api/v1/leads', { method:'POST', headers:{ 'content-type':'application/json' }, body: JSON.stringify(lead({ affiliateCode:'ANA-TEST01', contact:{ name:'Ana', email:'ana@test' } })) });
+  expect(r.status).toBe(201); const row = await readLead((await r.json()).data.leadId); expect(row.affiliate_code).toBe('ANA-TEST01'); expect(row.meta.self_referral_suspect).toBe(true);
 });
 it('unknown affiliate code → 400', async () => { const r = await SELF.fetch('http://x/api/v1/leads', { method:'POST', headers:{ 'content-type':'application/json' }, body: JSON.stringify(lead({ affiliateCode:'NOPE-0000' })) }); expect(r.status).toBe(400); });
-it('GET /affiliates/validate', async () => { expect((await (await SELF.fetch('http://x/api/v1/affiliates/validate?code=ANA-TEST')).json()).data.valid).toBe(true); expect((await (await SELF.fetch('http://x/api/v1/affiliates/validate?code=ZZZ-0000')).json()).data.valid).toBe(false); });
+it('GET /affiliates/validate', async () => { expect((await (await SELF.fetch('http://x/api/v1/affiliates/validate?code=ANA-TEST01')).json()).data.valid).toBe(true); expect((await (await SELF.fetch('http://x/api/v1/affiliates/validate?code=ZZZ-0000')).json()).data.valid).toBe(false); });
 ```
 - [ ] 2. → FAIL. 3. Implementar según DT §3.3–3.4 (`fuente` mapeada, `monto` = `priceFrom` de la propuesta recuperada de KV y re-tarificada, `waitUntil(notifyLead)`, `notified:'pending'` si no termina en 3 s; `N8N_LEAD_WEBHOOK_ENABLED` opcional). `POST /notify/lead` con `assertAdmin` existente. 4. → PASS. 5. Commit: `git commit -m "feat(api): leads endpoint with Turnstile/server-key auth, affiliate attribution and edge-function notification"`.
 
@@ -2027,12 +2031,12 @@ it('accepts a valid HMAC-SHA256 and rejects a tampered body', () => {
 import { it, expect } from 'vitest';
 import { captureRef } from './ref-cookie';
 it('stores a well-formed code once and ignores later codes and junk', () => {
-  expect(captureRef('?ref=ANA-3B7K', undefined)).toEqual({ set:'ANA-3B7K', notice:true });
-  expect(captureRef('?ref=BOB-7F2K', 'ANA-3B7K')).toEqual({ notice:false });
+  expect(captureRef('?ref=ANA-3B7K2Q', undefined)).toEqual({ set:'ANA-3B7K2Q', notice:true });
+  expect(captureRef('?ref=BOB-7F2KX9', 'ANA-3B7K2Q')).toEqual({ notice:false });
   expect(captureRef('?ref=<script>', undefined)).toEqual({ notice:false });
 });
 ```
-- [ ] 2. → FAIL. 3. Implementar; `RefCapture` consulta `GET /affiliates/validate` antes de escribir la cookie (`SameSite=Lax`, 30 días, `Secure` en https); el RH del webhook usa `await req.text()`, cabecera `x-cal-signature-256`, `attendees[0]`, `responses.notes`, `metadata.ref` → `affiliateCode`. E2E de DT §8.2 "Afiliado" (visita con `?ref=ANA-TEST` → `RefNotice` → contacto → lead con `affiliate_code`; segundo `?ref` no sobrescribe; autoreferido marcado). 4. → PASS. 5. Commit: `git commit -m "feat(web): Cal.com webhook to gateway lead, call_booked event and affiliate ref capture"`.
+- [ ] 2. → FAIL. 3. Implementar; `RefCapture` consulta `GET /affiliates/validate` antes de escribir la cookie (`SameSite=Lax`, 30 días, `Secure` en https); el RH del webhook usa `await req.text()`, cabecera `x-cal-signature-256`, `attendees[0]`, `responses.notes`, `metadata.ref` → `affiliateCode`. E2E de DT §8.2 "Afiliado" (visita con `?ref=ANA-TEST01` → `RefNotice` → contacto → lead con `affiliate_code`; segundo `?ref` no sobrescribe; autoreferido marcado). 4. → PASS. 5. Commit: `git commit -m "feat(web): Cal.com webhook to gateway lead, call_booked event and affiliate ref capture"`.
 
 **Hecho cuando:** tests y E2E en verde; el RH responde 401 con firma inválida.
 
@@ -2316,7 +2320,7 @@ it('P2 client choosing P3 sees 1.100 € and submits computed price', () => {
 
 **Ficheros:** `.../recomiendame/page.tsx`, `.../recomiendame/actions.ts`, `components/area/{referral-link,referral-leads,rewards-list}.tsx`, `components/area/referral-link.test.tsx`, `e2e/client-area.spec.ts` (ampliar).
 
-**Pasos:** 1. Test: `ReferralLink` muestra la URL con el código y al pulsar "Copiar" llama a `navigator.clipboard.writeText` y a `track('referral_copy')`. 2. FAIL. 3. Implementar. 4. PASS; E2E: Bob (no cliente) entra, obtiene código `BOB-TEST`, ve su recompensa `pending` de seed. 5. Commit: `git commit -m "feat(web): referral program page with code, attributed leads and rewards"`.
+**Pasos:** 1. Test: `ReferralLink` muestra la URL con el código y al pulsar "Copiar" llama a `navigator.clipboard.writeText` y a `track('referral_copy')`. 2. FAIL. 3. Implementar. 4. PASS; E2E: Bob (no cliente) entra, obtiene código `BOB-TEST02`, ve su recompensa `pending` de seed. 5. Commit: `git commit -m "feat(web): referral program page with code, attributed leads and rewards"`.
 
 **Cierre de la fase 5:** `revisor`; `/puerta-calidad` completa (`usuario-ejemplo` como cliente Ana y como afiliado Bob; `revisor-seguridad` sobre RLS y URLs firmadas); merge.
 
