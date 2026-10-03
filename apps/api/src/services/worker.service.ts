@@ -30,14 +30,33 @@ function getWorkerTimeoutMs(env: Env): number {
   return Number.isFinite(n) && n > 0 ? n : fallback;
 }
 
-function buildWorkerRequestHeaders(env: Env, hasBody: boolean): Record<string, string> {
+function buildWorkerRequestHeaders(token: string, hasBody: boolean): Record<string, string> {
   const headers: Record<string, string> = {
-    Authorization: `Bearer ${env.WORKER_INTERNAL_TOKEN}`,
+    Authorization: `Bearer ${token}`,
   };
   if (hasBody) {
     headers['Content-Type'] = 'application/json';
   }
   return headers;
+}
+
+/**
+ * Calls the backend with `WORKER_INTERNAL_TOKEN`. While the token is being rotated, the backend may still only
+ * know the previous one: on a 401, and only if `WORKER_INTERNAL_TOKEN_PREV` is set, it is retried once with it.
+ */
+async function fetchFromWorker(
+  env: Env,
+  url: string,
+  init: { method: WorkerMethod; body: string | undefined; signal: AbortSignal },
+): Promise<Response> {
+  const hasBody = init.body !== undefined;
+  const send = (token: string) =>
+    fetch(url, { ...init, headers: buildWorkerRequestHeaders(token, hasBody) });
+  const response = await send(env.WORKER_INTERNAL_TOKEN);
+  if (response.status === 401 && env.WORKER_INTERNAL_TOKEN_PREV) {
+    return send(env.WORKER_INTERNAL_TOKEN_PREV);
+  }
+  return response;
 }
 
 export async function callWorker<T>(
@@ -53,15 +72,11 @@ export async function callWorker<T>(
     options.timeoutMs ?? getWorkerTimeoutMs(env),
   );
 
-  const response = await fetch(
-    url,
-    {
-      method: options.method ?? 'GET',
-      headers: buildWorkerRequestHeaders(env, hasBody),
-      body: hasBody ? JSON.stringify(options.body) : undefined,
-      signal: controller.signal,
-    },
-  ).finally(() => clearTimeout(timeout));
+  const response = await fetchFromWorker(env, url, {
+    method: options.method ?? 'GET',
+    body: hasBody ? JSON.stringify(options.body) : undefined,
+    signal: controller.signal,
+  }).finally(() => clearTimeout(timeout));
 
   const rawText = await response.text();
   let data: unknown = null;
@@ -96,15 +111,11 @@ export async function fetchWorkerResponse(
     options.timeoutMs ?? getWorkerTimeoutMs(env),
   );
 
-  return fetch(
-    url,
-    {
-      method: options.method ?? 'GET',
-      headers: buildWorkerRequestHeaders(env, hasBody),
-      body: hasBody ? JSON.stringify(options.body) : undefined,
-      signal: controller.signal,
-    },
-  ).finally(() => clearTimeout(timeout));
+  return fetchFromWorker(env, url, {
+    method: options.method ?? 'GET',
+    body: hasBody ? JSON.stringify(options.body) : undefined,
+    signal: controller.signal,
+  }).finally(() => clearTimeout(timeout));
 }
 
 function upstreamErrorMessage(error: UpstreamError): string {
@@ -161,7 +172,7 @@ export function toUpstreamFail(error: unknown) {
     });
   }
   if (error instanceof Error && error.name === 'AbortError') {
-    return fail('upstream_error', 'Gateway timed out waiting for the Android emulator session', {
+    return fail('upstream_error', 'Gateway timed out waiting for the upstream worker', {
       backendCode: 'GATEWAY_TIMEOUT',
     });
   }
