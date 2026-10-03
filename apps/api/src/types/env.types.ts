@@ -75,4 +75,28 @@ export type Env = {
 
   /** Modelo Workers AI para el admin-chat (default `@cf/meta/llama-3.3-70b-instruct-fp8-fast`). */
   AI_CHAT_MODEL?: string;
+
+  // --- Added by plan 1.7 for the new modules (DT §9). All optional until the task that uses each one. ---
+  /** Previous internal token, accepted for 24 h while rotating `WORKER_INTERNAL_TOKEN` (worker.service.ts). */
+  WORKER_INTERNAL_TOKEN_PREV?: string;
+  TURNSTILE_SECRET_KEY?: string;
+  /** Server-to-server key of `leads` (header `x-josecoded-server-key`). */
+  SERVER_KEY?: string;
+  NOTIFY_SHARED_SECRET?: string;
+  N8N_LEAD_WEBHOOK_ENABLED?: string;
+  PROPOSALS_DAILY_LIMIT_IP?: string;
+  PROPOSALS_DAILY_LIMIT_ALL?: string;
+  AI_PROPOSAL_MODEL?: string;
+  /** Required from task 3.7 (AI Gateway for proposals). */
+  AI_GATEWAY_ID?: string;
+  ALLOWED_TURNSTILE_HOSTNAMES?: string;
+  GITHUB_APP_ID?: string;
+  GITHUB_APP_INSTALLATION_ID?: string;
+  GITHUB_APP_PRIVATE_KEY?: string;
+  /** Native rate limiting bindings (wrangler `ratelimits`). Absent in local dev. */
+  LEADS_RATE_LIMITER?: RateLimiterBinding;
+  AFFILIATE_RATE_LIMITER?: RateLimiterBinding;
+  RADAR_RATE_LIMITER?: RateLimiterBinding;
 };
+
+export type RateLimiterBinding = { limit(opts: { key: string }): Promise<{ success: boolean }> };

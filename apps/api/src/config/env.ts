@@ -1,7 +1,15 @@
 import { z } from 'zod';
-import type { ApiMode, Env } from '../types/env.types';
+import type { ApiMode, Env, RateLimiterBinding } from '../types/env.types';
 
 const apiModeSchema = z.enum(['development', 'production'] satisfies ApiMode[]);
+
+/** Native Rate Limiting binding (object with `.limit()`, not a string): kept as is, absent in local dev. */
+const rateLimiterSchema = z
+  .custom<RateLimiterBinding>(
+    (v) => typeof v === 'object' && v !== null && typeof (v as { limit?: unknown }).limit === 'function',
+    { message: 'Rate limiter binding must expose limit()' },
+  )
+  .optional();
 
 const envSchema = z.object({
   API_MODE: apiModeSchema.default('development'),
@@ -32,6 +40,24 @@ const envSchema = z.object({
   // fallaría en runtime pese a compilar bien. Opcional (como AI_RATE_LIMITER): puede
   // faltar en tests o en local sin el binding; `generateAdminReply` falla explícito
   // si falta y el pipeline de admin-chat cae al fallback local.
+  // New modules (plan 1.7, DT §9). Optional for now; every new binding must be listed here or parseEnv strips it.
+  WORKER_INTERNAL_TOKEN_PREV: z.string().min(10).optional(),
+  TURNSTILE_SECRET_KEY: z.string().min(1).optional(),
+  SERVER_KEY: z.string().min(1).optional(),
+  NOTIFY_SHARED_SECRET: z.string().min(1).optional(),
+  N8N_LEAD_WEBHOOK_ENABLED: z.enum(['true', 'false']).optional(),
+  PROPOSALS_DAILY_LIMIT_IP: z.string().regex(/^\d+$/).optional(),
+  PROPOSALS_DAILY_LIMIT_ALL: z.string().regex(/^\d+$/).optional(),
+  AI_PROPOSAL_MODEL: z.string().min(1).optional(),
+  // becomes required with task 3.7
+  AI_GATEWAY_ID: z.string().min(1).optional(),
+  ALLOWED_TURNSTILE_HOSTNAMES: z.string().optional(),
+  GITHUB_APP_ID: z.string().min(1).optional(),
+  GITHUB_APP_INSTALLATION_ID: z.string().min(1).optional(),
+  GITHUB_APP_PRIVATE_KEY: z.string().min(1).optional(),
+  LEADS_RATE_LIMITER: rateLimiterSchema,
+  AFFILIATE_RATE_LIMITER: rateLimiterSchema,
+  RADAR_RATE_LIMITER: rateLimiterSchema,
   AI: z
     .custom<Env['AI']>(
       (v) => typeof v === 'object' && v !== null && typeof (v as { run?: unknown }).run === 'function',
