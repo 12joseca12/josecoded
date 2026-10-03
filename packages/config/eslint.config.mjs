@@ -5,6 +5,7 @@
 // React.FC / enums (Jose did not pick them).
 import { createRequire } from 'node:module';
 
+import eslintComments from '@eslint-community/eslint-plugin-eslint-comments';
 import nextCoreWebVitals from 'eslint-config-next/core-web-vitals';
 import { createNodeResolver, importX } from 'eslint-plugin-import-x';
 import tseslint from 'typescript-eslint';
@@ -18,9 +19,10 @@ const webFiles = ['apps/web/**/*.{js,jsx,mjs,ts,tsx,mts,cts}'];
 
 const restrictions = {
   messages: {
-    group: ['**/messages/**/*.json'],
-    message: 'Use useTranslations/getTranslations; never import messages JSON directly.',
-    dynamic: '/messages\\/.*\\.json$/',
+    group: ['**/messages/**/*.json', '**/messages/es', '**/messages/en', '@/messages/*'],
+    message:
+      'Use useTranslations/getTranslations; never import the message catalogs (JSON or es/en modules) directly.',
+    dynamic: '/messages\\/(?:.*\\.json|es|en)$/',
     dynamicTemplate: '/messages\\//',
   },
   database: {
@@ -48,6 +50,13 @@ const restrictions = {
       'supabase-js is allowed only in apps/web/lib/supabase/ and apps/api/src/adapters/ (use the typed clients).',
     dynamic: '/^@supabase\\/supabase-js$/',
   },
+  // import(variable) / import(`…${x}`): the path cannot be checked, so it is only allowed where the
+  // module list is deliberately closed (i18n loaders, the glyph-scene worker)
+  dynamicImports: {
+    selector: "ImportExpression[source.type!='Literal']",
+    message:
+      'Dynamic import() needs a literal path: the boundaries above cannot be checked otherwise.',
+  },
   adapters: {
     group: ['**/adapters/*', '**/adapters'],
     message: 'Routes receive deps (buildDeps(env)); they never import adapters.',
@@ -64,11 +73,16 @@ const restrict = (ids) => {
   return {
     'no-restricted-imports': [
       'error',
-      { patterns: picked.map(({ group, message }) => ({ group, message })) },
+      {
+        patterns: picked
+          .filter((r) => 'group' in r)
+          .map(({ group, message }) => ({ group, message })),
+      },
     ],
     'no-restricted-syntax': [
       'error',
       ...picked.flatMap((r) => [
+        ...('selector' in r ? [{ selector: r.selector, message: r.message }] : []),
         ...('dynamic' in r
           ? [{ selector: `ImportExpression[source.value=${r.dynamic}]`, message: r.message }]
           : []),
@@ -86,8 +100,8 @@ const restrict = (ids) => {
   };
 };
 
-const everywhere = ['messages', 'database', 'tokens', 'three', 'supabase'];
-const without = (/** @type {string} */ id) => everywhere.filter((x) => x !== id);
+const everywhere = ['messages', 'database', 'tokens', 'three', 'supabase', 'dynamicImports'];
+const without = (/** @type {string[]} */ ...ids) => everywhere.filter((x) => !ids.includes(x));
 
 const boundaries = [
   { files: ['**/*.{js,jsx,mjs,ts,tsx,mts,cts}'], rules: restrict(everywhere) },
@@ -100,13 +114,33 @@ const boundaries = [
     rules: restrict(everywhere),
   },
   // the only places where each thing is legitimate
-  { files: ['apps/web/messages/**', 'apps/web/i18n/**'], rules: restrict(without('messages')) },
-  { files: ['packages/glyph-scene/**'], rules: restrict(without('three')) },
+  {
+    files: ['apps/web/messages/**', 'apps/web/i18n/**'],
+    rules: restrict(without('messages', 'dynamicImports')),
+  },
+  { files: ['packages/glyph-scene/**'], rules: restrict(without('three', 'dynamicImports')) },
   {
     files: ['apps/web/lib/supabase/**', 'apps/api/src/adapters/**'],
     rules: restrict(without('supabase')),
   },
 ];
+
+// --- the boundaries cannot be switched off with a comment ------------------------------------------
+
+const noSilencing = {
+  files: ['**/*.{js,jsx,mjs,ts,tsx,mts,cts}'],
+  plugins: { '@eslint-community/eslint-comments': eslintComments },
+  linterOptions: { reportUnusedDisableDirectives: 'error' },
+  rules: {
+    '@eslint-community/eslint-comments/no-restricted-disable': [
+      'error',
+      'no-restricted-imports',
+      'no-restricted-syntax',
+    ],
+    // a blanket `eslint-disable` would switch the boundaries off too
+    '@eslint-community/eslint-comments/no-unlimited-disable': 'error',
+  },
+};
 
 // --- import-x (order, duplicates, cycles) --------------------------------------------
 
@@ -189,5 +223,6 @@ export default tseslint.config(
   ...web,
   importRules,
   ...boundaries,
+  noSilencing,
   noLiteralsInJsx,
 );

@@ -1,8 +1,8 @@
 import { getTranslations } from 'next-intl/server';
 
 import { resolveLocale } from '@/lib/locale';
-import type { LocaleParams } from '@/lib/locale';
 
+import type { LocaleParams } from '@/lib/locale';
 import type { Metadata } from 'next';
 
 export async function generateMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {

@@ -2,8 +2,8 @@ import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
 import { resolveLocale } from '@/lib/locale';
-import type { LocaleParams } from '@/lib/locale';
 
+import type { LocaleParams } from '@/lib/locale';
 import type { Metadata } from 'next';
 
 // Every URL without a page lands here (extension-less Spanish paths are rewritten under /es,
