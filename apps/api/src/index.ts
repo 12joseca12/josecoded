@@ -1,17 +1,19 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-import type { AppEnv } from './deps';
-import { withDeps } from './middlewares/with-deps';
-import { healthRoutes } from './modules/health.routes';
-import { systemRoutes } from './modules/system.routes';
-import { devWorkerProxyRoutes } from './modules/dev-worker-proxy.routes';
-import { v1Routes } from './modules/v1.routes';
+
 import { parseEnv } from './config/env';
 import {
   requestId,
   securityHeaders,
 } from './middlewares/security.middleware';
+import { withDeps } from './middlewares/with-deps';
+import { devWorkerProxyRoutes } from './modules/dev-worker-proxy.routes';
+import { healthRoutes } from './modules/health.routes';
+import { systemRoutes } from './modules/system.routes';
+import { v1Routes } from './modules/v1.routes';
 import { fail } from './utils/api-response';
+
+import type { AppEnv } from './deps';
 
 const app = new Hono<AppEnv>();
 

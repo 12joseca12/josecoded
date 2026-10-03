@@ -277,8 +277,11 @@ describe('legacy gateway (apps/api, heredado, intocable)', () => {
   });
 
   it('keeps linting everything new in apps/api with the full rules', async () => {
-    // the legacy list is explicit: new modules, middlewares, ports and deps are not in it
+    // the legacy list is literal: new files are not in it, even inside the legacy folders
     for (const file of [
+      'apps/api/src/index.ts',
+      'apps/api/src/services/leads.service.ts',
+      'apps/api/src/utils/cron.ts',
       'apps/api/src/deps.ts',
       'apps/api/src/modules/proposals/proposals.routes.ts',
       'apps/api/src/middlewares/with-deps.ts',

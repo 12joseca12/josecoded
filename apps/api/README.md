@@ -1,8 +1,9 @@
 # josecoded-api
 
 Moved from `josedev/josecoded-api` on 2026-10-03 (josedev commit `baa8f0dea9543c6274aa0ad8ff133c6ae861fabc`,
-branch `plan-p8-rediseno`). Contracts unchanged. Legacy code stays as it was (it is excluded from the new
-lint rules in `packages/config/eslint.config.mjs`); new modules follow ports and adapters
+branch `plan-p8-rediseno`). Contracts unchanged. The files copied from there stay as they were: they are
+excluded from the new lint rules by a literal file list in `packages/config/eslint.config.mjs`. Everything
+else, including `src/index.ts` and any new file in `services/` or `utils/`, is linted in full. New modules follow ports and adapters
 (`src/deps.ts`, `src/adapters/`, working-agreements §17). The rest of this file is the original text
 and still names `josedev` paths.
 
