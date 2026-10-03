@@ -58,7 +58,7 @@ See `.dev.vars.example`. Key ones:
 ```bash
 pnpm dev            # wrangler dev, Postgres-backed if SUPABASE_SERVICE_ROLE_KEY is set
 pnpm dev -- --mock  # in-memory mock stores, no Supabase needed (see forum.mock-store.ts)
-pnpm test           # Jest (13 suites); moves to Vitest in workerd in task 1.3
+pnpm test           # Vitest in workerd (@cloudflare/vitest-pool-workers), local only
 pnpm typecheck
 pnpm lint
 pnpm build          # wrangler deploy --dry-run --outdir dist (offline, uploads nothing)
