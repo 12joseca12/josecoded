@@ -1,4 +1,4 @@
 {
   "site": { "name": "josecoded" },
-  "notFound": { "title": "Página no encontrada" }
+  "notFound": { "title": "Página no encontrada", "home": "Volver al inicio" }
 }

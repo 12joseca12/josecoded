@@ -1,4 +1,4 @@
 {
   "site": { "name": "josecoded" },
-  "notFound": { "title": "Page not found" }
+  "notFound": { "title": "Page not found", "home": "Back to home" }
 }

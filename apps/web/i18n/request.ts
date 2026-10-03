@@ -1,4 +1,3 @@
-import { locale as rootLocale } from 'next/root-params';
 import { hasLocale } from 'next-intl';
 import { getRequestConfig } from 'next-intl/server';
 
@@ -11,9 +10,10 @@ const loaders = {
   en: () => import('../messages/en'),
 } as const;
 
-export default getRequestConfig(async () => {
-  // the locale comes from the route params, not from headers: there is no middleware
-  const candidate = await rootLocale();
+export default getRequestConfig(async ({ requestLocale }) => {
+  // The locale is the one the route set with setRequestLocale() (layouts and pages); there is no
+  // middleware and no header sniffing. Anything else falls back to the default locale.
+  const candidate = await requestLocale;
   const locale = hasLocale(routing.locales, candidate) ? candidate : routing.defaultLocale;
   return { locale, messages: (await loaders[locale]()).default };
 });
