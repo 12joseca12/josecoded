@@ -15,7 +15,9 @@
         "es": [
           "Web de presentación + contacto + SEO base + textos legales. Sin gestión ni pedidos"
         ],
-        "en": ["{{DATO: pack P1 includes (en)}}"]
+        "en": [
+          "{{DATO: pack P1 includes (en)}}"
+        ]
       },
       "forWhom": {
         "es": "{{DATO: pack P1 forWhom (es)}}",
@@ -34,7 +36,9 @@
         "es": [
           "P1 + pedidos o reservas + gestión básica (subir, modificar, eliminar productos o citas). Sin panel interno"
         ],
-        "en": ["{{DATO: pack P2 includes (en)}}"]
+        "en": [
+          "{{DATO: pack P2 includes (en)}}"
+        ]
       },
       "forWhom": {
         "es": "{{DATO: pack P2 forWhom (es)}}",
@@ -53,7 +57,9 @@
         "es": [
           "P2 + panel interno con roles: pedidos, clientes, stock, agenda, exportaciones, facturación básica o integración con una herramienta del cliente"
         ],
-        "en": ["{{DATO: pack P3 includes (en)}}"]
+        "en": [
+          "{{DATO: pack P3 includes (en)}}"
+        ]
       },
       "forWhom": {
         "es": "{{DATO: pack P3 forWhom (es)}}",
@@ -72,7 +78,9 @@
         "es": [
           "P3 + automatizaciones en n8n (avisos, emails, WhatsApp, sincronización con herramientas, informes) + IA (respuestas, clasificación, resúmenes)"
         ],
-        "en": ["{{DATO: pack P4 includes (en)}}"]
+        "en": [
+          "{{DATO: pack P4 includes (en)}}"
+        ]
       },
       "forWhom": {
         "es": "{{DATO: pack P4 forWhom (es)}}",
@@ -93,7 +101,9 @@
         "es": [
           "React Native/Expo, iOS + Android, 3–5 pantallas, auth, backend simple (Supabase), publicación en stores"
         ],
-        "en": ["{{DATO: app APP_MVP includes (en)}}"]
+        "en": [
+          "{{DATO: app APP_MVP includes (en)}}"
+        ]
       },
       "forWhom": {
         "es": "{{DATO: app APP_MVP forWhom (es)}}",
@@ -109,8 +119,12 @@
       "price": 6000,
       "weeks": 8,
       "includes": {
-        "es": ["MVP + notificaciones, pagos o integración con API del cliente"],
-        "en": ["{{DATO: app APP_PLUS includes (en)}}"]
+        "es": [
+          "MVP + notificaciones, pagos o integración con API del cliente"
+        ],
+        "en": [
+          "{{DATO: app APP_PLUS includes (en)}}"
+        ]
       },
       "forWhom": {
         "es": "{{DATO: app APP_PLUS forWhom (es)}}",
