@@ -262,6 +262,39 @@ describe('eslint-config-next under ESLint 10', () => {
   });
 });
 
+describe('legacy gateway (apps/api, heredado, intocable)', () => {
+  const supabaseImport =
+    "import { createClient } from '@supabase/supabase-js';\nexport { createClient };\n";
+
+  it('does not apply the new boundaries to the files moved from josecoded-api', async () => {
+    const ids = await rules(supabaseImport, 'apps/api/src/services/supabase.service.ts');
+    expect(ids).not.toContain('no-restricted-imports');
+  });
+
+  it('does not apply the import order to the legacy files', async () => {
+    const code = "import { b } from './b';\nimport { z } from 'zod';\nexport { b, z };\n";
+    expect(await rules(code, 'apps/api/src/modules/v1.routes.ts')).not.toContain('import-x/order');
+  });
+
+  it('keeps linting everything new in apps/api with the full rules', async () => {
+    // the legacy list is explicit: new modules, middlewares, ports and deps are not in it
+    for (const file of [
+      'apps/api/src/deps.ts',
+      'apps/api/src/modules/proposals/proposals.routes.ts',
+      'apps/api/src/middlewares/with-deps.ts',
+      'apps/api/src/ports/clock.ts',
+    ]) {
+      expect(await rules(supabaseImport, file), file).toContain('no-restricted-imports');
+    }
+  });
+
+  it('allows supabase-js in the adapters, as for any new code', async () => {
+    expect(await rules(supabaseImport, 'apps/api/src/adapters/supabase.ts')).not.toContain(
+      'no-restricted-imports',
+    );
+  });
+});
+
 describe('scope of the strictness', () => {
   it('does not add the extra TypeScript rules Jose did not choose', async () => {
     // enum + React.FC + a value import used only as a type: none of that is banned here

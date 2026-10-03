@@ -125,6 +125,42 @@ const boundaries = [
   },
 ];
 
+// --- legacy gateway (heredado, intocable) ----------------------------------------------------------
+// The code moved from josedev/josecoded-api keeps its contracts and its shape: working-agreements §17.1
+// (ports and adapters) only applies to NEW modules. These globs are an explicit list, not a directory,
+// so anything new under apps/api/src (adapters/, deps.ts, new modules, new services) is linted in full.
+// Rules switched off here: the ones this repo added (boundaries, import order) plus
+// no-unused-vars, which the legacy code already breaks. The only `any` without a disable comment
+// is switched off for its own file below, so the unused-directive check stays on everywhere else.
+const legacyApi = [
+  'apps/api/src/index.ts',
+  'apps/api/src/index.test.ts',
+  'apps/api/src/forum-moderation.contract.test.ts',
+  'apps/api/src/config/**',
+  'apps/api/src/schemas/**',
+  'apps/api/src/types/**',
+  'apps/api/src/utils/**',
+  'apps/api/src/middlewares/{auth,native-rate-limit,security}.middleware{,.test}.ts',
+  'apps/api/src/modules/{v1,v1-protected,forum,admin-chat,admin-chat-admin,dev-worker-proxy,health,system}.routes{,.test}.ts',
+  'apps/api/src/services/**',
+  'apps/api/scripts/**',
+];
+
+const legacyGateway = {
+  files: legacyApi,
+  rules: {
+    'no-restricted-imports': 'off',
+    'no-restricted-syntax': 'off',
+    'import-x/order': 'off',
+    '@typescript-eslint/no-unused-vars': 'off',
+  },
+};
+
+const legacyAny = {
+  files: ['apps/api/src/middlewares/native-rate-limit.middleware.test.ts'],
+  rules: { '@typescript-eslint/no-explicit-any': 'off' },
+};
+
 // --- the boundaries cannot be switched off with a comment ------------------------------------------
 
 const noSilencing = {
@@ -223,6 +259,8 @@ export default tseslint.config(
   ...web,
   importRules,
   ...boundaries,
+  legacyGateway,
+  legacyAny,
   noSilencing,
   noLiteralsInJsx,
 );
