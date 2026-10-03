@@ -167,16 +167,16 @@ josecoded/
 | | `next-intl` | 4.14.5 | Peer `next ^16`. Sin `proxy.ts` (ver 1.4) |
 | | `@next/mdx` + `@mdx-js/loader` + `@mdx-js/react` | 16.3.6 / 3.1.x | Compilación en build; ver decisión 1.5 |
 | | `rehype-pretty-code` + `shiki` | 0.14.5 / 4.4.3 | Código en el blog, en build |
-| | `@supabase/ssr` + `@supabase/supabase-js` | 0.12.7 / 2.116.0 | Peer `supabase-js ^2.114` |
+| | `@supabase/ssr` + `@supabase/supabase-js` | 0.12.7 / 2.117.2 | Peer `supabase-js ^2.114` |
 | | `@marsidev/react-turnstile` | 1.6.1 | Widget Turnstile |
 | | `@calcom/embed-react` | 1.5.3 | Reserva 20 min (vía Empresas) |
 | | ~~`ogl`~~ | — | **Eliminado** (v1.1). En v1.2 el único WebGL es `three` en `GlyphScene` (D16) |
 | | `lucide-react` | 1.47.0 | Iconos de UI por import nombrado (sin UMD de CDN como `base.js`); trazo 1.75, 1.05em (`DESIGN.md`) |
 | | `zod` | 4.6.5 | Validación de env, formularios, frontmatter y `pricing.json` |
-| API | `hono` | 4.13.8 | Hoy 4.12.16; subida menor |
+| API | `hono` | 4.13.12 | Hoy 4.12.16; subida menor |
 | | `zod` | 4.6.5 | Hoy 4.4.2 |
-| | `@supabase/supabase-js` | 2.116.0 | Hoy 2.105.4 |
-| | `@cloudflare/workers-types` | 5.20260917.1 | |
+| | `@supabase/supabase-js` | 2.117.2 (apps/web usa la misma versión para no duplicarla en el lockfile) | Hoy 2.105.4 |
+| | `@cloudflare/workers-types` | 5.20260925.2 | |
 | | `fast-xml-parser` | a fijar (tarea 0 Radar) | Feed RSS de Tecnoempleo en el gateway (§11.4); ~10 KB. El HTML de fichas se extrae con `HTMLRewriter` nativo, sin cheerio |
 | | `@cloudflare/puppeteer` | a fijar (tarea 0 Radar) | PDF del CV con el binding `BROWSER` (Browser Rendering, §11.7); cliente fino, no incluye Chromium |
 | Glyph-scene | `three` | ver arriba | Paquete sin React; `esbuild` (dev) para `render/` y el worker de nubes |
