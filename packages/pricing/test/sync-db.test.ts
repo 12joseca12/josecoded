@@ -54,6 +54,9 @@ describe('buildSyncSql', () => {
     expect(bad((p) => (p.extras[0]!.code = 'geo; x' as 'geo'))).toThrow(/invalid extra code/);
     expect(bad((p) => (p.extras[0]!.price = Number.NaN))).toThrow(/invalid price/);
     expect(bad((p) => (p.extras[0]!.description.es = 'x $sync$ y'))).toThrow(/dollar-quote/);
+    expect(bad((p) => (p.version = "2026-09-14'; drop table leads; --"))).toThrow(
+      /invalid version/,
+    );
   });
 
   it('carries the prices and weeks of pricing.json', () => {

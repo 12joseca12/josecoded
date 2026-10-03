@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { APP_CODES, extraCodeSchema, PACK_CODES } from './pricing';
+import { APP_CODES, extraCodeSchema, PACK_CODES } from './pricing.ts';
 
 /**
  * `ai_proposal` contract between the gateway (3.7/3.8), the Edge Function `notify` and

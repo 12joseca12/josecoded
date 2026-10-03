@@ -20,11 +20,11 @@ describe('@josecoded/types barrel', () => {
   });
 
   it.each(domainFiles)('re-exports %s', (name) => {
-    expect(barrel).toContain(`export * from './${name}';`);
+    expect(barrel).toContain(`export * from './${name}.ts';`);
   });
 
   it('re-exports the schemas index', () => {
-    expect(barrel).toContain("export * from './schemas';");
+    expect(barrel).toContain("export * from './schemas/index.ts';");
   });
 
   it('re-exports every schemas/*.ts file from schemas/index.ts', () => {
@@ -32,7 +32,7 @@ describe('@josecoded/types barrel', () => {
       .filter((f) => f.endsWith('.ts') && f !== 'index.ts')
       .map((f) => f.replace(/\.ts$/, ''));
     for (const name of schemaFiles) {
-      expect(schemasBarrel).toContain(`export * from './${name}';`);
+      expect(schemasBarrel).toContain(`export * from './${name}.ts';`);
     }
   });
 });

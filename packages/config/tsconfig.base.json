@@ -16,6 +16,7 @@
     "noUncheckedIndexedAccess": true,
     "noFallthroughCasesInSwitch": true,
     "noEmit": true,
+    "allowImportingTsExtensions": true,
     "paths": {
       "@josecoded/types": ["../types/src/index.ts"]
     }

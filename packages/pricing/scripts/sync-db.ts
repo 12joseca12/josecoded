@@ -1,10 +1,13 @@
 // Generates supabase/generated/pricing-sync.sql from pricing.json (DT §0b, finding 11).
 // It never connects to anything and needs no service role key: the controller reviews the file
 // and applies it with apply_migration in task 9.4 (production gate, Jose's OK in session).
-// Runs with plain Node (type stripping, Node >= 22.18); `import type` only.
+// Runs with plain Node (type stripping, Node >= 22.18). @josecoded/types is TypeScript source whose
+// internal imports carry explicit `.ts` extensions precisely so Node can load it here.
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+
+import { pricingSchema } from '@josecoded/types';
 
 import type { PricingData } from '@josecoded/types';
 
@@ -47,6 +50,9 @@ function assertNoPendingTexts(pricing: PricingData) {
 
 /** Everything interpolated into SQL is validated first: numbers, codes and the dollar-quote tag. */
 function assertSafeToInterpolate(pricing: PricingData) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(pricing.version)) {
+    throw new Error(`sync-db: invalid version: ${JSON.stringify(pricing.version)}`);
+  }
   for (const pack of pricing.packs) {
     assertCode(pack.code, 'pack code');
     assertPositiveInteger(pack.price, `price of ${pack.code}`);
@@ -96,9 +102,10 @@ export function buildSyncSql(pricing: PricingData): string {
 }
 
 function main() {
-  const pricing = JSON.parse(
-    readFileSync(fileURLToPath(new URL('../pricing.json', import.meta.url)), 'utf8'),
-  ) as PricingData;
+  // the file is untrusted input for the SQL: validate it with the real schema first
+  const pricing = pricingSchema.parse(
+    JSON.parse(readFileSync(fileURLToPath(new URL('../pricing.json', import.meta.url)), 'utf8')),
+  );
   const out = fileURLToPath(
     new URL('../../../supabase/generated/pricing-sync.sql', import.meta.url),
   );
