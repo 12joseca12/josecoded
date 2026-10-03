@@ -103,6 +103,8 @@ Gates que no se cruzan sin OK explícito de Jose en la misma sesión: migracione
 
 ## Decisiones recientes
 
+- **2026-10-03 (Jose):** la página **404 se mantiene por idioma** (es/en según la URL), aunque el HTML de servidor sea un shell que completa el cliente al hidratar (sin JS se ve vacía; cada URL inexistente se renderiza en el Worker). Descartado el 404 estático bilingüe que proponía el `revisor`. Deuda aceptada y documentada.
+
 - **2026-10-02 (Jose):** **`apps/web` en Workers Free** (junto al gateway), **sin código de medición de CPU**: el rendimiento se analiza con la web construida y en producción. Fase 0 cerrada. Aprobaciones en local hasta tener credenciales de Cloudflare en CI; workflows de preview y producción desactivados de momento.
 
 - **2026-09-30:** Jose aprueba el vídeo del hero a 700 KB (0.2 cerrada) y decide **slugs traducidos en inglés** (`/en/business`, `/en/about`…). Anotado en el plan (nota v2.3 antes de la fase 1).
