@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "node ./scripts/wrangler-dev.mjs",
     "deploy": "wrangler deploy",
-    "build": "wrangler deploy --dry-run --outdir dist && node scripts/check-no-test-hooks.mjs",
+    "build": "wrangler deploy --dry-run --outdir dist && wrangler deploy --dry-run --env preview --outdir .wrangler/preview-bundle && node scripts/check-no-test-hooks.mjs dist .wrangler/preview-bundle",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
