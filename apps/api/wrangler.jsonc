@@ -15,5 +15,10 @@
     ],
     "ai": {
       "binding": "AI"
-    }
+    },
+    // Minify so esbuild drops the dead `if (__TEST_HOOKS__)` branch from the bundle (without it the branch stays as `if (false)`).
+    "minify": true,
+    // Compile-time flag: the test hooks of src/ (env.__deps) are removed from the production bundle.
+    // `define` is not inherited by environments: repeat it in every env.* (test/wrangler-config.test.ts).
+    "define": { "__TEST_HOOKS__": "false" }
   }
