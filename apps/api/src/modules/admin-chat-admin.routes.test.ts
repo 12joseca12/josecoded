@@ -1,3 +1,6 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import type { Mock } from 'vitest';
+
 import type { Env } from '../types/env.types';
 
 const baseEnv = {
@@ -13,32 +16,32 @@ const AUTH_HEADERS = { authorization: 'Bearer test-token', 'content-type': 'appl
 
 /** Mocks `requireUser` (via `verifySupabaseUser`) to authenticate as a fixed user. */
 function mockAuthenticatedUser(user: { id: string; email?: string }) {
-  jest.doMock('../services/supabase.service', () => ({
-    verifySupabaseUser: jest.fn().mockResolvedValue(user),
+  vi.doMock('../services/supabase.service', () => ({
+    verifySupabaseUser: vi.fn().mockResolvedValue(user),
   }));
 }
 
 type PgStoreMocks = {
-  assertAdmin: jest.Mock;
-  listConversationsForAdmin: jest.Mock;
-  getConversationMessagesForAdmin: jest.Mock;
-  insertAdminMessage: jest.Mock;
-  setConversationAiEnabled: jest.Mock;
-  markConversationRead: jest.Mock;
+  assertAdmin: Mock;
+  listConversationsForAdmin: Mock;
+  getConversationMessagesForAdmin: Mock;
+  insertAdminMessage: Mock;
+  setConversationAiEnabled: Mock;
+  markConversationRead: Mock;
 };
 
 function mockPgStore(overrides: Partial<PgStoreMocks> = {}) {
   class AdminAccessDeniedError extends Error {}
   const mocks: PgStoreMocks = {
-    assertAdmin: jest.fn().mockResolvedValue(undefined),
-    listConversationsForAdmin: jest.fn().mockResolvedValue([]),
-    getConversationMessagesForAdmin: jest.fn().mockResolvedValue([]),
-    insertAdminMessage: jest.fn().mockResolvedValue({}),
-    setConversationAiEnabled: jest.fn().mockResolvedValue(undefined),
-    markConversationRead: jest.fn().mockResolvedValue(undefined),
+    assertAdmin: vi.fn().mockResolvedValue(undefined),
+    listConversationsForAdmin: vi.fn().mockResolvedValue([]),
+    getConversationMessagesForAdmin: vi.fn().mockResolvedValue([]),
+    insertAdminMessage: vi.fn().mockResolvedValue({}),
+    setConversationAiEnabled: vi.fn().mockResolvedValue(undefined),
+    markConversationRead: vi.fn().mockResolvedValue(undefined),
     ...overrides,
   };
-  jest.doMock('../services/admin-chat.pg-store', () => ({
+  vi.doMock('../services/admin-chat.pg-store', () => ({
     AdminAccessDeniedError,
     ...mocks,
   }));
@@ -49,12 +52,12 @@ const VALID_CONV_ID = '11111111-1111-4111-8111-111111111111';
 
 describe('admin-chat-admin routes', () => {
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it('requires Authorization (401) before checking admin role', async () => {
-    jest.resetModules();
+    vi.resetModules();
     mockAuthenticatedUser({ id: 'admin-1' });
     mockPgStore();
     const { adminChatAdminRoutes } = await import('./admin-chat-admin.routes');
@@ -64,17 +67,17 @@ describe('admin-chat-admin routes', () => {
   });
 
   it('returns 403 when assertAdmin rejects with AdminAccessDeniedError', async () => {
-    jest.resetModules();
+    vi.resetModules();
     mockAuthenticatedUser({ id: 'closer-1' });
     const { AdminAccessDeniedError } = mockPgStore();
-    jest.doMock('../services/admin-chat.pg-store', () => ({
+    vi.doMock('../services/admin-chat.pg-store', () => ({
       AdminAccessDeniedError,
-      assertAdmin: jest.fn().mockRejectedValue(new AdminAccessDeniedError('nope')),
-      listConversationsForAdmin: jest.fn(),
-      getConversationMessagesForAdmin: jest.fn(),
-      insertAdminMessage: jest.fn(),
-      setConversationAiEnabled: jest.fn(),
-      markConversationRead: jest.fn(),
+      assertAdmin: vi.fn().mockRejectedValue(new AdminAccessDeniedError('nope')),
+      listConversationsForAdmin: vi.fn(),
+      getConversationMessagesForAdmin: vi.fn(),
+      insertAdminMessage: vi.fn(),
+      setConversationAiEnabled: vi.fn(),
+      markConversationRead: vi.fn(),
     }));
     const { adminChatAdminRoutes } = await import('./admin-chat-admin.routes');
 
@@ -90,7 +93,7 @@ describe('admin-chat-admin routes', () => {
   });
 
   it('GET /conversations returns the list from the store for an authenticated admin', async () => {
-    jest.resetModules();
+    vi.resetModules();
     mockAuthenticatedUser({ id: 'admin-1' });
     const summary = [
       {
@@ -104,7 +107,7 @@ describe('admin-chat-admin routes', () => {
       },
     ];
     const { mocks } = mockPgStore({
-      listConversationsForAdmin: jest.fn().mockResolvedValue(summary),
+      listConversationsForAdmin: vi.fn().mockResolvedValue(summary),
     });
     const { adminChatAdminRoutes } = await import('./admin-chat-admin.routes');
 
@@ -121,7 +124,7 @@ describe('admin-chat-admin routes', () => {
   });
 
   it('POST /conversations/:id/messages validates the body (400 on empty content)', async () => {
-    jest.resetModules();
+    vi.resetModules();
     mockAuthenticatedUser({ id: 'admin-1' });
     const { mocks } = mockPgStore();
     const { adminChatAdminRoutes } = await import('./admin-chat-admin.routes');
@@ -136,7 +139,7 @@ describe('admin-chat-admin routes', () => {
   });
 
   it('POST /conversations/:id/messages inserts an admin message (does not touch the AI pipeline)', async () => {
-    jest.resetModules();
+    vi.resetModules();
     mockAuthenticatedUser({ id: 'admin-1' });
     const inserted = {
       id: 'msg-1',
@@ -149,7 +152,7 @@ describe('admin-chat-admin routes', () => {
       createdAt: '2026-01-01T00:00:00Z',
     };
     const { mocks } = mockPgStore({
-      insertAdminMessage: jest.fn().mockResolvedValue(inserted),
+      insertAdminMessage: vi.fn().mockResolvedValue(inserted),
     });
     const { adminChatAdminRoutes } = await import('./admin-chat-admin.routes');
 
@@ -169,7 +172,7 @@ describe('admin-chat-admin routes', () => {
   });
 
   it('POST /conversations/:id/ai toggles ai_enabled', async () => {
-    jest.resetModules();
+    vi.resetModules();
     mockAuthenticatedUser({ id: 'admin-1' });
     const { mocks } = mockPgStore();
     const { adminChatAdminRoutes } = await import('./admin-chat-admin.routes');
@@ -186,7 +189,7 @@ describe('admin-chat-admin routes', () => {
   });
 
   it('POST /conversations/:id/read marks the conversation read', async () => {
-    jest.resetModules();
+    vi.resetModules();
     mockAuthenticatedUser({ id: 'admin-1' });
     const { mocks } = mockPgStore();
     const { adminChatAdminRoutes } = await import('./admin-chat-admin.routes');
@@ -201,7 +204,7 @@ describe('admin-chat-admin routes', () => {
   });
 
   it('GET /conversations/:id/messages rejects a malformed conversation id (400)', async () => {
-    jest.resetModules();
+    vi.resetModules();
     mockAuthenticatedUser({ id: 'admin-1' });
     const { mocks } = mockPgStore();
     const { adminChatAdminRoutes } = await import('./admin-chat-admin.routes');

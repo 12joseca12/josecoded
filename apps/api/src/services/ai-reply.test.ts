@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { buildAdminChatMessages, generateAdminReply } from './ai-reply';
 import type { Env } from '../types/env.types';
 

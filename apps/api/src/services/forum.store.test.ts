@@ -1,3 +1,5 @@
+import { expect, test } from 'vitest';
+
 import type { Env } from '../types/env.types';
 import { forumUsesDatabase } from './forum.store';
 

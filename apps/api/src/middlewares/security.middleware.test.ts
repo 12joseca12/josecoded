@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { Hono } from 'hono';
 import type { Env } from '../types/env.types';
 import { devApiKeyGuard } from './security.middleware';

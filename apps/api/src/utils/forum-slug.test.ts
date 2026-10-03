@@ -1,3 +1,5 @@
+import { expect, test } from 'vitest';
+
 import { slugFromTitleNoSpaces } from './forum-slug';
 import { forumEntrySlugFieldSchema } from '../schemas/forum.schema';
 

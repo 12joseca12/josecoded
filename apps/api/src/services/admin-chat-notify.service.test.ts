@@ -1,3 +1,5 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
+
 import type { Env } from '../types/env.types';
 
 const baseEnv = {
@@ -14,12 +16,12 @@ describe('notifyAdminOfNewMessage', () => {
 
   afterEach(() => {
     global.fetch = originalFetch;
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('does not call fetch when N8N_CHAT_WEBHOOK_URL is not configured', async () => {
     const { notifyAdminOfNewMessage } = await import('./admin-chat-notify.service');
-    const fetchSpy = jest.fn();
+    const fetchSpy = vi.fn();
     global.fetch = fetchSpy as unknown as typeof fetch;
 
     await notifyAdminOfNewMessage(baseEnv, {
@@ -35,7 +37,7 @@ describe('notifyAdminOfNewMessage', () => {
 
   it('POSTs the message payload to N8N_CHAT_WEBHOOK_URL when configured', async () => {
     const { notifyAdminOfNewMessage } = await import('./admin-chat-notify.service');
-    const fetchSpy = jest.fn().mockResolvedValue({ ok: true, status: 200 });
+    const fetchSpy = vi.fn().mockResolvedValue({ ok: true, status: 200 });
     global.fetch = fetchSpy as unknown as typeof fetch;
 
     const env = { ...baseEnv, N8N_CHAT_WEBHOOK_URL: 'https://n8n.example.com/webhook/chat' };
@@ -48,7 +50,7 @@ describe('notifyAdminOfNewMessage', () => {
     });
 
     expect(fetchSpy).toHaveBeenCalledTimes(1);
-    const [url, init] = fetchSpy.mock.calls[0];
+    const [url, init] = fetchSpy.mock.calls[0] ?? [];
     expect(url).toBe('https://n8n.example.com/webhook/chat');
     expect(init.method).toBe('POST');
     const body = JSON.parse(init.body as string);
@@ -63,7 +65,7 @@ describe('notifyAdminOfNewMessage', () => {
 
   it('never throws when the webhook request fails', async () => {
     const { notifyAdminOfNewMessage } = await import('./admin-chat-notify.service');
-    const fetchSpy = jest.fn().mockRejectedValue(new Error('network down'));
+    const fetchSpy = vi.fn().mockRejectedValue(new Error('network down'));
     global.fetch = fetchSpy as unknown as typeof fetch;
 
     const env = { ...baseEnv, N8N_CHAT_WEBHOOK_URL: 'https://n8n.example.com/webhook/chat' };

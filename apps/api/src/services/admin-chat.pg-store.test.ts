@@ -1,3 +1,5 @@
+import { describe, expect, it, vi } from 'vitest';
+
 import type { Env } from '../types/env.types';
 
 const baseEnv = {
@@ -78,10 +80,10 @@ function makeFakeSupabaseClient(opts: {
 
 describe('resolveSuperuserId', () => {
   it('short-circuits on ADMIN_SUPERUSER_ID without creating a Supabase client', async () => {
-    jest.resetModules();
-    jest.doMock('./supabase.service', () => ({
+    vi.resetModules();
+    vi.doMock('./supabase.service', () => ({
       DEFAULT_ADMIN_SUPERUSER_EMAIL: 'sanchezgaricajosecarlos12@gmail.com',
-      createSupabaseServiceClient: jest.fn(() => {
+      createSupabaseServiceClient: vi.fn(() => {
         throw new Error('should not be called when ADMIN_SUPERUSER_ID is set');
       }),
     }));
@@ -91,10 +93,10 @@ describe('resolveSuperuserId', () => {
   });
 
   it('resolves from staff_members when a single admin row exists (no email match needed)', async () => {
-    jest.resetModules();
-    jest.doMock('./supabase.service', () => ({
+    vi.resetModules();
+    vi.doMock('./supabase.service', () => ({
       DEFAULT_ADMIN_SUPERUSER_EMAIL: 'sanchezgaricajosecarlos12@gmail.com',
-      createSupabaseServiceClient: jest.fn(() =>
+      createSupabaseServiceClient: vi.fn(() =>
         makeFakeSupabaseClient({
           staffMembersSelect: {
             data: [{ user_id: 'staff-row-id', email: 'someone-else@example.com' }],
@@ -109,10 +111,10 @@ describe('resolveSuperuserId', () => {
   });
 
   it('resolves from staff_members by matching email among multiple admin rows', async () => {
-    jest.resetModules();
-    jest.doMock('./supabase.service', () => ({
+    vi.resetModules();
+    vi.doMock('./supabase.service', () => ({
       DEFAULT_ADMIN_SUPERUSER_EMAIL: 'sanchezgaricajosecarlos12@gmail.com',
-      createSupabaseServiceClient: jest.fn(() =>
+      createSupabaseServiceClient: vi.fn(() =>
         makeFakeSupabaseClient({
           staffMembersSelect: {
             data: [
@@ -130,11 +132,11 @@ describe('resolveSuperuserId', () => {
   });
 
   it('falls back to Auth admin lookup and upserts into staff_members when no row matches', async () => {
-    jest.resetModules();
+    vi.resetModules();
     const upserted: unknown[] = [];
-    jest.doMock('./supabase.service', () => ({
+    vi.doMock('./supabase.service', () => ({
       DEFAULT_ADMIN_SUPERUSER_EMAIL: 'sanchezgaricajosecarlos12@gmail.com',
-      createSupabaseServiceClient: jest.fn(() =>
+      createSupabaseServiceClient: vi.fn(() =>
         makeFakeSupabaseClient({
           staffMembersSelect: { data: [], error: null },
           listUsersResult: {
@@ -153,10 +155,10 @@ describe('resolveSuperuserId', () => {
   });
 
   it('throws a clear error when the superuser cannot be resolved anywhere', async () => {
-    jest.resetModules();
-    jest.doMock('./supabase.service', () => ({
+    vi.resetModules();
+    vi.doMock('./supabase.service', () => ({
       DEFAULT_ADMIN_SUPERUSER_EMAIL: 'sanchezgaricajosecarlos12@gmail.com',
-      createSupabaseServiceClient: jest.fn(() =>
+      createSupabaseServiceClient: vi.fn(() =>
         makeFakeSupabaseClient({
           staffMembersSelect: { data: [], error: null },
           listUsersResult: { data: { users: [] }, error: null },
@@ -205,10 +207,10 @@ function makeFlagsAndHistoryClient(opts: {
 
 describe('getConversationFlags', () => {
   it('returns aiEnabled=true when the column is true', async () => {
-    jest.resetModules();
-    jest.doMock('./supabase.service', () => ({
+    vi.resetModules();
+    vi.doMock('./supabase.service', () => ({
       DEFAULT_ADMIN_SUPERUSER_EMAIL: 'sanchezgaricajosecarlos12@gmail.com',
-      createSupabaseServiceClient: jest.fn(() =>
+      createSupabaseServiceClient: vi.fn(() =>
         makeFlagsAndHistoryClient({ conversationsSelect: { data: { ai_enabled: true }, error: null } }),
       ),
     }));
@@ -218,10 +220,10 @@ describe('getConversationFlags', () => {
   });
 
   it('returns aiEnabled=false when the column is false', async () => {
-    jest.resetModules();
-    jest.doMock('./supabase.service', () => ({
+    vi.resetModules();
+    vi.doMock('./supabase.service', () => ({
       DEFAULT_ADMIN_SUPERUSER_EMAIL: 'sanchezgaricajosecarlos12@gmail.com',
-      createSupabaseServiceClient: jest.fn(() =>
+      createSupabaseServiceClient: vi.fn(() =>
         makeFlagsAndHistoryClient({ conversationsSelect: { data: { ai_enabled: false }, error: null } }),
       ),
     }));
@@ -231,10 +233,10 @@ describe('getConversationFlags', () => {
   });
 
   it('throws when the query errors', async () => {
-    jest.resetModules();
-    jest.doMock('./supabase.service', () => ({
+    vi.resetModules();
+    vi.doMock('./supabase.service', () => ({
       DEFAULT_ADMIN_SUPERUSER_EMAIL: 'sanchezgaricajosecarlos12@gmail.com',
-      createSupabaseServiceClient: jest.fn(() =>
+      createSupabaseServiceClient: vi.fn(() =>
         makeFlagsAndHistoryClient({ conversationsSelect: { data: null, error: new Error('boom') } }),
       ),
     }));
@@ -245,7 +247,7 @@ describe('getConversationFlags', () => {
 
 describe('getRecentHistory', () => {
   it('excludes excludeMessageId and maps admin/assistant sender_role to assistant, chronologically', async () => {
-    jest.resetModules();
+    vi.resetModules();
     // Rows as the DB would return them (most-recent first, DESC) — mirrors what
     // getRecentMessagesForPrompt fetches before it reverses to chronological order.
     const descRows = [
@@ -290,9 +292,9 @@ describe('getRecentHistory', () => {
         created_at: '2026-01-01T00:00:00Z',
       },
     ];
-    jest.doMock('./supabase.service', () => ({
+    vi.doMock('./supabase.service', () => ({
       DEFAULT_ADMIN_SUPERUSER_EMAIL: 'sanchezgaricajosecarlos12@gmail.com',
-      createSupabaseServiceClient: jest.fn(() =>
+      createSupabaseServiceClient: vi.fn(() =>
         makeFlagsAndHistoryClient({ messagesSelect: { data: descRows, error: null } }),
       ),
     }));
@@ -308,7 +310,7 @@ describe('getRecentHistory', () => {
   });
 
   it('respects the limit after excluding the current turn', async () => {
-    jest.resetModules();
+    vi.resetModules();
     // 9 rows DESC (limit+1 = 8+1): newest is the just-inserted user turn, then 8 older
     // messages — after exclusion exactly `limit` (8) should remain, oldest dropped.
     const descRows = Array.from({ length: 9 }, (_, i) => {
@@ -324,9 +326,9 @@ describe('getRecentHistory', () => {
         created_at: `2026-01-01T00:00:${String(idx).padStart(2, '0')}Z`,
       };
     });
-    jest.doMock('./supabase.service', () => ({
+    vi.doMock('./supabase.service', () => ({
       DEFAULT_ADMIN_SUPERUSER_EMAIL: 'sanchezgaricajosecarlos12@gmail.com',
-      createSupabaseServiceClient: jest.fn(() =>
+      createSupabaseServiceClient: vi.fn(() =>
         makeFlagsAndHistoryClient({ messagesSelect: { data: descRows, error: null } }),
       ),
     }));
@@ -349,11 +351,11 @@ describe('getRecentHistory', () => {
 
 describe('ensureConversation', () => {
   it('inserts assigned_staff_id (NOT admin_id) when creating a new conversation', async () => {
-    jest.resetModules();
+    vi.resetModules();
     let insertPayload: unknown;
-    jest.doMock('./supabase.service', () => ({
+    vi.doMock('./supabase.service', () => ({
       DEFAULT_ADMIN_SUPERUSER_EMAIL: 'sanchezgaricajosecarlos12@gmail.com',
-      createSupabaseServiceClient: jest.fn(() => ({
+      createSupabaseServiceClient: vi.fn(() => ({
         from: (table: string) => {
           if (table === 'admin_chat_conversations') {
             return {
@@ -388,11 +390,11 @@ describe('ensureConversation', () => {
   });
 
   it('returns the existing conversation id without inserting', async () => {
-    jest.resetModules();
-    const insertSpy = jest.fn();
-    jest.doMock('./supabase.service', () => ({
+    vi.resetModules();
+    const insertSpy = vi.fn();
+    vi.doMock('./supabase.service', () => ({
       DEFAULT_ADMIN_SUPERUSER_EMAIL: 'sanchezgaricajosecarlos12@gmail.com',
-      createSupabaseServiceClient: jest.fn(() => ({
+      createSupabaseServiceClient: vi.fn(() => ({
         from: (table: string) => {
           if (table === 'admin_chat_conversations') {
             return {
@@ -419,10 +421,10 @@ describe('ensureConversation', () => {
 
 describe('assertAdmin', () => {
   it('resolves when staff_members.role is admin', async () => {
-    jest.resetModules();
-    jest.doMock('./supabase.service', () => ({
+    vi.resetModules();
+    vi.doMock('./supabase.service', () => ({
       DEFAULT_ADMIN_SUPERUSER_EMAIL: 'sanchezgaricajosecarlos12@gmail.com',
-      createSupabaseServiceClient: jest.fn(() => ({
+      createSupabaseServiceClient: vi.fn(() => ({
         from: (table: string) => {
           if (table === 'staff_members') {
             return {
@@ -443,10 +445,10 @@ describe('assertAdmin', () => {
   });
 
   it('rejects with AdminAccessDeniedError when the role is not admin', async () => {
-    jest.resetModules();
-    jest.doMock('./supabase.service', () => ({
+    vi.resetModules();
+    vi.doMock('./supabase.service', () => ({
       DEFAULT_ADMIN_SUPERUSER_EMAIL: 'sanchezgaricajosecarlos12@gmail.com',
-      createSupabaseServiceClient: jest.fn(() => ({
+      createSupabaseServiceClient: vi.fn(() => ({
         from: (table: string) => {
           if (table === 'staff_members') {
             return {
@@ -467,10 +469,10 @@ describe('assertAdmin', () => {
   });
 
   it('rejects with AdminAccessDeniedError when the user has no staff_members row', async () => {
-    jest.resetModules();
-    jest.doMock('./supabase.service', () => ({
+    vi.resetModules();
+    vi.doMock('./supabase.service', () => ({
       DEFAULT_ADMIN_SUPERUSER_EMAIL: 'sanchezgaricajosecarlos12@gmail.com',
-      createSupabaseServiceClient: jest.fn(() => ({
+      createSupabaseServiceClient: vi.fn(() => ({
         from: (table: string) => {
           if (table === 'staff_members') {
             return {
@@ -520,7 +522,7 @@ function makeAdminMessagesTable(responses: {
 
 describe('listConversationsForAdmin', () => {
   it('computes unread from sender_role=user vs admin_last_read_at and orders by last_message_at desc', async () => {
-    jest.resetModules();
+    vi.resetModules();
     const conversationsRows = [
       {
         id: 'conv-unread',
@@ -563,9 +565,9 @@ describe('listConversationsForAdmin', () => {
       'user-3': 'user3@example.com',
     };
 
-    jest.doMock('./supabase.service', () => ({
+    vi.doMock('./supabase.service', () => ({
       DEFAULT_ADMIN_SUPERUSER_EMAIL: 'sanchezgaricajosecarlos12@gmail.com',
-      createSupabaseServiceClient: jest.fn(() => ({
+      createSupabaseServiceClient: vi.fn(() => ({
         from: (table: string) => {
           if (table === 'admin_chat_conversations') {
             return {
@@ -628,10 +630,10 @@ describe('listConversationsForAdmin', () => {
   });
 
   it('returns an empty array when there are no conversations', async () => {
-    jest.resetModules();
-    jest.doMock('./supabase.service', () => ({
+    vi.resetModules();
+    vi.doMock('./supabase.service', () => ({
       DEFAULT_ADMIN_SUPERUSER_EMAIL: 'sanchezgaricajosecarlos12@gmail.com',
-      createSupabaseServiceClient: jest.fn(() => ({
+      createSupabaseServiceClient: vi.fn(() => ({
         from: (table: string) => {
           if (table === 'admin_chat_conversations') {
             return {
@@ -652,11 +654,11 @@ describe('listConversationsForAdmin', () => {
 
 describe('insertAdminMessage', () => {
   it('inserts with sender_role=admin and returns the mapped DTO', async () => {
-    jest.resetModules();
+    vi.resetModules();
     let insertPayload: unknown;
-    jest.doMock('./supabase.service', () => ({
+    vi.doMock('./supabase.service', () => ({
       DEFAULT_ADMIN_SUPERUSER_EMAIL: 'sanchezgaricajosecarlos12@gmail.com',
-      createSupabaseServiceClient: jest.fn(() => ({
+      createSupabaseServiceClient: vi.fn(() => ({
         from: (table: string) => {
           if (table === 'admin_chat_messages') {
             return {
@@ -709,12 +711,12 @@ describe('insertAdminMessage', () => {
 
 describe('setConversationAiEnabled', () => {
   it('updates ai_enabled for the conversation', async () => {
-    jest.resetModules();
+    vi.resetModules();
     let updatePayload: unknown;
     let eqCall: [string, unknown] | undefined;
-    jest.doMock('./supabase.service', () => ({
+    vi.doMock('./supabase.service', () => ({
       DEFAULT_ADMIN_SUPERUSER_EMAIL: 'sanchezgaricajosecarlos12@gmail.com',
-      createSupabaseServiceClient: jest.fn(() => ({
+      createSupabaseServiceClient: vi.fn(() => ({
         from: (table: string) => {
           if (table === 'admin_chat_conversations') {
             return {
@@ -745,11 +747,11 @@ describe('setConversationAiEnabled', () => {
 
 describe('markConversationRead', () => {
   it('sets admin_last_read_at to a fresh timestamp', async () => {
-    jest.resetModules();
+    vi.resetModules();
     let updatePayload: { admin_last_read_at?: string } | undefined;
-    jest.doMock('./supabase.service', () => ({
+    vi.doMock('./supabase.service', () => ({
       DEFAULT_ADMIN_SUPERUSER_EMAIL: 'sanchezgaricajosecarlos12@gmail.com',
-      createSupabaseServiceClient: jest.fn(() => ({
+      createSupabaseServiceClient: vi.fn(() => ({
         from: (table: string) => {
           if (table === 'admin_chat_conversations') {
             return {
@@ -781,7 +783,7 @@ describe('markConversationRead', () => {
 
 describe('getConversationMessagesForAdmin', () => {
   it('returns messages for the conversation in chronological order', async () => {
-    jest.resetModules();
+    vi.resetModules();
     const row = {
       id: 'm1',
       conversation_id: 'conv-1',
@@ -792,9 +794,9 @@ describe('getConversationMessagesForAdmin', () => {
       metadata: {},
       created_at: '2026-01-01T00:00:00Z',
     };
-    jest.doMock('./supabase.service', () => ({
+    vi.doMock('./supabase.service', () => ({
       DEFAULT_ADMIN_SUPERUSER_EMAIL: 'sanchezgaricajosecarlos12@gmail.com',
-      createSupabaseServiceClient: jest.fn(() => ({
+      createSupabaseServiceClient: vi.fn(() => ({
         from: (table: string) => {
           if (table === 'admin_chat_messages') {
             return {

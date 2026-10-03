@@ -1,6 +1,8 @@
 // Characterization of the legacy surface of the gateway: every route that existed in josedev/josecoded-api
 // must stay mounted, with the same auth gate and the same error envelope. It runs without Supabase or the
 // backend (unauthenticated requests stop at the gate). New routes are additive and get their own tests.
+import { describe, expect, it } from 'vitest';
+
 import app from './index';
 
 const env = {

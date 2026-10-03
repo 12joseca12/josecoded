@@ -1,4 +1,6 @@
 import { Hono } from 'hono';
+import { describe, expect, it } from 'vitest';
+
 
 import { buildDeps, type AppEnv } from './deps';
 import { withDeps } from './middlewares/with-deps';

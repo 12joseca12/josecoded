@@ -1,3 +1,5 @@
+import { beforeEach, expect, test } from 'vitest';
+
 import app from './index';
 import { forumResetMock } from './services/forum.store';
 

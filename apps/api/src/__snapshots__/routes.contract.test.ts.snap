@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`exact route surface matches the committed snapshot 1`] = `
+exports[`exact route surface > matches the committed snapshot 1`] = `
 [
   "ALL /*",
   "ALL /api/dev/worker/*",

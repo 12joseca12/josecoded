@@ -1,3 +1,5 @@
+import { describe, expect, it, vi } from 'vitest';
+
 import type { Env } from '../types/env.types';
 import { getSupabaseApiKey, verifySupabaseUser } from './supabase.service';
 
@@ -20,7 +22,7 @@ describe('supabase.service', () => {
     let capturedUrl = '';
     let capturedHeaders: HeadersInit | undefined;
 
-    globalThis.fetch = jest.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+    globalThis.fetch = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
       capturedUrl = String(input);
       capturedHeaders = init?.headers;
       return new Response(JSON.stringify({ id: 'user-1', email: 'a@b.com' }), { status: 200 });

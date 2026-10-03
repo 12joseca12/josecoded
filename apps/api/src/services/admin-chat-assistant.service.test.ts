@@ -1,3 +1,5 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
+
 import type { Env } from '../types/env.types';
 import { fallbackAssistantPlan } from './admin-chat-assistant.service';
 
@@ -40,24 +42,24 @@ describe('fallbackAssistantPlan', () => {
 
 describe('runAssistantPipeline', () => {
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it('aiEnabled=false: does not call generateAdminReply, but always notifies the admin', async () => {
-    jest.resetModules();
-    const notifySpy = jest.fn().mockResolvedValue(undefined);
-    const generateSpy = jest.fn();
-    const getRecentHistorySpy = jest.fn();
-    const insertAssistantMessageSpy = jest.fn().mockResolvedValue({});
+    vi.resetModules();
+    const notifySpy = vi.fn().mockResolvedValue(undefined);
+    const generateSpy = vi.fn();
+    const getRecentHistorySpy = vi.fn();
+    const insertAssistantMessageSpy = vi.fn().mockResolvedValue({});
 
-    jest.doMock('./admin-chat.pg-store', () => ({
-      getConversationFlags: jest.fn().mockResolvedValue({ aiEnabled: false }),
+    vi.doMock('./admin-chat.pg-store', () => ({
+      getConversationFlags: vi.fn().mockResolvedValue({ aiEnabled: false }),
       getRecentHistory: getRecentHistorySpy,
       insertAssistantMessage: insertAssistantMessageSpy,
     }));
-    jest.doMock('./ai-reply', () => ({ generateAdminReply: generateSpy }));
-    jest.doMock('./admin-chat-notify.service', () => ({ notifyAdminOfNewMessage: notifySpy }));
+    vi.doMock('./ai-reply', () => ({ generateAdminReply: generateSpy }));
+    vi.doMock('./admin-chat-notify.service', () => ({ notifyAdminOfNewMessage: notifySpy }));
 
     const { runAssistantPipeline } = await import('./admin-chat-assistant.service');
     await runAssistantPipeline(baseEnv, baseInput);
@@ -79,25 +81,25 @@ describe('runAssistantPipeline', () => {
   });
 
   it('aiEnabled=true: notifies the admin AND calls generateAdminReply with non-empty history', async () => {
-    jest.resetModules();
-    const notifySpy = jest.fn().mockResolvedValue(undefined);
+    vi.resetModules();
+    const notifySpy = vi.fn().mockResolvedValue(undefined);
     const history = [
       { role: 'user' as const, content: 'mensaje anterior del usuario' },
       { role: 'assistant' as const, content: 'respuesta anterior' },
     ];
-    const getRecentHistorySpy = jest.fn().mockResolvedValue(history);
-    const generateSpy = jest
+    const getRecentHistorySpy = vi.fn().mockResolvedValue(history);
+    const generateSpy = vi
       .fn()
       .mockResolvedValue({ content: 'Respuesta de la IA', showMeetingPicker: false });
-    const insertAssistantMessageSpy = jest.fn().mockResolvedValue({});
+    const insertAssistantMessageSpy = vi.fn().mockResolvedValue({});
 
-    jest.doMock('./admin-chat.pg-store', () => ({
-      getConversationFlags: jest.fn().mockResolvedValue({ aiEnabled: true }),
+    vi.doMock('./admin-chat.pg-store', () => ({
+      getConversationFlags: vi.fn().mockResolvedValue({ aiEnabled: true }),
       getRecentHistory: getRecentHistorySpy,
       insertAssistantMessage: insertAssistantMessageSpy,
     }));
-    jest.doMock('./ai-reply', () => ({ generateAdminReply: generateSpy }));
-    jest.doMock('./admin-chat-notify.service', () => ({ notifyAdminOfNewMessage: notifySpy }));
+    vi.doMock('./ai-reply', () => ({ generateAdminReply: generateSpy }));
+    vi.doMock('./admin-chat-notify.service', () => ({ notifyAdminOfNewMessage: notifySpy }));
 
     const { runAssistantPipeline } = await import('./admin-chat-assistant.service');
     await runAssistantPipeline(baseEnv, baseInput);
@@ -125,45 +127,45 @@ describe('runAssistantPipeline', () => {
   });
 
   it('falls back locally and still notifies when generateAdminReply throws (aiEnabled=true)', async () => {
-    jest.resetModules();
-    const notifySpy = jest.fn().mockResolvedValue(undefined);
-    const getRecentHistorySpy = jest.fn().mockResolvedValue([]);
-    const generateSpy = jest.fn().mockRejectedValue(new Error('AI binding missing'));
-    const insertAssistantMessageSpy = jest.fn().mockResolvedValue({});
+    vi.resetModules();
+    const notifySpy = vi.fn().mockResolvedValue(undefined);
+    const getRecentHistorySpy = vi.fn().mockResolvedValue([]);
+    const generateSpy = vi.fn().mockRejectedValue(new Error('AI binding missing'));
+    const insertAssistantMessageSpy = vi.fn().mockResolvedValue({});
 
-    jest.doMock('./admin-chat.pg-store', () => ({
-      getConversationFlags: jest.fn().mockResolvedValue({ aiEnabled: true }),
+    vi.doMock('./admin-chat.pg-store', () => ({
+      getConversationFlags: vi.fn().mockResolvedValue({ aiEnabled: true }),
       getRecentHistory: getRecentHistorySpy,
       insertAssistantMessage: insertAssistantMessageSpy,
     }));
-    jest.doMock('./ai-reply', () => ({ generateAdminReply: generateSpy }));
-    jest.doMock('./admin-chat-notify.service', () => ({ notifyAdminOfNewMessage: notifySpy }));
+    vi.doMock('./ai-reply', () => ({ generateAdminReply: generateSpy }));
+    vi.doMock('./admin-chat-notify.service', () => ({ notifyAdminOfNewMessage: notifySpy }));
 
     const { runAssistantPipeline } = await import('./admin-chat-assistant.service');
     await runAssistantPipeline(baseEnv, baseInput);
 
     expect(notifySpy).toHaveBeenCalledTimes(1);
     expect(insertAssistantMessageSpy).toHaveBeenCalledTimes(1);
-    const [, payload] = insertAssistantMessageSpy.mock.calls[0];
+    const [, payload] = insertAssistantMessageSpy.mock.calls[0] ?? [];
     expect(payload.conversationId).toBe(baseInput.conversationId);
     expect(typeof payload.content).toBe('string');
     expect(payload.content.length).toBeGreaterThan(0);
   });
 
   it('fail-closed: getConversationFlags rejects -> does NOT call the AI, but DOES notify (aiEnabled=false)', async () => {
-    jest.resetModules();
-    const notifySpy = jest.fn().mockResolvedValue(undefined);
-    const generateSpy = jest.fn();
-    const getRecentHistorySpy = jest.fn();
-    const insertAssistantMessageSpy = jest.fn().mockResolvedValue({});
+    vi.resetModules();
+    const notifySpy = vi.fn().mockResolvedValue(undefined);
+    const generateSpy = vi.fn();
+    const getRecentHistorySpy = vi.fn();
+    const insertAssistantMessageSpy = vi.fn().mockResolvedValue({});
 
-    jest.doMock('./admin-chat.pg-store', () => ({
-      getConversationFlags: jest.fn().mockRejectedValue(new Error('read error (possible RLS/network blip)')),
+    vi.doMock('./admin-chat.pg-store', () => ({
+      getConversationFlags: vi.fn().mockRejectedValue(new Error('read error (possible RLS/network blip)')),
       getRecentHistory: getRecentHistorySpy,
       insertAssistantMessage: insertAssistantMessageSpy,
     }));
-    jest.doMock('./ai-reply', () => ({ generateAdminReply: generateSpy }));
-    jest.doMock('./admin-chat-notify.service', () => ({ notifyAdminOfNewMessage: notifySpy }));
+    vi.doMock('./ai-reply', () => ({ generateAdminReply: generateSpy }));
+    vi.doMock('./admin-chat-notify.service', () => ({ notifyAdminOfNewMessage: notifySpy }));
 
     const { runAssistantPipeline } = await import('./admin-chat-assistant.service');
     await runAssistantPipeline(baseEnv, baseInput);
