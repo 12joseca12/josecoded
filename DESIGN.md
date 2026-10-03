@@ -155,6 +155,7 @@ rounded:
   tcard: "clamp(1.125rem, 0.8rem + 1vmin, 1.75rem)"
   pill: "9999rem"
   bubble-tail: "0.25rem"
+  circle: "50%"
   focus: "0.375rem"
 spacing:
   gutter: "clamp(1rem, 4vw, 3.5rem)"
@@ -190,6 +191,9 @@ sizes:
 focus:
   focus-ring-width: "2px"
   focus-ring-offset: "3px"
+strokes:
+  stroke-line: "2px"
+  stroke-line-active: "3px"
 fontWeights:
   emphasis: "500"
 components:
@@ -519,12 +523,12 @@ Un gesto con propósito por celda: marquesina doble del stack en sentidos opuest
 
 ## Tokens consumibles (tarea 1.10)
 
-`.impeccable/design.json` es la fuente única de tokens; `pnpm tokens:build` genera `apps/web/styles/{tokens.css,breakpoints.ts,tokens.ts}` (247 custom properties) y un test de deriva impide editarlos a mano. Los valores salen 1:1 de `docs/superpowers/design/ref/home-v6/{base,v6}.css`. Prefijos por grupo:
+`.impeccable/design.json` es la fuente única de tokens; `pnpm tokens:build` genera `apps/web/styles/{tokens.css,breakpoints.ts,tokens.ts}` (250 custom properties) y un test de deriva impide editarlos a mano. Los valores salen 1:1 de `docs/superpowers/design/ref/home-v6/{base,v6}.css`. Prefijos por grupo:
 
 - **Colores** sin prefijo (`--bg`, `--violet`…), más `--pending` y `--scrollbar-thumb`. Familias `--font-sans` y `--font-mono`; cada rol tipográfico emite `--font-<rol>-{size,weight,leading,tracking,features}` y `--font-emphasis-weight` (500).
-- **Radios** `--r-*` (`--r-kbd`, `--r-bubble-tail`, `--r-focus` y la píldora `--r-pill: 9999rem`, no `999px`).
+- **Radios** `--r-*` (`--r-kbd`, `--r-bubble-tail`, `--r-focus`, `--r-circle` 50 % y la píldora `--r-pill: 9999rem`, no `999px`).
 - **Espaciado** `--sp-*`: escala numérica en rem (`--sp-0-5` 0.125, `--sp-1` 0.25, `--sp-1-5` 0.375, `--sp-2` 0.5, `--sp-2-5` 0.625, `--sp-3` 0.75, `--sp-3-5` 0.875, `--sp-4` 1, `--sp-5` 1.25, `--sp-6` 1.5, `--sp-7` 1.75, `--sp-8` 2, `--sp-10` 2.5, `--sp-16` 4) y semánticos fluidos (`--sp-gutter`, `--sp-pad-scene`, `--sp-pad-top`, `--sp-pad-cell`, `--sp-gap-scene`, `--sp-gap-bento`, `--sp-gap-cell`, `--sp-gap-cell-body`, `--sp-container`). Sustituye a `sp-xs…2xl`.
-- **Tamaños** `--size-dot`, `--size-hit` (2.75rem), `--size-control-{sm,md,lg,xl}` (2.25, 2.5, 3, 3.5rem). **Foco**: `--focus-ring-width` 2px, `--focus-ring-offset` 3px y `--r-focus`, tomados del `:focus-visible` del prototipo.
+- **Tamaños** `--size-dot`, `--size-hit` (2.75rem), `--size-control-{sm,md,lg,xl}` (2.25, 2.5, 3, 3.5rem). **Trazos**: `--stroke-line` 2px (barras del ciclo, del carrusel y del indicador) y `--stroke-line-active` 3px (línea activa del indicador). **Foco**: `--focus-ring-width` 2px, `--focus-ring-offset` 3px y `--r-focus`, tomados del `:focus-visible` del prototipo.
 - **Alfas por uso** sin prefijo de grupo: `--tint-*` (rellenos; `--tint-emphasis` es el énfasis de la celda destacada), `--edge-*` y `--pager-*` (filetes y líneas; `--edge-keycap-down`), `--bg-segmented`, `--bg-prompt`, `--header-scrolled`, `--scrim`, `--palette-backdrop`, `--beam-{1,2,3}-{a,b}`.
 - **Sombras** `--shadow-*` (hairline, hairline-strong, card, card-hover, card-focus, button, overlay, kbd, keycap, keycap-down, selected-row), compuestas con `var()` de sus tokens base (`--line`, `--line-2`, `--card-line`, `--edge-selected`, `--edge-keycap-down`); degradados `--grad-*` y `--glow-art` (`--grad-cell-tint` y `--grad-cell-hero` usan `--tint-selected`, `--tint-emphasis` y `--card`); `--light-*`; desenfoques `--blur-*` más `--saturate-header` (1.2).
 - **Movimiento:** `--dur-*` (`--dur-hover`, `--dur-nudge`, `--dur-keycap`, `--dur-canvas-in`, `--dur-stagger-draw`, `--dur-delay-draw`…), `--ease-*` (los easings en palabra clave del prototipo también son tokens: `--ease-standard`, `--ease-keycap`, `--ease-linear`, `--ease-float`, `--ease-blink`), `--glide-min`, `--glide-max`, `--glide-rate` (0.15), `--wheel-threshold`, `--wheel-lock`.

@@ -65,6 +65,7 @@ function collect(design: Design): Token[] {
     ...fromRecord('spacing', 'sp-', design.spacing),
     ...fromRecord('sizes', 'size-', design.sizes),
     ...fromRecord('focus', '', design.focus),
+    ...fromRecord('strokes', '', design.strokes),
     ...fromEntries('alphas', '', x.alphas),
     ...fromEntries('shadows', 'shadow-', x.shadows),
     ...fromEntries('blurs', '', x.blurs),

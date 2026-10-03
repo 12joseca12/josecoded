@@ -21,6 +21,7 @@ const minimal = {
   spacing: { gutter: 'clamp(1rem, 4vw, 3.5rem)', '8': '2rem' },
   sizes: { dot: '0.375rem' },
   focus: { 'focus-ring-width': '2px' },
+  strokes: { 'stroke-line': '2px' },
   extensions: {
     alphas: [{ name: 'tint-chip', value: 'rgb(157 140 255 / 0.08)' }],
     shadows: [{ name: 'card', value: 'inset 0 0 0 1px red' }],
@@ -62,6 +63,7 @@ describe('emitTokens', () => {
       '--saturate-header: 1.2;',
       '--font-emphasis-weight: 500;',
       '--focus-ring-width: 2px;',
+      '--stroke-line: 2px;',
       '--dur-hover: 150ms;',
       '--ease-out: cubic-bezier(0.23, 1, 0.32, 1);',
       '--glide-min: 600ms;',

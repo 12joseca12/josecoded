@@ -109,6 +109,7 @@ export type TokenName =
   | '--r-pill'
   | '--r-bubble-tail'
   | '--r-focus'
+  | '--r-circle'
   | '--sp-1'
   | '--sp-2'
   | '--sp-3'
@@ -140,6 +141,8 @@ export type TokenName =
   | '--size-control-xl'
   | '--focus-ring-width'
   | '--focus-ring-offset'
+  | '--stroke-line'
+  | '--stroke-line-active'
   | '--tint-cmdk'
   | '--tint-chip'
   | '--tint-kbd'
@@ -363,6 +366,7 @@ export const tokens = {
   'r-pill': '--r-pill',
   'r-bubble-tail': '--r-bubble-tail',
   'r-focus': '--r-focus',
+  'r-circle': '--r-circle',
   'sp-1': '--sp-1',
   'sp-2': '--sp-2',
   'sp-3': '--sp-3',
@@ -394,6 +398,8 @@ export const tokens = {
   'size-control-xl': '--size-control-xl',
   'focus-ring-width': '--focus-ring-width',
   'focus-ring-offset': '--focus-ring-offset',
+  'stroke-line': '--stroke-line',
+  'stroke-line-active': '--stroke-line-active',
   'tint-cmdk': '--tint-cmdk',
   'tint-chip': '--tint-chip',
   'tint-kbd': '--tint-kbd',

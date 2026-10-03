@@ -31,6 +31,7 @@ export const designSchema = z.object({
   spacing: group,
   sizes: group,
   focus: group,
+  strokes: group,
   extensions: z.object({
     alphas: entries,
     shadows: entries,
