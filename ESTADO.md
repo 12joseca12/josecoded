@@ -83,6 +83,12 @@ Documentos (al día con la v6 desde el 2026-09-29):
 - [ ] Fase 2: media queries con sintaxis de rango (`width <= 67.5rem` / `width > 67.5rem`); tokens semánticos para huecos fluidos con `svh`/`vmin` (`.scene`, `.tour__sticky`, `.tcard`, `.close`) y paddings del hero/botón; decidir `color-mix` vs color relativo para la luz de `Cell` (ui).
 - [ ] A11y fase 2: zona táctil del pager ≥ 24 px (44 recomendado) con pseudo-elemento; `--pager-idle` 1,61:1 necesita indicador no cromático o alfa ~0,55; pulgar de scroll a ~3:1 (`#5a4fb0` o `--pager-hover`); helper axe en 2.17 incluyendo los 404 (revisor-accesibilidad).
 
+**Heredados del gateway (revisión de 1.2, preexistentes; revisar en 1.7 y en la tarea de cabeceras de seguridad):**
+- [ ] `apps/api/wrangler.jsonc` despliega `API_MODE: "development"`: con `DEV_API_KEY` puesto, `/api/dev/worker/*` quedaría activo en producción (`DEPLOY.md` §4 ya lo marca).
+- [ ] `GET /system/status` de raíz es público y llama a Omen con el token interno.
+- [ ] `/admin-chat/n8n/inbound` compara el secreto sin tiempo constante.
+- [ ] Correos personales en `apps/api/wrangler.jsonc` (`ADMIN_SUPERUSER_EMAIL`) y `apps/api/DEPLOY.md`: moverlos a secretos si el repo se publicara (hoy es privado; decide Jose).
+
 **Suelto**
 - [ ] Accesibilidad: al descomponer etiquetas en glifos (home-v4) el nombre accesible puede leerse con basura; en v6 ya no se usa, confirmar al implementar.
 - [ ] `.gitignore` de `josedev` y `josecoded-worker` con `graphify-out/` sin commitear.
