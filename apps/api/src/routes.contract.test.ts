@@ -162,6 +162,16 @@ describe('error envelope and headers', () => {
     expect(headers).toEqual(expect.arrayContaining(['content-type', 'authorization']));
   });
 
+  it('CORS: localhost is only allowed in development when CORS_ORIGINS is empty', async () => {
+    const origin = { headers: { Origin: 'http://localhost:3000' } };
+    const run = (e: Record<string, string>) =>
+      app.request('http://localhost/health', origin, { ...env, CORS_ORIGINS: '', ...e });
+    expect((await run({ API_MODE: 'development' })).headers.get('access-control-allow-origin')).toBe(
+      'http://localhost:3000',
+    );
+    expect((await run({ API_MODE: 'production' })).headers.get('access-control-allow-origin') ?? '').toBe('');
+  });
+
   it('CORS: allows a configured origin and nothing else', async () => {
     const allowed = await call('GET', '/health', { headers: { Origin: 'http://localhost:3000' } });
     expect(allowed.headers.get('access-control-allow-origin')).toBe('http://localhost:3000');
