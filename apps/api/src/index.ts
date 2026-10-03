@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 
-import { parseEnv } from './config/env';
+import { normalizeEnvBindings, parseEnv } from './config/env';
 import {
   requestId,
   securityHeaders,
@@ -11,9 +11,12 @@ import { devWorkerProxyRoutes } from './modules/dev-worker-proxy.routes';
 import { healthRoutes } from './modules/health.routes';
 import { systemRoutes } from './modules/system.routes';
 import { v1Routes } from './modules/v1.routes';
+import { scheduled } from './scheduled';
 import { fail } from './utils/api-response';
+import { isAllowedOrigin, parseOriginList } from './utils/cors-origins';
 
 import type { AppEnv } from './deps';
+import type { Env } from './types/env.types';
 
 const app = new Hono<AppEnv>();
 
@@ -24,13 +27,13 @@ app.use('*', withDeps);
 
 app.use('*', async (c, next) => {
   const env = parseEnv(c.env);
-  const allowedOrigins = env.CORS_ORIGINS.split(',').map((o) => o.trim()).filter(Boolean);
+  const hasAllowList = parseOriginList(env.CORS_ORIGINS).length > 0;
   const localhostDev = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
   const corsMiddleware = cors({
     origin: (origin) => {
       if (!origin) return '';
-      if (allowedOrigins.length > 0) {
-        return allowedOrigins.includes(origin) ? origin : '';
+      if (hasAllowList) {
+        return isAllowedOrigin(origin, env.CORS_ORIGINS) ? origin : '';
       }
       if (env.API_MODE === 'development' && localhostDev.test(origin)) {
         return origin;
@@ -61,9 +64,20 @@ app.onError((error, c) => {
     return c.json(fail('internal_error', 'API misconfigured'), 500);
   }
   return c.json(
-    fail('internal_error', 'Internal API error', error instanceof Error ? error.message : undefined),
+    fail('internal_error', 'Internal API error', exposeErrorDetails(c.env) ? errorMessage(error) : undefined),
     500,
   );
 });
 
-export default app;
+/** The cause of an unexpected error is returned only in API_MODE=development (the default of a bare env). */
+function exposeErrorDetails(rawEnv: unknown): boolean {
+  return normalizeEnvBindings(rawEnv).API_MODE === 'development';
+}
+
+function errorMessage(error: unknown): string | undefined {
+  return error instanceof Error ? error.message : undefined;
+}
+
+export { app };
+
+export default { fetch: app.fetch, scheduled } satisfies ExportedHandler<Env>;

@@ -3,7 +3,7 @@
 // backend (unauthenticated requests stop at the gate). New routes are additive and get their own tests.
 import { describe, expect, it } from 'vitest';
 
-import app from './index';
+import { app } from './index';
 
 const env = {
   API_MODE: 'development',
@@ -172,6 +172,27 @@ describe('error envelope and headers', () => {
       'http://localhost:3000',
     );
     expect((await run({ API_MODE: 'production' })).headers.get('access-control-allow-origin') ?? '').toBe('');
+  });
+
+  it('CORS: the production list admits preview Workers (dash wildcard) and nothing like them', async () => {
+    const list =
+      'https://josecoded.com,https://www.josecoded.com,https://*-josecoded-web.jose.workers.dev,http://localhost:3000';
+    const allowOrigin = async (origin: string) =>
+      (
+        await app.request(
+          'http://localhost/api/v1/health',
+          { method: 'OPTIONS', headers: { Origin: origin, 'Access-Control-Request-Method': 'GET' } },
+          { ...env, API_MODE: 'production', CORS_ORIGINS: list },
+        )
+      ).headers.get('access-control-allow-origin') ?? '';
+
+    expect(await allowOrigin('https://abc123-josecoded-web.jose.workers.dev')).toBe(
+      'https://abc123-josecoded-web.jose.workers.dev',
+    );
+    expect(await allowOrigin('https://josecoded.com')).toBe('https://josecoded.com');
+    expect(await allowOrigin('https://josecoded-web.jose.workers.dev')).toBe('');
+    expect(await allowOrigin('https://abc-josecoded-web.jose.workers.dev.evil.com')).toBe('');
+    expect(await allowOrigin('https://x.jose.workers.dev')).toBe('');
   });
 
   it('CORS: allows a configured origin and nothing else', async () => {

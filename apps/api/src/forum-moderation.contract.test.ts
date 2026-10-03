@@ -1,6 +1,6 @@
 import { beforeEach, expect, test } from 'vitest';
 
-import app from './index';
+import { app } from './index';
 import { forumResetMock } from './services/forum.store';
 
 type ApiFailBody = { ok: false; error: { code: string; message: string; details?: unknown } };

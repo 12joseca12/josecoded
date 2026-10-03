@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 
-import app from './index';
+import { app } from './index';
 
 const baseEnv = {
   API_MODE: 'development',

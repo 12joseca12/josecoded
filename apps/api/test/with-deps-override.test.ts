@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { describe, expect, it } from 'vitest';
 
-import app from '../src/index';
+import { app } from '../src/index';
 import { createFakeClock } from './fakes/clock.fake';
 import { withDeps } from '../src/middlewares/with-deps';
 
