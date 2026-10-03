@@ -1,3 +1,4 @@
+import { match } from 'next/dist/compiled/path-to-regexp';
 import { describe, expect, it } from 'vitest';
 
 import { pathnames } from '../i18n/pathnames';
@@ -105,15 +106,37 @@ describe('translated English slugs (pathnames)', () => {
     expect(rewrites.some((r) => r.destination === '/es/:path')).toBe(false);
   });
 
-  it('first-segment pattern accepts Spanish segments and refuses en, api, _next and dots', () => {
-    const pattern = /^(?!en$|api$|_next$)[^/.]+$/;
-    for (const ok of ['negocios', 'a', 'sobre-mi', 'entrada'])
-      expect(pattern.test(ok), ok).toBe(true);
-    for (const no of ['en', 'api', '_next', 'favicon.ico', 'robots.txt']) {
-      expect(pattern.test(no), no).toBe(false);
-    }
-    expect(rewrites.find((r) => r.destination === '/es/:first')?.source).toContain(
-      '(?!en$|api$|_next$)[^/.]+',
-    );
+  describe('which rewrite a URL reaches (same matcher Next uses)', () => {
+    const rewriteFor = (path: string) =>
+      rewrites.find((rule) => match(rule.source)(path) !== false)?.destination;
+
+    it.each([
+      ['/', '/es'],
+      ['/negocios', '/es/:first'],
+      ['/negocios/x', '/es/:first/:rest+'],
+      ['/a/b/c', '/es/:first/:rest+'],
+      ['/legal/aviso-legal', '/es/:first/:rest+'],
+      ['/entrada', '/es/:first'],
+      ['/en/business', '/en/negocios'],
+    ])('%s -> %s', (path, destination) => {
+      expect(rewriteFor(path)).toBe(destination);
+    });
+
+    // English URLs must never be pushed under /es (that served the Spanish 404 on /en/nope)
+    it.each([
+      '/en',
+      '/en/nope',
+      '/en/a/b',
+      '/api/x',
+      '/api',
+      '/_next/static/x',
+      '/favicon.ico',
+      '/foo.txt',
+    ])('%s is left alone', (path) => {
+      const reached = rewriteFor(path);
+      expect(reached === undefined || reached.startsWith('/en/'), `${path} -> ${reached}`).toBe(
+        true,
+      );
+    });
   });
 });

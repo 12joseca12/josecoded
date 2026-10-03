@@ -15,7 +15,7 @@ export interface RedirectRule extends RewriteRule {
 // Spanish has no prefix: everything that is not /en, /api, /_next or a file goes to /es.
 // One rule per depth, never a single `:path(.*)` param: a destination param that contains
 // slashes is encoded by OpenNext on workerd and the request ends in a 500 (/negocios/x, /a/b/c).
-const FIRST_SEGMENT = ':first((?!en$|api$|_next$)[^/.]+)';
+const FIRST_SEGMENT = ':first((?!(?:en|api|_next)(?:/|$))[^/.]+)';
 
 /**
  * A path and everything below it. Two explicit rules instead of `:path*`: OpenNext on workerd
