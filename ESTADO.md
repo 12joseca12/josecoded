@@ -95,13 +95,15 @@ Documentos (al día con la v6 desde el 2026-09-29):
 4. ~~Componentes de la home~~ hecho (2026-09-29).
 5. ~~Actualizar spec, UX, diseño técnico y plan + `/plan-eng-review`~~ hecho (2026-09-30: plan v2.1 con los 41 hallazgos).
 6. ~~Batería de stack y metodologías de producción~~ hecha (2026-09-30: 12 respuestas → working-agreements v1.2, `CLAUDE.md` reglas 11–13, plan v2.2).
-7. ~~Fase 0~~ cerrada. ~~Fase 1a~~ terminada y con puerta de calidad PASA (2026-10-03) en `chore/monorepo-base`, pendiente de PR y merge. **Siguiente: fase 1b** `chore/supabase` (1.2, 1.3, 1.6, 1.7 cron único + preview, 1.8 migraciones + RPCs, 1.9 gate con «Confirm email» y SMTP).
+7. ~~Fase 0~~ y ~~Fase 1a~~ (PR #1 fusionado). **Fase 1b en curso** en `chore/supabase`: 1.2 ✅, 1.3 ✅, 1.7 hecha y **pendiente de revisor**; luego 1.6 y 1.8 (necesitan Supabase local) y 1.9 (gate de producción con OK de Jose).
 8. Fase 2: port 1:1 de `home-v6` escena a escena, con capturas comparadas (2 %) y aprobación de Jose entre escenas. Al cerrarla, **fijar la fecha de válvula** y la tabla del hito «contenido completo».
 9. Orden de fases: 0 → 1a → 1b → 2 → hito de contenido → 3 → 4 → 5 → 6 → 8.1 → 9 (lanzamiento) → **7 Radar** → 10 Newsletter.
 
 Gates que no se cruzan sin OK explícito de Jose en la misma sesión: migraciones y deploys a producción, contratar servicios, tocar servicios preexistentes de Omen.
 
 ## Decisiones recientes
+
+- **2026-10-24 — Paso a sesiones en la nube.** Fase 1b en `chore/supabase`: **1.2** (gateway movido a `apps/api`, contratos intactos, snapshot de 31 rutas) y **1.3** (tests en Vitest/workerd, Jest fuera, `__deps` solo con `__TEST_HOOKS__` en compilación y `TEST=1`) con `revisor` PASA; **1.7** implementada (CORS con comodín de previews, `routes-manifest`, cron único `*/5` con despachador `nextRun` y presupuesto de 40 subpeticiones, `env.preview` → `josecoded-api-preview`, `minify`) **pendiente de `revisor`**. Copiados a `.claude/` del repo los agentes, skills y plugins que usa el proyecto (`.claude/README.md`); la fuente sigue siendo `claude-config`. En la nube no hay vault, codebase-memory, `/cierre`, `/cerebro`, CLI de Supabase con sesión ni Docker: **1.6 y 1.8 necesitan el Mac** (o instalar Supabase CLI + Docker y que Jose haga `supabase login`).
 
 - **2026-10-03:** **GitHub Free** con repo privado: no hay protección de ramas. Se sigue con PR por rama y squash por disciplina, con `revisor` como control; protección solo si se pasa a Pro. `main` se subió una única vez con los 44 commits de diseño antes del primer PR (OK de Jose). pnpm 11 en CI exige `allowBuilds` explícito en `pnpm-workspace.yaml` (en el Mac de Jose está `dangerouslyAllowAllBuilds` global, por eso en local no fallaba).
 

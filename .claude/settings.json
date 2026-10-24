@@ -1,0 +1,12 @@
+{
+  "enabledPlugins": {
+    "superpowers@claude-plugins-official": true,
+    "cloudflare@claude-plugins-official": true,
+    "impeccable@impeccable": true,
+    "taste-skill@taste-skill": true
+  },
+  "extraKnownMarketplaces": {
+    "impeccable": { "source": { "source": "github", "repo": "pbakaus/impeccable" } },
+    "taste-skill": { "source": { "source": "github", "repo": "Leonxlnx/taste-skill" } }
+  }
+}
