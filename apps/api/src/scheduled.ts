@@ -1,6 +1,7 @@
 // Single Cron Trigger `*/5 * * * *` dispatcher (DT §0b, finding 35). Workers Free allows 5 crons per account,
 // so every periodic job (Radar, newsletter, lead-notify retries, ...) is a row of `private.scheduled_jobs` and
 // each tick runs the DUE ones, in order, inside a subrequest budget; what does not fit waits for the next tick.
+import { parseEnv } from './config/env';
 import { resolveDeps, type Deps } from './deps';
 import { nextRun } from './utils/cron';
 import {
@@ -121,6 +122,11 @@ export async function runDueJobs(options: {
   return report;
 }
 
-export async function scheduled(_event: ScheduledController, env: Env): Promise<void> {
-  await runDueJobs({ env, deps: resolveDeps(env) });
+/**
+ * Cron entry point. Jobs get the env validated by `parseEnv`, like the routes; the deps are resolved from the
+ * raw bindings (as `withDeps` does), because the test hook `__deps` is not part of the schema.
+ */
+export async function scheduled(_event: ScheduledController, rawEnv: Env): Promise<void> {
+  const env = parseEnv(rawEnv);
+  await runDueJobs({ env, deps: resolveDeps(rawEnv) });
 }

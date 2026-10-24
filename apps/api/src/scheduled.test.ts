@@ -298,4 +298,36 @@ describe('scheduled() entry point', () => {
     expect(seen).toEqual([NOW]);
     expect(repo.ran).toEqual(['tick']);
   });
+
+  it('hands the jobs the env parsed by parseEnv, as fetch does (defaults applied, blanks normalised)', async () => {
+    const { deps } = setup([due('tick', 5)]);
+    const seen: Env[] = [];
+    jobHandlers.set('tick', async ({ env: e }) => void seen.push(e));
+    const withoutCors: Partial<Env> = { ...env };
+    delete withoutCors.CORS_ORIGINS;
+
+    await scheduled(
+      { cron: '*/5 * * * *', scheduledTime: Date.parse(NOW), noRetry: () => undefined } as ScheduledController,
+      { ...withoutCors, API_MODE: '', WORKER_TIMEOUT_MS: '', TEST: '1', __deps: deps } as unknown as Env,
+    );
+
+    expect(seen).toHaveLength(1);
+    expect(seen[0]).toMatchObject({ API_MODE: 'development', CORS_ORIGINS: '' });
+    expect(seen[0]).not.toHaveProperty('WORKER_TIMEOUT_MS', '');
+    // parseEnv strips what the schema does not know, the test hooks included
+    expect(seen[0]).not.toHaveProperty('__deps');
+  });
+
+  it('rejects an invalid environment instead of running jobs with it', async () => {
+    const { repo, deps } = setup([due('tick', 5)]);
+    jobHandlers.set('tick', async () => undefined);
+
+    await expect(
+      scheduled(
+        { cron: '*/5 * * * *', scheduledTime: Date.parse(NOW), noRetry: () => undefined } as ScheduledController,
+        { ...env, API_MODE: 'production', WORKER_URL: 'not a url', TEST: '1', __deps: deps } as Env,
+      ),
+    ).rejects.toThrow(/Invalid environment/);
+    expect(repo.ran).toEqual([]);
+  });
 });
