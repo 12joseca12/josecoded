@@ -53,6 +53,43 @@ describe('nextRun with a time zone (radar.daily at 08:00 Europe/Madrid)', () => 
   });
 });
 
+describe('nextRun with day restrictions across DST changes (Europe/Madrid)', () => {
+  const tz = 'Europe/Madrid';
+
+  it.each([
+    // spring (2026-03-29 has 23 h): Monday 30 March 00:00 CEST is 2026-03-29T22:00Z
+    ['0 0 * * 1', '2026-03-28T23:30:00.000Z', '2026-03-29T22:00:00.000Z'],
+    ['0 0 30 3 *', '2026-03-28T23:30:00.000Z', '2026-03-29T22:00:00.000Z'],
+    ['30 0 * * 1', '2026-03-28T12:00:00.000Z', '2026-03-29T22:30:00.000Z'],
+    // autumn (2026-10-25 has 25 h): Monday 26 October 00:00 CET is 2026-10-25T23:00Z
+    ['0 0 * * 1', '2026-10-24T23:30:00.000Z', '2026-10-25T23:00:00.000Z'],
+    ['0 0 26 10 *', '2026-10-24T23:30:00.000Z', '2026-10-25T23:00:00.000Z'],
+    // month restriction: the 1st of April 00:00 CEST
+    ['0 0 * 4 *', '2026-03-28T23:30:00.000Z', '2026-03-31T22:00:00.000Z'],
+  ])('%s after %s -> %s', (expr, after, expected) => {
+    expect(iso(nextRun(expr, new Date(after), tz))).toBe(expected);
+  });
+});
+
+describe('schedules that can never fire fail fast', () => {
+  it.each(['0 0 30 2 *', '0 0 31 4,6,9,11 *', '0 0 31 2 *'])('%s throws without scanning years', (expr) => {
+    const started = Date.now();
+    expect(() => nextRun(expr, new Date('2026-05-04T00:00:00.000Z'))).toThrow(/never fires/);
+    expect(Date.now() - started).toBeLessThan(50);
+  });
+
+  it('30 February with a weekday also restricted is fine (either matches)', () => {
+    // February only: the first Monday of February 2027
+    expect(iso(nextRun('0 0 30 2 1', new Date('2026-05-04T00:00:00.000Z')))).toBe('2027-02-01T00:00:00.000Z');
+  });
+
+  it('an unknown time zone throws a clear error', () => {
+    expect(() => nextRun('0 8 * * *', new Date('2026-05-04T00:00:00.000Z'), 'Europe/Madird')).toThrow(
+      /Invalid time zone: Europe\/Madird/,
+    );
+  });
+});
+
 describe('invalid expressions', () => {
   it.each(['* * * *', '61 * * * *', '* 24 * * *', '*/0 * * * *', 'a * * * *', '5-1 * * * *', '* * 0 * *'])(
     '%s throws',
