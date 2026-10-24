@@ -43,6 +43,11 @@ function buildWorkerRequestHeaders(token: string, hasBody: boolean): Record<stri
 /**
  * Calls the backend with `WORKER_INTERNAL_TOKEN`. While the token is being rotated, the backend may still only
  * know the previous one: on a 401, and only if `WORKER_INTERNAL_TOKEN_PREV` is set, it is retried once with it.
+ *
+ * Known limit: the gateway cannot tell a 401 for the internal token from any other 401 of the backend (the
+ * josecoded-worker contract has no header or envelope code for it), so a POST whose handler answers 401 after
+ * doing work would run twice while `WORKER_INTERNAL_TOKEN_PREV` is set. Keep the PREV token only for the
+ * rotation window.
  */
 async function fetchFromWorker(
   env: Env,
@@ -54,6 +59,8 @@ async function fetchFromWorker(
     fetch(url, { ...init, headers: buildWorkerRequestHeaders(token, hasBody) });
   const response = await send(env.WORKER_INTERNAL_TOKEN);
   if (response.status === 401 && env.WORKER_INTERNAL_TOKEN_PREV) {
+    // release the first connection before opening the second one
+    await response.body?.cancel();
     return send(env.WORKER_INTERNAL_TOKEN_PREV);
   }
   return response;

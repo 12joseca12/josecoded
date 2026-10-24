@@ -53,6 +53,28 @@ describe('internal token rotation (WORKER_INTERNAL_TOKEN_PREV)', () => {
     expect((fetchSpy.mock.calls[1]?.[1] as RequestInit).body).toBe('{"q":1}');
   });
 
+  it('cancels the body of the 401 before retrying, so the first connection is released', async () => {
+    const cancel = vi.fn(async () => undefined);
+    const rejected = json(401, { error: 'bad token' });
+    const stream = rejected.body;
+    if (!stream) throw new Error('expected a body');
+    vi.spyOn(stream, 'cancel').mockImplementation(cancel);
+    const fetchSpy = vi
+      .fn()
+      .mockResolvedValueOnce(rejected)
+      .mockImplementationOnce(async () => {
+        // already released when the retry goes out
+        expect(cancel).toHaveBeenCalledTimes(1);
+        return json(200, { ok: true });
+      });
+    vi.stubGlobal('fetch', fetchSpy);
+
+    await callWorker({ ...env, WORKER_INTERNAL_TOKEN_PREV: 'previous-internal-token' }, '/x');
+
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
+    expect(cancel).toHaveBeenCalledTimes(1);
+  });
+
   it('does not use the previous token when the current one works', async () => {
     const fetchSpy = vi.fn(async () => json(200, { ok: true }));
     vi.stubGlobal('fetch', fetchSpy);
