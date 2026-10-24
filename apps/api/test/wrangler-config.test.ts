@@ -11,6 +11,7 @@ type WranglerSection = {
   triggers?: { crons?: string[] };
   ratelimits?: RateLimit[];
   routes?: unknown;
+  workers_dev?: boolean;
 };
 type Wrangler = WranglerSection & { env?: Record<string, WranglerSection> };
 
@@ -54,7 +55,10 @@ describe('wrangler.jsonc: cron and preview Worker', () => {
   it('declares the preview as its own Worker, without cron or routes', () => {
     expect(preview?.name).toBe('josecoded-api-preview');
     expect(preview?.triggers?.crons).toEqual([]);
-    expect(preview).not.toHaveProperty('routes');
+    // `routes` and `workers_dev` are inheritable: both are declared so the production route
+    // (api.josecoded.com) and a top-level `workers_dev: false` can never leak into the preview
+    expect(preview?.routes).toEqual([]);
+    expect(preview?.workers_dev).toBe(true);
   });
 
   it('gives the preview its own rate limiters (distinct namespaces, same names and limits)', () => {

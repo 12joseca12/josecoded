@@ -49,6 +49,10 @@
         ],
         "ai": { "binding": "AI" },
         "triggers": { "crons": [] },
+        // `routes` and `workers_dev` ARE inherited: declared here so the production route (api.josecoded.com)
+        // never reaches the preview, which is served only on josecoded-api-preview.<subdomain>.workers.dev.
+        "routes": [],
+        "workers_dev": true,
         "minify": true,
         "define": { "__TEST_HOOKS__": "false" }
       }
