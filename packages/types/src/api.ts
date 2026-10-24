@@ -25,6 +25,11 @@ export interface ScheduledJobsRepo {
   listDue(now: Date): Promise<ScheduledJob[]>;
   /** Records a run and when the job is due next. */
   markRan(name: string, ranAt: Date, nextRunAt: Date): Promise<void>;
+  /**
+   * Sets `enabled = false`: used when the row's cron or tz cannot produce a next run (a typo in the seed), so the
+   * job is not retried every tick. Someone fixes the row and re-enables it by hand.
+   */
+  disable(name: string, reason: string): Promise<void>;
 }
 
 export type AiProposal = z.infer<typeof aiProposalSchema>;

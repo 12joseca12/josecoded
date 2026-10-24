@@ -66,7 +66,8 @@ describe('runDueJobs', () => {
       ['first', 'second', 'third'].map((n) => [n, call(n)]),
     );
 
-    const first = await runDueJobs({ env, deps, handlers, fetchImpl: okFetch, budgetLimit: 2 });
+    // 1 listDue + (1 fetch + 1 markRan) x 2 jobs = 5: the third does not fit
+    const first = await runDueJobs({ env, deps, handlers, fetchImpl: okFetch, budgetLimit: 5 });
 
     expect(order).toEqual(['first', 'second']);
     expect(first.ran).toEqual(['first', 'second']);
@@ -77,13 +78,33 @@ describe('runDueJobs', () => {
     expect((await repo.listDue(deps.clock.now())).map((j) => j.name)).toEqual(['third']);
 
     // next tick: fresh budget, the third one runs
-    const second = await runDueJobs({ env, deps, handlers, fetchImpl: okFetch, budgetLimit: 2 });
+    const second = await runDueJobs({ env, deps, handlers, fetchImpl: okFetch, budgetLimit: 5 });
     expect(second.ran).toEqual(['third']);
     expect(order).toEqual(['first', 'second', 'third']);
   });
 
-  it('a job that overruns the budget mid-way stays due and blocks the ones after it', async () => {
+  it('a job that overruns the budget after others ran stays due and waits for the next tick', async () => {
+    const { repo, deps } = setup([due('small', 20), due('greedy', 10)]);
+    const handlers = new Map<string, JobHandler>([
+      ['small', async ({ fetch: f }) => void (await f('https://example.test/small'))],
+      [
+        'greedy',
+        async ({ fetch: f }) => {
+          for (let i = 0; i < 3; i++) await f('https://example.test/' + i);
+        },
+      ],
+    ]);
+
+    // 1 listDue + small (1 + 1 markRan) + greedy reserves its markRan and gets 2 of the 3 calls it wants
+    const report = await runDueJobs({ env, deps, handlers, fetchImpl: okFetch, budgetLimit: 6 });
+
+    expect(report).toMatchObject({ ran: ['small'], failed: [], waiting: ['greedy'] });
+    expect(repo.ran).toEqual(['small']);
+  });
+
+  it('a job that alone overruns a full budget is a failure: rescheduled, and the queue moves on', async () => {
     const { repo, deps } = setup([due('greedy', 20), due('after', 10)]);
+    const errors = vi.spyOn(console, 'error').mockImplementation(() => undefined);
     const handlers = new Map<string, JobHandler>([
       [
         'greedy',
@@ -95,13 +116,104 @@ describe('runDueJobs', () => {
       ['after', async () => undefined],
     ]);
 
-    const report = await runDueJobs({ env, deps, handlers, fetchImpl: okFetch, budgetLimit: 1 });
+    // 1 listDue + 1 reserved for greedy's markRan leaves greedy 1 call: it can never fit
+    const first = await runDueJobs({ env, deps, handlers, fetchImpl: okFetch, budgetLimit: 3 });
 
-    expect(report).toMatchObject({ ran: [], waiting: ['greedy', 'after'] });
-    expect(repo.ran).toEqual([]);
+    expect(first).toMatchObject({ ran: [], failed: ['greedy'], waiting: ['after'] });
+    expect(repo.ran).toEqual(['greedy']);
+    expect(String(errors.mock.calls[0]?.[0])).toContain('"job":"greedy"');
+    expect(String(errors.mock.calls[0]?.[0])).toContain('budget_exhausted');
+
+    // next tick: greedy is not due until its next run, so it no longer blocks the one after it
+    const second = await runDueJobs({ env, deps, handlers, fetchImpl: okFetch, budgetLimit: 3 });
+    expect(second).toMatchObject({ ran: ['after'], failed: [], waiting: [] });
+    errors.mockRestore();
+  });
+
+  it('counts the repository calls (listDue + one markRan per job) in the same budget', async () => {
+    const jobs = ['a', 'b', 'c', 'd', 'e'].map((n, i) => due(n, 50 - i));
+    const { repo, deps } = setup(jobs);
+    let repoCalls = 0;
+    const counted: Deps = {
+      ...deps,
+      scheduledJobs: {
+        listDue: async (now) => (repoCalls++, repo.listDue(now)),
+        markRan: async (...args) => (repoCalls++, repo.markRan(...args)),
+        disable: async (...args) => (repoCalls++, repo.disable(...args)),
+      },
+    };
+    const handlers = new Map<string, JobHandler>(
+      jobs.map((j) => [
+        j.name,
+        async ({ fetch: f }) => {
+          await f('https://example.test/1');
+          await f('https://example.test/2');
+        },
+      ]),
+    );
+
+    const report = await runDueJobs({ env, deps: counted, handlers, fetchImpl: okFetch, budgetLimit: 10 });
+
+    // 1 + 3 x (2 fetch + 1 markRan) = 10
+    expect(report).toMatchObject({ ran: ['a', 'b', 'c'], waiting: ['d', 'e'] });
+    expect(okFetch.mock.calls.length + repoCalls).toBe(10);
+  });
+
+  it('by default a tick stays at 40 subrequests in total (Workers Free allows 50)', async () => {
+    const jobs = Array.from({ length: 30 }, (_, i) => due(`job${String(i).padStart(2, '0')}`, 60 - i));
+    const { repo, deps } = setup(jobs);
+    let repoCalls = 0;
+    const counted: Deps = {
+      ...deps,
+      scheduledJobs: {
+        listDue: async (now) => (repoCalls++, repo.listDue(now)),
+        markRan: async (...args) => (repoCalls++, repo.markRan(...args)),
+        disable: async (...args) => (repoCalls++, repo.disable(...args)),
+      },
+    };
+    const handlers = new Map<string, JobHandler>(
+      jobs.map((j) => [j.name, async ({ fetch: f }) => void (await f('https://example.test/' + j.name))]),
+    );
+
+    const report = await runDueJobs({ env, deps: counted, handlers, fetchImpl: okFetch });
+
+    expect(okFetch.mock.calls.length + repoCalls).toBeLessThanOrEqual(40);
+    expect(report.ran.length + report.waiting.length).toBe(30);
+    expect(report.waiting.length).toBeGreaterThan(0);
+  });
+
+  it('a job whose time zone or cron cannot produce a next run is disabled without running, and the rest go on', async () => {
+    const { repo, deps } = setup([
+      due('typo.tz', 30, '0 8 * * *', 'Europe/Madird'),
+      due('never', 20, '0 0 30 2 *'),
+      due('fine', 10),
+    ]);
+    const errors = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const calls: string[] = [];
+    const handlers = new Map<string, JobHandler>(
+      ['typo.tz', 'never', 'fine'].map((name) => [name, async () => void calls.push(name)]),
+    );
+
+    const report = await runDueJobs({ env, deps, handlers });
+
+    expect(calls).toEqual(['fine']);
+    expect(report).toMatchObject({ ran: ['fine'], failed: ['typo.tz', 'never'], waiting: [] });
+    expect(repo.disabled).toEqual(['typo.tz', 'never']);
+    expect(repo.ran).toEqual(['fine']);
+    const logged = errors.mock.calls.map((c) => String(c[0]));
+    expect(logged[0]).toContain('"job":"typo.tz"');
+    expect(logged[0]).toContain('Invalid time zone');
+    expect(logged[1]).toContain('never fires');
+
+    // disabled jobs are not listed again: no hot loop
+    const next = await runDueJobs({ env, deps, handlers });
+    expect(next.failed).toEqual([]);
+    expect(calls).toEqual(['fine']);
+    errors.mockRestore();
   });
 
   it('counts env.AI.run against the same budget as fetch', async () => {
+    const errors = vi.spyOn(console, 'error').mockImplementation(() => undefined);
     const run = vi.fn(async () => ({ response: 'hola' }));
     const { deps } = setup([due('ai', 5)]);
     const used: number[] = [];
@@ -122,12 +234,14 @@ describe('runDueJobs', () => {
       deps,
       handlers,
       fetchImpl: okFetch,
-      budgetLimit: 2,
+      // 1 listDue + 1 reserved for markRan + fetch + one AI.run
+      budgetLimit: 4,
     });
 
-    expect(used).toEqual([2]);
+    expect(used).toEqual([3]);
     expect(run).toHaveBeenCalledTimes(1);
-    expect(report.waiting).toEqual(['ai']);
+    expect(report.failed).toEqual(['ai']);
+    errors.mockRestore();
   });
 
   it('a failing job is logged, rescheduled (no hot loop) and does not stop the others', async () => {

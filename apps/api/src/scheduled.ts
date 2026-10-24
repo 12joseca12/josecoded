@@ -36,6 +36,21 @@ export type TickReport = {
   unhandled: string[];
 };
 
+function logJobError(job: string, error: unknown): void {
+  console.error(
+    JSON.stringify({
+      scope: 'scheduled',
+      job,
+      message: error instanceof Error ? error.message : 'unknown',
+    }),
+  );
+}
+
+/**
+ * Runs the due jobs in order. Every call to the repository counts in the same budget as the handlers (one
+ * listDue, then one markRan or disable per job, set aside before the handler starts), so a tick never goes over
+ * `budgetLimit` subrequests in total.
+ */
 export async function runDueJobs(options: {
   env: Env;
   deps: Deps;
@@ -51,7 +66,11 @@ export async function runDueJobs(options: {
   const budget = createSubrequestBudget(options.fetchImpl ?? fetch, options.budgetLimit);
   const budgetedEnv: Env = env.AI ? { ...env, AI: budget.ai(env.AI) } : env;
   const now = deps.clock.now();
+  budget.take();
   const due = await repo.listDue(now);
+  const waitFrom = (index: number) =>
+    report.waiting.push(...due.slice(index).map((j) => j.name).filter((n) => handlers.has(n)));
+  let handlersRun = 0;
 
   for (const [index, job] of due.entries()) {
     const handler = handlers.get(job.name);
@@ -59,30 +78,45 @@ export async function runDueJobs(options: {
       report.unhandled.push(job.name);
       continue;
     }
+    // the job's own markRan (or disable) must fit, whatever the handler does
     if (budget.remaining <= 0) {
-      report.waiting.push(...due.slice(index).map((j) => j.name).filter((n) => handlers.has(n)));
+      waitFrom(index);
       break;
     }
+    budget.reserve();
+
+    // Computed before running: `now` is fixed for the tick, and a schedule that cannot produce a next run
+    // (unknown tz, 30 February) must neither abort the batch nor fire again every tick. The row is disabled.
+    let next: Date;
+    try {
+      next = nextRun(job.cron, now, job.tz);
+    } catch (error) {
+      logJobError(job.name, error);
+      budget.takeReserved();
+      await repo.disable(job.name, error instanceof Error ? error.message : 'unknown');
+      report.failed.push(job.name);
+      continue;
+    }
+
+    const firstHandler = handlersRun === 0;
+    handlersRun += 1;
     try {
       await handler({ env: budgetedEnv, deps, budget, fetch: budget.fetch, now });
+      report.ran.push(job.name);
     } catch (error) {
-      if (error instanceof BudgetExhaustedError) {
-        // not recorded as run: it stays due, and so does everything after it
-        report.waiting.push(...due.slice(index).map((j) => j.name).filter((n) => handlers.has(n)));
+      if (error instanceof BudgetExhaustedError && !firstHandler) {
+        // not recorded as run: it stays due, and so does everything after it; next tick it starts earlier
+        waitFrom(index);
         break;
       }
-      // a broken job must not fire again every 5 minutes: schedule its next run and log
-      console.error(
-        JSON.stringify({
-          scope: 'scheduled',
-          job: job.name,
-          message: error instanceof Error ? error.message : 'unknown',
-        }),
-      );
+      // A broken job must not fire again every 5 minutes: it is rescheduled and logged. That includes a job
+      // that spent the whole budget of a tick on its own: it would never fit, and retrying it would block the
+      // queue for good.
+      logJobError(job.name, error);
       report.failed.push(job.name);
     }
-    await repo.markRan(job.name, now, nextRun(job.cron, now, job.tz));
-    if (!report.failed.includes(job.name)) report.ran.push(job.name);
+    budget.takeReserved();
+    await repo.markRan(job.name, now, next);
   }
   return report;
 }
