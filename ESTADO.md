@@ -83,6 +83,14 @@ Documentos (al día con la v6 desde el 2026-09-29):
 - [ ] Fase 2: media queries con sintaxis de rango (`width <= 67.5rem` / `width > 67.5rem`); tokens semánticos para huecos fluidos con `svh`/`vmin` (`.scene`, `.tour__sticky`, `.tcard`, `.close`) y paddings del hero/botón; decidir `color-mix` vs color relativo para la luz de `Cell` (ui).
 - [ ] A11y fase 2: zona táctil del pager ≥ 24 px (44 recomendado) con pseudo-elemento; `--pager-idle` 1,61:1 necesita indicador no cromático o alfa ~0,55; pulgar de scroll a ~3:1 (`#5a4fb0` o `--pager-hover`); helper axe en 2.17 incluyendo los 404 (revisor-accesibilidad).
 
+**De la revisión de la 1.7 (2026-10-24):**
+- [ ] 1.8: el adaptador real de `ScheduledJobsRepo` debe implementar el nuevo `disable(name, reason)` (pone `enabled = false`; se usa cuando la fila tiene cron o tz imposibles). Un job desactivado se reactiva a mano tras corregir la fila.
+- [ ] Desde el Mac: mirar en `josecoded-worker` si su 401 por token interno se distingue de otros 401 (cabecera o código en el envelope). Hoy el gateway reintenta cualquier 401 con `WORKER_INTERNAL_TOKEN_PREV`, así que un POST no idempotente (`/ai/admin-chat`) podría ejecutarse dos veces si el 401 viene de otra causa.
+- [ ] `API_MODE: "development"` en el Worker de producción devuelve `details` de error hasta el corte a producción (DT §3.6).
+- [ ] Un test del gateway que espera 403 falló una vez y pasó al relanzar: vigilar si es intermitente.
+- [ ] El «Hecho cuando» de la 1.7 (`wrangler deploy --dry-run` y `curl` en `wrangler dev`) no se ha ejecutado en la nube: comprobarlo en el Mac.
+- [ ] Sincronizar desde el Mac (no hay vault ni codebase-memory en la nube): nota del vault y ADR con el estado de la 1.7.
+
 **Suelto**
 - [ ] Accesibilidad: al descomponer etiquetas en glifos (home-v4) el nombre accesible puede leerse con basura; en v6 ya no se usa, confirmar al implementar.
 - [ ] `.gitignore` de `josedev` y `josecoded-worker` con `graphify-out/` sin commitear.
@@ -95,7 +103,7 @@ Documentos (al día con la v6 desde el 2026-09-29):
 4. ~~Componentes de la home~~ hecho (2026-09-29).
 5. ~~Actualizar spec, UX, diseño técnico y plan + `/plan-eng-review`~~ hecho (2026-09-30: plan v2.1 con los 41 hallazgos).
 6. ~~Batería de stack y metodologías de producción~~ hecha (2026-09-30: 12 respuestas → working-agreements v1.2, `CLAUDE.md` reglas 11–13, plan v2.2).
-7. ~~Fase 0~~ y ~~Fase 1a~~ (PR #1 fusionado). **Fase 1b en curso** en `chore/supabase`: 1.2 ✅, 1.3 ✅, 1.7 hecha y **pendiente de revisor**; luego 1.6 y 1.8 (necesitan Supabase local) y 1.9 (gate de producción con OK de Jose).
+7. ~~Fase 0~~ y ~~Fase 1a~~ (PR #1 fusionado). **Fase 1b en curso** en `chore/supabase` (la sesión en la nube del 2026-10-24 sigue en `main-aktp2d`, mismo punto de partida `dac9fb9`): 1.2 ✅, 1.3 ✅, 1.7 ✅ (revisor «aprobado con cambios menores»; 8 hallazgos aplicados en `43ea5c5..101bf7f`, 214 tests); luego 1.6 y 1.8 (necesitan Supabase local) y 1.9 (gate de producción con OK de Jose).
 8. Fase 2: port 1:1 de `home-v6` escena a escena, con capturas comparadas (2 %) y aprobación de Jose entre escenas. Al cerrarla, **fijar la fecha de válvula** y la tabla del hito «contenido completo».
 9. Orden de fases: 0 → 1a → 1b → 2 → hito de contenido → 3 → 4 → 5 → 6 → 8.1 → 9 (lanzamiento) → **7 Radar** → 10 Newsletter.
 
