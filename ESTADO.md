@@ -1,6 +1,6 @@
 # Estado — josecoded
 
-> **Etapa de diseño y planificación cerrada el 2026-09-30** (`/cierre`). Home v6 documentada, convenciones de trabajo, inventario de componentes, pantallas y contenidos, spec v1.7, DT v1.4, newsletter v1.2, plan v2.1 con `/plan-eng-review` CLEAR. **Batería de stack y metodologías de producción respondida el 2026-09-30 (tarde)**: working-agreements **v1.2**, `CLAUDE.md` con las reglas duras 11–13 y plan **v2.2**. Siguiente: **fase 0**. Sin código de aplicación todavía.
+> **Fase 1b en curso** en `chore/supabase` (2026-10-27): fase 0 y fase 1a hechas (PR #1); de la 1b, 1.2, 1.3 y 1.7 hechas y revisadas. Siguiente: 1.6 y 1.8 en el Mac (Supabase local + Docker) y 1.9 (gate de producción con OK de Jose). Desde el 2026-10-24 se trabaja también en sesiones en la nube: siempre sobre `chore/supabase`, sin crear ramas nuevas; lo que necesita Docker, Supabase CLI, `wrangler` con sesión, vault o codebase-memory se hace en el Mac. Diseño y planificación cerrados el 2026-09-30 (spec v1.7, DT v1.4, plan v2.2, working-agreements v1.2).
 
 ## Ahora
 
@@ -106,7 +106,7 @@ Documentos (al día con la v6 desde el 2026-09-29):
 4. ~~Componentes de la home~~ hecho (2026-09-29).
 5. ~~Actualizar spec, UX, diseño técnico y plan + `/plan-eng-review`~~ hecho (2026-09-30: plan v2.1 con los 41 hallazgos).
 6. ~~Batería de stack y metodologías de producción~~ hecha (2026-09-30: 12 respuestas → working-agreements v1.2, `CLAUDE.md` reglas 11–13, plan v2.2).
-7. ~~Fase 0~~ y ~~Fase 1a~~ (PR #1 fusionado). **Fase 1b en curso** en `chore/supabase` (la sesión en la nube del 2026-10-24 sigue en `main-aktp2d`, mismo punto de partida `dac9fb9`): 1.2 ✅, 1.3 ✅, 1.7 ✅ (revisor «aprobado con cambios menores»; 8 hallazgos aplicados en `43ea5c5..101bf7f`, 214 tests); luego 1.6 y 1.8 (necesitan Supabase local) y 1.9 (gate de producción con OK de Jose).
+7. ~~Fase 0~~ y ~~Fase 1a~~ (PR #1 fusionado). **Fase 1b en curso** en `chore/supabase` (la rama `main-aktp2d` de la sesión en la nube del 2026-10-24 se integró aquí el 2026-10-27): 1.2 ✅, 1.3 ✅, 1.7 ✅ (revisor «aprobado con cambios menores»; 8 hallazgos aplicados en `43ea5c5..101bf7f`, 214 tests); luego 1.6 y 1.8 (necesitan Supabase local) y 1.9 (gate de producción con OK de Jose).
 8. Fase 2: port 1:1 de `home-v6` escena a escena, con capturas comparadas (2 %) y aprobación de Jose entre escenas. Al cerrarla, **fijar la fecha de válvula** y la tabla del hito «contenido completo».
 9. Orden de fases: 0 → 1a → 1b → 2 → hito de contenido → 3 → 4 → 5 → 6 → 8.1 → 9 (lanzamiento) → **7 Radar** → 10 Newsletter.
 
