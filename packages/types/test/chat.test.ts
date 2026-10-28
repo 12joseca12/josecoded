@@ -5,14 +5,9 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, expectTypeOf, it } from 'vitest';
 
 import {
-  CHAT_CASES,
-  CHAT_MESSAGE_TYPES,
-  CHAT_SENDERS,
   chatContextFactsSchema,
   chatContextPublishedSchema,
   chatVisitorMessageEventSchema,
-  CONTEXT_STATUSES,
-  THREAD_STATUSES,
   type ChatContextFacts,
 } from '../src';
 
@@ -24,24 +19,6 @@ const sql = readdirSync(migrations)
   .map((f) => readFileSync(join(migrations, f), 'utf8').replace(/--.*$/gm, ''))
   .join('\n');
 const seed = readFileSync(join(root, 'seed', 'seed.sql'), 'utf8');
-
-function sqlEnum(name: string): string[] {
-  const m = new RegExp(`create type public\\.${name} as enum \\(([^)]*)\\)`, 'i').exec(sql);
-  if (!m) throw new Error(`enum ${name} not found in supabase/migrations`);
-  return [...m[1]!.matchAll(/'([^']+)'/g)].map((v) => v[1]!);
-}
-
-describe('chat value lists mirror the SQL enums (until database.ts is generated)', () => {
-  it.each([
-    ['chat_case', CHAT_CASES],
-    ['context_status', CONTEXT_STATUSES],
-    ['thread_status', THREAD_STATUSES],
-    ['chat_sender', CHAT_SENDERS],
-    ['chat_message_type', CHAT_MESSAGE_TYPES],
-  ] as const)('%s', (name, values) => {
-    expect(sqlEnum(name)).toEqual([...values]);
-  });
-});
 
 describe('chatContextFactsSchema', () => {
   it('accepts the empty default of the column and fills the lists', () => {

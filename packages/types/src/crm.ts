@@ -1,61 +1,41 @@
+import type { Enums } from './db.ts';
 import type {
-  AFFILIATE_LEVELS,
-  ASSET_SOURCES,
-  CHAT_CASES,
-  CLIENT_EXTRA_STATUSES,
-  COMMENT_STATUSES,
-  CONTACT_KINDS,
-  CONTACT_SOURCES,
   CONTACT_STATUSES,
-  CONTACT_VIAS,
   createLeadInputSchema,
-  DRAFT_AUTHORS,
-  DRAFT_STATUSES,
   importOrganizationsRowSchema,
-  INTERACTION_ACTORS,
-  INTERACTION_CHANNELS,
-  INTERACTION_DIRECTIONS,
-  INTERACTION_KINDS,
   interactionPayloadSchema,
-  LEAD_SOURCES,
-  LEAD_STATUSES,
-  ORG_KINDS,
-  PROJECT_PHASES,
-  REWARD_STATUSES,
-  REWARD_TYPES,
-  TASK_STATUSES,
-  UPGRADE_STATUSES,
 } from './schemas';
 import type { z } from 'zod';
 
-// CRM, leads, client area, affiliates and comments (DATOS v1.1 §4.3–§4.5). The unions come from the value lists in
-// schemas/crm.ts, which mirror the SQL enums (test/crm.test.ts). Rows and RPC results use Tables<>/Enums<> from
-// `db.ts` once `database.ts` is generated from Supabase local.
+// CRM, leads, client area, affiliates and comments (DATOS v1.1 §4.3–§4.5). Unions that mirror a SQL enum are
+// `Enums<>` of the generated `database.ts`; the zod value lists in schemas/crm.ts validate at the boundaries and
+// test/enums.test-d.ts breaks typecheck when either side drifts. `ContactStatus` is a text column checked by
+// `private.contact_status_ok()`, so it stays inferred from the zod map.
 
-export type OrgKind = (typeof ORG_KINDS)[number];
-export type ContactKind = (typeof CONTACT_KINDS)[number];
-export type ContactSource = (typeof CONTACT_SOURCES)[number];
-export type ChatCase = (typeof CHAT_CASES)[number];
+export type OrgKind = Enums<'org_kind'>;
+export type ContactKind = Enums<'contact_kind'>;
+export type ContactSource = Enums<'contact_source'>;
+export type ChatCase = Enums<'chat_case'>;
 /** `crm_contacts.status` allowed for a kind (`ContactStatus` alone is the union of every kind). */
 export type ContactStatus<K extends ContactKind = ContactKind> = (typeof CONTACT_STATUSES)[K][number];
-export type InteractionKind = (typeof INTERACTION_KINDS)[number];
-export type InteractionChannel = (typeof INTERACTION_CHANNELS)[number];
-export type InteractionDirection = (typeof INTERACTION_DIRECTIONS)[number];
-export type InteractionActor = (typeof INTERACTION_ACTORS)[number];
-export type DraftAuthor = (typeof DRAFT_AUTHORS)[number];
-export type DraftStatus = (typeof DRAFT_STATUSES)[number];
-export type LeadStatus = (typeof LEAD_STATUSES)[number];
-export type LeadSource = (typeof LEAD_SOURCES)[number];
-export type ContactVia = (typeof CONTACT_VIAS)[number];
-export type ProjectPhase = (typeof PROJECT_PHASES)[number];
-export type TaskStatus = (typeof TASK_STATUSES)[number];
-export type AssetSource = (typeof ASSET_SOURCES)[number];
-export type ClientExtraStatus = (typeof CLIENT_EXTRA_STATUSES)[number];
-export type UpgradeStatus = (typeof UPGRADE_STATUSES)[number];
-export type AffiliateLevel = (typeof AFFILIATE_LEVELS)[number];
-export type RewardType = (typeof REWARD_TYPES)[number];
-export type RewardStatus = (typeof REWARD_STATUSES)[number];
-export type CommentStatus = (typeof COMMENT_STATUSES)[number];
+export type InteractionKind = Enums<'interaction_kind'>;
+export type InteractionChannel = Enums<'interaction_channel'>;
+export type InteractionDirection = Enums<'interaction_direction'>;
+export type InteractionActor = Enums<'interaction_actor'>;
+export type DraftAuthor = Enums<'draft_author'>;
+export type DraftStatus = Enums<'draft_status'>;
+export type LeadStatus = Enums<'lead_status'>;
+export type LeadSource = Enums<'lead_source'>;
+export type ContactVia = Enums<'contact_via'>;
+export type ProjectPhase = Enums<'project_phase'>;
+export type TaskStatus = Enums<'task_status'>;
+export type AssetSource = Enums<'asset_source'>;
+export type ClientExtraStatus = Enums<'client_extra_status'>;
+export type UpgradeStatus = Enums<'upgrade_status'>;
+export type AffiliateLevel = Enums<'affiliate_level'>;
+export type RewardType = Enums<'reward_type'>;
+export type RewardStatus = Enums<'reward_status'>;
+export type CommentStatus = Enums<'comment_status'>;
 
 /** Parsed body of `create_lead(p)`; `CreateLeadInputRaw` is what callers may send before defaults apply. */
 export type CreateLeadInput = z.infer<typeof createLeadInputSchema>;

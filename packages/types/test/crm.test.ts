@@ -6,33 +6,12 @@ import { describe, expect, expectTypeOf, it } from 'vitest';
 
 import {
   AFFILIATE_CODE_DB_RE,
-  AFFILIATE_LEVELS,
-  ASSET_SOURCES,
-  CHAT_CASES,
-  CLIENT_EXTRA_STATUSES,
-  COMMENT_STATUSES,
   CONTACT_KINDS,
-  CONTACT_SOURCES,
   CONTACT_STATUSES,
-  CONTACT_VIAS,
   createLeadInputSchema,
-  DRAFT_AUTHORS,
-  DRAFT_STATUSES,
   importOrganizationsRowSchema,
-  INTERACTION_ACTORS,
-  INTERACTION_CHANNELS,
-  INTERACTION_DIRECTIONS,
-  INTERACTION_KINDS,
   interactionPayloadSchema,
-  LEAD_SOURCES,
-  LEAD_STATUSES,
-  ORG_KINDS,
-  PROJECT_PHASES,
-  REWARD_STATUSES,
-  REWARD_TYPES,
-  TASK_STATUSES,
   TERMINAL_CONTACT_STATUSES,
-  UPGRADE_STATUSES,
   type ContactStatus,
 } from '../src';
 
@@ -43,12 +22,6 @@ const sql = readdirSync(migrations)
   .map((f) => readFileSync(join(migrations, f), 'utf8').replace(/--.*$/gm, ''))
   .join('\n');
 
-function sqlEnum(name: string): string[] {
-  const m = new RegExp(`create type public\\.${name} as enum \\(([^)]*)\\)`, 'i').exec(sql);
-  if (!m) throw new Error(`enum ${name} not found in supabase/migrations`);
-  return [...m[1]!.matchAll(/'([^']+)'/g)].map((v) => v[1]!);
-}
-
 function sqlArray(fn: string, label: string): string[] {
   const body = new RegExp(`function private\\.${fn}\\([\\s\\S]*?\\$\\$([\\s\\S]*?)\\$\\$`, 'i').exec(sql)?.[1] ?? '';
   const line = label ? new RegExp(`when '${label}'\\s+then p_status in \\(([^)]*)\\)`).exec(body) : /in \(([^)]*)\)/.exec(body);
@@ -56,34 +29,7 @@ function sqlArray(fn: string, label: string): string[] {
   return [...line[1]!.matchAll(/'([^']+)'/g)].map((v) => v[1]!);
 }
 
-describe('crm value lists mirror the SQL enums (until database.ts is generated)', () => {
-  it.each([
-    ['org_kind', ORG_KINDS],
-    ['contact_kind', CONTACT_KINDS],
-    ['contact_source', CONTACT_SOURCES],
-    ['chat_case', CHAT_CASES],
-    ['interaction_kind', INTERACTION_KINDS],
-    ['interaction_channel', INTERACTION_CHANNELS],
-    ['interaction_direction', INTERACTION_DIRECTIONS],
-    ['interaction_actor', INTERACTION_ACTORS],
-    ['draft_author', DRAFT_AUTHORS],
-    ['draft_status', DRAFT_STATUSES],
-    ['lead_status', LEAD_STATUSES],
-    ['lead_source', LEAD_SOURCES],
-    ['contact_via', CONTACT_VIAS],
-    ['project_phase', PROJECT_PHASES],
-    ['task_status', TASK_STATUSES],
-    ['asset_source', ASSET_SOURCES],
-    ['client_extra_status', CLIENT_EXTRA_STATUSES],
-    ['upgrade_status', UPGRADE_STATUSES],
-    ['affiliate_level', AFFILIATE_LEVELS],
-    ['reward_type', REWARD_TYPES],
-    ['reward_status', REWARD_STATUSES],
-    ['comment_status', COMMENT_STATUSES],
-  ] as const)('%s', (name, values) => {
-    expect(sqlEnum(name)).toEqual([...values]);
-  });
-
+describe('crm value lists mirror the SQL checks (enums: test/enums.test-d.ts)', () => {
   it.each(CONTACT_KINDS)('statuses of %s match private.contact_status_ok()', (kind) => {
     expect(sqlArray('contact_status_ok', kind)).toEqual([...CONTACT_STATUSES[kind]]);
   });

@@ -1,20 +1,28 @@
 // Real adapter of the ScheduledJobsRepo port (working-agreements §17.1) over `private.scheduled_jobs`.
 // PostgREST does not expose the `private` schema, so it goes through the three service-role-only RPCs of
 // migration 20261028100000_base.sql. The service-role client comes from adapters/supabase.ts (one per request).
-import type { ScheduledJob, ScheduledJobsRepo } from '@josecoded/types';
+import type { Database, ScheduledJob, ScheduledJobsRepo } from '@josecoded/types';
 
-/** The slice of the supabase-js client the RPC adapters need (also what the tests fake). */
+type PublicFunctions = Database['public']['Functions'];
+/** Names of the RPCs the generated `database.ts` knows. */
+export type RpcName = keyof PublicFunctions;
+export type RpcArgs<F extends RpcName> = PublicFunctions[F]['Args'];
+export type RpcReturns<F extends RpcName> = PublicFunctions[F]['Returns'];
+
+/** The slice of the supabase-js client the RPC adapters need (also what the tests fake), typed from `Database`. */
 export interface RpcClient {
-  rpc(
-    fn: string,
-    args?: Record<string, unknown>,
-  ): PromiseLike<{ data: unknown; error: { message: string } | null }>;
+  rpc<F extends RpcName>(
+    fn: F,
+    args: RpcArgs<F>,
+  ): PromiseLike<{ data: RpcReturns<F> | null; error: { message: string } | null }>;
 }
 
-type DueRow = { name: string; cron: string; tz: string | null; next_run_at: string };
-
 /** Calls `fn` and turns a PostgREST error into an exception naming the function. */
-export async function callRpc(client: RpcClient, fn: string, args: Record<string, unknown>): Promise<unknown> {
+export async function callRpc<F extends RpcName>(
+  client: RpcClient,
+  fn: F,
+  args: RpcArgs<F>,
+): Promise<RpcReturns<F> | null> {
   const { data, error } = await client.rpc(fn, args);
   if (error) throw new Error(`${fn}: ${error.message}`);
   return data;
@@ -23,7 +31,7 @@ export async function callRpc(client: RpcClient, fn: string, args: Record<string
 export function createScheduledJobsRepo(client: RpcClient): ScheduledJobsRepo {
   return {
     async listDue(now) {
-      const rows = (await callRpc(client, 'scheduled_jobs_due', { p_now: now.toISOString() })) as DueRow[] | null;
+      const rows = await callRpc(client, 'scheduled_jobs_due', { p_now: now.toISOString() });
       return (rows ?? []).map(
         (row): ScheduledJob => ({
           name: row.name,

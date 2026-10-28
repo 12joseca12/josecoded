@@ -1,22 +1,18 @@
+import type { Enums } from './db.ts';
 import type {
-  CHAT_MESSAGE_TYPES,
-  CHAT_SENDERS,
   chatContextFactsSchema,
   chatContextPublishedSchema,
   chatVisitorMessageEventSchema,
-  CONTEXT_STATUSES,
-  THREAD_STATUSES,
 } from './schemas';
 import type { z } from 'zod';
 
-// Case-based chat (DATOS v1.2 §4.6). The unions come from the value lists in schemas/chat.ts, which mirror the SQL
-// enums (test/chat.test.ts); `ChatCase` is in crm.ts. Rows use Tables<'chat_threads'> etc. from `db.ts` once
-// `database.ts` is generated from Supabase local.
+// Case-based chat (DATOS v1.2 §4.6). Enum unions are `Enums<>` of the generated `database.ts`; the zod lists in
+// schemas/chat.ts validate at the boundaries and test/enums.test-d.ts breaks typecheck on drift. `ChatCase` is in crm.ts.
 
-export type ContextStatus = (typeof CONTEXT_STATUSES)[number];
-export type ThreadStatus = (typeof THREAD_STATUSES)[number];
-export type ChatSender = (typeof CHAT_SENDERS)[number];
-export type ChatMessageType = (typeof CHAT_MESSAGE_TYPES)[number];
+export type ContextStatus = Enums<'context_status'>;
+export type ThreadStatus = Enums<'thread_status'>;
+export type ChatSender = Enums<'chat_sender'>;
+export type ChatMessageType = Enums<'chat_message_type'>;
 
 /** Parsed `chat_contexts.facts`; `ChatContextFactsRaw` is what the CRM editor may send before defaults apply. */
 export type ChatContextFacts = z.infer<typeof chatContextFactsSchema>;

@@ -5,11 +5,12 @@ import { createNoticeLedger, createOutboxRepo } from './outbox';
 import type { RpcClient } from './scheduled-jobs';
 
 function fakeClient(replies: Record<string, unknown> = {}, error?: string) {
-  const calls: { fn: string; args: Record<string, unknown> | undefined }[] = [];
+  const calls: { fn: string; args: unknown }[] = [];
   const client: RpcClient = {
     rpc: async (fn, args) => {
       calls.push({ fn, args });
-      return { data: error ? null : (replies[fn] ?? null), error: error ? { message: error } : null };
+      // the fake replies with loose JSON; the typed port is checked against the real client in supabase.ts
+      return { data: (error ? null : (replies[fn] ?? null)) as never, error: error ? { message: error } : null };
     },
   };
   return { client, calls };

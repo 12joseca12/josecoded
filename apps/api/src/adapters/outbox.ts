@@ -7,26 +7,23 @@
 // Dead-lettering (10 attempts -> dead_at + system.outbox_dead) happens in SQL, not here.
 import { callRpc, type RpcClient } from './scheduled-jobs';
 
-import type { NoticeLedger, OutboxEvent, OutboxRepo } from '@josecoded/types';
+import type { Json, NoticeLedger, OutboxEvent, OutboxRepo } from '@josecoded/types';
 
-type ClaimRow = {
-  id: number | string;
-  event: string;
-  payload: Record<string, unknown> | null;
-  attempts: number;
-  created_at: string;
-};
+/** `outbox.payload` is jsonb; the gateway only handles objects, anything else counts as empty. */
+function payloadOf(value: Json): Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value) ? value : {};
+}
 
 export function createOutboxRepo(client: RpcClient): OutboxRepo {
   return {
     async claim(limit, worker) {
-      const rows = (await callRpc(client, 'outbox_claim', { p_limit: limit, p_worker: worker })) as ClaimRow[] | null;
+      const rows = await callRpc(client, 'outbox_claim', { p_limit: limit, p_worker: worker });
       return (rows ?? []).map(
         (row): OutboxEvent => ({
           // bigserial: PostgREST sends it as a JSON number while it fits (it always will here)
           id: Number(row.id),
           event: row.event,
-          payload: row.payload ?? {},
+          payload: payloadOf(row.payload),
           attempts: row.attempts,
           createdAt: new Date(row.created_at),
         }),

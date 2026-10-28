@@ -48,10 +48,8 @@ function aalOf(jwt: string): AuthUser['aal'] {
   }
 }
 
-// Untyped on purpose until `database.ts` is generated (it is still the empty placeholder of 1.6): the typed
-// client cannot name a table or an RPC yet. admin() hands out the typed view of the same client.
-function createServiceClient(base: string, secret: string, fetchImpl: typeof fetch) {
-  return createClient(base, secret, {
+function createServiceClient(base: string, secret: string, fetchImpl: typeof fetch): SupabaseClient<Database> {
+  return createClient<Database>(base, secret, {
     auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
     global: { fetch: (...args) => fetchImpl(...args) },
   });
@@ -64,7 +62,7 @@ function createServiceClient(base: string, secret: string, fetchImpl: typeof fet
 export function createSupabaseAdapters(env: Env, fetchImpl: typeof fetch = fetch): SupabaseAdapters {
   const base = env.SUPABASE_URL.replace(/\/$/, '');
   const secret = env.SUPABASE_SECRET_KEY?.trim();
-  let client: ReturnType<typeof createServiceClient> | undefined;
+  let client: SupabaseClient<Database> | undefined;
   const service = () => {
     if (!secret) throw new Error('SUPABASE_SECRET_KEY is required');
     client ??= createServiceClient(base, secret, fetchImpl);
@@ -94,11 +92,11 @@ export function createSupabaseAdapters(env: Env, fetchImpl: typeof fetch = fetch
       if (error) throw new Error(`staff_members: ${error.message}`);
       return Array.isArray(data) && data.length > 0;
     },
-    admin: () => service() as unknown as SupabaseClient<Database>,
+    admin: service,
   };
 
   return {
     gateway,
-    ...(secret ? { rpc: { rpc: (fn: string, args?: Record<string, unknown>) => service().rpc(fn, args) } } : {}),
+    ...(secret ? { rpc: { rpc: (fn, args) => service().rpc(fn, args) } } : {}),
   };
 }

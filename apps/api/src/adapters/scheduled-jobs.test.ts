@@ -3,11 +3,12 @@ import { describe, expect, it } from 'vitest';
 import { createScheduledJobsRepo, type RpcClient } from './scheduled-jobs';
 
 function fakeClient(reply: { data?: unknown; error?: { message: string } | null } = {}) {
-  const calls: { fn: string; args: Record<string, unknown> | undefined }[] = [];
+  const calls: { fn: string; args: unknown }[] = [];
   const client: RpcClient = {
     rpc: async (fn, args) => {
       calls.push({ fn, args });
-      return { data: reply.data ?? null, error: reply.error ?? null };
+      // the fake replies with loose JSON; the typed port is checked against the real client in supabase.ts
+      return { data: (reply.data ?? null) as never, error: reply.error ?? null };
     },
   };
   return { client, calls };
