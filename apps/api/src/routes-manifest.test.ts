@@ -22,8 +22,13 @@ describe('routes manifest', () => {
 
   it('lists the inherited routes without duplicates', () => {
     expect(manifest).toContain('GET /api/v1/health');
-    expect(manifest).toContain('GET /api/v1/admin-chat/thread');
+    expect(manifest).toContain('GET /api/v1/auth/me');
     expect(new Set(manifest).size).toBe(manifest.length);
+  });
+
+  it('has no forum or admin-chat route left (retired with their tables, DATOS §9 Q1)', () => {
+    expect(manifest.filter((r) => /\/(forum|admin-chat)(\/|$)/.test(r))).toEqual([]);
+    expect(registeredRoutes(app.routes).filter((r) => /\/(forum|admin-chat)(\/|$)/.test(r))).toEqual([]);
   });
 
   it('matches what the app registers: nothing missing, nothing extra', () => {

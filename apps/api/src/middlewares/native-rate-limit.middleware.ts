@@ -1,6 +1,7 @@
-import type { Context, MiddlewareHandler } from 'hono';
 import { fail } from '../utils/api-response';
+
 import type { Env } from '../types/env.types';
+import type { Context, MiddlewareHandler } from 'hono';
 
 export type RateLimiterBinding = { limit(opts: { key: string }): Promise<{ success: boolean }> };
 

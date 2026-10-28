@@ -40,23 +40,21 @@ test('v1 protected route requires Authorization', async () => {
   expect(json.error?.code).toBe('unauthorized');
 });
 
-test('GET /api/v1/forum/thematics succeeds with empty bindings in development (local wrangler)', async () => {
-  const res = await app.request('http://localhost/api/v1/forum/thematics', {}, {});
+test('GET /api/v1/health succeeds with empty bindings in development (local wrangler)', async () => {
+  const res = await app.request('http://localhost/api/v1/health', {}, {});
   expect(res.status).toBe(200);
-  const json = (await res.json()) as { ok: boolean; data?: unknown };
+  const json = (await res.json()) as { ok: boolean };
   expect(json.ok).toBe(true);
-  expect(Array.isArray(json.data)).toBe(true);
 });
 
-test('GET /api/v1/forum/thematics succeeds with partial wrangler vars (WORKER_URL only)', async () => {
+test('GET /api/v1/health succeeds with partial wrangler vars (WORKER_URL only)', async () => {
   const partial = {
     API_MODE: 'development',
     WORKER_URL: 'https://example.com',
     CORS_ORIGINS: 'http://localhost:3000',
   };
-  const res = await app.request('http://localhost/api/v1/forum/thematics', {}, partial);
+  const res = await app.request('http://localhost/api/v1/health', {}, partial);
   expect(res.status).toBe(200);
-  const json = (await res.json()) as { ok: boolean; data?: unknown };
+  const json = (await res.json()) as { ok: boolean };
   expect(json.ok).toBe(true);
-  expect(Array.isArray(json.data)).toBe(true);
 });

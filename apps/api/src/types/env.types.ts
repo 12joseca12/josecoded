@@ -6,66 +6,29 @@ export type Env = {
   WORKER_INTERNAL_TOKEN: string;
   CORS_ORIGINS: string;
   SUPABASE_URL: string;
-  /** Legacy anon JWT (`eyJ...`) o clave publicable si no usas anon. */
+  /** Legacy anon JWT (`eyJ...`), only when there is no publishable key. */
   SUPABASE_ANON_KEY?: string;
-  /** Recomendado en local: misma que `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. */
+  /** `sb_publishable_…`: same value as `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` of the web. */
   SUPABASE_PUBLISHABLE_KEY?: string;
-  SUPABASE_SERVICE_ROLE_KEY?: string;
-  /** `true` (p. ej. `pnpm dev -- --mock`): foro solo en mock aunque exista service_role. */
-  FORUM_USE_MOCK?: string;
-  /** Opcional: `false` fuerza mock aunque haya service_role (compat). */
-  FORUM_USE_DATABASE?: string;
-  FORUM_MODERATION_DISABLED?: string;
-
   /**
-   * Optional: protect /api/dev/* with a separate key.
-   * If set, requests must include `x-dev-api-key`.
+   * `sb_secret_…` (bypasses RLS). Only adapters/supabase.ts reads it: outbox, scheduled jobs and the admin check.
+   * Without it the dispatcher finds nothing to run and `isAdmin` fails.
    */
+  SUPABASE_SECRET_KEY?: string;
+
+  /** Optional: protect /api/dev/* with a separate key (`x-dev-api-key`). */
   DEV_API_KEY?: string;
 
-  /**
-   * Optional: max ms to wait for upstream worker.
-   */
+  /** Optional: max ms to wait for the upstream worker. */
   WORKER_TIMEOUT_MS?: string;
 
-  /**
-   * Optional: timeout ms for /ai/chat proxy to worker (default 30000).
-   */
+  /** Optional: timeout ms for /ai/chat proxy to worker (default 30000). */
   AI_CHAT_TIMEOUT_MS?: string;
 
-  /** UUIDs separados por coma con permisos de moderación en el foro (mock). */
-  FORUM_ADMIN_USER_IDS?: string;
-
-  /** Email del superusuario / administrador del chat. */
-  ADMIN_SUPERUSER_EMAIL?: string;
-
-  /** UUID en Supabase Auth (opcional; evita depender solo del email). */
-  ADMIN_SUPERUSER_ID?: string;
-
-  /** Ruta del worker IA para el chat (default `/ai/chat`). */
-  ADMIN_CHAT_WORKER_PATH?: string;
-
-  /** Timeout ms para la llamada IA del chat (default 60000). */
-  ADMIN_CHAT_WORKER_TIMEOUT_MS?: string;
-
-  /** Webhook n8n (opcional; el chat usa worker IA por defecto). */
-  N8N_CHAT_WEBHOOK_URL?: string;
-
-  /** Secreto compartido: cabecera `x-n8n-chat-secret` en callback n8n → API. */
-  N8N_CHAT_WEBHOOK_SECRET?: string;
-
-  /** URL pública del API para callbacks n8n (p. ej. https://api.tudominio.com). */
-  PUBLIC_API_BASE_URL?: string;
-
-  /** Binding nativo de Cloudflare Rate Limiting para /ai/*. Ausente en dev local. */
+  /** Native Cloudflare Rate Limiting binding for /ai/*. Absent in local dev. */
   AI_RATE_LIMITER?: { limit(opts: { key: string }): Promise<{ success: boolean }> };
 
-  /**
-   * Binding nativo de Cloudflare Workers AI (respuesta del admin-chat).
-   * Opcional como `AI_RATE_LIMITER`: ausente en tests/env que no lo configuran;
-   * `generateAdminReply` (ai-reply.ts) falla explícito si falta y el pipeline
-   * cae al fallback local.
-   */
+  /** Native Workers AI binding. Absent in tests and in local envs that do not configure it. */
   AI?: {
     run(
       model: string,
@@ -73,8 +36,17 @@ export type Env = {
     ): Promise<{ response?: string }>;
   };
 
-  /** Modelo Workers AI para el admin-chat (default `@cf/meta/llama-3.3-70b-instruct-fp8-fast`). */
-  AI_CHAT_MODEL?: string;
+  // --- Plan 1.8c (DATOS §8.4, §12). ---
+  /** `'false'` turns off the `aal2` requirement of `requireAdmin` (local tests without TOTP). Any other value: required. */
+  ADMIN_REQUIRE_MFA?: string;
+  /** Telegram bot that tells Jose about outbox events (outbox.drain). */
+  TELEGRAM_BOT_TOKEN?: string;
+  /** Jose's chat with the bot. */
+  TELEGRAM_ADMIN_CHAT_ID?: string;
+  /** Resend (DATOS Q5): email channel; no launch event uses it yet. */
+  RESEND_API_KEY?: string;
+  /** Signs `chat_sid` of the case-based chat (task 4.4). */
+  CHAT_SID_SECRET?: string;
 
   // --- Added by plan 1.7 for the new modules (DT §9). All optional until the task that uses each one. ---
   /** Previous internal token, accepted for 24 h while rotating `WORKER_INTERNAL_TOKEN` (worker.service.ts). */
@@ -82,7 +54,6 @@ export type Env = {
   TURNSTILE_SECRET_KEY?: string;
   /** Server-to-server key of `leads` (header `x-josecoded-server-key`). */
   SERVER_KEY?: string;
-  NOTIFY_SHARED_SECRET?: string;
   N8N_LEAD_WEBHOOK_ENABLED?: string;
   PROPOSALS_DAILY_LIMIT_IP?: string;
   PROPOSALS_DAILY_LIMIT_ALL?: string;

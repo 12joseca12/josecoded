@@ -1,28 +1,22 @@
 #!/usr/bin/env node
 /**
- * `pnpm dev` → wrangler dev (foro en Postgres si hay SUPABASE_SERVICE_ROLE_KEY en .dev.vars).
- * `pnpm dev -- --mock` → fuerza foro en memoria (mock), sin tocar el resto de bindings.
+ * `pnpm dev` -> `wrangler dev` with the bindings of `.dev.vars` (Supabase local: see `.dev.vars.example`).
+ * Extra arguments are forwarded (`pnpm dev -- --test-scheduled` exposes `/__scheduled` to fire the cron).
  */
-import { spawn } from "node:child_process";
-import { fileURLToPath } from "node:url";
-import path from "node:path";
+import { spawn } from 'node:child_process';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
-const raw = process.argv.slice(2);
-const mock = raw.includes("--mock");
-const forward = raw.filter((a) => a !== "--mock");
-const args = ["exec", "wrangler", "dev", ...forward];
-if (mock) {
-  args.push("--var", "FORUM_USE_MOCK:true");
-}
+const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
+const args = ['exec', 'wrangler', 'dev', ...process.argv.slice(2)];
 
-const child = spawn("pnpm", args, {
-  stdio: "inherit",
+const child = spawn('pnpm', args, {
+  stdio: 'inherit',
   cwd: root,
   env: process.env,
   shell: false,
 });
 
-child.on("exit", (code) => {
+child.on('exit', (code) => {
   process.exit(code ?? 1);
 });

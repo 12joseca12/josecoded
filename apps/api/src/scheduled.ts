@@ -1,32 +1,19 @@
 // Single Cron Trigger `*/5 * * * *` dispatcher (DT §0b, finding 35). Workers Free allows 5 crons per account,
-// so every periodic job (Radar, newsletter, lead-notify retries, ...) is a row of `private.scheduled_jobs` and
+// so every periodic job (outbox drain, Radar, newsletter, ...) is a row of `private.scheduled_jobs` and
 // each tick runs the DUE ones, in order, inside a subrequest budget; what does not fit waits for the next tick.
 import { parseEnv } from './config/env';
 import { resolveDeps, type Deps } from './deps';
+import { drainOutbox, OUTBOX_DRAIN } from './jobs/outbox-drain';
 import { nextRun } from './utils/cron';
-import {
-  BudgetExhaustedError,
-  createSubrequestBudget,
-  type SubrequestBudget,
-} from './utils/subrequest-budget';
+import { BudgetExhaustedError, createSubrequestBudget } from './utils/subrequest-budget';
 
+import type { JobHandler } from './jobs/job';
 import type { Env } from './types/env.types';
 
-export type JobContext = {
-  /** `env` whose `AI.run` is counted by the budget. */
-  env: Env;
-  deps: Deps;
-  budget: SubrequestBudget;
-  /** Budgeted `fetch`: handlers must use this one, not the global. */
-  fetch: typeof fetch;
-  now: Date;
-};
+export type { JobContext, JobHandler } from './jobs/job';
 
-/** Handlers must be idempotent: a job that hits the budget is retried from the start on the next tick. */
-export type JobHandler = (ctx: JobContext) => Promise<void>;
-
-/** name (row of scheduled_jobs) -> handler. Empty until each module registers its jobs (7.x, 10.x). */
-export const jobHandlers = new Map<string, JobHandler>();
+/** name (row of scheduled_jobs) -> handler. Each module registers its jobs here (chat 4.x, Radar 7.x, newsletter 10.x). */
+export const jobHandlers = new Map<string, JobHandler>([[OUTBOX_DRAIN, drainOutbox]]);
 
 export type TickReport = {
   ran: string[];

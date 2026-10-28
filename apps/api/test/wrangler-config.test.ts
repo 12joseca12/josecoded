@@ -40,6 +40,12 @@ describe('wrangler.jsonc keeps the test hooks out of deployed Workers', () => {
     expect(keys).not.toContain('__deps');
   });
 
+  it.each(sections)('%s: vars carry nothing of the retired modules nor a personal email (plan 1.8c)', (_name, section) => {
+    const keys = Object.keys(section.vars ?? {});
+    expect(keys.filter((k) => /^(FORUM_|ADMIN_SUPERUSER_|N8N_CHAT_|NOTIFY_SHARED_SECRET)/.test(k))).toEqual([]);
+    expect(JSON.stringify(section.vars ?? {})).not.toMatch(/@[a-z0-9-]+\.[a-z]/i);
+  });
+
   it.each(sections)('%s: __TEST_HOOKS__ is compiled to false (define is not inherited)', (_name, section) => {
     expect(section.define?.__TEST_HOOKS__).toBe('false');
   });

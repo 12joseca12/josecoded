@@ -1,66 +1,65 @@
 # josecoded-api
 
-Moved from `josedev/josecoded-api` on 2026-10-03 (josedev commit `baa8f0dea9543c6274aa0ad8ff133c6ae861fabc`,
-branch `plan-p8-rediseno`). Contracts unchanged. The files copied from there stay as they were: they are
-excluded from the new lint rules by a literal file list in `packages/config/eslint.config.mjs`. Everything
-else, including `src/index.ts` and any new file in `services/` or `utils/`, is linted in full. New modules follow ports and adapters
-(`src/deps.ts`, `src/adapters/`, working-agreements §17). The rest of this file is the original text
-and still names `josedev` paths.
-
-Cloudflare Worker (Hono) that acts as the **public API gateway** between the
-`josedev` browser client and the private backend. Deployed independently of
-`josedev` (own `wrangler deploy`).
+Cloudflare Worker (Hono) that acts as the **public API gateway** between the web (`apps/web`) and the private
+backend on Omen, and the only holder of the Supabase secret key. Moved from `josedev/josecoded-api` on 2026-10-03
+(josedev commit `baa8f0dea9543c6274aa0ad8ff133c6ae861fabc`). Since plan 1.8c (DATOS v1.2, 2026-10-28) it talks to
+the **new** Supabase project through `src/adapters/`, drains `private.outbox` from its cron, and `forum/*` and
+`admin-chat/*` are gone with their tables (DATOS §9, Q1; `assistant/*` succeeds admin-chat in 4.4). Every file is
+linted with the full rules: there is no legacy exception list any more.
 
 ## Role in the system
 
 ```
 browser
-  → josedev (Next.js, calls NEXT_PUBLIC_JOSECODED_API_URL)
-    → josecoded-api (this project, Cloudflare edge, public but token/CORS gated)
-        - forum + admin-chat: talk to Supabase directly (SUPABASE_* vars)
-        - /ai/*, /demo/android/*, /system/status: proxy to WORKER_URL
-      → backend (/Volumes/JosecodedData/backend, Fastify, private)
+  -> apps/web (Next.js, calls NEXT_PUBLIC_JOSECODED_API_URL)
+    -> josecoded-api (this Worker, Cloudflare edge, public but token/CORS gated)
+        - Supabase (new project): Auth check of the browser JWT, staff_members, outbox and scheduled-jobs RPCs
+          with the secret key, all through src/adapters/
+        - Telegram: outbox notices to Jose (job outbox.drain)
+        - /system/status, /api/dev/worker/*: proxy to WORKER_URL
+      -> josecoded-worker (Fastify on Omen, private)
           requires `Authorization: Bearer BACKEND_INTERNAL_TOKEN` (WORKER_INTERNAL_TOKEN here)
 ```
 
-This worker is the trust boundary: the backend's own `AGENTS.md` explicitly
-requires browser traffic to go through this gateway rather than calling the
-internal worker directly, and forbids exposing `BACKEND_INTERNAL_TOKEN` to
-frontend code. Do not collapse this proxy into `josedev` server actions
-without preserving that boundary.
+This Worker is the trust boundary: browser traffic reaches the backend only through it, and
+`BACKEND_INTERNAL_TOKEN` is never exposed to frontend code.
 
-## Structure
+## Routes
 
-- `src/index.ts` — Hono app entry, route mounting.
-- `src/modules/*.routes.ts` — HTTP route definitions (forum, admin-chat, ai,
-  emulator, health, system, v1 aggregator, dev-worker-proxy).
-- `src/services/*` — domain logic: Supabase-backed forum/admin-chat stores
-  (`*.pg-store.ts`), in-memory mock stores (`*.mock-store.ts`) for
-  `pnpm dev:api:mock`, `worker.service.ts` (proxy to the backend), n8n bridge.
-- `src/schemas/*` — Zod request validation per domain.
-- `src/middlewares/*` — auth (Supabase JWT) and security (CORS/headers).
-- `src/config/env.ts` — runtime env validation.
-- `src/types/*` — domain types (forum, admin-chat, env).
+`GET /health`, `GET /system/status`, `GET /api/v1/health` (public); `GET /api/v1/auth/me` (`{ id, email, is_admin }`)
+and `GET /api/v1/system/status` behind `requireUser`. Every other path under `/api/v1` answers 401 from the wildcard
+gate. `ALL /api/dev/worker/*` only with `API_MODE=development` and `DEV_API_KEY`. The list lives in
+`src/routes-manifest.ts` and the snapshot in `src/__snapshots__/`.
+
+## Structure (working-agreements §17.1)
+
+- `src/index.ts` — app composition: request id, security headers, `withDeps`, CORS, route mounting, `scheduled`.
+- `src/deps.ts` — `buildDeps(env)`: clock, `supabase` (gateway), `outbox`, `notices`, `scheduledJobs`, `telegram`.
+  Tests replace ports through `env.__deps` (compiled out of every wrangler build).
+- `src/adapters/` — the only files that import SDKs or call third parties: `supabase.ts` (port `SupabaseGateway`:
+  `verifyUser`, `isAdmin`, `admin()`; the only `@supabase/supabase-js` import), `scheduled-jobs.ts`, `outbox.ts`
+  (`OutboxRepo`, `NoticeLedger`), `telegram.ts`.
+- `src/middlewares/` — `requireUser` / `requireAdmin` (admin = `staff_members` row **and** `aal2`, unless
+  `ADMIN_REQUIRE_MFA=false`), security headers, rate limits, `withDeps`.
+- `src/modules/` — Hono routers; they read `c.var.deps` and never import adapters (lint-enforced).
+- `src/scheduled.ts` + `src/jobs/` — the single `*/5` cron dispatching `private.scheduled_jobs`; `outbox.drain`
+  claims, sends by Telegram, acks or fails (dead letter after 10 attempts is SQL).
+- `test/fakes/` — in-memory ports and an in-memory Supabase/Telegram `fetch` for end-to-end tests in workerd.
 
 ## Env vars
 
-See `.dev.vars.example`. Key ones:
-
-- `SUPABASE_URL` / `SUPABASE_ANON_KEY` / `SUPABASE_SERVICE_ROLE_KEY` — forum + admin-chat persistence.
-- `PUBLIC_API_BASE_URL` — where this worker itself runs locally (`wrangler dev`, default `:8787`).
-- `WORKER_URL` — URL of the **backend** (`/Volumes/JosecodedData/backend`), typically an ngrok tunnel to the home server. Not the same as this worker's own URL.
-- `WORKER_INTERNAL_TOKEN` — must equal `BACKEND_INTERNAL_TOKEN` on the backend.
-- `ADMIN_SUPERUSER_ID` / `ADMIN_SUPERUSER_EMAIL` — terminal admin-chat identity.
-- `N8N_CHAT_WEBHOOK_URL` / `N8N_CHAT_WEBHOOK_SECRET` — optional n8n handoff for admin-chat.
+See `.dev.vars.example` and `DEPLOY.md` §2. Key ones: `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`,
+`SUPABASE_SECRET_KEY`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_ADMIN_CHAT_ID`, `WORKER_URL`, `WORKER_INTERNAL_TOKEN`
+(must equal `BACKEND_INTERNAL_TOKEN` on the backend), `CHAT_SID_SECRET`, optional `RESEND_API_KEY`.
 
 ## Commands
 
 ```bash
-pnpm dev            # wrangler dev, Postgres-backed if SUPABASE_SERVICE_ROLE_KEY is set
-pnpm dev -- --mock  # in-memory mock stores, no Supabase needed (see forum.mock-store.ts)
-pnpm test           # Vitest in workerd (@cloudflare/vitest-pool-workers), local only
+pnpm dev                          # wrangler dev with .dev.vars (Supabase local: supabase start)
+pnpm dev -- --test-scheduled      # also exposes /__scheduled to fire the cron by hand
+pnpm test                         # Vitest in workerd (@cloudflare/vitest-pool-workers), local only
 pnpm typecheck
 pnpm lint
-pnpm build          # wrangler deploy --dry-run --outdir dist (offline, uploads nothing)
-pnpm deploy         # wrangler deploy (the controller deploys, never an agent)
+pnpm build                        # wrangler deploy --dry-run for prod and preview (offline) + no test hooks check
+pnpm deploy                       # wrangler deploy (the controller deploys, never an agent)
 ```

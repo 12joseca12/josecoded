@@ -1,8 +1,10 @@
+import { Hono } from 'hono';
 import { describe, expect, it } from 'vitest';
 
-import { Hono } from 'hono';
-import type { Env } from '../types/env.types';
 import { devApiKeyGuard } from './security.middleware';
+
+import type { Env } from '../types/env.types';
+
 
 const prodRequiredEnv = {
   WORKER_URL: 'https://example.com',

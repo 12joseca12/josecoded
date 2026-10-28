@@ -1,8 +1,10 @@
 import { Hono } from 'hono';
-import type { Env } from '../types/env.types';
+
 import { devApiKeyGuard, fixedWindowRateLimit } from '../middlewares/security.middleware';
-import { fail } from '../utils/api-response';
 import { callWorker, toUpstreamFail } from '../services/worker.service';
+import { fail } from '../utils/api-response';
+
+import type { Env } from '../types/env.types';
 
 export const devWorkerProxyRoutes = new Hono<{ Bindings: Env }>();
 

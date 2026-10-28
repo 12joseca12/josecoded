@@ -1,8 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { createScheduledJobsRepo, createScheduledJobsRepoFromEnv, type RpcClient } from './scheduled-jobs';
-
-import type { Env } from '../types/env.types';
+import { createScheduledJobsRepo, type RpcClient } from './scheduled-jobs';
 
 function fakeClient(reply: { data?: unknown; error?: { message: string } | null } = {}) {
   const calls: { fn: string; args: Record<string, unknown> | undefined }[] = [];
@@ -66,25 +64,5 @@ describe('createScheduledJobsRepo', () => {
     const repo = createScheduledJobsRepo(fakeClient({ error: { message: 'permission denied' } }).client);
     await expect(repo.disable('x', 'y')).rejects.toThrow('scheduled_jobs_disable: permission denied');
     await expect(repo.listDue(new Date())).rejects.toThrow('scheduled_jobs_due: permission denied');
-  });
-});
-
-describe('createScheduledJobsRepoFromEnv', () => {
-  const env = {
-    API_MODE: 'development',
-    WORKER_URL: 'http://worker.test',
-    WORKER_INTERNAL_TOKEN: 'test-internal-token-12345',
-    CORS_ORIGINS: '',
-    SUPABASE_URL: 'http://127.0.0.1:54321',
-  } satisfies Env;
-
-  it('is undefined without the service role key', () => {
-    expect(createScheduledJobsRepoFromEnv(env)).toBeUndefined();
-    expect(createScheduledJobsRepoFromEnv({ ...env, SUPABASE_SERVICE_ROLE_KEY: '  ' })).toBeUndefined();
-  });
-
-  it('builds the repo with the key', () => {
-    const repo = createScheduledJobsRepoFromEnv({ ...env, SUPABASE_SERVICE_ROLE_KEY: 'a'.repeat(30) });
-    expect(repo).toBeDefined();
   });
 });

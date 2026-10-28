@@ -1,8 +1,7 @@
 import { Hono } from 'hono';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
-
-import { buildDeps, type AppEnv } from './deps';
+import { buildDeps, resolveDeps, type AppEnv } from './deps';
 import { withDeps } from './middlewares/with-deps';
 
 import type { Env } from './types/env.types';
@@ -25,6 +24,39 @@ describe('buildDeps', () => {
 
   it('returns a fresh object per call (built once per request, never shared)', () => {
     expect(buildDeps(env)).not.toBe(buildDeps(env));
+  });
+
+  it('always builds the Supabase gateway; outbox, notices and scheduled jobs only with the secret key', () => {
+    const plain = buildDeps(env);
+    expect(plain.supabase).toBeDefined();
+    expect(plain).not.toHaveProperty('outbox');
+    expect(plain).not.toHaveProperty('notices');
+    expect(plain).not.toHaveProperty('scheduledJobs');
+
+    const withSecret = buildDeps({ ...env, SUPABASE_SECRET_KEY: 'sb_secret_test_0123456789abcdef' });
+    expect(withSecret.outbox).toBeDefined();
+    expect(withSecret.notices).toBeDefined();
+    expect(withSecret.scheduledJobs).toBeDefined();
+  });
+
+  it('builds Telegram only with the bot token and the admin chat id', () => {
+    expect(buildDeps(env)).not.toHaveProperty('telegram');
+    expect(buildDeps({ ...env, TELEGRAM_BOT_TOKEN: '123456:test-token' })).not.toHaveProperty('telegram');
+    expect(buildDeps({ ...env, TELEGRAM_BOT_TOKEN: '123456:test-token', TELEGRAM_ADMIN_CHAT_ID: '42' }).telegram).toBeDefined();
+  });
+
+  it('opens no connection while building (the service client is created on first use)', () => {
+    const fetchSpy = vi.fn();
+    vi.stubGlobal('fetch', fetchSpy);
+    buildDeps({ ...env, SUPABASE_SECRET_KEY: 'sb_secret_test_0123456789abcdef', TELEGRAM_BOT_TOKEN: '1:t', TELEGRAM_ADMIN_CHAT_ID: '1' });
+    expect(fetchSpy).not.toHaveBeenCalled();
+    vi.unstubAllGlobals();
+  });
+});
+
+describe('resolveDeps', () => {
+  it('validates the env first: an invalid one throws Invalid environment', () => {
+    expect(() => resolveDeps({ ...env, API_MODE: 'production', WORKER_URL: 'not a url' })).toThrow(/^Invalid environment:/);
   });
 });
 

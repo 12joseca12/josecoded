@@ -1,53 +1,66 @@
-import type { MiddlewareHandler } from 'hono';
-import type { User } from '@supabase/supabase-js';
-import { parseEnv } from '../config/env';
+// Auth gates of the gateway over `c.var.deps.supabase` (adapters/supabase.ts): a verified Supabase session, and
+// for the admin routes a `staff_members` row plus a second factor (`aal2`, DATOS Q3).
+import { createMiddleware } from 'hono/factory';
+
 import { fail } from '../utils/api-response';
-import { verifySupabaseUser } from '../services/supabase.service';
-import type { Env } from '../types/env.types';
 
-type AuthContext = {
-  Bindings: Env;
-  Variables: { user: User };
-};
+import type { AppEnv } from '../deps';
+import type { AuthUser } from '@josecoded/types';
+import type { Context } from 'hono';
 
-export const optionalUser: MiddlewareHandler<{ Bindings: Env; Variables: { user?: User } }> = async (c, next) => {
-  const auth = c.req.header('authorization') ?? c.req.header('Authorization');
-  if (!auth) return next();
-  const match = auth.match(/^Bearer\s+(.+)$/i);
-  const token = match?.[1]?.trim();
-  if (!token) return next();
-  const env = parseEnv(c.env);
-  try {
-    const user = await verifySupabaseUser(env, token);
-    c.set('user', user);
-  } catch {
-    // Lectura anónima: token inválido se ignora.
-  }
-  return next();
-};
+export type AuthEnv = AppEnv & { Variables: AppEnv['Variables'] & { user: AuthUser } };
 
-export const requireUser: MiddlewareHandler<AuthContext> = async (c, next) => {
-  const auth = c.req.header('authorization') ?? c.req.header('Authorization');
-  if (!auth) return c.json(fail('unauthorized', 'Missing authorization header'), 401);
+function logAuthError(action: string, error: unknown): void {
+  console.error(
+    JSON.stringify({ scope: 'auth', action, message: error instanceof Error ? error.message : 'unknown' }),
+  );
+}
 
-  const match = auth.match(/^Bearer\s+(.+)$/i);
-  const token = match?.[1]?.trim();
+/** Verifies the bearer token and leaves the user in `c.var.user`; otherwise the response to send back. */
+async function authenticate(c: Context<AuthEnv>): Promise<Response | undefined> {
+  const header = c.req.header('authorization');
+  if (!header) return c.json(fail('unauthorized', 'Missing authorization header'), 401);
+  const token = /^Bearer\s+(.+)$/i.exec(header)?.[1]?.trim();
   if (!token) return c.json(fail('unauthorized', 'Invalid authorization header'), 401);
 
-  const env = parseEnv(c.env);
+  let user: AuthUser | null;
   try {
-    const user = await verifySupabaseUser(env, token);
-    c.set('user', user);
-    return next();
-  } catch (e) {
-    console.error(
-      JSON.stringify({
-        scope: 'auth',
-        action: 'require-user-failed',
-        message: e instanceof Error ? e.message : 'unknown',
-      }),
-    );
-    return c.json(fail('unauthorized', 'Invalid or expired session'), 401);
+    user = await c.var.deps.supabase.verifyUser(token);
+  } catch (error) {
+    // Auth unreachable is not a bad session: the client must not log the user out over it
+    logAuthError('verify-user-failed', error);
+    return c.json(fail('upstream_error', 'Auth service unavailable'), 502);
   }
-};
+  if (!user) return c.json(fail('unauthorized', 'Invalid or expired session'), 401);
+  c.set('user', user);
+  return undefined;
+}
 
+export const requireUser = createMiddleware<AuthEnv>(async (c, next) => {
+  const denied = await authenticate(c);
+  if (denied) return denied;
+  await next();
+});
+
+/**
+ * Admin = `requireUser` + an `admin` row in `staff_members` + `aal2`. The second factor is required unless
+ * `ADMIN_REQUIRE_MFA` is exactly `'false'` (local runs: the seed accounts have no TOTP).
+ */
+export const requireAdmin = createMiddleware<AuthEnv>(async (c, next) => {
+  const denied = await authenticate(c);
+  if (denied) return denied;
+  const user = c.var.user;
+
+  let admin: boolean;
+  try {
+    admin = await c.var.deps.supabase.isAdmin(user.id);
+  } catch (error) {
+    logAuthError('is-admin-failed', error);
+    return c.json(fail('upstream_error', 'Could not check the admin role'), 502);
+  }
+  if (!admin) return c.json(fail('forbidden', 'Admin only'), 403);
+  if (c.env.ADMIN_REQUIRE_MFA !== 'false' && user.aal !== 'aal2') {
+    return c.json(fail('forbidden', 'Second factor required', { reason: 'mfa_required' }), 403);
+  }
+  await next();
+});

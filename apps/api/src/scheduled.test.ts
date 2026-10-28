@@ -1,9 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { OUTBOX_DRAIN, drainOutbox } from './jobs/outbox-drain';
 import { jobHandlers, runDueJobs, scheduled, type JobHandler } from './scheduled';
 import { createFakeClock } from '../test/fakes/clock.fake';
 import { createFakeScheduledJobs } from '../test/fakes/scheduled-jobs.fake';
-
+import { createFakeSupabaseGateway } from '../test/fakes/supabase.fake';
 
 import type { Deps } from './deps';
 import type { Env } from './types/env.types';
@@ -27,15 +28,24 @@ const due = (name: string, minutesAgo: number, cron = '*/5 * * * *', tz?: string
 
 function setup(jobs: ScheduledJob[]) {
   const repo = createFakeScheduledJobs(jobs);
-  const deps: Deps = { clock: createFakeClock(NOW), scheduledJobs: repo };
+  const deps: Deps = { clock: createFakeClock(NOW), supabase: createFakeSupabaseGateway(), scheduledJobs: repo };
   return { repo, deps };
 }
 
 const okFetch = vi.fn(async () => new Response('ok'));
 
 afterEach(() => {
+  // back to what the module registers, so no test depends on the order
   jobHandlers.clear();
+  jobHandlers.set(OUTBOX_DRAIN, drainOutbox);
   okFetch.mockClear();
+});
+
+describe('jobHandlers', () => {
+  it('registers outbox.drain (plan 1.8c), the row the base migration seeds as * * * * *', () => {
+    expect(jobHandlers.get(OUTBOX_DRAIN)).toBe(drainOutbox);
+    expect(OUTBOX_DRAIN).toBe('outbox.drain');
+  });
 });
 
 describe('runDueJobs', () => {
@@ -279,7 +289,7 @@ describe('runDueJobs', () => {
   });
 
   it('does nothing without a scheduled-jobs repo (table arrives with migration 1.8)', async () => {
-    const report = await runDueJobs({ env, deps: { clock: createFakeClock(NOW) }, handlers: new Map() });
+    const report = await runDueJobs({ env, deps: { clock: createFakeClock(NOW), supabase: createFakeSupabaseGateway() }, handlers: new Map() });
     expect(report).toEqual({ ran: [], failed: [], waiting: [], unhandled: [] });
   });
 });

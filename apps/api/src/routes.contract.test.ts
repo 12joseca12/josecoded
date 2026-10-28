@@ -1,6 +1,7 @@
-// Characterization of the legacy surface of the gateway: every route that existed in josedev/josecoded-api
-// must stay mounted, with the same auth gate and the same error envelope. It runs without Supabase or the
-// backend (unauthenticated requests stop at the gate). New routes are additive and get their own tests.
+// Characterization of the inherited surface of the gateway: health, system and v1-protected stay mounted, with
+// the same auth gate and the same error envelope; forum/* and admin-chat/* were retired with their tables in plan
+// 1.8c (DATOS §9, Q1). It runs without Supabase or the backend (unauthenticated requests stop at the gate). New
+// routes get their own tests.
 import { describe, expect, it } from 'vitest';
 
 import { app } from './index';
@@ -40,14 +41,6 @@ describe('legacy route surface stays mounted', () => {
   it.each([
     ['GET', '/api/v1/auth/me'],
     ['GET', '/api/v1/system/status'],
-    ['GET', '/api/v1/admin-chat/thread'],
-    ['POST', '/api/v1/admin-chat/messages'],
-    ['POST', '/api/v1/admin-chat/meeting'],
-    ['GET', '/api/v1/admin-chat/admin/conversations'],
-    ['GET', '/api/v1/admin-chat/admin/conversations/abc/messages'],
-    ['POST', '/api/v1/admin-chat/admin/conversations/abc/messages'],
-    ['POST', '/api/v1/admin-chat/admin/conversations/abc/ai'],
-    ['POST', '/api/v1/admin-chat/admin/conversations/abc/read'],
   ])('%s %s requires a user (401 unauthorized envelope)', async (method, path) => {
     const res = await call(method, path);
     expect(res.status).toBe(401);
@@ -58,26 +51,14 @@ describe('legacy route surface stays mounted', () => {
   it.each([
     ['GET', '/api/v1/forum/thematics'],
     ['GET', '/api/v1/forum/popular'],
-  ])('%s %s is public and answers ok', async (method, path) => {
+    ['POST', '/api/v1/forum/entries'],
+    ['GET', '/api/v1/admin-chat/thread'],
+    ['GET', '/api/v1/admin-chat/admin/conversations'],
+    ['POST', '/api/v1/admin-chat/n8n/inbound'],
+  ])('retired %s %s no longer answers: it stops at the wildcard auth gate like any unknown path', async (method, path) => {
     const res = await call(method, path);
-    expect(res.status).toBe(200);
-    expect(((await res.json()) as Envelope).ok).toBe(true);
-  });
-
-  it('keeps the write routes of the forum mounted (they never fall to the 404 handler)', async () => {
-    const routes = [
-      ['POST', '/api/v1/forum/entries'],
-      ['POST', '/api/v1/forum/entries/a/b/comments'],
-      ['PUT', '/api/v1/forum/entries/a/b/comments/1'],
-      ['DELETE', '/api/v1/forum/entries/a/b/comments/1'],
-    ] as const;
-    const codes: string[] = [];
-    for (const [method, path] of routes) {
-      const res = await call(method, path);
-      const json = (await res.json()) as Envelope;
-      codes.push(`${method} ${path} -> ${json.error?.code ?? 'ok'}`);
-    }
-    expect(codes.filter((c) => c.endsWith('not_found'))).toEqual([]);
+    expect(res.status).toBe(401);
+    expect(await res.json()).toMatchObject({ ok: false, error: { code: 'unauthorized' } });
   });
 });
 
@@ -97,12 +78,13 @@ describe('exact route surface', () => {
       'GET /api/v1/health',
       'GET /api/v1/auth/me',
       'GET /api/v1/system/status',
-      'GET /api/v1/forum/thematics',
-      'GET /api/v1/admin-chat/thread',
-      'GET /api/v1/admin-chat/admin/conversations',
     ]) {
       expect(surface.has(route)).toBe(true);
     }
+  });
+
+  it('has no forum or admin-chat route or middleware left', () => {
+    expect(app.routes.filter((r) => /\/(forum|admin-chat)(\/|$)/.test(r.path))).toEqual([]);
   });
 
   it('the auth gate is a wildcard: unknown paths under /api/v1 also answer 401, so only the surface proves a route exists', async () => {
@@ -127,7 +109,7 @@ describe('error envelope and headers', () => {
 
   it('a misconfigured env answers 500 internal_error without leaking the cause', async () => {
     const res = await app.request(
-      'http://localhost/api/v1/forum/thematics',
+      'http://localhost/api/v1/health',
       {},
       { API_MODE: 'production' },
     );
@@ -146,7 +128,7 @@ describe('error envelope and headers', () => {
   });
 
   it('CORS preflight: allows the methods and headers of the contract', async () => {
-    const res = await call('OPTIONS', '/api/v1/forum/entries/a/b/comments/1', {
+    const res = await call('OPTIONS', '/api/v1/auth/me', {
       headers: {
         Origin: 'http://localhost:3000',
         'Access-Control-Request-Method': 'PUT',

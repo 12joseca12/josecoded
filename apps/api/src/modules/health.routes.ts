@@ -1,6 +1,8 @@
 import { Hono } from 'hono';
-import type { Env } from '../types/env.types';
+
 import { ok } from '../utils/api-response';
+
+import type { Env } from '../types/env.types';
 
 export const healthRoutes = new Hono<{ Bindings: Env }>();
 

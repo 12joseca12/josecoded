@@ -1,15 +1,17 @@
 # Deploy runbook — josecoded-api (Cloudflare Worker)
 
 Este documento describe cómo desplegar el gateway `josecoded-api` a la cuenta
-Cloudflare del proyecto (`d26022a34346cb759178a720bace386d`,
-`developerjose12@gmail.com`) y qué secretos hay que fijar antes del primer
-deploy real. Ningún valor secreto vive en el repo: los secretos se cargan con
+Cloudflare del proyecto (`d26022a34346cb759178a720bace386d`) y qué secretos
+hay que fijar antes del primer deploy real. Desde el plan 1.8c (DATOS v1.2) el
+gateway habla con el proyecto Supabase **nuevo** (`echlwywbucgbhwpncviy`) y ya
+no monta `forum/*` ni `admin-chat/*` (retirados con sus tablas, DATOS §9, Q1).
+Ningún valor secreto vive en el repo: los secretos se cargan con
 `wrangler secret put` directamente contra la cuenta Cloudflare.
 
 ## 0. Prerrequisitos
 
 ```bash
-cd josecoded-api
+cd apps/api
 pnpm exec wrangler login    # una sola vez por máquina; abre el navegador
 pnpm exec wrangler whoami   # confirma cuenta + account_id == d26022a34346cb759178a720bace386d
 ```
@@ -19,85 +21,94 @@ pedirá seleccionar cuenta interactivamente.
 
 ## 1. Variables no secretas (`vars` en `wrangler.jsonc`)
 
-Estas viven en el repo porque no son sensibles (URLs públicas, CORS, IDs de
-admin que ya son públicos en Supabase Auth):
+Estas viven en el repo porque no son sensibles (URLs públicas, CORS). **Ningún
+correo ni identificador personal** va en `vars` (lo comprueba
+`test/wrangler-config.test.ts`); el admin ya no se configura aquí: es una fila
+de `public.staff_members` (gate 1.9).
 
 | Var | Valor actual | Notas |
 |---|---|---|
-| `API_MODE` | `development` | Ver sección 4 — el override de producción se documenta ahí, no se cambia en este task. |
-| `WORKER_URL` | `https://worker.josecoded.com` | URL pública del Cloudflare Tunnel hacia el Fastify worker en Omen (Task 3). |
-| `CORS_ORIGINS` | `http://localhost:3000,https://josecoded.com` | Lista separada por comas. |
-| `ADMIN_SUPERUSER_ID` | UUID de Supabase Auth | No es secreto (es un identificador, no una credencial). |
-| `ADMIN_SUPERUSER_EMAIL` | email del admin | Idem. |
+| `API_MODE` | `development` | Ver sección 4 — el override de producción se documenta ahí. |
+| `WORKER_URL` | `https://worker.josecoded.com` | URL pública del Cloudflare Tunnel hacia el Fastify worker en Omen. |
+| `CORS_ORIGINS` | `https://josecoded.com,https://www.josecoded.com,https://*-josecoded-web.jose.workers.dev,http://localhost:3000` | Lista separada por comas; el comodín de previews lleva guion, nunca punto. |
 
-El binding nativo de rate limiting también vive en `wrangler.jsonc` (no es un
-secreto, es infraestructura):
+El env `preview` (`josecoded-api-preview`) repite sus propias `vars` (sin cron
+ni rutas de producción): no hereda nada de la raíz.
 
-```jsonc
-"ratelimits": [
-  { "name": "AI_RATE_LIMITER", "namespace_id": "1001", "simple": { "limit": 20, "period": 60 } }
-]
-```
+Los bindings nativos de rate limiting viven en `wrangler.jsonc` (infraestructura,
+no secretos): `AI_RATE_LIMITER`, `LEADS_RATE_LIMITER`, `AFFILIATE_RATE_LIMITER`,
+`RADAR_RATE_LIMITER`, con namespaces distintos en `preview`.
 
-## 2. Secretos requeridos (`wrangler secret put`)
+## 2. Secretos (`wrangler secret put`)
 
-Fuente de verdad: `josecoded-api/src/config/env.ts` (`envSchema`) y
-`src/types/env.types.ts`. Los valores **no** se pegan en este archivo, ni en
-el repo, ni en chats: los pone el usuario directamente en el prompt de
-`wrangler secret put`.
+Fuente de verdad: `src/config/env.ts` (`envSchema`) y `src/types/env.types.ts`.
+Los valores **no** se pegan en este archivo, ni en el repo, ni en chats: los
+pone Jose directamente en el prompt de `wrangler secret put`. Se fijan en
+**los dos** Workers: `josecoded-api` y `josecoded-api-preview` (`--env preview`).
+Claves de Supabase en formato nuevo (Settings → API Keys, DATOS §8.1): la JWT
+`service_role` heredada no se usa.
 
-### Obligatorios para que el gateway arranque en producción
+### Obligatorios
 
-| Secreto | Por qué es secreto | Validación en `env.ts` |
+| Secreto | Para qué | Validación en `env.ts` |
 |---|---|---|
-| `WORKER_INTERNAL_TOKEN` | Token compartido con el Fastify worker (Omen); si se filtra, cualquiera puede llamar al worker interno. | `z.string().min(10)`, obligatorio |
-| `SUPABASE_URL` | Técnicamente es una URL pública de proyecto, pero se fija como secreto/var de entorno por env — **no** contiene credenciales, se puede tratar como var no sensible si se prefiere (ver nota abajo). | `z.string().url()`, obligatorio |
-| `SUPABASE_SERVICE_ROLE_KEY` | Clave con privilegios totales sobre la base de datos (bypassa RLS). Nunca debe ir en `vars`. | `z.string().min(20).optional()` — opcional en el schema, pero **requerida** en producción para foro en BD / chat terminal (sin ella cae a mock). |
+| `WORKER_INTERNAL_TOKEN` | Token compartido con el Fastify worker (Omen). | `z.string().min(10)`, obligatorio |
+| `SUPABASE_URL` | `https://echlwywbucgbhwpncviy.supabase.co` (no es credencial; se fija como secreto por entorno). | `z.string().url()`, obligatorio |
+| `SUPABASE_PUBLISHABLE_KEY` | `sb_publishable_…`: `apikey` de `/auth/v1/user` al verificar la sesión. (`SUPABASE_ANON_KEY` solo como alternativa heredada.) | una de las dos (`.refine()`) |
+| `SUPABASE_SECRET_KEY` | `sb_secret_…` (salta RLS). Solo la usa `src/adapters/supabase.ts`: RPC del outbox, `scheduled_jobs_*`, `increment_quota` y la lectura de `staff_members` (`is_admin`). Sin ella el cron no ejecuta nada y `auth/me` responde 502. | `min(20)`, opcional en el esquema, **necesaria** en producción y preview |
+| `TELEGRAM_BOT_TOKEN` | Bot que avisa a Jose de los eventos del outbox (`outbox.drain`). | `min(10)`, opcional en el esquema; sin él (o sin el chat) el drenaje **no reclama** eventos |
+| `TELEGRAM_ADMIN_CHAT_ID` | `chat_id` de Jose con el bot (numérico, negativo en grupos). | `^-?\d+$` |
+| `CHAT_SID_SECRET` | Firma de `chat_sid` del chat por casos (4.4). `openssl rand -hex 32`. | `min(32)`, opcional hasta 4.4 |
 
 ```bash
 pnpm exec wrangler secret put WORKER_INTERNAL_TOKEN
-pnpm exec wrangler secret put SUPABASE_SERVICE_ROLE_KEY
 pnpm exec wrangler secret put SUPABASE_URL
+pnpm exec wrangler secret put SUPABASE_PUBLISHABLE_KEY
+pnpm exec wrangler secret put SUPABASE_SECRET_KEY
+pnpm exec wrangler secret put TELEGRAM_BOT_TOKEN
+pnpm exec wrangler secret put TELEGRAM_ADMIN_CHAT_ID
+pnpm exec wrangler secret put CHAT_SID_SECRET
+# y lo mismo con --env preview para josecoded-api-preview
 ```
 
-### Al menos una de estas dos (validado por `.refine()` en `env.ts`)
+### Opcionales
 
-| Secreto | Notas |
+| Secreto/var | Cuándo |
 |---|---|
-| `SUPABASE_ANON_KEY` | Legacy JWT anon. |
-| `SUPABASE_PUBLISHABLE_KEY` | Clave publicable moderna (`sb_publishable_...`). Recomendada. |
+| `RESEND_API_KEY` | Canal email (Resend, DATOS Q5). Ningún evento del lanzamiento se envía por email todavía. |
+| `ADMIN_REQUIRE_MFA` | Solo `false` desactiva la exigencia de `aal2` (TOTP) en `requireAdmin`; **nunca** en producción ni preview (DATOS Q3). Pensado para `wrangler dev` contra Supabase local, cuyas cuentas del seed no tienen TOTP. |
+| `DEV_API_KEY` | Proteger `/api/dev/*` (solo existe con `API_MODE=development`). |
+| `WORKER_TIMEOUT_MS` | Override del timeout hacia el worker. |
+| `TURNSTILE_SECRET_KEY`, `SERVER_KEY`, `AI_GATEWAY_ID`, `GITHUB_APP_*`, … | Los añade la tarea que usa cada uno (plan 1.7). |
 
-Aunque estas claves están diseñadas para ser expuestas en clientes (no dan
-acceso privilegiado), se recomienda fijarlas como `secret` en Cloudflare por
-consistencia operativa (un solo mecanismo de rotación) salvo que se prefiera
-moverlas a `vars` — si se hace, actualizar este documento.
+### Secretos que hay que **borrar** (plan 1.9, paso 9)
+
+`ADMIN_SUPERUSER_ID`, `ADMIN_SUPERUSER_EMAIL`, `N8N_CHAT_WEBHOOK_URL`,
+`N8N_CHAT_WEBHOOK_SECRET`, `FORUM_*`, `NOTIFY_SHARED_SECRET` y
+`SUPABASE_SERVICE_ROLE_KEY` (sustituida por `SUPABASE_SECRET_KEY`). El esquema
+ya no los conoce (`parseEnv` los descarta), así que dejarlos no rompe nada,
+pero son credenciales y correos que no deben seguir en la cuenta:
 
 ```bash
-pnpm exec wrangler secret put SUPABASE_PUBLISHABLE_KEY
-# o, si el proyecto usa el flujo legacy:
-# pnpm exec wrangler secret put SUPABASE_ANON_KEY
+pnpm exec wrangler secret list
+pnpm exec wrangler secret delete ADMIN_SUPERUSER_EMAIL   # uno por uno, también con --env preview
 ```
 
-### Opcionales (según features habilitadas)
+### Notificaciones: outbox + cron (DATOS §8.4, Q2)
 
-| Secreto/var | Requerido si... |
-|---|---|
-| `DEV_API_KEY` | Se quiere proteger `/api/dev/*` con clave separada. |
-| `WORKER_TIMEOUT_MS` | Se quiere override del timeout por defecto hacia el worker. |
-| `AI_CHAT_TIMEOUT_MS` | Override del timeout de `/ai/chat` (default 30000ms, Task 1). |
-| `FORUM_ADMIN_USER_IDS` | Moderación de foro en modo mock. |
-| `FORUM_USE_MOCK` / `FORUM_USE_DATABASE` | Forzar modo mock/BD del foro. |
-| `FORUM_MODERATION_DISABLED` | Deshabilitar moderación del foro. |
-| `ADMIN_CHAT_WORKER_PATH` | Override de la ruta del chat admin (default `/ai/admin-chat`). |
-| `ADMIN_CHAT_WORKER_TIMEOUT_MS` | Timeout del chat admin (default 60000ms). |
-| `EMULATOR_SESSION_TIMEOUT_MS` | Boot del emulador Android (recomendado ≥ 360000 si se usa). |
-| `N8N_CHAT_WEBHOOK_URL` / `N8N_CHAT_WEBHOOK_SECRET` | Solo si el chat usa n8n en vez del fallback automático. |
-| `PUBLIC_API_BASE_URL` | URL pública del propio gateway, usada en callbacks de n8n. |
-
-Estos no son sensibles en su mayoría (son configuración, no credenciales) y
-pueden ir como `vars` en `wrangler.jsonc` si se decide fijarlos de forma
-permanente; los que sí son secretos (`N8N_CHAT_WEBHOOK_SECRET`, `DEV_API_KEY`)
-deben ir como `wrangler secret put`.
+Sin Edge Function `notify`, sin `pg_net`, sin `vault`. Triggers y RPC escriben
+en `private.outbox`; el único Cron Trigger (`*/5 * * * *`) ejecuta el job
+`outbox.drain` (fila `* * * * *` de `private.scheduled_jobs`: vence en cada
+tick), que llama a `outbox_claim(limit, worker)`, envía cada evento a Telegram
+y cierra con `outbox_ack(ids, worker)` u `outbox_fail(id, worker, error)`. Al
+10.º intento la propia base marca la carta muerta y encola
+`system.outbox_dead`, que llega a Jose en el tick siguiente. Por tick se
+reclaman como mucho 12 eventos (presupuesto de 40 subpeticiones). Los avisos
+de `lead.created` y `chat.*` que la petición ya envió (marca en
+`increment_quota`, clave `notice:<evento>:<payload.id>`) se confirman sin
+reenviarse. Comprobación: `wrangler tail` durante un tick → sin errores de
+`scheduled`; `select count(*) from private.outbox where delivered_at is null`
+baja a 0.
 
 ## 3. Rotación de `WORKER_INTERNAL_TOKEN` (acción pendiente, post-migración ngrok → Tunnel)
 
@@ -149,7 +160,7 @@ actualmente en `vars`.
 ## 5. Deploy
 
 ```bash
-cd josecoded-api
+cd apps/api
 pnpm exec wrangler deploy
 ```
 
@@ -175,7 +186,9 @@ Confirma que:
 
 - [ ] `wrangler whoami` confirma la cuenta correcta.
 - [ ] `WORKER_INTERNAL_TOKEN` rotado y sincronizado con `BACKEND_INTERNAL_TOKEN` en Omen (sección 3).
-- [ ] Todos los secretos obligatorios (sección 2) están fijados en la cuenta (`wrangler secret list`).
+- [ ] Todos los secretos obligatorios (sección 2) están fijados en `josecoded-api` y en `josecoded-api-preview` (`wrangler secret list`), y los de la lista «borrar» ya no están.
+- [ ] `ADMIN_REQUIRE_MFA` **no** está fijado (o vale `true`) en ninguno de los dos.
+- [ ] Smoke: `GET /api/v1/health` 200; `GET /api/v1/auth/me` sin JWT 401 y con el de Jose `is_admin: true`; ninguna ruta `forum`/`admin-chat` (responden 401 del comodín, no existen).
 - [ ] Decisión sobre `API_MODE=production` tomada y aplicada (sección 4, P8).
 - [ ] `pnpm test` y `pnpm typecheck` en verde.
 - [ ] `wrangler deploy --dry-run --outdir=dist` sin errores.

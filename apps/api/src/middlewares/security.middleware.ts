@@ -1,6 +1,7 @@
-import type { Context, MiddlewareHandler } from 'hono';
-import { fail } from '../utils/api-response';
 import { parseEnv } from '../config/env';
+import { fail } from '../utils/api-response';
+
+import type { Context, MiddlewareHandler } from 'hono';
 
 function getClientId(c: Context): string {
   const forwardedFor = c.req.header('cf-connecting-ip');
@@ -45,27 +46,6 @@ export function fixedWindowRateLimit(
     }
 
     return next();
-  };
-}
-
-/** Rate limit escrituras del foro (POST/PUT/DELETE); GET/HEAD/OPTIONS pasan sin contar. */
-export function forumWriteRateLimit(resolveActorId: (c: Context) => string | undefined): MiddlewareHandler {
-  const limit = 48;
-  const windowMs = 60_000;
-  const inner = fixedWindowRateLimit({
-    limit,
-    windowMs,
-    keyPrefix: 'forum:write',
-    resolveKey: (c) => {
-      const actor = resolveActorId(c)?.trim();
-      if (actor) return actor;
-      return getClientId(c);
-    },
-  });
-  return async (c, next) => {
-    const m = c.req.method;
-    if (m === 'GET' || m === 'HEAD' || m === 'OPTIONS') return next();
-    return inner(c, next);
   };
 }
 

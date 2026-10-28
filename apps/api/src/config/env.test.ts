@@ -18,7 +18,6 @@ describe('envSchema additions of plan 1.7', () => {
       WORKER_INTERNAL_TOKEN_PREV: 'previous-internal-token',
       TURNSTILE_SECRET_KEY: 'ts-secret',
       SERVER_KEY: 'server-key',
-      NOTIFY_SHARED_SECRET: 'notify-secret',
       N8N_LEAD_WEBHOOK_ENABLED: 'true',
       PROPOSALS_DAILY_LIMIT_IP: '5',
       PROPOSALS_DAILY_LIMIT_ALL: '200',
@@ -59,5 +58,74 @@ describe('envSchema additions of plan 1.7', () => {
 
   it('validates the numeric limits', () => {
     expect(() => parseEnv({ ...base, PROPOSALS_DAILY_LIMIT_IP: 'many' })).toThrow(/Invalid environment/);
+  });
+
+  it('removes the leftovers of the Edge Function notify (Q2): NOTIFY_SHARED_SECRET is stripped', () => {
+    const env = parseEnv({ ...base, NOTIFY_SHARED_SECRET: 'notify-secret' }) as Record<string, unknown>;
+    expect(env).not.toHaveProperty('NOTIFY_SHARED_SECRET');
+  });
+});
+
+describe('envSchema of plan 1.8c (new Supabase project, outbox, retired forum and admin-chat)', () => {
+  it('keeps the secret key, Telegram, Resend, CHAT_SID_SECRET and ADMIN_REQUIRE_MFA', () => {
+    const env = parseEnv({
+      ...base,
+      SUPABASE_SECRET_KEY: 'sb_secret_0123456789abcdef',
+      TELEGRAM_BOT_TOKEN: '123456:telegram-token',
+      TELEGRAM_ADMIN_CHAT_ID: '-1001234567',
+      RESEND_API_KEY: 're_0123456789',
+      CHAT_SID_SECRET: 'a'.repeat(64),
+      ADMIN_REQUIRE_MFA: 'false',
+    });
+    expect(env).toMatchObject({
+      SUPABASE_SECRET_KEY: 'sb_secret_0123456789abcdef',
+      TELEGRAM_BOT_TOKEN: '123456:telegram-token',
+      TELEGRAM_ADMIN_CHAT_ID: '-1001234567',
+      RESEND_API_KEY: 're_0123456789',
+      CHAT_SID_SECRET: 'a'.repeat(64),
+      ADMIN_REQUIRE_MFA: 'false',
+    });
+  });
+
+  it('rejects a chat id that is not numeric, a short CHAT_SID_SECRET and an ADMIN_REQUIRE_MFA other than true/false', () => {
+    expect(() => parseEnv({ ...base, TELEGRAM_ADMIN_CHAT_ID: '@jose' })).toThrow(/Invalid environment/);
+    expect(() => parseEnv({ ...base, CHAT_SID_SECRET: 'short' })).toThrow(/Invalid environment/);
+    expect(() => parseEnv({ ...base, ADMIN_REQUIRE_MFA: 'no' })).toThrow(/Invalid environment/);
+  });
+
+  it('strips the variables of the retired modules and the legacy service role key', () => {
+    const env = parseEnv({
+      ...base,
+      FORUM_USE_MOCK: 'true',
+      FORUM_USE_DATABASE: 'true',
+      FORUM_MODERATION_DISABLED: 'true',
+      FORUM_ADMIN_USER_IDS: 'x',
+      ADMIN_SUPERUSER_ID: '25486629-4071-42bb-9447-0ea776ea53ec',
+      ADMIN_SUPERUSER_EMAIL: 'admin@example.com',
+      N8N_CHAT_WEBHOOK_URL: 'https://n8n.example.com/hook',
+      N8N_CHAT_WEBHOOK_SECRET: 'secret-secret',
+      ADMIN_CHAT_WORKER_PATH: '/ai/admin-chat',
+      PUBLIC_API_BASE_URL: 'https://api.example.com',
+      SUPABASE_SERVICE_ROLE_KEY: 'x'.repeat(40),
+    }) as Record<string, unknown>;
+    for (const key of [
+      'FORUM_USE_MOCK',
+      'FORUM_USE_DATABASE',
+      'FORUM_MODERATION_DISABLED',
+      'FORUM_ADMIN_USER_IDS',
+      'ADMIN_SUPERUSER_ID',
+      'ADMIN_SUPERUSER_EMAIL',
+      'N8N_CHAT_WEBHOOK_URL',
+      'N8N_CHAT_WEBHOOK_SECRET',
+      'ADMIN_CHAT_WORKER_PATH',
+      'PUBLIC_API_BASE_URL',
+      'SUPABASE_SERVICE_ROLE_KEY',
+    ]) {
+      expect(env, key).not.toHaveProperty(key);
+    }
+  });
+
+  it('a malformed value of a retired variable no longer breaks the env', () => {
+    expect(() => parseEnv({ ...base, ADMIN_SUPERUSER_EMAIL: 'not-an-email' })).not.toThrow();
   });
 });

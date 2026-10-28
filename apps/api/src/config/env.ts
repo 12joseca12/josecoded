@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import type { ApiMode, Env, RateLimiterBinding } from '../types/env.types';
 
 const apiModeSchema = z.enum(['development', 'production'] satisfies ApiMode[]);
@@ -19,32 +20,24 @@ const envSchema = z.object({
   SUPABASE_URL: z.string().url(),
   SUPABASE_ANON_KEY: z.string().min(10).optional(),
   SUPABASE_PUBLISHABLE_KEY: z.string().min(10).optional(),
-  SUPABASE_SERVICE_ROLE_KEY: z.string().min(20).optional(),
-  FORUM_USE_MOCK: z.enum(['true', 'false']).optional(),
-  FORUM_USE_DATABASE: z.enum(['true', 'false']).optional(),
-  FORUM_MODERATION_DISABLED: z.enum(['true', 'false']).optional(),
+  // New-format secret key (`sb_secret_…`, DATOS §8.1): outbox, scheduled jobs and staff_members (adapters/supabase.ts).
+  SUPABASE_SECRET_KEY: z.string().min(20).optional(),
   DEV_API_KEY: z.string().min(10).optional(),
   WORKER_TIMEOUT_MS: z.string().regex(/^\d+$/).optional(),
   AI_CHAT_TIMEOUT_MS: z.string().regex(/^\d+$/).optional(),
-  FORUM_ADMIN_USER_IDS: z.string().optional(),
-  ADMIN_SUPERUSER_EMAIL: z.string().email().optional(),
-  ADMIN_SUPERUSER_ID: z.string().uuid().optional(),
-  ADMIN_CHAT_WORKER_PATH: z.string().min(2).optional(),
-  ADMIN_CHAT_WORKER_TIMEOUT_MS: z.string().regex(/^\d+$/).optional(),
-  N8N_CHAT_WEBHOOK_URL: z.string().url().optional(),
-  N8N_CHAT_WEBHOOK_SECRET: z.string().min(8).optional(),
-  PUBLIC_API_BASE_URL: z.string().url().optional(),
-  AI_CHAT_MODEL: z.string().min(1).optional(),
-  // Binding nativo de Cloudflare (objeto con `.run()`, no un string): sin esta entrada
-  // zod lo eliminaría del env parseado (modo "strip" por defecto) y `env.AI.run(...)`
-  // fallaría en runtime pese a compilar bien. Opcional (como AI_RATE_LIMITER): puede
-  // faltar en tests o en local sin el binding; `generateAdminReply` falla explícito
-  // si falta y el pipeline de admin-chat cae al fallback local.
+  // Admin guard (DATOS Q3): TOTP (`aal2`) is required unless this is exactly 'false' (local tests without TOTP).
+  ADMIN_REQUIRE_MFA: z.enum(['true', 'false']).optional(),
+  // Outbox notifications (plan 1.8c, DATOS §8.4): without both, outbox.drain leaves the events where they are.
+  TELEGRAM_BOT_TOKEN: z.string().min(10).optional(),
+  TELEGRAM_ADMIN_CHAT_ID: z.string().regex(/^-?\d+$/).optional(),
+  // Email channel (Resend, DATOS Q5); no launch event is routed to it yet.
+  RESEND_API_KEY: z.string().min(10).optional(),
+  // Signs `chat_sid` (assistant, task 4.4).
+  CHAT_SID_SECRET: z.string().min(32).optional(),
   // New modules (plan 1.7, DT §9). Optional for now; every new binding must be listed here or parseEnv strips it.
   WORKER_INTERNAL_TOKEN_PREV: z.string().min(10).optional(),
   TURNSTILE_SECRET_KEY: z.string().min(1).optional(),
   SERVER_KEY: z.string().min(1).optional(),
-  NOTIFY_SHARED_SECRET: z.string().min(1).optional(),
   N8N_LEAD_WEBHOOK_ENABLED: z.enum(['true', 'false']).optional(),
   PROPOSALS_DAILY_LIMIT_IP: z.string().regex(/^\d+$/).optional(),
   PROPOSALS_DAILY_LIMIT_ALL: z.string().regex(/^\d+$/).optional(),
@@ -58,6 +51,7 @@ const envSchema = z.object({
   LEADS_RATE_LIMITER: rateLimiterSchema,
   AFFILIATE_RATE_LIMITER: rateLimiterSchema,
   RADAR_RATE_LIMITER: rateLimiterSchema,
+  // Native binding (object with `.run()`): without this entry zod would strip it from the parsed env.
   AI: z
     .custom<Env['AI']>(
       (v) => typeof v === 'object' && v !== null && typeof (v as { run?: unknown }).run === 'function',
@@ -78,7 +72,7 @@ const REQUIRED_BINDING_KEYS = [
   'SUPABASE_URL',
 ] as const;
 
-/** Valores solo para `wrangler dev` sin `.dev.vars`: placeholders Supabase; el foro usa Postgres si hay `SUPABASE_SERVICE_ROLE_KEY` en `.dev.vars`. */
+/** Values only for `wrangler dev` without `.dev.vars`: Supabase placeholders (nothing privileged works without them). */
 const LOCAL_DEV_ENV_PLACEHOLDERS = {
   WORKER_URL: 'http://127.0.0.1:8787',
   WORKER_INTERNAL_TOKEN: 'local-dev-worker-internal-token',

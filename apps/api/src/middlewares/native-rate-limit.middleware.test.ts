@@ -1,10 +1,12 @@
+import { Hono } from 'hono';
 import { describe, expect, it } from 'vitest';
 
-import { Hono } from 'hono';
-import { nativeRateLimit } from './native-rate-limit.middleware';
+import { nativeRateLimit, type RateLimiterBinding } from './native-rate-limit.middleware';
 
-function appWith(limiter: any) {
-  const app = new Hono<any>();
+import type { Env } from '../types/env.types';
+
+function appWith(limiter: RateLimiterBinding | undefined) {
+  const app = new Hono<{ Bindings: Env }>();
   app.use('/ai/*', nativeRateLimit(() => limiter, { keyPrefix: 'ai' }));
   app.get('/ai/ping', (c) => c.text('ok'));
   return app;
