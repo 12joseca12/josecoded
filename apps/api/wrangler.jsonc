@@ -1,0 +1,59 @@
+{
+    "name": "josecoded-api",
+    "account_id": "d26022a34346cb759178a720bace386d",
+    "main": "src/index.ts",
+    "compatibility_date": "2026-05-03",
+    "vars": {
+      // Production is safe by default: "development" exposes error.message and mounts /api/dev/* (security review, 1.8c).
+      "API_MODE": "production",
+      "WORKER_URL": "https://worker.josecoded.com",
+      // exact origins, previews of the web Worker (<hash>-josecoded-web.jose.workers.dev) and local dev
+      "CORS_ORIGINS": "https://josecoded.com,https://www.josecoded.com,https://*-josecoded-web.jose.workers.dev,http://localhost:3000"
+    },
+    "ratelimits": [
+      { "name": "AI_RATE_LIMITER", "namespace_id": "1001", "simple": { "limit": 20, "period": 60 } },
+      { "name": "LEADS_RATE_LIMITER", "namespace_id": "1002", "simple": { "limit": 5, "period": 60 } },
+      { "name": "AFFILIATE_RATE_LIMITER", "namespace_id": "1003", "simple": { "limit": 30, "period": 60 } },
+      { "name": "RADAR_RATE_LIMITER", "namespace_id": "1004", "simple": { "limit": 60, "period": 60 } }
+    ],
+    "ai": {
+      "binding": "AI"
+    },
+    // The only Cron Trigger (Workers Free: 5 per account). src/scheduled.ts dispatches every periodic job
+    // from private.scheduled_jobs with nextRun and a subrequest budget.
+    "triggers": { "crons": ["*/5 * * * *"] },
+    // Minify so esbuild drops the dead `if (__TEST_HOOKS__)` branch from the bundle (without it the branch stays as `if (false)`).
+    "minify": true,
+    // Compile-time flag: the test hooks of src/ (env.__deps) are removed from the production bundle.
+    // `define` is not inherited by environments: repeat it in every env.* (test/wrangler-config.test.ts).
+    "define": { "__TEST_HOOKS__": "false" },
+
+    "env": {
+      // Separate Worker for previews (DT §0b, finding 9): own name, secrets and rate limiters, no cron, and it
+      // never points at production data (Supabase local in CI or a Supabase branch; set through its own secrets).
+      // Bindings and vars are NOT inherited by an env, so everything the Worker needs is repeated here.
+      // Pending, not declared yet because the resource does not exist: RADAR_KV (KV namespace of the preview,
+      // created by the controller before task 7.x deploys it). Deploying this env is done by preview.yml (9.x).
+      "preview": {
+        "name": "josecoded-api-preview",
+        "vars": {
+          "API_MODE": "development",
+          "CORS_ORIGINS": "https://*-josecoded-web.jose.workers.dev,http://localhost:3000"
+        },
+        "ratelimits": [
+          { "name": "AI_RATE_LIMITER", "namespace_id": "2001", "simple": { "limit": 20, "period": 60 } },
+          { "name": "LEADS_RATE_LIMITER", "namespace_id": "2002", "simple": { "limit": 5, "period": 60 } },
+          { "name": "AFFILIATE_RATE_LIMITER", "namespace_id": "2003", "simple": { "limit": 30, "period": 60 } },
+          { "name": "RADAR_RATE_LIMITER", "namespace_id": "2004", "simple": { "limit": 60, "period": 60 } }
+        ],
+        "ai": { "binding": "AI" },
+        "triggers": { "crons": [] },
+        // `routes` and `workers_dev` ARE inherited: declared here so the production route (api.josecoded.com)
+        // never reaches the preview, which is served only on josecoded-api-preview.<subdomain>.workers.dev.
+        "routes": [],
+        "workers_dev": true,
+        "minify": true,
+        "define": { "__TEST_HOOKS__": "false" }
+      }
+    }
+  }

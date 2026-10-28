@@ -1,10 +1,16 @@
 import { describe, expect, it } from 'vitest';
 
+import { AFFILIATE_CODE_DB_RE } from '@josecoded/types';
+
 import { AFFILIATE_CODE_RE, isValidCode, normalizeCode, suggestPrefix } from '../src';
 
 describe('affiliate code contract', () => {
   it('keeps the regex literal shared with the SQL trigger', () => {
     expect(AFFILIATE_CODE_RE.source).toBe('^[A-Z0-9]{3,12}-[A-Z0-9]{6}$');
+  });
+
+  it('is the same contract as the database check (AFFILIATE_CODE_DB_RE, tested against the migration)', () => {
+    expect(AFFILIATE_CODE_RE.source).toBe(AFFILIATE_CODE_DB_RE.source);
   });
 
   it('accepts prefix 3–12 plus a 6-character suffix', () => {

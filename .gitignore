@@ -37,3 +37,6 @@ next-env.d.ts
 test-results/
 playwright-report/
 *.tsbuildinfo
+
+# local explain dataset for plan 1.8a step 5 (DATOS §7); never versioned
+supabase/scripts/load-local.sql

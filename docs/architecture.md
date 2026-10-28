@@ -25,7 +25,6 @@ flowchart LR
   subgraph supa[Supabase]
     DB[(Postgres + RLS<br/>leads, clients, crm_*, chat_*, blog_comments)]
     AUTH[Auth: Google, GitHub, email OTP]
-    EDGE[Edge Function notify -> Telegram / Resend]
   end
 
   subgraph omen[Home server "Omen"]
@@ -52,8 +51,7 @@ flowchart LR
   API --> KV
   API -->|Bearer WORKER_INTERNAL_TOKEN| TUN --> WRK
   WRK --> N8N
-  DB -->|pg_net| EDGE --> TG
-  API -->|planned: Telegram, Brevo, Google| TG
+  API -->|outbox drain + inline: Telegram, Resend| TG
 ```
 
 Rules the diagram encodes:
@@ -61,7 +59,7 @@ Rules the diagram encodes:
 - The browser never talks to Omen or to n8n. The only Omen URL the public sees is Umami.
 - Secrets live in the gateway (`wrangler secret`) or in Supabase, never in `NEXT_PUBLIC_*` and never in the repo.
 - Supabase is reached from the browser only through RLS with the publishable key; privileged access exists only in the gateway and in Server Actions.
-- Legacy pieces are consumed, not rewritten: the gateway's inherited routes (`v1`, `v1-protected`, `forum`, `admin-chat`, `health`, `system`), the Omen worker, the Supabase schema (additive migrations only), the domain and the Cloudflare account.
+- Legacy pieces are consumed, not rewritten: the gateway's inherited routes (`health`, `system`, `v1-protected`; `forum` and `admin-chat` were retired with their tables in plan 1.8c), the Omen worker, the domain and the Cloudflare account. The Supabase schema is built from scratch in `supabase/migrations/` for a new project (D49, DATOS).
 
 ## Monorepo map
 
@@ -85,12 +83,12 @@ josecoded/
 │  └─ api/                      Hono gateway on Workers (branch chore/supabase until phase 1b merges)
 │     ├─ src/index.ts           composition: middlewares, CORS, route mounting, scheduled handler
 │     ├─ src/deps.ts            buildDeps(env): the composition root of the new modules
-│     ├─ src/adapters/          the ONLY files that import SDKs or fetch third parties (*planned*: supabase, kv-quota, telegram, brevo, workers-ai, turnstile, google, github)
-│     ├─ src/modules/           one Hono router per domain; legacy: v1, v1-protected, forum, admin-chat, health, system; *planned*: proposals, leads, notify, affiliates, assistant, crm, radar
-│     ├─ src/services/          legacy domain logic (stores, n8n bridge, worker proxy); new services are create<X>Service(deps) factories
-│     ├─ src/middlewares/       requestId, securityHeaders, auth (Supabase JWT), native rate limit, withDeps
-│     ├─ src/schemas/           legacy zod request schemas (new ones live in @josecoded/types)
+│     ├─ src/adapters/          the ONLY files that import SDKs or fetch third parties: supabase, scheduled-jobs, outbox, telegram (*planned*: turnstile, workers-ai, resend, google, github)
+│     ├─ src/modules/           one Hono router per domain; inherited: health, system, v1, v1-protected; *planned*: proposals, leads, notify, affiliates, assistant, crm, radar
+│     ├─ src/services/          worker proxy; new services are create<X>Service(deps) factories
+│     ├─ src/middlewares/       requestId, securityHeaders, requireUser/requireAdmin (via deps.supabase; admin needs aal2), native rate limit, withDeps
 │     ├─ src/scheduled.ts       the single cron (*/5) dispatching private.scheduled_jobs
+│     ├─ src/jobs/              job handlers: outbox.drain (private.outbox -> Telegram, ack/fail)
 │     └─ test/fakes/            in-memory fakes of the ports used by service tests
 ├─ packages/
 │  ├─ config/                   shared eslint (boundaries), stylelint (tokens only), tsconfig, prettier; tested
@@ -100,7 +98,7 @@ josecoded/
 │  ├─ glyph-scene/              *planned*: Three.js hero scene, no React; renders the hero video/poster at build time
 │  ├─ radar-core/               *planned, post-launch*: state machine, scoring and materials of the job-hunting module
 │  └─ radar-connectors/         *planned, post-launch*: job-platform connectors + CLIs for Omen and the Mac
-├─ supabase/                    *planned (phase 1b/1c)*: read-only baseline, additive migrations, notify function, seed, RLS tests
+├─ supabase/                    migrations from scratch (DATOS), seed, migration tests and the `test/pg` harness; the gateway drains `private.outbox`
 ├─ infra/                       *planned*: reference only (Omen compose files, n8n exports, launchd plist); applied by hand with explicit OK
 ├─ .impeccable/                 design.json (source of the tokens), surface contracts
 ├─ docs/                        working agreements, specs, technical design, UX/UI, plans, prototypes (docs/superpowers/design/ref/)
@@ -129,13 +127,13 @@ app/ (routes, thin)  ->  components/ (compose, styled with tokens)  ->  lib/ (pu
 index.ts (compose)  ->  modules/*.routes.ts (validate, call service, respond)  ->  services (pure, take deps)  ->  ports (@josecoded/types)  <-  adapters (SDKs, fetch)
 ```
 
-- **Ports** are interfaces in `@josecoded/types/api.ts` (`Clock`, `ScheduledJobsRepo` today; `LeadsRepo`, `QuotaStore`, `Notifier`, `AiClient`, `TurnstileVerifier`... as each task lands).
-- **Adapters** in `src/adapters/*.adapter.ts` are the only files allowed to import an SDK or `fetch` a third party.
+- **Ports** are interfaces in `@josecoded/types/api.ts` (`Clock`, `ScheduledJobsRepo`, `OutboxRepo`, `NoticeLedger`, `Notifier`, `AuthUser` today; `LeadsRepo`, `AiClient`, `TurnstileVerifier`... as each task lands). `SupabaseGateway` lives next to its adapter because it hands out the typed supabase-js client.
+- **Adapters** in `src/adapters/` are the only files allowed to import an SDK or `fetch` a third party; `@supabase/supabase-js` is imported only there (lint-enforced, no exception list).
 - **`buildDeps(env)`** in `src/deps.ts` builds the real adapters once per request; the `withDeps` middleware leaves them in `c.var.deps`. Routes never import adapters (lint-enforced) and never build dependencies.
 - **Services** are factories `create<X>Service(deps: Pick<Deps, ...>)` tested with in-memory fakes from `test/fakes/`. Pure business rules (quotas, pricing, state machines) have no `deps` at all.
-- **Modules per domain**: legacy `v1`, `v1-protected`, `forum`, `admin-chat`, `health`, `system` (kept as moved from the old repo, contracts frozen); new `proposals`, `leads`, `notify`, `affiliates`, `assistant` (case-based public chat), `crm` (contacts, drafts, contexts), later `radar/*` and `newsletter/*`.
+- **Modules per domain**: inherited `health`, `system`, `v1`, `v1-protected` (`auth/me` returns `{ id, email, is_admin }` through `deps`); new `proposals`, `leads`, `notify`, `affiliates`, `assistant` (case-based public chat), `crm` (contacts, drafts, contexts), later `radar/*` and `newsletter/*`.
 - The response envelope is shared by all routes: `{ ok: true, data }` or `{ ok: false, error: { code, message, details? } }`.
-- One cron trigger (`*/5`) dispatches jobs read from `private.scheduled_jobs` with a subrequest budget; no per-job crons (Workers Free limit).
+- One cron trigger (`*/5`) dispatches jobs read from `private.scheduled_jobs` with a subrequest budget; no per-job crons (Workers Free limit). `outbox.drain` runs every tick and is how every notification leaves the system (no `pg_net`, no Edge Function).
 - Test hooks (`env.__deps`) are compiled out of production bundles with `define: { __TEST_HOOKS__: false }`, and the wrangler config has a test asserting it for every environment.
 
 ### `packages/*`
@@ -168,8 +166,8 @@ Short list; each links to the Spanish document where it was taken.
 | Decision | Why | Source |
 |---|---|---|
 | Next 16 App Router on Cloudflare Workers via OpenNext, no Node middleware | One account, one edge, Workers Free; i18n by rewrites and guards in layouts | [spec §5](superpowers/specs/2026-09-13-josecoded-plataforma.md), [DT §1.3–1.4](superpowers/design/2026-09-17-josecoded-diseno-tecnico.md) |
-| Keep the legacy gateway, worker and Supabase schema; only additive changes | They work in production; the rewrite is the site, not the platform | [spec §3, §7](superpowers/specs/2026-09-13-josecoded-plataforma.md), plan "Restricciones globales" |
-| Ports and adapters with `buildDeps(env)` for new gateway modules only | Services testable with fakes; SDKs confined to adapters; legacy stays frozen | [working-agreements §17.1](working-agreements.md) |
+| Keep the gateway and the worker; Supabase from scratch in a new project (D49) | The old project is unreachable; the schema is designed for spec v2.0 | [spec §3, §7](superpowers/specs/2026-09-13-josecoded-plataforma.md), plan "Restricciones globales" |
+| Ports and adapters with `buildDeps(env)` for the whole gateway | Services testable with fakes; SDKs confined to adapters | [working-agreements §17.1](working-agreements.md) |
 | CSS Modules + generated tokens; no Tailwind, shadcn or GSAP by default | A design system with a single source (`design.json`) and lint-checkable styles | [working-agreements §1–§3](working-agreements.md), spec D27 |
 | `@josecoded/types` as the only home of shared types; zod at boundaries | No duplicated contracts between web and gateway; inferred types | [working-agreements §14](working-agreements.md) |
 | One component per concept with `data-*` variants, polymorphism by `href` | SOLID applied to UI without CVA/clsx/Slot | [working-agreements §15](working-agreements.md) |

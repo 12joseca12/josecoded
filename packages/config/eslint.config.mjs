@@ -47,7 +47,7 @@ const restrictions = {
   supabase: {
     group: ['@supabase/supabase-js'],
     message:
-      'supabase-js is allowed only in apps/web/lib/supabase/ and apps/api/src/adapters/ (use the typed clients).',
+      'supabase-js is allowed only in apps/web/lib/supabase/, apps/api/src/adapters/ and apps/web/tests/helpers/ (use the typed clients or c.var.deps).',
     dynamic: '/^@supabase\\/supabase-js$/',
   },
   // import(variable) / import(`…${x}`): the path cannot be checked, so it is only allowed where the
@@ -120,7 +120,7 @@ const boundaries = [
   },
   { files: ['packages/glyph-scene/**'], rules: restrict(without('three', 'dynamicImports')) },
   {
-    files: ['apps/web/lib/supabase/**', 'apps/api/src/adapters/**'],
+    files: ['apps/web/lib/supabase/**', 'apps/api/src/adapters/**', 'apps/web/tests/helpers/**'],
     rules: restrict(without('supabase')),
   },
 ];

@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -259,6 +260,66 @@ describe('eslint-config-next under ESLint 10', () => {
     const ids = await rules(code, 'apps/web/components/ui/card/card.tsx');
     expect(ids.filter((id) => id.startsWith('parse:'))).toEqual([]);
     expect(ids).toContain('@next/next/no-img-element');
+  });
+});
+
+describe('apps/api: supabase-js only in src/adapters/ (plan 1.8c, no legacy exceptions left)', () => {
+  const supabaseImport =
+    "import { createClient } from '@supabase/supabase-js';\nexport { createClient };\n";
+  const supabaseTypeImport =
+    "import type { User } from '@supabase/supabase-js';\nexport type U = User;\n";
+
+  it('rejects supabase-js anywhere in the gateway outside adapters/, the formerly legacy files included', async () => {
+    for (const file of [
+      'apps/api/src/index.ts',
+      'apps/api/src/deps.ts',
+      'apps/api/src/scheduled.ts',
+      'apps/api/src/jobs/outbox-drain.ts',
+      'apps/api/src/config/env.ts',
+      'apps/api/src/middlewares/auth.middleware.ts',
+      'apps/api/src/middlewares/with-deps.ts',
+      'apps/api/src/modules/v1-protected.routes.ts',
+      'apps/api/src/modules/v1.routes.ts',
+      'apps/api/src/services/supabase.service.ts',
+      'apps/api/src/services/worker.service.ts',
+      'apps/api/src/types/env.types.ts',
+      'apps/api/src/utils/cron.ts',
+      'apps/api/test/outbox-drain.test.ts',
+      'apps/api/test/fakes/supabase.fake.ts',
+    ]) {
+      expect(await rules(supabaseImport, file), file).toContain('no-restricted-imports');
+      expect(await rules(supabaseTypeImport, file), `${file} (type import)`).toContain('no-restricted-imports');
+    }
+  });
+
+  it('allows supabase-js in every gateway adapter', async () => {
+    for (const file of [
+      'apps/api/src/adapters/supabase.ts',
+      'apps/api/src/adapters/scheduled-jobs.ts',
+      'apps/api/src/adapters/outbox.ts',
+    ]) {
+      expect(await rules(supabaseImport, file), file).not.toContain('no-restricted-imports');
+    }
+  });
+
+  it('applies the import order to every gateway file (the literal legacy list is gone)', async () => {
+    const code = "import { b } from './b';\nimport { z } from 'zod';\nexport { b, z };\n";
+    for (const file of ['apps/api/src/modules/v1.routes.ts', 'apps/api/src/config/env.ts', 'apps/api/scripts/wrangler-dev.mjs']) {
+      expect(await rules(code, file), file).toContain('import-x/order');
+    }
+  });
+
+  it('routes and middlewares never import adapters', async () => {
+    expect(await rules("import { a } from '../adapters/supabase';\nexport { a };\n", 'apps/api/src/modules/v1-protected.routes.ts')).toContain(
+      'no-restricted-imports',
+    );
+  });
+
+  it('the shared config has no file list that switches the boundaries off', () => {
+    const source = readFileSync(configFile, 'utf8');
+    expect(source).not.toMatch(/legacyApi|legacyGateway|legacyAny/);
+    // folders (adapters/**, modules/**) are rules; a single gateway file in the config would be an exception
+    expect(source).not.toMatch(/'apps\/api\/[^'*]*\.(?:ts|mjs)'/);
   });
 });
 

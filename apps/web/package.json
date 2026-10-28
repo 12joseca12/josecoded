@@ -26,6 +26,7 @@
     "@axe-core/playwright": "4.13.0",
     "@josecoded/config": "workspace:*",
     "@playwright/test": "1.63.0",
+    "@supabase/supabase-js": "2.117.2",
     "@testing-library/react": "16.3.3",
     "@types/node": "22.20.2",
     "@types/react": "19.3.0",

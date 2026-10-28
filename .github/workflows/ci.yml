@@ -1,12 +1,15 @@
+# CI (plan 1.9). No production credentials live here: the only Supabase is the local stack of `supabase start`.
+# Third-party actions are pinned by full commit SHA (version in the trailing comment); bump them on purpose.
 name: CI
 
 on:
   push:
+    branches: [main]
   pull_request:
 
 concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
@@ -23,14 +26,17 @@ env:
   NEXT_PUBLIC_WHATSAPP_NUMBER: '34600000000'
   NEXT_PUBLIC_HERO_MEDIA_VERSION: '1'
   NEXT_PUBLIC_DEV_UI: '1'
+  # Supabase CLI used by the `test` job (pinned; keep it equal to the one on Jose's Mac, `supabase --version`).
+  SUPABASE_CLI_VERSION: 2.122.0
 
 jobs:
   lint:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@d9184bf108216479bc5a137cc391f4d7b14c870b # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
           cache: pnpm
@@ -44,48 +50,74 @@ jobs:
 
   typecheck:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@d9184bf108216479bc5a137cc391f4d7b14c870b # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
 
+  # Unit tests AND the tests that need a real database. GitHub sets CI=true, and both
+  # apps/web/tests/rls.test.ts and packages/types/test/database-drift.test.ts turn "Supabase local not reachable" into a
+  # failure when CI is set (outside CI they skip with a warning), so the stack must be up before `pnpm test`: the drift
+  # check and the RLS suite can never be skipped silently here. `pnpm test` (turbo) runs them together with every other
+  # package's tests, so there is no second invocation of the same files.
+  #
+  # supabase/test/pg/run.sh (the vanilla-Postgres twin of the SQL assertions) is NOT run here: it exists for cloud
+  # sessions without Docker, and a real Supabase stack is the reference that already applies the same migrations and
+  # seed (`db reset`) and runs the TS RLS tests.
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@d9184bf108216479bc5a137cc391f4d7b14c870b # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v3.0.1
+        with:
+          version: ${{ env.SUPABASE_CLI_VERSION }}
+      # Only what the tests use: API (kong, postgrest), auth, realtime, storage and postgres-meta (`gen types --local`
+      # needs it for the drift check). Excluded: studio, imgproxy, edge-runtime (no functions, Q2), logflare + vector
+      # (analytics), mailpit (no email is read in tests) and supavisor.
+      - run: supabase start -x studio,imgproxy,edge-runtime,logflare,vector,mailpit,supavisor
+      # Applies supabase/migrations and supabase/seed/seed.sql from scratch, exactly as the repo describes the schema.
+      - run: supabase db reset
       - run: pnpm test
+      - if: failure()
+        run: supabase status || true
+      - if: always()
+        run: supabase stop --no-backup
 
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@d9184bf108216479bc5a137cc391f4d7b14c870b # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
-      # Later tasks add here: check:hero-bundle + hero:media:check (2.9), Playwright against
-      # `wrangler dev` (1.5), RLS tests against `supabase start` (1.8), Lighthouse CI (2.9).
+      # Not wired yet because the scripts do not exist: check:hero-bundle and hero:media:check (task 2.9) and the
+      # Lighthouse CI run (`pnpm lhci`, task 2.9). Each of those tasks adds its step here.
 
   e2e:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@d9184bf108216479bc5a137cc391f4d7b14c870b # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
           cache: pnpm
@@ -95,3 +127,5 @@ jobs:
       # The URL matrix runs against the LOCAL preview (`opennextjs-cloudflare preview`, which
       # populates the cache like production). Nothing is uploaded to Cloudflare.
       - run: pnpm e2e
+      # Not wired yet: the visual diff against the prototype (`pnpm visual`, task 2.13). The E2E against `wrangler dev`
+      # of the gateway + Supabase local is added by the first task whose UI signs in.

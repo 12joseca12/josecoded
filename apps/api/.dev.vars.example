@@ -1,0 +1,26 @@
+# Copy to `.dev.vars` in this folder (apps/api). Wrangler loads it on `pnpm dev`. Never commit `.dev.vars`.
+
+# --- Supabase local (`supabase start`, then `supabase status` for the keys) ---
+SUPABASE_URL=http://127.0.0.1:54321
+# Publishable key: same value as NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY of apps/web
+SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+# Secret key (bypasses RLS): outbox, scheduled jobs, staff_members. Only the gateway has it.
+SUPABASE_SECRET_KEY=sb_secret_...
+# The seed accounts have no TOTP: only locally, let requireAdmin accept aal1. Never in production or preview.
+ADMIN_REQUIRE_MFA=false
+
+# --- Outbox notifications (job outbox.drain). Without both, the drain claims nothing. ---
+# TELEGRAM_BOT_TOKEN=123456:...
+# TELEGRAM_ADMIN_CHAT_ID=123456789
+# Email channel (Resend), not used by any launch event yet
+# RESEND_API_KEY=re_...
+
+# --- Chat (task 4.4): openssl rand -hex 32 ---
+# CHAT_SID_SECRET=
+
+# --- Backend on Omen (Fastify), NOT this Worker's URL ---
+WORKER_URL=https://worker.josecoded.com
+# Must be EXACTLY the BACKEND_INTERNAL_TOKEN of the backend
+WORKER_INTERNAL_TOKEN=paste_the_backend_hex_token_here
+# Optional: protects /api/dev/* (header x-dev-api-key)
+# DEV_API_KEY=

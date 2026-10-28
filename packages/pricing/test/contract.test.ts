@@ -1,4 +1,4 @@
-// Shared fixture with @josecoded/types: the gateway, the `notify` function and area_lead_summary()
+// Shared fixture with @josecoded/types: the gateway (incl. its outbox drain) and area_lead_summary()
 // read the same ai_proposal shape, and its price must be the one pricing.json gives.
 import { expect, it } from 'vitest';
 

@@ -45,7 +45,7 @@ packages/config/   shared eslint (boundaries), stylelint (tokens only), tsconfig
 packages/types/    @josecoded/types: one file per domain, zod schemas, generated database.ts
 packages/pricing/  pricing.json, price rules, affiliates, DB sync
 packages/design-tokens/  .impeccable/design.json -> apps/web/styles/tokens.css|ts, drift test
-supabase/          baseline, additive migrations, seed, RLS tests (planned)
+supabase/          migrations (the only source of the schema), seed, migration tests, test/pg harness; RLS tests in apps/web
 docs/              architecture, working agreements, specs, technical design, plans, prototypes
 ```
 

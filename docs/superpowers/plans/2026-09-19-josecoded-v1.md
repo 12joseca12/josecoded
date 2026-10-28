@@ -2,8 +2,27 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Fecha:** 2026-09-19 · **Perfil:** web · **Versión:** **3.1 (2026-10-28, tarea 9.5b repo público)** · **3.0 (2026-10-28, reposicionamiento: identidad única freelance, `/servicios`, `/partners`, chat por casos, CRM, Radar y newsletter post-lanzamiento; spec v2.0, PANT v2.0)** · 2.2 (2026-09-30, batería de stack y metodologías; working-agreements v1.2) · 2.1 (2026-09-30, tras `/plan-eng-review`) · 2.0 (2026-09-29) · **Autor:** `arquitecto`
+**Fecha:** 2026-09-19 · **Perfil:** web · **Versión:** **3.2 (2026-10-28, Supabase desde cero en el proyecto nuevo; D49; `docs/superpowers/design/2026-10-28-datos-v2.md`, en adelante DATOS)** · **3.1 (2026-10-28, tarea 9.5b repo público)** · **3.0 (2026-10-28, reposicionamiento: identidad única freelance, `/servicios`, `/partners`, chat por casos, CRM, Radar y newsletter post-lanzamiento; spec v2.0, PANT v2.0)** · 2.2 (2026-09-30, batería de stack y metodologías; working-agreements v1.2) · 2.1 (2026-09-30, tras `/plan-eng-review`) · 2.0 (2026-09-29) · **Autor:** `arquitecto`
 **Insumos:** spec **v2.0** (`docs/superpowers/specs/2026-09-13-josecoded-plataforma.md`; §0 manda), pantallas **v2.0** (bloque «v2.0» de `2026-09-29-pantallas-y-contenidos.md`, **PANT v2.0**), `ESTADO.md` de `main` y de `chore/supabase` (punto real), vault `Comercial/{canales-captacion,agencias,agencias-mensajes,tarifas}.md`; y los de v2.2: spec v1.7, UX **v4.0** (`docs/superpowers/design/2026-09-17-josecoded-ux.md`), diseño técnico **v1.4** (§0b recoge los cambios del eng review) (`docs/superpowers/design/2026-09-17-josecoded-diseno-tecnico.md`, en adelante **DT**), `docs/working-agreements.md` v1.0 (**normativo**: si una tarea lo contradice, manda él), `DESIGN.md` + `.impeccable/design.json` (sistema visual v6), inventario `docs/superpowers/design/2026-09-29-componentes-home-v6.md` v1.1 (**INV**), pantallas `docs/superpowers/design/2026-09-29-pantallas-y-contenidos.md` v1.0 (**PANT**), prototipo `docs/superpowers/design/ref/home-v6/`, spec de newsletter `docs/superpowers/specs/2026-09-29-josecoded-newsletter.md` **v1.2** (fase 10), `docs/working-agreements.md` **v1.1**, `ESTADO.md`, `Comercial/tarifas.md` v2. El documento de `ui` v3 (`2026-09-17-josecoded-ui.md`) **queda superado** por `DESIGN.md` y no es insumo de ninguna tarea.
+
+## Changelog v3.2 (2026-10-28, Supabase desde cero; spec D49; DATOS v1.0)
+
+**Decisión de Jose:** el proyecto Supabase heredado `nrgrmymsjtgayzejtawa` se abandona (sin acceso desde su cuenta actual); se usa el proyecto **nuevo y vacío** `echlwywbucgbhwpncviy` (`josecoded`, eu-west-1, Postgres 17). Nada se migra. Diseño del esquema: **DATOS** (`docs/superpowers/design/2026-10-28-datos-v2.md`), que sustituye a DT §6 y a spec §0.6 en lo que se contradigan.
+
+**Qué cambia:**
+
+| # | Cambio | Tareas |
+|---|---|---|
+| 1 | **Sin baseline de producción.** Las migraciones del repo son la fuente; `supabase start` las aplica desde cero. Desaparecen `supabase/schema/`, `scripts/supabase-baseline.sh`, `supabase/scripts/baseline-meta.ts`, `supabase/test/baseline.test.ts` y la regla «cada gate regenera el baseline» | 1.6 reescrita; 1.9, 1.12, 7.7, 10.1 pierden el paso de baseline |
+| 2 | **Esquema v2 en inglés, diseñado para la spec v2.0** (DATOS §4): `staff_members`, `user_profiles`, `packs`/`pack_options`/`extras`, `crm_organizations`, `crm_contacts`, `leads` (oportunidades de un contacto), `crm_interactions`, `crm_message_templates`, `crm_message_drafts`, `clients`, `client_tasks`, `client_task_comments`, `client_assets`, `client_extras`, `upgrade_requests`, `affiliates`, `affiliate_rewards`, `blog_comments`, `chat_contexts`, `chat_threads`, `chat_messages`; `private.quota_counters`, `private.scheduled_jobs`, `private.outbox`. Sin `forum_*`, `blog_posts`, `admin_chat_*`, `lead_assignments`, `commission_entries`, sin `crm_contacts_view` ni `affiliate_leads_view` (RPC `affiliate_leads()`) | 1.8 reescrita y partida en **1.8a** (identidad, catálogo, CRM, área, afiliados, comentarios), **1.8b** (chat), **1.8c** (gateway: adaptador Supabase, outbox, retirada de rutas) |
+| 3 | **La fase 1c se funde en la 1b**: 1.11 y 1.12 quedan superadas (su contenido está en 1.8a/1.8b y 1.9). La rama `chore/crm-schema` no se crea | 1.11, 1.12 marcadas «(v3.0, superada)»; ramas y camino crítico |
+| 4 | **Notificaciones por `private.outbox` + gateway** (DATOS §8.4; Q2): sin `pg_net`, sin Edge Function `notify`, sin `vault.notify_shared_secret`. Los eventos `lead.created`, `comment.pending`, `asset.uploaded`, `upgrade.requested`, `chat.visitor_message` se drenan en el job `outbox.drain` del cron `*/5`; los que nacen en el gateway se notifican además en la misma petición | 1.8c (drenaje), 3.8 (`POST /notify/lead` y `notifyLead` pasan a ser internos del gateway), 3.12 y 9.4 (sin `supabase functions deploy`), 10.2 (eventos `newsletter.*` en el outbox) |
+| 5 | **Rutas heredadas del gateway sin tabla**: `forum/*` y `admin-chat/*` **se retiran** (Q1; DATOS §9); `supabase.service.ts` pasa a `adapters/supabase.ts`; `v1-protected`, `health`, `system` se mantienen | 1.8c; restricción global «rutas intactas» reescrita; 9.5b pierde tres pendientes (correos literales, `n8n/inbound`) |
+| 6 | **Auth del proyecto nuevo** (DATOS §8.1): Google + GitHub + OTP sin contraseña (Q4), confirmación obligatoria (D35), SMTP propio (Q5), Turnstile en Auth, **TOTP para admin** (Q3), plantillas es/en versionadas en `supabase/templates/` | 1.9 (configuración en el gate), 4.1 (login sin contraseña; `requireAdmin()` exige `aal2`), 6.1 (guard admin con `aal2`) |
+| 7 | **Gate 1.9 contra el proyecto nuevo**: `supabase link` + `supabase db push` (el repo es la fuente), configuración de Auth/API/Storage, alta de Jose como admin, variables y secretos de web, gateway (prod y preview) y Omen, `get_advisors` limpio, sin baseline | 1.9 reescrita |
+| 8 | **Tabla de equivalencias** para las tareas 5.x y 6.x escritas contra nombres heredados: `pack_templates`→`packs` (`code` PK), `pack_extras`→`extras`, `client_pack_extras`→`client_extras`, `leads.estado/fuente/monto/notas`→`status/source/amount/owner_note (en el contacto)`, `clients.project_phase` valores en inglés, `staff_members.role` enum, `admin_counters()` con los 7 contadores de DATOS §6 desde el principio | 5.1–5.5, 6.1–6.9, 7.6 (`radar_applications.contact_id` desde la primera migración), 9.1 |
+
+**Qué se reutiliza de `chore/supabase` (commits 53329bc…7888c1a):** `supabase/config.toml` (editado), `supabase/package.json`, `tsconfig.json`, `supabase/test/migrations.test.ts` (lista nueva + reglas de DATOS §10.2), `apps/web/tests/helpers/supabase-test-clients.ts` (sin cambios), estructura y helpers de `apps/web/tests/rls.test.ts`, `packages/types/src/db.ts`, `packages/types/test/database-drift.test.ts`, script `db:types`, `apps/api/src/adapters/scheduled-jobs.ts` (+ handler `outbox.drain`), `apps/api/wrangler.jsonc`, reglas ESLint de fronteras; el SQL de `quota_counters`, `scheduled_jobs`, `user_profiles` (guard), `affiliates` (trigger de código), `upgrade_requests` (`request_upgrade`), `client_access_claim`, `admin_close_lead_paid`, `admin_counters` y `blog_comments` se copia adaptando nombres. **Se rehace:** las 13 migraciones como una serie nueva `20261028…`, `seed.sql`, `rls.test.ts`. **Se borra:** `supabase/schema/`, `scripts/supabase-baseline.sh`, `supabase/scripts/baseline-meta.ts`, `supabase/test/baseline.test.ts`, `supabase/functions/notify/`, `20260917100700_notify_lead_event.sql`, `[functions.notify]` del `config.toml`, `apps/api/src/services/forum*`, `admin-chat*`, `supabase.service.ts`.
 
 ## Changelog v3.1 (2026-10-28, repo público)
 
@@ -117,7 +136,7 @@ Se acepta la opción recomendada salvo donde se indica. Cada punto dice en qué 
 
 ## Restricciones globales (aplican a todas las tareas)
 
-- **Nada heredado se reescribe**: `josecoded-api` (rutas `v1`, `v1-protected`, `forum`, `admin-chat`, `health`, `system` intactas), `josecoded-worker` (sin cambios, ni por Radar), esquema Supabase (solo migraciones aditivas), dominio y cuenta Cloudflare. Contratos existentes intocables (spec §7, DT §7).
+- **Lo heredado que se conserva** (v3.2, D49): `josecoded-api` solo en sus rutas `health`, `system`, `v1/health` y `v1-protected` (`forum/*` y `admin-chat/*` se retiran en 1.8c, Q1), `josecoded-worker` (sin cambios, ni por Radar), dominio y cuenta Cloudflare. **Supabase es un proyecto nuevo (`echlwywbucgbhwpncviy`) con esquema propio desde cero (DATOS)**: las migraciones del repo son la fuente; nada del proyecto heredado se migra. Contratos del gateway que siguen vivos, intocables (spec §7, DT §7).
 - **Sin middleware/proxy Node** en `apps/web`: guards en layouts server-side + re-comprobación en cada Server Action y route handler; i18n por rewrites (DT §1.4, §1.7).
 - **El navegador nunca habla con Omen ni con n8n**; solo el gateway. Umami es la única URL de Omen expuesta (DT §7.2).
 - **Producción con OK explícito de Jose en la sesión** (tareas marcadas **GATE**): `wrangler deploy`, `apply_migration`, `supabase functions deploy`, `pricing:sync-db`, exponer `stats.josecoded.com`, cambiar `API_MODE`, alta de `api.josecoded.com`, `setWebhook` de Telegram, contenedores y workflows en Omen, plist de launchd en el Mac, `wrangler secret put` en Workers de producción. **Las migraciones las aplica el controlador, no un subagente**, con `list_tables` y `get_advisors` antes y después (DT §6.2, §11.1).
@@ -135,7 +154,7 @@ Se acepta la opción recomendada salvo donde se indica. Cada punto dice en qué 
 
 - **`josecoded-api`** (gateway Hono en Workers): rutas `v1`, `v1-protected`, `forum` (intacto, sin consumidor), `admin-chat` (+ `admin-chat/admin/*`, takeover), `health`, `system`; middlewares `requestId`, `securityHeaders`, CORS, rate limit; binding `AI_RATE_LIMITER` declarado. Se mueve a `apps/api` (1.2) y solo recibe rutas, bindings y cron aditivos.
 - **`josecoded-worker`** en Omen (Fastify, `worker.josecoded.com`): módulos `ai/*` (chat, blog, summarize), `n8n/*` (trigger de workflows), `storage/*`, `system/*`, `health`. Sin cambios en todo el plan.
-- **Supabase `josecoded`**: 21 tablas heredadas (`staff_members` con Jose admin y `telegram_chat_id`, `leads` con sus 6 triggers, `clients`, `client_tasks`, `client_task_comments`, `client_assets`, `client_pack_extras`, `pack_templates`, `pack_extras`, `admin_chat_*`, `blog_posts`, `forum_*`), 47 políticas con `private.staff_role_of()`, esquema `private.*` (`notify_event()` por `pg_net`), bucket privado `client-assets` (25 MiB), Edge Function `notify` v4 (Telegram + Resend), `vault.notify_shared_secret`. Solo migraciones aditivas.
+- **Supabase `josecoded` (v3.2):** proyecto **nuevo** `echlwywbucgbhwpncviy` (eu-west-1, Postgres 17), vacío hasta el gate 1.9. Esquema v2 en `supabase/migrations/` (DATOS). ~~**Supabase `josecoded`**: 21 tablas heredadas (`staff_members` con Jose admin y `telegram_chat_id`, `leads` con sus 6 triggers, `clients`, `client_tasks`, `client_task_comments`, `client_assets`, `client_pack_extras`, `pack_templates`, `pack_extras`, `admin_chat_*`, `blog_posts`, `forum_*`), 47 políticas con `private.staff_role_of()`, esquema `private.*` (`notify_event()` por `pg_net`), bucket privado `client-assets` (25 MiB), Edge Function `notify` v4 (Telegram + Resend), `vault.notify_shared_secret`. Solo migraciones aditivas.~~ (heredado de `nrgrmymsjtgayzejtawa`, abandonado el 2026-10-28, D49).
 - Dominio `josecoded.com`, cuenta Cloudflare, bot de Telegram, cuenta de Resend (dominio a verificar).
 
 ## NOT in scope (decidido el 2026-09-30; **ampliado v3.0 el 2026-10-28**)
@@ -164,8 +183,8 @@ Se acepta la opción recomendada salvo donde se indica. Cada punto dice en qué 
 |---|---|---|---|
 | 0 | `spike/t0-*` | — | Hecha |
 | 1a | `chore/monorepo-base` (1.1, 1.4, 1.5, 1.10) | `revisor` | **Mergeada** (PR #1) |
-| 1b | `chore/supabase` (1.2 ✅, 1.3 ✅, 1.7 ✅, 1.6, 1.8, 1.9) | `/puerta-calidad` sin UI (`qa` + `revisor-seguridad`) | **En curso**; no se le añade nada |
-| **1c** | **`chore/crm-schema`** (1.11 migraciones `crm_*`/`chat_*` + RLS + tipos; 1.12 **GATE** producción) | `revisor-seguridad` (RLS, service role) + `qa` | Nueva; arranca al mergear 1b; en paralelo con la fase 2 |
+| 1b | `chore/supabase` (1.2 ✅, 1.3 ✅, 1.7 ✅, **1.6, 1.8a, 1.8b, 1.8c, 1.9** reescritas en v3.2) | `/puerta-calidad` sin UI (`qa` + `revisor-seguridad`) | **En curso**; v3.2 la amplía con el CRM y el chat (DATOS) |
+| ~~1c~~ | ~~`chore/crm-schema`~~ | — | **Superada por v3.2**: fundida en 1b |
 | 2 | `design/home-v7` (2.0: prototipo, **no se mergea hasta el OK de Jose**), `feat/shell-home` (+ `feat/glyph-scene` en paralelo) | 2.0: **OK de Jose en el navegador**; resto: `/puerta-calidad` completa + `ui` sobre capturas + OK de Jose en preview | — |
 | 3 | `feat/public-pages` (3.1, 3.13, **3.2 `/servicios`**, **3.3 `/partners`**, 3.4, 3.5, 3.6, 3.14), `feat/generator-leads` (3.7–3.12) | `/puerta-calidad` completa (Marta, Dani, Nuria, Pablo) + OK de Jose en preview | — |
 | 4 | `feat/auth-blog-lab` (4.1, 4.2, 4.3, **4.5 `/lab`**), **`feat/assistant-chat`** (4.4: gateway `assistant` + web `/chat`) | `/puerta-calidad` completa (Dani, Nuria, Pablo en el chat) | — |
@@ -180,8 +199,8 @@ Se acepta la opción recomendada salvo donde se indica. Cada punto dice en qué 
 
 | Fase | Tareas | Estimación | Notas |
 |---|---|---|---|
-| 1b (resto) | 1.6, 1.8, 1.9 | S | En el Mac; 1.9 GATE |
-| **1c CRM/chat schema** | 1.11, 1.12 | **S** | Migraciones + RLS + tipos; 1.12 GATE. Bloquea 4.4 y la fase 6; no bloquea la fase 2 |
+| 1b (resto, v3.2) | 1.6, 1.8a, 1.8b, 1.8c, 1.9 | **M** | En el Mac; esquema completo del lanzamiento (DATOS); 1.9 GATE contra el proyecto nuevo. Bloquea 3.8, 4.1, 4.4, 5 y 6; no bloquea la fase 2 |
+| ~~1c~~ | ~~1.11, 1.12~~ | — | Fundida en 1b (v3.2) |
 | 2 Home v7 | 2.0 + 2.1–2.17 | **XL** | 2.0 (prototipo) bloquea todo el port; 2.5a–2.6 (`glyph-scene`) en paralelo; la escena Servicios (2.14) sustituye a dos escenas: algo menos que en v2.2 |
 | 3 Páginas públicas | 3.1, 3.13, 3.2, 3.3, 3.4, 3.5, 3.6, 3.14, 3.7–3.12 | **L** | `/servicios` (3.2) es la pantalla más grande; `/partners` (3.3) es pequeña; 3.7–3.8 en paralelo |
 | 4 Auth + blog + lab + chat | 4.1–4.5 | **L** | 4.4 (chat v2) es la tarea más grande de la fase; 4.5 depende de que existan dos demos |
@@ -192,11 +211,11 @@ Se acepta la opción recomendada salvo donde se indica. Cada punto dice en qué 
 | 7 Radar (post) | 31 | XL | Como v2.2; reutiliza contactos e interacciones del CRM |
 | 10 Newsletter (post, a reevaluar) | 7 | L | Solo si la decisión de los 3 meses es «sí» |
 
-**Orden de ejecución de fases (v3.0):** 1b (cerrar) → **1c** ‖ **2.0 (prototipo home-v7 + gate)** → 2 (port) → **hito «contenido completo» (reducido)** → 3 → 4 → 5 → 6 → 8.1 → 9 (lanzamiento) → 7 Radar → 10 Newsletter (si procede). Carriles: **A** web pública (`design/home-v7` → `feat/shell-home` → `feat/public-pages` → `feat/auth-blog-lab` → `feat/client-area` → `release/v2`); **B** paquetes sin UI (`feat/glyph-scene`, `pricing` con P5); **C** gateway y esquema (`chore/supabase` → `chore/crm-schema` → 3.7–3.8 → `feat/assistant-chat` → `feat/crm`); **D** infra (`infra/omen` 8.1). El CRM (fase 6) puede empezar en el carril C en cuanto 1.12 esté aplicado y 6.1 (shell) exista, en paralelo con las fases 3–5 del carril A, porque no comparte `messages/` de pantallas públicas ni `tokens.css`.
+**Orden de ejecución de fases (v3.2):** 1b (cerrar, ahora con CRM y chat) ‖ **2.0 (prototipo home-v7 + gate)** → 2 (port) → **hito «contenido completo» (reducido)** → 3 → 4 → 5 → 6 → 8.1 → 9 (lanzamiento) → 7 Radar → 10 Newsletter (si procede). Carriles: **A** web pública (`design/home-v7` → `feat/shell-home` → `feat/public-pages` → `feat/auth-blog-lab` → `feat/client-area` → `release/v2`); **B** paquetes sin UI (`feat/glyph-scene`, `pricing` con P5); **C** gateway y esquema (`chore/supabase` → 3.7–3.8 → `feat/assistant-chat` → `feat/crm`); **D** infra (`infra/omen` 8.1). El CRM (fase 6) puede empezar en el carril C en cuanto 1.12 esté aplicado y 6.1 (shell) exista, en paralelo con las fases 3–5 del carril A, porque no comparte `messages/` de pantallas públicas ni `tokens.css`.
 
-**Camino crítico real:** 1.6 → 1.8 → 1.9 → **2.0 (OK de Jose)** → 2.1 → 2.2 → 2.3 → 2.8 (espera a 2.5b + 2.6 + 2.7) → 2.10 → 2.13 → **2.14 (Servicios)** → 2.15 (Proyectos + Lab/Blog) → 2.16 → 2.17 → hito de contenido → 3.13 → **3.2 (`/servicios`)** → 3.8 → 3.10 → **3.3 (`/partners`)** → 3.9 → 3.4 → 3.5 → 3.6 → 3.12 → 4.1 → 4.2 → 4.5 → **4.4 (chat v2; necesita 1.12 y 6.9 para contextos reales, con contexto de seed hasta entonces)** → 5.1 → 6.1 → 6.2 → 6.9 → 6.8 → 6.6 → 9.1 → 9.4 → 9.5 → 9.6. En paralelo y fuera del camino crítico: 1.11 → 1.12 (carril C, tras 1.9), 6.7 (importar), 6.3–6.5, 8.1.
+**Camino crítico real (v3.2):** 1.6 → 1.8a → 1.8b → 1.8c → 1.9 → **2.0 (OK de Jose)** → 2.1 → 2.2 → 2.3 → 2.8 (espera a 2.5b + 2.6 + 2.7) → 2.10 → 2.13 → **2.14 (Servicios)** → 2.15 (Proyectos + Lab/Blog) → 2.16 → 2.17 → hito de contenido → 3.13 → **3.2 (`/servicios`)** → 3.8 → 3.10 → **3.3 (`/partners`)** → 3.9 → 3.4 → 3.5 → 3.6 → 3.12 → 4.1 → 4.2 → 4.5 → **4.4 (chat v2; necesita 1.9 y 6.9 para contextos reales, con contexto de seed hasta entonces)** → 5.1 → 6.1 → 6.2 → 6.9 → 6.8 → 6.6 → 9.1 → 9.4 → 9.5 → 9.6. En paralelo y fuera del camino crítico: 6.7 (importar), 6.3–6.5, 8.1.
 
-**Lo que más acorta el lanzamiento:** (1) aprobar el prototipo home-v7 pronto (2.0 es un gate de Jose, no de código); (2) arrancar 1c y el shell del CRM en el carril C mientras el carril A porta la home; (3) tener las dos demos del lab y las tres guías antes de la fase 4 (insumos). **Sin válvula por fecha**: ya no hay nada en el lanzamiento que dependa de Radar.
+**Lo que más acorta el lanzamiento:** (1) aprobar el prototipo home-v7 pronto (2.0 es un gate de Jose, no de código); (2) arrancar el shell del CRM en el carril C en cuanto 1.9 esté aplicada mientras el carril A porta la home; (3) tener las dos demos del lab y las tres guías antes de la fase 4 (insumos). **Sin válvula por fecha**: ya no hay nada en el lanzamiento que dependa de Radar.
 
 
 ### Ramas y estimación (v2.2, superadas por v3.0)
@@ -270,7 +289,7 @@ Se acepta la opción recomendada salvo donde se indica. Cada punto dice en qué 
 | `Comercial/voz.md` con los tres ejemplos corregidos | 2.10, 3.x (copy), 7.5 (`voice.radar.md`) | Se usa la versión actual; `redactor` revisa el copy cuando Jose corrija los ejemplos |
 | Textos legales (aviso, privacidad, cookies) | 3.6 | Se portan los de josedev con marca `josecoded`; Jose los valida |
 | Retrato para Sobre mí (UX §13.4) | 3.5 | Sin foto, el bloque muestra solo texto |
-| OAuth Google y GitHub en el dashboard de Supabase; plantilla OTP con `{{ .Token }}`; "Leaked password protection" (DT P9) | 4.1 (login real) | Los E2E usan email + contraseña de seed; la prueba manual de OAuth queda para la puerta de la fase 4 |
+| **v3.2 — Proyecto Supabase nuevo:** token de `supabase login` en el Mac, OAuth Google y GitHub (client id/secret), SMTP (Resend, Q5), decisiones Q1–Q6 de DATOS §12, `TELEGRAM_BOT_TOKEN` + `chat_id` | **1.9 (gate)**, 4.1 (login real) | Los E2E usan email + contraseña de seed; la prueba manual de OAuth queda para la puerta de la fase 4 |
 | Widget Turnstile (site key + secret) | 3.12 (gate); 3.9/3.10 en preview | En dev y CI, claves de test de Cloudflare (`1x00000000000000000000AA` / `1x0000000000000000000000000000000AA`) |
 | Cuenta Cal.com, evento "20 min", webhook `BOOKING_CREATED` + secreto | 3.11 (RH real), 3.12 | Test del RH con payload grabado y firma calculada |
 | Resend: cuenta y dominio `josecoded.com` verificado (DT P8) | 3.8 (email de respaldo de `lead.created`) | Se omite el email; Telegram basta |
@@ -732,46 +751,71 @@ it('env fails fast when a public var is missing', async () => {
 
 **Hecho cuando:** matriz de URLs en verde contra `wrangler dev`, `build` < 2,5 MiB comprimidos, `env` falla con mensaje claro.
 
-### Tarea 1.6 — `supabase/`: baseline de solo lectura, config local, seed y test de deriva
+### Tarea 1.6 — `supabase/` desde cero: config local, migración base (`private`, helpers, roles, catálogo, contadores, jobs, outbox), seed de cuentas y tests de migraciones (v3.2)
 
-**Agente:** implementador-web · **Gate:** no (lectura de producción con `supabase db dump --linked`; avisar a Jose de que se lee el esquema) · **Depende de:** 1.1
+**Agente:** implementador-web · **Rama:** `chore/supabase` · **Gate:** no (solo local) · **Depende de:** 1.1 · **Insumos:** DATOS §2, §3, §4.1, §4.2, §4.7, §6, §10
 
-> **v2.2 (stack):** tras `supabase start`, `pnpm --filter types db:types` ejecuta `supabase gen types typescript --local > packages/types/src/database.ts` (**nunca `--linked`**); se commitea. `packages/types/src/db.ts` expone `Database`, `Tables<T>`, `TablesInsert<T>`, `TablesUpdate<T>`, `Enums<T>`. Test `packages/types/test/database-drift.test.ts`: regenera en memoria y compara byte a byte (se salta con aviso si `SUPABASE_LOCAL` no responde; en CI es bloqueante porque Supabase local ya está arrancado para RLS). Toda tarea con migración (1.8, 4.x, 7.6, 10.1) termina regenerando el fichero.
+> **v3.2:** sustituye por completo a la 1.6 de v2.2 (baseline de solo lectura). **No hay dump de producción**: el proyecto nuevo está vacío y las migraciones del repo son la fuente. Lo que ya existe en la rama se reutiliza o se borra según el changelog v3.2.
 
-**Objetivo:** que `supabase start` local y CI reproduzcan el esquema real sin copiar las 47 migraciones remotas (DT H6, §6.2, §8.4).
+**Objetivo:** que `supabase start && supabase db reset` levante un esquema vacío pero completo en su base (esquemas, extensiones, privilegios por defecto, helpers, `staff_members`, `user_profiles`, catálogo de precios, `private.quota_counters`, `private.scheduled_jobs`, `private.outbox` y sus RPC) con las cuatro cuentas del seed, `database.ts` regenerado y un test de migraciones que vigila las reglas de DATOS §2.
 
 **Ficheros:**
-- Crear: `supabase/config.toml` (`[db.migrations] schema_paths = ["./schema/baseline.sql"]`, `[functions.notify] verify_jwt = false`, `[auth] enable_signup = true`, `[auth.email] enable_confirmations = false`, OTP habilitado), `supabase/schema/baseline.sql` (dump de `public`, `private`, `storage`, `vault` sin datos), `supabase/schema/baseline.meta.json` (`{ dumpedAt, tables, policies, functions }` calculado del dump), `supabase/seed/seed.sql` (tres cuentas `jose@test`/`ana@test`/`bob@test` con contraseñas de test, fila `staff_members` de Jose `role='admin'` con `telegram_chat_id`, cliente P2 de Ana, 2 leads, `pack_templates` con `code`… los inserts que dependen de migraciones nuevas se añaden en 1.8), `supabase/functions/notify/index.ts` (copia literal de la v4 desplegada, obtenida con `get_edge_function`), `scripts/supabase-baseline.sh` (ejecuta `supabase db dump --linked --schema public,private,storage,vault -f supabase/schema/baseline.sql` y regenera `baseline.meta.json`).
-- Test: `supabase/test/baseline.test.ts`.
+- Borrar: `supabase/schema/` (vacío), `scripts/supabase-baseline.sh`, `supabase/scripts/baseline-meta.ts`, `supabase/test/baseline.test.ts`, `supabase/functions/notify/`, las 13 migraciones `202609*`/`202610*` existentes (su SQL se recicla en 1.8a/1.8b).
+- Modificar: `supabase/config.toml` (quitar `[db.migrations] schema_paths` y `[functions.notify]`; `[api] schemas = ["public"]`, `max_rows = 200`; `[auth] enable_signup = true`, `site_url = "http://127.0.0.1:3000"`; `[auth.email] enable_confirmations = true`, `otp_length = 6`; `[auth.mfa.totp] enroll_enabled = true, verify_enabled = true`; `[auth.external.google]`/`[auth.external.github]` `enabled = false` en local con `env(...)` para los secretos; `[auth.captcha]` comentado en local), `supabase/test/migrations.test.ts` (reescrito), `supabase/seed/seed.sql` (reescrito: solo las cuatro cuentas de `auth.users`/`auth.identities`, `staff_members` de Jose, `packs` P1–P5 + `pack_options(P5, plus)` + `extras` con los valores de `pricing.json`, `test_set_email_confirmed()`; el resto del seed llega en 1.8a/1.8b), `.github/` nada (1.9).
+- Crear: `supabase/migrations/20261028100000_base.sql`:
+  - `create extension if not exists citext with schema extensions; create extension if not exists unaccent with schema extensions;` (`pgcrypto` ya viene).
+  - `create schema private; revoke all on schema private from public, anon; grant usage on schema private to authenticated, service_role;`
+  - `alter default privileges for role postgres in schema public revoke all on tables from anon, authenticated; … on sequences …; … on functions …;` (P1).
+  - Enums de DATOS §4.1 y §4.2: `staff_role`, `locale`, `audience_signal`.
+  - `private.set_updated_at()`, `private.is_admin()`, `private.assert_email_confirmed()`, `private.enqueue(event, payload)`, `private.handle_new_user()` + trigger `on auth.users after insert`, `private.user_profiles_guard()`.
+  - Tablas `staff_members`, `user_profiles`, `packs`, `pack_options`, `extras` con RLS, políticas y grants exactos de DATOS §4.1–§4.2 (grant por columnas en `user_profiles`).
+  - `private.quota_counters` + `public.increment_quota` (copiar literal de `20260930100000_quota_counters.sql`), `private.scheduled_jobs` + `scheduled_jobs_due/mark_ran/disable` (copiar de `20260930100100_scheduled_jobs.sql` **cambiando las filas sembradas** por `outbox.drain '* * * * *'` (corrección v3.2: DATOS §4.7 manda; con `*/5` el despachador, que calcula `nextRun(cron, now)` con el reloj real, puede saltarse un tick), `chat.notify_digest '*/10 * * * *'`, `chat.purge_anonymous '0 4 * * *'`, `crm.due_digest '0 8 * * 1-5' Europe/Madrid`), `private.outbox` + `outbox_claim/ack/fail` (DATOS §4.7; corrección v3.2: `outbox_claim` cuenta el intento al reclamar, de modo que un evento venenoso que tumba el Worker antes de `outbox_fail` llega igualmente a los 10 intentos y a `system.outbox_dead`, marcado una sola vez con `dead_at`; `outbox_ack(p_ids, p_worker)` y `outbox_fail(p_id, p_worker, p_error)` solo actúan sobre filas reclamadas por `p_worker`), `public.system_health() returns jsonb` service_role (outbox atrasado, jobs deshabilitados).
+- Tipos: `pnpm --filter types db:types` → `packages/types/src/database.ts` commiteado.
 
 **Pasos:**
-- [ ] 1. Test que falla:
+- [ ] 1. Test que falla (`supabase/test/migrations.test.ts`, sustituye al de 1.8):
 ```ts
-// supabase/test/baseline.test.ts
-import { it, expect } from 'vitest';
-import { readFileSync } from 'node:fs';
-const sql = readFileSync(new URL('../schema/baseline.sql', import.meta.url), 'utf8');
-const meta = JSON.parse(readFileSync(new URL('../schema/baseline.meta.json', import.meta.url), 'utf8'));
-it('baseline has the 21 inherited public tables and no radar_* tables', () => {
-  const tables = [...sql.matchAll(/CREATE TABLE (?:IF NOT EXISTS )?"?public"?\."?(\w+)"?/g)].map(m => m[1]);
-  expect(tables).toHaveLength(21);
-  for (const t of ['staff_members','leads','clients','client_tasks','client_assets','pack_templates','pack_extras','admin_chat_conversations','admin_chat_messages','blog_posts']) expect(tables).toContain(t);
-  expect(tables.some(t => t.startsWith('radar_'))).toBe(false);
-  expect(tables).not.toContain('admin_superusers');
+import { readdirSync, readFileSync } from 'node:fs';
+import { describe, expect, it } from 'vitest';
+const dir = new URL('../migrations/', import.meta.url);
+const files = readdirSync(dir).filter((f) => f.endsWith('.sql')).sort();
+const read = (n: string) => readFileSync(new URL(n, dir), 'utf8').replace(/--.*$/gm, '');
+describe('migrations (DATOS §10.2)', () => {
+  it('starts with the base migration and has no legacy files', () => {
+    expect(files[0]).toBe('20261028100000_base.sql');
+    expect(files.some((f) => /^202609|^20260930/.test(f))).toBe(false);
+  });
+  it('every security definer fixes search_path and revokes public/anon/authenticated', () => {
+    for (const f of files) for (const m of read(f).matchAll(/create (?:or replace )?function\s+([\w.]+)\s*\(([\s\S]*?)\)[\s\S]*?language[\s\S]*?(?=;\s*$|\$\$)/gim)) {
+      const body = m[0];
+      if (!/security definer/i.test(body)) continue;
+      expect(body, m[1]).toMatch(/set search_path = ''/);
+      expect(read(f), m[1]).toMatch(new RegExp(`revoke all on function ${m[1].replace('.', '\\.')}[\\s\\S]*?from public, anon, authenticated`, 'i'));
+    }
+  });
+  it('every public table enables RLS and has no `for all` policy', () => {
+    for (const f of files) {
+      const sql = read(f);
+      for (const t of sql.matchAll(/create table (?:if not exists )?public\.(\w+)/gi)) expect(sql, t[1]).toMatch(new RegExp(`alter table public\\.${t[1]} enable row level security`, 'i'));
+      expect(sql).not.toMatch(/create policy[\s\S]*?for all/i);
+    }
+  });
+  it('never uses bare auth.uid() in a policy and never creates a view', () => {
+    for (const f of files) { const sql = read(f); expect(sql).not.toMatch(/(?<!\(select )auth\.uid\(\)/); expect(sql).not.toMatch(/create (or replace )?view/i); }
+  });
+  it('is additive after the base migration', () => {
+    for (const f of files.slice(1)) expect(read(f)).not.toMatch(/\b(drop table|truncate|delete from)\b/i);
+  });
 });
-it('baseline has 47 policies and the staff_role_of function', () => {
-  expect((sql.match(/CREATE POLICY/g) ?? []).length).toBe(meta.policies);
-  expect(meta.policies).toBe(47);
-  expect(sql).toMatch(/FUNCTION "?private"?\."?staff_role_of"?/);
-});
-it('baseline contains no data', () => { expect(sql).not.toMatch(/^INSERT INTO/m); expect(sql).not.toMatch(/COPY .* FROM stdin/); });
 ```
-- [ ] 2. `pnpm --filter supabase test` → FAIL (no hay dump). (Añadir `supabase/package.json` con nombre `@josecoded/supabase` y script `test`.)
-- [ ] 3. `supabase login` (token de Jose en el Mac) + `supabase link --project-ref nrgrmymsjtgayzejtawa` + `scripts/supabase-baseline.sh`. Revisar el dump: sin `INSERT`, sin secretos de `vault` (solo `vault.secrets` vacío). Copiar la Edge Function `notify` v4.
-- [ ] 4. `supabase start && supabase db reset` → aplica baseline + seed sin error. `pnpm --filter supabase test` → PASS.
-- [ ] 5. Commit: `git commit -m "chore(supabase): read-only baseline dump, local config, seed and notify function copy"`.
+- [ ] 2. `pnpm --filter supabase test` → FAIL. Borrar los ficheros listados; escribir `20261028100000_base.sql` y el `config.toml`.
+- [ ] 3. `supabase start && supabase db reset` → OK; `supabase status` imprime las claves locales que usa `supabase-test-clients.ts`.
+- [ ] 4. Reescribir `seed.sql` (sección 1 y 2 del actual se mantienen; sección 3 con `packs`/`pack_options`/`extras`; sección 10 `test_set_email_confirmed`). `supabase db reset` → OK.
+- [ ] 5. `pnpm --filter types db:types`; `pnpm --filter types test -- database-drift` PASS; `pnpm --filter supabase test` PASS.
+- [ ] 6. Prueba manual: `psql` local → `set role anon; select * from public.packs;` → `permission denied`; `set role authenticated; select private.is_admin();` → `false`.
+- [ ] 7. Commit: `git commit -m "feat(supabase): schema from scratch (base migration: private schema, helpers, staff, profiles, catalogue, quotas, jobs, outbox), local config and seed accounts"`.
 
-**Hecho cuando:** `supabase db reset` local termina sin error y los 3 tests pasan. Regla: **cada tarea GATE de migración regenera el baseline antes de aplicar** y el test detecta si producción cambió (números distintos).
+**Hecho cuando:** `db reset` en verde, `database.ts` regenerado, test de migraciones en verde, y en el repo no queda ninguna referencia a `baseline`, `nrgrmymsjtgayzejtawa` ni a la Edge Function `notify` salvo en documentos históricos.
 
 ### Tarea 1.7 — Gateway: CORS con comodín, `routes-manifest`, `scheduled` y deuda menor
 
@@ -815,79 +859,160 @@ it('manifest lists inherited routes', () => {
 
 **Hecho cuando:** tests en verde y `curl -H 'Origin: https://x-josecoded-web.jose.workers.dev' -X OPTIONS http://localhost:8787/api/v1/health` devuelve `access-control-allow-origin` correcto en `wrangler dev`.
 
-### Tarea 1.8 — Migraciones aditivas no-Radar + tests RLS con tres cuentas (local)
+### Tarea 1.8a — Migraciones del CRM, leads, área de clientes, afiliados y comentarios + seed + tests RLS (local) (v3.2)
 
-**Agente:** implementador-web · **Gate:** no (solo local) · **Depende de:** 1.6
+**Agente:** implementador-web · **Rama:** `chore/supabase` · **Gate:** no (solo local) · **Depende de:** 1.6 · **Insumos:** DATOS §4.3–§4.5, §5, §6, §7, §8.3; `Comercial/agencias.md` (estados de agencia), `Comercial/agencias-mensajes.md` (reglas de las plantillas, sin datos personales); `pricing.json` (P5 y `plus`)
 
-> **v2.1 (eng review):** migraciones que cambian o se añaden (SQL en DT §6.2 y §0b): **`pack_codes`** añade `price` y `weeks` y hace el `UPDATE` por slug (`landing`→P1 900/1, `gestion-logica`→P2 1400/2, `crm-cms`→P3 2500/2, `automatizaciones`→P4 4200/3) y sobreescribe los `name`; **`affiliates`**: trigger `set_affiliate_code()` solo si `new.code is null`, `extensions.gen_random_bytes`, `search_path = public, extensions`, regex del contrato de 1.4 como `check`; **`upgrade_requests`**: RPC `security definer request_upgrade(p_to_pack_code, p_extras)` que deduce `client_id` y `from_pack_code`, calcula el precio en la BD (diferencia de lista con `pack_templates.price` + extras) y **sin política de insert directo**; **`client_access_claim`**: exige `email_confirmed_at is not null`, `for update skip locked limit 1`, `revoke execute from anon, public`; **`leads_web_fields`**: `idempotency_key text unique`, `user_id uuid` (índice); **`user_profiles`**: `area_lead_summary()` exige email confirmado y filtra `ai_proposal is not null and fuente='web_proposal'`; **nuevas** `20260930100000_quota_counters.sql` (`private.quota_counters` + `public.increment_quota(p_key, p_limit, p_ttl) returns boolean`, service role), `20260930100100_scheduled_jobs.sql` (`private.scheduled_jobs` sembrada con los trabajos de DT §0b), `20260930100200_admin_counters.sql` (`public.admin_counters()` solo admin). Seed: cuarta cuenta **`sin@test` sin confirmar**; `ANA-TEST01`/`BOB-TEST01` fijados por el seed (el trigger no los sobreescribe). Tests RLS añadidos: `sin@test` no puede `claim_client_access` ni ver `area_lead_summary`; `ana` no puede insertar `upgrade_requests` directamente pero sí vía `request_upgrade` (precio 1100 calculado en BD); `increment_quota` solo con service role; `admin_counters` 404 para `ana`. Rama `chore/supabase`.
+> **v3.2:** sustituye a la 1.8 de v2.1 y absorbe la parte CRM de la 1.11. Las tablas se crean **en su forma final** (DATOS): sin mapeo a tablas heredadas, sin vistas. El SQL de las migraciones de la rama se recicla donde DATOS lo indica.
 
-**Objetivo:** escribir las 10 migraciones de DT §6.2 (9 de v1 + `user_profiles`) y probarlas con `supabase start` y tres cuentas (DT §8.4).
+**Objetivo:** existen en local, con RLS probada con las cuatro cuentas, las 17 tablas de DATOS §4.3–§4.5 (`crm_organizations`, `crm_contacts`, `leads`, `crm_interactions`, `crm_message_templates`, `crm_message_drafts`, `clients`, `client_tasks`, `client_task_comments`, `client_assets`, `client_extras`, `upgrade_requests`, `affiliates`, `affiliate_rewards`, `blog_comments`) y el bucket `client-assets`, con sus RPC (`create_lead`, `admin_close_lead_paid`, `crm_import_organizations`, `request_upgrade`, `claim_client_access`, `area_lead_summary`, `affiliate_leads`, `admin_counters`) y los triggers de outbox.
 
 **Ficheros:**
-- Crear: `supabase/migrations/20260917100000_leads_web_fields.sql`, `20260917100100_pack_codes.sql`, `20260917100200_blog_comments.sql`, `20260917100300_affiliates.sql`, `20260917100400_affiliate_rewards.sql`, `20260917100500_upgrade_requests.sql`, `20260917100600_client_access_claim.sql`, `20260917100650_admin_close_lead_paid.sql`, `20260917100700_notify_lead_event.sql` (comentario), **`20260929100000_user_profiles.sql`** (v2.0: tabla `user_profiles` write-once, RPC `area_lead_summary()` y columna `leads.user_id`; DT §1.12), **copiando literalmente el SQL de DT §6.2**; `apps/web/tests/rls.test.ts`; `apps/web/tests/helpers/supabase-test-clients.ts` (`clientFor('jose'|'ana'|'bob'|'anon')` con login por password contra `http://127.0.0.1:54321`).
-- Modificar: `supabase/seed/seed.sql` (Ana afiliada `standard` con código `ANA-TEST01`, Bob afiliado `premium` `BOB-TEST02`, 2 leads (uno con `affiliate_code='ANA-TEST01'`), 1 recompensa `pending`, 2 comentarios `pending`/`approved`, `clients.invite_email`), `supabase/functions/notify/index.ts` (nuevo `case 'lead.created'` y `case 'system.ping_failed'`; `EMAIL_FROM = 'josecoded <no-reply@josecoded.com>'`; `ADMIN_NOTIFY_EMAIL` opcional).
+- Crear (una migración por bloque, SQL con los campos exactos de DATOS §4; cada una termina con sus `grant`):
+  - `20261028100100_crm.sql`: enums de §4.3; `private.contact_status_ok`; `crm_organizations`, `crm_contacts`, `crm_interactions`, `crm_message_templates`, `crm_message_drafts`; trigger `private.crm_contact_status_change`; RLS admin (4 políticas por tabla con `(select private.is_admin())`); seed de plantillas (reglas y estructura de `agencias-mensajes.md`, **sin nombres ni empresas**).
+  - `20261028100200_leads.sql`: enums `lead_status`, `lead_source`, `contact_via`; tabla `leads`; RPC `create_lead(p jsonb)` (service_role; `enqueue('lead.created')`); política admin; `affiliate_code` FK se añade en la migración de afiliados (`alter table leads add constraint` allí).
+  - `20261028100300_clients.sql`: enums `project_phase`, `task_status`, `asset_source`, `client_extra_status`, `upgrade_status`; `private.client_id_of()`; `clients` (grant por columnas sin `notes_internal`), `client_tasks`, `client_task_comments`, `client_extras`, `upgrade_requests`; RPC `request_upgrade` (reciclar `20260917100500_upgrade_requests.sql`: precio = `packs.price` destino − origen + `extras.price`; `assert_email_confirmed()`; `enqueue('upgrade.requested')`), `claim_client_access` (reciclar `20260917100600_client_access_claim.sql`; además `update crm_contacts set user_id`), `area_lead_summary` (reciclar de `20260929100000_user_profiles.sql`; lee `leads` + `crm_contacts.email`).
+  - `20261028100400_client_assets.sql`: tabla + bucket `client-assets` (`insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)`) + políticas en `storage.objects` (DATOS §8.3) + trigger `enqueue('asset.uploaded')`.
+  - `20261028100500_affiliates.sql`: enums `affiliate_level`, `reward_type`, `reward_status`; `affiliates` (reciclar trigger `set_affiliate_code` de `20260917100300_affiliates.sql`), `affiliate_rewards`; FK `leads.affiliate_code → affiliates(code)`; RPC `affiliate_leads()`; RPC `admin_close_lead_paid` (reciclar `20260917100650_admin_close_lead_paid.sql` + crear `clients` si no existe + `crm_contacts.status = 'active_client'` + interacción `lead_won`).
+  - `20261028100600_blog_comments.sql`: reciclar `20260917100200_blog_comments.sql` con `post_slug`, `comment_status`, `private.comment_parent_ok`, grant `anon: select`, trigger `enqueue('comment.pending')`.
+  - `20261028100700_admin_counters.sql`: `admin_counters()` con los 7 contadores de DATOS §6.
+- Modificar: `supabase/seed/seed.sql` (añadir: organización «Agencia Test» `fit=4`; contactos: Marta `kind='lead'` con un lead `open` P2 vía `web_proposal` y `affiliate_code='ANA-TEST01'`, Ana `kind='client'` `active_client` con su `client` P2 (`user_id` de Ana) y un lead `won` pagado, agencia `pending`, reclutador `new`, cliente invitado `invite_email='sin@test'` sin `user_id`; 2 tareas de Ana, 1 comentario interno y 1 no interno; `client_extras` `seo_basic` incluido; Ana afiliada `standard` `ANA-TEST01`, Bob `premium` `BOB-TEST01`; recompensa `pending` de Bob por el lead de Ana; comentarios: uno aprobado de Bob, uno pendiente de Ana y otro de Bob), `apps/web/tests/rls.test.ts` (reescrito: una aserción por celda de DATOS §5; reutilizar `clientFor`, `SEED`), `apps/web/tests/helpers/supabase-test-clients.ts` (añadir ids nuevos a `SEED`: `contacts`, `clients`, `leads`, `orgs`).
+- Tipos: `pnpm --filter types db:types`; `packages/types/src/crm.ts` (`ContactKind`, `ContactStatus` por kind, `LeadStatus`, … como `Enums<>`), `packages/types/src/schemas/crm.ts` (zod: `createLeadInput`, `interactionPayload`, `importOrganizationsRow`), barrel.
 
 **Pasos:**
-- [ ] 1. Test que falla (los inserts de seed fallan porque no existen las tablas):
+- [ ] 1. Tests que fallan (`apps/web/tests/rls.test.ts`, extracto; completar hasta cubrir §5):
 ```ts
-// apps/web/tests/rls.test.ts (extracto; una aserción por fila de DT §6.3)
-import { describe, it, expect, beforeAll } from 'vitest';
-import { clientFor } from './helpers/supabase-test-clients';
-let jose, ana, bob, anon;
-beforeAll(async () => { [jose, ana, bob, anon] = await Promise.all(['jose','ana','bob','anon'].map(clientFor)); });
-describe('blog_comments', () => {
-  it('anon reads only approved', async () => { const { data } = await anon.from('blog_comments').select('status'); expect(data.every(c => c.status === 'approved')).toBe(true); });
-  it('ana sees her pending, not bob pending', async () => { const { data } = await ana.from('blog_comments').select('user_id,status'); expect(data.filter(c => c.status === 'pending').every(c => c.user_id === ana.userId)).toBe(true); });
-  it('ana cannot insert approved', async () => { const { error } = await ana.from('blog_comments').insert({ slug:'x', locale:'es', body:'hi', status:'approved', author_name:'Ana', user_id: ana.userId }); expect(error).toBeTruthy(); });
+describe('crm', () => {
+  it('ana, bob and anon read 0 rows of every crm_* table and of leads', async () => {
+    for (const c of [ana, bob, anon]) for (const t of ['crm_organizations','crm_contacts','crm_interactions','crm_message_templates','crm_message_drafts','leads']) {
+      const { data, error } = await c.from(t).select('id'); expect(error ? true : data!.length === 0, `${t}`).toBe(true);
+    }
+  });
+  it('contact status must match its kind', async () => {
+    const { error } = await jose.from('crm_contacts').insert({ kind:'agency', display_name:'X', status:'won', source:'manual' }); expect(error).toBeTruthy();
+  });
+  it('changing a status without next action fails; with it, logs an interaction', async () => {
+    const { error } = await jose.from('crm_contacts').update({ status:'contacted' }).eq('id', SEED.contacts.marta); expect(error?.message).toMatch(/next_action/);
+    await jose.from('crm_contacts').update({ status:'contacted', next_action:'call', next_action_at: new Date().toISOString() }).eq('id', SEED.contacts.marta);
+    const { data } = await jose.from('crm_interactions').select('kind,payload').eq('contact_id', SEED.contacts.marta).eq('kind','status_change'); expect(data![0].payload).toMatchObject({ from:'new', to:'contacted' });
+  });
+  it('create_lead is idempotent and reuses the contact by email', async () => {
+    const p = { email:'nuevo@test', display_name:'Nuevo', source:'web_form', via:'client', locale:'es', idempotency_key:'k1', message:'hola' };
+    const a = await service.rpc('create_lead', { p }); const b = await service.rpc('create_lead', { p });
+    expect(a.data![0].created).toBe(true); expect(b.data![0].lead_id).toBe(a.data![0].lead_id);
+    const { count } = await jose.from('crm_contacts').select('*', { count:'exact', head:true }).eq('email','nuevo@test'); expect(count).toBe(1);
+    const { data: ob } = await service.rpc('outbox_claim', { p_limit: 50, p_worker: 'test' }); expect(ob!.some((e: any) => e.event === 'lead.created')).toBe(true);
+  });
+  it('ana cannot call create_lead nor crm_import_organizations', async () => {
+    expect((await ana.rpc('create_lead', { p: {} })).error).toBeTruthy();
+    expect((await ana.rpc('crm_import_organizations', { p_rows: [] })).error?.message).toMatch(/forbidden|permission/);
+  });
+  it('import is idempotent by normalized name', async () => {
+    const rows = [{ name:'Agencia  Test', kind:'agency', fit:5 }];
+    const a = await jose.rpc('crm_import_organizations', { p_rows: rows }); expect(a.data![0]).toMatchObject({ created:0, updated:1 });
+    const { count } = await jose.from('crm_organizations').select('*', { count:'exact', head:true }).eq('name_normalized','agencia test'); expect(count).toBe(1);
+  });
 });
-describe('affiliates', () => {
-  it('ana cannot change her level', async () => { const { data } = await ana.from('affiliates').update({ level:'premium' }).eq('user_id', ana.userId).select(); expect(data).toHaveLength(0); });
-  it('ana reads affiliate_leads_view without contact data', async () => { const { data } = await ana.from('affiliate_leads_view').select('*'); expect(data.length).toBeGreaterThan(0); expect(Object.keys(data[0])).not.toContain('contact_email'); });
-  it('ana reads 0 rows of leads directly', async () => { const { data } = await ana.from('leads').select('id'); expect(data).toHaveLength(0); });
-  it('ana cannot insert affiliate_rewards', async () => { const { error } = await ana.from('affiliate_rewards').insert({ affiliate_id: ana.affiliateId, lead_id: ana.leadId, type:'percent', amount:1, base_amount:10, pricing_version:'x' }); expect(error).toBeTruthy(); });
+describe('area', () => {
+  it('ana reads her client without notes_internal', async () => { const { data, error } = await ana.from('clients').select('id, pack_code, notes_internal'); expect(error).toBeTruthy(); const ok = await ana.from('clients').select('id, pack_code'); expect(ok.data).toHaveLength(1); });
+  it('bob (no client) reads 0 clients/tasks; ana reads her tasks and only non-internal comments', async () => { /* … */ });
+  it('ana inserts a non-internal comment; an internal one fails', async () => { /* … */ });
+  it('upgrade only through request_upgrade; price computed in DB (P2→P3 = 1100)', async () => { /* … */ });
+  it('sin@test cannot claim_client_access nor read area_lead_summary; ana gets her lead summary', async () => { /* … */ });
+  it('storage: ana uploads under clients/<her id>/<asset id> only', async () => { /* … */ });
 });
-describe('upgrade_requests', () => {
-  it('bob (no client) cannot insert', async () => { const { error } = await bob.from('upgrade_requests').insert({ client_id: ana.clientId, to_pack_code:'P3', computed_price:1100, pricing_version:'2026-09-14' }); expect(error).toBeTruthy(); });
-  it('ana inserts pending for her client', async () => { const { error } = await ana.from('upgrade_requests').insert({ client_id: ana.clientId, from_pack_code:'P2', to_pack_code:'P3', computed_price:1100, pricing_version:'2026-09-14' }); expect(error).toBeNull(); });
-});
-describe('user_profiles (v2.0)', () => {
-  it('ana reads her profile and not bob\'s', async () => { const { data } = await ana.from('user_profiles').select('user_id'); expect(data.every(r => r.user_id === ana.userId)).toBe(true); });
-  it('first_audience is write-once', async () => { await bob.from('user_profiles').upsert({ user_id: bob.userId, first_audience:'referral', first_audience_source:'ref' }); const { error } = await bob.from('user_profiles').update({ first_audience:'business' }).eq('user_id', bob.userId); expect(error?.message).toMatch(/write-once/); });
-  it('area_lead_summary returns only the caller lead', async () => { const a = await ana.rpc('area_lead_summary'); expect(a.data?.length).toBe(1); const b = await bob.rpc('area_lead_summary'); expect(b.data).toEqual([]); });
-});
-describe('admin', () => {
-  it('jose inserts a manual lead', async () => { const { error } = await jose.from('leads').insert({ estado:'nuevo', fuente:'whatsapp', contact_name:'Marta' }); expect(error).toBeNull(); });
-  it('ana cannot insert a lead', async () => { const { error } = await ana.from('leads').insert({ estado:'nuevo', fuente:'whatsapp' }); expect(error).toBeTruthy(); });
-  it('admin_close_lead_paid rejects non-admin', async () => { const { error } = await ana.rpc('admin_close_lead_paid', { p_lead_id: ana.leadId, p_base_amount:1400, p_reward_type:'percent', p_reward_amount:140, p_reward_percent:10, p_pricing_version:'2026-09-14', p_generate_reward:true }); expect(error?.message).toMatch(/forbidden/); });
+describe('affiliates and comments', () => {
+  it('ana cannot change her level; affiliate_leads() returns referred leads without contact data', async () => { /* … */ });
+  it('admin_close_lead_paid creates client, reward and active_client status; rejects ana', async () => { /* … */ });
+  it('anon reads only approved comments; ana sees her pending; ana cannot insert approved', async () => { /* … */ });
 });
 ```
 - [ ] 2. `supabase db reset` → FAIL en seed; `pnpm --filter web test -- rls` → FAIL.
-- [ ] 3. Crear las migraciones (literal de DT §6.2) y completar el seed.
-- [ ] 4. `supabase db reset` OK; `pnpm --filter web test -- rls` → PASS (≥ 15 aserciones).
-- [ ] 5. Commit: `git commit -m "feat(supabase): additive migrations (leads fields, comments, affiliates, rewards, upgrades, claim, close-paid RPC, user_profiles) with RLS tests"`.
+- [ ] 3. Escribir las 7 migraciones, el seed y los tipos; `pnpm --filter types db:types`.
+- [ ] 4. `supabase db reset` OK; `pnpm --filter web test -- rls` PASS (≥ 35 aserciones); `pnpm --filter supabase test` PASS; `pnpm --filter types test` PASS.
+- [ ] 5. Script de carga local **no commiteado** (`supabase/scripts/load-local.sql`, en `.gitignore`): 1.000 contactos, 10.000 interacciones, 500 hilos; `explain (analyze, buffers)` de C2, C3 y P10 (DATOS §7) → sin `Seq Scan`; pegar los planes en el PR.
+- [ ] 6. Test de repo `apps/api/test/no-gmail-send.test.ts` (DATOS §10.7): `grep -r "messages.send\|users.messages.send" apps packages` vacío.
+- [ ] 7. Commit: `git commit -m "feat(supabase): crm, leads, client area, affiliates and blog comments with RLS, outbox triggers and RPCs"`.
 
-**Hecho cuando:** `supabase db reset` + `rls.test.ts` en verde; `ci.yml` (1.9) ejecuta ambos.
+**Hecho cuando:** `db reset` + RLS + migraciones + deriva en verde; planes de `explain` adjuntos; `database.ts` commiteado.
 
-### Tarea 1.9 — CI/CD + **GATE** aplicar migraciones no-Radar en producción
+### Tarea 1.8b — Migraciones del chat por casos (`chat_contexts`, `chat_threads`, `chat_messages`), Realtime, RPC y tests RLS (local) (v3.2)
 
-**Agente:** implementador-web (workflows) + **controlador** (migraciones, con OK de Jose) · **Gate:** **SÍ** (producción: `apply_migration` ×9 y `supabase functions deploy notify`) · **Depende de:** 1.5, 1.7, 1.8
+**Agente:** implementador-web · **Rama:** `chore/supabase` · **Gate:** no (solo local) · **Depende de:** 1.8a · **Insumos:** DATOS §4.6, §6, §8.6; spec v2.0 §0.4
 
-> **v2.1 (eng review):** (a) la rama es `chore/supabase`; (b) el gate comprueba en producción que **Auth tiene «Confirm email» activo** y, si Jose ya tiene la cuenta SMTP, configura **SMTP propio** (`cuenta@josecoded.com`, DT §0b) en Auth → si no, queda como insumo y 3.12 lo cierra; (c) revisa el `UPDATE` de `pack_codes` contra `pricing.json` antes de aplicarlo (mapeo de módulos acumulativos, DT §0b); (d) `apply_migration` ×12 (9 de v2 + `quota_counters`, `scheduled_jobs`, `admin_counters`); (e) `preview.yml` despliega **`josecoded-api-preview`** (secretos propios) y la web de preview apunta a él; (f) `supabase-ping.yml` avisa por **Telegram directo** con `TELEGRAM_PING_TOKEN`/`TELEGRAM_PING_CHAT_ID` en los secretos de GitHub, sin pasar por `notify`; (g) `ci.yml` incluye el job **`newsletter-content-only`** (lógica en el YAML: autor `josecoded-bot[bot]` → rama `newsletter/*` y solo `apps/web/content/blog/{es,en}/*.md`; humano → nunca `newsletter/*`) y el CI reducido para `newsletter/*`; **`deploy-content.yml`** (push a `main` con `paths: apps/web/content/blog/**`, guarda `last-deployed`, aborta con Telegram si hay código sin desplegar) y `deploy-production.yml` mueve la etiqueta `last-deployed` y ejecuta el **smoke del gateway** (`/api/v1/health`, una ruta `forum` de lectura, `admin-chat/thread` → 401) tras cada deploy del api; (h) 26 tablas esperadas en el baseline regenerado (21 + `blog_comments`, `affiliates`, `affiliate_rewards`, `upgrade_requests`, `user_profiles`).
-
-**Objetivo:** los cuatro workflows de DT §1.8 y las migraciones aplicadas en producción para que las fases 3–6 puedan probarse en preview contra datos reales.
+> **v3.2:** absorbe la parte de chat de la 1.11. `anon` no tiene grants: el visitante anónimo opera siempre por el gateway.
 
 **Ficheros:**
-- Crear: `.github/workflows/ci.yml` (install → `turbo lint typecheck test` (lint incluye stylelint; test incluye el de deriva de tokens e `i18n:check` informativo hasta `release/v1`) → `pnpm --filter web build` → Playwright Chromium + WebKit contra `wrangler dev` (web + api con `scheduled` simulado) → `supabase start` + `db reset` + `rls.test.ts` → Lighthouse CI (se activa en 2.9) → job `visual` informativo con el diff como artefacto (se activa en 2.13)), `preview.yml` (`wrangler versions upload` web y api si cambió; comenta URLs en el PR), `deploy-production.yml` (`workflow_dispatch` con inputs `web`/`api`; **nunca migraciones**), `supabase-ping.yml` (cron semanal `GET ${SUPABASE_URL}/rest/v1/` con publishable key; si falla, `POST functions/v1/notify` con `system.ping_failed`).
-- Documentar: `docs/superpowers/plans/2026-09-19-josecoded-v1.md` no cambia; `ESTADO.md` recibe la fecha de aplicación.
+- Crear: `supabase/migrations/20261028100800_chat.sql` (enums `chat_case`, `context_status`, `thread_status`, `chat_sender`, `chat_message_type`; tablas con índices de DATOS §4.6; `uq (case, locale) where status='published'`; trigger `private.chat_message_after_insert`; RLS: admin todo, `authenticated` `select` de sus hilos y mensajes, admin `insert` mensajes `jose`; `alter publication supabase_realtime add table public.chat_messages`; RPC `chat_context_published(p_case, p_locale)` stable service_role; RPC `chat_purge_anonymous(p_older_than)` service_role; `admin_counters()` ya cuenta `chat_unread`).
+- Modificar: `supabase/seed/seed.sql` (dos `chat_contexts` publicados `client/es` y `curious/es` con `{{DATO}}` visibles, uno en borrador `partner/es`; un hilo anónimo `case='partner'` con 2 mensajes y uno de Ana `case='client'` con `user_id`, enlazado a su contacto), `apps/web/tests/rls.test.ts` (`describe('chat')`), `packages/types/src/chat.ts` + `schemas/chat.ts` (`ChatContextFacts` zod).
 
 **Pasos:**
-- [ ] 1. Escribir los cuatro workflows; abrir PR de `chore/monorepo` → `ci.yml` y `preview.yml` deben pasar (la URL de preview aparece en el PR).
-- [ ] 2. **Pedir OK a Jose** en la sesión, listando las 9 migraciones (incluida `user_profiles`) y el despliegue de la Edge Function.
-- [ ] 3. Controlador: `list_tables` (confirmar que no existen `blog_comments`, `affiliates`, `affiliate_rewards`, `upgrade_requests`, `user_profiles`, la función `area_lead_summary` ni las columnas nuevas) → `get_advisors` (security + performance, guardar salida) → `apply_migration` una a una en orden → `get_advisors` de nuevo: **ningún hallazgo nuevo salvo `security_definer_view` de `affiliate_leads_view`** (esperado, DT §6.4) → `supabase functions deploy notify` → `scripts/supabase-baseline.sh` para regenerar el baseline con el esquema ya migrado (el test 1.6 pasa a esperar 25 tablas y 47 + N políticas: actualizar `baseline.meta.json` y las cifras del test).
-- [ ] 4. Anotar en `ESTADO.md` ("Decisiones recientes": migraciones aplicadas, advisors antes/después) y en el ADR de codebase-memory (tras indexar el repo en 9.6 o antes si ya hay código: `manage_adr get` + copia antes de `index_repository`).
-- [ ] 5. Commit: `git commit -m "ci: ci, preview, production dispatch and supabase ping workflows"`.
+- [ ] 1. Tests que fallan:
+```ts
+describe('chat', () => {
+  it('only one published context per case and locale', async () => { const { error } = await jose.from('chat_contexts').insert({ case:'client', locale:'es', version:9, status:'published', body_md:'x' }); expect(error?.message).toMatch(/unique|duplicate/); });
+  it('chat_context_published is callable only by service role and returns null when unpublished', async () => {
+    expect((await ana.rpc('chat_context_published', { p_case:'client', p_locale:'es' })).error).toBeTruthy();
+    expect((await service.rpc('chat_context_published', { p_case:'client', p_locale:'es' })).data).toMatchObject({ version: 1 });
+    expect((await service.rpc('chat_context_published', { p_case:'partner', p_locale:'es' })).data).toBeNull();
+  });
+  it('ana reads only her thread and its messages; bob and anon read none; jose reads the anonymous one', async () => { /* … */ });
+  it('a visitor message marks the thread unread and enqueues chat.visitor_message', async () => { /* … service insert, then jose reads unread_for_admin, outbox_claim … */ });
+  it('chat_purge_anonymous deletes only anonymous threads without contact older than the interval', async () => { /* … */ });
+});
+```
+- [ ] 2. `db reset` FAIL → migración + seed → `db reset` OK; `pnpm --filter web test -- rls` PASS (≥ 10 nuevas); `db:types`; `pnpm --filter types test` PASS.
+- [ ] 3. Realtime manual: `supabase status` → con el cliente de Ana, `channel('chat').on('postgres_changes', { table:'chat_messages' })` recibe el insert de su hilo y **no** el del hilo anónimo.
+- [ ] 4. Commit: `git commit -m "feat(supabase): case-based chat tables with realtime, published-context RPC and anonymous purge"`.
 
-**Hecho cuando:** CI verde en el PR, migraciones aplicadas con advisors limpios, baseline regenerado y test 1.6 actualizado.
+**Hecho cuando:** RLS en verde; Realtime verificado; `database.ts` commiteado.
+
+### Tarea 1.8c — Gateway sobre el proyecto nuevo: adaptador Supabase, drenaje del outbox, retirada de `forum/*` y `admin-chat/*` (v3.2)
+
+**Agente:** implementador-web · **Rama:** `chore/supabase` · **Gate:** no · **Depende de:** 1.7, 1.8b; **decisiones Q1 y Q2 de DATOS §12** (se aplican las recomendaciones si Jose no dice otra cosa) · **Insumos:** DATOS §8.4, §9; WA §17.1
+
+**Objetivo:** el gateway deja de depender de tablas heredadas y habla con el proyecto nuevo a través de un adaptador; el cron drena el outbox; las rutas sin tabla desaparecen.
+
+**Ficheros:**
+- Crear: `apps/api/src/adapters/supabase.ts` (puerto `SupabaseGateway { verifyUser(jwt): Promise<User|null>; isAdmin(userId): Promise<boolean>; admin(): SupabaseClient<Database> }`, único fichero que importa `@supabase/supabase-js` junto a `scheduled-jobs.ts`), `apps/api/src/adapters/outbox.ts` (`OutboxRepo { claim, ack, fail }` sobre las RPC), `apps/api/src/jobs/outbox-drain.ts` (handler `outbox.drain`: por evento → `telegram.send` o `email.send`; `lead.created` y `chat.*` con clave de idempotencia `payload.id`), `apps/api/src/adapters/telegram.ts` (`sendMessage` con `TELEGRAM_BOT_TOKEN` y `TELEGRAM_ADMIN_CHAT_ID`), `apps/api/test/outbox-drain.test.ts` (fetchMock: ack tras 200, fail tras 500, `attempts ≥ 10` → `system.outbox_dead`).
+- Borrar: `apps/api/src/modules/forum.routes.ts`, `services/forum.store.ts`, `forum.pg-store.ts`, `forum.mock-store.ts`, `modules/admin-chat.routes.ts`, `modules/admin-chat-admin.routes.ts`, `services/admin-chat-assistant.service.ts`, `services/admin-chat.pg-store.ts`, `services/supabase.service.ts`, sus tests y fixtures.
+- Modificar: `apps/api/src/deps.ts` (`buildDeps(env)` añade `supabase`, `outbox`, `telegram`), `middlewares/auth.middleware.ts` (usa `deps.supabase.verifyUser`; `requireAdmin` exige `deps.supabase.isAdmin` **y** `aal === 'aal2'` si `env.ADMIN_REQUIRE_MFA !== 'false'`), `modules/v1-protected.routes.ts` (`auth/me` devuelve `{ id, email, is_admin }` vía `deps`), `modules/v1.routes.ts` (desmonta `forum` y `admin-chat`), `scheduled.ts` (registra `outbox.drain`), `env.ts` (`envSchema`: fuera `FORUM_*`, `ADMIN_SUPERUSER_*`, `N8N_CHAT_WEBHOOK_*`; dentro `SUPABASE_SECRET_KEY`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_ADMIN_CHAT_ID`, `RESEND_API_KEY` opcional, `CHAT_SID_SECRET`), `wrangler.jsonc` (vars limpias; `env.preview` igual), `test/routes-manifest.test.ts` (snapshot nuevo), `DEPLOY.md`, `README.md` de `apps/api`, `packages/config/eslint.config.mjs` (fuera la lista literal de excepciones heredadas: ya no hace falta), `docs/architecture.md` («inherited routes» → `health`, `system`, `v1-protected`).
+
+**Pasos:**
+- [ ] 1. Tests que fallan: snapshot de rutas sin `forum`/`admin-chat`; `auth/me` devuelve `is_admin`; `outbox-drain.test.ts`; test de ESLint (`packages/config/test/eslint.test.ts`): `@supabase/supabase-js` solo en `adapters/`.
+- [ ] 2. Implementar; `pnpm --filter api test` PASS (workerd); `pnpm lint && pnpm typecheck` PASS sin excepciones heredadas.
+- [ ] 3. `wrangler dev` contra Supabase local (`SUPABASE_URL=http://127.0.0.1:54321`, claves de `supabase status` en `.dev.vars`): `curl /api/v1/auth/me` con el JWT de `jose@test` → `is_admin: true`; disparar `scheduled` (`--test-scheduled`) tras insertar un evento → Telegram falso (fetchMock) recibe el mensaje y la fila queda `delivered_at`.
+- [ ] 4. Commit: `git commit -m "refactor(api): supabase adapter, outbox drain job, retire forum and admin-chat modules"`.
+
+**Hecho cuando:** gateway sin importaciones de `supabase-js` fuera de `adapters/`, sin rutas huérfanas, cron drena el outbox, snapshot y DEPLOY.md actualizados. **Cierre de la 1b:** `revisor` sobre la rama; `/puerta-calidad` reducida (`qa`: `db reset` + RLS + `wrangler dev`; `revisor-seguridad`: grants, `security definer`, RLS, `anon` sin acceso, secretos).
+
+### Tarea 1.9 — CI/CD + **GATE**: proyecto Supabase nuevo en producción (esquema, Auth, secretos de web, gateway y Omen) (v3.2)
+
+**Agente:** implementador-web (workflows, checklist) + **controlador** (todo lo que toca el proyecto `echlwywbucgbhwpncviy`, con OK de Jose en cada paso) · **Gate:** **SÍ** · **Depende de:** 1.5, 1.7, 1.8a–c · **Insumos de Jose:** cliente IDs/secretos de OAuth Google y GitHub; cuenta SMTP (Resend, Q5) y dominio verificado; decisiones Q3–Q6 de DATOS §12; token de Supabase en su Mac (`supabase login`); `TELEGRAM_BOT_TOKEN` y su `chat_id`
+
+> **v3.2:** sustituye a la 1.9 de v2.1. **Sin baseline**: el repo es la fuente y el proyecto está vacío. Se aplica con `supabase db push` (queda registrado en `supabase_migrations.schema_migrations`), no con `apply_migration` fichero a fichero. Mantiene de v2.1: `preview.yml` con `josecoded-api-preview`, `supabase-ping.yml` con Telegram directo, `deploy-production.yml` **nunca migraciones**, job `newsletter-content-only` y `deploy-content.yml`.
+
+**Objetivo:** CI reproducible (Supabase local en cada run) y el proyecto nuevo configurado y poblado con el esquema, con Jose como admin con TOTP, y todos los consumidores (web, gateway prod y preview, Omen) apuntando a él.
+
+**Ficheros:**
+- Crear: `.github/workflows/ci.yml` (install → `turbo lint typecheck test` → `pnpm --filter web build` → `supabase start && supabase db reset` → `rls.test.ts` + `database-drift` → Playwright contra `wrangler dev` (web + api con `.dev.vars` locales) → Lighthouse CI (2.9) → `visual` (2.13)), `preview.yml`, `deploy-production.yml` (smoke tras el deploy del api: `GET /api/v1/health` 200, `GET /api/v1/auth/me` sin JWT → 401; **sin** rutas `forum`/`admin-chat`), `supabase-ping.yml` (semanal: `GET ${SUPABASE_URL}/rest/v1/` con publishable key + `POST /rest/v1/rpc/system_health` con la clave secreta desde un secreto de Actions **o**, mejor, `GET https://api.josecoded.com/api/v1/system/health` que lo hace el gateway → si falla o hay outbox atrasado, Telegram directo con `TELEGRAM_PING_TOKEN`), `supabase/templates/{confirmation,magic_link,otp,recovery,email_change}.{es,en}.html` (plantillas de Auth versionadas; `redactor` revisa el texto), `docs/runbooks/supabase-gate.md` (checklist de abajo para repetirlo en 7.7 y 10.1).
+- Modificar: `ESTADO.md` (fecha, advisors), `apps/web/wrangler.jsonc` y `apps/api/wrangler.jsonc` (`NEXT_PUBLIC_SUPABASE_URL`/`SUPABASE_URL` nuevas), `.env.example`/`.dev.vars.example`.
+
+**Pasos (cada uno de 3 a 11 con OK explícito de Jose en la sesión; el controlador ejecuta, nunca un subagente):**
+- [ ] 1. `implementador-web`: escribir los cuatro workflows y las plantillas; abrir el PR de `chore/supabase` → `ci.yml` y `preview.yml` en verde.
+- [ ] 2. **Pedir OK a Jose** mostrando: lista de migraciones (`ls supabase/migrations`), ajustes de Auth/API/Storage que se van a tocar, lista de secretos a crear/rotar y en qué Worker, y que **no hay nada que migrar del proyecto viejo**.
+- [ ] 3. **Esquema:** en el Mac de Jose, `supabase link --project-ref echlwywbucgbhwpncviy` → `supabase db push --dry-run` (debe listar exactamente las migraciones del repo, nada más) → `supabase db push` → `supabase migration list` coincide con el repo. **Nunca** `db reset` ni `db push --include-seed` contra producción.
+- [ ] 4. **Advisors:** `get_advisors` security + performance → **cero hallazgos** (DATOS §10.4). Si aparece alguno: se corrige con una migración nueva en la rama, `db push`, repetir. `list_tables` → las 24 tablas de `public` y ninguna más; `private` no expuesto (`curl …/rest/v1/quota_counters` con publishable key → 404).
+- [ ] 5. **API:** dashboard → Settings → API: exposed schemas `public` solo (quitar `graphql_public`), max rows 200. Comprobar `curl …/rest/v1/packs` con publishable key → `permission denied` (anon sin grants).
+- [ ] 6. **Auth:** proveedores Google y GitHub (client id/secret de Jose; redirect `https://echlwywbucgbhwpncviy.supabase.co/auth/v1/callback`), email con OTP (**sin contraseña** si Q4 = recomendación: deshabilitar «Email password sign-in»), «Confirm email» **on**, SMTP propio (Q5) con remitente `cuenta@josecoded.com` y prueba de envío, plantillas es/en pegadas desde `supabase/templates/` (una sola plantilla por tipo con bloque es + en), CAPTCHA Turnstile con la site key de la web, MFA TOTP habilitado, `site_url = https://josecoded.com`, redirect allowlist (DATOS §8.1), «Leaked password protection» on (solo aplica si hay contraseñas), rate limits por defecto.
+- [ ] 7. **Jose admin:** Jose entra en `https://echlwywbucgbhwpncviy.supabase.co` no, en la web de preview (`/auth`) con Google → el controlador copia su `auth.users.id` → SQL en el editor del dashboard (o `psql` con la contraseña de Jose) `insert into public.staff_members (user_id, role, display_name, telegram_chat_id) values (…)` → Jose **enrola TOTP** (Q3) desde `/perfil` cuando exista o desde la API de MFA del dashboard → `GET /api/v1/auth/me` devuelve `is_admin: true`.
+- [ ] 8. **Storage:** confirmar en el dashboard que `client-assets` existe (lo creó la migración) y es privado; subir y descargar un fichero de prueba con la cuenta de Jose y borrarlo.
+- [ ] 9. **Secretos y variables** (`wrangler secret put` / `wrangler.jsonc`; valores de Settings → API Keys, formato nuevo): **web** (`josecoded-web` y su preview): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`; **gateway** `josecoded-api` **y** `josecoded-api-preview`: `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_ADMIN_CHAT_ID`, `CHAT_SID_SECRET` (nuevo, `openssl rand -hex 32`), y **borrar** `ADMIN_SUPERUSER_ID`, `ADMIN_SUPERUSER_EMAIL`, `N8N_CHAT_WEBHOOK_URL`, `N8N_CHAT_WEBHOOK_SECRET`, `FORUM_*`, `NOTIFY_SHARED_SECRET`; **Omen** (`josecoded-worker`): revisar su `.env` y **eliminar** cualquier `SUPABASE_*` heredada (el código no las usa; no se sustituyen) y reiniciar el contenedor con `implementador-infra` (servicios preexistentes intactos); **GitHub Actions**: `TELEGRAM_PING_TOKEN`, `TELEGRAM_PING_CHAT_ID` (ya previstos), `SUPABASE_URL` + `SUPABASE_PUBLISHABLE_KEY` del proyecto nuevo para `supabase-ping.yml`. **Edge Function:** ninguna (Q2). Las claves del proyecto viejo no se pueden revocar (sin acceso): se eliminan de todos los sitios donde estuvieran y se anota.
+- [ ] 10. **Precios:** `pnpm pricing:sync-db` → revisar `supabase/generated/pricing-sync.sql` → aplicarlo con `apply_migration` (MCP) o `psql` → `select code, price from packs` coincide con `pricing.json` (P1–P5 y `plus`).
+- [ ] 11. **Smoke:** `wrangler deploy` del gateway (preview primero, luego prod con OK) → `curl https://api.josecoded.com/api/v1/health` 200; `auth/me` sin JWT 401 y con el JWT de Jose `is_admin: true`; `wrangler tail` durante un tick del cron → `outbox.drain` sin errores; `get_advisors` de nuevo → cero.
+- [ ] 12. Anotar en `ESTADO.md` («Decisiones recientes»: fecha, migraciones aplicadas, advisors, qué secretos se rotaron, Q1–Q6 tal como quedaron) y en el ADR de codebase-memory cuando se indexe el repo (`manage_adr get` + copia antes de `index_repository`). Commit: `git commit -m "ci: ci, preview, production dispatch and supabase ping workflows; auth templates and supabase gate runbook"`.
+
+**Hecho cuando:** CI verde en el PR; `supabase migration list` igual al repo; advisors a cero; Jose entra en la preview como admin con TOTP; web, gateway (prod y preview) y Omen sin ninguna referencia al proyecto viejo (`grep -r nrgrmymsjtgayzejtawa` vacío en repo, `wrangler secret list` y `.env` de Omen); runbook escrito.
 
 ### Tarea 1.10 — **BLOQUEANTE de la fase 2**: tokens completos en `.impeccable/design.json`, `pnpm tokens:build` → `tokens.css` y test de deriva
 
@@ -946,11 +1071,13 @@ it('committed tokens.css equals a fresh build', () => {
 > **v2.4 (decisiones de `ui` sobre tokens, 2026-10-02) para los componentes de la fase 2:** barra deslizante de packs = JS solo escribe `--pack-y` (offsetTop + offsetHeight en px) y el CSS suma el hueco con `top: calc(var(--pack-y) + var(--sp-1-5))` (sin `+6` en JS); umbral del indicador de sección medido sobre el botón (`right * 2 < button.offsetWidth`), sin constante 36; trazos de 2–3 px (pager, ciclo, raíl, packs) con `border-radius: var(--r-pill)`; `outline-offset` de los packs = `calc(var(--sp-1-5) - var(--focus-ring-width))`; tiempos del ciclo de glifos y parámetros de `scene.js` son configuración de `packages/glyph-scene`, no tokens. **Para Jose / `revisor-accesibilidad` (decidir en el navegador):** pulgar de la barra de scroll `#2c2660` sobre fondo da 1,49:1 (1.4.11 pide 3:1 si cuenta como control propio) y zona táctil del botón del pager 2,25 × 1,125rem (comprobar 2.5.8 o subir el alto sin cambiar la línea).
 
 
-## Fase 1c — Esquema del CRM y del chat por casos · Estimación S · rama `chore/crm-schema` · **v3.0**
+## Fase 1c — Esquema del CRM y del chat por casos · **(v3.0, superada por v3.2: fundida en 1.8a/1.8b/1.9; la rama `chore/crm-schema` no se crea)**
+
+> **v3.2:** el contenido de 1.11 vive en 1.8a (CRM) y 1.8b (chat) con las tablas en su forma final de DATOS (sin mapeo a `leads`/`clients` heredados ni `crm_contacts_view`); el gate 1.12 es el 1.9. Se conserva el texto como historial.
 
 > Nueva en v3.0 (spec v2.0 §0.6, D39–D41). **No se añade a `chore/supabase`**: la 1b se cierra como estaba y esta rama arranca al mergearla. Todo aditivo; nada heredado se altera (`leads`, `clients`, `admin_chat_*` intactos). Convenciones de 1.8: SQL literal en la tarea, `supabase db reset`, tests RLS con las cuatro cuentas del seed, `pnpm --filter types db:types` al terminar.
 
-### Tarea 1.11 — Migraciones `crm_*` y `chat_*`, vista `crm_contacts_view`, RPC, seed y tests RLS (local)
+### Tarea 1.11 (v3.0, superada por 1.8a/1.8b) — Migraciones `crm_*` y `chat_*`, vista `crm_contacts_view`, RPC, seed y tests RLS (local)
 
 **Agente:** implementador-web · **Rama:** `chore/crm-schema` · **Gate:** no (solo local) · **Depende de:** 1.8 (mergeada), 1.6 · **Insumos:** spec v2.0 §0.6 (tablas y campos), `agencias.md` (estados de agencia), `agencias-mensajes.md` (reglas para las plantillas)
 
@@ -1007,7 +1134,7 @@ describe('chat (v3.0)', () => {
 
 **Hecho cuando:** `db reset` + RLS en verde; `database.ts` regenerado y commiteado; el test de 1.6 actualizado a 34 tablas (26 + 8) y el número de políticas nuevo en `baseline.meta.json` **solo tras 1.12** (hasta entonces el baseline sigue siendo el de 1.9).
 
-### Tarea 1.12 — **GATE**: aplicar las migraciones del CRM y del chat en producción
+### Tarea 1.12 (v3.0, superada por 1.9) — **GATE**: aplicar las migraciones del CRM y del chat en producción
 
 **Agente:** controlador con OK de Jose (las migraciones las aplica el controlador, nunca un subagente) · **Rama:** `chore/crm-schema` · **Gate:** **SÍ** · **Depende de:** 1.11, 1.9 (aplicada)
 
@@ -2144,7 +2271,9 @@ it('failed Turnstile → 403 bot_check_failed', async () => {
 
 > **v3.0 (D41):** `POST /leads` admite `source: 'web_partner'` (→ `fuente='web_partner'`) y `organization?`; tras insertar el `lead` **crea también `crm_contacts`** (`kind` por `source`: `web_partner`→`agency` (+ `crm_organizations` por nombre normalizado), resto→`lead`; `lead_id`, `email`, `phone`, `locale`, `status='new'`, `next_action='Responder'`, `next_action_at = now()+1 día`) y una `crm_interactions(kind='import'|'message_received', channel=web_form|web_proposal|calcom)`; **la respuesta `{ leadId, notified }` no cambia** (test de contrato). Si falla la escritura del CRM, el lead ya está creado y se registra `meta.crm = 'failed'` (el mapeo perezoso de 6.2 lo recupera). Puerto `CrmRepo` en `@josecoded/types/api.ts` con falsa en memoria.
 
-**Agente:** implementador-web · **Rama:** `feat/generator-leads` · **Gate:** no (el deploy de la función y los secretos van en 3.12) · **Depende de:** 3.7, 1.8, 1.9
+**Agente:** implementador-web · **Rama:** `feat/generator-leads` · **Gate:** no (los secretos van en 3.12) · **Depende de:** 3.7, 1.8c, 1.9
+
+> **v3.2 (DATOS §4.3, §8.4):** `POST /api/v1/leads` llama a la RPC `create_lead(p jsonb)` (service role), que crea o reutiliza el `crm_contact` por email, inserta el `lead` idempotente, la interacción `lead_created` y el evento `lead.created` en `private.outbox`; el gateway además avisa por Telegram en la misma petición (`deps.telegram`) con la misma clave de idempotencia. **Desaparecen** la Edge Function `notify`, `POST /notify/lead` y `NOTIFY_SHARED_SECRET`; `notifyLead` es una función interna del gateway. `GET /affiliates/validate` lee `affiliates.code`.
 
 > **v2.2 (stack):** puertos `LeadsRepo`, `AffiliatesRepo`, `Notifier`; adaptadores `supabase.adapter.ts` (repos) y `telegram.adapter.ts`; `createLeadsService(deps)` (idempotencia, afiliado desconocido no bloquea, `notifyLead`) con tests sobre falsas en memoria; los tests contra `supabase start` de v2.1 quedan como tests de contrato de `supabase.adapter.ts`. Esquemas `leadSchema`, `leadResponseSchema` en `@josecoded/types/schemas/leads.ts`; `apps/web` importa el mismo tipo `Lead` (sin duplicar el contrato en la web).
 
@@ -2335,6 +2464,8 @@ it('stores a well-formed code once and ignores later codes and junk', () => {
 
 **Agente:** controlador (con OK de Jose); `implementador-web` prepara el checklist · **Gate:** **SÍ** · **Depende de:** 3.7–3.11 mergeadas o listas en la rama
 
+> **v3.2:** sin `supabase functions deploy` ni `vault`. El SMTP de Auth, «Confirm email», OAuth, Turnstile en Auth y MFA ya se configuraron en **1.9**; aquí solo Turnstile de la web, Cal.com, KV/rate limiters y Email Routing (Q18).
+
 > **v2.1 (eng review):** se adelantan a este gate: **alta de `api.josecoded.com`** como custom domain del gateway y `NEXT_PUBLIC_JOSECODED_API_URL` (antes en 9.4), **rotación del token de Telegram y de la key de Resend** (antes en 9.4), **SMTP propio en Supabase Auth** (`cuenta@josecoded.com`; insumo de Jose) y `AI_GATEWAY_ID` (AI Gateway creado en el dashboard con los presupuestos por consumidor de DT §0b). Los secretos van al Worker de producción **y** a `josecoded-api-preview` con valores distintos. Tras el deploy, el smoke de `v1`, `forum` y `admin-chat` (1.9).
 
 **Pasos (cada uno con OK explícito de Jose en la sesión):**
@@ -2403,7 +2534,9 @@ Pantallas: PANT P9–P15, P17 y UX v4.0 §5, §4.7–4.8, §4.11, §4.13, §9.4�
 
 ### Tarea 4.1 — Auth con `@supabase/ssr`: guards, login/registro/OTP, callback, perfil
 
-**Agente:** implementador-web · **Gate:** no · **Depende de:** 2.3, 1.8 · **Insumos de Jose (para la prueba manual, no para los tests):** OAuth Google/GitHub en Supabase, plantilla OTP con `{{ .Token }}`, leaked password protection (DT P9)
+**Agente:** implementador-web · **Gate:** no · **Depende de:** 2.3, **1.9** · **Insumos de Jose (para la prueba manual, no para los tests):** OAuth Google/GitHub en Supabase, plantilla OTP con `{{ .Token }}`, leaked password protection (DT P9)
+
+> **v3.2 (DATOS §8.1):** login **sin contraseña** para visitantes (Google, GitHub, OTP por email de 6 dígitos / magic link; Q4): sin pantalla de registro con contraseña ni recuperación. `user_profiles` la crea el trigger `handle_new_user()` (la web no inserta; solo `update` de `first_audience` write-once y `locale`). `requireAdmin()` exige `staff_members.role = 'admin'` **y** `aal2` (TOTP, Q3): si el admin no tiene factor verificado, redirige a `/perfil/seguridad` para enrolarlo; `/perfil` incluye enrolar/quitar TOTP (`supabase.auth.mfa`). Los E2E leen el OTP de `http://127.0.0.1:54324` (Inbucket local) en vez de usar contraseña; las cuatro cuentas del seed conservan contraseña solo para los tests RLS.
 
 > **v2.1 (eng review):** (a) plantillas de Supabase Auth (confirmación, OTP, recuperación) en es y en con el remitente **`cuenta@josecoded.com`** (SMTP propio configurado en 1.9/3.12; en local, Inbucket/Mailpit); (b) `ensureProfile` = `insert … on conflict do nothing` + `update … where first_audience is null`; la señal por `contact_email` solo cuenta con email confirmado (lo garantiza `area_lead_summary`); (c) **E2E de login por OTP leyendo el código del buzón local** (`http://127.0.0.1:54324`) y E2E de la señal de origen de extremo a extremo (`/negocios` → registro → `/area-clientes` con `PackStrip`).
 
@@ -2474,7 +2607,9 @@ it('marks hasTranslation only when the same slug exists in both locales', async 
 
 ### Tarea 4.3 — Comentarios con cola de aprobación
 
-**Agente:** implementador-web · **Gate:** no · **Depende de:** 4.1, 4.2, 1.8
+**Agente:** implementador-web · **Gate:** no · **Depende de:** 4.1, 4.2, 1.8a
+
+> **v3.2:** columnas `post_slug`, `status` (`comment_status`), `author_name` del perfil; el aviso a Jose sale del outbox (`comment.pending`, trigger de 1.8a), no de una SA.
 
 **Objetivo:** `CommentThread` (cliente, lee `blog_comments` con RLS: aprobados + propios), SA `postComment` con Turnstile (action `comment`, verificación en la SA con `TURNSTILE_SECRET_KEY` de `apps/web`), estado "Pendiente" visible solo al autor, respuestas a comentarios aprobados (UX §9.5, D10).
 
@@ -2501,7 +2636,7 @@ it('asks to sign in when anonymous', () => { render(<CommentThread comments={[]}
 
 ### Tarea 4.4 — Chat por casos sin cuenta: gateway `assistant/*` + web `/chat` (v3.0; D39, D40)
 
-**Agente:** implementador-web · **Rama:** `feat/assistant-chat` · **Gate:** no (secretos y Turnstile reales en 3.12, ya hechos) · **Depende de:** 1.12 (tablas `chat_*` en producción; en local, 1.11), 1.7 (`buildDeps`, rate limiters), 3.7 (`verifyTurnstile`, `increment_quota`, AI Gateway, guarda determinista), 3.10 (`QuickContact` de 3.3, Turnstile en cliente), 4.1 (opcional: asociar hilo a `user_id`) · **Insumos:** PANT v2.0 P11; copy del `CaseSelector` y de `QuotaNotice` (es/en, `redactor`); **contexto inicial por caso** (si no existe, seed con `{{DATO}}` en dev; en producción, el caso sin contexto publicado usa `curious`)
+**Agente:** implementador-web · **Rama:** `feat/assistant-chat` · **Gate:** no (secretos y Turnstile reales en 3.12, ya hechos) · **Depende de:** **1.9** (tablas `chat_*` en producción; en local, **1.8b**), **1.8c** (adaptador Supabase, `CHAT_SID_SECRET`), 1.7 (`buildDeps`, rate limiters), 3.7 (`verifyTurnstile`, `increment_quota`, AI Gateway, guarda determinista), 3.10 (`QuickContact` de 3.3, Turnstile en cliente), 4.1 (opcional: asociar hilo a `user_id`) · **Insumos:** PANT v2.0 P11; copy del `CaseSelector` y de `QuotaNotice` (es/en, `redactor`); **contexto inicial por caso** (si no existe, seed con `{{DATO}}` en dev; en producción, el caso sin contexto publicado usa `curious`)
 
 > Las rutas heredadas `admin-chat/*` **no se tocan ni se usan** (quedan como `forum/*`). `knowledge.json` deja de ser fuente del prompt: el contexto sale de `chat_context_published(case, locale)` (1.11). Puertos y adaptadores como 3.7: `ChatThreadsRepo`, `ChatContextsRepo`, `Ai`, `Turnstile`, `Quota`, `Notify` en `@josecoded/types/api.ts`; servicio `createAssistantService(deps)` testeado con falsas en memoria.
 
@@ -2647,7 +2782,9 @@ Pantallas: PANT A1–A7 y §1.4 (personalización automática), UX v4.0 §2.2, �
 
 ### Tarea 5.1 — Shell del área, inicio del área y reclamar acceso
 
-**Agente:** implementador-web · **Gate:** no · **Depende de:** 4.1, 1.8
+**Agente:** implementador-web · **Gate:** no · **Depende de:** 4.1, 1.8a
+
+> **v3.2 (DATOS §4.4):** nombres en inglés: `clients.project_phase` (`kickoff|design|build|review|delivered|maintenance`), `packs`/`pack_options`/`extras` (`code` PK), `client_extras`, `client_tasks.status` (`pending|in_progress|done`); el cliente nunca recibe `notes_internal` (grant por columnas). `claim_client_access()` y `area_lead_summary()` como en DATOS §6. La señal `first_audience` admite los valores de D32 v2.0. Aplica a 5.2–5.5 (A2–A7) la tabla de equivalencias del changelog v3.2.
 
 > **v2.1 (eng review):** `resolveAreaVariant` sin cambios; la señal «lead» solo llega si `area_lead_summary()` la devuelve (email confirmado). E2E de la señal de origen de extremo a extremo (4.1).
 
@@ -2742,7 +2879,9 @@ it('P2 client choosing P3 sees 1.100 € and submits computed price', () => {
 
 ### Tarea 6.1 — Layout del admin, guard, shell y Resumen `/admin`
 
-**Agente:** implementador-web · **Rama:** `feat/crm` · **Gate:** no · **Depende de:** 4.1, 1.7, 1.12
+**Agente:** implementador-web · **Rama:** `feat/crm` · **Gate:** no · **Depende de:** 4.1, 1.7, **1.9** (v3.2)
+
+> **v3.2:** `admin_counters()` ya trae los 7 contadores desde 1.8a; el guard del admin exige `aal2` (DATOS §8.1); `/admin` responde 404 si el usuario no está en `staff_members`.
 
 > **v3.0:** navegación **Contactos · Chat · Clientes · Más** (Más: organizaciones, importar, contextos, afiliados, moderación, ampliaciones); Resumen con los contadores de `admin_counters()` ampliada en 1.11 (`contacts_due`, `chat_unread`, `agencies_replied`, más los cinco de v2.2); «Radar hoy» desaparece hasta la fase 7 (placeholder fuera). La primaria del Resumen es «Ver vencidas» → `/admin/crm/contactos?due=1`. Prototipo `ref/admin/` validado por Jose. El resto de la tarea (adenda v2.1: `React.cache()`, `Promise.all`, una llamada a la RPC por render; `adminFetch` con JWT) no cambia.
 
@@ -2773,7 +2912,9 @@ E2E: `/admin` con Ana → 404; con Jose → "Resumen" y los cinco contadores.
 
 ### Tarea 6.2 — Contactos: bandeja, detalle, siguiente acción, historial, mapeo de leads heredados y «Cerrar cobrado» (v3.0)
 
-**Agente:** implementador-web · **Rama:** `feat/crm` · **Gate:** no · **Depende de:** 6.1, 1.12, 1.4, 3.8 (adenda: `POST /leads` crea el contacto enlazado) · **Insumos:** PANT v2.0 C2–C3; prototipo `ref/admin/` (C2, C3) validado por Jose
+**Agente:** implementador-web · **Rama:** `feat/crm` · **Gate:** no · **Depende de:** 6.1, **1.9**, 1.4, 3.8
+
+> **v3.2 (DATOS §4.3):** **no hay leads heredados que mapear** ni `crm_contacts_view`: un lead es una oportunidad (`leads.contact_id`) de un contacto y se lista dentro de C3. «Cerrar cobrado» llama a `admin_close_lead_paid(p_lead_id, p_amount, …)` (crea `client`, recompensa y pasa el contacto a `active_client`). Cambiar de estado exige `next_action_at` (trigger) y queda como interacción `status_change`. Columnas en inglés (`status`, `source`, `amount`, `owner_note`). · **Insumos:** PANT v2.0 C2–C3; prototipo `ref/admin/` (C2, C3) validado por Jose
 
 > Sustituye a la bandeja de leads de la 6.2 v2.2: lo que hacía (filtros por `estado`/`fuente`, `ProposalCard`, lead manual, «Cerrar cobrado» con recompensa vía `admin_close_lead_paid`, «Reenviar aviso») vive ahora dentro del contacto de `kind='lead'`. `buildClosePaidArgs` y su test se mantienen tal cual.
 
@@ -3248,7 +3389,9 @@ it('includes domains, subjects and message ids, stays under 1500 chars', () => {
 
 ### Tarea 7.6 — Migraciones `radar_*`, seed de Radar y tests de BD (RLS, guarda, `claim_work`)
 
-**Agente:** implementador-web · **Rama:** `feat/radar-core` · **Gate:** no (local) · **Depende de:** 1.6, 1.8
+**Agente:** implementador-web · **Rama:** `feat/radar-core` · **Gate:** no (local) · **Depende de:** 1.6, 1.8a
+
+> **v3.2:** `radar_applications.contact_id → crm_contacts` desde la primera migración; avisos `radar.*` por `private.outbox` (sin `notify_event`); las filas `radar.sweep/mail/daily` de `private.scheduled_jobs` se insertan en esta migración; nombres en inglés (DATOS §4.8). 7.7 aplica con `supabase db push`, sin baseline (runbook de 1.9).
 
 **Ficheros:** `supabase/migrations/20260919100000_radar_settings_platforms_runs.sql`, `20260919100100_radar_offers_scores.sql`, `20260919100200_radar_applications_materials_events.sql`, `20260919100300_radar_emails_profile_versions.sql`, `20260919100400_radar_rls_rpc.sql`, `20260919100500_radar_storage.sql` — **copiados literalmente de DT §11.1**; `supabase/seed/seed.sql` (ampliar: 8 plataformas `enabled=false` salvo `tecnoempleo` y `linkedin-email`, 6 ofertas, 3 candidaturas (`prepared` asistida, `prepared` con `can_submit`, `sent`), materiales v1, 4 correos, 1 evento propuesto); `apps/web/tests/rls-radar.test.ts`.
 
@@ -3900,6 +4043,8 @@ Sin métricas en la web (spec §12, `DESIGN.md`): no hay `ProofStrip` ni cifra d
 ### Tarea 9.4 — **GATE**: preparación del cutover
 
 **Agente:** controlador con OK de Jose · **Gate:** **SÍ** · **Depende de:** todas las ramas mergeadas en `release/v1`
+
+> **v3.2:** sin Edge Function ni `vault`; `get_advisors` a cero como criterio; `grep -r nrgrmymsjtgayzejtawa` vacío en repo, secretos de Workers y `.env` de Omen; `supabase-ping.yml` activo.
 
 > **v2.1 (eng review):** (a) `pricing:sync-db` ya no escribe: el controlador aplica **`supabase/generated/pricing-sync.sql`** con `apply_migration` tras revisar el diff; (b) `api.josecoded.com`, la rotación de Telegram/Resend y el SMTP ya se hicieron en 3.12; aquí solo se rota `WORKER_INTERNAL_TOKEN` (con `_PREV` 24 h) y se confirma `API_MODE`; (c) **fecha de válvula**: si Radar no está, se lanza sin él (D34) y `ESTADO.md` lo anota.
 
