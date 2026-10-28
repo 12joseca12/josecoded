@@ -55,8 +55,8 @@ begin
   raise notice 'PASS extras match pricing.json';
 
   if (select string_agg(name || '|' || cron || '|' || coalesce(tz, '-'), ',' order by name) from private.scheduled_jobs)
-     <> 'chat.notify_digest|*/10 * * * *|-,chat.purge_anonymous|0 4 * * *|-,crm.due_digest|0 8 * * 1-5|Europe/Madrid,outbox.drain|*/5 * * * *|-' then
-    raise exception 'FAIL scheduled_jobs rows differ from plan 1.6';
+     <> 'chat.notify_digest|*/10 * * * *|-,chat.purge_anonymous|0 4 * * *|-,crm.due_digest|0 8 * * 1-5|Europe/Madrid,outbox.drain|* * * * *|-' then
+    raise exception 'FAIL scheduled_jobs rows differ from plan 1.6 (v3.2: outbox.drain every tick)';
   end if;
   if exists (select 1 from private.scheduled_jobs where not enabled) then
     raise exception 'FAIL every seeded job starts enabled';
@@ -161,7 +161,7 @@ begin
   for r in select unnest(array['public.increment_quota(text,integer,interval)', 'public.scheduled_jobs_due(timestamptz)',
                                 'public.scheduled_jobs_mark_ran(text,timestamptz,timestamptz)',
                                 'public.scheduled_jobs_disable(text,text)', 'public.outbox_claim(integer,text)',
-                                'public.outbox_ack(bigint[])', 'public.outbox_fail(bigint,text)',
+                                'public.outbox_ack(bigint[],text)', 'public.outbox_fail(bigint,text,text)',
                                 'public.system_health()', 'public.test_set_email_confirmed(text,boolean)']) as f loop
     if not has_function_privilege('service_role', r.f, 'execute')
        or has_function_privilege('authenticated', r.f, 'execute')
@@ -329,12 +329,12 @@ begin
   exception when insufficient_privilege then null;
   end;
   begin
-    perform public.outbox_ack(array[1::bigint]);
+    perform public.outbox_ack(array[1::bigint], 'ana');
     raise exception 'FAIL ana can call outbox_ack';
   exception when insufficient_privilege then null;
   end;
   begin
-    perform public.outbox_fail(1, 'x');
+    perform public.outbox_fail(1, 'ana', 'x');
     raise exception 'FAIL ana can call outbox_fail';
   exception when insufficient_privilege then null;
   end;
@@ -454,38 +454,50 @@ do $$
 declare
   ids bigint[];
   n integer;
+  att smallint;
   evs text[];
   h jsonb;
 begin
-  select array_agg(id order by id) into ids from public.outbox_claim(50, 'test-worker');
+  select array_agg(c.id order by c.id), max(c.attempts) into ids, att from public.outbox_claim(50, 'test-worker') c;
   if coalesce(array_length(ids, 1), 0) <> 2 then raise exception 'FAIL claim returned % events, expected 2', ids; end if;
-  raise notice 'PASS service_role claims the two pending events';
+  if att <> 1 then raise exception 'FAIL the claim must count the attempt (attempts = %)', att; end if;
+  raise notice 'PASS service_role claims the two pending events and the claim counts one attempt';
 
   select count(*) into n from public.outbox_claim(50, 'second-worker');
   if n <> 0 then raise exception 'FAIL claimed events were handed out twice'; end if;
   raise notice 'PASS a claimed event is not handed to a second drain';
 
-  if public.outbox_ack(array[ids[1]]) <> 1 then raise exception 'FAIL ack did not mark the event'; end if;
-  if public.outbox_ack(array[ids[1]]) <> 0 then raise exception 'FAIL ack is not idempotent'; end if;
+  if public.outbox_ack(array[ids[1]], 'second-worker') <> 0 then raise exception 'FAIL ack by a worker that does not hold it'; end if;
+  if public.outbox_fail(ids[2], 'second-worker', 'x') then raise exception 'FAIL fail by a worker that does not hold it'; end if;
+  raise notice 'PASS outbox_ack and outbox_fail ignore events claimed by another worker';
+
+  if public.outbox_ack(array[ids[1]], 'test-worker') <> 1 then raise exception 'FAIL ack did not mark the event'; end if;
+  if public.outbox_ack(array[ids[1]], 'test-worker') <> 0 then raise exception 'FAIL ack is not idempotent'; end if;
   raise notice 'PASS outbox_ack marks once and is idempotent';
 
-  perform public.outbox_fail(ids[2], 'telegram 500');
-  select count(*) into n from public.outbox_claim(50, 'retry');
-  if n <> 1 then raise exception 'FAIL a failed event must be claimable again (got %)', n; end if;
-  raise notice 'PASS a failed event is released for retry';
+  if not public.outbox_fail(ids[2], 'test-worker', 'telegram 500') then raise exception 'FAIL fail by the holder'; end if;
+  select count(*), max(c.attempts) into n, att from public.outbox_claim(50, 'retry') c;
+  if n <> 1 or att <> 2 then raise exception 'FAIL a failed event must be claimable again with attempts 2 (got %, %)', n, att; end if;
+  raise notice 'PASS a failed event is released for retry and fail does not double count the attempt';
 
-  for i in 2..10 loop perform public.outbox_fail(ids[2], 'telegram 500'); end loop;
+  -- attempts 2 is claimed by 'retry'; fail + reclaim up to the 10th claim.
+  for i in 3..10 loop
+    perform public.outbox_fail(ids[2], case when i = 3 then 'retry' else 'w' || (i - 1) end, 'telegram 500');
+    perform 1 from public.outbox_claim(50, 'w' || i);
+  end loop;
+  perform public.outbox_fail(ids[2], 'w10', 'telegram 500');
   select array_agg(c.event) into evs from public.outbox_claim(50, 'after-dead') c;
   if evs is distinct from array['system.outbox_dead'] then
     raise exception 'FAIL after 10 attempts expected only system.outbox_dead to be claimable, got %', evs;
   end if;
   raise notice 'PASS after 10 attempts the event is dead and system.outbox_dead is enqueued';
 
+  if public.outbox_fail(ids[2], 'w10', 'again') then raise exception 'FAIL fail acted on a dead event'; end if;
   h := public.system_health();
-  if (h ->> 'outbox_dead')::int <> 1 or (h ->> 'outbox_pending')::int <> 2 or h -> 'jobs_disabled' <> '[]'::jsonb then
+  if (h ->> 'outbox_dead')::int <> 1 or (h ->> 'outbox_pending')::int <> 1 or h -> 'jobs_disabled' <> '[]'::jsonb then
     raise exception 'FAIL system_health returned %', h;
   end if;
-  raise notice 'PASS system_health reports pending, dead and no disabled jobs';
+  raise notice 'PASS a dead event is not failed again; system_health reports 1 pending, 1 dead, no disabled jobs';
 
   begin
     perform 1 from private.outbox;
@@ -493,6 +505,41 @@ begin
   exception when insufficient_privilege then null;
   end;
   raise notice 'PASS service_role reaches the outbox only through the RPCs';
+end $$;
+rollback;
+
+-- Poison event: the Worker crashes after every claim (no outbox_fail). Abandoned claims still count, and after the 10th
+-- one the event is dead-lettered once. Claims are aged by hand (as postgres) to skip the 10-minute wait.
+begin;
+do $$ begin perform private.enqueue('lead.created', '{"id":"poison"}'); end $$;
+do $$
+declare
+  n integer;
+  evs text[];
+begin
+  for i in 1..10 loop
+    set local role service_role;
+    select count(*) into n from public.outbox_claim(50, 'crash-' || i);
+    if n <> 1 then raise exception 'FAIL poison claim % returned % events', i, n; end if;
+    reset role;
+    update private.outbox set claimed_at = now() - interval '11 minutes' where event = 'lead.created';
+  end loop;
+  set local role service_role;
+  select array_agg(c.event) into evs from public.outbox_claim(50, 'after-crashes') c;
+  if evs is distinct from array['system.outbox_dead'] then
+    raise exception 'FAIL after 10 abandoned claims expected system.outbox_dead, got %', evs;
+  end if;
+  reset role;
+  update private.outbox set claimed_at = now() - interval '11 minutes';
+  set local role service_role;
+  select array_agg(c.event) into evs from public.outbox_claim(50, 'again') c;
+  if evs is distinct from array['system.outbox_dead'] then
+    raise exception 'FAIL the poison event was dead-lettered twice or revived: %', evs;
+  end if;
+  reset role;
+  select count(*) into n from private.outbox where event = 'system.outbox_dead';
+  if n <> 1 then raise exception 'FAIL % system.outbox_dead rows, expected 1', n; end if;
+  raise notice 'PASS a poison event that never reaches outbox_fail dies after 10 claims, dead-lettered once';
 end $$;
 rollback;
 

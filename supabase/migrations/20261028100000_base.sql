@@ -216,8 +216,10 @@ alter table private.scheduled_jobs enable row level security;  -- no policies: o
 create index idx_scheduled_jobs_due on private.scheduled_jobs (next_run_at, name) where enabled;
 
 -- Launch rows (plan 1.6, DATOS §4.7). Radar (7.6) and newsletter (10.1) add theirs; leads.notify_retry is gone (outbox).
+-- outbox.drain is `* * * * *` (every tick of the `*/5` Cron Trigger): the dispatcher computes nextRun(cron, now) on the
+-- real clock, so a `*/5` row whose tick fires a few seconds late gets a next run 5 minutes away and skips a tick.
 insert into private.scheduled_jobs (name, cron, tz) values
-  ('outbox.drain',          '*/5 * * * *',  null),
+  ('outbox.drain',          '* * * * *',    null),
   ('chat.notify_digest',    '*/10 * * * *', null),
   ('chat.purge_anonymous',  '0 4 * * *',    null),
   ('crm.due_digest',        '0 8 * * 1-5',  'Europe/Madrid');
@@ -249,6 +251,8 @@ grant execute on function public.scheduled_jobs_disable(text, text) to service_r
 -- 10) Outbox (DATOS §4.7, §8.4). Triggers and RPCs write with private.enqueue(); the gateway's outbox.drain job claims,
 --     delivers (Telegram / Resend) and acks or fails. Events: lead.created, comment.pending, asset.uploaded,
 --     upgrade.requested, chat.visitor_message, system.*.
+--     attempts counts claims (not failures): an event that crashes the Worker before outbox_fail still dies after 10
+--     claims. dead_at marks the dead letter once, so system.outbox_dead is enqueued exactly once per dead event.
 create table private.outbox (
   id           bigserial primary key,
   event        text not null,
@@ -258,10 +262,11 @@ create table private.outbox (
   claimed_by   text,
   attempts     smallint not null default 0,
   delivered_at timestamptz,
+  dead_at      timestamptz,
   last_error   text
 );
 alter table private.outbox enable row level security;  -- no policies: only enqueue() and the RPCs below touch it
-create index idx_outbox_pending on private.outbox (created_at) where delivered_at is null;
+create index idx_outbox_pending on private.outbox (created_at) where delivered_at is null and dead_at is null;
 
 -- Writes one event for the gateway's outbox.drain job. Only called from triggers and RPCs that are themselves
 -- security definer (owned by postgres): no role has execute on it.
@@ -271,66 +276,93 @@ language sql set search_path = '' as $$
 $$;
 revoke all on function private.enqueue(text, jsonb) from public, anon, authenticated;
 
--- Claims up to p_limit (1..200) undelivered events with fewer than 10 attempts. A claim older than 10 minutes counts as
--- abandoned (worker died mid-batch) and is claimable again. Concurrent drains never get the same row (skip locked).
+-- Dead letter: marks the event dead (once) and enqueues system.outbox_dead so the next drain tells Jose. A dead
+-- system.outbox_dead does not spawn another one.
+create or replace function private.outbox_mark_dead(p_id bigint) returns void
+language plpgsql set search_path = '' as $$
+declare
+  v_event text;
+  v_error text;
+begin
+  update private.outbox set dead_at = now(), claimed_at = null, claimed_by = null
+   where id = p_id and dead_at is null and delivered_at is null
+  returning event, last_error into v_event, v_error;
+  if v_event is not null and v_event <> 'system.outbox_dead' then
+    perform private.enqueue('system.outbox_dead',
+      jsonb_build_object('id', p_id, 'event', v_event, 'last_error', left(coalesce(v_error, 'abandoned claim'), 500)));
+  end if;
+end $$;
+revoke all on function private.outbox_mark_dead(bigint) from public, anon, authenticated;
+
+-- Claims up to p_limit (1..200) live events and counts the attempt. A claim older than 10 minutes counts as abandoned
+-- (worker died mid-batch) and is claimable again; an abandoned claim that already used its 10th attempt is dead-lettered
+-- first. Concurrent drains never get the same row (skip locked).
 create or replace function public.outbox_claim(p_limit integer, p_worker text)
 returns table (id bigint, event text, payload jsonb, attempts smallint, created_at timestamptz)
-language sql security definer set search_path = '' as $$
-  update private.outbox o set claimed_at = now(), claimed_by = p_worker
+language plpgsql security definer set search_path = '' as $$
+declare r record;
+begin
+  for r in select o.id from private.outbox o
+           where o.delivered_at is null and o.dead_at is null and o.attempts >= 10
+             and o.claimed_at < now() - interval '10 minutes'
+           for update skip locked loop
+    perform private.outbox_mark_dead(r.id);
+  end loop;
+
+  return query
+  update private.outbox o set claimed_at = now(), claimed_by = p_worker, attempts = o.attempts + 1
   where o.id in (
     select c.id from private.outbox c
-    where c.delivered_at is null and c.attempts < 10
+    where c.delivered_at is null and c.dead_at is null and c.attempts < 10
       and (c.claimed_at is null or c.claimed_at < now() - interval '10 minutes')
     order by c.created_at, c.id
     limit least(greatest(coalesce(p_limit, 50), 1), 200)
     for update skip locked
   )
-  returning o.id, o.event, o.payload, o.attempts, o.created_at
-$$;
+  returning o.id, o.event, o.payload, o.attempts, o.created_at;
+end $$;
 
--- Marks delivered events; returns how many changed (already delivered ids are ignored).
-create or replace function public.outbox_ack(p_ids bigint[])
+-- Marks delivered the events that p_worker holds; returns how many changed (delivered ids or ids claimed by another
+-- worker are ignored).
+create or replace function public.outbox_ack(p_ids bigint[], p_worker text)
 returns integer language plpgsql security definer set search_path = '' as $$
 declare v_count integer;
 begin
   update private.outbox set delivered_at = now()
-  where id = any (p_ids) and delivered_at is null;
+  where id = any (p_ids) and claimed_by = p_worker and delivered_at is null and dead_at is null;
   get diagnostics v_count = row_count;
   return v_count;
 end $$;
 
--- Records a failed delivery and releases the claim. On the 10th attempt the event is dead: a system.outbox_dead event
--- is enqueued so the next drain tells Jose (a dead system.outbox_dead does not spawn another one).
-create or replace function public.outbox_fail(p_id bigint, p_error text)
-returns void language plpgsql security definer set search_path = '' as $$
-declare
-  v_attempts smallint;
-  v_event    text;
+-- Records a failed delivery of an event that p_worker holds and releases the claim (the attempt was counted by the
+-- claim). After the 10th attempt the event is dead-lettered. Returns false when p_worker does not hold the event.
+create or replace function public.outbox_fail(p_id bigint, p_worker text, p_error text)
+returns boolean language plpgsql security definer set search_path = '' as $$
+declare v_attempts smallint;
 begin
   update private.outbox
-     set attempts = attempts + 1, last_error = left(p_error, 2000), claimed_at = null, claimed_by = null
-   where id = p_id and delivered_at is null
-  returning attempts, event into v_attempts, v_event;
-  if v_attempts >= 10 and v_event <> 'system.outbox_dead' then
-    perform private.enqueue('system.outbox_dead',
-      jsonb_build_object('id', p_id, 'event', v_event, 'last_error', left(p_error, 500)));
-  end if;
+     set last_error = left(p_error, 2000), claimed_at = null, claimed_by = null
+   where id = p_id and claimed_by = p_worker and delivered_at is null and dead_at is null
+  returning attempts into v_attempts;
+  if v_attempts is null then return false; end if;
+  if v_attempts >= 10 then perform private.outbox_mark_dead(p_id); end if;
+  return true;
 end $$;
 revoke all on function public.outbox_claim(integer, text) from public, anon, authenticated;
-revoke all on function public.outbox_ack(bigint[]) from public, anon, authenticated;
-revoke all on function public.outbox_fail(bigint, text) from public, anon, authenticated;
+revoke all on function public.outbox_ack(bigint[], text) from public, anon, authenticated;
+revoke all on function public.outbox_fail(bigint, text, text) from public, anon, authenticated;
 grant execute on function public.outbox_claim(integer, text) to service_role;
-grant execute on function public.outbox_ack(bigint[]) to service_role;
-grant execute on function public.outbox_fail(bigint, text) to service_role;
+grant execute on function public.outbox_ack(bigint[], text) to service_role;
+grant execute on function public.outbox_fail(bigint, text, text) to service_role;
 
 -- 11) Health for supabase-ping.yml (DATOS §11): outbox backlog and disabled jobs. Service role only.
 create or replace function public.system_health()
 returns jsonb language sql stable security definer set search_path = '' as $$
   select jsonb_build_object(
-    'outbox_pending', (select count(*) from private.outbox o where o.delivered_at is null),
+    'outbox_pending', (select count(*) from private.outbox o where o.delivered_at is null and o.dead_at is null),
     'outbox_overdue', (select count(*) from private.outbox o
-                       where o.delivered_at is null and o.created_at < now() - interval '1 hour'),
-    'outbox_dead',    (select count(*) from private.outbox o where o.delivered_at is null and o.attempts >= 10),
+                       where o.delivered_at is null and o.dead_at is null and o.created_at < now() - interval '1 hour'),
+    'outbox_dead',    (select count(*) from private.outbox o where o.dead_at is not null and o.delivered_at is null),
     'jobs_disabled',  (select coalesce(jsonb_agg(j.name order by j.name), '[]'::jsonb)
                        from private.scheduled_jobs j where not j.enabled),
     'checked_at',     now()
