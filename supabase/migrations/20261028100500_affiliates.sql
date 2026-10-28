@@ -8,7 +8,7 @@ create type public.reward_status as enum ('pending', 'paid');
 create table public.affiliates (
   id         uuid primary key default gen_random_uuid(),
   user_id    uuid not null unique references auth.users (id) on delete cascade,
-  code       text not null unique check (code ~ '^[A-Z0-9]{3,12}-[A-Z0-9]{4,8}$'),
+  code       text not null unique check (code ~ '^[A-Z0-9]{3,12}-[A-Z0-9]{6}$'),  -- = AFFILIATE_CODE_RE (packages/pricing)
   level      public.affiliate_level not null default 'standard',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()

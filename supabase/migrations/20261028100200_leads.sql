@@ -51,6 +51,12 @@ grant select, insert, update on public.leads to authenticated;
 -- email among non-archived lead/client contacts or creates it, inserts the lead (idempotent by idempotency_key), the
 -- lead_created interaction and the lead.created outbox event. An unknown affiliate code never loses the lead: it is
 -- dropped and kept in meta.affiliate_code_rejected.
+-- Concurrency: transaction-scoped advisory locks on the idempotency key and on the email (always in that order) make
+-- two simultaneous calls with the same key return one lead without an orphan contact, and two with the same email
+-- share one contact.
+-- p.user_id (the JWT user the gateway saw) is stored on the lead, but it only links the contact (crm_contacts.user_id,
+-- which admin_close_lead_paid copies to clients.user_id) when that user's confirmed email is the lead's email: a form
+-- typed with someone else's email never hands their contact, and later their client area, to the caller.
 create or replace function public.create_lead(p jsonb)
 returns table (lead_id uuid, contact_id uuid, created boolean)
 language plpgsql security definer set search_path = '' as $$
@@ -65,10 +71,23 @@ declare
   v_meta      jsonb := coalesce(p -> 'meta', '{}'::jsonb);
   v_contact   uuid;
   v_lead      uuid;
+  v_link_user uuid;
 begin
   if v_source is null then raise exception 'source_required' using errcode = '22023'; end if;
   if v_email is null and nullif(btrim(p ->> 'phone'), '') is null then
     raise exception 'email_or_phone_required' using errcode = '22023';
+  end if;
+
+  if v_key is not null then
+    perform pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended('create_lead:key:' || v_key, 0));
+  end if;
+  if v_email is not null then
+    perform pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended('crm_contacts:email:' || lower(v_email::text), 0));
+  end if;
+  if v_user is not null and v_email is not null then
+    select u.id into v_link_user from auth.users u
+     where u.id = v_user and u.email_confirmed_at is not null
+       and u.email::extensions.citext operator(extensions.=) v_email;
   end if;
 
   if v_key is not null then
@@ -89,12 +108,12 @@ begin
   if v_contact is null then
     insert into public.crm_contacts (kind, status, display_name, email, phone, locale, user_id, source, chat_case)
     values ('lead', 'new', coalesce(nullif(btrim(p ->> 'display_name'), ''), v_email::text, btrim(p ->> 'phone')),
-            v_email, nullif(btrim(p ->> 'phone'), ''), v_locale, v_user,
+            v_email, nullif(btrim(p ->> 'phone'), ''), v_locale, v_link_user,
             case v_source when 'referral' then 'manual' else v_source::text end::public.contact_source,
             (p ->> 'chat_case')::public.chat_case)
     returning id into v_contact;
-  elsif v_user is not null then
-    update public.crm_contacts set user_id = v_user where id = v_contact and user_id is null;
+  elsif v_link_user is not null then
+    update public.crm_contacts set user_id = v_link_user where id = v_contact and user_id is null;
   end if;
 
   if v_affiliate is not null and not exists (select 1 from public.affiliates a where a.code = v_affiliate) then

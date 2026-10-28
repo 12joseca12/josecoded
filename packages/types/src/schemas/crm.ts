@@ -99,8 +99,11 @@ export const leadStatusSchema = z.enum(LEAD_STATUSES);
 export const leadSourceSchema = z.enum(LEAD_SOURCES);
 export const contactViaSchema = z.enum(CONTACT_VIAS);
 
-/** `affiliates.code` check of the database (DATOS §4.4). */
-export const AFFILIATE_CODE_DB_RE = /^[A-Z0-9]{3,12}-[A-Z0-9]{4,8}$/;
+/**
+ * `affiliates.code` check of the database: the single contract of `AFFILIATE_CODE_RE` in `@josecoded/pricing` (prefix
+ * 3–12, suffix of exactly 6, what `private.set_affiliate_code()` generates). Tests in both packages compare them.
+ */
+export const AFFILIATE_CODE_DB_RE = /^[A-Z0-9]{3,12}-[A-Z0-9]{6}$/;
 
 /**
  * Body of `create_lead(p jsonb)` (gateway POST /leads, DATOS §4.3). The gateway parses with this schema and passes

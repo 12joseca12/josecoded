@@ -132,7 +132,7 @@ begin
     if has_function_privilege('authenticated', r.oid, 'execute') and r.sig::text not in (
          'private.is_admin()', 'private.client_id_of()', 'private.comment_parent_ok(uuid,text,locale)',
          'crm_import_organizations(jsonb)', 'request_upgrade(text,text[])', 'claim_client_access()',
-         'area_lead_summary()', 'affiliate_leads()', 'admin_counters()',
+         'area_lead_summary()', 'affiliate_leads()', 'admin_counters()', 'admin_clients(uuid)',
          'admin_close_lead_paid(uuid,numeric,timestamp with time zone,boolean,reward_type,numeric,smallint,text)') then
       raise exception 'FAIL authenticated can execute security definer %', r.sig;
     end if;

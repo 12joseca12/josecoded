@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, expectTypeOf, it } from 'vitest';
 
 import {
+  AFFILIATE_CODE_DB_RE,
   AFFILIATE_LEVELS,
   ASSET_SOURCES,
   CHAT_CASES,
@@ -97,6 +98,12 @@ describe('crm value lists mirror the SQL enums (until database.ts is generated)'
   });
 });
 
+describe('affiliate code contract', () => {
+  it('AFFILIATE_CODE_DB_RE is the literal check of affiliates.code in the migrations', () => {
+    expect(sql).toContain(`check (code ~ '${AFFILIATE_CODE_DB_RE.source}')`);
+  });
+});
+
 describe('createLeadInputSchema', () => {
   const base = { email: 'nuevo@example.test', source: 'web_form', idempotency_key: 'k1-abcdef' };
 
@@ -114,6 +121,7 @@ describe('createLeadInputSchema', () => {
   it('checks the affiliate code and pack code formats', () => {
     expect(createLeadInputSchema.safeParse({ ...base, affiliate_code: 'ANA-TEST01' }).success).toBe(true);
     expect(createLeadInputSchema.safeParse({ ...base, affiliate_code: 'ana-test01' }).success).toBe(false);
+    expect(createLeadInputSchema.safeParse({ ...base, affiliate_code: 'ANA-TEST' }).success).toBe(false);
     expect(createLeadInputSchema.safeParse({ ...base, pack_code: 'P0' }).success).toBe(false);
   });
 });

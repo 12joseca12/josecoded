@@ -238,6 +238,22 @@ create policy crm_interactions_delete on public.crm_interactions for delete to a
   using ((select private.is_admin()));
 grant select, insert, update, delete on public.crm_interactions to authenticated;
 
+-- crm_contacts.last_interaction_at (C2/C3 «última interacción») follows the newest occurred_at of the contact's
+-- timeline; it never moves back when an older interaction is logged late. Bookkeeping rows (status_change, import)
+-- are not an interaction with the person and do not count. Runs as the caller: the admin (RLS lets him update
+-- contacts), the service role or a definer RPC; nobody else can insert interactions.
+create or replace function private.crm_interactions_touch_contact() returns trigger
+language plpgsql set search_path = '' as $$
+begin
+  update public.crm_contacts c set last_interaction_at = new.occurred_at
+   where c.id = new.contact_id and (c.last_interaction_at is null or c.last_interaction_at < new.occurred_at);
+  return null;
+end $$;
+revoke all on function private.crm_interactions_touch_contact() from public, anon, authenticated;
+create trigger crm_interactions_touch_contact after insert on public.crm_interactions
+  for each row when (new.kind not in ('status_change', 'import'))
+  execute function private.crm_interactions_touch_contact();
+
 -- 7) Status changes (spec §9 «next action is mandatory»): a change to a non-terminal status needs next_action_at, and
 --    every change leaves a status_change interaction. Runs as the caller: the admin (RLS) or a definer RPC. The actor is
 --    jose when there is a user in the request (only the admin can update contacts), system otherwise (service role).

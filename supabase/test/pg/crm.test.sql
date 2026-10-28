@@ -155,7 +155,7 @@ select t.ok(bool_and(t.err(q) like '42501 %'), 'anon: permission denied on every
   from unnest(array[$q$select public.create_lead('{}')$q$, 'select public.area_lead_summary()',
                     'select public.claim_client_access()', 'select public.affiliate_leads()',
                     'select public.admin_counters()', $q$select public.request_upgrade('P3')$q$,
-                    $q$select public.crm_import_organizations('[]')$q$,
+                    $q$select public.crm_import_organizations('[]')$q$, 'select * from public.admin_clients()',
                     $q$select public.admin_close_lead_paid('00000000-0000-4000-8000-000000000301', 1)$q$]) q;
 select t.ok(t.n($q$select id from storage.objects where bucket_id = 'client-assets'$q$) = 0,
             'anon: no client-assets object is visible');
@@ -182,6 +182,10 @@ select t.ok(t.err($q$select * from public.crm_import_organizations('[]')$q$) ~ '
 select t.ok(t.err('select public.admin_counters()') = '42501 forbidden', 'ana: admin_counters is forbidden');
 select t.ok(t.err($q$select public.admin_close_lead_paid('00000000-0000-4000-8000-000000000301', 1400)$q$)
             = '42501 forbidden', 'ana: admin_close_lead_paid is forbidden');
+select t.ok(t.err('select * from public.admin_clients()') = '42501 forbidden'
+            and t.err($q$select notes_internal from public.admin_clients('00000000-0000-4000-8000-000000000401')$q$)
+                = '42501 forbidden',
+            'ana: admin_clients is forbidden, also for her own client (notes_internal stays hidden)');
 rollback;
 
 -- ================================================================ ana: area (clients, tasks, comments, extras, upgrades)
@@ -408,7 +412,9 @@ select t.ok(t.val('select lead_id || '':'' || reward_status from public.affiliat
 select t.ok(t.n('select id from public.blog_comments') = 2
             and t.val($q$select id from public.blog_comments where status = 'pending'$q$) = '00000000-0000-4000-8000-000000000a03',
             'bob: sees the approved comment and his own pending one');
-select t.ok(t.err('select public.admin_counters()') = '42501 forbidden', 'bob: admin_counters is forbidden');
+select t.ok(t.err('select public.admin_counters()') = '42501 forbidden'
+            and t.err('select * from public.admin_clients()') = '42501 forbidden',
+            'bob: admin_counters and admin_clients are forbidden');
 rollback;
 
 -- ================================================================ sin: unconfirmed email
@@ -423,6 +429,7 @@ select t.ok(t.err($q$select public.request_upgrade('P3')$q$) = '42501 email_not_
             'sin: request_upgrade refuses the unconfirmed email');
 select t.ok(t.n('select id from public.clients') = 0 and t.n('select id from public.affiliates') = 0,
             'sin: no client and no affiliate row');
+select t.ok(t.err('select * from public.admin_clients()') = '42501 forbidden', 'sin: admin_clients is forbidden');
 reset role;
 select t.ok((select user_id is null from public.clients where id = '00000000-0000-4000-8000-000000000402'),
             'sin: the invited client stays unclaimed');
@@ -453,7 +460,13 @@ select t.ok(t.n('select id from public.clients') = 2 and t.n('select id from pub
             'jose: reads every area, affiliate and comment row (internal comments included)');
 select t.ok(t.err('select notes_internal from public.clients') like '42501 %'
             and t.affected($q$update public.clients set notes_internal = 'updated' where id = '00000000-0000-4000-8000-000000000401'$q$) = 1,
-            'jose: writes notes_internal but cannot read it with a JWT (column grant; see report)');
+            'jose: the column grant hides notes_internal from his JWT too; he writes it');
+select t.ok(t.val($q$select notes_internal || ':' || contact_id || ':' || user_id || ':' || invite_email
+                    from public.admin_clients('00000000-0000-4000-8000-000000000401')$q$)
+            = 'updated:00000000-0000-4000-8000-000000000202:00000000-0000-4000-8000-0000000000a2:ana@test'
+            and t.n('select id from public.admin_clients()') = 2
+            and t.n($q$select id from public.admin_clients('00000000-0000-4000-8000-0000000004ff')$q$) = 0,
+            'jose: admin_clients reads every column (notes_internal, CRM links, invite_email), one or all clients');
 select t.ok(t.err($q$insert into public.crm_contacts (kind, display_name, status, source)
                     values ('agency', 'X', 'won', 'manual')$q$) like '23514 %',
             'contact status must match its kind (agency cannot be won)');
@@ -567,6 +580,30 @@ begin
   select * into c from public.create_lead('{"email":"y@example.test","source":"web_form","affiliate_code":"ANA-TEST01","idempotency_key":"k5"}');
   perform t.ok(c.created, 'create_lead accepts a known affiliate code');
 end $$;
+do $$
+declare c record;
+begin
+  -- ana (logged in) types Marta's email: the lead keeps ana as submitter, Marta's contact is not linked to ana.
+  select * into c from public.create_lead('{"email":"marta@example.test","source":"web_form","idempotency_key":"k6",
+                                            "user_id":"00000000-0000-4000-8000-0000000000a2"}');
+  perform t.ok(c.contact_id = '00000000-0000-4000-8000-000000000201'
+               and (select user_id is null from public.crm_contacts where id = c.contact_id)
+               and (select user_id = '00000000-0000-4000-8000-0000000000a2' from public.leads where id = c.lead_id),
+               'create_lead never links an existing contact to a user whose email is not the lead email');
+  select * into c from public.create_lead('{"email":"victim@example.test","source":"web_form","idempotency_key":"k7",
+                                            "user_id":"00000000-0000-4000-8000-0000000000a3"}');
+  perform t.ok((select user_id is null from public.crm_contacts where id = c.contact_id),
+               'create_lead creates the contact of a mismatched email without the user');
+  select * into c from public.create_lead('{"email":"sin@test","source":"web_form","idempotency_key":"k8",
+                                            "user_id":"00000000-0000-4000-8000-0000000000a4"}');
+  perform t.ok(c.contact_id = '00000000-0000-4000-8000-000000000205'
+               and (select user_id is null from public.crm_contacts where id = c.contact_id),
+               'create_lead does not link a user whose email is unconfirmed');
+  select * into c from public.create_lead('{"email":"BOB@test","source":"web_form","idempotency_key":"k9",
+                                            "user_id":"00000000-0000-4000-8000-0000000000a3"}');
+  perform t.ok((select user_id = '00000000-0000-4000-8000-0000000000a3' from public.crm_contacts where id = c.contact_id),
+               'create_lead links the contact when the user''s confirmed email is the lead email (case-insensitive)');
+end $$;
 select t.ok(t.err($q$select public.create_lead('{"email":"z@example.test"}')$q$) like '22023 source_required'
             and t.err($q$select public.create_lead('{"source":"web_form"}')$q$) like '22023 email_or_phone_required',
             'create_lead requires a source and an email or phone');
@@ -597,4 +634,35 @@ select t.ok(t.err($q$insert into public.affiliates (user_id) values ('00000000-0
             and t.val('select code from public.affiliates') ~ '^NURIA-[2-9A-FXZ]{6}$'
             and t.val('select level from public.affiliates') = 'standard',
             'a user enrols as standard affiliate and gets a generated code (prefix from the name, no accents)');
+reset role;
+select t.ok(t.err($q$insert into public.affiliates (user_id, code) values ('00000000-0000-4000-8000-0000000000a4', 'SIN-TEST')$q$)
+            like '23514 %'
+            and t.err($q$insert into public.affiliates (user_id, code) values ('00000000-0000-4000-8000-0000000000a4', 'SIN-TEST0001')$q$)
+            like '23514 %'
+            and t.err($q$insert into public.affiliates (user_id, code) values ('00000000-0000-4000-8000-0000000000a4', 'SIN-TEST01')$q$)
+            is null,
+            'affiliates.code: the suffix is exactly 6 characters (AFFILIATE_CODE_RE of packages/pricing)');
+rollback;
+
+-- ================================================================ crm_contacts.last_interaction_at
+begin;
+select t.ok((select last_interaction_at is not null from public.crm_contacts where id = '00000000-0000-4000-8000-000000000201')
+            and (select last_interaction_at is null from public.crm_contacts where id = '00000000-0000-4000-8000-000000000204'),
+            'seed: contacts with interactions carry last_interaction_at, the others do not');
+set local role authenticated;
+set local request.jwt.claims = :'jose';
+select t.ok(t.err($q$insert into public.crm_interactions (contact_id, kind, actor, occurred_at)
+                    values ('00000000-0000-4000-8000-000000000204', 'call', 'jose', '2026-10-01 10:00+00')$q$) is null
+            and t.val($q$select last_interaction_at = '2026-10-01 10:00+00' from public.crm_contacts
+                        where id = '00000000-0000-4000-8000-000000000204'$q$) = 'true',
+            'jose logs a call: last_interaction_at takes its occurred_at');
+select t.ok(t.err($q$insert into public.crm_interactions (contact_id, kind, actor, occurred_at)
+                    values ('00000000-0000-4000-8000-000000000204', 'note', 'jose', '2026-09-01 10:00+00')$q$) is null
+            and t.val($q$select last_interaction_at = '2026-10-01 10:00+00' from public.crm_contacts
+                        where id = '00000000-0000-4000-8000-000000000204'$q$) = 'true',
+            'an older interaction logged late does not move last_interaction_at back');
+select t.ok(t.affected($q$update public.crm_contacts set status = 'closed' where id = '00000000-0000-4000-8000-000000000204'$q$) = 1
+            and t.val($q$select last_interaction_at = '2026-10-01 10:00+00' from public.crm_contacts
+                        where id = '00000000-0000-4000-8000-000000000204'$q$) = 'true',
+            'a status_change (bookkeeping) does not count as an interaction');
 rollback;

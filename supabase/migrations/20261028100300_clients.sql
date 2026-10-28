@@ -49,6 +49,22 @@ create policy clients_delete on public.clients for delete to authenticated using
 grant select (id, pack_code, pack_option, project_phase, starts_at, delivered_at, created_at) on public.clients to authenticated;
 grant insert, update, delete on public.clients to authenticated;
 
+-- Admin read of every column (notes_internal, contact_id, lead_id, user_id, invite_email, updated_at), which the column
+-- grant above hides from every JWT, Jose's included. The column grant stays the only gate for clients; this RPC checks
+-- is_admin() inside. One client by id, or all of them (newest first) when p_client_id is null.
+create or replace function public.admin_clients(p_client_id uuid default null)
+returns setof public.clients
+language plpgsql stable security definer set search_path = '' as $$
+begin
+  if not private.is_admin() then raise exception 'forbidden' using errcode = '42501'; end if;
+  return query
+  select c.* from public.clients c
+   where p_client_id is null or c.id = p_client_id
+   order by c.created_at desc, c.id;
+end $$;
+revoke all on function public.admin_clients(uuid) from public, anon, authenticated;
+grant execute on function public.admin_clients(uuid) to authenticated;
+
 create table public.client_tasks (
   id          uuid primary key default gen_random_uuid(),
   client_id   uuid not null references public.clients (id) on delete cascade,

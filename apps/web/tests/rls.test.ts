@@ -40,10 +40,20 @@ const CRM_TABLES = [
 const AREA_TABLES = ['clients', 'client_tasks', 'client_task_comments', 'client_assets', 'client_extras', 'upgrade_requests'] as const;
 const PRIVATE_TO_ANON = [...CRM_TABLES, 'leads', ...AREA_TABLES, 'affiliates', 'affiliate_rewards', 'staff_members', 'user_profiles', 'packs'] as const;
 
-/** Rows a client reads from a table (an error counts as 0: no grant). */
-async function visible(c: TestClient, table: string, columns = 'id'): Promise<number> {
+/** Primary key column of the tables without an `id`. */
+const KEY: Record<string, string> = { staff_members: 'user_id', user_profiles: 'user_id', packs: 'code', extras: 'code' };
+
+/**
+ * Rows a client reads from a table. Only a permission error (42501: no grant) counts as 0 rows; any other error (a
+ * wrong column, a missing table) throws, so a typo can never pass as «denied».
+ */
+async function visible(c: TestClient, table: string, columns = KEY[table] ?? 'id'): Promise<number> {
   const { data, error } = await c.from(table).select(columns);
-  return error ? 0 : (data ?? []).length;
+  if (error) {
+    if (error.code === '42501') return 0;
+    throw new Error(`${table}: ${error.code} ${error.message}`);
+  }
+  return (data ?? []).length;
 }
 
 describe.skipIf(!up && !inCi)('RLS with jose (admin), ana (P2 client + affiliate), bob (affiliate), sin (unconfirmed)', () => {
@@ -89,6 +99,7 @@ describe.skipIf(!up && !inCi)('RLS with jose (admin), ana (P2 client + affiliate
         anon.rpc('admin_counters'),
         anon.rpc('request_upgrade', { p_to_pack_code: 'P3', p_extras: [] }),
         anon.rpc('crm_import_organizations', { p_rows: [] }),
+        anon.rpc('admin_clients'),
         anon.rpc('admin_close_lead_paid', { p_lead_id: SEED.leads.marta, p_amount: 1 }),
       ]);
       for (const { error } of calls) expect(error).toBeTruthy();
@@ -97,14 +108,14 @@ describe.skipIf(!up && !inCi)('RLS with jose (admin), ana (P2 client + affiliate
 
   describe('staff, profiles and catalogue (DATOS §5, 1.6)', () => {
     it('staff_members: each user reads only their own row', async () => {
-      expect(await visible(jose, 'staff_members', 'user_id')).toBe(1);
-      expect(await visible(ana, 'staff_members', 'user_id')).toBe(0);
+      expect(await visible(jose, 'staff_members')).toBe(1);
+      expect(await visible(ana, 'staff_members')).toBe(0);
     });
 
     it("user_profiles: ana reads hers and not bob's; admin reads every profile", async () => {
       const { data } = await ana.from('user_profiles').select('user_id');
       expect((data as Row[]).map((r) => r.user_id)).toEqual([ana.userId]);
-      expect(await visible(jose, 'user_profiles', 'user_id')).toBeGreaterThanOrEqual(4);
+      expect(await visible(jose, 'user_profiles')).toBeGreaterThanOrEqual(4);
     });
 
     it('user_profiles: first_audience is write-once and there is no insert', async () => {
@@ -116,8 +127,8 @@ describe.skipIf(!up && !inCi)('RLS with jose (admin), ana (P2 client + affiliate
     });
 
     it('packs, pack_options and extras: authenticated reads, nobody writes', async () => {
-      expect(await visible(ana, 'packs', 'code')).toBe(5);
-      expect(await visible(bob, 'extras', 'code')).toBe(6);
+      expect(await visible(ana, 'packs')).toBe(5);
+      expect(await visible(bob, 'extras')).toBe(6);
       const { error } = await jose.from('packs').update({ price: 1 }).eq('code', 'P1');
       expect(error).toBeTruthy();
     });
@@ -125,11 +136,7 @@ describe.skipIf(!up && !inCi)('RLS with jose (admin), ana (P2 client + affiliate
 
   describe('crm', () => {
     it('ana, bob and anon read 0 rows of every crm_* table and of leads', async () => {
-      for (const c of [ana, bob, anon])
-        for (const t of [...CRM_TABLES, 'leads']) {
-          const { data, error } = await c.from(t).select('id');
-          expect(error ? true : data!.length === 0, t).toBe(true);
-        }
+      for (const c of [ana, bob, anon]) for (const t of [...CRM_TABLES, 'leads']) expect(await visible(c, t), t).toBe(0);
     });
 
     it('jose reads every crm_* table and the leads', async () => {
@@ -175,6 +182,10 @@ describe.skipIf(!up && !inCi)('RLS with jose (admin), ana (P2 client + affiliate
       expect((c.data as Row[])[0]?.contact_id).toBe((a.data as Row[])[0]?.contact_id);
       const { count } = await jose.from('crm_contacts').select('*', { count: 'exact', head: true }).eq('email', email);
       expect(count).toBe(1);
+      // A logged-in user who types someone else's email never gets that contact linked (nor, later, its client).
+      const typed = await service.rpc('create_lead', { p: { ...p, idempotency_key: randomUUID(), user_id: ana.userId } });
+      const linked = await jose.from('crm_contacts').select('user_id').eq('id', (typed.data as Row[])[0]?.contact_id as string).single();
+      expect(linked.data?.user_id).toBeNull();
       const { data: ob } = await service.rpc('outbox_claim', { p_limit: 200, p_worker: 'rls-test' });
       const events = (ob ?? []) as Row[];
       expect(events.some((e) => e.event === 'lead.created' && (e.payload as Row).id === (a.data as Row[])[0]?.lead_id)).toBe(true);
@@ -222,6 +233,16 @@ describe.skipIf(!up && !inCi)('RLS with jose (admin), ana (P2 client + affiliate
       expect(error).toBeTruthy();
       const ok = await ana.from('clients').select('id, pack_code');
       expect(ok.data).toEqual([{ id: SEED.clients.ana, pack_code: 'P2' }]);
+    });
+
+    it('only jose reads every column of clients, through admin_clients()', async () => {
+      expect((await jose.from('clients').select('notes_internal')).error?.code).toBe('42501');
+      const { data, error } = await jose.rpc('admin_clients', { p_client_id: SEED.clients.ana });
+      expect(error).toBeNull();
+      expect((data as Row[])[0]).toMatchObject({ id: SEED.clients.ana, contact_id: SEED.contacts.ana, user_id: ana.userId, invite_email: 'ana@test' });
+      expect(Object.keys((data as Row[])[0] ?? {})).toContain('notes_internal');
+      for (const c of [ana, bob, sin]) expect((await c.rpc('admin_clients')).error?.message).toMatch(/forbidden/);
+      expect((await anon.rpc('admin_clients')).error).toBeTruthy();
     });
 
     it('bob (no client) reads 0 clients/tasks; ana reads her tasks and only non-internal comments', async () => {
@@ -305,7 +326,16 @@ describe.skipIf(!up && !inCi)('RLS with jose (admin), ana (P2 client + affiliate
       expect((await ana.storage.from('client-assets').upload(`clients/${SEED.clients.invitedSin}/${randomUUID()}`, file)).error).toBeTruthy();
       expect((await bob.storage.from('client-assets').download(path)).error).toBeTruthy();
       expect((await ana.storage.from('client-assets').download(path)).error).toBeNull();
-      expect((await ana.from('client_assets').insert({ client_id: SEED.clients.ana, uploaded_by_user_id: ana.userId, source: 'admin', storage_path: 'x' })).error).toBeTruthy();
+      // A valid path, so the refusal comes from RLS (source = 'admin') and not from the storage_path check.
+      const adminId = randomUUID();
+      const asAdmin = await ana.from('client_assets').insert({
+        id: adminId,
+        client_id: SEED.clients.ana,
+        uploaded_by_user_id: ana.userId,
+        source: 'admin',
+        storage_path: `clients/${SEED.clients.ana}/${adminId}`,
+      });
+      expect(asAdmin.error?.code).toBe('42501');
       expect((await ana.storage.from('client-assets').remove([path])).error).toBeNull();
       expect((await ana.from('client_assets').delete().eq('id', id)).error).toBeNull();
     });
