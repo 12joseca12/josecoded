@@ -89,7 +89,7 @@ Documentos (al día con la v6 desde el 2026-09-29):
 - [ ] A11y fase 2: zona táctil del pager ≥ 24 px (44 recomendado) con pseudo-elemento; `--pager-idle` 1,61:1 necesita indicador no cromático o alfa ~0,55; pulgar de scroll a ~3:1 (`#5a4fb0` o `--pager-hover`); helper axe en 2.17 incluyendo los 404 (revisor-accesibilidad).
 
 **De la revisión de la 1.7 (2026-10-24):**
-- [ ] 1.8: el adaptador real de `ScheduledJobsRepo` debe implementar el nuevo `disable(name, reason)` (pone `enabled = false`; se usa cuando la fila tiene cron o tz imposibles). Un job desactivado se reactiva a mano tras corregir la fila.
+- [x] 1.8 (hecho en `apps/api/src/adapters/scheduled-jobs.ts` + RPC `scheduled_jobs_*`; no ejecutado contra Supabase real): el adaptador real de `ScheduledJobsRepo` debe implementar el nuevo `disable(name, reason)` (pone `enabled = false`; se usa cuando la fila tiene cron o tz imposibles). Un job desactivado se reactiva a mano tras corregir la fila.
 - [ ] Desde el Mac: mirar en `josecoded-worker` si su 401 por token interno se distingue de otros 401 (cabecera o código en el envelope). Hoy el gateway reintenta cualquier 401 con `WORKER_INTERNAL_TOKEN_PREV`, así que un POST no idempotente (`/ai/admin-chat`) podría ejecutarse dos veces si el 401 viene de otra causa.
 - [ ] `API_MODE: "development"` en el Worker de producción devuelve `details` de error hasta el corte a producción (DT §3.6).
 - [ ] Un test del gateway que espera 403 falló una vez y pasó al relanzar: vigilar si es intermitente.

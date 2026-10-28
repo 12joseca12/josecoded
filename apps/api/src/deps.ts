@@ -2,14 +2,16 @@
 // Ports live in @josecoded/types (api.ts); real adapters live in src/adapters/ and are the only files
 // that import SDKs or call third parties. Routes receive `c.var.deps`; they never import adapters.
 // The legacy modules (v1, v1-protected, forum, admin-chat, health, system) do not use this.
+import { createScheduledJobsRepoFromEnv } from './adapters/scheduled-jobs';
+
 import type { Env } from './types/env.types';
 import type { Clock, ScheduledJobsRepo } from '@josecoded/types';
 
 export interface Deps {
   clock: Clock;
   /**
-   * Source of the scheduled-jobs dispatcher. No real adapter yet: `private.scheduled_jobs` is created by
-   * migration 1.8, so until then the dispatcher finds nothing to run. Tests inject a fake.
+   * Source of the scheduled-jobs dispatcher (`private.scheduled_jobs`, migration 1.8). Undefined without
+   * SUPABASE_SERVICE_ROLE_KEY, in which case the dispatcher finds nothing to run. Tests inject a fake.
    */
   scheduledJobs?: ScheduledJobsRepo;
 }
@@ -28,9 +30,10 @@ type TestBindings = { TEST?: string; __deps?: Partial<Deps> };
  * The clock is trivial enough to live inline until a second adapter justifies the folder.
  */
 export function buildDeps(env: Env): Deps {
-  void env;
+  const scheduledJobs = createScheduledJobsRepoFromEnv(env);
   return {
     clock: { now: () => new Date() },
+    ...(scheduledJobs ? { scheduledJobs } : {}),
   };
 }
 
