@@ -1,5 +1,6 @@
 # Pantallas independientes y sus contenidos
 
+> **Versión 2.0, 2026-10-28** (`arquitecto`, reposicionamiento de Jose; spec v2.0 §0): mapa nuevo con `/servicios` (P20), `/partners` (P21), `/lab` (P22–P23), chat por casos (P11 v2), CRM en admin (C1–C13); P1 y P4 se retiran con 301. El bloque **«v2.0»** al final del §0 manda sobre §1, P1, P4, P11 y §4 de la v1.0, que se conservan como historial.
 > Versión 1.0, 2026-09-29. Autor: agente `ux`. **Cerrado** con las respuestas de Jose a la batería del §6 (v0.1 era el borrador con las preguntas).
 > Parte de: home cerrada en `ref/home-v6/` (contrato `.impeccable/surfaces/docs-superpowers-design-ref-home-v6-index-html.md`, sistema en `DESIGN.md`), inventario `2026-09-29-componentes-home-v6.md` (con sus decisiones cerradas del §3), `docs/working-agreements.md`, `PRODUCT.md`, spec v1.5.2 y UX v3.2 (`2026-09-17-josecoded-ux.md`; sus §2 y §4.1 de la home están superados, el resto se toma como punto de partida salvo lo que cambia el §7).
 > Aquí no hay wireframes ni HTML. Es el mapa, el contenido que necesita cada pantalla y el orden de diseño y construcción. Los wireframes se hacen después, pantalla a pantalla, con `/impeccable shape` y un prototipo en el navegador para que Jose decida viéndolo.
@@ -31,7 +32,166 @@ Se resuelven sin preguntar porque las decisiones ya están tomadas:
 
 ---
 
-## 1. Mapa de pantallas
+## v2.0 — Reposicionamiento (2026-10-28, `arquitecto` sobre las decisiones de Jose; spec v2.0 §0, D36–D47)
+
+> Este bloque **sustituye** a §1 (mapa), a las fichas P1, P4 y P11 de §3 y al orden de §4 en lo que contradiga. El resto (P2, P3 con selector nuevo, P6–P10, P12–P19, A1–A7, §1.3, §1.4, §2, §5) sigue vigente salvo las notas que se indican. Marco: identidad única freelance; una página de oferta `/servicios` con cuatro vías; `/partners` para agencias; blog técnico + `/lab`; chat por casos sin cuenta; CRM en `/admin`. Mismo sistema visual v6 (`DESIGN.md`); home nueva en `ref/home-v7/`.
+
+### v2.0 §1 Mapa de pantallas
+
+Rutas en español; inglés bajo `/en/...`. Estado: **nueva**, **cambia**, **se retira**, **igual**.
+
+#### Públicas
+
+| # | Pantalla | Ruta | Modo | Persona | Se llega desde | Estado |
+|---|---|---|---|---|---|---|
+| P20 | **Servicios** (cuatro vías: por hora · proyecto cerrado · packs · contratación) | `/servicios` · `/en/services` (anclas `#por-hora`, `#proyecto`, `#packs`, `#contratacion` / `#hourly`, `#fixed-scope`, `#packs`, `#hiring`) | Persuadir | Marta, Dani, Pablo | Hero («Cómo trabajo conmigo →»), escena Servicios (celda ampliada → su vía), cabecera, ⌘K («desde 900 €», «40 €/h», «CV»), menú, pie, 301 desde `/empresas` y `/negocios` | **nueva** (funde P1 y P4) |
+| P21 | **Partners** (agencias y consultoras) | `/partners` · `/en/partners` | Persuadir | Nuria | Enlace de los mensajes a agencias (LinkedIn, correo), pie («Para agencias»), ⌘K, menú ☰; **no** está en la barra principal de la cabecera | **nueva** |
+| P22 | **Lab** (índice de demos) | `/lab` · `/en/lab` | Leer / Operar (demo) | Dani, Pablo | Escena Lab/Blog, cabecera («Lab/Blog» → `/lab` o `/blog` según exista), ⌘K, pie | **nueva** |
+| P23 | **Ficha de demo** | `/lab/[slug]` | Operar (demo) + Leer | Dani, Pablo | P22, artículo relacionado, escena Lab/Blog («Probar») | **nueva** |
+| P1 | ~~Webs para tu negocio~~ | `/negocios` → **301** `/servicios#packs`; `/en/business` → `/en/services#packs` | — | — | — | **se retira** |
+| P4 | ~~Trabajo con empresas~~ | `/empresas` → **301** `/servicios#por-hora`; `/en/companies` → `/en/services#hourly` | — | — | — | **se retira** |
+| P2 | Generador de propuesta | `/propuesta` | Operar | Marta, Dani | P20 (`?pack=P1..P5`, ProposalPrompt), ⌘K, área | **cambia**: clasifica en cinco packs; `P5` con opción `plus` |
+| P3 | Contacto / Hablamos | `/contacto` | Persuadir | todos | Cierre corto, «¿Empezamos?», ⌘K, menú, errores | **cambia**: selector de **cuatro vías** (Soy cliente · Soy agencia · Contratación · Otra cosa); `?via=client|partner|recruiter|other` (Q17 de la spec: recomendación mantenerla) |
+| P6 | Sobre mí (+ Stack y formación + CV) | `/sobre-mi` | Persuadir | todos | — | **igual**; la frase de cabecera pasa a identidad única; «Descargar CV» es/en |
+| P7, P8 | Proyectos y caso | `/proyectos`, `/proyectos/[slug]` | Persuadir / Leer | Dani, Nuria | — | **igual**; la ficha de caso añade «Hablar de un proyecto así» → `/contacto?via=client` y, en casos propios, enlace a `/partners` («¿Eres agencia?») |
+| P9, P10 | Blog y artículo (guías largas) | `/blog`, `/blog/[slug]` | Leer | Dani, Pablo | — | **cambia**: guías ≥ 1.500 palabras con `TechArticle`; «Avísame de nuevas guías» (crea contacto `newsletter_interest` en el CRM, sin Brevo); enlace a la demo del lab si existe |
+| P11 | Chat con el asistente | `/chat` (`?case=client|partner|recruiter|curious`) | Operar | todos | Cabecera, ⌘K, P20, P21, P6, cierre de cada página, 404 | **cambia**: sin cuenta obligatoria; selector «¿Quién eres?»; contacto rápido; `AuthGateCard` desaparece (login opcional «Guardar esta conversación») |
+| P12–P15, P17 | Auth y cuenta | `/auth/*`, `/perfil` | Operar | — | — | **igual**; el callback asocia el hilo del chat (`chat_sid` → `user_id`) además de la señal de origen |
+| P18, P19 | Legales y errores | `/legal/*`, errores | Leer | — | — | **igual**; privacidad añade finalidades: chat anónimo (cookie `chat_sid`, hash de IP para la cuota), CRM (datos de contacto de leads, agencias y reclutadores; base legal: interés legítimo / consentimiento), borradores con IA |
+
+#### Área privada (`/area-clientes`): A1–A7 **igual** (§1.2). A1: la señal de origen admite `partner` y `recruiter` (portada neutra con dos puertas para ellos: «Hablar de una colaboración» → `/partners`, «Ver mi CV» → PDF).
+
+#### Admin: CRM (`/admin`, solo Jose, solo español; modo Operar)
+
+| # | Pantalla | Ruta | Contenido | Acción primaria | Estado |
+|---|---|---|---|---|---|
+| C1 | **Resumen** | `/admin` | Contadores (`admin_counters()` ampliada): contactos con siguiente acción vencida, hilos de chat sin leer, agencias en `replied`, leads nuevos, comentarios pendientes, ampliaciones y recompensas pendientes; semáforo de Omen | Ir a la bandeja filtrada por «vencidas» | **cambia** (era 6.1) |
+| C2 | **Contactos** (bandeja) | `/admin/crm/contactos` (`?kind=lead|client|agency|recruiter|other&status=…&due=1`) | Tabla densa: nombre, organización, `kind`, estado, siguiente acción + fecha (vencida en rojo), último contacto, canal. Filtros persistentes en URL. Acciones en fila: cambiar estado (hoja), fijar siguiente acción | Abrir contacto | **nueva** (absorbe la bandeja de leads 6.2) |
+| C3 | **Contacto** (detalle) | `/admin/crm/contactos/[id]` | Cabecera (nombre, organización, `kind`, estado, enlaces LinkedIn/web/Notion, email con copiar, WhatsApp si hay teléfono); **siguiente acción** editable; historial unificado (`crm_interactions`: mensajes, notas, reuniones, cambios de estado, hilos de chat enlazados); si es lead: `ProposalCard`, `monto`, «Cerrar cobrado» (RPC heredada); si es cliente: enlace a su ficha (C8); pestaña **Mensajes**: borradores (C4) | Redactar mensaje | **nueva** |
+| C4 | **Redactar mensaje** (hoja dentro de C3) | `/admin/crm/contactos/[id]?mensaje=nuevo|[draftId]` | Elegir canal (invitación LinkedIn 300 · InMail 1.900 · correo) y plantilla por `kind`; «Generar con IA» (voz + reglas; contador de caracteres; linter de reglas: sin emojis, sin exclamaciones, sin precios, sin Alten, 3CatInfo/3Cat separados); editar; **Copiar**; «Abrir LinkedIn» / «Abrir correo» (`mailto:`; Gmail `drafts.create` solo si existe OAuth, Q20); **«Lo he enviado»** → interacción `message_sent` + estado sugerido. **El sistema nunca envía** | Copiar | **nueva** |
+| C5 | **Organizaciones** | `/admin/crm/organizaciones`, `/[id]` | Lista con `kind`, `fit`, ciudad, nº de contactos, estado agregado; detalle con sus contactos y notas de investigación (`agencias.md` «Motivo», «Señal») | Añadir contacto | **nueva** |
+| C6 | **Importar** | `/admin/crm/importar` | Pegar o subir `Comercial/agencias.md` (o CSV); vista previa de lo que crea/actualiza (por `name_normalized`); confirmar | Importar | **nueva** |
+| C7 | **Chat: hilos** | `/admin/crm/chat`, `/admin/crm/chat/[id]` | Lista de hilos (caso, idioma, origen, último mensaje, sin leer, IA on/off, contacto enlazado o «anónimo»); detalle con el hilo, **interruptor IA** (takeover), respuesta manual, «Crear contacto desde este hilo» (prellena con lo que el visitante haya dicho), «Enlazar a contacto» | Responder | **cambia** (era 6.6, sobre tablas `chat_*` nuevas) |
+| C8 | **Contextos del chat** | `/admin/crm/contextos`, `/admin/crm/contextos/[case]/[locale]` | Rejilla 4 casos × 2 idiomas con estado (publicado vX · borrador · sin contexto) y fecha; editor: título, hechos estructurados (disponibilidad, enlaces, stack, qué sí / qué no, `rates_ref` fijo a `pricing`), texto libre `body_md`; **Diff** con la versión publicada; «Probar» (abre `/chat?case=…&preview=<version>` solo para admin); **Publicar**; historial de versiones y «Volver a esta» | Publicar | **nueva** |
+| C9 | **Clientes, tareas, material, packs, ampliaciones** | `/admin/clientes`, `/admin/ampliaciones` | Como 6.4 del plan v2.2 | — | **igual** |
+| C10 | **Afiliados** | `/admin/afiliados` | Como 6.5 | — | **igual** |
+| C11 | **Moderación** | `/admin/comentarios` | Como 6.3 | — | **igual** |
+| C12 | **Radar** (módulo del CRM) | `/admin/crm/radar/*` | UX v3 §7 + spec §13; las ofertas crean contactos `recruiter` y oportunidades | — | **post-lanzamiento** (D43) |
+| C13 | **Newsletter** | `/admin/newsletter/*` | Spec de newsletter | — | **post-lanzamiento, a reevaluar** (D44) |
+
+Navegación del admin (escritorio lateral, móvil barra inferior de 4): **Contactos · Chat · Clientes · Más** (Más: organizaciones, importar, contextos, afiliados, moderación, ampliaciones; Radar y Newsletter cuando existan).
+
+### v2.0 §2 Componentes nuevos por pantalla
+
+| Pantalla | Reutiliza (R) | Nuevo (N) |
+|---|---|---|
+| P20 Servicios | PageHead, Scene (sin `fill`), Bento, BentoCell, SlidingList (vías), SegmentedControl + RateFigure (tarifas), PackStrip (índice de packs), PackCompare (cinco columnas / un pack por vista en móvil), CheckList, ProposalPrompt, ProcessSteps, FAQ, CtaRow, Closing compacto, StickyCtaBar (móvil: WhatsApp + Propuesta, solo en la vía packs visible) | **WayNav** (navegación de vías pegajosa bajo la cabecera, anclas, `aria-current`), **WaySection** (cabecera de vía: titular a dos tonos + párrafo citable + acción primaria + secundarias), **PackOption** (opción «ampliada» dentro de la ficha de P5), **HiringCard** (vía d: CV es/en, reservar, chat, LinkedIn, email con copiar) |
+| P21 Partners | PageHead, Scene, Bento, BentoCell, CheckList, ProcessSteps, FAQ, ProjectCard (casos propios), Closing compacto | **QuickContact** (cuatro vías en una fila: WhatsApp, Cal.com, email con copiar, LinkedIn; también se usa en el chat), **FitList** («Cuándo encajo / cuándo no»), **PartnerForm** (corto: nombre, agencia, email, qué necesitan; Turnstile; crea contacto `agency` vía gateway) |
+| P22 Lab | PageHead, SegmentedControl (Todas · Motion · Herramientas · IA), Chip | **DemoCard** (miniatura estática, nombre, una frase, etiqueta, «Probar») |
+| P23 Ficha de demo | Prose, Toc, Chip, CodeBlock, Closing compacto, PostTeaser (artículo relacionado) | **DemoFrame** (isla cliente con la demo, estado estático sin JS, botón «Reiniciar», respeta reduced motion), **DemoMeta** (qué muestra, cómo está hecho, peso del bundle no se muestra: sin métricas) |
+| P11 Chat v2 | ChatBubble, Chip, LiveDot, QuickContact | **CaseSelector** («¿Quién eres?», 4 opciones, cambiable), **ChatThread**, **ChatComposer** (Turnstile invisible en el primer envío), **QuotaNotice** (429 amable con vías de contacto), **SaveThreadHint** (login opcional) |
+| P3 Contacto v2 | SegmentedControl (4 vías), ContactForm, CalEmbed, CopyField, QuickContact | — |
+| C2–C8 CRM | AppShell del admin, tablas y hojas propias (CSS Modules), StatusBadge, Toast, EmptyState, Form/Field, ProposalCard, ChatBubble | **ContactTable**, **NextActionField**, **InteractionTimeline**, **StatusSheet**, **DraftComposer** (con `RuleLinter` y contador), **CopyButton**, **ImportPreview**, **ThreadList**, **TakeoverSwitch**, **ContextEditor**, **ContextDiff**, **VersionList** |
+
+### v2.0 §3 Contenidos por pantalla
+
+#### P20 Servicios `/servicios`
+
+| # | Bloque | Contenido | Acción | Hay / falta |
+|---|---|---|---|---|
+| 1 | Cabecera | Titular a dos tonos («Trabajo como freelance. Web, móvil e IA, de la forma que te encaje.», lo fija `redactor`) + párrafo citable (quién, qué, para quién, cómo se contrata) + WayNav | — | Falta: titular definitivo es/en (`redactor` con `voz.md`) |
+| 2 | **Vía (a) Por hora** `#por-hora` | Para equipos y agencias que necesitan refuerzo; qué incluye la hora (desarrollo, consultoría, auditoría, formación interna); cómo se factura (semanal, parte de horas); 40 €/h desde `pricing` | **[Reservar 20 min]** · «Preguntar al asistente →» (`/chat?case=client`) · email | Hay: tarifa. Falta: Cal.com `{{DATO}}`; texto en es/en |
+| 3 | **Vía (b) Proyecto cerrado** `#proyecto` | Feature cerrada desde 150 € (qué es una feature: alcance, precio y plazo cerrados antes de empezar); cómo es el proceso (hablamos → propuesta cerrada → demo semanal → entrega + 30 días); para proyectos mayores, los packs de la vía (c) | **[Pedir propuesta orientativa]** (→ `/propuesta`) · WhatsApp | Hay: `tarifas.md`, `condiciones.md` |
+| 4 | **Vía (c) Packs** `#packs` | PackStrip (cinco) + **PackCompare** con P1–P4 web y **P5 App móvil** (desde 4.000 € · 6 semanas; opción «ampliada» desde 6.000 € · 8 semanas con notificaciones, pagos o integración); qué incluye en lenguaje llano; plazo; «Precios desde, sin IVA. Dominio, hosting y cuentas de las stores a tu nombre.»; **ExtraList** (mantenimiento 49/149 €/mes, SEO 250/600 €, GEO 300 €, seguridad 250 €); ProposalPrompt | **[Pedir propuesta con este pack]** por pack (`/propuesta?pack=Px`) · WhatsApp prellenado por pack | Hay: `pricing.json` (faltan los 36 `{{DATO}}` en inglés y «para quién», ya anotados) |
+| 5 | **Vía (d) Abierto a contratación** `#contratacion` | Una frase honesta (plantilla o externo de larga duración; remoto o Madrid); qué aporta (stack, experiencia formando equipos, sin métricas); **HiringCard**: Descargar CV (es · en), Reservar 20 min, Preguntar al asistente (`/chat?case=recruiter`), LinkedIn, email con copiar | **[Reservar 20 min]** | Falta: CV maestro es/en `{{DATO}}`, Cal.com, texto de disponibilidad (solo si Jose lo quiere publicar; si no, lo dice el chat) |
+| 6 | Cómo trabajo | ProcessSteps común a las vías (a)–(c) | — | Hay: `condiciones.md` |
+| 7 | Pruebas | Casos destacados (ProjectCard ×3), «Código en GitHub», stores, sin contadores | — | Falta: enlaces `{{DATO}}` |
+| 8 | Preguntas | Una FAQ por vía (plazos, qué necesito darte, facturación, remoto, NDA, ¿y si no sé qué vía es la mía?) con `FAQPage` | — | Falta: respuestas de Jose es/en `{{DATO}}` |
+| 9 | Cierre corto | «¿No sabes por dónde empezar? Cuéntamelo y te digo qué vía encaja.» → [Preguntar al asistente] + «Otras formas de hablar →» | — | Hay |
+| — | Barra fija móvil | Solo mientras la vía (c) está en pantalla: [WhatsApp] [Propuesta] | — | Hay |
+
+#### P21 Partners `/partners`
+
+| # | Bloque | Contenido | Acción | Hay / falta |
+|---|---|---|---|---|
+| 1 | Cabecera | «Para agencias y consultoras. Un desarrollador externo que encaja en tu proceso.» + párrafo citable (RN, Next, IA; marca blanca; por hora o feature cerrada; Madrid y remoto) + **QuickContact** | **QuickContact** (WhatsApp · Reservar 20 min · `freelance@josecoded.com` con copiar · LinkedIn) | Falta: WhatsApp, Cal.com, buzón activo (Q18), URL de LinkedIn `{{DATO}}` |
+| 2 | Qué hago para agencias | Tres celdas: apps React Native/Expo que vuestros diseñadores diseñan; webs y productos Next.js cuando el CMS no llega; IA integrada en producto (chat, clasificación, resúmenes) | — | Falta: texto es/en (`redactor` a partir de `agencias-mensajes.md` y `canales-captacion.md`) |
+| 3 | Cómo encajo en vuestro proceso | ProcessSteps: brief vuestro → estimación en 48 h → trabajo en vuestro repo o en el mío → demo semanal → entrega con documentación; herramientas (GitHub/GitLab, Linear/Jira, Slack), **marca blanca** (sin firma, sin publicar el caso si no queréis), NDA (firmo el vuestro) | — | Falta: confirmar herramientas y plazo de estimación `{{DATO}}` |
+| 4 | Cuándo encajo y cuándo no | FitList: sí (picos de carga, un perfil RN/Next que no tenéis, un MVP con fecha); no (equipos de 5+ en plantilla, tecnologías fuera del stack, guardias 24/7) | — | Falta: validación de Jose |
+| 5 | Tarifa | **Sin precio** (recomendación Q16): «Por hora o feature cerrada; te paso tarifa y disponibilidad en una llamada de 20 min» | [Reservar 20 min] | Depende de Q16 |
+| 6 | Casos | ProjectCard de HazmeFila, Oportunix y josecoded.com (casos propios, sin NDA); nota «he trabajado para medios y consultoras bajo NDA» sin nombres | — | Falta: casos (ya pedidos) |
+| 7 | Preguntas | ¿Facturas como autónomo? ¿Firmas NDA? ¿Trabajas en nuestro repo? ¿Marca blanca? ¿Disponibilidad? ¿Qué pasa si el proyecto crece? | — | Falta: respuestas es/en `{{DATO}}` |
+| 8 | Contacto corto | PartnerForm (nombre, agencia, email, qué necesitáis, Turnstile) → contacto `agency` en el CRM + Telegram; o «Preguntar al asistente» (`/chat?case=partner`) | Enviar | Hay |
+
+#### P22 Lab y P23 Ficha de demo
+
+| Bloque | Contenido | Hay / falta |
+|---|---|---|
+| Regla de publicación | **Mínimo 2 demos reales**; con menos, `/lab` 404 y fuera de cabecera, menú, ⌘K, pie y escena (como el blog). La cabecera muestra «Lab/Blog» si existe cualquiera de los dos; «Lab» o «Blog» si solo uno | — |
+| Índice | «Cosas que pruebo. Demos y herramientas pequeñas, con su explicación.» + filtro + DemoCard | Falta: **las demos** `{{DATO}}` (candidatas en spec §0.7) |
+| Ficha | DemoFrame (demo viva; estado estático sin JS), «Qué muestra», «Cómo está hecho» (Prose + CodeBlock), «Léelo largo →» (artículo del blog si existe), relacionadas, cierre corto («¿Quieres algo así en tu producto?» → `/servicios#proyecto`) | Falta: texto es/en por demo |
+| JSON-LD | `SoftwareSourceCode` + `TechArticle` | — |
+
+#### P11 Chat v2 `/chat`
+
+| Bloque | Contenido | Hay / falta |
+|---|---|---|
+| Primera pantalla | CaseSelector «¿Quién eres?»: Busco un desarrollador para mi web o app · Soy una agencia o consultora · Estoy contratando · Solo curioseo. Preseleccionado por `?case` o por página de origen; cambiable siempre | Hay (copy nuevo es/en por `redactor`) |
+| Hilo | ChatBubble; primera respuesta del asistente según el caso (desde el contexto publicado); QuickContact aparece cuando el visitante pide hablar con Jose o tras 3 intercambios; SaveThreadHint («Entra para guardar esta conversación», opcional) | Falta: **contexto inicial por caso e idioma** `{{DATO}}` (ocho textos: 4 casos × es/en; los redacta Jose con `redactor` y los publica en el CRM) |
+| Límite | QuotaNotice al mensaje 21/día: «Hoy ya hemos hablado bastante. Si quieres seguir, escríbeme directamente» + QuickContact | Hay |
+| Takeover | Banda «Jose ha entrado en la conversación» cuando la IA se desactiva | Hay |
+
+#### P3 Contacto v2: selector de cuatro vías (Soy cliente → WhatsApp + propuesta + formulario plegado; Soy agencia → QuickContact + PartnerForm; Contratación → CV + reservar + email; Otra cosa → formulario + chat). Resto igual que P3 v1.0.
+
+#### CRM C2–C8: copy solo en español; sin `{{DATO}}` salvo las plantillas de mensaje, que se siembran desde `agencias-mensajes.md` (reglas + estructura de las plantillas «2-10» y «11-50» sin datos personales) y los **contextos iniciales del chat**.
+
+### v2.0 §3.1 `{{DATO}}` nuevos (todos en es y en salvo el CRM)
+
+- Titular y párrafo citable de `/servicios` y una frase por vía (`redactor` propone; Jose valida).
+- Texto de `/partners`: qué hago para agencias, cómo encajo, cuándo sí/no, FAQ, herramientas y plazo de estimación; decisión Q16 (precio o no).
+- **Contexto inicial del chat por caso** (4 × es/en): hechos que la IA puede decir a un cliente, a una agencia, a un reclutador y a un curioso (disponibilidad, zona, stack, qué no hace, enlaces); se publican desde el CRM, no en el repo.
+- Demos del lab: mínimo dos, con nombre, qué muestran y texto corto; elegir entre las candidatas de spec §0.7.
+- Tres guías largas del blog (sustituye «tres artículos»: ahora guías técnicas).
+- CV maestro es/en (ya pedido; ahora bloquea también la vía (d)).
+- Cal.com, WhatsApp, buzón `freelance@` activo (Q18), URL de LinkedIn.
+- FAQ de `/servicios` por vía (incluida contratación: remoto, disponibilidad, tipo de contrato).
+- Textos legales ampliados: chat anónimo, cuota por IP, CRM.
+- Siguen abiertos los de v1.0 §3.1 (foto, historia, trayectoria, proyectos, legales, stores, GitHub).
+
+### v2.0 §4 Orden de diseño y construcción (lanzar cuanto antes)
+
+| Orden | Pantalla | Por qué ahora | Prototipo de `ui` |
+|---|---|---|---|
+| 0 | **Home v7** (`ref/home-v7/`) | Gate de Jose antes de portar; fija la escena Servicios y Lab/Blog | **Sí** (obligatorio, D45) |
+| 1 | **P20 Servicios** | Destino de todas las redirecciones y de la escena Servicios; fija WayNav, WaySection, PackCompare de cinco, HiringCard | **Sí** (sustituye al de Negocios) |
+| 2 | **P3 Contacto v2 + P21 Partners** | Salidas de todas las personas; `/partners` es el enlace de los mensajes a agencias (canal prioritario) | Contacto **sí** (ya previsto); Partners **no** (`DESIGN.md` + componentes de P20; Jose aprueba en preview) |
+| 3 | **P2 Generador** (cinco packs) | Lead más cualificado | No |
+| 4 | **P11 Chat v2** | Puerta de Nuria y Pablo; necesita los contextos (CRM C8) | No (Operar) |
+| 5 | **P7/P8 Proyectos y casos** | Prueba de oficio; casos propios para `/partners` | No |
+| 6 | **P6 Sobre mí + CV** | Vía (d) y confianza | No |
+| 7 | **P9/P10 Blog (guías) + P22/P23 Lab** | SEO/GEO; regla de 3 guías y 2 demos | No |
+| 8 | **P18/P19 Legales y errores** | Obligatorios | No |
+| 9 | **P12–P15, P17 Auth** | Habilitan guardar el hilo, comentarios y área | No |
+| 10 | **A1–A7 Área** | Clientes de packs | Sí (ya previsto) |
+| 11 | **C1–C8 CRM** | Imprescindible para el lanzamiento (D46); `ui` prototipa shell + bandeja de contactos + detalle | **Sí** (shell, C2, C3) |
+
+### v2.0 §6 Impacto en spec y plan
+
+| Tema | Antes | Ahora | Dónde |
+|---|---|---|---|
+| Oferta | P1 `/negocios` + P4 `/empresas` | P20 `/servicios` con cuatro vías y cinco packs; 301 | Spec D37; plan 3.2 reescrita, 3.3 reasignada a `/partners`, 9.1 |
+| Agencias | Sin página | P21 `/partners` + CRM `agency` + plantillas de mensaje | Spec D38, D41; plan 3.3, 6.x |
+| Chat | Con cuenta, `admin-chat/*`, antesala | Sin cuenta, casos, contextos en el CRM, `assistant/*` + `chat_*` | Spec D39, D40; plan 1.11, 4.4 |
+| Admin | Bandeja de leads + módulos | CRM (contactos, organizaciones, importar, mensajes, chat, contextos) + módulos | Spec D41, D42; plan fase 6 |
+| Radar | En v1 con válvula | Módulo del CRM, post-lanzamiento | Spec D43; plan fase 7 tras 9.6 |
+| Contenido | Blog ≥ 3 artículos; newsletter fase 10 | Guías largas + `/lab` ≥ 2 demos; newsletter aplazada | Spec D44; plan 4.2, 4.5, fase 10 |
+| Home | v6 (Empresas, Negocios) | v7 (Servicios, Lab/Blog), prototipo con gate | Spec D45; plan 2.0, 2.14, 2.15 |
+| Lanzamiento | Todo junto con válvula | Público + área + CRM | Spec D46; plan orden de fases |
+
+
+---
+
+## 1. Mapa de pantallas (v1.0; **superado por el mapa v2.0 de arriba**)
 
 Rutas en español; en inglés, bajo `/en/...` con el equivalente de UX v3 §2.1 (todas existen en los dos idiomas). Estado: **definida** (tiene ficha en UX v3 y sigue valiendo en lo esencial), **a medias** (tiene ficha, pero la v6 o una decisión posterior la cambia), **nueva** (no existe en ningún documento).
 
@@ -137,7 +297,7 @@ Leyenda: **R** = reutiliza del inventario v6. **N** = nuevo. Todas usan además 
 
 Bloques en el orden de lectura (móvil). **Hay**: contenido que ya existe en el repo, en la spec o en el vault. **`{{DATO}}`**: lo tiene que aportar Jose. **Todo el copy existe en `messages/es.json` y `messages/en.json`**; todo `{{DATO}}` de texto (descripciones, historia, FAQ, casos de estudio, entregables) se pide en los dos idiomas, y `i18n:check` marca como pendiente la clave que falte en cualquiera de ellos. Los precios salen siempre de `packages/pricing` (fuente: `Comercial/tarifas.md`), se formatean por idioma con `Intl.NumberFormat` y nunca se escriben en `messages`.
 
-### P1 Webs para tu negocio `/negocios`
+### P1 Webs para tu negocio `/negocios` (**v2.0: se retira; 301 a `/servicios#packs`; contenido absorbido por P20 vía (c)**)
 
 | # | Bloque | Contenido | Hay / falta |
 |---|---|---|---|
@@ -166,7 +326,7 @@ Contenido completo en UX §4.4 y §10.3 (preguntas, chips, estados y microcopy),
 | 3b | Vía empresa | Formulario abierto (primaria: Enviar) + [Reservar 20 min] (Cal.com) + email con copiar | Falta: email real y cuenta de Cal.com `{{DATO}}` |
 | 4 | Datos | Email, LinkedIn, GitHub, «Respondo en menos de {{DATO}}» | Hay: LinkedIn. Falta: email, usuario de GitHub, plazo de respuesta `{{DATO}}` |
 
-### P4 Trabajo con empresas `/empresas`
+### P4 Trabajo con empresas `/empresas` (**v2.0: se retira; 301 a `/servicios#por-hora`; contenido absorbido por P20 vías (a), (b) y (d)**)
 
 Solo trabajo y freelancing para empresas: por proyecto, por horas o como puesto. **Sin packs** (ni web ni app: los packs viven en Negocios).
 
@@ -232,7 +392,7 @@ Se lee en dos o tres minutos. Para cada proyecto, Jose aporta unos dos párrafos
 
 Candidatos con material ya en el repo: «Cómo está hecha josecoded.com» (complementa el caso de estudio), «Una nube de glifos en Three.js» (escena del hero) y «Un asistente que nunca envía nada sin mí» (Radar). Los escribe Jose o `redactor` a partir de lo que Jose cuente.
 
-### P11 Chat `/chat`
+### P11 Chat `/chat` (**v2.0: superado por «P11 Chat v2» del bloque v2.0: sin cuenta, casos, contexto desde el CRM**)
 
 Contenido en UX §4.11 y §10.4, en es y en. El asistente responde en el idioma de la página. Falta: dos o tres intercambios reales de ejemplo para la antesala (de respuestas verdaderas de `knowledge.json`), y actualizar `josecoded-api/src/knowledge/knowledge.json` con los `{{DATO}}` resueltos.
 
@@ -291,7 +451,7 @@ Todos los de texto se piden **en español y en inglés**.
 
 ---
 
-## 4. Orden de diseño y construcción
+## 4. Orden de diseño y construcción (v1.0; **superado por v2.0 §4**)
 
 Es el orden en que se diseñan y se construyen las pantallas. **No es un orden de lanzamiento**: producción se abre con todo (§0).
 
