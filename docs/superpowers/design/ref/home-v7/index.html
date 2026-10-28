@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07060F">
+<script>document.documentElement.classList.add('js');</script>
+<title>josecoded · home v7 · bento por escenas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="base.css">
+<link rel="stylesheet" href="v7.css">
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/" } }</script>
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+<header class="nav" id="nav">
+  <a class="nav__brand" href="#top" aria-label="josecoded, inicio">josecoded</a>
+  <nav class="nav__links" aria-label="Principal">
+    <a href="/sobre-mi" data-sec="sobre-mi">Sobre mí</a><a href="/servicios" data-sec="servicios">Servicios</a><a href="/proyectos" data-sec="proyectos">Proyectos</a><a href="/lab" data-sec="lab-blog" data-need="lab">Lab</a><a href="/blog" data-sec="lab-blog" data-need="blog">Blog</a>
+  </nav>
+  <div class="nav__right">
+    <a class="nav__lang" href="/en" hreflang="en" lang="en">EN</a>
+    <button class="cmdk" type="button" id="cmdk-open" aria-haspopup="dialog"><i data-lucide="search" aria-hidden="true"></i><span>Buscar</span><kbd>⌘K</kbd></button>
+    <a class="nav__chat" href="/chat" aria-label="Abrir el chat"><span class="live" aria-hidden="true"></span><i data-lucide="message-square" aria-hidden="true"></i><span>Chat</span></a>
+    <a class="btn btn--solid btn--sm" href="/auth" aria-label="Login"><i data-lucide="log-in" aria-hidden="true"></i><span>Login</span></a>
+    <button class="nav__menu" id="menu-btn" type="button" aria-label="Menú" aria-expanded="false" aria-controls="menu"><i class="m-open" data-lucide="menu" aria-hidden="true"></i><i class="m-close" data-lucide="x" aria-hidden="true"></i></button>
+    <a class="nav__menu nav__menu--nojs" href="#pie" aria-label="Menú: ir al índice del pie"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></a>
+  </div>
+  <nav class="menu" id="menu" aria-label="Menú" hidden>
+    <a href="/sobre-mi">Sobre mí</a><a href="/servicios">Servicios</a><a href="/proyectos">Proyectos</a><a href="/lab" data-need="lab">Lab</a><a href="/blog" data-need="blog">Blog</a>
+    <a class="menu__sep" href="/partners">Para agencias</a><a href="/contacto">Contacto</a>
+    <div class="menu__lang" role="group" aria-label="Idioma"><span aria-current="true">Español</span><a href="/en" hreflang="en" lang="en">English</a></div>
+  </nav>
+</header>
+<div class="field" id="field" aria-hidden="true"><div class="field__pool"></div><i class="beam beam--3"></i><i class="beam beam--1"></i><i class="beam beam--2"></i></div>
+<div class="grain" aria-hidden="true"></div>
+<canvas id="scene" aria-hidden="true"></canvas>
+<main id="main">
+  <section class="hero" id="top" data-scene="cycle" data-side="right">
+    <div class="hero__copy">
+      <h1 class="hero__title">Jose Carlos<br>Sánchez</h1>
+      <p class="hero__sub"><span class="todo">{{DATO: subtítulo de identidad única, una frase, sin audiencias}}</span></p>
+      <div class="hero__ctas">
+        <a class="btn btn--solid" href="/servicios">Servicios y precios</a>
+        <a class="btn btn--ghost" href="/proyectos">Ver proyectos</a>
+      </div>
+    </div>
+    <div class="hero__stage" id="stage" role="img" aria-label="Caracteres de código que forman, por turnos, un móvil, una web y un chip de IA">
+      <img class="hero__static" src="glyph-phone-alpha.png" alt="" loading="lazy">
+      <ol class="cycle" aria-hidden="true"><li></li><li></li><li></li></ol>
+    </div>
+  </section>
+
+  <section class="scene" id="sobre-mi" data-scene="off">
+    <header class="scene__head"><h2 class="sec-title">Quién hay detrás. <span>Una persona, no una agencia.</span></h2></header>
+    <div class="bento-wrap"><div class="bento">
+        <article class="cell surface cell--big cell--tall" style="--span:7" tabindex="-1">
+          <header class="cell__head"><span class="cell__ic"><i data-lucide="user" aria-hidden="true"></i></span><h3>Sobre mí</h3><button class="cell__open" type="button" aria-label="Ampliar Sobre mí"><i data-lucide="maximize-2" aria-hidden="true"></i></button><button class="cell__close" type="button" aria-label="Cerrar"><i data-lucide="x" aria-hidden="true"></i></button></header>
+          <div class="cell__body"><div class="about"><div class="photo" aria-hidden="true"><span class="todo">{{DATO: foto real de Jose}}</span></div><div class="about__text"><p class="about__name">Jose Carlos Sánchez</p><p class="muted">Desarrollador full-stack freelance · <span class="todo">{{DATO: ciudad}}</span></p><p class="lead"><span class="todo">{{DATO: entradilla Sobre mí con identidad única}}</span></p></div></div>
+<div class="row-links"><a class="go" href="/sobre-mi">Conóceme<i data-lucide="arrow-right" aria-hidden="true"></i></a><a class="go" href="#pendiente" data-dato="CV es (PDF)">Descargar CV<i data-lucide="download" aria-hidden="true"></i></a></div></div><div class="cell__more"><p class="muted">Aquí se abre la página completa.</p><a class="btn btn--solid btn--sm" href="/sobre-mi">Ir a Sobre mí</a></div>
+        </article>
+        <article class="cell surface " style="--span:5">
+          <header class="cell__head"><span class="cell__ic"><i data-lucide="layers" aria-hidden="true"></i></span><h3>Con qué trabajo</h3></header>
+          <div class="cell__body"><div class="marquee" aria-label="Next.js, React Native, Expo, TypeScript, Supabase, Cloudflare Workers, Three.js, n8n, PostgreSQL, Tailwind"><div class="marquee__track" aria-hidden="true"><span>Next.js</span><span>React Native</span><span>Expo</span><span>TypeScript</span><span>Supabase</span><span>Cloudflare Workers</span><span>Three.js</span><span>n8n</span><span>PostgreSQL</span><span>Tailwind</span><span>Next.js</span><span>React Native</span><span>Expo</span><span>TypeScript</span><span>Supabase</span><span>Cloudflare Workers</span><span>Three.js</span><span>n8n</span><span>PostgreSQL</span><span>Tailwind</span></div></div><div class="marquee marquee--rev" aria-hidden="true"><div class="marquee__track"><span>Cloudflare Workers</span><span>Three.js</span><span>n8n</span><span>PostgreSQL</span><span>Tailwind</span><span>Next.js</span><span>React Native</span><span>Expo</span><span>TypeScript</span><span>Supabase</span><span>Cloudflare Workers</span><span>Three.js</span><span>n8n</span><span>PostgreSQL</span><span>Tailwind</span><span>Next.js</span><span>React Native</span><span>Expo</span><span>TypeScript</span><span>Supabase</span></div></div><p class="muted small">Lo que uso a diario, en producción.</p></div>
+        </article>
+        <article class="cell surface cell--tint" style="--span:5">
+          <header class="cell__head"><span class="cell__ic"><i data-lucide="message-circle" aria-hidden="true"></i></span><h3>Trato directo</h3></header>
+          <div class="cell__body"><div class="mini-chat" aria-label="Ejemplo de conversación"><p class="bub bub--me" data-t="Hola Jose, ¿me ayudas con la web de mi negocio?"></p><p class="bub bub--jc" data-t="Claro. Cuéntame qué necesitas y te digo cómo lo haría."></p></div><p class="lead">Hablas conmigo desde el primer mensaje hasta la entrega.</p><a class="go" href="/contacto">Escríbeme<i data-lucide="arrow-right" aria-hidden="true"></i></a></div>
+        </article>
+    </div></div>
+  </section>
+
+  <section class="scene" id="servicios" data-scene="off">
+    <header class="scene__head"><h2 class="sec-title"><span class="todo">{{DATO: titular, tono 1}}</span> <span><span class="todo">{{DATO: tono 2}}</span></span></h2><p class="scene__aside"><span>¿Eres una agencia?</span> <a class="go" href="/partners">Para agencias<i data-lucide="arrow-right" aria-hidden="true"></i></a></p></header>
+    <div class="bento-wrap"><div class="bento">
+        <article class="cell surface cell--big cell--hero cell--wide cell--vias" style="--span:12" tabindex="-1">
+          <header class="cell__head"><span class="cell__ic"><i data-lucide="route" aria-hidden="true"></i></span><h3>Cómo trabajar conmigo</h3><p class="cell__note">Precios sin IVA.</p><button class="cell__open" type="button" aria-label="Ampliar Cómo trabajar conmigo"><i data-lucide="maximize-2" aria-hidden="true"></i></button><button class="cell__close" type="button" aria-label="Cerrar"><i data-lucide="x" aria-hidden="true"></i></button></header>
+          <div class="cell__body">
+            <div class="vias">
+              <fieldset class="vias__list">
+                <legend class="sr">Cómo trabajar conmigo</legend>
+                <span class="vias__hl" aria-hidden="true"></span>
+                <label class="via"><input class="sr" type="radio" name="via" value="hora" data-href="/servicios#por-hora" checked><span class="ic"><i data-lucide="clock" aria-hidden="true"></i></span><span class="via__name">Por horas</span><span class="via__fig">40&nbsp;€/h</span></label>
+                <label class="via"><input class="sr" type="radio" name="via" value="encargo" data-href="/servicios#proyecto"><span class="ic"><i data-lucide="package-check" aria-hidden="true"></i></span><span class="via__name">Encargo a precio fijo</span><span class="via__fig">desde 150&nbsp;€</span></label>
+                <label class="via"><input class="sr" type="radio" name="via" value="packs" data-href="/servicios#packs"><span class="ic"><i data-lucide="store" aria-hidden="true"></i></span><span class="via__name">Packs de web y app</span><span class="via__fig">desde 900&nbsp;€</span></label>
+                <label class="via"><input class="sr" type="radio" name="via" value="empleo" data-href="/servicios#contratacion"><span class="ic"><i data-lucide="briefcase" aria-hidden="true"></i></span><span class="via__name">Abierto a empleo</span><span class="via__fig">CV y entrevista</span></label>
+              </fieldset>
+              <div class="vias__panels">
+                <div class="via-panel" data-via="hora">
+                  <p class="lead"><span class="todo">{{DATO: frase de la vía por horas}}</span></p>
+                  <div class="via-panel__acts"><a class="btn btn--solid" href="#pendiente" data-dato="URL de Cal.com"><i data-lucide="calendar" aria-hidden="true"></i>Reservar 20&nbsp;min</a><a class="go" href="/chat?case=client">Preguntar al asistente<i data-lucide="arrow-right" aria-hidden="true"></i></a></div>
+                </div>
+                <div class="via-panel" data-via="encargo">
+                  <p class="lead"><span class="todo">{{DATO: frase de la vía encargo a precio fijo}}</span></p>
+                  <div class="via-panel__acts"><a class="btn btn--solid" href="/propuesta"><i data-lucide="sparkles" aria-hidden="true"></i>Pedir propuesta orientativa</a><a class="go" href="#pendiente" data-dato="WhatsApp prellenado (proyecto)">Escribir por WhatsApp<i data-lucide="arrow-right" aria-hidden="true"></i></a></div>
+                </div>
+                <div class="via-panel" data-via="packs">
+                  <p class="lead"><span class="todo">{{DATO: frase de la vía packs}}</span></p>
+                  <div class="via-panel__acts"><a class="btn btn--solid" href="/propuesta"><i data-lucide="sparkles" aria-hidden="true"></i>Pedir propuesta</a><a class="go" href="#pendiente" data-dato="WhatsApp prellenado (packs)">Escribir por WhatsApp<i data-lucide="arrow-right" aria-hidden="true"></i></a></div>
+                </div>
+                <div class="via-panel" data-via="empleo">
+                  <p class="lead"><span class="todo">{{DATO: frase de la vía abierto a empleo}}</span></p>
+                  <div class="via-panel__acts"><a class="btn btn--solid" href="#pendiente" data-dato="CV es (PDF)"><i data-lucide="download" aria-hidden="true"></i>Descargar CV (PDF)</a><a class="go" href="#pendiente" data-dato="URL de Cal.com">Reservar 20&nbsp;min<i data-lucide="arrow-right" aria-hidden="true"></i></a><a class="go" href="/chat?case=recruiter">Preguntar al asistente<i data-lucide="arrow-right" aria-hidden="true"></i></a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="cell__more"><p class="muted"><span class="todo">{{DATO: resumen de las cuatro vías}}</span></p><a class="btn btn--solid btn--sm" id="vias-go" href="/servicios#por-hora">Ir a Servicios</a></div>
+        </article>
+        <article class="cell surface" style="--span:7">
+          <header class="cell__head"><span class="cell__ic"><i data-lucide="package" aria-hidden="true"></i></span><h3>Packs</h3><p class="cell__note">Desde, sin IVA.</p></header>
+          <div class="cell__body">
+            <div class="packs5 packs--live"><span class="packs__bar" aria-hidden="true"></span>
+              <div class="packs5__group packs5__group--web">
+                <a class="pack" href="/servicios?pack=P1#packs"><small>Web básica</small><b><span class="sr">desde </span>900&nbsp;€<span class="sr"> sin IVA. Ver qué incluye</span></b></a>
+                <a class="pack is-hi" href="/servicios?pack=P2#packs"><small>Pedidos o reservas</small><b><span class="sr">desde </span>1.400&nbsp;€<span class="sr"> sin IVA. Ver qué incluye</span></b></a>
+                <a class="pack" href="/servicios?pack=P3#packs"><small>Gestión</small><b><span class="sr">desde </span>2.500&nbsp;€<span class="sr"> sin IVA. Ver qué incluye</span></b></a>
+                <a class="pack" href="/servicios?pack=P4#packs"><small>Gestión + automatizaciones</small><b><span class="sr">desde </span>4.200&nbsp;€<span class="sr"> sin IVA. Ver qué incluye</span></b></a>
+              </div>
+              <div class="packs5__group packs5__group--app">
+                <a class="pack" href="/servicios?pack=P5#packs"><small>App móvil</small><b><span class="sr">desde </span>4.000&nbsp;€<span class="sr"> sin IVA. Ver qué incluye</span></b></a>
+              </div>
+            </div>
+            <a class="go" href="/servicios#packs">Qué incluye cada pack<i data-lucide="arrow-right" aria-hidden="true"></i></a>
+          </div>
+        </article>
+        <article class="cell surface cell--tint cell--rates" style="--span:5">
+          <header class="cell__head"><span class="cell__ic"><i data-lucide="receipt" aria-hidden="true"></i></span><h3>Tarifas</h3><p class="cell__note">Sin IVA.</p></header>
+          <div class="cell__body">
+            <fieldset class="seg"><legend class="sr">Modalidad</legend><span class="seg__thumb" aria-hidden="true"></span><label><input class="sr" type="radio" name="rate" value="0" checked>Por horas</label><label><input class="sr" type="radio" name="rate" value="1">Encargo</label></fieldset>
+            <div class="rate-big" aria-live="polite"><b class="rate-0">40&nbsp;€/h</b><b class="rate-1">desde 150&nbsp;€</b></div>
+            <p class="muted small rate-0">Dentro de tu equipo, a tu ritmo.</p><p class="muted small rate-1">Una funcionalidad cerrada, con precio y plazo.</p>
+            <a class="go rate-0" href="/servicios#por-hora">Trabajo por horas<i data-lucide="arrow-right" aria-hidden="true"></i></a><a class="go rate-1" href="/servicios#proyecto">Encargo a precio fijo<i data-lucide="arrow-right" aria-hidden="true"></i></a>
+          </div>
+        </article>
+    </div></div>
+  </section>
+
+  <section class="tour" id="proyectos" data-scene="off" aria-label="Proyectos">
+    <div class="tour__sticky">
+      <header class="scene__head tour__head"><h2 class="sec-title">Proyectos en uso. <span>Con enlace a la store, a la web o al código.</span></h2><a class="go" href="/proyectos">Ver todos<i data-lucide="arrow-right" aria-hidden="true"></i></a></header>
+      <div class="tour__track">
+          <article class="tcard surface" data-i="0">
+            <div class="tcard__art" aria-hidden="true"><img src="glyph-phone-alpha.png" alt="" width="801" height="722" loading="lazy"></div>
+            <div class="tcard__copy"><h3 class="tcard__name">HazmeFila</h3><p class="lead"><span class="todo">{{DATO: qué hace, en una frase}}</span></p><p class="tcard__meta"><i data-lucide="smartphone" aria-hidden="true"></i>App</p><a class="go" href="/proyectos/hazmefila">Ver proyecto<i data-lucide="arrow-right" aria-hidden="true"></i></a></div>
+          </article>
+          <article class="tcard surface" data-i="1">
+            <div class="tcard__art" aria-hidden="true"><img src="glyph-web2-alpha.png" alt="" width="801" height="722" loading="lazy"></div>
+            <div class="tcard__copy"><h3 class="tcard__name">Oportunix</h3><p class="lead"><span class="todo">{{DATO: qué hace, en una frase}}</span></p><p class="tcard__meta"><i data-lucide="globe" aria-hidden="true"></i>Web</p><a class="go" href="/proyectos/oportunix">Ver proyecto<i data-lucide="arrow-right" aria-hidden="true"></i></a></div>
+          </article>
+          <article class="tcard surface" data-i="2">
+            <div class="tcard__art" aria-hidden="true"><img src="glyph-web2-alpha.png" alt="" width="801" height="722" loading="lazy"></div>
+            <div class="tcard__copy"><h3 class="tcard__name">Webs de comercios</h3><p class="lead"><span class="todo">{{DATO: qué hace, en una frase}}</span></p><p class="tcard__meta"><i data-lucide="globe" aria-hidden="true"></i>Web</p><a class="go" href="/proyectos/webs-de-comercios">Ver proyecto<i data-lucide="arrow-right" aria-hidden="true"></i></a></div>
+          </article>
+          <article class="tcard surface" data-i="3">
+            <div class="tcard__art" aria-hidden="true"><img src="glyph-phone-alpha.png" alt="" width="801" height="722" loading="lazy"></div>
+            <div class="tcard__copy"><h3 class="tcard__name">3catinfo</h3><p class="lead"><span class="todo">{{DATO: qué hace, en una frase}}</span></p><p class="tcard__meta"><i data-lucide="smartphone" aria-hidden="true"></i>App</p><a class="go" href="/proyectos/3catinfo">Ver proyecto<i data-lucide="arrow-right" aria-hidden="true"></i></a></div>
+          </article>
+      </div>
+      <div class="rail" aria-hidden="true"><div class="rail__links"><span data-i="0">HazmeFila</span><span data-i="1">Oportunix</span><span data-i="2">Webs de comercios</span><span data-i="3">3catinfo</span></div><div class="rail__bar"><span></span></div></div>
+    </div>
+  </section>
+
+  <section class="scene" id="lab-blog" data-scene="off">
+    <header class="scene__head"><h2 class="sec-title"><span class="todo">{{DATO: titular, tono 1}}</span> <span><span class="todo">{{DATO: tono 2}}</span></span></h2><a class="go" href="/blog" data-need="blog">Todas las guías<i data-lucide="arrow-right" aria-hidden="true"></i></a><a class="go" href="/lab" data-only="lab" hidden>Todas las demos<i data-lucide="arrow-right" aria-hidden="true"></i></a></header>
+    <div class="bento-wrap"><div class="bento">
+        <article class="cell surface cell--big cell--wide cell--lab" style="--span:6" tabindex="-1" data-need="lab">
+          <header class="cell__head"><span class="cell__ic"><i data-lucide="flask-conical" aria-hidden="true"></i></span><h3>Lab</h3><button class="cell__open" type="button" aria-label="Ampliar Lab"><i data-lucide="maximize-2" aria-hidden="true"></i></button><button class="cell__close" type="button" aria-label="Cerrar"><i data-lucide="x" aria-hidden="true"></i></button></header>
+          <div class="cell__body">
+            <div class="demo" aria-hidden="true">
+              <div class="demo__screen"><div class="demo__track">
+                <div class="demo__scene"><i class="demo__title"></i><div class="demo__bento"><i class="w7 t2"></i><i class="w5"></i><i class="w5"></i></div></div>
+                <div class="demo__scene"><i class="demo__title"></i><div class="demo__bento"><i class="w12"></i><i class="w7"></i><i class="w5"></i></div></div>
+                <div class="demo__scene"><i class="demo__title"></i><div class="demo__bento"><i class="w6 t2"></i><i class="w3 t2"></i><i class="w3 t2"></i></div></div>
+              </div><div class="demo__pager"><i></i><i></i><i></i></div></div>
+            </div>
+            <p class="post__title"><span class="todo">{{DATO: nombre de la demo}}</span></p>
+            <p class="lead"><span class="todo">{{DATO: una frase sobre la demo}}</span></p>
+            <a class="go" href="/lab/{{DATO-slug}}">Probar la demo<i data-lucide="arrow-right" aria-hidden="true"></i></a>
+          </div><div class="cell__more"><p class="muted"><span class="todo">{{DATO: resumen del Lab}}</span></p><a class="btn btn--solid btn--sm" href="/lab">Ir al Lab</a></div>
+        </article>
+        <article class="cell surface cell--big cell--wide" style="--span:6" tabindex="-1" data-only="blog" hidden>
+          <header class="cell__head"><span class="cell__ic"><i data-lucide="book-open" aria-hidden="true"></i></span><h3>Último artículo</h3><button class="cell__open" type="button" aria-label="Ampliar Último artículo"><i data-lucide="maximize-2" aria-hidden="true"></i></button><button class="cell__close" type="button" aria-label="Cerrar"><i data-lucide="x" aria-hidden="true"></i></button></header>
+          <div class="cell__body"><p class="muted small"><span class="todo">{{DATO: fecha}}</span></p><p class="post__title"><span class="todo">{{DATO: título del último artículo}}</span></p><p class="lead"><span class="todo">{{DATO: entradilla}}</span></p><a class="go" href="/blog/{{DATO-slug}}">Leer<i data-lucide="arrow-right" aria-hidden="true"></i></a></div><div class="cell__more"><p class="muted">Aquí se abre la página completa.</p><a class="btn btn--solid btn--sm" href="/blog">Ir al Blog</a></div>
+        </article>
+        <article class="cell surface" style="--span:3" data-need="blog">
+          <header class="cell__head"><span class="cell__ic"><i data-lucide="file-text" aria-hidden="true"></i></span><h3>Guía</h3></header>
+          <div class="cell__body"><p class="muted small"><span class="todo">{{DATO: fecha}}</span></p><p class="post__title post__title--sm"><span class="todo">{{DATO: título}}</span></p><a class="go" href="/blog/{{DATO-slug}}">Leer<i data-lucide="arrow-right" aria-hidden="true"></i></a></div>
+        </article>
+        <article class="cell surface" style="--span:3" data-need="blog">
+          <header class="cell__head"><span class="cell__ic"><i data-lucide="file-text" aria-hidden="true"></i></span><h3>Guía</h3></header>
+          <div class="cell__body"><p class="muted small"><span class="todo">{{DATO: fecha}}</span></p><p class="post__title post__title--sm"><span class="todo">{{DATO: título}}</span></p><a class="go" href="/blog/{{DATO-slug}}">Leer<i data-lucide="arrow-right" aria-hidden="true"></i></a></div>
+        </article>
+        <article class="cell surface" style="--span:3" data-only="lab" hidden>
+          <header class="cell__head"><span class="cell__ic"><i data-lucide="flask-conical" aria-hidden="true"></i></span><h3>Demo</h3></header>
+          <div class="cell__body"><p class="post__title post__title--sm"><span class="todo">{{DATO: nombre de la demo}}</span></p><p class="muted small"><span class="todo">{{DATO: una frase}}</span></p><a class="go" href="/lab/{{DATO-slug}}">Probar<i data-lucide="arrow-right" aria-hidden="true"></i></a></div>
+        </article>
+        <article class="cell surface" style="--span:3" data-only="lab" hidden>
+          <header class="cell__head"><span class="cell__ic"><i data-lucide="flask-conical" aria-hidden="true"></i></span><h3>Demo</h3></header>
+          <div class="cell__body"><p class="post__title post__title--sm"><span class="todo">{{DATO: nombre de la demo}}</span></p><p class="muted small"><span class="todo">{{DATO: una frase}}</span></p><a class="go" href="/lab/{{DATO-slug}}">Probar<i data-lucide="arrow-right" aria-hidden="true"></i></a></div>
+        </article>
+    </div></div>
+  </section>
+
+  <section class="close" id="hablamos" data-scene="off">
+    <h2 class="close__title">¿Empezamos? <span>Cuéntame qué necesitas.</span></h2>
+    <div class="close__ctas">
+      <a class="btn btn--solid btn--lg" href="#pendiente" data-dato="WhatsApp"><i data-lucide="message-circle" aria-hidden="true"></i>Escribir por WhatsApp</a>
+      <a class="btn btn--ghost btn--lg" href="#pendiente" data-dato="URL de Cal.com"><i data-lucide="calendar" aria-hidden="true"></i>Reservar 20&nbsp;min</a>
+    </div>
+    <p class="close__hint">o pulsa <kbd class="key" id="keyCmd">⌘</kbd><kbd class="key" id="keyK">K</kbd> y busca lo que quieras</p>
+  </section>
+</main>
+<footer class="foot" id="pie">
+  <span class="foot__brand">josecoded</span>
+  <nav aria-label="Pie"><a href="/sobre-mi">Sobre mí</a><a href="/servicios">Servicios</a><a href="/proyectos">Proyectos</a><a href="/lab" data-need="lab">Lab</a><a href="/blog" data-need="blog">Blog</a><a href="/partners">Para agencias</a><a href="/contacto">Contacto</a><a href="/area-clientes">Área de clientes</a><a href="/legal/aviso-legal">Legal</a></nav>
+  <span class="foot__rev">rev. <time datetime="2026-10-28">28 oct 2026</time></span>
+</footer>
+<dialog class="palette" id="palette" aria-label="Ir a">
+  <form method="dialog" class="palette__box">
+    <div class="palette__input"><i data-lucide="search" aria-hidden="true"></i><input id="pq" type="text" placeholder="Busca «precio», «cv»…" autocomplete="off" aria-controls="pres" aria-autocomplete="list"><kbd>esc</kbd></div>
+    <ul class="palette__list" id="pres" role="listbox"></ul>
+    <div class="palette__foot"><span><kbd>↑</kbd><kbd>↓</kbd> mover</span><span><kbd>↵</kbd> abrir</span></div>
+  </form>
+</dialog>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="v7.js" type="module"></script>
+<script src="scene.js" type="module"></script>
+</body>
+</html>

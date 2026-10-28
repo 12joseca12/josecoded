@@ -7,6 +7,7 @@ export type TokenName =
   | '--text'
   | '--text-2'
   | '--text-3'
+  | '--highlight'
   | '--line'
   | '--line-2'
   | '--card'
@@ -128,6 +129,7 @@ export type TokenName =
   | '--sp-pad-cell'
   | '--sp-gap-cell'
   | '--sp-gap-cell-body'
+  | '--sp-gap-split'
   | '--sp-0-5'
   | '--sp-1-5'
   | '--sp-2-5'
@@ -145,6 +147,7 @@ export type TokenName =
   | '--stroke-line'
   | '--stroke-line-active'
   | '--tint-cmdk'
+  | '--tint-preview'
   | '--tint-chip'
   | '--tint-kbd'
   | '--tint-icon'
@@ -205,6 +208,7 @@ export type TokenName =
   | '--dur-vt'
   | '--dur-draw'
   | '--dur-float'
+  | '--dur-demo-loop'
   | '--dur-marquee-a'
   | '--dur-marquee-b'
   | '--dur-blink'
@@ -240,8 +244,11 @@ export type TokenName =
   | '--cq-card-stack'
   | '--cq-prompt-stack'
   | '--cq-list-meta'
+  | '--cq-cell-narrow'
   | '--cq-bento-2'
+  | '--cq-packs-row'
   | '--cq-packs-dividers'
+  | '--cq-vias-split'
   | '--cq-bento-12'
   | '--grad-keycap'
   | '--grad-photo'
@@ -265,6 +272,7 @@ export const tokens = {
   text: '--text',
   'text-2': '--text-2',
   'text-3': '--text-3',
+  highlight: '--highlight',
   line: '--line',
   'line-2': '--line-2',
   card: '--card',
@@ -386,6 +394,7 @@ export const tokens = {
   'sp-pad-cell': '--sp-pad-cell',
   'sp-gap-cell': '--sp-gap-cell',
   'sp-gap-cell-body': '--sp-gap-cell-body',
+  'sp-gap-split': '--sp-gap-split',
   'sp-0-5': '--sp-0-5',
   'sp-1-5': '--sp-1-5',
   'sp-2-5': '--sp-2-5',
@@ -403,6 +412,7 @@ export const tokens = {
   'stroke-line': '--stroke-line',
   'stroke-line-active': '--stroke-line-active',
   'tint-cmdk': '--tint-cmdk',
+  'tint-preview': '--tint-preview',
   'tint-chip': '--tint-chip',
   'tint-kbd': '--tint-kbd',
   'tint-icon': '--tint-icon',
@@ -463,6 +473,7 @@ export const tokens = {
   'dur-vt': '--dur-vt',
   'dur-draw': '--dur-draw',
   'dur-float': '--dur-float',
+  'dur-demo-loop': '--dur-demo-loop',
   'dur-marquee-a': '--dur-marquee-a',
   'dur-marquee-b': '--dur-marquee-b',
   'dur-blink': '--dur-blink',
@@ -498,8 +509,11 @@ export const tokens = {
   'cq-card-stack': '--cq-card-stack',
   'cq-prompt-stack': '--cq-prompt-stack',
   'cq-list-meta': '--cq-list-meta',
+  'cq-cell-narrow': '--cq-cell-narrow',
   'cq-bento-2': '--cq-bento-2',
+  'cq-packs-row': '--cq-packs-row',
   'cq-packs-dividers': '--cq-packs-dividers',
+  'cq-vias-split': '--cq-vias-split',
   'cq-bento-12': '--cq-bento-12',
   'grad-keycap': '--grad-keycap',
   'grad-photo': '--grad-photo',

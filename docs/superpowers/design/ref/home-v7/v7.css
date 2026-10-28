@@ -1,0 +1,348 @@
+/* home v7 · bento por escenas (base: v6.css; lo nuevo va en la sección «v7» al final). Adaptativo, sin medidas mágicas.
+   taste: bento con celdas exactas por sección, una sección por pantalla, Proyectos como carrusel fijado.
+   impeccable: todo escala de forma continua (clamp con vw/svh/vmin) y el bento se reorganiza según el ancho de SU contenedor (container queries).
+   Emil: el paso entre escenas es un gesto deliberado (~0,8 s ease-in-out); lo demás, respuesta inmediata. */
+
+:root {
+  /* escalas fluidas: dependen del ancho y del alto a la vez, así una pantalla baja no se desborda */
+  --pad-scene: clamp(1rem, 0.5rem + 3vw, 3.5rem);
+  --pad-top: clamp(4.75rem, 3rem + 7svh, 7.5rem);
+  --gap-bento: clamp(0.75rem, 0.4rem + 1.2vmin, 1.25rem);
+  --pad-cell: clamp(1.125rem, 0.6rem + 1.6vmin, 2.25rem);
+  --title: clamp(1.75rem, 0.9rem + 1.4vw + 1.6svh, 3rem);
+}
+.sec-title { font-size: var(--title); }
+.lead { font-size: clamp(0.9375rem, 0.85rem + 0.35vmin, 1.0625rem); }
+
+/* el scroll se asienta al principio de cada escena (proximity: nunca atrapa); con paginado activo manda JS */
+html { scroll-snap-type: y proximity; }
+html.paging { scroll-snap-type: none; scroll-behavior: auto; }
+.hero, .scene, .tour, .close { scroll-snap-align: start; }
+
+/* ---------- escena ---------- */
+.scene { min-height: 100svh; max-width: var(--max); margin: 0 auto; padding: var(--pad-top) var(--pad-scene) clamp(2rem, 5svh, 4rem); display: grid; align-content: center; gap: clamp(1.25rem, 3svh, 2.5rem); }
+.scene__head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 1rem 2rem; }
+.scene__head .sec-title { max-width: 22ch; }
+
+/* ---------- bento: se decide por el ancho del propio bento ---------- */
+.bento-wrap { container: bento / inline-size; }
+.bento { display: grid; gap: var(--gap-bento); grid-template-columns: minmax(0, 1fr); }
+@container bento (min-width: 34rem) {
+  .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cell--hero, .cell--wide, .cell--tall { grid-column: 1 / -1; }
+}
+@container bento (min-width: 52rem) {
+  .bento { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+  .cell { grid-column: span var(--span, 6); }
+  .cell--tall { grid-row: span 2; }
+}
+
+/* ---------- celda ---------- */
+.cell { container: cell / inline-size; display: grid; align-content: start; gap: clamp(0.875rem, 2svh, 1.5rem); padding: var(--pad-cell); border-radius: clamp(1rem, 0.6rem + 1vmin, 1.5rem); }
+.cell--big { cursor: pointer; }
+.cell--tint { background: linear-gradient(160deg, rgb(124 108 255 / 0.14), var(--card) 60%); }
+.cell--hero { background: linear-gradient(135deg, rgb(124 108 255 / 0.2), var(--card) 55%); }
+.cell--tall { grid-template-rows: auto 1fr; }   /* la celda alta reparte: cuerpo arriba, enlace anclado abajo */
+.cell--tall .cell__body { align-content: space-between; }
+.cell__head { display: flex; align-items: center; gap: 0.75rem; }
+.cell__ic { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 0.5rem; background: rgb(157 140 255 / 0.12); color: var(--violet-soft); flex: none; }
+.cell--hero .cell__ic { background: var(--violet); color: var(--ink); }
+.cell__head h3 { margin: 0; font-size: 0.9375rem; font-weight: 550; color: var(--text-2); }
+.cell__open, .cell__close { margin-left: auto; display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: 0.625rem; color: var(--text-3); transition: color 150ms ease, background-color 150ms ease; }
+.cell__close { display: none; }
+.cell__body { display: grid; gap: clamp(0.875rem, 2svh, 1.25rem); align-content: start; }
+.cell__more { display: none; gap: 1rem; justify-items: start; padding-top: 1.25rem; box-shadow: inset 0 1px 0 var(--line); }
+.cell--hero .muted, .cell--hero .pack small, .cell--tint .muted { color: var(--text-2); }
+@media (hover: hover) and (pointer: fine) {
+  .cell--big:hover { box-shadow: inset 0 0 0 1px var(--line-2), inset 0 1px 0 rgb(185 173 255 / 0.1), 0 30px 60px -30px rgb(5 3 20 / 0.95); }
+  .cell--big:hover .cell__open { color: var(--text); background: rgb(157 140 255 / 0.1); }
+}
+
+/* sobre mí: hueco de foto real (proporción fija) junto al texto */
+.about { display: grid; grid-template-columns: clamp(5.5rem, 38cqi, 16rem) minmax(0, 1fr); gap: clamp(1rem, 3cqi, 1.75rem); align-items: start; }
+.about__text { display: grid; gap: 0.5rem; }
+.photo { aspect-ratio: 4 / 5; display: grid; place-items: center; padding: 0.5rem; text-align: center; border-radius: 1rem; background: linear-gradient(160deg, #221d4d, #151233); box-shadow: inset 0 0 0 1px var(--line-2); }
+.photo .todo { font-size: 0.75rem; opacity: 0.8; }
+
+/* contenido que se adapta a la anchura de SU celda */
+.rate-big b { font-size: clamp(2rem, 1.2rem + 5cqi, 3.5rem) !important; }
+.strip { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem 1.5rem; }
+.post__title { margin: 0; font-size: clamp(1.125rem, 0.9rem + 2cqi, 1.75rem); font-weight: 600; letter-spacing: -0.03em; line-height: 1.15; }
+.post__title--sm { font-size: 1.125rem; }
+.seg { justify-self: start; }
+
+/* ---------- celda ampliada (View Transitions) ---------- */
+.cell.is-open { position: fixed; inset: clamp(4.25rem, 8svh, 5.5rem) clamp(0.75rem, 6vw, 8vw) clamp(0.75rem, 3svh, 2rem); z-index: 40; overflow: auto; cursor: auto; grid-column: auto; grid-row: auto; grid-template-rows: none; background: rgb(14 12 32 / 0.97); }
+.cell.is-open .cell__open { display: none; } .cell.is-open .cell__close { display: grid; margin-left: auto; }
+.cell.is-open .cell__more { display: grid; }
+.scrim { position: fixed; inset: 0; z-index: 35; background: rgb(7 6 15 / 0.72); backdrop-filter: blur(6px); }
+::view-transition-group(*) { animation-duration: 380ms; animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1); }
+::view-transition-old(cell), ::view-transition-new(cell) { height: 100%; width: 100%; object-fit: cover; }
+
+/* ---------- transición entre escenas, ligada al scroll ---------- */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* cada pieza se enfoca con su propia entrada en pantalla: nunca queda desenfocada mientras la lees, sea cual sea el alto */
+    .scene__head, .cell, .close > * {
+      animation: scene-in linear both, scene-out linear both;
+      animation-timeline: view(), view();
+      animation-range: entry 0% entry 75%, exit 25% exit 100%;
+    }
+    .cell.is-open { animation: none; }
+  }
+}
+@keyframes scene-in { from { opacity: 0; transform: translateY(40px) scale(0.985); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+@keyframes scene-out { from { opacity: 1; transform: none; } to { opacity: 0.25; transform: translateY(-24px) scale(0.97); } }
+
+
+/* ---------- Proyectos: carrusel fijado; en columna cuando la pantalla es más alta que ancha ---------- */
+.tour { position: relative; }
+.tour__sticky { display: grid; grid-template-columns: 100%; gap: clamp(1rem, 2.5svh, 2rem); padding: var(--pad-top) 0 clamp(1.5rem, 4svh, 2.5rem); }
+.tour__head { width: 100%; max-width: var(--max); margin: 0 auto; padding: 0 var(--pad-scene); }
+.tour__track { display: grid; gap: var(--gap-bento); padding: 0 var(--pad-scene); max-width: var(--max); margin: 0 auto; width: 100%; }
+.tcard { container: tcard / inline-size; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: clamp(1rem, 2.5vmin, 2rem); padding: var(--pad-cell); border-radius: clamp(1.125rem, 0.8rem + 1vmin, 1.75rem); }
+.tcard__art { display: grid; place-items: center; min-height: clamp(9rem, 22svh, 14rem); background: radial-gradient(60% 55% at 50% 45%, rgb(91 75 255 / 0.22), transparent 70%); overflow: hidden; }
+.tcard__art img { width: 88%; height: auto; aspect-ratio: 801 / 722; max-height: 16rem; object-fit: contain; }   /* altura reservada: sin salto de layout al cargar (lazy) */
+
+.tcard__copy { display: grid; align-content: center; gap: clamp(0.75rem, 1.8svh, 1.125rem); min-width: 0; }
+.tcard__meta { margin: 0; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.8125rem; color: var(--text-3); }
+.tcard__name { margin: 0; font-size: clamp(1.75rem, 1rem + 5cqi, 3rem); font-weight: 600; letter-spacing: -0.04em; line-height: 1; }
+.rail { display: none; }
+@supports (animation-timeline: view()) {
+  @media (min-aspect-ratio: 1/1) and (prefers-reduced-motion: no-preference) {
+    .tour { height: 420svh; view-timeline-name: --tour; view-timeline-axis: block; }
+    .tour__sticky { position: sticky; top: 0; height: 100svh; overflow: hidden; grid-template-rows: auto 1fr auto; }
+    .tour__track { display: flex; justify-self: start; align-self: center; width: max-content; max-width: none; margin: 0; padding: 0 max(var(--pad-scene), calc((100vw - var(--max)) / 2 + var(--pad-scene))); animation: pan linear both; animation-timeline: --tour; animation-range: contain 0% contain 100%; will-change: transform; }
+    .tcard { width: clamp(20rem, 58vw + 4svh, 58rem); height: clamp(18rem, 56svh, 32rem); opacity: 0.4; transform: scale(0.96); transition: opacity 360ms ease, transform 360ms cubic-bezier(0.23, 1, 0.32, 1); }
+    .tcard.is-active { opacity: 1; transform: none; box-shadow: inset 0 0 0 1px var(--line-2), inset 0 1px 0 rgb(185 173 255 / 0.09), 0 40px 80px -40px rgb(5 3 20 / 0.95); }
+    .rail { width: clamp(16rem, 40vw, 36rem); justify-self: center; display: grid; gap: 0.75rem; }
+  }
+}
+@keyframes pan { from { transform: translateX(0); } to { transform: translateX(calc(-100% + 100vw)); } }
+.rail__links { display: flex; justify-content: space-between; gap: 0.5rem; }
+.rail__links span { font-size: 0.8125rem; color: var(--text-3); transition: color 200ms ease; white-space: nowrap; }
+.rail__links span.is-on { color: var(--text); }
+.rail__bar { height: 2px; border-radius: 2px; background: rgb(157 140 255 / 0.16); overflow: hidden; }
+.rail__bar span { display: block; height: 100%; background: var(--violet-soft); transform-origin: left; animation: grow linear both; animation-timeline: --tour; animation-range: contain 0% contain 100%; }
+@keyframes grow { from { transform: scaleX(0.04); } to { transform: scaleX(1); } }
+
+/* cierre como última escena */
+.close { min-height: 100svh; display: grid; align-content: center; padding-left: var(--pad-scene); padding-right: var(--pad-scene); }
+.close__title { font-size: clamp(2.25rem, 1rem + 4vw + 2svh, 5rem); }
+
+@media (prefers-reduced-motion: reduce) { html { scroll-snap-type: none; } ::view-transition-group(*) { animation: none; } }
+
+/* =================== vida en el bento (un gesto con propósito por celda) =================== */
+/* luz que sigue al cursor dentro de la celda: indica qué celda tienes bajo la mano */
+@media (hover: hover) and (pointer: fine) {
+  .cell { background-image: radial-gradient(22rem circle at var(--mx, 50%) var(--my, -30%), rgb(157 140 255 / var(--lit, 0)), transparent 60%); transition: box-shadow 200ms ease; }
+  .cell:hover { --lit: 0.09; }
+  .cell--tint { background-image: radial-gradient(22rem circle at var(--mx, 50%) var(--my, -30%), rgb(157 140 255 / var(--lit, 0)), transparent 60%), linear-gradient(160deg, rgb(124 108 255 / 0.14), var(--card) 60%); }
+  .cell--hero { background-image: radial-gradient(26rem circle at var(--mx, 50%) var(--my, -30%), rgb(157 140 255 / var(--lit, 0)), transparent 60%), linear-gradient(135deg, rgb(124 108 255 / 0.2), var(--card) 55%); }
+}
+
+/* stack: dos bandas que se desplazan en sentidos opuestos (la única marquesina de la página) */
+.marquee { overflow: hidden; -webkit-mask: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); mask: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+.marquee__track { display: flex; gap: 0.5rem; width: max-content; animation: marquee 38s linear infinite; }
+.marquee--rev .marquee__track { animation-direction: reverse; animation-duration: 44s; }
+.marquee__track span { padding: 0.5rem 0.875rem; border-radius: 999px; font-size: 0.875rem; color: var(--text-2); background: rgb(157 140 255 / 0.08); box-shadow: inset 0 0 0 1px var(--line); white-space: nowrap; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+.cell:hover .marquee__track { animation-play-state: paused; }
+.cell .marquee + .marquee { margin-top: -0.625rem; }
+
+/* trato directo: mini conversación que se escribe sola mientras está a la vista */
+.mini-chat { display: grid; gap: 0.5rem; }
+.bub { margin: 0; max-width: 88%; min-height: 2.5rem; padding: 0.625rem 0.875rem; border-radius: 0.875rem; font-size: 0.875rem; line-height: 1.45; opacity: 0; transform: translateY(6px); transition: opacity 240ms var(--ease-out), transform 240ms var(--ease-out); }
+.bub.is-on { opacity: 1; transform: none; }
+.bub--me { justify-self: end; background: rgb(124 108 255 / 0.2); color: var(--text); border-bottom-right-radius: 0.25rem; }
+.bub--jc { justify-self: start; background: rgb(255 255 255 / 0.05); color: var(--text-2); box-shadow: inset 0 0 0 1px var(--line); border-bottom-left-radius: 0.25rem; }
+
+.packs--live { position: relative; padding-bottom: 0.75rem; }
+.packs--live .pack { cursor: default; outline-offset: 4px; transition: opacity 200ms ease; }
+.packs--live:hover .pack:not(.is-hi) { opacity: 0.55; }
+.packs--live .pack.is-hi b { color: var(--violet-soft); }
+.packs__bar { position: absolute; left: 0; bottom: 0; height: 2px; width: var(--w, 25%); border-radius: 2px; background: var(--violet-soft); transform: translateX(var(--x, 0)); transition: transform 260ms cubic-bezier(0.77, 0, 0.175, 1), width 260ms cubic-bezier(0.77, 0, 0.175, 1); }
+
+/* tarifas: selector segmentado con pulgar que se desliza */
+.seg { position: relative; display: inline-grid; grid-template-columns: 1fr 1fr; padding: 0.25rem; border-radius: 999px; background: rgb(7 6 15 / 0.5); box-shadow: inset 0 0 0 1px var(--line-2); justify-self: start; }
+.seg__thumb { position: absolute; top: 0.25rem; bottom: 0.25rem; left: 0.25rem; width: calc(50% - 0.25rem); border-radius: 999px; background: var(--violet); transform: translateX(calc(var(--s, 0) * 100%)); transition: transform 240ms cubic-bezier(0.77, 0, 0.175, 1); }
+.rate-big b { display: block; font-size: clamp(2.5rem, 4vw, 3.5rem); font-weight: 600; letter-spacing: -0.045em; line-height: 1; animation: swap-in 260ms var(--ease-out); }
+@keyframes swap-in { from { opacity: 0; filter: blur(4px); transform: translateY(6px); } }
+
+
+/* proyectos: el arte de la tarjeta en foco flota muy despacio */
+.tcard.is-active .tcard__art img { animation: float 6s ease-in-out infinite; }
+@keyframes float { 50% { transform: translateY(-8px); } }
+
+/* blog: el título subraya al pasar */
+.post__title .todo, .post__title { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size 260ms var(--ease-out); }
+@media (hover: hover) and (pointer: fine) { .cell:hover .post__title { background-size: 100% 1px; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track { animation: none; flex-wrap: wrap; width: auto; } .marquee--rev { display: none; } .marquee { -webkit-mask: none; mask: none; }
+  .bub { opacity: 1; transform: none; transition: none; }
+  .tcard.is-active .tcard__art img, .rate-big b { animation: none; }
+}
+
+
+[hidden] { display: none !important; }
+
+/* =================== indicador de sección: líneas en el margen derecho, sin texto =================== */
+.pager {
+  --rg: max(var(--pad-scene), calc((100vw - var(--max)) / 2 + var(--pad-scene)));   /* ancho real del margen derecho */
+  position: fixed; top: 50%; right: calc(var(--rg) / 2); z-index: 20;
+  display: grid; gap: 0.25rem; justify-items: center;
+  transform: translate(50%, -50%); opacity: 0; pointer-events: none;
+  transition: opacity 250ms var(--ease-out), transform 250ms var(--ease-out);
+}
+.pager.is-on { opacity: 1; pointer-events: auto; }
+.pager:not(.is-on) { transform: translate(calc(50% + 8px), -50%); }
+.pager button { display: grid; place-items: center; width: 2.25rem; height: 1.125rem; }   /* zona táctil mayor que la línea */
+.pager i { display: block; width: 1.5rem; height: 2px; border-radius: 2px; background: rgb(157 140 255 / 0.3); transform: scaleX(0.55); transform-origin: center; transition: transform 200ms var(--ease-out), background-color 200ms ease, height 200ms ease; }
+.pager button[aria-current="true"] i { transform: scaleX(1); height: 3px; background: var(--violet-soft); }
+@media (hover: hover) and (pointer: fine) { .pager button:not([aria-current="true"]):hover i { transform: scaleX(0.8); background: rgb(157 140 255 / 0.6); } }
+.pager button:focus-visible { outline-offset: 0; }
+.pager.is-cramped { display: none; }   /* margen demasiado estrecho: no se pisa el contenido */
+@media (prefers-reduced-motion: reduce) { .pager, .pager i { transition: opacity 150ms ease; } .pager:not(.is-on) { transform: translate(50%, -50%); } }
+
+/* =================================================================================================
+   v7 · escenas Servicios y Lab/Blog, cabecera de identidad única, sin-JS.
+   Todo valor sale de .impeccable/design.json; los tokens nuevos (README §3) van marcados «token nuevo».
+   ================================================================================================= */
+.sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.sec-title .todo { color: inherit; text-decoration: underline dotted; }   /* pending: el marcador {{DATO}} se ve también en la segunda mitad del titular */
+
+/* ---------- sin JS: lo que necesita JS no se ofrece; ☰ pasa a ser un enlace al pie ---------- */
+html:not(.js) #menu-btn, html:not(.js) .cmdk, html:not(.js) .close__hint, html:not(.js) .cell__open { display: none !important; }
+html:not(.js) .cell--big { cursor: auto; }
+html:not(.js) .hero__static { display: block; } html:not(.js) .cycle { display: none; }   /* sin JS no hay nube: el póster del móvil, como con reduced motion */
+.js .nav__menu--nojs { display: none !important; }
+.nav__menu--nojs svg { width: 1.375rem; height: 1.375rem; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; }
+
+/* ---------- menú ☰: filete antes de «Para agencias» (README §6.4) ---------- */
+.menu .menu__sep { position: relative; margin-top: 0.75rem; }
+.menu .menu__sep::before { content: ""; position: absolute; left: 0.75rem; right: 0.75rem; top: -0.375rem; height: 1px; background: var(--line); }
+
+/* ---------- cabecera de escena: aparte a la derecha («Para agencias», «Todas las guías») ---------- */
+.scene__aside { margin: 0; display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.5rem; font-size: 0.9375rem; color: var(--text-3); }
+@media (pointer: coarse) { .go { min-height: 2.75rem; } .palette__foot { display: none; } }   /* en táctil no hay ↑ ↓ ↵ */
+
+/* nota de celda junto al título («Precios sin IVA.»): antes de cualquier precio y sin gastar una fila */
+.cell__note { margin: 0; font-size: 0.8125rem; color: var(--text-3); }
+.cell--hero .cell__note { color: var(--text-2); }
+@container cell (max-width: 30rem) {   /* cq cell-narrow */ .cell__head { flex-wrap: wrap; row-gap: 0.25rem; } .cell__note { order: 5; flex-basis: 100%; } }
+
+/* ---------- Servicios · vías: grupo de radios; el panel lo cambia :has() (funciona sin JS) ---------- */
+.vias { display: grid; gap: clamp(0.875rem, 2svh, 1.5rem); }   /* sp gap-cell */
+.vias__list { position: relative; display: grid; gap: 0.25rem; margin: 0; padding: 0; border: 0; min-width: 0; }
+.via, .seg label { touch-action: manipulation; }
+.via { position: relative; z-index: 1; display: grid; grid-template-columns: 1.75rem minmax(0, 1fr) auto; align-items: center; gap: 0.75rem; min-height: 2.75rem; padding: 0.375rem 0.75rem; border-radius: 0.625rem; color: var(--text-2); cursor: pointer; -webkit-tap-highlight-color: transparent; transition: color 150ms ease, background-color 150ms ease; }
+.via .ic { display: grid; place-items: center; width: 1.75rem; height: 1.75rem; border-radius: 0.4375rem; background: rgb(157 140 255 / 0.1); color: var(--violet-soft); transition: background-color 160ms ease, color 160ms ease; }
+.via__name { font-weight: 500; }
+.via__fig { font-size: 0.875rem; color: var(--text-2); font-variant-numeric: tabular-nums; white-space: nowrap; transition: color 150ms ease; }
+/* elegida: tinte + filete + icono violeta sólido + cifra en lavanda (sin JS el fondo va en la propia fila) */
+.via:has(:checked) { color: var(--text); background: rgb(124 108 255 / 0.14); box-shadow: inset 0 0 0 1px rgb(157 140 255 / 0.2); }
+.via:has(:checked) .ic { background: var(--violet); color: var(--ink); }
+.via:has(:checked) .via__fig { color: var(--text); }
+.via:has(:focus-visible) { outline: 2px solid var(--violet-soft); outline-offset: 2px; }
+.vias__hl { display: none; }
+.js .via:has(:checked) { background: none; box-shadow: none; }
+.js .vias__hl { display: block; position: absolute; left: 0; right: 0; top: 0; height: 2.75rem; border-radius: 0.625rem; background: rgb(124 108 255 / 0.14); box-shadow: inset 0 0 0 1px rgb(157 140 255 / 0.2); transform: translateY(var(--y, 0)); }
+.js .vias.is-ready .vias__hl { transition: transform 240ms cubic-bezier(0.77, 0, 0.175, 1); }
+/* hover = vista previa, NO selección: tinte más tenue sin filete y sin icono sólido (hallazgo 5 de usuario-ejemplo). Token nuevo: tint-preview */
+@media (hover: hover) and (pointer: fine) { .via:not(:has(:checked)):hover { background: rgb(157 140 255 / 0.06); color: var(--text); } }
+
+.vias__panels { display: grid; min-width: 0; padding-top: 1.25rem; box-shadow: inset 0 1px 0 var(--line-2); }
+.via-panel { grid-area: 1 / 1; display: grid; gap: 1.25rem; align-content: center; opacity: 0; visibility: hidden; filter: blur(4px); transform: translateY(6px); }
+.vias:has(input[value="hora"]:checked) [data-via="hora"],
+.vias:has(input[value="encargo"]:checked) [data-via="encargo"],
+.vias:has(input[value="packs"]:checked) [data-via="packs"],
+.vias:has(input[value="empleo"]:checked) [data-via="empleo"] { opacity: 1; visibility: visible; filter: none; transform: none; transition: opacity 260ms cubic-bezier(0.23, 1, 0.32, 1), filter 260ms cubic-bezier(0.23, 1, 0.32, 1), transform 260ms cubic-bezier(0.23, 1, 0.32, 1); }
+.via-panel__acts { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.5rem; }
+@container cell (max-width: 30rem) {   /* cq cell-narrow */ .via-panel .btn { width: 100%; } }
+@container cell (max-width: 26rem) {   /* cq list-meta · contenedor estrecho: la cifra baja bajo el nombre, siempre visible (nunca se oculta como el meta de la v6) */
+  .via { grid-template-columns: 1.75rem minmax(0, 1fr); row-gap: 0; padding-block: 0.5rem; }
+  .via .ic { grid-row: span 2; }
+  .via__fig { font-size: 0.8125rem; }
+}
+@container cell (min-width: 40rem) {   /* token nuevo: cq vias-split. Lista y panel lado a lado: el ratón va de la fila al botón sin cruzar otras filas */
+  .vias { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(1.5rem, 4cqi, 3rem); }   /* sp gap-split (token nuevo) */
+  .vias__panels { padding: 0 0 0 clamp(1.5rem, 4cqi, 3rem);   /* sp gap-split */ box-shadow: inset 1px 0 0 var(--line-2); }
+}
+/* celda ampliada: una sola sólida por vista → el botón del panel baja a fantasma */
+.cell.is-open .via-panel .btn--solid { background: rgb(124 108 255 / 0.1); color: var(--text); box-shadow: inset 0 0 0 1px var(--line-2); }
+
+/* ---------- Servicios · cinco packs: web (P1–P4) | app (P5), separados por hueco y filete (D4) ---------- */
+.packs5 { position: relative; display: grid; }
+.packs5__group { display: grid; }
+.packs5 .pack { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; min-height: 2.75rem; padding: 0.375rem 0; box-shadow: none; }
+.packs5 .pack small { font-size: 0.875rem; color: var(--text-2); }
+.packs5 .pack b { margin: 0; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.packs5__group--app { margin-top: 1rem; padding-top: 0.625rem; box-shadow: inset 0 1px 0 var(--line-2); }
+.packs5 .packs__bar { display: none; }
+@container cell (min-width: 36rem) {   /* token nuevo: cq packs-row */
+  .packs5 { grid-template-columns: minmax(0, 4fr) minmax(0, 1fr); padding-bottom: 0.75rem; }
+  .packs5__group--web { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .packs5 .pack { display: grid; grid-template-rows: 1fr auto; align-items: start; padding: 0.25rem 0.75rem 0.25rem 0; }   /* la cifra se alinea abajo aunque el nombre ocupe dos líneas */
+  .packs5 .pack small { font-size: 0.75rem; color: var(--text-3); }
+  .packs5 .pack b { margin-top: 0.25rem; }
+  .packs5__group--app { margin: 0 0 0 0.75rem; padding: 0 0 0 1.5rem; box-shadow: inset 1px 0 0 var(--line-2); }
+  .packs5 .packs__bar { display: block; }
+}
+
+/* ---------- Servicios · tarifas: radios con :has() (D6; funciona sin JS) ---------- */
+.seg { margin: 0; border: 0; min-width: 0; }
+.seg label { position: relative; z-index: 1; display: grid; place-items: center; min-height: 2.25rem; padding: 0 1rem; border-radius: 999px; font-size: 0.8125rem; font-weight: 550; color: var(--text-2); cursor: pointer; transition: color 180ms ease; }
+.seg label:has(:checked) { color: var(--ink); }
+.seg label:has(:focus-visible) { outline: 2px solid var(--violet-soft); outline-offset: 3px; }
+.seg:has(input[value="1"]:checked) { --s: 1; }
+@media (pointer: coarse) { .seg label { min-height: 2.75rem; } }
+.cell--rates:has(input[name="rate"][value="0"]:checked) .rate-1,
+.cell--rates:has(input[name="rate"][value="1"]:checked) .rate-0 { display: none; }
+
+/* ---------- Lab/Blog · demo «paginado por gesto» en miniatura: póster quieto; vive con hover (puntero fino) o foco ---------- */
+.demo { display: grid; }
+.demo__screen { position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 0.625rem; background: rgb(7 6 15 / 0.5); box-shadow: inset 0 0 0 1px var(--line); }
+@container cell (min-width: 34rem) { .demo__screen { aspect-ratio: 2.2; } }   /* celda ancha: el marco llena el ancho sin crecer en alto */
+.demo__track { height: 300%; animation: demo-page 7s cubic-bezier(0.77, 0, 0.175, 1) infinite paused; }   /* token nuevo: dur demo-loop */
+.demo__scene { height: calc(100% / 3); display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 0.5rem; padding: 5% 10% 5% 6%; }
+.demo__title { display: block; height: 0.5rem; width: 46%; border-radius: 9999rem; background: linear-gradient(90deg, var(--text-2) 0 55%, var(--text-3) 55%); opacity: 0.55; }
+.demo__bento { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: minmax(0, 1fr); gap: 0.375rem; }
+.demo__bento i { border-radius: 0.375rem; background: var(--card); box-shadow: inset 0 0 0 1px var(--card-line); }
+.demo__bento i:first-child { background: rgb(124 108 255 / 0.2); }
+.demo__bento .w3 { grid-column: span 3; } .demo__bento .w5 { grid-column: span 5; } .demo__bento .w6 { grid-column: span 6; } .demo__bento .w7 { grid-column: span 7; } .demo__bento .w12 { grid-column: span 12; } .demo__bento .t2 { grid-row: span 2; }
+.demo__pager { position: absolute; right: 3.5%; top: 50%; transform: translateY(-50%); display: grid; gap: 0.25rem; }
+.demo__pager i { display: block; width: 0.75rem; height: 2px; border-radius: 2px; background: rgb(157 140 255 / 0.3); transform: scaleX(0.55); }
+.demo__pager i:nth-child(1) { animation: demo-p1 7s cubic-bezier(0.77, 0, 0.175, 1) infinite paused; }
+.demo__pager i:nth-child(2) { animation: demo-p2 7s cubic-bezier(0.77, 0, 0.175, 1) infinite paused; }
+.demo__pager i:nth-child(3) { animation: demo-p3 7s cubic-bezier(0.77, 0, 0.175, 1) infinite paused; }
+.cell--lab:focus-within .demo__track, .cell--lab:focus-within .demo__pager i { animation-play-state: running; }
+@media (hover: hover) and (pointer: fine) { .cell--lab:hover .demo__track, .cell--lab:hover .demo__pager i { animation-play-state: running; } }
+@keyframes demo-page { 0%, 24% { transform: translateY(0); } 33%, 57% { transform: translateY(-33.3333%); } 66%, 90% { transform: translateY(-66.6667%); } 100% { transform: translateY(0); } }
+@keyframes demo-p1 { 0%, 26% { transform: scaleX(1); background-color: var(--violet-soft); } 31%, 92% { transform: scaleX(0.55); background-color: rgb(157 140 255 / 0.3); } 100% { transform: scaleX(1); background-color: var(--violet-soft); } }
+@keyframes demo-p2 { 0%, 26% { transform: scaleX(0.55); background-color: rgb(157 140 255 / 0.3); } 31%, 59% { transform: scaleX(1); background-color: var(--violet-soft); } 64%, 100% { transform: scaleX(0.55); background-color: rgb(157 140 255 / 0.3); } }
+@keyframes demo-p3 { 0%, 59% { transform: scaleX(0.55); background-color: rgb(157 140 255 / 0.3); } 64%, 92% { transform: scaleX(1); background-color: var(--violet-soft); } 97%, 100% { transform: scaleX(0.55); background-color: rgb(157 140 255 / 0.3); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .via-panel { filter: none; transform: none; }
+  .vias:has(input:checked) .via-panel { transition: opacity 150ms ease; }
+  .js .vias.is-ready .vias__hl { transition: none; }
+  .demo__track, .demo__pager i { animation: none !important; }
+  .demo__pager i:first-child { transform: scaleX(1); background: var(--violet-soft); }
+}
+
+/* ---------- v7 · destaque: segundo tono de los titulares en un color propio (tokens highlight-*). ámbar tostado elegido por Jose ---------- */
+:root { --highlight: #e09c47; }
+.sec-title span, .close__title span { color: var(--highlight); }
+.sec-title span .todo { color: #e9c46a; }
+
+/* ---------- v7 · navegación a pantallas propias ---------- */
+.nav__links a.is-here { color: var(--text); }   /* escena a la vista: solo color, sin aria-current */
+.no-expand .cell__open { display: none; }
+.no-expand .cell--big { cursor: auto; }
+@media (hover: hover) and (pointer: fine) { .no-expand .cell--big:hover { box-shadow: inset 0 0 0 1px var(--card-line), inset 0 1px 0 rgb(185 173 255 / 0.07), 0 30px 60px -30px rgb(5 3 20 / 0.95); } }
+
+/* aviso del prototipo: «Lleva a /ruta, pantalla propia». Transición (no keyframes): se puede disparar varias veces seguidas */
+.notice { position: fixed; left: 50%; bottom: max(1.25rem, env(safe-area-inset-bottom)); z-index: 50; max-width: calc(100vw - 2rem); padding: 0.625rem 1rem; border-radius: 0.625rem; background: rgb(14 12 32 / 0.97); box-shadow: inset 0 0 0 1px var(--line-2), inset 0 1px 0 rgb(255 255 255 / 0.07), 0 40px 80px -20px rgb(5 3 20 / 0.9); color: var(--text-2); font-size: 0.875rem; opacity: 0; transform: translate(-50%, 0.5rem); pointer-events: none; transition: opacity 200ms cubic-bezier(0.23, 1, 0.32, 1), transform 200ms cubic-bezier(0.23, 1, 0.32, 1); }
+.notice.is-on { opacity: 1; transform: translate(-50%, 0); }
+@media (prefers-reduced-motion: reduce) { .notice { transform: translate(-50%, 0); } }
