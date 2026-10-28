@@ -323,32 +323,82 @@ insert into public.chat_threads (id, visitor_id, user_id, contact_id, "case", lo
    'es', now() - interval '120 days'),
   ('00000000-0000-4000-8000-0000000000f4', gen_random_uuid(), null, '00000000-0000-4000-8000-000000000204', 'recruiter',
    'en', now() - interval '120 days'),
-  ('00000000-0000-4000-8000-0000000000f5', gen_random_uuid(), null, null, 'curious', 'es', now() - interval '120 days');
+  ('00000000-0000-4000-8000-0000000000f5', gen_random_uuid(), null, null, 'curious', 'es', now() - interval '120 days'),
+  ('00000000-0000-4000-8000-0000000000f6', gen_random_uuid(), null, null, 'curious', 'es', now() - interval '120 days');
 insert into public.chat_messages (thread_id, sender_role, content, created_at) values
   ('00000000-0000-4000-8000-0000000000f1', 'visitor', 'old', now() - interval '100 days'),  -- anonymous, idle 100 d
   ('00000000-0000-4000-8000-0000000000f2', 'visitor', 'old', now() - interval '100 days'),  -- anonymous, but active
   ('00000000-0000-4000-8000-0000000000f2', 'visitor', 'new', now() - interval '3 days'),
   ('00000000-0000-4000-8000-0000000000f3', 'visitor', 'old', now() - interval '100 days'),  -- bob's
   ('00000000-0000-4000-8000-0000000000f4', 'visitor', 'old', now() - interval '100 days');  -- linked to a contact
--- …f5: anonymous, no message, created 120 days ago.
-insert into public.crm_interactions (contact_id, kind, actor, chat_thread_id)
-values ('00000000-0000-4000-8000-000000000204', 'chat_thread', 'system', '00000000-0000-4000-8000-0000000000f4');
+-- …f5: anonymous, no message, created 120 days ago. …f6: anonymous and idle, but a CRM interaction points at it.
+insert into public.crm_interactions (contact_id, kind, actor, chat_thread_id) values
+  ('00000000-0000-4000-8000-000000000204', 'chat_thread', 'system', '00000000-0000-4000-8000-0000000000f4'),
+  ('00000000-0000-4000-8000-000000000204', 'chat_thread', 'system', '00000000-0000-4000-8000-0000000000f6');
 select t.ok(t.err($q$select public.chat_purge_anonymous('1 hour')$q$) = '22023 interval_too_short'
             and t.err('select public.chat_purge_anonymous(null)') = '22023 interval_too_short',
             'chat_purge_anonymous refuses intervals under a day');
 select t.ok(public.chat_purge_anonymous('90 days') = 2,
             'chat_purge_anonymous(90 days) deletes the two anonymous threads without contact idle for longer');
 select t.ok((select string_agg(right(id::text, 2), ',' order by id) from public.chat_threads
-             where id::text like '00000000-0000-4000-8000-0000000000f_') = 'f2,f3,f4'
+             where id::text like '00000000-0000-4000-8000-0000000000f_') = 'f2,f3,f4,f6'
             and exists (select 1 from public.chat_threads where id = '00000000-0000-4000-8000-000000000c01')
             and exists (select 1 from public.chat_threads where id = '00000000-0000-4000-8000-000000000c02'),
-            'kept: the recently active anonymous thread, the user''s, the contact''s and the seeded ones');
+            'kept: the recently active anonymous thread, the user''s, the contact''s, the one a CRM interaction '
+            'points at, and the seeded ones');
 select t.ok(not exists (select 1 from public.chat_messages where thread_id = '00000000-0000-4000-8000-0000000000f1'),
             'the messages of a purged thread go with it (cascade)');
 select t.ok(public.chat_purge_anonymous('90 days') = 0, 'chat_purge_anonymous is idempotent');
 reset role;
 delete from public.chat_threads where id = '00000000-0000-4000-8000-0000000000f4';
 select t.ok((select chat_thread_id is null from public.crm_interactions
-             where contact_id = '00000000-0000-4000-8000-000000000204' and kind = 'chat_thread'),
+             where contact_id = '00000000-0000-4000-8000-000000000204' and kind = 'chat_thread'
+               and chat_thread_id is distinct from '00000000-0000-4000-8000-0000000000f6'),
             'deleting a thread keeps its CRM interaction with chat_thread_id set to null');
+rollback;
+
+-- ================================================================ chat_context_publish (C8, admin only)
+begin;
+select t.ok(has_function_privilege('authenticated', 'public.chat_context_publish(uuid)', 'execute')
+            and not has_function_privilege('anon', 'public.chat_context_publish(uuid)', 'execute')
+            and (select not prosecdef from pg_proc where proname = 'chat_context_publish'),
+            'chat_context_publish: authenticated may call it (it checks is_admin), anon not; security invoker');
+set local role anon;
+select t.ok(t.err($q$select public.chat_context_publish('00000000-0000-4000-8000-000000000b03')$q$) like '42501 %',
+            'anon: chat_context_publish denied');
+set local role authenticated;
+set local request.jwt.claims = :'ana';
+select t.ok(t.err($q$select public.chat_context_publish('00000000-0000-4000-8000-000000000b03')$q$)
+            = '42501 forbidden', 'ana: chat_context_publish is forbidden');
+reset role;
+set local role service_role;
+select t.ok(t.err($q$select public.chat_context_publish('00000000-0000-4000-8000-000000000b03')$q$)
+            = '42501 forbidden', 'service role: chat_context_publish is for the admin only');
+reset role;
+set local role authenticated;
+set local request.jwt.claims = :'jose';
+insert into public.chat_contexts (id, "case", locale, version, body_md)
+values ('00000000-0000-4000-8000-000000000bf2', 'client', 'es', 2, 'v2');
+select t.ok(public.chat_context_publish('00000000-0000-4000-8000-000000000bf2')
+            = '{"id":"00000000-0000-4000-8000-000000000bf2","version":2,"archived_version":1}'::jsonb
+            and t.val($q$select string_agg(version || ':' || status, ',' order by version) from public.chat_contexts
+                        where "case" = 'client' and locale = 'es'$q$) = '1:archived,2:published'
+            and t.val($q$select (published_by = '00000000-0000-4000-8000-0000000000a1'
+                                 and published_at > now() - interval '1 minute')::text
+                        from public.chat_contexts where id = '00000000-0000-4000-8000-000000000bf2'$q$) = 'true',
+            'jose publishes v2 in one call: v1 archived, v2 published with published_at and published_by');
+select t.ok((public.chat_context_publish('00000000-0000-4000-8000-000000000b01') ->> 'archived_version') = '2'
+            and t.val($q$select version from public.chat_contexts
+                        where "case" = 'client' and locale = 'es' and status = 'published'$q$) = '1',
+            'republishing the archived v1 rolls back and archives v2');
+select t.ok((public.chat_context_publish('00000000-0000-4000-8000-000000000b01') -> 'archived_version') = 'null'::jsonb
+            and t.n($q$select id from public.chat_contexts
+                      where "case" = 'client' and locale = 'es' and status = 'published'$q$) = 1,
+            'publishing the published version changes nothing');
+select t.ok((public.chat_context_publish('00000000-0000-4000-8000-000000000b03') -> 'archived_version') = 'null'::jsonb
+            and t.val($q$select status from public.chat_contexts
+                        where id = '00000000-0000-4000-8000-000000000b02'$q$) = 'published',
+            'publishing the partner/es draft touches no other case (curious/es stays published)');
+select t.ok(t.err($q$select public.chat_context_publish('00000000-0000-4000-8000-0000000000ff')$q$)
+            = 'P0002 context_not_found', 'chat_context_publish: unknown id');
 rollback;

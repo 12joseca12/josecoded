@@ -508,6 +508,24 @@ describe.skipIf(!up && !inCi)('RLS with jose (admin), ana (P2 client + affiliate
       expect((left.data as Row[]).map((r) => r.id).sort()).toEqual([recent, linked, SEED.chatThreads.anonymous, SEED.chatThreads.ana].sort());
       expect((await service.from('chat_threads').delete().in('id', [recent, linked])).error).toBeNull();
     });
+
+    it('chat_context_publish archives the published version and publishes the new one, admin only', async () => {
+      const draft = { p_id: SEED.chatContexts.partnerEsDraft };
+      for (const c of [ana, service]) expect((await c.rpc('chat_context_publish', draft)).error?.code).toBe('42501');
+      expect((await anon.rpc('chat_context_publish', draft)).error).toBeTruthy();
+      const v2 = randomUUID();
+      expect((await jose.from('chat_contexts').insert({ id: v2, case: 'client', locale: 'es', version: 9000 + Math.floor(Math.random() * 999), body_md: 'rls' })).error).toBeNull();
+      try {
+        const { data, error } = await jose.rpc('chat_context_publish', { p_id: v2 });
+        expect(error).toBeNull();
+        expect(data).toMatchObject({ id: v2, archived_version: 1 });
+        expect((await service.rpc('chat_context_published', { p_case: 'client', p_locale: 'es' })).data).toMatchObject({ body_md: 'rls' });
+      } finally {
+        expect((await jose.rpc('chat_context_publish', { p_id: SEED.chatContexts.clientEs })).error).toBeNull();
+        expect((await jose.from('chat_contexts').delete().eq('id', v2)).error).toBeNull();
+      }
+      expect((await service.rpc('chat_context_published', { p_case: 'client', p_locale: 'es' })).data).toMatchObject({ version: 1 });
+    });
   });
 
   describe('service role RPCs (1.6)', () => {

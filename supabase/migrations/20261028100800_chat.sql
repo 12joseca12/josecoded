@@ -11,8 +11,8 @@ create type public.chat_sender as enum ('visitor', 'assistant', 'jose');
 create type public.chat_message_type as enum ('text', 'quick_contact', 'case_switch', 'system');
 
 -- 2) Contexts (D40): versioned facts per case and locale, edited from the CRM (C8). At most one published per
---    (case, locale): publishing a new version archives the previous one in the same transaction. The gateway reads the
---    published one through chat_context_published(); no user JWT other than the admin's reads this table.
+--    (case, locale): chat_context_publish() archives the previous one and publishes the new one in one transaction. The
+--    gateway reads the published one through chat_context_published(); no user JWT other than the admin's reads this table.
 create table public.chat_contexts (
   id           uuid primary key default gen_random_uuid(),
   "case"       public.chat_case not null,
@@ -150,8 +150,8 @@ grant execute on function public.chat_context_published(public.chat_case, public
 
 -- Retention (DATOS P10, Q6: 90 days, job chat.purge_anonymous): deletes the anonymous threads without contact whose
 -- last activity (last message, or creation when there is none) is older than p_older_than; messages go by cascade.
--- Threads of a user or linked to a CRM contact are never purged. Refuses intervals under a day so a wrong argument
--- cannot wipe the live inbox. Returns how many threads it deleted.
+-- Threads of a user or linked to a CRM contact (contact_id, or a crm_interactions row pointing at the thread) are never
+-- purged. Refuses intervals under a day so a wrong argument cannot wipe the live inbox. Returns how many it deleted.
 create or replace function public.chat_purge_anonymous(p_older_than interval)
 returns integer language plpgsql security definer set search_path = '' as $$
 declare
@@ -164,12 +164,43 @@ begin
   v_cutoff := now() - p_older_than;
   delete from public.chat_threads t
    where t.user_id is null and t.contact_id is null
-     and (t.last_message_at < v_cutoff or (t.last_message_at is null and t.created_at < v_cutoff));
+     and (t.last_message_at < v_cutoff or (t.last_message_at is null and t.created_at < v_cutoff))
+     and not exists (select 1 from public.crm_interactions i where i.chat_thread_id = t.id);
   get diagnostics v_count = row_count;
   return v_count;
 end $$;
 revoke all on function public.chat_purge_anonymous(interval) from public, anon, authenticated;
 grant execute on function public.chat_purge_anonymous(interval) to service_role;
+
+-- 6b) RPC for the CRM (C8, admin only). Publishes a version of a context: the published one of the same case and locale
+--     becomes archived and this one published (published_at, published_by) in one transaction, which the partial unique
+--     uq_chat_contexts_published would otherwise force into two requests with no context in between if the second
+--     fails. Republishing an archived version rolls back; calling it on the published one changes nothing. An advisory
+--     lock per (case, locale) serialises two publishes of the same cell. Invoker: RLS of chat_contexts applies too.
+--     Returns {id, version, archived_version} (archived_version null when nothing was published before).
+create or replace function public.chat_context_publish(p_id uuid) returns jsonb
+language plpgsql security invoker set search_path = '' as $$
+declare
+  v_ctx      public.chat_contexts;
+  v_archived integer;
+begin
+  if not private.is_admin() then raise exception 'forbidden' using errcode = '42501'; end if;
+  select * into v_ctx from public.chat_contexts c where c.id = p_id;
+  if not found then raise exception 'context_not_found' using errcode = 'P0002'; end if;
+  perform pg_advisory_xact_lock(hashtextextended('chat_context_publish:' || v_ctx."case" || ':' || v_ctx.locale, 0));
+  select * into v_ctx from public.chat_contexts c where c.id = p_id for update;
+  if v_ctx.status = 'published' then
+    return jsonb_build_object('id', v_ctx.id, 'version', v_ctx.version, 'archived_version', null);
+  end if;
+  update public.chat_contexts c set status = 'archived'
+   where c."case" = v_ctx."case" and c.locale = v_ctx.locale and c.status = 'published'
+  returning c.version into v_archived;
+  update public.chat_contexts c set status = 'published', published_at = now(), published_by = (select auth.uid())
+   where c.id = p_id;
+  return jsonb_build_object('id', v_ctx.id, 'version', v_ctx.version, 'archived_version', v_archived);
+end $$;
+revoke all on function public.chat_context_publish(uuid) from public, anon, authenticated;
+grant execute on function public.chat_context_publish(uuid) to authenticated;
 
 -- 7) admin_counters() (20261028100700) looked chat_threads up dynamically until this migration; now it is static.
 --    Same signature, same grants, same seven counters (DATOS §6, §7 C1).
