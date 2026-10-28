@@ -189,6 +189,8 @@ describe.skipIf(!up && !inCi)('RLS with jose (admin), ana (P2 client + affiliate
       const typed = await service.rpc('create_lead', { p: { ...p, idempotency_key: randomUUID(), user_id: ana.userId } });
       const linked = await jose.from('crm_contacts').select('user_id').eq('id', (typed.data as Row[])[0]?.contact_id as string).single();
       expect(linked.data?.user_id).toBeNull();
+      // Remove it: area_lead_summary returns ana's most recent lead, and the area test expects her seeded won lead.
+      expect((await service.from('leads').delete().eq('id', (typed.data as Row[])[0]?.lead_id as string)).error).toBeNull();
       const { data: ob } = await service.rpc('outbox_claim', { p_limit: 200, p_worker: 'rls-test' });
       const events = (ob ?? []) as Row[];
       expect(events.some((e) => e.event === 'lead.created' && (e.payload as Row).id === (a.data as Row[])[0]?.lead_id)).toBe(true);
@@ -306,8 +308,7 @@ describe.skipIf(!up && !inCi)('RLS with jose (admin), ana (P2 client + affiliate
       const { data: row } = await service.from('clients').select('user_id').eq('id', SEED.clients.invitedSin).single();
       expect(row?.user_id).toBeNull();
       const a = await ana.rpc('area_lead_summary');
-      // Earlier tests may add leads ana submitted herself (create_lead with her user_id), so only the seeded won lead is asserted.
-      expect(a.data).toEqual(expect.arrayContaining([expect.objectContaining({ pack_code: 'P2', price_from: 1400, status: 'won' })]));
+      expect(a.data).toEqual([expect.objectContaining({ pack_code: 'P2', price_from: 1400, status: 'won' })]);
       expect(Object.keys((a.data as Row[])[0] ?? {}).sort()).toEqual(['created_at', 'pack_code', 'pack_option', 'price_from', 'status']);
       expect((await bob.rpc('area_lead_summary')).data).toEqual([]);
       expect((await bob.rpc('claim_client_access')).data).toBeNull();
