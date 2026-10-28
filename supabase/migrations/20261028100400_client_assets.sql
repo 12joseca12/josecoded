@@ -47,10 +47,11 @@ revoke all on function private.client_assets_after_insert() from public, anon, a
 create trigger client_assets_after_insert after insert on public.client_assets
   for each row when (new.source = 'client') execute function private.client_assets_after_insert();
 
--- Bucket: private, 25 MiB, images, PDF, text, CSV, zip and Office documents.
+-- Bucket: private, 25 MiB, raster images, PDF, text, CSV, zip and Office documents. Explicit allowlist, never
+-- image/*: an SVG can carry script and would run on any page that serves it inline.
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values ('client-assets', 'client-assets', false, 26214400, array[
-  'image/*', 'application/pdf', 'text/plain', 'text/csv', 'application/zip',
+  'image/png', 'image/jpeg', 'image/webp', 'image/avif', 'image/gif', 'application/pdf', 'text/plain', 'text/csv', 'application/zip',
   'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation'

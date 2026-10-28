@@ -268,7 +268,13 @@ describe.skipIf(!up && !inCi)('RLS with jose (admin), ana (P2 client + affiliate
       expect((await ana.from('client_extras').insert({ client_id: SEED.clients.ana, extra_code: 'geo', status: 'active' })).error).toBeTruthy();
     });
 
-    it('upgrade only through request_upgrade; price computed in DB (P2→P3 = 1100)', async () => {
+    it('upgrade only through request_upgrade; price computed in DB (P2→P3 = 1100); one pending at a time', async () => {
+      // Jose resolves what an earlier run left pending, so the test can run again on the same database.
+      const reject = (id?: string) => {
+        const q = jose.from('upgrade_requests').update({ status: 'rejected' }).eq('client_id', SEED.clients.ana).eq('status', 'pending');
+        return id ? q.eq('id', id) : q;
+      };
+      expect((await reject()).error).toBeNull();
       const direct = await ana
         .from('upgrade_requests')
         .insert({ client_id: SEED.clients.ana, from_pack_code: 'P2', to_pack_code: 'P3', computed_price: 1, pricing_version: '2026-09-14' });
@@ -277,9 +283,15 @@ describe.skipIf(!up && !inCi)('RLS with jose (admin), ana (P2 client + affiliate
       expect(error).toBeNull();
       const row = await ana.from('upgrade_requests').select('*').eq('id', data as string).single();
       expect(row.data).toMatchObject({ client_id: SEED.clients.ana, from_pack_code: 'P2', to_pack_code: 'P3', computed_price: 1100, status: 'pending' });
+      const second = await ana.rpc('request_upgrade', { p_to_pack_code: null, p_extras: ['geo'] });
+      expect(second.error).toMatchObject({ code: '23505', message: 'upgrade_already_pending' });
+      const selfResolve = await ana.from('upgrade_requests').update({ status: 'rejected' }).eq('id', data as string).select('id');
+      expect(selfResolve.data ?? []).toHaveLength(0);
+      expect((await reject(data as string)).error).toBeNull();
       const extra = await ana.rpc('request_upgrade', { p_to_pack_code: null, p_extras: ['seo_basic'] });
       const extraRow = await ana.from('upgrade_requests').select('computed_price').eq('id', extra.data as string).single();
       expect(extraRow.data?.computed_price).toBe(250);
+      expect((await reject(extra.data as string)).error).toBeNull();
       expect((await ana.rpc('request_upgrade', { p_to_pack_code: 'P1', p_extras: [] })).error?.message).toMatch(/not_an_upgrade/);
       expect((await bob.rpc('request_upgrade', { p_to_pack_code: 'P3', p_extras: [] })).error?.message).toMatch(/not_a_client/);
       expect(await visible(bob, 'upgrade_requests')).toBe(0);

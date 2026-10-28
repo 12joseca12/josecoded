@@ -163,6 +163,9 @@ alter table public.upgrade_requests enable row level security;
 create index idx_upgrade_requests_client on public.upgrade_requests (client_id, created_at desc);
 create index idx_upgrade_requests_to_pack on public.upgrade_requests (to_pack_code);
 create index idx_upgrade_requests_from_pack on public.upgrade_requests (from_pack_code);
+-- At most one pending request per client: each request reaches Jose's Telegram through the outbox, so a client cannot
+-- flood it. request_upgrade() checks first for a clear error; this index closes the race between two calls.
+create unique index uq_upgrade_requests_pending on public.upgrade_requests (client_id) where status = 'pending';
 create trigger upgrade_requests_set_updated_at before update on public.upgrade_requests
   for each row execute function private.set_updated_at();
 create policy upgrade_requests_select on public.upgrade_requests for select to authenticated
@@ -177,6 +180,7 @@ grant select, insert, update, delete on public.upgrade_requests to authenticated
 
 -- Recycled from 20260917100500_upgrade_requests.sql (mirror of computeUpgrade() in packages/pricing): list-price
 -- difference between packs plus extras at list price, deduplicated. client_id and from_pack_code come from the session.
+-- Refuses a second request while the client has one pending (Jose accepts or rejects it first).
 create or replace function public.request_upgrade(p_to_pack_code text, p_extras text[] default '{}')
 returns uuid language plpgsql security definer set search_path = '' as $$
 declare
@@ -210,6 +214,11 @@ begin
     select count(*), coalesce(sum(x.price), 0) into v_found, v_extras_price
       from public.extras x where x.code = any (v_extras) and x.active;
     if v_found <> cardinality(v_extras) then raise exception 'unknown_extra' using errcode = '22023'; end if;
+  end if;
+
+  -- One pending request per client (uq_upgrade_requests_pending); 23505 so PostgREST answers 409.
+  if exists (select 1 from public.upgrade_requests u where u.client_id = v_client and u.status = 'pending') then
+    raise exception 'upgrade_already_pending' using errcode = '23505';
   end if;
 
   insert into public.upgrade_requests (client_id, from_pack_code, to_pack_code, extras, computed_price, pricing_version)

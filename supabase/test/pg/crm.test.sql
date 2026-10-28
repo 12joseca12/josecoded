@@ -108,9 +108,19 @@ select t.ok(not has_table_privilege('authenticated', 'public.leads', 'delete'),
             'authenticated: no delete on leads (closed, never removed)');
 
 select t.ok((select public = false and file_size_limit = 26214400 and 'application/pdf' = any (allowed_mime_types)
-                    and 'image/*' = any (allowed_mime_types)
+                    and 'image/png' = any (allowed_mime_types)
              from storage.buckets where id = 'client-assets'),
             'bucket client-assets is private, 25 MiB, with images and PDF');
+select t.ok((select allowed_mime_types = array[
+                      'image/png', 'image/jpeg', 'image/webp', 'image/avif', 'image/gif', 'application/pdf', 'text/plain',
+                      'text/csv', 'application/zip', 'application/msword',
+                      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                      'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                      'application/vnd.ms-powerpoint',
+                      'application/vnd.openxmlformats-officedocument.presentationml.presentation']
+                    and not exists (select 1 from unnest(allowed_mime_types) m where m like '%*%' or m like '%svg%')
+             from storage.buckets where id = 'client-assets'),
+            'bucket client-assets: explicit MIME allowlist, no wildcard and no SVG');
 select t.ok((select string_agg(cmd, ',' order by cmd) from pg_policies
              where schemaname = 'storage' and tablename = 'objects' and policyname like 'client_assets_%')
             = 'DELETE,INSERT,SELECT', 'storage.objects: select/insert/delete policies for client-assets, no update');
@@ -235,16 +245,26 @@ begin
                        and pricing_version = '2026-09-14'
                 from public.upgrade_requests where id = v),
                'ana: request_upgrade P2 -> P3 is priced 1100 by the database');
+  perform t.ok(t.err($q$select public.request_upgrade(null, array['geo'])$q$) = '23505 upgrade_already_pending',
+               'ana: a second request while one is pending is refused (upgrade_already_pending, 23505)');
+  perform t.ok(t.affected($q$update public.upgrade_requests set status = 'rejected' where id = '$q$ || v || $q$'$q$) = 0,
+               'ana: cannot resolve her own pending request to free the slot');
+  -- Jose resolves it (as postgres here; the admin update policy is covered in the jose block).
+  reset role;
+  update public.upgrade_requests set status = 'rejected' where id = v;
+  set local role authenticated;
   v := public.request_upgrade(null, array['seo_basic', 'seo_basic']);
   perform t.ok((select computed_price = 250 and extras = array['seo_basic'] from public.upgrade_requests where id = v),
-               'ana: an extra alone is priced at list (250), deduplicated');
+               'ana: once the pending one is resolved, an extra alone is priced at list (250), deduplicated');
 end $$;
 select t.ok(t.err($q$select public.request_upgrade('P1')$q$) like '% not_an_upgrade'
             and t.err($q$select public.request_upgrade(null, array['nope'])$q$) like '% unknown_extra'
             and t.err($q$select public.request_upgrade('P9')$q$) like '% unknown_pack'
             and t.err('select public.request_upgrade(null)') like '% nothing_requested',
             'ana: request_upgrade rejects downgrades, unknown extras/packs and empty requests');
-select t.ok(t.n('select id from public.upgrade_requests') = 2, 'ana: reads her own upgrade requests');
+select t.ok(t.n('select id from public.upgrade_requests') = 2
+            and t.n($q$select id from public.upgrade_requests where status = 'pending'$q$) = 1,
+            'ana: reads her own upgrade requests, one of them pending');
 select t.ok(t.val('select public.claim_client_access()') = '00000000-0000-4000-8000-000000000401',
             'ana: claim_client_access is idempotent for an already linked client');
 select t.ok(t.n('select * from public.area_lead_summary()') = 1
@@ -253,7 +273,11 @@ select t.ok(t.n('select * from public.area_lead_summary()') = 1
             'ana: area_lead_summary returns her P2 lead (1400, won)');
 reset role;
 select t.ok((select count(*) from private.outbox where event = 'upgrade.requested') = 2,
-            'request_upgrade enqueues upgrade.requested');
+            'request_upgrade enqueues upgrade.requested (once per accepted request, none for the refused one)');
+select t.ok(t.err($q$insert into public.upgrade_requests (client_id, from_pack_code, to_pack_code, computed_price, pricing_version)
+                    values ('00000000-0000-4000-8000-000000000401', 'P2', 'P4', 1, '2026-09-14')$q$)
+            like '23505 %uq_upgrade_requests_pending%',
+            'uq_upgrade_requests_pending: a second pending row is refused even outside the RPC (race between two calls)');
 rollback;
 
 -- ================================================================ ana: storage and client_assets
