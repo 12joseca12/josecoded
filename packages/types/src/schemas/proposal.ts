@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { APP_CODES, extraCodeSchema, PACK_CODES } from './pricing.ts';
 
 /**
- * `ai_proposal` contract between the gateway (3.7/3.8), the Edge Function `notify` and
+ * `ai_proposal` contract between the gateway (3.7/3.8, incl. its outbox drain) and
  * `area_lead_summary()` (DT §0b). The price is never taken from the model: the gateway
  * re-prices with @josecoded/pricing.
  */

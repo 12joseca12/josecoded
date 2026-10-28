@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-Next.js (App Router) desplegado en Cloudflare Workers con OpenNext; monorepo `apps/web` + `apps/api` con pnpm. Se conservan sin reescribir el gateway `josecoded-api` (Worker), el backend `josecoded-worker` en Omen, Supabase (`nrgrmymsjtgayzejtawa`) y el dominio `josecoded.com`. Detalle en `CLAUDE.md` y en la spec.
+Next.js (App Router) desplegado en Cloudflare Workers con OpenNext; monorepo `apps/web` + `apps/api` con pnpm. Se conservan sin reescribir el gateway `josecoded-api` (Worker), el backend `josecoded-worker` en Omen, el dominio `josecoded.com`; Supabase es un proyecto nuevo con el esquema desde cero (D49, `docs/superpowers/design/2026-10-28-datos-v2.md`). Detalle en `CLAUDE.md` y en la spec.
 
 ## Users
 

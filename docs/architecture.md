@@ -25,7 +25,6 @@ flowchart LR
   subgraph supa[Supabase]
     DB[(Postgres + RLS<br/>leads, clients, crm_*, chat_*, blog_comments)]
     AUTH[Auth: Google, GitHub, email OTP]
-    EDGE[Edge Function notify -> Telegram / Resend]
   end
 
   subgraph omen[Home server "Omen"]
@@ -52,8 +51,7 @@ flowchart LR
   API --> KV
   API -->|Bearer WORKER_INTERNAL_TOKEN| TUN --> WRK
   WRK --> N8N
-  DB -->|pg_net| EDGE --> TG
-  API -->|planned: Telegram, Brevo, Google| TG
+  API -->|outbox drain + inline: Telegram, Resend| TG
 ```
 
 Rules the diagram encodes:
@@ -100,7 +98,7 @@ josecoded/
 │  ├─ glyph-scene/              *planned*: Three.js hero scene, no React; renders the hero video/poster at build time
 │  ├─ radar-core/               *planned, post-launch*: state machine, scoring and materials of the job-hunting module
 │  └─ radar-connectors/         *planned, post-launch*: job-platform connectors + CLIs for Omen and the Mac
-├─ supabase/                    *planned (phase 1b/1c)*: read-only baseline, additive migrations, notify function, seed, RLS tests
+├─ supabase/                    migrations from scratch (DATOS), seed, migration tests and the `test/pg` harness; the gateway drains `private.outbox`
 ├─ infra/                       *planned*: reference only (Omen compose files, n8n exports, launchd plist); applied by hand with explicit OK
 ├─ .impeccable/                 design.json (source of the tokens), surface contracts
 ├─ docs/                        working agreements, specs, technical design, UX/UI, plans, prototypes (docs/superpowers/design/ref/)

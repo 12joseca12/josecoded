@@ -1,6 +1,6 @@
 // @vitest-environment node
 // RLS with four accounts against Supabase local (DT §6.3, §8.4; plan 1.8 incl. the v2.1 additions).
-// Needs `supabase start` + `supabase db reset` (baseline + migrations + seed). Skipped with a warning when the stack does
+// Needs `supabase start` + `supabase db reset` (migrations + seed). Skipped with a warning when the stack does
 // not answer locally, and a failure in CI (same criterion as packages/types/test/database-drift.test.ts).
 import { randomUUID } from 'node:crypto';
 

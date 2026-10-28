@@ -1,6 +1,6 @@
 // Real adapter of the ScheduledJobsRepo port (working-agreements §17.1) over `private.scheduled_jobs`.
 // PostgREST does not expose the `private` schema, so it goes through the three service-role-only RPCs of
-// migration 20260930100100_scheduled_jobs.sql.
+// migration 20261028100000_base.sql.
 import { createClient } from '@supabase/supabase-js';
 
 import type { Env } from '../types/env.types';
