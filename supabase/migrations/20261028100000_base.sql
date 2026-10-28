@@ -21,6 +21,11 @@ grant usage on schema private to authenticated, service_role;
 alter default privileges for role postgres in schema public revoke all on tables from anon, authenticated;
 alter default privileges for role postgres in schema public revoke all on sequences from anon, authenticated;
 alter default privileges for role postgres in schema public revoke all on functions from anon, authenticated;
+--    Functions also get EXECUTE for PUBLIC from the built-in defaults, which anon inherits; a per-schema rule cannot
+--    remove a global one, so this one is global (every schema, functions created by postgres from here on). Each RPC
+--    grants execute to the role that calls it. Extensions created by postgres after this point would lose PUBLIC
+--    execute on their functions too: grant it explicitly in that migration if a role needs it.
+alter default privileges for role postgres revoke execute on functions from public;
 
 -- 4) Enums (DATOS §4.1). Adding a value = `alter type … add value` in its own migration (P6).
 create type public.staff_role as enum ('admin');

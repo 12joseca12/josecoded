@@ -24,7 +24,8 @@ describe('migrations (DATOS §10.2)', () => {
         expect(body, m[1]).toMatch(/set search_path = ''/);
         expect(read(f), m[1]).toMatch(
           new RegExp(
-            `revoke all on function ${m[1]!.replace('.', '\\.')}[\\s\\S]*?from public, anon, authenticated`,
+            // [^;] keeps the match inside one revoke statement (a later revoke of another function must not count)
+            `revoke all on function ${m[1]!.replace('.', '\\.')}\\s*\\([^;]*?\\)\\s*from public, anon, authenticated\\s*;`,
             'i',
           ),
         );

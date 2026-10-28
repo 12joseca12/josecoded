@@ -176,6 +176,7 @@ end $$;
 begin;
 create table public.p1_probe (id int);
 create function public.p1_probe_fn() returns int language sql as $$ select 1 $$;
+create function private.p1_probe_fn() returns int language sql as $$ select 1 $$;
 do $$
 begin
   if has_table_privilege('anon', 'public.p1_probe', 'select')
@@ -185,12 +186,16 @@ begin
   if not has_table_privilege('service_role', 'public.p1_probe', 'select') then
     raise exception 'FAIL service_role lost its default table privileges';
   end if;
-  if exists (select 1 from pg_proc p, aclexplode(p.proacl) a
-             where p.oid = 'public.p1_probe_fn()'::regprocedure
-               and a.grantee in ('anon'::regrole, 'authenticated'::regrole)) then
-    raise exception 'FAIL default privileges still grant new public functions to anon/authenticated';
+  -- has_function_privilege, not the ACL entries: EXECUTE through PUBLIC (built-in default) counts too.
+  if has_function_privilege('anon', 'public.p1_probe_fn()', 'execute')
+     or has_function_privilege('authenticated', 'public.p1_probe_fn()', 'execute')
+     or has_function_privilege('authenticated', 'private.p1_probe_fn()', 'execute') then
+    raise exception 'FAIL default privileges still let anon/authenticated execute new functions (PUBLIC?)';
   end if;
-  raise notice 'PASS default privileges: new public tables/functions get no anon/authenticated grant';
+  if not has_function_privilege('service_role', 'public.p1_probe_fn()', 'execute') then
+    raise exception 'FAIL service_role lost its default execute on new public functions';
+  end if;
+  raise notice 'PASS default privileges: new tables/functions get no anon/authenticated access (PUBLIC included)';
 end $$;
 rollback;
 
