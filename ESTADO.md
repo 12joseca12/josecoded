@@ -1,10 +1,10 @@
 # Estado — josecoded
 
-> **Fase 1b en curso** en `chore/supabase` (2026-10-27): fase 0 y fase 1a hechas (PR #1); de la 1b, 1.2, 1.3 y 1.7 hechas y revisadas. Siguiente: 1.6 y 1.8 en el Mac (Supabase local + Docker) y 1.9 (gate de producción con OK de Jose). Desde el 2026-10-24 se trabaja también en sesiones en la nube: siempre sobre `chore/supabase`, sin crear ramas nuevas; lo que necesita Docker, Supabase CLI, `wrangler` con sesión, vault o codebase-memory se hace en el Mac. Diseño y planificación cerrados el 2026-09-30 (spec v1.7, DT v1.4, plan v2.2, working-agreements v1.2).
+> **Reposicionamiento decidido por Jose el 2026-10-28** (identidad única freelance; `/servicios` con cuatro vías y cinco packs; `/partners` para agencias; chat por casos sin cuenta con contexto desde el CRM; CRM propio en `/admin`; Radar módulo del CRM y newsletter fuera del lanzamiento; blog técnico + `/lab`; home v7 con prototipo y gate). Documentos: **spec v2.0** (§0, D36–D47), **pantallas v2.0**, **plan v3.0**. Fase 0 y 1a hechas (PR #1); **fase 1b en curso en `chore/supabase`** (1.2, 1.3, 1.7 hechas; quedan 1.6, 1.8 en el Mac y 1.9 gate). **Prototipo `home-v7` aprobado por Jose el 2026-10-28** (tarea 2.0 hecha). Siguiente: cerrar 1b, arrancar **1c** (`chore/crm-schema`) y la fase 2 (port de la v7).
 
 ## Ahora
 
-**Home elegida: `docs/superpowers/design/ref/home-v6/` («bento por escenas»).**
+**Home: la referencia a portar es `ref/home-v7/`, aprobada por Jose en el navegador el 2026-10-28** (escenas Sobre mí · Servicios · Proyectos · Lab/Blog · ¿Empezamos?; la home es una muestra y la navegación va a pantallas propias, D48; destaque ámbar tostado `#e09c47`). Servir con `python3 -m http.server 8768 --directory docs/superpowers/design/ref` → http://localhost:8768/home-v7/?nointro. Qué cambia respecto a la v6 y decisiones aplicadas: `ref/home-v7/README.md` §10–§17. Lo que sigue describe la v6, cuya mecánica y sistema visual se mantienen.
 Servir con `python3 -m http.server 8765 --directory docs/superpowers/design/ref` → http://localhost:8765/home-v6/ (`?intro` para ver la caída de letras del hero). En la sesión de Claude existe la config `josecoded-design-ref` en `~/Documents/ClaudeDocuments/.claude/launch.json`.
 
 Qué tiene la v6:
@@ -21,21 +21,22 @@ Qué tiene la v6:
 
 Fuentes de verdad de diseño: `PRODUCT.md` (producto), `DESIGN.md` + `.impeccable/design.json` (sistema v6, volcado el 2026-09-29; **faltan los tokens de INV §5, que completa la tarea 1.10 del plan**), contrato en `.impeccable/surfaces/`. Figma con exploraciones: https://www.figma.com/design/aGt6l1dnVUB8tmhU8ctn4f.
 
-Histórico de prototipos (no usar como base): `home-v5/` (variantes A/B/C que llevaron a la v6), `home-v4/` (ventana con dock), `hero-lab-3/` (hero aprobado original), `estilo/`, `eje/`, `ui-v3/`, `heros/`, `hero-lab`, `hero-lab-2`.
+Histórico de prototipos (no usar como base): `home-v6/` (base de la v7), `home-v5/` (variantes A/B/C que llevaron a la v6), `home-v4/` (ventana con dock), `hero-lab-3/` (hero aprobado original), `estilo/`, `eje/`, `ui-v3/`, `heros/`, `hero-lab`, `hero-lab-2`.
 
 Documentos (al día con la v6 desde el 2026-09-29):
 
 | Documento | Ruta | Versión |
 |---|---|---|
-| Spec | `docs/superpowers/specs/2026-09-13-josecoded-plataforma.md` | **v1.7** (D27–D35, §12 v6, válvula por fecha) |
+| Spec | `docs/superpowers/specs/2026-09-13-josecoded-plataforma.md` | **v2.0** (2026-10-28: §0 reposicionamiento, D36–D47, modelo `crm_*`/`chat_*`, Q16–Q20 abiertas) · v1.7 (D27–D35) |
 | Spec newsletter | `docs/superpowers/specs/2026-09-29-josecoded-newsletter.md` | **v1.2** (bilingüe, GitHub App, grants por columna; Q1–Q6 resueltas) |
 | UX | `docs/superpowers/design/2026-09-17-josecoded-ux.md` | **v4.0** (§2 y §4.1 v6; interiores → documento de pantallas) |
 | Diseño técnico | `docs/superpowers/design/2026-09-17-josecoded-diseno-tecnico.md` | **v1.4** (§0b: cambios del eng review) |
 | Sistema visual | `DESIGN.md` + `.impeccable/design.json` | v6 (`2026-09-17-josecoded-ui.md` v3 superado) |
 | Componentes home | `docs/superpowers/design/2026-09-29-componentes-home-v6.md` | v1.1 |
-| Pantallas y contenidos | `docs/superpowers/design/2026-09-29-pantallas-y-contenidos.md` | v1.0 |
+| Pantallas y contenidos | `docs/superpowers/design/2026-09-29-pantallas-y-contenidos.md` | **v2.0** (bloque v2.0: P20 `/servicios`, P21 `/partners`, P22–P23 `/lab`, P11 v2, CRM C1–C13) |
 | Convenciones | `docs/working-agreements.md` | **v1.2** (§14 tipos, §15 componentes con variantes, §16 a11y por componente, §17 servicios/estado/formularios) |
-| Plan | `docs/superpowers/plans/2026-09-19-josecoded-v1.md` | **v2.2** (adendas «v2.2 (stack)» en 1.1–1.3, 1.5, 1.6, 1.10, 2.2, 2.17, 3.7–3.10, 7.1, 7.16–7.24, 10.2; fase 0 sin cambios) |
+| Plan | `docs/superpowers/plans/2026-09-19-josecoded-v1.md` | **v3.1** (2026-10-28: tarea **9.5b** repo público + gate «Jose cambia la visibilidad») · v3.0 (fase 1c, 2.0 gate home-v7, 3.2 `/servicios`, 3.3 `/partners`, 4.4 chat v2, 4.5 `/lab`, fase 6 CRM, Radar y newsletter tras 9.6) · v2.2 |
+| Arquitectura (portada técnica, inglés) | `docs/architecture.md` + `README.md` | v1.0 (2026-10-28, PR #2) |
 
 Índices: codebase-memory `Users-jose-Documents-GitHub-josecoded` (indexado 2026-09-29, con ADR de diseño); graphify se regenera en cada commit (hook).
 
@@ -65,6 +66,7 @@ Documentos (al día con la v6 desde el 2026-09-29):
 - [x] **Pantallas independientes**: mapa, contenidos y orden en `docs/superpowers/design/2026-09-29-pantallas-y-contenidos.md` v1.0 (2026-09-29). Incluye las páginas derivadas: stack/CV (sección en Sobre mí + PDF), tarifas de negocio (comparador en `/negocios`) y personalización automática del área.
 
 **Insumos de Jose (bloquean tareas del plan)**
+- [ ] **v3.0 (2026-10-28):** aprobar el prototipo `ref/home-v7/` en el navegador (2.0); **contexto inicial del chat por caso** (4 casos × es/en; se publica desde el CRM, 6.9); texto de `/partners` y decisión **Q16** (precio para agencias: recomendación «sin precio»); titular, frase por vía y FAQ por vía de `/servicios`; **dos demos del lab** y **tres guías largas** del blog; buzón `freelance@josecoded.com` activo (Email Routing, **Q18**) y URL de LinkedIn; `agencias.md` al día para la importación; decisiones **Q17** (mantener `/contacto` con cuatro vías), **Q19** (mentoría fuera del lanzamiento), **Q20** (CRM arranca solo con «Copiar», sin Gmail). Detalle en spec v2.0 §0.13 y plan v3.0 «Insumos».
 - [ ] Los `{{DATO}}`: nombre a mostrar, ciudad, años, estado y descripción de 3catinfo/HazmeFila/Oportunix, certificaciones, WhatsApp y email, usuario de GitHub, enlaces de stores, plazo de respuesta real, artículos del blog.
 - [ ] Radar: `content/radar/profile.json` y CV maestro es/en; proyecto OAuth de Google; alertas de LinkedIn; ≥ 12 correos reales anonimizados; cuentas en InfoJobs/Tecnoempleo/Upwork/Workana/Malt.
 - [ ] Supabase: OAuth Google/GitHub, plantilla OTP **en es y en**, «leaked password protection», **«Confirm email» activo y cuenta SMTP propia para Auth (`cuenta@josecoded.com`)** (D35; gate 1.9/3.12).
@@ -94,6 +96,22 @@ Documentos (al día con la v6 desde el 2026-09-29):
 - [ ] El «Hecho cuando» de la 1.7 (`wrangler deploy --dry-run` y `curl` en `wrangler dev`) no se ha ejecutado en la nube: comprobarlo en el Mac.
 - [ ] Sincronizar desde el Mac (no hay vault ni codebase-memory en la nube): nota del vault y ADR con el estado de la 1.7.
 
+**Antes de hacer público el repo (tarea 9.5b del plan v3.1; gate «Jose cambia la visibilidad», antes de 9.6):**
+- [ ] `apps/api/wrangler.jsonc`: fuera `account_id`, `ADMIN_SUPERUSER_ID` y `ADMIN_SUPERUSER_EMAIL` (a secretos/entorno); bloque `env.production` con `API_MODE=production`; test de wrangler ampliado.
+- [ ] `apps/api/DEPLOY.md`, `apps/api/README.md`, `apps/api/infra/cloudflared/README.md`, spec §7/Q11/Q20 y DT §1.3/P14: sin correo de la cuenta de Cloudflare/Google, sin `account_id`, sin UUID del túnel ni rutas de disco de Omen (`/Volumes/...`). Valores al vault.
+- [ ] Correo personal literal en código heredado: `apps/api/src/services/supabase.service.ts` (`DEFAULT_ADMIN_SUPERUSER_EMAIL`) y `admin-chat.pg-store.ts` (mensaje de error). Desvío de una línea aprobado por `revisor-seguridad`.
+- [ ] Historial: sin tokens ni claves (escaneo 2026-10-28); correos e identificadores sí. **Decide Jose**: aceptar o `git filter-repo` una vez.
+- [ ] «3catinfo» (NDA) en `PRODUCT.md`, `ESTADO.md`, spec, DT, PANT: **decide Jose** si se mantiene el nombre (recomendado; NDA sobre métricas y detalles) o se anonimiza. Alten y las agencias no están en el repo (comprobado).
+- [ ] `.claude/` (rama `chore/supabase`): agentes sin rutas personales; skills de Emil Kowalski sin licencia en el repo → comprobar `emilkowalski/skills` y sacarlas si no permite redistribución; Vercel (MIT) con atribución. `.impeccable/` se queda (`review/` ya ignorado).
+- [ ] `LICENSE` (**decide Jose**; recomendación: MIT para el código, todos los derechos reservados para marca, textos, diseño y medios), `SECURITY.md`, opcional `CODEOWNERS`.
+- [ ] Al publicar: proteger `main` (GitHub Free lo permite en públicos; cierra el pendiente de working-agreements §9), confirmar que `preview.yml`/`deploy-production.yml` nunca corren con `pull_request` de forks, acciones por SHA + Dependabot (B2), cerrar `preview_urls` (B5).
+
+**Heredados del gateway (revisión de 1.2, preexistentes; revisar en 1.7 y en la tarea de cabeceras de seguridad):**
+- [ ] `apps/api/wrangler.jsonc` despliega `API_MODE: "development"`: con `DEV_API_KEY` puesto, `/api/dev/worker/*` quedaría activo en producción (`DEPLOY.md` §4 ya lo marca).
+- [ ] `GET /system/status` de raíz es público y llama a Omen con el token interno.
+- [ ] `/admin-chat/n8n/inbound` compara el secreto sin tiempo constante.
+- [ ] Correos personales en `apps/api/wrangler.jsonc` (`ADMIN_SUPERUSER_EMAIL`) y `apps/api/DEPLOY.md`: moverlos a secretos → **absorbido por la tarea 9.5b** (repo público).
+
 **Suelto**
 - [ ] Accesibilidad: al descomponer etiquetas en glifos (home-v4) el nombre accesible puede leerse con basura; en v6 ya no se usa, confirmar al implementar.
 - [ ] `.gitignore` de `josedev` y `josecoded-worker` con `graphify-out/` sin commitear.
@@ -106,13 +124,18 @@ Documentos (al día con la v6 desde el 2026-09-29):
 4. ~~Componentes de la home~~ hecho (2026-09-29).
 5. ~~Actualizar spec, UX, diseño técnico y plan + `/plan-eng-review`~~ hecho (2026-09-30: plan v2.1 con los 41 hallazgos).
 6. ~~Batería de stack y metodologías de producción~~ hecha (2026-09-30: 12 respuestas → working-agreements v1.2, `CLAUDE.md` reglas 11–13, plan v2.2).
-7. ~~Fase 0~~ y ~~Fase 1a~~ (PR #1 fusionado). **Fase 1b en curso** en `chore/supabase` (la rama `main-aktp2d` de la sesión en la nube del 2026-10-24 se integró aquí el 2026-10-27): 1.2 ✅, 1.3 ✅, 1.7 ✅ (revisor «aprobado con cambios menores»; 8 hallazgos aplicados en `43ea5c5..101bf7f`, 214 tests); luego 1.6 y 1.8 (necesitan Supabase local) y 1.9 (gate de producción con OK de Jose).
-8. Fase 2: port 1:1 de `home-v6` escena a escena, con capturas comparadas (2 %) y aprobación de Jose entre escenas. Al cerrarla, **fijar la fecha de válvula** y la tabla del hito «contenido completo».
-9. Orden de fases: 0 → 1a → 1b → 2 → hito de contenido → 3 → 4 → 5 → 6 → 8.1 → 9 (lanzamiento) → **7 Radar** → 10 Newsletter.
+7. ~~Fase 0~~ y ~~Fase 1a~~ (PR #1). **Fase 1b en curso** en `chore/supabase`: 1.2, 1.3, 1.7 hechas; **quedan 1.6 y 1.8 (Supabase local, en el Mac) y 1.9 (gate con OK de Jose)**. No se le añade nada nuevo.
+8. **Plan v3.0 (2026-10-28):** al mergear 1b → **1c** `chore/crm-schema` (1.11 migraciones `crm_*`/`chat_*`, 1.12 gate) en paralelo con **2.0** (`ui` hace `ref/home-v7/`; **Jose lo aprueba en el navegador**: gate) → fase 2 (port de la v7) → hito de contenido reducido → 3 (`/servicios`, `/partners`, contacto con cuatro vías, generador con cinco packs, proyectos, sobre mí, legales) → 4 (auth, blog de guías, `/lab`, chat por casos) → 5 (área) → 6 (CRM) → 8.1 → 9 (lanzamiento = público + área + CRM, sin válvula) → **7 Radar como módulo del CRM** → 10 Newsletter solo si Jose lo decide a los 3 meses con datos.
+9. Camino crítico: 1.6 → 1.8 → 1.9 → 2.0 (OK de Jose) → 2.1 … 2.17 → 3.13 → 3.2 → 3.8 → 3.10 → 3.3 → 3.9 → 3.4 → 3.5 → 3.6 → 3.12 → 4.1 → 4.2 → 4.5 → 4.4 → 5.1 → 6.1 → 6.2 → 6.9 → 6.8 → 6.6 → 9.1 → 9.4 → 9.5 → 9.6.
 
 Gates que no se cruzan sin OK explícito de Jose en la misma sesión: migraciones y deploys a producción, contratar servicios, tocar servicios preexistentes de Omen.
 
 ## Decisiones recientes
+
+- **2026-10-28 — Prototipo `home-v7` aprobado (Jose, en el navegador; gate de la tarea 2.0):** con todas las propuestas del README §15 (CTA del hero «Servicios y precios» sólido + «Ver proyectos»; vías Por horas · Encargo a precio fijo · Packs de web y app · Abierto a empleo; «Para agencias» siempre visible en Servicios; CV como acción principal de la vía de empleo y en Sobre mí; P5 separado de P1–P4; Lab y Blog como dos enlaces; sin celda ampliada ⤢). **D48:** la home es una muestra; cabecera, ☰, ⌘K, pie y botones de cada celda llevan a pantallas propias. **Destaque** de los titulares a dos tonos: ámbar tostado `#e09c47` (token `highlight`). Los textos propuestos siguen pasando por `redactor` antes de entrar en `messages`.
+- **2026-10-28 — Arquitectura enseñable en GitHub (`arquitecto`; en `main` desde el PR #2):** `docs/architecture.md` en inglés (visión, diagrama de contexto Mermaid, mapa del monorepo con lo *planned*, capas y reglas de dependencia de web y gateway, cómo se hacen cumplir, decisiones clave, dónde mirar primero) y `README.md` reescrito en inglés como portada (conserva la tabla de comandos). El repo sigue **privado hasta la tarea 9.5b** (plan v3.1), que sustituye la decisión «repo privado» del 2026-09-30 por «privado hasta limpiar y Jose cambia la visibilidad». Violaciones de la arquitectura descrita detectadas y **no arregladas** (se listan para decidir): (1) código heredado del gateway exento por lista literal en ESLint —`supabase.service.ts` y `forum.pg-store.ts` importan `@supabase/supabase-js` fuera de `adapters/`, las rutas heredadas importan servicios directamente en vez de `c.var.deps`, tipos compartidos en `apps/api/src/types/*`—; `adapters/` está vacío (`.gitkeep`) hasta 3.7; (2) `apps/web/i18n/route-rules.ts` (`RewriteRule`, `RedirectRule`), `i18n/pathnames.ts` (`Pathnames`) y `lib/locale.ts` (`LocaleParams`) exportan tipos usados por varios ficheros fuera de `@josecoded/types` (working-agreements §14.1 al pie de la letra); (3) deriva v3.0 en el código: ruta `app/[locale]/negocios/`, `pathnames` con `/empresas` y `/negocios`, catálogos `messages/*/{companies,business,newsletter}.json` (se resuelven en 3.2/2.1); (4) la CORS se construye inline en `apps/api/src/index.ts` en cada petición (heredado); (5) en `main` no existe `apps/api` aunque README y DT lo describen (se resuelve al mergear `chore/supabase`).
+
+- **2026-10-28 — Reposicionamiento (Jose; spec v2.0 §0, D36–D47; pantallas v2.0; plan v3.0):** (D36) **identidad única: freelance**; se acaba la distinción empresas/negocios. (D37) **`/servicios`** única página de oferta con cuatro vías —por hora 40 €/h · proyecto cerrado desde 150 € · **cinco packs** (P1–P4 + **P5 App móvil desde 4.000 €**, ampliada 6.000 € como opción) · **abierto a contratación** (CV es/en, Cal.com, chat, LinkedIn/email)—; `/empresas` y `/negocios` → 301; el generador clasifica en cinco packs. (D38) **`/partners`** para agencias y consultoras con contacto rápido múltiple; será el enlace de los mensajes a agencias (`agencias-mensajes.md` deberá permitirlo). (D39) **Chat por casos sin cuenta** (`client`, `partner`, `recruiter`, `curious`; Turnstile + cuota por IP con `increment_quota`; módulo `assistant/*` y tablas `chat_*`; `admin-chat/*` queda intacto sin consumidor porque exige `user_id`). (D40) **El contexto de la IA por caso lo edita y publica Jose desde el CRM** (`chat_contexts`, versionado, un `published` por caso e idioma). (D41) **CRM propio en `/admin`**: contactos unificados (leads, clientes, agencias, reclutadores) con estado, historial, siguiente acción; importación de `agencias.md`; **mensajes con IA que Jose envía a mano** (nunca envío automático; Gmail solo borradores y solo con OAuth); leads y clientes heredados mapeados por FK nullable sin alterarlos. (D42) **Notion** solo guarda documentos comerciales (brief, propuesta, presupuesto) vía skills, enlazados por `notion_url`; el estado del contacto vive en el CRM; `/seguimiento` leerá del CRM más adelante (cambio en `claude-config`). (D43) **Radar = módulo del CRM, fuera del lanzamiento** (tras 9.6, sin válvula). (D44) **Blog técnico (guías largas) + `/lab`** (≥ 2 demos reales; si no, 404) como prioridad; **newsletter aplazada**, decisión a los 3 meses con datos; mientras, «Avísame» crea un contacto en el CRM. (D45) **Home v7**: Sobre mí · Servicios · Proyectos · Lab/Blog · ¿Empezamos?; prototipo nuevo `ref/home-v7/` que **Jose aprueba en el navegador antes de portar** (gate 2.0). (D46) **Lanzamiento = público + área de clientes + CRM**. (D47) vía «contratación» explícita. Plan v3.0: fase **1c** `chore/crm-schema` (1.11, 1.12) separada de `chore/supabase`; 3.2 = `/servicios`, 3.3 = `/partners`, 4.4 chat v2, 4.5 `/lab`, fase 6 = CRM (6.2 contactos, 6.6 hilos, 6.7 organizaciones e importación, 6.8 borradores con linter de reglas y test negativo de envío, 6.9 contextos). **Preguntas abiertas para Jose (spec §0.13):** Q16 tarifa para agencias en `/partners`, Q17 mantener `/contacto`, Q18 buzón `freelance@`, Q19 mentoría, Q20 Gmail en el CRM; se aplican las recomendaciones hasta que decida.
 
 - **2026-10-24 — Paso a sesiones en la nube.** Fase 1b en `chore/supabase`: **1.2** (gateway movido a `apps/api`, contratos intactos, snapshot de 31 rutas) y **1.3** (tests en Vitest/workerd, Jest fuera, `__deps` solo con `__TEST_HOOKS__` en compilación y `TEST=1`) con `revisor` PASA; **1.7** implementada (CORS con comodín de previews, `routes-manifest`, cron único `*/5` con despachador `nextRun` y presupuesto de 40 subpeticiones, `env.preview` → `josecoded-api-preview`, `minify`) **pendiente de `revisor`**. Copiados a `.claude/` del repo los agentes, skills y plugins que usa el proyecto (`.claude/README.md`); la fuente sigue siendo `claude-config`. En la nube no hay vault, codebase-memory, `/cierre`, `/cerebro`, CLI de Supabase con sesión ni Docker: **1.6 y 1.8 necesitan el Mac** (o instalar Supabase CLI + Docker y que Jose haga `supabase login`).
 

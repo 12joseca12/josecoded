@@ -7,6 +7,7 @@ colors:
   text: "#ece9ff"
   text-2: "#a9a3d6"
   text-3: "#8c86bd"
+  highlight: "#e09c47"
   line: "rgb(157 140 255 / 0.12)"
   line-2: "rgb(157 140 255 / 0.22)"
   card: "rgb(22 19 48 / 0.84)"
@@ -166,6 +167,7 @@ spacing:
   pad-cell: "clamp(1.125rem, 0.6rem + 1.6vmin, 2.25rem)"
   gap-cell: "clamp(0.875rem, 2svh, 1.5rem)"
   gap-cell-body: "clamp(0.875rem, 2svh, 1.25rem)"
+  gap-split: "clamp(1.5rem, 4cqi, 3rem)"
   0-5: "0.125rem"
   1: "0.25rem"
   1-5: "0.375rem"
@@ -199,6 +201,7 @@ fontWeights:
   emphasis: "500"
 alphas:
   tint-cmdk: "rgb(157 140 255 / 0.06)"
+  tint-preview: "rgb(157 140 255 / 0.06)"
   tint-chip: "rgb(157 140 255 / 0.08)"
   tint-kbd: "rgb(157 140 255 / 0.1)"
   tint-icon: "rgb(157 140 255 / 0.12)"
@@ -341,7 +344,7 @@ components:
 
 Un sistema tech limpio y preciso, con el acabado de un lanzador de escritorio, donde el índigo no es un acento sino el material de la página. El fondo es un índigo casi negro con grano fino y un campo de luz contenido: haces violeta difusos que nacen junto a la nube de glifos del hero y se inclinan un poco hacia el cursor. La nube (caracteres reales de código que forman por turnos un móvil, una web y un chip) es el único objeto vivo de la web y vive solo en el hero. Todo lo demás es interfaz: texto lavanda, tarjetas de vidrio índigo con filete violeta y una sola acción violeta sólida por vista.
 
-Tras el hero, la home se lee como una secuencia de escenas a pantalla completa: Sobre mí, Empresas, Negocios, Proyectos, Blog y el cierre. Cada escena es un titular a dos tonos y un bento de tres celdas sin huecos que se reorganiza según el ancho de su propio contenedor. Proyectos es un carrusel horizontal fijado. Con puntero fino, un gesto de rueda o de teclado lleva a la siguiente escena. La densidad es media: mucho aire entre escenas y, dentro de cada celda, una interfaz compacta tipo aplicación (lista con selección deslizante, selector segmentado, mini conversación, atajos). El teclado es ciudadano de primera: ⌘K abre una paleta que lleva a cualquier sitio.
+Tras el hero, la home se lee como una secuencia de escenas a pantalla completa: Sobre mí, Servicios, Proyectos, Lab/Blog y el cierre (home v7). Servicios reúne la oferta en una escena: una lista de vías con el precio en cada fila y un panel con una sola acción, los cinco packs y las tarifas; Lab/Blog enseña una demo viva y dos guías. Cada escena es un titular a dos tonos y un bento de tres celdas sin huecos que se reorganiza según el ancho de su propio contenedor. Proyectos es un carrusel horizontal fijado. Con puntero fino, un gesto de rueda o de teclado lleva a la siguiente escena. La densidad es media: mucho aire entre escenas y, dentro de cada celda, una interfaz compacta tipo aplicación (lista con selección deslizante, selector segmentado, mini conversación, atajos). El teclado es ciudadano de primera: ⌘K abre una paleta que lleva a cualquier sitio.
 
 Rechazos confirmados por Jose y por PRODUCT.md: glassmorphism de plantilla, gradientes morados genéricos, Inter con texto degradado, iconos brillantes, copy vacío, parallax de fondo, gradientes animados, inclinaciones o escalas al hacer hover, aspecto «de web normal», la franja de métricas, el negro puro, las metáforas de objeto físico, WebGL fuera del hero, el badge o eyebrow en el hero y los antetítulos sobre los nombres de proyecto.
 
@@ -413,7 +416,7 @@ Una paleta índigo casi monocroma: fondo y superficies de la misma familia de ma
 ### Named Rules
 **The One Family Rule.** Geist para todo. Geist Mono solo en teclas, el enlace de idioma, los marcadores {{DATO}} y los glifos (nube, intro, arte de Proyectos). Ningún otro tipo de letra.
 
-**The Two-Tone Headline Rule.** Todo titular de escena y el del cierre se escriben en dos frases: la primera en lavanda (text) dice qué es, la segunda en lavanda terciaria (text-3) dice para quién o con qué. Se mantiene en todas las escenas; el h1 del hero es la única excepción porque es un nombre.
+**The Two-Tone Headline Rule.** Todo titular de escena y el del cierre se escriben en dos frases: la primera en lavanda (text) dice qué es, la segunda en lavanda terciaria (text-3) dice para quién o con qué. Se mantiene en todas las escenas; el h1 del hero es la única excepción porque es un nombre. **Home v7:** el segundo tono pasa de lavanda terciaria a **destaque** (`highlight`), un color propio ámbar tostado `#e09c47` (8,65:1 sobre el fondo), elegido por Jose el 2026-10-28. Solo en el segundo tono de los titulares de escena y del cierre; nunca en botones, enlaces ni estados.
 
 **The Tight Display Rule.** Cuanto más grande, más apretado: display, cierre y cifras de tarifa a -0.045em, headline y nombre de proyecto a -0.04em, cifra de pack destacada a -0.035em, title a -0.03em, cifra de pack y marca a -0.02em. El texto corrido va con tracking normal.
 
@@ -567,3 +570,5 @@ Un gesto con propósito por celda: marquesina doble del stack en sentidos opuest
 Renombres de la revisión de `ui`: `dur-scene` → `dur-canvas-in`, `dur-fast` → `dur-hover`, `dur-arrow` → `dur-nudge`, `dur-key` → `dur-keycap`, `ease-key` → `ease-keycap`, `edge-key-down` → `edge-keycap-down`, `r-key` → `r-kbd`, `shadow-key` → `shadow-kbd`, rol `mono-key` → `mono-kbd`, `scrollbar` → `scrollbar-thumb`, `tint-cell-hero` → `tint-emphasis`, `bp-hero-stack` → `bp-short`.
 
 Añadidos sobre la lista del plan, todos presentes en el prototipo: `dur-state` (200 ms, 12 usos), `dur-blink`, `dur-canvas-in`, `dur-delay-draw`, `z-skip`, los easings en palabra clave, `grad-field-pool`, `grad-mask-fade`, `sp-gap-cell-body`, `pending` y `scrollbar-thumb`.
+
+**Añadidos de la home v7 (prototipo `ref/home-v7/`, emitidos con `pnpm tokens:build`):** `--tint-preview` (rgb(157 140 255 / 0.06), vista previa en hover de una fila elegible; más tenue que `--tint-selected` y sin filete, para que el hover no parezca selección), `--dur-demo-loop` (7s, ciclo de la demo en miniatura de la celda Lab, solo con hover o foco) los contenedores `--cq-packs-row` (36rem, cinco packs en fila con P5 separado por hueco y filete), `--cq-vias-split` (40rem, lista de vías y panel lado a lado) y `--cq-cell-narrow` (30rem, celda estrecha), y el espaciado `--sp-gap-split` (clamp(1.5rem, 4cqi, 3rem), hueco y sangría entre la lista de vías y su panel). `--cq-list-meta` (26rem) se reutiliza para bajar la cifra de cada vía bajo su nombre.

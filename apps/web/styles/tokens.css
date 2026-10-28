@@ -6,6 +6,7 @@
   --text: #ece9ff;
   --text-2: #a9a3d6;
   --text-3: #8c86bd;
+  --highlight: #e09c47;
   --line: rgb(157 140 255 / 0.12);
   --line-2: rgb(157 140 255 / 0.22);
   --card: rgb(22 19 48 / 0.84);
@@ -135,6 +136,7 @@
   --sp-pad-cell: clamp(1.125rem, 0.6rem + 1.6vmin, 2.25rem);
   --sp-gap-cell: clamp(0.875rem, 2svh, 1.5rem);
   --sp-gap-cell-body: clamp(0.875rem, 2svh, 1.25rem);
+  --sp-gap-split: clamp(1.5rem, 4cqi, 3rem);
   --sp-0-5: 0.125rem;
   --sp-1-5: 0.375rem;
   --sp-2-5: 0.625rem;
@@ -160,6 +162,7 @@
 
   /* alphas */
   --tint-cmdk: rgb(157 140 255 / 0.06);
+  --tint-preview: rgb(157 140 255 / 0.06);
   --tint-chip: rgb(157 140 255 / 0.08);
   --tint-kbd: rgb(157 140 255 / 0.1);
   --tint-icon: rgb(157 140 255 / 0.12);
@@ -226,6 +229,7 @@
   --dur-vt: 380ms;
   --dur-draw: 420ms;
   --dur-float: 6s;
+  --dur-demo-loop: 7s;
   --dur-marquee-a: 38s;
   --dur-marquee-b: 44s;
   --dur-blink: 1s;
@@ -271,8 +275,11 @@
   --cq-card-stack: 15rem;
   --cq-prompt-stack: 24rem;
   --cq-list-meta: 26rem;
+  --cq-cell-narrow: 30rem;
   --cq-bento-2: 34rem;
+  --cq-packs-row: 36rem;
   --cq-packs-dividers: 40rem;
+  --cq-vias-split: 40rem;
   --cq-bento-12: 52rem;
 
   /* gradients */

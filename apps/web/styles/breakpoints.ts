@@ -11,7 +11,10 @@ export const cq = {
   'card-stack': '15rem',
   'prompt-stack': '24rem',
   'list-meta': '26rem',
+  'cell-narrow': '30rem',
   'bento-2': '34rem',
+  'packs-row': '36rem',
   'packs-dividers': '40rem',
+  'vias-split': '40rem',
   'bento-12': '52rem',
 } as const;
