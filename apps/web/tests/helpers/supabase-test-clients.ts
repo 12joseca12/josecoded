@@ -21,7 +21,7 @@ if (!LOOPBACK.has(new URL(LOCAL_URL).hostname)) {
 
 export const TEST_PASSWORD = 'test-password-123';
 
-/** Fixed ids of supabase/seed/seed.sql (task 1.8a; the seed header documents the ranges). */
+/** Fixed ids of supabase/seed/seed.sql (tasks 1.8a and 1.8b; the seed header documents the ranges). */
 export const SEED = {
   users: {
     jose: '00000000-0000-4000-8000-0000000000a1',
@@ -74,6 +74,20 @@ export const SEED = {
     approvedBob: '00000000-0000-4000-8000-000000000a01',
     pendingAna: '00000000-0000-4000-8000-000000000a02',
     pendingBob: '00000000-0000-4000-8000-000000000a03',
+  },
+  chatContexts: {
+    /** client/es v1, published. */
+    clientEs: '00000000-0000-4000-8000-000000000b01',
+    /** curious/es v1, published. */
+    curiousEs: '00000000-0000-4000-8000-000000000b02',
+    /** partner/es v1, draft (nothing published for partner). */
+    partnerEsDraft: '00000000-0000-4000-8000-000000000b03',
+  },
+  chatThreads: {
+    /** case partner, no user, no contact, unread for the admin. */
+    anonymous: '00000000-0000-4000-8000-000000000c01',
+    /** case client, Ana's user and contact, read. */
+    ana: '00000000-0000-4000-8000-000000000c02',
   },
 } as const;
 

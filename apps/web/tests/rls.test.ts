@@ -1,6 +1,6 @@
 // @vitest-environment node
-// RLS with four accounts against Supabase local: one assertion per cell of DATOS v1.1 §5 (plan v3.2, tasks 1.6 and
-// 1.8a) plus the RPC behaviours of the 1.8a test extract. Needs `supabase start` + `supabase db reset` (migrations +
+// RLS with four accounts against Supabase local: one assertion per cell of DATOS v1.2 §5 (plan v3.2, tasks 1.6, 1.8a
+// and 1.8b) plus the RPC behaviours of the 1.8a and 1.8b test extracts. Needs `supabase start` + `supabase db reset` (migrations +
 // seed). Skipped with a warning when the stack does not answer locally, and a failure in CI (same criterion as
 // packages/types/test/database-drift.test.ts). The SQL twin that runs without Supabase is supabase/test/pg/.
 // The tests write through PostgREST (no rollback), so whatever they create uses fresh ids and keys: they can run
@@ -38,7 +38,8 @@ const CRM_TABLES = [
   'crm_message_drafts',
 ] as const;
 const AREA_TABLES = ['clients', 'client_tasks', 'client_task_comments', 'client_assets', 'client_extras', 'upgrade_requests'] as const;
-const PRIVATE_TO_ANON = [...CRM_TABLES, 'leads', ...AREA_TABLES, 'affiliates', 'affiliate_rewards', 'staff_members', 'user_profiles', 'packs'] as const;
+const CHAT_TABLES = ['chat_contexts', 'chat_threads', 'chat_messages'] as const;
+const PRIVATE_TO_ANON = [...CRM_TABLES, 'leads', ...AREA_TABLES, 'affiliates', 'affiliate_rewards', ...CHAT_TABLES, 'staff_members', 'user_profiles', 'packs'] as const;
 
 /** Primary key column of the tables without an `id`. */
 const KEY: Record<string, string> = { staff_members: 'user_id', user_profiles: 'user_id', packs: 'code', extras: 'code' };
@@ -90,7 +91,7 @@ describe.skipIf(!up && !inCi)('RLS with jose (admin), ana (P2 client + affiliate
       expect(await visible(anon, table)).toBe(0);
     });
 
-    it('cannot call any 1.8a RPC', async () => {
+    it('cannot call any 1.8a or 1.8b RPC', async () => {
       const calls = await Promise.all([
         anon.rpc('create_lead', { p: {} }),
         anon.rpc('area_lead_summary'),
@@ -101,6 +102,8 @@ describe.skipIf(!up && !inCi)('RLS with jose (admin), ana (P2 client + affiliate
         anon.rpc('crm_import_organizations', { p_rows: [] }),
         anon.rpc('admin_clients'),
         anon.rpc('admin_close_lead_paid', { p_lead_id: SEED.leads.marta, p_amount: 1 }),
+        anon.rpc('chat_context_published', { p_case: 'client', p_locale: 'es' }),
+        anon.rpc('chat_purge_anonymous', { p_older_than: '90 days' }),
       ]);
       for (const { error } of calls) expect(error).toBeTruthy();
     });
@@ -413,6 +416,97 @@ describe.skipIf(!up && !inCi)('RLS with jose (admin), ana (P2 client + affiliate
       const mod = await ana.from('blog_comments').update({ status: 'approved' }).eq('id', SEED.blogComments.pendingAna).select('id');
       expect(mod.data ?? []).toHaveLength(0);
       expect(await visible(jose, 'blog_comments')).toBeGreaterThanOrEqual(3);
+    });
+  });
+
+  describe('chat', () => {
+    /** Inserts with the service role (the gateway) and returns the new row id. */
+    async function serviceInsert(table: string, row: Row): Promise<string> {
+      const { data, error } = await service.from(table).insert(row).select('id').single();
+      expect(error).toBeNull();
+      return (data as Row).id as string;
+    }
+    const daysAgo = (d: number) => new Date(Date.now() - d * 86_400_000).toISOString();
+
+    it('only one published context per case and locale', async () => {
+      const { error } = await jose.from('chat_contexts').insert({ case: 'client', locale: 'es', version: 9, status: 'published', body_md: 'x' });
+      expect(error?.code).toBe('23505');
+      expect(error?.message).toMatch(/unique|duplicate/);
+    });
+
+    it('chat_contexts: ana, bob and anon read none; jose reads all, drafts included', async () => {
+      for (const c of [ana, bob, anon]) expect(await visible(c, 'chat_contexts')).toBe(0);
+      const { data } = await jose.from('chat_contexts').select('id');
+      expect((data as Row[]).map((r) => r.id)).toEqual(expect.arrayContaining(Object.values(SEED.chatContexts)));
+      expect((await ana.from('chat_contexts').insert({ case: 'client', locale: 'en', version: 1, body_md: 'x' })).error?.code).toBe('42501');
+    });
+
+    it('chat_context_published is callable only by service role and returns null when unpublished', async () => {
+      expect((await ana.rpc('chat_context_published', { p_case: 'client', p_locale: 'es' })).error?.code).toBe('42501');
+      expect((await anon.rpc('chat_context_published', { p_case: 'client', p_locale: 'es' })).error).toBeTruthy();
+      expect((await service.rpc('chat_context_published', { p_case: 'client', p_locale: 'es' })).data).toMatchObject({ version: 1 });
+      expect((await service.rpc('chat_context_published', { p_case: 'partner', p_locale: 'es' })).data).toBeNull();
+    });
+
+    it('ana reads only her thread and its messages; bob and anon read none; jose reads the anonymous one', async () => {
+      const threads = await ana.from('chat_threads').select('id');
+      expect((threads.data as Row[]).map((r) => r.id)).toEqual([SEED.chatThreads.ana]);
+      const messages = await ana.from('chat_messages').select('thread_id');
+      expect((messages.data as Row[]).length).toBeGreaterThanOrEqual(2);
+      expect((messages.data as Row[]).every((m) => m.thread_id === SEED.chatThreads.ana)).toBe(true);
+      for (const c of [bob, anon]) for (const t of ['chat_threads', 'chat_messages']) expect(await visible(c, t), t).toBe(0);
+      const anonymous = await jose.from('chat_threads').select('id, user_id, contact_id').eq('id', SEED.chatThreads.anonymous).single();
+      expect(anonymous.data).toMatchObject({ user_id: null, contact_id: null });
+      expect(await visible(jose, 'chat_messages')).toBeGreaterThanOrEqual(4);
+    });
+
+    it('messages are written by the gateway and by jose as jose only; nobody updates them', async () => {
+      const msg = (sender_role: string) => ({ thread_id: SEED.chatThreads.ana, sender_role, content: `rls ${randomUUID()}` });
+      expect((await ana.from('chat_messages').insert(msg('visitor'))).error?.code).toBe('42501');
+      expect((await ana.from('chat_messages').insert(msg('jose'))).error?.code).toBe('42501');
+      expect((await jose.from('chat_messages').insert(msg('assistant'))).error?.code).toBe('42501');
+      expect((await jose.from('chat_messages').insert(msg('jose'))).error).toBeNull();
+      expect((await jose.from('chat_messages').update({ content: 'x' }).eq('thread_id', SEED.chatThreads.ana)).error?.code).toBe('42501');
+      const upd = await ana.from('chat_threads').update({ ai_enabled: false }).eq('id', SEED.chatThreads.ana).select('id');
+      expect(upd.data ?? []).toHaveLength(0);
+    });
+
+    it('a visitor message marks the thread unread and enqueues chat.visitor_message', async () => {
+      const thread = await serviceInsert('chat_threads', { visitor_id: randomUUID(), case: 'curious', locale: 'es', origin_path: '/' });
+      const message = await serviceInsert('chat_messages', { thread_id: thread, sender_role: 'visitor', content: 'hola' });
+      const row = await jose.from('chat_threads').select('unread_for_admin, last_message_at').eq('id', thread).single();
+      expect(row.data).toMatchObject({ unread_for_admin: true });
+      expect(row.data?.last_message_at).toBeTruthy();
+      const counters = await jose.rpc('admin_counters');
+      expect((counters.data as Row).chat_unread).toBeGreaterThanOrEqual(1);
+      const { data: ob } = await service.rpc('outbox_claim', { p_limit: 200, p_worker: 'rls-test' });
+      const events = (ob ?? []) as Row[];
+      const event = events.find((e) => e.event === 'chat.visitor_message' && (e.payload as Row).id === message);
+      expect(event?.payload).toMatchObject({ thread_id: thread, case: 'curious', locale: 'es' });
+      expect(event?.payload).not.toHaveProperty('content');
+      await service.rpc('outbox_ack', { p_ids: events.map((e) => e.id), p_worker: 'rls-test' });
+      expect((await service.from('chat_threads').delete().eq('id', thread)).error).toBeNull();
+    });
+
+    it('chat_purge_anonymous deletes only anonymous threads without contact older than the interval', async () => {
+      const old = await serviceInsert('chat_threads', { visitor_id: randomUUID(), case: 'curious', locale: 'es', created_at: daysAgo(120) });
+      const recent = await serviceInsert('chat_threads', { visitor_id: randomUUID(), case: 'curious', locale: 'es', created_at: daysAgo(120) });
+      await serviceInsert('chat_messages', { thread_id: recent, sender_role: 'visitor', content: 'still here', created_at: daysAgo(3) });
+      const linked = await serviceInsert('chat_threads', {
+        visitor_id: randomUUID(),
+        contact_id: SEED.contacts.recruiter,
+        case: 'recruiter',
+        locale: 'en',
+        created_at: daysAgo(120),
+      });
+      expect((await ana.rpc('chat_purge_anonymous', { p_older_than: '90 days' })).error?.code).toBe('42501');
+      expect((await service.rpc('chat_purge_anonymous', { p_older_than: '1 hour' })).error?.message).toMatch(/interval_too_short/);
+      const { data, error } = await service.rpc('chat_purge_anonymous', { p_older_than: '90 days' });
+      expect(error).toBeNull();
+      expect(data).toBeGreaterThanOrEqual(1);
+      const left = await service.from('chat_threads').select('id').in('id', [old, recent, linked, SEED.chatThreads.anonymous, SEED.chatThreads.ana]);
+      expect((left.data as Row[]).map((r) => r.id).sort()).toEqual([recent, linked, SEED.chatThreads.anonymous, SEED.chatThreads.ana].sort());
+      expect((await service.from('chat_threads').delete().in('id', [recent, linked])).error).toBeNull();
     });
   });
 

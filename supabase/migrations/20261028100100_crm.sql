@@ -22,7 +22,8 @@ create type public.interaction_actor as enum ('jose', 'ai', 'system', 'contact')
 create type public.draft_author as enum ('ai', 'jose');
 create type public.draft_status as enum ('draft', 'copied', 'marked_sent', 'discarded');
 
--- 2) Helpers.
+-- 2) Helpers. Pure functions (no definer) granted to authenticated AND service_role: the crm_contacts check and the
+--    status trigger call them as the caller, and the gateway writes contacts and interactions with the secret key.
 -- Status of a contact depends on its kind (P6: text + check instead of an enum).
 create or replace function private.contact_status_ok(p_kind public.contact_kind, p_status text) returns boolean
 language sql immutable set search_path = '' as $$
@@ -36,7 +37,7 @@ language sql immutable set search_path = '' as $$
   end
 $$;
 revoke all on function private.contact_status_ok(public.contact_kind, text) from public, anon, authenticated;
-grant execute on function private.contact_status_ok(public.contact_kind, text) to authenticated;
+grant execute on function private.contact_status_ok(public.contact_kind, text) to authenticated, service_role;
 
 -- Statuses that end the commercial follow-up: changing to one of them does not need a next action (spec §9).
 -- active_client counts as terminal: the follow-up of a client lives in the area (tasks), not in the inbox.
@@ -45,7 +46,7 @@ language sql immutable set search_path = '' as $$
   select p_status in ('won', 'lost', 'active_client', 'closed', 'discarded', 'rejected')
 $$;
 revoke all on function private.contact_status_terminal(text) from public, anon, authenticated;
-grant execute on function private.contact_status_terminal(text) to authenticated;
+grant execute on function private.contact_status_terminal(text) to authenticated, service_role;
 
 -- Organisation names are matched on lower(unaccent(collapsed spaces)). The two-argument unaccent names its dictionary,
 -- so it works with search_path = ''.
@@ -54,7 +55,7 @@ language sql stable set search_path = '' as $$
   select lower(extensions.unaccent('extensions.unaccent'::regdictionary, regexp_replace(btrim(p_name), '\s+', ' ', 'g')))
 $$;
 revoke all on function private.normalize_name(text) from public, anon, authenticated;
-grant execute on function private.normalize_name(text) to authenticated;
+grant execute on function private.normalize_name(text) to authenticated, service_role;
 
 -- 3) Organisations.
 create table public.crm_organizations (

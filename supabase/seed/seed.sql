@@ -1,15 +1,16 @@
 -- Local/CI seed (supabase db reset). Test data only; never applied to production.
 -- Task 1.6 (plan v3.2, DATOS §5): the four accounts, Jose as staff and the price catalogue.
--- Task 1.8a: CRM, leads, client area, affiliates and comments (sections 4-9). Chat arrives with 1.8b.
+-- Task 1.8a: CRM, leads, client area, affiliates and comments (sections 4-9). Task 1.8b: chat (section 10).
 -- Fixed ids (apps/web/tests/helpers/supabase-test-clients.ts SEED mirrors them): users …a1-a4, organisation …0101,
 -- contacts …02xx, leads …03xx, clients …04xx, tasks …05xx, task comments …06xx, client extras …07xx,
--- affiliates …08xx, rewards …09xx, blog comments …0axx. Emails of non-users use the reserved example.test domain.
+-- affiliates …08xx, rewards …09xx, blog comments …0axx, chat contexts …0bxx, chat threads …0cxx, chat messages …0dxx.
+-- Emails of non-users use the reserved example.test domain.
 
 -- 1) Auth users (email + password, only for the local tests: visitors are passwordless in production, DATOS Q4).
 --    Password for all four: test-password-123. jose/ana/bob are confirmed; sin@test is NOT confirmed (D35:
 --    claim_client_access and area_lead_summary must refuse unconfirmed emails). GoTrue refuses the password login of an
 --    unconfirmed user, so the test helper confirms sin@test just for the login with test_set_email_confirmed()
---    (section 10) and undoes it. private.handle_new_user() creates the four user_profiles rows.
+--    (section 11) and undoes it. private.handle_new_user() creates the four user_profiles rows.
 insert into auth.users (
   instance_id, id, aud, role, email, encrypted_password, email_confirmed_at,
   raw_app_meta_data, raw_user_meta_data, created_at, updated_at,
@@ -162,7 +163,47 @@ insert into public.blog_comments (id, post_slug, locale, user_id, author_name, b
    'Seed comment: pending (Bob)', 'pending')
 on conflict (id) do nothing;
 
--- 10) Test-only helper (this file never reaches production): lets the RLS helper confirm sin@test just long enough
+-- 10) Chat (task 1.8b, DATOS §4.6). Contexts: client/es and curious/es published, partner/es still a draft; the real
+--     copy is pending (redactor), so every fact is a visible {{DATO: …}} placeholder. Threads: one anonymous partner
+--     thread (no user, no contact) with a visitor question and the assistant's answer, left unread for the admin; and
+--     Ana's client thread (her user and her CRM contact), already read by Jose. The trigger fills last_message_at and
+--     unread_for_admin and enqueues chat.visitor_message for each visitor message, as in real use.
+insert into public.chat_contexts (id, "case", locale, version, status, title, body_md, facts, published_at, published_by)
+values
+  ('00000000-0000-4000-8000-000000000b01', 'client', 'es', 1, 'published', '{{DATO: título contexto cliente}}',
+   '{{DATO: contexto del caso cliente (packs, plazos, proceso)}}',
+   '{"availability":"{{DATO: disponibilidad}}","rates_ref":"pricing","stack":["Next.js","Cloudflare Workers","Supabase"],
+     "links":{"servicios":"/servicios","contacto":"/contacto"},"dos":["{{DATO: qué sí}}"],"donts":["{{DATO: qué no}}"]}',
+   now() - interval '7 days', '00000000-0000-4000-8000-0000000000a1'),
+  ('00000000-0000-4000-8000-000000000b02', 'curious', 'es', 1, 'published', '{{DATO: título contexto curioso}}',
+   '{{DATO: contexto del caso curioso (quién es Jose, qué hace)}}',
+   '{"availability":"{{DATO: disponibilidad}}","rates_ref":"pricing","stack":["Next.js"],"links":{"sobre_mi":"/sobre-mi"},
+     "dos":["{{DATO: qué sí}}"],"donts":["{{DATO: qué no}}"]}',
+   now() - interval '7 days', '00000000-0000-4000-8000-0000000000a1'),
+  ('00000000-0000-4000-8000-000000000b03', 'partner', 'es', 1, 'draft', '{{DATO: título contexto partner}}',
+   '{{DATO: contexto del caso partner (colaboración con agencias)}}', '{}', null, null)
+on conflict (id) do nothing;
+
+insert into public.chat_threads (id, visitor_id, user_id, contact_id, "case", locale, origin_path, context_version) values
+  ('00000000-0000-4000-8000-000000000c01', '00000000-0000-4000-8000-0000000000e1', null, null, 'partner', 'es',
+   '/partners', null),
+  ('00000000-0000-4000-8000-000000000c02', '00000000-0000-4000-8000-0000000000e2', '00000000-0000-4000-8000-0000000000a2',
+   '00000000-0000-4000-8000-000000000202', 'client', 'es', '/servicios#packs', 1)
+on conflict (id) do nothing;
+
+insert into public.chat_messages (id, thread_id, sender_role, content, created_at) values
+  ('00000000-0000-4000-8000-000000000d01', '00000000-0000-4000-8000-000000000c01', 'visitor',
+   'Seed: ¿colaboráis con agencias?', now() - interval '2 hours'),
+  ('00000000-0000-4000-8000-000000000d02', '00000000-0000-4000-8000-000000000c01', 'assistant',
+   'Seed: respuesta con el contexto curious (partner no está publicado)', now() - interval '2 hours' + interval '5 seconds'),
+  ('00000000-0000-4000-8000-000000000d03', '00000000-0000-4000-8000-000000000c02', 'visitor',
+   'Seed: ¿cuándo estará la revisión del diseño?', now() - interval '1 day'),
+  ('00000000-0000-4000-8000-000000000d04', '00000000-0000-4000-8000-000000000c02', 'assistant',
+   'Seed: respuesta con el contexto client', now() - interval '1 day' + interval '5 seconds')
+on conflict (id) do nothing;
+update public.chat_threads set unread_for_admin = false where id = '00000000-0000-4000-8000-000000000c02';
+
+-- 11) Test-only helper (this file never reaches production): lets the RLS helper confirm sin@test just long enough
 --     to log in, then unconfirm it. Only the service role can call it.
 create or replace function public.test_set_email_confirmed(p_email text, p_confirmed boolean)
 returns void language sql security definer set search_path = '' as $$

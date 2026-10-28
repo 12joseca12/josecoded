@@ -1,6 +1,6 @@
 -- Task 1.8a (plan v3.2; DATOS v1.1 §6, §7 C1). One call for the seven counters of the admin summary, admin only.
--- chat_unread reads chat_threads, created in 1.8b (20261028100800_chat.sql): until then it is 0. The lookup is dynamic
--- so this function needs no redefinition when the table arrives.
+-- chat_unread reads chat_threads, created in 1.8b: until then it is 0 through a dynamic lookup, and
+-- 20261028100800_chat.sql replaces this function with the static query once the table exists.
 create or replace function public.admin_counters() returns jsonb
 language plpgsql stable security definer set search_path = '' as $$
 declare v_chat_unread bigint := 0;

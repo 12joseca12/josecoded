@@ -16,7 +16,7 @@ describe('@josecoded/types barrel', () => {
     .map((f) => f.replace(/\.ts$/, ''));
 
   it('has the expected domain files', () => {
-    expect(domainFiles.sort()).toEqual(['api', 'content', 'crm', 'db', 'i18n', 'tokens', 'ui']);
+    expect(domainFiles.sort()).toEqual(['api', 'chat', 'content', 'crm', 'db', 'i18n', 'tokens', 'ui']);
   });
 
   it.each(domainFiles)('re-exports %s', (name) => {

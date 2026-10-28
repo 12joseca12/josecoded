@@ -51,9 +51,15 @@ describe('migrations (DATOS §10.2)', () => {
     }
   });
 
+  // What the migration itself runs must not remove data or tables. Function bodies ($$…$$) are left out: a function
+  // that deletes at run time (chat_purge_anonymous, retention P10) changes nothing when the migration is applied.
   it('is additive after the base migration', () => {
+    const topLevel = (sql: string) => sql.replace(/\$(\w*)\$[\s\S]*?\$\1\$/g, '$$$$');
+    expect(topLevel('select 1; create function f() returns void language sql as $$ delete from x $$; truncate y')).toBe(
+      'select 1; create function f() returns void language sql as $$; truncate y',
+    );
     for (const f of files.slice(1))
-      expect(read(f)).not.toMatch(/\b(drop table|truncate|delete from)\b/i);
+      expect(topLevel(read(f)), f).not.toMatch(/\b(drop table|truncate|delete from)\b/i);
   });
 
   // DATOS P11 / §10.2: every public table with updated_at carries the private.set_updated_at() trigger.

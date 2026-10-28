@@ -93,10 +93,11 @@ begin
   end if;
   raise notice 'PASS every function in public and private pins search_path = ''''';
 
-  if exists (select 1 from pg_publication_tables where pubname = 'supabase_realtime') then
-    raise exception 'FAIL nothing is in supabase_realtime yet (chat_messages arrives in 1.8b)';
+  if (select coalesce(string_agg(schemaname || '.' || tablename, ','), '') from pg_publication_tables
+      where pubname = 'supabase_realtime') <> 'public.chat_messages' then
+    raise exception 'FAIL supabase_realtime must publish public.chat_messages only (DATOS §8.6)';
   end if;
-  raise notice 'PASS supabase_realtime is still empty';
+  raise notice 'PASS supabase_realtime publishes public.chat_messages only';
 
   if exists (select 1 from pg_extension where extname in ('pg_net', 'pg_cron')) then
     raise exception 'FAIL pg_net/pg_cron must not be installed (DATOS P9)';

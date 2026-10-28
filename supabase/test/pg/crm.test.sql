@@ -16,34 +16,34 @@
 \set bob '{"sub":"00000000-0000-4000-8000-0000000000a3","role":"authenticated","email":"bob@test"}'
 \set sin '{"sub":"00000000-0000-4000-8000-0000000000a4","role":"authenticated","email":"sin@test"}'
 
-create schema t;
+create schema if not exists t;  -- chat.test.sql (earlier in the run) creates the same helpers
 grant usage on schema t to anon, authenticated, service_role;
-create function t.ok(c boolean, what text) returns void language plpgsql as $$
+create or replace function t.ok(c boolean, what text) returns void language plpgsql as $$
 begin
   if c is not true then raise exception 'FAIL %', what; end if;
   raise notice 'PASS %', what;
 end $$;
-create function t.n(q text) returns bigint language plpgsql as $$
+create or replace function t.n(q text) returns bigint language plpgsql as $$
 declare n bigint;
 begin
   execute 'select count(*) from (' || q || ') s' into n;
   return n;
 end $$;
-create function t.err(q text) returns text language plpgsql as $$
+create or replace function t.err(q text) returns text language plpgsql as $$
 begin
   execute q;
   return null;
 exception when others then
   return sqlstate || ' ' || sqlerrm;
 end $$;
-create function t.affected(q text) returns bigint language plpgsql as $$
+create or replace function t.affected(q text) returns bigint language plpgsql as $$
 declare n bigint;
 begin
   execute q;
   get diagnostics n = row_count;
   return n;
 end $$;
-create function t.val(q text) returns text language plpgsql as $$
+create or replace function t.val(q text) returns text language plpgsql as $$
 declare v text;
 begin
   execute q into v;
@@ -82,8 +82,11 @@ select t.ok(
   'enums match DATOS §4.3-4.5');
 
 select t.ok((select count(*) from pg_type t join pg_namespace s on s.oid = t.typnamespace
-             where s.nspname = 'public' and t.typtype = 'e') = 3 + 10 + 3 + 5 + 3 + 1,
-            'public has the 25 enums of DATOS §4.1 and §4.3-4.5 (chat_case included, used by crm_contacts)');
+             where s.nspname = 'public' and t.typtype = 'e'
+               and t.typname not in ('context_status', 'thread_status', 'chat_sender', 'chat_message_type'))
+            = 3 + 10 + 3 + 5 + 3 + 1,
+            'public has the 25 enums of DATOS §4.1 and §4.3-4.5 (chat_case included, used by crm_contacts; the other '
+            'chat enums are counted in chat.test.sql)');
 
 -- Grants: anon only reads the public columns of blog_comments; nothing else of 1.8a.
 select t.ok(not exists (select 1 from information_schema.role_table_grants
@@ -527,9 +530,9 @@ select t.ok(t.val($q$select created || ':' || updated from public.crm_import_org
             and t.val($q$select name_normalized from public.crm_organizations where fit = 3$q$) = 'agencia nueva',
             'crm_import_organizations normalizes case, accents and spaces');
 select t.ok(public.admin_counters()
-            = '{"chat_unread": 0, "leads_open": 2, "contacts_due": 1, "rewards_pending": 1, "agencies_replied": 0,
+            = '{"chat_unread": 1, "leads_open": 2, "contacts_due": 1, "rewards_pending": 1, "agencies_replied": 0,
                 "comments_pending": 2, "upgrades_pending": 0}'::jsonb,
-            'admin_counters returns the seven counters of C1');
+            'admin_counters returns the seven counters of C1 (chat_unread: the seeded anonymous thread)');
 select t.ok(t.err($q$select public.admin_close_lead_paid('00000000-0000-4000-8000-000000000301', 1400)$q$)
             like '22023 reward_params_required',
             'admin_close_lead_paid asks for the reward values when the lead carries an affiliate code');
@@ -633,6 +636,12 @@ select t.ok(t.err($q$select public.create_lead('{"email":"z@example.test"}')$q$)
             'create_lead requires a source and an email or phone');
 select t.ok(t.err($q$select public.admin_close_lead_paid('00000000-0000-4000-8000-000000000301', 1)$q$) = '42501 forbidden',
             'service role without a user is not admin for admin_close_lead_paid');
+select t.ok(t.err($q$insert into public.crm_interactions (contact_id, kind, actor)
+                    values ('00000000-0000-4000-8000-000000000204', 'chat_thread', 'system')$q$) is null
+            and t.err($q$update public.crm_contacts set status = 'in_process', next_action = 'reply',
+                         next_action_at = now() where id = '00000000-0000-4000-8000-000000000204'$q$) is null
+            and t.err($q$insert into public.crm_organizations (name, kind) values ('Org  Gateway', 'agency')$q$) is null,
+            'service role (gateway) writes interactions, contact statuses and organisations (check helpers granted)');
 reset role;
 select t.ok((select count(*) = 1 and bool_and(kind = 'lead' and status = 'new' and source = 'web_form')
              from public.crm_contacts where email = 'nuevo@test'),
