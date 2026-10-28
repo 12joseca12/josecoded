@@ -12,12 +12,19 @@ export function createTelegramNotifier(env: Env, fetchImpl: typeof fetch = fetch
   if (!token || !chatId) return undefined;
   return {
     async sendMessage(text) {
-      const res = await fetchImpl(`https://api.telegram.org/bot${token}/sendMessage`, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        // plain text (no parse_mode): payload values such as a comment author's name are never markup
-        body: JSON.stringify({ chat_id: chatId, text: text.slice(0, MAX_TEXT), disable_web_page_preview: true }),
-      });
+      let res: Response;
+      try {
+        res = await fetchImpl(`https://api.telegram.org/bot${token}/sendMessage`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          // plain text (no parse_mode): payload values such as a comment author's name are never markup
+          body: JSON.stringify({ chat_id: chatId, text: text.slice(0, MAX_TEXT), disable_web_page_preview: true }),
+        });
+      } catch {
+        // a network error may embed the request URL, which carries the bot token: it must never reach
+        // private.outbox.last_error, the logs or system.outbox_dead
+        throw new Error('telegram sendMessage network error');
+      }
       if (!res.ok) {
         const body = (await res.json().catch(() => null)) as { description?: unknown } | null;
         const description = typeof body?.description === 'string' ? `: ${body.description.slice(0, 200)}` : '';

@@ -28,7 +28,7 @@ de `public.staff_members` (gate 1.9).
 
 | Var | Valor actual | Notas |
 |---|---|---|
-| `API_MODE` | `development` | Ver sección 4 — el override de producción se documenta ahí. |
+| `API_MODE` | `production` (raíz) · `development` (`env.preview`) | Ver sección 4. |
 | `WORKER_URL` | `https://worker.josecoded.com` | URL pública del Cloudflare Tunnel hacia el Fastify worker en Omen. |
 | `CORS_ORIGINS` | `https://josecoded.com,https://www.josecoded.com,https://*-josecoded-web.jose.workers.dev,http://localhost:3000` | Lista separada por comas; el comodín de previews lleva guion, nunca punto. |
 
@@ -138,24 +138,20 @@ credenciales pegadas en chat durante el desarrollo se completa en P3
 (seguridad); aquí solo se deja documentado y se rota el token como primer
 paso.
 
-## 4. `API_MODE=production` — pendiente de estructurar (follow-up P8)
+## 4. `API_MODE=production` — cerrado (P8)
 
-`wrangler.jsonc` comparte un único bloque `vars` (no hay `[env.production]`
-todavía), y ese bloque fija `API_MODE=development`. Este task **no**
-reestructura los entornos — solo se documenta el plan para cuando se haga el
-cutover real (P8):
+La raíz de `wrangler.jsonc` (el Worker de producción) fija `API_MODE=production`;
+`test/wrangler-config.test.ts` lo comprueba. Con `development`, `onError`
+devolvería `error.message` y `/api/dev/worker/*` se montaría si existe
+`DEV_API_KEY`, así que producción nunca debe ir en ese modo.
 
-- Opción A: añadir un bloque `env.production` en `wrangler.jsonc` con su
-  propio `vars.API_MODE = "production"` (y el resto de vars que difieran), y
-  desplegar con `wrangler deploy --env production`.
-- Opción B: mantener un solo entorno pero hacer override en el momento del
-  deploy, p. ej. `wrangler deploy --var API_MODE:production` (evaluar si
-  wrangler v4 soporta `--var` para `vars` no-secretos en el momento del
-  deploy, o si conviene moverlo a secret).
-
-Hasta que P8 decida el cutover, el deploy vigente (incluyendo el dry-run de
-este task) se hace con `API_MODE=development`, que es el valor real
-actualmente en `vars`.
+`env.preview` conserva `API_MODE=development` (DEPLOY §1: previews contra
+Supabase local o una branch; no apuntan a datos de producción). En producción
+los placeholders locales de `normalizeEnvBindings` no se rellenan: si falta
+`WORKER_INTERNAL_TOKEN`, `SUPABASE_URL` o una clave publishable/anon,
+`parseEnv` lanza `Invalid environment` (la API responde 500 `API misconfigured`).
+Por eso los secretos de la sección 2 deben estar fijados en `josecoded-api`
+**antes** del próximo deploy de producción.
 
 ## 5. Deploy
 
@@ -189,6 +185,6 @@ Confirma que:
 - [ ] Todos los secretos obligatorios (sección 2) están fijados en `josecoded-api` y en `josecoded-api-preview` (`wrangler secret list`), y los de la lista «borrar» ya no están.
 - [ ] `ADMIN_REQUIRE_MFA` **no** está fijado (o vale `true`) en ninguno de los dos.
 - [ ] Smoke: `GET /api/v1/health` 200; `GET /api/v1/auth/me` sin JWT 401 y con el de Jose `is_admin: true`; ninguna ruta `forum`/`admin-chat` (responden 401 del comodín, no existen).
-- [ ] Decisión sobre `API_MODE=production` tomada y aplicada (sección 4, P8).
+- [x] `API_MODE=production` en la raíz de `wrangler.jsonc` (sección 4, P8 cerrado).
 - [ ] `pnpm test` y `pnpm typecheck` en verde.
 - [ ] `wrangler deploy --dry-run --outdir=dist` sin errores.

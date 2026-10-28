@@ -47,4 +47,13 @@ describe('createTelegramNotifier', () => {
     expect((error as Error).message).toBe('telegram sendMessage 429: Too Many Requests: retry after 3');
     expect((error as Error).message).not.toContain(TOKEN);
   });
+
+  it('hides the token when fetch itself fails (its error may carry the URL)', async () => {
+    const notifier = createTelegramNotifier(env, async (input) => {
+      throw new TypeError(`fetch failed: ${String(input)}`);
+    });
+    const error = await notifier?.sendMessage('hi').catch((e: unknown) => e);
+    expect((error as Error).message).toBe('telegram sendMessage network error');
+    expect((error as Error).message).not.toContain(TOKEN);
+  });
 });

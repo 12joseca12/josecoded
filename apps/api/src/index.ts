@@ -61,6 +61,8 @@ app.notFound((c) => {
 app.onError((error, c) => {
   // If env is invalid, fail early with a controlled response.
   if (error instanceof Error && error.message.startsWith('Invalid environment:')) {
+    // paths and messages only (never values): tells the operator which production var is missing
+    console.error(JSON.stringify({ scope: 'env', error: error.message }));
     return c.json(fail('internal_error', 'API misconfigured'), 500);
   }
   return c.json(

@@ -51,6 +51,12 @@ describe('wrangler.jsonc keeps the test hooks out of deployed Workers', () => {
   });
 });
 
+describe('wrangler.jsonc: API_MODE', () => {
+  it('the top level (production Worker) runs in production mode: no error.message leak, no /api/dev/*', () => {
+    expect(config.vars?.API_MODE).toBe('production');
+  });
+});
+
 describe('wrangler.jsonc: cron and preview Worker', () => {
   const preview = config.env?.preview;
 

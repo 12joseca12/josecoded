@@ -46,6 +46,24 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
+describe('formatOutboxEvent: untrusted text', () => {
+  const at = (event: string, payload: Record<string, unknown>) => ({ id: 1, event, payload, attempts: 1, createdAt: new Date() });
+
+  it('an unknown event shows its name and id, never the payload', () => {
+    const out = formatOutboxEvent(at('mystery.thing', { id: 7, secret: 'hunter2', email: 'a@b.co' }));
+    expect(out).toBe('mystery.thing\nid 7');
+  });
+
+  it('visitor-controlled fields are cut to 60 characters, single line and quoted', () => {
+    const long = 'A'.repeat(200);
+    const comment = formatOutboxEvent(at('comment.pending', { id: 'c', post_slug: 's', locale: 'es', author_name: `x\ny ${long}` }));
+    expect(comment).toContain('«x y ' + 'A'.repeat(55) + '…»');
+    expect(comment).not.toContain('A'.repeat(61));
+    const asset = formatOutboxEvent(at('asset.uploaded', { id: 'f', client_id: 'c', size_bytes: 1, file_name: long }));
+    expect(asset).toContain(`«${'A'.repeat(59)}…»`);
+  });
+});
+
 describe('outbox.drain', () => {
   it('delivers an event to Jose by Telegram and acks it after the 200', async () => {
     const row = sb.enqueue('comment.pending', comment);
@@ -166,15 +184,15 @@ describe('formatOutboxEvent and noticeKey', () => {
   const at = new Date();
   it.each([
     ['lead.created', { id: 'l', contact_id: 'c', source: 'proposal', pack_code: 'P3' }, 'Nuevo lead (proposal · P3).\nLead l · contacto c'],
-    ['comment.pending', comment, 'Comentario pendiente de moderar de Bob en hola (es).\nComentario c1'],
-    ['asset.uploaded', { id: 'f', client_id: 'k', file_name: 'a.pdf', size_bytes: 3 }, 'Material nuevo del cliente k: a.pdf (3 bytes).\nFichero f'],
+    ['comment.pending', comment, 'Comentario pendiente de moderar de «Bob» en «hola» (es).\nComentario c1'],
+    ['asset.uploaded', { id: 'f', client_id: 'k', file_name: 'a.pdf', size_bytes: 3 }, 'Material nuevo del cliente k: «a.pdf» (3 bytes).\nFichero f'],
     [
       'upgrade.requested',
       { id: 'u', client_id: 'k', from_pack_code: 'P2', to_pack_code: 'P3', computed_price: 400 },
       'Ampliación solicitada: P2 → P3 (400 €).\nCliente k · solicitud u',
     ],
     ['chat.visitor_message', { id: 'm', thread_id: 't', case: 'curious', locale: 'en' }, 'Mensaje nuevo en el chat (curious, en).\nHilo t'],
-    ['radar.new', { a: 1 }, 'radar.new\n{"a":1}'],
+    ['radar.new', { id: 9, a: 1 }, 'radar.new\nid 9'],
   ])('%s', (event, payload, expected) => {
     expect(formatOutboxEvent({ id: 1, event, payload, attempts: 1, createdAt: at })).toBe(expected);
   });

@@ -26,6 +26,16 @@ function text(payload: Record<string, unknown>, key: string): string {
   return typeof value === 'string' || typeof value === 'number' ? String(value) : '?';
 }
 
+/** Visitor-controlled text is cut to this many characters before it reaches Jose's Telegram. */
+const MAX_FIELD = 60;
+
+/** A visitor-controlled field: single line, at most MAX_FIELD characters, quoted so it reads as data. */
+function quoted(payload: Record<string, unknown>, key: string): string {
+  const raw = text(payload, key).replace(/\s+/g, ' ').trim();
+  const cut = raw.length > MAX_FIELD ? `${raw.slice(0, MAX_FIELD - 1)}…` : raw;
+  return `«${cut}»`;
+}
+
 /**
  * Events that may already have been notified by the request that created them (`POST /leads`, the chat): their
  * once-only key is `<event>:<payload.id>` (NoticeLedger). `undefined` for the rest.
@@ -45,9 +55,9 @@ export function formatOutboxEvent({ event, payload }: OutboxEvent): string {
       return `Nuevo lead (${p('source')}${pack}).\nLead ${p('id')} · contacto ${p('contact_id')}`;
     }
     case 'comment.pending':
-      return `Comentario pendiente de moderar de ${p('author_name')} en ${p('post_slug')} (${p('locale')}).\nComentario ${p('id')}`;
+      return `Comentario pendiente de moderar de ${quoted(payload, 'author_name')} en ${quoted(payload, 'post_slug')} (${p('locale')}).\nComentario ${p('id')}`;
     case 'asset.uploaded':
-      return `Material nuevo del cliente ${p('client_id')}: ${p('file_name')} (${p('size_bytes')} bytes).\nFichero ${p('id')}`;
+      return `Material nuevo del cliente ${p('client_id')}: ${quoted(payload, 'file_name')} (${p('size_bytes')} bytes).\nFichero ${p('id')}`;
     case 'upgrade.requested':
       return `Ampliación solicitada: ${p('from_pack_code')} → ${p('to_pack_code')} (${p('computed_price')} €).\nCliente ${p('client_id')} · solicitud ${p('id')}`;
     case 'chat.visitor_message':
@@ -55,7 +65,8 @@ export function formatOutboxEvent({ event, payload }: OutboxEvent): string {
     case 'system.outbox_dead':
       return `Aviso perdido tras 10 intentos: ${p('event')} #${p('id')}.\nÚltimo error: ${p('last_error')}`;
     default:
-      return `${event}\n${JSON.stringify(payload).slice(0, 500)}`;
+      // unknown event: its name and id only, never the payload
+      return `${event.slice(0, MAX_FIELD)}\nid ${p('id')}`;
   }
 }
 
