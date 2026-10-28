@@ -2,6 +2,7 @@
 // Every domain file in this folder must be re-exported here (test/barrel.test.ts).
 export * from './api.ts';
 export * from './content.ts';
+export * from './crm.ts';
 export * from './db.ts';
 export * from './i18n.ts';
 export * from './schemas/index.ts';

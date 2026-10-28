@@ -116,7 +116,7 @@ begin
              where grantee in ('anon', 'PUBLIC') and table_schema in ('public', 'private')) then
     raise exception 'FAIL anon or PUBLIC holds a table privilege in public/private';
   end if;
-  raise notice 'PASS anon holds no table privilege (nothing public in 1.6)';
+  raise notice 'PASS anon holds no table-level privilege (blog_comments is a column grant, crm.test.sql)';
 
   for r in select p.oid, p.oid::regprocedure as sig from pg_proc p join pg_namespace s on s.oid = p.pronamespace
            where s.nspname = 'public' loop
@@ -128,11 +128,16 @@ begin
 
   for r in select p.oid, p.oid::regprocedure as sig from pg_proc p join pg_namespace s on s.oid = p.pronamespace
            where s.nspname in ('public', 'private') and p.prosecdef loop
-    if has_function_privilege('authenticated', r.oid, 'execute') and r.sig::text <> 'private.is_admin()' then
+    -- Allowlist: the policy helpers and the RPCs that DATOS §6 grants to authenticated (they check the caller inside).
+    if has_function_privilege('authenticated', r.oid, 'execute') and r.sig::text not in (
+         'private.is_admin()', 'private.client_id_of()', 'private.comment_parent_ok(uuid,text,locale)',
+         'crm_import_organizations(jsonb)', 'request_upgrade(text,text[])', 'claim_client_access()',
+         'area_lead_summary()', 'affiliate_leads()', 'admin_counters()',
+         'admin_close_lead_paid(uuid,numeric,timestamp with time zone,boolean,reward_type,numeric,smallint,text)') then
       raise exception 'FAIL authenticated can execute security definer %', r.sig;
     end if;
   end loop;
-  raise notice 'PASS authenticated executes only private.is_admin() among the security definer functions';
+  raise notice 'PASS authenticated executes only the allowlisted security definer helpers and RPCs';
 
   if has_schema_privilege('anon', 'private', 'usage') then raise exception 'FAIL anon has usage on private'; end if;
   if not has_schema_privilege('authenticated', 'private', 'usage') then
@@ -147,7 +152,8 @@ begin
   raise notice 'PASS private tables have no grants for the API roles';
 
   if (select string_agg(table_name || ':' || privilege_type, ',' order by table_name, privilege_type)
-      from information_schema.role_table_grants where grantee = 'authenticated' and table_schema = 'public')
+      from information_schema.role_table_grants where grantee = 'authenticated' and table_schema = 'public'
+        and table_name in ('extras', 'pack_options', 'packs', 'staff_members', 'user_profiles'))
      <> 'extras:SELECT,pack_options:SELECT,packs:SELECT,staff_members:SELECT,user_profiles:SELECT' then
     raise exception 'FAIL authenticated table grants differ from DATOS §4.1-4.2';
   end if;
@@ -445,6 +451,7 @@ rollback;
 
 -- ---------------------------------------------------------------- service_role: outbox lifecycle
 begin;
+delete from private.outbox;  -- the seed leaves comment.pending events; this block starts from an empty outbox
 do $$ begin
   perform private.enqueue('lead.created', '{"id":"l1"}');
   perform private.enqueue('comment.pending', '{"id":"c1"}');
@@ -511,6 +518,7 @@ rollback;
 -- Poison event: the Worker crashes after every claim (no outbox_fail). Abandoned claims still count, and after the 10th
 -- one the event is dead-lettered once. Claims are aged by hand (as postgres) to skip the 10-minute wait.
 begin;
+delete from private.outbox;
 do $$ begin perform private.enqueue('lead.created', '{"id":"poison"}'); end $$;
 do $$
 declare

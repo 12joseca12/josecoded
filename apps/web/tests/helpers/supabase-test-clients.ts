@@ -21,7 +21,7 @@ if (!LOOPBACK.has(new URL(LOCAL_URL).hostname)) {
 
 export const TEST_PASSWORD = 'test-password-123';
 
-/** Fixed ids of supabase/seed/seed.sql. */
+/** Fixed ids of supabase/seed/seed.sql (task 1.8a; the seed header documents the ranges). */
 export const SEED = {
   users: {
     jose: '00000000-0000-4000-8000-0000000000a1',
@@ -29,18 +29,51 @@ export const SEED = {
     bob: '00000000-0000-4000-8000-0000000000a3',
     sin: '00000000-0000-4000-8000-0000000000a4',
   },
-  affiliates: {
-    ana: '00000000-0000-4000-8000-0000000000e1',
-    bob: '00000000-0000-4000-8000-0000000000e2',
+  orgs: {
+    agenciaTest: '00000000-0000-4000-8000-000000000101',
   },
-  /** Ana's closed lead (P2) and the lead referred by Ana. */
+  contacts: {
+    /** kind lead, status new, with the open P2 lead referred by Ana. */
+    marta: '00000000-0000-4000-8000-000000000201',
+    /** kind client, active_client, linked to Ana's user. */
+    ana: '00000000-0000-4000-8000-000000000202',
+    /** kind agency, pending, due yesterday (C2 inbox). */
+    agency: '00000000-0000-4000-8000-000000000203',
+    recruiter: '00000000-0000-4000-8000-000000000204',
+    /** kind client, invited as sin@test, no user. */
+    invitedSin: '00000000-0000-4000-8000-000000000205',
+  },
   leads: {
-    ana: '00000000-0000-4000-8000-0000000000b3',
-    referredByAna: '00000000-0000-4000-8000-0000000000b1',
+    /** Marta: open, P2, web_proposal, affiliate ANA-TEST01. */
+    marta: '00000000-0000-4000-8000-000000000301',
+    /** Ana: won and paid, P2, affiliate BOB-TEST01. */
+    ana: '00000000-0000-4000-8000-000000000302',
+    invitedSin: '00000000-0000-4000-8000-000000000303',
   },
   clients: {
-    ana: '00000000-0000-4000-8000-0000000000c1',
-    invitedSin: '00000000-0000-4000-8000-0000000000c2',
+    ana: '00000000-0000-4000-8000-000000000401',
+    invitedSin: '00000000-0000-4000-8000-000000000402',
+  },
+  tasks: {
+    anaDone: '00000000-0000-4000-8000-000000000501',
+    anaPending: '00000000-0000-4000-8000-000000000502',
+  },
+  taskComments: {
+    internal: '00000000-0000-4000-8000-000000000601',
+    visible: '00000000-0000-4000-8000-000000000602',
+  },
+  affiliates: {
+    ana: '00000000-0000-4000-8000-000000000801',
+    bob: '00000000-0000-4000-8000-000000000802',
+  },
+  rewards: {
+    /** Bob's pending reward for Ana's lead. */
+    bobForAna: '00000000-0000-4000-8000-000000000901',
+  },
+  blogComments: {
+    approvedBob: '00000000-0000-4000-8000-000000000a01',
+    pendingAna: '00000000-0000-4000-8000-000000000a02',
+    pendingBob: '00000000-0000-4000-8000-000000000a03',
   },
 } as const;
 
@@ -51,6 +84,7 @@ export type TestClient = SupabaseClient & {
   userId: string | null;
   affiliateId: string | null;
   leadId: string | null;
+  contactId: string | null;
   clientId: string | null;
 };
 
@@ -76,6 +110,7 @@ function withIds(client: SupabaseClient, name: TestClientName): TestClient {
     userId: isUser ? SEED.users[name] : null,
     affiliateId: name === 'ana' || name === 'bob' ? SEED.affiliates[name] : null,
     leadId: name === 'ana' ? SEED.leads.ana : null,
+    contactId: name === 'ana' ? SEED.contacts.ana : null,
     clientId: name === 'ana' ? SEED.clients.ana : null,
   });
 }

@@ -1,7 +1,10 @@
 // @vitest-environment node
-// RLS with four accounts against Supabase local (DT §6.3, §8.4; plan 1.8 incl. the v2.1 additions).
-// Needs `supabase start` + `supabase db reset` (migrations + seed). Skipped with a warning when the stack does
-// not answer locally, and a failure in CI (same criterion as packages/types/test/database-drift.test.ts).
+// RLS with four accounts against Supabase local: one assertion per cell of DATOS v1.1 §5 (plan v3.2, tasks 1.6 and
+// 1.8a) plus the RPC behaviours of the 1.8a test extract. Needs `supabase start` + `supabase db reset` (migrations +
+// seed). Skipped with a warning when the stack does not answer locally, and a failure in CI (same criterion as
+// packages/types/test/database-drift.test.ts). The SQL twin that runs without Supabase is supabase/test/pg/.
+// The tests write through PostgREST (no rollback), so whatever they create uses fresh ids and keys: they can run
+// again on the same database without a reset.
 import { randomUUID } from 'node:crypto';
 
 import { beforeAll, describe, expect, it } from 'vitest';
@@ -27,6 +30,22 @@ if (!up) {
   );
 }
 
+const CRM_TABLES = [
+  'crm_organizations',
+  'crm_contacts',
+  'crm_interactions',
+  'crm_message_templates',
+  'crm_message_drafts',
+] as const;
+const AREA_TABLES = ['clients', 'client_tasks', 'client_task_comments', 'client_assets', 'client_extras', 'upgrade_requests'] as const;
+const PRIVATE_TO_ANON = [...CRM_TABLES, 'leads', ...AREA_TABLES, 'affiliates', 'affiliate_rewards', 'staff_members', 'user_profiles', 'packs'] as const;
+
+/** Rows a client reads from a table (an error counts as 0: no grant). */
+async function visible(c: TestClient, table: string, columns = 'id'): Promise<number> {
+  const { data, error } = await c.from(table).select(columns);
+  return error ? 0 : (data ?? []).length;
+}
+
 describe.skipIf(!up && !inCi)('RLS with jose (admin), ana (P2 client + affiliate), bob (affiliate), sin (unconfirmed)', () => {
   let jose: TestClient;
   let ana: TestClient;
@@ -45,319 +64,331 @@ describe.skipIf(!up && !inCi)('RLS with jose (admin), ana (P2 client + affiliate
     anon = await clientFor('anon');
   }, 30_000);
 
-  describe('blog_comments', () => {
-    it('anon reads only approved', async () => {
-      const { data, error } = await anon.from('blog_comments').select('status');
+  /** A fresh lead contact owned by the test, so status changes can run again on the same database. */
+  async function freshContact(kind = 'lead', status = 'new'): Promise<string> {
+    const { data, error } = await jose
+      .from('crm_contacts')
+      .insert({ kind, status, display_name: `Test ${randomUUID()}`, source: 'manual' })
+      .select('id')
+      .single();
+    expect(error).toBeNull();
+    return (data as Row).id as string;
+  }
+
+  describe('anon', () => {
+    it.each(PRIVATE_TO_ANON)('reads 0 rows (or is denied) on %s', async (table) => {
+      expect(await visible(anon, table)).toBe(0);
+    });
+
+    it('cannot call any 1.8a RPC', async () => {
+      const calls = await Promise.all([
+        anon.rpc('create_lead', { p: {} }),
+        anon.rpc('area_lead_summary'),
+        anon.rpc('claim_client_access'),
+        anon.rpc('affiliate_leads'),
+        anon.rpc('admin_counters'),
+        anon.rpc('request_upgrade', { p_to_pack_code: 'P3', p_extras: [] }),
+        anon.rpc('crm_import_organizations', { p_rows: [] }),
+        anon.rpc('admin_close_lead_paid', { p_lead_id: SEED.leads.marta, p_amount: 1 }),
+      ]);
+      for (const { error } of calls) expect(error).toBeTruthy();
+    });
+  });
+
+  describe('staff, profiles and catalogue (DATOS §5, 1.6)', () => {
+    it('staff_members: each user reads only their own row', async () => {
+      expect(await visible(jose, 'staff_members', 'user_id')).toBe(1);
+      expect(await visible(ana, 'staff_members', 'user_id')).toBe(0);
+    });
+
+    it("user_profiles: ana reads hers and not bob's; admin reads every profile", async () => {
+      const { data } = await ana.from('user_profiles').select('user_id');
+      expect((data as Row[]).map((r) => r.user_id)).toEqual([ana.userId]);
+      expect(await visible(jose, 'user_profiles', 'user_id')).toBeGreaterThanOrEqual(4);
+    });
+
+    it('user_profiles: first_audience is write-once and there is no insert', async () => {
+      await bob.from('user_profiles').update({ first_audience: 'referral', first_audience_source: 'ref' }).eq('user_id', bob.userId).is('first_audience', null);
+      const { error } = await bob.from('user_profiles').update({ first_audience: 'business' }).eq('user_id', bob.userId);
+      expect(error?.message).toMatch(/write-once/);
+      const insert = await bob.from('user_profiles').insert({ user_id: randomUUID() });
+      expect(insert.error).toBeTruthy();
+    });
+
+    it('packs, pack_options and extras: authenticated reads, nobody writes', async () => {
+      expect(await visible(ana, 'packs', 'code')).toBe(5);
+      expect(await visible(bob, 'extras', 'code')).toBe(6);
+      const { error } = await jose.from('packs').update({ price: 1 }).eq('code', 'P1');
+      expect(error).toBeTruthy();
+    });
+  });
+
+  describe('crm', () => {
+    it('ana, bob and anon read 0 rows of every crm_* table and of leads', async () => {
+      for (const c of [ana, bob, anon])
+        for (const t of [...CRM_TABLES, 'leads']) {
+          const { data, error } = await c.from(t).select('id');
+          expect(error ? true : data!.length === 0, t).toBe(true);
+        }
+    });
+
+    it('jose reads every crm_* table and the leads', async () => {
+      expect(await visible(jose, 'crm_organizations')).toBeGreaterThanOrEqual(1);
+      expect(await visible(jose, 'crm_contacts')).toBeGreaterThanOrEqual(5);
+      expect(await visible(jose, 'crm_message_templates')).toBeGreaterThanOrEqual(8);
+      expect(await visible(jose, 'leads')).toBeGreaterThanOrEqual(3);
+    });
+
+    it('contact status must match its kind', async () => {
+      const { error } = await jose.from('crm_contacts').insert({ kind: 'agency', display_name: 'X', status: 'won', source: 'manual' });
+      expect(error).toBeTruthy();
+    });
+
+    it('changing a status without next action fails; with it, logs an interaction', async () => {
+      const id = await freshContact();
+      const { error } = await jose.from('crm_contacts').update({ status: 'contacted' }).eq('id', id);
+      expect(error?.message).toMatch(/next_action/);
+      const ok = await jose
+        .from('crm_contacts')
+        .update({ status: 'contacted', next_action: 'call', next_action_at: new Date().toISOString() })
+        .eq('id', id);
+      expect(ok.error).toBeNull();
+      const { data } = await jose.from('crm_interactions').select('kind,payload,actor').eq('contact_id', id).eq('kind', 'status_change');
+      expect((data as Row[])[0]).toMatchObject({ payload: { from: 'new', to: 'contacted' }, actor: 'jose' });
+    });
+
+    it('a terminal status needs no next action', async () => {
+      const id = await freshContact();
+      const { error } = await jose.from('crm_contacts').update({ status: 'lost' }).eq('id', id);
       expect(error).toBeNull();
-      expect(data?.length).toBeGreaterThan(0);
-      expect((data as Row[]).every((c) => c.status === 'approved')).toBe(true);
     });
 
-    it('ana sees her pending, not bob pending', async () => {
-      const { data } = await ana.from('blog_comments').select('user_id,status');
-      const pending = ((data ?? []) as Row[]).filter((c) => c.status === 'pending');
-      expect(pending.length).toBeGreaterThan(0);
-      expect(pending.every((c) => c.user_id === ana.userId)).toBe(true);
+    it('create_lead is idempotent, reuses the contact by email and enqueues lead.created', async () => {
+      const email = `nuevo-${randomUUID()}@test`;
+      const p = { email, display_name: 'Nuevo', source: 'web_form', via: 'client', locale: 'es', idempotency_key: randomUUID(), message: 'hola' };
+      const a = await service.rpc('create_lead', { p });
+      const b = await service.rpc('create_lead', { p });
+      expect(a.error).toBeNull();
+      expect((a.data as Row[])[0]?.created).toBe(true);
+      expect((b.data as Row[])[0]?.lead_id).toBe((a.data as Row[])[0]?.lead_id);
+      const c = await service.rpc('create_lead', { p: { ...p, email: email.toUpperCase(), idempotency_key: randomUUID() } });
+      expect((c.data as Row[])[0]?.contact_id).toBe((a.data as Row[])[0]?.contact_id);
+      const { count } = await jose.from('crm_contacts').select('*', { count: 'exact', head: true }).eq('email', email);
+      expect(count).toBe(1);
+      const { data: ob } = await service.rpc('outbox_claim', { p_limit: 200, p_worker: 'rls-test' });
+      const events = (ob ?? []) as Row[];
+      expect(events.some((e) => e.event === 'lead.created' && (e.payload as Row).id === (a.data as Row[])[0]?.lead_id)).toBe(true);
+      await service.rpc('outbox_ack', { p_ids: events.map((e) => e.id), p_worker: 'rls-test' });
     });
 
-    it('ana cannot insert approved, and inserts pending', async () => {
-      const base = { slug: 'x', locale: 'es', body: 'hi', author_name: 'Ana', user_id: ana.userId };
-      const rejected = await ana.from('blog_comments').insert({ ...base, status: 'approved' });
-      expect(rejected.error).toBeTruthy();
-      const accepted = await ana.from('blog_comments').insert({ ...base, status: 'pending' });
-      expect(accepted.error).toBeNull();
+    it('ana cannot call create_lead nor crm_import_organizations', async () => {
+      expect((await ana.rpc('create_lead', { p: {} })).error).toBeTruthy();
+      expect((await ana.rpc('crm_import_organizations', { p_rows: [] })).error?.message).toMatch(/forbidden|permission/);
     });
 
-    it('a normal user cannot moderate; admin reads and updates all', async () => {
-      const own = await ana.from('blog_comments').update({ status: 'approved' }).eq('id', '00000000-0000-4000-8000-000000000d02').select();
-      expect(own.data).toHaveLength(0);
-      const all = await jose.from('blog_comments').select('id');
-      expect((all.data ?? []).length).toBeGreaterThanOrEqual(3);
-      const moderated = await jose
-        .from('blog_comments')
-        .update({ moderated_by: jose.userId })
-        .eq('id', '00000000-0000-4000-8000-000000000d03')
-        .select();
-      expect(moderated.data).toHaveLength(1);
-    });
-  });
-
-  describe('affiliates', () => {
-    it('ana cannot change her level', async () => {
-      const { data } = await ana.from('affiliates').update({ level: 'premium' }).eq('user_id', ana.userId).select();
-      expect(data).toHaveLength(0);
+    it('import is idempotent by normalized name', async () => {
+      const rows = [{ name: 'Agencia  Test', kind: 'agency', fit: 5 }];
+      const a = await jose.rpc('crm_import_organizations', { p_rows: rows });
+      expect((a.data as Row[])[0]).toMatchObject({ created: 0, updated: 1 });
+      const { count } = await jose.from('crm_organizations').select('*', { count: 'exact', head: true }).eq('name_normalized', 'agencia test');
+      expect(count).toBe(1);
     });
 
-    it('ana reads only her own affiliate row; admin reads both', async () => {
-      const mine = await ana.from('affiliates').select('user_id,code');
-      expect((mine.data as Row[]).map((a) => a.user_id)).toEqual([ana.userId]);
-      expect((mine.data as Row[])[0]?.code).toBe('ANA-TEST01');
-      const all = await jose.from('affiliates').select('code');
-      expect((all.data ?? []).length).toBeGreaterThanOrEqual(2);
+    it('jose inserts a manual lead; ana cannot', async () => {
+      const contact = await freshContact();
+      expect((await jose.from('leads').insert({ contact_id: contact, source: 'manual', pack_code: 'P1' })).error).toBeNull();
+      expect((await ana.from('leads').insert({ contact_id: contact, source: 'manual' })).error).toBeTruthy();
     });
 
-    it('ana reads affiliate_leads_view without contact data', async () => {
-      const { data } = await ana.from('affiliate_leads_view').select('*');
-      expect((data ?? []).length).toBeGreaterThan(0);
-      expect(Object.keys((data as Row[])[0] ?? {})).not.toContain('contact_email');
-    });
-
-    it('ana reads 0 rows of leads directly', async () => {
-      const { data } = await ana.from('leads').select('id');
-      expect(data).toHaveLength(0);
-    });
-
-    it('ana cannot insert affiliate_rewards, nor read bob rewards', async () => {
-      const { error } = await ana.from('affiliate_rewards').insert({
-        affiliate_id: ana.affiliateId,
-        lead_id: ana.leadId,
-        type: 'percent',
-        amount: 1,
-        base_amount: 10,
-        pricing_version: 'x',
-      });
-      expect(error).toBeTruthy();
-      const own = await ana.from('affiliate_rewards').select('id');
-      expect(own.data).toHaveLength(0);
-      const bobs = await bob.from('affiliate_rewards').select('affiliate_id');
-      expect((bobs.data as Row[]).every((r) => r.affiliate_id === bob.affiliateId)).toBe(true);
-      expect(bobs.data).toHaveLength(1);
-    });
-
-    it('admin reads rewards', async () => {
-      const { data } = await jose.from('affiliate_rewards').select('status');
-      expect((data ?? []).length).toBeGreaterThanOrEqual(1);
+    it('admin_counters: forbidden to ana, seven counters for jose', async () => {
+      expect((await ana.rpc('admin_counters')).error?.message).toMatch(/forbidden/);
+      const { data, error } = await jose.rpc('admin_counters');
+      expect(error).toBeNull();
+      expect(Object.keys(data as Row).sort()).toEqual([
+        'agencies_replied',
+        'chat_unread',
+        'comments_pending',
+        'contacts_due',
+        'leads_open',
+        'rewards_pending',
+        'upgrades_pending',
+      ]);
     });
   });
 
-  describe('upgrade_requests (v2.1: only through request_upgrade)', () => {
-    it('ana cannot insert directly, even for her own client', async () => {
-      const { error } = await ana.from('upgrade_requests').insert({
-        client_id: ana.clientId,
-        from_pack_code: 'P2',
-        to_pack_code: 'P3',
-        computed_price: 1,
-        pricing_version: '2026-09-14',
-      });
+  describe('area', () => {
+    it('ana reads her client without notes_internal', async () => {
+      const { error } = await ana.from('clients').select('id, pack_code, notes_internal');
       expect(error).toBeTruthy();
+      const ok = await ana.from('clients').select('id, pack_code');
+      expect(ok.data).toEqual([{ id: SEED.clients.ana, pack_code: 'P2' }]);
     });
 
-    it('bob (no client) cannot request an upgrade', async () => {
-      const { error } = await bob.rpc('request_upgrade', { p_to_pack_code: 'P3', p_extras: [] });
-      expect(error?.message).toMatch(/not_a_client/);
+    it('bob (no client) reads 0 clients/tasks; ana reads her tasks and only non-internal comments', async () => {
+      for (const t of AREA_TABLES) expect(await visible(bob, t), t).toBe(0);
+      expect(await visible(ana, 'client_tasks')).toBe(2);
+      const { data } = await ana.from('client_task_comments').select('id, internal');
+      expect((data as Row[]).every((c) => c.internal === false)).toBe(true);
+      expect((data as Row[]).some((c) => c.id === SEED.taskComments.internal)).toBe(false);
+      expect(await visible(ana, 'client_extras')).toBe(1);
     });
 
-    it('ana requests P2 -> P3 and the database computes 1100', async () => {
+    it('ana inserts a non-internal comment; an internal one fails', async () => {
+      const base = { client_id: SEED.clients.ana, task_id: SEED.tasks.anaPending, author_user_id: ana.userId, body: `ok ${randomUUID()}` };
+      expect((await ana.from('client_task_comments').insert(base)).error).toBeNull();
+      expect((await ana.from('client_task_comments').insert({ ...base, internal: true })).error).toBeTruthy();
+      expect((await ana.from('client_task_comments').insert({ ...base, client_id: SEED.clients.invitedSin, task_id: null })).error).toBeTruthy();
+    });
+
+    it('ana cannot write her client, tasks or extras directly', async () => {
+      const upd = await ana.from('clients').update({ project_phase: 'delivered' }).eq('id', SEED.clients.ana).select('id');
+      expect(upd.data ?? []).toHaveLength(0);
+      expect((await ana.from('client_tasks').insert({ client_id: SEED.clients.ana, title: 'x' })).error).toBeTruthy();
+      expect((await ana.from('client_extras').insert({ client_id: SEED.clients.ana, extra_code: 'geo', status: 'active' })).error).toBeTruthy();
+    });
+
+    it('upgrade only through request_upgrade; price computed in DB (P2→P3 = 1100)', async () => {
+      const direct = await ana
+        .from('upgrade_requests')
+        .insert({ client_id: SEED.clients.ana, from_pack_code: 'P2', to_pack_code: 'P3', computed_price: 1, pricing_version: '2026-09-14' });
+      expect(direct.error).toBeTruthy();
       const { data, error } = await ana.rpc('request_upgrade', { p_to_pack_code: 'P3', p_extras: [] });
       expect(error).toBeNull();
-      const row = await ana.from('upgrade_requests').select('*').eq('id', data).single();
-      expect(row.data).toMatchObject({
-        client_id: ana.clientId,
-        from_pack_code: 'P2',
-        to_pack_code: 'P3',
-        status: 'pending',
-        pricing_version: '2026-09-14',
-      });
-      expect(Number(row.data?.computed_price)).toBe(1100);
-    });
-
-    it('ana can request only an extra, priced at list (250), and cannot downgrade', async () => {
+      const row = await ana.from('upgrade_requests').select('*').eq('id', data as string).single();
+      expect(row.data).toMatchObject({ client_id: SEED.clients.ana, from_pack_code: 'P2', to_pack_code: 'P3', computed_price: 1100, status: 'pending' });
       const extra = await ana.rpc('request_upgrade', { p_to_pack_code: null, p_extras: ['seo_basic'] });
-      expect(extra.error).toBeNull();
-      const row = await ana.from('upgrade_requests').select('computed_price').eq('id', extra.data).single();
-      expect(Number(row.data?.computed_price)).toBe(250);
-      const down = await ana.rpc('request_upgrade', { p_to_pack_code: 'P1', p_extras: [] });
-      expect(down.error?.message).toMatch(/not_an_upgrade/);
+      const extraRow = await ana.from('upgrade_requests').select('computed_price').eq('id', extra.data as string).single();
+      expect(extraRow.data?.computed_price).toBe(250);
+      expect((await ana.rpc('request_upgrade', { p_to_pack_code: 'P1', p_extras: [] })).error?.message).toMatch(/not_an_upgrade/);
+      expect((await bob.rpc('request_upgrade', { p_to_pack_code: 'P3', p_extras: [] })).error?.message).toMatch(/not_a_client/);
+      expect(await visible(bob, 'upgrade_requests')).toBe(0);
     });
 
-    it('bob sees none of ana requests; admin sees them', async () => {
-      const bobs = await bob.from('upgrade_requests').select('id');
-      expect(bobs.data).toHaveLength(0);
-      const admin = await jose.from('upgrade_requests').select('id');
-      expect((admin.data ?? []).length).toBeGreaterThanOrEqual(1);
-    });
-  });
-
-  describe('leads', () => {
-    it('anon reads nothing', async () => {
-      const { data } = await anon.from('leads').select('id');
-      expect(data ?? []).toHaveLength(0);
-    });
-
-    it('jose inserts a manual lead', async () => {
-      const { error } = await jose.from('leads').insert({ estado: 'nuevo', fuente: 'whatsapp', contact_name: 'Marta' });
-      expect(error).toBeNull();
-    });
-
-    it('ana cannot insert a lead', async () => {
-      const { error } = await ana.from('leads').insert({ estado: 'nuevo', fuente: 'whatsapp' });
-      expect(error).toBeTruthy();
-    });
-
-    it('admin_close_lead_paid rejects non-admin', async () => {
-      const { error } = await ana.rpc('admin_close_lead_paid', {
-        p_lead_id: ana.leadId,
-        p_base_amount: 1400,
-        p_reward_type: 'percent',
-        p_reward_amount: 140,
-        p_reward_percent: 10,
-        p_pricing_version: '2026-09-14',
-        p_generate_reward: true,
-      });
-      expect(error?.message).toMatch(/forbidden/);
-    });
-
-    it('idempotency_key is unique', async () => {
-      const key = `test:${randomUUID()}`;
-      const first = await service.from('leads').insert({ estado: 'nuevo', fuente: 'web_form', idempotency_key: key });
-      expect(first.error).toBeNull();
-      const again = await service.from('leads').insert({ estado: 'nuevo', fuente: 'web_form', idempotency_key: key });
-      expect(again.error?.code).toBe('23505');
-    });
-  });
-
-  describe('clients.invite_email / claim_client_access (v2.1: confirmed email, skip locked)', () => {
-    it('sin@test (unconfirmed) cannot claim the client invited with its email', async () => {
-      const { data, error } = await sin.rpc('claim_client_access');
-      expect(error).toBeNull();
-      expect(data).toBeNull();
+    it('sin@test cannot claim_client_access nor read area_lead_summary; ana gets her lead summary', async () => {
+      expect((await sin.rpc('claim_client_access')).error?.message).toMatch(/email_not_confirmed/);
+      expect((await sin.rpc('area_lead_summary')).error?.message).toMatch(/email_not_confirmed/);
       const { data: row } = await service.from('clients').select('user_id').eq('id', SEED.clients.invitedSin).single();
       expect(row?.user_id).toBeNull();
+      const a = await ana.rpc('area_lead_summary');
+      expect(a.data).toEqual([expect.objectContaining({ pack_code: 'P2', price_from: 1400, status: 'won' })]);
+      expect(Object.keys((a.data as Row[])[0] ?? {}).sort()).toEqual(['created_at', 'pack_code', 'pack_option', 'price_from', 'status']);
+      expect((await bob.rpc('area_lead_summary')).data).toEqual([]);
+      expect((await bob.rpc('claim_client_access')).data).toBeNull();
+      expect((await ana.rpc('claim_client_access')).data).toBe(SEED.clients.ana);
     });
 
-    it('a confirmed user without an invite gets null', async () => {
-      const { data, error } = await bob.rpc('claim_client_access');
-      expect(error).toBeNull();
-      expect(data).toBeNull();
-    });
-
-    it('a confirmed user claims the client invited with their email', async () => {
+    it('a confirmed user claims the client invited with their email (and its contact)', async () => {
       const email = `claim-${randomUUID()}@test`;
       const created = await service.auth.admin.createUser({ email, password: TEST_PASSWORD, email_confirm: true });
       expect(created.error).toBeNull();
       const userId = created.data.user?.id as string;
-      const lead = await service
-        .from('leads')
-        .insert({ estado: 'cerrado', fuente: 'web_form', monto: 900 })
-        .select('id')
-        .single();
-      expect(lead.error).toBeNull();
-      const client = await service
-        .from('clients')
-        .insert({ lead_id: lead.data?.id, invite_email: email.toUpperCase() })
-        .select('id')
-        .single();
+      const contact = await service.from('crm_contacts').insert({ kind: 'client', status: 'active_client', display_name: 'Claim', email, source: 'manual' }).select('id').single();
+      const client = await service.from('clients').insert({ contact_id: contact.data?.id, invite_email: email.toUpperCase(), pack_code: 'P1' }).select('id').single();
       expect(client.error).toBeNull();
-
       const session = await clientFor('anon');
       await session.auth.signInWithPassword({ email, password: TEST_PASSWORD });
       const { data, error } = await session.rpc('claim_client_access');
       expect(error).toBeNull();
       expect(data).toBe(client.data?.id);
-      const claimed = await service.from('clients').select('user_id').eq('id', client.data?.id).single();
-      expect(claimed.data?.user_id).toBe(userId);
+      const linked = await service.from('crm_contacts').select('user_id').eq('id', contact.data?.id).single();
+      expect(linked.data?.user_id).toBe(userId);
     });
 
-    it('anon cannot call the RPC', async () => {
-      const { error } = await anon.rpc('claim_client_access');
-      expect(error).toBeTruthy();
-    });
-  });
-
-  describe('user_profiles (v2.0)', () => {
-    it("ana reads her profile and not bob's", async () => {
-      const { data } = await ana.from('user_profiles').select('user_id');
-      expect((data ?? []).length).toBe(1);
-      expect((data as Row[]).every((r) => r.user_id === ana.userId)).toBe(true);
-    });
-
-    it('first_audience is write-once', async () => {
-      await bob.from('user_profiles').upsert({ user_id: bob.userId, first_audience: 'referral', first_audience_source: 'ref' });
-      const { error } = await bob.from('user_profiles').update({ first_audience: 'business' }).eq('user_id', bob.userId);
-      expect(error?.message).toMatch(/write-once/);
-    });
-
-    it('admin reads every profile; anon none', async () => {
-      const admin = await jose.from('user_profiles').select('user_id');
-      expect((admin.data ?? []).length).toBeGreaterThanOrEqual(2);
-      const visitor = await anon.from('user_profiles').select('user_id');
-      expect(visitor.data ?? []).toHaveLength(0);
+    it('storage: ana uploads under clients/<her id>/<asset id> only', async () => {
+      const id = randomUUID();
+      const path = `clients/${SEED.clients.ana}/${id}`;
+      const row = await ana.from('client_assets').insert({ id, client_id: SEED.clients.ana, uploaded_by_user_id: ana.userId, source: 'client', storage_path: path, file_name: 'a.txt' });
+      expect(row.error).toBeNull();
+      const file = new Blob(['hello'], { type: 'text/plain' });
+      expect((await ana.storage.from('client-assets').upload(path, file)).error).toBeNull();
+      expect((await ana.storage.from('client-assets').upload(`clients/${SEED.clients.ana}/no-row-${randomUUID()}`, file)).error).toBeTruthy();
+      expect((await ana.storage.from('client-assets').upload(`clients/${SEED.clients.invitedSin}/${randomUUID()}`, file)).error).toBeTruthy();
+      expect((await bob.storage.from('client-assets').download(path)).error).toBeTruthy();
+      expect((await ana.storage.from('client-assets').download(path)).error).toBeNull();
+      expect((await ana.from('client_assets').insert({ client_id: SEED.clients.ana, uploaded_by_user_id: ana.userId, source: 'admin', storage_path: 'x' })).error).toBeTruthy();
+      expect((await ana.storage.from('client-assets').remove([path])).error).toBeNull();
+      expect((await ana.from('client_assets').delete().eq('id', id)).error).toBeNull();
     });
   });
 
-  describe('area_lead_summary (v2.1: confirmed email, proposal leads only)', () => {
-    it('returns only the caller lead', async () => {
-      const a = await ana.rpc('area_lead_summary');
-      expect(a.error).toBeNull();
-      expect(a.data).toHaveLength(1);
-      expect((a.data as Row[])[0]).toMatchObject({ pack_code: 'P2', is_app: false });
-      expect(Number((a.data as Row[])[0]?.price_from)).toBe(1400);
-      const b = await bob.rpc('area_lead_summary');
-      expect(b.data).toEqual([]);
+  describe('affiliates and comments', () => {
+    it('ana cannot change her level; affiliate_leads() returns referred leads without contact data', async () => {
+      const upd = await ana.from('affiliates').update({ level: 'premium' }).eq('user_id', ana.userId).select('id');
+      expect(upd.data ?? []).toHaveLength(0);
+      const mine = await ana.from('affiliates').select('code, level');
+      expect(mine.data).toEqual([{ code: 'ANA-TEST01', level: 'standard' }]);
+      expect((await ana.from('affiliates').insert({ user_id: SEED.users.sin })).error).toBeTruthy();
+      const { data } = await ana.rpc('affiliate_leads');
+      expect((data as Row[]).some((l) => l.lead_id === SEED.leads.marta)).toBe(true);
+      expect(Object.keys((data as Row[])[0] ?? {}).sort()).toEqual(['created_at', 'lead_id', 'pack_code', 'reward_status', 'status']);
     });
 
-    it('sin@test (unconfirmed) gets nothing although a proposal lead has its email', async () => {
-      const { data, error } = await sin.rpc('area_lead_summary');
+    it('bob reads his own reward and cannot create or pay one; ana reads none of his', async () => {
+      const bobs = await bob.from('affiliate_rewards').select('id, affiliate_id');
+      expect((bobs.data as Row[]).every((r) => r.affiliate_id === SEED.affiliates.bob)).toBe(true);
+      expect((bobs.data as Row[]).some((r) => r.id === SEED.rewards.bobForAna)).toBe(true);
+      expect((await ana.from('affiliate_rewards').select('id').eq('id', SEED.rewards.bobForAna)).data).toHaveLength(0);
+      const ins = await bob.from('affiliate_rewards').insert({ affiliate_id: SEED.affiliates.bob, lead_id: SEED.leads.marta, type: 'percent', amount: 1 });
+      expect(ins.error).toBeTruthy();
+      expect(await visible(jose, 'affiliate_rewards')).toBeGreaterThanOrEqual(1);
+    });
+
+    it('admin_close_lead_paid creates client, reward and active_client status; rejects ana', async () => {
+      expect((await ana.rpc('admin_close_lead_paid', { p_lead_id: SEED.leads.marta, p_amount: 1400 })).error?.message).toMatch(/forbidden/);
+      const contact = await freshContact();
+      const lead = await jose.from('leads').insert({ contact_id: contact, source: 'web_form', pack_code: 'P2', affiliate_code: 'ANA-TEST01' }).select('id').single();
+      const { data, error } = await jose.rpc('admin_close_lead_paid', {
+        p_lead_id: lead.data?.id,
+        p_amount: 1400,
+        p_reward_type: 'percent',
+        p_reward_amount: 140,
+        p_reward_percent: 10,
+      });
       expect(error).toBeNull();
-      expect(data).toEqual([]);
+      const result = data as Row;
+      expect(result.client_id).toBeTruthy();
+      expect(result.reward_id).toBeTruthy();
+      const c = await jose.from('crm_contacts').select('status').eq('id', contact).single();
+      expect(c.data?.status).toBe('active_client');
+      const l = await jose.from('leads').select('status, amount').eq('id', lead.data?.id).single();
+      expect(l.data).toMatchObject({ status: 'won', amount: 1400 });
+      const again = await jose.rpc('admin_close_lead_paid', { p_lead_id: lead.data?.id, p_amount: 1400 });
+      expect(again.error?.message).toMatch(/lead_already_closed_or_missing/);
     });
 
-    it('anon cannot call it', async () => {
-      const { error } = await anon.rpc('area_lead_summary');
-      expect(error).toBeTruthy();
+    it('anon reads only approved comments; ana sees her pending; ana cannot insert approved', async () => {
+      const pub = await anon.from('blog_comments').select('id, status');
+      expect(pub.error).toBeNull();
+      expect((pub.data as Row[]).every((c) => c.status === 'approved')).toBe(true);
+      expect((await anon.from('blog_comments').select('user_id')).error).toBeTruthy();
+      const mine = await ana.from('blog_comments').select('id, user_id, status').eq('status', 'pending');
+      expect((mine.data as Row[]).every((c) => c.user_id === ana.userId)).toBe(true);
+      expect((mine.data as Row[]).some((c) => c.id === SEED.blogComments.pendingAna)).toBe(true);
+      const base = { post_slug: 'hello-world', locale: 'es', user_id: ana.userId, author_name: 'Ana', body: `rls ${randomUUID()}` };
+      expect((await ana.from('blog_comments').insert({ ...base, status: 'approved' })).error).toBeTruthy();
+      expect((await ana.from('blog_comments').insert({ ...base, parent_id: SEED.blogComments.pendingBob })).error).toBeTruthy();
+      expect((await ana.from('blog_comments').insert({ ...base, parent_id: SEED.blogComments.approvedBob })).error).toBeNull();
+      const mod = await ana.from('blog_comments').update({ status: 'approved' }).eq('id', SEED.blogComments.pendingAna).select('id');
+      expect(mod.data ?? []).toHaveLength(0);
+      expect(await visible(jose, 'blog_comments')).toBeGreaterThanOrEqual(3);
     });
   });
 
-  describe('increment_quota (v2.1: service role only)', () => {
-    it('counts atomically against the limit with the service role', async () => {
+  describe('service role RPCs (1.6)', () => {
+    it('increment_quota counts against the limit; authenticated and anon cannot call it', async () => {
       const key = `test:${randomUUID()}`;
       const call = () => service.rpc('increment_quota', { p_key: key, p_limit: 2, p_ttl: '1 hour' });
       expect((await call()).data).toBe(true);
       expect((await call()).data).toBe(true);
       expect((await call()).data).toBe(false);
+      expect((await ana.rpc('increment_quota', { p_key: key, p_limit: 1, p_ttl: '1 hour' })).error).toBeTruthy();
     });
 
-    it('a window that expired starts again', async () => {
-      const key = `test:${randomUUID()}`;
-      await service.rpc('increment_quota', { p_key: key, p_limit: 1, p_ttl: '-1 second' });
-      const { data } = await service.rpc('increment_quota', { p_key: key, p_limit: 1, p_ttl: '1 hour' });
-      expect(data).toBe(true);
-    });
-
-    it('authenticated and anon cannot call it', async () => {
-      const args = { p_key: 'test:x', p_limit: 1, p_ttl: '1 hour' };
-      expect((await ana.rpc('increment_quota', args)).error).toBeTruthy();
-      expect((await anon.rpc('increment_quota', args)).error).toBeTruthy();
-    });
-  });
-
-  describe('scheduled_jobs (service role only)', () => {
-    it('seeds the jobs of DT §0b and lists the due ones for the service role', async () => {
-      const { data, error } = await service.rpc('scheduled_jobs_due', { p_now: new Date().toISOString() });
+    it('scheduled_jobs_due lists the launch jobs for the service role only', async () => {
+      const { data, error } = await service.rpc('scheduled_jobs_due', { p_now: new Date(Date.now() + 86_400_000).toISOString() });
       expect(error).toBeNull();
-      const names = (data as Row[]).map((j) => j.name);
-      expect(names).toEqual(expect.arrayContaining(['radar.sweep', 'radar.daily', 'leads.notify_retry']));
-      expect((data as Row[]).find((j) => j.name === 'radar.daily')).toMatchObject({ cron: '0 8 * * *', tz: 'Europe/Madrid' });
-    });
-
-    it('authenticated cannot read or change them', async () => {
+      expect((data as Row[]).find((j) => j.name === 'outbox.drain')).toMatchObject({ cron: '* * * * *' });
       expect((await ana.rpc('scheduled_jobs_due', { p_now: new Date().toISOString() })).error).toBeTruthy();
-      expect((await ana.rpc('scheduled_jobs_disable', { p_name: 'radar.sweep', p_reason: 'x' })).error).toBeTruthy();
-    });
-  });
-
-  describe('admin_counters', () => {
-    it('is refused to ana', async () => {
-      const { error } = await ana.rpc('admin_counters');
-      expect(error?.message).toMatch(/forbidden/);
-    });
-
-    it('returns the counters to the admin', async () => {
-      const { data, error } = await jose.rpc('admin_counters');
-      expect(error).toBeNull();
-      const row = (data as Row[])[0] as Row;
-      expect(Object.keys(row).sort()).toEqual(['comments_pending', 'leads_new', 'rewards_pending', 'upgrades_pending']);
-      expect(Number(row.rewards_pending)).toBeGreaterThanOrEqual(1);
     });
   });
 });
