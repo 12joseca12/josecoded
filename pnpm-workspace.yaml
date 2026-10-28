@@ -1,6 +1,7 @@
 packages:
   - 'apps/*'
   - 'packages/*'
+  - 'supabase'
 overrides:
   undici: '^7.29.1'
 # Build scripts allowed explicitly (pnpm 11 blocks them by default and fails in CI).
