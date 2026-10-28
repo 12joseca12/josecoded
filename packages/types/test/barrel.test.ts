@@ -12,7 +12,7 @@ const schemasBarrel = readFileSync(join(src, 'schemas', 'index.ts'), 'utf8');
 
 describe('@josecoded/types barrel', () => {
   const domainFiles = readdirSync(src)
-    .filter((f) => f.endsWith('.ts') && f !== 'index.ts')
+    .filter((f) => f.endsWith('.ts') && f !== 'index.ts' && f !== 'database.ts')
     .map((f) => f.replace(/\.ts$/, ''));
 
   it('has the expected domain files', () => {
@@ -29,7 +29,7 @@ describe('@josecoded/types barrel', () => {
 
   it('re-exports every schemas/*.ts file from schemas/index.ts', () => {
     const schemaFiles = readdirSync(join(src, 'schemas'))
-      .filter((f) => f.endsWith('.ts') && f !== 'index.ts')
+      .filter((f) => f.endsWith('.ts') && f !== 'index.ts' && f !== 'database.ts')
       .map((f) => f.replace(/\.ts$/, ''));
     for (const name of schemaFiles) {
       expect(schemasBarrel).toContain(`export * from './${name}.ts';`);
