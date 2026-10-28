@@ -52,12 +52,16 @@ describe('migrations (DATOS §10.2)', () => {
   });
 
   // What the migration itself runs must not remove data or tables. Function bodies ($$…$$) are left out: a function
-  // that deletes at run time (chat_purge_anonymous, retention P10) changes nothing when the migration is applied.
+  // that deletes at run time (chat_purge_anonymous, retention P10) changes nothing when the migration is applied. A
+  // `do` block runs while the migration applies, so its body is kept and checked.
   it('is additive after the base migration', () => {
-    const topLevel = (sql: string) => sql.replace(/\$(\w*)\$[\s\S]*?\$\1\$/g, '$$$$');
+    const topLevel = (sql: string) =>
+      sql.replace(/(\bdo\s+(?:language\s+\w+\s+)?)?\$(\w*)\$[\s\S]*?\$\2\$/gi, (m, run?: string) => (run ? m : '$$'));
     expect(topLevel('select 1; create function f() returns void language sql as $$ delete from x $$; truncate y')).toBe(
       'select 1; create function f() returns void language sql as $$; truncate y',
     );
+    expect(topLevel('do $$ begin delete from x; end $$;')).toMatch(/delete from/);
+    expect(topLevel('DO language plpgsql $b$ begin truncate x; end $b$;')).toMatch(/truncate/);
     for (const f of files.slice(1))
       expect(topLevel(read(f)), f).not.toMatch(/\b(drop table|truncate|delete from)\b/i);
   });
