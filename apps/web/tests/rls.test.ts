@@ -306,7 +306,8 @@ describe.skipIf(!up && !inCi)('RLS with jose (admin), ana (P2 client + affiliate
       const { data: row } = await service.from('clients').select('user_id').eq('id', SEED.clients.invitedSin).single();
       expect(row?.user_id).toBeNull();
       const a = await ana.rpc('area_lead_summary');
-      expect(a.data).toEqual([expect.objectContaining({ pack_code: 'P2', price_from: 1400, status: 'won' })]);
+      // Earlier tests may add leads ana submitted herself (create_lead with her user_id), so only the seeded won lead is asserted.
+      expect(a.data).toEqual(expect.arrayContaining([expect.objectContaining({ pack_code: 'P2', price_from: 1400, status: 'won' })]));
       expect(Object.keys((a.data as Row[])[0] ?? {}).sort()).toEqual(['created_at', 'pack_code', 'pack_option', 'price_from', 'status']);
       expect((await bob.rpc('area_lead_summary')).data).toEqual([]);
       expect((await bob.rpc('claim_client_access')).data).toBeNull();
