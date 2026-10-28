@@ -248,10 +248,30 @@ otp_expiry = 3600
 # admin_email = "admin@email.com"
 # sender_name = "Admin"
 
-# Uncomment to customize email template
-# [auth.email.template.invite]
-# subject = "You have been invited"
-# content_path = "./supabase/templates/invite.html"
+# Auth email templates (plan 1.9, DATOS 8.1). Locally the CLI takes ONE file per type, so the Spanish version is used;
+# production gets a single template per type with the es + en blocks pasted by hand in the dashboard (the Management
+# API for templates is not in the free CLI): see docs/runbooks/supabase-gate.md step "templates". The sign-in code
+# arrives through magic_link (existing user) or confirmation (new user); GoTrue has no "otp" type, so otp.*.html is
+# the reauthentication template. `redactor` reviews the copy on the Mac.
+[auth.email.template.confirmation]
+subject = "josecoded: confirma tu correo"
+content_path = "./supabase/templates/confirmation.es.html"
+
+[auth.email.template.magic_link]
+subject = "josecoded: tu código de acceso"
+content_path = "./supabase/templates/magic_link.es.html"
+
+[auth.email.template.recovery]
+subject = "josecoded: recupera el acceso"
+content_path = "./supabase/templates/recovery.es.html"
+
+[auth.email.template.email_change]
+subject = "josecoded: confirma el cambio de correo"
+content_path = "./supabase/templates/email_change.es.html"
+
+[auth.email.template.reauthentication]
+subject = "josecoded: código para confirmar la acción"
+content_path = "./supabase/templates/otp.es.html"
 
 # Uncomment to customize notification email template
 # [auth.email.notification.password_changed]
