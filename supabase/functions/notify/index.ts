@@ -12,6 +12,8 @@
 //   comment.admin         -> email al cliente (solo cuando el trigger ya filtró internal=false)
 //   asset.uploaded.client -> Telegram al/los admin ("un cliente subió un archivo")
 //   asset.uploaded.admin  -> email al cliente ("JoseCoded subió un archivo")
+//   lead.created          -> Telegram al/los admin (+ email a ADMIN_NOTIFY_EMAIL si está definido) (tarea 1.8)
+//   system.ping_failed    -> Telegram al/los admin ("el ping a Supabase falló") (tarea 1.8)
 
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
@@ -21,11 +23,16 @@ interface NotifyPayload {
     | "sale.closed"
     | "comment.admin"
     | "asset.uploaded.client"
-    | "asset.uploaded.admin";
+    | "asset.uploaded.admin"
+    | "lead.created"
+    | "system.ping_failed";
   data: Record<string, unknown>;
 }
 
-const EMAIL_FROM = "josedev <no-reply@josedev.com>";
+const EMAIL_FROM = "josecoded <no-reply@josecoded.com>";
+
+const escapeHtml = (value: string) =>
+  value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 Deno.serve(async (req) => {
   // P3 M1: shared-secret auth (la invoca la DB vía private.notify_event, que manda
@@ -95,7 +102,33 @@ Deno.serve(async (req) => {
   };
 
   try {
-    if (event === "sale.closed") {
+    if (event === "lead.created") {
+      const contact = (data.contact ?? {}) as Record<string, unknown>;
+      const name = String(contact.name ?? "") || "sin nombre";
+      const pack = String(data.pack ?? "");
+      const priceFrom = data.price_from == null ? "" : String(data.price_from);
+      const adminUrl = String(data.admin_url ?? "");
+      const lines = [
+        `🆕 Nuevo lead: ${name}`,
+        `Origen: ${String(data.source ?? "?")} (${String(data.locale ?? "?")})`,
+        pack ? `Propuesta: ${pack}${priceFrom ? ` desde ${priceFrom} €` : ""}` : "",
+        data.affiliate_code ? `Afiliado: ${String(data.affiliate_code)}` : "",
+        adminUrl,
+      ].filter(Boolean);
+      await sendTelegram(lines.join("\n"));
+      const adminEmail = Deno.env.get("ADMIN_NOTIFY_EMAIL");
+      if (adminEmail) {
+        await sendEmail(
+          adminEmail,
+          `Nuevo lead: ${name}`,
+          `<p>${lines.map((l) => escapeHtml(l)).join("<br>")}</p>`,
+        );
+      }
+    } else if (event === "system.ping_failed") {
+      await sendTelegram(
+        `⚠️ El ping a Supabase falló${data.reason ? `: ${String(data.reason)}` : ""}`,
+      );
+    } else if (event === "sale.closed") {
       await sendTelegram(`✅ Venta cerrada (lead ${String(data.lead_id ?? "")})`);
     } else if (event === "comment.client") {
       await sendTelegram(`💬 Nuevo comentario de un cliente en el portal`);
