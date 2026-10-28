@@ -2,8 +2,12 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Fecha:** 2026-09-19 · **Perfil:** web · **Versión:** **3.0 (2026-10-28, reposicionamiento: identidad única freelance, `/servicios`, `/partners`, chat por casos, CRM, Radar y newsletter post-lanzamiento; spec v2.0, PANT v2.0)** · 2.2 (2026-09-30, batería de stack y metodologías; working-agreements v1.2) · 2.1 (2026-09-30, tras `/plan-eng-review`) · 2.0 (2026-09-29) · **Autor:** `arquitecto`
+**Fecha:** 2026-09-19 · **Perfil:** web · **Versión:** **3.1 (2026-10-28, tarea 9.5b repo público)** · **3.0 (2026-10-28, reposicionamiento: identidad única freelance, `/servicios`, `/partners`, chat por casos, CRM, Radar y newsletter post-lanzamiento; spec v2.0, PANT v2.0)** · 2.2 (2026-09-30, batería de stack y metodologías; working-agreements v1.2) · 2.1 (2026-09-30, tras `/plan-eng-review`) · 2.0 (2026-09-29) · **Autor:** `arquitecto`
 **Insumos:** spec **v2.0** (`docs/superpowers/specs/2026-09-13-josecoded-plataforma.md`; §0 manda), pantallas **v2.0** (bloque «v2.0» de `2026-09-29-pantallas-y-contenidos.md`, **PANT v2.0**), `ESTADO.md` de `main` y de `chore/supabase` (punto real), vault `Comercial/{canales-captacion,agencias,agencias-mensajes,tarifas}.md`; y los de v2.2: spec v1.7, UX **v4.0** (`docs/superpowers/design/2026-09-17-josecoded-ux.md`), diseño técnico **v1.4** (§0b recoge los cambios del eng review) (`docs/superpowers/design/2026-09-17-josecoded-diseno-tecnico.md`, en adelante **DT**), `docs/working-agreements.md` v1.0 (**normativo**: si una tarea lo contradice, manda él), `DESIGN.md` + `.impeccable/design.json` (sistema visual v6), inventario `docs/superpowers/design/2026-09-29-componentes-home-v6.md` v1.1 (**INV**), pantallas `docs/superpowers/design/2026-09-29-pantallas-y-contenidos.md` v1.0 (**PANT**), prototipo `docs/superpowers/design/ref/home-v6/`, spec de newsletter `docs/superpowers/specs/2026-09-29-josecoded-newsletter.md` **v1.2** (fase 10), `docs/working-agreements.md` **v1.1**, `ESTADO.md`, `Comercial/tarifas.md` v2. El documento de `ui` v3 (`2026-09-17-josecoded-ui.md`) **queda superado** por `DESIGN.md` y no es insumo de ninguna tarea.
+
+## Changelog v3.1 (2026-10-28, repo público)
+
+Jose quiere poder enseñar el código en GitHub (hoy el repo es privado; la decisión de 2026-09-30 de «repo privado» pasa a «privado hasta 9.5b»). Se añade la **tarea 9.5b — Repo público: limpieza y GATE «Jose cambia la visibilidad»**, entre la puerta final (9.5) y el lanzamiento (9.6), con la lista concreta de lo que hay que sacar o mover antes de publicar (secretos e identificadores de cuenta en `apps/api/wrangler.jsonc` y `DEPLOY.md`, `API_MODE`, correos personales, licencia, `.claude/`, nombres bajo NDA en documentos). Documentación para visitantes: `docs/architecture.md` (inglés) y `README.md` reescrito en inglés como portada; ambos sin commitear hasta que Jose los vea. Ninguna otra tarea cambia.
 
 ## Changelog v3.0 (2026-10-28, reposicionamiento; spec v2.0 §0, D36–D47; PANT v2.0)
 
@@ -3920,11 +3924,60 @@ Sin métricas en la web (spec §12, `DESIGN.md`): no hay `ProofStrip` ni cifra d
 - [ ] 4. Baseline GEO: ejecutar el protocolo de spec §8 (10 preguntas a ChatGPT, Perplexity, Claude, Google AI Overviews) y guardar `docs/geo/baseline-<fecha>.md`.
 - [ ] 5. Repetir hasta que los cinco revisores (`qa`, `revisor-seguridad`, `revisor-accesibilidad`, `usuario-ejemplo`, `ui`) dan PASA y **Jose aprueba la preview en el navegador**.
 
+### Tarea 9.5b — Repo público: limpieza y **GATE** «Jose cambia la visibilidad» (v3.1)
+
+**Agente:** implementador-web (pasos 1–7) · `revisor-seguridad` (paso 8) · controlador con OK de Jose (paso 9) · **Gate:** **SÍ** (el cambio de visibilidad lo hace Jose en GitHub; ningún agente toca la configuración del repo) · **Depende de:** 9.5 (la puerta final ya pasada); **antes de 9.6** · **Rama:** `release/v2` (o `chore/public-repo` si se adelanta; no toca `main`)
+
+**Objetivo.** Que el repo pueda pasar a público sin exponer identificadores de cuenta, correos personales, topología del servidor casero ni nombres de terceros bajo NDA, y con licencia y portada claras. El repo queda **privado hasta que este gate se cruza**; la decisión del 2026-09-30 («repo privado») se sustituye por esta tarea. Lo que no es secreto pero sí identifica infraestructura (UUIDs, `account_id`, túnel) sale del repo por higiene, no por riesgo directo.
+
+**Qué hay que cambiar (lista cerrada; se marca cada ítem al hacerlo):**
+
+*Secretos, identificadores y correos*
+- [ ] `apps/api/wrangler.jsonc`: quitar `account_id` (pasa a `CLOUDFLARE_ACCOUNT_ID` en el entorno de quien despliega y en los secretos de Actions, que ya existen en `preview.yml`/`deploy-production.yml`); sacar `ADMIN_SUPERUSER_ID` y `ADMIN_SUPERUSER_EMAIL` de `vars` a `wrangler secret put` (el gateway ya los acepta como env; `env.ts` no cambia). Añadir bloque `env.production` con `API_MODE: "production"` y dejar el bloque raíz como desarrollo, o fijar `API_MODE` por entorno como decida 9.4 §4; **ningún deploy aquí**, solo el fichero y el test `test/wrangler-config.test.ts` ampliado (cada env tiene `define`, el raíz no tiene `account_id` ni correos, `env.production.vars.API_MODE === 'production'`).
+- [ ] `apps/api/DEPLOY.md`: quitar el correo de la cuenta de Cloudflare y el `account_id` literal (sustituir por «la cuenta del proyecto», `wrangler whoami`); reescribir §4 ya resuelto con lo anterior. Mover el valor real al vault (`Proyectos/josecoded.md`, bloque «Infra»).
+- [ ] `apps/api/src/services/supabase.service.ts` (`DEFAULT_ADMIN_SUPERUSER_EMAIL`) y `apps/api/src/services/admin-chat.pg-store.ts` (mensaje de error con el correo): quitar el correo literal; el valor viene solo de `ADMIN_SUPERUSER_EMAIL`. Es código heredado («intocable»): **desvío justificado** (privacidad), una línea cada uno, contrato de la ruta sin cambios; lo aprueba `revisor-seguridad` en el paso 8. Actualizar el test `supabase.service.test.ts` si lo referencia.
+- [ ] `apps/api/infra/cloudflared/README.md`: quitar el UUID del túnel y la ruta del fichero de credenciales; dejar solo el procedimiento genérico. Valores al vault.
+- [ ] `apps/api/README.md`: quitar las rutas de disco del servidor casero (`/Volumes/JosecodedData/...`) y las referencias a `josedev` que ya no aplican; apuntar a `docs/architecture.md`.
+- [ ] `docs/superpowers/specs/2026-09-13-josecoded-plataforma.md` (§7 y Q11/Q20), `docs/superpowers/design/2026-09-17-josecoded-diseno-tecnico.md` (§1.3 y P14): sustituir el correo de la cuenta de Cloudflare/Google y el `account_id` por «cuenta del proyecto (valor en el vault)». Los documentos de decisión se quedan; solo salen los identificadores.
+- [ ] Barrido final con `git grep -n -i -E 'gmail|proton|account_id|25486629|c0dac20a|/Volumes/|192\.168'` en la rama: cero resultados salvo `.dev.vars.example` genéricos. **Historial:** el escaneo del 2026-10-28 no encontró tokens ni claves en ningún commit (`sb_secret_*`, JWT, `ghp_*`, tokens de Telegram); los correos e identificadores sí están en el historial. Decisión de Jose en el paso 9: aceptar que queden en el historial (recomendado: son identificadores, no credenciales) o reescribir con `git filter-repo` antes de publicar (rompe los clones; se haría una sola vez con OK explícito).
+
+*Nombres de terceros y datos personales en documentos*
+- [ ] «3catinfo» aparece en `PRODUCT.md`, `ESTADO.md`, spec §3, DT §2 y §5.2, PANT §3 y §4 con la nota «NDA» (nunca en primer lugar, métricas ocultas). Decidir con Jose: (a) mantener el nombre (la app es pública en las stores y el NDA afecta a métricas y detalles, no al nombre) o (b) sustituir por «app de un medio» en los documentos públicos. Recomendación: (a), y confirmar por escrito qué cubre el NDA antes de publicar. **Alten no aparece en el repo** (comprobado); las agencias de `Comercial/agencias.md` tampoco (viven en el vault). Comprobar que ninguna tarea futura las importa al repo (6.7 importa desde el vault a Supabase, no al repo: correcto).
+- [ ] Datos personales: en el repo no hay WhatsApp, NIF ni domicilio (van como `{{DATO}}` y a Supabase/`messages`, nunca a `content/` sin revisión). El enlace al Figma privado en `ESTADO.md` no abre nada sin permiso; se queda.
+- [ ] `apps/api/src/knowledge/knowledge.json`: contiene solo el nombre público y la descripción de servicios; se queda (y 4.4 lo sustituye por `chat_contexts`).
+
+*Ficheros de herramientas*
+- [ ] `.claude/` (en `chore/supabase`: agentes, skills vendorizadas, `settings.json`, `README.md`; en `main`: `launch.json`). Decisión por carpeta: `settings.json`, `launch.json` y `README.md` se quedan (describen cómo se trabaja; no hay rutas personales). `agents/*.md`: revisar que no contengan rutas del Mac ni del vault con nombre de usuario; si las tienen, parametrizar o sacar. `skills/vercel-react-best-practices/` lleva licencia MIT de Vercel (conservar su `README.md`/atribución); las cinco skills de Emil Kowalski (`animate`, `emil-design-eng`, `review-animations`, `improve-animations`, `find-animation-opportunities`) **no traen fichero de licencia**: comprobar la licencia de `emilkowalski/skills` y, si no permite redistribución, sacarlas del repo y dejarlas solo en `~/.claude` (las sesiones en la nube las perderían: anotarlo en `.claude/README.md`).
+- [ ] `.impeccable/`: `design.json`, `config.json` y `surfaces/` se quedan (son el sistema de diseño). `review/`, `questions/` y `hook.cache.json` ya están ignorados: comprobar con `git ls-files .impeccable`.
+- [ ] `graphify-out/`, `.gstack/`, `.claude/worktrees/`: ya ignorados; comprobar que no hay nada rastreado (`git ls-files | grep -E 'graphify-out|\.gstack'` vacío).
+
+*Licencia y portada*
+- [ ] `LICENSE` en la raíz. Recomendación: **MIT para el código** (`apps/`, `packages/`, `supabase/`, `.github/`) y **«todos los derechos reservados» para marca, textos, diseño y medios** (`DESIGN.md`, `.impeccable/design.json`, `docs/superpowers/design/ref/`, `messages/`, `apps/web/public/`, `content/`), declarado en `LICENSE` (dos secciones) y en una línea del `README.md` («Code: MIT. Brand, copy, design and media: all rights reserved»). Alternativa: todo «source-available, no license» (se puede leer, no reutilizar); menos útil para enseñar. **Decide Jose en el paso 9.**
+- [ ] `README.md` (inglés, portada) y `docs/architecture.md` (inglés) ya escritos el 2026-10-28; revisar que las rutas *planned* reflejen el estado real en el momento de publicar. Añadir `SECURITY.md` (cómo reportar: correo `freelance@josecoded.com` si Q18 está activo; sin bug bounty) y, opcional, `CODEOWNERS` con `* @12joseca12`.
+
+*Efectos de pasar a público (no son limpieza, pero se hacen en el mismo gate)*
+- [ ] **Protección de `main`**: GitHub Free sí permite reglas de protección en repos públicos. Al cambiar la visibilidad, Jose activa la protección de `main` (working-agreements §9: PR obligatoria, squash, checks `ci` requeridos) que la decisión del 2026-10-03 dejó pendiente por ser privado. Excepción de auto-merge solo para `newsletter/*` (fase 10, si llega).
+- [ ] **Workflows ante forks**: `ci.yml` usa solo variables públicas (bien). `preview.yml` y `deploy-production.yml` usan secretos: confirmar que solo corren en `push` a ramas del repo y nunca en `pull_request` de forks (`pull_request_target` prohibido). Dependabot y acciones fijadas por SHA (pendiente de la puerta 1a, B2) entran aquí si no se han hecho antes.
+- [ ] `preview_urls: true` en `apps/web/wrangler.jsonc` (pendiente B5): con repo público las URLs de preview son adivinables por nombre; cerrar con Access o `noindex` + sin `/dev/ui` antes del gate.
+
+**Pasos:**
+- [ ] 1. Test que falla: ampliar `apps/api/test/wrangler-config.test.ts` (sin `account_id`, sin `@` en `vars`, `env.production.vars.API_MODE === 'production'`, `define` en todos los env) y un test nuevo `packages/config/test/no-secrets-in-repo.test.ts` que recorre `git ls-files` (excluye `docs/superpowers/design/ref/**` e imágenes) y falla ante `gmail.com|proton.me|account_id":|25486629|c0dac20a|/Volumes/|192\.168\.` fuera de `.dev.vars.example`/`.env.example`.
+- [ ] 2. → FAIL. 3. Aplicar la lista de arriba (cada ítem un commit pequeño: `chore(api): move account and admin identifiers out of wrangler vars`, `docs: strip account identifiers from spec and technical design`, `chore: add LICENSE and SECURITY.md`...). Los desvíos en código heredado llevan `deviation:` en el cuerpo del commit.
+- [ ] 4. → PASS. `pnpm lint && pnpm typecheck && pnpm test && pnpm build` en verde.
+- [ ] 5. Actualizar `docs/architecture.md` y `README.md` si algo de la lista cambió rutas.
+- [ ] 6. Mover los valores retirados al vault (`Proyectos/josecoded.md`, bloque «Infra»: `account_id`, correo de la cuenta, UUID del túnel, ruta de credenciales en Omen, `ADMIN_SUPERUSER_ID`). Lo hace el controlador, no el implementador (el vault está fuera del repo).
+- [ ] 7. `git grep` del barrido final en la rama: vacío.
+- [ ] 8. `revisor-seguridad` sobre la rama: confirma los desvíos del código heredado, el estado del historial y la configuración de workflows ante forks. Veredicto PASA.
+- [ ] 9. **GATE — Jose:** decide licencia, 3catinfo y reescritura del historial; **cambia la visibilidad en GitHub** (Settings → General → Danger zone → Change visibility), activa la protección de `main` y comprueba que `ci` sigue en verde en el primer push posterior. Ningún agente ejecuta este paso.
+- [ ] 10. `ESTADO.md`: «repo público desde <fecha>»; quitar el pendiente heredado de los correos en `wrangler.jsonc`/`DEPLOY.md`; anotar en el vault y en el ADR (`manage_adr`) la decisión de licencia.
+
+**Hecho cuando:** el repo es público, `main` está protegida, el barrido devuelve cero resultados, `LICENSE` y `SECURITY.md` existen, el `README.md` en inglés es la portada y `revisor-seguridad` ha dado PASA.
+
 ### Tarea 9.6 — **GATE**: lanzamiento y cierre
 
 > **v3.0 (D46):** `release/v2` → `main`; sin smoke de Radar; smoke añadido: `/servicios`, `/partners`, `/lab`, `/chat` anónimo (un mensaje → respuesta con el contexto publicado), un lead de `/partners` → contacto `agency` en el CRM + Telegram. Tras el lanzamiento arranca la fase 7 (Radar) y, a los 3 meses, la decisión sobre la fase 10 (spec §0.9). `ESTADO.md`, vault, canvas y ADR se actualizan con D36–D47. Anotar en el vault: **`agencias-mensajes.md` puede llevar enlace a `/partners`** desde este día.
 
-**Agente:** controlador con OK de Jose · **Gate:** **SÍ** · **Depende de:** 9.5
+**Agente:** controlador con OK de Jose · **Gate:** **SÍ** · **Depende de:** 9.5 y **9.5b** (v3.1: el repo se publica antes del lanzamiento o en el mismo gate; nunca después sin pasar 9.5b)
 
 > **v2.1 (eng review):** el lanzamiento no espera a Radar (D34): el smoke de Radar solo si 7.x está mergeado; si no, el paso 2 lo omite y Radar se despliega después con su propio gate 7.31. Tras el deploy, `deploy-production.yml` mueve `last-deployed`.
 
