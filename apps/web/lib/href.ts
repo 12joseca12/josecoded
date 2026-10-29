@@ -11,8 +11,16 @@ export function isInternalHref(href: Href): boolean {
 export interface LinkTarget {
   pathname: string;
   params?: Record<string, string>;
-  query?: Record<string, string>;
+  query?: Record<string, string | string[]>;
   hash?: string;
+}
+
+function safeDecode(value: string): string {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
 }
 
 const templates = Object.keys(pathnames).map((key) => ({
@@ -32,7 +40,12 @@ const templates = Object.keys(pathnames).map((key) => ({
 export function toLinkTarget(href: Href): LinkTarget {
   const url = new URL(href, 'https://local.invalid');
   const path = url.pathname;
-  const query = Object.fromEntries(url.searchParams);
+  // repeated keys (`?tag=a&tag=b`) are kept as arrays, which next-intl serializes back as repeats
+  const query: Record<string, string | string[]> = {};
+  for (const key of new Set(url.searchParams.keys())) {
+    const values = url.searchParams.getAll(key);
+    query[key] = values.length > 1 ? values : (values[0] ?? '');
+  }
   const target: LinkTarget = { pathname: path };
   if (Object.keys(query).length > 0) target.query = query;
   if (url.hash !== '') target.hash = url.hash.slice(1);
@@ -43,7 +56,9 @@ export function toLinkTarget(href: Href): LinkTarget {
       const match = t.pattern.exec(path);
       if (!match) continue;
       target.pathname = t.key;
-      target.params = Object.fromEntries(t.names.map((name, i) => [name, match[i + 1] ?? '']));
+      // URL parsing leaves the segments percent-encoded and next-intl encodes params itself:
+      // decode once here or `café` would become `caf%25C3%25A9`
+      target.params = Object.fromEntries(t.names.map((name, i) => [name, safeDecode(match[i + 1] ?? '')]));
       break;
     }
   }

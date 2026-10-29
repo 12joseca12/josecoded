@@ -11,9 +11,17 @@ const FOCUSABLE = [
   '[contenteditable="true"]',
 ].join(',');
 
-/** Tabbable descendants of `container` in DOM order, without hidden or inert ones. */
+/** Rendered at all: `display: none` / `visibility: hidden` ancestors do not take part in Tab. */
+function isRendered(el: HTMLElement): boolean {
+  if (typeof el.checkVisibility === 'function') return el.checkVisibility({ visibilityProperty: true });
+  // happy-dom and old engines: no layout box means not rendered
+  return el.getClientRects().length > 0 || el.offsetParent !== null;
+}
+
+/** Tabbable descendants of `container` in DOM order, without hidden, inert or unrendered ones. */
 export function focusableWithin(container: HTMLElement): HTMLElement[] {
   return [...container.querySelectorAll<HTMLElement>(FOCUSABLE)].filter(
-    (el) => el.closest('[hidden], [inert]') === null && el.getAttribute('tabindex') !== '-1',
+    (el) => el.closest('[hidden], [inert]') === null && el.getAttribute('tabindex') !== '-1' &&
+      isRendered(el),
   );
 }

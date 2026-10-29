@@ -44,6 +44,7 @@ export const designSchema = z.object({
     containers: entries,
     gradients: entries,
     lights: entries,
+    geometry: entries,
   }),
 });
 

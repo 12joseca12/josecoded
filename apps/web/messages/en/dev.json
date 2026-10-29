@@ -33,6 +33,28 @@
         "stack": "TypeScript",
         "stackTwo": "Cloudflare Workers",
         "live": "Online now"
+      },
+      "sections": {
+        "Button": "Button",
+        "ArrowLink": "ArrowLink",
+        "Icon": "Icon",
+        "IconTile": "IconTile",
+        "Kbd": "Kbd",
+        "Chip": "Chip",
+        "LiveDot": "LiveDot",
+        "Pending": "Pending",
+        "Surface": "Surface",
+        "TwoToneHeading": "TwoToneHeading",
+        "Typography": "Typography"
+      },
+      "captions": {
+        "href": "Link (href)",
+        "arrowEmphasis": "Emphasis: regular / strong",
+        "arrowIcons": "Icon: download / message-circle, no link",
+        "tileVariants": "Size: md / sm × tone: soft / solid",
+        "pending": "Pending-data marker",
+        "surfaceVariants": "Radius: cell / tcard × layer: card / overlay",
+        "interactive": "Interactive"
       }
     }
   }

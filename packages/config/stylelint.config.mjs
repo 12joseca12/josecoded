@@ -17,6 +17,14 @@ const tokenOnlyProps =
 const scaleProps =
   '/^(gap|row-gap|column-gap|padding(-.+)?|margin(-.+)?|transition(-.+)?|animation(-.+)?)$/';
 
+// Geometry (box size, offsets, strokes, transforms) is a design decision too: a length, an angle or
+// a scale written inline is a missing token. Rule 8 lets px exist in transform offsets, but even
+// there the number lives in design.json (--nudge-distance), so px is flagged here as well.
+const geometryProps =
+  '/^(width|height|(min|max)-(width|height)|inset(-.+)?|stroke-width|transform|translate|scale|rotate|--.+)$/';
+const geometryLiteral =
+  '/(?<![\\w-])[+-]?\\d*\\.?\\d+(px|rem|em|ch|ex|vw|vh|svw|svh|lvw|lvh|dvw|dvh|vmin|vmax|cqi|cqb|cqw|cqh|deg|grad|rad|turn)\\b|\\bscale[XYZ3d]*\\(\\s*[+-]?(?!(0|1)\\s*[,)])\\d*\\.?\\d+|^\\s*[+-]?(?!(0|1)\\s*$)\\d*\\.?\\d+\\s*$/';
+
 // Easing must come from --ease-* tokens, never a keyword or a curve written inline.
 const motionProps = '/^(transition(-.+)?|animation(-.+)?)$/';
 const easingLiteral =
@@ -58,6 +66,7 @@ export default {
         [tokenOnlyProps]: [notATokenOrKeyword, lengthOrTimeLiteral],
         [scaleProps]: [lengthOrTimeLiteral],
         [motionProps]: [easingLiteral],
+        [geometryProps]: [geometryLiteral],
       },
     ],
     'color-named': 'never',

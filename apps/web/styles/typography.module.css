@@ -1,7 +1,7 @@
 /* Text roles shared by several components, not components themselves: others pull them in with
    `composes: lead from '@/styles/typography.module.css'`. */
 .lead {
-  max-width: 52ch;
+  max-width: var(--size-measure-prose);
   margin: 0;
   color: var(--text-2);
   font-size: var(--font-lead-size);

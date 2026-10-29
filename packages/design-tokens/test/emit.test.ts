@@ -37,6 +37,7 @@ const minimal = {
     containers: [{ name: 'bento-2', value: '34rem' }],
     gradients: [{ name: 'grad-keycap', value: 'linear-gradient(180deg, #1f1a44, #151233)' }],
     lights: [{ name: 'alpha', value: '0.09' }],
+    geometry: [{ name: 'press-scale', value: '0.97' }],
   },
 };
 

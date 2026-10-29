@@ -81,3 +81,41 @@ describe('stylelint: no literals outside tokens', () => {
     );
   });
 });
+
+describe('stylelint: geometry literals', () => {
+  it.each([
+    '.a { width: 1.05em; }',
+    '.a { max-width: 52ch; }',
+    '.a { inset: -20vmax; }',
+    '.a { min-width: 5.5rem; }',
+    '.a { height: 10px; }',
+    '.a { stroke-width: 1.75; }',
+    '.a { transform: scale(0.97); }',
+    '.a { transform: translateX(3px); }',
+    '.a { transform: rotate(32deg); }',
+    '.a { --rest-x: 18vw; }',
+    '.a { grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr)); width: calc(100% - 4rem); }',
+  ])('rejects %s', async (css) => {
+    const rules = await lint(css);
+    expect(
+      rules.some((r) => r === 'declaration-property-value-disallowed-list' || r === 'unit-disallowed-list'),
+    ).toBe(true);
+  });
+
+  it.each([
+    '.a { width: var(--size-icon); height: var(--size-icon); }',
+    '.a { max-width: var(--size-measure-prose); }',
+    '.a { inset: var(--field-bleed); inset-block-start: 50%; }',
+    '.a { width: 100%; height: 0; min-height: 0; }',
+    '.a { stroke-width: var(--stroke-icon); }',
+    '.a { transform: scale(var(--press-scale)); }',
+    '.a { transform: translateX(var(--nudge-distance)); }',
+    '.a { transform: translate(var(--rest-x), var(--rest-y)); }',
+    '.a { transform: rotate(var(--a)) translateX(var(--o)); }',
+    '.a { transform: none; }',
+    '.a { transform: scale(1); }',
+    '.a { --a: var(--beam-1-angle); }',
+  ])('accepts %s', async (css) => {
+    expect(await lint(css)).toEqual([]);
+  });
+});

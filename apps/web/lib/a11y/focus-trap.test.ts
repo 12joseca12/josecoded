@@ -76,4 +76,35 @@ describe('trapFocus', () => {
     expect(document.activeElement).toBe(empty);
     release();
   });
+
+  it('only the top-most of two nested traps handles Tab, and popping restores the previous one', () => {
+    document.body.innerHTML = `
+      <div id="cell" tabindex="-1"><button id="c1">1</button><button id="c2">2</button></div>
+      <div id="pal" tabindex="-1"><button id="p1">1</button><button id="p2">2</button></div>`;
+    const get = (id: string) => document.getElementById(id) as HTMLElement;
+    const releaseCell = trapFocus(get('cell'));
+    const releasePalette = trapFocus(get('pal'));
+    get('p2').focus();
+    expect(tab().defaultPrevented).toBe(true);
+    expect(document.activeElement).toBe(get('p1')); // the palette wraps, the cell does not steal it
+    releasePalette();
+    get('c2').focus();
+    expect(tab().defaultPrevented).toBe(true);
+    expect(document.activeElement).toBe(get('c1')); // the cell is back in charge
+    releaseCell();
+  });
+
+  it('releasing the lower trap first leaves the upper one active', () => {
+    document.body.innerHTML = `
+      <div id="a" tabindex="-1"><button id="a1">1</button></div>
+      <div id="b" tabindex="-1"><button id="b1">1</button><button id="b2">2</button></div>`;
+    const get = (id: string) => document.getElementById(id) as HTMLElement;
+    const releaseA = trapFocus(get('a'));
+    const releaseB = trapFocus(get('b'));
+    releaseA();
+    get('b2').focus();
+    expect(tab().defaultPrevented).toBe(true);
+    releaseB();
+    expect(tab().defaultPrevented).toBe(false);
+  });
 });

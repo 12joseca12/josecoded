@@ -141,11 +141,17 @@ export type TokenName =
   | '--size-control-lg'
   | '--size-control-xl'
   | '--size-container'
+  | '--size-icon'
+  | '--size-measure-prose'
+  | '--size-measure-heading'
+  | '--size-swatch'
+  | '--size-visually-hidden'
   | '--focus-ring-width'
   | '--focus-ring-offset'
   | '--focus-ring-color'
   | '--stroke-line'
   | '--stroke-line-active'
+  | '--stroke-icon'
   | '--tint-cmdk'
   | '--tint-preview'
   | '--tint-chip'
@@ -264,7 +270,24 @@ export type TokenName =
   | '--light-grain'
   | '--light-beam-1'
   | '--light-beam-2'
-  | '--light-beam-3';
+  | '--light-beam-3'
+  | '--press-scale'
+  | '--nudge-distance'
+  | '--field-bleed'
+  | '--field-rest-x'
+  | '--field-rest-y'
+  | '--pool-width'
+  | '--pool-height'
+  | '--beam-length'
+  | '--beam-width'
+  | '--beam-width-narrow'
+  | '--beam-width-wide'
+  | '--beam-1-angle'
+  | '--beam-1-offset'
+  | '--beam-2-angle'
+  | '--beam-2-offset'
+  | '--beam-3-angle'
+  | '--beam-3-offset';
 
 /** Reads a design token from the document. Motion code reads tokens only through this. */
 export function readToken(name: TokenName): string {
@@ -411,11 +434,17 @@ export const tokens = {
   'size-control-lg': '--size-control-lg',
   'size-control-xl': '--size-control-xl',
   'size-container': '--size-container',
+  'size-icon': '--size-icon',
+  'size-measure-prose': '--size-measure-prose',
+  'size-measure-heading': '--size-measure-heading',
+  'size-swatch': '--size-swatch',
+  'size-visually-hidden': '--size-visually-hidden',
   'focus-ring-width': '--focus-ring-width',
   'focus-ring-offset': '--focus-ring-offset',
   'focus-ring-color': '--focus-ring-color',
   'stroke-line': '--stroke-line',
   'stroke-line-active': '--stroke-line-active',
+  'stroke-icon': '--stroke-icon',
   'tint-cmdk': '--tint-cmdk',
   'tint-preview': '--tint-preview',
   'tint-chip': '--tint-chip',
@@ -535,4 +564,21 @@ export const tokens = {
   'light-beam-1': '--light-beam-1',
   'light-beam-2': '--light-beam-2',
   'light-beam-3': '--light-beam-3',
+  'press-scale': '--press-scale',
+  'nudge-distance': '--nudge-distance',
+  'field-bleed': '--field-bleed',
+  'field-rest-x': '--field-rest-x',
+  'field-rest-y': '--field-rest-y',
+  'pool-width': '--pool-width',
+  'pool-height': '--pool-height',
+  'beam-length': '--beam-length',
+  'beam-width': '--beam-width',
+  'beam-width-narrow': '--beam-width-narrow',
+  'beam-width-wide': '--beam-width-wide',
+  'beam-1-angle': '--beam-1-angle',
+  'beam-1-offset': '--beam-1-offset',
+  'beam-2-angle': '--beam-2-angle',
+  'beam-2-offset': '--beam-2-offset',
+  'beam-3-angle': '--beam-3-angle',
+  'beam-3-offset': '--beam-3-offset',
 } as const satisfies Record<string, TokenName>;

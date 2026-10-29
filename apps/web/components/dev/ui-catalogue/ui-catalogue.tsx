@@ -36,10 +36,10 @@ function Block({ caption, children }: { caption: string; children: ReactNode }) 
   );
 }
 
-function Section({ name, children }: { name: string; children: ReactNode }) {
+function Section({ id, title, children }: { id: string; title: string; children: ReactNode }) {
   return (
-    <section className={styles.section} data-primitive={name}>
-      <h2 className={styles.name}>{name}</h2>
+    <section className={styles.section} data-primitive={id}>
+      <h2 className={styles.name}>{title}</h2>
       {children}
     </section>
   );
@@ -63,7 +63,7 @@ export async function UiCatalogue() {
           <p className={typography.lead}>{t('intro')}</p>
         </header>
 
-        <Section name="Button">
+        <Section id="Button" title={t('sections.Button')}>
           {variants.map((variant) => (
             <Block key={variant} caption={`${t('variants')}: ${variant}`}>
               {sizes.map((size) => (
@@ -88,7 +88,7 @@ export async function UiCatalogue() {
               {t('samples.send')}
             </Button>
           </Block>
-          <Block caption="href">
+          <Block caption={t('captions.href')}>
             <Button href="/proyectos">{t('samples.viewProjects')}</Button>
             <Button href="https://cal.com" variant="ghost">
               {t('samples.book20')}
@@ -96,8 +96,8 @@ export async function UiCatalogue() {
           </Block>
         </Section>
 
-        <Section name="ArrowLink">
-          <Block caption={`${state('rest')}: regular / strong`}>
+        <Section id="ArrowLink" title={t('sections.ArrowLink')}>
+          <Block caption={`${state('rest')} - ${t('captions.arrowEmphasis')}`}>
             <ArrowLink href="/servicios">{t('samples.whatIncludes')}</ArrowLink>
             <ArrowLink href="/servicios" emphasis="strong">
               {t('samples.whatIncludes')}
@@ -111,7 +111,7 @@ export async function UiCatalogue() {
               {t('samples.whatIncludes')}
             </ArrowLink>
           </Block>
-          <Block caption="icon: download / message-circle, button">
+          <Block caption={t('captions.arrowIcons')}>
             <ArrowLink href="/cv.pdf" icon="download">
               {t('samples.downloadCv')}
             </ArrowLink>
@@ -122,7 +122,7 @@ export async function UiCatalogue() {
           </Block>
         </Section>
 
-        <Section name="Icon">
+        <Section id="Icon" title={t('sections.Icon')}>
           <div className={styles.glyphs}>
             {iconNames.map((name) => (
               <div key={name} className={styles.glyph}>
@@ -133,8 +133,8 @@ export async function UiCatalogue() {
           </div>
         </Section>
 
-        <Section name="IconTile">
-          <Block caption="md / sm × soft / solid">
+        <Section id="IconTile" title={t('sections.IconTile')}>
+          <Block caption={t('captions.tileVariants')}>
             <IconTile icon="clock" />
             <IconTile icon="clock" tone="solid" />
             <IconTile icon="package-check" size="sm" />
@@ -142,7 +142,7 @@ export async function UiCatalogue() {
           </Block>
         </Section>
 
-        <Section name="Kbd">
+        <Section id="Kbd" title={t('sections.Kbd')}>
           <Block caption={t('samples.shortcut')}>
             {SHORTCUTS.map((key) => (
               <Kbd key={key}>{key}</Kbd>
@@ -150,27 +150,27 @@ export async function UiCatalogue() {
           </Block>
         </Section>
 
-        <Section name="Chip">
+        <Section id="Chip" title={t('sections.Chip')}>
           <Block caption={t('samples.stack')}>
             <Chip>{t('samples.stack')}</Chip>
             <Chip>{t('samples.stackTwo')}</Chip>
           </Block>
         </Section>
 
-        <Section name="LiveDot">
+        <Section id="LiveDot" title={t('sections.LiveDot')}>
           <Block caption={t('samples.live')}>
             <LiveDot />
           </Block>
         </Section>
 
-        <Section name="Pending">
-          <Block caption="{{DATO}}">
+        <Section id="Pending" title={t('sections.Pending')}>
+          <Block caption={t('captions.pending')}>
             <Pending>{PENDING_SAMPLE}</Pending>
           </Block>
         </Section>
 
-        <Section name="Surface">
-          <Block caption="radius: cell / tcard × layer: card / overlay">
+        <Section id="Surface" title={t('sections.Surface')}>
+          <Block caption={t('captions.surfaceVariants')}>
             {(['cell', 'tcard'] as const).flatMap((radius) =>
               (['card', 'overlay'] as const).map((layer) => (
                 <Surface key={`${radius}-${layer}`} radius={radius} layer={layer}>
@@ -182,7 +182,7 @@ export async function UiCatalogue() {
               )),
             )}
           </Block>
-          <Block caption={`interactive: ${state('rest')} / ${state('hover')}`}>
+          <Block caption={`${t('captions.interactive')}: ${state('rest')} / ${state('hover')}`}>
             <Surface interactive>
               <div className={styles.cell}>
                 <p className={typography.small}>{state('rest')}</p>
@@ -196,7 +196,7 @@ export async function UiCatalogue() {
           </Block>
         </Section>
 
-        <Section name="TwoToneHeading">
+        <Section id="TwoToneHeading" title={t('sections.TwoToneHeading')}>
           <TwoToneHeading lead={t('samples.headingLead')} tail={t('samples.headingTail')} />
           <TwoToneHeading
             lead={t('samples.closingLead')}
@@ -206,7 +206,7 @@ export async function UiCatalogue() {
           <TwoToneHeading lead={t('samples.headingLead')} tail={<Pending>{PENDING_SAMPLE}</Pending>} />
         </Section>
 
-        <Section name="Typography">
+        <Section id="Typography" title={t('sections.Typography')}>
           <p className={typography.lead}>{t('samples.lead')}</p>
           <p className={typography.muted}>{t('samples.muted')}</p>
           <p className={typography.small}>{t('samples.small')}</p>

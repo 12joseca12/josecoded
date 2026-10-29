@@ -1,7 +1,7 @@
 /* home-v7 base.css:155-156 (.sec-title) + v6.css:14, 25 and base.css:185-186 + v6.css:145
    (.close__title); v7.css:336 puts the second tone in the highlight colour. */
 .heading {
-  max-width: 22ch;
+  max-width: var(--size-measure-heading);
   margin: 0;
   font-size: var(--font-headline-size);
   font-weight: var(--font-headline-weight);

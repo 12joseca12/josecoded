@@ -57,12 +57,12 @@ button {
   color: var(--text);
 }
 
-/* :where() keeps the specificity at zero, so a component's own radius (a pill button) wins;
-   [data-focus] forces the ring in the /dev/ui catalogue */
+/* :where() keeps the specificity at zero, so a component's own outline wins; [data-focus] forces
+   the ring in the /dev/ui catalogue. The element's border-radius is left alone: the outline follows
+   it in current browsers, so the ring keeps the shape of each element. */
 :where(:focus-visible, [data-focus]) {
   outline: var(--focus-ring-width) solid var(--focus-ring-color);
   outline-offset: var(--focus-ring-offset);
-  border-radius: var(--r-focus);
 }
 
 /* Without !important: a component that sets `display` on an element it also hides must say so
@@ -74,8 +74,8 @@ button {
 /* Visually hidden, still read by assistive technology. */
 .sr-only {
   position: absolute;
-  width: 1ch;
-  height: 1ch;
+  width: var(--size-visually-hidden);
+  height: var(--size-visually-hidden);
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;

@@ -77,6 +77,7 @@ function collect(design: Design): Token[] {
     ...fromEntries('containers', 'cq-', x.containers),
     ...fromEntries('gradients', '', x.gradients),
     ...fromEntries('lights', 'light-', x.lights),
+    ...fromEntries('geometry', '', x.geometry),
   ];
 }
 

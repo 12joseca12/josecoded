@@ -222,7 +222,12 @@
     "control-md": "2.5rem",
     "control-lg": "3rem",
     "control-xl": "3.5rem",
-    "container": "82rem"
+    "container": "82rem",
+    "icon": "1.05em",
+    "measure-prose": "52ch",
+    "measure-heading": "22ch",
+    "swatch": "5.5rem",
+    "visually-hidden": "1ch"
   },
   "extensions": {
     "colorMeta": {
@@ -1248,6 +1253,93 @@
         "value": "3,5 s reposo + 1,6 s morph (parámetros de packages/glyph-scene)",
         "purpose": "Ciclo móvil → web → chip de la nube del hero."
       }
+    ],
+    "geometry": [
+      {
+        "name": "press-scale",
+        "value": "0.97",
+        "purpose": "Escala de un control mientras se pulsa."
+      },
+      {
+        "name": "nudge-distance",
+        "value": "3px",
+        "purpose": "Desplazamiento de la flecha de un enlace al pasar el cursor."
+      },
+      {
+        "name": "field-bleed",
+        "value": "-20vmax",
+        "purpose": "Cuánto sobresale el campo de luz del viewport por cada lado."
+      },
+      {
+        "name": "field-rest-x",
+        "value": "18vw",
+        "purpose": "Posición de reposo del campo de luz, eje X."
+      },
+      {
+        "name": "field-rest-y",
+        "value": "-6vh",
+        "purpose": "Posición de reposo del campo de luz, eje Y."
+      },
+      {
+        "name": "pool-width",
+        "value": "70vmax",
+        "purpose": "Ancho de la mancha de luz central."
+      },
+      {
+        "name": "pool-height",
+        "value": "50vmax",
+        "purpose": "Alto de la mancha de luz central."
+      },
+      {
+        "name": "beam-length",
+        "value": "170vmax",
+        "purpose": "Largo de cada haz."
+      },
+      {
+        "name": "beam-width",
+        "value": "22vmax",
+        "purpose": "Ancho del haz medio; también el que centra el margen de los tres."
+      },
+      {
+        "name": "beam-width-narrow",
+        "value": "12vmax",
+        "purpose": "Ancho del haz estrecho (2)."
+      },
+      {
+        "name": "beam-width-wide",
+        "value": "30vmax",
+        "purpose": "Ancho del haz ancho (3)."
+      },
+      {
+        "name": "beam-1-angle",
+        "value": "32deg",
+        "purpose": "Inclinación del haz 1."
+      },
+      {
+        "name": "beam-1-offset",
+        "value": "-6vmax",
+        "purpose": "Desplazamiento lateral del haz 1."
+      },
+      {
+        "name": "beam-2-angle",
+        "value": "38deg",
+        "purpose": "Inclinación del haz 2."
+      },
+      {
+        "name": "beam-2-offset",
+        "value": "9vmax",
+        "purpose": "Desplazamiento lateral del haz 2."
+      },
+      {
+        "name": "beam-3-angle",
+        "value": "26deg",
+        "purpose": "Inclinación del haz 3."
+      },
+      {
+        "name": "beam-3-offset",
+        "value": "22vmax",
+        "purpose": "Desplazamiento lateral del haz 3."
+      }
     ]
   },
   "components": [
@@ -1453,7 +1545,8 @@
   },
   "strokes": {
     "stroke-line": "2px",
-    "stroke-line-active": "3px"
+    "stroke-line-active": "3px",
+    "stroke-icon": "1.75"
   },
   "fontWeights": {
     "emphasis": "500"

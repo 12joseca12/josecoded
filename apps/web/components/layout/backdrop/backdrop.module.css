@@ -1,16 +1,17 @@
 /* Ported from home-v7 base.css:44-45 and 137-144. Values are tokens; the geometry of the beams
-   (vmax lengths, angles) is the drawing itself and stays as local variables. */
+   (vmax lengths, angles) is the drawing itself: it lives in design.json (`geometry`) and the local
+   variables below only pick which token a beam uses. */
 .backdrop {
   /* the two layers inside are fixed; the wrapper itself takes no space and never catches a click */
   pointer-events: none;
 }
 
 .field {
-  --rest-x: 18vw;
-  --rest-y: -6vh;
+  --rest-x: var(--field-rest-x);
+  --rest-y: var(--field-rest-y);
 
   position: fixed;
-  inset: -20vmax;
+  inset: var(--field-bleed);
   z-index: var(--z-field);
   pointer-events: none;
   mix-blend-mode: screen;
@@ -22,8 +23,8 @@
 }
 
 .pool {
-  --pw: 70vmax;
-  --ph: 50vmax;
+  --pw: var(--pool-width);
+  --ph: var(--pool-height);
 
   position: absolute;
   inset-block-start: 50%;
@@ -37,9 +38,9 @@
 }
 
 .beam {
-  --w: 22vmax;
-  --h: 170vmax;
-  --w-center: 22vmax; /* the margin centres a 22vmax beam; the narrower and wider ones keep it, as in the prototype */
+  --w: var(--beam-width);
+  --h: var(--beam-length);
+  --w-center: var(--beam-width); /* the margin centres the middle beam; the narrower and wider ones keep it, as in the prototype */
 
   position: absolute;
   inset-block-start: 50%;
@@ -56,29 +57,29 @@
 }
 
 .beam[data-beam='1'] {
-  --a: 32deg;
-  --o: -6vmax;
+  --a: var(--beam-1-angle);
+  --o: var(--beam-1-offset);
   --c: var(--beam-1-a);
   --c2: var(--beam-1-b);
   --op: var(--light-beam-1);
 }
 
 .beam[data-beam='2'] {
-  --a: 38deg;
-  --o: 9vmax;
+  --a: var(--beam-2-angle);
+  --o: var(--beam-2-offset);
   --c: var(--beam-2-a);
   --c2: var(--beam-2-b);
   --op: var(--light-beam-2);
-  --w: 12vmax;
+  --w: var(--beam-width-narrow);
 }
 
 .beam[data-beam='3'] {
-  --a: 26deg;
-  --o: 22vmax;
+  --a: var(--beam-3-angle);
+  --o: var(--beam-3-offset);
   --c: var(--beam-3-a);
   --c2: var(--beam-3-b);
   --op: var(--light-beam-3);
-  --w: 30vmax;
+  --w: var(--beam-width-wide);
 }
 
 .grain {

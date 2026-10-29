@@ -150,6 +150,11 @@
   --size-control-lg: 3rem;
   --size-control-xl: 3.5rem;
   --size-container: 82rem;
+  --size-icon: 1.05em;
+  --size-measure-prose: 52ch;
+  --size-measure-heading: 22ch;
+  --size-swatch: 5.5rem;
+  --size-visually-hidden: 1ch;
 
   /* focus */
   --focus-ring-width: 2px;
@@ -159,6 +164,7 @@
   /* strokes */
   --stroke-line: 2px;
   --stroke-line-active: 3px;
+  --stroke-icon: 1.75;
 
   /* alphas */
   --tint-cmdk: rgb(157 140 255 / 0.06);
@@ -300,4 +306,23 @@
   --light-beam-1: 0.3;
   --light-beam-2: 0.2;
   --light-beam-3: 0.14;
+
+  /* geometry */
+  --press-scale: 0.97;
+  --nudge-distance: 3px;
+  --field-bleed: -20vmax;
+  --field-rest-x: 18vw;
+  --field-rest-y: -6vh;
+  --pool-width: 70vmax;
+  --pool-height: 50vmax;
+  --beam-length: 170vmax;
+  --beam-width: 22vmax;
+  --beam-width-narrow: 12vmax;
+  --beam-width-wide: 30vmax;
+  --beam-1-angle: 32deg;
+  --beam-1-offset: -6vmax;
+  --beam-2-angle: 38deg;
+  --beam-2-offset: 9vmax;
+  --beam-3-angle: 26deg;
+  --beam-3-offset: 22vmax;
 }
