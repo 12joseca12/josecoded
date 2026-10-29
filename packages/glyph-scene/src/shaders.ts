@@ -2,7 +2,7 @@
 
 export const VERTEX = /* glsl */ `
 attribute vec3 aT0, aT1, aT2; attribute float aSeed, aGlyph, aCol, aKind, aParam;
-uniform float uTime, uProg, uFrom, uTo, uSize, uScatter, uDpr, uIntroT, uWave, uWavePeriod, uWaveAmp, uBreath, uBreathW, uMirror, uFocus;
+uniform float uTime, uProg, uFrom, uTo, uSize, uScatter, uDpr, uIntroT, uWave, uWavePeriod, uWaveAmp, uBreath, uBreathW, uTracePeriod, uMirror, uFocus;
 varying float vGlyph, vCol, vSeed, vFade, vAlpha, vSoft, vLand;
 float ease(float t){ return t*t*(3.0-2.0*t); }
 void main(){
@@ -33,7 +33,7 @@ void main(){
   vLand = exp(-abs(p.y - yR) * 6.0) * step(uIntroT, 3.0);
   p = mix(dropP, p, landed);
   float chipW = (si == 2 ? 1.0 - t : 0.0) + (sj == 2 ? t : 0.0);
-  float tracePulse = aKind > 0.5 ? exp(-abs(fract(uTime / 1.25 + aSeed * 0.15) - aParam) * 9.0) * 1.8 * chipW : 0.0;
+  float tracePulse = aKind > 0.5 ? exp(-abs(fract(uTime / uTracePeriod + aSeed * 0.15) - aParam) * 9.0) * 1.8 * chipW : 0.0;
   float refl = 1.0;
   if (uMirror > 0.5) { p.y = -2.9 - p.y; refl = smoothstep(-4.4, -1.6, p.y) * 0.3; }
   vAlpha = wAlpha * refl;

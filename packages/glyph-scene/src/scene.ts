@@ -65,6 +65,8 @@ export type GlyphSceneDebug = {
   next: StateIndex;
   uProg: number;
   uIntroT: number;
+  uTime: number;
+  rotY: number;
   bright: number;
   mirror: number;
   scale: number;
@@ -149,6 +151,8 @@ export async function createGlyphScene(o: GlyphSceneOptions): Promise<GlyphScene
   waveGeo.setDrawRange(0, Math.floor(N * 0.28));
 
   const breathW = capture ? (TAU * 3) / LOOP_SECONDS : BREATH_W;
+  // Live keeps the prototype's 1.25 s; capture uses 15.3 / 12 = 1.275 s so the trace pulse repeats every loop.
+  const tracePeriod = capture ? LOOP_SECONDS / 12 : 1.25;
   const swayW = capture ? TAU / 5.1 : SWAY_W;
   const makeMaterial = (extra: Partial<Record<string, number>>, texture: Texture): ShaderMaterial => {
     const uniforms: Uniforms = {
@@ -162,6 +166,7 @@ export async function createGlyphScene(o: GlyphSceneOptions): Promise<GlyphScene
       uWaveAmp: u(P.wamp),
       uBreath: u(P.breath),
       uBreathW: u(breathW),
+      uTracePeriod: u(tracePeriod),
       uMirror: u(0),
       uFocus: u(P.focus),
       uSize: u(P.size),
@@ -317,8 +322,11 @@ export async function createGlyphScene(o: GlyphSceneOptions): Promise<GlyphScene
     group.position.set(cur.x, cur.y, 0);
     group.scale.setScalar(cur.scale);
 
+    // capture wraps at the loop length (epsilon absorbs the float error of 459 accumulated 1/30 steps)
+    const wrapped = clock % LOOP_SECONDS;
+    const time = capture ? (LOOP_SECONDS - wrapped < 1e-6 ? 0 : wrapped) : clock;
     for (const m of mats) {
-      uni(m, 'uTime').value = clock;
+      uni(m, 'uTime').value = time;
       uni(m, 'uProg').value = cycle.prog;
       uni(m, 'uFrom').value = cycle.state;
       uni(m, 'uTo').value = cycle.next;
@@ -350,8 +358,9 @@ export async function createGlyphScene(o: GlyphSceneOptions): Promise<GlyphScene
   let offscreen = false;
   let raf = 0;
   let last = 0;
+  let disposed = false;
 
-  const shouldRun = () => started && !userPaused && !hidden && !offscreen;
+  const shouldRun = () => !disposed && started && !userPaused && !hidden && !offscreen;
   function frame(now: number): void {
     raf = 0;
     if (!shouldRun()) return;
@@ -362,6 +371,11 @@ export async function createGlyphScene(o: GlyphSceneOptions): Promise<GlyphScene
     raf = requestAnimationFrame(frame);
   }
   function sync(): void {
+    if (disposed) {
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+      return;
+    }
     if (shouldRun()) {
       if (!raf) {
         last = performance.now();
@@ -371,6 +385,14 @@ export async function createGlyphScene(o: GlyphSceneOptions): Promise<GlyphScene
       cancelAnimationFrame(raf);
       raf = 0;
     }
+  }
+  /** Leaving the viewport: dim to zero and draw once, so the fixed canvas does not freeze bright over other sections. */
+  function settleOffscreen(): void {
+    if (disposed || !started || cur.bright < 1e-3) return;
+    cur.bright = 0;
+    for (const m of mats) uni(m, 'uBright').value = 0;
+    if (bloom) bloom.strength = 0;
+    render();
   }
   const onVisibility = () => {
     hidden = document.hidden;
@@ -383,6 +405,7 @@ export async function createGlyphScene(o: GlyphSceneOptions): Promise<GlyphScene
           const e = entries[entries.length - 1];
           if (!e) return;
           offscreen = !e.isIntersecting;
+          if (offscreen) settleOffscreen();
           sync();
         })
       : null;
@@ -390,6 +413,7 @@ export async function createGlyphScene(o: GlyphSceneOptions): Promise<GlyphScene
 
   return {
     start() {
+      if (disposed) return;
       started = true;
       sync();
     },
@@ -414,6 +438,7 @@ export async function createGlyphScene(o: GlyphSceneOptions): Promise<GlyphScene
       for (const m of mats) uni(m, 'uIntroT').value = intro.t;
     },
     step(dt) {
+      if (disposed) return;
       update(dt);
       render();
     },
@@ -427,6 +452,8 @@ export async function createGlyphScene(o: GlyphSceneOptions): Promise<GlyphScene
       next: cycle.next,
       uProg: cycle.prog,
       uIntroT: intro.t,
+      uTime: uni(mat, 'uTime').value,
+      rotY,
       bright: cur.bright,
       mirror: cur.mirror,
       scale: cur.scale,
@@ -436,6 +463,8 @@ export async function createGlyphScene(o: GlyphSceneOptions): Promise<GlyphScene
       mode,
     }),
     dispose() {
+      if (disposed) return;
+      disposed = true;
       started = false;
       sync();
       io?.disconnect();
@@ -450,8 +479,10 @@ export async function createGlyphScene(o: GlyphSceneOptions): Promise<GlyphScene
       waveGeo.dispose();
       for (const m of mats) m.dispose();
       atlas.dispose();
+      bloom?.dispose();
       composer?.dispose();
       renderer.dispose();
+      renderer.forceContextLoss();
     },
   };
 }

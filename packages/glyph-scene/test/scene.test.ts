@@ -1,5 +1,11 @@
 // @vitest-environment happy-dom
-import { expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+const spies = vi.hoisted(() => ({
+  renderer: { dispose: vi.fn(), forceContextLoss: vi.fn(), render: vi.fn() },
+  composer: { dispose: vi.fn(), render: vi.fn() },
+  bloom: { dispose: vi.fn() },
+}));
 
 vi.mock('three', async (orig) => ({
   ...(await orig<typeof import('three')>()),
@@ -8,8 +14,15 @@ vi.mock('three', async (orig) => ({
     setSize() {}
     setPixelRatio() {}
     setClearColor() {}
-    render() {}
-    dispose() {}
+    render() {
+      spies.renderer.render();
+    }
+    dispose() {
+      spies.renderer.dispose();
+    }
+    forceContextLoss() {
+      spies.renderer.forceContextLoss();
+    }
     getPixelRatio() {
       return 1;
     }
@@ -21,21 +34,28 @@ vi.mock('three', async (orig) => ({
 vi.mock('three/addons/postprocessing/EffectComposer.js', () => ({
   EffectComposer: class {
     addPass() {}
-    render() {}
+    render() {
+      spies.composer.render();
+    }
     setSize() {}
-    dispose() {}
+    dispose() {
+      spies.composer.dispose();
+    }
   },
 }));
 vi.mock('three/addons/postprocessing/RenderPass.js', () => ({ RenderPass: class {} }));
 vi.mock('three/addons/postprocessing/UnrealBloomPass.js', () => ({
   UnrealBloomPass: class {
     strength = 0;
+    dispose() {
+      spies.bloom.dispose();
+    }
   },
 }));
 
 import { createGlyphScene } from '../src';
 
-async function make() {
+async function make(capture = true) {
   const canvas = document.createElement('canvas');
   const stage = document.createElement('div');
   document.body.append(stage);
@@ -45,7 +65,8 @@ async function make() {
     stage,
     count: 200,
     seed: 1,
-    capture: true,
+    capture,
+    ...(capture ? null : { background: '#07060f' }),
     onState: (i) => states.push(i),
   });
   return { s, states };
@@ -87,9 +108,91 @@ it('the cycle waits while the intro has not reached 1.5 s', async () => {
   expect(s.debug().phase).toBe('morph');
 });
 
-it('dispose is safe and stops the loop', async () => {
+it('capture loop closes in 459 steps of 1/30 s: state, phase, uProg, rotY and uTime match frame 0', async () => {
   const { s } = await make();
-  s.start();
-  s.dispose();
-  expect(() => s.step(0.1)).not.toThrow();
+  const dbg = () => ({ ...s.debug() });
+  const first = dbg();
+  const dt = 1 / 30;
+  for (let i = 0; i < 459; i++) {
+    s.step(dt);
+  }
+  const last = dbg();
+  expect(last.state).toBe(first.state);
+  expect(last.phase).toBe(first.phase);
+  expect(last.uProg).toBe(first.uProg);
+  // the chip sway relaxes with a lag: ~0.005 rad (0.3 deg) of residual at the wrap
+  expect(Math.abs(last.rotY - first.rotY)).toBeLessThan(0.01);
+  expect(last.uTime).toBeCloseTo(0, 6);
+  expect(first.uTime).toBe(0);
+});
+
+describe('lifecycle', () => {
+  let raf: ReturnType<typeof vi.fn>;
+  let caf: ReturnType<typeof vi.fn>;
+  let ioCb: ((e: { isIntersecting: boolean }[]) => void) | undefined;
+  beforeEach(() => {
+    vi.clearAllMocks();
+    let id = 0;
+    raf = vi.fn(() => ++id);
+    caf = vi.fn();
+    vi.stubGlobal('requestAnimationFrame', raf);
+    vi.stubGlobal('cancelAnimationFrame', caf);
+    vi.stubGlobal(
+      'IntersectionObserver',
+      class {
+        constructor(cb: (e: { isIntersecting: boolean }[]) => void) {
+          ioCb = cb;
+        }
+        observe() {}
+        disconnect() {}
+      },
+    );
+  });
+  afterEach(() => vi.unstubAllGlobals());
+
+  it('dispose cancels rAF, frees GPU resources, removes listeners and makes start/step no-ops', async () => {
+    const removeDoc = vi.spyOn(document, 'removeEventListener');
+    const removeWin = vi.spyOn(window, 'removeEventListener');
+    const { s } = await make(false);
+    s.start();
+    expect(raf).toHaveBeenCalledTimes(1);
+    s.dispose();
+    expect(caf).toHaveBeenCalledTimes(1);
+    expect(spies.bloom.dispose).toHaveBeenCalledTimes(1);
+    expect(spies.composer.dispose).toHaveBeenCalledTimes(1);
+    expect(spies.renderer.dispose).toHaveBeenCalledTimes(1);
+    expect(spies.renderer.forceContextLoss).toHaveBeenCalledTimes(1);
+    expect(removeDoc).toHaveBeenCalledWith('visibilitychange', expect.any(Function));
+    expect(removeWin).toHaveBeenCalledWith('pointermove', expect.any(Function));
+    expect(removeWin).toHaveBeenCalledWith('resize', expect.any(Function));
+    const renders = spies.composer.render.mock.calls.length;
+    const rafs = raf.mock.calls.length;
+    s.start();
+    s.step(0.1);
+    s.dispose();
+    expect(raf.mock.calls.length).toBe(rafs);
+    expect(spies.composer.render.mock.calls.length).toBe(renders);
+    expect(spies.renderer.dispose).toHaveBeenCalledTimes(1);
+  });
+
+  it('pauses on visibilitychange and when the stage leaves the viewport, drawing one dim frame', async () => {
+    const { s } = await make(false);
+    s.start();
+    expect(raf).toHaveBeenCalledTimes(1);
+    Object.defineProperty(document, 'hidden', { configurable: true, value: true });
+    document.dispatchEvent(new Event('visibilitychange'));
+    expect(caf).toHaveBeenCalledTimes(1);
+    Object.defineProperty(document, 'hidden', { configurable: true, value: false });
+    document.dispatchEvent(new Event('visibilitychange'));
+    expect(raf).toHaveBeenCalledTimes(2);
+
+    const before = spies.composer.render.mock.calls.length;
+    ioCb?.([{ isIntersecting: false }]);
+    expect(caf).toHaveBeenCalledTimes(2);
+    expect(s.debug().bright).toBe(0);
+    expect(spies.composer.render.mock.calls.length).toBe(before + 1);
+    ioCb?.([{ isIntersecting: true }]);
+    expect(raf).toHaveBeenCalledTimes(3);
+    s.dispose();
+  });
 });

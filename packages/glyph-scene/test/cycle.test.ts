@@ -29,3 +29,10 @@ it('fill grows during the hold and stays full during a morph', () => {
   expect(c.phase).toBe('morph');
   expect(cycleFill(c, P.hold)).toBe(1);
 });
+
+it('459 fixed steps of 1/30 s return to the frame-0 state (no one-frame drift per hold)', () => {
+  const c = createCycle();
+  for (let i = 0; i < 459; i++) advanceCycle(c, 1 / 30, P, false);
+  expect(c).toMatchObject({ state: 0, phase: 'hold', prog: 0 });
+  expect(c.pt).toBeLessThan(1e-6);
+});

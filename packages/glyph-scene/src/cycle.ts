@@ -16,6 +16,9 @@ export type Cycle = {
 
 export const createCycle = (): Cycle => ({ state: PHONE, next: WEB, phase: 'hold', pt: 0, prog: 0 });
 
+/** Absorbs float error of accumulated fixed steps (105 x 1/30 may land at 3.4999999). */
+const EPS = 1e-9;
+
 const after = (s: StateIndex): StateIndex => ((s + 1) % 3) as StateIndex;
 
 /** Index the cycle bars highlight: the next state once the morph is past half. */
@@ -32,17 +35,17 @@ export function advanceCycle(c: Cycle, dt: number, p: { hold: number; morph: num
   c.pt += dt;
   let f = 0;
   if (c.phase === 'hold') {
-    if (c.pt >= p.hold) {
+    if (c.pt >= p.hold - EPS) {
       c.next = after(c.state);
       c.phase = 'morph';
-      c.pt = 0;
+      c.pt = Math.max(0, c.pt - p.hold); // carry the remainder so fixed-dt loops do not drift
     }
   } else {
     f = Math.min(1, c.pt / p.morph);
-    if (f >= 1) {
+    if (f >= 1 - EPS) {
       c.state = c.next;
       c.phase = 'hold';
-      c.pt = 0;
+      c.pt = Math.max(0, c.pt - p.morph);
       f = 0;
     }
   }

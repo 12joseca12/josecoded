@@ -50,7 +50,7 @@ export const CAPTURE = {
 
 /**
  * Inputs of `paramsHash`. `threeVersion` and `sources` are optional here, but the task 2.6 scripts (hero:media,
- * hero:media:check) MUST pass them: the plan requires shaders/scene/atlas sources and the `three` version in the hash.
+ * hero:media:check) MUST pass them: the plan requires shaders/scene/atlas/cloud-set/cycle sources and the `three` version in the hash.
  */
 export type HashInputs = {
   params: Record<string, unknown>;
@@ -58,7 +58,7 @@ export type HashInputs = {
   capture: Record<string, unknown>;
   /** Version of `three` from the lockfile (filled in by the media scripts; null while the package does not import it). */
   threeVersion: string | null;
-  /** Source text of the modules whose content defines the picture but that this module cannot see (shaders.ts, scene.ts, atlas.ts). */
+  /** Source text of the modules whose content defines the picture but that this module cannot see (shaders.ts, scene.ts, atlas.ts, cloud-set.ts, cycle.ts). */
   sources: readonly string[];
 };
 
@@ -83,7 +83,7 @@ export function cloudsDigest(seed: number, cloudMap: Record<string, CloudFn> = c
 /**
  * Short sha256 (16 hex) of everything that decides how the hero looks: PARAMS, COUNT, CAPTURE, the clouds
  * (through a digest of their output at the real capture counts, equivalent to hashing clouds.ts), the `three` version and, when given,
- * the sources of shaders/scene/atlas. `hero:media` only regenerates when this changes.
+ * the sources of shaders/scene/atlas/cloud-set/cycle. `hero:media` only regenerates when this changes.
  */
 export function paramsHash(over: Partial<HashInputs> = {}): string {
   const inputs: HashInputs = {

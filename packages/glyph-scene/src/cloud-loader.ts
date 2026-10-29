@@ -24,10 +24,20 @@ export function loadChunked(n: number, seed: number, idle: Idle = defaultIdle): 
   });
 }
 
-function loadInWorker(n: number, seed: number): Promise<CloudSet> {
+/** A worker that never answers (blocked module, CSP) must not hang the hero. */
+const WORKER_TIMEOUT_MS = 4000;
+
+function loadInWorker(n: number, seed: number, timeoutMs = WORKER_TIMEOUT_MS): Promise<CloudSet> {
   return new Promise((resolve, reject) => {
     const worker = new Worker(new URL('./worker.ts', import.meta.url), { type: 'module' });
-    const done = () => worker.terminate();
+    const timer = setTimeout(() => {
+      done();
+      reject(new Error('worker timeout'));
+    }, timeoutMs);
+    const done = () => {
+      clearTimeout(timer);
+      worker.terminate();
+    };
     worker.onmessage = (e: MessageEvent<CloudReply>) => {
       done();
       if (e.data.type === 'clouds') resolve(e.data.set);
@@ -53,4 +63,4 @@ export async function loadClouds(n: number, seed: number): Promise<CloudSet> {
   return loadChunked(n, seed);
 }
 
-export { computeCloudSet };
+export { computeCloudSet, loadInWorker };

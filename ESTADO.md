@@ -42,6 +42,9 @@ Documentos (al día con la v6 desde el 2026-09-29):
 
 ## Pendientes
 
+- [ ] Presupuesto del bundle de `@josecoded/glyph-scene` (2.5b): medido hoy 141,2 KiB gz (three + escena, esbuild puntual, sin devDependency). Lo hace cumplir `check-hero-bundle` en la tarea 2.9; no se añade esbuild al paquete.
+- [ ] Pregunta al arquitecto (2.5b): la oscilación `sway` de captura usa 0,34 rad (v6) y el DT §1.6.3 dice 0,22. Se deja en 0,34; ¿cuál manda?
+
 **Confirmaciones de Jose (cierran el diseño)**
 - [x] Badge «Disponible para proyectos»: quitado del hero (2026-09-29).
 - [x] «Contacto» fuera de la cabecera: confirmado.
