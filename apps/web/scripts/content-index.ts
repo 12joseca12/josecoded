@@ -1,0 +1,72 @@
+// Writes content/generated/content-index.json at prebuild: how much real content each optional
+// section has. Blog needs three guides (spec D33), Lab two demos (D44); a section below its threshold
+// vanishes from the whole site (lib/content/sections.ts). Pending texts (`{{DATO`) do not count.
+// Tasks 4.2 / 4.5 extend this file with the blog index (frontmatter, slugs, translations) and the lab
+// schema; the counting rules below are the minimum those tasks build on.
+// Runs with plain Node (type stripping, Node >= 22.18), so internal imports carry `.ts`.
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+
+import { contentIndexSchema } from '@josecoded/types';
+
+import { isPendingDato } from '../lib/content/dato.ts';
+
+import type { ContentIndex } from '@josecoded/types';
+
+export const BLOG_MIN_GUIDES = 3;
+export const LAB_MIN_DEMOS = 2;
+
+const LOCALES = ['es', 'en'] as const;
+
+function readReal(file: string): string | null {
+  const text = readFileSync(file, 'utf8');
+  return isPendingDato(text) ? null : text;
+}
+
+/** Guides per site, not per locale: the same slug in es and en counts once. Notes (`kind: note`) do not count. */
+function countGuides(contentRoot: string): number {
+  const slugs = new Set<string>();
+  for (const locale of LOCALES) {
+    const dir = join(contentRoot, 'blog', locale);
+    if (!existsSync(dir)) continue;
+    for (const name of readdirSync(dir).filter((f) => /\.mdx?$/.test(f))) {
+      const text = readReal(join(dir, name));
+      if (text === null || /^\s*(?:export const metadata[^]*?)?kind:\s*['"]?note\b/m.test(text)) continue;
+      slugs.add(name.replace(/\.mdx?$/, ''));
+    }
+  }
+  return slugs.size;
+}
+
+/** A demo is a folder `lab/<slug>/` with a real `meta.es.md` or `meta.en.md`. */
+function countDemos(contentRoot: string): number {
+  const dir = join(contentRoot, 'lab');
+  if (!existsSync(dir)) return 0;
+  return readdirSync(dir, { withFileTypes: true }).filter(
+    (entry) =>
+      entry.isDirectory() &&
+      LOCALES.some((locale) => {
+        const meta = join(dir, entry.name, `meta.${locale}.md`);
+        return existsSync(meta) && readReal(meta) !== null;
+      }),
+  ).length;
+}
+
+export function computeContentIndex({ contentRoot }: { contentRoot: string }): ContentIndex {
+  const guides = countGuides(contentRoot);
+  const demos = countDemos(contentRoot);
+  return contentIndexSchema.parse({
+    blog: { guides },
+    lab: { demos },
+    blogEnabled: guides >= BLOG_MIN_GUIDES,
+    labEnabled: demos >= LAB_MIN_DEMOS,
+  });
+}
+
+if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
+  const contentRoot = fileURLToPath(new URL('../content', import.meta.url));
+  const index = computeContentIndex({ contentRoot });
+  writeFileSync(join(contentRoot, 'generated/content-index.json'), `${JSON.stringify(index, null, 2)}\n`);
+  console.log(`content-index: ${index.blog.guides} guides (blog ${index.blogEnabled}), ${index.lab.demos} demos (lab ${index.labEnabled})`);
+}

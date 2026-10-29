@@ -1,8 +1,11 @@
 {
   "branch": "main",
-  "commit": "c77d225",
+  "commit": "b6264d2",
   "nextVersion": "16.3.6",
-  "gatewayRoutes": 24,
-  "supabase": { "tables": 26, "policies": 40 },
+  "gatewayRoutes": 6,
+  "supabase": {
+    "tables": 26,
+    "policies": 82
+  },
   "reviewedAt": "2026-10-29"
 }

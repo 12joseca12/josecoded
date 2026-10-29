@@ -1,6 +1,8 @@
 import type {
   appCodeSchema,
   appPackSchema,
+  buildInfoSchema,
+  contentIndexSchema,
   extraCodeSchema,
   extraSchema,
   localizedTextSchema,
@@ -20,3 +22,5 @@ export type Pack = z.infer<typeof packSchema>;
 export type AppPack = z.infer<typeof appPackSchema>;
 export type Extra = z.infer<typeof extraSchema>;
 export type PricingData = z.infer<typeof pricingSchema>;
+export type BuildInfo = z.infer<typeof buildInfoSchema>;
+export type ContentIndex = z.infer<typeof contentIndexSchema>;
