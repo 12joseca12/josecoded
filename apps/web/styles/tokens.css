@@ -127,6 +127,7 @@
   --sp-7: 1.75rem;
   --sp-8: 2rem;
   --sp-10: 2.5rem;
+  --sp-12: 3rem;
   --sp-16: 4rem;
   --sp-gutter: clamp(1rem, 4vw, 3.5rem);
   --sp-pad-scene: clamp(1rem, 0.5rem + 3vw, 3.5rem);
@@ -155,6 +156,7 @@
   --size-measure-heading: 22ch;
   --size-swatch: 5.5rem;
   --size-visually-hidden: 1ch;
+  --size-icon-lg: 1.375rem;
 
   /* focus */
   --focus-ring-width: 2px;
@@ -165,6 +167,7 @@
   --stroke-line: 2px;
   --stroke-line-active: 3px;
   --stroke-icon: 1.75;
+  --stroke-hairline: 1px;
 
   /* alphas */
   --tint-cmdk: rgb(157 140 255 / 0.06);
@@ -210,6 +213,8 @@
   --shadow-keycap: inset 0 1px 0 rgb(185 173 255 / 0.25), inset 0 -3px 0 rgb(5 3 20 / 0.7), 0 0 0 1px var(--line-2), 0 8px 16px -8px rgb(5 3 20 / 0.9);
   --shadow-keycap-down: inset 0 1px 0 rgb(185 173 255 / 0.2), inset 0 -1px 0 rgb(5 3 20 / 0.7), 0 0 0 1px var(--edge-keycap-down), 0 4px 10px -6px rgb(5 3 20 / 0.9);
   --shadow-selected-row: inset 0 0 0 1px var(--edge-selected);
+  --shadow-edge-bottom: inset 0 -1px 0 var(--line);
+  --shadow-edge-top: inset 0 1px 0 var(--line);
 
   /* blurs */
   --blur-backdrop: 4px;
@@ -243,6 +248,8 @@
   --dur-canvas-in: 1.2s;
   --dur-stagger-draw: 120ms;
   --dur-delay-draw: 100ms;
+  --dur-page-exit: 120ms;
+  --dur-page-enter: 160ms;
 
   /* easings */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -325,4 +332,12 @@
   --beam-2-offset: 9vmax;
   --beam-3-angle: 26deg;
   --beam-3-offset: 22vmax;
+  --header-height: 4rem;
+  --header-threshold: 80px;
+  --menu-width: min(17rem, calc(100vw - 2 * var(--sp-gutter)));
+  --menu-max-height: calc(100svh - 5rem);
+  --menu-enter-offset: -0.375rem;
+  --menu-enter-scale: 0.98;
+  --page-enter-offset: 0.5rem;
+  --cmdk-label-width: 6.5rem;
 }

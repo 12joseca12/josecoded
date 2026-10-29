@@ -29,9 +29,10 @@ const ShellContext = createContext<ShellApi | null>(null);
 export function ShellProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(shellReducer, initialShellState);
 
-  const api = useMemo<ShellApi>(
+  // `dispatch` never changes, so the actions are created once: effects that call them do not
+  // re-subscribe every time the state moves
+  const actions = useMemo<Omit<ShellApi, keyof ShellState>>(
     () => ({
-      ...state,
       openPalette: () => dispatch({ type: 'palette/open' }),
       closePalette: () => dispatch({ type: 'palette/close' }),
       togglePalette: () => dispatch({ type: 'palette/toggle' }),
@@ -42,8 +43,9 @@ export function ShellProvider({ children }: { children: ReactNode }) {
       closeCell: () => dispatch({ type: 'cell/close' }),
       escape: () => dispatch({ type: 'escape' }),
     }),
-    [state],
+    [],
   );
+  const api = useMemo<ShellApi>(() => ({ ...state, ...actions }), [state, actions]);
 
   return <ShellContext value={api}>{children}</ShellContext>;
 }

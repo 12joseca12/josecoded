@@ -1,0 +1,55 @@
+/* home-v7 base.css:115-119, 208-209 (.foot) */
+.footer {
+  position: relative;
+  z-index: var(--z-content);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-8);
+  max-width: var(--size-container);
+  margin: 0 auto;
+  padding: var(--sp-10) var(--sp-gutter) var(--sp-12);
+  box-shadow: var(--shadow-edge-top);
+  color: var(--text-3);
+  font-size: var(--font-label-size);
+}
+
+.brand {
+  color: var(--text);
+  font-weight: var(--font-brand-weight);
+  letter-spacing: var(--font-brand-tracking);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-5);
+}
+
+.link {
+  transition: color var(--dur-hover) var(--ease-standard);
+}
+
+.reviewed {
+  margin-inline-start: auto;
+  font-size: var(--font-small-size);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .link:hover {
+    color: var(--text);
+  }
+}
+
+/* compact (bp.compact = 56.25rem): the review date goes under the links */
+@media (width <= 56.25rem) {
+  .reviewed {
+    margin-inline-start: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link {
+    transition: none;
+  }
+}

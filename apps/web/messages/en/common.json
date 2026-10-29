@@ -10,7 +10,7 @@
     "skipToContent": "Skip to content"
   },
   "actions": {
-    "book20": "Book 20\u00a0min",
+    "book20": "Book 20 min",
     "whatsapp": "Message me on WhatsApp",
     "downloadCv": "Download CV",
     "askAssistant": "Ask the assistant",
@@ -31,6 +31,10 @@
     "chat": "Chat",
     "chatOpen": "Open the chat",
     "login": "Login",
+    "account": "My account",
+    "profile": "Profile",
+    "signOut": "Sign out",
+    "userMenu": "Account menu",
     "menu": "Menu",
     "menuToFooter": "Menu: jump to the footer index",
     "language": {

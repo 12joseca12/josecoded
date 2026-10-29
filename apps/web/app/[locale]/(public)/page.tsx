@@ -10,8 +10,6 @@ export default async function HomePage({ params }: { params: LocaleParams }) {
   const t = await getTranslations();
 
   return (
-    <main>
-      <h1>{t('site.name')}</h1>
-    </main>
+    <h1>{t('site.name')}</h1>
   );
 }

@@ -284,5 +284,20 @@
   "beam-2-angle",
   "beam-2-offset",
   "beam-3-angle",
-  "beam-3-offset"
+  "beam-3-offset",
+  "header-height",
+  "header-threshold",
+  "menu-width",
+  "menu-max-height",
+  "menu-enter-offset",
+  "menu-enter-scale",
+  "page-enter-offset",
+  "dur-page-exit",
+  "dur-page-enter",
+  "stroke-hairline",
+  "sp-12",
+  "shadow-edge-bottom",
+  "shadow-edge-top",
+  "cmdk-label-width",
+  "size-icon-lg"
 ]

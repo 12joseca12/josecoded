@@ -33,12 +33,16 @@ export type IconName =
   | 'briefcase'
   | 'clock'
   | 'download'
+  | 'log-in'
+  | 'log-out'
   | 'maximize'
   | 'menu'
   | 'message-circle'
+  | 'message-square'
   | 'package-check'
   | 'search'
   | 'store'
+  | 'user'
   | 'x';
 
 // --- Polymorphism by `href` (working-agreements §15.3) -------------------------------------------

@@ -213,7 +213,8 @@
     "7": "1.75rem",
     "8": "2rem",
     "10": "2.5rem",
-    "16": "4rem"
+    "16": "4rem",
+    "12": "3rem"
   },
   "sizes": {
     "dot": "0.375rem",
@@ -227,7 +228,8 @@
     "measure-prose": "52ch",
     "measure-heading": "22ch",
     "swatch": "5.5rem",
-    "visually-hidden": "1ch"
+    "visually-hidden": "1ch",
+    "icon-lg": "1.375rem"
   },
   "extensions": {
     "colorMeta": {
@@ -797,6 +799,16 @@
         "name": "selected-row",
         "value": "inset 0 0 0 1px var(--edge-selected)",
         "purpose": "Filete del resaltado deslizante de lista."
+      },
+      {
+        "name": "edge-bottom",
+        "value": "inset 0 -1px 0 var(--line)",
+        "purpose": "Filete inferior: borde de la cabecera con fondo."
+      },
+      {
+        "name": "edge-top",
+        "value": "inset 0 1px 0 var(--line)",
+        "purpose": "Filete superior: separa el pie y el selector de idioma del menú."
       }
     ],
     "blurs": [
@@ -946,6 +958,16 @@
         "name": "delay-draw",
         "value": "100ms",
         "purpose": "Retardo del primer check."
+      },
+      {
+        "name": "page-exit",
+        "value": "120ms",
+        "purpose": "Sale la página anterior en un cambio de ruta (View Transition): más corta que la entrada para no hacer esperar."
+      },
+      {
+        "name": "page-enter",
+        "value": "160ms",
+        "purpose": "Entra la página nueva en un cambio de ruta (View Transition)."
       }
     ],
     "easings": [
@@ -1339,6 +1361,46 @@
         "name": "beam-3-offset",
         "value": "22vmax",
         "purpose": "Desplazamiento lateral del haz 3."
+      },
+      {
+        "name": "header-height",
+        "value": "4rem",
+        "purpose": "Alto de la cabecera fija."
+      },
+      {
+        "name": "header-threshold",
+        "value": "80px",
+        "purpose": "Scroll tras el cual la cabecera gana fondo (sentinela de IntersectionObserver; excepción de px de working-agreements §8)."
+      },
+      {
+        "name": "menu-width",
+        "value": "min(17rem, calc(100vw - 2 * var(--sp-gutter)))",
+        "purpose": "Ancho del panel del menú ☰ y del menú de usuario: 17rem, sin salirse de la pantalla."
+      },
+      {
+        "name": "menu-max-height",
+        "value": "calc(100svh - 5rem)",
+        "purpose": "Alto máximo del panel del menú: cabe bajo la cabecera y desplaza si hace falta."
+      },
+      {
+        "name": "menu-enter-offset",
+        "value": "-0.375rem",
+        "purpose": "Desplazamiento inicial del panel del menú al abrirse (entra desde su botón)."
+      },
+      {
+        "name": "menu-enter-scale",
+        "value": "0.98",
+        "purpose": "Escala inicial del panel del menú al abrirse."
+      },
+      {
+        "name": "page-enter-offset",
+        "value": "0.5rem",
+        "purpose": "Desplazamiento de la página que entra en un cambio de ruta (View Transition)."
+      },
+      {
+        "name": "cmdk-label-width",
+        "value": "6.5rem",
+        "purpose": "Ancho mínimo del texto del buscador de la cabecera (el botón no cambia de ancho al cargar)."
       }
     ]
   },
@@ -1546,7 +1608,8 @@
   "strokes": {
     "stroke-line": "2px",
     "stroke-line-active": "3px",
-    "stroke-icon": "1.75"
+    "stroke-icon": "1.75",
+    "stroke-hairline": "1px"
   },
   "fontWeights": {
     "emphasis": "500"

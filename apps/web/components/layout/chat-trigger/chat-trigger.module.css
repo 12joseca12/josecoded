@@ -1,0 +1,41 @@
+/* home-v7 base.css:148-151, 206 (.nav__chat) */
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  height: var(--size-control-sm);
+  padding: 0 var(--sp-3-5);
+  border-radius: var(--r-pill);
+  background: var(--tint-ghost);
+  box-shadow: var(--shadow-hairline-strong);
+  color: var(--text);
+  font-size: var(--font-small-size);
+  font-weight: var(--font-label-button-weight);
+  transition: background-color var(--dur-hover) var(--ease-standard);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .trigger:hover {
+    background: var(--tint-ghost-hover);
+  }
+}
+
+/* compact: dot and icon only, 2.75 rem square (bp.compact = 56.25rem); the name is the aria-label */
+@media (width <= 56.25rem) {
+  .trigger {
+    justify-content: center;
+    width: var(--size-hit);
+    height: var(--size-hit);
+    padding: 0;
+  }
+
+  .label {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trigger {
+    transition: none;
+  }
+}

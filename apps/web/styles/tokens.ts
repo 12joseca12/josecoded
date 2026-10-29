@@ -120,6 +120,7 @@ export type TokenName =
   | '--sp-7'
   | '--sp-8'
   | '--sp-10'
+  | '--sp-12'
   | '--sp-16'
   | '--sp-gutter'
   | '--sp-pad-scene'
@@ -146,12 +147,14 @@ export type TokenName =
   | '--size-measure-heading'
   | '--size-swatch'
   | '--size-visually-hidden'
+  | '--size-icon-lg'
   | '--focus-ring-width'
   | '--focus-ring-offset'
   | '--focus-ring-color'
   | '--stroke-line'
   | '--stroke-line-active'
   | '--stroke-icon'
+  | '--stroke-hairline'
   | '--tint-cmdk'
   | '--tint-preview'
   | '--tint-chip'
@@ -193,6 +196,8 @@ export type TokenName =
   | '--shadow-keycap'
   | '--shadow-keycap-down'
   | '--shadow-selected-row'
+  | '--shadow-edge-bottom'
+  | '--shadow-edge-top'
   | '--blur-backdrop'
   | '--blur-scrim'
   | '--blur-header'
@@ -222,6 +227,8 @@ export type TokenName =
   | '--dur-canvas-in'
   | '--dur-stagger-draw'
   | '--dur-delay-draw'
+  | '--dur-page-exit'
+  | '--dur-page-enter'
   | '--ease-out'
   | '--ease-slide'
   | '--ease-vt'
@@ -287,7 +294,15 @@ export type TokenName =
   | '--beam-2-angle'
   | '--beam-2-offset'
   | '--beam-3-angle'
-  | '--beam-3-offset';
+  | '--beam-3-offset'
+  | '--header-height'
+  | '--header-threshold'
+  | '--menu-width'
+  | '--menu-max-height'
+  | '--menu-enter-offset'
+  | '--menu-enter-scale'
+  | '--page-enter-offset'
+  | '--cmdk-label-width';
 
 /** Reads a design token from the document. Motion code reads tokens only through this. */
 export function readToken(name: TokenName): string {
@@ -413,6 +428,7 @@ export const tokens = {
   'sp-7': '--sp-7',
   'sp-8': '--sp-8',
   'sp-10': '--sp-10',
+  'sp-12': '--sp-12',
   'sp-16': '--sp-16',
   'sp-gutter': '--sp-gutter',
   'sp-pad-scene': '--sp-pad-scene',
@@ -439,12 +455,14 @@ export const tokens = {
   'size-measure-heading': '--size-measure-heading',
   'size-swatch': '--size-swatch',
   'size-visually-hidden': '--size-visually-hidden',
+  'size-icon-lg': '--size-icon-lg',
   'focus-ring-width': '--focus-ring-width',
   'focus-ring-offset': '--focus-ring-offset',
   'focus-ring-color': '--focus-ring-color',
   'stroke-line': '--stroke-line',
   'stroke-line-active': '--stroke-line-active',
   'stroke-icon': '--stroke-icon',
+  'stroke-hairline': '--stroke-hairline',
   'tint-cmdk': '--tint-cmdk',
   'tint-preview': '--tint-preview',
   'tint-chip': '--tint-chip',
@@ -486,6 +504,8 @@ export const tokens = {
   'shadow-keycap': '--shadow-keycap',
   'shadow-keycap-down': '--shadow-keycap-down',
   'shadow-selected-row': '--shadow-selected-row',
+  'shadow-edge-bottom': '--shadow-edge-bottom',
+  'shadow-edge-top': '--shadow-edge-top',
   'blur-backdrop': '--blur-backdrop',
   'blur-scrim': '--blur-scrim',
   'blur-header': '--blur-header',
@@ -515,6 +535,8 @@ export const tokens = {
   'dur-canvas-in': '--dur-canvas-in',
   'dur-stagger-draw': '--dur-stagger-draw',
   'dur-delay-draw': '--dur-delay-draw',
+  'dur-page-exit': '--dur-page-exit',
+  'dur-page-enter': '--dur-page-enter',
   'ease-out': '--ease-out',
   'ease-slide': '--ease-slide',
   'ease-vt': '--ease-vt',
@@ -581,4 +603,12 @@ export const tokens = {
   'beam-2-offset': '--beam-2-offset',
   'beam-3-angle': '--beam-3-angle',
   'beam-3-offset': '--beam-3-offset',
+  'header-height': '--header-height',
+  'header-threshold': '--header-threshold',
+  'menu-width': '--menu-width',
+  'menu-max-height': '--menu-max-height',
+  'menu-enter-offset': '--menu-enter-offset',
+  'menu-enter-scale': '--menu-enter-scale',
+  'page-enter-offset': '--page-enter-offset',
+  'cmdk-label-width': '--cmdk-label-width',
 } as const satisfies Record<string, TokenName>;

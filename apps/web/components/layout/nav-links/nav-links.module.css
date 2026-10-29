@@ -1,0 +1,35 @@
+/* home-v7 base.css:55-56, 152, v7.css:340 (.nav__links) */
+.links {
+  display: flex;
+  gap: var(--sp-7);
+  color: var(--text-2);
+  font-size: var(--font-label-size);
+}
+
+.link {
+  transition: color var(--dur-hover) var(--ease-standard);
+}
+
+.link[aria-current],
+.link[data-here] {
+  color: var(--text);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .link:hover {
+    color: var(--text);
+  }
+}
+
+/* the links give way to the ☰ menu (bp.menu = 67.5rem) */
+@media (width <= 67.5rem) {
+  .links {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link {
+    transition: none;
+  }
+}

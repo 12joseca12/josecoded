@@ -52,5 +52,6 @@ test('the home link of a 404 works', async ({ page }) => {
   await page.goto('/en/nope');
   await page.getByRole('link', { name: 'Back to home' }).click();
   await expect(page).toHaveURL(/\/en$/);
-  expect(await page.title()).toBe('josecoded');
+  // the title is swapped when the page transition commits, not at the URL change
+  await expect(page).toHaveTitle('josecoded');
 });

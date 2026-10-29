@@ -1,0 +1,52 @@
+/* home-v7 base.css:62-63, 202-203 (.nav__menu) and v7.css:216-220 (no-JS fallback) */
+.toggle {
+  display: none;
+  place-items: center;
+  width: var(--size-hit);
+  height: var(--size-hit);
+  border-radius: var(--r-md);
+}
+
+.noscript {
+  display: none;
+  place-items: center;
+  width: var(--size-hit);
+  height: var(--size-hit);
+  border-radius: var(--r-md);
+}
+
+.toggle svg,
+.noscript svg {
+  width: var(--size-icon-lg);
+  height: var(--size-icon-lg);
+}
+
+/* ☰ ↔ ✕ follows aria-expanded */
+.toggle[aria-expanded='false'] .close,
+.toggle[aria-expanded='true'] .open {
+  display: none;
+}
+
+.nav {
+  display: grid;
+  gap: var(--sp-0-5);
+}
+
+/* the menu button appears below the menu breakpoint (bp.menu = 67.5rem, styles/breakpoints.ts) */
+@media (width <= 67.5rem) {
+  .toggle {
+    display: grid;
+  }
+}
+
+/* No scripting: the button cannot open anything, so a link to the footer index takes its place.
+   `scripting` is Baseline 2023; elsewhere the button simply stays. */
+@media (scripting: none) and (width <= 67.5rem) {
+  .toggle {
+    display: none;
+  }
+
+  .noscript {
+    display: grid;
+  }
+}

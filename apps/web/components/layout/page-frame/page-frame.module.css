@@ -1,0 +1,6 @@
+/* home-v7 base.css:46: main sits above the light field and the grain */
+.main {
+  position: relative;
+  z-index: var(--z-content);
+  outline: none;
+}

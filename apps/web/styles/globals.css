@@ -22,6 +22,9 @@ html {
   scroll-behavior: smooth;
   scrollbar-color: var(--scrollbar-thumb) var(--bg);
   scrollbar-width: thin;
+
+  /* the fixed header must not cover what an anchor or the keyboard scrolls into view */
+  scroll-padding-block-start: var(--header-height);
   text-size-adjust: 100%;
 }
 

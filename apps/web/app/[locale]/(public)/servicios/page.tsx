@@ -18,8 +18,6 @@ export default async function ServicesPage({ params }: { params: LocaleParams })
   const t = await getTranslations();
 
   return (
-    <main>
-      <h1>{t('services.title')}</h1>
-    </main>
+    <h1>{t('services.title')}</h1>
   );
 }

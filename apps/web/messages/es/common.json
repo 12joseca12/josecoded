@@ -10,7 +10,7 @@
     "skipToContent": "Saltar al contenido"
   },
   "actions": {
-    "book20": "Reservar 20\u00a0min",
+    "book20": "Reservar 20 min",
     "whatsapp": "Escribir por WhatsApp",
     "downloadCv": "Descargar CV",
     "askAssistant": "Preguntar al asistente",
@@ -31,6 +31,10 @@
     "chat": "Chat",
     "chatOpen": "Abrir el chat",
     "login": "Login",
+    "account": "Mi cuenta",
+    "profile": "Perfil",
+    "signOut": "Cerrar sesión",
+    "userMenu": "Menú de cuenta",
     "menu": "Menú",
     "menuToFooter": "Menú: ir al índice del pie",
     "language": {
