@@ -1,5 +1,5 @@
 # Manual: regenerates the Playwright screenshot baselines with CI's own browser and commits them to the branch.
-# Commits made with GITHUB_TOKEN do not trigger workflows, so there is no loop; re-run CI afterwards.
+# Commits made with GITHUB_TOKEN do not trigger `push` workflows (no loop); this workflow dispatches CI itself.
 name: Update e2e snapshots
 
 on:
@@ -16,6 +16,7 @@ concurrency:
 
 permissions:
   contents: write
+  actions: write
 
 env:
   NEXT_PUBLIC_SITE_URL: http://localhost:3000
@@ -57,3 +58,6 @@ jobs:
           fi
           git commit -m "test(web): update e2e snapshots from CI browser"
           git push origin "HEAD:${GITHUB_REF_NAME}"
+          gh workflow run ci.yml --ref "${GITHUB_REF_NAME}"
+        env:
+          GH_TOKEN: ${{ github.token }}
