@@ -10,6 +10,9 @@ export default defineConfig({
   testDir: './e2e',
   workers: 1,
   reporter: 'list',
+  // Jose's 2 % tolerance for screenshot comparisons (working-agreements §5). Baselines are produced ONLY by the
+  // `update-snapshots` workflow (CI's Playwright Chromium), never locally; see e2e/README.md.
+  expect: { toHaveScreenshot: { maxDiffPixelRatio: 0.02 } },
   use: {
     baseURL: `http://127.0.0.1:${port}`,
     browserName: 'chromium',

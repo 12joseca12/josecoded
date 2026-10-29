@@ -97,6 +97,7 @@ Nombres de fichero en kebab-case, componentes en PascalCase, identificadores en 
 - Cada tarea con UI termina adjuntando al PR las tres capturas de la app y el porcentaje de diff por escena. Un diff por encima de la tolerancia no bloquea el commit, pero sí la puerta de la rama.
 - En `/puerta-calidad`, `ui` (modo revisión con `/impeccable audit` y `/impeccable critique`) revisa el diff y emite «fiel», «desvío aceptable» o «no pasa». Después Jose abre la preview del PR (`preview.yml`) y aprueba en el navegador. Sin ese OK no hay merge.
 - El estado por defecto de un desvío es «pendiente de Jose», no «aceptado por el agente».
+- **Las líneas base de `toHaveScreenshot` (`*-snapshots/`) las genera solo el workflow manual `update-snapshots.yml`** con el Chromium que instala CI; nunca en local ni en el contenedor de la nube (su Chromium renderiza distinto y rompe CI). Flujo en `apps/web/e2e/README.md`.
 
 ## 6. Navegadores: Baseline 2024 con degradación por `@supports`
 

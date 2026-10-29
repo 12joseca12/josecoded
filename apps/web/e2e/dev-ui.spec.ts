@@ -78,16 +78,14 @@ for (const width of widths) {
     for (const name of primitives) {
       test(`${name}`, async ({ page }) => {
         await page.goto('/dev/ui');
-        await expect(page.locator(`[data-primitive="${name}"]`)).toHaveScreenshot(`${name}-${width}.png`, {
-          maxDiffPixelRatio: 0.01,
-        });
+        await expect(page.locator(`[data-primitive="${name}"]`)).toHaveScreenshot(`${name}-${width}.png`);
       });
     }
 
     test('Backdrop (light field and grain, at rest)', async ({ page }) => {
       await page.goto('/dev/ui');
       await page.addStyleTag({ content: 'main { visibility: hidden; }' });
-      await expect(page).toHaveScreenshot(`Backdrop-${width}.png`, { maxDiffPixelRatio: 0.01 });
+      await expect(page).toHaveScreenshot(`Backdrop-${width}.png`);
     });
   });
 }

@@ -1,0 +1,59 @@
+# Manual: regenerates the Playwright screenshot baselines with CI's own browser and commits them to the branch.
+# Commits made with GITHUB_TOKEN do not trigger workflows, so there is no loop; re-run CI afterwards.
+name: Update e2e snapshots
+
+on:
+  workflow_dispatch:
+    inputs:
+      spec:
+        description: Playwright spec file to regenerate (relative to apps/web/e2e)
+        required: false
+        default: dev-ui.spec.ts
+
+concurrency:
+  group: update-snapshots-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+env:
+  NEXT_PUBLIC_SITE_URL: http://localhost:3000
+  NEXT_PUBLIC_JOSECODED_API_URL: http://localhost:8787
+  NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_local
+  NEXT_PUBLIC_TURNSTILE_SITE_KEY: 1x00000000000000000000AA
+  NEXT_PUBLIC_CAL_LINK: josecoded/20min
+  NEXT_PUBLIC_WHATSAPP_NUMBER: '34600000000'
+  NEXT_PUBLIC_HERO_MEDIA_VERSION: '1'
+  NEXT_PUBLIC_DEV_UI: '1'
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@d9184bf108216479bc5a137cc391f4d7b14c870b # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm --filter @josecoded/web exec playwright install --with-deps chromium
+      - name: Regenerate baselines
+        env:
+          SPEC: ${{ inputs.spec }}
+        run: pnpm --filter @josecoded/web exec playwright test "e2e/$SPEC" --update-snapshots
+      - name: Commit changed baselines
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A -- 'apps/web/e2e/**/*-snapshots/'
+          if git diff --cached --quiet; then
+            echo "No snapshot changes."
+            exit 0
+          fi
+          git commit -m "test(web): update e2e snapshots from CI browser"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

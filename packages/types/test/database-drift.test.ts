@@ -31,7 +31,8 @@ if (!up) {
 }
 
 describe('database.ts drift', () => {
-  it.skipIf(!up && !inCi)('matches `supabase gen types --local` byte for byte', () => {
+  // Shells out to the Supabase CLI (docker + postgres-meta), slow when turbo runs other packages in parallel.
+  it.skipIf(!up && !inCi)('matches `supabase gen types --local` byte for byte', { timeout: 60_000 }, () => {
     expect(up, `Supabase local must be running in CI (${localUrl})`).toBe(true);
     const generated = execFileSync(
       'supabase',
