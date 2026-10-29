@@ -7,8 +7,9 @@ const config = {
   ...defineCloudflareConfig({
     incrementalCache: staticAssetsIncrementalCache,
   }),
-  // `pnpm build` is `opennextjs-cloudflare build`; it runs the plain Next build itself.
-  buildCommand: 'pnpm exec next build',
+  // `pnpm build`, the deploy and the preview all run `opennextjs-cloudflare build`, which runs this command, so
+  // build-info.json and content-index.json are regenerated on every build path (content/generated is not versioned).
+  buildCommand: 'pnpm run generate && pnpm exec next build',
 };
 
 export default config;

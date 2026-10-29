@@ -4,13 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "prebuild": "node scripts/build-info.ts && node scripts/content-index.ts",
+    "generate": "node scripts/build-info.ts && node scripts/content-index.ts",
+    "dev": "pnpm run generate && next dev",
     "build": "opennextjs-cloudflare build",
     "preview": "opennextjs-cloudflare preview",
-    "lint": "eslint . && stylelint \"**/*.css\" --allow-empty-input",
-    "typecheck": "tsc --noEmit",
-    "test": "vitest run",
+    "lint": "pnpm run generate && eslint . && stylelint \"**/*.css\" --allow-empty-input",
+    "typecheck": "pnpm run generate && tsc --noEmit",
+    "test": "pnpm run generate && vitest run",
     "i18n:check": "node scripts/i18n-check.ts",
     "e2e": "playwright test"
   },

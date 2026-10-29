@@ -32,7 +32,7 @@ describe('computeContentIndex', () => {
     const root = fixture({
       'blog/es/a.mdx': 'x',
       'blog/es/b.mdx': 'x',
-      'blog/es/pending.mdx': 'title: {{DATO: titulo}}',
+      'blog/es/pending.mdx': '---\ntitle: {{DATO: titulo}}\n---\nx',
       'blog/es/note.md': "---\nkind: 'note'\n---\nx",
     });
     expect(computeContentIndex({ contentRoot: root })).toMatchObject({ blogEnabled: false, blog: { guides: 2 } });
@@ -43,5 +43,23 @@ describe('computeContentIndex', () => {
     expect(computeContentIndex({ contentRoot: one })).toMatchObject({ labEnabled: false, lab: { demos: 1 } });
     const two = fixture({ 'lab/a/meta.es.md': 'x', 'lab/b/meta.en.md': 'x' });
     expect(computeContentIndex({ contentRoot: two })).toMatchObject({ labEnabled: true, lab: { demos: 2 } });
+  });
+
+  it('checks the pending marker in the frontmatter only, not in the body', () => {
+    const root = fixture({
+      'blog/es/a.mdx': '---\ntitle: A\n---\nHow to write {{DATO: x}} markers',
+      'blog/es/b.mdx': '---\ntitle: B\n---\nx',
+      'blog/es/c.mdx': '---\ntitle: C\n---\nx',
+    });
+    expect(computeContentIndex({ contentRoot: root })).toMatchObject({ blogEnabled: true, blog: { guides: 3 } });
+  });
+
+  it('detects `kind: note` in the frontmatter only, not inside a code block', () => {
+    const root = fixture({
+      'blog/es/a.mdx': '---\ntitle: A\n---\n```yaml\nkind: note\n```\n',
+      'blog/es/b.mdx': '---\ntitle: B\n---\nkind: note',
+      'blog/es/c.mdx': '---\ntitle: C\nkind: note\n---\nx',
+    });
+    expect(computeContentIndex({ contentRoot: root })).toMatchObject({ blog: { guides: 2 } });
   });
 });

@@ -1,5 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalPassThroughEnv": ["GITHUB_PR_HEAD_SHA", "GITHUB_HEAD_REF", "GITHUB_REF_NAME", "GITHUB_SHA", "WORKERS_CI_BRANCH", "WORKERS_CI_COMMIT_SHA"],
   "tasks": {
     "lint": {},
     "typecheck": {},

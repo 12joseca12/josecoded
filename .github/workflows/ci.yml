@@ -28,6 +28,8 @@ env:
   NEXT_PUBLIC_WHATSAPP_NUMBER: '34600000000'
   NEXT_PUBLIC_HERO_MEDIA_VERSION: '1'
   NEXT_PUBLIC_DEV_UI: '1'
+  # build-info.ts: a pull_request run checks out a merge commit; the real head SHA is only in the event payload.
+  GITHUB_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
   # Supabase CLI used by the `test` job (pinned; keep it equal to the one on Jose's Mac, `supabase --version`).
   SUPABASE_CLI_VERSION: 2.122.0
 

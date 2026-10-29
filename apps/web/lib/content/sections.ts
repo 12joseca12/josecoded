@@ -14,7 +14,8 @@ export interface SectionAvailability {
   blog: boolean;
 }
 
-export function getSectionAvailability(): SectionAvailability {
-  const { labEnabled, blogEnabled } = contentIndexSchema.parse(raw);
+/** `index` is injectable for tests; production reads the generated file. */
+export function getSectionAvailability(index: unknown = raw): SectionAvailability {
+  const { labEnabled, blogEnabled } = contentIndexSchema.parse(index);
   return { lab: labEnabled, blog: blogEnabled };
 }

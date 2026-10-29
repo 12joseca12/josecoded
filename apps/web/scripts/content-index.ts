@@ -1,6 +1,7 @@
 // Writes content/generated/content-index.json at prebuild: how much real content each optional
 // section has. Blog needs three guides (spec D33), Lab two demos (D44); a section below its threshold
-// vanishes from the whole site (lib/content/sections.ts). Pending texts (`{{DATO`) do not count.
+// vanishes from the whole site (lib/content/sections.ts). Pending texts (`{{DATO` in the frontmatter) do not
+// count; a body that merely mentions the marker (a guide about it) is a real text.
 // Tasks 4.2 / 4.5 extend this file with the blog index (frontmatter, slugs, translations) and the lab
 // schema; the counting rules below are the minimum those tasks build on.
 // Runs with plain Node (type stripping, Node >= 22.18), so internal imports carry `.ts`.
@@ -19,20 +20,26 @@ export const LAB_MIN_DEMOS = 2;
 
 const LOCALES = ['es', 'en'] as const;
 
-function readReal(file: string): string | null {
-  const text = readFileSync(file, 'utf8');
-  return isPendingDato(text) ? null : text;
+/** The leading `---` YAML block, or `null` when the file has none. */
+function frontmatter(text: string): string | null {
+  return text.match(/^\uFEFF?---\r?\n([^]*?)\r?\n---[ \t]*(?:\r?\n|$)/)?.[1] ?? null;
 }
 
-/** Guides per site, not per locale: the same slug in es and en counts once. Notes (`kind: note`) do not count. */
+/** A text is pending when its frontmatter carries a `{{DATO`; a file without frontmatter is all metadata only for lab metas. */
+function isPending(text: string, wholeFileIfNoFrontmatter: boolean): boolean {
+  const front = frontmatter(text);
+  return isPendingDato(front ?? (wholeFileIfNoFrontmatter ? text : ''));
+}
+
+/** Guides per site, not per locale: the same slug in es and en counts once. Notes (`kind: note` in the frontmatter) do not count. */
 function countGuides(contentRoot: string): number {
   const slugs = new Set<string>();
   for (const locale of LOCALES) {
     const dir = join(contentRoot, 'blog', locale);
     if (!existsSync(dir)) continue;
     for (const name of readdirSync(dir).filter((f) => /\.mdx?$/.test(f))) {
-      const text = readReal(join(dir, name));
-      if (text === null || /^\s*(?:export const metadata[^]*?)?kind:\s*['"]?note\b/m.test(text)) continue;
+      const text = readFileSync(join(dir, name), 'utf8');
+      if (isPending(text, false) || /^kind:\s*['"]?note\b/m.test(frontmatter(text) ?? '')) continue;
       slugs.add(name.replace(/\.mdx?$/, ''));
     }
   }
@@ -48,7 +55,7 @@ function countDemos(contentRoot: string): number {
       entry.isDirectory() &&
       LOCALES.some((locale) => {
         const meta = join(dir, entry.name, `meta.${locale}.md`);
-        return existsSync(meta) && readReal(meta) !== null;
+        return existsSync(meta) && !isPending(readFileSync(meta, 'utf8'), true);
       }),
   ).length;
 }
