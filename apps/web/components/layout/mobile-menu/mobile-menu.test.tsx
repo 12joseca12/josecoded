@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { axe } from 'vitest-axe';
 
 import { ShellProvider, useShell } from '@/components/layout/shell-provider';
-import { renderIntl } from '@/tests/helpers/render-intl';
+import { renderHeaderIntl } from '@/tests/helpers/render-intl';
 
 import { MobileMenu } from '.';
 
@@ -28,7 +28,7 @@ function Probe() {
 }
 
 function setup(children?: ReactNode) {
-  return renderIntl(
+  return renderHeaderIntl(
     <ShellProvider>
       <header>
         <MobileMenu

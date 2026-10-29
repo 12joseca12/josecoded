@@ -14,17 +14,21 @@
   }
 }
 
-::view-transition-old(.exit) {
-  animation: leave var(--dur-page-exit) var(--ease-out) both;
-}
+/* @supports: View Transitions (`view-transition-name`, Baseline 2024). Fallback (working-agreements
+   §6): without them the navigation swaps the page at once, with no animation. */
+@supports (view-transition-name: none) {
+  ::view-transition-old(.exit) {
+    animation: leave var(--dur-page-exit) var(--ease-out) both;
+  }
 
-::view-transition-new(.enter) {
-  animation: arrive var(--dur-page-enter) var(--ease-out) both;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(.exit),
   ::view-transition-new(.enter) {
-    animation: none;
+    animation: arrive var(--dur-page-enter) var(--ease-out) both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(.exit),
+    ::view-transition-new(.enter) {
+      animation: none;
+    }
   }
 }

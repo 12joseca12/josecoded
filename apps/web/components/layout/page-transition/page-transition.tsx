@@ -11,7 +11,7 @@ import type { ReactNode } from 'react';
  * `document.startViewTransition` the navigation simply swaps (working-agreements §6), and with
  * reduced motion the CSS removes every animation.
  *
- * Mounted from `app/[locale]/template.tsx`, which Next re-creates on each navigation.
+ * Mounted from `app/[locale]/(public)/template.tsx`, which Next re-creates on each navigation.
  */
 export function PageTransition({ children }: { children: ReactNode }) {
   return (

@@ -6,7 +6,7 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { MenuItem, MenuPanel } from '@/components/layout/menu-panel';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
-import { useRouter } from '@/i18n/navigation';
+import { usePathname, useRouter } from '@/i18n/navigation';
 import { hasSessionCookie } from '@/lib/auth/session-cookie';
 import { createDisclosure } from '@/lib/motion/disclosure';
 
@@ -19,19 +19,22 @@ interface Account {
   signOut: () => Promise<void>;
 }
 
-/** Loads Supabase on demand: a visitor without a session cookie never downloads it. */
-async function loadAccount(): Promise<Account | null> {
-  if (!hasSessionCookie(document.cookie)) return null;
-  const { createClient } = await import('@/lib/supabase/browser');
-  const client = createClient();
-  const { data } = await client.auth.getUser();
-  if (!data.user) return null;
+type BrowserClient = ReturnType<typeof import('@/lib/supabase/browser').createClient>;
+
+function toAccount(client: BrowserClient, user: { email?: string | null } | null | undefined): Account | null {
+  if (!user) return null;
   return {
-    email: data.user.email ?? '',
+    email: user.email ?? '',
     signOut: async () => {
       await client.auth.signOut();
     },
   };
+}
+
+/** Loads Supabase on demand: a visitor without a session cookie never downloads it. */
+async function loadClient(): Promise<BrowserClient> {
+  const { createClient } = await import('@/lib/supabase/browser');
+  return createClient();
 }
 
 /**
@@ -39,7 +42,9 @@ async function loadAccount(): Promise<Account | null> {
  * screen. After mount, only if a `sb-*-auth-token` cookie exists, the Supabase browser client is
  * imported and, with a live session, the button becomes the account menu (client area, profile,
  * sign out) as a disclosure. `@supabase/supabase-js` stays out of the initial chunks
- * (`check-hero-bundle`, task 2.9).
+ * (`check-hero-bundle`, task 2.9). Once the client is loaded it listens to `onAuthStateChange`
+ * (sign-in, sign-out, token refresh from another tab), and the cookie is checked again at each
+ * client navigation, so signing in or out without a full reload updates the header.
  *
  * A11y: Login is a link named «Login» even when only its icon shows (≤ 22.5rem); the account
  * trigger is a button with `aria-expanded`/`aria-controls`; Esc, a link, a tap or focus outside
@@ -49,21 +54,47 @@ export function UserMenu() {
   const t = useTranslations('nav');
   const tFooter = useTranslations('footer');
   const router = useRouter();
+  const pathname = usePathname();
   const [account, setAccount] = useState<Account | null>(null);
   const panelId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
   const disclosure = useRef<Disclosure | null>(null);
 
+  const client = useRef<Promise<BrowserClient> | null>(null);
+  const subscription = useRef<{ unsubscribe: () => void } | null>(null);
+  const mounted = useRef(true);
+
   useEffect(() => {
-    let alive = true;
-    loadAccount().then(
-      (loaded) => alive && setAccount(loaded),
-      () => undefined, // no session client available: the visitor keeps «Login»
-    );
+    mounted.current = true;
     return () => {
-      alive = false;
+      mounted.current = false;
+      subscription.current?.unsubscribe();
+      subscription.current = null;
     };
   }, []);
+
+  // each client navigation re-reads the cookie: a sign-in that ends in a redirect has no event
+  // to listen to yet because the client was never loaded
+  useEffect(() => {
+    if (!hasSessionCookie(document.cookie)) return; // a sign-out is announced by the auth event
+    let current = true;
+    (async () => {
+      client.current ??= loadClient();
+      const supabase = await client.current;
+      const { data } = await supabase.auth.getUser();
+      if (!current || !mounted.current) return;
+      setAccount(toAccount(supabase, data.user));
+      if (!subscription.current) {
+        const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+          if (mounted.current) setAccount(toAccount(supabase, session?.user));
+        });
+        subscription.current = listener.subscription;
+      }
+    })().catch(() => undefined); // no session client available: the visitor keeps «Login»
+    return () => {
+      current = false;
+    };
+  }, [pathname]);
 
   // the disclosure is created on the first click, when the button element is at hand
   function toggle(button: HTMLButtonElement) {

@@ -7,9 +7,10 @@ import { MobileMenu } from '@/components/layout/mobile-menu';
 import { NavLinks } from '@/components/layout/nav-links';
 import { SearchTrigger } from '@/components/layout/search-trigger';
 import { UserMenu } from '@/components/layout/user-menu';
-import { Link } from '@/i18n/navigation';
 import { getNavItems } from '@/lib/layout/nav';
 
+import { BrandLink } from './brand-link';
+import { pickHeaderMessages } from './header-messages';
 import { HeaderScrollState } from './header-scroll-state';
 import styles from './site-header.module.css';
 
@@ -17,7 +18,7 @@ import styles from './site-header.module.css';
  * Fixed header of every public page: brand, main navigation, then language → ⌘K → Chat → Login
  * (never «Contacto»: it lives in the menu, ⌘K and the closing of each page). Below 67.5 rem the
  * links and the language go into the ☰ menu. Server Component; the islands that need the browser
- * (scroll state, menu, ⌘K, account) receive only the `nav` messages they use.
+ * (scroll state, menu, ⌘K, account) receive only the namespaces listed in `HEADER_NAMESPACES`.
  */
 export async function SiteHeader() {
   const [locale, messages, t, site] = await Promise.all([
@@ -29,11 +30,9 @@ export async function SiteHeader() {
   const items = getNavItems().map(({ key, href, scene }) => ({ href, scene, label: t(key) }));
 
   return (
-    <NextIntlClientProvider locale={locale} messages={{ nav: messages.nav }}>
+    <NextIntlClientProvider locale={locale} messages={pickHeaderMessages(messages)}>
       <HeaderScrollState>
-        <Link href="/" className={styles.brand} aria-label={t('brandLabel')}>
-          {site('name')}
-        </Link>
+        <BrandLink label={t('brandLabel')} name={site('name')} />
         <NavLinks items={items} label={t('primary')} />
         <div className={styles.right}>
           <LangSwitch variant="inline" />

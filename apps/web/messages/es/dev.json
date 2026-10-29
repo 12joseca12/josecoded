@@ -45,7 +45,8 @@
         "Pending": "Pending",
         "Surface": "Surface",
         "TwoToneHeading": "TwoToneHeading",
-        "Typography": "Typography"
+        "Typography": "Typography",
+        "Shell": "Shell (cabecera y menús)"
       },
       "captions": {
         "href": "Enlace (href)",
@@ -54,7 +55,11 @@
         "tileVariants": "Tamaño: md / sm × tono: suave / sólido",
         "pending": "Marcador de dato pendiente",
         "surfaceVariants": "Radio: cell / tcard × capa: card / overlay",
-        "interactive": "Interactiva"
+        "interactive": "Interactiva",
+        "langSwitch": "LangSwitch: inline / segmented",
+        "searchInert": "SearchTrigger sin paleta montada (inerte)",
+        "chatTrigger": "ChatTrigger: enlace / botón",
+        "menuItem": "MenuItem: normal / destacado / separado"
       }
     }
   }

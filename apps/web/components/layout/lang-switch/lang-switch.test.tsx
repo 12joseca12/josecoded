@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { axe } from 'vitest-axe';
 
-import { renderIntl } from '@/tests/helpers/render-intl';
+import { renderHeaderIntl } from '@/tests/helpers/render-intl';
 
 import { LangSwitch } from '.';
 
@@ -25,7 +25,7 @@ beforeEach(() => {
 describe('LangSwitch inline', () => {
   it('offers the other language, keeping the translated path', () => {
     route.pathname = '/servicios';
-    renderIntl(<LangSwitch />);
+    renderHeaderIntl(<LangSwitch />);
     const link = screen.getByRole('link', { name: 'English' });
     expect(link.textContent).toBe('EN');
     expect(link.getAttribute('href')).toBe('/en/services');
@@ -35,7 +35,7 @@ describe('LangSwitch inline', () => {
 
   it('goes back to the unprefixed Spanish URL from English', () => {
     route.pathname = '/servicios';
-    renderIntl(<LangSwitch />, 'en');
+    renderHeaderIntl(<LangSwitch />, 'en');
     const link = screen.getByRole('link', { name: 'Español' });
     expect(link.textContent).toBe('ES');
     expect(link.getAttribute('href')).toBe('/servicios');
@@ -44,12 +44,12 @@ describe('LangSwitch inline', () => {
   it('keeps the parameters of a dynamic route', () => {
     route.pathname = '/proyectos/[slug]';
     route.params = { locale: 'es', slug: 'hazmefila' };
-    renderIntl(<LangSwitch />);
+    renderHeaderIntl(<LangSwitch />);
     expect(screen.getByRole('link', { name: 'English' }).getAttribute('href')).toBe('/en/projects/hazmefila');
   });
 
   it('maps the home to /en and back', () => {
-    renderIntl(<LangSwitch />);
+    renderHeaderIntl(<LangSwitch />);
     expect(screen.getByRole('link', { name: 'English' }).getAttribute('href')).toBe('/en');
   });
 });
@@ -57,7 +57,7 @@ describe('LangSwitch inline', () => {
 describe('LangSwitch segmented', () => {
   it('lists both languages with the current one marked and only the other a link', async () => {
     route.pathname = '/sobre-mi';
-    const { container } = renderIntl(<LangSwitch variant="segmented" />);
+    const { container } = renderHeaderIntl(<LangSwitch variant="segmented" />);
     const group = screen.getByRole('group', { name: 'Idioma' });
     expect(group.querySelector('[aria-current]')?.textContent).toBe('Español');
     expect(screen.getAllByRole('link')).toHaveLength(1);

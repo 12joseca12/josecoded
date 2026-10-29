@@ -1,6 +1,13 @@
-import { getTranslations } from 'next-intl/server';
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale, getMessages, getTranslations } from 'next-intl/server';
 
 import { Backdrop } from '@/components/layout/backdrop';
+import { ChatTrigger } from '@/components/layout/chat-trigger';
+import { LangSwitch } from '@/components/layout/lang-switch';
+import { MenuItem } from '@/components/layout/menu-panel';
+import { SearchTrigger } from '@/components/layout/search-trigger';
+import { ShellProvider } from '@/components/layout/shell-provider';
+import { pickHeaderMessages } from '@/components/layout/site-header/header-messages';
 import { ArrowLink } from '@/components/ui/arrow-link';
 import { Button } from '@/components/ui/button';
 import { Chip } from '@/components/ui/chip';
@@ -52,6 +59,7 @@ function Section({ id, title, children }: { id: string; title: string; children:
  */
 export async function UiCatalogue() {
   const t = await getTranslations('dev.ui');
+  const [locale, messages, tNav] = await Promise.all([getLocale(), getMessages(), getTranslations('nav')]);
   const state = (key: 'rest' | 'hover' | 'focus' | 'disabled') => t(`states.${key}`);
 
   return (
@@ -210,6 +218,31 @@ export async function UiCatalogue() {
           <p className={typography.lead}>{t('samples.lead')}</p>
           <p className={typography.muted}>{t('samples.muted')}</p>
           <p className={typography.small}>{t('samples.small')}</p>
+        </Section>
+
+        <Section id="Shell" title={t('sections.Shell')}>
+          <NextIntlClientProvider locale={locale} messages={pickHeaderMessages(messages)}>
+            <ShellProvider>
+              <Block caption={t('captions.langSwitch')}>
+                <LangSwitch variant="inline" />
+                <LangSwitch variant="segmented" />
+              </Block>
+              <Block caption={t('captions.searchInert')}>
+                <SearchTrigger />
+              </Block>
+              <Block caption={t('captions.chatTrigger')}>
+                <ChatTrigger href="/chat" label={tNav('chat')} aria-label={tNav('chatOpen')} />
+                <ChatTrigger label={tNav('chat')} aria-label={tNav('chatOpen')} />
+              </Block>
+              <Block caption={t('captions.menuItem')}>
+                <MenuItem href="/perfil">{tNav('profile')}</MenuItem>
+                <MenuItem href="/contacto" highlighted>
+                  {tNav('contact')}
+                </MenuItem>
+                <MenuItem separated>{tNav('signOut')}</MenuItem>
+              </Block>
+            </ShellProvider>
+          </NextIntlClientProvider>
         </Section>
       </main>
     </>

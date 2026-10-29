@@ -71,14 +71,23 @@ test.describe('desktop 1440', () => {
     await expect(page.locator('html')).toHaveAttribute('lang', 'es');
   });
 
-  test('Ctrl+K toggles the search trigger', async ({ page }) => {
+  // the palette arrives with task 2.16; until then the trigger is inert and ⌘K is not hijacked
+  // (when 2.16 lands, restore the toggle assertions: aria-expanded false -> true -> false)
+  test('the search trigger is inert and Ctrl+K is left alone until the palette exists', async ({ page }) => {
     await open(page, '/');
     const search = header(page).getByRole('button', { name: 'Buscar' });
-    await expect(search).toHaveAttribute('aria-expanded', 'false');
+    await expect(search).toHaveAttribute('aria-disabled', 'true');
+    await expect(search).not.toHaveAttribute('aria-expanded', /.*/);
+    await expect(search).not.toHaveAttribute('aria-haspopup', /.*/);
     await page.keyboard.press('Control+k');
-    await expect(search).toHaveAttribute('aria-expanded', 'true');
-    await page.keyboard.press('Control+k');
-    await expect(search).toHaveAttribute('aria-expanded', 'false');
+    await expect(search).not.toHaveAttribute('aria-expanded', /.*/);
+  });
+
+  test('the brand goes to #top on the home and to the home elsewhere', async ({ page }) => {
+    await open(page, '/');
+    await expect(header(page).getByRole('link', { name: 'josecoded, inicio' })).toHaveAttribute('href', '#top');
+    await open(page, '/servicios');
+    await expect(header(page).getByRole('link', { name: 'josecoded, inicio' })).toHaveAttribute('href', '/');
   });
 
   test('the header gains its band once the page scrolls past 80 px', async ({ page }) => {

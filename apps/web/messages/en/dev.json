@@ -45,7 +45,8 @@
         "Pending": "Pending",
         "Surface": "Surface",
         "TwoToneHeading": "TwoToneHeading",
-        "Typography": "Typography"
+        "Typography": "Typography",
+        "Shell": "Shell (header and menus)"
       },
       "captions": {
         "href": "Link (href)",
@@ -54,7 +55,11 @@
         "tileVariants": "Size: md / sm × tone: soft / solid",
         "pending": "Pending-data marker",
         "surfaceVariants": "Radius: cell / tcard × layer: card / overlay",
-        "interactive": "Interactive"
+        "interactive": "Interactive",
+        "langSwitch": "LangSwitch: inline / segmented",
+        "searchInert": "SearchTrigger with no palette mounted (inert)",
+        "chatTrigger": "ChatTrigger: link / button",
+        "menuItem": "MenuItem: regular / highlighted / separated"
       }
     }
   }

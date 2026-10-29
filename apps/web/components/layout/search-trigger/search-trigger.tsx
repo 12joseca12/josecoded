@@ -10,18 +10,22 @@ import { Kbd } from '@/components/ui/kbd';
 import styles from './search-trigger.module.css';
 
 /**
- * Opens the command palette (mounted by task 2.16, which reads `useShell().palette`) and owns the
- * global shortcut: ⌘K / Ctrl+K toggles it from anywhere, also while typing in a field.
+ * Opens the command palette and owns the global shortcut: ⌘K / Ctrl+K toggles it from anywhere,
+ * also while typing in a field. Until a palette is mounted (task 2.16 calls
+ * `useShell().registerPalette()`), the trigger is inert: `aria-disabled`, no dialog semantics, and
+ * the shortcut is left to the browser.
  *
- * A11y: a button named «Buscar» (the label stays even when only the icon is visible),
- * `aria-haspopup="dialog"`, `aria-expanded` follows the palette, `aria-keyshortcuts` announces
- * the shortcut; 2.75 rem hit area under 900 px; the shortcut itself is never animated.
+ * A11y: a button named «Buscar» (the label stays even when only the icon is visible). With a
+ * palette: `aria-haspopup="dialog"`, `aria-expanded` follows it and `aria-keyshortcuts` announces
+ * the shortcut. Without: `aria-disabled` only. 2.75 rem hit area under 900 px; the shortcut is
+ * never animated.
  */
 export function SearchTrigger() {
   const t = useTranslations('nav');
-  const { palette, openPalette, togglePalette } = useShell();
+  const { palette, paletteMounted, openPalette, togglePalette } = useShell();
 
   useEffect(() => {
+    if (!paletteMounted) return;
     function onKeyDown(event: KeyboardEvent) {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
         event.preventDefault();
@@ -30,17 +34,18 @@ export function SearchTrigger() {
     }
     addEventListener('keydown', onKeyDown);
     return () => removeEventListener('keydown', onKeyDown);
-  }, [togglePalette]);
+  }, [paletteMounted, togglePalette]);
 
   return (
     <button
       type="button"
       className={styles.trigger}
       aria-label={t('search')}
-      aria-haspopup="dialog"
-      aria-expanded={palette}
-      aria-keyshortcuts="Meta+K Control+K"
-      onClick={openPalette}
+      aria-disabled={paletteMounted ? undefined : 'true'}
+      aria-haspopup={paletteMounted ? 'dialog' : undefined}
+      aria-expanded={paletteMounted ? palette : undefined}
+      aria-keyshortcuts={paletteMounted ? 'Meta+K Control+K' : undefined}
+      onClick={paletteMounted ? openPalette : undefined}
     >
       <Icon name="search" />
       <span className={styles.label} aria-hidden="true">
