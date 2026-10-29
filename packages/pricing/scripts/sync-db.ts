@@ -36,7 +36,7 @@ function assertNoPendingTexts(pricing: PricingData) {
       for (const [key, value] of Object.entries(node)) walk(value, `${path}.${key}`);
     }
   };
-  // the database columns are Spanish: only the `es` texts must be final
+  // the Spanish texts are the reference ones: they must be final before a catalogue sync
   for (const pack of pricing.packs)
     walk({ name: pack.name.es, includes: pack.includes.es }, `packs.${pack.code}`);
   for (const extra of pricing.extras)
@@ -48,7 +48,53 @@ function assertNoPendingTexts(pricing: PricingData) {
   }
 }
 
-/** Everything interpolated into SQL is validated first: numbers, codes and the dollar-quote tag. */
+/**
+ * Fixed mapping from pricing.json to the DATOS §4.2 schema. Slugs are not in pricing.json, so they live here
+ * (same values as supabase/seed/seed.sql section 3). P5 is the mobile app: pricing.json lists it as `apps`
+ * APP_MVP (the pack itself) and APP_PLUS (its `plus` option, D37).
+ */
+const PACK_SLUGS: Record<string, string> = {
+  P1: 'landing',
+  P2: 'gestion-logica',
+  P3: 'crm-cms',
+  P4: 'automatizaciones',
+  P5: 'app',
+};
+const APP_PACK = { code: 'P5', baseApp: 'APP_MVP', optionApp: 'APP_PLUS', optionCode: 'plus' } as const;
+
+interface PackRow {
+  code: string;
+  slug: string;
+  price: number;
+  weeks: number;
+  sort: number;
+}
+interface OptionRow {
+  packCode: string;
+  code: string;
+  price: number;
+}
+
+function catalogue(pricing: PricingData): { packs: PackRow[]; options: OptionRow[] } {
+  const base = pricing.apps.find((a) => a.code === APP_PACK.baseApp);
+  const plus = pricing.apps.find((a) => a.code === APP_PACK.optionApp);
+  if (!base || !plus) {
+    throw new Error(`sync-db: pricing.json needs apps ${APP_PACK.baseApp} and ${APP_PACK.optionApp}`);
+  }
+  const rows = [
+    ...pricing.packs.map((p) => ({ code: p.code as string, price: p.price, weeks: p.weeks })),
+    { code: APP_PACK.code as string, price: base.price, weeks: base.weeks },
+  ];
+  const packs = rows.map((row, i) => {
+    const slug = PACK_SLUGS[row.code];
+    if (!slug) throw new Error(`sync-db: no slug for pack ${row.code}`);
+    return { ...row, slug, sort: i + 1 };
+  });
+  const options = [{ packCode: APP_PACK.code, code: APP_PACK.optionCode, price: plus.price }];
+  return { packs, options };
+}
+
+/** Everything interpolated into SQL is validated first: numbers, codes and the version. */
 function assertSafeToInterpolate(pricing: PricingData) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(pricing.version)) {
     throw new Error(`sync-db: invalid version: ${JSON.stringify(pricing.version)}`);
@@ -58,46 +104,54 @@ function assertSafeToInterpolate(pricing: PricingData) {
     assertPositiveInteger(pack.price, `price of ${pack.code}`);
     assertPositiveInteger(pack.weeks, `weeks of ${pack.code}`);
   }
+  for (const app of pricing.apps) {
+    assertCode(app.code, 'app code');
+    assertPositiveInteger(app.price, `price of ${app.code}`);
+    assertPositiveInteger(app.weeks, `weeks of ${app.code}`);
+  }
   for (const extra of pricing.extras) {
     assertCode(extra.code, 'extra code');
     assertPositiveInteger(extra.price, `price of ${extra.code}`);
   }
-  const texts = [
-    ...pricing.packs.flatMap((p) => [p.name.es, ...p.includes.es]),
-    ...pricing.extras.flatMap((e) => [e.label.es, e.description.es]),
-  ];
-  if (texts.some((t) => t.includes('$sync$'))) {
-    throw new Error('sync-db: a text contains the dollar-quote tag $sync$');
-  }
 }
 
 /**
- * Column names follow DT §6.5 / §0b (`pack_templates.code|nombre|descripcion|price|weeks`,
- * `pack_extras.code|nombre|descripcion|precio|activo`). `pack_extras` is empty in production, so
- * extras are upserted. To be checked against `list_tables` by the controller before applying.
- * No begin/commit: apply_migration already runs the file in a transaction. Each pack update
- * raises if no row matches its code, so a missing row is never silent.
+ * Idempotent upsert of the DATOS §4.2 catalogue (`public.packs`, `public.pack_options`, `public.extras`).
+ * Names and descriptions live in messages/*.json, not in the database. It never deletes rows. One begin/commit
+ * block so a failure leaves nothing half applied; no psql meta-commands, so it is a valid single batch for the
+ * Management API `database/query` endpoint as well as for apply_migration or psql.
  */
 export function buildSyncSql(pricing: PricingData): string {
   assertNoPendingTexts(pricing);
   assertSafeToInterpolate(pricing);
+  const { packs, options } = catalogue(pricing);
+  const v = quote(pricing.version);
 
-  const packs = pricing.packs.map(
-    (pack) =>
-      `do $sync$\nbegin\n  update public.pack_templates\n     set nombre = ${quote(pack.name.es)},\n         descripcion = ${quote(pack.includes.es.join('\n'))},\n         price = ${pack.price},\n         weeks = ${pack.weeks}\n   where code = ${quote(pack.code)};\n  if not found then\n    raise exception 'pack_templates has no row with code %', ${quote(pack.code)};\n  end if;\nend\n$sync$;`,
-  );
+  const packsSql = `insert into public.packs (code, slug, price, weeks, sort, active, pricing_version)\nvalues\n${packs
+    .map((p) => `  (${quote(p.code)}, ${quote(p.slug)}, ${p.price}, ${p.weeks}, ${p.sort}, true, ${v})`)
+    .join(',\n')}\non conflict (code) do update\n  set slug = excluded.slug,\n      price = excluded.price,\n      weeks = excluded.weeks,\n      sort = excluded.sort,\n      active = excluded.active,\n      pricing_version = excluded.pricing_version;`;
 
-  const extras = pricing.extras.map(
-    (extra) =>
-      `insert into public.pack_extras (code, nombre, descripcion, precio, activo)\nvalues (${quote(extra.code)}, ${quote(extra.label.es)}, ${quote(extra.description.es)}, ${extra.price}, true)\non conflict (code) do update\n  set nombre = excluded.nombre,\n      descripcion = excluded.descripcion,\n      precio = excluded.precio,\n      activo = excluded.activo;`,
-  );
+  const optionsSql = `insert into public.pack_options (pack_code, code, price, pricing_version)\nvalues\n${options
+    .map((o) => `  (${quote(o.packCode)}, ${quote(o.code)}, ${o.price}, ${v})`)
+    .join(',\n')}\non conflict (pack_code, code) do update\n  set price = excluded.price,\n      pricing_version = excluded.pricing_version;`;
+
+  const extrasSql = `insert into public.extras (code, price, active, pricing_version)\nvalues\n${pricing.extras
+    .map((e) => `  (${quote(e.code)}, ${e.price}, true, ${v})`)
+    .join(',\n')}\non conflict (code) do update\n  set price = excluded.price,\n      active = excluded.active,\n      pricing_version = excluded.pricing_version;`;
 
   return [
     `-- GENERATED by packages/pricing/scripts/sync-db.ts from pricing.json (version ${pricing.version}).`,
-    '-- Do not edit. Review, then apply with apply_migration (task 9.4, production gate).',
+    '-- Do not edit. Idempotent upsert, never deletes. Review, then apply at the production gate (Jose\'s OK).',
+    'begin;',
     '',
-    ...packs.flatMap((sql) => [sql, '']),
-    ...extras.flatMap((sql) => [sql, '']),
+    packsSql,
+    '',
+    optionsSql,
+    '',
+    extrasSql,
+    '',
+    'commit;',
+    '',
   ].join('\n');
 }
 

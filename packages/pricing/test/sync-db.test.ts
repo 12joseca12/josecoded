@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+
 import { describe, expect, it } from 'vitest';
 
 import { buildSyncSql } from '../scripts/sync-db';
@@ -19,22 +21,42 @@ describe('buildSyncSql', () => {
     expect(() => buildSyncSql(withPending)).toThrow(/pending/);
   });
 
-  it('generates one update per pack by code and one upsert per extra', () => {
+  it('upserts packs, pack_options and extras of the new schema, in one transaction', () => {
     const sql = buildSyncSql(finalSpanish());
     expect(sql.startsWith('-- GENERATED')).toBe(true);
-    for (const code of ['P1', 'P2', 'P3', 'P4']) expect(sql).toContain(`where code = '${code}';`);
-    expect(sql.match(/update public\.pack_templates/g)).toHaveLength(4);
-    expect(sql.match(/insert into public\.pack_extras/g)).toHaveLength(6);
-    expect(sql).toContain('on conflict (code) do update');
-    // apply_migration already wraps the file in a transaction
-    expect(sql).not.toMatch(/^\s*(begin|commit);/im);
+    expect(sql).toMatch(/^begin;$/m);
+    expect(sql).toMatch(/^commit;$/m);
+    expect(sql.match(/insert into public\.packs /g)).toHaveLength(1);
+    expect(sql.match(/insert into public\.pack_options /g)).toHaveLength(1);
+    expect(sql.match(/insert into public\.extras /g)).toHaveLength(1);
+    expect(sql.match(/on conflict \(code\) do update/g)).toHaveLength(2);
+    expect(sql).toContain('on conflict (pack_code, code) do update');
+    expect(sql).toContain("('P5', 'app', 4000, 6, 5, true, '2026-09-14')");
+    expect(sql).toContain("('P5', 'plus', 6000, '2026-09-14')");
+    expect(sql).not.toMatch(/\bdelete\b|\btruncate\b|\bdrop\b|^\\/im);
   });
 
-  it('raises when a pack row is missing instead of passing silently', () => {
+  it('references only packs, pack_options and extras', () => {
+    const sql = buildSyncSql(finalSpanish()).replace(/^--.*$/gm, '');
+    const tables = [...sql.matchAll(/\b(?:into|from|update|join)\s+(public\.\w+)/gi)].map((m) => m[1]);
+    expect(new Set(tables)).toEqual(
+      new Set(['public.packs', 'public.pack_options', 'public.extras']),
+    );
+    expect(sql).not.toMatch(/pack_templates|pack_extras|nombre|descripcion|precio/);
+  });
+
+  it('matches the catalogue section of supabase/seed/seed.sql', () => {
+    const seed = readFileSync(new URL('../../../supabase/seed/seed.sql', import.meta.url), 'utf8');
+    const section = seed.slice(seed.indexOf('-- 3) Price catalogue'), seed.indexOf('-- 4)'));
+    const tuples = (text: string) =>
+      [...text.matchAll(/\(\s*'([^']+)'\s*,([^()]*)\)/g)].map((m) =>
+        `${m[1]},${m[2]!.replace(/\s+/g, ' ').replace(/\s*,\s*/g, ',').trim()}`.replace(/,true,/g, ','),
+      );
     const sql = buildSyncSql(finalSpanish());
-    expect(sql.match(/do \$sync\$/g)).toHaveLength(4);
-    expect(sql.match(/if not found then/g)).toHaveLength(4);
-    expect(sql).toContain("raise exception 'pack_templates has no row with code %', 'P1'");
+    const seedTuples = tuples(section.replace(/^\s*--.*$/gm, ''));
+    const generated = tuples(sql.replace(/^--.*$/gm, ''));
+    expect(generated.length).toBeGreaterThan(0);
+    expect(generated).toEqual(seedTuples);
   });
 
   it('validates what it interpolates', () => {
@@ -53,7 +75,7 @@ describe('buildSyncSql', () => {
     );
     expect(bad((p) => (p.extras[0]!.code = 'geo; x' as 'geo'))).toThrow(/invalid extra code/);
     expect(bad((p) => (p.extras[0]!.price = Number.NaN))).toThrow(/invalid price/);
-    expect(bad((p) => (p.extras[0]!.description.es = 'x $sync$ y'))).toThrow(/dollar-quote/);
+    expect(bad((p) => (p.apps[1]!.price = 0))).toThrow(/invalid price of APP_PLUS/);
     expect(bad((p) => (p.version = "2026-09-14'; drop table leads; --"))).toThrow(
       /invalid version/,
     );
@@ -61,15 +83,12 @@ describe('buildSyncSql', () => {
 
   it('carries the prices and weeks of pricing.json', () => {
     const sql = buildSyncSql(finalSpanish());
-    expect(sql).toContain('price = 1400');
-    expect(sql).toContain('weeks = 2');
-    expect(sql).toContain("'maintenance_basic', 'Mantenimiento básico'");
+    expect(sql).toContain("('P2', 'gestion-logica', 1400, 2, 2, true, '2026-09-14')");
+    expect(sql).toContain("('maintenance_basic', 49, true, '2026-09-14')");
   });
 
-  it('escapes single quotes', () => {
-    const tricky = finalSpanish();
-    tricky.packs[0]!.name.es = "Web d'empresa";
-    expect(buildSyncSql(tricky)).toContain("'Web d''empresa'");
+  it('is idempotent text: same input, same output', () => {
+    expect(buildSyncSql(finalSpanish())).toBe(buildSyncSql(finalSpanish()));
   });
 
   it('needs no credentials and writes nothing to a database', () => {
