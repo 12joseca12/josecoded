@@ -12,8 +12,11 @@ describe('translated English slugs (pathnames)', () => {
       const value = pathnames[key];
       return typeof value === 'string' ? value : value.en;
     };
-    expect(en('/negocios')).toBe('/business');
-    expect(en('/empresas')).toBe('/companies');
+    expect(en('/servicios')).toBe('/services');
+    expect(en('/area-clientes')).toBe('/client-area');
+    expect(en('/area-clientes/pack/ampliar')).toBe('/client-area/plan/upgrade');
+    expect(en('/auth/registro')).toBe('/auth/sign-up');
+    expect(en('/perfil')).toBe('/profile');
     expect(en('/sobre-mi')).toBe('/about');
     expect(en('/contacto')).toBe('/contact');
     expect(en('/proyectos')).toBe('/projects');
@@ -21,10 +24,14 @@ describe('translated English slugs (pathnames)', () => {
   });
 
   it('rewrites each English URL to its Spanish folder, with subpaths', () => {
-    expect(rewrites).toContainEqual({ source: '/en/business', destination: '/en/negocios' });
+    expect(rewrites).toContainEqual({ source: '/en/services', destination: '/en/servicios' });
     expect(rewrites).toContainEqual({
-      source: '/en/business/:path+',
-      destination: '/en/negocios/:path+',
+      source: '/en/services/:path+',
+      destination: '/en/servicios/:path+',
+    });
+    expect(rewrites).toContainEqual({
+      source: '/en/client-area/plan/upgrade',
+      destination: '/en/area-clientes/pack/ampliar',
     });
     expect(rewrites).toContainEqual({ source: '/en/about', destination: '/en/sobre-mi' });
     expect(rewrites).toContainEqual({
@@ -35,13 +42,18 @@ describe('translated English slugs (pathnames)', () => {
 
   it('redirects the untranslated English variant (no duplicate URLs)', () => {
     expect(redirects).toContainEqual({
-      source: '/en/negocios',
-      destination: '/en/business',
+      source: '/en/servicios',
+      destination: '/en/services',
       permanent: true,
     });
     expect(redirects).toContainEqual({
-      source: '/en/negocios/:path+',
-      destination: '/en/business/:path+',
+      source: '/en/servicios/:path+',
+      destination: '/en/services/:path+',
+      permanent: true,
+    });
+    expect(redirects).toContainEqual({
+      source: '/en/area-clientes/tareas',
+      destination: '/en/client-area/tasks',
       permanent: true,
     });
     expect(redirects).toContainEqual({
@@ -89,8 +101,8 @@ describe('translated English slugs (pathnames)', () => {
   it('sends trailing-slash variants straight to the canonical URL, specific rules first', () => {
     expect(redirects).toContainEqual({ source: '/es/', destination: '/', permanent: true });
     expect(redirects).toContainEqual({
-      source: '/en/negocios/',
-      destination: '/en/business',
+      source: '/en/servicios/',
+      destination: '/en/services',
       permanent: true,
     });
     expect(redirects.findIndex((r) => r.source === '/:path+/')).toBe(redirects.length - 1);
@@ -106,18 +118,52 @@ describe('translated English slugs (pathnames)', () => {
     expect(rewrites.some((r) => r.destination === '/es/:path')).toBe(false);
   });
 
+  describe('retired pages (P1 /negocios and P4 /empresas)', () => {
+    const redirectFor = (path: string) =>
+      redirects.find((rule) => match(rule.source)(path) !== false);
+
+    it.each([
+      ['/negocios', '/servicios#packs'],
+      ['/negocios/', '/servicios#packs'],
+      ['/negocios/x', '/servicios#packs'],
+      ['/es/negocios', '/servicios#packs'],
+      ['/empresas', '/servicios#por-hora'],
+      ['/en/business', '/en/services#packs'],
+      ['/en/negocios', '/en/services#packs'],
+      ['/en/companies', '/en/services#hourly'],
+      ['/en/empresas', '/en/services#hourly'],
+    ])('%s answers 301 to %s in one hop', (path, destination) => {
+      const rule = redirectFor(path);
+      expect(rule).toMatchObject({ destination, statusCode: 301 });
+      expect(rule).not.toHaveProperty('permanent');
+    });
+
+    it('no longer has a page nor a translated slug of its own', () => {
+      for (const gone of ['/negocios', '/empresas']) expect(pathnames).not.toHaveProperty(gone);
+      expect(
+        rewrites.some((r) => r.source.includes('business') || r.source.includes('companies')),
+      ).toBe(false);
+    });
+
+    it('sends the bare /auth to the login', () => {
+      expect(redirectFor('/auth')).toMatchObject({ destination: '/auth/login' });
+      expect(redirectFor('/en/auth')).toMatchObject({ destination: '/en/auth/login' });
+    });
+  });
+
   describe('which rewrite a URL reaches (same matcher Next uses)', () => {
     const rewriteFor = (path: string) =>
       rewrites.find((rule) => match(rule.source)(path) !== false)?.destination;
 
     it.each([
       ['/', '/es'],
-      ['/negocios', '/es/:first'],
-      ['/negocios/x', '/es/:first/:rest+'],
+      ['/servicios', '/es/:first'],
+      ['/servicios/x', '/es/:first/:rest+'],
       ['/a/b/c', '/es/:first/:rest+'],
       ['/legal/aviso-legal', '/es/:first/:rest+'],
       ['/entrada', '/es/:first'],
-      ['/en/business', '/en/negocios'],
+      ['/en/services', '/en/servicios'],
+      ['/en/client-area/tasks/7', '/en/area-clientes/tareas/:path+'],
     ])('%s -> %s', (path, destination) => {
       expect(rewriteFor(path)).toBe(destination);
     });

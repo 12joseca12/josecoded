@@ -1,1 +1,161 @@
-{}
+{
+  "hero": {
+    "title": {
+      "line1": "Jose Carlos",
+      "line2": "Sánchez"
+    },
+    "subtitle": "{{DATO: single-identity subtitle, one sentence, no audiences (redactor with voz.md)}}",
+    "cta": {
+      "services": "Services and pricing",
+      "projects": "See projects"
+    },
+    "stageLabel": "Code characters that take turns forming a phone, a website and an AI chip"
+  },
+  "home": {
+    "cell": {
+      "expand": "Expand {name}",
+      "close": "Close",
+      "fullPage": "The full page opens here."
+    },
+    "sectionIndicator": "Page sections",
+    "scenes": {
+      "about": {
+        "title": {
+          "lead": "Who is behind it.",
+          "accent": "One person, not an agency."
+        },
+        "about": {
+          "title": "About me",
+          "name": "Jose Carlos Sánchez",
+          "role": "Freelance full-stack developer",
+          "lead": "{{DATO: About me lead, single identity}}",
+          "meet": "Get to know me",
+          "goTo": "Go to About me"
+        },
+        "stack": {
+          "title": "What I work with",
+          "caption": "What I use every day, in production."
+        },
+        "direct": {
+          "title": "Direct contact",
+          "chatLabel": "Example conversation",
+          "visitor": "Hi Jose, can you help me with my business website?",
+          "reply": "Sure. Tell me what you need and I'll tell you how I'd do it.",
+          "lead": "You talk to me from the first message to delivery.",
+          "cta": "Write to me"
+        }
+      },
+      "services": {
+        "title": {
+          "lead": "{{DATO: headline, tone 1}}",
+          "accent": "{{DATO: tone 2}}"
+        },
+        "agencyAsk": "Are you an agency?",
+        "vias": {
+          "title": "How to work with me",
+          "note": "Prices exclude VAT.",
+          "hourly": {
+            "name": "Hourly",
+            "figure": "{price}/h",
+            "lead": "{{DATO: hourly route sentence}}"
+          },
+          "fixed": {
+            "name": "Fixed-price job",
+            "figure": "from {price}",
+            "lead": "{{DATO: fixed-price route sentence}}",
+            "requestProposal": "Request an estimated proposal"
+          },
+          "packs": {
+            "name": "Web and app packs",
+            "figure": "from {price}",
+            "lead": "{{DATO: packs route sentence}}"
+          },
+          "hiring": {
+            "name": "Open to employment",
+            "figure": "CV and interview",
+            "lead": "{{DATO: open-to-employment route sentence}}",
+            "downloadCv": "Download CV (PDF)"
+          },
+          "summary": "{{DATO: summary of the four routes}}",
+          "goTo": "Go to Services"
+        },
+        "packs": {
+          "title": "Packs",
+          "note": "From, excl. VAT.",
+          "srPrice": "from {price} excl. VAT. See what is included",
+          "link": "What each pack includes"
+        },
+        "rates": {
+          "title": "Rates",
+          "note": "Excl. VAT.",
+          "legend": "Mode",
+          "hourlyTab": "Hourly",
+          "fixedTab": "Job",
+          "hourlyText": "Inside your team, at your pace.",
+          "fixedText": "One closed feature, with a price and a deadline.",
+          "hourlyLink": "Hourly work"
+        }
+      },
+      "projects": {
+        "title": {
+          "lead": "Projects in use.",
+          "accent": "Linked to the store, the site or the code."
+        },
+        "viewAll": "See all",
+        "viewProject": "See project",
+        "kind": {
+          "app": "App",
+          "web": "Web"
+        },
+        "items": {
+          "hazmefila": {
+            "name": "HazmeFila",
+            "lead": "{{DATO: what it does, one sentence}}"
+          },
+          "oportunix": {
+            "name": "Oportunix",
+            "lead": "{{DATO: what it does, one sentence}}"
+          },
+          "webs-de-comercios": {
+            "name": "Local business websites",
+            "lead": "{{DATO: what it does, one sentence}}"
+          },
+          "3catinfo": {
+            "name": "3catinfo",
+            "lead": "{{DATO: what it does, one sentence}}"
+          }
+        }
+      },
+      "labBlog": {
+        "title": {
+          "lead": "{{DATO: headline, tone 1}}",
+          "accent": "{{DATO: tone 2}}"
+        },
+        "allGuides": "All guides",
+        "allDemos": "All demos",
+        "lab": {
+          "summary": "{{DATO: Lab summary}}",
+          "tryDemo": "Try the demo",
+          "goTo": "Go to the Lab"
+        },
+        "latest": {
+          "title": "Latest article",
+          "read": "Read",
+          "goTo": "Go to the Blog"
+        },
+        "guide": {
+          "title": "Guide"
+        },
+        "demo": {
+          "title": "Demo",
+          "try": "Try"
+        }
+      },
+      "closing": {
+        "title": "Shall we start?",
+        "accent": "Tell me what you need.",
+        "hint": "or press <keys></keys> and search for anything"
+      }
+    }
+  }
+}

@@ -196,7 +196,11 @@ const noLiteralsInJsx = {
   files: ['apps/web/**/*.tsx'],
   ignores: ['**/*.test.tsx', 'apps/web/e2e/**'],
   rules: {
-    'react/jsx-no-literals': ['error', { noStrings: true, ignoreProps: true }],
+    // working-agreements §10: the only literals are the brand, the ⌘K shortcut and key codes
+    'react/jsx-no-literals': [
+      'error',
+      { noStrings: true, ignoreProps: true, allowedStrings: ['josecoded', '⌘K', '⌘', 'K', 'esc'] },
+    ],
   },
 };
 

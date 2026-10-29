@@ -1,1 +1,161 @@
-{}
+{
+  "hero": {
+    "title": {
+      "line1": "Jose Carlos",
+      "line2": "Sánchez"
+    },
+    "subtitle": "{{DATO: subtítulo de identidad única, una frase, sin audiencias (redactor con voz.md)}}",
+    "cta": {
+      "services": "Servicios y precios",
+      "projects": "Ver proyectos"
+    },
+    "stageLabel": "Caracteres de código que forman, por turnos, un móvil, una web y un chip de IA"
+  },
+  "home": {
+    "cell": {
+      "expand": "Ampliar {name}",
+      "close": "Cerrar",
+      "fullPage": "Aquí se abre la página completa."
+    },
+    "sectionIndicator": "Secciones de la página",
+    "scenes": {
+      "about": {
+        "title": {
+          "lead": "Quién hay detrás.",
+          "accent": "Una persona, no una agencia."
+        },
+        "about": {
+          "title": "Sobre mí",
+          "name": "Jose Carlos Sánchez",
+          "role": "Desarrollador full-stack freelance",
+          "lead": "{{DATO: entradilla Sobre mí con identidad única}}",
+          "meet": "Conóceme",
+          "goTo": "Ir a Sobre mí"
+        },
+        "stack": {
+          "title": "Con qué trabajo",
+          "caption": "Lo que uso a diario, en producción."
+        },
+        "direct": {
+          "title": "Trato directo",
+          "chatLabel": "Ejemplo de conversación",
+          "visitor": "Hola Jose, ¿me ayudas con la web de mi negocio?",
+          "reply": "Claro. Cuéntame qué necesitas y te digo cómo lo haría.",
+          "lead": "Hablas conmigo desde el primer mensaje hasta la entrega.",
+          "cta": "Escríbeme"
+        }
+      },
+      "services": {
+        "title": {
+          "lead": "{{DATO: titular, tono 1}}",
+          "accent": "{{DATO: tono 2}}"
+        },
+        "agencyAsk": "¿Eres una agencia?",
+        "vias": {
+          "title": "Cómo trabajar conmigo",
+          "note": "Precios sin IVA.",
+          "hourly": {
+            "name": "Por horas",
+            "figure": "{price}/h",
+            "lead": "{{DATO: frase de la vía por horas}}"
+          },
+          "fixed": {
+            "name": "Encargo a precio fijo",
+            "figure": "desde {price}",
+            "lead": "{{DATO: frase de la vía encargo a precio fijo}}",
+            "requestProposal": "Pedir propuesta orientativa"
+          },
+          "packs": {
+            "name": "Packs de web y app",
+            "figure": "desde {price}",
+            "lead": "{{DATO: frase de la vía packs}}"
+          },
+          "hiring": {
+            "name": "Abierto a empleo",
+            "figure": "CV y entrevista",
+            "lead": "{{DATO: frase de la vía abierto a empleo}}",
+            "downloadCv": "Descargar CV (PDF)"
+          },
+          "summary": "{{DATO: resumen de las cuatro vías}}",
+          "goTo": "Ir a Servicios"
+        },
+        "packs": {
+          "title": "Packs",
+          "note": "Desde, sin IVA.",
+          "srPrice": "desde {price} sin IVA. Ver qué incluye",
+          "link": "Qué incluye cada pack"
+        },
+        "rates": {
+          "title": "Tarifas",
+          "note": "Sin IVA.",
+          "legend": "Modalidad",
+          "hourlyTab": "Por horas",
+          "fixedTab": "Encargo",
+          "hourlyText": "Dentro de tu equipo, a tu ritmo.",
+          "fixedText": "Una funcionalidad cerrada, con precio y plazo.",
+          "hourlyLink": "Trabajo por horas"
+        }
+      },
+      "projects": {
+        "title": {
+          "lead": "Proyectos en uso.",
+          "accent": "Con enlace a la store, a la web o al código."
+        },
+        "viewAll": "Ver todos",
+        "viewProject": "Ver proyecto",
+        "kind": {
+          "app": "App",
+          "web": "Web"
+        },
+        "items": {
+          "hazmefila": {
+            "name": "HazmeFila",
+            "lead": "{{DATO: qué hace, en una frase}}"
+          },
+          "oportunix": {
+            "name": "Oportunix",
+            "lead": "{{DATO: qué hace, en una frase}}"
+          },
+          "webs-de-comercios": {
+            "name": "Webs de comercios",
+            "lead": "{{DATO: qué hace, en una frase}}"
+          },
+          "3catinfo": {
+            "name": "3catinfo",
+            "lead": "{{DATO: qué hace, en una frase}}"
+          }
+        }
+      },
+      "labBlog": {
+        "title": {
+          "lead": "{{DATO: titular, tono 1}}",
+          "accent": "{{DATO: tono 2}}"
+        },
+        "allGuides": "Todas las guías",
+        "allDemos": "Todas las demos",
+        "lab": {
+          "summary": "{{DATO: resumen del Lab}}",
+          "tryDemo": "Probar la demo",
+          "goTo": "Ir al Lab"
+        },
+        "latest": {
+          "title": "Último artículo",
+          "read": "Leer",
+          "goTo": "Ir al Blog"
+        },
+        "guide": {
+          "title": "Guía"
+        },
+        "demo": {
+          "title": "Demo",
+          "try": "Probar"
+        }
+      },
+      "closing": {
+        "title": "¿Empezamos?",
+        "accent": "Cuéntame qué necesitas.",
+        "hint": "o pulsa <keys></keys> y busca lo que quieras"
+      }
+    }
+  }
+}

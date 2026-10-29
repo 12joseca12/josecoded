@@ -13,7 +13,7 @@ const notFound: [path: string, lang: 'es' | 'en', home: string, heading: string]
   ['/en/nope', 'en', '/en', 'Page not found'],
   ['/a/b/c', 'es', '/', 'Página no encontrada'],
   ['/en/a/b', 'en', '/en', 'Page not found'],
-  ['/negocios/x', 'es', '/', 'Página no encontrada'],
+  ['/servicios/x', 'es', '/', 'Página no encontrada'],
   // outside any locale route (a file-like path): the root not-found, default language
   ['/foo.txt', 'es', '/', 'Página no encontrada'],
 ];
@@ -34,8 +34,8 @@ for (const [path, lang, home, heading] of notFound) {
 const titled: [path: string, lang: string, expected: RegExp][] = [
   ['/', 'es', /^josecoded$/],
   ['/en', 'en', /^josecoded$/],
-  ['/negocios', 'es', /^Negocios · josecoded$/],
-  ['/en/business', 'en', /^Business · josecoded$/],
+  ['/servicios', 'es', /^Servicios · josecoded$/],
+  ['/en/services', 'en', /^Services · josecoded$/],
 ];
 
 for (const [path, lang, expected] of titled) {

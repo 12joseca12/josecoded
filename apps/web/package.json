@@ -10,6 +10,7 @@
     "lint": "eslint . && stylelint \"**/*.css\" --allow-empty-input",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "i18n:check": "node scripts/i18n-check.ts",
     "e2e": "playwright test"
   },
   "dependencies": {

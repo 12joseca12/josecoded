@@ -21,8 +21,20 @@ describe('typed message keys', () => {
     notFound('name');
   });
 
-  it('rejects an unknown namespace', () => {
-    // @ts-expect-error `nav` does not exist yet (it arrives with task 2.1)
-    expectTypeOf<ReturnType<typeof useTranslations<'nav'>>>().toBeFunction();
+  it('knows the nav, palette and home scene namespaces and rejects an unknown one', () => {
+    const nav = (() => '') as unknown as ReturnType<typeof useTranslations<'nav'>>;
+    nav('services');
+    // @ts-expect-error the retired /negocios entry is gone from the navigation
+    nav('business');
+
+    const services = (() => '') as unknown as ReturnType<
+      typeof useTranslations<'home.scenes.services.vias'>
+    >;
+    services('hourly.name');
+    // @ts-expect-error a key of another scene must not compile
+    services('latest.title');
+
+    // @ts-expect-error `nope` is not a namespace
+    expectTypeOf<ReturnType<typeof useTranslations<'nope'>>>().toBeFunction();
   });
 });

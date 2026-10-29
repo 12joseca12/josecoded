@@ -1,4 +1,6 @@
-import type { Pathnames } from './pathnames';
+import { aliasPaths, retiredPaths } from './pathnames';
+
+import type { Pathnames, RetiredPath } from './pathnames';
 
 // Rewrites and redirects of DT §1.4, with translated English slugs (plan v2.3), built from the
 // pathnames. Plain data on purpose: it is imported by next.config.ts (no Node middleware).
@@ -10,6 +12,11 @@ export interface RewriteRule {
 
 export interface RedirectRule extends RewriteRule {
   permanent: true;
+}
+
+/** Retired pages answer a real 301 (`permanent: true` would be a 308). */
+export interface RetiredRule extends RewriteRule {
+  statusCode: 301;
 }
 
 // Spanish has no prefix: everything that is not /en, /api, /_next or a file goes to /es.
@@ -31,9 +38,30 @@ function withSubpaths(from: string, to: string): RewriteRule[] {
   ];
 }
 
-export function buildLocaleRules(pathnames: Pathnames): {
+/**
+ * 301s of the pages that no longer exist, every spelling that ever resolved to them:
+ * /negocios, /es/negocios, /en/negocios, /en/business, with trailing slash and subpaths.
+ */
+function buildRetiredRules(retired: readonly RetiredPath[]): RetiredRule[] {
+  const to301 = (sources: string[], destination: string): RetiredRule[] =>
+    sources.flatMap((from) => [
+      { source: from, destination, statusCode: 301 as const },
+      { source: `${from}/`, destination, statusCode: 301 as const },
+      { source: `${from}/:path+`, destination, statusCode: 301 as const },
+    ]);
+  return retired.flatMap(({ from, to }) => [
+    ...to301([from.es, `/es${from.es}`], to.es),
+    ...to301([`/en${from.en}`, `/en${from.es}`], `/en${to.en}`),
+  ]);
+}
+
+export function buildLocaleRules(
+  pathnames: Pathnames,
+  retired: readonly RetiredPath[] = retiredPaths,
+  aliases: Readonly<Record<string, string>> = aliasPaths,
+): {
   rewrites: RewriteRule[];
-  redirects: RedirectRule[];
+  redirects: (RedirectRule | RetiredRule)[];
 } {
   // longer translated paths first, so /legal/notice is matched before any shorter prefix
   const translated = Object.entries(pathnames)
@@ -53,7 +81,15 @@ export function buildLocaleRules(pathnames: Pathnames): {
 
   // Trailing slashes are handled here (next.config sets skipTrailingSlashRedirect) so that each
   // URL reaches its canonical form in ONE hop: `/es/` -> `/`, `/en/negocios/` -> `/en/business`.
-  const redirects: RedirectRule[] = [
+  const redirects: (RedirectRule | RetiredRule)[] = [
+    ...buildRetiredRules(retired),
+    // bare paths that were never a page: /auth -> /auth/login
+    ...Object.entries(aliases).flatMap(([from, to]) =>
+      permanent([
+        { source: from, destination: to },
+        { source: `/en${from}`, destination: `/en${to}` },
+      ]),
+    ),
     ...permanent([
       { source: '/es/', destination: '/' },
       { source: '/es/:path+/', destination: '/:path+' },

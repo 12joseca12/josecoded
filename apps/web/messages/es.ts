@@ -5,20 +5,22 @@ import about from './es/about.json';
 import area from './es/area.json';
 import auth from './es/auth.json';
 import blog from './es/blog.json';
-import business from './es/business.json';
 import common from './es/common.json';
-import companies from './es/companies.json';
 import contact from './es/contact.json';
 import home from './es/home.json';
+import lab from './es/lab.json';
 import newsletter from './es/newsletter.json';
+import partners from './es/partners.json';
 import projects from './es/projects.json';
 import proposal from './es/proposal.json';
+import services from './es/services.json';
 
 const messages = {
   ...common,
   ...home,
-  ...business,
-  ...companies,
+  ...services,
+  ...partners,
+  ...lab,
   ...about,
   ...projects,
   ...blog,

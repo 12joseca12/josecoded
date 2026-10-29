@@ -5,18 +5,28 @@ import { expect, test } from '@playwright/test';
 const cases: [path: string, status: number, lang?: string][] = [
   ['/', 200, 'es'],
   ['/en', 200, 'en'],
-  ['/negocios', 200, 'es'],
-  ['/en/business', 200, 'en'],
-  ['/es/negocios', 308],
-  ['/en/negocios', 308],
+  ['/servicios', 200, 'es'],
+  ['/en/services', 200, 'en'],
+  ['/es/servicios', 308],
+  ['/en/servicios', 308],
+  // retired pages (P1, P4): a real 301 to /servicios
+  ['/negocios', 301],
+  ['/empresas', 301],
+  ['/en/business', 301],
+  ['/en/companies', 301],
+  ['/auth', 308],
   ['/no-existe', 404],
   ['/en/no-existe', 404],
   ['/en/', 308],
-  ['/negocios/', 308],
+  ['/servicios/', 308],
   // deep Spanish paths must 404, never 500
-  ['/negocios/x', 404],
+  ['/servicios/x', 404],
   ['/a/b/c', 404],
   ['/legal/aviso-legal', 404],
+  // localized routes whose page arrives in a later task: 404 in both languages, never 500
+  ['/area-clientes', 404],
+  ['/en/client-area', 404],
+  ['/en/client-area/tasks', 404],
   ['/en/a/b', 404],
 ];
 
@@ -32,20 +42,20 @@ test('the redirects point at the canonical URL', async ({ request }) => {
   const location = async (path: string) =>
     new URL((await request.get(path, { maxRedirects: 0 })).headers()['location'] ?? '', 'http://x')
       .pathname;
-  expect(await location('/es/negocios')).toBe('/negocios');
-  expect(await location('/en/negocios')).toBe('/en/business');
+  expect(await location('/es/servicios')).toBe('/servicios');
+  expect(await location('/en/servicios')).toBe('/en/services');
   expect(await location('/en/')).toBe('/en');
-  expect(await location('/negocios/')).toBe('/negocios');
+  expect(await location('/servicios/')).toBe('/servicios');
 });
 
 test('every non-canonical URL reaches its canonical form in one hop', async ({ request }) => {
   for (const [from, to] of [
     ['/es/', '/'],
-    ['/es/negocios/', '/negocios'],
-    ['/en/negocios/', '/en/business'],
-    ['/en/negocios', '/en/business'],
+    ['/es/servicios/', '/servicios'],
+    ['/en/servicios/', '/en/services'],
+    ['/en/servicios', '/en/services'],
     ['/en/', '/en'],
-    ['/negocios/', '/negocios'],
+    ['/servicios/', '/servicios'],
   ] as const) {
     const res = await request.get(from, { maxRedirects: 0 });
     expect(res.status(), from).toBe(308);
@@ -62,10 +72,32 @@ test('translated slugs redirect even when the page does not exist yet', async ({
     ['/en/sobre-mi', '/en/about'],
     ['/en/contacto', '/en/contact'],
     ['/en/proyectos', '/en/projects'],
-    ['/en/empresas', '/en/companies'],
+    ['/en/servicios', '/en/services'],
+    ['/en/area-clientes', '/en/client-area'],
+    ['/en/area-clientes/tareas', '/en/client-area/tasks'],
+    ['/en/area-clientes/pack/ampliar', '/en/client-area/plan/upgrade'],
+    ['/en/auth/registro', '/en/auth/sign-up'],
+    ['/en/perfil', '/en/profile'],
   ] as const) {
     const res = await request.get(from, { maxRedirects: 0 });
     expect(res.status(), from).toBe(308);
     expect(new URL(res.headers()['location'] ?? '', 'http://x').pathname).toBe(to);
+  }
+});
+
+test('the retired pages land on the anchor of their successor', async ({ request }) => {
+  for (const [from, to] of [
+    ['/negocios', '/servicios#packs'],
+    ['/empresas', '/servicios#por-hora'],
+    ['/es/negocios', '/servicios#packs'],
+    ['/en/business', '/en/services#packs'],
+    ['/en/companies', '/en/services#hourly'],
+    ['/en/negocios', '/en/services#packs'],
+  ] as const) {
+    const res = await request.get(from, { maxRedirects: 0 });
+    expect(res.status(), from).toBe(301);
+    expect(res.headers()['location'], from).toBe(to);
+    const next = await request.get(to.split('#')[0] ?? to, { maxRedirects: 0 });
+    expect(next.status(), `${from} -> ${to}`).toBe(200);
   }
 });

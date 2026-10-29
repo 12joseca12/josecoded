@@ -1,4 +1,100 @@
 {
-  "site": { "name": "josecoded" },
-  "notFound": { "title": "Page not found", "home": "Back to home" }
+  "site": {
+    "name": "josecoded"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "home": "Back to home"
+  },
+  "a11y": {
+    "skipToContent": "Skip to content"
+  },
+  "actions": {
+    "book20": "Book 20\u00a0min",
+    "whatsapp": "Message me on WhatsApp",
+    "downloadCv": "Download CV",
+    "askAssistant": "Ask the assistant",
+    "requestProposal": "Request a proposal"
+  },
+  "nav": {
+    "brandLabel": "josecoded, home",
+    "primary": "Main",
+    "about": "About me",
+    "services": "Services",
+    "projects": "Projects",
+    "lab": "Lab",
+    "blog": "Blog",
+    "labBlog": "Lab/Blog",
+    "partners": "For agencies",
+    "contact": "Contact",
+    "search": "Search",
+    "chat": "Chat",
+    "chatOpen": "Open the chat",
+    "login": "Login",
+    "menu": "Menu",
+    "menuToFooter": "Menu: jump to the footer index",
+    "language": {
+      "label": "Language",
+      "es": "Español",
+      "en": "English",
+      "short": {
+        "es": "ES",
+        "en": "EN"
+      }
+    }
+  },
+  "footer": {
+    "label": "Footer",
+    "clientArea": "Client area",
+    "legal": "Legal",
+    "reviewed": "rev."
+  },
+  "palette": {
+    "label": "Go to",
+    "placeholder": "Search “price”, “cv”…",
+    "hintMove": "move",
+    "hintOpen": "open",
+    "empty": "Nothing for “{query}”. Try “price”, “cv” or “agency”.",
+    "groups": {
+      "goTo": "Go to",
+      "actions": "Actions"
+    },
+    "hints": {
+      "pdf": "PDF",
+      "from": "from {price}",
+      "perHour": "{price}/h"
+    },
+    "labels": {
+      "packs": "Packs",
+      "hourly": "Hourly work"
+    },
+    "keywords": {
+      "about": "about me jose who person",
+      "services": "services ways work hire freelance how i work",
+      "projects": "projects apps websites portfolio case studies",
+      "lab": "lab demos experiments tools",
+      "blog": "blog guides articles",
+      "partners": "agency agencies partners partner consultancy subcontract white label collaborate",
+      "packs": "packs price website shop restaurant clinic mobile app how much",
+      "hourly": "hour hourly rate price support team consulting audit",
+      "proposal": "proposal quote estimate generator ai feature fixed price project",
+      "cv": "cv resume hire employment job recruiter",
+      "book": "call meeting appointment calendar interview",
+      "whatsapp": "whatsapp talk message",
+      "contact": "contact email mail talk",
+      "chat": "chat assistant ai ask",
+      "login": "login sign in account client area"
+    }
+  },
+  "facts": {
+    "displayName": "{{DATO: display name (accents, second surname); the prototype uses “Jose Carlos Sánchez”}}",
+    "city": "{{DATO: city}}",
+    "photo": "{{DATO: real photo of Jose}}",
+    "cvUrl": "{{DATO: URL of the master CV PDF (en)}}",
+    "email": "{{DATO: active freelance@ mailbox (Q18)}}",
+    "githubUser": "{{DATO: GitHub username}}",
+    "linkedinUrl": "{{DATO: LinkedIn URL}}",
+    "whatsappProject": "{{DATO: prefilled WhatsApp text (fixed-price job)}}",
+    "whatsappPacks": "{{DATO: prefilled WhatsApp text (packs)}}"
+  }
 }

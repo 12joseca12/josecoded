@@ -1,4 +1,100 @@
 {
-  "site": { "name": "josecoded" },
-  "notFound": { "title": "Página no encontrada", "home": "Volver al inicio" }
+  "site": {
+    "name": "josecoded"
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "home": "Volver al inicio"
+  },
+  "a11y": {
+    "skipToContent": "Saltar al contenido"
+  },
+  "actions": {
+    "book20": "Reservar 20\u00a0min",
+    "whatsapp": "Escribir por WhatsApp",
+    "downloadCv": "Descargar CV",
+    "askAssistant": "Preguntar al asistente",
+    "requestProposal": "Pedir propuesta"
+  },
+  "nav": {
+    "brandLabel": "josecoded, inicio",
+    "primary": "Principal",
+    "about": "Sobre mí",
+    "services": "Servicios",
+    "projects": "Proyectos",
+    "lab": "Lab",
+    "blog": "Blog",
+    "labBlog": "Lab/Blog",
+    "partners": "Para agencias",
+    "contact": "Contacto",
+    "search": "Buscar",
+    "chat": "Chat",
+    "chatOpen": "Abrir el chat",
+    "login": "Login",
+    "menu": "Menú",
+    "menuToFooter": "Menú: ir al índice del pie",
+    "language": {
+      "label": "Idioma",
+      "es": "Español",
+      "en": "English",
+      "short": {
+        "es": "ES",
+        "en": "EN"
+      }
+    }
+  },
+  "footer": {
+    "label": "Pie",
+    "clientArea": "Área de clientes",
+    "legal": "Legal",
+    "reviewed": "rev."
+  },
+  "palette": {
+    "label": "Ir a",
+    "placeholder": "Busca «precio», «cv»…",
+    "hintMove": "mover",
+    "hintOpen": "abrir",
+    "empty": "Nada con «{query}». Prueba con «precio», «cv» o «agencia».",
+    "groups": {
+      "goTo": "Ir a",
+      "actions": "Acciones"
+    },
+    "hints": {
+      "pdf": "PDF",
+      "from": "desde {price}",
+      "perHour": "{price}/h"
+    },
+    "labels": {
+      "packs": "Packs",
+      "hourly": "Trabajo por horas"
+    },
+    "keywords": {
+      "about": "sobre mi jose quien persona",
+      "services": "servicios vias trabajar contratar freelance como trabajas",
+      "projects": "proyectos apps webs portfolio casos",
+      "lab": "lab demos laboratorio experimentos herramientas",
+      "blog": "blog guias articulos",
+      "partners": "agencia agencias partners partner consultora subcontratar marca blanca colaborar",
+      "packs": "packs precio web tienda restaurante clinica app movil cuanto cuesta",
+      "hourly": "hora horas tarifa precio refuerzo equipo consultoria auditoria",
+      "proposal": "propuesta presupuesto generador ia feature proyecto cerrado",
+      "cv": "cv curriculum resume contratar empleo trabajo reclutador",
+      "book": "llamada reunion cita calendario entrevista",
+      "whatsapp": "whatsapp hablar mensaje",
+      "contact": "contacto email correo hablamos",
+      "chat": "chat asistente ia preguntar",
+      "login": "login entrar cuenta area clientes"
+    }
+  },
+  "facts": {
+    "displayName": "{{DATO: nombre a mostrar (tildes, segundo apellido); el prototipo usa «Jose Carlos Sánchez»}}",
+    "city": "{{DATO: ciudad}}",
+    "photo": "{{DATO: foto real de Jose}}",
+    "cvUrl": "{{DATO: URL del CV maestro en PDF (es)}}",
+    "email": "{{DATO: buzón freelance@ activo (Q18)}}",
+    "githubUser": "{{DATO: usuario de GitHub}}",
+    "linkedinUrl": "{{DATO: URL de LinkedIn}}",
+    "whatsappProject": "{{DATO: texto prellenado de WhatsApp (encargo a precio fijo)}}",
+    "whatsappPacks": "{{DATO: texto prellenado de WhatsApp (packs)}}"
+  }
 }

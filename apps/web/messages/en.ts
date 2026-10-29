@@ -3,22 +3,24 @@ import about from './en/about.json';
 import area from './en/area.json';
 import auth from './en/auth.json';
 import blog from './en/blog.json';
-import business from './en/business.json';
 import common from './en/common.json';
-import companies from './en/companies.json';
 import contact from './en/contact.json';
 import home from './en/home.json';
+import lab from './en/lab.json';
 import newsletter from './en/newsletter.json';
+import partners from './en/partners.json';
 import projects from './en/projects.json';
 import proposal from './en/proposal.json';
+import services from './en/services.json';
 
 import type es from './es';
 
 const messages = {
   ...common,
   ...home,
-  ...business,
-  ...companies,
+  ...services,
+  ...partners,
+  ...lab,
   ...about,
   ...projects,
   ...blog,
