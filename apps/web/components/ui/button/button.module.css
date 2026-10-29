@@ -1,0 +1,77 @@
+/* home-v7 base.css:85-96 (.btn, .btn--sm/lg, .btn--solid/ghost). Disabled state is new:
+   deviation: button disabled state (not in prototype). */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  min-height: var(--size-control-lg);
+  padding: 0 calc(var(--sp-5) + var(--sp-0-5));
+  border-radius: var(--r-pill);
+  font-size: var(--font-label-button-size);
+  font-weight: var(--font-label-button-weight);
+  letter-spacing: var(--font-label-button-tracking);
+  white-space: nowrap;
+  transition:
+    transform var(--dur-press) var(--ease-out),
+    background-color var(--dur-hover) var(--ease-standard),
+    box-shadow var(--dur-hover) var(--ease-standard),
+    color var(--dur-hover) var(--ease-standard);
+}
+
+.btn:disabled {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.btn[data-size='sm'] {
+  min-height: var(--size-control-sm);
+  padding: 0 var(--sp-3-5);
+  font-size: var(--font-small-size);
+}
+
+.btn[data-size='lg'] {
+  min-height: var(--size-control-xl);
+  padding: 0 var(--sp-7);
+  font-size: var(--font-body-size);
+}
+
+/* 2.75rem square for every size: the touch target of the header's icon buttons */
+.btn[data-icon-only] {
+  width: var(--size-hit);
+  height: var(--size-hit);
+  min-height: 0;
+  padding: 0;
+}
+
+.btn[data-variant='solid'] {
+  background: var(--violet);
+  color: var(--ink);
+  box-shadow: var(--shadow-button);
+}
+
+.btn[data-variant='ghost'] {
+  background: var(--tint-ghost);
+  color: var(--text);
+  box-shadow: var(--shadow-hairline-strong);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn[data-variant='solid']:is(:hover, [data-hover]):not(:disabled) {
+    background: var(--violet-hi);
+  }
+
+  .btn[data-variant='ghost']:is(:hover, [data-hover]):not(:disabled) {
+    background: var(--tint-ghost-hover);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn:active:not(:disabled) {
+    transform: none;
+  }
+}

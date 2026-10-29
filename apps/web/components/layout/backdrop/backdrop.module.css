@@ -1,0 +1,91 @@
+/* Ported from home-v7 base.css:44-45 and 137-144. Values are tokens; the geometry of the beams
+   (vmax lengths, angles) is the drawing itself and stays as local variables. */
+.backdrop {
+  /* the two layers inside are fixed; the wrapper itself takes no space and never catches a click */
+  pointer-events: none;
+}
+
+.field {
+  --rest-x: 18vw;
+  --rest-y: -6vh;
+
+  position: fixed;
+  inset: -20vmax;
+  z-index: var(--z-field);
+  pointer-events: none;
+  mix-blend-mode: screen;
+  will-change: transform;
+
+  /* rest position; the home scene overwrites this inline while it runs (and with reduced motion it
+     never does, so the field stays here) */
+  transform: translate(var(--rest-x), var(--rest-y));
+}
+
+.pool {
+  --pw: 70vmax;
+  --ph: 50vmax;
+
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  width: var(--pw);
+  height: var(--ph);
+  margin-block-start: calc(var(--ph) / -2);
+  margin-inline-start: calc(var(--pw) / -2);
+  border-radius: var(--r-circle);
+  background: var(--grad-field-pool);
+}
+
+.beam {
+  --w: 22vmax;
+  --h: 170vmax;
+  --w-center: 22vmax; /* the margin centres a 22vmax beam; the narrower and wider ones keep it, as in the prototype */
+
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  width: var(--w);
+  height: var(--h);
+  margin-block-start: calc(var(--h) / -2);
+  margin-inline-start: calc(var(--w-center) / -2);
+  border-radius: var(--r-circle);
+  opacity: var(--op);
+  filter: blur(var(--blur-beam));
+  transform: rotate(var(--a)) translateX(var(--o));
+  background: linear-gradient(90deg, transparent, var(--c) 45%, var(--c2) 52%, transparent);
+}
+
+.beam[data-beam='1'] {
+  --a: 32deg;
+  --o: -6vmax;
+  --c: var(--beam-1-a);
+  --c2: var(--beam-1-b);
+  --op: var(--light-beam-1);
+}
+
+.beam[data-beam='2'] {
+  --a: 38deg;
+  --o: 9vmax;
+  --c: var(--beam-2-a);
+  --c2: var(--beam-2-b);
+  --op: var(--light-beam-2);
+  --w: 12vmax;
+}
+
+.beam[data-beam='3'] {
+  --a: 26deg;
+  --o: 22vmax;
+  --c: var(--beam-3-a);
+  --c2: var(--beam-3-b);
+  --op: var(--light-beam-3);
+  --w: 30vmax;
+}
+
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-field);
+  pointer-events: none;
+  opacity: var(--light-grain);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}

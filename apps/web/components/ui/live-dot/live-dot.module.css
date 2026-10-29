@@ -1,0 +1,9 @@
+/* home-v7 base.css:150 (.nav__chat .live) */
+.dot {
+  display: inline-block;
+  flex: none;
+  width: var(--size-dot);
+  height: var(--size-dot);
+  border-radius: var(--r-circle);
+  background: var(--green);
+}

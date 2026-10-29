@@ -256,5 +256,10 @@
   "grad-mask-fade",
   "light-cell",
   "light-cell-hero",
-  "light-alpha"
+  "light-alpha",
+  "light-grain",
+  "light-beam-1",
+  "light-beam-2",
+  "light-beam-3",
+  "opacity-disabled"
 ]

@@ -1,0 +1,46 @@
+/* home-v7 base.css:161 (.surface). The 1.25rem radius of the prototype is dropped: no piece used
+   it (v6.css overrides it with the cell and tcard radii). */
+.surface {
+  position: relative;
+  border-radius: var(--r-cell);
+
+  /* no backdrop-filter: the translucent card over the page colour, i.e. an opaque sheet */
+  background: linear-gradient(var(--card), var(--card)) var(--bg);
+  box-shadow: var(--shadow-card);
+  transition: box-shadow var(--dur-state) var(--ease-standard);
+}
+
+.surface[data-radius='tcard'] {
+  border-radius: var(--r-tcard);
+}
+
+.surface[data-layer='overlay'] {
+  background: var(--overlay);
+  box-shadow: var(--shadow-overlay);
+}
+
+/* backdrop-filter (Baseline 2024 in Safari 18): the sheet blurs what floats under it.
+   Fallback: the opaque sheet above. */
+@supports (backdrop-filter: blur(1px)) {
+  .surface {
+    background: var(--card);
+    backdrop-filter: blur(var(--blur-surface));
+  }
+
+  .surface[data-layer='overlay'] {
+    background: var(--overlay);
+    backdrop-filter: blur(var(--blur-overlay));
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .surface[data-interactive]:is(:hover, [data-hover]) {
+    box-shadow: var(--shadow-card-hover);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .surface {
+    transition: none;
+  }
+}

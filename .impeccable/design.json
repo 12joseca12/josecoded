@@ -730,6 +730,11 @@
         "name": "beam-3-b",
         "value": "rgb(91 75 255 / 0.3)",
         "purpose": "Haz 3, núcleo."
+      },
+      {
+        "name": "opacity-disabled",
+        "value": "0.5",
+        "purpose": "Opacidad de un control deshabilitado (Button disabled; sin hover)."
       }
     ],
     "shadows": [
@@ -1175,6 +1180,26 @@
         "name": "alpha",
         "value": "0.09",
         "purpose": "Opacidad de la luz con la celda bajo el cursor."
+      },
+      {
+        "name": "grain",
+        "value": "0.045",
+        "purpose": "Opacidad del grano fijo sobre el fondo (Backdrop)."
+      },
+      {
+        "name": "beam-1",
+        "value": "0.3",
+        "purpose": "Opacidad del haz principal del campo de luz (Backdrop)."
+      },
+      {
+        "name": "beam-2",
+        "value": "0.2",
+        "purpose": "Opacidad del haz estrecho del campo de luz (Backdrop)."
+      },
+      {
+        "name": "beam-3",
+        "value": "0.14",
+        "purpose": "Opacidad del haz ancho del campo de luz (Backdrop)."
       }
     ],
     "motion": [

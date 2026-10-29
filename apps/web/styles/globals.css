@@ -1,0 +1,110 @@
+/* Global layer (working-agreements §1): tokens, reset, fonts, reduced motion, focus, selection,
+   .sr-only and .skip. Everything else lives in each component's CSS Module. */
+@import url('./tokens.css');
+
+/* next/font hashes the family names, so lib/fonts.ts exposes the loaded faces as --font-geist and
+   --font-geist-mono; from here on every token consumer gets them through --font-sans / --font-mono. */
+:root {
+  --font-sans: var(--font-geist);
+  --font-mono: var(--font-geist-mono);
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg);
+  scroll-behavior: smooth;
+  scrollbar-color: var(--scrollbar-thumb) var(--bg);
+  scrollbar-width: thin;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  overflow-x: clip;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--font-body-size);
+  font-weight: var(--font-body-weight);
+  font-feature-settings: var(--font-body-features);
+  line-height: var(--font-body-leading);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  padding: 0;
+  border-width: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+::selection {
+  background: var(--tint-selection);
+  color: var(--text);
+}
+
+/* :where() keeps the specificity at zero, so a component's own radius (a pill button) wins;
+   [data-focus] forces the ring in the /dev/ui catalogue */
+:where(:focus-visible, [data-focus]) {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: var(--r-focus);
+}
+
+/* Without !important: a component that sets `display` on an element it also hides must say so
+   itself (`.x[hidden] { display: none }`). */
+[hidden] {
+  display: none;
+}
+
+/* Visually hidden, still read by assistive technology. */
+.sr-only {
+  position: absolute;
+  width: 1ch;
+  height: 1ch;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* «Skip to content»: first tab stop, hidden until focused (the link itself lives in the layout). */
+.skip {
+  position: fixed;
+  inset-block-start: calc(-1 * var(--sp-16));
+  inset-inline-start: var(--sp-4);
+  z-index: var(--z-skip);
+  padding: var(--sp-2-5) var(--sp-4);
+  border-radius: var(--r-sm);
+  background: var(--text);
+  color: var(--bg);
+  font-weight: var(--font-brand-weight);
+  transition: inset-block-start var(--dur-state) var(--ease-out);
+}
+
+.skip:focus {
+  inset-block-start: var(--sp-4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .skip {
+    transition: none;
+  }
+}

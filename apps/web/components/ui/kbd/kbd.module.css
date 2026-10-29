@@ -1,0 +1,13 @@
+/* home-v7 base.css:37 */
+.kbd {
+  padding: var(--sp-1) var(--sp-1-5);
+  border-radius: var(--r-kbd);
+  background: var(--tint-kbd);
+  box-shadow: var(--shadow-kbd);
+  color: var(--text-2);
+  font-family: var(--font-mono);
+  font-feature-settings: normal; /* the prototype sets `font:` as a shorthand, which resets ss01/cv11 */
+  font-size: var(--font-mono-kbd-size);
+  font-weight: var(--font-mono-kbd-weight);
+  line-height: var(--font-mono-kbd-leading);
+}

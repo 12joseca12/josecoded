@@ -1,0 +1,84 @@
+/* Layout of the /dev/ui catalogue only; the primitives bring their own styles. */
+.page {
+  position: relative;
+  z-index: var(--z-content);
+  display: grid;
+  gap: var(--sp-16);
+  max-width: var(--size-container);
+  margin: 0 auto;
+  padding: var(--sp-pad-top) var(--sp-gutter) var(--sp-16);
+}
+
+.intro {
+  display: grid;
+  gap: var(--sp-4);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--font-headline-size);
+  font-weight: var(--font-headline-weight);
+  letter-spacing: var(--font-headline-tracking);
+  line-height: var(--font-headline-leading);
+}
+
+.section {
+  display: grid;
+  gap: var(--sp-6);
+}
+
+.name {
+  margin: 0;
+  color: var(--text-2);
+  font-family: var(--font-mono);
+  font-size: var(--font-mono-lang-size);
+  font-weight: var(--font-mono-lang-weight);
+}
+
+.block {
+  display: grid;
+  gap: var(--sp-3);
+}
+
+.caption {
+  margin: 0;
+  color: var(--text-3);
+  font-size: var(--font-caption-size);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  align-items: center;
+}
+
+.cell {
+  display: grid;
+  gap: var(--sp-3);
+  padding: var(--sp-pad-cell);
+}
+
+.cell > p {
+  margin: 0;
+}
+
+.glyphs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
+  gap: var(--sp-3);
+}
+
+.glyph {
+  display: grid;
+  gap: var(--sp-2);
+  justify-items: center;
+  color: var(--violet-soft);
+  font-size: var(--font-label-button-size);
+}
+
+.glyph > span {
+  color: var(--text-3);
+  font-family: var(--font-mono);
+  font-size: var(--font-caption-size);
+}

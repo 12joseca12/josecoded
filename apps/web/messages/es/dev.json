@@ -1,0 +1,39 @@
+{
+  "dev": {
+    "ui": {
+      "title": "Catálogo de interfaz",
+      "intro": "Cada primitiva de components/ui con sus variantes, tamaños y estados. Solo existe con NEXT_PUBLIC_DEV_UI=1 (local y preview); en producción esta ruta da 404.",
+      "variants": "Variantes",
+      "sizes": "Tamaños",
+      "states": {
+        "rest": "Reposo",
+        "hover": "Hover forzado",
+        "focus": "Foco visible",
+        "disabled": "Deshabilitado"
+      },
+      "samples": {
+        "viewProjects": "Ver proyectos",
+        "book20": "Reservar 20 min",
+        "send": "Enviar",
+        "search": "Buscar",
+        "login": "Login",
+        "whatIncludes": "Qué incluye cada pack",
+        "downloadCv": "Descargar CV",
+        "askAssistant": "Preguntar al asistente",
+        "cellTitle": "Cómo trabajar conmigo",
+        "cellBody": "Una lámina de vidrio índigo con filete violeta, luz superior y sombra larga.",
+        "headingLead": "Una persona, no una agencia.",
+        "headingTail": "Web, móvil e IA.",
+        "closingLead": "¿Empezamos?",
+        "closingTail": "Cuéntame qué necesitas.",
+        "lead": "Entradilla dentro de una celda: lavanda secundaria, hasta 52 caracteres de ancho.",
+        "muted": "Texto atenuado en lavanda terciaria.",
+        "small": "Nota pequeña, metadatos.",
+        "shortcut": "Abrir la paleta",
+        "stack": "TypeScript",
+        "stackTwo": "Cloudflare Workers",
+        "live": "En línea ahora"
+      }
+    }
+  }
+}

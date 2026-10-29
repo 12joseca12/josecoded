@@ -1,8 +1,12 @@
+import { NextIntlClientProvider } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 
 import { routing } from '@/i18n/routing';
 import { env } from '@/lib/env';
+import { fontVariables } from '@/lib/fonts';
 import { resolveLocale } from '@/lib/locale';
+
+import '@/styles/globals.css';
 
 import type { LocaleParams } from '@/lib/locale';
 import type { Metadata } from 'next';
@@ -31,8 +35,14 @@ export default async function LocaleLayout({
   const locale = await resolveLocale(params);
 
   return (
-    <html lang={locale}>
-      <body>{children}</body>
+    <html lang={locale} className={fontVariables}>
+      <body>
+        {/* the localized Link needs the locale in the client; no messages travel to the browser
+            here: a client component that translates receives the subset it needs */}
+        <NextIntlClientProvider locale={locale} messages={null}>
+          {children}
+        </NextIntlClientProvider>
+      </body>
     </html>
   );
 }

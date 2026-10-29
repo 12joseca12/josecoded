@@ -1,0 +1,32 @@
+/* home-v7 base.css:91-92 (.link, 500) and 179-181 (.go, 550): one component, two emphases. */
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  color: var(--violet-soft);
+  font-weight: var(--font-emphasis-weight);
+}
+
+.link[data-emphasis='strong'] {
+  font-weight: var(--font-cell-title-weight);
+}
+
+.link svg {
+  transition: transform var(--dur-nudge) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .link:is(:hover, [data-hover]) svg {
+    transform: translateX(3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link svg {
+    transition: none;
+  }
+
+  .link:is(:hover, [data-hover]) svg {
+    transform: none;
+  }
+}

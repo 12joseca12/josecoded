@@ -1,0 +1,39 @@
+{
+  "dev": {
+    "ui": {
+      "title": "Interface catalogue",
+      "intro": "Every components/ui primitive with its variants, sizes and states. It only exists with NEXT_PUBLIC_DEV_UI=1 (local and preview); in production this route answers 404.",
+      "variants": "Variants",
+      "sizes": "Sizes",
+      "states": {
+        "rest": "Rest",
+        "hover": "Forced hover",
+        "focus": "Focus visible",
+        "disabled": "Disabled"
+      },
+      "samples": {
+        "viewProjects": "View projects",
+        "book20": "Book 20 min",
+        "send": "Send",
+        "search": "Search",
+        "login": "Login",
+        "whatIncludes": "What each pack includes",
+        "downloadCv": "Download CV",
+        "askAssistant": "Ask the assistant",
+        "cellTitle": "How to work with me",
+        "cellBody": "A sheet of indigo glass with a violet hairline, a top light and a long shadow.",
+        "headingLead": "One person, not an agency.",
+        "headingTail": "Web, mobile and AI.",
+        "closingLead": "Shall we start?",
+        "closingTail": "Tell me what you need.",
+        "lead": "Lead text inside a cell: secondary lavender, up to 52 characters wide.",
+        "muted": "Muted text in tertiary lavender.",
+        "small": "Small note, metadata.",
+        "shortcut": "Open the palette",
+        "stack": "TypeScript",
+        "stackTwo": "Cloudflare Workers",
+        "live": "Online now"
+      }
+    }
+  }
+}

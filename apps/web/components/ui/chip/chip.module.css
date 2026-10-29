@@ -1,0 +1,10 @@
+/* home-v7 v6.css:162 (.marquee__track span) */
+.chip {
+  padding: var(--sp-2) var(--sp-3-5);
+  border-radius: var(--r-pill);
+  background: var(--tint-chip);
+  box-shadow: var(--shadow-hairline);
+  color: var(--text-2);
+  font-size: var(--font-label-size);
+  white-space: nowrap;
+}

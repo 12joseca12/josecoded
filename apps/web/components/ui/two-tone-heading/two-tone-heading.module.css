@@ -1,0 +1,34 @@
+/* home-v7 base.css:155-156 (.sec-title) + v6.css:14, 25 and base.css:185-186 + v6.css:145
+   (.close__title); v7.css:336 puts the second tone in the highlight colour. */
+.heading {
+  max-width: 22ch;
+  margin: 0;
+  font-size: var(--font-headline-size);
+  font-weight: var(--font-headline-weight);
+  letter-spacing: var(--font-headline-tracking);
+  line-height: var(--font-headline-leading);
+  text-wrap: balance;
+}
+
+.heading[data-size='display-closing'] {
+  margin-inline: auto;
+  font-size: var(--font-display-closing-size);
+  font-weight: var(--font-display-closing-weight);
+  letter-spacing: var(--font-display-closing-tracking);
+  line-height: var(--font-display-closing-leading);
+}
+
+.tail {
+  color: var(--highlight);
+}
+
+/* v7.css:213 and 337: a pending marker keeps the colour of its phrase with a dotted underline;
+   in the tail it goes back to the pending colour so it cannot be mistaken for the highlight */
+.heading [data-pending] {
+  color: inherit;
+  text-decoration: underline dotted;
+}
+
+.tail [data-pending] {
+  color: var(--pending);
+}

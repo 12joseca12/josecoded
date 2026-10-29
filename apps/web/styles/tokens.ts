@@ -175,6 +175,7 @@ export type TokenName =
   | '--beam-2-b'
   | '--beam-3-a'
   | '--beam-3-b'
+  | '--opacity-disabled'
   | '--shadow-hairline'
   | '--shadow-hairline-strong'
   | '--shadow-card'
@@ -259,7 +260,11 @@ export type TokenName =
   | '--grad-mask-fade'
   | '--light-cell'
   | '--light-cell-hero'
-  | '--light-alpha';
+  | '--light-alpha'
+  | '--light-grain'
+  | '--light-beam-1'
+  | '--light-beam-2'
+  | '--light-beam-3';
 
 /** Reads a design token from the document. Motion code reads tokens only through this. */
 export function readToken(name: TokenName): string {
@@ -440,6 +445,7 @@ export const tokens = {
   'beam-2-b': '--beam-2-b',
   'beam-3-a': '--beam-3-a',
   'beam-3-b': '--beam-3-b',
+  'opacity-disabled': '--opacity-disabled',
   'shadow-hairline': '--shadow-hairline',
   'shadow-hairline-strong': '--shadow-hairline-strong',
   'shadow-card': '--shadow-card',
@@ -525,4 +531,8 @@ export const tokens = {
   'light-cell': '--light-cell',
   'light-cell-hero': '--light-cell-hero',
   'light-alpha': '--light-alpha',
+  'light-grain': '--light-grain',
+  'light-beam-1': '--light-beam-1',
+  'light-beam-2': '--light-beam-2',
+  'light-beam-3': '--light-beam-3',
 } as const satisfies Record<string, TokenName>;
