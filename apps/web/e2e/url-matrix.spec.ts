@@ -101,3 +101,30 @@ test('the retired pages land on the anchor of their successor', async ({ request
     expect(next.status(), `${from} -> ${to}`).toBe(200);
   }
 });
+
+test('every spelling of the bare /auth reaches the login in one hop', async ({ request }) => {
+  for (const [from, to] of [
+    ['/auth', '/auth/login'],
+    ['/auth/', '/auth/login'],
+    ['/es/auth', '/auth/login'],
+    ['/es/auth/', '/auth/login'],
+    ['/en/auth', '/en/auth/login'],
+    ['/en/auth/', '/en/auth/login'],
+  ] as const) {
+    const res = await request.get(from, { maxRedirects: 0 });
+    expect(res.status(), from).toBe(308);
+    expect(new URL(res.headers()['location'] ?? '', 'http://x').pathname, from).toBe(to);
+  }
+});
+
+test('dynamic children inherit the translated prefix', async ({ request }) => {
+  const redirect = await request.get('/en/proyectos/hazmefila', { maxRedirects: 0 });
+  expect(redirect.status()).toBe(308);
+  expect(new URL(redirect.headers()['location'] ?? '', 'http://x').pathname).toBe(
+    '/en/projects/hazmefila',
+  );
+  // the page arrives in a later task: 404, never 500
+  for (const path of ['/en/projects/hazmefila', '/proyectos/hazmefila', '/en/client-area/tasks/7']) {
+    expect((await request.get(path, { maxRedirects: 0 })).status(), path).toBe(404);
+  }
+});

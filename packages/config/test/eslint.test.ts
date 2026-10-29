@@ -238,6 +238,30 @@ describe('react/jsx-no-literals', () => {
   });
 });
 
+describe('text in JSX attributes (working-agreements 10)', () => {
+  const file = 'apps/web/components/ui/c/c.tsx';
+  const wrap = (jsx: string) =>
+    `export function C({ t }: { t: (k: string) => string }) { return ${jsx}; }\n`;
+
+  it.each([
+    '<button aria-label="Abrir">x</button>',
+    "<button aria-label={'Abrir'}>x</button>",
+    '<img alt="Foto" src="/a.png" />',
+    '<input placeholder="Email" />',
+    '<a title="Inicio" href="/">x</a>',
+  ])('rejects %s', async (jsx) => {
+    expect(await rules(wrap(jsx), file)).toContain('no-restricted-syntax');
+  });
+
+  it.each([
+    "<button aria-label={t('open')}>x</button>",
+    '<img alt={t("photo")} src="/a.png" />',
+    '<input type="email" name="email" />',
+  ])('accepts %s', async (jsx) => {
+    expect(await rules(wrap(jsx), file)).not.toContain('no-restricted-syntax');
+  });
+});
+
 describe('eslint-config-next under ESLint 10', () => {
   it('runs every next/react rule on a realistic component without crashing', async () => {
     const code = [

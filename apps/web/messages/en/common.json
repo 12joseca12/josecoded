@@ -87,7 +87,8 @@
     }
   },
   "facts": {
-    "displayName": "{{DATO: display name (accents, second surname); the prototype uses “Jose Carlos Sánchez”}}",
+    "givenNames": "{{DATO: given names (the prototype uses “Jose Carlos”)}}",
+    "surnames": "{{DATO: surnames with accents (the prototype uses “Sánchez”)}}",
     "city": "{{DATO: city}}",
     "photo": "{{DATO: real photo of Jose}}",
     "cvUrl": "{{DATO: URL of the master CV PDF (en)}}",

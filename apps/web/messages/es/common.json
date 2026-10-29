@@ -87,7 +87,8 @@
     }
   },
   "facts": {
-    "displayName": "{{DATO: nombre a mostrar (tildes, segundo apellido); el prototipo usa «Jose Carlos Sánchez»}}",
+    "givenNames": "{{DATO: nombre de pila (p. ej. el prototipo usa «Jose Carlos»)}}",
+    "surnames": "{{DATO: apellidos con tildes (el prototipo usa «Sánchez»)}}",
     "city": "{{DATO: ciudad}}",
     "photo": "{{DATO: foto real de Jose}}",
     "cvUrl": "{{DATO: URL del CV maestro en PDF (es)}}",

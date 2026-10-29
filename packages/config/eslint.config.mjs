@@ -100,11 +100,25 @@ const restrict = (ids) => {
   };
 };
 
+// working-agreements §10: aria-label, alt, title, placeholder... are text too (`ignoreProps` of
+// react/jsx-no-literals lets them through, so they are restricted here, literal or `{'literal'}`).
+const TEXT_ATTRIBUTES = '/^(aria-label|aria-description|aria-placeholder|aria-roledescription|aria-valuetext|alt|title|placeholder)$/';
+restrictions.attributeLiterals = {
+  selector: `:matches(JSXAttribute[name.name=${TEXT_ATTRIBUTES}] > Literal, JSXAttribute[name.name=${TEXT_ATTRIBUTES}] > JSXExpressionContainer > Literal)`,
+  message: 'No literal text in aria-label/alt/title/placeholder: use t(...) (working-agreements §10).',
+};
+
 const everywhere = ['messages', 'database', 'tokens', 'three', 'supabase', 'dynamicImports'];
 const without = (/** @type {string[]} */ ...ids) => everywhere.filter((x) => !ids.includes(x));
 
 const boundaries = [
   { files: ['**/*.{js,jsx,mjs,ts,tsx,mts,cts}'], rules: restrict(everywhere) },
+  // UI text in attributes (tests and e2e may use literals)
+  {
+    files: ['apps/web/**/*.tsx'],
+    ignores: ['**/*.test.tsx', 'apps/web/e2e/**', 'apps/web/messages/**', 'apps/web/i18n/**'],
+    rules: restrict([...everywhere, 'attributeLiterals']),
+  },
   // gateway routes: all of the above plus «no adapters»
   { files: ['apps/api/src/modules/**'], rules: restrict([...everywhere, 'adapters']) },
   // generated database.ts: only db.ts and the drift test may import it

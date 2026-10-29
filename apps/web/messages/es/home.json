@@ -1,8 +1,8 @@
 {
   "hero": {
     "title": {
-      "line1": "Jose Carlos",
-      "line2": "Sánchez"
+      "line1": "{givenNames}",
+      "line2": "{surnames}"
     },
     "subtitle": "{{DATO: subtítulo de identidad única, una frase, sin audiencias (redactor con voz.md)}}",
     "cta": {
@@ -26,7 +26,7 @@
         },
         "about": {
           "title": "Sobre mí",
-          "name": "Jose Carlos Sánchez",
+          "name": "{givenNames} {surnames}",
           "role": "Desarrollador full-stack freelance",
           "lead": "{{DATO: entradilla Sobre mí con identidad única}}",
           "meet": "Conóceme",

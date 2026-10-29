@@ -2,8 +2,10 @@
 // slugs are translated (plan v2.3). `next.config.ts` derives rewrites and redirects from this
 // object and `routing.ts` hands it to next-intl, so the three never drift.
 // UX v4.0 §2.1–2.2 and pantallas v2.0 §1 (P20 `/servicios`, P21 `/partners`, P22 `/lab`).
-// Dynamic children (`/proyectos/[slug]`, `/blog/[slug]`, `/lab/[slug]`,
-// `/area-clientes/tareas/[id]`) are not listed: they inherit the translated prefix.
+// Dynamic screens are listed with their template (`/proyectos/[slug]`) so that `Link` and
+// `getPathname` accept `{ pathname, params }`. They add no rewrites: `route-rules.ts` skips keys
+// with `[` because the translated parent prefix already rewrites every child.
+// Admin screens (`/admin/...`, noindex, Spanish only) are outside this map on purpose.
 export const pathnames = {
   '/': '/',
   '/servicios': { es: '/servicios', en: '/services' },
@@ -12,8 +14,11 @@ export const pathnames = {
   '/proyectos': { es: '/proyectos', en: '/projects' },
   '/sobre-mi': { es: '/sobre-mi', en: '/about' },
   '/contacto': { es: '/contacto', en: '/contact' },
+  '/proyectos/[slug]': { es: '/proyectos/[slug]', en: '/projects/[slug]' },
   '/blog': '/blog',
+  '/blog/[slug]': '/blog/[slug]',
   '/lab': '/lab',
+  '/lab/[slug]': '/lab/[slug]',
   '/chat': '/chat',
   '/legal/aviso-legal': { es: '/legal/aviso-legal', en: '/legal/notice' },
   '/legal/privacidad': { es: '/legal/privacidad', en: '/legal/privacy' },
@@ -25,6 +30,10 @@ export const pathnames = {
   '/perfil': { es: '/perfil', en: '/profile' },
   '/area-clientes': { es: '/area-clientes', en: '/client-area' },
   '/area-clientes/tareas': { es: '/area-clientes/tareas', en: '/client-area/tasks' },
+  '/area-clientes/tareas/[id]': {
+    es: '/area-clientes/tareas/[id]',
+    en: '/client-area/tasks/[id]',
+  },
   '/area-clientes/material': { es: '/area-clientes/material', en: '/client-area/files' },
   '/area-clientes/pack': { es: '/area-clientes/pack', en: '/client-area/plan' },
   '/area-clientes/pack/ampliar': {

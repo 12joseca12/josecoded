@@ -160,6 +160,8 @@ Nunca se hace `git push --force` sobre una rama compartida ni se reescribe histo
 **Reglas.**
 
 - Ningún literal de texto en JSX ni en TypeScript: siempre `t('clave')` o `useTranslations`. Incluye `aria-label`, `alt`, `title`, placeholders y mensajes de error. Excepciones: identificadores no traducibles (marca `josecoded`, atajos `⌘K`, códigos).
+- El nombre de Jose no se repite en los textos: `facts.givenNames` y `facts.surnames` son la única fuente y el resto de claves lo reciben como argumento ICU (`{givenNames}`, `{surnames}`) que rellena la capa de componentes.
+- La URL de Cal.com y el número de WhatsApp **no** son `facts`: son variables públicas de build `NEXT_PUBLIC_CAL_LINK` y `NEXT_PUBLIC_WHATSAPP_NUMBER` (validadas con zod en `lib/env.ts`, documentadas en `.env.example`, distintas por entorno). Lo que sí es texto traducible, el mensaje prellenado de WhatsApp, vive en `facts.whatsappProject` y `facts.whatsappPacks`.
 - Claves por pantalla y componente (`home.scenes.about.title`), en inglés, sin abreviar. El mismo texto en dos sitios es una sola clave.
 - Un `{{DATO}}` pendiente se escribe como valor `"{{DATO: qué es}}"` en ambos idiomas. El bloque que lo contiene no se renderiza en producción (plan, restricciones globales).
 - Textos largos (fichas de proyectos, servicios, FAQ, blog) siguen en `content/` como decidió el diseño técnico; `messages/` es para la interfaz y los hechos.

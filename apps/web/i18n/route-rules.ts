@@ -65,7 +65,11 @@ export function buildLocaleRules(
 } {
   // longer translated paths first, so /legal/notice is matched before any shorter prefix
   const translated = Object.entries(pathnames)
-    .flatMap(([, value]) => (typeof value === 'string' || value.es === value.en ? [] : [value]))
+    // dynamic templates (`/proyectos/[slug]`) add nothing: their translated parent already
+    // rewrites and redirects every child, whatever the segment is
+    .flatMap(([key, value]) =>
+      key.includes('[') || typeof value === 'string' || value.es === value.en ? [] : [value],
+    )
     .sort((a, b) => b.en.length - a.en.length);
 
   const rewrites: RewriteRule[] = [
@@ -84,10 +88,15 @@ export function buildLocaleRules(
   const redirects: (RedirectRule | RetiredRule)[] = [
     ...buildRetiredRules(retired),
     // bare paths that were never a page: /auth -> /auth/login
+    // (every spelling reaches the login in ONE hop: /auth/, /es/auth, /es/auth/, /en/auth/)
     ...Object.entries(aliases).flatMap(([from, to]) =>
       permanent([
         { source: from, destination: to },
+        { source: `${from}/`, destination: to },
+        { source: `/es${from}`, destination: to },
+        { source: `/es${from}/`, destination: to },
         { source: `/en${from}`, destination: `/en${to}` },
+        { source: `/en${from}/`, destination: `/en${to}` },
       ]),
     ),
     ...permanent([

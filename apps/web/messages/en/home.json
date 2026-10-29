@@ -1,8 +1,8 @@
 {
   "hero": {
     "title": {
-      "line1": "Jose Carlos",
-      "line2": "Sánchez"
+      "line1": "{givenNames}",
+      "line2": "{surnames}"
     },
     "subtitle": "{{DATO: single-identity subtitle, one sentence, no audiences (redactor with voz.md)}}",
     "cta": {
@@ -26,7 +26,7 @@
         },
         "about": {
           "title": "About me",
-          "name": "Jose Carlos Sánchez",
+          "name": "{givenNames} {surnames}",
           "role": "Freelance full-stack developer",
           "lead": "{{DATO: About me lead, single identity}}",
           "meet": "Get to know me",

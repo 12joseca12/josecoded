@@ -145,9 +145,59 @@ describe('translated English slugs (pathnames)', () => {
       ).toBe(false);
     });
 
+    it.each([
+      '/auth',
+      '/auth/',
+      '/es/auth',
+      '/es/auth/',
+    ])('%s reaches /auth/login in one hop', (path) => {
+      expect(redirectFor(path)).toMatchObject({ destination: '/auth/login' });
+    });
+
+    it.each(['/en/auth', '/en/auth/'])('%s reaches /en/auth/login in one hop', (path) => {
+      expect(redirectFor(path)).toMatchObject({ destination: '/en/auth/login' });
+    });
+
     it('sends the bare /auth to the login', () => {
       expect(redirectFor('/auth')).toMatchObject({ destination: '/auth/login' });
       expect(redirectFor('/en/auth')).toMatchObject({ destination: '/en/auth/login' });
+    });
+  });
+
+  describe('dynamic templates', () => {
+    it('lists the dynamic screens with their English equivalents', () => {
+      expect(pathnames['/proyectos/[slug]']).toEqual({
+        es: '/proyectos/[slug]',
+        en: '/projects/[slug]',
+      });
+      expect(pathnames['/area-clientes/tareas/[id]'].en).toBe('/client-area/tasks/[id]');
+      expect(pathnames['/blog/[slug]']).toBe('/blog/[slug]');
+      expect(pathnames['/lab/[slug]']).toBe('/lab/[slug]');
+    });
+
+    it('emits no rule with brackets: the translated parent covers every child', () => {
+      for (const rule of [...rewrites, ...redirects]) {
+        expect(rule.source).not.toMatch(/\[(slug|id)\]/);
+        expect(rule.destination).not.toMatch(/\[(slug|id)\]/);
+      }
+    });
+
+    it.each([
+      ['/en/projects/hazmefila', '/en/proyectos/:path+'],
+      ['/en/client-area/tasks/7', '/en/area-clientes/tareas/:path+'],
+    ])('%s rewrites to %s', (path, destination) => {
+      expect(rewrites.find((rule) => match(rule.source)(path) !== false)?.destination).toBe(
+        destination,
+      );
+    });
+
+    it('leaves /en/lab/x to the page itself (same slug in both languages)', () => {
+      expect(rewrites.some((rule) => match(rule.source)('/en/lab/x') !== false)).toBe(false);
+    });
+
+    it('redirects the untranslated English child to the translated one', () => {
+      const rule = redirects.find((r) => match(r.source)('/en/proyectos/hazmefila') !== false);
+      expect(rule).toMatchObject({ destination: '/en/projects/:path+', permanent: true });
     });
   });
 

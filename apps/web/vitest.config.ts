@@ -8,6 +8,8 @@ export default defineConfig({
   },
   test: {
     environment: 'happy-dom',
+    // next-intl's ESM imports 'next/navigation' without extension: let vite resolve it
+    server: { deps: { inline: ['next-intl'] } },
     include: ['**/*.test.{ts,tsx}'],
     exclude: ['node_modules', '.next', '.open-next', 'e2e'],
     typecheck: { enabled: true, include: ['tests/**/*.test-d.ts'] },

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { localizePath, pageMetadata } from './page-metadata';
+import { pageMetadata } from './page-metadata';
 
 vi.mock('@/lib/env', () => ({
   env: { client: { NEXT_PUBLIC_SITE_URL: 'https://josecoded.com' } },
@@ -54,7 +54,8 @@ describe('pageMetadata', () => {
   it('no alternates when the page has no translation', () => {
     const m = pageMetadata({
       locale: 'es',
-      pathname: '/blog/solo-es',
+      pathname: '/blog/[slug]',
+      params: { slug: 'solo-es' },
       title: 't',
       description: 'd',
       hasTranslation: false,
@@ -87,16 +88,20 @@ describe('pageMetadata', () => {
   });
 });
 
-describe('localizePath', () => {
+describe('dynamic pages', () => {
   it.each([
-    ['/servicios', 'en', '/services'],
-    ['/servicios', 'es', '/servicios'],
-    ['/proyectos/hazmefila', 'en', '/projects/hazmefila'],
-    ['/area-clientes/pack/ampliar', 'en', '/client-area/plan/upgrade'],
-    ['/area-clientes/pack/algo', 'en', '/client-area/plan/algo'],
-    ['/blog/guia', 'en', '/blog/guia'],
-    ['/', 'en', '/'],
-  ] as const)('%s in %s is %s', (path, locale, expected) => {
-    expect(localizePath(path, locale)).toBe(expected);
+    ['es', '/proyectos/[slug]', 'https://josecoded.com/proyectos/hazmefila'],
+    ['en', '/proyectos/[slug]', 'https://josecoded.com/en/projects/hazmefila'],
+    ['en', '/blog/[slug]', 'https://josecoded.com/en/blog/hazmefila'],
+    ['en', '/area-clientes/tareas/[id]', 'https://josecoded.com/en/client-area/tasks/hazmefila'],
+  ] as const)('%s %s', (locale, pathname, canonical) => {
+    const m = pageMetadata({
+      locale,
+      pathname,
+      params: { slug: 'hazmefila', id: 'hazmefila' },
+      title: 't',
+      description: 'd',
+    });
+    expect(m.alternates?.canonical).toBe(canonical);
   });
 });
