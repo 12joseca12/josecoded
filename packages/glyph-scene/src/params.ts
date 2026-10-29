@@ -3,7 +3,23 @@ import { mulberry32 } from './rng';
 import { sha256Hex } from './sha256';
 
 /** Scene parameters of the approved v6 hero (ref/home-v6/scene.js:11). `directedMorph` belongs to dead code and is not ported. */
-export const PARAMS = {
+export type Params = {
+  hold: number;
+  morph: number;
+  rot: number;
+  size: number;
+  green: number;
+  scatter: number;
+  breath: number;
+  wperiod: number;
+  wamp: number;
+  bloom: number;
+  bloomth: number;
+  focus: number;
+  mirror: number;
+};
+
+export const PARAMS: Params = {
   hold: 3.5,
   morph: 1.6,
   rot: 0.18,
@@ -17,7 +33,7 @@ export const PARAMS = {
   bloomth: 0.72,
   focus: 6.2,
   mirror: 0.35,
-} as const;
+};
 
 /** Particle counts: the poster and the live scene use `desktop`; the video is rendered with `video`. */
 export const COUNT = { desktop: 9000, video: 5000 } as const;
@@ -32,6 +48,10 @@ export const CAPTURE = {
   posterFrame: 15,
 } as const;
 
+/**
+ * Inputs of `paramsHash`. `threeVersion` and `sources` are optional here, but the task 2.6 scripts (hero:media,
+ * hero:media:check) MUST pass them: the plan requires shaders/scene/atlas sources and the `three` version in the hash.
+ */
 export type HashInputs = {
   params: Record<string, unknown>;
   count: Record<string, unknown>;
@@ -42,19 +62,27 @@ export type HashInputs = {
   sources: readonly string[];
 };
 
-/** Behavioural fingerprint of clouds.ts: any change to a shape or to the sampling changes the sample. */
-function cloudsDigest(seed: number): string {
-  const rng = mulberry32(seed);
-  const parts = (Object.keys(clouds) as Array<keyof typeof clouds>).map((k) => {
-    const a = clouds[k](256, rng);
-    return k + ':' + a.reduce((acc, v) => acc + v.toFixed(5) + ',', '');
-  });
+type CloudFn = (n: number, rng: () => number) => Float32Array;
+
+/**
+ * Behavioural fingerprint of clouds.ts: every cloud is sampled with the real capture counts
+ * (`COUNT.desktop` and `COUNT.video`) and the capture seed, so any change to a shape or to the sampling that
+ * alters a particle of the poster or the video changes the digest. `cloudMap` is injectable for tests.
+ */
+export function cloudsDigest(seed: number, cloudMap: Record<string, CloudFn> = clouds): string {
+  const parts: string[] = [];
+  for (const k of Object.keys(cloudMap)) {
+    for (const n of [COUNT.desktop, COUNT.video]) {
+      const a = (cloudMap[k] as CloudFn)(n, mulberry32(seed));
+      parts.push(k + ':' + n + ':' + sha256Hex(Array.from(a, (v) => v.toFixed(6)).join(',')));
+    }
+  }
   return sha256Hex(parts.join('|'));
 }
 
 /**
  * Short sha256 (16 hex) of everything that decides how the hero looks: PARAMS, COUNT, CAPTURE, the clouds
- * (through a digest of their output, equivalent to hashing clouds.ts), the `three` version and, when given,
+ * (through a digest of their output at the real capture counts, equivalent to hashing clouds.ts), the `three` version and, when given,
  * the sources of shaders/scene/atlas. `hero:media` only regenerates when this changes.
  */
 export function paramsHash(over: Partial<HashInputs> = {}): string {
