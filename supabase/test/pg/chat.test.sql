@@ -125,7 +125,7 @@ select t.ok(bool_and(has_function_privilege('service_role', f, 'execute')
 select t.ok((select provolatile = 's' from pg_proc where proname = 'chat_context_published'),
             'chat_context_published is stable');
 select t.ok((select prosrc !~* '(execute|to_regclass)' and prosrc ~ 'public\.chat_threads'
-             from pg_proc where proname = 'admin_counters'),
+             from pg_proc where proname = 'admin_counters_impl'),
             'admin_counters reads chat_threads statically (no dynamic lookup left)');
 
 select t.ok((select count(*) = 3 and count(*) filter (where status = 'published') = 2

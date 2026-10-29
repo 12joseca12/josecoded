@@ -132,12 +132,18 @@ begin
     -- Allowlist: the policy helpers and the RPCs that DATOS §6 grants to authenticated (they check the caller inside).
     if has_function_privilege('authenticated', r.oid, 'execute') and r.sig::text not in (
          'private.is_admin()', 'private.client_id_of()', 'private.comment_parent_ok(uuid,text,locale)',
-         'crm_import_organizations(jsonb)', 'request_upgrade(text,text[])', 'claim_client_access()',
-         'area_lead_summary()', 'affiliate_leads()', 'admin_counters()', 'admin_clients(uuid)',
-         'admin_close_lead_paid(uuid,numeric,timestamp with time zone,boolean,reward_type,numeric,smallint,text)') then
+         'private.crm_import_organizations_impl(jsonb)', 'private.request_upgrade_impl(text,text[])',
+         'private.claim_client_access_impl()', 'private.area_lead_summary_impl()', 'private.affiliate_leads_impl()',
+         'private.admin_counters_impl()', 'private.admin_clients_impl(uuid)',
+         'private.admin_close_lead_paid_impl(uuid,numeric,timestamp with time zone,boolean,reward_type,numeric,smallint,text)') then
       raise exception 'FAIL authenticated can execute security definer %', r.sig;
     end if;
   end loop;
+  -- DATOS §10.4 (advisor 0029): no security definer lives in public; the RPCs are invoker wrappers over private impls.
+  if exists (select 1 from pg_proc p join pg_namespace s on s.oid = p.pronamespace
+             where s.nspname = 'public' and p.prosecdef and has_function_privilege('authenticated', p.oid, 'execute')) then
+    raise exception 'FAIL a security definer function in public is executable by authenticated';
+  end if;
   raise notice 'PASS authenticated executes only the allowlisted security definer helpers and RPCs';
 
   if has_schema_privilege('anon', 'private', 'usage') then raise exception 'FAIL anon has usage on private'; end if;
