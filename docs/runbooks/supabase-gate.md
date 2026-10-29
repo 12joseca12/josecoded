@@ -30,6 +30,8 @@ crear o rotar y en qué Worker (paso 9); y que **no hay nada que migrar** del pr
 
 ## 2. Esquema (paso 3, Mac de Jose)
 
+> Desde la nube no hay conexión directa a Postgres: allí la migración se aplica con la Management API (`POST /v1/projects/<ref>/database/query`) en una transacción que incluye `insert into supabase_migrations.schema_migrations(version, name, statements)`, para que `supabase migration list` siga coincidiendo. Advisors: `GET /v1/projects/<ref>/advisors/{security,performance}`.
+
 ```bash
 supabase link --project-ref echlwywbucgbhwpncviy
 supabase db push --dry-run     # debe listar exactamente las migraciones del repo y nada más
