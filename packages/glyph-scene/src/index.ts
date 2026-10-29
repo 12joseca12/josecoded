@@ -1,7 +1,10 @@
+export { createGlyphScene } from './scene';
+export type { GlyphScene, GlyphSceneDebug, GlyphSceneMode, GlyphSceneOptions } from './scene';
+export type { StateIndex } from './cycle';
 export { CHARS, GL } from './glyphs';
 export { clouds, cloudChipBrain, cloudPhone, cloudWeb } from './clouds';
 export type { ChipMeta, CloudName } from './clouds';
 export { CAPTURE, COUNT, PARAMS, paramsHash } from './params';
-export type { HashInputs } from './params';
+export type { HashInputs, Params } from './params';
 export { mulberry32 } from './rng';
 export type { Rng } from './rng';
