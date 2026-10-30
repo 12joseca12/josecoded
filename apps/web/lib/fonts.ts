@@ -1,4 +1,5 @@
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Geist } from 'next/font/google';
+import localFont from 'next/font/local';
 
 // Geist for everything, Geist Mono only in keys, the language link, {{DATO}} markers and glyphs
 // (DESIGN.md «The One Family Rule»). next/font downloads the files at build time and serves them
@@ -14,9 +15,14 @@ export const geist = Geist({
   fallback: ['ui-sans-serif', 'system-ui', 'sans-serif'],
 });
 
-export const geistMono = Geist_Mono({
-  subsets: ['latin'],
-  weight: '500',
+/**
+ * Geist Mono is the vendored variable file (OFL, licence beside it), the same bytes `@josecoded/glyph-scene`
+ * paints its atlas with when it renders the hero media (`render/GeistMono-Variable.woff2`), so the live
+ * scene and the video/poster use one font. A test keeps the two copies identical.
+ */
+export const geistMono = localFont({
+  src: './fonts/GeistMono-Variable.woff2',
+  weight: '100 900',
   display: 'swap',
   variable: '--font-geist-mono',
   fallback: ['ui-monospace', 'SF Mono', 'monospace'],

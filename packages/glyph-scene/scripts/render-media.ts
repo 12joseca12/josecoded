@@ -4,6 +4,7 @@
  * Only regenerates when `paramsHash` changed (`--force` to override). Output is committed under apps/web/public.
  */
 import { execFile } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { createServer, type Server } from 'node:http';
 import { tmpdir } from 'node:os';
@@ -14,19 +15,23 @@ import { build } from 'esbuild';
 import { chromium, type Browser } from 'playwright';
 import sharp from 'sharp';
 
-import { checkMedia, checkMediaFiles, LIMITS, type MediaManifest } from './check-media';
+
+import { checkMedia, checkMediaFiles, LIMITS } from './check-media';
 import { ART, FONT_FILE, MANIFEST_PATH, PUBLIC_DIR, ROOT, mediaHash } from './media-config';
+import { bisect as bisectCrf, fit, glowToAlpha as glowPixels, psnr as psnrRaw } from './media-math';
 import { CAPTURE, COUNT } from '../src/params';
 
 import type { HarnessApi } from '../render/harness';
+import type { MediaManifest } from '@josecoded/types';
 
 const run = promisify(execFile);
 const args = process.argv.slice(2);
 const force = args.includes('--force');
 const framesArg = args.indexOf('--frames-dir');
-const framesDir = framesArg >= 0 ? (args[framesArg + 1] as string) : mkdtempSync(join(tmpdir(), 'glyph-frames-'));
 const keepFrames = framesArg >= 0;
 const MIN_LOOP_PSNR = 35;
+/** Page background (`--color-bg`): the poster is opaque, so no alpha channel is encoded. */
+const POSTER_BG = '#07060f';
 const log = (m: string) => console.log(`hero:media: ${m}`);
 
 /* ---------- freshness ---------- */
@@ -42,6 +47,9 @@ if (!force) {
     // no manifest yet: generate
   }
 }
+
+// Created only when generating (after the freshness check), so an up-to-date run leaves nothing behind.
+const framesDir = framesArg >= 0 ? (args[framesArg + 1] as string) : mkdtempSync(join(tmpdir(), 'glyph-frames-'));
 
 /* ---------- harness server ---------- */
 async function serve(): Promise<{ server: Server; url: string }> {
@@ -96,44 +104,14 @@ async function raw(png: Buffer) {
   return { data, ...info };
 }
 
-async function psnr(a: Buffer, b: Buffer): Promise<number> {
-  const [x, y] = await Promise.all([raw(a), raw(b)]);
-  let se = 0;
-  for (let i = 0; i < x.data.length; i++) {
-    const d = (x.data[i] as number) - (y.data[i] as number);
-    se += d * d;
-  }
-  const mse = se / x.data.length;
-  return mse === 0 ? Infinity : 10 * Math.log10((255 * 255) / mse);
-}
+const psnr = async (a: Buffer, b: Buffer) => psnrRaw((await raw(a)).data, (await raw(b)).data);
 
-/** Additive glow on black -> straight-alpha RGBA: alpha from the glow's brightest channel (haze below the floor is cut), colour = glow / alpha, so it looks the same over a dark page. */
+/** Additive glow on black -> straight-alpha PNG (see `glowToAlpha` in media-math). */
 async function glowToAlpha(png: Buffer): Promise<Buffer> {
   const crop = sharp(png).extract({ left: Math.floor((ART.viewportWidth - ART.width) / 2), top: 0, width: ART.width, height: ART.height });
   const { data, width, height } = await raw(await crop.png().toBuffer());
-  const out = Buffer.alloc(width * height * 4);
-  for (let i = 0; i < width * height; i++) {
-    const r = data[i * 3] as number;
-    const g = data[i * 3 + 1] as number;
-    const b = data[i * 3 + 2] as number;
-    const a = Math.min(255, Math.round(Math.max(0, Math.max(r, g, b) - ART.alpha.floor) * ART.alpha.gain));
-    if (a > 0) {
-      out[i * 4] = Math.min(255, Math.round((r * 255) / a));
-      out[i * 4 + 1] = Math.min(255, Math.round((g * 255) / a));
-      out[i * 4 + 2] = Math.min(255, Math.round((b * 255) / a));
-    }
-    out[i * 4 + 3] = a;
-  }
-  return sharp(out, { raw: { width, height, channels: 4 } }).png().toBuffer();
-}
-
-/** Highest quality (from `start` down) whose encoding fits the limit. */
-async function fit(name: string, encode: (q: number) => Promise<Buffer>, start: number, limit: number): Promise<Buffer> {
-  for (let q = start; q >= 20; q -= 4) {
-    const buf = await encode(q);
-    if (buf.length <= limit) return buf;
-  }
-  throw new Error(`${name} does not fit ${limit} bytes even at quality 20`);
+  const rgba = glowPixels(data, width * height, ART.alpha.floor, ART.alpha.gain);
+  return sharp(rgba, { raw: { width, height, channels: 4 } }).png().toBuffer();
 }
 
 /* ---------- video ---------- */
@@ -150,21 +128,13 @@ async function encode(codec: 'webm' | 'mp4', crf: number, out: string): Promise<
   return statSync(out).size;
 }
 
-/** Lowest crf (best quality) whose file fits the limit; the size grows as crf falls, so a bisection finds it. */
-async function bisect(codec: 'webm' | 'mp4', lo: number, hi: number, out: string, limit: number): Promise<number> {
-  let best = hi;
-  while (lo <= hi) {
-    const mid = (lo + hi) >> 1;
-    const bytes = await encode(codec, mid, out);
-    log(`${codec} crf ${mid}: ${bytes} bytes`);
-    if (bytes <= limit) {
-      best = mid;
-      hi = mid - 1;
-    } else lo = mid + 1;
-  }
-  const bytes = await encode(codec, best, out);
-  if (bytes > limit) throw new Error(`${codec} does not fit ${limit} bytes even at crf ${best}`);
-  return best;
+const bisect = async (codec: 'webm' | 'mp4', lo: number, hi: number, out: string, limit: number) =>
+  bisectCrf((crf) => encode(codec, crf, out), lo, hi, limit, (crf, bytes) => log(`${codec} crf ${crf}: ${bytes} bytes`));
+
+/** Versions of the tools that make the files, recorded in the manifest. */
+async function generatorVersions(b: Browser): Promise<MediaManifest['generator']> {
+  const ffmpeg = (await run('ffmpeg', ['-version'])).stdout.split('\n')[0]?.replace(/^ffmpeg version /, '').split(' ')[0] ?? 'unknown';
+  return { chromium: b.version(), ffmpeg, sharp: sharp.versions.sharp };
 }
 
 /* ---------- main ---------- */
@@ -215,21 +185,21 @@ try {
   const out: Record<string, Buffer> = {
     'hero/video.webm': readFileSync(join(stage, 'video.webm')),
     'hero/video.mp4': readFileSync(join(stage, 'video.mp4')),
-    'hero/poster.avif': await fit('poster.avif', (q) => sharp(posterPng).avif({ quality: q, effort: 6 }).toBuffer(), 50, LIMITS['hero/poster.avif'] as number),
-    'hero/poster.webp': await fit('poster.webp', (q) => sharp(posterPng).webp({ quality: q, effort: 6 }).toBuffer(), 78, LIMITS['hero/poster.webp'] as number),
-    'art/glyph-phone.avif': await fit('glyph-phone.avif', (q) => sharp(art.phone).avif({ quality: q, effort: 6 }).toBuffer(), 60, LIMITS['art/glyph-phone.avif'] as number),
-    'art/glyph-web.avif': await fit('glyph-web.avif', (q) => sharp(art.web).avif({ quality: q, effort: 6 }).toBuffer(), 60, LIMITS['art/glyph-web.avif'] as number),
+    'hero/poster.avif': Buffer.from(await fit('poster.avif', (q) => sharp(posterPng).flatten({ background: POSTER_BG }).avif({ quality: q, effort: 6 }).toBuffer(), 50, LIMITS['hero/poster.avif'] as number)),
+    'hero/poster.webp': Buffer.from(await fit('poster.webp', (q) => sharp(posterPng).flatten({ background: POSTER_BG }).webp({ quality: q, effort: 6 }).toBuffer(), 78, LIMITS['hero/poster.webp'] as number)),
+    'art/glyph-phone.avif': Buffer.from(await fit('glyph-phone.avif', (q) => sharp(art.phone).avif({ quality: q, effort: 6 }).toBuffer(), 60, LIMITS['art/glyph-phone.avif'] as number)),
+    'art/glyph-web.avif': Buffer.from(await fit('glyph-web.avif', (q) => sharp(art.web).avif({ quality: q, effort: 6 }).toBuffer(), 60, LIMITS['art/glyph-web.avif'] as number)),
   };
 
-  const files: Record<string, number> = {};
+  const files: MediaManifest['files'] = {};
   for (const [name, buf] of Object.entries(out)) {
     const path = join(PUBLIC_DIR, name);
     mkdirSync(join(path, '..'), { recursive: true });
     writeFileSync(path, buf);
-    files[name] = buf.length;
+    files[name] = { bytes: buf.length, sha256: createHash('sha256').update(buf).digest('hex') };
     log(`${name}: ${buf.length} bytes`);
   }
-  const manifest: MediaManifest = { generatedAt: new Date().toISOString(), paramsHash: hash, seed: CAPTURE.seed, files, loopPsnr: Number(loopPsnr.toFixed(2)) };
+  const manifest: MediaManifest = { generatedAt: new Date().toISOString(), paramsHash: hash, seed: CAPTURE.seed, files, loopPsnr: Number(loopPsnr.toFixed(2)), generator: await generatorVersions(browser) };
   writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, 2) + '\n');
   log(`done (webm crf ${webmCrf}, mp4 crf ${mp4Crf}, paramsHash ${hash})`);
 } finally {

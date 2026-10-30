@@ -17,6 +17,8 @@ const cache = join(root, 'node_modules/.cache');
 mkdirSync(cache, { recursive: true });
 const out = mkdtempSync(join(cache, 'run-'));
 const outfile = join(out, 'main.mjs');
+// Scripts may call process.exit(); 'exit' handlers run synchronously, so the bundle dir never outlives the process.
+process.on('exit', () => rmSync(out, { recursive: true, force: true }));
 try {
   await build({
     entryPoints: [resolve(root, entry)],
@@ -24,7 +26,8 @@ try {
     bundle: true,
     platform: 'node',
     format: 'esm',
-    packages: 'external',
+    // Workspace packages (TypeScript sources) are bundled; everything else resolves from node_modules.
+    external: ['esbuild', 'playwright', 'sharp', 'three', '@types/*'],
     logLevel: 'warning',
   });
   process.env['GLYPH_SCENE_ROOT'] = root;

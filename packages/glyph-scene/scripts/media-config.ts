@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -9,7 +9,8 @@ import { CAPTURE, paramsHash } from '../src/params';
 export const ROOT = process.env['GLYPH_SCENE_ROOT'] ?? resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export const PUBLIC_DIR = resolve(ROOT, '../../apps/web/public');
 export const MANIFEST_PATH = join(PUBLIC_DIR, 'hero/media.json');
-export const FONT_FILE = join(ROOT, 'node_modules/geist/dist/fonts/geist-mono/GeistMono-Variable.woff2');
+/** Vendored Geist Mono (OFL, licence next to it); the app serves a copy of the same file (apps/web/lib/fonts). */
+export const FONT_FILE = join(ROOT, 'render/GeistMono-Variable.woff2');
 
 /**
  * Project art: still frames of the phone and web states, 801x722 like the prototype's `glyph-*-alpha.png`
@@ -36,24 +37,33 @@ export function threeVersion(): string {
   return (JSON.parse(read('node_modules/three/package.json')) as { version: string }).version;
 }
 
-/** Digest of the font file: a different Geist Mono changes every glyph of the atlas. */
-export const fontDigest = (): string => createHash('sha256').update(readFileSync(FONT_FILE)).digest('hex');
+/**
+ * Everything that produces the media: all of `src/` and `render/` (scene, glyph set, harness, page and the vendored
+ * font) plus the scripts that capture, encode and measure. Tests are not inputs. Sorted, so the order is stable.
+ */
+export function hashedFiles(root = ROOT): string[] {
+  const out: string[] = [];
+  const walk = (rel: string) => {
+    for (const entry of readdirSync(join(root, rel), { withFileTypes: true })) {
+      const path = `${rel}/${entry.name}`;
+      if (entry.isDirectory()) walk(path);
+      else if (!/\.test\.[cm]?[jt]sx?$/.test(entry.name)) out.push(path);
+    }
+  };
+  walk('src');
+  walk('render');
+  out.push(...MEDIA_SCRIPTS);
+  return out.sort();
+}
+
+/** Scripts that decide how the media are made (the manifest checkers are not part of it). */
+const MEDIA_SCRIPTS = ['scripts/render-media.ts', 'scripts/media-math.ts', 'scripts/media-config.ts', 'scripts/run-ts.mjs'];
 
 /**
- * `paramsHash` with everything the media depend on: the scene sources, the glyph set, the capture harness,
- * the font file, the `three` version and the art geometry. Any change regenerates the media.
+ * `paramsHash` with everything the media depend on: the files above (by content, the font included), the `three`
+ * version and the art geometry. Any change regenerates the media.
  */
-export function mediaHash(): string {
-  const sources = [
-    'src/shaders.ts',
-    'src/scene.ts',
-    'src/atlas.ts',
-    'src/cloud-set.ts',
-    'src/cycle.ts',
-    'src/glyphs.ts',
-    'render/harness.ts',
-    'render/index.html',
-  ].map(read);
-  sources.push(`font:${fontDigest()}`);
+export function mediaHash(root = ROOT): string {
+  const sources = hashedFiles(root).map((rel) => `${rel}:${createHash('sha256').update(readFileSync(join(root, rel))).digest('hex')}`);
   return paramsHash({ threeVersion: threeVersion(), sources, capture: { ...CAPTURE, art: ART } });
 }

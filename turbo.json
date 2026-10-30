@@ -39,7 +39,14 @@
     "hero:media": {
       "cache": false
     },
-    "hero:media:check": {},
+    "hero:media:check": {
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/apps/web/public/hero/**",
+        "$TURBO_ROOT$/apps/web/public/art/**",
+        "$TURBO_ROOT$/packages/types/src/schemas/media.ts"
+      ]
+    },
     "check:hero-bundle": {},
     "lhci": {
       "cache": false
