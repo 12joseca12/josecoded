@@ -38,6 +38,10 @@ export interface GlyphSceneOptions {
   params?: Partial<Params>;
   /** Fixed dt, no intro, `rot` 0 and loop-perfect periods (sway 5.1 s, breath 3 cycles per 15.3 s, waves 3.825 s). */
   capture?: boolean;
+  /** CSS `font-family` value of the glyph atlas (next/font hashes the family: pass the computed one). Defaults to `"Geist Mono"`. */
+  fontFamily?: string;
+  /** Initial rotation in radians (media art only: a still of the cloud turned like the prototype's). Use with `params: { rot: 0 }` to keep it. */
+  pose?: { rotY?: number; rotX?: number };
   /** CSS colour of the clear colour; defaults to the `--bg` custom property, then `#07060f`. */
   background?: string;
   /** Fires when the highlighted cycle state changes (not for the initial state). `progress` is the bar fill at that moment. */
@@ -112,7 +116,7 @@ export async function createGlyphScene(o: GlyphSceneOptions): Promise<GlyphScene
   const N = o.count ?? COUNT.desktop;
   const { canvas, stage, field } = o;
 
-  const [clouds, atlas] = await Promise.all([loadClouds(N, seed), createAtlasTexture()]);
+  const [clouds, atlas] = await Promise.all([loadClouds(N, seed), createAtlasTexture(o.fontFamily)]);
 
   const renderer = new WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: 'high-performance' });
   renderer.setPixelRatio(capture ? 1 : Math.min(devicePixelRatio || 1, 1.5));
@@ -167,6 +171,7 @@ export async function createGlyphScene(o: GlyphSceneOptions): Promise<GlyphScene
       uBreath: u(P.breath),
       uBreathW: u(breathW),
       uTracePeriod: u(tracePeriod),
+      uLoop: u(capture ? LOOP_SECONDS : 0),
       uMirror: u(0),
       uFocus: u(P.focus),
       uSize: u(P.size),
@@ -224,7 +229,8 @@ export async function createGlyphScene(o: GlyphSceneOptions): Promise<GlyphScene
   }
 
   layout();
-  const cur = { x: heroX, y: heroY, scale: heroScale, bright: narrow ? 0.55 : 1, mirror: 1 };
+  // Capture starts on its steady state (the prototype's live scene fades the reflection out on narrow screens), so frame 0 equals the last frame.
+  const cur = { x: heroX, y: heroY, scale: heroScale, bright: narrow ? 0.55 : 1, mirror: capture ? targetFor(mode).mirror : 1 };
 
   /* ---- state ---- */
   const cycle = createCycle();
@@ -237,8 +243,8 @@ export async function createGlyphScene(o: GlyphSceneOptions): Promise<GlyphScene
   let lastY = 0;
   let velX = 0;
   let velY = 0;
-  let rotY = 0;
-  let rotX = 0;
+  let rotY = o.pose?.rotY ?? 0;
+  let rotX = o.pose?.rotX ?? 0;
   let tiltX = 0;
   let tiltY = 0;
   let fx = 0;

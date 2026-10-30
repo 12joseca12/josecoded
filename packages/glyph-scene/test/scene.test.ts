@@ -126,6 +126,21 @@ it('capture loop closes in 459 steps of 1/30 s: state, phase, uProg, rotY and uT
   expect(first.uTime).toBe(0);
 });
 
+it('capture starts on its steady look (no fading reflection) and honours the initial pose; live fades from the prototype start', async () => {
+  const mk = async (capture: boolean, pose?: { rotY: number }) => {
+    const stage = document.createElement('div');
+    document.body.append(stage);
+    return createGlyphScene({ canvas: document.createElement('canvas'), stage, count: 200, capture, background: '#07060f', ...(pose ? { pose } : null) });
+  };
+  vi.stubGlobal('matchMedia', () => ({ matches: false })); // below 56.25rem: the narrow look has no reflection
+  const cap = await mk(true);
+  const live = await mk(false);
+  expect(cap.debug().mirror).toBe(0);
+  expect(live.debug().mirror).toBe(1);
+  expect((await mk(false, { rotY: 0.6 })).debug().rotY).toBe(0.6);
+  vi.unstubAllGlobals();
+});
+
 describe('lifecycle', () => {
   let raf: ReturnType<typeof vi.fn>;
   let caf: ReturnType<typeof vi.fn>;

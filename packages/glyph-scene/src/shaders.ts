@@ -2,9 +2,11 @@
 
 export const VERTEX = /* glsl */ `
 attribute vec3 aT0, aT1, aT2; attribute float aSeed, aGlyph, aCol, aKind, aParam;
-uniform float uTime, uProg, uFrom, uTo, uSize, uScatter, uDpr, uIntroT, uWave, uWavePeriod, uWaveAmp, uBreath, uBreathW, uTracePeriod, uMirror, uFocus;
+uniform float uTime, uProg, uFrom, uTo, uSize, uScatter, uDpr, uIntroT, uWave, uWavePeriod, uWaveAmp, uBreath, uBreathW, uTracePeriod, uMirror, uFocus, uLoop;
 varying float vGlyph, vCol, vSeed, vFade, vAlpha, vSoft, vLand;
 float ease(float t){ return t*t*(3.0-2.0*t); }
+// Capture only (uLoop = loop seconds): rounds an angular frequency to a whole number of cycles per loop so the seam is invisible.
+float loopW(float w){ return uLoop > 0.0 ? floor(w * uLoop / 6.2831853 + 0.5) * 6.2831853 / uLoop : w; }
 void main(){
   float f = uProg;
   int si = int(uFrom + 0.5); int sj = int(uTo + 0.5);
@@ -46,14 +48,22 @@ void main(){
   float dA = (si == 2) ? 0.62 : 0.45;
   float dB = (sj == 2) ? 0.62 : 0.45;
   float dens = mix(dA, dB, t);
-  vFade = (0.30 + 0.20 * (sin(uTime * (1.0 + aSeed) + aSeed * 30.0) * 0.5 + 0.5) + head * 1.4 + mid * 0.5 + tracePulse) * dens;
+  vFade = (0.30 + 0.20 * (sin(uTime * loopW(1.0 + aSeed) + aSeed * 30.0) * 0.5 + 0.5) + head * 1.4 + mid * 0.5 + tracePulse) * dens;
 }`;
 
 export const FRAGMENT = /* glsl */ `
-uniform sampler2D uAtlas; uniform float uBright, uTime;
+uniform sampler2D uAtlas; uniform float uBright, uTime, uLoop;
 varying float vGlyph, vCol, vSeed, vFade, vAlpha, vSoft, vLand;
 void main(){
-  float g = mod(vGlyph + floor(uTime * (0.4 + vSeed * 0.8) + vSeed * 9.0), 128.0);
+  float rate = 0.4 + vSeed * 0.8;
+  float k = floor(uTime * rate + vSeed * 9.0);
+  if (uLoop > 0.0) {
+    // Capture: n glyph changes per loop, walked forward then back (a plain counter would land n glyphs away from where it started).
+    float n = floor(rate * uLoop + 0.5);
+    k = mod(floor(uTime * n / uLoop + fract(vSeed * 9.0)), n);
+    k = min(k, n - k);
+  }
+  float g = mod(vGlyph + k, 128.0);
   vec2 cell = vec2(mod(g, 16.0), floor(g / 16.0));
   vec2 uv = vec2((cell.x + gl_PointCoord.x) / 16.0, 1.0 - (cell.y + gl_PointCoord.y) / 8.0);
   float a = texture2D(uAtlas, uv).r;

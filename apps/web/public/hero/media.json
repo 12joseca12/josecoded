@@ -1,0 +1,14 @@
+{
+  "generatedAt": "2026-10-30T14:53:50.352Z",
+  "paramsHash": "32b36bc9856bbc84",
+  "seed": 1,
+  "files": {
+    "hero/video.webm": 681233,
+    "hero/video.mp4": 604031,
+    "hero/poster.avif": 11106,
+    "hero/poster.webp": 14174,
+    "art/glyph-phone.avif": 53440,
+    "art/glyph-web.avif": 56121
+  },
+  "loopPsnr": 45.85
+}
