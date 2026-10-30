@@ -40,10 +40,10 @@ test.describe('desktop 1440', () => {
     await expect(page.locator('main#main')).toBeFocused();
   });
 
-  test('the bar has the sections that have content (Lab and Blog are off until 4.2/4.5), language, search, chat and login, and no Contacto', async ({ page }) => {
+  test('the bar has the sections that have content (Lab and Blog show outside production; e2e builds with NEXT_PUBLIC_SITE_ENV=development), language, search, chat and login, and no Contacto', async ({ page }) => {
     await page.goto('/');
     const nav = header(page).getByRole('navigation', { name: 'Principal' });
-    await expect(nav.getByRole('link')).toHaveText(['Sobre mí', 'Servicios', 'Proyectos']);
+    await expect(nav.getByRole('link')).toHaveText(['Sobre mí', 'Servicios', 'Proyectos', 'Lab', 'Blog']);
     await expect(header(page).getByRole('link', { name: 'Contacto' })).toHaveCount(0);
     await expect(header(page).getByRole('link', { name: 'Para agencias' })).toBeHidden();
     await expect(header(page).getByRole('link', { name: 'English' })).toHaveText('EN');
@@ -111,6 +111,8 @@ test.describe('desktop 1440', () => {
       'Sobre mí',
       'Servicios',
       'Proyectos',
+      'Lab',
+      'Blog',
       'Para agencias',
       'Contacto',
       'Área de clientes',
@@ -157,6 +159,8 @@ test.describe('mobile 360', () => {
       'Sobre mí',
       'Servicios',
       'Proyectos',
+      'Lab',
+      'Blog',
       'Para agencias',
       'Contacto',
     ]);

@@ -13,7 +13,7 @@
 - **Reglas que no se discuten**: nada inventado (ni testimonios, ni cifras, ni precios fuera de `tarifas.md`); sin métricas en la web (los precios «desde» sí); solo modo oscuro; una acción primaria por pantalla; máximo tres niveles de navegación; mobile-first; bloque sin `{{DATO}}` cubierto = bloque que no se publica.
 - **Modo de superficie** (impeccable): **Persuadir** (Sobre mí, Empresas, Negocios, Proyectos, Contacto), **Leer** (ficha de proyecto, blog, artículo, legales), **Operar** (auth, chat, área privada, perfil). El modo decide la densidad, cuánto «gesto por celda» cabe y si hay bento.
 - **Lenguaje de las páginas interiores** (decisión de Jose): **escenas con scroll libre**. Mismo titular a dos tonos y bentos que la home, pero sin forzar 100svh (`Scene` sin la prop `fill`) y sin paginado por gesto (`usePagedScroll` solo en la home). Sin indicador de sección ni carrusel fijado. En modo Leer y Operar el bento se usa poco o nada: manda la columna de lectura o la herramienta.
-- **Cabecera v6** en todas las páginas públicas: marca · Sobre mí · Empresas · Negocios · Proyectos · Blog · idioma → ⌘K → Chat → Login. «Contacto» no está en la barra: vive en el cierre de cada página, en ⌘K y en el menú ☰. Si el blog no tiene sus tres artículos, «Blog» desaparece de la cabecera, del menú, de ⌘K y del pie (§3, P9).
+- **Cabecera v6** en todas las páginas públicas: marca · Sobre mí · Empresas · Negocios · Proyectos · Blog · idioma → ⌘K → Chat → Login. «Contacto» no está en la barra: vive en el cierre de cada página, en ⌘K y en el menú ☰. Si el blog no tiene sus tres artículos, «Blog» desaparece de la cabecera, del menú, de ⌘K y del pie (§3, P9). *(Nota, Jose 2026-10-30: solo en producción; fuera de ella Lab y Blog se muestran siempre, ver «Regla de publicación» del v2.0.)*
 - **Pie v6**: secciones, Área de clientes y Legal.
 
 ### 0.1 Choques entre la UX v3 y decisiones posteriores
@@ -127,7 +127,7 @@ Navegación del admin (escritorio lateral, móvil barra inferior de 4): **Contac
 
 | Bloque | Contenido | Hay / falta |
 |---|---|---|
-| Regla de publicación | **Mínimo 2 demos reales**; con menos, `/lab` 404 y fuera de cabecera, menú, ⌘K, pie y escena (como el blog). La cabecera muestra «Lab/Blog» si existe cualquiera de los dos; «Lab» o «Blog» si solo uno | — |
+| Regla de publicación | **Mínimo 2 demos reales**; con menos, `/lab` 404 y fuera de cabecera, menú, ⌘K, pie y escena (como el blog). La cabecera muestra «Lab/Blog» si existe cualquiera de los dos; «Lab» o «Blog» si solo uno Nota (Jose, 2026-10-30): la regla solo aplica en producción (`NEXT_PUBLIC_SITE_ENV=production`, valor por defecto); en local, previews y CI e2e Lab y Blog se muestran siempre, como en el prototipo `home-v7`. | — |
 | Índice | «Cosas que pruebo. Demos y herramientas pequeñas, con su explicación.» + filtro + DemoCard | Falta: **las demos** `{{DATO}}` (candidatas en spec §0.7) |
 | Ficha | DemoFrame (demo viva; estado estático sin JS), «Qué muestra», «Cómo está hecho» (Prose + CodeBlock), «Léelo largo →» (artículo del blog si existe), relacionadas, cierre corto («¿Quieres algo así en tu producto?» → `/servicios#proyecto`) | Falta: texto es/en por demo |
 | JSON-LD | `SoftwareSourceCode` + `TechArticle` | — |

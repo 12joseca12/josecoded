@@ -6,6 +6,14 @@ import { z } from 'zod';
 
 const nonEmpty = z.string().min(1);
 
+/**
+ * Where this build runs. Only `production` hides Lab and Blog until they have real content
+ * (lib/content/sections.ts); every other value shows both (Jose, 2026-10-30). Absent means
+ * `production`, so a forgotten variable can never expose empty sections on the live site.
+ */
+export const siteEnvSchema = z.enum(['production', 'preview', 'development']).default('production');
+export type SiteEnv = z.infer<typeof siteEnvSchema>;
+
 export const envClientSchema = z.object({
   NEXT_PUBLIC_SITE_URL: z.url(),
   NEXT_PUBLIC_JOSECODED_API_URL: z.url(),
@@ -17,6 +25,7 @@ export const envClientSchema = z.object({
   NEXT_PUBLIC_CAL_LINK: nonEmpty,
   NEXT_PUBLIC_WHATSAPP_NUMBER: nonEmpty,
   NEXT_PUBLIC_HERO_MEDIA_VERSION: nonEmpty,
+  NEXT_PUBLIC_SITE_ENV: siteEnvSchema,
   /** `'1'` in local and preview builds to expose the /dev/ui catalogue (task 2.2); absent in production. */
   NEXT_PUBLIC_DEV_UI: z.literal('1').optional(),
 });

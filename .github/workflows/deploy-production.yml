@@ -44,6 +44,7 @@ jobs:
       NEXT_PUBLIC_CAL_LINK: ${{ vars.NEXT_PUBLIC_CAL_LINK || 'josecoded/20min' }}
       NEXT_PUBLIC_WHATSAPP_NUMBER: ${{ vars.NEXT_PUBLIC_WHATSAPP_NUMBER }}
       NEXT_PUBLIC_HERO_MEDIA_VERSION: '1'
+      NEXT_PUBLIC_SITE_ENV: production
       # NEXT_PUBLIC_DEV_UI is deliberately absent: the /dev/ui catalogue never ships to production.
       API_BASE: https://api.josecoded.com
     steps:

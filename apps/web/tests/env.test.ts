@@ -14,7 +14,7 @@ const valid = {
 };
 
 // Optional vars are cleared so the outer environment (e.g. CI's job env) cannot leak in.
-const optional = ['NEXT_PUBLIC_UMAMI_WEBSITE_ID', 'NEXT_PUBLIC_DEV_UI'] as const;
+const optional = ['NEXT_PUBLIC_UMAMI_WEBSITE_ID', 'NEXT_PUBLIC_DEV_UI', 'NEXT_PUBLIC_SITE_ENV'] as const;
 
 function stubValidEnv() {
   for (const [key, value] of Object.entries(valid)) vi.stubEnv(key, value);
@@ -54,6 +54,17 @@ describe('env', () => {
     vi.resetModules();
     vi.stubEnv('NEXT_PUBLIC_DEV_UI', 'yes');
     await expect(import('../lib/env')).rejects.toThrow(/NEXT_PUBLIC_DEV_UI/);
+  });
+
+  it('defaults NEXT_PUBLIC_SITE_ENV to production and accepts only the three environments', async () => {
+    stubValidEnv();
+    expect((await import('../lib/env')).env.client.NEXT_PUBLIC_SITE_ENV).toBe('production');
+    vi.resetModules();
+    vi.stubEnv('NEXT_PUBLIC_SITE_ENV', 'preview');
+    expect((await import('../lib/env')).env.client.NEXT_PUBLIC_SITE_ENV).toBe('preview');
+    vi.resetModules();
+    vi.stubEnv('NEXT_PUBLIC_SITE_ENV', 'staging');
+    await expect(import('../lib/env')).rejects.toThrow(/NEXT_PUBLIC_SITE_ENV/);
   });
 
   it('reads server secrets lazily and names the missing one', async () => {

@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { getSectionAvailability } from './sections';
 
@@ -24,6 +24,25 @@ describe('getSectionAvailability', () => {
   it('blog follows the guides, independently of the lab', () => {
     expect(getSectionAvailability(index(true, false))).toEqual({ lab: false, blog: true });
     expect(getSectionAvailability(index(false, true))).toMatchObject({ blog: false });
+  });
+
+  describe('site env', () => {
+    it('production follows the content index', () => {
+      expect(getSectionAvailability(index(false, false), 'production')).toEqual({ lab: false, blog: false });
+      expect(getSectionAvailability(index(true, false), 'production')).toEqual({ lab: false, blog: true });
+    });
+
+    it.each(['preview', 'development'] as const)('%s always shows Lab and Blog', (siteEnv) => {
+      expect(getSectionAvailability(index(false, false), siteEnv)).toEqual({ lab: true, blog: true });
+    });
+
+    it('defaults to production when NEXT_PUBLIC_SITE_ENV is unset or empty', () => {
+      vi.stubEnv('NEXT_PUBLIC_SITE_ENV', '');
+      expect(getSectionAvailability(index(false, false))).toEqual({ lab: false, blog: false });
+      vi.stubEnv('NEXT_PUBLIC_SITE_ENV', 'preview');
+      expect(getSectionAvailability(index(false, false))).toEqual({ lab: true, blog: true });
+      vi.unstubAllEnvs();
+    });
   });
 
   it('rejects a malformed index', () => {

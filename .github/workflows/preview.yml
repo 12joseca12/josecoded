@@ -41,6 +41,8 @@ jobs:
       NEXT_PUBLIC_WHATSAPP_NUMBER: ${{ vars.NEXT_PUBLIC_WHATSAPP_NUMBER || '34600000000' }}
       NEXT_PUBLIC_HERO_MEDIA_VERSION: '1'
       # exposes the /dev/ui catalogue (task 2.2) in previews only; absent in deploy-production.yml
+      # Lab and Blog always visible outside production (Jose, 2026-10-30)
+      NEXT_PUBLIC_SITE_ENV: preview
       NEXT_PUBLIC_DEV_UI: '1'
     steps:
       - name: Check credentials and origin
