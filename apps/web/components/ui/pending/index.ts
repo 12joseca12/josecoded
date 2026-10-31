@@ -1,1 +1,1 @@
-export { Pending } from './pending';
+export { Pending, isPendingVisible } from './pending';

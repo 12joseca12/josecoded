@@ -82,6 +82,9 @@ button {
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+
+  /* never part of a selection: copying a split text (FallText) must not paste it twice */
+  user-select: none;
 }
 
 /* «Skip to content»: first tab stop, hidden until focused (the link itself lives in the layout). */

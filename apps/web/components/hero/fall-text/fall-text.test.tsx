@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import { expect, it, vi } from 'vitest';
+import { afterEach, expect, it, vi } from 'vitest';
 import { axe } from 'vitest-axe';
 
 import { FallText } from '.';
@@ -53,4 +53,57 @@ it('has no accessibility violations inside a heading', async () => {
     </main>,
   );
   expect(await axe(container)).toHaveNoViolations();
+});
+
+afterEach(() => {
+  vi.unstubAllEnvs();
+  vi.resetModules();
+});
+
+it('renders nothing, not an empty heading, for a pending {{DATO}} in production', async () => {
+  vi.stubEnv('NODE_ENV', 'production');
+  vi.stubEnv('NEXT_PUBLIC_DEV_UI', undefined);
+  vi.resetModules();
+  const { FallText: Prod } = await import('.');
+  const { container } = render(
+    <main>
+      <Prod as="h1" text="{{DATO: titular}}" />
+    </main>,
+  );
+  expect(container.querySelector('h1')).toBeNull();
+  expect(await axe(container)).toHaveNoViolations();
+});
+
+it('keeps non-breaking spaces inside the word', () => {
+  const { container } = render(<FallText text={'Reservar\u00A020\u00A0min ya'} />);
+  const words = container.querySelectorAll('[aria-hidden="true"] .w');
+  expect(words).toHaveLength(2);
+  expect(words[0]?.querySelectorAll('.ch')).toHaveLength('Reservar 20 min'.length);
+  expect(words[0]?.textContent).toBe('Reservar\u00A020\u00A0min');
+});
+
+it('splits by grapheme: a combining accent and a ZWJ emoji are one character', () => {
+  const { container } = render(<FallText text={'x\u0301👨‍👩‍👧'} />);
+  const letters = [...container.querySelectorAll('.ch')];
+  expect(letters.map((el) => (el as HTMLElement).dataset.ch)).toEqual(['x\u0301', '👨‍👩‍👧']);
+});
+
+it('normalises to NFC: a decomposed accent becomes one precomposed character', () => {
+  const { container } = render(<FallText text={'Sa\u0301nchez'} />);
+  expect(container.querySelector('.sr-only')?.textContent).toBe('Sánchez');
+  expect(container.querySelectorAll('.ch')).toHaveLength(7);
+});
+
+it('has no accessibility violations as p or span, and the letters are hidden from AT', async () => {
+  const { container } = render(
+    <main>
+      <FallText as="p" text="Reservar 20 min" />
+      <p>
+        <FallText text="Hola mundo" />
+      </p>
+    </main>,
+  );
+  expect(await axe(container)).toHaveNoViolations();
+  expect(container.querySelectorAll('.w')).toHaveLength(5);
+  for (const w of container.querySelectorAll('.w')) expect(w.closest('[aria-hidden="true"]')).not.toBeNull();
 });

@@ -9,7 +9,7 @@ import type { Rng } from '@josecoded/glyph-scene/rng';
 // Intro of the first visit per session (spec D16, DT §1.6.4; port of ref/home-v7/scene.js:425-481):
 // the characters of the hero fall at a constant speed, land with a green flash and settle on their
 // final letter. The text is served already split by FallText, so this module never changes the
-// structure: it only writes `style.transform`, the classes and the `textContent` of each `.ch`.
+// structure: it only writes `style.transform`, the classes and the text node of each `.ch`.
 // Durations and distances come from tokens (readToken); the PRNG is seeded, so the fall is the same
 // in every test and every visit.
 
@@ -29,6 +29,11 @@ export interface IntroResult {
   mode: IntroMode;
 }
 
+export interface IntroStart {
+  t0: number;
+  sceneReady: boolean;
+}
+
 export interface FallPlan {
   el: HTMLElement;
   /** Offset in px above the final place (negative). */
@@ -45,15 +50,21 @@ export interface RunIntroOptions {
   /** Resolves when the glyph scene can play its own intro; the letters wait for it up to a token. */
   sceneReady?: Promise<unknown>;
   seed?: number;
-  /** Called when the fall begins, with the shared `t0` of letters and scene. */
-  onStart?: (t0: number) => void;
+  /**
+   * Called when the fall begins, with the shared `t0` and whether the scene was ready by then
+   * (false: it timed out, and the scene enters later with `uIntroT = 100`, DT §1.6.4).
+   */
+  onStart?: (start: IntroStart) => void;
   onDone: (result: IntroResult) => void;
 }
 
 export interface IntroHandle {
   /** Everything lands in the same frame (what a gesture does). */
   finish: () => void;
-  /** Stops without reporting and re-arms the gate; for an effect cleanup that will run again. */
+  /**
+   * For an effect cleanup. While still waiting it re-arms the gate (`pending`) so the next run
+   * plays; once falling it only settles the letters (visible) and never hides them again.
+   */
   cancel: () => void;
 }
 
@@ -109,10 +120,17 @@ interface Drop extends FallPlan {
   flash: number;
 }
 
+/** Writes into the existing text node, so the node React rendered stays attached. */
+function setText(el: HTMLElement, value: string) {
+  const node = el.firstChild;
+  if (node?.nodeType === Node.TEXT_NODE) node.nodeValue = value;
+  else el.textContent = value;
+}
+
 function settle(el: HTMLElement) {
   el.classList.remove('is-falling', 'is-wet');
   el.style.removeProperty('transform');
-  el.textContent = el.dataset.ch ?? '';
+  setText(el, el.dataset.ch ?? '');
 }
 
 /**
@@ -130,7 +148,8 @@ export function runIntro({
   const html = document.documentElement;
   const chars = [...root.querySelectorAll<HTMLElement>('.ch')];
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const mode: IntroMode = sceneReady ? 'full' : 'letters';
+  // 'full' only if the scene answered in time; a timeout leaves the letters alone
+  let mode: IntroMode = 'letters';
   const abort = new AbortController();
   let drops: Drop[] = [];
   let frame = 0;
@@ -195,10 +214,10 @@ export function runIntro({
         d.flash = flashMin + rng() * flashSpan;
         d.el.classList.replace('is-falling', 'is-wet');
         d.el.style.removeProperty('transform');
-        d.el.textContent = randomGlyph(rng);
+        setText(d.el, randomGlyph(rng));
       } else {
         d.el.style.transform = `translateY(${d.y}px)`;
-        if (rng() < swapChance) d.el.textContent = randomGlyph(rng);
+        if (rng() < swapChance) setText(d.el, randomGlyph(rng));
       }
     }
     if (!busy) {
@@ -208,9 +227,10 @@ export function runIntro({
     frame = requestAnimationFrame((next) => tick(next, now));
   }
 
-  function begin() {
+  function begin(sceneAnswered: boolean) {
     if (state !== 'waiting') return;
     state = 'falling';
+    if (sceneAnswered) mode = 'full';
     clearTimeout(waitTimer);
     drops = planFall(chars, rng, window.innerHeight).map((plan) => ({
       ...plan,
@@ -222,29 +242,34 @@ export function runIntro({
     for (const d of drops) {
       d.el.classList.add('is-falling');
       d.el.style.transform = `translateY(${d.start}px)`;
-      d.el.textContent = d.glyph;
+      setText(d.el, d.glyph);
     }
     delete html.dataset.intro;
     const t0 = performance.now();
-    onStart?.(t0);
+    onStart?.({ t0, sceneReady: sceneAnswered });
     frame = requestAnimationFrame((now) => tick(now, t0));
   }
 
   if (sceneReady) {
-    waitTimer = setTimeout(begin, readMs('--dur-intro-scene-wait'));
-    void sceneReady.then(begin, begin);
+    waitTimer = setTimeout(() => begin(false), readMs('--dur-intro-scene-wait'));
+    void sceneReady.then(
+      () => begin(true),
+      () => begin(false),
+    );
   } else {
-    begin();
+    begin(false);
   }
 
   return {
     finish,
     cancel() {
       if (state === 'done') return;
+      const wasWaiting = state === 'waiting';
       state = 'done';
       stop();
       for (const el of chars) settle(el);
-      html.dataset.intro = 'pending';
+      // falling: the gate is already open, the letters stay visible and a remount does not replay
+      if (wasWaiting) html.dataset.intro = 'pending';
     },
   };
 }

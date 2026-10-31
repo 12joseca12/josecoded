@@ -132,19 +132,90 @@ it('with reduced motion nothing animates: letters are final and mode is none', (
   expect(root.querySelectorAll('.is-falling')).toHaveLength(0);
 });
 
-it('cancel() stops without reporting and re-arms the gate (React strict mode remount)', () => {
+it('cancel() while waiting for the scene stops without reporting and re-arms the gate (strict mode remount)', () => {
   vi.useFakeTimers();
   document.documentElement.dataset.intro = 'pending';
   const root = document.createElement('div');
   root.append(...chars(5));
   document.body.append(root);
   const onDone = vi.fn();
-  const run = runIntro({ root, onDone });
+  const onStart = vi.fn();
+  const run = runIntro({ root, sceneReady: new Promise(() => undefined), onStart, onDone });
   vi.advanceTimersByTime(100);
   run.cancel();
   expect(onDone).not.toHaveBeenCalled();
   expect(document.documentElement.dataset.intro).toBe('pending');
   expect(root.querySelectorAll('.is-falling')).toHaveLength(0);
   window.dispatchEvent(new KeyboardEvent('keydown', { key: 'a' }));
+  vi.advanceTimersByTime(2000);
   expect(onDone).not.toHaveBeenCalled();
+  expect(onStart).not.toHaveBeenCalled();
+});
+
+it('cancel() mid-fall leaves the letters visible and never hides them again', () => {
+  vi.useFakeTimers();
+  document.documentElement.dataset.intro = 'pending';
+  const root = document.createElement('div');
+  root.append(...chars(8));
+  document.body.append(root);
+  const onDone = vi.fn();
+  const run = runIntro({ root, onDone });
+  vi.advanceTimersByTime(300);
+  expect(root.querySelectorAll('.is-falling').length).toBeGreaterThan(0);
+  run.cancel();
+  expect(document.documentElement.dataset.intro).toBeUndefined();
+  for (const el of root.querySelectorAll<HTMLElement>('.ch')) {
+    expect(el.textContent).toBe(el.dataset.ch);
+    expect(el.className).toBe('ch');
+    expect(el.style.transform).toBe('');
+  }
+  // a remount finds no `pending` gate (the component bails out) and nothing replays
+  vi.advanceTimersByTime(3000);
+  expect(onDone).not.toHaveBeenCalled();
+  expect(document.documentElement.dataset.intro).toBeUndefined();
+});
+
+it('a scene timeout falls as letters: start reports sceneReady false and done reports mode letters', () => {
+  vi.useFakeTimers();
+  document.documentElement.dataset.intro = 'pending';
+  const root = document.createElement('div');
+  root.append(...chars(6));
+  document.body.append(root);
+  const onStart = vi.fn();
+  const onDone = vi.fn();
+  runIntro({ root, sceneReady: new Promise(() => undefined), onStart, onDone });
+  vi.advanceTimersByTime(1300);
+  expect(onStart).toHaveBeenCalledWith({ t0: expect.any(Number), sceneReady: false });
+  vi.advanceTimersByTime(3000);
+  expect(onDone).toHaveBeenCalledWith(expect.objectContaining({ skipped: false, mode: 'letters' }));
+});
+
+it('a scene that answers in time reports sceneReady true', async () => {
+  vi.useFakeTimers();
+  document.documentElement.dataset.intro = 'pending';
+  const root = document.createElement('div');
+  root.append(...chars(6));
+  document.body.append(root);
+  const onStart = vi.fn();
+  runIntro({ root, sceneReady: Promise.resolve(), onStart, onDone: vi.fn() });
+  await vi.advanceTimersByTimeAsync(50);
+  expect(onStart).toHaveBeenCalledWith({ t0: expect.any(Number), sceneReady: true });
+});
+
+it('keeps the text node of each char attached (React owns it): only nodeValue changes', () => {
+  vi.useFakeTimers();
+  document.documentElement.dataset.intro = 'pending';
+  const root = document.createElement('div');
+  root.append(...chars(6));
+  document.body.append(root);
+  const els = [...root.querySelectorAll<HTMLElement>('.ch')];
+  const nodes = els.map((el) => el.firstChild);
+  runIntro({ root, onDone: vi.fn() });
+  vi.advanceTimersByTime(300);
+  els.forEach((el, i) => expect(el.firstChild).toBe(nodes[i]));
+  vi.advanceTimersByTime(3000);
+  els.forEach((el, i) => {
+    expect(el.firstChild).toBe(nodes[i]);
+    expect(el.textContent).toBe(el.dataset.ch);
+  });
 });

@@ -9,9 +9,12 @@ import type { ReactNode } from 'react';
  * development and in previews (`NEXT_PUBLIC_DEV_UI=1`); in production it renders nothing, and the
  * block that holds it is not rendered at all (`hasDato`).
  */
+export function isPendingVisible(): boolean {
+  return process.env.NODE_ENV !== 'production' || env.client.NEXT_PUBLIC_DEV_UI === '1';
+}
+
 export function Pending({ children }: { children: ReactNode }) {
-  const visible = process.env.NODE_ENV !== 'production' || env.client.NEXT_PUBLIC_DEV_UI === '1';
-  if (!visible) return null;
+  if (!isPendingVisible()) return null;
   return (
     <span className={styles.pending} data-pending="">
       {children}
