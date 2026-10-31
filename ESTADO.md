@@ -137,6 +137,9 @@ Gates que no se cruzan sin OK explícito de Jose en la misma sesión: migracione
 
 ## Decisiones recientes
 
+- **2026-10-31 — Omen (Jose; `docs/superpowers/design/2026-10-31-omen-rol.md`):** la web y el gateway se desacoplan de Omen (tarea nueva **1.8d**, antes de cerrar 1.9). Omen se queda para Umami (8.1), Radar (7.x/8.x), newsletter (10.x) y **se estudia usarlo para el chat de IA** (4.4) con Workers AI de respaldo. Fase 8 se mantiene.
+- **2026-10-31 — Demos del lab:** propuesta en `docs/superpowers/design/2026-10-31-demos-lab.md` (sandbox `demo.josecoded.com` con Durable Object por visitante, tres niveles de degradación); pendientes Q1–Q4 de Jose.
+
 - **2026-10-30 — Lab y Blog siempre visibles fuera de producción (Jose):** como el prototipo `home-v7`; en producción siguen ocultos hasta tener contenido real (blog 3 guías, lab 2 demos). Señal única `NEXT_PUBLIC_SITE_ENV=production|preview|development` (zod en `@josecoded/types`, por defecto `production`), fijada en `deploy-production.yml`, `preview.yml`, `ci.yml` y `update-snapshots.yml`; la regla vive en `getSectionAvailability`. `shell.spec.ts` vuelve a esperar 5 enlaces: pide línea base de capturas en CI.
 
 - **2026-10-29 — Excepción a la regla 9 (Jose):** «mergealo, no hagas pr, mergealo directamente». Desde el merge de la fase 1b se trabaja y se sube directamente a `main`, sin ramas ni PR; cada tarea sigue pasando por `implementador-web` → `revisor` y el CI de `main` (con Supabase real) es la red de seguridad. `main` no está protegida en GitHub. Se vuelve a ramas + PR si Jose lo pide.
