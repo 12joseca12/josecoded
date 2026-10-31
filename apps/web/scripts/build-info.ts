@@ -2,7 +2,7 @@
 // repository itself; if a source is missing the build fails instead of shipping a made-up value.
 // Runs with plain Node (type stripping, Node >= 22.18), so internal imports carry `.ts`.
 import { execFileSync } from 'node:child_process';
-import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -171,6 +171,7 @@ export function computeBuildInfo({ repoRoot, env }: BuildInfoOptions): BuildInfo
 if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
   const webRoot = fileURLToPath(new URL('..', import.meta.url));
   const info = computeBuildInfo({ repoRoot: join(webRoot, '../..'), env: process.env });
+  mkdirSync(join(webRoot, 'content/generated'), { recursive: true });
   writeFileSync(join(webRoot, 'content/generated/build-info.json'), `${JSON.stringify(info, null, 2)}\n`);
   console.log(`build-info: ${info.branch}@${info.commit}, next ${info.nextVersion}, ${info.gatewayRoutes} routes, ${info.supabase.tables} tables`);
 }

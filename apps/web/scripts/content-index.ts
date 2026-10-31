@@ -5,7 +5,7 @@
 // Tasks 4.2 / 4.5 extend this file with the blog index (frontmatter, slugs, translations) and the lab
 // schema; the counting rules below are the minimum those tasks build on.
 // Runs with plain Node (type stripping, Node >= 22.18), so internal imports carry `.ts`.
-import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -74,6 +74,7 @@ export function computeContentIndex({ contentRoot }: { contentRoot: string }): C
 if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
   const contentRoot = fileURLToPath(new URL('../content', import.meta.url));
   const index = computeContentIndex({ contentRoot });
+  mkdirSync(join(contentRoot, 'generated'), { recursive: true });
   writeFileSync(join(contentRoot, 'generated/content-index.json'), `${JSON.stringify(index, null, 2)}\n`);
   console.log(`content-index: ${index.blog.guides} guides (blog ${index.blogEnabled}), ${index.lab.demos} demos (lab ${index.labEnabled})`);
 }
