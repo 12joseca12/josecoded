@@ -51,7 +51,7 @@ jobs:
       - run: >-
           pnpm dlx jscpd@5.4.0 apps packages
           --min-lines 30 --min-tokens 120 --threshold 0
-          --ignore "**/*.test.*,**/database.ts,**/tokens.*,**/content/**,**/node_modules/**"
+          --ignore "**/*.test.*,**/database.ts,**/tokens.*,**/content/**,**/node_modules/**,**/*-OFL.txt"
 
   typecheck:
     runs-on: ubuntu-latest

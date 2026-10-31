@@ -17,13 +17,13 @@ describe('getSectionAvailability', () => {
   });
 
   it('lab follows the lab demos, independently of the blog', () => {
-    expect(getSectionAvailability(index(false, true))).toEqual({ lab: true, blog: false });
-    expect(getSectionAvailability(index(true, false))).toMatchObject({ lab: false });
+    expect(getSectionAvailability(index(false, true), 'production')).toEqual({ lab: true, blog: false });
+    expect(getSectionAvailability(index(true, false), 'production')).toMatchObject({ lab: false });
   });
 
   it('blog follows the guides, independently of the lab', () => {
-    expect(getSectionAvailability(index(true, false))).toEqual({ lab: false, blog: true });
-    expect(getSectionAvailability(index(false, true))).toMatchObject({ blog: false });
+    expect(getSectionAvailability(index(true, false), 'production')).toEqual({ lab: false, blog: true });
+    expect(getSectionAvailability(index(false, true), 'production')).toMatchObject({ blog: false });
   });
 
   describe('site env', () => {
