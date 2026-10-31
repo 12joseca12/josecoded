@@ -1475,6 +1475,11 @@
         "purpose": "Hero: lado del escenario por debajo de 56.25rem en pantallas de menos de 43.75rem de alto."
       },
       {
+        "name": "mask-hero-video",
+        "value": "radial-gradient(closest-side, #000 55%, transparent)",
+        "purpose": "Hero: máscara del vídeo; funde los bordes del cuadrado con el campo de luz (el póster ya lleva alfa)."
+      },
+      {
         "name": "cycle-bar-width",
         "value": "1.5rem",
         "purpose": "Ancho de cada una de las tres barras del ciclo del hero."

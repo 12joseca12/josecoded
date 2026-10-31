@@ -1,23 +1,23 @@
 {
-  "generatedAt": "2026-10-30T15:08:15.326Z",
-  "paramsHash": "6e985c572d6dead4",
+  "generatedAt": "2026-10-31T18:27:04.412Z",
+  "paramsHash": "606f854cb27b548b",
   "seed": 1,
   "files": {
     "hero/video.webm": {
       "bytes": 681233,
-      "sha256": "1e07a2566601068167d201aaca84d1aca941adf942d0c8715574360bec2a06b4"
+      "sha256": "71376389db21879936f2683c99f12d3cf80f1459687b0e79f5a9151ee2097918"
     },
     "hero/video.mp4": {
       "bytes": 604031,
       "sha256": "e36f0c3560f54ddd6459e75094bc058ebca35087db6f8c8d9adbdd17d41137bd"
     },
     "hero/poster.avif": {
-      "bytes": 10921,
-      "sha256": "fbc05eeb4f1e080e1241fa8eec9d43c1cfbc294de6c2ea947a4b8e13edc7e9ca"
+      "bytes": 57656,
+      "sha256": "2f7f9b87f43a811a082e5409937abdc4136c667854ee6d5cf1bf0c261a5f2e83"
     },
     "hero/poster.webp": {
-      "bytes": 14174,
-      "sha256": "4c7336c20f23b6e4f2f4d60601884730cb71e526573b593a0098ccc10c1fb19a"
+      "bytes": 59024,
+      "sha256": "b9141ae605b654293df6cdae6c6bf2bf710394a7e0bb6f87a9346ce9ec36a068"
     },
     "art/glyph-phone.avif": {
       "bytes": 53440,

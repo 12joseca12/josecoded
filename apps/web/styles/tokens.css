@@ -355,6 +355,7 @@
   --stage-max-height: 80svh;
   --stage-compact-height: 38svh;
   --stage-short-height: 34svh;
+  --mask-hero-video: radial-gradient(closest-side, #000 55%, transparent);
   --cycle-bar-width: 1.5rem;
   --hero-min-height: 100svh;
 }

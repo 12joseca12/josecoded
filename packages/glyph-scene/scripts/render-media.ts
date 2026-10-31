@@ -30,8 +30,6 @@ const force = args.includes('--force');
 const framesArg = args.indexOf('--frames-dir');
 const keepFrames = framesArg >= 0;
 const MIN_LOOP_PSNR = 35;
-/** Page background (`--color-bg`): the poster is opaque, so no alpha channel is encoded. */
-const POSTER_BG = '#07060f';
 const log = (m: string) => console.log(`hero:media: ${m}`);
 
 /* ---------- freshness ---------- */
@@ -107,9 +105,8 @@ async function raw(png: Buffer) {
 const psnr = async (a: Buffer, b: Buffer) => psnrRaw((await raw(a)).data, (await raw(b)).data);
 
 /** Additive glow on black -> straight-alpha PNG (see `glowToAlpha` in media-math). */
-async function glowToAlpha(png: Buffer): Promise<Buffer> {
-  const crop = sharp(png).extract({ left: Math.floor((ART.viewportWidth - ART.width) / 2), top: 0, width: ART.width, height: ART.height });
-  const { data, width, height } = await raw(await crop.png().toBuffer());
+async function glowToAlpha(png: Buffer, crop?: { left: number; top: number; width: number; height: number }): Promise<Buffer> {
+  const { data, width, height } = await raw(crop ? await sharp(png).extract(crop).png().toBuffer() : png);
   const rgba = glowPixels(data, width * height, ART.alpha.floor, ART.alpha.gain);
   return sharp(rgba, { raw: { width, height, channels: 4 } }).png().toBuffer();
 }
@@ -162,9 +159,10 @@ try {
   if (loopPsnr < MIN_LOOP_PSNR) throw new Error(`loop does not close: PSNR ${loopPsnr.toFixed(2)} dB < ${MIN_LOOP_PSNR} dB`);
 
   log(`capturing the poster (frame ${CAPTURE.posterFrame}, count ${COUNT.desktop})`);
-  const posterScene = await session(browser, url, { width: CAPTURE.width, height: CAPTURE.height }, { count: COUNT.desktop, seed: CAPTURE.seed, capture: true });
+  const posterScene = await session(browser, url, { width: CAPTURE.width, height: CAPTURE.height }, { count: COUNT.desktop, seed: CAPTURE.seed, capture: true, background: '#000000' });
   for (let f = 0; f < CAPTURE.posterFrame; f++) await posterScene.step(1 / CAPTURE.fps);
-  const posterPng = await posterScene.stepPng(1 / CAPTURE.fps);
+  // the poster is transparent like the prototype's `.hero__static`: the light field shows around the cloud
+  const posterPng = await glowToAlpha(await posterScene.stepPng(1 / CAPTURE.fps));
   await posterScene.close();
 
   const art: Record<'phone' | 'web', Buffer> = { phone: Buffer.alloc(0), web: Buffer.alloc(0) };
@@ -173,7 +171,7 @@ try {
     const s = await session(browser, url, { width: ART.viewportWidth, height: ART.height }, { count: COUNT.desktop, seed: CAPTURE.seed, capture: false, background: '#000000', params: { rot: 0 }, pose: { rotY: ART[name].rotY }, stageHeight: ART.stage.height, stageOffsetY: ART.stage.offsetY });
     const steps = ART[name].steps;
     for (const dt of steps.slice(0, -1)) await s.step(dt);
-    art[name] = await glowToAlpha(await s.stepPng(steps[steps.length - 1] as number));
+    art[name] = await glowToAlpha(await s.stepPng(steps[steps.length - 1] as number), { left: Math.floor((ART.viewportWidth - ART.width) / 2), top: 0, width: ART.width, height: ART.height });
     await s.close();
   }
 
@@ -185,8 +183,8 @@ try {
   const out: Record<string, Buffer> = {
     'hero/video.webm': readFileSync(join(stage, 'video.webm')),
     'hero/video.mp4': readFileSync(join(stage, 'video.mp4')),
-    'hero/poster.avif': Buffer.from(await fit('poster.avif', (q) => sharp(posterPng).flatten({ background: POSTER_BG }).avif({ quality: q, effort: 6 }).toBuffer(), 50, LIMITS['hero/poster.avif'] as number)),
-    'hero/poster.webp': Buffer.from(await fit('poster.webp', (q) => sharp(posterPng).flatten({ background: POSTER_BG }).webp({ quality: q, effort: 6 }).toBuffer(), 78, LIMITS['hero/poster.webp'] as number)),
+    'hero/poster.avif': Buffer.from(await fit('poster.avif', (q) => sharp(posterPng).avif({ quality: q, effort: 6 }).toBuffer(), 50, LIMITS['hero/poster.avif'] as number)),
+    'hero/poster.webp': Buffer.from(await fit('poster.webp', (q) => sharp(posterPng).webp({ quality: q, alphaQuality: 60, effort: 6 }).toBuffer(), 78, LIMITS['hero/poster.webp'] as number)),
     'art/glyph-phone.avif': Buffer.from(await fit('glyph-phone.avif', (q) => sharp(art.phone).avif({ quality: q, effort: 6 }).toBuffer(), 60, LIMITS['art/glyph-phone.avif'] as number)),
     'art/glyph-web.avif': Buffer.from(await fit('glyph-web.avif', (q) => sharp(art.web).avif({ quality: q, effort: 6 }).toBuffer(), 60, LIMITS['art/glyph-web.avif'] as number)),
   };

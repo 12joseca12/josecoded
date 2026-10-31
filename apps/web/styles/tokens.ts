@@ -318,6 +318,7 @@ export type TokenName =
   | '--stage-max-height'
   | '--stage-compact-height'
   | '--stage-short-height'
+  | '--mask-hero-video'
   | '--cycle-bar-width'
   | '--hero-min-height';
 
@@ -643,6 +644,7 @@ export const tokens = {
   'stage-max-height': '--stage-max-height',
   'stage-compact-height': '--stage-compact-height',
   'stage-short-height': '--stage-short-height',
+  'mask-hero-video': '--mask-hero-video',
   'cycle-bar-width': '--cycle-bar-width',
   'hero-min-height': '--hero-min-height',
 } as const satisfies Record<string, TokenName>;

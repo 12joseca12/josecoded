@@ -27,7 +27,9 @@ export interface RetiredRule extends RewriteRule {
 // (a 404). In production the assets binding answers before any rewrite.
 // One rule per depth, never a single `:path(.*)` param: a destination param that contains
 // slashes is encoded by OpenNext on workerd and the request ends in a 500 (/negocios/x, /a/b/c).
-const FIRST_SEGMENT = ':first((?!(?:es|en|api|_next|hero|art|og)(?:/|$))[^/.]+)';
+// `hero|art|og` are excluded only with a second segment (a file under them): a page that happens
+// to be called /hero, /art or /og must still rewrite and 404 as a localized path.
+const FIRST_SEGMENT = ':first((?!(?:es|en|api|_next)(?:/|$)|(?:hero|art|og)/[^/])[^/.]+)';
 
 /**
  * A path and everything below it. Two explicit rules instead of `:path*`: OpenNext on workerd

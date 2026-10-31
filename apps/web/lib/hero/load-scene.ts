@@ -25,6 +25,11 @@ export interface HeroSceneElements {
   canvasSlot: HTMLElement;
   /** Light field the scene moves by `transform`. */
   field: HTMLElement | null;
+  /**
+   * The WebGL context was lost after the scene was created. The scene is already stopped and
+   * disposed when this runs; the caller picks the fallback.
+   */
+  onContextLost?: () => void;
 }
 
 /** If the letters never answer (no IntroFall on the page) the scene must not wait for ever. */
@@ -78,6 +83,16 @@ export function startScene(el: HeroSceneElements): { ready: Promise<void>; stop:
 
     canvas = document.createElement('canvas');
     el.canvasSlot.append(canvas);
+    // a lost context (GPU reset, memory pressure) leaves a frozen canvas: dispose and hand over
+    canvas.addEventListener(
+      'webglcontextlost',
+      (event) => {
+        event.preventDefault();
+        stop();
+        el.onContextLost?.();
+      },
+      { once: true, signal },
+    );
     const write = createBarWriter(el.bars);
     const fontFamily = monoFamily();
     const created = await createGlyphScene({

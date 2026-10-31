@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -18,7 +18,10 @@ describe('computeBuildInfo', () => {
     expect(info.branch).toBe('feat/x');
     expect(info.commit).toBe('abcdef1');
     expect(info.nextVersion).toMatch(/^16\./);
-    expect(info.gatewayRoutes).toBeGreaterThanOrEqual(6);
+    // the gateway has no public status route since 1.8d: compare with the manifest itself, not a magic number
+    const manifest = join(repoRoot, 'apps/api/src/routes-manifest.ts');
+    expect(info.gatewayRoutes).toBe(countRoutesIn(readFileSync(manifest, 'utf8'), manifest));
+    expect(info.gatewayRoutes).toBeGreaterThanOrEqual(5);
     expect(info.supabase.tables).toBeGreaterThanOrEqual(26);
     expect(info.supabase.policies).toBeGreaterThan(0);
     expect(info.reviewedAt).toMatch(/^\d{4}-\d{2}-\d{2}$/);

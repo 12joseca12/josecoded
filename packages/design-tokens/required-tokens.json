@@ -307,5 +307,15 @@
   "dur-intro-scene-wait",
   "intro-start-min",
   "intro-start-span",
-  "intro-glyph-swap"
+  "intro-glyph-swap",
+  "sp-9",
+  "size-measure-hero-sub",
+  "hero-pad-top",
+  "hero-pad-top-compact",
+  "stage-max-height",
+  "stage-compact-height",
+  "stage-short-height",
+  "mask-hero-video",
+  "cycle-bar-width",
+  "hero-min-height"
 ]

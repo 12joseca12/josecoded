@@ -212,6 +212,10 @@ describe('translated English slugs (pathnames)', () => {
       ['/a/b/c', '/es/:first/:rest+'],
       ['/legal/aviso-legal', '/es/:first/:rest+'],
       ['/entrada', '/es/:first'],
+      ['/hero', '/es/:first'],
+      ['/art', '/es/:first'],
+      ['/og', '/es/:first'],
+      ['/hero/', '/es/:first'],
       ['/en/services', '/en/servicios'],
       ['/en/client-area/tasks/7', '/en/area-clientes/tareas/:path+'],
     ])('%s -> %s', (path, destination) => {
@@ -235,6 +239,7 @@ describe('translated English slugs (pathnames)', () => {
       '/foo.txt',
       '/hero/poster.webp',
       '/art/glyph-phone.avif',
+      '/og/home.png',
     ])('%s is left alone', (path) => {
       const reached = rewriteFor(path);
       expect(reached === undefined || reached.startsWith('/en/'), `${path} -> ${reached}`).toBe(

@@ -1,7 +1,10 @@
 // Video mode (DT §1.6.3): every phone and small tablet, and any desktop without WebGL2. After the
 // LCP the sources are added (no `<source>` in the HTML: poster mode and Save-Data download nothing),
-// `load()` waits for idle, and the poster hides on `canplay` without a fade. The clip is paused
-// outside the viewport and with the tab hidden; the cycle bars follow `currentTime`.
+// `load()` waits for idle and `play()` follows at once (iOS Safari with `preload="none"` never fires
+// `canplay` without it). The stage turns `live` (poster hidden, bars shown) only when playback has
+// actually started (`playing`): if `play()` is refused (low-power mode) the poster stays and the bars
+// stay hidden. The clip is paused outside the viewport and with the tab hidden; the bars follow
+// `currentTime`.
 import { afterLcp, idle } from './after-lcp';
 import { createBarWriter } from './bars';
 import { barsAt } from './cycle-clock';
@@ -56,7 +59,7 @@ export function startVideo(el: HeroVideoElements, sources: VideoSources): () => 
     await idle();
     if (signal.aborted) return;
     video.addEventListener(
-      'canplay',
+      'playing',
       () => {
         stage.dataset.state = 'live';
         sync();
@@ -64,6 +67,8 @@ export function startVideo(el: HeroVideoElements, sources: VideoSources): () => 
       { once: true, signal },
     );
     video.load();
+    // a refused autoplay leaves the stage as it is: poster visible, bars hidden
+    void video.play().catch(() => undefined);
   })();
 
   const io = new IntersectionObserver((entries) => {

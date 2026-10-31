@@ -45,22 +45,23 @@
   display: block;
 }
 
-/* the poster gives way: at once for the video, after the canvas has faded in for the scene */
+/* the poster gives way: at once for the video (it plays only when it is really playing) */
 .stage[data-state='live'] .poster {
   visibility: hidden;
 }
 
-.stage[data-mode='scene'][data-state='live'] .poster {
-  /* visibility flips at the end of the interval: the poster stays until the fade is over */
-  transition: visibility var(--dur-canvas-in) var(--ease-linear);
+/* The live scene is the first paint, not the poster (decided by Jose, 2026-10-31; deviation from
+   DT §1.6.3). Only once `HeroModeScript` or the gate has chosen `scene`: without JavaScript, with
+   reduced motion, or when the gate picks video or poster, the poster stays visible. */
+.stage[data-mode='scene'] .poster {
+  visibility: hidden;
 }
 
-/* Desktop, fine pointer, motion allowed, scripts on: the live scene is the first paint, not the
-   poster (decided by Jose, 2026-10-31; deviation from DT §1.6.3). Without scripts, with reduced
-   motion or when the gate picks video or poster, the poster stays. */
-@media (width > 56.25rem) and (hover: hover) and (pointer: fine) and (scripting: enabled) and (prefers-reduced-motion: no-preference) {
-  .stage:not([data-mode='video'], [data-mode='poster']) .poster {
-    visibility: hidden;
+/* The video is an opaque square: its edges fade out so they do not show over the light field
+   (the poster carries alpha instead; deviation from home-v7, where the static is a PNG with margins) */
+@supports (mask-image: linear-gradient(#000, transparent)) {
+  .video {
+    mask-image: var(--mask-hero-video);
   }
 }
 
