@@ -6,6 +6,33 @@
   pointer-events: none;
 }
 
+/* home-v7 base.css:46-47: the scene's canvas, full viewport under the light field; it fades in
+   once the scene runs (`data-live`, set by lib/hero/load-scene.ts) */
+.canvasSlot {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-canvas);
+  pointer-events: none;
+}
+
+.canvasSlot > canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity var(--dur-canvas-in) var(--ease-out);
+}
+
+.canvasSlot > canvas[data-live] {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .canvasSlot > canvas {
+    transition: none;
+  }
+}
+
 .field {
   --rest-x: var(--field-rest-x);
   --rest-y: var(--field-rest-y);

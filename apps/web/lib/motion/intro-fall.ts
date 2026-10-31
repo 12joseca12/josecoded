@@ -130,6 +130,7 @@ function setText(el: HTMLElement, value: string) {
 function settle(el: HTMLElement) {
   el.classList.remove('is-falling', 'is-wet');
   el.style.removeProperty('transform');
+  el.style.removeProperty('width');
   setText(el, el.dataset.ch ?? '');
 }
 
@@ -232,6 +233,10 @@ export function runIntro({
     state = 'falling';
     if (sceneAnswered) mode = 'full';
     clearTimeout(waitTimer);
+    // Every letter keeps the width of its final character while it shows random glyphs: glyphs of
+    // other widths would re-wrap the text and move the whole hero (CLS 0.48 at 360 px without this).
+    // All reads first, then the writes: one layout.
+    const widths = chars.map((el) => el.getBoundingClientRect().width);
     drops = planFall(chars, rng, window.innerHeight).map((plan) => ({
       ...plan,
       speed: -plan.start / plan.landT,
@@ -239,11 +244,12 @@ export function runIntro({
       landed: false,
       flash: 0,
     }));
-    for (const d of drops) {
+    drops.forEach((d, i) => {
+      d.el.style.width = `${widths[i] ?? 0}px`;
       d.el.classList.add('is-falling');
       d.el.style.transform = `translateY(${d.start}px)`;
       setText(d.el, d.glyph);
-    }
+    });
     delete html.dataset.intro;
     const t0 = performance.now();
     onStart?.({ t0, sceneReady: sceneAnswered });

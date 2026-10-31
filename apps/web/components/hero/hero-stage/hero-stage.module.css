@@ -1,0 +1,81 @@
+/* Ported from home-v7 base.css:104-107 and 175-178 (.hero__stage, .hero__static). */
+.stage {
+  position: relative;
+  aspect-ratio: 1;
+  width: 100%;
+  max-height: var(--stage-max-height);
+  touch-action: pan-y; /* the vertical gesture stays a scroll on touch */
+}
+
+/* the drag belongs to the live scene only */
+.stage[data-mode='scene'] {
+  cursor: grab;
+}
+
+.stage[data-mode='scene']:active {
+  cursor: grabbing;
+}
+
+.poster,
+.video {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.posterImage,
+.video {
+  object-fit: contain;
+}
+
+.posterImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.video {
+  display: none;
+}
+
+.stage[data-mode='video'] .video {
+  display: block;
+}
+
+/* the poster gives way: at once for the video, after the canvas has faded in for the scene */
+.stage[data-state='live'] .poster {
+  visibility: hidden;
+}
+
+.stage[data-mode='scene'][data-state='live'] .poster {
+  /* visibility flips at the end of the interval: the poster stays until the fade is over */
+  transition: visibility var(--dur-canvas-in) var(--ease-linear);
+}
+
+/* Desktop, fine pointer, motion allowed, scripts on: the live scene is the first paint, not the
+   poster (decided by Jose, 2026-10-31; deviation from DT §1.6.3). Without scripts, with reduced
+   motion or when the gate picks video or poster, the poster stays. */
+@media (width > 56.25rem) and (hover: hover) and (pointer: fine) and (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .stage:not([data-mode='video'], [data-mode='poster']) .poster {
+    visibility: hidden;
+  }
+}
+
+/* below 56.25rem the stage is a square limited by height, and by width on narrow, tall screens */
+@media (width <= 56.25rem) {
+  .stage {
+    width: min(var(--stage-compact-height), 100%);
+    max-height: var(--stage-compact-height);
+    height: auto;
+  }
+}
+
+@media (width <= 56.25rem) and (height <= 43.75rem) {
+  .stage {
+    width: min(var(--stage-short-height), 100%);
+    max-height: var(--stage-short-height);
+  }
+}

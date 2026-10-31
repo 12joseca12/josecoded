@@ -211,3 +211,22 @@ describe('lifecycle', () => {
     s.dispose();
   });
 });
+
+it('onProgress reports the highlighted state and its fill as the hold advances', async () => {
+  const seen: Array<[number, number]> = [];
+  const s = await createGlyphScene({
+    canvas: document.createElement('canvas'),
+    stage: document.createElement('div'),
+    count: 200,
+    seed: 1,
+    capture: true,
+    onProgress: (i, f) => seen.push([i, f]),
+  });
+  s.step(1.75);
+  const last = seen[seen.length - 1]!;
+  expect(last[0]).toBe(0);
+  expect(last[1]).toBeCloseTo(0.5, 2);
+  s.step(1.75); // hold ends (fill 1)
+  s.step(0.9); // the morph passes half: the next bar, already full
+  expect(seen[seen.length - 1]).toEqual([1, 1]);
+});

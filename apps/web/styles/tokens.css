@@ -126,6 +126,7 @@
   --sp-6: 1.5rem;
   --sp-7: 1.75rem;
   --sp-8: 2rem;
+  --sp-9: 2.25rem;
   --sp-10: 2.5rem;
   --sp-12: 3rem;
   --sp-16: 4rem;
@@ -157,6 +158,7 @@
   --size-swatch: 5.5rem;
   --size-visually-hidden: 1ch;
   --size-icon-lg: 1.375rem;
+  --size-measure-hero-sub: 34ch;
 
   /* focus */
   --focus-ring-width: 2px;
@@ -348,4 +350,11 @@
   --menu-enter-scale: 0.98;
   --page-enter-offset: 0.5rem;
   --cmdk-label-width: 6.5rem;
+  --hero-pad-top: 7rem;
+  --hero-pad-top-compact: 5.5rem;
+  --stage-max-height: 80svh;
+  --stage-compact-height: 38svh;
+  --stage-short-height: 34svh;
+  --cycle-bar-width: 1.5rem;
+  --hero-min-height: 100svh;
 }

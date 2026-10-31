@@ -119,6 +119,7 @@ export type TokenName =
   | '--sp-6'
   | '--sp-7'
   | '--sp-8'
+  | '--sp-9'
   | '--sp-10'
   | '--sp-12'
   | '--sp-16'
@@ -148,6 +149,7 @@ export type TokenName =
   | '--size-swatch'
   | '--size-visually-hidden'
   | '--size-icon-lg'
+  | '--size-measure-hero-sub'
   | '--focus-ring-width'
   | '--focus-ring-offset'
   | '--focus-ring-color'
@@ -310,7 +312,14 @@ export type TokenName =
   | '--menu-enter-offset'
   | '--menu-enter-scale'
   | '--page-enter-offset'
-  | '--cmdk-label-width';
+  | '--cmdk-label-width'
+  | '--hero-pad-top'
+  | '--hero-pad-top-compact'
+  | '--stage-max-height'
+  | '--stage-compact-height'
+  | '--stage-short-height'
+  | '--cycle-bar-width'
+  | '--hero-min-height';
 
 /** Reads a design token from the document. Motion code reads tokens only through this. */
 export function readToken(name: TokenName): string {
@@ -435,6 +444,7 @@ export const tokens = {
   'sp-6': '--sp-6',
   'sp-7': '--sp-7',
   'sp-8': '--sp-8',
+  'sp-9': '--sp-9',
   'sp-10': '--sp-10',
   'sp-12': '--sp-12',
   'sp-16': '--sp-16',
@@ -464,6 +474,7 @@ export const tokens = {
   'size-swatch': '--size-swatch',
   'size-visually-hidden': '--size-visually-hidden',
   'size-icon-lg': '--size-icon-lg',
+  'size-measure-hero-sub': '--size-measure-hero-sub',
   'focus-ring-width': '--focus-ring-width',
   'focus-ring-offset': '--focus-ring-offset',
   'focus-ring-color': '--focus-ring-color',
@@ -627,4 +638,11 @@ export const tokens = {
   'menu-enter-scale': '--menu-enter-scale',
   'page-enter-offset': '--page-enter-offset',
   'cmdk-label-width': '--cmdk-label-width',
+  'hero-pad-top': '--hero-pad-top',
+  'hero-pad-top-compact': '--hero-pad-top-compact',
+  'stage-max-height': '--stage-max-height',
+  'stage-compact-height': '--stage-compact-height',
+  'stage-short-height': '--stage-short-height',
+  'cycle-bar-width': '--cycle-bar-width',
+  'hero-min-height': '--hero-min-height',
 } as const satisfies Record<string, TokenName>;

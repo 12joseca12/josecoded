@@ -219,3 +219,14 @@ it('keeps the text node of each char attached (React owns it): only nodeValue ch
     expect(el.textContent).toBe(el.dataset.ch);
   });
 });
+
+it('pins every falling letter to the width of its final character, and releases it when it lands', () => {
+  vi.useFakeTimers();
+  const letters = chars(3);
+  letters.forEach((el, i) => (el.getBoundingClientRect = () => ({ width: 10 + i }) as DOMRect));
+  document.documentElement.dataset.intro = 'pending';
+  const run = runIntro({ root: document.body, onDone: () => undefined });
+  expect(letters.map((el) => el.style.width)).toEqual(['10px', '11px', '12px']);
+  run.finish();
+  expect(letters.map((el) => el.style.width)).toEqual(['', '', '']);
+});

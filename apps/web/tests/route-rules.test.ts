@@ -218,6 +218,11 @@ describe('translated English slugs (pathnames)', () => {
       expect(rewriteFor(path)).toBe(destination);
     });
 
+    // the result of a rewrite must not match a second one: `next dev` chains them (/ -> /es -> /es/es)
+    it.each(['/es', '/es/servicios', '/es/a/b'])('%s is not rewritten again', (path) => {
+      expect(rewriteFor(path)).toBeUndefined();
+    });
+
     // English URLs must never be pushed under /es (that served the Spanish 404 on /en/nope)
     it.each([
       '/en',
@@ -228,6 +233,8 @@ describe('translated English slugs (pathnames)', () => {
       '/_next/static/x',
       '/favicon.ico',
       '/foo.txt',
+      '/hero/poster.webp',
+      '/art/glyph-phone.avif',
     ])('%s is left alone', (path) => {
       const reached = rewriteFor(path);
       expect(reached === undefined || reached.startsWith('/en/'), `${path} -> ${reached}`).toBe(

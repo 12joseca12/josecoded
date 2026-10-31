@@ -121,6 +121,7 @@ button {
 .ch.is-falling,
 .ch.is-wet {
   display: inline-block;
+  text-align: center; /* intro-fall.ts pins the width of the final character: a glyph sits centred in it */
 }
 
 .ch.is-falling {

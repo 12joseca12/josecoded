@@ -46,6 +46,8 @@ export interface GlyphSceneOptions {
   background?: string;
   /** Fires when the highlighted cycle state changes (not for the initial state). `progress` is the bar fill at that moment. */
   onState?(index: StateIndex, progress: number): void;
+  /** Fires on every frame the bar fill changes (the web cycle bars): the highlighted state and its fill, 0..1. */
+  onProgress?(index: StateIndex, progress: number): void;
 }
 
 export interface GlyphScene {
@@ -237,6 +239,8 @@ export async function createGlyphScene(o: GlyphSceneOptions): Promise<GlyphScene
   const intro = createIntro();
   let clock = 0;
   let lastIndex: StateIndex = 0;
+  let barIndex: StateIndex | -1 = -1;
+  let barFill = -1;
 
   let dragging = false;
   let lastX = 0;
@@ -291,6 +295,14 @@ export async function createGlyphScene(o: GlyphSceneOptions): Promise<GlyphScene
     uni(mat, 'uTo').value = cycle.next;
     uni(mat, 'uProg').value = cycle.prog;
     const idx = cycleIndex(cycle);
+    if (o.onProgress) {
+      const fill = cycleFill(cycle, P.hold);
+      if (idx !== barIndex || Math.abs(fill - barFill) >= 1e-3) {
+        barIndex = idx;
+        barFill = fill;
+        o.onProgress(idx, fill);
+      }
+    }
     if (idx !== lastIndex) {
       lastIndex = idx;
       o.onState?.(idx, cycleFill(cycle, P.hold));

@@ -19,10 +19,15 @@ export interface RetiredRule extends RewriteRule {
   statusCode: 301;
 }
 
-// Spanish has no prefix: everything that is not /en, /api, /_next or a file goes to /es.
+// Spanish has no prefix: everything that is not /es, /en, /api, /_next or a file goes to /es.
+// /es is excluded too: `next dev` applies the rewrites in a chain (`/` -> `/es` -> `/es/es`, a 404),
+// the OpenNext preview stops at the first match. /es/... is a redirect to the unprefixed URL anyway.
+// The folders of `public/` (hero media, art, OG images) are excluded for the same dev reason: a
+// rewrite runs before the file system in `next dev`, so /hero/poster.webp became /es/hero/poster.webp
+// (a 404). In production the assets binding answers before any rewrite.
 // One rule per depth, never a single `:path(.*)` param: a destination param that contains
 // slashes is encoded by OpenNext on workerd and the request ends in a 500 (/negocios/x, /a/b/c).
-const FIRST_SEGMENT = ':first((?!(?:en|api|_next)(?:/|$))[^/.]+)';
+const FIRST_SEGMENT = ':first((?!(?:es|en|api|_next|hero|art|og)(?:/|$))[^/.]+)';
 
 /**
  * A path and everything below it. Two explicit rules instead of `:path*`: OpenNext on workerd

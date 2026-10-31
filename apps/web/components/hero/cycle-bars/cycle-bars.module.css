@@ -1,0 +1,36 @@
+/* Ported from home-v7 base.css:106-108 (.cycle). */
+.cycle {
+  position: absolute;
+  inset-inline-start: 50%;
+  inset-block-end: var(--sp-2);
+  display: flex;
+  gap: var(--sp-1-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transform: translateX(-50%);
+  visibility: hidden;
+}
+
+/* the stage turns `live` when the scene runs or the video plays */
+[data-hero-stage][data-state='live'] .cycle {
+  visibility: visible;
+}
+
+.cycle li {
+  width: var(--cycle-bar-width);
+  height: var(--stroke-line);
+  border-radius: var(--r-pill);
+  background: var(--edge-selected);
+  overflow: hidden;
+}
+
+.cycle li::after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--violet-soft);
+  transform: scaleX(var(--p, 0));
+  transform-origin: left;
+}

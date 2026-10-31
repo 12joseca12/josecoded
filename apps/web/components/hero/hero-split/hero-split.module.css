@@ -1,0 +1,95 @@
+/* Ported from home-v7 base.css:99-105 and 169-176 (.hero, .hero__title, .hero__sub, .hero__ctas).
+   deviation: the padding-top (7rem, 5.5rem compact) are the hero-pad-top tokens, added to design.json. */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  align-items: center;
+  gap: var(--sp-8);
+  min-height: var(--hero-min-height);
+  max-width: var(--size-container);
+  margin-inline: auto;
+  padding: var(--hero-pad-top) var(--sp-gutter) var(--sp-16);
+}
+
+.copy {
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--font-display-size);
+  font-weight: var(--font-display-weight);
+  line-height: var(--font-display-leading);
+  letter-spacing: var(--font-display-tracking);
+  text-wrap: balance;
+}
+
+/* one line per name: the FallText of each line is a block */
+.title > span {
+  display: block;
+}
+
+/* a pending name ({{DATO}}, development and previews only) is a note, not display type */
+.title:has([data-pending]) {
+  font-size: var(--font-lede-size);
+  font-weight: var(--font-lede-weight);
+  line-height: var(--font-lede-leading);
+  letter-spacing: normal;
+}
+
+/* the subtitle is the FallText `p` that follows the heading */
+.copy > p {
+  margin: var(--sp-6) 0 0;
+  max-width: var(--size-measure-hero-sub);
+  font-size: var(--font-lede-size);
+  font-weight: var(--font-lede-weight);
+  line-height: var(--font-lede-leading);
+  color: var(--text-2);
+  text-wrap: pretty;
+}
+
+.ctas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-6);
+  margin-top: var(--sp-9);
+}
+
+.stageCell {
+  display: grid;
+  justify-items: end;
+  min-width: 0;
+}
+
+@media (width <= 56.25rem) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    gap: var(--sp-2);
+    padding-top: var(--hero-pad-top-compact);
+  }
+
+  /* the stage goes first, centred, and the name comes under it */
+  .stageCell {
+    order: -1;
+    justify-items: center;
+  }
+
+  .title {
+    margin-top: var(--sp-5);
+    font-size: var(--font-display-compact-size);
+    font-weight: var(--font-display-compact-weight);
+    line-height: var(--font-display-compact-leading);
+    letter-spacing: var(--font-display-compact-tracking);
+  }
+
+  .copy > p {
+    margin-top: var(--sp-4);
+  }
+
+  .ctas {
+    gap: var(--sp-4);
+    margin-top: var(--sp-7);
+  }
+}

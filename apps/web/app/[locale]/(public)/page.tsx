@@ -1,15 +1,18 @@
-import { getTranslations } from 'next-intl/server';
-
+import { HeroSplit } from '@/components/hero/hero-split';
+import { IntroFall } from '@/components/hero/intro-fall';
 import { resolveLocale } from '@/lib/locale';
 
 import type { LocaleParams } from '@/lib/locale';
 
-// Placeholder: the home (hero, bento scenes) is phase 2.
+// The home. Scene 0 (the hero) is task 2.8; the bento scenes follow in 2.10 onwards.
 export default async function HomePage({ params }: { params: LocaleParams }) {
   await resolveLocale(params);
-  const t = await getTranslations();
 
   return (
-    <h1>{t('site.name')}</h1>
+    <>
+      <HeroSplit />
+      {/* waits for the live scene on desktop (it asks the hero gate), falls alone elsewhere */}
+      <IntroFall awaitScene="auto" />
+    </>
   );
 }
