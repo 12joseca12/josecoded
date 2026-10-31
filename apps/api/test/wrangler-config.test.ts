@@ -57,6 +57,14 @@ describe('wrangler.jsonc: API_MODE', () => {
   });
 });
 
+describe('wrangler.jsonc: Omen is optional (task 1.8d)', () => {
+  it('declares no WORKER_URL / WORKER_INTERNAL_TOKEN var in any environment', () => {
+    for (const [, section] of sections) {
+      expect(Object.keys(section.vars ?? {}).filter((k) => k.startsWith('WORKER_'))).toEqual([]);
+    }
+  });
+});
+
 describe('wrangler.jsonc: cron and preview Worker', () => {
   const preview = config.env?.preview;
 

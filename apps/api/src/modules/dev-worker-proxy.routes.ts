@@ -1,13 +1,27 @@
-import { Hono } from 'hono';
+import { Hono, type MiddlewareHandler } from 'hono';
 
+import { parseEnv } from '../config/env';
 import { devApiKeyGuard, fixedWindowRateLimit } from '../middlewares/security.middleware';
-import { callWorker, toUpstreamFail } from '../services/worker.service';
+import { callWorker, isWorkerConfigured, toUpstreamFail, workerFailStatus } from '../services/worker.service';
 import { fail } from '../utils/api-response';
 
 import type { Env } from '../types/env.types';
 
 export const devWorkerProxyRoutes = new Hono<{ Bindings: Env }>();
 
+/**
+ * The proxy exists only when Omen AND a dev key are configured, and never in production (task 1.8d). Otherwise the
+ * path is a plain 404, as if it were not mounted. `devApiKeyGuard` then checks the key itself.
+ */
+const devProxyEnabled: MiddlewareHandler = async (c, next) => {
+  const env = parseEnv(c.env);
+  if (env.API_MODE === 'production' || !isWorkerConfigured(env) || !env.DEV_API_KEY) {
+    return c.json(fail('not_found', 'Not found'), 404);
+  }
+  return next();
+};
+
+devWorkerProxyRoutes.use('/api/dev/worker/*', devProxyEnabled);
 devWorkerProxyRoutes.use('/api/dev/worker/*', devApiKeyGuard);
 devWorkerProxyRoutes.use(
   '/api/dev/worker/*',
@@ -43,7 +57,7 @@ devWorkerProxyRoutes.all('/api/dev/worker/*', async (c) => {
     });
     return c.json(data);
   } catch (e) {
-    return c.json(toUpstreamFail(e), 502);
+    return c.json(toUpstreamFail(e), workerFailStatus(e));
   }
 });
 

@@ -318,12 +318,12 @@ describe('scheduled() entry point', () => {
 
     await scheduled(
       { cron: '*/5 * * * *', scheduledTime: Date.parse(NOW), noRetry: () => undefined } as ScheduledController,
-      { ...withoutCors, API_MODE: '', WORKER_TIMEOUT_MS: '', TEST: '1', __deps: deps } as unknown as Env,
+      { ...withoutCors, API_MODE: '', AI_CHAT_TIMEOUT_MS: '', TEST: '1', __deps: deps } as unknown as Env,
     );
 
     expect(seen).toHaveLength(1);
     expect(seen[0]).toMatchObject({ API_MODE: 'development', CORS_ORIGINS: '' });
-    expect(seen[0]).not.toHaveProperty('WORKER_TIMEOUT_MS', '');
+    expect(seen[0]).not.toHaveProperty('AI_CHAT_TIMEOUT_MS', '');
     // parseEnv strips what the schema does not know, the test hooks included
     expect(seen[0]).not.toHaveProperty('__deps');
   });

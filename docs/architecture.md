@@ -4,7 +4,7 @@
 
 ## In one paragraph
 
-josecoded is the personal platform of a freelance full-stack developer: a public site (services, projects, technical blog, a small lab, an AI chat that answers by visitor type), a client area and a private CRM, all in one pnpm/turbo monorepo. The web app is Next.js 16 App Router rendered on Cloudflare Workers through OpenNext, with no Node middleware. Everything that needs a secret or talks to a third party goes through one Hono gateway (`apps/api`), also a Worker, which fronts Supabase (Postgres + Auth with RLS), Workers AI, Turnstile, Telegram and a Fastify backend on a home server ("Omen") reached only through a Cloudflare Tunnel. Design is expressed as tokens (`design.json` -> `tokens.css`) consumed by CSS Modules, motion is native CSS plus small TypeScript modules, and every cross-cutting rule (import boundaries, token-only styles, shared types, zod at the edges, duplication, RLS) is enforced by a test or a lint rule rather than by convention.
+josecoded is the personal platform of a freelance full-stack developer: a public site (services, projects, technical blog, a small lab, an AI chat that answers by visitor type), a client area and a private CRM, all in one pnpm/turbo monorepo. The web app is Next.js 16 App Router rendered on Cloudflare Workers through OpenNext, with no Node middleware. Everything that needs a secret or talks to a third party goes through one Hono gateway (`apps/api`), also a Worker, which fronts Supabase (Postgres + Auth with RLS), Workers AI, Turnstile, Telegram and and, optionally, a Fastify backend on a home server ("Omen") that is outside the product: no production route depends on it (task 1.8d). Design is expressed as tokens (`design.json` -> `tokens.css`) consumed by CSS Modules, motion is native CSS plus small TypeScript modules, and every cross-cutting rule (import boundaries, token-only styles, shared types, zod at the edges, duplication, RLS) is enforced by a test or a lint rule rather than by convention.
 
 ## Context
 
@@ -27,7 +27,7 @@ flowchart LR
     AUTH[Auth: Google, GitHub, email OTP]
   end
 
-  subgraph omen[Home server "Omen"]
+  subgraph omen["Home server Omen: outside the product, optional"]
     TUN[Cloudflare Tunnel<br/>worker.josecoded.com]
     WRK["josecoded-worker (Fastify)<br/>ai, n8n, storage, system"]
     N8N[n8n]
@@ -49,7 +49,7 @@ flowchart LR
   API --> AI
   API -->|verify| TS
   API --> KV
-  API -->|Bearer WORKER_INTERNAL_TOKEN| TUN --> WRK
+  API -. "optional: WORKER_URL + WORKER_INTERNAL_TOKEN" .-> TUN --> WRK
   WRK --> N8N
   API -->|outbox drain + inline: Telegram, Resend| TG
 ```
@@ -59,7 +59,7 @@ Rules the diagram encodes:
 - The browser never talks to Omen or to n8n. The only Omen URL the public sees is Umami.
 - Secrets live in the gateway (`wrangler secret`) or in Supabase, never in `NEXT_PUBLIC_*` and never in the repo.
 - Supabase is reached from the browser only through RLS with the publishable key; privileged access exists only in the gateway and in Server Actions.
-- Legacy pieces are consumed, not rewritten: the gateway's inherited routes (`health`, `system`, `v1-protected`; `forum` and `admin-chat` were retired with their tables in plan 1.8c), the Omen worker, the domain and the Cloudflare account. The Supabase schema is built from scratch in `supabase/migrations/` for a new project (D49, DATOS).
+- Legacy pieces are consumed, not rewritten: the gateway's inherited routes (`health`, `v1-protected`; the public `system` route was removed in 1.8d; `forum` and `admin-chat` were retired with their tables in plan 1.8c), the Omen worker (optional, not configured in production), the domain and the Cloudflare account. The Supabase schema is built from scratch in `supabase/migrations/` for a new project (D49, DATOS).
 
 ## Monorepo map
 

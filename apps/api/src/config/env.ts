@@ -14,8 +14,9 @@ const rateLimiterSchema = z
 
 const envSchema = z.object({
   API_MODE: apiModeSchema.default('development'),
-  WORKER_URL: z.string().url(),
-  WORKER_INTERNAL_TOKEN: z.string().min(10),
+  // Omen backend (task 1.8d): optional and coupled (both or neither, see the refine below). Production runs without it.
+  WORKER_URL: z.string().url().optional(),
+  WORKER_INTERNAL_TOKEN: z.string().min(10).optional(),
   CORS_ORIGINS: z.string().default(''),
   SUPABASE_URL: z.string().url(),
   SUPABASE_ANON_KEY: z.string().min(10).optional(),
@@ -23,7 +24,6 @@ const envSchema = z.object({
   // New-format secret key (`sb_secret_…`, DATOS §8.1): outbox, scheduled jobs and staff_members (adapters/supabase.ts).
   SUPABASE_SECRET_KEY: z.string().min(20).optional(),
   DEV_API_KEY: z.string().min(10).optional(),
-  WORKER_TIMEOUT_MS: z.string().regex(/^\d+$/).optional(),
   AI_CHAT_TIMEOUT_MS: z.string().regex(/^\d+$/).optional(),
   // Admin guard (DATOS Q3): TOTP (`aal2`) is required unless this is exactly 'false' (local tests without TOTP).
   ADMIN_REQUIRE_MFA: z.enum(['true', 'false']).optional(),
@@ -35,10 +35,8 @@ const envSchema = z.object({
   // Signs `chat_sid` (assistant, task 4.4).
   CHAT_SID_SECRET: z.string().min(32).optional(),
   // New modules (plan 1.7, DT §9). Optional for now; every new binding must be listed here or parseEnv strips it.
-  WORKER_INTERNAL_TOKEN_PREV: z.string().min(10).optional(),
   TURNSTILE_SECRET_KEY: z.string().min(1).optional(),
   SERVER_KEY: z.string().min(1).optional(),
-  N8N_LEAD_WEBHOOK_ENABLED: z.enum(['true', 'false']).optional(),
   PROPOSALS_DAILY_LIMIT_IP: z.string().regex(/^\d+$/).optional(),
   PROPOSALS_DAILY_LIMIT_ALL: z.string().regex(/^\d+$/).optional(),
   AI_PROPOSAL_MODEL: z.string().min(1).optional(),
@@ -58,7 +56,12 @@ const envSchema = z.object({
       { message: 'Falta el binding AI (Workers AI). Configura "ai": { "binding": "AI" } en wrangler.jsonc' },
     )
     .optional(),
-}).refine(
+})
+  .refine((data) => Boolean(data.WORKER_URL) === Boolean(data.WORKER_INTERNAL_TOKEN), {
+    message: 'Set WORKER_URL and WORKER_INTERNAL_TOKEN together, or neither',
+    path: ['WORKER_URL'],
+  })
+  .refine(
   (data) => Boolean(data.SUPABASE_ANON_KEY?.trim() || data.SUPABASE_PUBLISHABLE_KEY?.trim()),
   {
     message: 'Set SUPABASE_ANON_KEY or SUPABASE_PUBLISHABLE_KEY',
@@ -66,16 +69,10 @@ const envSchema = z.object({
   },
 );
 
-const REQUIRED_BINDING_KEYS = [
-  'WORKER_URL',
-  'WORKER_INTERNAL_TOKEN',
-  'SUPABASE_URL',
-] as const;
+const REQUIRED_BINDING_KEYS = ['SUPABASE_URL'] as const;
 
 /** Values only for `wrangler dev` without `.dev.vars`: Supabase placeholders (nothing privileged works without them). */
 const LOCAL_DEV_ENV_PLACEHOLDERS = {
-  WORKER_URL: 'http://127.0.0.1:8787',
-  WORKER_INTERNAL_TOKEN: 'local-dev-worker-internal-token',
   SUPABASE_URL: 'http://127.0.0.1:54321',
   SUPABASE_ANON_KEY: 'local-dev-supabase-anon-key-placeholder',
 } as const;
@@ -101,7 +98,7 @@ export function normalizeEnvBindings(raw: unknown): Record<string, unknown> {
   const mode: ApiMode = base.API_MODE === 'production' ? 'production' : 'development';
   base.API_MODE = mode;
 
-  // En development, rellenar solo las claves vacías (p. ej. wrangler.jsonc con WORKER_URL pero sin Supabase).
+  // En development, rellenar solo las claves vacías (p. ej. wrangler.jsonc sin Supabase).
   if (mode === 'development') {
     for (const k of REQUIRED_BINDING_KEYS) {
       if (isEmptyBinding(base[k])) {

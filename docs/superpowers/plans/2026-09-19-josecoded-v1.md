@@ -138,6 +138,7 @@ Se acepta la opción recomendada salvo donde se indica. Cada punto dice en qué 
 
 - **Lo heredado que se conserva** (v3.2, D49): `josecoded-api` solo en sus rutas `health`, `system`, `v1/health` y `v1-protected` (`forum/*` y `admin-chat/*` se retiran en 1.8c, Q1), `josecoded-worker` (sin cambios, ni por Radar), dominio y cuenta Cloudflare. **Supabase es un proyecto nuevo (`echlwywbucgbhwpncviy`) con esquema propio desde cero (DATOS)**: las migraciones del repo son la fuente; nada del proyecto heredado se migra. Contratos del gateway que siguen vivos, intocables (spec §7, DT §7).
 - **Sin middleware/proxy Node** en `apps/web`: guards en layouts server-side + re-comprobación en cada Server Action y route handler; i18n por rewrites (DT §1.4, §1.7).
+- **Ninguna ruta de producción de la web ni del gateway depende de Omen** (1.8d): `WORKER_URL`/`WORKER_INTERNAL_TOKEN` son opcionales y no se fijan en producción.
 - **El navegador nunca habla con Omen ni con n8n**; solo el gateway. Umami es la única URL de Omen expuesta (DT §7.2).
 - **Producción con OK explícito de Jose en la sesión** (tareas marcadas **GATE**): `wrangler deploy`, `apply_migration`, `supabase functions deploy`, `pricing:sync-db`, exponer `stats.josecoded.com`, cambiar `API_MODE`, alta de `api.josecoded.com`, `setWebhook` de Telegram, contenedores y workflows en Omen, plist de launchd en el Mac, `wrangler secret put` en Workers de producción. **Las migraciones las aplica el controlador, no un subagente**, con `list_tables` y `get_advisors` antes y después (DT §6.2, §11.1).
 - **Servicios preexistentes de Omen intocables** (worker, n8n, Ollama, Samba, túnel `josecoded-worker`). Solo contenedores y workflows **nuevos**.
@@ -153,7 +154,7 @@ Se acepta la opción recomendada salvo donde se indica. Cada punto dice en qué 
 ## What already exists (no se reescribe; se consume)
 
 - **`josecoded-api`** (gateway Hono en Workers): rutas `v1`, `v1-protected`, `forum` (intacto, sin consumidor), `admin-chat` (+ `admin-chat/admin/*`, takeover), `health`, `system`; middlewares `requestId`, `securityHeaders`, CORS, rate limit; binding `AI_RATE_LIMITER` declarado. Se mueve a `apps/api` (1.2) y solo recibe rutas, bindings y cron aditivos.
-- **`josecoded-worker`** en Omen (Fastify, `worker.josecoded.com`): módulos `ai/*` (chat, blog, summarize), `n8n/*` (trigger de workflows), `storage/*`, `system/*`, `health`. Sin cambios en todo el plan.
+- **`josecoded-worker`** en Omen (Fastify, `worker.josecoded.com`): módulos `ai/*` (chat, blog, summarize), `n8n/*` (trigger de workflows), `storage/*`, `system/*`, `health`. Sin cambios en todo el plan; **opcional para el gateway desde 1.8d** (fuera del producto).
 - **Supabase `josecoded` (v3.2):** proyecto **nuevo** `echlwywbucgbhwpncviy` (eu-west-1, Postgres 17), vacío hasta el gate 1.9. Esquema v2 en `supabase/migrations/` (DATOS). ~~**Supabase `josecoded`**: 21 tablas heredadas (`staff_members` con Jose admin y `telegram_chat_id`, `leads` con sus 6 triggers, `clients`, `client_tasks`, `client_task_comments`, `client_assets`, `client_pack_extras`, `pack_templates`, `pack_extras`, `admin_chat_*`, `blog_posts`, `forum_*`), 47 políticas con `private.staff_role_of()`, esquema `private.*` (`notify_event()` por `pg_net`), bucket privado `client-assets` (25 MiB), Edge Function `notify` v4 (Telegram + Resend), `vault.notify_shared_secret`. Solo migraciones aditivas.~~ (heredado de `nrgrmymsjtgayzejtawa`, abandonado el 2026-10-28, D49).
 - Dominio `josecoded.com`, cuenta Cloudflare, bot de Telegram, cuenta de Resend (dominio a verificar).
 
@@ -213,7 +214,7 @@ Se acepta la opción recomendada salvo donde se indica. Cada punto dice en qué 
 
 **Orden de ejecución de fases (v3.2):** 1b (cerrar, ahora con CRM y chat) ‖ **2.0 (prototipo home-v7 + gate)** → 2 (port) → **hito «contenido completo» (reducido)** → 3 → 4 → 5 → 6 → 8.1 → 9 (lanzamiento) → 7 Radar → 10 Newsletter (si procede). Carriles: **A** web pública (`design/home-v7` → `feat/shell-home` → `feat/public-pages` → `feat/auth-blog-lab` → `feat/client-area` → `release/v2`); **B** paquetes sin UI (`feat/glyph-scene`, `pricing` con P5); **C** gateway y esquema (`chore/supabase` → 3.7–3.8 → `feat/assistant-chat` → `feat/crm`); **D** infra (`infra/omen` 8.1). El CRM (fase 6) puede empezar en el carril C en cuanto 1.12 esté aplicado y 6.1 (shell) exista, en paralelo con las fases 3–5 del carril A, porque no comparte `messages/` de pantallas públicas ni `tokens.css`.
 
-**Camino crítico real (v3.2):** 1.6 → 1.8a → 1.8b → 1.8c → 1.9 → **2.0 (OK de Jose)** → 2.1 → 2.2 → 2.3 → 2.8 (espera a 2.5b + 2.6 + 2.7) → 2.10 → 2.13 → **2.14 (Servicios)** → 2.15 (Proyectos + Lab/Blog) → 2.16 → 2.17 → hito de contenido → 3.13 → **3.2 (`/servicios`)** → 3.8 → 3.10 → **3.3 (`/partners`)** → 3.9 → 3.4 → 3.5 → 3.6 → 3.12 → 4.1 → 4.2 → 4.5 → **4.4 (chat v2; necesita 1.9 y 6.9 para contextos reales, con contexto de seed hasta entonces)** → 5.1 → 6.1 → 6.2 → 6.9 → 6.8 → 6.6 → 9.1 → 9.4 → 9.5 → 9.6. En paralelo y fuera del camino crítico: 6.7 (importar), 6.3–6.5, 8.1.
+**Camino crítico real (v3.2):** 1.6 → 1.8a → 1.8b → 1.8c → 1.8d → 1.9 → **2.0 (OK de Jose)** → 2.1 → 2.2 → 2.3 → 2.8 (espera a 2.5b + 2.6 + 2.7) → 2.10 → 2.13 → **2.14 (Servicios)** → 2.15 (Proyectos + Lab/Blog) → 2.16 → 2.17 → hito de contenido → 3.13 → **3.2 (`/servicios`)** → 3.8 → 3.10 → **3.3 (`/partners`)** → 3.9 → 3.4 → 3.5 → 3.6 → 3.12 → 4.1 → 4.2 → 4.5 → **4.4 (chat v2; necesita 1.9 y 6.9 para contextos reales, con contexto de seed hasta entonces)** → 5.1 → 6.1 → 6.2 → 6.9 → 6.8 → 6.6 → 9.1 → 9.4 → 9.5 → 9.6. En paralelo y fuera del camino crítico: 6.7 (importar), 6.3–6.5, 8.1.
 
 **Lo que más acorta el lanzamiento:** (1) aprobar el prototipo home-v7 pronto (2.0 es un gate de Jose, no de código); (2) arrancar el shell del CRM en el carril C en cuanto 1.9 esté aplicada mientras el carril A porta la home; (3) tener las dos demos del lab y las tres guías antes de la fase 4 (insumos). **Sin válvula por fecha**: ya no hay nada en el lanzamiento que dependa de Radar.
 
@@ -985,6 +986,18 @@ describe('chat', () => {
 - [ ] 4. Commit: `git commit -m "refactor(api): supabase adapter, outbox drain job, retire forum and admin-chat modules"`.
 
 **Hecho cuando:** gateway sin importaciones de `supabase-js` fuera de `adapters/`, sin rutas huérfanas, cron drena el outbox, snapshot y DEPLOY.md actualizados. **Cierre de la 1b:** `revisor` sobre la rama; `/puerta-calidad` reducida (`qa`: `db reset` + RLS + `wrangler dev`; `revisor-seguridad`: grants, `security definer`, RLS, `anon` sin acceso, secretos).
+
+### Tarea 1.8d — Gateway sin Omen: `WORKER_*` opcionales, 503 `worker_not_configured`, sin sonda pública (hecha)
+
+**Agente:** implementador-web · **Rama:** `main` (autorizado por Jose) · **Gate:** no · **Depende de:** 1.8c · **Insumos:** `docs/superpowers/design/2026-10-31-omen-rol.md` (decisión Q1 de Jose, 2026-10-31)
+
+**Objetivo:** la web y el gateway funcionan en producción sin Omen configurado. Omen se conserva fuera del producto (Umami, Radar, newsletter y, si el estudio sale bien, chat de IA) y la integración con el worker sigue disponible pero opcional.
+
+**Hecho:** `envSchema` con `WORKER_URL` y `WORKER_INTERNAL_TOKEN` opcionales y acoplados (`refine`: los dos o ninguno), sin placeholders locales; fuera `WORKER_INTERNAL_TOKEN_PREV`, `WORKER_TIMEOUT_MS` y `N8N_LEAD_WEBHOOK_ENABLED`; `callWorker` lanza `WorkerNotConfiguredError` (503 `worker_not_configured`) sin llamar a la red; `GET /system/status` público **borrado** (cerraba el pendiente de seguridad: llamaba a Omen con el token interno sin auth; también `modules/system.routes.ts` y el módulo `system` del manifiesto); `GET /api/v1/system/status` (con sesión) responde 503 `worker_not_configured` sin Omen y 502 si Omen cae; `/api/dev/worker/*` responde 404 salvo con `WORKER_URL` + `DEV_API_KEY` y `API_MODE=development`; `wrangler.jsonc` sin `WORKER_URL` (desaparece el aviso de `env.preview.vars`); snapshot, `DEPLOY.md`, `README.md`, `docs/architecture.md` y tests actualizados.
+
+**Verificación:** `pnpm --filter josecoded-api test`, `pnpm lint`, `pnpm typecheck`, `pnpm --filter josecoded-api build` (dry-run). **Commit:** `feat(api): gateway runs without Omen (1.8d): optional coupled worker env, 503 worker_not_configured, no public status probe`.
+
+**Notas de ajuste a otras tareas (una línea cada una, sin reescribirlas):** 1.9 paso 9: en producción y preview **no se fija** `WORKER_INTERNAL_TOKEN` ni `WORKER_URL`; el `.env` de Omen solo se limpia de `SUPABASE_*` (higiene, sin OK adicional) · 6.1: la tarjeta «Infra» muestra salud de Supabase y Workers AI y «Omen» solo si `WORKER_URL` existe · 9.4 paso 3: sin rotación de `WORKER_INTERNAL_TOKEN` (no hay token en producción) · 9.4 paso 4: `/api/dev/worker/*` no existe en producción y `blog-ai.ts` local solo funciona con `WORKER_URL` + `DEV_API_KEY` en el gateway de desarrollo · el script de Umami (8.1) debe cargar asíncrono y tolerar fallo, porque Omen puede caer sin que caiga la web · D22: el respaldo en Omen de Workers AI queda a la espera del estudio de coste/latencia/fiabilidad previo a 4.4.
 
 ### Tarea 1.9 — CI/CD + **GATE**: proyecto Supabase nuevo en producción (esquema, Auth, secretos de web, gateway y Omen) (v3.2)
 
@@ -4051,7 +4064,7 @@ Sin métricas en la web (spec §12, `DESIGN.md`): no hay `ProofStrip` ni cifra d
 **Pasos (cada uno con OK):**
 - [ ] 1. `pricing:sync-db` (escribe `pack_templates`/`pack_extras` por `code` en producción; imprime diff y pide confirmación).
 - [ ] 2. Alta de `api.josecoded.com` como custom domain de `josecoded-api` (`wrangler.jsonc` `routes`) y `NEXT_PUBLIC_JOSECODED_API_URL=https://api.josecoded.com`; la URL `workers.dev` sigue respondiendo.
-- [ ] 3. Rotar `WORKER_INTERNAL_TOKEN` (gateway + Omen), token del bot de Telegram (Edge Function + gateway) y key de Resend (Edge Function) en la misma sesión.
+- [ ] 3. ~~Rotar `WORKER_INTERNAL_TOKEN` (gateway + Omen)~~ (retirado en 1.8d: no hay token en producción); rotar token del bot de Telegram (Edge Function + gateway) y key de Resend (Edge Function) en la misma sesión.
 - [ ] 4. `API_MODE=production` en el gateway (deuda heredada `DEPLOY.md §4`): confirmar con Jose qué desactiva (`/api/dev/*`) y que `blog-ai.ts` local usa la vía directa a Omen.
 - [ ] 5. Jose activa Cloudflare Web Analytics en la zona; Turnstile y Cal.com apuntan a `josecoded.com`.
 - [ ] 6. Copia del ADR (`manage_adr get`) → `docs/adr-backup-<fecha>.md` (ignorado o commiteado, decisión del controlador) → `index_repository` del monorepo → restaurar/actualizar el ADR con las decisiones del Anexo del DT y de este plan.

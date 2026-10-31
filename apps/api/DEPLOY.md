@@ -21,6 +21,8 @@ pedirá seleccionar cuenta interactivamente.
 
 ## 1. Variables no secretas (`vars` en `wrangler.jsonc`)
 
+`WORKER_URL` **no** está en `vars` (1.8d): el gateway funciona sin Omen y ninguna ruta de producción lo necesita. Si algún día se quiere la integración opcional, se fija como secreto junto con `WORKER_INTERNAL_TOKEN`, nunca uno solo (el esquema lo rechaza).
+
 Estas viven en el repo porque no son sensibles (URLs públicas, CORS). **Ningún
 correo ni identificador personal** va en `vars` (lo comprueba
 `test/wrangler-config.test.ts`); el admin ya no se configura aquí: es una fila
@@ -29,7 +31,6 @@ de `public.staff_members` (gate 1.9).
 | Var | Valor actual | Notas |
 |---|---|---|
 | `API_MODE` | `production` (raíz) · `development` (`env.preview`) | Ver sección 4. |
-| `WORKER_URL` | `https://worker.josecoded.com` | URL pública del Cloudflare Tunnel hacia el Fastify worker en Omen. |
 | `CORS_ORIGINS` | `https://josecoded.com,https://www.josecoded.com,https://*-josecoded-web.jose.workers.dev,http://localhost:3000` | Lista separada por comas; el comodín de previews lleva guion, nunca punto. |
 
 El env `preview` (`josecoded-api-preview`) repite sus propias `vars` (sin cron
@@ -52,7 +53,6 @@ Claves de Supabase en formato nuevo (Settings → API Keys, DATOS §8.1): la JWT
 
 | Secreto | Para qué | Validación en `env.ts` |
 |---|---|---|
-| `WORKER_INTERNAL_TOKEN` | Token compartido con el Fastify worker (Omen). | `z.string().min(10)`, obligatorio |
 | `SUPABASE_URL` | `https://echlwywbucgbhwpncviy.supabase.co` (no es credencial; se fija como secreto por entorno). | `z.string().url()`, obligatorio |
 | `SUPABASE_PUBLISHABLE_KEY` | `sb_publishable_…`: `apikey` de `/auth/v1/user` al verificar la sesión. (`SUPABASE_ANON_KEY` solo como alternativa heredada.) | una de las dos (`.refine()`) |
 | `SUPABASE_SECRET_KEY` | `sb_secret_…` (salta RLS). Solo la usa `src/adapters/supabase.ts`: RPC del outbox, `scheduled_jobs_*`, `increment_quota` y la lectura de `staff_members` (`is_admin`). Sin ella el cron no ejecuta nada y `auth/me` responde 502. | `min(20)`, opcional en el esquema, **necesaria** en producción y preview |
@@ -61,7 +61,6 @@ Claves de Supabase en formato nuevo (Settings → API Keys, DATOS §8.1): la JWT
 | `CHAT_SID_SECRET` | Firma de `chat_sid` del chat por casos (4.4). `openssl rand -hex 32`. | `min(32)`, opcional hasta 4.4 |
 
 ```bash
-pnpm exec wrangler secret put WORKER_INTERNAL_TOKEN
 pnpm exec wrangler secret put SUPABASE_URL
 pnpm exec wrangler secret put SUPABASE_PUBLISHABLE_KEY
 pnpm exec wrangler secret put SUPABASE_SECRET_KEY
@@ -77,8 +76,8 @@ pnpm exec wrangler secret put CHAT_SID_SECRET
 |---|---|
 | `RESEND_API_KEY` | Canal email (Resend, DATOS Q5). Ningún evento del lanzamiento se envía por email todavía. |
 | `ADMIN_REQUIRE_MFA` | Solo `false` desactiva la exigencia de `aal2` (TOTP) en `requireAdmin`; **nunca** en producción ni preview (DATOS Q3). Pensado para `wrangler dev` contra Supabase local, cuyas cuentas del seed no tienen TOTP. |
-| `DEV_API_KEY` | Proteger `/api/dev/*` (solo existe con `API_MODE=development`). |
-| `WORKER_TIMEOUT_MS` | Override del timeout hacia el worker. |
+| `WORKER_URL` + `WORKER_INTERNAL_TOKEN` | Integración opcional con el worker de Omen (1.8d). **Los dos o ninguno** (`refine` en `env.ts`). **No se fijan en producción ni en preview.** Sin ellos, `GET /api/v1/system/status` responde 503 `worker_not_configured` y `/api/dev/worker/*` no existe. `WORKER_INTERNAL_TOKEN` debe ser idéntico a `BACKEND_INTERNAL_TOKEN` del worker. |
+| `DEV_API_KEY` | Con `WORKER_URL` y `API_MODE=development`, monta `/api/dev/worker/*` (proxy de desarrollo). Sin alguno de los tres, esa ruta responde 404. |
 | `TURNSTILE_SECRET_KEY`, `SERVER_KEY`, `AI_GATEWAY_ID`, `GITHUB_APP_*`, … | Los añade la tarea que usa cada uno (plan 1.7). |
 
 ### Secretos que hay que **borrar** (plan 1.9, paso 9)
@@ -110,45 +109,29 @@ reenviarse. Comprobación: `wrangler tail` durante un tick → sin errores de
 `scheduled`; `select count(*) from private.outbox where delivered_at is null`
 baja a 0.
 
-## 3. Rotación de `WORKER_INTERNAL_TOKEN` (acción pendiente, post-migración ngrok → Tunnel)
+## 3. Omen es opcional (1.8d)
 
-Con la migración del túnel (Task 3, `WORKER_URL` ahora apunta a
-`https://worker.josecoded.com` en vez de una URL ngrok efímera), corresponde
-**rotar** `WORKER_INTERNAL_TOKEN` como buena práctica — el valor anterior
-pudo haber quedado expuesto en configuraciones de ngrok o pegado en chats
-durante el desarrollo.
+Producción y preview se despliegan **sin** `WORKER_URL` ni `WORKER_INTERNAL_TOKEN`; no hay nada que rotar ni
+sincronizar con `BACKEND_INTERNAL_TOKEN`. Omen sigue existiendo para Umami, Radar, newsletter y un posible chat de IA,
+pero el gateway no lo necesita para arrancar. Se retiraron `WORKER_INTERNAL_TOKEN_PREV` (rotación de 24 h),
+`WORKER_TIMEOUT_MS` (10 s fijos) y `N8N_LEAD_WEBHOOK_ENABLED` (el aviso de lead ya sale por el outbox), y la ruta pública
+`GET /system/status`, que llamaba a Omen con el token interno sin autenticación. Si se borraron antes secretos con
+esos nombres de la cuenta, `wrangler secret delete` los limpia; `parseEnv` los descarta aunque sigan ahí.
 
-Pasos (coordinar ambos lados en la misma ventana, si no quedan desincronizados
-y el gateway recibirá 401 del worker):
-
-1. Generar un token nuevo (ej. `openssl rand -hex 32`).
-2. En el Fastify worker (Omen), actualizar `BACKEND_INTERNAL_TOKEN` en su
-   `.env` con el nuevo valor y reiniciar el proceso.
-3. En Cloudflare, fijar el mismo valor:
-   ```bash
-   pnpm exec wrangler secret put WORKER_INTERNAL_TOKEN
-   ```
-4. Verificar con una llamada real al gateway que dependa del worker (p. ej.
-   `/ai/chat` o el healthcheck) que no devuelve 401.
-
-**Invariante:** `WORKER_INTERNAL_TOKEN` (gateway, Cloudflare secret) y
-`BACKEND_INTERNAL_TOKEN` (worker Fastify, Omen `.env`) deben ser
-**exactamente el mismo string** en todo momento. Este cierre formal de
-credenciales pegadas en chat durante el desarrollo se completa en P3
-(seguridad); aquí solo se deja documentado y se rota el token como primer
-paso.
+Si en el futuro se activa la integración: fijar **los dos** secretos con `wrangler secret put`, el mismo valor que
+`BACKEND_INTERNAL_TOKEN` del worker, y comprobar `GET /api/v1/system/status` con sesión (200 en vez de 503).
 
 ## 4. `API_MODE=production` — cerrado (P8)
 
 La raíz de `wrangler.jsonc` (el Worker de producción) fija `API_MODE=production`;
 `test/wrangler-config.test.ts` lo comprueba. Con `development`, `onError`
-devolvería `error.message` y `/api/dev/worker/*` se montaría si existe
-`DEV_API_KEY`, así que producción nunca debe ir en ese modo.
+devolvería `error.message` y `/api/dev/worker/*` se montaría si existen
+`WORKER_URL` y `DEV_API_KEY`, así que producción nunca debe ir en ese modo.
 
 `env.preview` conserva `API_MODE=development` (DEPLOY §1: previews contra
 Supabase local o una branch; no apuntan a datos de producción). En producción
 los placeholders locales de `normalizeEnvBindings` no se rellenan: si falta
-`WORKER_INTERNAL_TOKEN`, `SUPABASE_URL` o una clave publishable/anon,
+`SUPABASE_URL` o una clave publishable/anon,
 `parseEnv` lanza `Invalid environment` (la API responde 500 `API misconfigured`).
 Por eso los secretos de la sección 2 deben estar fijados en `josecoded-api`
 **antes** del próximo deploy de producción.
@@ -181,7 +164,7 @@ Confirma que:
 ## 6. Checklist antes de un deploy real a producción
 
 - [ ] `wrangler whoami` confirma la cuenta correcta.
-- [ ] `WORKER_INTERNAL_TOKEN` rotado y sincronizado con `BACKEND_INTERNAL_TOKEN` en Omen (sección 3).
+- [ ] `WORKER_URL` y `WORKER_INTERNAL_TOKEN` **no** están fijados (sección 3); `GET /system/status` responde 404.
 - [ ] Todos los secretos obligatorios (sección 2) están fijados en `josecoded-api` y en `josecoded-api-preview` (`wrangler secret list`), y los de la lista «borrar» ya no están.
 - [ ] `ADMIN_REQUIRE_MFA` **no** está fijado (o vale `true`) en ninguno de los dos.
 - [ ] Smoke: `GET /api/v1/health` 200; `GET /api/v1/auth/me` sin JWT 401 y con el de Jose `is_admin: true`; ninguna ruta `forum`/`admin-chat` (responden 401 del comodín, no existen).

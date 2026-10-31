@@ -6,7 +6,8 @@
     "vars": {
       // Production is safe by default: "development" exposes error.message and mounts /api/dev/* (security review, 1.8c).
       "API_MODE": "production",
-      "WORKER_URL": "https://worker.josecoded.com",
+      // WORKER_URL / WORKER_INTERNAL_TOKEN (Omen) are deliberately NOT set: the gateway runs without Omen (task 1.8d).
+      // Only for a deploy that wants the optional integration: `wrangler secret put` both, never one alone.
       // exact origins, previews of the web Worker (<hash>-josecoded-web.jose.workers.dev) and local dev
       "CORS_ORIGINS": "https://josecoded.com,https://www.josecoded.com,https://*-josecoded-web.jose.workers.dev,http://localhost:3000"
     },

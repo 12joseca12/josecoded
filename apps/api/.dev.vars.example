@@ -18,9 +18,9 @@ ADMIN_REQUIRE_MFA=false
 # --- Chat (task 4.4): openssl rand -hex 32 ---
 # CHAT_SID_SECRET=
 
-# --- Backend on Omen (Fastify), NOT this Worker's URL ---
-WORKER_URL=https://worker.josecoded.com
+# --- Optional backend on Omen (Fastify), NOT this Worker's URL. Both or neither; not set in production. ---
+# WORKER_URL=https://worker.josecoded.com
 # Must be EXACTLY the BACKEND_INTERNAL_TOKEN of the backend
-WORKER_INTERNAL_TOKEN=paste_the_backend_hex_token_here
-# Optional: protects /api/dev/* (header x-dev-api-key)
+# WORKER_INTERNAL_TOKEN=paste_the_backend_hex_token_here
+# With WORKER_URL and API_MODE=development, DEV_API_KEY mounts /api/dev/worker/* (header x-dev-api-key)
 # DEV_API_KEY=

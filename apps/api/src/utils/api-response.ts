@@ -6,6 +6,7 @@ export type ApiErrorCode =
   | 'conflict'
   | 'rate_limited'
   | 'upstream_error'
+  | 'worker_not_configured'
   | 'moderation_unavailable'
   | 'content_rejected'
   | 'internal_error';

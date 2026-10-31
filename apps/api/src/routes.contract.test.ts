@@ -1,4 +1,4 @@
-// Characterization of the inherited surface of the gateway: health, system and v1-protected stay mounted, with
+// Characterization of the inherited surface of the gateway: health and v1-protected stay mounted, with
 // the same auth gate and the same error envelope; forum/* and admin-chat/* were retired with their tables in plan
 // 1.8c (DATOS §9, Q1). It runs without Supabase or the backend (unauthenticated requests stop at the gate). New
 // routes get their own tests.
@@ -74,13 +74,17 @@ describe('exact route surface', () => {
     const surface = new Set(app.routes.map((r) => `${r.method} ${r.path}`));
     for (const route of [
       'GET /health',
-      'GET /system/status',
       'GET /api/v1/health',
       'GET /api/v1/auth/me',
       'GET /api/v1/system/status',
     ]) {
       expect(surface.has(route)).toBe(true);
     }
+  });
+
+  it('has no public /system/status: it called Omen with the internal token and no auth (task 1.8d)', async () => {
+    expect(app.routes.filter((r) => r.path === '/system/status')).toEqual([]);
+    expect((await call('GET', '/system/status')).status).toBe(404);
   });
 
   it('has no forum or admin-chat route or middleware left', () => {

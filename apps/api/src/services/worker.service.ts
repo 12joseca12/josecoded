@@ -7,7 +7,7 @@ type WorkerMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 type CallWorkerOptions = {
   method?: WorkerMethod;
   body?: unknown;
-  /** Sobrescribe `WORKER_TIMEOUT_MS` para esta llamada. */
+  /** Overrides the default timeout (10 s) for this call. */
   timeoutMs?: number;
 };
 
@@ -23,48 +23,19 @@ export class UpstreamError extends Error {
   }
 }
 
-function getWorkerTimeoutMs(env: Env): number {
-  const fallback = 10_000;
-  const raw = env.WORKER_TIMEOUT_MS;
-  if (!raw) return fallback;
-  const n = Number(raw);
-  return Number.isFinite(n) && n > 0 ? n : fallback;
+const DEFAULT_TIMEOUT_MS = 10_000;
+
+/** Omen is optional (task 1.8d): the backend integration exists only when both values are set. */
+export function isWorkerConfigured(env: Env): env is Env & { WORKER_URL: string; WORKER_INTERNAL_TOKEN: string } {
+  return Boolean(env.WORKER_URL && env.WORKER_INTERNAL_TOKEN);
 }
 
-function buildWorkerRequestHeaders(token: string, hasBody: boolean): Record<string, string> {
-  const headers: Record<string, string> = {
-    Authorization: `Bearer ${token}`,
-  };
-  if (hasBody) {
-    headers['Content-Type'] = 'application/json';
+/** Thrown instead of calling out when the gateway runs without Omen. Routes answer 503 `worker_not_configured`. */
+export class WorkerNotConfiguredError extends UpstreamError {
+  constructor() {
+    super('Worker backend is not configured', 503, { code: 'worker_not_configured' });
+    this.name = 'WorkerNotConfiguredError';
   }
-  return headers;
-}
-
-/**
- * Calls the backend with `WORKER_INTERNAL_TOKEN`. While the token is being rotated, the backend may still only
- * know the previous one: on a 401, and only if `WORKER_INTERNAL_TOKEN_PREV` is set, it is retried once with it.
- *
- * Known limit: the gateway cannot tell a 401 for the internal token from any other 401 of the backend (the
- * josecoded-worker contract has no header or envelope code for it), so a POST whose handler answers 401 after
- * doing work would run twice while `WORKER_INTERNAL_TOKEN_PREV` is set. Keep the PREV token only for the
- * rotation window.
- */
-async function fetchFromWorker(
-  env: Env,
-  url: string,
-  init: { method: WorkerMethod; body: string | undefined; signal: AbortSignal },
-): Promise<Response> {
-  const hasBody = init.body !== undefined;
-  const send = (token: string) =>
-    fetch(url, { ...init, headers: buildWorkerRequestHeaders(token, hasBody) });
-  const response = await send(env.WORKER_INTERNAL_TOKEN);
-  if (response.status === 401 && env.WORKER_INTERNAL_TOKEN_PREV) {
-    // release the first connection before opening the second one
-    await response.body?.cancel();
-    return send(env.WORKER_INTERNAL_TOKEN_PREV);
-  }
-  return response;
 }
 
 export async function callWorker<T>(
@@ -72,17 +43,19 @@ export async function callWorker<T>(
   path: string,
   options: CallWorkerOptions = {},
 ): Promise<T> {
+  if (!isWorkerConfigured(env)) throw new WorkerNotConfiguredError();
   const url = `${env.WORKER_URL.replace(/\/$/, '')}${path.startsWith('/') ? path : `/${path}`}`;
   const hasBody = options.body !== undefined;
   const controller = new AbortController();
-  const timeout = setTimeout(
-    () => controller.abort(),
-    options.timeoutMs ?? getWorkerTimeoutMs(env),
-  );
+  const timeout = setTimeout(() => controller.abort(), options.timeoutMs ?? DEFAULT_TIMEOUT_MS);
 
-  const response = await fetchFromWorker(env, url, {
+  const response = await fetch(url, {
     method: options.method ?? 'GET',
     body: hasBody ? JSON.stringify(options.body) : undefined,
+    headers: {
+      Authorization: `Bearer ${env.WORKER_INTERNAL_TOKEN}`,
+      ...(hasBody ? { 'Content-Type': 'application/json' } : {}),
+    },
     signal: controller.signal,
   }).finally(() => clearTimeout(timeout));
 
@@ -106,26 +79,6 @@ export async function callWorker<T>(
   return data as T;
 }
 
-export async function fetchWorkerResponse(
-  env: Env,
-  path: string,
-  options: CallWorkerOptions = {},
-): Promise<Response> {
-  const url = `${env.WORKER_URL.replace(/\/$/, '')}${path.startsWith('/') ? path : `/${path}`}`;
-  const hasBody = options.body !== undefined;
-  const controller = new AbortController();
-  const timeout = setTimeout(
-    () => controller.abort(),
-    options.timeoutMs ?? getWorkerTimeoutMs(env),
-  );
-
-  return fetchFromWorker(env, url, {
-    method: options.method ?? 'GET',
-    body: hasBody ? JSON.stringify(options.body) : undefined,
-    signal: controller.signal,
-  }).finally(() => clearTimeout(timeout));
-}
-
 function upstreamErrorMessage(error: UpstreamError): string {
   const payload = error.data;
   if (payload && typeof payload === 'object') {
@@ -138,21 +91,16 @@ function upstreamErrorMessage(error: UpstreamError): string {
 }
 
 function upstreamErrorCode(error: UpstreamError): ApiErrorCode {
+  if (error instanceof WorkerNotConfiguredError) return 'worker_not_configured';
   if (error.status === 401) return 'unauthorized';
   if (error.status === 409) return 'conflict';
   if (error.status === 504) return 'upstream_error';
   return 'upstream_error';
 }
 
-/** Código HTTP a devolver al cliente (propaga 4xx/5xx del backend cuando aplica). */
-export function upstreamHttpStatus(error: unknown): number {
-  if (error instanceof UpstreamError) {
-    return error.status >= 400 && error.status < 600 ? error.status : 502;
-  }
-  if (error instanceof Error && error.name === 'AbortError') {
-    return 504;
-  }
-  return 502;
+/** HTTP status for the client: 503 when Omen is not configured, otherwise 502 (the upstream failed). */
+export function workerFailStatus(error: unknown): 502 | 503 {
+  return error instanceof WorkerNotConfiguredError ? 503 : 502;
 }
 
 /** El Fastify worker responde `{ ok: true, data: T }`; extrae `data`. */

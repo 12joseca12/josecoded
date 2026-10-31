@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 
 import { requireUser, type AuthEnv } from '../middlewares/auth.middleware';
-import { callWorker, toUpstreamFail } from '../services/worker.service';
+import { callWorker, toUpstreamFail, workerFailStatus } from '../services/worker.service';
 import { fail, ok } from '../utils/api-response';
 
 export const protectedV1Routes = new Hono<AuthEnv>();
@@ -28,6 +28,6 @@ protectedV1Routes.get('/system/status', async (c) => {
     const data = await callWorker<unknown>(c.env, '/system/status');
     return c.json(ok(data));
   } catch (e) {
-    return c.json(toUpstreamFail(e), 502);
+    return c.json(toUpstreamFail(e), workerFailStatus(e));
   }
 });

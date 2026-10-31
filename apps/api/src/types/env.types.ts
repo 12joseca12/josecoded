@@ -2,8 +2,9 @@ export type ApiMode = 'development' | 'production';
 
 export type Env = {
   API_MODE: ApiMode;
-  WORKER_URL: string;
-  WORKER_INTERNAL_TOKEN: string;
+  /** Omen backend, optional (task 1.8d). Set together with `WORKER_INTERNAL_TOKEN` or not at all. */
+  WORKER_URL?: string;
+  WORKER_INTERNAL_TOKEN?: string;
   CORS_ORIGINS: string;
   SUPABASE_URL: string;
   /** Legacy anon JWT (`eyJ...`), only when there is no publishable key. */
@@ -18,9 +19,6 @@ export type Env = {
 
   /** Optional: protect /api/dev/* with a separate key (`x-dev-api-key`). */
   DEV_API_KEY?: string;
-
-  /** Optional: max ms to wait for the upstream worker. */
-  WORKER_TIMEOUT_MS?: string;
 
   /** Optional: timeout ms for /ai/chat proxy to worker (default 30000). */
   AI_CHAT_TIMEOUT_MS?: string;
@@ -49,12 +47,9 @@ export type Env = {
   CHAT_SID_SECRET?: string;
 
   // --- Added by plan 1.7 for the new modules (DT §9). All optional until the task that uses each one. ---
-  /** Previous internal token, accepted for 24 h while rotating `WORKER_INTERNAL_TOKEN` (worker.service.ts). */
-  WORKER_INTERNAL_TOKEN_PREV?: string;
   TURNSTILE_SECRET_KEY?: string;
   /** Server-to-server key of `leads` (header `x-josecoded-server-key`). */
   SERVER_KEY?: string;
-  N8N_LEAD_WEBHOOK_ENABLED?: string;
   PROPOSALS_DAILY_LIMIT_IP?: string;
   PROPOSALS_DAILY_LIMIT_ALL?: string;
   AI_PROPOSAL_MODEL?: string;

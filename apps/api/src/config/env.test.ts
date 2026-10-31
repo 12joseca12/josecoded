@@ -11,14 +11,53 @@ const base = {
   SUPABASE_ANON_KEY: 'test-anon-key-12345',
 };
 
+describe('Omen worker env is optional and coupled (task 1.8d)', () => {
+  const noWorker: Record<string, string> = { ...base };
+  delete noWorker.WORKER_URL;
+  delete noWorker.WORKER_INTERNAL_TOKEN;
+
+  it('parses without either value, in production too', () => {
+    const env = parseEnv({ ...noWorker, API_MODE: 'production' });
+    expect(env.WORKER_URL).toBeUndefined();
+    expect(env.WORKER_INTERNAL_TOKEN).toBeUndefined();
+  });
+
+  it('parses with both', () => {
+    expect(parseEnv(base).WORKER_URL).toBe('https://example.com');
+  });
+
+  it('rejects one without the other', () => {
+    expect(() => parseEnv({ ...noWorker, WORKER_URL: 'https://example.com' })).toThrow(/Invalid environment/);
+    expect(() => parseEnv({ ...noWorker, WORKER_INTERNAL_TOKEN: 'test-internal-token-12345' })).toThrow(
+      /Invalid environment/,
+    );
+  });
+
+  it('treats blank values as absent and no longer fills worker placeholders in development', () => {
+    const env = parseEnv({ ...noWorker, WORKER_URL: '', WORKER_INTERNAL_TOKEN: '' });
+    expect(env.WORKER_URL).toBeUndefined();
+    expect(env.WORKER_INTERNAL_TOKEN).toBeUndefined();
+  });
+
+  it('drops the retired variables', () => {
+    const env = parseEnv({
+      ...base,
+      WORKER_INTERNAL_TOKEN_PREV: 'previous-internal-token',
+      WORKER_TIMEOUT_MS: '5000',
+      N8N_LEAD_WEBHOOK_ENABLED: 'true',
+    }) as Record<string, unknown>;
+    for (const k of ['WORKER_INTERNAL_TOKEN_PREV', 'WORKER_TIMEOUT_MS', 'N8N_LEAD_WEBHOOK_ENABLED']) {
+      expect(env).not.toHaveProperty(k);
+    }
+  });
+});
+
 describe('envSchema additions of plan 1.7', () => {
   it('keeps the new variables (otherwise parseEnv would strip them)', () => {
     const env = parseEnv({
       ...base,
-      WORKER_INTERNAL_TOKEN_PREV: 'previous-internal-token',
       TURNSTILE_SECRET_KEY: 'ts-secret',
       SERVER_KEY: 'server-key',
-      N8N_LEAD_WEBHOOK_ENABLED: 'true',
       PROPOSALS_DAILY_LIMIT_IP: '5',
       PROPOSALS_DAILY_LIMIT_ALL: '200',
       AI_PROPOSAL_MODEL: '@cf/meta/llama',
@@ -28,7 +67,6 @@ describe('envSchema additions of plan 1.7', () => {
       GITHUB_APP_INSTALLATION_ID: '2',
       GITHUB_APP_PRIVATE_KEY: 'pem',
     });
-    expect(env.WORKER_INTERNAL_TOKEN_PREV).toBe('previous-internal-token');
     expect(env.AI_GATEWAY_ID).toBe('josecoded');
     expect(env.PROPOSALS_DAILY_LIMIT_IP).toBe('5');
     expect(env.GITHUB_APP_PRIVATE_KEY).toBe('pem');

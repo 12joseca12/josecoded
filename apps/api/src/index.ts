@@ -9,7 +9,6 @@ import {
 import { withDeps } from './middlewares/with-deps';
 import { devWorkerProxyRoutes } from './modules/dev-worker-proxy.routes';
 import { healthRoutes } from './modules/health.routes';
-import { systemRoutes } from './modules/system.routes';
 import { v1Routes } from './modules/v1.routes';
 import { scheduled } from './scheduled';
 import { fail } from './utils/api-response';
@@ -47,7 +46,6 @@ app.use('*', async (c, next) => {
 });
 
 app.route('/', healthRoutes);
-app.route('/', systemRoutes);
 app.route('/', devWorkerProxyRoutes);
 app.route('/api/v1', v1Routes);
 
