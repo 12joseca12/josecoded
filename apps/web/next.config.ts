@@ -10,7 +10,7 @@ const { rewrites, redirects } = buildLocaleRules(pathnames);
 
 const config: NextConfig = {
   // workspace packages are shipped as TypeScript source
-  transpilePackages: ['@josecoded/types', '@josecoded/pricing'],
+  transpilePackages: ['@josecoded/types', '@josecoded/pricing', '@josecoded/glyph-scene'],
   // no image optimizer in the worker: images are generated at build time (task 2.x)
   images: { unoptimized: true },
   // do not advertise the framework

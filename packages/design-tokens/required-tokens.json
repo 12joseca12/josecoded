@@ -299,5 +299,13 @@
   "shadow-edge-bottom",
   "shadow-edge-top",
   "cmdk-label-width",
-  "size-icon-lg"
+  "size-icon-lg",
+  "dur-intro-land-min",
+  "dur-intro-land-span",
+  "dur-intro-flash-min",
+  "dur-intro-flash-span",
+  "dur-intro-scene-wait",
+  "intro-start-min",
+  "intro-start-span",
+  "intro-glyph-swap"
 ]

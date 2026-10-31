@@ -15,6 +15,7 @@
     "e2e": "playwright test"
   },
   "dependencies": {
+    "@josecoded/glyph-scene": "workspace:*",
     "@josecoded/pricing": "workspace:*",
     "@josecoded/types": "workspace:*",
     "@opennextjs/cloudflare": "1.20.6",

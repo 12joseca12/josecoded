@@ -34,8 +34,10 @@ export default async function LocaleLayout({
 }) {
   const locale = await resolveLocale(params);
 
+  // suppressHydrationWarning: the intro gate (components/hero/intro-gate-script) sets data-intro on <html>
+  // before React hydrates
   return (
-    <html lang={locale} className={fontVariables}>
+    <html lang={locale} className={fontVariables} suppressHydrationWarning>
       <body>
         {/* the localized Link needs the locale in the client; no messages travel to the browser
             here: a client component that translates receives the subset it needs */}

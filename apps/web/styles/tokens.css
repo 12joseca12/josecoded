@@ -250,6 +250,11 @@
   --dur-delay-draw: 100ms;
   --dur-page-exit: 120ms;
   --dur-page-enter: 160ms;
+  --dur-intro-land-min: 400ms;
+  --dur-intro-land-span: 800ms;
+  --dur-intro-flash-min: 140ms;
+  --dur-intro-flash-span: 160ms;
+  --dur-intro-scene-wait: 1200ms;
 
   /* easings */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -315,6 +320,9 @@
   --light-beam-3: 0.14;
 
   /* geometry */
+  --intro-start-min: 0.35;
+  --intro-start-span: 0.75;
+  --intro-glyph-swap: 0.3;
   --press-scale: 0.97;
   --nudge-distance: 3px;
   --field-bleed: -20vmax;

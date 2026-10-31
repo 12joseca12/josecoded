@@ -229,6 +229,11 @@ export type TokenName =
   | '--dur-delay-draw'
   | '--dur-page-exit'
   | '--dur-page-enter'
+  | '--dur-intro-land-min'
+  | '--dur-intro-land-span'
+  | '--dur-intro-flash-min'
+  | '--dur-intro-flash-span'
+  | '--dur-intro-scene-wait'
   | '--ease-out'
   | '--ease-slide'
   | '--ease-vt'
@@ -278,6 +283,9 @@ export type TokenName =
   | '--light-beam-1'
   | '--light-beam-2'
   | '--light-beam-3'
+  | '--intro-start-min'
+  | '--intro-start-span'
+  | '--intro-glyph-swap'
   | '--press-scale'
   | '--nudge-distance'
   | '--field-bleed'
@@ -537,6 +545,11 @@ export const tokens = {
   'dur-delay-draw': '--dur-delay-draw',
   'dur-page-exit': '--dur-page-exit',
   'dur-page-enter': '--dur-page-enter',
+  'dur-intro-land-min': '--dur-intro-land-min',
+  'dur-intro-land-span': '--dur-intro-land-span',
+  'dur-intro-flash-min': '--dur-intro-flash-min',
+  'dur-intro-flash-span': '--dur-intro-flash-span',
+  'dur-intro-scene-wait': '--dur-intro-scene-wait',
   'ease-out': '--ease-out',
   'ease-slide': '--ease-slide',
   'ease-vt': '--ease-vt',
@@ -586,6 +599,9 @@ export const tokens = {
   'light-beam-1': '--light-beam-1',
   'light-beam-2': '--light-beam-2',
   'light-beam-3': '--light-beam-3',
+  'intro-start-min': '--intro-start-min',
+  'intro-start-span': '--intro-start-span',
+  'intro-glyph-swap': '--intro-glyph-swap',
   'press-scale': '--press-scale',
   'nudge-distance': '--nudge-distance',
   'field-bleed': '--field-bleed',

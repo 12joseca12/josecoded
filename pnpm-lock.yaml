@@ -75,6 +75,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@josecoded/glyph-scene':
+        specifier: workspace:*
+        version: link:../../packages/glyph-scene
       '@josecoded/pricing':
         specifier: workspace:*
         version: link:../../packages/pricing

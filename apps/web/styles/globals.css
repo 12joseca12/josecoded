@@ -102,6 +102,34 @@ button {
   inset-block-start: var(--sp-4);
 }
 
+/* Intro fall (task 2.7, DT §1.6.4): FallText serves every character split in `.ch` inside
+   indivisible `.w` words. The gate script marks <html> `pending` before the first paint and
+   IntroFall `armed` while it waits for the scene: the letters stay hidden until they are placed. */
+.w {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+:is([data-intro='pending'], [data-intro='armed']) .ch {
+  visibility: hidden;
+}
+
+/* a transform needs a box; the character is inline again as soon as it settles */
+.ch.is-falling,
+.ch.is-wet {
+  display: inline-block;
+}
+
+.ch.is-falling {
+  color: var(--violet-soft);
+  will-change: transform;
+}
+
+/* «Green means live»: the landing flash */
+.ch.is-wet {
+  color: var(--green);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -109,5 +137,10 @@ button {
 
   .skip {
     transition: none;
+  }
+
+  /* no intro without motion: the letters are never hidden */
+  :is([data-intro='pending'], [data-intro='armed']) .ch {
+    visibility: visible;
   }
 }

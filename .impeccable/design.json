@@ -968,6 +968,31 @@
         "name": "page-enter",
         "value": "160ms",
         "purpose": "Entra la página nueva en un cambio de ruta (View Transition)."
+      },
+      {
+        "name": "intro-land-min",
+        "value": "400ms",
+        "purpose": "Intro de caída: tiempo más corto que tarda un carácter en aterrizar."
+      },
+      {
+        "name": "intro-land-span",
+        "value": "800ms",
+        "purpose": "Intro de caída: margen sobre el mínimo; cada carácter aterriza entre 0,4 y 1,2 s."
+      },
+      {
+        "name": "intro-flash-min",
+        "value": "140ms",
+        "purpose": "Intro de caída: tiempo mínimo del destello verde al aterrizar."
+      },
+      {
+        "name": "intro-flash-span",
+        "value": "160ms",
+        "purpose": "Intro de caída: margen sobre el destello mínimo."
+      },
+      {
+        "name": "intro-scene-wait",
+        "value": "1200ms",
+        "purpose": "Intro de caída: lo máximo que esperan las letras a la escena antes de caer solas."
       }
     ],
     "easings": [
@@ -1274,9 +1299,29 @@
         "name": "glyph-cycle",
         "value": "3,5 s reposo + 1,6 s morph (parámetros de packages/glyph-scene)",
         "purpose": "Ciclo móvil → web → chip de la nube del hero."
+      },
+      {
+        "name": "intro-fall",
+        "value": "caída a velocidad constante, 0,4–1,2 s por carácter, destello var(--green) 0,14–0,30 s; letras de GL",
+        "purpose": "Primera visita por sesión: los caracteres del titular, el subtítulo y los CTA caen y aterrizan; cualquier gesto la termina en un fotograma."
       }
     ],
     "geometry": [
+      {
+        "name": "intro-start-min",
+        "value": "0.35",
+        "purpose": "Intro de caída: altura mínima de partida, en fracciones del alto del viewport por encima del sitio final."
+      },
+      {
+        "name": "intro-start-span",
+        "value": "0.75",
+        "purpose": "Intro de caída: margen sobre la altura mínima de partida."
+      },
+      {
+        "name": "intro-glyph-swap",
+        "value": "0.3",
+        "purpose": "Intro de caída: probabilidad por fotograma de que un carácter en caída cambie de glifo."
+      },
       {
         "name": "press-scale",
         "value": "0.97",
