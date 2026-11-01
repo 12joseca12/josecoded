@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { app } from './index';
 
@@ -36,5 +36,16 @@ describe('app.onError: the cause of an unexpected error', () => {
     expect(json.error.code).toBe('internal_error');
     expect(json).not.toHaveProperty('error.details');
     expect(JSON.stringify(json)).not.toContain('hunter2');
+  });
+});
+
+describe('app.onError: logging of an unexpected error (security review B6)', () => {
+  it('logs the event and the path only, never the message or the query', async () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    await app.request('http://localhost/__boom?email=nuria@agencia.test', {}, { ...base, API_MODE: 'production' });
+    const lines = spy.mock.calls.map((call) => String(call[0]));
+    spy.mockRestore();
+    expect(lines).toContain(JSON.stringify({ scope: 'api', action: 'unhandled', path: '/__boom' }));
+    expect(lines.join('\n')).not.toMatch(/hunter2|nuria|agencia/);
   });
 });

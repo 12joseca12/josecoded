@@ -1,4 +1,5 @@
 import { fail } from '../utils/api-response';
+import { normalizeIp } from '../utils/crypto';
 import { HttpError } from '../utils/http-error';
 
 import type { Env } from '../types/env.types';
@@ -8,10 +9,12 @@ export type RateLimiterBinding = { limit(opts: { key: string }): Promise<{ succe
 
 function getClientId(c: Context): string {
   const ip = c.req.header('cf-connecting-ip')?.trim() || c.req.header('x-real-ip')?.trim();
-  return ip || 'unknown';
+  return ip ? normalizeIp(ip) : 'unknown';
 }
 
-/** Rate-limit con el binding nativo de Cloudflare (global, entre isolates).
+/** Rate-limit con el binding nativo de Cloudflare. Sus contadores son por ubicación de Cloudflare (eventualmente
+ *  consistentes), no globales: ponen un techo aproximado por punto de presencia, y los topes diarios exactos
+ *  viven en `increment_quota`. La IP se normaliza (un IPv6 cuenta por su /64).
  *  Sin binding (dev local) hace fail-open para no romper `wrangler dev`. */
 export function nativeRateLimit(
   getLimiter: (env: Env) => RateLimiterBinding | undefined,

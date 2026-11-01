@@ -79,6 +79,7 @@ export type Env = {
   CHAT_DAILY_THREADS_ALL?: string;
   CHAT_DAILY_MESSAGES_IP?: string;
   CHAT_DAILY_MESSAGES_ALL?: string;
+  CHAT_DAILY_MESSAGES_VISITOR?: string;
 };
 
 export type RateLimiterBinding = { limit(opts: { key: string }): Promise<{ success: boolean }> };

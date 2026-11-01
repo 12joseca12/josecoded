@@ -54,6 +54,7 @@ const envSchema = z.object({
   CHAT_DAILY_THREADS_ALL: z.string().regex(/^\d+$/).optional(),
   CHAT_DAILY_MESSAGES_IP: z.string().regex(/^\d+$/).optional(),
   CHAT_DAILY_MESSAGES_ALL: z.string().regex(/^\d+$/).optional(),
+  CHAT_DAILY_MESSAGES_VISITOR: z.string().regex(/^\d+$/).optional(),
   // Native binding (object with `.run()`): without this entry zod would strip it from the parsed env.
   AI: z
     .custom<Env['AI']>(

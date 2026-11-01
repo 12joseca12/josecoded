@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { signProposalToken, verifyProposalToken, type ProposalTokenPayload } from './proposal-token';
+import { hmacSha256, toBase64Url } from '../utils/crypto';
 
 const SECRET = 'server-key-test-0123456789abcdef';
 const now = 1_800_000_000;
@@ -47,3 +48,13 @@ describe('proposal token', () => {
     expect(await verifyProposalToken(SECRET, token, now)).toBeNull();
   });
 });
+
+describe('proposal token: derived key (security review B5)', () => {
+  it('a token signed with the raw SERVER_KEY (before the derivation) is rejected', async () => {
+    const body = toBase64Url(new TextEncoder().encode(JSON.stringify(payload)));
+    const old = `${body}.${await hmacSha256(SECRET, body)}`;
+    expect(await verifyProposalToken(SECRET, old, now)).toBeNull();
+    expect(await verifyProposalToken(SECRET, await signProposalToken(SECRET, payload), now)).toEqual(payload);
+  });
+});
+

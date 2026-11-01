@@ -110,8 +110,29 @@ describe('wrangler.jsonc: cron and preview Worker', () => {
   });
 
   it('the CORS list admits the preview wildcard with a dash, never a dot', () => {
-    const list = String(config.vars?.CORS_ORIGINS);
+    const list = String(config.env?.preview?.vars?.CORS_ORIGINS);
     expect(list).toContain('https://*-josecoded-web.jose.workers.dev');
     expect(list).not.toContain('https://*.');
   });
 });
+
+describe('wrangler.jsonc: production origins (security review B1)', () => {
+  const list = (value: unknown) => String(value ?? '').split(',').map((v) => v.trim()).filter(Boolean);
+
+  it('the production Worker allows only the two site origins and hostnames', () => {
+    expect(list(config.vars?.CORS_ORIGINS)).toEqual(['https://josecoded.com', 'https://www.josecoded.com']);
+    expect(list(config.vars?.ALLOWED_TURNSTILE_HOSTNAMES)).toEqual(['josecoded.com', 'www.josecoded.com']);
+  });
+
+  it('no localhost, loopback, wildcard or workers.dev entry reaches production', () => {
+    const production = JSON.stringify([config.vars?.CORS_ORIGINS, config.vars?.ALLOWED_TURNSTILE_HOSTNAMES]);
+    expect(production).not.toMatch(/localhost|127\.0\.0\.1|\*|workers\.dev|http:\/\//);
+  });
+
+  it('previews and local dev keep theirs in env.preview', () => {
+    const preview = config.env?.preview?.vars;
+    expect(list(preview?.CORS_ORIGINS)).toEqual(expect.arrayContaining(['https://*-josecoded-web.jose.workers.dev', 'http://localhost:3000']));
+    expect(list(preview?.ALLOWED_TURNSTILE_HOSTNAMES)).toEqual(expect.arrayContaining(['*-josecoded-web.jose.workers.dev', 'localhost']));
+  });
+});
+

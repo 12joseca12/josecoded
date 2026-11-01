@@ -2747,6 +2747,8 @@ test('admin takeover is visible to the visitor and no request hits admin-chat', 
 
 **Hecho cuando:** E2E en verde en Chromium y WebKit; `revisor-seguridad` confirma que la cookie `chat_sid` es HttpOnly, que un `visitor_id` no lee otro hilo, que la cuota por IP y el tope global funcionan y que **ninguna ruta de la web nueva llama a `admin-chat/*`**; el admin (6.6) ve el hilo.
 
+> **Seguridad (revisión del gateway):** el contenido del chat (visitante, IA y Jose) se pinta **siempre como texto plano** (nodos de texto de React; nunca `dangerouslySetInnerHTML`, Markdown ni autolinks): la guarda del gateway rechaza enlaces y HTML, pero el render es la segunda barrera.
+
 ### Tarea 4.4 (v2.2, superada) — Chat `/chat` con takeover (gateway `admin-chat/*`) y `knowledge.json` nuevo
 
 > **Superada en v3.0 (D39, D40):** el chat no exige cuenta ni usa `admin-chat/*`; el contexto sale del CRM. `knowledge.json` se conserva en el repo para las rutas heredadas (sin consumidor) y su test de marca sigue en verde. Texto original por historial.
@@ -3058,6 +3060,8 @@ it('no affiliate → generate false', () => expect(buildClosePaidArgs({ id:'l' }
 **Pasos:** 1. Tests: `TakeoverSwitch` con `aiEnabled=true` muestra «IA activa» y al pulsar llama a `onToggle(false)`; `extractContact('soy nuria@agencia.test, 600 000 000')` → `{ email, phone, name: null }`. 2. FAIL. 3. Implementar. 4. PASS; E2E de takeover de 4.4 completo (visitante ve la banda y el mensaje de Jose; 0 peticiones a `admin-chat/*`). 5. Commit: `git commit -m "feat(web): crm chat threads with takeover, context version and contact linking"`.
 
 **Hecho cuando:** E2E de 4.4 en verde con el admin real; crear un contacto desde un hilo anónimo deja `contact_id` y una interacción `chat_thread`.
+
+> **Seguridad (revisión del gateway):** los mensajes del hilo se pintan **siempre como texto plano**, sin Markdown, HTML ni autolinks, aunque los escriba el visitante o la IA.
 
 ### Tarea 6.6 (v2.2, superada) — Chat del admin con takeover
 

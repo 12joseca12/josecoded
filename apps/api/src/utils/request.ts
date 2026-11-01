@@ -1,4 +1,5 @@
 import { isAllowedOrigin } from './cors-origins';
+import { normalizeIp } from './crypto';
 import { HttpError } from './http-error';
 
 import type { Env } from '../types/env.types';
@@ -8,6 +9,11 @@ import type { ZodType, z } from 'zod';
 /** The caller's IP as Cloudflare saw it. `cf-connecting-ip` is set by the edge and cannot be forged by the client. */
 export function clientIp(c: Context): string {
   return c.req.header('cf-connecting-ip')?.trim() || 'unknown';
+}
+
+/** `clientIp` as a limiter key: an IPv6 counts by its /64, so rotating its lower bits does not dodge a limit. */
+export function clientRateKey(c: Context): string {
+  return normalizeIp(clientIp(c));
 }
 
 /** Whether a browser `Origin` may call the gateway: the CORS allow-list, plus localhost in development with no list. */

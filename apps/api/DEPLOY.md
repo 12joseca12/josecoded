@@ -31,7 +31,8 @@ de `public.staff_members` (gate 1.9).
 | Var | Valor actual | Notas |
 |---|---|---|
 | `API_MODE` | `production` (raíz) · `development` (`env.preview`) | Ver sección 4. |
-| `CORS_ORIGINS` | `https://josecoded.com,https://www.josecoded.com,https://*-josecoded-web.jose.workers.dev,http://localhost:3000` | Lista separada por comas; el comodín de previews lleva guion, nunca punto. |
+| `CORS_ORIGINS` | `https://josecoded.com,https://www.josecoded.com` (raíz) · previews y `http://localhost:3000` solo en `env.preview` | Lista separada por comas; el comodín de previews lleva guion, nunca punto. Producción no admite localhost ni `workers.dev` (lo comprueba `test/wrangler-config.test.ts`); en local, `.dev.vars` con `CORS_ORIGINS` propio. |
+| `ALLOWED_TURNSTILE_HOSTNAMES` | `josecoded.com,www.josecoded.com` (raíz) · comodín de previews y `localhost` solo en `env.preview` | Mismo criterio que `CORS_ORIGINS`. |
 
 El env `preview` (`josecoded-api-preview`) repite sus propias `vars` (sin cron
 ni rutas de producción): no hereda nada de la raíz.
@@ -58,7 +59,7 @@ Claves de Supabase en formato nuevo (Settings → API Keys, DATOS §8.1): la JWT
 | `SUPABASE_SECRET_KEY` | `sb_secret_…` (salta RLS). Solo la usa `src/adapters/supabase.ts`: RPC del outbox, `scheduled_jobs_*`, `increment_quota` y la lectura de `staff_members` (`is_admin`). Sin ella el cron no ejecuta nada y `auth/me` responde 502. | `min(20)`, opcional en el esquema, **necesaria** en producción y preview |
 | `TELEGRAM_BOT_TOKEN` | Bot que avisa a Jose de los eventos del outbox (`outbox.drain`). | `min(10)`, opcional en el esquema; sin él (o sin el chat) el drenaje **no reclama** eventos |
 | `TELEGRAM_ADMIN_CHAT_ID` | `chat_id` de Jose con el bot (numérico, negativo en grupos). | `^-?\d+$` |
-| `CHAT_SID_SECRET` | Firma de `chat_sid` del chat por casos (4.4). `openssl rand -hex 32`. | `min(32)`, opcional hasta 4.4 |
+| `CHAT_SID_SECRET` | Firma de la cookie `__Host-chat_sid` del chat por casos (4.4), con una subclave derivada (HMAC de la clave y la etiqueta `chat-cookie`; igual `SERVER_KEY` para el `proposalToken` y el pepper de IP). `openssl rand -hex 32`. | `min(32)`, opcional hasta 4.4 |
 
 ```bash
 pnpm exec wrangler secret put SUPABASE_URL
@@ -79,10 +80,12 @@ pnpm exec wrangler secret put CHAT_SID_SECRET
 | `ALLOWED_TURNSTILE_HOSTNAMES` (var) | Hostnames que Turnstile puede reportar. Obligatoria en producción (`wrangler.jsonc`); admite `*-sufijo`. |
 | `AI_GATEWAY_ID` (var) | AI Gateway por el que pasa **toda** llamada a Workers AI (`cf-aig-metadata: {consumer}`); sin él el modelo no se llama y se usan reglas / respuesta fija. |
 | `PROPOSALS_DAILY_LIMIT_IP` / `_ALL` | Cuotas diarias del generador (por defecto 10 y 300). |
-| `CHAT_DAILY_THREADS_IP` / `_ALL`, `CHAT_DAILY_MESSAGES_IP` / `_ALL` | Cuotas diarias del chat (por defecto 20/500 hilos y 40/2000 mensajes). |
+| `CHAT_DAILY_THREADS_IP` / `_ALL`, `CHAT_DAILY_MESSAGES_IP` / `_ALL` / `_VISITOR` | Cuotas diarias del chat (por defecto 20/500 hilos, 40/2000 mensajes y 60 por visitante). Las IPv6 cuentan por su /64. Los contactos rápidos tienen tope fijo: 3 por hilo y 5 por IP al día. |
 | `AI_PROPOSAL_MODEL`, `AI_ASSISTANT_MODEL` | Modelo de cada consumidor (por defecto `@cf/meta/llama-3.3-70b-instruct-fp8-fast`). |
 
-Los contadores usan la RPC `increment_quota` (sin KV); si no responde, la petición pasa y se registra `quota_unavailable`. Bindings nuevos: `ASSISTANT_RATE_LIMITER` (1005 / preview 2005). El chat necesita contextos publicados (`chat_contexts`, tarea 6.9) o responde con el texto fijo.
+Los contadores usan la RPC `increment_quota` (sin KV); si no responde, la petición pasa, se registra `quota_unavailable` y Jose recibe un aviso de Telegram (como mucho uno por hora y isolate). Mientras dura, el único tope de coste es el presupuesto del AI Gateway.
+
+**Presupuesto del AI Gateway (obligatorio antes de abrir el chat y las propuestas).** En el dashboard de Cloudflare, AI → AI Gateway → `josecoded` (y `josecoded-preview`) → Settings: activar **Rate limiting** (fixed window, por ejemplo 120 peticiones por hora) y **Cache** de respuestas, y fijar un tope de gasto mensual con aviso al 80 % (Billing → Notifications). El gateway es la red de seguridad cuando los contadores de Supabase caen o una cookie reparte mensajes entre muchas IPs; sin tope ahí, el coste de Workers AI no tiene techo. Bindings nuevos: `ASSISTANT_RATE_LIMITER` (1005 / preview 2005). El chat necesita contextos publicados (`chat_contexts`, tarea 6.9) o responde con el texto fijo.
 
 ### Opcionales
 

@@ -41,3 +41,17 @@ describe('nativeRateLimit', () => {
     expect(body).toMatchObject({ ok: false, error: { code: 'rate_limited', message: 'Too many requests' } });
   });
 });
+
+describe('nativeRateLimit: key per client (security review M2)', () => {
+  const keys: string[] = [];
+  const spy: RateLimiterBinding = { limit: async ({ key }) => (keys.push(key), { success: true }) };
+
+  it('an IPv4 is the key as is; every address of an IPv6 /64 shares one key', async () => {
+    keys.length = 0;
+    const app = appWith(spy);
+    for (const ip of ['1.2.3.4', '2001:db8:1:2::1', '2001:db8:1:2:ffff:ffff:ffff:ffff', '2001:0DB8:0001:0002:abcd::5', '2001:db8:1:3::1']) {
+      await app.request('http://x/ai/ping', { headers: { 'cf-connecting-ip': ip } });
+    }
+    expect(keys).toEqual(['ai:1.2.3.4', 'ai:2001:db8:1:2::/64', 'ai:2001:db8:1:2::/64', 'ai:2001:db8:1:2::/64', 'ai:2001:db8:1:3::/64']);
+  });
+});

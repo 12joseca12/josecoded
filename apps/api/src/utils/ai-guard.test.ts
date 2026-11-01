@@ -68,3 +68,53 @@ describe('guardModelOutput with allowed amounts and links (assistant)', () => {
     expect(guardModelOutput('Mira https://cal.com.evil.com/jose', options)).toEqual({ ok: false, reason: 'url' });
   });
 });
+
+describe('guardModelOutput: obfuscation (security review B2)', () => {
+  const chat = { ...es, allowedAmounts: prices, allowedLinks: ['https://cal.com/jose'] };
+
+  it.each([
+    ['full-width digits', 'Cuesta ７００ €'],
+    ['full-width digits with a word', 'Son ７００ euros en total'],
+    ['spelled out, Spanish', 'Una web básica cuesta dos mil euros.'],
+    ['spelled out, Spanish, with words between', 'Serían unos mil quinientos euros más o menos'],
+    ['spelled out, English', 'It would be two thousand euros in total'],
+    ['spelled out, dollars', 'Roughly five hundred dollars'],
+  ])('rejects %s', (_name, text) => expect(guardModelOutput(text, chat)).toEqual({ ok: false, reason: 'amount' }));
+
+  it.each([
+    ['javascript scheme', 'Pulsa javascript:alert(1)'],
+    ['mailto scheme', 'Escribe a mailto:ventas@evil.example'],
+    ['data scheme', 'Abre data:text/html;base64,AAAA'],
+    ['tel scheme', 'Llama a tel:+34600000000'],
+    ['markdown link to a listed URL', 'Reserva [aquí](https://cal.com/jose) cuando quieras'],
+    ['markdown link to nowhere', 'Mira [esto](#) por favor'],
+    ['reference-style markdown link', 'Mira [esto][1] por favor'],
+    ['ideographic full stop', 'Visita ejemplo。xyz para ver más'],
+    ['full-width dot', 'Visita ejemplo．shop para ver más'],
+    ['uncommon TLD', 'Visita oferta.store hoy'],
+    ['new gTLD with a path', 'Visita oferta.company/regalo hoy'],
+  ])('rejects %s', (_name, text) => expect(guardModelOutput(text, chat)).toEqual({ ok: false, reason: 'url' }));
+
+  it('does not mistake tech names, times or a prose colon for links or amounts', () => {
+    expect(guardModelOutput('Trabajo con Next.js y Node.js. Nota: te atiendo de 10:30 a 14:00.', chat)).toEqual({ ok: true });
+    expect(guardModelOutput('Dos semanas de trabajo, y un euro de más no importa', { ...es, allowedAmounts: prices })).toEqual({ ok: true });
+  });
+});
+
+describe('guardModelOutput: instruction leaks (security review B3)', () => {
+  const rule = 'Never invent discounts, free items, deadlines or availability beyond what the context says';
+  const options = { ...en, forbiddenTexts: [rule, 'No hacemos WordPress'] };
+
+  it('rejects an answer that repeats a run of 8 words of a rule', () => {
+    expect(guardModelOutput('My rule is: never invent discounts, free items, deadlines or availability.', options)).toEqual({ ok: false, reason: 'prompt_leak' });
+  });
+
+  it('matches case, punctuation and full-width forms', () => {
+    expect(guardModelOutput('NEVER INVENT DISCOUNTS; FREE ITEMS; DEADLINES OR AVAILABILITY', options).ok).toBe(false);
+  });
+
+  it('allows short overlaps and unrelated text', () => {
+    expect(guardModelOutput('We never invent discounts, so the price is what you see on the page.', options).ok).toBe(true);
+    expect(guardModelOutput('No hacemos WordPress', { ...es, forbiddenTexts: options.forbiddenTexts }).ok).toBe(true);
+  });
+});

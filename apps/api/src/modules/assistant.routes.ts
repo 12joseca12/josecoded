@@ -1,5 +1,5 @@
 // /api/v1/assistant/*: case-based chat without an account (plan 4.4). The visitor is the holder of the signed HttpOnly
-// `chat_sid` cookie (or the owner's JWT); every mutation checks `Origin` (the cookie is the credential, so a cross-site
+// `__Host-chat_sid` cookie (or the owner's JWT); every mutation checks `Origin` (the cookie is the credential, so a cross-site
 // form post must not be able to use it) and the native limiter keyed by visitor. The admin side needs a staff admin
 // with a second factor. Responses are never cached.
 import { Hono } from 'hono';
@@ -21,7 +21,7 @@ import { readVisitorSid, sidCookie, signVisitorSid } from '../services/chat-sess
 import { intFromEnv } from '../services/quota.service';
 import { ok } from '../utils/api-response';
 import { HttpError, logEvent } from '../utils/http-error';
-import { assertTrustedOrigin, clientIp, parseWith, readJson } from '../utils/request';
+import { assertTrustedOrigin, clientIp, clientRateKey, parseWith, readJson } from '../utils/request';
 
 import type { AppEnv } from '../deps';
 import type { ChatThreadRow } from '../ports';
@@ -52,8 +52,14 @@ function service(c: Context<AppEnv>) {
       threadsAll: intFromEnv(c.env.CHAT_DAILY_THREADS_ALL, 500),
       messagesIp: intFromEnv(c.env.CHAT_DAILY_MESSAGES_IP, 40),
       messagesAll: intFromEnv(c.env.CHAT_DAILY_MESSAGES_ALL, 2000),
+      messagesVisitor: intFromEnv(c.env.CHAT_DAILY_MESSAGES_VISITOR, 60),
     },
   });
+}
+
+/** The unprefixed cookie name is read only in development (plain-http `wrangler dev`). */
+function cookieOptions(c: Context<AppEnv>) {
+  return { allowDevName: c.env.API_MODE === 'development' };
 }
 
 function bearer(c: Context<AppEnv>): string | undefined {
@@ -74,7 +80,7 @@ async function optionalUserId(c: Context<AppEnv>): Promise<string | undefined> {
 }
 
 async function accessOf(c: Context<AppEnv>): Promise<Access> {
-  const visitorId = await readVisitorSid(c.env.CHAT_SID_SECRET, c.req.header('cookie'));
+  const visitorId = await readVisitorSid(c.env.CHAT_SID_SECRET, c.req.header('cookie'), cookieOptions(c));
   const userId = await optionalUserId(c);
   return { ...(visitorId ? { visitorId } : {}), ...(userId ? { userId } : {}) };
 }
@@ -95,14 +101,14 @@ function threadId(c: Context<AppEnv>): string {
 
 // --- Visitor ---
 
-/** POST /threads: Turnstile `chat`, 20 threads per IP and 500 in total per day, sets the `chat_sid` cookie. */
+/** POST /threads: Turnstile `chat`, 20 threads per IP and 500 in total per day, sets the `__Host-chat_sid` cookie. */
 assistantRoutes.post('/threads', async (c) => {
   assertTrustedOrigin(c);
   const ip = clientIp(c);
   const secret = secretOf(c);
-  await enforceNativeLimit(c.env.ASSISTANT_RATE_LIMITER, `assistant-new:${ip}`);
+  await enforceNativeLimit(c.env.ASSISTANT_RATE_LIMITER, `assistant-new:${clientRateKey(c)}`);
   const input = await readJson(c, createThreadRequestSchema, MAX_BODY_BYTES);
-  const existing = await readVisitorSid(secret, c.req.header('cookie'));
+  const existing = await readVisitorSid(secret, c.req.header('cookie'), cookieOptions(c));
   const { thread, visitorId } = await service(c).createThread({
     case: input.case,
     locale: input.locale,
@@ -156,7 +162,7 @@ assistantRoutes.post('/threads/:id/claim', async (c) => {
   assertTrustedOrigin(c);
   const userId = await optionalUserId(c);
   if (!userId) throw new HttpError(401, 'unauthorized', 'Sign in to save the conversation');
-  const visitorId = await readVisitorSid(c.env.CHAT_SID_SECRET, c.req.header('cookie'));
+  const visitorId = await readVisitorSid(c.env.CHAT_SID_SECRET, c.req.header('cookie'), cookieOptions(c));
   await enforceNativeLimit(c.env.ASSISTANT_RATE_LIMITER, `assistant:${visitorId ?? `user:${userId}`}`);
   const thread = await service(c).claim({ threadId: id, visitorId: visitorId ?? undefined, userId });
   return c.json(ok({ thread: toThreadView(thread) }));
@@ -171,6 +177,7 @@ assistantRoutes.post('/threads/:id/quick-contact', async (c) => {
     threadId: id,
     access,
     contact,
+    ip: clientIp(c),
     waitUntil: (promise) => {
       try {
         c.executionCtx.waitUntil(promise);

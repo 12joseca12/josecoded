@@ -1,10 +1,10 @@
-// `proposalToken`: the generated proposal travels with the visitor as an HMAC-signed token (SERVER_KEY, no KV), so
+// `proposalToken`: the generated proposal travels with the visitor as an HMAC-signed token (subkey of SERVER_KEY derived for this purpose, no KV), so
 // POST /leads can trust the pack and extras without a lookup. The price in it is informative: the lead is re-priced.
 import { z } from 'zod';
 
 import { APP_CODES, EXTRA_CODES, PACK_CODES } from '@josecoded/types';
 
-import { fromBase64Url, hmacSha256, toBase64Url, verifyHmacSha256 } from '../utils/crypto';
+import { deriveKey, fromBase64Url, hmacSha256, toBase64Url, verifyHmacSha256 } from '../utils/crypto';
 
 export const PROPOSAL_TOKEN_TTL_SECONDS = 24 * 60 * 60;
 
@@ -28,7 +28,7 @@ export type ProposalTokenPayload = z.infer<typeof proposalTokenPayloadSchema>;
 
 export async function signProposalToken(secret: string, payload: ProposalTokenPayload): Promise<string> {
   const body = toBase64Url(new TextEncoder().encode(JSON.stringify(payload)));
-  return `${body}.${await hmacSha256(secret, body)}`;
+  return `${body}.${await hmacSha256(await deriveKey(secret, 'proposal-token'), body)}`;
 }
 
 /** The payload of a genuine, unexpired token; `null` for anything else (the caller does not learn which). */
@@ -40,7 +40,7 @@ export async function verifyProposalToken(
   const parts = token.split('.');
   if (parts.length !== 2) return null;
   const [body, signature] = parts as [string, string];
-  if (!(await verifyHmacSha256(secret, body, signature))) return null;
+  if (!(await verifyHmacSha256(await deriveKey(secret, 'proposal-token'), body, signature))) return null;
   const bytes = fromBase64Url(body);
   if (!bytes) return null;
   try {

@@ -12,7 +12,7 @@ import { healthRoutes } from './modules/health.routes';
 import { v1Routes } from './modules/v1.routes';
 import { scheduled } from './scheduled';
 import { fail } from './utils/api-response';
-import { HttpError } from './utils/http-error';
+import { HttpError, logEvent } from './utils/http-error';
 import { isOriginAllowed } from './utils/request';
 
 import type { AppEnv } from './deps';
@@ -63,6 +63,8 @@ app.onError((error, c) => {
     console.error(JSON.stringify({ scope: 'env', error: error.message }));
     return c.json(fail('internal_error', 'API misconfigured'), 500);
   }
+  // the path only: an error message can carry values from the request (an email in a constraint name, a token)
+  logEvent('api', 'unhandled', { path: c.req.path });
   return c.json(
     fail('internal_error', 'Internal API error', exposeErrorDetails(c.env) ? errorMessage(error) : undefined),
     500,

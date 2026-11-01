@@ -7,7 +7,7 @@ import { submitLead } from '../services/leads.service';
 import { ok } from '../utils/api-response';
 import { secretsEqual } from '../utils/crypto';
 import { HttpError, logEvent } from '../utils/http-error';
-import { clientIp, parseWith, readJson } from '../utils/request';
+import { clientIp, clientRateKey, parseWith, readJson } from '../utils/request';
 
 import type { AppEnv } from '../deps';
 import type { Context } from 'hono';
@@ -48,7 +48,7 @@ leadsRoutes.post('/', async (c) => {
     if (!expected || !(await secretsEqual(presented, expected))) throw new HttpError(403, 'forbidden', 'Invalid server key');
     serverAuthenticated = true;
   } else {
-    await enforceNativeLimit(c.env.LEADS_RATE_LIMITER, `leads:${ip}`);
+    await enforceNativeLimit(c.env.LEADS_RATE_LIMITER, `leads:${clientRateKey(c)}`);
   }
 
   const request = await readJson(c, leadRequestSchema, MAX_BODY_BYTES);

@@ -59,8 +59,40 @@ export async function secretsEqual(provided: string, expected: string): Promise<
   return diff === 0;
 }
 
-/** Stable pseudonym of an IP for quota keys and `chat_threads.ip_hash` (HMAC when a secret is given). */
+/**
+ * Derives a per-purpose subkey: HMAC(key, label). The proposal token, the IP pepper and the chat cookie each sign
+ * with their own, so a signature made for one purpose is worthless for another and a leak of one derived key does
+ * not reveal the master secret.
+ */
+export async function deriveKey(key: string, label: 'proposal-token' | 'ip-pepper' | 'chat-cookie'): Promise<string> {
+  return hmacSha256(key, `josecoded:v1:${label}`);
+}
+
+/**
+ * The address that identifies a client for quotas and rate limits: an IPv4 as is, an IPv6 reduced to its /64 (a
+ * subscriber gets at least a /64, so rotating the lower 64 bits must not mint a fresh identity). Anything that is
+ * not an address (`unknown`) is returned as is.
+ */
+export function normalizeIp(ip: string): string {
+  const raw = ip.trim().toLowerCase().split('%')[0] ?? '';
+  if (!raw.includes(':')) return raw;
+  // IPv4-mapped / embedded (::ffff:1.2.3.4): the client is that IPv4
+  const mapped = /^(?:0{0,4}:){2,5}(?:ffff:)?(\d{1,3}(?:\.\d{1,3}){3})$/.exec(raw);
+  if (mapped?.[1]) return mapped[1];
+  const [head = '', tail, ...extra] = raw.split('::');
+  if (extra.length > 0) return raw;
+  const left = head ? head.split(':') : [];
+  const right = tail ? tail.split(':') : [];
+  const groups = tail === undefined ? left : [...left, ...Array<string>(Math.max(0, 8 - left.length - right.length)).fill('0'), ...right];
+  if (groups.length !== 8 || groups.some((g) => !/^[0-9a-f]{1,4}$/.test(g))) return raw;
+  return `${groups.slice(0, 4).map((g) => g.replace(/^0+(?=.)/, '')).join(':')}::/64`;
+}
+
+/** Stable pseudonym of an IP (its /64 for IPv6) for quota keys and `chat_threads.ip_hash` (HMAC with the derived pepper when a secret is given). */
 export async function hashIp(ip: string, secret?: string): Promise<string> {
-  const full = secret ? toHex(fromBase64Url(await hmacSha256(secret, ip)) ?? new Uint8Array()) : await sha256Hex(ip);
+  const address = normalizeIp(ip);
+  const full = secret
+    ? toHex(fromBase64Url(await hmacSha256(await deriveKey(secret, 'ip-pepper'), address)) ?? new Uint8Array())
+    : await sha256Hex(address);
   return full.slice(0, 32);
 }
