@@ -50,6 +50,9 @@
     "check:hero-bundle": {},
     "lhci": {
       "cache": false
+    },
+    "lhci:assert-lcp-element": {
+      "cache": false
     }
   }
 }

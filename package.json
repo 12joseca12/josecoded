@@ -20,7 +20,8 @@
     "hero:media": "turbo run hero:media",
     "hero:media:check": "turbo run hero:media:check",
     "check:hero-bundle": "turbo run check:hero-bundle",
-    "lhci": "turbo run lhci"
+    "lhci": "turbo run lhci",
+    "lhci:assert-lcp-element": "turbo run lhci:assert-lcp-element"
   },
   "devDependencies": {
     "@josecoded/config": "workspace:*",

@@ -114,8 +114,12 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - run: pnpm hero:media:check
-      # Not wired yet because the scripts do not exist: check:hero-bundle and the Lighthouse CI run
-      # (`pnpm lhci`, task 2.9). Each of those tasks adds its step here.
+      # Task 2.9: bundle budget (three only in a dynamic chunk, sceneGz <= 200 KB, homeGz <= 350 KB), Lighthouse CI
+      # (mobile 4G and desktop against the local OpenNext preview; Chrome is the runner's) and the LCP element
+      # (hero h1 or poster) read from the reports it wrote.
+      - run: pnpm check:hero-bundle
+      - run: pnpm lhci
+      - run: pnpm lhci:assert-lcp-element
 
   e2e:
     runs-on: ubuntu-latest

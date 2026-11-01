@@ -12,7 +12,10 @@
     "typecheck": "pnpm run generate && tsc --noEmit",
     "test": "pnpm run generate && vitest run",
     "i18n:check": "node scripts/i18n-check.ts",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "check:hero-bundle": "node scripts/check-hero-bundle.ts",
+    "lhci": "lhci autorun --config=lighthouserc.json && lhci autorun --config=lighthouserc.desktop.json",
+    "lhci:assert-lcp-element": "node scripts/lhci-assert-lcp-element.ts"
   },
   "dependencies": {
     "@josecoded/glyph-scene": "workspace:*",
@@ -31,6 +34,7 @@
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",
     "@josecoded/config": "workspace:*",
+    "@lhci/cli": "0.15.1",
     "@playwright/test": "1.63.0",
     "@testing-library/react": "16.3.3",
     "@types/node": "22.20.2",

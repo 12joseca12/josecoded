@@ -44,3 +44,4 @@ supabase/scripts/load-local.sql
 
 # build data written by apps/web/scripts at every build path (pnpm run generate); never versioned
 apps/web/content/generated/
+.lighthouseci/
