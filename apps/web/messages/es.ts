@@ -14,6 +14,7 @@ import newsletter from './es/newsletter.json';
 import partners from './es/partners.json';
 import projects from './es/projects.json';
 import proposal from './es/proposal.json';
+import seo from './es/seo.json';
 import services from './es/services.json';
 
 const messages = {
@@ -31,6 +32,7 @@ const messages = {
   ...auth,
   ...area,
   ...newsletter,
+  ...seo,
 };
 
 export default messages;

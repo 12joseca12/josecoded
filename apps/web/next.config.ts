@@ -27,6 +27,12 @@ const config: NextConfig = {
   async redirects() {
     return redirects;
   },
+  // Previews (`*.workers.dev`) must never be indexed: the build of a preview says so on every response, and also in its
+  // robots.txt and meta tags (lib/seo). Production builds send no X-Robots-Tag.
+  async headers() {
+    if (process.env.NEXT_PUBLIC_SITE_ENV !== 'preview') return [];
+    return [{ source: '/:path*', headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }] }];
+  },
 };
 
 export default withNextIntl(config);

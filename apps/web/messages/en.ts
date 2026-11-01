@@ -12,6 +12,7 @@ import newsletter from './en/newsletter.json';
 import partners from './en/partners.json';
 import projects from './en/projects.json';
 import proposal from './en/proposal.json';
+import seo from './en/seo.json';
 import services from './en/services.json';
 
 import type es from './es';
@@ -31,6 +32,7 @@ const messages = {
   ...auth,
   ...area,
   ...newsletter,
+  ...seo,
 } satisfies typeof es;
 
 export default messages;

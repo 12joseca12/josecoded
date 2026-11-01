@@ -22,7 +22,7 @@ function screens(locale: string): Record<string, Record<string, unknown>> {
 }
 
 describe('message catalogs', () => {
-  it('has the 14 screens in both languages', () => {
+  it('has the 15 screens in both languages', () => {
     const expected = [
       'about',
       'area',
@@ -37,6 +37,7 @@ describe('message catalogs', () => {
       'partners',
       'projects',
       'proposal',
+      'seo',
       'services',
     ];
     for (const locale of locales) expect(Object.keys(screens(locale))).toEqual(expected);

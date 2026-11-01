@@ -1,0 +1,69 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`site graph > matches the snapshot 1`] = `
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@id": "https://josecoded.com/#person",
+      "@type": "Person",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "ES",
+        "addressLocality": "Valencia",
+      },
+      "alternateName": "josecoded",
+      "email": "mailto:hola@example.com",
+      "jobTitle": "Desarrollador full-stack freelance",
+      "knowsAbout": [
+        "TypeScript",
+        "Next.js",
+        "React Native",
+        "Expo",
+        "Supabase",
+        "Cloudflare Workers",
+        "Web accessibility",
+        "AI integration",
+      ],
+      "knowsLanguage": [
+        "es",
+        "en",
+      ],
+      "name": "Ana Prueba Ejemplo",
+      "sameAs": [
+        "https://www.linkedin.com/in/ana-prueba",
+        "https://github.com/ana-prueba",
+      ],
+      "url": "https://josecoded.com",
+      "worksFor": {
+        "@id": "https://josecoded.com/#organization",
+      },
+    },
+    {
+      "@id": "https://josecoded.com/#organization",
+      "@type": [
+        "Organization",
+        "ProfessionalService",
+      ],
+      "areaServed": [
+        "ES",
+      ],
+      "founder": {
+        "@id": "https://josecoded.com/#person",
+      },
+      "name": "josecoded",
+      "url": "https://josecoded.com",
+    },
+    {
+      "@id": "https://josecoded.com/#website",
+      "@type": "WebSite",
+      "inLanguage": "es",
+      "name": "josecoded",
+      "publisher": {
+        "@id": "https://josecoded.com/#organization",
+      },
+      "url": "https://josecoded.com",
+    },
+  ],
+}
+`;

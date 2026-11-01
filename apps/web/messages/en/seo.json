@@ -1,0 +1,28 @@
+{
+  "seo": {
+    "home": {
+      "title": "Freelance developer: web, mobile and AI",
+      "description": "Freelance developer: Next.js websites, React Native apps and integrated AI. Hourly, fixed price or packs from {price} excl. VAT. Also open to agencies."
+    },
+    "jobTitle": "Freelance full-stack developer",
+    "personDescription": "{{DATO: one-line citable sentence about who he is and what he does (redactor with voz.md)}}",
+    "services": {
+      "hourly": "Hourly web and mobile development",
+      "fixed": "Fixed-price feature",
+      "packs": "Fixed-price web and app packs"
+    },
+    "llms": {
+      "pages": "Pages",
+      "prices": "Prices (excl. VAT)",
+      "hourly": "Hourly",
+      "fixed": "Fixed-price feature, from",
+      "packFrom": "from",
+      "weeks": "{weeks, plural, one {# week} other {# weeks}}",
+      "contact": "Contact",
+      "english": "Español",
+      "author": "Author",
+      "about": "About",
+      "includes": "Includes"
+    }
+  }
+}

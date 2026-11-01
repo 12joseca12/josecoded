@@ -2,9 +2,10 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { pageMetadata } from './page-metadata';
 
-vi.mock('@/lib/env', () => ({
-  env: { client: { NEXT_PUBLIC_SITE_URL: 'https://josecoded.com' } },
+const mockEnv = vi.hoisted(() => ({
+  client: { NEXT_PUBLIC_SITE_URL: 'https://josecoded.com', NEXT_PUBLIC_SITE_ENV: 'development' as string },
 }));
+vi.mock('@/lib/env', () => ({ env: mockEnv }));
 
 describe('pageMetadata', () => {
   it('es canonical without prefix, en under /en, alternates with x-default', () => {
@@ -64,10 +65,39 @@ describe('pageMetadata', () => {
     expect(m.alternates?.languages).toBeUndefined();
   });
 
-  it('rejects long titles', () => {
+  it('rejects titles that would pass 60 characters once the layout adds the suffix', () => {
     expect(() =>
-      pageMetadata({ locale: 'es', pathname: '/', title: 'x'.repeat(61), description: 'd' }),
-    ).toThrow(/60/);
+      pageMetadata({ locale: 'es', pathname: '/', title: 'x'.repeat(49), description: 'd' }),
+    ).toThrow(/48/);
+    expect(() =>
+      pageMetadata({ locale: 'es', pathname: '/', title: 'x'.repeat(48), description: 'd' }),
+    ).not.toThrow();
+  });
+
+  it('refuses a {{DATO}} in the title or description only in a production build', () => {
+    const page = { locale: 'es', pathname: '/servicios', title: 't', description: '{{DATO: descripción}}' } as const;
+    mockEnv.client.NEXT_PUBLIC_SITE_ENV = 'preview';
+    expect(() => pageMetadata(page)).not.toThrow();
+    mockEnv.client.NEXT_PUBLIC_SITE_ENV = 'production';
+    try {
+      expect(() => pageMetadata(page)).toThrow(/DATO/);
+      expect(() => pageMetadata({ ...page, title: '{{DATO: título}}', description: 'd' })).toThrow(/DATO/);
+    } finally {
+      mockEnv.client.NEXT_PUBLIC_SITE_ENV = 'development';
+    }
+  });
+
+  it('points at the generated card of its section, or the default one', () => {
+    const images = (pathname: '/servicios' | '/area-clientes', locale: 'es' | 'en') =>
+      (pageMetadata({ locale, pathname, title: 't', description: 'd' }).openGraph as { images: string[] }).images;
+    expect(images('/servicios', 'en')).toEqual(['https://josecoded.com/og/servicios-en.png']);
+    expect(images('/area-clientes', 'es')).toEqual(['https://josecoded.com/og/default-es.png']);
+  });
+
+  it('noindex pages say so and keep following links', () => {
+    const m = pageMetadata({ locale: 'es', pathname: '/chat', title: 'Chat', description: 'd', noindex: true });
+    expect(m.robots).toEqual({ index: false, follow: true });
+    expect(pageMetadata({ locale: 'es', pathname: '/chat', title: 'Chat', description: 'd' }).robots).toBeUndefined();
   });
 
   it('carries title, description and the Open Graph card of its own locale', () => {
@@ -84,6 +114,7 @@ describe('pageMetadata', () => {
       url: 'https://josecoded.com/en/lab',
       locale: 'en_US',
       images: ['https://josecoded.com/og/lab.png'],
+      siteName: 'josecoded',
     });
   });
 });
