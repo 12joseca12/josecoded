@@ -1,4 +1,5 @@
 import { notFound, redirect } from 'next/navigation';
+import { cache } from 'react';
 
 import { getPathname } from '@/i18n/navigation';
 import { createServerSupabase } from '@/lib/supabase/server';
@@ -30,11 +31,20 @@ function loginHref({ locale, next }: GuardOptions): string {
  * authority is still RLS; this only decides what to render.
  */
 export async function requireUser(options: GuardOptions): Promise<Session> {
+  const session = await getOptionalSession();
+  if (!session) redirect(loginHref(options));
+  return session;
+}
+
+/**
+ * The session of this request or null, validated once per request (`cache` dedupes the Auth server
+ * call between a layout and its page). Never redirects: the caller decides.
+ */
+export const getOptionalSession = cache(async (): Promise<Session | null> => {
   const supabase = await createServerSupabase();
   const { data } = await supabase.auth.getUser();
-  if (!data.user) redirect(loginHref(options));
-  return { user: data.user, supabase };
-}
+  return data.user ? { user: data.user, supabase } : null;
+});
 
 /**
  * Admin guard (DATOS §8.1): the user must be in `staff_members` with role `admin` (anyone else gets a

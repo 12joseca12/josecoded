@@ -1,15 +1,9 @@
-import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
+import { expectNoSeriousViolations } from './helpers/axe';
 import { latestOtp, signInAs, supabaseIsUp } from './helpers/supabase';
 
-const AXE_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
 const widths = [360, 1440] as const;
-
-async function expectNoSeriousViolations(page: import('@playwright/test').Page) {
-  const { violations } = await new AxeBuilder({ page }).withTags(AXE_TAGS).analyze();
-  expect(violations.filter((v) => v.impact === 'serious' || v.impact === 'critical')).toEqual([]);
-}
 
 // --- Without Supabase: guards, screens, accessibility ---------------------------------------------
 

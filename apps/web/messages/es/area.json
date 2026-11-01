@@ -1,7 +1,124 @@
 {
   "area": {
     "metaTitle": "Área de clientes",
-    "title": { "lead": "Tu espacio", "tail": "con josecoded" },
-    "placeholder": "Aquí encontrarás tu proyecto, tus tareas y tu material."
+    "nav": {
+      "label": "Área de clientes",
+      "home": "Inicio",
+      "project": "Mi proyecto",
+      "tasks": "Tareas",
+      "files": "Material",
+      "plan": "Pack",
+      "referrals": "Recomiéndame",
+      "account": "Mi cuenta"
+    },
+    "contact": {
+      "title": "¿Hablamos?",
+      "body": "Escríbeme por donde te sea más cómodo: respondo yo.",
+      "whatsapp": "Escribir por WhatsApp",
+      "book": "Reservar 20 min",
+      "page": "Otras vías de contacto"
+    },
+    "home": {
+      "greeting": "Hola, {name}",
+      "client": {
+        "title": {
+          "lead": "Tu proyecto,",
+          "tail": "paso a paso"
+        },
+        "phaseTitle": "Dónde estamos",
+        "phaseOf": "Fase {current} de {total}",
+        "phases": {
+          "kickoff": "Arranque",
+          "design": "Diseño",
+          "build": "Construcción",
+          "review": "Revisión",
+          "delivered": "Entregado",
+          "maintenance": "Mantenimiento"
+        },
+        "pack": "Pack contratado",
+        "startedOn": "Empezó el {date}",
+        "deliveredOn": "Entregado el {date}",
+        "yourTurn": "Te toca a ti",
+        "yourTurnCount": "{count, plural, one {Tienes # tarea esperándote} other {Tienes # tareas esperándote}}",
+        "yourTurnEmpty": "No tienes nada pendiente ahora mismo.",
+        "seeTasks": "Ver tareas",
+        "news": "Novedades",
+        "newsEmpty": "Aún no hay novedades. Aquí verás los comentarios de Jose sobre tus tareas.",
+        "newsFrom": "{name} el {date}",
+        "newsSelf": "Tú el {date}",
+        "newsJose": "Jose el {date}"
+      },
+      "proposal": {
+        "title": {
+          "lead": "Tu propuesta,",
+          "tail": "en marcha"
+        },
+        "lede": "Esto es lo que te propusimos. Si algo cambia, hablamos.",
+        "pack": "Pack recomendado",
+        "from": "Desde {price}",
+        "status": {
+          "open": "En estudio",
+          "won": "Aceptada",
+          "lost": "Cerrada"
+        },
+        "ask": "Hablar de la propuesta",
+        "statusLine": "Estado: {status} · enviada el {date}"
+      },
+      "referral": {
+        "title": {
+          "lead": "Recomienda,",
+          "tail": "y gana"
+        },
+        "lede": "Entraste con un enlace de recomendación. Tú también puedes tener el tuyo y compartirlo.",
+        "cta": "Conseguir mi enlace",
+        "wantWebTitle": "¿Quieres una web?",
+        "wantWebBody": "Mira los packs y su precio cerrado.",
+        "wantWebCta": "Ver packs"
+      },
+      "business": {
+        "title": {
+          "lead": "Una web para tu negocio,",
+          "tail": "a precio cerrado"
+        },
+        "lede": "Elige el pack que se parezca a lo que necesitas y te preparo la propuesta.",
+        "packsLabel": "Packs",
+        "request": "Pedir propuesta",
+        "seePacks": "Ver los packs en detalle",
+        "packLine": "{weeks, plural, one {# semana} other {# semanas}} · desde {price}"
+      },
+      "company": {
+        "title": {
+          "lead": "Para equipos",
+          "tail": "que contratan"
+        },
+        "lede": "Mi CV, una llamada de 20 minutos y el trabajo que he hecho, a mano.",
+        "cv": "Descargar CV",
+        "book": "Reservar 20 min",
+        "chat": "Preguntar al asistente",
+        "projects": "Ver proyectos"
+      },
+      "blog": {
+        "title": {
+          "lead": "Sigue",
+          "tail": "leyendo"
+        },
+        "lede": "Llegaste desde una guía del blog. Puedes volver a ella o ver qué más hay.",
+        "back": "Volver al blog",
+        "lab": "Probar las demos del lab"
+      },
+      "neutral": {
+        "title": {
+          "lead": "Bienvenido,",
+          "tail": "elige tu puerta"
+        },
+        "lede": "Dos caminos según lo que busques.",
+        "projectTitle": "Tengo un proyecto",
+        "projectBody": "Una web, una tienda o una app: mira cómo trabajo y qué cuesta.",
+        "projectCta": "Ver servicios",
+        "talkTitle": "Quiero conocerte",
+        "talkBody": "Para colaborar, contratar o simplemente hablar.",
+        "talkCta": "Sobre mí"
+      }
+    }
   }
 }

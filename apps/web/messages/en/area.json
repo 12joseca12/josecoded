@@ -1,7 +1,124 @@
 {
   "area": {
     "metaTitle": "Client area",
-    "title": { "lead": "Your space", "tail": "with josecoded" },
-    "placeholder": "Your project, your tasks and your files will live here."
+    "nav": {
+      "label": "Client area",
+      "home": "Home",
+      "project": "My project",
+      "tasks": "Tasks",
+      "files": "Files",
+      "plan": "Plan",
+      "referrals": "Refer a friend",
+      "account": "My account"
+    },
+    "contact": {
+      "title": "Shall we talk?",
+      "body": "Write to me whichever way suits you: I answer myself.",
+      "whatsapp": "Message on WhatsApp",
+      "book": "Book 20 min",
+      "page": "Other ways to get in touch"
+    },
+    "home": {
+      "greeting": "Hi, {name}",
+      "client": {
+        "title": {
+          "lead": "Your project,",
+          "tail": "step by step"
+        },
+        "phaseTitle": "Where we are",
+        "phaseOf": "Phase {current} of {total}",
+        "phases": {
+          "kickoff": "Kickoff",
+          "design": "Design",
+          "build": "Build",
+          "review": "Review",
+          "delivered": "Delivered",
+          "maintenance": "Maintenance"
+        },
+        "pack": "Plan you hired",
+        "startedOn": "Started on {date}",
+        "deliveredOn": "Delivered on {date}",
+        "yourTurn": "Your turn",
+        "yourTurnCount": "{count, plural, one {You have # task waiting} other {You have # tasks waiting}}",
+        "yourTurnEmpty": "You have nothing pending right now.",
+        "seeTasks": "See tasks",
+        "news": "News",
+        "newsEmpty": "No news yet. Here you will see Jose's comments on your tasks.",
+        "newsFrom": "{name} on {date}",
+        "newsSelf": "You on {date}",
+        "newsJose": "Jose on {date}"
+      },
+      "proposal": {
+        "title": {
+          "lead": "Your proposal,",
+          "tail": "under way"
+        },
+        "lede": "This is what we proposed. If anything changes, we talk.",
+        "pack": "Recommended plan",
+        "from": "From {price}",
+        "status": {
+          "open": "Under review",
+          "won": "Accepted",
+          "lost": "Closed"
+        },
+        "ask": "Talk about the proposal",
+        "statusLine": "Status: {status} · sent on {date}"
+      },
+      "referral": {
+        "title": {
+          "lead": "Refer,",
+          "tail": "and earn"
+        },
+        "lede": "You came in through a referral link. You can have your own and share it too.",
+        "cta": "Get my link",
+        "wantWebTitle": "Want a website?",
+        "wantWebBody": "See the plans and their fixed price.",
+        "wantWebCta": "See plans"
+      },
+      "business": {
+        "title": {
+          "lead": "A website for your business,",
+          "tail": "at a fixed price"
+        },
+        "lede": "Pick the plan closest to what you need and I will prepare the proposal.",
+        "packsLabel": "Plans",
+        "request": "Ask for a proposal",
+        "seePacks": "See the plans in detail",
+        "packLine": "{weeks, plural, one {# week} other {# weeks}} · from {price}"
+      },
+      "company": {
+        "title": {
+          "lead": "For teams",
+          "tail": "that hire"
+        },
+        "lede": "My CV, a 20-minute call and the work I have done, by hand.",
+        "cv": "Download CV",
+        "book": "Book 20 min",
+        "chat": "Ask the assistant",
+        "projects": "See projects"
+      },
+      "blog": {
+        "title": {
+          "lead": "Keep",
+          "tail": "reading"
+        },
+        "lede": "You came from a blog guide. You can go back to it or see what else there is.",
+        "back": "Back to the blog",
+        "lab": "Try the lab demos"
+      },
+      "neutral": {
+        "title": {
+          "lead": "Welcome,",
+          "tail": "pick your door"
+        },
+        "lede": "Two paths depending on what you are looking for.",
+        "projectTitle": "I have a project",
+        "projectBody": "A website, a shop or an app: see how I work and what it costs.",
+        "projectCta": "See services",
+        "talkTitle": "I want to get to know you",
+        "talkBody": "To collaborate, to hire or just to talk.",
+        "talkCta": "About me"
+      }
+    }
   }
 }
