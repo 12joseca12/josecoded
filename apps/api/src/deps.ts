@@ -2,11 +2,15 @@
 // Ports live in @josecoded/types (api.ts); real adapters live in src/adapters/ and are the only files
 // that import SDKs or call third parties. Routes and middlewares receive `c.var.deps`; they never import adapters.
 import { createNoticeLedger, createOutboxRepo } from './adapters/outbox';
+import { createQuotaStore } from './adapters/quota';
 import { createScheduledJobsRepo } from './adapters/scheduled-jobs';
 import { createSupabaseAdapters, type SupabaseGateway } from './adapters/supabase';
 import { createTelegramNotifier } from './adapters/telegram';
+import { createTurnstileVerifier } from './adapters/turnstile';
+import { createAiClient } from './adapters/workers-ai';
 import { parseEnv } from './config/env';
 
+import type { AiClient, QuotaStore, TurnstileVerifier } from './ports';
 import type { Env } from './types/env.types';
 import type { Clock, NoticeLedger, Notifier, OutboxRepo, ScheduledJobsRepo } from '@josecoded/types';
 
@@ -25,6 +29,12 @@ export interface Deps {
   notices?: NoticeLedger;
   /** Jose's Telegram. Undefined without TELEGRAM_BOT_TOKEN and TELEGRAM_ADMIN_CHAT_ID. */
   telegram?: Notifier;
+  /** Cloudflare Turnstile. Undefined without TURNSTILE_SECRET_KEY: routes that need it answer 503. */
+  turnstile?: TurnstileVerifier;
+  /** Atomic counters (`increment_quota`). Undefined without SUPABASE_SECRET_KEY: quotas then let requests through. */
+  quota?: QuotaStore;
+  /** Workers AI through the AI Gateway. Undefined without the AI binding or AI_GATEWAY_ID: callers use rules. */
+  ai?: AiClient;
 }
 
 /** Hono generics of the gateway app: the bindings plus what the middlewares leave in `c.var`. */
@@ -43,13 +53,22 @@ type TestBindings = { TEST?: string; __deps?: Partial<Deps> };
 export function buildDeps(env: Env): Deps {
   const { gateway, rpc } = createSupabaseAdapters(env);
   const telegram = createTelegramNotifier(env);
+  const turnstile = createTurnstileVerifier(env);
+  const ai = createAiClient(env);
   return {
     clock: { now: () => new Date() },
     supabase: gateway,
     ...(rpc
-      ? { scheduledJobs: createScheduledJobsRepo(rpc), outbox: createOutboxRepo(rpc), notices: createNoticeLedger(rpc) }
+      ? {
+          scheduledJobs: createScheduledJobsRepo(rpc),
+          outbox: createOutboxRepo(rpc),
+          notices: createNoticeLedger(rpc),
+          quota: createQuotaStore(rpc),
+        }
       : {}),
     ...(telegram ? { telegram } : {}),
+    ...(turnstile ? { turnstile } : {}),
+    ...(ai ? { ai } : {}),
   };
 }
 

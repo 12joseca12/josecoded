@@ -12,7 +12,8 @@ import { healthRoutes } from './modules/health.routes';
 import { v1Routes } from './modules/v1.routes';
 import { scheduled } from './scheduled';
 import { fail } from './utils/api-response';
-import { isAllowedOrigin, parseOriginList } from './utils/cors-origins';
+import { HttpError } from './utils/http-error';
+import { isOriginAllowed } from './utils/request';
 
 import type { AppEnv } from './deps';
 import type { Env } from './types/env.types';
@@ -26,21 +27,15 @@ app.use('*', withDeps);
 
 app.use('*', async (c, next) => {
   const env = parseEnv(c.env);
-  const hasAllowList = parseOriginList(env.CORS_ORIGINS).length > 0;
-  const localhostDev = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
   const corsMiddleware = cors({
     origin: (origin) => {
       if (!origin) return '';
-      if (hasAllowList) {
-        return isAllowedOrigin(origin, env.CORS_ORIGINS) ? origin : '';
-      }
-      if (env.API_MODE === 'development' && localhostDev.test(origin)) {
-        return origin;
-      }
-      return '';
+      return isOriginAllowed(env, origin) ? origin : '';
     },
     allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowHeaders: ['Content-Type', 'Authorization'],
+    // the assistant identifies the visitor by an HttpOnly cookie; the origin is always an allow-listed one (never *)
+    credentials: true,
   });
   return corsMiddleware(c, next);
 });
@@ -57,6 +52,11 @@ app.notFound((c) => {
 });
 
 app.onError((error, c) => {
+  // expected failures (bad input, bot check, quota...): the message was written for the caller
+  if (error instanceof HttpError) {
+    for (const [name, value] of Object.entries(error.headers ?? {})) c.header(name, value);
+    return c.json(error.toBody(), error.status);
+  }
   // If env is invalid, fail early with a controlled response.
   if (error instanceof Error && error.message.startsWith('Invalid environment:')) {
     // paths and messages only (never values): tells the operator which production var is missing

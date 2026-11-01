@@ -9,5 +9,6 @@ exports[`exact route surface > matches the committed snapshot 1`] = `
   "GET /api/v1/health",
   "GET /api/v1/system/status",
   "GET /health",
+  "POST /api/v1/proposals/generate",
 ]
 `;

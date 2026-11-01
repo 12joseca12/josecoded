@@ -40,7 +40,7 @@ const envSchema = z.object({
   PROPOSALS_DAILY_LIMIT_IP: z.string().regex(/^\d+$/).optional(),
   PROPOSALS_DAILY_LIMIT_ALL: z.string().regex(/^\d+$/).optional(),
   AI_PROPOSAL_MODEL: z.string().min(1).optional(),
-  // becomes required with task 3.7
+  AI_ASSISTANT_MODEL: z.string().min(1).optional(),
   AI_GATEWAY_ID: z.string().min(1).optional(),
   ALLOWED_TURNSTILE_HOSTNAMES: z.string().optional(),
   GITHUB_APP_ID: z.string().min(1).optional(),
@@ -49,6 +49,11 @@ const envSchema = z.object({
   LEADS_RATE_LIMITER: rateLimiterSchema,
   AFFILIATE_RATE_LIMITER: rateLimiterSchema,
   RADAR_RATE_LIMITER: rateLimiterSchema,
+  ASSISTANT_RATE_LIMITER: rateLimiterSchema,
+  CHAT_DAILY_THREADS_IP: z.string().regex(/^\d+$/).optional(),
+  CHAT_DAILY_THREADS_ALL: z.string().regex(/^\d+$/).optional(),
+  CHAT_DAILY_MESSAGES_IP: z.string().regex(/^\d+$/).optional(),
+  CHAT_DAILY_MESSAGES_ALL: z.string().regex(/^\d+$/).optional(),
   // Native binding (object with `.run()`): without this entry zod would strip it from the parsed env.
   AI: z
     .custom<Env['AI']>(

@@ -30,8 +30,14 @@ export type Env = {
   AI?: {
     run(
       model: string,
-      opts: { messages: { role: string; content: string }[] },
-    ): Promise<{ response?: string }>;
+      opts: {
+        messages: { role: string; content: string }[];
+        max_tokens?: number;
+        temperature?: number;
+        response_format?: { type: 'json_schema'; json_schema: Record<string, unknown> };
+      },
+      options?: { gateway?: { id: string }; extraHeaders?: Record<string, string> },
+    ): Promise<{ response?: unknown }>;
   };
 
   // --- Plan 1.8c (DATOS §8.4, §12). ---
@@ -50,10 +56,13 @@ export type Env = {
   TURNSTILE_SECRET_KEY?: string;
   /** Server-to-server key of `leads` (header `x-josecoded-server-key`). */
   SERVER_KEY?: string;
+  /** Daily caps of the generator (defaults 10 per IP, 300 in total). */
   PROPOSALS_DAILY_LIMIT_IP?: string;
   PROPOSALS_DAILY_LIMIT_ALL?: string;
   AI_PROPOSAL_MODEL?: string;
-  /** Required from task 3.7 (AI Gateway for proposals). */
+  /** Model of the case-based assistant (task 4.4); defaults to the proposals model. */
+  AI_ASSISTANT_MODEL?: string;
+  /** AI Gateway that every Workers AI call goes through; without it the model is not called (rules / fixed answers). */
   AI_GATEWAY_ID?: string;
   ALLOWED_TURNSTILE_HOSTNAMES?: string;
   GITHUB_APP_ID?: string;
@@ -63,6 +72,13 @@ export type Env = {
   LEADS_RATE_LIMITER?: RateLimiterBinding;
   AFFILIATE_RATE_LIMITER?: RateLimiterBinding;
   RADAR_RATE_LIMITER?: RateLimiterBinding;
+  /** Assistant messages, keyed by visitor (task 4.4). */
+  ASSISTANT_RATE_LIMITER?: RateLimiterBinding;
+  /** Assistant daily caps (defaults: 20 threads and 40 messages per IP, 500 threads and 2000 messages in total). */
+  CHAT_DAILY_THREADS_IP?: string;
+  CHAT_DAILY_THREADS_ALL?: string;
+  CHAT_DAILY_MESSAGES_IP?: string;
+  CHAT_DAILY_MESSAGES_ALL?: string;
 };
 
 export type RateLimiterBinding = { limit(opts: { key: string }): Promise<{ success: boolean }> };

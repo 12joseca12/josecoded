@@ -9,7 +9,11 @@
       // WORKER_URL / WORKER_INTERNAL_TOKEN (Omen) are deliberately NOT set: the gateway runs without Omen (task 1.8d).
       // Only for a deploy that wants the optional integration: `wrangler secret put` both, never one alone.
       // exact origins, previews of the web Worker (<hash>-josecoded-web.jose.workers.dev) and local dev
-      "CORS_ORIGINS": "https://josecoded.com,https://www.josecoded.com,https://*-josecoded-web.jose.workers.dev,http://localhost:3000"
+      "CORS_ORIGINS": "https://josecoded.com,https://www.josecoded.com,https://*-josecoded-web.jose.workers.dev,http://localhost:3000",
+      // Hostnames Turnstile may report for a token (production requires the list; the secret itself is a Worker secret).
+      "ALLOWED_TURNSTILE_HOSTNAMES": "josecoded.com,www.josecoded.com,*-josecoded-web.jose.workers.dev",
+      // AI Gateway every Workers AI call goes through (create it in the dashboard; without it the model is never called).
+      "AI_GATEWAY_ID": "josecoded"
     },
     "ratelimits": [
       { "name": "AI_RATE_LIMITER", "namespace_id": "1001", "simple": { "limit": 20, "period": 60 } },
@@ -39,7 +43,8 @@
         "name": "josecoded-api-preview",
         "vars": {
           "API_MODE": "development",
-          "CORS_ORIGINS": "https://*-josecoded-web.jose.workers.dev,http://localhost:3000"
+          "CORS_ORIGINS": "https://*-josecoded-web.jose.workers.dev,http://localhost:3000",
+          "AI_GATEWAY_ID": "josecoded-preview"
         },
         "ratelimits": [
           { "name": "AI_RATE_LIMITER", "namespace_id": "2001", "simple": { "limit": 20, "period": 60 } },

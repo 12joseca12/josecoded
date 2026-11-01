@@ -7,3 +7,5 @@ export * from './env.ts';
 export * from './media.ts';
 export * from './pricing.ts';
 export * from './proposal.ts';
+export * from './proposals.ts';
+export * from './text.ts';

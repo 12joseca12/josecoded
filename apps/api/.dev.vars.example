@@ -15,6 +15,16 @@ ADMIN_REQUIRE_MFA=false
 # Email channel (Resend), not used by any launch event yet
 # RESEND_API_KEY=re_...
 
+# --- Public modules (proposals 3.7, leads 3.8) ---
+# Turnstile always-pass dummy secret for local runs (https://developers.cloudflare.com/turnstile/troubleshooting/testing/)
+# TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+# openssl rand -hex 32. Signs proposalToken and authenticates server-to-server leads (header x-josecoded-server-key)
+# SERVER_KEY=
+# AI Gateway id (Workers AI is only called through it); wrangler.jsonc sets "josecoded" for production
+# AI_GATEWAY_ID=josecoded
+# PROPOSALS_DAILY_LIMIT_IP=10
+# PROPOSALS_DAILY_LIMIT_ALL=300
+
 # --- Chat (task 4.4): openssl rand -hex 32 ---
 # CHAT_SID_SECRET=
 

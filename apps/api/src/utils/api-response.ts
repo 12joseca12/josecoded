@@ -9,6 +9,12 @@ export type ApiErrorCode =
   | 'worker_not_configured'
   | 'moderation_unavailable'
   | 'content_rejected'
+  | 'bot_check_failed'
+  | 'quota_exceeded'
+  | 'payload_too_large'
+  | 'unsupported_media_type'
+  | 'service_unavailable'
+  | 'invalid_proposal'
   | 'internal_error';
 
 export type ApiError = {
