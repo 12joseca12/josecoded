@@ -58,8 +58,8 @@ export default async function ProfilePage({
       </header>
 
       <div className={styles.grid}>
-        <Surface as="section" aria-labelledby="profile-account" radius="tcard">
-          <div className={styles.body}>
+        <Surface radius="tcard">
+          <section className={styles.body} aria-labelledby="profile-account">
             <h2 id="profile-account" className={styles.title}>
               {t('account.title')}
             </h2>
@@ -74,11 +74,11 @@ export default async function ProfilePage({
                 {t('account.signOut')}
               </Button>
             </form>
-          </div>
+          </section>
         </Surface>
 
-        <Surface as="section" aria-labelledby="profile-prefs" radius="tcard">
-          <div className={styles.body}>
+        <Surface radius="tcard">
+          <section className={styles.body} aria-labelledby="profile-prefs">
             <h2 id="profile-prefs" className={styles.title}>
               {t('form.title')}
             </h2>
@@ -97,12 +97,12 @@ export default async function ProfilePage({
                 saved: t('form.saved'),
               }}
             />
-          </div>
+          </section>
         </Surface>
 
         {isAdmin ? (
-          <Surface as="section" aria-labelledby="profile-security" radius="tcard">
-            <div className={styles.body}>
+          <Surface radius="tcard">
+            <section className={styles.body} aria-labelledby="profile-security">
               <h2 id="profile-security" className={styles.title}>
                 {t('security.title')}
               </h2>
@@ -134,7 +134,7 @@ export default async function ProfilePage({
                   form: t('security.title'),
                 }}
               />
-            </div>
+            </section>
           </Surface>
         ) : null}
       </div>
