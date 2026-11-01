@@ -129,23 +129,20 @@
           "web": "Web"
         },
         "items": {
-          "hazmefila": {
-            "name": "HazmeFila",
-            "lead": "{{DATO: what it does, one sentence}}"
-          },
-          "oportunix": {
-            "name": "Oportunix",
-            "lead": "{{DATO: what it does, one sentence}}"
-          },
-          "webs-de-comercios": {
-            "name": "Local business websites",
-            "lead": "{{DATO: what it does, one sentence}}"
+          "3cat": {
+            "name": "3cat",
+            "lead": "{{DATO: what it does, in one sentence}}"
           },
           "3catinfo": {
             "name": "3catinfo",
-            "lead": "{{DATO: what it does, one sentence}}"
+            "lead": "{{DATO: what it does, in one sentence}}"
+          },
+          "josecoded": {
+            "name": "josecoded.com",
+            "lead": "{{DATO: what it does, in one sentence}}"
           }
-        }
+        },
+        "viewProjectNamed": "View project {name}"
       },
       "labBlog": {
         "title": {
@@ -170,6 +167,15 @@
         "demo": {
           "title": "Demo",
           "try": "Try"
+        },
+        "readNamed": "Read “{title}”",
+        "tryNamed": "Try the demo “{name}”",
+        "placeholder": {
+          "date": "{{DATO: date}}",
+          "title": "{{DATO: title}}",
+          "lead": "{{DATO: lead}}",
+          "demoName": "{{DATO: demo name}}",
+          "demoLead": "{{DATO: one sentence about the demo}}"
         }
       },
       "closing": {

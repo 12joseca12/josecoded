@@ -129,23 +129,20 @@
           "web": "Web"
         },
         "items": {
-          "hazmefila": {
-            "name": "HazmeFila",
-            "lead": "{{DATO: qué hace, en una frase}}"
-          },
-          "oportunix": {
-            "name": "Oportunix",
-            "lead": "{{DATO: qué hace, en una frase}}"
-          },
-          "webs-de-comercios": {
-            "name": "Webs de comercios",
+          "3cat": {
+            "name": "3cat",
             "lead": "{{DATO: qué hace, en una frase}}"
           },
           "3catinfo": {
             "name": "3catinfo",
             "lead": "{{DATO: qué hace, en una frase}}"
+          },
+          "josecoded": {
+            "name": "josecoded.com",
+            "lead": "{{DATO: qué hace, en una frase}}"
           }
-        }
+        },
+        "viewProjectNamed": "Ver proyecto {name}"
       },
       "labBlog": {
         "title": {
@@ -170,6 +167,15 @@
         "demo": {
           "title": "Demo",
           "try": "Probar"
+        },
+        "readNamed": "Leer «{title}»",
+        "tryNamed": "Probar la demo «{name}»",
+        "placeholder": {
+          "date": "{{DATO: fecha}}",
+          "title": "{{DATO: título}}",
+          "lead": "{{DATO: entradilla}}",
+          "demoName": "{{DATO: nombre de la demo}}",
+          "demoLead": "{{DATO: una frase sobre la demo}}"
         }
       },
       "closing": {

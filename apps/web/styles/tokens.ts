@@ -111,6 +111,7 @@ export type TokenName =
   | '--r-bubble-tail'
   | '--r-focus'
   | '--r-circle'
+  | '--r-demo'
   | '--sp-1'
   | '--sp-2'
   | '--sp-3'
@@ -138,6 +139,10 @@ export type TokenName =
   | '--sp-3-5'
   | '--sp-pad-scene-bottom'
   | '--sp-gap-photo'
+  | '--sp-gap-tour'
+  | '--sp-pad-tour-bottom'
+  | '--sp-gap-tcard'
+  | '--sp-gap-tcopy'
   | '--size-dot'
   | '--size-hit'
   | '--size-control-sm'
@@ -153,6 +158,9 @@ export type TokenName =
   | '--size-icon-lg'
   | '--size-measure-hero-sub'
   | '--size-photo-column'
+  | '--size-tcard-art-min'
+  | '--size-tcard-art-max'
+  | '--size-tour-rail'
   | '--focus-ring-width'
   | '--focus-ring-offset'
   | '--focus-ring-color'
@@ -205,6 +213,7 @@ export type TokenName =
   | '--shadow-edge-top'
   | '--shadow-edge-top-strong'
   | '--shadow-edge-start-strong'
+  | '--shadow-card-edge'
   | '--blur-backdrop'
   | '--blur-scrim'
   | '--blur-header'
@@ -334,7 +343,16 @@ export type TokenName =
   | '--scene-min-height'
   | '--cell-open-inset'
   | '--bubble-rise'
-  | '--swap-rise';
+  | '--swap-rise'
+  | '--tour-height'
+  | '--w-tcard'
+  | '--h-tcard'
+  | '--float-offset'
+  | '--viewport-width'
+  | '--opacity-tcard-idle'
+  | '--scale-tcard-idle'
+  | '--rail-grow-from'
+  | '--pager-idle-scale';
 
 /** Reads a design token from the document. Motion code reads tokens only through this. */
 export function readToken(name: TokenName): string {
@@ -451,6 +469,7 @@ export const tokens = {
   'r-bubble-tail': '--r-bubble-tail',
   'r-focus': '--r-focus',
   'r-circle': '--r-circle',
+  'r-demo': '--r-demo',
   'sp-1': '--sp-1',
   'sp-2': '--sp-2',
   'sp-3': '--sp-3',
@@ -478,6 +497,10 @@ export const tokens = {
   'sp-3-5': '--sp-3-5',
   'sp-pad-scene-bottom': '--sp-pad-scene-bottom',
   'sp-gap-photo': '--sp-gap-photo',
+  'sp-gap-tour': '--sp-gap-tour',
+  'sp-pad-tour-bottom': '--sp-pad-tour-bottom',
+  'sp-gap-tcard': '--sp-gap-tcard',
+  'sp-gap-tcopy': '--sp-gap-tcopy',
   'size-dot': '--size-dot',
   'size-hit': '--size-hit',
   'size-control-sm': '--size-control-sm',
@@ -493,6 +516,9 @@ export const tokens = {
   'size-icon-lg': '--size-icon-lg',
   'size-measure-hero-sub': '--size-measure-hero-sub',
   'size-photo-column': '--size-photo-column',
+  'size-tcard-art-min': '--size-tcard-art-min',
+  'size-tcard-art-max': '--size-tcard-art-max',
+  'size-tour-rail': '--size-tour-rail',
   'focus-ring-width': '--focus-ring-width',
   'focus-ring-offset': '--focus-ring-offset',
   'focus-ring-color': '--focus-ring-color',
@@ -545,6 +571,7 @@ export const tokens = {
   'shadow-edge-top': '--shadow-edge-top',
   'shadow-edge-top-strong': '--shadow-edge-top-strong',
   'shadow-edge-start-strong': '--shadow-edge-start-strong',
+  'shadow-card-edge': '--shadow-card-edge',
   'blur-backdrop': '--blur-backdrop',
   'blur-scrim': '--blur-scrim',
   'blur-header': '--blur-header',
@@ -675,4 +702,13 @@ export const tokens = {
   'cell-open-inset': '--cell-open-inset',
   'bubble-rise': '--bubble-rise',
   'swap-rise': '--swap-rise',
+  'tour-height': '--tour-height',
+  'w-tcard': '--w-tcard',
+  'h-tcard': '--h-tcard',
+  'float-offset': '--float-offset',
+  'viewport-width': '--viewport-width',
+  'opacity-tcard-idle': '--opacity-tcard-idle',
+  'scale-tcard-idle': '--scale-tcard-idle',
+  'rail-grow-from': '--rail-grow-from',
+  'pager-idle-scale': '--pager-idle-scale',
 } as const satisfies Record<string, TokenName>;

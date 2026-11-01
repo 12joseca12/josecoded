@@ -1,0 +1,77 @@
+/* home-v7 v6.css:101-109 (.tcard, .tcard__art, .tcard__copy, .tcard__meta, .tcard__name) */
+.inner {
+  container: tcard / inline-size;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--cq-card-stack)), 1fr));
+  gap: var(--sp-gap-tcard);
+  height: 100%;
+  padding: var(--sp-pad-cell);
+  border-radius: var(--r-tcard);
+}
+
+.art {
+  display: grid;
+  place-items: center;
+  min-height: var(--size-tcard-art-min);
+  overflow: hidden;
+  background: var(--glow-art);
+}
+
+/* the box is reserved by its aspect ratio, so the lazy image does not shift the layout */
+.art img {
+  width: 88%;
+  height: auto;
+  max-height: var(--size-tcard-art-max);
+  aspect-ratio: 801 / 722;
+  object-fit: contain;
+
+  /* the art of the card in focus floats very slowly: the tour sets --art-play on the active card */
+  animation: float var(--dur-float) var(--ease-float) infinite;
+  animation-play-state: var(--art-play, paused);
+}
+
+.copy {
+  display: grid;
+  align-content: center;
+  gap: var(--sp-gap-tcopy);
+  min-width: 0;
+}
+
+.copy p {
+  margin: 0;
+}
+
+.name {
+  margin: 0;
+  font-size: var(--font-project-name-size);
+  font-weight: var(--font-project-name-weight);
+  letter-spacing: var(--font-project-name-tracking);
+  line-height: var(--font-project-name-leading);
+}
+
+.lead {
+  max-width: var(--size-measure-prose);
+  color: var(--text-2);
+  font-size: var(--font-lead-size);
+  line-height: var(--font-lead-leading);
+}
+
+.meta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  color: var(--text-3);
+  font-size: var(--font-small-size);
+}
+
+@keyframes float {
+  50% {
+    transform: translateY(var(--float-offset));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .art img {
+    animation: none;
+  }
+}

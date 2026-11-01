@@ -1,6 +1,8 @@
 import { HeroSplit } from '@/components/hero/hero-split';
 import { IntroFall } from '@/components/hero/intro-fall';
 import { AboutScene } from '@/components/home/about-scene';
+import { LabBlogScene } from '@/components/home/lab-blog-scene';
+import { ProjectsScene } from '@/components/home/projects-scene';
 import { ServicesScene } from '@/components/home/services-scene';
 import { resolveLocale } from '@/lib/locale';
 
@@ -17,6 +19,8 @@ export default async function HomePage({ params }: { params: LocaleParams }) {
       <IntroFall awaitScene="auto" />
       <AboutScene />
       <ServicesScene />
+      <ProjectsScene />
+      <LabBlogScene />
     </>
   );
 }

@@ -1,0 +1,156 @@
+/* home-v7 v6.css:98-127 (the pinned tour, the rail) and 173-175 (the floating art) */
+.tour {
+  position: relative;
+}
+
+.sticky {
+  display: grid;
+  grid-template-columns: 100%;
+  gap: var(--sp-gap-tour);
+  padding: var(--sp-pad-top) 0 var(--sp-pad-tour-bottom);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--sp-4) var(--sp-8);
+  width: 100%;
+  max-width: var(--size-container);
+  margin-inline: auto;
+  padding: 0 var(--sp-pad-scene);
+}
+
+.track {
+  display: grid;
+  gap: var(--sp-gap-bento);
+  width: 100%;
+  max-width: var(--size-container);
+  margin-inline: auto;
+  padding: 0 var(--sp-pad-scene);
+}
+
+.rail {
+  display: none;
+}
+
+/* the card in the middle: its art floats */
+.track > [data-active] {
+  --art-play: running;
+}
+
+/* pinned: needs scroll-driven animations, a landscape screen and motion */
+@supports (animation-timeline: view()) {
+  @media (aspect-ratio >= 1/1) and (prefers-reduced-motion: no-preference) {
+    .tour {
+      height: var(--tour-height);
+      view-timeline: --tour block;
+    }
+
+    .sticky {
+      position: sticky;
+      top: 0;
+      grid-template-rows: auto 1fr auto;
+      height: var(--scene-min-height);
+      overflow: hidden;
+    }
+
+    .track {
+      display: flex;
+      place-self: center start;
+      width: max-content;
+      max-width: none;
+      margin: 0;
+      padding: 0 max(var(--sp-pad-scene), calc((var(--viewport-width) - var(--size-container)) / 2 + var(--sp-pad-scene)));
+      animation: pan var(--ease-linear) both;
+      animation-timeline: --tour;
+      animation-range: contain 0% contain 100%;
+      will-change: transform;
+    }
+
+    .track > [data-tcard] {
+      width: var(--w-tcard);
+      height: var(--h-tcard);
+      opacity: var(--opacity-tcard-idle);
+      transform: scale(var(--scale-tcard-idle));
+      transition:
+        opacity var(--dur-card) var(--ease-standard),
+        transform var(--dur-card) var(--ease-out),
+        box-shadow var(--dur-state) var(--ease-standard);
+    }
+
+    .track > [data-tcard][data-active] {
+      opacity: 1;
+      transform: none;
+      box-shadow: var(--shadow-card-focus);
+    }
+
+    .rail {
+      display: grid;
+      gap: var(--sp-3);
+      justify-self: center;
+      width: var(--size-tour-rail);
+    }
+  }
+}
+
+@keyframes pan {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(-100% + var(--viewport-width)));
+  }
+}
+
+.names {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+
+.names span {
+  color: var(--text-3);
+  font-size: var(--font-small-size);
+  white-space: nowrap;
+  transition: color var(--dur-state) var(--ease-standard);
+}
+
+.names span[data-on] {
+  color: var(--text);
+}
+
+.bar {
+  height: var(--stroke-line);
+  overflow: hidden;
+  border-radius: var(--stroke-line);
+  background: var(--tint-rail);
+}
+
+.bar span {
+  display: block;
+  height: 100%;
+  background: var(--violet-soft);
+  transform-origin: left;
+  animation: grow var(--ease-linear) both;
+  animation-timeline: --tour;
+  animation-range: contain 0% contain 100%;
+}
+
+@keyframes grow {
+  from {
+    transform: scaleX(var(--rail-grow-from));
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .names span {
+    transition: none;
+  }
+}
