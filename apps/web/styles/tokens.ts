@@ -143,6 +143,7 @@ export type TokenName =
   | '--sp-pad-tour-bottom'
   | '--sp-gap-tcard'
   | '--sp-gap-tcopy'
+  | '--sp-pad-close'
   | '--size-dot'
   | '--size-hit'
   | '--size-control-sm'
@@ -161,6 +162,8 @@ export type TokenName =
   | '--size-tcard-art-min'
   | '--size-tcard-art-max'
   | '--size-tour-rail'
+  | '--size-palette'
+  | '--size-palette-list'
   | '--focus-ring-width'
   | '--focus-ring-offset'
   | '--focus-ring-color'
@@ -214,6 +217,7 @@ export type TokenName =
   | '--shadow-edge-top-strong'
   | '--shadow-edge-start-strong'
   | '--shadow-card-edge'
+  | '--shadow-edge-bottom-focus'
   | '--blur-backdrop'
   | '--blur-scrim'
   | '--blur-header'
@@ -352,7 +356,12 @@ export type TokenName =
   | '--opacity-tcard-idle'
   | '--scale-tcard-idle'
   | '--rail-grow-from'
-  | '--pager-idle-scale';
+  | '--pager-idle-scale'
+  | '--keycap-travel'
+  | '--pager-shift'
+  | '--pager-hover-scale'
+  | '--page-stop-step'
+  | '--palette-top';
 
 /** Reads a design token from the document. Motion code reads tokens only through this. */
 export function readToken(name: TokenName): string {
@@ -501,6 +510,7 @@ export const tokens = {
   'sp-pad-tour-bottom': '--sp-pad-tour-bottom',
   'sp-gap-tcard': '--sp-gap-tcard',
   'sp-gap-tcopy': '--sp-gap-tcopy',
+  'sp-pad-close': '--sp-pad-close',
   'size-dot': '--size-dot',
   'size-hit': '--size-hit',
   'size-control-sm': '--size-control-sm',
@@ -519,6 +529,8 @@ export const tokens = {
   'size-tcard-art-min': '--size-tcard-art-min',
   'size-tcard-art-max': '--size-tcard-art-max',
   'size-tour-rail': '--size-tour-rail',
+  'size-palette': '--size-palette',
+  'size-palette-list': '--size-palette-list',
   'focus-ring-width': '--focus-ring-width',
   'focus-ring-offset': '--focus-ring-offset',
   'focus-ring-color': '--focus-ring-color',
@@ -572,6 +584,7 @@ export const tokens = {
   'shadow-edge-top-strong': '--shadow-edge-top-strong',
   'shadow-edge-start-strong': '--shadow-edge-start-strong',
   'shadow-card-edge': '--shadow-card-edge',
+  'shadow-edge-bottom-focus': '--shadow-edge-bottom-focus',
   'blur-backdrop': '--blur-backdrop',
   'blur-scrim': '--blur-scrim',
   'blur-header': '--blur-header',
@@ -711,4 +724,9 @@ export const tokens = {
   'scale-tcard-idle': '--scale-tcard-idle',
   'rail-grow-from': '--rail-grow-from',
   'pager-idle-scale': '--pager-idle-scale',
+  'keycap-travel': '--keycap-travel',
+  'pager-shift': '--pager-shift',
+  'pager-hover-scale': '--pager-hover-scale',
+  'page-stop-step': '--page-stop-step',
+  'palette-top': '--palette-top',
 } as const satisfies Record<string, TokenName>;

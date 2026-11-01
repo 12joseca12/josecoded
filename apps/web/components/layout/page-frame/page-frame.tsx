@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 
 import { Backdrop } from '@/components/layout/backdrop';
+import { CommandPalette } from '@/components/layout/command-palette';
 import { ShellProvider } from '@/components/layout/shell-provider';
 import { SiteFooter } from '@/components/layout/site-footer';
 import { SiteHeader } from '@/components/layout/site-header';
@@ -28,6 +29,7 @@ export async function PageFrame({ children }: { children: ReactNode }) {
         {children}
       </main>
       <SiteFooter />
+      <CommandPalette />
     </ShellProvider>
   );
 }

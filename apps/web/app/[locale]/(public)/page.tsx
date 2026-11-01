@@ -1,6 +1,8 @@
 import { HeroSplit } from '@/components/hero/hero-split';
 import { IntroFall } from '@/components/hero/intro-fall';
 import { AboutScene } from '@/components/home/about-scene';
+import { ClosingScene } from '@/components/home/closing-scene';
+import { HomeChrome } from '@/components/home/home-chrome';
 import { LabBlogScene } from '@/components/home/lab-blog-scene';
 import { ProjectsScene } from '@/components/home/projects-scene';
 import { ServicesScene } from '@/components/home/services-scene';
@@ -21,6 +23,8 @@ export default async function HomePage({ params }: { params: LocaleParams }) {
       <ServicesScene />
       <ProjectsScene />
       <LabBlogScene />
+      <ClosingScene />
+      <HomeChrome />
     </>
   );
 }

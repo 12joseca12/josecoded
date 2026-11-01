@@ -222,7 +222,8 @@
     "gap-tour": "clamp(1rem, 2.5svh, 2rem)",
     "pad-tour-bottom": "clamp(1.5rem, 4svh, 2.5rem)",
     "gap-tcard": "clamp(1rem, 2.5vmin, 2rem)",
-    "gap-tcopy": "clamp(0.75rem, 1.8svh, 1.125rem)"
+    "gap-tcopy": "clamp(0.75rem, 1.8svh, 1.125rem)",
+    "pad-close": "clamp(6rem, 14vh, 9rem)"
   },
   "sizes": {
     "dot": "0.375rem",
@@ -242,7 +243,9 @@
     "photo-column": "clamp(5.5rem, 38cqi, 16rem)",
     "tcard-art-min": "clamp(9rem, 22svh, 14rem)",
     "tcard-art-max": "16rem",
-    "tour-rail": "clamp(16rem, 40vw, 36rem)"
+    "tour-rail": "clamp(16rem, 40vw, 36rem)",
+    "palette": "min(40rem, calc(100vw - 2rem))",
+    "palette-list": "22rem"
   },
   "extensions": {
     "colorMeta": {
@@ -837,6 +840,11 @@
         "name": "card-edge",
         "value": "inset 0 0 0 1px var(--card-line)",
         "purpose": "Filete de un bloque de la miniatura de la demo."
+      },
+      {
+        "name": "edge-bottom-focus",
+        "value": "inset 0 calc(-1 * var(--stroke-line)) 0 var(--violet-soft)",
+        "purpose": "Línea violeta bajo el campo de la paleta ⌘K cuando tiene el foco."
       }
     ],
     "blurs": [
@@ -1604,6 +1612,31 @@
         "name": "pager-idle-scale",
         "value": "0.55",
         "purpose": "Escala de una línea de indicador de sección (o de la demo del Lab) que no es la activa."
+      },
+      {
+        "name": "keycap-travel",
+        "value": "2px",
+        "purpose": "Cuánto se hunde una tecla grande del cierre mientras se mantiene pulsada la tecla real."
+      },
+      {
+        "name": "pager-shift",
+        "value": "8px",
+        "purpose": "Desplazamiento lateral del indicador de sección cuando está oculto (entra y sale deslizándose)."
+      },
+      {
+        "name": "pager-hover-scale",
+        "value": "0.8",
+        "purpose": "Escala de una línea del indicador de sección con el cursor encima."
+      },
+      {
+        "name": "page-stop-step",
+        "value": "0.85",
+        "purpose": "Paginado: separación de las paradas intermedias en una escena alta, en fracción del alto del viewport."
+      },
+      {
+        "name": "palette-top",
+        "value": "14vh",
+        "purpose": "Distancia de la paleta ⌘K al borde superior del viewport."
       }
     ]
   },

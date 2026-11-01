@@ -7,6 +7,7 @@ export type { BentoCellProps, BentoSpan } from './bento-cell';
 export { CellText } from './cell-text';
 export type { CellTextVariant } from './cell-text';
 export { ChatBubble } from './chat-bubble';
+export { Closing } from './closing';
 export { CursorLight } from './cursor-light';
 export { DemoCard } from './demo-card';
 export { CellExpander } from './expanded-cell';

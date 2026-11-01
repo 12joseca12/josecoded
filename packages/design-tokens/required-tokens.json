@@ -349,5 +349,14 @@
   "size-tcard-art-max",
   "size-tour-rail",
   "r-demo",
-  "shadow-card-edge"
+  "shadow-card-edge",
+  "keycap-travel",
+  "pager-shift",
+  "pager-hover-scale",
+  "sp-pad-close",
+  "page-stop-step",
+  "palette-top",
+  "size-palette",
+  "size-palette-list",
+  "shadow-edge-bottom-focus"
 ]

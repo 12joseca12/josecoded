@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { observeActiveSection } from './active-section';
+import { indicatorVisibility, observeActiveSection } from './active-section';
 
 type Callback = (entries: Partial<IntersectionObserverEntry>[]) => void;
 let callback: Callback;
@@ -44,5 +44,16 @@ describe('observeActiveSection', () => {
   it('stops observing on cleanup', () => {
     observeActiveSection(['a'], vi.fn())();
     expect(disconnect).toHaveBeenCalled();
+  });
+});
+
+describe('indicatorVisibility', () => {
+  it('is hidden in the hero, in the tour, with an open cell, and when the margin is too narrow', () => {
+    expect(indicatorVisibility({ inHero: true, inTour: false, cellOpen: false, marginRem: 4 })).toBe(false);
+    expect(indicatorVisibility({ inHero: false, inTour: true, cellOpen: false, marginRem: 4 })).toBe(false);
+    expect(indicatorVisibility({ inHero: false, inTour: false, cellOpen: true, marginRem: 4 })).toBe(false);
+    expect(indicatorVisibility({ inHero: false, inTour: false, cellOpen: false, marginRem: 2 })).toBe(false);
+    expect(indicatorVisibility({ inHero: false, inTour: false, cellOpen: false, marginRem: 4 })).toBe(true);
+    expect(indicatorVisibility({ inHero: false, inTour: false, cellOpen: false, marginRem: 2.25 })).toBe(true);
   });
 });

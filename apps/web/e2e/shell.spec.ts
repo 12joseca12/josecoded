@@ -71,16 +71,24 @@ test.describe('desktop 1440', () => {
     await expect(page.locator('html')).toHaveAttribute('lang', 'es');
   });
 
-  // the palette arrives with task 2.16; until then the trigger is inert and ⌘K is not hijacked
-  // (when 2.16 lands, restore the toggle assertions: aria-expanded false -> true -> false)
-  test('the search trigger is inert and Ctrl+K is left alone until the palette exists', async ({ page }) => {
+  // the palette (task 2.16) registers itself with the shell: the trigger and ⌘K / Ctrl+K are live
+  test('the search trigger opens the palette and Ctrl+K toggles it (aria-expanded false -> true -> false)', async ({ page }) => {
     await open(page, '/');
     const search = header(page).getByRole('button', { name: 'Buscar' });
-    await expect(search).toHaveAttribute('aria-disabled', 'true');
-    await expect(search).not.toHaveAttribute('aria-expanded', /.*/);
-    await expect(search).not.toHaveAttribute('aria-haspopup', /.*/);
+    await expect(search).toHaveAttribute('aria-expanded', 'false');
+    await expect(search).toHaveAttribute('aria-haspopup', 'dialog');
+    await expect(search).not.toHaveAttribute('aria-disabled', /.*/);
     await page.keyboard.press('Control+k');
-    await expect(search).not.toHaveAttribute('aria-expanded', /.*/);
+    await expect(search).toHaveAttribute('aria-expanded', 'true');
+    await expect(page.getByRole('dialog', { name: 'Ir a' })).toBeVisible();
+    await expect(page.getByRole('combobox')).toBeFocused();
+    await page.keyboard.press('Control+k');
+    await expect(search).toHaveAttribute('aria-expanded', 'false');
+    await search.click();
+    await expect(search).toHaveAttribute('aria-expanded', 'true');
+    await page.keyboard.press('Escape');
+    await expect(search).toHaveAttribute('aria-expanded', 'false');
+    await expect(search).toBeFocused();
   });
 
   test('the brand goes to #top on the home and to the home elsewhere', async ({ page }) => {

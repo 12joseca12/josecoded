@@ -1,0 +1,32 @@
+/* home-v7 base.css:184-191 (.close), v6.css:129-131 */
+.close {
+  display: grid;
+  align-content: center;
+  max-width: var(--size-container);
+  min-height: var(--scene-min-height);
+  margin-inline: auto;
+  padding: var(--sp-pad-close) var(--sp-pad-scene);
+  overflow-x: clip;
+  text-align: center;
+}
+
+.ctas {
+  margin-top: var(--sp-10);
+}
+
+.hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  margin: var(--sp-8) 0 0;
+  color: var(--text-3);
+  font-size: var(--font-label-button-size);
+}
+
+/* there is no ⌘K without a keyboard */
+@media (hover: none), (pointer: coarse) {
+  .hint {
+    display: none;
+  }
+}

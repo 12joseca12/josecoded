@@ -1,0 +1,73 @@
+/* home-v7 base.css:190-206 (.pager): lines in the right margin, no text. The active one is longer and violet. */
+.pager {
+  --margin: max(var(--sp-pad-scene), calc((var(--viewport-width) - var(--size-container)) / 2 + var(--sp-pad-scene)));
+
+  position: fixed;
+  top: 50%;
+  right: calc(var(--margin) / 2);
+  z-index: var(--z-pager);
+  display: grid;
+  gap: var(--sp-1);
+  justify-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(calc(50% + var(--pager-shift)), -50%);
+  visibility: hidden;
+  transition:
+    opacity var(--dur-pager) var(--ease-out),
+    transform var(--dur-pager) var(--ease-out),
+    visibility var(--dur-pager) var(--ease-standard);
+}
+
+.pager[data-on] {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(50%, -50%);
+  visibility: visible;
+}
+
+/* the hit area is larger than the line */
+.link {
+  display: grid;
+  place-items: center;
+  width: var(--sp-9);
+  height: calc(var(--sp-9) / 2);
+}
+
+.line {
+  display: block;
+  width: var(--sp-6);
+  height: var(--stroke-line);
+  border-radius: var(--stroke-line);
+  background: var(--pager-idle);
+  transform: scaleX(var(--pager-idle-scale));
+  transform-origin: center;
+  transition:
+    transform var(--dur-state) var(--ease-out),
+    background-color var(--dur-state) var(--ease-standard),
+    height var(--dur-state) var(--ease-standard);
+}
+
+.link[aria-current='true'] .line {
+  height: var(--stroke-line-active);
+  background: var(--violet-soft);
+  transform: scaleX(1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .link:not([aria-current='true']):hover .line {
+    background: var(--pager-hover);
+    transform: scaleX(var(--pager-hover-scale));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pager,
+  .line {
+    transition: opacity var(--dur-hover) var(--ease-standard);
+  }
+
+  .pager {
+    transform: translate(50%, -50%);
+  }
+}

@@ -25,3 +25,25 @@ export function observeActiveSection(
   }
   return () => observer.disconnect();
 }
+
+export interface IndicatorState {
+  /** The middle of the viewport is still inside the hero. */
+  inHero: boolean;
+  /** The pinned projects tour covers the middle of the viewport. */
+  inTour: boolean;
+  cellOpen: boolean;
+  /** Width of the free margin to the right of the content, in rem. */
+  marginRem: number;
+}
+
+/** The narrowest margin that leaves room for the lines without touching the content (2.25 rem). */
+export const INDICATOR_MIN_MARGIN_REM = 2.25;
+
+/**
+ * Whether the section indicator (the lines in the right margin) is drawn: never over the hero, never
+ * while the pinned tour fills the screen with a card, never with an open cell, and not when the
+ * margin is too narrow to hold it without overlapping the content.
+ */
+export function indicatorVisibility({ inHero, inTour, cellOpen, marginRem }: IndicatorState): boolean {
+  return !inHero && !inTour && !cellOpen && marginRem >= INDICATOR_MIN_MARGIN_REM;
+}

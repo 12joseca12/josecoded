@@ -150,6 +150,7 @@
   --sp-pad-tour-bottom: clamp(1.5rem, 4svh, 2.5rem);
   --sp-gap-tcard: clamp(1rem, 2.5vmin, 2rem);
   --sp-gap-tcopy: clamp(0.75rem, 1.8svh, 1.125rem);
+  --sp-pad-close: clamp(6rem, 14vh, 9rem);
 
   /* sizes */
   --size-dot: 0.375rem;
@@ -170,6 +171,8 @@
   --size-tcard-art-min: clamp(9rem, 22svh, 14rem);
   --size-tcard-art-max: 16rem;
   --size-tour-rail: clamp(16rem, 40vw, 36rem);
+  --size-palette: min(40rem, calc(100vw - 2rem));
+  --size-palette-list: 22rem;
 
   /* focus */
   --focus-ring-width: 2px;
@@ -231,6 +234,7 @@
   --shadow-edge-top-strong: inset 0 1px 0 var(--line-2);
   --shadow-edge-start-strong: inset 1px 0 0 var(--line-2);
   --shadow-card-edge: inset 0 0 0 1px var(--card-line);
+  --shadow-edge-bottom-focus: inset 0 calc(-1 * var(--stroke-line)) 0 var(--violet-soft);
 
   /* blurs */
   --blur-backdrop: 4px;
@@ -390,4 +394,9 @@
   --scale-tcard-idle: 0.96;
   --rail-grow-from: 0.04;
   --pager-idle-scale: 0.55;
+  --keycap-travel: 2px;
+  --pager-shift: 8px;
+  --pager-hover-scale: 0.8;
+  --page-stop-step: 0.85;
+  --palette-top: 14vh;
 }
