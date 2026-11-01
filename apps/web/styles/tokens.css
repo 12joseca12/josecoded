@@ -143,6 +143,8 @@
   --sp-1-5: 0.375rem;
   --sp-2-5: 0.625rem;
   --sp-3-5: 0.875rem;
+  --sp-pad-scene-bottom: clamp(2rem, 5svh, 4rem);
+  --sp-gap-photo: clamp(1rem, 3cqi, 1.75rem);
 
   /* sizes */
   --size-dot: 0.375rem;
@@ -159,6 +161,7 @@
   --size-visually-hidden: 1ch;
   --size-icon-lg: 1.375rem;
   --size-measure-hero-sub: 34ch;
+  --size-photo-column: clamp(5.5rem, 38cqi, 16rem);
 
   /* focus */
   --focus-ring-width: 2px;
@@ -358,4 +361,12 @@
   --mask-hero-video: radial-gradient(closest-side, #000 55%, transparent);
   --cycle-bar-width: 1.5rem;
   --hero-min-height: 100svh;
+  --reveal-in-offset: 40px;
+  --reveal-in-scale: 0.985;
+  --reveal-out-offset: -24px;
+  --reveal-out-scale: 0.97;
+  --reveal-out-opacity: 0.25;
+  --scene-min-height: 100svh;
+  --cell-open-inset: clamp(4.25rem, 8svh, 5.5rem) clamp(0.75rem, 6vw, 8vw) clamp(0.75rem, 3svh, 2rem);
+  --bubble-rise: 6px;
 }

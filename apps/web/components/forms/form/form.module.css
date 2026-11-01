@@ -1,0 +1,33 @@
+.form {
+  display: grid;
+  gap: var(--sp-5);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  align-items: center;
+}
+
+/* Errors: there is no red in the palette (DESIGN.md), so the state is carried by the weight of the
+   edge and by the text of the message, never by colour alone. */
+.error {
+  margin: 0;
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-md);
+  background: var(--tint-ghost);
+  box-shadow: inset var(--stroke-line) 0 0 var(--pending);
+  color: var(--text);
+  font-size: var(--font-label-size);
+}
+
+.success {
+  margin: 0;
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-md);
+  background: var(--tint-ghost);
+  box-shadow: inset var(--stroke-line) 0 0 var(--green);
+  color: var(--text);
+  font-size: var(--font-label-size);
+}

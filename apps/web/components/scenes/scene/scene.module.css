@@ -1,0 +1,38 @@
+/* home-v7 v6.css:22-25 (.scene, .scene__head) */
+.scene {
+  display: grid;
+  align-content: center;
+  gap: var(--sp-gap-scene);
+  max-width: var(--size-container);
+  margin-inline: auto;
+  padding: var(--sp-pad-top) var(--sp-pad-scene) var(--sp-pad-scene-bottom);
+}
+
+/* the home gives each scene a whole screen; elsewhere a scene is as tall as its content */
+.scene[data-fill] {
+  min-height: var(--scene-min-height);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--sp-4) var(--sp-8);
+}
+
+/* the aside of a scene head («¿Eres una agencia? Para agencias →»): home-v7 v7.css:227 */
+.aside {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-2);
+  margin: 0;
+  color: var(--text-3);
+  font-size: var(--font-body-size);
+}
+
+/* scroll-snap-type itself lives in styles/globals.css (it is a rule on <html>) */
+.scene[data-snap] {
+  scroll-snap-align: start;
+}

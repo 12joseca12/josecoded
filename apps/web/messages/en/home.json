@@ -28,13 +28,27 @@
           "title": "About me",
           "name": "{givenNames} {surnames}",
           "role": "Freelance full-stack developer",
+          "roleCity": "{role} · {city}",
           "lead": "{{DATO: About me lead, single identity}}",
+          "photoAlt": "Portrait",
           "meet": "Get to know me",
           "goTo": "Go to About me"
         },
         "stack": {
           "title": "What I work with",
-          "caption": "What I use every day, in production."
+          "caption": "What I use every day, in production.",
+          "items": [
+            "Next.js",
+            "React Native",
+            "Expo",
+            "TypeScript",
+            "Supabase",
+            "Cloudflare Workers",
+            "Three.js",
+            "n8n",
+            "PostgreSQL",
+            "Tailwind"
+          ]
         },
         "direct": {
           "title": "Direct contact",

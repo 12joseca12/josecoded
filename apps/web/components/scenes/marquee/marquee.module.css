@@ -1,0 +1,62 @@
+/* home-v7 v6.css:144-151 and 182: two bands that drift in opposite directions (the only marquee on
+   the page). The mask fades the ends; hovering the cell pauses them. */
+.marquee {
+  overflow: hidden;
+  mask: var(--grad-mask-fade);
+}
+
+/* the second band tucks under the first */
+.marquee + .marquee {
+  margin-top: calc(-1 * var(--sp-2-5));
+}
+
+.track {
+  display: flex;
+  gap: var(--sp-2);
+  width: max-content;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  animation: drift var(--dur-marquee-a) var(--ease-linear) infinite;
+}
+
+.marquee[data-reverse] .track {
+  animation-direction: reverse;
+  animation-duration: var(--dur-marquee-b);
+}
+
+/* the chip fills its item, so its padding counts in the height of a wrapped row */
+.track > li {
+  display: flex;
+}
+
+[data-cell]:hover .track {
+  animation-play-state: paused;
+}
+
+@keyframes drift {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* without motion: one static, wrapped band with the list once; the reversed copy goes away */
+@media (prefers-reduced-motion: reduce) {
+  .marquee {
+    mask: none;
+  }
+
+  .marquee[data-reverse] {
+    display: none;
+  }
+
+  .track {
+    flex-wrap: wrap;
+    width: auto;
+    animation: none;
+  }
+
+  .track > [aria-hidden] {
+    display: none;
+  }
+}

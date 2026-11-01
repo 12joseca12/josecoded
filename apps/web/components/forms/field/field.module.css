@@ -1,0 +1,126 @@
+.field {
+  display: grid;
+  gap: var(--sp-2);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border-width: 0;
+}
+
+.label {
+  padding: 0;
+  color: var(--text);
+  font-size: var(--font-label-size);
+  font-weight: var(--font-label-button-weight);
+}
+
+.control {
+  width: 100%;
+  min-height: var(--size-control-lg);
+  padding: var(--sp-2-5) var(--sp-4);
+  border-width: 0;
+  border-radius: var(--r-md);
+  background: var(--bg-prompt);
+  box-shadow: var(--shadow-hairline-strong);
+  color: var(--text);
+  font: inherit;
+  font-size: var(--font-body-size);
+  transition: box-shadow var(--dur-hover) var(--ease-standard);
+}
+
+textarea.control {
+  resize: vertical;
+}
+
+.control::placeholder {
+  color: var(--text-3);
+}
+
+.control:disabled {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+}
+
+/* the field draws its own ring on the hairline; the global outline stays for keyboard users */
+.control:focus-visible {
+  box-shadow: inset 0 0 0 var(--stroke-line) var(--violet-soft);
+  outline: none;
+}
+
+.control[aria-invalid='true'] {
+  box-shadow: inset 0 0 0 var(--stroke-line) var(--pending);
+}
+
+/* one-time code: large, centred, digits of equal width */
+.control[data-size='code'] {
+  min-height: var(--size-control-xl);
+  font-size: var(--font-title-size);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.help {
+  margin: 0;
+  color: var(--text-3);
+  font-size: var(--font-small-size);
+}
+
+.error {
+  margin: 0;
+  color: var(--pending);
+  font-size: var(--font-small-size);
+  font-weight: var(--font-label-button-weight);
+}
+
+.options {
+  display: grid;
+  gap: var(--sp-2);
+}
+
+.option {
+  display: flex;
+  gap: var(--sp-3);
+  align-items: flex-start;
+  min-height: var(--size-hit);
+  padding: var(--sp-2-5) var(--sp-3);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-hairline);
+  color: var(--text);
+  font-size: var(--font-label-size);
+  cursor: pointer;
+  transition: background-color var(--dur-hover) var(--ease-standard);
+}
+
+.option:has(input:checked) {
+  background: var(--tint-current);
+  box-shadow: var(--shadow-selected-row);
+}
+
+.option:has(input:focus-visible) {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.option input {
+  flex: none;
+  margin-block: var(--sp-0-5);
+  accent-color: var(--violet);
+}
+
+.optionBody {
+  display: grid;
+  gap: var(--sp-0-5);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .option:hover {
+    background: var(--tint-ghost);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .control,
+  .option {
+    transition: none;
+  }
+}

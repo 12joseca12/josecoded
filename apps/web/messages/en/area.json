@@ -1,1 +1,7 @@
-{}
+{
+  "area": {
+    "metaTitle": "Client area",
+    "title": { "lead": "Your space", "tail": "with josecoded" },
+    "placeholder": "Your project, your tasks and your files will live here."
+  }
+}

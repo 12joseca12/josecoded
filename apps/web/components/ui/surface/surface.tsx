@@ -10,6 +10,8 @@ export type SurfaceProps = Omit<ComponentPropsWithoutRef<'div'>, 'className' | '
   layer?: SurfaceLayer;
   /** Lifts the hairline on hover (fine pointer only). */
   interactive?: boolean;
+  /** The element: `article` for a bento cell, `section` for a block with its own heading. */
+  as?: 'div' | 'article' | 'section';
 };
 
 /**
@@ -18,13 +20,14 @@ export type SurfaceProps = Omit<ComponentPropsWithoutRef<'div'>, 'className' | '
  * carries no role: put the semantics (a section, an article, a dialog) on the element that uses it.
  */
 export function Surface({
+  as: Element = 'div',
   radius = 'cell',
   layer = 'card',
   interactive = false,
   ...rest
 }: SurfaceProps) {
   return (
-    <div
+    <Element
       {...rest}
       className={styles.surface}
       data-radius={radius}

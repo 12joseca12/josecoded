@@ -1,0 +1,103 @@
+/* home-v7 v6.css:27-59, 74-80 and 135-142, v7.css:226-233 and 340-343. The grid and the cell root
+   (a Surface, which takes no class) are styled here; the head, body and slots of the cell inside
+   are styled in bento-cell.module.css. */
+.wrap {
+  container: bento / inline-size;
+}
+
+.bento {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sp-gap-bento);
+}
+
+/* a cell fills its grid area, so a tall one can anchor its link to the bottom */
+.bento > [data-cell] {
+  display: grid;
+  min-width: 0;
+  background-image: var(--cell-light, none), var(--cell-wash, none);
+}
+
+.bento > [data-tone='tint'] {
+  --cell-wash: var(--grad-cell-tint);
+}
+
+.bento > [data-hero] {
+  --cell-wash: var(--grad-cell-hero);
+  --light-radius: var(--light-cell-hero);
+}
+
+/* the light under the cursor: says which cell is under the hand (fine pointer only) */
+@media (hover: hover) and (pointer: fine) {
+  .bento > [data-cell] {
+    --cell-light: radial-gradient(
+      var(--light-radius, var(--light-cell)) circle at var(--mx, 50%) var(--my, -30%),
+      color-mix(in srgb, var(--violet-hi) calc(var(--lit, 0) * 100%), transparent),
+      transparent 60%
+    );
+  }
+
+  .bento > [data-cell]:hover {
+    --lit: var(--light-alpha);
+  }
+}
+
+@container bento (min-width: 34rem) {
+  .bento {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bento > :is([data-hero], [data-wide], [data-tall]) {
+    grid-column: 1 / -1;
+  }
+}
+
+@container bento (min-width: 52rem) {
+  .bento {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  .bento > [data-cell] {
+    grid-column: span 6;
+  }
+
+  .bento > [data-span='3'] {
+    grid-column: span 3;
+  }
+
+  .bento > [data-span='4'] {
+    grid-column: span 4;
+  }
+
+  .bento > [data-span='5'] {
+    grid-column: span 5;
+  }
+
+  .bento > [data-span='7'] {
+    grid-column: span 7;
+  }
+
+  .bento > [data-span='8'] {
+    grid-column: span 8;
+  }
+
+  .bento > [data-span='12'] {
+    grid-column: span 12;
+  }
+
+  .bento > [data-tall] {
+    grid-row: span 2;
+  }
+}
+
+/* the cell that opens: fixed over the page, on the overlay layer (View Transitions animate it) */
+.bento > [data-cell][data-open] {
+  position: fixed;
+  inset: var(--cell-open-inset);
+  z-index: var(--z-open);
+  grid-column: auto;
+  grid-row: auto;
+  overflow: auto;
+  background-image: none;
+  background-color: var(--overlay);
+}

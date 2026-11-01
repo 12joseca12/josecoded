@@ -1,0 +1,5 @@
+/* home-v7 v6.css:154 (.mini-chat) */
+.chat {
+  display: grid;
+  gap: var(--sp-2);
+}

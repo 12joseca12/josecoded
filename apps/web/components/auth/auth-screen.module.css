@@ -1,0 +1,83 @@
+.page {
+  display: grid;
+  justify-items: center;
+  padding: var(--sp-pad-top) var(--sp-gutter) var(--sp-16);
+}
+
+/* the card is the container its children query (providers side by side, form padding) */
+.card {
+  container-type: inline-size;
+  display: grid;
+  gap: var(--sp-6);
+  width: 100%;
+  max-width: calc(var(--size-measure-prose) - var(--sp-12));
+}
+
+.head {
+  display: grid;
+  gap: var(--sp-3);
+}
+
+.lede {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--font-lead-size);
+  line-height: var(--font-lead-leading);
+}
+
+.body {
+  display: grid;
+  gap: var(--sp-5);
+  padding: var(--sp-pad-cell);
+}
+
+.alert {
+  margin: 0;
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-md);
+  background: var(--tint-ghost);
+  box-shadow: inset var(--stroke-line) 0 0 var(--pending);
+  font-size: var(--font-label-size);
+}
+
+/* a rule with the text in the middle */
+.divider {
+  display: flex;
+  gap: var(--sp-3);
+  align-items: center;
+  margin: 0;
+  color: var(--text-3);
+  font-size: var(--font-small-size);
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: var(--stroke-hairline);
+  background: var(--line-2);
+}
+
+.switch {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--font-label-size);
+}
+
+.link {
+  color: var(--violet-soft);
+  text-decoration: underline;
+  text-underline-offset: var(--sp-1);
+}
+
+.legal {
+  margin: 0;
+  color: var(--text-3);
+  font-size: var(--font-small-size);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .link:hover {
+    color: var(--text);
+  }
+}

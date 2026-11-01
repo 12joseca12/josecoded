@@ -317,5 +317,16 @@
   "stage-short-height",
   "mask-hero-video",
   "cycle-bar-width",
-  "hero-min-height"
+  "hero-min-height",
+  "reveal-in-offset",
+  "reveal-in-scale",
+  "reveal-out-offset",
+  "reveal-out-scale",
+  "reveal-out-opacity",
+  "scene-min-height",
+  "cell-open-inset",
+  "bubble-rise",
+  "sp-pad-scene-bottom",
+  "sp-gap-photo",
+  "size-photo-column"
 ]

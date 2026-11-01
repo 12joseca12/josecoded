@@ -1,0 +1,44 @@
+/* home-v7 v6.css:82-95: every piece of a scene comes into focus with its own entry into the viewport
+   (so it is never blurred while it is being read, whatever the height) and recedes on its way out.
+   Scroll-driven, so it needs animation-timeline; without it, and with reduced motion, nothing moves.
+   `item` is for a single piece, `group` for the cells of a bento. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .item,
+    .group > [data-cell]:not([data-open]) {
+      animation:
+        scene-in var(--ease-linear) both,
+        scene-out var(--ease-linear) both;
+      animation-timeline: view(), view();
+      animation-range:
+        entry 0% entry 75%,
+        exit 25% exit 100%;
+    }
+  }
+}
+
+@keyframes scene-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--reveal-in-offset)) scale(var(--reveal-in-scale));
+    filter: blur(var(--blur-scrim));
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes scene-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+
+  to {
+    opacity: var(--reveal-out-opacity);
+    transform: translateY(var(--reveal-out-offset)) scale(var(--reveal-out-scale));
+  }
+}

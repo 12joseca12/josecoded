@@ -1,0 +1,50 @@
+/* home-v7 base.css:241-251 (.lead, .small, .muted), v6.css:70-71 (.post__title) and 177-179 (the
+   underline that draws when the cell is under the pointer) */
+.text {
+  margin: 0;
+}
+
+.text[data-variant='lead'] {
+  max-width: var(--size-measure-prose);
+  color: var(--text-2);
+  font-size: var(--font-lead-size);
+  font-weight: var(--font-lead-weight);
+  line-height: var(--font-lead-leading);
+}
+
+.text[data-variant='muted'] {
+  color: var(--muted, var(--text-3));
+  font-size: var(--font-small-size);
+  font-weight: var(--font-small-weight);
+}
+
+.text[data-variant='title'],
+.text[data-variant='title-sm'] {
+  background: linear-gradient(currentcolor, currentcolor) 0 100% no-repeat;
+  background-size: 0 var(--stroke-hairline);
+  font-size: var(--font-title-size);
+  font-weight: var(--font-title-weight);
+  letter-spacing: var(--font-title-tracking);
+  line-height: var(--font-title-leading);
+  transition: background-size var(--dur-underline) var(--ease-out);
+}
+
+.text[data-variant='title-sm'] {
+  font-size: var(--font-title-sm-size);
+  font-weight: var(--font-title-sm-weight);
+  letter-spacing: var(--font-title-sm-tracking);
+  line-height: var(--font-title-sm-leading);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  :is([data-cell]:hover, [data-cell][data-hover]) .text:is([data-variant='title'], [data-variant='title-sm']) {
+    background-size: 100% var(--stroke-hairline);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text[data-variant='title'],
+  .text[data-variant='title-sm'] {
+    transition: none;
+  }
+}

@@ -1,0 +1,44 @@
+/* home-v7 v6.css:153-158 (.bub, .bub--me, .bub--jc) */
+.bubble {
+  max-width: 88%;
+  min-height: var(--size-control-md);
+  margin: 0;
+  padding: var(--sp-2-5) var(--sp-3-5);
+  border-radius: var(--r-bubble);
+  font-size: var(--font-bubble-size);
+  font-weight: var(--font-bubble-weight);
+  line-height: var(--font-bubble-leading);
+  opacity: 0;
+  transform: translateY(var(--bubble-rise));
+  transition:
+    opacity var(--dur-slide) var(--ease-out),
+    transform var(--dur-slide) var(--ease-out);
+}
+
+.bubble[data-on] {
+  opacity: 1;
+  transform: none;
+}
+
+.bubble[data-from='visitor'] {
+  justify-self: end;
+  border-end-end-radius: var(--r-bubble-tail);
+  background: var(--tint-emphasis);
+  color: var(--text);
+}
+
+.bubble[data-from='author'] {
+  justify-self: start;
+  border-end-start-radius: var(--r-bubble-tail);
+  background: var(--tint-bubble-other);
+  box-shadow: var(--shadow-hairline);
+  color: var(--text-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bubble {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

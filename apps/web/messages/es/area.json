@@ -1,1 +1,7 @@
-{}
+{
+  "area": {
+    "metaTitle": "Área de clientes",
+    "title": { "lead": "Tu espacio", "tail": "con josecoded" },
+    "placeholder": "Aquí encontrarás tu proyecto, tus tareas y tu material."
+  }
+}

@@ -28,13 +28,27 @@
           "title": "Sobre mí",
           "name": "{givenNames} {surnames}",
           "role": "Desarrollador full-stack freelance",
+          "roleCity": "{role} · {city}",
           "lead": "{{DATO: entradilla Sobre mí con identidad única}}",
+          "photoAlt": "Retrato",
           "meet": "Conóceme",
           "goTo": "Ir a Sobre mí"
         },
         "stack": {
           "title": "Con qué trabajo",
-          "caption": "Lo que uso a diario, en producción."
+          "caption": "Lo que uso a diario, en producción.",
+          "items": [
+            "Next.js",
+            "React Native",
+            "Expo",
+            "TypeScript",
+            "Supabase",
+            "Cloudflare Workers",
+            "Three.js",
+            "n8n",
+            "PostgreSQL",
+            "Tailwind"
+          ]
         },
         "direct": {
           "title": "Trato directo",

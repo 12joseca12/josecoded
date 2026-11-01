@@ -23,10 +23,10 @@ const cases: [path: string, status: number, lang?: string][] = [
   ['/servicios/x', 404],
   ['/a/b/c', 404],
   ['/legal/aviso-legal', 404],
-  // localized routes whose page arrives in a later task: 404 in both languages, never 500
-  ['/area-clientes', 404],
-  ['/en/client-area', 404],
-  ['/en/client-area/tasks', 404],
+  // private routes: an anonymous visitor is sent to the login (e2e/auth.spec.ts checks where to)
+  ['/area-clientes', 307],
+  ['/en/client-area', 307],
+  ['/en/client-area/tasks', 404], // arrives with task 5.2
   ['/en/a/b', 404],
 ];
 

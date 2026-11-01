@@ -1,0 +1,20 @@
+.group {
+  display: grid;
+  gap: var(--sp-3);
+}
+
+.form {
+  display: grid;
+}
+
+.form > button {
+  width: 100%;
+}
+
+/* nearest container is the card of the screen: two columns once it has room for both labels
+   (--cq-cell-narrow) */
+@container (min-width: 30rem) {
+  .group {
+    grid-template-columns: 1fr 1fr;
+  }
+}

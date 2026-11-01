@@ -1,0 +1,62 @@
+/* home-v7 v6.css:61-65 (.about, .photo) and base.css:241-244 (.about__name, .lead, .row-links) */
+.about {
+  display: grid;
+  grid-template-columns: var(--size-photo-column) minmax(0, 1fr);
+  align-items: start;
+  gap: var(--sp-gap-photo);
+}
+
+/* no photo yet: the text takes the whole row */
+.about[data-photo='none'] {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.photo {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 5;
+  padding: var(--sp-2);
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  background: var(--grad-photo);
+  box-shadow: var(--shadow-hairline-strong);
+  text-align: center;
+}
+
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.text {
+  display: grid;
+  gap: var(--sp-2);
+}
+
+.text p {
+  margin: 0;
+}
+
+.name {
+  font-size: var(--font-title-sm-size);
+  font-weight: var(--font-title-sm-weight);
+}
+
+.role {
+  color: var(--muted, var(--text-3));
+}
+
+.lead {
+  max-width: var(--size-measure-prose);
+  color: var(--text-2);
+  font-size: var(--font-lead-size);
+  line-height: var(--font-lead-leading);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-5);
+}

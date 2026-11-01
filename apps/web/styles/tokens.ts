@@ -136,6 +136,8 @@ export type TokenName =
   | '--sp-1-5'
   | '--sp-2-5'
   | '--sp-3-5'
+  | '--sp-pad-scene-bottom'
+  | '--sp-gap-photo'
   | '--size-dot'
   | '--size-hit'
   | '--size-control-sm'
@@ -150,6 +152,7 @@ export type TokenName =
   | '--size-visually-hidden'
   | '--size-icon-lg'
   | '--size-measure-hero-sub'
+  | '--size-photo-column'
   | '--focus-ring-width'
   | '--focus-ring-offset'
   | '--focus-ring-color'
@@ -320,7 +323,15 @@ export type TokenName =
   | '--stage-short-height'
   | '--mask-hero-video'
   | '--cycle-bar-width'
-  | '--hero-min-height';
+  | '--hero-min-height'
+  | '--reveal-in-offset'
+  | '--reveal-in-scale'
+  | '--reveal-out-offset'
+  | '--reveal-out-scale'
+  | '--reveal-out-opacity'
+  | '--scene-min-height'
+  | '--cell-open-inset'
+  | '--bubble-rise';
 
 /** Reads a design token from the document. Motion code reads tokens only through this. */
 export function readToken(name: TokenName): string {
@@ -462,6 +473,8 @@ export const tokens = {
   'sp-1-5': '--sp-1-5',
   'sp-2-5': '--sp-2-5',
   'sp-3-5': '--sp-3-5',
+  'sp-pad-scene-bottom': '--sp-pad-scene-bottom',
+  'sp-gap-photo': '--sp-gap-photo',
   'size-dot': '--size-dot',
   'size-hit': '--size-hit',
   'size-control-sm': '--size-control-sm',
@@ -476,6 +489,7 @@ export const tokens = {
   'size-visually-hidden': '--size-visually-hidden',
   'size-icon-lg': '--size-icon-lg',
   'size-measure-hero-sub': '--size-measure-hero-sub',
+  'size-photo-column': '--size-photo-column',
   'focus-ring-width': '--focus-ring-width',
   'focus-ring-offset': '--focus-ring-offset',
   'focus-ring-color': '--focus-ring-color',
@@ -647,4 +661,12 @@ export const tokens = {
   'mask-hero-video': '--mask-hero-video',
   'cycle-bar-width': '--cycle-bar-width',
   'hero-min-height': '--hero-min-height',
+  'reveal-in-offset': '--reveal-in-offset',
+  'reveal-in-scale': '--reveal-in-scale',
+  'reveal-out-offset': '--reveal-out-offset',
+  'reveal-out-scale': '--reveal-out-scale',
+  'reveal-out-opacity': '--reveal-out-opacity',
+  'scene-min-height': '--scene-min-height',
+  'cell-open-inset': '--cell-open-inset',
+  'bubble-rise': '--bubble-rise',
 } as const satisfies Record<string, TokenName>;

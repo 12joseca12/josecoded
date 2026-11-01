@@ -2,6 +2,8 @@ import { createBrowserClient } from '@supabase/ssr';
 
 import { env } from '@/lib/env';
 
+import type { Database } from '@josecoded/types';
+
 /**
  * Supabase client for the browser (session in cookies, shared with the server clients of 4.1).
  * Never import this from a module in the initial bundle: load it with `import()` where it is needed
@@ -9,7 +11,7 @@ import { env } from '@/lib/env';
  * fails if supabase-js reaches a first-load chunk of the home).
  */
 export function createClient() {
-  return createBrowserClient(
+  return createBrowserClient<Database>(
     env.client.NEXT_PUBLIC_SUPABASE_URL,
     env.client.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
   );

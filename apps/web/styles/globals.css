@@ -68,6 +68,22 @@ button {
   outline-offset: var(--focus-ring-offset);
 }
 
+/* home-v7 v7.css:17-20: a page made of scenes (`data-snap`) settles the scroll at the start of each
+   one (proximity: it never traps). The paging hook sets `data-paging` on <html> when it takes the
+   wheel and drives the scroll itself. */
+html:has([data-snap]) {
+  scroll-snap-type: y proximity;
+}
+
+html:has([data-snap])[data-paging] {
+  scroll-snap-type: none;
+  scroll-behavior: auto;
+}
+
+html:has([data-snap]) #top {
+  scroll-snap-align: start;
+}
+
 /* Without !important: a component that sets `display` on an element it also hides must say so
    itself (`.x[hidden] { display: none }`). */
 [hidden] {
@@ -135,8 +151,10 @@ button {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
+  html,
+  html:has([data-snap]) {
     scroll-behavior: auto;
+    scroll-snap-type: none;
   }
 
   .skip {
