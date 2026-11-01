@@ -21,6 +21,8 @@ export interface FormProps<S> {
   label?: string;
   /** Shown (and announced) when the action answers `ok`. */
   successMessage?: string;
+  /** Clears the fields after an `ok` answer (a comment box that was just sent). */
+  resetOnSuccess?: boolean;
   /** Extra controls next to the submit button (a cancel link, a secondary action). */
   actions?: ReactNode;
   /** The fields; a function receives the last state when the action returns extra data (a QR code). */
@@ -46,6 +48,7 @@ export function Form<S extends FormState<never> = FormState<Record<string, unkno
   submitVariant = 'solid',
   label,
   successMessage,
+  resetOnSuccess = false,
   actions,
   children,
 }: FormProps<S>) {
@@ -56,6 +59,10 @@ export function Form<S extends FormState<never> = FormState<Record<string, unkno
   const formRef = useRef<HTMLFormElement>(null);
   const summaryRef = useRef<HTMLParagraphElement>(null);
   const summaryId = useId();
+
+  useEffect(() => {
+    if (state.status === 'ok' && resetOnSuccess) formRef.current?.reset();
+  }, [state, resetOnSuccess]);
 
   useEffect(() => {
     if (state.status !== 'error') return;

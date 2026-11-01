@@ -62,3 +62,37 @@ test.describe('home of the area', () => {
     });
   }
 });
+
+const ANA_PENDING_TASK = '00000000-0000-4000-8000-000000000502';
+
+test.describe('tasks', () => {
+  test('the list groups the seeded tasks and the detail shows only visible comments', async ({ page, context, baseURL }) => {
+    await signInAs(context, baseURL as string, 'ana');
+    await page.goto('/area-clientes/tareas');
+    await expect(page.getByRole('heading', { level: 2, name: 'Pendientes' })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 2, name: 'Hechas' })).toBeVisible();
+    await page.getByRole('link', { name: 'Seed: review the design' }).click();
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Seed: review the design');
+    await expect(page.getByText('Seed: visible comment')).toBeVisible();
+    await expect(page.getByText('Seed: internal comment')).toHaveCount(0);
+    await expectNoSeriousViolations(page);
+  });
+
+  test('a client comments on a task and the comment appears; the box is cleared', async ({ page, context, baseURL }) => {
+    await signInAs(context, baseURL as string, 'ana');
+    await page.goto(`/area-clientes/tareas/${ANA_PENDING_TASK}`);
+    const body = `Comentario de prueba ${Date.now()}`;
+    await page.getByLabel('Escribe un comentario').fill(body);
+    await page.getByRole('button', { name: 'Enviar comentario' }).click();
+    await expect(page.getByText('Comentario enviado.')).toBeVisible();
+    await expect(page.getByRole('list', { name: 'Comentarios de la tarea' }).getByText(body)).toBeVisible();
+    await expect(page.getByLabel('Escribe un comentario')).toHaveValue('');
+  });
+
+  test("another user opening Ana's task by URL gets a 404, and a non-client has no tasks section", async ({ page, context, baseURL }) => {
+    await signInAs(context, baseURL as string, 'bob');
+    expect((await page.goto(`/area-clientes/tareas/${ANA_PENDING_TASK}`))?.status()).toBe(404);
+    expect((await page.goto('/area-clientes/tareas'))?.status()).toBe(404);
+    expect((await page.goto('/area-clientes/tareas/not-a-uuid'))?.status()).toBe(404);
+  });
+});

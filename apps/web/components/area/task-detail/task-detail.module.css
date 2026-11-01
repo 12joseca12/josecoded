@@ -1,0 +1,51 @@
+.status {
+  margin: 0;
+  font-weight: var(--font-label-button-weight);
+}
+
+.status[data-status='in_progress'] {
+  color: var(--violet-soft);
+}
+
+.status[data-status='done'] {
+  color: var(--green);
+}
+
+.text {
+  margin: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.muted {
+  margin: 0;
+  color: var(--text-3);
+  font-size: var(--font-small-size);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+}
+
+.comments {
+  display: grid;
+  gap: var(--sp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.comment {
+  display: grid;
+  gap: var(--sp-1);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-hairline);
+}
+
+/* the client's own comments sit on the tinted ground, Jose's on the plain one */
+.comment[data-own] {
+  background: var(--tint-ghost);
+}

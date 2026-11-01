@@ -119,6 +119,48 @@
         "talkBody": "To collaborate, to hire or just to talk.",
         "talkCta": "About me"
       }
+    },
+    "empty": {
+      "tasksTitle": "No tasks yet",
+      "tasksBody": "When Jose adds tasks for your project, you will see them here."
+    },
+    "tasks": {
+      "metaTitle": "Tasks",
+      "title": {
+        "lead": "Your tasks,",
+        "tail": "clear"
+      },
+      "lede": "What needs doing on your project and who has the ball.",
+      "groups": {
+        "in_progress": "In progress",
+        "pending": "Pending",
+        "done": "Done"
+      },
+      "dueOn": "Due {date}",
+      "open": "Open",
+      "back": "Back to tasks",
+      "status": "Status",
+      "statusValues": {
+        "in_progress": "In progress",
+        "pending": "Pending",
+        "done": "Done"
+      },
+      "comments": {
+        "title": "Comments",
+        "empty": "No comments on this task yet.",
+        "you": "You",
+        "jose": "Jose",
+        "meta": "{who} · {date}",
+        "list": "Task comments",
+        "form": {
+          "label": "Write a comment",
+          "help": "Jose will see it. Up to 4000 characters.",
+          "submit": "Send comment",
+          "sent": "Comment sent.",
+          "invalid": "Write a comment of 1 to 4000 characters.",
+          "failed": "We could not send the comment. Please try again."
+        }
+      }
     }
   }
 }

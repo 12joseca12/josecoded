@@ -16,3 +16,15 @@
   font-size: var(--font-lead-size);
   line-height: var(--font-lead-leading);
 }
+
+/* title of a detail screen (a task): the page's h1 when the title is data, not a two-tone phrase */
+.title {
+  max-width: var(--size-measure-heading);
+  margin: 0;
+  font-size: var(--font-headline-size);
+  font-weight: var(--font-headline-weight);
+  line-height: var(--font-headline-leading);
+  letter-spacing: var(--font-headline-tracking);
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}

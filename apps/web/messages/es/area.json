@@ -119,6 +119,48 @@
         "talkBody": "Para colaborar, contratar o simplemente hablar.",
         "talkCta": "Sobre mí"
       }
+    },
+    "empty": {
+      "tasksTitle": "Aún no hay tareas",
+      "tasksBody": "Cuando Jose añada tareas para tu proyecto, las verás aquí."
+    },
+    "tasks": {
+      "metaTitle": "Tareas",
+      "title": {
+        "lead": "Tus tareas,",
+        "tail": "claras"
+      },
+      "lede": "Lo que hay que hacer en tu proyecto y quién tiene la pelota.",
+      "groups": {
+        "in_progress": "En curso",
+        "pending": "Pendientes",
+        "done": "Hechas"
+      },
+      "dueOn": "Para el {date}",
+      "open": "Abrir",
+      "back": "Volver a las tareas",
+      "status": "Estado",
+      "statusValues": {
+        "in_progress": "En curso",
+        "pending": "Pendiente",
+        "done": "Hecha"
+      },
+      "comments": {
+        "title": "Comentarios",
+        "empty": "Aún no hay comentarios en esta tarea.",
+        "you": "Tú",
+        "jose": "Jose",
+        "meta": "{who} · {date}",
+        "list": "Comentarios de la tarea",
+        "form": {
+          "label": "Escribe un comentario",
+          "help": "Lo verá Jose. Hasta 4000 caracteres.",
+          "submit": "Enviar comentario",
+          "sent": "Comentario enviado.",
+          "invalid": "Escribe un comentario de entre 1 y 4000 caracteres.",
+          "failed": "No hemos podido enviar el comentario. Inténtalo de nuevo."
+        }
+      }
     }
   }
 }

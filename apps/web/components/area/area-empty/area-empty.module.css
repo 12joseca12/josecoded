@@ -1,0 +1,18 @@
+.empty {
+  display: grid;
+  gap: var(--sp-1);
+  padding: var(--sp-pad-cell);
+  border-radius: var(--r-cell);
+  box-shadow: var(--shadow-hairline);
+}
+
+.title {
+  margin: 0;
+  font-weight: var(--font-label-button-weight);
+}
+
+.body {
+  max-width: var(--size-measure-prose);
+  margin: 0;
+  color: var(--text-2);
+}

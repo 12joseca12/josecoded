@@ -26,7 +26,7 @@ const cases: [path: string, status: number, lang?: string][] = [
   // private routes: an anonymous visitor is sent to the login (e2e/auth.spec.ts checks where to)
   ['/area-clientes', 307],
   ['/en/client-area', 307],
-  ['/en/client-area/tasks', 404], // arrives with task 5.2
+  ['/en/client-area/tasks', 307],
   ['/en/a/b', 404],
 ];
 
