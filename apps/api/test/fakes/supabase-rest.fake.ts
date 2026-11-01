@@ -144,7 +144,8 @@ export function createFakeSupabase(options: { url?: string; secret?: string; sta
       return true;
     },
     increment_quota({ p_key, p_limit, p_ttl }) {
-      const ttl = String(p_ttl) === '1 second' ? 1_000 : String(p_ttl) === '7 days' ? 7 * 86_400_000 : 60_000;
+      const seconds = /^(\d+) seconds?$/.exec(String(p_ttl));
+      const ttl = seconds ? Number(seconds[1]) * 1000 : String(p_ttl) === '7 days' ? 7 * 86_400_000 : 60_000;
       const key = String(p_key);
       const q = state.quota.get(key);
       if (!q || q.expiresAt <= clock) state.quota.set(key, { count: 1, expiresAt: clock + ttl });

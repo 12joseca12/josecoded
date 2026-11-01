@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 // Vite inlines the file as text: the tests run in workerd, which has no filesystem.
 import raw from '../wrangler.jsonc?raw';
 
-type RateLimit = { name: string; namespace_id: string };
+type RateLimit = { name: string; namespace_id: string; simple?: { limit: number; period: number } };
 type WranglerSection = {
   name?: string;
   vars?: Record<string, unknown>;
@@ -96,6 +96,17 @@ describe('wrangler.jsonc: cron and preview Worker', () => {
       AFFILIATE_RATE_LIMITER: '1003',
       RADAR_RATE_LIMITER: '1004',
     });
+  });
+
+  it('declares the assistant limiter, 10 per minute per visitor (task 4.4)', () => {
+    const limiter = (config.ratelimits ?? []).find((r) => r.name === 'ASSISTANT_RATE_LIMITER');
+    expect(limiter).toMatchObject({ namespace_id: '1005', simple: { limit: 10, period: 60 } });
+  });
+
+  it('routes every Workers AI call through an AI Gateway in every environment', () => {
+    for (const [, section] of sections.filter(([name]) => name === 'top level' || name === 'env.preview')) {
+      expect(String(section.vars?.AI_GATEWAY_ID ?? '')).not.toBe('');
+    }
   });
 
   it('the CORS list admits the preview wildcard with a dash, never a dot', () => {

@@ -27,6 +27,11 @@ ADMIN_REQUIRE_MFA=false
 
 # --- Chat (task 4.4): openssl rand -hex 32 ---
 # CHAT_SID_SECRET=
+# CHAT_DAILY_THREADS_IP=20
+# CHAT_DAILY_THREADS_ALL=500
+# CHAT_DAILY_MESSAGES_IP=40
+# CHAT_DAILY_MESSAGES_ALL=2000
+# AI_ASSISTANT_MODEL=@cf/meta/llama-3.3-70b-instruct-fp8-fast
 
 # --- Optional backend on Omen (Fastify), NOT this Worker's URL. Both or neither; not set in production. ---
 # WORKER_URL=https://worker.josecoded.com

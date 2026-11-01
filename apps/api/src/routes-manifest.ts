@@ -7,6 +7,7 @@ export type RouteModule =
   | 'v1'
   | 'v1-protected'
   | 'proposals'
+  | 'assistant'
   | 'leads'
   | 'affiliates'
   | 'dev-worker-proxy';
@@ -20,6 +21,17 @@ export type RouteEntry = {
 export const routes = [
   { method: 'ALL', path: '/api/dev/worker/*', module: 'dev-worker-proxy' },
   { method: 'GET', path: '/api/v1/affiliates/validate', module: 'affiliates' },
+  { method: 'GET', path: '/api/v1/assistant/admin/threads', module: 'assistant' },
+  { method: 'GET', path: '/api/v1/assistant/admin/threads/:id', module: 'assistant' },
+  { method: 'POST', path: '/api/v1/assistant/admin/threads/:id/ai', module: 'assistant' },
+  { method: 'POST', path: '/api/v1/assistant/admin/threads/:id/messages', module: 'assistant' },
+  { method: 'POST', path: '/api/v1/assistant/admin/threads/:id/read', module: 'assistant' },
+  { method: 'GET', path: '/api/v1/assistant/threads/current', module: 'assistant' },
+  { method: 'POST', path: '/api/v1/assistant/threads', module: 'assistant' },
+  { method: 'POST', path: '/api/v1/assistant/threads/:id/case', module: 'assistant' },
+  { method: 'POST', path: '/api/v1/assistant/threads/:id/claim', module: 'assistant' },
+  { method: 'POST', path: '/api/v1/assistant/threads/:id/messages', module: 'assistant' },
+  { method: 'POST', path: '/api/v1/assistant/threads/:id/quick-contact', module: 'assistant' },
   { method: 'GET', path: '/api/v1/auth/me', module: 'v1-protected' },
   { method: 'GET', path: '/api/v1/health', module: 'v1' },
   { method: 'POST', path: '/api/v1/leads', module: 'leads' },

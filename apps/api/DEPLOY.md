@@ -70,6 +70,20 @@ pnpm exec wrangler secret put CHAT_SID_SECRET
 # y lo mismo con --env preview para josecoded-api-preview
 ```
 
+### Módulos públicos (3.7 propuestas, 3.8 leads, 4.4 chat por casos)
+
+| Secreto/var | Para qué |
+|---|---|
+| `TURNSTILE_SECRET_KEY` | Secreto de Turnstile (propuestas `proposal`, leads `contact`/`proposal_send`/`partner`, chat `chat`). Sin él esas rutas responden 503 (nunca "sin comprobación"). En local: `1x0000000000000000000000000000000AA`. |
+| `SERVER_KEY` | `openssl rand -hex 32`. Firma el `proposalToken` y autentica `POST /leads` servidor a servidor (cabecera `x-josecoded-server-key`, webhook de Cal.com vía `apps/web`). El mismo valor en `apps/web`. |
+| `ALLOWED_TURNSTILE_HOSTNAMES` (var) | Hostnames que Turnstile puede reportar. Obligatoria en producción (`wrangler.jsonc`); admite `*-sufijo`. |
+| `AI_GATEWAY_ID` (var) | AI Gateway por el que pasa **toda** llamada a Workers AI (`cf-aig-metadata: {consumer}`); sin él el modelo no se llama y se usan reglas / respuesta fija. |
+| `PROPOSALS_DAILY_LIMIT_IP` / `_ALL` | Cuotas diarias del generador (por defecto 10 y 300). |
+| `CHAT_DAILY_THREADS_IP` / `_ALL`, `CHAT_DAILY_MESSAGES_IP` / `_ALL` | Cuotas diarias del chat (por defecto 20/500 hilos y 40/2000 mensajes). |
+| `AI_PROPOSAL_MODEL`, `AI_ASSISTANT_MODEL` | Modelo de cada consumidor (por defecto `@cf/meta/llama-3.3-70b-instruct-fp8-fast`). |
+
+Los contadores usan la RPC `increment_quota` (sin KV); si no responde, la petición pasa y se registra `quota_unavailable`. Bindings nuevos: `ASSISTANT_RATE_LIMITER` (1005 / preview 2005). El chat necesita contextos publicados (`chat_contexts`, tarea 6.9) o responde con el texto fijo.
+
 ### Opcionales
 
 | Secreto/var | Cuándo |

@@ -1,6 +1,7 @@
 // Composition root of the gateway (working-agreements §17.1).
 // Ports live in @josecoded/types (api.ts); real adapters live in src/adapters/ and are the only files
 // that import SDKs or call third parties. Routes and middlewares receive `c.var.deps`; they never import adapters.
+import { createChatContextsRepo, createChatRepo } from './adapters/chat';
 import { createAffiliatesRepo, createLeadsRepo } from './adapters/leads';
 import { createNoticeLedger, createOutboxRepo } from './adapters/outbox';
 import { createQuotaStore } from './adapters/quota';
@@ -11,7 +12,7 @@ import { createTurnstileVerifier } from './adapters/turnstile';
 import { createAiClient } from './adapters/workers-ai';
 import { parseEnv } from './config/env';
 
-import type { AffiliatesRepo, AiClient, LeadsRepo, QuotaStore, TurnstileVerifier } from './ports';
+import type { AffiliatesRepo, AiClient, ChatContextsRepo, ChatRepo, LeadsRepo, QuotaStore, TurnstileVerifier } from './ports';
 import type { Env } from './types/env.types';
 import type { Clock, NoticeLedger, Notifier, OutboxRepo, ScheduledJobsRepo } from '@josecoded/types';
 
@@ -40,6 +41,10 @@ export interface Deps {
   leads?: LeadsRepo;
   /** `affiliates` and Auth owner lookup (service role). Undefined without SUPABASE_SECRET_KEY. */
   affiliates?: AffiliatesRepo;
+  /** Chat threads and messages (service role). Undefined without SUPABASE_SECRET_KEY. */
+  chat?: ChatRepo;
+  /** Published chat contexts (`chat_context_published`). Undefined without SUPABASE_SECRET_KEY. */
+  chatContexts?: ChatContextsRepo;
 }
 
 /** Hono generics of the gateway app: the bindings plus what the middlewares leave in `c.var`. */
@@ -71,6 +76,8 @@ export function buildDeps(env: Env): Deps {
           quota: createQuotaStore(rpc),
           leads: createLeadsRepo(rpc),
           affiliates: createAffiliatesRepo(gateway.admin),
+          chat: createChatRepo(gateway.admin),
+          chatContexts: createChatContextsRepo(rpc),
         }
       : {}),
     ...(telegram ? { telegram } : {}),

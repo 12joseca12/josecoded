@@ -20,7 +20,10 @@ export function isOriginAllowed(env: Pick<Env, 'API_MODE' | 'CORS_ORIGINS'>, ori
  * CSRF guard for requests authenticated by a cookie: a browser always sends `Origin` on a cross-site POST, so one
  * that is not on the allow-list is refused. A request with no `Origin` is not a browser form post and passes.
  */
-export function assertTrustedOrigin(c: Context<{ Bindings: Env }>): void {
+export function assertTrustedOrigin(c: {
+  req: { header(name: string): string | undefined };
+  env: Pick<Env, 'API_MODE' | 'CORS_ORIGINS'>;
+}): void {
   const origin = c.req.header('origin');
   if (origin && !isOriginAllowed(c.env, origin)) throw new HttpError(403, 'forbidden', 'Origin not allowed');
 }

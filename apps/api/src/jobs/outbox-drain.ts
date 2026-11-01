@@ -46,6 +46,15 @@ export function noticeKey(event: OutboxEvent): string | undefined {
   return typeof id === 'string' || typeof id === 'number' ? `${event.event}:${id}` : undefined;
 }
 
+/** One Telegram notice per thread in this many seconds (task 4.4: «uno por hilo cada 10 min»). */
+export const CHAT_NOTICE_WINDOW_SECONDS = 600;
+
+/** The thread of a visitor chat message, whose notices are grouped; `undefined` for every other event. */
+export function groupingThread(event: OutboxEvent): string | undefined {
+  const id = event.payload.thread_id;
+  return event.event === 'chat.visitor_message' && typeof id === 'string' && id ? id : undefined;
+}
+
 /** Plain-text Telegram message for Jose. Payloads carry ids and short fields only, never message content. */
 export function formatOutboxEvent({ event, payload }: OutboxEvent): string {
   const p = (key: string) => text(payload, key);
@@ -75,7 +84,7 @@ function errorText(error: unknown): string {
 }
 
 export const drainOutbox: JobHandler = async ({ deps, budget }) => {
-  const { outbox, telegram, notices } = deps;
+  const { outbox, telegram, notices, quota } = deps;
   // Without a channel nothing is claimed: a claim spends one of the event's 10 attempts.
   if (!outbox || !telegram) {
     console.warn(
@@ -97,6 +106,19 @@ export const drainOutbox: JobHandler = async ({ deps, budget }) => {
   try {
     for (const event of events) {
       try {
+        const thread = groupingThread(event);
+        if (thread && quota) {
+          // chat notices are grouped: one per thread every 10 minutes (the rest of the burst is acked unsent)
+          budget.take();
+          if (!(await quota.hit(`chatnotify:${thread}`, 1, CHAT_NOTICE_WINDOW_SECONDS))) {
+            delivered.push(event.id);
+            continue;
+          }
+          budget.take();
+          await telegram.sendMessage(formatOutboxEvent(event));
+          delivered.push(event.id);
+          continue;
+        }
         const key = noticeKey(event);
         if (key && notices) {
           budget.take();

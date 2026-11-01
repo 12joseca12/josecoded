@@ -124,18 +124,38 @@ describe('outbox.drain', () => {
     expect(row.attempts).toBe(10);
   });
 
-  it('lead.created and chat.* already notified by their request are acked without a second Telegram', async () => {
+  it('lead.created and chat.* events already notified by their request are acked without a second Telegram', async () => {
     const lead = sb.enqueue('lead.created', { id: 'lead-1', contact_id: 'ct-1', source: 'proposal', via: 'client', pack_code: 'P2' });
-    const chat = sb.enqueue('chat.visitor_message', { id: 'msg-1', thread_id: 'th-1', case: 'client', locale: 'es' });
+    const chat = sb.enqueue('chat.some_future_event', { id: 'msg-1' });
     const fresh = sb.enqueue('lead.created', { id: 'lead-2', contact_id: 'ct-2', source: 'contact', via: 'client', pack_code: null });
     // what the request path does after its own Telegram (NoticeLedger.markSent)
     sb.quota.set('notice:lead.created:lead-1', { count: 1, expiresAt: sb.now() + 7 * 86_400_000 });
-    sb.quota.set('notice:chat.visitor_message:msg-1', { count: 1, expiresAt: sb.now() + 7 * 86_400_000 });
+    sb.quota.set('notice:chat.some_future_event:msg-1', { count: 1, expiresAt: sb.now() + 7 * 86_400_000 });
 
     await tick();
 
     expect(sb.telegram.map((m) => m.text)).toEqual([`Nuevo lead (contact).\nLead lead-2 · contacto ct-2`]);
     for (const row of [lead, chat, fresh]) expect(row.delivered_at).not.toBeNull();
+  });
+
+  it('chat.visitor_message is grouped: one Telegram per thread every 10 minutes, the rest acked unsent', async () => {
+    const msg = (id: string, thread: string) => sb.enqueue('chat.visitor_message', { id, thread_id: thread, case: 'client', locale: 'es' });
+    const rows = [msg('m1', 'th-a'), msg('m2', 'th-a'), msg('m3', 'th-b'), msg('m4', 'th-a')];
+
+    await tick();
+
+    expect(sb.telegram.map((m) => m.text)).toEqual([
+      'Mensaje nuevo en el chat (client, es).\nHilo th-a',
+      'Mensaje nuevo en el chat (client, es).\nHilo th-b',
+    ]);
+    for (const row of rows) expect(row.delivered_at).not.toBeNull();
+
+    // 10 minutes later the thread notifies again
+    sb.advance(10 * 60_000 + 1000);
+    const later = msg('m5', 'th-a');
+    await tick();
+    expect(sb.telegram).toHaveLength(3);
+    expect(later.delivered_at).not.toBeNull();
   });
 
   it('claims nothing without Telegram configured (a claim would spend one of the 10 attempts)', async () => {

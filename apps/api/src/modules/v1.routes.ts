@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 
+import { assistantRoutes } from './assistant.routes';
 import { affiliatesRoutes, leadsRoutes } from './leads.routes';
 import { proposalsRoutes } from './proposals.routes';
 import { protectedV1Routes } from './v1-protected.routes';
@@ -23,6 +24,7 @@ v1Routes.get('/health', (c) => {
 // forum/* and admin-chat/* were retired with their tables (DATOS §9, Q1); assistant/* (4.4) succeeds admin-chat.
 // Public modules (their own guards: Turnstile, server key, signed cookie) go BEFORE the session gate below.
 v1Routes.route('/proposals', proposalsRoutes);
+v1Routes.route('/assistant', assistantRoutes);
 v1Routes.route('/leads', leadsRoutes);
 v1Routes.route('/affiliates', affiliatesRoutes);
 

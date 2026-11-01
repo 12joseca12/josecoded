@@ -56,7 +56,16 @@ async function proposalFor(deps: Deps, request: LeadRequest, ctx: LeadContext) {
   return { aiProposal, packCode: payload.isApp ? undefined : payload.pack, proposalId: payload.id };
 }
 
-async function notifyLead(deps: Deps, created: { leadId: string; contactId: string }, request: LeadRequest, packCode?: string) {
+/**
+ * Tells Jose in the request that created the lead, once (NoticeLedger key `lead.created:<id>`, the one the outbox drain
+ * checks), and backs it up with the outbox event. `true` when Telegram took the message.
+ */
+export async function notifyLead(
+  deps: Deps,
+  created: { leadId: string; contactId: string },
+  source: string,
+  packCode?: string,
+): Promise<boolean> {
   const { telegram, notices } = deps;
   if (!telegram) return false;
   const key = `lead.created:${created.leadId}`;
@@ -66,7 +75,7 @@ async function notifyLead(deps: Deps, created: { leadId: string; contactId: stri
       formatOutboxEvent({
         id: 0,
         event: 'lead.created',
-        payload: { id: created.leadId, contact_id: created.contactId, source: request.source, ...(packCode ? { pack_code: packCode } : {}) },
+        payload: { id: created.leadId, contact_id: created.contactId, source, ...(packCode ? { pack_code: packCode } : {}) },
         attempts: 1,
         createdAt: deps.clock.now(),
       }),
@@ -77,6 +86,27 @@ async function notifyLead(deps: Deps, created: { leadId: string; contactId: stri
     logEvent('leads', 'notify_failed');
     return false;
   }
+}
+
+/** Notifies in the request, waiting at most NOTIFY_WAIT_MS; the send finishes in the background either way. */
+export async function notifyWithin(
+  deps: Deps,
+  created: { leadId: string; contactId: string },
+  source: string,
+  packCode: string | undefined,
+  waitUntil: (promise: Promise<unknown>) => void,
+): Promise<'telegram' | 'outbox'> {
+  const work = notifyLead(deps, created, source, packCode);
+  waitUntil(work);
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const sent = await Promise.race([
+    work,
+    new Promise<boolean>((resolve) => {
+      timer = setTimeout(() => resolve(false), NOTIFY_WAIT_MS);
+    }),
+  ]);
+  clearTimeout(timer);
+  return sent ? 'telegram' : 'outbox';
 }
 
 export async function submitLead(
@@ -147,15 +177,6 @@ export async function submitLead(
   }
   if (!created.created) return { status: 200, body: { leadId: created.leadId, notified: 'none' } };
 
-  const work = notifyLead(deps, created, request, proposal?.packCode);
-  ctx.waitUntil(work);
-  let timer: ReturnType<typeof setTimeout> | undefined;
-  const sent = await Promise.race([
-    work,
-    new Promise<boolean>((resolve) => {
-      timer = setTimeout(() => resolve(false), NOTIFY_WAIT_MS);
-    }),
-  ]);
-  clearTimeout(timer);
-  return { status: 201, body: { leadId: created.leadId, notified: sent ? 'telegram' : 'outbox' } };
+  const notified = await notifyWithin(deps, created, request.source, proposal?.packCode, ctx.waitUntil);
+  return { status: 201, body: { leadId: created.leadId, notified } };
 }

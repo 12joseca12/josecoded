@@ -1,7 +1,7 @@
 // Ports of the public-facing modules (proposals, leads, assistant), working-agreements §17.1. Real adapters live in
 // src/adapters/; tests inject fakes through `env.__deps`. Kept in the gateway (not in @josecoded/types) because no
 // other package implements or consumes them.
-import type { CreateLeadInput } from '@josecoded/types';
+import type { ChatCase, ChatContextPublished, CreateLeadInput, Database } from '@josecoded/types';
 
 export type CreateLeadPayload = CreateLeadInput;
 
@@ -57,4 +57,38 @@ export interface AffiliatesRepo {
   findOwner(code: string): Promise<{ userId: string } | null>;
   /** Email of an Auth user, `null` when unknown. */
   userEmail(userId: string): Promise<string | null>;
+}
+
+export type ChatThreadRow = Database['public']['Tables']['chat_threads']['Row'];
+export type ChatMessageRow = Database['public']['Tables']['chat_messages']['Row'];
+export type ChatThreadPatch = Database['public']['Tables']['chat_threads']['Update'];
+export type ChatMessageInput = Pick<Database['public']['Tables']['chat_messages']['Insert'], 'thread_id' | 'sender_role' | 'content' | 'message_type' | 'metadata'>;
+
+/** `chat_threads`, `chat_messages` and the CRM link (service role: the anonymous visitor has no grants, DATOS §4.6). */
+export interface ChatRepo {
+  createThread(input: {
+    visitorId: string;
+    case: ChatCase;
+    locale: 'es' | 'en';
+    originPath: string;
+    ipHash: string;
+    contextVersion: number | null;
+  }): Promise<ChatThreadRow>;
+  getThread(id: string): Promise<ChatThreadRow | null>;
+  /** The most recent thread of a visitor id or of a user (either may be absent), or `null`. */
+  findCurrent(by: { visitorId?: string; userId?: string }): Promise<ChatThreadRow | null>;
+  updateThread(id: string, patch: ChatThreadPatch): Promise<void>;
+  addMessage(input: ChatMessageInput): Promise<ChatMessageRow>;
+  /** Oldest first. `after` is an ISO timestamp: only newer messages. */
+  listMessages(threadId: string, options: { after?: string; limit: number }): Promise<ChatMessageRow[]>;
+  /** The last `limit` messages, oldest first. */
+  recentMessages(threadId: string, limit: number): Promise<ChatMessageRow[]>;
+  listThreads(options: { unreadOnly: boolean; limit: number }): Promise<ChatThreadRow[]>;
+  /** `crm_interactions(kind = 'chat_thread')` of a contact. */
+  linkInteraction(contactId: string, threadId: string): Promise<void>;
+}
+
+/** `chat_context_published(case, locale)`: the single published context, or `null`. */
+export interface ChatContextsRepo {
+  published(chatCase: ChatCase, locale: 'es' | 'en'): Promise<ChatContextPublished | null>;
 }
