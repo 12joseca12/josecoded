@@ -203,6 +203,8 @@ export type TokenName =
   | '--shadow-selected-row'
   | '--shadow-edge-bottom'
   | '--shadow-edge-top'
+  | '--shadow-edge-top-strong'
+  | '--shadow-edge-start-strong'
   | '--blur-backdrop'
   | '--blur-scrim'
   | '--blur-header'
@@ -331,7 +333,8 @@ export type TokenName =
   | '--reveal-out-opacity'
   | '--scene-min-height'
   | '--cell-open-inset'
-  | '--bubble-rise';
+  | '--bubble-rise'
+  | '--swap-rise';
 
 /** Reads a design token from the document. Motion code reads tokens only through this. */
 export function readToken(name: TokenName): string {
@@ -540,6 +543,8 @@ export const tokens = {
   'shadow-selected-row': '--shadow-selected-row',
   'shadow-edge-bottom': '--shadow-edge-bottom',
   'shadow-edge-top': '--shadow-edge-top',
+  'shadow-edge-top-strong': '--shadow-edge-top-strong',
+  'shadow-edge-start-strong': '--shadow-edge-start-strong',
   'blur-backdrop': '--blur-backdrop',
   'blur-scrim': '--blur-scrim',
   'blur-header': '--blur-header',
@@ -669,4 +674,5 @@ export const tokens = {
   'scene-min-height': '--scene-min-height',
   'cell-open-inset': '--cell-open-inset',
   'bubble-rise': '--bubble-rise',
+  'swap-rise': '--swap-rise',
 } as const satisfies Record<string, TokenName>;

@@ -220,6 +220,8 @@
   --shadow-selected-row: inset 0 0 0 1px var(--edge-selected);
   --shadow-edge-bottom: inset 0 -1px 0 var(--line);
   --shadow-edge-top: inset 0 1px 0 var(--line);
+  --shadow-edge-top-strong: inset 0 1px 0 var(--line-2);
+  --shadow-edge-start-strong: inset 1px 0 0 var(--line-2);
 
   /* blurs */
   --blur-backdrop: 4px;
@@ -369,4 +371,5 @@
   --scene-min-height: 100svh;
   --cell-open-inset: clamp(4.25rem, 8svh, 5.5rem) clamp(0.75rem, 6vw, 8vw) clamp(0.75rem, 3svh, 2rem);
   --bubble-rise: 6px;
+  --swap-rise: 6px;
 }

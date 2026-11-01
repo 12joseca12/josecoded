@@ -97,7 +97,14 @@
           "title": "Packs",
           "note": "Desde, sin IVA.",
           "srPrice": "desde {price} sin IVA. Ver qué incluye",
-          "link": "Qué incluye cada pack"
+          "link": "Qué incluye cada pack",
+          "names": {
+            "P1": "Web básica",
+            "P2": "Pedidos o reservas",
+            "P3": "Gestión",
+            "P4": "Gestión + automatizaciones",
+            "P5": "App móvil"
+          }
         },
         "rates": {
           "title": "Tarifas",

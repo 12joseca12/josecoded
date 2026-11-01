@@ -328,5 +328,8 @@
   "bubble-rise",
   "sp-pad-scene-bottom",
   "sp-gap-photo",
-  "size-photo-column"
+  "size-photo-column",
+  "shadow-edge-top-strong",
+  "shadow-edge-start-strong",
+  "swap-rise"
 ]

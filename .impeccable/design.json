@@ -814,6 +814,16 @@
         "name": "edge-top",
         "value": "inset 0 1px 0 var(--line)",
         "purpose": "Filete superior: separa el pie y el selector de idioma del menú."
+      },
+      {
+        "name": "edge-top-strong",
+        "value": "inset 0 1px 0 var(--line-2)",
+        "purpose": "Filete superior más visible: separa el panel de una vía de su lista y el grupo de app de los packs web."
+      },
+      {
+        "name": "edge-start-strong",
+        "value": "inset 1px 0 0 var(--line-2)",
+        "purpose": "Filete lateral: panel de vías junto a su lista y grupo de app junto a los packs web."
       }
     ],
     "blurs": [
@@ -1531,6 +1541,11 @@
         "name": "bubble-rise",
         "value": "6px",
         "purpose": "Cuánto sube una burbuja del mini-chat al aparecer."
+      },
+      {
+        "name": "swap-rise",
+        "value": "6px",
+        "purpose": "Cuánto sube un panel o una cifra al cambiar (cambio de vía, cambio de tarifa)."
       }
     ]
   },

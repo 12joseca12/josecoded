@@ -1,6 +1,7 @@
 import { HeroSplit } from '@/components/hero/hero-split';
 import { IntroFall } from '@/components/hero/intro-fall';
 import { AboutScene } from '@/components/home/about-scene';
+import { ServicesScene } from '@/components/home/services-scene';
 import { resolveLocale } from '@/lib/locale';
 
 import type { LocaleParams } from '@/lib/locale';
@@ -15,6 +16,7 @@ export default async function HomePage({ params }: { params: LocaleParams }) {
       {/* waits for the live scene on desktop (it asks the hero gate), falls alone elsewhere */}
       <IntroFall awaitScene="auto" />
       <AboutScene />
+      <ServicesScene />
     </>
   );
 }

@@ -97,7 +97,14 @@
           "title": "Packs",
           "note": "From, excl. VAT.",
           "srPrice": "from {price} excl. VAT. See what is included",
-          "link": "What each pack includes"
+          "link": "What each pack includes",
+          "names": {
+            "P1": "Basic website",
+            "P2": "Orders or bookings",
+            "P3": "Management",
+            "P4": "Management + automations",
+            "P5": "Mobile app"
+          }
         },
         "rates": {
           "title": "Rates",
