@@ -1,6 +1,8 @@
 'use client';
 
-import { createContext, useCallback, useContext, useMemo, useReducer, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useState } from 'react';
+
+import { track } from '@/lib/analytics';
 
 import { initialShellState, shellReducer } from './shell-reducer';
 
@@ -37,6 +39,10 @@ const ShellContext = createContext<ShellApi | null>(null);
 export function ShellProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(shellReducer, initialShellState);
   const [palettes, setPalettes] = useState(0);
+  // every opening of the palette (⌘K, its trigger, any caller) is one `palette_open`
+  useEffect(() => {
+    if (state.palette) track('palette_open');
+  }, [state.palette]);
   const registerPalette = useCallback(() => {
     setPalettes((count) => count + 1);
     return () => setPalettes((count) => count - 1);

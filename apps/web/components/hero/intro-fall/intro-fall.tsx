@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 
+import { track } from '@/lib/analytics';
 import { decideHeroMode, readHeroContext } from '@/lib/motion/hero-gate';
 import {
   INTRO_DONE_EVENT,
@@ -43,8 +44,10 @@ export function IntroFall({ awaitScene = false }: { awaitScene?: boolean | 'auto
         sceneReady,
         onStart: (start) =>
           window.dispatchEvent(new CustomEvent<IntroStart>(INTRO_START_EVENT, { detail: start })),
-        onDone: (result: IntroResult) =>
-          window.dispatchEvent(new CustomEvent<IntroResult>(INTRO_DONE_EVENT, { detail: result })),
+        onDone: (result: IntroResult) => {
+          window.dispatchEvent(new CustomEvent<IntroResult>(INTRO_DONE_EVENT, { detail: result }));
+          track('intro_played', result);
+        },
       });
     };
     // Waiting for the scene, runIntro itself holds the letters. Alone, it would fall in this very

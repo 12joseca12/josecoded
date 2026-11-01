@@ -6,6 +6,7 @@
 // The canvas is created here and lives in the Backdrop slot, not inside the hero: `<main>` is a
 // stacking context above the light field, and the scene draws opaque, so a canvas inside it would
 // bury the field (deviation from DT §1.6.3, which put `<canvas hidden>` in the stage).
+import { track } from '@/lib/analytics';
 import {
   INTRO_DONE_EVENT,
   INTRO_START_EVENT,
@@ -43,11 +44,11 @@ function monoFamily(): string | undefined {
   return family === '' ? undefined : family;
 }
 
-/** Counts the first drag on the stage once per page (Umami is optional; task 2.12 types this). */
+/** Counts the first drag on the stage once per page. */
 function trackFirstDrag(stage: HTMLElement, signal: AbortSignal) {
   const onMove = (event: PointerEvent) => {
     if (event.buttons !== 1) return;
-    (window as Window & { umami?: { track?: (name: string) => void } }).umami?.track?.('scene_drag');
+    track('scene_drag');
     stage.removeEventListener('pointermove', onMove);
   };
   stage.addEventListener('pointermove', onMove, { signal });

@@ -14,7 +14,7 @@ const valid = {
 };
 
 // Optional vars are cleared so the outer environment (e.g. CI's job env) cannot leak in.
-const optional = ['NEXT_PUBLIC_UMAMI_WEBSITE_ID', 'NEXT_PUBLIC_DEV_UI', 'NEXT_PUBLIC_SITE_ENV'] as const;
+const optional = ['NEXT_PUBLIC_UMAMI_URL', 'NEXT_PUBLIC_UMAMI_WEBSITE_ID', 'NEXT_PUBLIC_DEV_UI', 'NEXT_PUBLIC_SITE_ENV'] as const;
 
 function stubValidEnv() {
   for (const [key, value] of Object.entries(valid)) vi.stubEnv(key, value);

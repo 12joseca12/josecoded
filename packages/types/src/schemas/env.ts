@@ -20,6 +20,8 @@ export const envClientSchema = z.object({
   NEXT_PUBLIC_SUPABASE_URL: z.url(),
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: nonEmpty,
   NEXT_PUBLIC_TURNSTILE_SITE_KEY: nonEmpty,
+  /** Origin of the self-hosted Umami (`https://stats.josecoded.com`). With the website id it turns analytics on; without either there is none. */
+  NEXT_PUBLIC_UMAMI_URL: z.url().optional(),
   NEXT_PUBLIC_UMAMI_WEBSITE_ID: nonEmpty.optional(),
   NEXT_PUBLIC_CF_BEACON_TOKEN: nonEmpty.optional(),
   NEXT_PUBLIC_CAL_LINK: nonEmpty,
