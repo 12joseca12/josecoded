@@ -1,5 +1,6 @@
 # Pantallas independientes y sus contenidos
 
+> **Versión 2.1, 2026-11-01** (`arquitecto`; spec v2.2 §0.14, DATOS v1.3 §14): bloque **«v2.1»** con la zona `/crm` para admin y closers (K1–K7), las pantallas exclusivas del admin que se añaden (D1 Equipo, D2 Contenido, D3 Notificaciones) y las historias de usuario del cliente (A8, cambios en A1–A2). Las rutas `/admin/crm/*` de C2–C8 pasan a `/crm/*` (ninguna estaba construida); C1, C5–C11 siguen como estaban salvo las notas del bloque.
 > **Versión 2.0, 2026-10-28** (`arquitecto`, reposicionamiento de Jose; spec v2.0 §0): mapa nuevo con `/servicios` (P20), `/partners` (P21), `/lab` (P22–P23), chat por casos (P11 v2), CRM en admin (C1–C13); P1 y P4 se retiran con 301. El bloque **«v2.0»** al final del §0 manda sobre §1, P1, P4, P11 y §4 de la v1.0, que se conservan como historial.
 > Versión 1.0, 2026-09-29. Autor: agente `ux`. **Cerrado** con las respuestas de Jose a la batería del §6 (v0.1 era el borrador con las preguntas).
 > Parte de: home cerrada en `ref/home-v6/` (contrato `.impeccable/surfaces/docs-superpowers-design-ref-home-v6-index-html.md`, sistema en `DESIGN.md`), inventario `2026-09-29-componentes-home-v6.md` (con sus decisiones cerradas del §3), `docs/working-agreements.md`, `PRODUCT.md`, spec v1.5.2 y UX v3.2 (`2026-09-17-josecoded-ux.md`; sus §2 y §4.1 de la home están superados, el resto se toma como punto de partida salvo lo que cambia el §7).
@@ -188,6 +189,77 @@ Navegación del admin (escritorio lateral, móvil barra inferior de 4): **Contac
 | Home | v6 (Empresas, Negocios) | v7 (Servicios, Lab/Blog), prototipo con gate | Spec D45; plan 2.0, 2.14, 2.15 |
 | Lanzamiento | Todo junto con válvula | Público + área + CRM | Spec D46; plan orden de fases |
 
+---
+
+## v2.1 — Closers, historias de usuario y contenido editable (2026-11-01, `arquitecto`; spec v2.2 §0.14, DATOS v1.3 §14)
+
+> Manda sobre las rutas de C2–C8 del bloque v2.0 (ahora bajo `/crm`) y añade K1–K7, D1–D3 y A8. Mismo sistema visual (`DESIGN.md`), modo Operar, **solo español** en `/crm` y `/admin`; el área (A8) en es y en. Sin prototipo de `ui` en `ref/` salvo el shell de `/crm` + K2 + K3 (**medio día**, Jose lo valida en el navegador el día 1); el resto se aprueba en preview. Nada de métricas ni gráficas: cifras en celdas, listas densas.
+
+### v2.1 §1 Mapa de pantallas
+
+#### `/crm` — zona del equipo (admin y closers; el alcance lo da RLS: el closer ve su cartera, el admin todo)
+
+| # | Pantalla | Ruta | Contenido | Acción primaria | Quién |
+|---|---|---|---|---|---|
+| K1 | **Resumen** | `/crm` | Celdas: mis contactos con acción vencida · mis leads abiertos · historias por decidir · comisiones (pendientes y aprobadas, importe) · última importación; una celda **«Equipo»** con los agregados globales sin nombres (`crm_team_counters()`); admin además los contadores de C1 (`admin_counters()` ampliada) y acceso a `/admin` | «Ver vencidas» → `/crm/contactos?due=1` | ambos |
+| K2 | **Contactos** | `/crm/contactos` (`?kind&status&due=1&q`; admin además `?owner=<id>|mine|unassigned`) | C2 tal cual + columna **Dueño** (solo admin) + botón «Importar CSV». El closer no ve el filtro de dueño ni la columna | Abrir contacto | ambos |
+| K3 | **Contacto** | `/crm/contactos/[id]` | C3 tal cual + en cabecera: dueño (admin: selector «Reasignar a…», con confirmación) · **«Habilitar acceso al portal»** si el contacto es cliente (`clients` existe) sin `user_id` (hoja: email prellenado con el del contacto, confirmar → correo transaccional; estado «Invitado el …» / «Con acceso») · pestaña **Historias** del cliente (misma lista que K6) · el closer **no** ve «Cerrar cobrado» (solo admin): ve «Marcar propuesta enviada» y «Pedir cierre» (fija `next_action` «Jose: cerrar cobrado» y avisa por Telegram al admin) | Redactar mensaje (C4) / Cerrar cobrado (admin) | ambos |
+| K4 | **Importar CSV** | `/crm/importar` | Tres pasos en una página: **1** subir o pegar CSV (≤ 1 MB, ≤ 500 filas; separador `,` o `;` detectado; BOM y CRLF tolerados) → **2** mapeo de columnas por cabecera (auto: `nombre|name`, `email`, `teléfono|phone`, `linkedin`, `empresa|organization`, `cargo|role`, `ciudad|city`, `tipo|kind`, `notas|notes`, `etiquetas|tags`; corregible con selectores) y **vista previa** de las primeras 20 filas con el veredicto por fila (crear · actualizar · omitir «ya está en el CRM» · inválida y por qué) y totales → **3** «Importar» → resultado + enlace a K2 filtrada `?import=<id>`. Debajo, **historial** de mis importaciones (fecha, fichero, creados/actualizados/omitidos). Repetir el mismo fichero muestra «Ya importado el … (sin cambios)» | Importar | ambos |
+| K5 | **Comisiones** | `/crm/comisiones` (`?status`) | Lista: fecha de cierre · contacto · pack · importe cobrado · % · **comisión** · estado (`pendiente` · `aprobada` · `pagada` · `rechazada` con motivo) · fecha de pago; totales por estado arriba. **Admin:** filtro por closer, acciones «Aprobar», «Rechazar (motivo)», «Marcar pagada (fecha, nota)» con diálogo de confirmación; el pago es manual fuera de la web (transferencia) y aquí solo se registra | Admin: Aprobar · Marcar pagada | ambos (lectura) / admin (acciones) |
+| K6 | **Clientes** | `/crm/clientes`, `/crm/clientes/[id]` | Lista de clientes de mi cartera (admin: todos): nombre · pack · fase · acceso (sin invitar · invitado · con acceso) · historias por decidir. Detalle: `PhaseSteps`, tareas (lectura; el admin edita en C9), **Historias** (lista con estado; hoja de decisión: «Aceptar» con horas, importe opcional y nota + casilla «Crear tarea» marcada · «Rechazar» con motivo · «Convertir en tarea» para las aceptadas), material (solo admin), «Habilitar acceso» | Decidir historia | ambos |
+| K7 | **Ajustes** | `/crm/ajustes` | **Telegram**: «Vincular» genera un código y muestra «Envía `/start <código>` a @<bot> en 15 min»; estado vinculado/no; qué avisos recibo (lectura de `notification_rules` que me afectan) · **Seguridad**: TOTP (enlace a `/perfil/seguridad`) · mi tasa de comisión (lectura) | Vincular Telegram | ambos |
+
+Navegación de `/crm` (escritorio lateral, móvil barra inferior de 4): **Contactos · Clientes · Comisiones · Más** (Más: Importar, Ajustes; admin además: Chat, Organizaciones, Contextos, y «Administración» → `/admin`). `/admin/crm/*` no existe; `/crm` para un usuario sin `staff_members` activo → **404** (no 403: no se revela que la zona existe).
+
+#### `/admin` — solo admin (se añaden; C1, C5–C11 siguen; C2–C4, C6 viven en `/crm`)
+
+| # | Pantalla | Ruta | Contenido | Acción primaria |
+|---|---|---|---|---|
+| D1 | **Equipo** | `/admin/equipo` | Lista de `staff_members` (nombre, email, rol, estado activo/desactivado, tasa, Telegram vinculado, nº de contactos, comisiones pendientes) + **invitaciones** pendientes (email, rol, caduca, «Reenviar», «Anular»). Hoja «Invitar»: email, rol (`closer`), tasa de comisión (por defecto 10 %), nota → correo de invitación. En cada closer: «Desactivar/Activar» (confirmación; explica que sus contactos quedan a su nombre hasta reasignar), «Reasignar cartera a…» (todo o filtrado), editar tasa | Invitar |
+| D2 | **Contenido** | `/admin/contenido` (`?tab=textos|faq|proyectos|blog|secciones|publicaciones`) | Barra superior: «**N cambios sin publicar**» · **Vista previa** (activa Draft Mode y abre la home en pestaña nueva con banda «Vista previa de borradores · Salir») · **Publicar** (hoja con la lista de cambios y «Publicar N cambios»; luego estado «En cola → Commit `abc123` → Desplegado hace 6 min» o «Falló: motivo» con «Reintentar»). **Textos**: buscador por clave o por texto, lista agrupada por namespace (lista blanca), editor **es y en lado a lado** con el valor base de `messages` en gris, el override editable, marcador «modificado»/«publicado vN», «Restaurar el de `messages`»; sin HTML. **FAQ**: por vía (`por hora · proyecto · packs · contratación · partners`), ordenar, editar pregunta/respuesta es/en, publicar/ocultar. **Proyectos**: por slug, textos `oneLiner`/reto/trabajo/resultado es/en y visible sí/no (las imágenes y fichas se cambian en el repo: texto de ayuda). **Blog**: lista de posts del repo (lectura) y de posts del admin; editor Markdown con vista previa renderizada (mismo pipeline que el blog), frontmatter (título, descripción, `kind`, etiquetas, `labSlug`, fecha), **es y en como dos entradas enlazadas**, «Publicar»/«Despublicar»; aviso «Sin componentes ni HTML; para guías con demo, repo». **Secciones y precios**: interruptores de Lab, Blog, Partners, Proyectos, Chat; «Mostrar precios» global; ocultar packs/extras concretos (lista de `pricing.json`, solo visibilidad: el valor se cambia en `tarifas.md`). **Publicaciones**: historial con fecha, autor, nº de entradas, commit, estado, «Ver diff» (versiones) y «Volver a esta versión» por entrada | Publicar |
+| D3 | **Notificaciones** | `/admin/notificaciones` | Matriz **evento × destinatario × canal** con interruptores: filas = eventos (lead nuevo, importación terminada, historia propuesta/decidida, comisión creada/aprobada/pagada, chat sin leer, comentario pendiente, ampliación, cliente invitado, contenido desplegado/fallido…), columnas = Admin (Telegram), Dueño del contacto (Telegram), Cliente (email), y «Persona concreta» (añadir fila con selector de staff). Texto de ayuda por evento. Botón «Enviar prueba» (Telegram al admin). Cambios inmediatos (el gateway cachea 5 min: se indica) | Guardar |
+
+Navegación de `/admin`: **Resumen · Clientes · Equipo · Más** (Más: Contenido, Notificaciones, Afiliados, Moderación, Ampliaciones, «Ir al CRM» → `/crm`).
+
+#### Área de clientes (`/area-clientes`, es y en)
+
+| # | Pantalla | Ruta | Cambio |
+|---|---|---|---|
+| A1 | Inicio | `/area-clientes` | Celda «Tus historias» (nº propuestas / aceptadas / en tareas) con «Proponer una historia» en la variante `client` |
+| A2 | Tareas | `/area-clientes/tareas` | Las tareas creadas desde una historia muestran «De tu historia: <título>» con enlace a A8 |
+| **A8** | **Historias de usuario** (nueva) | `/area-clientes/historias`, `/area-clientes/historias/[id]`, `?nueva=1` | Explicación corta («Cuéntame qué quieres conseguir con el formato Como… quiero… para…; lo valoro y, si encaja, lo convierto en tarea»); lista con estado (`propuesta` · `aceptada` · `en tareas` · `rechazada`), estimación si la hay y fecha; **formulario** (`Form`/`Field`): título, «Como…» (quién), «Quiero…» (qué), «Para…» (por qué), **criterios de aceptación** (lista de hasta 12 líneas, añadir/quitar), «Enviar»; detalle con los campos, el veredicto (estimación en horas y, si procede, importe «orientativo, sin IVA», nota), enlace a la tarea; editar/borrar solo mientras está propuesta. Vacío: «Aún no has propuesto ninguna historia» + ejemplo relleno | 
+
+### v2.1 §2 Componentes
+
+| Pantalla | Reutiliza (R) | Nuevo (N) |
+|---|---|---|
+| K1–K3 | AppShell del admin (ahora `StaffShell` con dos juegos de navegación según rol), ContactTable, StatusSheet, NextActionField, InteractionTimeline, DraftComposer, StatusBadge, Toast, EmptyState | **OwnerBadge** + **OwnerFilter** (admin), **ReassignSheet**, **InviteAccessSheet**, **TeamCell** (agregados) |
+| K4 | Form/Field, Table, StatusBadge | **CsvDropzone** (input de fichero + textarea pegar; sin librería), **ColumnMapper** (selects por columna detectada), **ImportPreview** (reutiliza el de C6 ampliado con veredicto por fila), **ImportHistory** |
+| K5 | Table, StatusBadge, ConfirmDialog | **CommissionRow**, **CommissionTotals** (celdas, sin gráfica) |
+| K6 / A8 | PhaseSteps, TaskRow, Form/Field, ConfirmDialog | **StoryCard** (Como/Quiero/Para + criterios como lista con check estático), **StoryForm** (lista dinámica de criterios accesible: cada línea un `input`, botón quitar con nombre accesible), **StoryDecisionSheet** (aceptar/rechazar/convertir) |
+| K7 | Field, CopyButton | **TelegramLinkCard** (código con copiar, estado, caducidad) |
+| D1 | Table, Form/Field, ConfirmDialog | **InviteStaffSheet**, **StaffRow** |
+| D2 | Tabs (segmented), Field, Prose, CodeBlock, Toast | **ContentSearch**, **OverrideEditor** (base gris + override es/en, estado), **ContentDiff** (reutiliza `ContextDiff` de C8), **MarkdownEditor** (textarea + vista previa server-rendered), **PublishSheet** (lista de cambios + estado de la publicación con pasos: en cola · commit · desplegado), **SectionSwitches**, **VersionList** (de C8) |
+| D3 | Table, Switch | **RuleMatrix** (tabla con `<th scope>` por fila/columna; cada interruptor con nombre «<evento> → <destinatario> por <canal>») |
+| Público | — | **DraftBanner** (banda fija solo con Draft Mode activo; «Salir» es una Server Action) |
+
+### v2.1 §3 Contenidos y copy
+
+- `/crm` y `/admin`: solo español, sin `{{DATO}}`. Nombres de evento en D3 con descripción en una frase (p. ej. «Historia propuesta — un cliente propone una historia de usuario»).
+- Correos transaccionales (plantillas fijas es/en en `apps/api/src/templates/`, texto pasa por `redactor` en el Mac antes del gate; mientras, texto provisional marcado): invitación al equipo («Jose te ha dado acceso al CRM de josecoded…»), acceso al portal («Ya puedes entrar en tu área de cliente…»), historia decidida («Tu historia “…” se ha aceptado/rechazado…»). Sin enlaces externos salvo `josecoded.com`.
+- A8 en es y en (`messages/{es,en}/area.json` → claves `stories.*`), ejemplo de historia rellena como ayuda.
+- D2 ayuda inline: qué se puede editar y qué no (componentes, imágenes, precios), cuánto tarda en publicarse (5–8 min), que la vista previa es solo para el admin.
+
+### v2.1 §4 Orden de diseño (días)
+
+| Día | Pantallas | Prototipo de `ui` |
+|---|---|---|
+| 1 | Shell de `/crm` + K2 + K3 (añadidos a C2/C3) en `ref/crm/`; Jose valida en el navegador por la tarde | **Sí** (medio día) |
+| 2 | K1, K4, K6, A8, D1; D2 pestañas Textos · Secciones · Publicaciones | No (preview) |
+| 3 | K5, K7, D3; D2 FAQ · Proyectos · Blog | No (preview) |
+| 4 | Puerta de calidad + pentest; sin pantallas nuevas | — |
+
+**Qué se recorta primero si el día 3 no llega:** D3 (las reglas quedan sembradas por migración y editables por SQL del controlador), D2 Blog (los posts siguen en el repo), K7 Telegram (el admin pega el `chat_id` en D1). Nunca se recorta: K2–K4, K5 lectura, K6 decisión de historias, A8, D1, D2 Textos + Publicar.
 
 ---
 

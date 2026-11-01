@@ -2,8 +2,28 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Fecha:** 2026-09-19 · **Perfil:** web · **Versión:** **3.2 (2026-10-28, Supabase desde cero en el proyecto nuevo; D49; `docs/superpowers/design/2026-10-28-datos-v2.md`, en adelante DATOS)** · **3.1 (2026-10-28, tarea 9.5b repo público)** · **3.0 (2026-10-28, reposicionamiento: identidad única freelance, `/servicios`, `/partners`, chat por casos, CRM, Radar y newsletter post-lanzamiento; spec v2.0, PANT v2.0)** · 2.2 (2026-09-30, batería de stack y metodologías; working-agreements v1.2) · 2.1 (2026-09-30, tras `/plan-eng-review`) · 2.0 (2026-09-29) · **Autor:** `arquitecto`
+**Fecha:** 2026-09-19 · **Perfil:** web · **Versión:** **3.3 (2026-11-01, closers como usuarios del CRM, historias de usuario del cliente y contenido editable por el admin; D51–D53; DATOS v1.3 §14, PANT v2.1; fase 6b con camino crítico de 3 días + día 4 de calidad y pentest)** · **3.2 (2026-10-28, Supabase desde cero en el proyecto nuevo; D49; `docs/superpowers/design/2026-10-28-datos-v2.md`, en adelante DATOS)** · **3.1 (2026-10-28, tarea 9.5b repo público)** · **3.0 (2026-10-28, reposicionamiento: identidad única freelance, `/servicios`, `/partners`, chat por casos, CRM, Radar y newsletter post-lanzamiento; spec v2.0, PANT v2.0)** · 2.2 (2026-09-30, batería de stack y metodologías; working-agreements v1.2) · 2.1 (2026-09-30, tras `/plan-eng-review`) · 2.0 (2026-09-29) · **Autor:** `arquitecto`
 **Insumos:** spec **v2.0** (`docs/superpowers/specs/2026-09-13-josecoded-plataforma.md`; §0 manda), pantallas **v2.0** (bloque «v2.0» de `2026-09-29-pantallas-y-contenidos.md`, **PANT v2.0**), `ESTADO.md` de `main` y de `chore/supabase` (punto real), vault `Comercial/{canales-captacion,agencias,agencias-mensajes,tarifas}.md`; y los de v2.2: spec v1.7, UX **v4.0** (`docs/superpowers/design/2026-09-17-josecoded-ux.md`), diseño técnico **v1.4** (§0b recoge los cambios del eng review) (`docs/superpowers/design/2026-09-17-josecoded-diseno-tecnico.md`, en adelante **DT**), `docs/working-agreements.md` v1.0 (**normativo**: si una tarea lo contradice, manda él), `DESIGN.md` + `.impeccable/design.json` (sistema visual v6), inventario `docs/superpowers/design/2026-09-29-componentes-home-v6.md` v1.1 (**INV**), pantallas `docs/superpowers/design/2026-09-29-pantallas-y-contenidos.md` v1.0 (**PANT**), prototipo `docs/superpowers/design/ref/home-v6/`, spec de newsletter `docs/superpowers/specs/2026-09-29-josecoded-newsletter.md` **v1.2** (fase 10), `docs/working-agreements.md` **v1.1**, `ESTADO.md`, `Comercial/tarifas.md` v2. El documento de `ui` v3 (`2026-09-17-josecoded-ui.md`) **queda superado** por `DESIGN.md` y no es insumo de ninguna tarea.
+
+## Changelog v3.3 (2026-11-01, closers, historias de usuario y contenido editable; spec v2.2 §0.14 D51–D53; DATOS v1.3 §14; PANT v2.1)
+
+**Decisiones de Jose (2026-11-01):** lanzamiento en **3 días + 1 día de revisión y pentest**; Radar después. (D51) **Los closers vuelven** como usuarios del CRM que solo el admin habilita, con datos globales y cartera propia (`crm_contacts.owner_id`), importación CSV, invitación al portal y comisiones que el admin aprueba y paga. (D52) El cliente propone **historias de usuario** que admin/closer aceptan, estiman y convierten en tareas. (D53) El admin **edita textos es/en, FAQ, proyectos, posts y secciones/visibilidad de precios** con vista previa, publicación y vuelta atrás: Supabase edita, el repo publica (commit del bot `josecoded-bot` desde el gateway), las páginas siguen estáticas. (4) El admin controla también el equipo y las **reglas de notificación** (Telegram por evento y destinatario; los closers reciben lo de su cartera). (5) SEO/GEO: nota honesta en la spec §0.14 y tareas medibles en 9.4/9.6.
+
+**Punto real de partida (2026-11-01):** carriles en marcha **A** (home v7, fase 2), **B** (SEO/headers: 2.11, cabeceras de seguridad), **D** (gateway: 3.7 propuestas, 3.8 leads, 4.4 chat) y **E** (auth 4.1 + área 5.x). Este changelog **no toca** lo que esos carriles tienen en curso; añade el carril **F** (CRM/closers/contenido, hasta tres implementadores en paralelo sobre ficheros disjuntos: **F1** CRM, **F2** contenido, **F3** equipo/notificaciones) y cuelga de **D** y **E** dos tareas pequeñas cada uno.
+
+| # | Cambio | Tareas |
+|---|---|---|
+| 1 | **Esquema aditivo D51–D53** (DATOS §14.7: seis migraciones `20261101…`, políticas de `crm_*`/`clients` reemplazadas, seed con `carla@test` closer y `dani@test` closer desactivado, matriz RLS de §14.3) y **gate** en producción | **1.8e** nueva, **1.9c** gate nuevo |
+| 2 | **Zona `/crm` compartida por admin y closers** (PANT v2.1 K1–K7); `/admin/crm/*` desaparece antes de nacer; `/admin` queda para lo exclusivo del admin | **6.0**, **6.0b** (`ui`), 6.1 y 6.2 **reescritas** (adenda v3.3), **6.10** importar CSV, **6.11** comisiones, **6.12** clientes + decisión de historias, **6.13** equipo, **6.14** notificaciones |
+| 3 | **Historias de usuario** en el área (A8) | **5.6** nueva (carril E) |
+| 4 | **Contenido editable** (D2): build con overrides, editor, Draft Mode, publicar/rollback; gateway commitea con la GitHub App y vigila el despliegue | **3.1b** build, **6.15a/6.15b** web, **3.8c** gateway |
+| 5 | **Notificaciones por reglas** y correos transaccionales de plantilla fija (`client.invited`, `staff.invited`, `story.decided`), vinculación de Telegram por código | **3.8b** gateway (carril D), 6.14 web |
+| 6 | **Día 4: puerta de calidad + pentest ligero** con lista cerrada; SEO medible en el gate (Search Console, Bing, IndexNow, línea base GEO) | **9.7** nueva; 9.4, 9.5, 9.6 adendas |
+| 7 | Regla de trabajo: «textos solo en `messages`» pasa a «`messages` + `content/overrides` validados por `i18n:check`» (working-agreements §10, spec D53) | 3.1b, 6.15a |
+
+**Camino crítico de 3 días (+1).** Día 1: `1.8e` → **`1.9c` (gate, tarde)** ‖ `6.0b` (`ui`, medio día, Jose valida en el navegador) ‖ `3.1b` (F2) ‖ `3.8b` (D) ‖ `6.0` (F1, tras 4.1 de E). Día 2: `6.1` → `6.2` → `6.10` (F1) ‖ `6.15a` (F2) ‖ `6.13` (F3) ‖ `5.6` (E, tras 5.2) ‖ `3.8c` (D). Día 3: `6.11` → `6.12` (F1) ‖ `6.15b` → `6.14` (F2/F3) ‖ `9.1`, `9.2` (A/B) ‖ **`9.4` (gate, tarde)**. Día 4: **`9.7`** (puerta + pentest) → arreglos → **`9.6`** (gate de lanzamiento). **Qué se recorta si el día 3 no llega** (PANT v2.1 §4): 6.14 (las reglas quedan sembradas), 6.15b Blog, vinculación de Telegram de K7 (el admin pega el `chat_id` en D1). Nunca se recorta: 1.8e, 1.9c, 6.0–6.2, 6.10, 6.11 lectura, 6.12, 5.6, 6.13, 6.15a, 3.8b, 3.8c, 9.7.
+
+**Preguntas abiertas (spec §0.14, se aplica la recomendación):** Q21 comisión = % sobre lo cobrado por closer (10 % por defecto), Q22 duplicados de CSV se omiten sin detalles, Q23 el admin edita solo la **visibilidad** de precios, Q24 TOTP también para closers.
 
 ## Changelog v3.2 (2026-10-28, Supabase desde cero; spec D49; DATOS v1.0)
 
@@ -2894,6 +2914,8 @@ it('P2 client choosing P3 sees 1.100 € and submits computed price', () => {
 
 **Agente:** implementador-web · **Rama:** `feat/crm` · **Gate:** no · **Depende de:** 4.1, 1.7, **1.9** (v3.2)
 
+> **v3.3 (D51; PANT v2.1 K1, D-nav; DATOS §14):** se construyen **dos shells** sobre un mismo componente `StaffShell` (`components/staff/staff-shell.tsx`, navegación por rol): **`/crm`** (`app/[locale]/(staff)/crm/layout.tsx` con `requireStaff()` de 6.0: admin o closer activo, `aal2`; 404 en otro caso) con barra **Contactos · Clientes · Comisiones · Más** y **`/admin`** (`requireAdmin()`) con **Resumen · Clientes · Equipo · Más**. `/admin/crm/*` **no se crea**: las rutas C2–C8 viven en `/crm/*`. Resumen de `/crm` (K1): `crm_my_counters()` + `crm_team_counters()` en una `Promise.all`; Resumen de `/admin` (C1): `admin_counters()` con los 11 contadores (añade `stories_proposed`, `commissions_pending`, `imports_failed_24h`, `content_pending`). Prototipo `ref/crm/` de **6.0b** validado por Jose. E2E añade: `carla@test` entra en `/crm` y ve «Equipo» sin nombres; `/admin` con Carla → 404; `dani@test` (desactivado) → 404 en `/crm`. Commit: `feat(web): staff shell with role-aware navigation for /crm and /admin, closer and admin summaries`. Lo demás de la tarea no cambia.
+
 > **v3.2:** `admin_counters()` ya trae los 7 contadores desde 1.8a; el guard del admin exige `aal2` (DATOS §8.1); `/admin` responde 404 si el usuario no está en `staff_members`.
 
 > **v3.0:** navegación **Contactos · Chat · Clientes · Más** (Más: organizaciones, importar, contextos, afiliados, moderación, ampliaciones); Resumen con los contadores de `admin_counters()` ampliada en 1.11 (`contacts_due`, `chat_unread`, `agencies_replied`, más los cinco de v2.2); «Radar hoy» desaparece hasta la fase 7 (placeholder fuera). La primaria del Resumen es «Ver vencidas» → `/admin/crm/contactos?due=1`. Prototipo `ref/admin/` validado por Jose. El resto de la tarea (adenda v2.1: `React.cache()`, `Promise.all`, una llamada a la RPC por render; `adminFetch` con JWT) no cambia.
@@ -2926,6 +2948,8 @@ E2E: `/admin` con Ana → 404; con Jose → "Resumen" y los cinco contadores.
 ### Tarea 6.2 — Contactos: bandeja, detalle, siguiente acción, historial, mapeo de leads heredados y «Cerrar cobrado» (v3.0)
 
 **Agente:** implementador-web · **Rama:** `feat/crm` · **Gate:** no · **Depende de:** 6.1, **1.9**, 1.4, 3.8
+
+> **v3.3 (D51; PANT v2.1 K2–K3; DATOS §14.1, §14.3, §14.4):** rutas **`/crm/contactos`** y **`/crm/contactos/[id]`** (no `/admin/crm/...`). La bandeja no filtra por dueño en código: **RLS** devuelve la cartera del closer o todo al admin; el admin tiene además `?owner=<id>|mine|unassigned` (`OwnerFilter`) y columna `OwnerBadge`. Detalle: cabecera con dueño y **«Reasignar a…»** (solo admin; SA `reassignContact` → `update crm_contacts set owner_id`; confirmación), **«Habilitar acceso al portal»** (`InviteAccessSheet`, compartida con 6.12: visible si existe `clients` sin `user_id`; SA `inviteClientAccess` → `rpc('invite_client_access', {p_client_id, p_email})`; estados «Sin invitar · Invitado el … · Con acceso»), pestaña **Historias** (lista de `client_user_stories` del cliente, lectura; la decisión se hace en 6.12). El **closer no ve «Cerrar cobrado»**: ve «Pedir cierre» (SA `requestClose` → `rpc('crm_request_close', {p_lead_id})`, RPC de 1.8e que en una transacción fija `next_action='Jose: cerrar cobrado'` y `next_action_at=now()` en el contacto, deja la interacción `note` y encola `lead.close_requested` → Telegram al admin). `statusesFor(kind, role)` excluye `won`/`active_client` para `closer` (test nuevo). Nuevo contacto manual: `owner_id` = el usuario actual si es closer (la RLS lo exige); admin puede elegir dueño. E2E añade: Carla no ve el contacto de Jose por URL directa (404); Carla reasignar → 42501 (la SA ni existe para ella: `requireAdmin` dentro); Jose reasigna el contacto de Dani a Carla y Carla lo ve. Commit: `feat(web): crm contacts for staff — owner scope, reassignment, portal access invite and close request`.
 
 > **v3.2 (DATOS §4.3):** **no hay leads heredados que mapear** ni `crm_contacts_view`: un lead es una oportunidad (`leads.contact_id`) de un contacto y se lista dentro de C3. «Cerrar cobrado» llama a `admin_close_lead_paid(p_lead_id, p_amount, …)` (crea `client`, recompensa y pasa el contacto a `active_client`). Cambiar de estado exige `next_action_at` (trigger) y queda como interacción `status_change`. Columnas en inglés (`status`, `source`, `amount`, `owner_note`). · **Insumos:** PANT v2.0 C2–C3; prototipo `ref/admin/` (C2, C3) validado por Jose
 
@@ -3156,6 +3180,305 @@ E2E: editar `partner`/es → guardar borrador → «Probar» abre el chat con el
 > Cierre v2.2 (superado): `revisor`; `/puerta-calidad` completa (`usuario-ejemplo` como Jose operador en leads y cierre cobrado; `revisor-seguridad` en `requireAdmin` por acción, RPC y `adminFetch`); merge.
 
 ---
+## Fase 6b — Closers, historias de usuario y contenido editable (v3.3; D51–D53) · Estimación L · 3 días + día 4 · carriles **F1** (CRM), **F2** (contenido), **F3** (equipo/notificaciones) + colgadas de **D** y **E**
+
+> Normativa: spec v2.2 §0.14, **DATOS v1.3 §14** (tablas, RLS, RPC, eventos: el implementador copia de ahí, no reinterpreta), **PANT v2.1** (pantallas K1–K7, D1–D3, A8). Trabajo directo en `main` (excepción vigente del 2026-10-29) con `implementador-web` → `revisor` por tarea; CI de `main` con Supabase local es la red. Reglas duras: closers y admin con `aal2` (Q24); **ninguna** Server Action de dinero (aprobar/pagar comisión, cerrar cobrado) sin diálogo de confirmación y sin `requireAdmin()` dentro; el CRM sigue sin enviar mensajes comerciales (los tres correos transaccionales de DATOS §14.6 son plantillas fijas en `apps/api/src/templates/` y el test negativo de envío los admite por nombre). Ficheros disjuntos por carril: F1 `app/[locale]/(staff)/crm/**`, `components/crm/**`, `lib/crm/**`; F2 `app/[locale]/(private)/admin/contenido/**`, `components/content-admin/**`, `lib/content/overrides*`, `scripts/*overrides*`; F3 `app/[locale]/(private)/admin/{equipo,notificaciones}/**`, `components/team/**`; E `app/[locale]/(area)/area-clientes/historias/**`; D `apps/api/**`. Los `messages/es/{crm,admin}.json` son nuevos y **solo en español**: `i18n:check` los exime de la paridad es/en porque figuran en `ADMIN_ONLY_NAMESPACES` (`lib/content/namespaces.ts`, 3.1b), distinta de `EDITABLE_NAMESPACES` (los que el admin puede sobrescribir).
+
+### Tarea 1.8e — Migraciones D51–D53, seed ampliado, tests de migraciones y RLS (local)
+
+**Agente:** implementador-web · **Carril:** F1 · **Día:** 1 (mañana) · **Gate:** no · **Depende de:** 1.8c (esquema v1.2 en `main`)
+
+**Objetivo:** las seis migraciones de DATOS §14.7 tal cual (nombres, orden, políticas reemplazadas con `drop policy` + `create policy` del mismo nombre, helpers §14.3, RPC §14.4 con el patrón `private.*_impl` + wrapper invoker, filas sembradas de `notification_rules` y `scheduled_jobs` §14.6), incluidas `crm_request_close(p_lead_id)` (6.2) y `admin_staff_list()` (6.13); seed con `carla@test`, `dani@test` y los datos de §14.7; tests.
+
+**Ficheros:** `supabase/migrations/20261101100000_staff_closer_role.sql` … `20261101100500_notification_rules.sql`; `supabase/seed.sql`; `supabase/test/migrations.test.ts` (reglas nuevas de §14.7); `supabase/test/pg/*.sql` (harness de la nube: aserciones de la matriz §14.3 y de los criterios §14.9 1–6); `apps/web/tests/helpers/supabase-test-clients.ts` (+ `carla`, `dani`); `apps/web/tests/rls.test.ts` (+ ≥ 40 aserciones); `packages/types/src/database.ts` (regenerado con `pnpm --filter types db:types`); `packages/types/src/schemas/{crm,content,stories}.ts` (zod: `CsvContactRow`, `ImportResult`, `ContentEntry` por `kind`, `SiteSettings`, `UserStoryInput`); `packages/types/src/{crm,content}.ts` (tipos inferidos + `EDITABLE_NAMESPACES`).
+
+**Pasos:**
+- [ ] 1. Tests que fallan (extracto; el resto sigue la matriz §14.3 celda a celda):
+```sql
+-- supabase/test/pg/closers.sql (harness run.sh; se ejecuta como cada cuenta con set_config('request.jwt.claims', …))
+-- carla ve solo su cartera
+select is((select count(*) from public.crm_contacts), 3::bigint, 'carla sees her 3 contacts');
+-- dani (disabled) sees nothing although he owns one
+select is((select count(*) from public.crm_contacts), 0::bigint, 'disabled closer sees 0 rows');
+-- carla cannot reassign nor self-win
+select throws_ok($$ update public.crm_contacts set owner_id = null where owner_id = auth.uid() $$, '42501');
+select throws_ok($$ update public.crm_contacts set status = 'won', next_action_at = now() where owner_id = auth.uid() $$, '42501');
+-- import idempotent and leak-free
+select is((select (public.crm_import_contacts_csv(:rows, 'a.csv', 'sha1') ->> 'created')::int), 2);
+select is((select (public.crm_import_contacts_csv(:rows, 'a.csv', 'sha1') ->> 'created')::int), 2, 'same checksum returns the previous result');
+select is((select public.crm_import_contacts_csv(:row_of_jose, 'b.csv', 'sha2') -> 'errors' -> 0 ->> 'reason'), 'exists_elsewhere');
+select ok((public.crm_import_contacts_csv(:row_of_jose, 'b.csv', 'sha3'))::text not like '%jose%', 'no owner data leaks');
+-- commission on close paid (as admin)
+select public.admin_close_lead_paid(:carla_lead, 1400, now(), false, null);
+select is((select amount from public.closer_commissions where lead_id = :carla_lead), 140.00);
+```
+```ts
+// apps/web/tests/rls.test.ts (añadido)
+it('ana proposes a story and cannot change its status', async () => {
+  const { data } = await ana.from('client_user_stories').insert({ client_id, title: 'Reservas', as_a: 'dueña', i_want: 'reservar online', so_that: 'no perder llamadas', acceptance_criteria: ['Formulario', 'Correo'] }).select().single();
+  expect(data?.status).toBe('proposed');
+  const upd = await ana.from('client_user_stories').update({ status: 'accepted' }).eq('id', data!.id);
+  expect(upd.error?.code).toBe('42501');
+});
+it('content_publish rejects {{DATO}} and foreign namespaces', async () => {
+  await jose.rpc('content_save_draft', { p_kind: 'message_override', p_key: 'auth.login.title', p_locale: 'es', p_draft: { value: 'x' } });
+  expect((await jose.rpc('content_publish')).error?.message).toMatch(/namespace_not_editable/);
+});
+```
+- [ ] 2. → FAIL. 3. Escribir las migraciones copiando DATOS §14 (enum en migración propia; `security definer` solo en `private`); seed; `pnpm --filter types db:types`. 4. `supabase db reset` (o `supabase/test/pg/run.sh` en la nube) → PASS; `pnpm test`. 5. Commit: `git commit -m "feat(db): closers (owner scope, imports, commissions), client user stories, site content and notification rules (DATOS v1.3)"`.
+
+**Hecho cuando:** 16 migraciones aplican desde cero; `migrations.test.ts` y `rls.test.ts` en verde con seis cuentas; `supabase inspect db` local sin `multiple_permissive_policies`; `database.ts` sin diff; `explain` de K2/K5 sobre el dataset de carga sin `Seq Scan`.
+
+### Tarea 1.9c — **GATE**: aplicar las migraciones D51–D53 en producción y preparar la GitHub App
+
+**Agente:** controlador con OK de Jose (nunca un subagente) · **Día:** 1 (tarde) · **Gate:** **SÍ** · **Depende de:** 1.8e con `revisor` PASA
+
+**Pasos (cada uno con OK):**
+- [ ] 1. `get_advisors` (seguridad y rendimiento) y `list_migrations` antes; comprobar que el esquema remoto coincide con `20261029100000` (sin drift).
+- [ ] 2. Aplicar las seis migraciones **una a una** por la Management API (`database/query` en transacción + fila en `supabase_migrations.schema_migrations`, como en 1.9) o `supabase db push` desde el Mac si Jose está en él.
+- [ ] 3. `get_advisors` después: **cero** hallazgos de seguridad; `multiple_permissive_policies`, `auth_rls_initplan`, `unindexed_foreign_keys` a cero; `unused_index` aceptado.
+- [ ] 4. Comprobar las filas sembradas de `notification_rules` y `scheduled_jobs` (`content.poll_deploy`, `telegram.poll_updates`); `staff_members` de Jose intacta (`role='admin'`, `disabled_at null`).
+- [ ] 5. **Jose** crea la GitHub App `josecoded-bot` (si no existe desde la fase 10): permisos `Contents: Read and write` **solo**, instalada en este repo; genera la clave privada. El controlador guarda `GITHUB_APP_ID`, `GITHUB_APP_INSTALLATION_ID`, `GITHUB_APP_PRIVATE_KEY` con `wrangler secret put` en `josecoded-api` (producción y preview) tras 3.8c. La clave no se pega en el chat: Jose la introduce desde su terminal (`wrangler secret put` interactivo) o el controlador la lee de un fichero local que se borra.
+- [ ] 6. `ESTADO.md`: «1.9c aplicada el <fecha>; advisors 0».
+
+**Hecho cuando:** `select count(*) from information_schema.tables where table_schema='public'` = 31; advisors a cero; Jose sigue entrando en `/admin`.
+
+### Tarea 6.0 — `requireStaff()`, `claim_staff_access` tras el login y grupo de rutas `(staff)`
+
+**Agente:** implementador-web · **Carril:** F1 · **Día:** 1 (tarde) · **Gate:** no · **Depende de:** 4.1 (carril E: `requireAdmin`, `createServerSupabase`, SA de login), 1.8e
+
+**Objetivo:** `requireStaff(): Promise<{ session, role: 'admin'|'closer' }>` en fichero propio para no tocar `lib/auth/guards.ts` de E: lee `staff_members` (propia fila por RLS), exige `role in ('admin','closer')`, `disabled_at is null` y `aal2` (como `requireAdmin`; si no hay factor, redirige a `/perfil/seguridad`); `notFound()` en cualquier otro caso. Tras el login (en la SA de 4.1 que ya llama a `claim_client_access`), añadir **una línea**: `await supabase.rpc('claim_staff_access')` ignorando `null`. Layout `app/[locale]/(staff)/crm/layout.tsx` con `requireStaff()` y placeholder; `/admin/layout.tsx` sigue con `requireAdmin()`.
+
+**Ficheros:** `apps/web/lib/auth/staff.ts`, `lib/auth/staff.test.ts`, `app/[locale]/(staff)/crm/layout.tsx`, `app/[locale]/(staff)/crm/page.tsx` (placeholder hasta 6.1), `app/[locale]/(auth)/auth/actions.ts` (una línea; coordinar con E: si la tarea 4.1 no ha mergeado, se hace en 6.1), `e2e/staff.spec.ts`.
+
+**Pasos:**
+- [ ] 1. Test que falla:
+```ts
+// apps/web/lib/auth/staff.test.ts
+import { it, expect, vi } from 'vitest';
+vi.mock('next/navigation', () => ({ redirect: vi.fn((u) => { throw new Error('REDIRECT ' + u); }), notFound: vi.fn(() => { throw new Error('NOT_FOUND'); }) }));
+vi.mock('../supabase/server', () => ({ createServerSupabase: () => ({
+  auth: { getUser: async () => ({ data: { user: globalThis.__user } }), mfa: { getAuthenticatorAssuranceLevel: async () => ({ data: { currentLevel: globalThis.__aal } }) } },
+  from: () => ({ select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: globalThis.__staff }) }) }) }) }) }));
+import { requireStaff } from './staff';
+it('404 for a non-staff user', async () => { globalThis.__user = { id: 'u' }; globalThis.__staff = null; await expect(requireStaff()).rejects.toThrow('NOT_FOUND'); });
+it('404 for a disabled closer', async () => { globalThis.__staff = { role: 'closer', disabled_at: '2026-11-01' }; globalThis.__aal = 'aal2'; await expect(requireStaff()).rejects.toThrow('NOT_FOUND'); });
+it('redirects an active closer without aal2 to security', async () => { globalThis.__staff = { role: 'closer', disabled_at: null }; globalThis.__aal = 'aal1'; await expect(requireStaff()).rejects.toThrow(/REDIRECT .*perfil\/seguridad/); });
+it('passes an active closer with aal2', async () => { globalThis.__aal = 'aal2'; await expect(requireStaff()).resolves.toMatchObject({ role: 'closer' }); });
+```
+- [ ] 2. → FAIL. 3. Implementar; E2E: anónimo `/crm` → redirige a login; `ana@test` → 404; `carla@test` → placeholder; `dani@test` → 404 (con `ADMIN_REQUIRE_MFA=false` en E2E, como el admin). 4. → PASS. 5. Commit: `git commit -m "feat(web): requireStaff guard with role, disabled and aal2 checks; staff route group"`.
+
+**Hecho cuando:** tests y E2E en verde; `requireStaff` consulta `staff_members` una vez por petición (`React.cache`).
+
+### Tarea 6.0b — Prototipo `ref/crm/` (shell, K2 bandeja con dueño, K3 detalle con acceso al portal e historias) y validación de Jose
+
+**Agente:** `ui` (con `impeccable`) · **Día:** 1 (medio día) · **Gate:** **sí, de Jose en el navegador** (no de código) · **Depende de:** PANT v2.1, `DESIGN.md`
+
+**Objetivo:** HTML estático en `docs/superpowers/design/ref/crm/` (`index.html` shell con las dos navegaciones conmutables por `?role=admin|closer`, `contactos.html`, `contacto.html`) con tokens de `tokens.css`, densidad de tabla, estados de dueño/acceso/historias, hoja «Habilitar acceso», móvil a 390 px con barra de 4. Sin JS salvo el conmutador. Jose lo abre con `python3 -m http.server … --directory docs/superpowers/design/ref` y decide. **Hecho cuando:** Jose dice OK (anotado en `ESTADO.md` con fecha); 6.1 y 6.2 toman valores de aquí.
+
+### Tarea 6.10 — Importar contactos por CSV (K4): parser propio, mapeo de columnas, vista previa y RPC
+
+**Agente:** implementador-web · **Carril:** F1 · **Día:** 2 · **Gate:** no · **Depende de:** 6.2, 1.8e
+
+**Objetivo:** `/crm/importar` según PANT v2.1 K4. Parser **propio** `lib/crm/csv.ts` (RFC 4180: comillas, comas y saltos dentro de comillas, separador `,` o `;` autodetectado por la cabecera, BOM, CRLF; límite 1 MB / 500 filas → error legible); `lib/crm/import-mapping.ts` (`guessMapping(headers)` con sinónimos es/en de PANT; `normalizeRow(row, mapping)` → `CsvContactRow` de zod; `linkedin_url` normalizada; `tags` por `;`/`,`); SA `previewImport` (parsea, mapea, valida, calcula veredicto local «inválida» y devuelve las primeras 20 + totales; **no** consulta duplicados: eso lo decide la RPC) y `importContacts` (zod de todas las filas, `checksum = sha256(texto normalizado)` con `crypto.subtle`, cuota **10 importaciones/hora por usuario** vía `rpc('increment_quota', {p_key: 'import:'+uid, p_limit: 10, p_ttl: '1 hour'})` antes de la RPC, `rpc('crm_import_contacts_csv')`, `revalidatePath('/crm/contactos')`); historial `crm_imports`.
+
+**Ficheros:** `app/[locale]/(staff)/crm/importar/page.tsx`, `.../importar/actions.ts`, `components/crm/import/{csv-dropzone,column-mapper,import-preview,import-history}.tsx` + CSS Modules, `lib/crm/csv.ts`, `lib/crm/csv.test.ts`, `lib/crm/import-mapping.ts`, `lib/crm/import-mapping.test.ts`, `e2e/crm-import.spec.ts`, `e2e/fixtures/contacts-30.csv`, `messages/es/crm.json`.
+
+**Pasos:**
+- [ ] 1. Tests que fallan:
+```ts
+// apps/web/lib/crm/csv.test.ts
+import { it, expect } from 'vitest';
+import { parseCsv } from './csv';
+it('parses quoted fields, embedded separators and CRLF with BOM', () => {
+  const out = parseCsv('﻿nombre;email;notas\r\n"Pérez, Ana";ana@x.es;"línea 1\nlínea 2"\r\n');
+  expect(out.headers).toEqual(['nombre', 'email', 'notas']); expect(out.rows[0]).toEqual(['Pérez, Ana', 'ana@x.es', 'línea 1\nlínea 2']); expect(out.separator).toBe(';');
+});
+it('rejects more than 500 rows and more than 1 MB', () => {
+  expect(() => parseCsv('a\n' + 'x\n'.repeat(501))).toThrow('too_many_rows');
+  expect(() => parseCsv('a\n' + 'x'.repeat(1024 * 1024 + 1))).toThrow('too_large');
+});
+```
+```ts
+// apps/web/lib/crm/import-mapping.test.ts
+import { guessMapping, normalizeRow } from './import-mapping';
+it('maps spanish and english headers', () => expect(guessMapping(['Nombre', 'E-mail', 'LinkedIn', 'Empresa', 'Tipo'])).toMatchObject({ display_name: 0, email: 1, linkedin_url: 2, organization: 3, kind: 4 }));
+it('normalizes linkedin and requires a reachable field', () => {
+  expect(normalizeRow(['Ana', '', 'https://www.linkedin.com/in/ana/?x=1', '', 'lead'], guessMapping(['Nombre','Email','LinkedIn','Empresa','Tipo'])).data?.linkedin_url).toBe('https://linkedin.com/in/ana');
+  expect(normalizeRow(['Ana', '', '', '', 'lead'], guessMapping(['Nombre','Email','LinkedIn','Empresa','Tipo'])).error).toBe('unreachable');
+});
+```
+E2E: Carla sube `contacts-30.csv` (30 filas: 26 nuevas, 2 suyas repetidas, 1 de Jose, 1 inválida) → vista previa muestra 1 inválida → importa → «26 creados · 2 actualizados · 2 omitidos»; vuelve a subir el mismo fichero → «Ya importado el … (sin cambios)»; la bandeja `?import=<id>` lista 26.
+- [ ] 2. → FAIL. 3. Implementar. 4. → PASS; `web-design-guidelines`; axe en la página (tabla de vista previa con `<caption>`, errores por fila con `aria-describedby`). 5. Commit: `git commit -m "feat(web): csv contact import for staff with own parser, header mapping, preview and idempotent rpc"`.
+
+**Hecho cuando:** E2E en verde; una fila con `=HYPERLINK(` se guarda como texto y se muestra escapada (sin ejecutar ni enlazar); ninguna respuesta de la SA incluye datos de contactos ajenos.
+
+### Tarea 6.11 — Comisiones (K5): lista del closer, totales, aprobación, rechazo y pago registrado por el admin
+
+**Agente:** implementador-web · **Carril:** F1 · **Día:** 3 · **Gate:** no (las acciones de dinero piden confirmación; el pago real es manual fuera de la web) · **Depende de:** 6.1, 1.8e
+
+**Objetivo:** `/crm/comisiones` según PANT K5: tabla (`CommissionRow`), totales por estado (`CommissionTotals`, celdas), filtro `?status`; admin: filtro por closer y acciones `approveCommission`, `rejectCommission(reason)`, `markCommissionPaid(paid_at, note)` → RPC `admin_commission_*` tras `ConfirmDialog` (texto: importe, closer, «esto solo registra el pago»). `requireAdmin()` dentro de cada SA. `lib/crm/commissions.ts`: `canTransition(from, to)` y `totalsByStatus(rows)`.
+
+**Ficheros:** `app/[locale]/(staff)/crm/comisiones/page.tsx`, `.../comisiones/actions.ts`, `components/crm/commissions/{commission-row,commission-totals}.tsx`, `lib/crm/commissions.ts`, `lib/crm/commissions.test.ts`, `e2e/crm-commissions.spec.ts`.
+
+**Pasos:**
+- [ ] 1. Test que falla: `canTransition('pending','paid') === false`, `('pending','approved') === true`, `('approved','paid') === true`, `('rejected', *) === false`; `totalsByStatus` suma con dos decimales. E2E: Carla ve su comisión de 140 € `pendiente` y no ve botones; Jose aprueba → Carla la ve `aprobada`; Jose marca pagada con fecha → `pagada` y `paid_at`; Jose intenta pagar una `pending` → botón ausente y SA → error `invalid_transition`.
+- [ ] 2. → FAIL. 3. Implementar. 4. → PASS. 5. Commit: `git commit -m "feat(web): closer commissions with totals and admin approve/reject/mark-paid"`.
+
+**Hecho cuando:** E2E en verde; sin ninguna llamada a pasarelas ni envíos: solo registro.
+
+### Tarea 6.12 — Clientes de la cartera (K6) y decisión de historias de usuario (aceptar · estimar · rechazar · convertir)
+
+**Agente:** implementador-web · **Carril:** F1 · **Día:** 3 · **Gate:** no · **Depende de:** 6.2 (`InviteAccessSheet`), 1.8e, 5.2 (componentes `PhaseSteps`, `TaskRow` del carril E)
+
+**Objetivo:** `/crm/clientes` y `/crm/clientes/[id]` (PANT K6) sobre `staff_clients()`; lista con acceso e historias por decidir; detalle con `PhaseSteps`, tareas (lectura), **Historias** (`StoryCard` + `StoryDecisionSheet`: Aceptar con horas, importe opcional, nota y casilla «Crear tarea» → `rpc('accept_user_story')`; Rechazar con motivo → `reject_user_story`; Convertir → `convert_user_story`), `InviteAccessSheet`. `lib/stories/status.ts`: `nextActions(status, role)`.
+
+**Ficheros:** `app/[locale]/(staff)/crm/clientes/page.tsx`, `.../clientes/[id]/page.tsx`, `.../clientes/actions.ts`, `components/crm/clients/{client-table,client-detail}.tsx`, `components/stories/{story-card,story-decision-sheet}.tsx` (compartidos con 5.6: F1 los crea, E los consume), `lib/stories/status.ts`, `lib/stories/status.test.ts`, `e2e/crm-clients.spec.ts`.
+
+**Pasos:**
+- [ ] 1. Test que falla: `nextActions('proposed','closer')` → `['accept','reject']`; `('accepted','closer')` → `['convert']`; `('converted', *)` → `[]`; `('proposed','client')` → `['edit','delete']`. E2E: Carla abre su cliente (Ana, seed) → historia «Reservas» `propuesta` → acepta con 6 h y «Crear tarea» → historia `en tareas`, tarea nueva en la ficha; Carla abre por URL un cliente de Jose → 404.
+- [ ] 2. → FAIL. 3. Implementar. 4. → PASS; capturas 390/900/1440; aprobación de Jose en preview. 5. Commit: `git commit -m "feat(web): staff clients view with portal access invite and user story decisions"`.
+
+**Hecho cuando:** E2E en verde; la decisión queda en `client_tasks.story_id` y Ana la ve en 5.6.
+
+### Tarea 5.6 — Área: historias de usuario del cliente (A8) y «De tu historia» en Tareas
+
+**Agente:** implementador-web · **Carril:** E · **Día:** 2 · **Gate:** no · **Depende de:** 5.1, 5.2, 1.8e; usa `StoryCard` de 6.12 si ya existe (si no, lo crea aquí con la misma API y 6.12 lo reutiliza)
+
+**Objetivo:** `/area-clientes/historias` (lista + vacío con ejemplo), `?nueva=1` (`StoryForm` con `Form`/`Field`: título, Como, Quiero, Para, criterios como lista dinámica accesible ≤ 12), `/area-clientes/historias/[id]` (detalle, veredicto, enlace a la tarea; editar/borrar solo `proposed`); A1 celda «Tus historias»; A2 `TaskRow` con «De tu historia» cuando `story_id`. Todo es y en (`messages/{es,en}/area.json` `stories.*`). SA `createStory`, `updateStory`, `deleteStory` con zod `UserStoryInput` y `requireUser()`.
+
+**Ficheros:** `app/[locale]/(area)/area-clientes/historias/{page,[id]/page}.tsx`, `.../historias/actions.ts`, `components/stories/story-form.tsx` (+ `story-card.tsx` si procede), `lib/stories/form.ts` (`normalizeCriteria(lines)`: quita vacías, recorta, máx. 12), `lib/stories/form.test.ts`, `e2e/client-stories.spec.ts`, `messages/{es,en}/area.json`.
+
+**Pasos:**
+- [ ] 1. Test que falla: `normalizeCriteria(['  a ', '', 'b'])` → `['a','b']`; 13 líneas → error `too_many`. E2E: Ana crea una historia con 2 criterios → aparece `propuesta`; la edita; Jose (seed/SA de admin) la acepta → Ana ve `aceptada` con 6 h y no puede editar; en Tareas aparece «De tu historia: Reservas». `/en/client-area/stories` en inglés.
+- [ ] 2. → FAIL. 3. Implementar. 4. → PASS; axe (lista dinámica: cada «Quitar» con nombre accesible «Quitar criterio N»; foco al añadir); `i18n:check`. 5. Commit: `git commit -m "feat(web): client user stories in the area with acceptance criteria and task linkage"`.
+
+**Hecho cuando:** E2E en verde; Ana no ve historias de otro cliente por URL (404).
+
+### Tarea 6.13 — Equipo (D1): invitar closers, activar/desactivar, tasa de comisión, reasignar cartera
+
+**Agente:** implementador-web · **Carril:** F3 · **Día:** 2 · **Gate:** no · **Depende de:** 6.1, 1.8e
+
+**Objetivo:** `/admin/equipo` según PANT D1: `StaffRow` sobre `admin_staff_list()` (RPC de 1.8e: `user_id, role, display_name, email, disabled_at, commission_rate, telegram_linked, contacts_count, commissions_pending`; el email sale de `auth.users` dentro del definer, nunca con el JWT), invitaciones pendientes (reenviar = `admin_staff_invite` de nuevo; anular = `delete`), `InviteStaffSheet` (email, rol, tasa, nota), «Desactivar/Activar» (`admin_staff_set`), «Reasignar cartera a…» (`admin_reassign_contacts`), editar tasa. Cada SA con `requireAdmin()`.
+
+**Ficheros:** `app/[locale]/(private)/admin/equipo/page.tsx`, `.../equipo/actions.ts`, `components/team/{staff-row,invite-staff-sheet,reassign-sheet}.tsx`, `lib/team/invite.ts` (zod del email + tasa 0..100), `lib/team/invite.test.ts`, `e2e/admin-team.spec.ts`, `messages/es/admin.json`.
+
+**Pasos:** 1. Test: tasa `101` → error; email inválido → error. E2E: Jose invita `nuevo@test` como closer al 12 % → aparece pendiente; (helper) crea el usuario y hace login → `claim_staff_access` → `/crm` accesible → fila en Equipo con 12 %; Jose lo desactiva → su `/crm` → 404; Jose reasigna la cartera de Dani a Carla → Carla ve el contacto. 2. FAIL. 3. Implementar. 4. PASS. 5. Commit: `git commit -m "feat(web): admin team — staff invites, enable/disable, commission rate and portfolio reassignment"`.
+
+**Hecho cuando:** E2E en verde; `staff_invites` caducadas no se pueden reclamar (test RLS de 1.8e).
+
+### Tarea 6.14 — Reglas de notificación (D3) y ajustes del closer (K7: vincular Telegram)
+
+**Agente:** implementador-web · **Carril:** F3 · **Día:** 3 · **Gate:** no · **Recortable** (las reglas quedan sembradas por migración) · **Depende de:** 6.1, 3.8b (gateway resuelve destinatarios y enlaza códigos)
+
+**Objetivo:** `/admin/notificaciones` con `RuleMatrix` (evento × destinatario × canal; cada `Switch` con nombre accesible; «Añadir persona concreta»; «Enviar prueba» → `POST /api/v1/notify/test` del gateway con JWT admin); `/crm/ajustes` con `TelegramLinkCard` (`rpc('staff_telegram_begin')` → código, caducidad, estado vinculado por `staff_members.telegram_chat_id` propia) y lectura de las reglas que me afectan. SA `setRule(event, recipient, channel, enabled, recipient_user_id?)` (upsert) con `requireAdmin()`.
+
+**Ficheros:** `app/[locale]/(private)/admin/notificaciones/page.tsx` + `actions.ts`, `app/[locale]/(staff)/crm/ajustes/page.tsx` + `actions.ts`, `components/team/rule-matrix.tsx`, `components/crm/telegram-link-card.tsx`, `lib/notifications/events.ts` (catálogo de eventos con descripción es), `lib/notifications/events.test.ts` (todo evento de DATOS §14.6 tiene descripción), `e2e/admin-notifications.spec.ts`.
+
+**Pasos:** 1. Test del catálogo. E2E: Jose desactiva «Historia propuesta → Dueño» → fila `enabled=false`; Carla genera código en Ajustes → se muestra con caducidad. 2. FAIL. 3. Implementar. 4. PASS. 5. Commit: `git commit -m "feat(web): notification rules matrix for admin and telegram linking for staff"`.
+
+**Hecho cuando:** E2E en verde; la matriz es una `<table>` navegable con teclado.
+
+### Tarea 3.1b — Build con `content/overrides`: fusión de mensajes, FAQ, proyectos, settings y posts `.md`; `i18n:check` ampliado
+
+**Agente:** implementador-web · **Carril:** F2 · **Día:** 1 · **Gate:** no · **Depende de:** 2.1 (`i18n:check`, catálogos), 3.1 (loaders de contenido; si 3.1 no ha mergeado, esta tarea crea `lib/content/overrides.ts` y 3.1 lo consume) · **Coordinación con A/B:** ficheros exclusivos; en `scripts/generate*` y `i18n/request.ts` solo **una línea** de integración cada uno
+
+**Objetivo:** `content/overrides/{messages.es,messages.en,faq,projects,settings}.json` (vacíos y versionados: `{}`/`[]`) + `content/blog/*.md` del admin. `scripts/merge-overrides.ts`: `mergeMessages(base, overrides)` (solo claves existentes, solo `EDITABLE_NAMESPACES`; lo demás → error de build con la clave), salida `content/generated/messages.<locale>.json` que `i18n/request.ts` carga en lugar de los catálogos sueltos; `lib/content/overrides.ts`: `applyFaqOverrides`, `applyProjectOverrides` (textos + `published`), `readSiteSettings()` (zod `SiteSettings` con valores por defecto); `getSectionAvailability()` **lee `settings.sections`** además de la regla de producción (sección oculta si el admin la apaga aunque haya contenido); `pricing` display: `settings.prices.showPrices`/`hiddenPacks` consumidos por `PackCompare`/`PackStrip` (prop `visiblePacks`). `i18n:check` añade: override con clave inexistente, namespace fuera de lista o valor con `{{DATO}}` → fallo; posts `.md` con frontmatter inválido → fallo; `.md` con JSX/HTML (`mdxJsxFlowElement`, `mdxjsEsm`, `html`) → fallo.
+
+**Ficheros:** `content/overrides/*.json`, `apps/web/scripts/merge-overrides.ts`, `apps/web/scripts/merge-overrides.test.ts`, `apps/web/lib/content/overrides.ts`, `lib/content/overrides.test.ts`, `lib/content/namespaces.ts` (`EDITABLE_NAMESPACES`, `ADMIN_ONLY_NAMESPACES`), `apps/web/scripts/i18n-check.ts` (ampliación), `lib/content/sections.ts` (`getSectionAvailability` lee settings), `packages/types/src/schemas/content.ts` (compartido con 1.8e: quien llegue primero lo crea), `open-next.config.ts`/`package.json` (`generate` llama a `merge-overrides`).
+
+**Pasos:**
+- [ ] 1. Tests que fallan:
+```ts
+// apps/web/scripts/merge-overrides.test.ts
+import { it, expect } from 'vitest';
+import { mergeMessages } from './merge-overrides';
+const base = { services: { hero: { title: 'A' } }, auth: { login: { title: 'L' } } };
+it('overrides an existing editable key', () => expect(mergeMessages(base, { 'services.hero.title': 'B' }).services.hero.title).toBe('B'));
+it('rejects unknown keys, non-editable namespaces and {{DATO}}', () => {
+  expect(() => mergeMessages(base, { 'services.hero.nope': 'x' })).toThrow('unknown_key services.hero.nope');
+  expect(() => mergeMessages(base, { 'auth.login.title': 'x' })).toThrow('namespace_not_editable auth');
+  expect(() => mergeMessages(base, { 'services.hero.title': '{{DATO}}' })).toThrow('dato_placeholder');
+});
+```
+```ts
+// apps/web/lib/content/overrides.test.ts
+it('a section switched off by settings is unavailable even with content', () => expect(getSectionAvailability({ env: 'production', guides: 3, demos: 2, settings: { sections: { blog: false, lab: true, partners: true, projects: true, chat: true } } }).blog).toBe(false));
+```
+- [ ] 2. → FAIL. 3. Implementar; `pnpm build` genera y la home sigue estática (`.open-next` sin rutas dinámicas nuevas: comprobar con el manifiesto de OpenNext en un test de build existente de 2.4). 4. → PASS; `pnpm i18n:check`. 5. Commit: `git commit -m "feat(web): content overrides layered over messages, faq, projects and settings at build time with i18n checks"`.
+
+**Hecho cuando:** con overrides vacíos la salida es idéntica a hoy (test de igualdad); con un override de prueba el HTML prerrenderizado de `/servicios` cambia; `i18n:check` falla ante cada caso inválido.
+
+### Tarea 6.15a — Contenido (D2): textos es/en, secciones y precios visibles, vista previa (Draft Mode), publicar, publicaciones y versiones
+
+**Agente:** implementador-web · **Carril:** F2 · **Día:** 2 · **Gate:** no · **Depende de:** 3.1b, 6.1, 1.8e; el commit real lo hace 3.8c (hasta entonces la publicación queda `queued` y la pantalla lo dice)
+
+**Objetivo:** `/admin/contenido?tab=textos|secciones|publicaciones` según PANT D2. Paso 0 (1 h, **spike de riesgo**): `draftMode().enable()` en una SA, `i18n/request.ts` con `draftMode().isEnabled && isAdmin` → `rpc('content_draft_snapshot')` fusionado; probar en `wrangler dev` que la home muestra el borrador solo con la cookie **y** sesión admin; si OpenNext no lo honra, aplicar el respaldo de DATOS §14.5 (ruta dinámica de vista previa) y anotarlo. `ContentSearch` + `OverrideEditor` (base en gris desde `content/generated/messages.<locale>.json` servido por un loader de servidor, override editable es/en, estados), `SectionSwitches` (lee la lista de packs/extras de `pricing.json`), `PublishSheet` (lista de entradas con `draft is distinct from published` → `rpc('content_publish')`; estado de la publicación con pasos), `VersionList` + `ContentDiff` por entrada con «Volver a esta versión» → `rpc('content_rollback')`. `DraftBanner` en el layout público (solo con Draft Mode). SA `saveDraft`, `discardDraft`, `publish`, `rollback`, `enablePreview`, `disablePreview` con `requireAdmin()`.
+
+**Ficheros:** `app/[locale]/(private)/admin/contenido/page.tsx`, `.../contenido/actions.ts`, `components/content-admin/{content-search,override-editor,section-switches,publish-sheet,version-list,content-diff}.tsx`, `components/layout/draft-banner.tsx`, `lib/content/draft.ts` (`loadDraftMessages(locale)` con `React.cache`), `lib/content/draft.test.ts`, `i18n/request.ts` (una rama), `e2e/admin-content.spec.ts`.
+
+**Pasos:**
+- [ ] 1. Tests que fallan: `lib/content/draft.test.ts`: `mergeDraft(base, snapshot)` aplica `messages` del snapshot y deja intacto lo demás; snapshot `null` → base. E2E: Jose edita `services.hero.title` es → «1 cambio sin publicar» → Vista previa abre `/servicios` con el título nuevo y la banda; en otro contexto sin cookie el título sigue el viejo; Publicar → fila `queued` en Publicaciones; Volver a la versión 0 → nueva publicación.
+- [ ] 2. → FAIL. 3. Implementar. 4. → PASS; `web-design-guidelines`; axe. 5. Commit: `git commit -m "feat(web): admin content editor — message overrides, sections and price visibility, draft preview, publish, versions and rollback"`.
+
+**Hecho cuando:** E2E en verde; la home de producción (sin cookie) **no** hace ninguna consulta a Supabase (test: `wrangler dev` con `SUPABASE_URL` roto → `/` sigue en 200); un visitante con la cookie `__prerender_bypass` robada pero sin sesión admin ve el contenido publicado.
+
+### Tarea 6.15b — Contenido (D2): FAQ, proyectos y posts del blog en Markdown
+
+**Agente:** implementador-web · **Carril:** F2 · **Día:** 3 · **Gate:** no · **Recortable** la pestaña Blog · **Depende de:** 6.15a, 3.1b, 4.2 (pipeline del blog)
+
+**Objetivo:** pestañas FAQ (por vía, ordenar, es/en, publicar/ocultar → entradas `faq`), Proyectos (textos es/en + visible → entradas `project`) y Blog (`MarkdownEditor` con vista previa server-rendered por el pipeline de 4.2; frontmatter con zod; es y en como dos entradas enlazadas por slug; «Publicar/Despublicar»). La SA `saveBlogDraft` **compila** el Markdown con `@mdx-js/mdx` (dependencia ya presente por 4.2) y rechaza nodos `mdxJsxFlowElement`, `mdxJsxTextElement`, `mdxjsEsm` y `html` con mensaje «Sin componentes ni HTML».
+
+**Ficheros:** `components/content-admin/{faq-editor,project-editor,markdown-editor}.tsx`, `lib/content/markdown-guard.ts`, `lib/content/markdown-guard.test.ts`, `e2e/admin-content.spec.ts` (ampliado).
+
+**Pasos:** 1. Test: `assertPlainMarkdown('# Hola\n\n<Demo />')` lanza `jsx_not_allowed`; `'<script>'` lanza `html_not_allowed`; Markdown normal pasa. E2E: Jose crea un post es/en `kind: guide` y lo publica → publicación con dos ficheros `content/blog/<slug>.{es,en}.md` en el snapshot; oculta una FAQ → desaparece del snapshot `faq.json`. 2. FAIL. 3. Implementar. 4. PASS. 5. Commit: `git commit -m "feat(web): admin content — faq, project texts and markdown blog posts with guarded compilation"`.
+
+**Hecho cuando:** E2E en verde; un post con JSX nunca llega a `site_content_entries`.
+
+### Tarea 3.8b — Gateway: destinatarios por `notification_rules`, correos transaccionales de plantilla fija y vinculación de Telegram
+
+**Agente:** implementador-web · **Carril:** D · **Día:** 1–2 · **Gate:** no (los secretos van en 1.9c/9.4) · **Depende de:** 1.8c (`outbox.drain`), 1.8e
+
+**Objetivo:** en `outbox.drain`, sustituir la lista fija por `rpc('notification_recipients', {p_event, p_owner_id})` (caché 5 min por evento en memoria del isolate) y entregar por canal: Telegram (adaptador existente) o **email** con `adapters/email.ts` (Resend; puerto `EmailSender` en `@josecoded/types/api.ts`) **solo** para las plantillas fijas `apps/api/src/templates/{staff-invited,client-invited,story-decided}.{es,en}.ts` (sin cuerpo editable: test negativo de envío ampliado para que `sendEmail` solo acepte `templateId` del catálogo). Evento `client` → email del cliente via `auth.admin.getUserById` o `clients.invite_email` del payload. Job `telegram.poll_updates` (`getUpdates` con offset en `quota_counters` `telegram.update_offset`; solo `/start <code>` → `rpc('staff_telegram_link')`). Ruta `POST /api/v1/notify/test` (admin, `aal2`) → Telegram al admin. `lead.created` incluye `owner_id` en el aviso al dueño.
+
+**Ficheros:** `apps/api/src/adapters/email.ts`, `adapters/email.contract.test.ts` (fetchMock), `src/services/notifications.service.ts` (`resolveRecipients`, `deliver`), `services/notifications.service.test.ts`, `src/templates/*.ts`, `src/jobs/telegram-poll.ts`, `jobs/telegram-poll.test.ts`, `src/modules/notify.routes.ts`, `routes-manifest.ts` + snapshot, `test/no-send.test.ts` (ampliado: `sendEmail` solo con `templateId`), `.dev.vars.example` (`RESEND_API_KEY`).
+
+**Pasos:** 1. Tests que fallan: `resolveRecipients('story.proposed', {owner_id})` con reglas falsas devuelve admin + owner; sin reglas → `[]`; `deliver` con un `templateId` desconocido → lanza; `telegram-poll` enlaza un `/start ABCDEFGH` y ignora el resto. 2. FAIL. 3. Implementar. 4. PASS en workerd. 5. Commit: `git commit -m "feat(api): notification rules resolution, fixed transactional email templates and telegram linking job"`.
+
+**Hecho cuando:** tests en verde; `grep -r "gmail" apps/api/src` vacío; `no-send.test.ts` prueba que ningún `send` acepta cuerpo libre.
+
+### Tarea 3.8c — Gateway: publicación de contenido al repo con la GitHub App (`contentPublish`) y vigilancia del despliegue
+
+**Agente:** implementador-web · **Carril:** D · **Día:** 2 · **Gate:** no (secretos en 1.9c/9.4) · **Depende de:** 1.8e, 3.8b
+
+**Objetivo:** adaptador `adapters/github.ts` (puerto `RepoWriter`): JWT RS256 de la App con `crypto.subtle` (`importKey` PKCS8 desde `GITHUB_APP_PRIVATE_KEY`), token de instalación (caché 50 min), **Git Data API**: `getRef(main)` → `createBlob`×n → `createTree(base_tree, entries)` (entradas `sha: null` para borrar posts despublicados) → `createCommit(message, author: josecoded-bot[bot])` → `updateRef` (fast-forward; un reintento si 422); `getWorkflowRunForSha(sha)`. Handler del evento `content.publish_requested` en `outbox.drain`: lee la publicación (`service_role`), escribe los ficheros del snapshot, `rpc('content_publication_mark', {status:'committed', commit_sha, files})`; en error → `failed` + `content.deploy_failed`. Job `content.poll_deploy` (`*/5`): publicaciones `committed` → estado del run de `deploy-production.yml` para ese sha → `deployed` (+ `content.deployed`) o `failed`. Mensaje de commit `content: publish <n> entries (<publication_id>)` sin trailers de IA (es el bot). Límite: 60 ficheros por publicación.
+
+**Ficheros:** `apps/api/src/adapters/github.ts`, `adapters/github.contract.test.ts` (fetchMock estricto: secuencia exacta de llamadas, cuerpo del árbol), `src/services/content-publish.service.ts` (`buildTree(snapshot)` puro: rutas permitidas solo bajo `content/overrides/` y `content/blog/`; cualquier otra → lanza), `services/content-publish.service.test.ts`, `src/jobs/content-poll-deploy.ts` + test, `config/env.ts` (`GITHUB_APP_*` opcionales; sin ellos el handler marca `failed: github_not_configured`), `.dev.vars.example`.
+
+**Pasos:** 1. Tests que fallan: `buildTree` rechaza `apps/web/x.ts` (`path_not_allowed`), produce `sha: null` para un post despublicado, serializa JSON con salto final; contrato: con fetchMock la secuencia es ref → blobs → tree → commit → ref y el `updateRef` lleva `force: false`. 2. FAIL. 3. Implementar. 4. PASS. 5. Commit: `git commit -m "feat(api): content publication to the repo via GitHub App (git data api) and deploy status polling"`.
+
+**Hecho cuando:** tests en verde; `wrangler dev --test-scheduled` con secretos de un repo de prueba (opcional, Jose) crea el commit; sin secretos, la publicación queda `failed: github_not_configured` y D2 lo muestra.
+
+### Tarea 9.7 — Día 4: puerta de calidad completa + pentest ligero (lista cerrada)
+
+**Agente:** `/puerta-calidad` (qa, revisor-seguridad, revisor-accesibilidad, usuario-ejemplo, ui) + `revisor` sobre `main` del día · **Día:** 4 · **Gate:** no (9.6 es el gate) · **Depende de:** todo lo anterior mergeado y 9.4 cruzado
+
+**Alcance del pentest (lo ejecuta `revisor-seguridad` con `qa`; herramientas: Playwright/curl/`pnpm audit`, sin dependencias nuevas; contra la preview con datos de seed, nunca contra producción):**
+- [ ] **Autorización**: matriz RLS con seis cuentas (`rls.test.ts` + `pg/*.sql`); **IDOR** en toda ruta `[id]` (`/crm/contactos`, `/crm/clientes`, `/admin/*/[id]`, `/area-clientes/historias`) con ids ajenos → 404; closer desactivado → 404 en la siguiente petición; `aal1` en `/crm`/`/admin` → redirección a seguridad; Server Actions llamadas directamente con otra sesión (reproducir el `POST` con `Next-Action`) → error.
+- [ ] **Entrada**: CSV con 501 filas, 1 MB+1, celdas de 100 KB, `=HYPERLINK()`/`+cmd`, UTF-16, separadores mixtos → errores controlados, nada ejecutado ni enlazado; Markdown con `<script>`, `<img onerror>`, `javascript:` en enlaces y JSX → rechazado; overrides con `{{DATO}}`, claves nuevas, namespaces `auth` → rechazados en SA y en `i18n:check`.
+- [ ] **Vista previa**: cookie `__prerender_bypass` sin sesión admin → contenido publicado; con sesión de closer → publicado; cabecera `Cache-Control` de páginas en Draft Mode `private, no-store`.
+- [ ] **Publicación**: `buildTree` no puede escribir fuera de `content/`; permisos de la App solo `contents`; `deploy-production.yml` no se dispara por `pull_request` de forks; commit del bot no lleva secretos.
+- [ ] **Dinero**: aprobar/pagar comisión y «Cerrar cobrado» exigen admin + confirmación; un closer no puede llamar a las RPC (42501); importes con 2 decimales y sin negativos (check en BD: añadir si falta).
+- [ ] **Notificaciones**: payloads de Telegram sin emails ni teléfonos de terceros (solo nombre e importes); correos transaccionales solo a emails ya registrados; `notify/test` solo admin.
+- [ ] **Plataforma**: cabeceras de seguridad (carril B) presentes en `/crm`, `/admin`, `/area-clientes`; `pnpm audit --prod` sin críticas; `git grep` de secretos (patrón de 9.5b) vacío; `get_advisors` producción a cero (de 1.9c); rate limit del gateway en `notify/test` e `imports` (la SA está detrás de sesión; cuota 10 importaciones/h por usuario con `increment_quota` desde la SA → **añadir si falta**).
+- [ ] **Puerta funcional**: `usuario-ejemplo` con las personas de 9.5 (v3.3) incluidas Carla y Ana-historias; `qa` E2E completos en Chromium y WebKit; `ui` sobre capturas de `/crm`, `/admin/contenido`, A8 a 390/900/1440; `revisor-accesibilidad` WCAG 2.2 AA en K2, K4, K6, A8, D2, D3.
+
+**Pasos:** 1. `revisor` sobre el diff acumulado del día 1–3. 2. `/puerta-calidad` con la lista de arriba como insumo adicional de `revisor-seguridad`. 3. Hallazgos → `implementador-web` (por carril) → repetir hasta cinco PASA. 4. Informe de pentest en `docs/security/2026-11-pentest-launch.md` (hallazgos, severidad, estado; sin datos sensibles) y `ESTADO.md`. 5. Commit: `docs: launch quality gate and light pentest report`.
+
+**Hecho cuando:** los cinco revisores PASA; ningún hallazgo alto o crítico abierto; los medios aceptados por Jose por escrito en `ESTADO.md`; Jose aprueba la preview en el navegador → 9.6.
+
+---
+
 ## Fase 7 — Radar como **módulo del CRM** (post-lanzamiento, D43) · Estimación XL · ramas `feat/radar-core`, `feat/radar-connectors`, `feat/radar-api`, `feat/radar-admin`, `feat/radar-mail-calendar`
 
 > **v3.0 (D43):** la fase completa va **después de 9.6**, sin válvula por fecha. Cambios aditivos al ejecutarla: (a) 7.6 añade `radar_applications.contact_id uuid references crm_contacts(id)` y, al preparar una candidatura, crea o enlaza el contacto `kind='recruiter'` (+ `crm_organizations` por empresa) y una `crm_interactions(kind='note', payload: {offer})`; los correos vinculados (7.22) crean `crm_interactions(kind='message_received', channel='email')`; (b) las pantallas 7.25–7.29 viven bajo **`/admin/crm/radar/*`** y la bandeja aparece en «Más» y en el Resumen («Radar hoy») solo cuando el módulo existe; (c) el borrador de seguimiento en Gmail (7.22) reutiliza `crm_message_drafts` y el OAuth de Google de 7.20 habilita también `POST /crm/drafts/:id/gmail-draft` (6.8, Q20); (d) `/seguimiento` de `claude-config` pasará a leer `next_action_at` del CRM (fuera de este repo). Todo lo demás de la fase (0.3–0.6, 7.1–7.31) sigue como en v2.2.
@@ -4057,6 +4380,8 @@ Sin métricas en la web (spec §12, `DESIGN.md`): no hay `ProofStrip` ni cifra d
 
 **Agente:** controlador con OK de Jose · **Gate:** **SÍ** · **Depende de:** todas las ramas mergeadas en `release/v1`
 
+> **v3.3 (día 3, tarde; SEO medible + D51–D53):** pasos añadidos, cada uno con OK: (7) **Search Console** (propiedad de dominio por DNS) y **Bing Webmaster Tools** verificados, `sitemap.xml` enviado en ambos, **Crawler Hints / IndexNow** activado en la zona de Cloudflare (SEO A10); (8) comprobar que `robots.txt` de la preview sigue con `Disallow: /` y que producción permite los bots de IA de la lista (A5); (9) **GitHub App `josecoded-bot`** instalada en el repo con permiso **solo `contents: write`**; `GITHUB_APP_ID`, `GITHUB_APP_PRIVATE_KEY`, `GITHUB_APP_INSTALLATION_ID` en `wrangler secret` del gateway (producción); prueba: publicar desde D2 un override inocuo → commit del bot → `deploy-production.yml` en verde → estado «Desplegado» en D2 y Telegram; (10) `RESEND_API_KEY` y remitente `cuenta@josecoded.com` verificados: un correo de prueba de `client.invited` a Jose; (11) Jose vincula su Telegram en `/crm/ajustes` y recibe «Enviar prueba» de D3; (12) **nota honesta anotada en `ESTADO.md`**: las posiciones no se garantizan; lo que se mide es GSC (impresiones/clics por consulta), citas del protocolo GEO (línea base en 9.6) y cadencia de una guía al mes. Sin estos pasos no se cruza 9.6.
+
 > **v3.2:** sin Edge Function ni `vault`; `get_advisors` a cero como criterio; `grep -r nrgrmymsjtgayzejtawa` vacío en repo, secretos de Workers y `.env` de Omen; `supabase-ping.yml` activo.
 
 > **v2.1 (eng review):** (a) `pricing:sync-db` ya no escribe: el controlador aplica **`supabase/generated/pricing-sync.sql`** con `apply_migration` tras revisar el diff; (b) `api.josecoded.com`, la rotación de Telegram/Resend y el SMTP ya se hicieron en 3.12; aquí solo se rota `WORKER_INTERNAL_TOKEN` (con `_PREV` 24 h) y se confirma `API_MODE`; (c) **fecha de válvula**: si Radar no está, se lanza sin él (D34) y `ESTADO.md` lo anota.
@@ -4070,6 +4395,8 @@ Sin métricas en la web (spec §12, `DESIGN.md`): no hay `ProofStrip` ni cifra d
 - [ ] 6. Copia del ADR (`manage_adr get`) → `docs/adr-backup-<fecha>.md` (ignorado o commiteado, decisión del controlador) → `index_repository` del monorepo → restaurar/actualizar el ADR con las decisiones del Anexo del DT y de este plan.
 
 ### Tarea 9.5 — Puerta de calidad final sobre `release/v1`
+
+> **v3.3:** la puerta final se ejecuta **como parte de 9.7 (día 4)**, con dos personas más para `usuario-ejemplo`: **Carla (closer)** —entra en `/crm`, importa un CSV de 30 filas con dos duplicados, abre su contacto, pide cierre, invita al portal a un cliente, ve su comisión `pending`→`approved`— y **Ana proponiendo una historia** que Carla convierte en tarea; y **Jose** publicando un cambio de texto desde D2 y viéndolo en producción. Lighthouse añade `/area-clientes/historias` no (privada); el resto igual.
 
 > **v3.0:** rama `release/v2`. `usuario-ejemplo` con **Marta** (home → `/servicios#packs` → generador/WhatsApp), **Dani** (home → proyectos/lab → `/servicios#por-hora` → reservar), **Nuria** (`/partners` → contacto rápido y chat `partner`), **Pablo** (`/servicios#contratacion` → CV/reservar/chat `recruiter`) y **Jose operador** (CRM: importar, estados, borrador, takeover, publicar contexto). Sin Radar. Lighthouse también en `/servicios`, `/partners`, `/lab`, `/en/services`. Criterio nuevo: los **ocho contextos del chat publicados** y las **dos demos y tres guías** en producción.
 
@@ -4132,6 +4459,8 @@ Sin métricas en la web (spec §12, `DESIGN.md`): no hay `ProofStrip` ni cifra d
 **Hecho cuando:** el repo es público, `main` está protegida, el barrido devuelve cero resultados, `LICENSE` y `SECURITY.md` existen, el `README.md` en inglés es la portada y `revisor-seguridad` ha dado PASA.
 
 ### Tarea 9.6 — **GATE**: lanzamiento y cierre
+
+> **v3.3 (día 4, tras 9.7 en PASA):** smoke añadido en producción: `/crm` con la cuenta de Jose (y 404 anónimo), invitación a un closer real si Jose la tiene (D1 → correo → claim → `/crm`), una historia propuesta por un cliente de prueba → Telegram al admin, una publicación desde D2 → commit → despliegue → texto cambiado en `/servicios`. **Línea base GEO** (SEO A13): las 10 preguntas × 4 sistemas registradas en `docs/geo/baseline-<fecha>.md` el mismo día. Radar arranca después (fase 7) como estaba.
 
 > **v3.0 (D46):** `release/v2` → `main`; sin smoke de Radar; smoke añadido: `/servicios`, `/partners`, `/lab`, `/chat` anónimo (un mensaje → respuesta con el contexto publicado), un lead de `/partners` → contacto `agency` en el CRM + Telegram. Tras el lanzamiento arranca la fase 7 (Radar) y, a los 3 meses, la decisión sobre la fase 10 (spec §0.9). `ESTADO.md`, vault, canvas y ADR se actualizan con D36–D47. Anotar en el vault: **`agencias-mensajes.md` puede llevar enlace a `/partners`** desde este día.
 
