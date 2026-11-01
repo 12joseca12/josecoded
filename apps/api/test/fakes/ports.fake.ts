@@ -1,5 +1,15 @@
-import type { AiClient, AiCompletion, QuotaStore, TurnstileVerdict, TurnstileVerifier } from '../../src/ports';
-import type { Notifier } from '@josecoded/types';
+import type {
+  AffiliatesRepo,
+  AiClient,
+  AiCompletion,
+  CreatedLead,
+  CreateLeadPayload,
+  LeadsRepo,
+  QuotaStore,
+  TurnstileVerdict,
+  TurnstileVerifier,
+} from '../../src/ports';
+import type { NoticeLedger, Notifier } from '@josecoded/types';
 
 export interface FakeTurnstile extends TurnstileVerifier {
   verdict: TurnstileVerdict;
@@ -76,4 +86,63 @@ export function createFakeTelegram(): FakeTelegram {
     },
   };
   return fake;
+}
+
+export interface FakeNotices extends NoticeLedger {
+  sent: Set<string>;
+}
+
+export function createFakeNotices(): FakeNotices {
+  const fake: FakeNotices = {
+    sent: new Set(),
+    async markSent(key) {
+      fake.sent.add(key);
+    },
+    async wasSent(key) {
+      return fake.sent.has(key);
+    },
+  };
+  return fake;
+}
+
+export interface FakeLeads extends LeadsRepo {
+  payloads: CreateLeadPayload[];
+  /** Set to make `create` throw (a Postgres error text that must never reach the response). */
+  failWith?: Error;
+}
+
+/** LeadsRepo with the idempotency and the affiliate fallback of `create_lead`. */
+export function createFakeLeads(knownCodes: string[] = []): FakeLeads {
+  const byKey = new Map<string, CreatedLead>();
+  const fake: FakeLeads = {
+    payloads: [],
+    async create(payload) {
+      if (fake.failWith) throw fake.failWith;
+      const existing = byKey.get(payload.idempotency_key);
+      if (existing) return { ...existing, created: false };
+      const stored = structuredClone(payload);
+      if (stored.affiliate_code && !knownCodes.includes(stored.affiliate_code)) {
+        stored.meta = { ...stored.meta, affiliate_code_rejected: stored.affiliate_code };
+        delete stored.affiliate_code;
+      }
+      fake.payloads.push(stored);
+      const created = { leadId: crypto.randomUUID(), contactId: crypto.randomUUID(), created: true };
+      byKey.set(payload.idempotency_key, created);
+      return created;
+    },
+  };
+  return fake;
+}
+
+/** AffiliatesRepo over `{ code: ownerEmail }`. */
+export function createFakeAffiliates(owners: Record<string, string> = {}): AffiliatesRepo {
+  return {
+    async findOwner(code) {
+      return code in owners ? { userId: `user-of-${code}` } : null;
+    },
+    async userEmail(userId) {
+      const code = userId.replace('user-of-', '');
+      return owners[code] ?? null;
+    },
+  };
 }

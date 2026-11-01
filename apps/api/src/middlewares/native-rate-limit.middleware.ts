@@ -1,4 +1,5 @@
 import { fail } from '../utils/api-response';
+import { HttpError } from '../utils/http-error';
 
 import type { Env } from '../types/env.types';
 import type { Context, MiddlewareHandler } from 'hono';
@@ -35,4 +36,20 @@ export function nativeRateLimit(
     }
     return next();
   };
+}
+
+/**
+ * The same limiter for a handler that knows the key only after reading the request (a visitor id, a valid server
+ * key). Throws the 429 / 503 of the middleware; no binding (local dev, tests) lets the request through.
+ */
+export async function enforceNativeLimit(limiter: RateLimiterBinding | undefined, key: string): Promise<void> {
+  if (!limiter) return;
+  let success: boolean;
+  try {
+    ({ success } = await limiter.limit({ key }));
+  } catch {
+    // fail closed, as the middleware does
+    throw new HttpError(503, 'rate_limited', 'Too many requests', { headers: { 'Retry-After': '60' } });
+  }
+  if (!success) throw new HttpError(429, 'rate_limited', 'Too many requests', { headers: { 'Retry-After': '60' } });
 }

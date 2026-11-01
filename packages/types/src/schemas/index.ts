@@ -6,6 +6,7 @@ export * from './build.ts';
 export * from './chat.ts';
 export * from './crm.ts';
 export * from './env.ts';
+export * from './leads.ts';
 export * from './media.ts';
 export * from './pricing.ts';
 export * from './proposal.ts';

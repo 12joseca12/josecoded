@@ -1,6 +1,7 @@
 // Composition root of the gateway (working-agreements §17.1).
 // Ports live in @josecoded/types (api.ts); real adapters live in src/adapters/ and are the only files
 // that import SDKs or call third parties. Routes and middlewares receive `c.var.deps`; they never import adapters.
+import { createAffiliatesRepo, createLeadsRepo } from './adapters/leads';
 import { createNoticeLedger, createOutboxRepo } from './adapters/outbox';
 import { createQuotaStore } from './adapters/quota';
 import { createScheduledJobsRepo } from './adapters/scheduled-jobs';
@@ -10,7 +11,7 @@ import { createTurnstileVerifier } from './adapters/turnstile';
 import { createAiClient } from './adapters/workers-ai';
 import { parseEnv } from './config/env';
 
-import type { AiClient, QuotaStore, TurnstileVerifier } from './ports';
+import type { AffiliatesRepo, AiClient, LeadsRepo, QuotaStore, TurnstileVerifier } from './ports';
 import type { Env } from './types/env.types';
 import type { Clock, NoticeLedger, Notifier, OutboxRepo, ScheduledJobsRepo } from '@josecoded/types';
 
@@ -35,6 +36,10 @@ export interface Deps {
   quota?: QuotaStore;
   /** Workers AI through the AI Gateway. Undefined without the AI binding or AI_GATEWAY_ID: callers use rules. */
   ai?: AiClient;
+  /** `create_lead` (service role). Undefined without SUPABASE_SECRET_KEY. */
+  leads?: LeadsRepo;
+  /** `affiliates` and Auth owner lookup (service role). Undefined without SUPABASE_SECRET_KEY. */
+  affiliates?: AffiliatesRepo;
 }
 
 /** Hono generics of the gateway app: the bindings plus what the middlewares leave in `c.var`. */
@@ -64,6 +69,8 @@ export function buildDeps(env: Env): Deps {
           outbox: createOutboxRepo(rpc),
           notices: createNoticeLedger(rpc),
           quota: createQuotaStore(rpc),
+          leads: createLeadsRepo(rpc),
+          affiliates: createAffiliatesRepo(gateway.admin),
         }
       : {}),
     ...(telegram ? { telegram } : {}),

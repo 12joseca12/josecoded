@@ -7,6 +7,8 @@ export type RouteModule =
   | 'v1'
   | 'v1-protected'
   | 'proposals'
+  | 'leads'
+  | 'affiliates'
   | 'dev-worker-proxy';
 
 export type RouteEntry = {
@@ -17,8 +19,10 @@ export type RouteEntry = {
 
 export const routes = [
   { method: 'ALL', path: '/api/dev/worker/*', module: 'dev-worker-proxy' },
+  { method: 'GET', path: '/api/v1/affiliates/validate', module: 'affiliates' },
   { method: 'GET', path: '/api/v1/auth/me', module: 'v1-protected' },
   { method: 'GET', path: '/api/v1/health', module: 'v1' },
+  { method: 'POST', path: '/api/v1/leads', module: 'leads' },
   { method: 'POST', path: '/api/v1/proposals/generate', module: 'proposals' },
   { method: 'GET', path: '/api/v1/system/status', module: 'v1-protected' },
   { method: 'GET', path: '/health', module: 'health' },

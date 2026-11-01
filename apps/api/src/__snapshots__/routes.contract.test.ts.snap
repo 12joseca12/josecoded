@@ -5,10 +5,12 @@ exports[`exact route surface > matches the committed snapshot 1`] = `
   "ALL /*",
   "ALL /api/dev/worker/*",
   "ALL /api/v1/*",
+  "GET /api/v1/affiliates/validate",
   "GET /api/v1/auth/me",
   "GET /api/v1/health",
   "GET /api/v1/system/status",
   "GET /health",
+  "POST /api/v1/leads",
   "POST /api/v1/proposals/generate",
 ]
 `;
