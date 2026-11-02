@@ -15,3 +15,10 @@ export function packLabel(code: string, locale: Locale): string {
 export function packPrice(code: string): number | null {
   return pricing.packs.find((p) => p.code === code)?.price ?? null;
 }
+
+/** Label of an extra; falls back to the Spanish one while the English text is still a `{{DATO}}`. */
+export function extraLabel(code: string, locale: Locale): string {
+  const extra = pricing.extras.find((e) => e.code === code);
+  if (!extra) return code;
+  return hasDato(extra.label[locale]) ? extra.label[locale] : extra.label.es;
+}

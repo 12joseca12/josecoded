@@ -27,6 +27,7 @@ const cases: [path: string, status: number, lang?: string][] = [
   ['/area-clientes', 307],
   ['/en/client-area', 307],
   ['/en/client-area/tasks', 307],
+  ['/en/client-area/plan', 307],
   ['/en/a/b', 404],
 ];
 

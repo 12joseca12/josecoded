@@ -191,6 +191,68 @@
         "notAllowed": "Ese tipo de archivo no se admite. Prueba con imagen, PDF, texto, CSV, ZIP u Office.",
         "failed": "No hemos podido subir el archivo. Inténtalo de nuevo."
       }
+    },
+    "plan": {
+      "metaTitle": "Pack",
+      "title": {
+        "lead": "Tu pack,",
+        "tail": "y lo que suma"
+      },
+      "lede": "Lo que contrataste, los extras de tu proyecto y cómo ampliarlo.",
+      "current": "Pack contratado",
+      "listPrice": "Precio de lista: {price}",
+      "weeks": "{count, plural, one {# semana} other {# semanas}} de trabajo",
+      "extrasTitle": "Extras",
+      "extrasEmpty": "Todavía no tienes extras.",
+      "extraStatus": {
+        "included": "Incluido",
+        "active": "Activo",
+        "requested": "Pedido",
+        "rejected": "Rechazado"
+      },
+      "extraFree": "Gratis",
+      "extraLine": "{label} · {status}",
+      "upgradeTitle": "Ampliar",
+      "upgradeLede": "Pasa a un pack superior (pagas la diferencia de lista) o añade extras.",
+      "upgradeCta": "Solicitar ampliación",
+      "requested": "Solicitud enviada. Jose la revisará y te responderá.",
+      "pending": "Tienes una solicitud pendiente: {summary}. Jose te responderá pronto; hasta entonces no se puede enviar otra.",
+      "history": "Solicitudes anteriores",
+      "requestStatus": {
+        "pending": "Pendiente",
+        "accepted": "Aceptada",
+        "rejected": "Rechazada"
+      },
+      "requestLine": "{summary} · {price} · {status}",
+      "summaryPack": "pasar a {pack}",
+      "summaryExtras": "extras: {extras}",
+      "summaryBoth": "pasar a {pack} y extras: {extras}",
+      "upgrade": {
+        "metaTitle": "Solicitar ampliación",
+        "title": {
+          "lead": "Amplía",
+          "tail": "tu proyecto"
+        },
+        "lede": "Elige un pack superior, extras o ambas cosas. El precio de abajo es el de lista; Jose confirma antes de empezar.",
+        "back": "Volver al pack",
+        "pendingBlocked": "Ya tienes una solicitud pendiente. Cuando Jose la resuelva podrás enviar otra.",
+        "packLegend": "Pasar a un pack superior",
+        "packNone": "Sin cambio de pack",
+        "extrasLegend": "Extras",
+        "total": "Precio de la ampliación",
+        "totalHelp": "Diferencia de lista entre packs más los extras. Sin descuentos adicionales.",
+        "nothing": "Elige un pack superior o al menos un extra.",
+        "noOptions": "No hay un pack superior ni extras disponibles para ti.",
+        "submit": "Enviar solicitud",
+        "form": "Solicitud de ampliación",
+        "errors": {
+          "nothing": "Elige un pack superior o al menos un extra.",
+          "notAnUpgrade": "Esa combinación no es una ampliación válida para tu pack.",
+          "alreadyPending": "Ya tienes una solicitud pendiente. Espera a que Jose la resuelva.",
+          "failed": "No hemos podido enviar la solicitud. Inténtalo de nuevo."
+        },
+        "extraMonthly": "al mes"
+      }
     }
   }
 }

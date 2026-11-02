@@ -1,0 +1,44 @@
+.extras {
+  display: grid;
+  gap: var(--sp-2);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border-width: 0;
+}
+
+.legend {
+  padding: 0;
+  margin-block-end: var(--sp-2);
+  color: var(--text);
+  font-size: var(--font-label-size);
+  font-weight: var(--font-label-button-weight);
+}
+
+.total {
+  display: grid;
+  gap: var(--sp-1);
+  padding: var(--sp-4);
+  border-radius: var(--r-md);
+  background: var(--tint-ghost);
+  box-shadow: var(--shadow-hairline-strong);
+}
+
+.totalLabel {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--font-small-size);
+}
+
+.price {
+  font-size: var(--font-figure-pack-size);
+  font-weight: var(--font-figure-pack-weight);
+  letter-spacing: var(--font-figure-pack-tracking);
+  line-height: var(--font-title-leading);
+}
+
+.help {
+  margin: 0;
+  color: var(--text-3);
+  font-size: var(--font-small-size);
+}

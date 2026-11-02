@@ -191,6 +191,68 @@
         "notAllowed": "That file type is not accepted. Try an image, PDF, text, CSV, ZIP or Office file.",
         "failed": "We could not upload the file. Please try again."
       }
+    },
+    "plan": {
+      "metaTitle": "Plan",
+      "title": {
+        "lead": "Your plan,",
+        "tail": "and what adds to it"
+      },
+      "lede": "What you hired, the extras of your project and how to extend it.",
+      "current": "Plan you hired",
+      "listPrice": "List price: {price}",
+      "weeks": "{count, plural, one {# week} other {# weeks}} of work",
+      "extrasTitle": "Extras",
+      "extrasEmpty": "You have no extras yet.",
+      "extraStatus": {
+        "included": "Included",
+        "active": "Active",
+        "requested": "Requested",
+        "rejected": "Rejected"
+      },
+      "extraFree": "Free",
+      "extraLine": "{label} · {status}",
+      "upgradeTitle": "Upgrade",
+      "upgradeLede": "Move to a higher plan (you pay the list difference) or add extras.",
+      "upgradeCta": "Request an upgrade",
+      "requested": "Request sent. Jose will review it and answer you.",
+      "pending": "You have a pending request: {summary}. Jose will answer soon; until then another one cannot be sent.",
+      "history": "Previous requests",
+      "requestStatus": {
+        "pending": "Pending",
+        "accepted": "Accepted",
+        "rejected": "Rejected"
+      },
+      "requestLine": "{summary} · {price} · {status}",
+      "summaryPack": "move to {pack}",
+      "summaryExtras": "extras: {extras}",
+      "summaryBoth": "move to {pack} and extras: {extras}",
+      "upgrade": {
+        "metaTitle": "Request an upgrade",
+        "title": {
+          "lead": "Extend",
+          "tail": "your project"
+        },
+        "lede": "Pick a higher plan, extras or both. The price below is the list price; Jose confirms before starting.",
+        "back": "Back to the plan",
+        "pendingBlocked": "You already have a pending request. When Jose resolves it you can send another.",
+        "packLegend": "Move to a higher plan",
+        "packNone": "No plan change",
+        "extrasLegend": "Extras",
+        "total": "Upgrade price",
+        "totalHelp": "List difference between plans plus the extras. No extra discounts.",
+        "nothing": "Pick a higher plan or at least one extra.",
+        "noOptions": "There is no higher plan or extra available for you.",
+        "submit": "Send request",
+        "form": "Upgrade request",
+        "errors": {
+          "nothing": "Pick a higher plan or at least one extra.",
+          "notAnUpgrade": "That combination is not a valid upgrade for your plan.",
+          "alreadyPending": "You already have a pending request. Wait for Jose to resolve it.",
+          "failed": "We could not send the request. Please try again."
+        },
+        "extraMonthly": "a month"
+      }
     }
   }
 }

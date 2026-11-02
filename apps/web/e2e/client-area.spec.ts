@@ -135,3 +135,43 @@ test.describe('material', () => {
     expect(data ?? []).toEqual([]);
   });
 });
+
+test.describe('plan and upgrade', () => {
+  test.beforeEach(async () => {
+    // a clean slate: the seed has no request, and a previous run may have left one pending
+    await serviceClient().from('upgrade_requests').delete().eq('client_id', SEED.clients.ana);
+  });
+  test.afterAll(async () => {
+    if (await supabaseIsUp()) await serviceClient().from('upgrade_requests').delete().eq('client_id', SEED.clients.ana);
+  });
+
+  test('the plan page shows the pack and the seeded extra', async ({ page, context, baseURL }) => {
+    await signInAs(context, baseURL as string, 'ana');
+    await page.goto('/area-clientes/pack');
+    await expect(page.getByText(/^P2/).first()).toBeVisible();
+    await expect(page.getByText(/SEO básico · Incluido/)).toBeVisible();
+    await expectNoSeriousViolations(page);
+  });
+
+  test('Ana requests P3: 1.100 € is shown, the database stores it as pending, and a second request is blocked', async ({
+    page,
+    context,
+    baseURL,
+  }) => {
+    await signInAs(context, baseURL as string, 'ana');
+    await page.goto('/area-clientes/pack/ampliar');
+    await expect(page.getByRole('radio', { name: /P1|P2/ })).toHaveCount(0);
+    await page.getByRole('radio', { name: /P3/ }).check();
+    await expect(page.getByText('1.100 €')).toBeVisible();
+    await page.getByRole('button', { name: 'Enviar solicitud' }).click();
+    await page.waitForURL('**/area-clientes/pack?requested=1');
+    await expect(page.getByText('Solicitud enviada.')).toBeVisible();
+
+    const { data } = await serviceClient().from('upgrade_requests').select('computed_price, status, to_pack_code').eq('client_id', SEED.clients.ana);
+    expect(data).toEqual([{ computed_price: 1100, status: 'pending', to_pack_code: 'P3' }]);
+
+    await page.goto('/area-clientes/pack/ampliar');
+    await expect(page.getByText(/Ya tienes una solicitud pendiente/)).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Enviar solicitud' })).toHaveCount(0);
+  });
+});

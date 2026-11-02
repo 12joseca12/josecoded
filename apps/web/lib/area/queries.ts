@@ -144,3 +144,33 @@ export async function getAssets(clientId: string): Promise<AreaAsset[]> {
     .order('created_at', { ascending: false });
   return data ?? [];
 }
+
+export type AreaExtra = Pick<Tables<'client_extras'>, 'id' | 'extra_code' | 'free' | 'status' | 'amount'>;
+export type AreaUpgrade = Pick<
+  Tables<'upgrade_requests'>,
+  'id' | 'to_pack_code' | 'extras' | 'computed_price' | 'status' | 'created_at'
+>;
+
+export async function getClientExtras(clientId: string): Promise<AreaExtra[]> {
+  const session = await getOptionalSession();
+  if (!session) return [];
+  const { data } = await session.supabase
+    .from('client_extras')
+    .select('id, extra_code, free, status, amount')
+    .eq('client_id', clientId)
+    .order('created_at', { ascending: true });
+  return data ?? [];
+}
+
+/** The latest upgrade requests of the client (at most one is pending: `uq_upgrade_requests_pending`). */
+export async function getUpgradeRequests(clientId: string, limit = 5): Promise<AreaUpgrade[]> {
+  const session = await getOptionalSession();
+  if (!session) return [];
+  const { data } = await session.supabase
+    .from('upgrade_requests')
+    .select('id, to_pack_code, extras, computed_price, status, created_at')
+    .eq('client_id', clientId)
+    .order('created_at', { ascending: false })
+    .limit(limit);
+  return data ?? [];
+}
