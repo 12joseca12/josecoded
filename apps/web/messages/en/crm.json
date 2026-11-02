@@ -110,6 +110,13 @@
         "content_pending": "Unpublished content",
         "quotes_draft": "Draft quotes"
       }
+    },
+    "error": {
+      "code": "500",
+      "title": "Something went wrong",
+      "text": "It is not your fault: this screen hit an error. Try again and, if it keeps happening, tell Jose.",
+      "retry": "Try again",
+      "home": "Back to the summary"
     }
   }
 }

@@ -18,6 +18,13 @@
   line-height: var(--font-display-closing-leading);
 }
 
+.heading[data-size='crm'] {
+  font-size: var(--font-crm-title-size);
+  font-weight: var(--font-crm-title-weight);
+  letter-spacing: var(--font-crm-title-tracking);
+  line-height: var(--font-crm-title-leading);
+}
+
 .tail {
   color: var(--highlight);
 }

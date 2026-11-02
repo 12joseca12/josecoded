@@ -39,9 +39,10 @@ export interface StaffShellProps {
  * 2.5rem tall in the rail and 2.75rem on touch.
  */
 export async function StaffShell({ locale, zone, role, identity, overdue = 0, children }: StaffShellProps) {
-  const [t, a11y] = await Promise.all([
+  const [t, a11y, site] = await Promise.all([
     getTranslations({ locale, namespace: 'crm' }),
     getTranslations({ locale, namespace: 'a11y' }),
+    getTranslations({ locale, namespace: 'site' }),
   ]);
   const nav = staffNav(zone, role);
   const view = (items: readonly StaffNavItem[]): StaffNavView[] =>
@@ -57,7 +58,7 @@ export async function StaffShell({ locale, zone, role, identity, overdue = 0, ch
   const label = t(`shell.navLabel.${zone}`);
   const brand = (
     <>
-      josecoded <span className={styles.zone}>{t(`shell.zone.${zone}`)}</span>
+      {site('name')} <span className={styles.zone}>{t(`shell.zone.${zone}`)}</span>
     </>
   );
   const name = identity.name ?? '';

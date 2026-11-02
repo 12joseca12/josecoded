@@ -1,9 +1,9 @@
 import { getFormatter, getTranslations } from 'next-intl/server';
 
+import { StatusBadge } from '@/components/shared/status-badge';
 import { Figure } from '@/components/staff/figure';
 import { PageHead } from '@/components/staff/page-head';
 import { StatList, StatRow } from '@/components/staff/stat-list';
-import { StatusBadge } from '@/components/staff/status-badge';
 import { SummaryCard } from '@/components/staff/summary-card';
 import { ArrowLink } from '@/components/ui/arrow-link';
 import { Button } from '@/components/ui/button';

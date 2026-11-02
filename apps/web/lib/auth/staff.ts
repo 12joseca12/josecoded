@@ -4,6 +4,7 @@ import { cache } from 'react';
 import { getPathname } from '@/i18n/navigation';
 
 import { requireUser } from './guards';
+import { mfaRequired } from './mfa';
 
 import type { GuardOptions, Session } from './guards';
 import type { ServerSupabase } from '@/lib/supabase/server';
@@ -42,7 +43,7 @@ export async function requireStaff(options: GuardOptions): Promise<StaffSession>
   const staff = await loadStaffRow(session.supabase, session.user.id);
   if (!staff || (staff.role !== 'admin' && staff.role !== 'closer') || staff.disabled_at !== null) notFound();
 
-  if (process.env.ADMIN_REQUIRE_MFA !== 'false') {
+  if (mfaRequired()) {
     const { data: aal } = await session.supabase.auth.mfa.getAuthenticatorAssuranceLevel();
     if (aal?.currentLevel !== 'aal2') {
       const profile = getPathname({ href: '/perfil', locale: options.locale });

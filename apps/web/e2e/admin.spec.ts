@@ -3,7 +3,8 @@ import { expect, test } from '@playwright/test';
 import { expectNoSeriousViolations } from './helpers/axe';
 import { signInAs, supabaseIsUp } from './helpers/supabase';
 
-// /admin (task 6.1) against Supabase local, with ADMIN_REQUIRE_MFA=false like the CRM guard spec.
+// /admin (task 6.1) against Supabase local. `signInAs` gives the staff accounts a real aal2 session (throwaway TOTP
+// factor), which the database needs for the counters; ADMIN_REQUIRE_MFA=false only lifts the web guard's redirect.
 // Seed: jose is the admin, carla an active closer, dani a deactivated one, ana a client.
 test.beforeEach(async () => {
   test.skip(!(await supabaseIsUp()), 'needs Supabase local (supabase start && supabase db reset)');
@@ -43,8 +44,8 @@ test('the admin sees Resumen with the counters of C1 and the state of Omen', asy
   ]) {
     await expect(admin.getByText(label)).toBeVisible();
   }
-  // the gateway is not part of this run: Omen is either online or reported as offline, never missing
-  await expect(admin.getByText(/Omen (en línea|sin conexión)/)).toBeVisible();
+  // the gateway is not part of this run: with no Omen configured the row is hidden, otherwise it says online or offline
+  await expect(admin.getByText(/Omen/)).toHaveCount(await admin.getByText(/Omen (en línea|sin conexión)/).count());
 });
 
 test('on a phone the admin bar has Resumen, Clientes, Equipo and «Más», each at least 44px', async ({

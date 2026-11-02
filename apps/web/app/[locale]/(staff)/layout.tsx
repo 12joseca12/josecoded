@@ -1,3 +1,6 @@
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
+
 import { resolveLocale } from '@/lib/locale';
 
 import type { LocaleParams } from '@/lib/locale';
@@ -17,5 +20,7 @@ export default async function StaffGroupLayout({
   params: LocaleParams;
 }) {
   await resolveLocale(params);
-  return children;
+  // the error boundary of the staff screens is a client component: it gets its own few sentences, nothing else
+  const messages = await getMessages();
+  return <NextIntlClientProvider messages={{ crm: { error: messages.crm.error } }}>{children}</NextIntlClientProvider>;
 }

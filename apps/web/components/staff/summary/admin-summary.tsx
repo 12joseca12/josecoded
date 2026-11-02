@@ -16,6 +16,7 @@ const COUNTERS: readonly { key: keyof AdminCounters; href?: Href }[] = [
   { key: 'chat_unread' },
   { key: 'agencies_replied' },
   { key: 'leads_open', href: '/crm/contactos' },
+  { key: 'contacts_due', href: '/crm/contactos' },
   { key: 'comments_pending' },
   { key: 'upgrades_pending' },
   { key: 'rewards_pending' },
@@ -28,7 +29,7 @@ const COUNTERS: readonly { key: keyof AdminCounters; href?: Href }[] = [
 ];
 
 /**
- * C1: the 13 counters of `admin_counters()` and the state of Omen, in one cell. It is the whole of `/admin` and
+ * C1: the 13 counters of `admin_counters()` and the state of Omen (hidden when the gateway has no Omen), in one cell. It is the whole of `/admin` and
  * the closing cell of K1 for the admin (README §4 H). One RPC call and one gateway call per render (`cache`).
  */
 export async function AdminSummary({ locale }: { locale: Locale }) {
@@ -43,7 +44,7 @@ export async function AdminSummary({ locale }: { locale: Locale }) {
       icon="shield-check"
       title={t('admin.title')}
       cols={12}
-      aside={<OmenStatus status={omen} label={t(`admin.omen.${omen}`)} />}
+      aside={omen === 'unconfigured' ? undefined : <OmenStatus status={omen} label={t(`admin.omen.${omen}`)} />}
     >
       <StatList columns>
         {COUNTERS.map(({ key, href }) => (

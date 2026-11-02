@@ -1,4 +1,4 @@
-import { beforeEach, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
 const state = vi.hoisted(() => ({
   user: null as null | { id: string },
@@ -26,6 +26,10 @@ vi.mock('@/lib/supabase/server', () => ({
 }));
 
 import { requireAdmin, requireUser } from './guards';
+
+afterEach(() => {
+  vi.unstubAllEnvs();
+});
 
 beforeEach(() => {
   state.user = null;
@@ -77,4 +81,19 @@ it('passes an admin at aal2', async () => {
   state.staff = { role: 'admin' };
   state.level = 'aal2';
   await expect(requireAdmin({ locale: 'es' })).resolves.toMatchObject({ user: { id: 'u' } });
+});
+
+it('lifts the second factor only when ADMIN_REQUIRE_MFA is exactly "false" (same as requireStaff)', async () => {
+  state.user = { id: 'u' };
+  state.staff = { role: 'admin' };
+  vi.stubEnv('ADMIN_REQUIRE_MFA', 'false');
+  await expect(requireAdmin({ locale: 'es' })).resolves.toMatchObject({ user: { id: 'u' } });
+  for (const value of ['no', 'False', 'true']) {
+    vi.stubEnv('ADMIN_REQUIRE_MFA', value);
+    await expect(requireAdmin({ locale: 'es' })).rejects.toThrow('REDIRECT /perfil?mfa=1');
+  }
+  // the exception never lifts the admin check
+  vi.stubEnv('ADMIN_REQUIRE_MFA', 'false');
+  state.staff = { role: 'closer' };
+  await expect(requireAdmin({ locale: 'es' })).rejects.toThrow('NOT_FOUND');
 });

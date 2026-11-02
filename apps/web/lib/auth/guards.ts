@@ -4,6 +4,7 @@ import { cache } from 'react';
 import { getPathname } from '@/i18n/navigation';
 import { createServerSupabase } from '@/lib/supabase/server';
 
+import { mfaRequired } from './mfa';
 import { safeNext } from './next-param';
 
 import type { ServerSupabase, User } from '@/lib/supabase/server';
@@ -50,6 +51,7 @@ export const getOptionalSession = cache(async (): Promise<Session | null> => {
  * Admin guard (DATOS §8.1): the user must be in `staff_members` with role `admin` (anyone else gets a
  * 404, the admin does not exist for them) AND have verified a TOTP code in this session (`aal2`).
  * An admin below `aal2` is sent to the profile, where the factor is enrolled or verified.
+ * `ADMIN_REQUIRE_MFA=false` lifts the factor only in local and E2E runs (`mfaRequired`), as in `requireStaff`.
  */
 export async function requireAdmin(options: GuardOptions): Promise<Session> {
   const session = await requireUser(options);
@@ -60,10 +62,12 @@ export async function requireAdmin(options: GuardOptions): Promise<Session> {
     .maybeSingle();
   if (staff?.role !== 'admin' || Boolean((staff as unknown as { disabled_at?: string | null }).disabled_at)) notFound();
 
-  const { data: aal } = await session.supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-  if (aal?.currentLevel !== 'aal2') {
-    const profile = getPathname({ href: '/perfil', locale: options.locale });
-    redirect(`${profile}?mfa=1`);
+  if (mfaRequired()) {
+    const { data: aal } = await session.supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+    if (aal?.currentLevel !== 'aal2') {
+      const profile = getPathname({ href: '/perfil', locale: options.locale });
+      redirect(`${profile}?mfa=1`);
+    }
   }
   return session;
 }

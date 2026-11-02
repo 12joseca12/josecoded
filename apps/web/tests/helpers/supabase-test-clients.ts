@@ -135,7 +135,7 @@ export type TestClient = SupabaseClient & {
 const options = { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } };
 
 /** Staff accounts: the database only honours them with an aal2 token (TOTP, DATOS §14.3 / Q24). */
-const STAFF: readonly TestUserName[] = ['jose', 'carla', 'dani'];
+export const STAFF: readonly TestUserName[] = ['jose', 'carla', 'dani'];
 const FACTOR_NAME = 'rls-tests';
 
 /** Service role: only for test setup (never exposed to the code under test). */
@@ -180,7 +180,7 @@ export async function cleanupTestFactors(): Promise<void> {
 }
 
 /** Enrols a TOTP factor, answers its challenge with the computed code and leaves the client with an aal2 session. */
-async function elevateToAal2(client: SupabaseClient, userId: string): Promise<void> {
+export async function elevateToAal2(client: SupabaseClient, userId: string): Promise<void> {
   await dropTestFactors(userId);
   const enroll = await client.auth.mfa.enroll({ factorType: 'totp', friendlyName: FACTOR_NAME });
   if (enroll.error || !enroll.data) throw new Error(`mfa enroll failed: ${enroll.error?.message}`);

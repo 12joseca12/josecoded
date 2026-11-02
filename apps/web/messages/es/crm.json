@@ -110,6 +110,13 @@
         "content_pending": "Contenido sin publicar",
         "quotes_draft": "Presupuestos en borrador"
       }
+    },
+    "error": {
+      "code": "500",
+      "title": "Algo ha fallado",
+      "text": "No es culpa tuya: esta pantalla ha tenido un error. Prueba otra vez y, si sigue, avisa a Jose.",
+      "retry": "Intentarlo de nuevo",
+      "home": "Volver al resumen"
     }
   }
 }

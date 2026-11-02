@@ -3,8 +3,9 @@ import { expect, test } from '@playwright/test';
 import { expectNoSeriousViolations } from './helpers/axe';
 import { signInAs, supabaseIsUp } from './helpers/supabase';
 
-// CRM guard (task 6.0) and shell and summary (task 6.1) against Supabase local. The web under test runs with ADMIN_REQUIRE_MFA=false
-// (apps/web/.dev.vars, like the admin), because the seed accounts have no TOTP factor.
+// CRM guard (task 6.0) and shell and summary (task 6.1) against Supabase local. `signInAs` elevates the staff accounts to aal2 with a
+// throwaway TOTP factor (the database refuses their RPCs below it); the web under test also runs with
+// ADMIN_REQUIRE_MFA=false (apps/web/.dev.vars, like the gateway).
 // Seed: carla is an active closer, dani a deactivated one, ana a client, jose the admin.
 test.beforeEach(async () => {
   test.skip(!(await supabaseIsUp()), 'needs Supabase local (supabase start && supabase db reset)');

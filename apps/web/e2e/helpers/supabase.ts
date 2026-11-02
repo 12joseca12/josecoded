@@ -1,6 +1,6 @@
 import { createServerClient } from '@supabase/ssr';
 
-import { LOCAL_URL, TEST_PASSWORD, supabaseIsUp } from '../../tests/helpers/supabase-test-clients';
+import { LOCAL_URL, STAFF, TEST_PASSWORD, elevateToAal2, supabaseIsUp } from '../../tests/helpers/supabase-test-clients';
 
 import type { BrowserContext } from '@playwright/test';
 
@@ -21,6 +21,8 @@ export const MAIL_URL = process.env.SUPABASE_MAIL_URL ?? 'http://127.0.0.1:54324
  * Signs a seeded account in by password (the seed keeps the password for the RLS tests only; the
  * product has no password UI) and puts the resulting session cookies in the browser context, with
  * the exact names and chunking `@supabase/ssr` uses, so the app sees an ordinary signed-in visitor.
+ * Staff accounts (jose, carla, dani) also enrol a throwaway TOTP factor and answer its challenge, so the session is
+ * `aal2` like a real one: the database (`private.is_aal2()`) refuses their RPCs below it, with no bypass in the DB.
  */
 export async function signInAs(
   context: BrowserContext,
@@ -39,8 +41,9 @@ export async function signInAs(
       },
     },
   });
-  const { error } = await client.auth.signInWithPassword({ email: `${name}@test`, password: TEST_PASSWORD });
+  const { data, error } = await client.auth.signInWithPassword({ email: `${name}@test`, password: TEST_PASSWORD });
   if (error) throw new Error(`seed login ${name} failed: ${error.message}`);
+  if (STAFF.includes(name) && data.user) await elevateToAal2(client, data.user.id);
   await context.addCookies([...jar].map(([key, value]) => ({ name: key, value, url: baseURL })));
 }
 

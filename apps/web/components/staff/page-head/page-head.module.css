@@ -13,24 +13,6 @@
   min-width: 0;
 }
 
-.title {
-  margin: 0;
-  max-width: var(--size-measure-heading);
-  font-size: var(--font-crm-title-size);
-  font-weight: var(--font-crm-title-weight);
-  letter-spacing: var(--font-crm-title-tracking);
-  line-height: var(--font-crm-title-leading);
-  text-wrap: balance;
-}
-
-.tone[data-tint='amber'] {
-  color: var(--highlight);
-}
-
-.tone[data-tint='lavender'] {
-  color: var(--text-3);
-}
-
 .lead {
   margin: 0;
   max-width: var(--size-measure-prose);

@@ -32,7 +32,7 @@ describe('variant unions', () => {
     expectTypeOf<SurfaceLayer>().toEqualTypeOf<'card' | 'overlay'>();
     expectTypeOf<ArrowLinkEmphasis>().toEqualTypeOf<'regular' | 'strong'>();
     expectTypeOf<TwoToneHeadingLevel>().toEqualTypeOf<'h1' | 'h2'>();
-    expectTypeOf<TwoToneHeadingSize>().toEqualTypeOf<'headline' | 'display-closing'>();
+    expectTypeOf<TwoToneHeadingSize>().toEqualTypeOf<'headline' | 'display-closing' | 'crm'>();
   });
 });
 

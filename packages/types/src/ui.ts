@@ -26,8 +26,20 @@ export type SurfaceRadius = 'cell' | 'tcard';
 export type SurfaceLayer = 'card' | 'overlay';
 export type ArrowLinkEmphasis = 'regular' | 'strong';
 export type TwoToneHeadingLevel = 'h1' | 'h2';
-export type TwoToneHeadingSize = 'headline' | 'display-closing';
+/** `crm` is the title of a staff screen (`--font-crm-title-*`). */
+export type TwoToneHeadingSize = 'headline' | 'display-closing' | 'crm';
 export type LangSwitchVariant = 'inline' | 'segmented';
+/** `attention` waits for a decision, `live` is alive or done, `overdue` is the urgency, `active` the current one. */
+export type StatusBadgeTone = 'neutral' | 'active' | 'live' | 'attention' | 'overdue' | 'muted';
+
+// Staff screens (`components/staff`).
+export type SummaryCardTone = 'default' | 'hero';
+/** Columns of the twelve of K1 a summary cell spans from 60rem. */
+export type SummaryCardCols = 4 | 5 | 7 | 12;
+export type SummaryCardRows = 1 | 2;
+export type FigureSize = 'lg' | 'sm';
+export type FigureTone = 'default' | 'overdue';
+export type StaffLinksSize = 'rail' | 'sheet';
 
 /**
  * Lucide icons the interface may name (the registry in `components/ui/icon` maps each to its

@@ -6,6 +6,7 @@ import { Action } from '@/components/ui/action';
 import { Icon } from '@/components/ui/icon';
 import { usePathname } from '@/i18n/navigation';
 import { isCurrentStaffPath } from '@/lib/staff/nav';
+import { bp } from '@/styles/breakpoints';
 
 import { StaffLinks } from './staff-nav';
 import styles from './staff-tab-bar.module.css';
@@ -43,6 +44,17 @@ export function StaffTabBar({
   useEffect(() => {
     dialog.current?.close();
   }, [pathname]);
+
+  // the bar and the sheet are hidden from the rail breakpoint on; an open modal would leave the rest of the page
+  // inert and unreachable, so it closes the moment the viewport gets that wide (rotating a tablet, resizing)
+  useEffect(() => {
+    const wide = window.matchMedia(`(width >= ${bp.rail})`);
+    const closeWhenWide = () => {
+      if (wide.matches) dialog.current?.close();
+    };
+    wide.addEventListener('change', closeWhenWide);
+    return () => wide.removeEventListener('change', closeWhenWide);
+  }, []);
 
   return (
     <>

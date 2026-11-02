@@ -4,7 +4,7 @@ import { IconTile } from '@/components/ui/icon-tile';
 
 import styles from './summary-card.module.css';
 
-import type { IconName } from '@josecoded/types';
+import type { IconName, SummaryCardCols, SummaryCardRows, SummaryCardTone } from '@josecoded/types';
 import type { ReactNode } from 'react';
 
 /**
@@ -22,9 +22,9 @@ export function SummaryCard({
 }: {
   icon: IconName;
   title: string;
-  tone?: 'default' | 'hero';
-  cols?: 4 | 5 | 7 | 12;
-  rows?: 1 | 2;
+  tone?: SummaryCardTone;
+  cols?: SummaryCardCols;
+  rows?: SummaryCardRows;
   /** Next to the heading, on the right: a «Ver» link or a status. */
   aside?: ReactNode;
   children: ReactNode;

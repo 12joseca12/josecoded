@@ -8,6 +8,7 @@ import { isCurrentStaffPath } from '@/lib/staff/nav';
 import styles from './staff-nav.module.css';
 
 import type { StaffNavItem } from '@/lib/staff/nav';
+import type { StaffLinksSize } from '@josecoded/types';
 
 /** A destination with its label already translated (the client islands receive no messages). */
 export interface StaffNavView extends StaffNavItem {
@@ -20,7 +21,7 @@ export interface StaffNavView extends StaffNavItem {
  * A list of destinations. Client island only to mark the current one (`aria-current="page"`) from the
  * localized path; the links are plain anchors. Rows are at least 2.5rem tall (2.75rem with a coarse pointer).
  */
-export function StaffLinks({ items, size = 'rail' }: { items: readonly StaffNavView[]; size?: 'rail' | 'sheet' }) {
+export function StaffLinks({ items, size = 'rail' }: { items: readonly StaffNavView[]; size?: StaffLinksSize }) {
   const pathname = usePathname();
   return (
     <ul role="list" className={styles.list}>
