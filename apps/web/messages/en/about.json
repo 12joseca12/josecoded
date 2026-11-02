@@ -5,6 +5,112 @@
       "named": "I am {name}, a freelance full-stack developer in Spain.",
       "city": "Freelance full-stack developer in {city}, Spain.",
       "bare": "Freelance full-stack developer in Spain."
+    },
+    "title": "About",
+    "meta": {
+      "title": "About: freelance full-stack developer",
+      "titleNamed": "About: {name}, freelance developer",
+      "description": "Freelance full-stack developer. TypeScript, Next.js, React Native and Expo, Supabase, Cloudflare Workers and AI. Background, stack, education and CV as a PDF."
+    },
+    "head": {
+      "role": "Freelance full-stack developer",
+      "roleCity": "{role} · {city}",
+      "citable": "{identity} I work with TypeScript, Next.js, React Native and Expo, Supabase and Cloudflare Workers, and I integrate AI into products. I work with businesses, companies and agencies, and I deliver what I design.",
+      "photoAlt": "Portrait"
+    },
+    "story": {
+      "title": "Who I am",
+      "text": "{{DATO: short first-person story (two or three paragraphs): where I come from, why I build apps and websites, how I work with people}}"
+    },
+    "timeline": {
+      "title": "Background",
+      "accent": "with dates",
+      "label": "Background",
+      "items": {
+        "josecoded": "josecoded.com, this site",
+        "3cat": "3cat",
+        "3catinfo": "3catinfo",
+        "employment": "{{DATO: jobs: company, role and years}}",
+        "freelance": "{{DATO: since when I am a freelancer}}"
+      }
+    },
+    "principles": {
+      "title": "How I work",
+      "items": {
+        "what": {
+          "title": "I say what I do",
+          "text": "Each service says what it includes and what it does not, without jargon."
+        },
+        "price": {
+          "title": "I say what it costs",
+          "text": "Prices are published, excluding VAT, before you ask."
+        },
+        "when": {
+          "title": "I say when it is ready",
+          "text": "Every proposal has a deadline agreed in writing before starting."
+        }
+      }
+    },
+    "stack": {
+      "title": "Stack and education",
+      "accent": "what I use and what I have studied",
+      "stackTitle": "What I work with",
+      "groups": {
+        "mobile": "Mobile",
+        "web": "Web",
+        "backend": "Backend and data",
+        "quality": "Quality and operations"
+      },
+      "items": {
+        "mobile": [
+          "React Native",
+          "Expo"
+        ],
+        "web": [
+          "Next.js",
+          "TypeScript",
+          "Three.js"
+        ],
+        "backend": [
+          "Supabase",
+          "PostgreSQL",
+          "Cloudflare Workers",
+          "Hono",
+          "Fastify",
+          "n8n"
+        ],
+        "quality": [
+          "Vitest",
+          "Playwright",
+          "GitHub Actions"
+        ]
+      },
+      "educationTitle": "Education",
+      "credentials": {
+        "itil": "ITIL 4",
+        "devops": "DevOps and Cloud Computing (AWS, GitLab CI)",
+        "psm": "Professional Scrum Master"
+      },
+      "status": {
+        "itil": "{{DATO: status of ITIL 4: body and year}}",
+        "devops": "{{DATO: status of DevOps and Cloud Computing: body and year}}",
+        "psm": "{{DATO: status of Professional Scrum Master: body and year}}"
+      },
+      "cv": "Download CV (PDF)"
+    },
+    "links": {
+      "title": "Links",
+      "label": "My profiles",
+      "linkedin": "LinkedIn",
+      "github": "GitHub",
+      "cv": "CV as a PDF"
+    },
+    "closing": {
+      "lead": "Shall we talk?",
+      "accent": "Tell me what you need.",
+      "cta": "Let's talk",
+      "assistant": "Ask the assistant",
+      "more": "Other ways to talk"
     }
   }
 }

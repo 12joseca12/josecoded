@@ -1,0 +1,31 @@
+.list {
+  display: grid;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: var(--size-swatch) minmax(0, 1fr);
+  gap: var(--sp-4);
+  align-items: baseline;
+  padding: var(--sp-3) 0;
+  box-shadow: var(--shadow-edge-bottom);
+}
+
+.date {
+  color: var(--violet-soft);
+  font-family: var(--font-mono);
+  font-size: var(--font-mono-lang-size);
+}
+
+.label {
+  color: var(--text);
+  font-size: var(--font-body-size);
+}
+
+.item[data-pending] {
+  display: block;
+}

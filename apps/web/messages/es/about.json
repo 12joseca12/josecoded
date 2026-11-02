@@ -5,6 +5,112 @@
       "named": "Soy {name}, desarrollador full-stack freelance en España.",
       "city": "Desarrollador full-stack freelance en {city}, España.",
       "bare": "Desarrollador full-stack freelance en España."
+    },
+    "title": "Sobre mí",
+    "meta": {
+      "title": "Sobre mí: desarrollador full-stack freelance",
+      "titleNamed": "Sobre mí: {name}, freelance",
+      "description": "Desarrollador full-stack freelance. TypeScript, Next.js, React Native y Expo, Supabase, Cloudflare Workers e IA. Trayectoria, stack, formación y CV en PDF."
+    },
+    "head": {
+      "role": "Desarrollador full-stack freelance",
+      "roleCity": "{role} · {city}",
+      "citable": "{identity} Trabajo con TypeScript, Next.js, React Native y Expo, Supabase y Cloudflare Workers, e integro IA en producto. Trabajo con negocios, empresas y agencias, y entrego yo lo que diseño.",
+      "photoAlt": "Retrato"
+    },
+    "story": {
+      "title": "Quién soy",
+      "text": "{{DATO: historia corta en primera persona (dos o tres párrafos): de dónde vengo, por qué hago apps y webs, cómo trabajo con la gente (redactor con voz.md)}}"
+    },
+    "timeline": {
+      "title": "Trayectoria",
+      "accent": "con fechas",
+      "label": "Trayectoria",
+      "items": {
+        "josecoded": "josecoded.com, esta web",
+        "3cat": "3cat",
+        "3catinfo": "3catinfo",
+        "employment": "{{DATO: empleos: empresa, puesto y años}}",
+        "freelance": "{{DATO: desde cuándo soy freelance}}"
+      }
+    },
+    "principles": {
+      "title": "Cómo trabajo",
+      "items": {
+        "what": {
+          "title": "Digo qué hago",
+          "text": "Cada servicio dice qué incluye y qué no, sin jerga."
+        },
+        "price": {
+          "title": "Digo cuánto cuesta",
+          "text": "Los precios están publicados, sin IVA, antes de que preguntes."
+        },
+        "when": {
+          "title": "Digo cuándo está",
+          "text": "Cada propuesta lleva un plazo cerrado por escrito antes de empezar."
+        }
+      }
+    },
+    "stack": {
+      "title": "Stack y formación",
+      "accent": "lo que uso y lo que he estudiado",
+      "stackTitle": "Con qué trabajo",
+      "groups": {
+        "mobile": "Móvil",
+        "web": "Web",
+        "backend": "Backend y datos",
+        "quality": "Calidad y operaciones"
+      },
+      "items": {
+        "mobile": [
+          "React Native",
+          "Expo"
+        ],
+        "web": [
+          "Next.js",
+          "TypeScript",
+          "Three.js"
+        ],
+        "backend": [
+          "Supabase",
+          "PostgreSQL",
+          "Cloudflare Workers",
+          "Hono",
+          "Fastify",
+          "n8n"
+        ],
+        "quality": [
+          "Vitest",
+          "Playwright",
+          "GitHub Actions"
+        ]
+      },
+      "educationTitle": "Formación",
+      "credentials": {
+        "itil": "ITIL 4",
+        "devops": "DevOps y Cloud Computing (AWS, GitLab CI)",
+        "psm": "Professional Scrum Master"
+      },
+      "status": {
+        "itil": "{{DATO: estado de ITIL 4: organismo y año}}",
+        "devops": "{{DATO: estado de DevOps y Cloud Computing: organismo y año}}",
+        "psm": "{{DATO: estado de Professional Scrum Master: organismo y año}}"
+      },
+      "cv": "Descargar CV (PDF)"
+    },
+    "links": {
+      "title": "Enlaces",
+      "label": "Mis perfiles",
+      "linkedin": "LinkedIn",
+      "github": "GitHub",
+      "cv": "CV en PDF"
+    },
+    "closing": {
+      "lead": "¿Hablamos?",
+      "accent": "Cuéntame qué necesitas.",
+      "cta": "Hablamos",
+      "assistant": "Preguntar al asistente",
+      "more": "Otras formas de hablar"
     }
   }
 }
