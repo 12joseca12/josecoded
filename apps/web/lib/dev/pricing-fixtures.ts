@@ -14,7 +14,7 @@ export function previewCatalogue(): Catalogue {
   const published = catalogueFromPricing(pricing);
   return {
     ...published,
-    packs: published.packs.map((pack) => (pack.code === 'P2' ? { ...changed(pack, 1200), options: pack.options } : pack)),
+    packs: published.packs.map((pack) => (pack.code === 'P2' ? { ...changed(pack, 1200), app: pack.app, options: pack.options } : pack)),
     extras: published.extras.map((extra) => (extra.code === 'seo_full' ? changed(extra, 450) : extra)),
   };
 }

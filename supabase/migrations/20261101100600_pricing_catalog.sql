@@ -404,7 +404,9 @@ language sql stable set search_path = '' as $$
 $$;
 revoke all on function private.pricing_pending() from public, anon, authenticated;
 
--- 6) Admin RPCs for the catalogue. A key that is absent keeps the current value (upsert by code).
+-- 6) Admin RPCs for the catalogue. A key that is absent keeps the current value (upsert by code). The key `create` of the
+-- payload makes it atomic: true = the code must be free (else `code_taken`, 23505), false = the item must exist (else
+-- `item_not_found`, P0002); absent = plain upsert. The forms send it, so two admins cannot overwrite each other.
 create or replace function private.admin_pricing_set_pack_impl(p jsonb) returns text
 language plpgsql security definer set search_path = '' as $$
 declare
@@ -414,6 +416,8 @@ begin
   if not private.is_admin() then raise exception 'forbidden' using errcode = '42501'; end if;
   if v_code is null or v_code !~ '^[A-Z][A-Z0-9_]{1,15}$' then raise exception 'invalid_code' using errcode = '22023'; end if;
   select * into o from public.packs x where x.code = v_code for update;
+  if p -> 'create' = 'true'::jsonb and o.code is not null then raise exception 'code_taken' using errcode = '23505'; end if;
+  if p -> 'create' = 'false'::jsonb and o.code is null then raise exception 'item_not_found' using errcode = 'P0002'; end if;
   if o.code is null then
     if p -> 'name' is null or p ->> 'price' is null then raise exception 'name_and_price_required' using errcode = '22023'; end if;
     insert into public.packs (code, kind, slug, name, includes, for_whom, price, weeks, sort, active, visible, pricing_version, updated_by)
@@ -452,7 +456,11 @@ begin
   if not private.is_admin() then raise exception 'forbidden' using errcode = '42501'; end if;
   if v_code is null or v_code !~ '^[a-z][a-z0-9_]{0,31}$' then raise exception 'invalid_code' using errcode = '22023'; end if;
   if not exists (select 1 from public.packs k where k.code = p_pack_code) then raise exception 'pack_not_found' using errcode = 'P0002'; end if;
+  -- Only the options of an app pack are published (pricing_snapshot_build), so another kind cannot have any.
+  if not exists (select 1 from public.packs k where k.code = p_pack_code and k.kind = 'app') then raise exception 'option_needs_app_pack' using errcode = '22023'; end if;
   select * into o from public.pack_options x where x.pack_code = p_pack_code and x.code = v_code for update;
+  if p -> 'create' = 'true'::jsonb and o.code is not null then raise exception 'code_taken' using errcode = '23505'; end if;
+  if p -> 'create' = 'false'::jsonb and o.code is null then raise exception 'item_not_found' using errcode = 'P0002'; end if;
   if o.code is null then
     if p -> 'name' is null or p ->> 'price' is null then raise exception 'name_and_price_required' using errcode = '22023'; end if;
     insert into public.pack_options (pack_code, code, name, price, weeks, includes, for_whom, visible, pricing_version)
@@ -483,6 +491,8 @@ begin
   if not private.is_admin() then raise exception 'forbidden' using errcode = '42501'; end if;
   if v_code is null or v_code !~ '^[a-z][a-z0-9_]{1,31}$' then raise exception 'invalid_code' using errcode = '22023'; end if;
   select * into o from public.extras x where x.code = v_code for update;
+  if p -> 'create' = 'true'::jsonb and o.code is not null then raise exception 'code_taken' using errcode = '23505'; end if;
+  if p -> 'create' = 'false'::jsonb and o.code is null then raise exception 'item_not_found' using errcode = 'P0002'; end if;
   if o.code is null then
     if p -> 'name' is null or p ->> 'price' is null then raise exception 'name_and_price_required' using errcode = '22023'; end if;
     insert into public.extras (code, name, description, price, billing, sort, active, visible, pricing_version, updated_by)
@@ -532,17 +542,19 @@ end $$;
 revoke all on function private.admin_pricing_delete_impl(public.pricing_item, text) from public, anon, authenticated;
 grant execute on function private.admin_pricing_delete_impl(public.pricing_item, text) to authenticated, service_role;
 
+-- Delete switches `visible` and `active` off and does not remember them, so a restore brings the item back on sale and
+-- visible (the admin can pause or hide it again from the sheet); otherwise an extra, which has no other way, stays off.
 create or replace function private.admin_pricing_restore_impl(p_kind public.pricing_item, p_code text) returns void
 language plpgsql security definer set search_path = '' as $$
 declare v_found boolean;
 begin
   if not private.is_admin() then raise exception 'forbidden' using errcode = '42501'; end if;
   if p_kind = 'pack' then
-    update public.packs set deleted_at = null, updated_by = (select auth.uid()) where code = p_code;
+    update public.packs set deleted_at = null, visible = true, active = true, updated_by = (select auth.uid()) where code = p_code;
   elsif p_kind = 'pack_option' then
-    update public.pack_options set deleted_at = null where pack_code = split_part(p_code, ':', 1) and code = split_part(p_code, ':', 2);
+    update public.pack_options set deleted_at = null, visible = true where pack_code = split_part(p_code, ':', 1) and code = split_part(p_code, ':', 2);
   elsif p_kind = 'extra' then
-    update public.extras set deleted_at = null, updated_by = (select auth.uid()) where code = p_code;
+    update public.extras set deleted_at = null, visible = true, active = true, updated_by = (select auth.uid()) where code = p_code;
   else
     raise exception 'invalid_kind' using errcode = '22023';
   end if;

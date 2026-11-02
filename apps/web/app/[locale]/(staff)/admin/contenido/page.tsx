@@ -35,7 +35,7 @@ export default async function AdminContentPage({ params }: { params: LocaleParam
     supabase.from('pricing_settings').select('hourly, feature').single(),
     supabase.rpc('pricing_catalog_snapshot'),
   ]);
-  if (packs.error || options.error || extras.error || settings.error) throw new Error('pricing draft unreadable');
+  if (packs.error || options.error || extras.error || settings.error || snapshot.error) throw new Error('pricing draft unreadable');
 
   // The draft as the file would be written; an invalid one (a price at 0, say) cannot be diffed and says so.
   const draft = pricingSchema.safeParse(snapshot.data);

@@ -37,6 +37,8 @@ export interface PriceItem {
 }
 
 export interface PricePack extends PriceItem {
+  /** An app pack: the only kind whose options are published. */
+  app: boolean;
   options: readonly PriceItem[];
 }
 
@@ -82,8 +84,8 @@ function packItem(pack: RawPack, kind: 'pack' | 'option'): PriceItem {
  */
 export function catalogueFromPricing(data: PricingData): Catalogue {
   const [app, plus] = data.apps;
-  const packs: PricePack[] = data.packs.map((pack) => ({ ...packItem(pack, 'pack'), options: [] }));
-  if (app) packs.push({ ...packItem(app, 'pack'), options: plus ? [packItem(plus, 'option')] : [] });
+  const packs: PricePack[] = data.packs.map((pack) => ({ ...packItem(pack, 'pack'), app: false, options: [] }));
+  if (app) packs.push({ ...packItem(app, 'pack'), app: true, options: plus ? [packItem(plus, 'option')] : [] });
   return {
     packs,
     extras: data.extras.map((extra) => ({

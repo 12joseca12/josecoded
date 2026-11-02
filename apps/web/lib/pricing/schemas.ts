@@ -70,6 +70,7 @@ export const packFormSchema = z
     code: v.code,
     payload: {
       code: v.code,
+      create: v.mode === 'create',
       name: localized(v.name_es, v.name_en, `pack ${v.code} name`),
       includes: localizedLines(v.includes_es, v.includes_en, `pack ${v.code} includes`),
       for_whom: optionalLocalized(v.for_whom_es, v.for_whom_en, `pack ${v.code} forWhom`),
@@ -96,6 +97,7 @@ export const optionFormSchema = z
     code: v.code,
     payload: {
       code: v.code,
+      create: v.mode === 'create',
       name: localized(v.name_es, v.name_en, `option ${v.pack}:${v.code} name`),
       includes: localizedLines(v.includes_es, v.includes_en, `option ${v.pack}:${v.code} includes`),
       for_whom: optionalLocalized(v.for_whom_es, v.for_whom_en, `option ${v.pack}:${v.code} forWhom`),
@@ -115,6 +117,7 @@ export const extraFormSchema = z
     includes_en: textField(600).default(''),
     price: whole(MAX_PRICE),
     billing: z.enum(['one_off', 'monthly', 'yearly']),
+    on_sale: present,
     visible: present,
   })
   .transform((v) => ({
@@ -122,10 +125,12 @@ export const extraFormSchema = z
     code: v.code,
     payload: {
       code: v.code,
+      create: v.mode === 'create',
       name: localized(v.name_es, v.name_en, `extra ${v.code} label`),
       description: optionalLocalized(v.includes_es, v.includes_en, `extra ${v.code} description`),
       price: v.price,
       billing: v.billing,
+      active: v.on_sale,
       visible: v.visible,
     },
   }));

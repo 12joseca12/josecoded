@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 const db = vi.hoisted(() => ({
   role: 'admin' as 'admin' | 'closer',
   existing: true,
+  packKind: 'app' as 'app' | 'web',
   rpc: vi.fn(),
   guard: vi.fn(),
   lookups: [] as unknown[][],
@@ -11,10 +12,11 @@ const db = vi.hoisted(() => ({
 
 // from(table).select('code').eq(...)[.eq(...)].maybeSingle()
 const lookup = (table: string) => {
+  let columns = '';
   const chain = {
-    select: () => chain,
+    select: (list: string) => ((columns = list), chain),
     eq: (...args: unknown[]) => (db.lookups.push([table, ...args]), chain),
-    maybeSingle: async () => ({ data: db.existing ? { code: 'x' } : null, error: null }),
+    maybeSingle: async () => ({ data: columns === 'kind' ? { kind: db.packKind } : db.existing ? { code: 'x' } : null, error: null }),
   };
   return chain;
 };
@@ -48,6 +50,7 @@ const extra = { mode: 'create', code: 'copywriting', name_es: 'Textos', price: '
 beforeEach(() => {
   db.role = 'admin';
   db.existing = false;
+  db.packKind = 'app';
   db.lookups = [];
   db.guard.mockReset();
   db.rpc.mockReset();
@@ -93,13 +96,32 @@ describe('savePack, saveOption and saveExtra', () => {
   it('edits an existing pack and looks the option up by pack and code', async () => {
     db.existing = true;
     await expect(saveOption(idle, form({ ...option, mode: 'edit' }))).resolves.toEqual({ status: 'ok' });
-    expect(db.lookups).toEqual([['pack_options', 'pack_code', 'P5'], ['pack_options', 'code', 'plus']]);
+    expect(db.lookups).toEqual([['pack_options', 'pack_code', 'P5'], ['pack_options', 'code', 'plus'], ['packs', 'code', 'P5']]);
     expect(db.rpc).toHaveBeenCalledWith('admin_pricing_set_option', { p_pack_code: 'P5', p: expect.objectContaining({ code: 'plus', price: 6000 }) });
   });
 
-  it('saves an extra', async () => {
-    await expect(saveExtra(idle, form(extra))).resolves.toEqual({ status: 'ok' });
-    expect(db.rpc).toHaveBeenCalledWith('admin_pricing_set_extra', { p: expect.objectContaining({ code: 'copywriting', billing: 'one_off', description: null }) });
+  it('refuses an option on a pack that is not an app pack, before calling the RPC', async () => {
+    db.packKind = 'web';
+    await expect(saveOption(idle, form(option))).resolves.toEqual({ status: 'error', formError: 'adminPricing.errors.optionNeedsApp' });
+    expect(db.rpc).not.toHaveBeenCalled();
+  });
+
+  it('sends create/edit to the RPC so it is atomic, and shows code_taken as a field error', async () => {
+    await savePack(idle, form(pack));
+    expect(db.rpc).toHaveBeenLastCalledWith('admin_pricing_set_pack', { p: expect.objectContaining({ create: true }) });
+    db.existing = true;
+    await savePack(idle, form({ ...pack, mode: 'edit' }));
+    expect(db.rpc).toHaveBeenLastCalledWith('admin_pricing_set_pack', { p: expect.objectContaining({ create: false }) });
+    db.existing = false;
+    db.rpc.mockResolvedValue({ data: null, error: { code: '23505', message: 'code_taken' } });
+    expect(await savePack(idle, form(pack))).toMatchObject({ status: 'error', fieldErrors: { code: 'adminPricing.errors.codeTaken' } });
+  });
+
+  it('saves an extra, on sale only when the box is ticked', async () => {
+    await expect(saveExtra(idle, form({ ...extra, on_sale: 'on' }))).resolves.toEqual({ status: 'ok' });
+    expect(db.rpc).toHaveBeenCalledWith('admin_pricing_set_extra', { p: expect.objectContaining({ code: 'copywriting', billing: 'one_off', description: null, active: true }) });
+    await saveExtra(idle, form(extra));
+    expect(db.rpc).toHaveBeenLastCalledWith('admin_pricing_set_extra', { p: expect.objectContaining({ active: false }) });
   });
 
   it.each([

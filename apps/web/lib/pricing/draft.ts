@@ -82,6 +82,7 @@ export function catalogueFromDraft(rows: DraftRows, changes: readonly CatalogCha
       onSale: pack.active,
       visible: pack.visible,
       ...marked(changes, publishedKey({ kind: 'pack', app, code: pack.code })),
+      app,
       options,
     };
   });

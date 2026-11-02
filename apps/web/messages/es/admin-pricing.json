@@ -82,6 +82,7 @@
       },
       "onSale": "En venta",
       "onSaleHelp": "Se puede pedir desde /servicios y /propuesta.",
+      "extraOnSaleHelp": "Si lo desactivas, el sitio lo muestra como no disponible.",
       "visible": "Visible",
       "visibleHelp": "Oculto, no llega ni al sitio ni a pricing.json."
     },
@@ -94,6 +95,7 @@
       "weeks": "Semanas: un entero de 1 a 104.",
       "rate": "Tarifa en euros enteros, mayor que 0.",
       "notFound": "No encuentro ese elemento. Recarga la página.",
+      "optionNeedsApp": "Solo las apps tienen opciones: esta opción no se publicaría.",
       "deleted": "Está borrado: restáuralo antes de editarlo.",
       "forbidden": "No tienes permiso para esto.",
       "failed": "No se ha podido guardar. Inténtalo de nuevo."

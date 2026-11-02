@@ -82,6 +82,7 @@
       },
       "onSale": "On sale",
       "onSaleHelp": "It can be ordered from /servicios and /propuesta.",
+      "extraOnSaleHelp": "When off, the site shows it as unavailable.",
       "visible": "Visible",
       "visibleHelp": "Hidden, it reaches neither the site nor pricing.json."
     },
@@ -94,6 +95,7 @@
       "weeks": "Weeks: a whole number from 1 to 104.",
       "rate": "Rate in whole euros, above 0.",
       "notFound": "That item was not found. Reload the page.",
+      "optionNeedsApp": "Only app packs have options: this option would never be published.",
       "deleted": "It is deleted: restore it before editing.",
       "forbidden": "You are not allowed to do this.",
       "failed": "Could not save. Try again."

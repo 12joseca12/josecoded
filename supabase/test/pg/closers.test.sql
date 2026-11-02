@@ -968,6 +968,21 @@ select t.ok(t.err($q$select public.admin_pricing_delete('pack', 'P4')$q$) is nul
 select t.ok(t.err($q$select public.admin_pricing_delete('pack', 'NOPE')$q$) = 'P0002 item_not_found'
             and t.err($q$select public.admin_pricing_delete('settings', 'x')$q$) = '22023 invalid_kind',
             'delete: unknown item and wrong kind are refused');
+select t.ok(t.err($q$select public.admin_pricing_delete('extra', 'seo_full')$q$) is null
+            and t.val($q$select active::text || ':' || visible::text from public.extras where code = 'seo_full'$q$) = 'false:false'
+            and t.err($q$select public.admin_pricing_restore('extra', 'seo_full')$q$) is null
+            and t.val($q$select active::text || ':' || visible::text || ':' || (deleted_at is null)::text from public.extras where code = 'seo_full'$q$) = 'true:true:true'
+            and exists (select 1 from jsonb_array_elements(t.snapshot() -> 'extras') e where e ->> 'code' = 'seo_full' and e ->> 'active' = 'true'),
+            'restore brings an extra back on sale and visible (delete had switched both off), and it is in the snapshot again');
+select t.ok(t.err($q$select public.admin_pricing_set_extra('{"code":"seo_full","price":650,"create":true}')$q$) = '23505 code_taken'
+            and t.err($q$select public.admin_pricing_set_pack('{"code":"P2","price":1500,"create":true}')$q$) = '23505 code_taken'
+            and t.err($q$select public.admin_pricing_set_option('P5', '{"code":"plus","price":1,"create":true}')$q$) = '23505 code_taken'
+            and t.err($q$select public.admin_pricing_set_extra('{"code":"ghost_x","price":1,"create":false}')$q$) = 'P0002 item_not_found'
+            and t.err($q$select public.admin_pricing_set_extra('{"code":"fresh_x","name":{"es":"a","en":"b"},"price":1,"create":true}')$q$) is null
+            and t.err($q$select public.admin_pricing_set_extra('{"code":"fresh_x","price":2,"create":false}')$q$) is null,
+            'create = true refuses an existing code (code_taken), create = false refuses a missing one; the flag is optional');
+select t.ok(t.err($q$select public.admin_pricing_set_option('P2', '{"code":"extra_o","name":{"es":"a","en":"b"},"price":1,"weeks":1}')$q$) = '22023 option_needs_app_pack',
+            'options only belong to app packs (the only ones whose options are published)');
 select t.ok(t.err($q$select public.admin_pricing_set_option('P5', '{"code":"pro","name":{"es":"Pro","en":"Pro"},"price":9000,"weeks":10}')$q$) is null
             and exists (select 1 from jsonb_array_elements(t.snapshot() -> 'apps') p where p ->> 'code' = 'P5_PRO' and p ->> 'price' = '9000')
             and t.err($q$select public.admin_pricing_set_option('NOPE', '{"code":"pro"}')$q$) = 'P0002 pack_not_found',

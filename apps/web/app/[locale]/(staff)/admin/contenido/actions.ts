@@ -22,12 +22,14 @@ type SaveState = FormState<{ code: string; name_es: string; price: string; weeks
 type PlainState = FormState<{ code: string }>;
 type RatesState = FormState<{ hourly: string; feature: string }>;
 
-type Failure = 'invalid' | 'codeTaken' | 'notFound' | 'deleted' | 'forbidden' | 'failed';
+type Failure = 'invalid' | 'codeTaken' | 'notFound' | 'deleted' | 'optionNeedsApp' | 'forbidden' | 'failed';
 
 /** What the database says when a rule is broken, as a key of `adminPricing.errors`. Unknown → `failed`. */
 function failureOf(error: { code?: string; message?: string }): Failure {
   const message = error.message ?? '';
   if (/_deleted/.test(message)) return 'deleted';
+  if (/code_taken/.test(message)) return 'codeTaken';
+  if (/option_needs_app_pack/.test(message)) return 'optionNeedsApp';
   if (/pack_not_found|item_not_found/.test(message)) return 'notFound';
   if (/invalid_code|name_and_price_required|invalid_rate|invalid_kind/.test(message)) return 'invalid';
   return error.code === '42501' ? 'forbidden' : 'failed';
@@ -38,7 +40,7 @@ const refresh = () => revalidatePath('/[locale]/admin/contenido', 'page');
 const KEYS = {
   pack: ['mode', 'code', 'name_es', 'name_en', 'includes_es', 'includes_en', 'for_whom_es', 'for_whom_en', 'price', 'weeks', 'on_sale', 'visible'],
   option: ['mode', 'pack', 'code', 'name_es', 'name_en', 'includes_es', 'includes_en', 'for_whom_es', 'for_whom_en', 'price', 'weeks', 'visible'],
-  extra: ['mode', 'code', 'name_es', 'name_en', 'includes_es', 'includes_en', 'price', 'billing', 'visible'],
+  extra: ['mode', 'code', 'name_es', 'name_en', 'includes_es', 'includes_en', 'price', 'billing', 'on_sale', 'visible'],
 } as const;
 
 type Errors = Awaited<ReturnType<typeof getTranslations<'adminPricing.errors'>>>;
@@ -81,8 +83,13 @@ async function save<S extends z.ZodType<Parsed>>(
   if (mode === 'create' && exists) return { status: 'error', fieldErrors: { code: t('codeTaken') } };
   if (mode === 'edit' && !exists) return { status: 'error', formError: t('notFound') };
 
+  // The checks above are only for a fast, friendly answer: the RPC repeats them atomically (`create` in the payload),
+  // so two admins creating the same code at once cannot overwrite each other.
   const { error } = await call(supabase, parsed.data);
-  if (error) return { status: 'error', formError: t(failureOf(error)) };
+  if (error) {
+    const failure = failureOf(error);
+    return failure === 'codeTaken' ? { status: 'error', fieldErrors: { code: t('codeTaken') } } : { status: 'error', formError: t(failure) };
+  }
   refresh();
   return { status: 'ok' };
 }
@@ -92,11 +99,16 @@ export async function savePack(_previous: SaveState, data: FormData): Promise<Sa
   return save(data, 'pack', packFormSchema, (supabase, { payload }) => supabase.rpc('admin_pricing_set_pack', { p: payload }));
 }
 
-/** The option of a pack (`pack` is the pack's code). */
+/**
+ * The option of a pack (`pack` is the pack's code). Only app packs have options: the published file carries no others,
+ * so one on a web pack would be saved and never shown.
+ */
 export async function saveOption(_previous: SaveState, data: FormData): Promise<SaveState> {
-  return save(data, 'option', optionFormSchema, (supabase, { pack, payload }) =>
-    supabase.rpc('admin_pricing_set_option', { p_pack_code: pack, p: payload }),
-  );
+  return save(data, 'option', optionFormSchema, async (supabase, { pack, payload }) => {
+    const owner = await supabase.from('packs').select('kind').eq('code', pack).maybeSingle();
+    if (owner.data?.kind !== 'app') return { error: { message: 'option_needs_app_pack' } };
+    return supabase.rpc('admin_pricing_set_option', { p_pack_code: pack, p: payload });
+  });
 }
 
 export async function saveExtra(_previous: SaveState, data: FormData): Promise<SaveState> {

@@ -126,10 +126,10 @@ export function PriceItemSheet({ kind, item, packCode }: { kind: PriceItemKind; 
               trailing={t('weeksUnit')}
               required
             />
-            {kind === 'pack' ? (
-              <Field kind="checkbox" name="on_sale" label={t('onSale')} help={t('onSaleHelp')} defaultChecked={item?.onSale ?? true} />
-            ) : null}
           </>
+        )}
+        {kind === 'option' ? null : (
+          <Field kind="checkbox" name="on_sale" label={t('onSale')} help={t(extra ? 'extraOnSaleHelp' : 'onSaleHelp')} defaultChecked={item?.onSale ?? true} />
         )}
         <Field kind="checkbox" name="visible" label={t('visible')} help={t('visibleHelp')} defaultChecked={item?.visible ?? true} />
       </Form>

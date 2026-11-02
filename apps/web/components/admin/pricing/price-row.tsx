@@ -61,7 +61,7 @@ export async function PriceRow({
       </td>
       <td role="cell" className={`${table.cell} ${styles.act}`}>
         <PriceItemSheet kind={item.kind} item={item} packCode={packCode} />
-        {item.kind === 'pack' ? <PriceItemSheet kind="option" packCode={item.code} /> : null}
+        {item.kind === 'pack' && 'app' in item && item.app ? <PriceItemSheet kind="option" packCode={item.code} /> : null}
       </td>
     </tr>
   );

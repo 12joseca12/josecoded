@@ -15,8 +15,11 @@ const price = z.number().int().positive().max(1_000_000);
 const weeks = z.number().int().positive().max(104);
 const sort = z.number().int().min(0).max(32_767);
 
+// `create` (set by the forms) makes the write atomic: true refuses an existing code (`code_taken`), false refuses a
+// missing one (`item_not_found`); absent is a plain upsert.
 export const packInputSchema = z.object({
   code: z.string().regex(PACK_CODE_RE),
+  create: z.boolean().optional(),
   kind: z.enum(PACK_KINDS).optional(),
   slug: z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/).optional(),
   name: localizedTextSchema.optional(),
@@ -31,6 +34,7 @@ export const packInputSchema = z.object({
 
 export const packOptionInputSchema = z.object({
   code: z.string().regex(OPTION_CODE_RE),
+  create: z.boolean().optional(),
   name: localizedTextSchema.optional(),
   price: price.optional(),
   weeks: weeks.optional(),
@@ -41,6 +45,7 @@ export const packOptionInputSchema = z.object({
 
 export const extraInputSchema = z.object({
   code: z.string().regex(EXTRA_CODE_RE),
+  create: z.boolean().optional(),
   name: localizedTextSchema.optional(),
   description: localizedTextSchema.optional(),
   price: price.optional(),
