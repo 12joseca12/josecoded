@@ -39,7 +39,7 @@ export default async function ServicesPage({ params }: ServicesProps) {
   ];
 
   return (
-    <main>
+    <>
       <BlockScroll />
       <PageHead
         title={t("services.head.title")}
@@ -132,6 +132,6 @@ export default async function ServicesPage({ params }: ServicesProps) {
           />
         </div>
       </div>
-    </main>
+    </>
   );
 }
