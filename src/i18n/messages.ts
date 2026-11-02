@@ -1,7 +1,9 @@
 import type { Locale } from "./config";
 import type { MessageKey } from "./keys.generated";
 
-type Tree = { [key: string]: string | Tree };
+interface Tree {
+  [key: string]: string | Tree;
+}
 
 const loaders: Record<Locale, () => Promise<{ default: Tree }>> = {
   es: () => import("../../messages/es.json"),

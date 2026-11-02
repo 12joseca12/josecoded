@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
+
 import { isLocale, isPublished, locales } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
 
-type LocaleProps = { params: Promise<{ locale: string }> };
+interface LocaleProps {
+  params: Promise<{ locale: string }>;
+}
 
 export const dynamicParams = false;
 

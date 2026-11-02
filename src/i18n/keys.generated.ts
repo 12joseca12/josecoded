@@ -1,3 +1,1 @@
-export type MessageKey =
-  | "home.name"
-  | "meta.title";
+export type MessageKey = "home.name" | "meta.title";

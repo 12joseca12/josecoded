@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+
 import { isLocale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
 

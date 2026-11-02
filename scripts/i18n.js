@@ -2,6 +2,8 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { format, resolveConfig } from "prettier";
+
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const generatedFile = join(root, "src/i18n/keys.generated.ts");
 const baseLocale = "es";
@@ -23,14 +25,15 @@ function load(locale) {
   return flatten(JSON.parse(readFileSync(file, "utf8")));
 }
 
-function render(keys) {
-  const body = keys.map((key) => `  | "${key}"`).join("\n");
-  return `export type MessageKey =\n${body};\n`;
+async function render(keys) {
+  const source = `export type MessageKey = ${keys.map((key) => `"${key}"`).join(" | ")};\n`;
+  const options = await resolveConfig(generatedFile);
+  return format(source, { ...options, filepath: generatedFile });
 }
 
 const base = load(baseLocale);
 const keys = Object.keys(base).sort();
-const expected = render(keys);
+const expected = await render(keys);
 
 if (process.argv.includes("--write")) {
   writeFileSync(generatedFile, expected);
