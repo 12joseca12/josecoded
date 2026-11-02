@@ -30,6 +30,8 @@ jobs:
       - run: pnpm format:check
       - run: pnpm typecheck
       - run: pnpm i18n:check
+      - run: pnpm tokens:check
+      - run: pnpm tokens:test
       - run: pnpm test
       - run: pnpm build
       - id: playwright
