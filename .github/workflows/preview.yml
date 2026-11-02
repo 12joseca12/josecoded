@@ -18,7 +18,7 @@ jobs:
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      NEXT_PUBLIC_SITE_URL: https://josecoded-preview.workers.dev
+      NEXT_PUBLIC_SITE_URL: https://josecoded-preview.josecoded-api.workers.dev
       NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: placeholder
     steps:
