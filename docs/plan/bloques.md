@@ -83,7 +83,7 @@ Tamaños: **S** ≤ 30 min · **M** ≤ 1 h.
 - **Depende:** W03 · **Tamaño:** S · **Decide Jose:** validar en Safari y Firefox frente a Chrome (10.10).
 - **Hecho cuando:** sin salto de layout al aparecer la barra · reduced-motion desactiva el scroll suave · progreso correcto en los tres navegadores.
 
-#### W11 · `public/layout-nav` · Cabecera, menú y pie · **BLOQUEADO por 10.9**
+#### W11 · `public/layout-nav` · Cabecera cápsula con borde de progreso, menú y pie
 - **Verá:** `localhost:3000/es` con cabecera y pie navegables en móvil y escritorio.
 - **Qué:** `SiteHeader` con la variante elegida (A cápsula: indicador deslizante y hoja; B terminal: ruta y progreso con marcas; C raíl: barra mínima y raíl lateral), `MobileMenu` como `<dialog>`, `SiteFooter`, skip link, `aria-current`, `data-scrolled`, enlaces Servicios · Proyectos · Sobre mí · Blog · Chat · Entrar (Blog oculto por interruptor desde W22).
 - **Depende:** W07, W10, decisión 10.9 · **Tamaño:** M · **Decide Jose:** 10.9. Si elige B, la paleta ⌘K se parte en `public/nav-palette` (S) justo después.

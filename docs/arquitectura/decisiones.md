@@ -102,7 +102,7 @@
 - **10.6 Orden por zonas:** público (home → servicios → proyectos → sobre mí → contacto → chat → blog → legales y errores) → auth y admin base → CRM → área de clientes → freelance → Radar → lab.
 - **10.7 Dos proyectos de Supabase. ABIERTA (acción de Jose): crear `josecoded-dev`** (gratuito, misma región) en su cuenta para previews y sesiones en la nube; producción sigue en `echlwywbucgbhwpncviy`; local con Docker en el Mac. La CI aplica las mismas migraciones a los dos.
 - **10.8 ABIERTA (acción de Jose): crear el repo `josecoded-omen`** en GitHub (privado, `main` protegida). Hasta entonces su backlog (`docs/plan/bloques.md`, lista O) no arranca.
-- **10.9 ABIERTA (en el navegador): navegación del estilo B.** Tres opciones en `prototipos/estilo-b/` (conmutador «Nav» abajo): **A cápsula** (barra con indicador deslizante y hoja en móvil), **B terminal** (ruta tipo `~/sección`, paleta ⌘K y barra de progreso con marcas), **C raíl** (barra mínima y raíl lateral de secciones). El bloque `public/layout-nav` queda bloqueado hasta que Jose elija.
+- **10.9 (Jose): navegación cápsula.** Barra que se condensa en cápsula al bajar; el progreso del scroll es su borde coral (0 % sin borde, 100 % completo). Sin eyebrows encima de los textos. Scroll por bloques en escritorio y nativo en móvil.
 - **10.10 ABIERTA (en el navegador): hero animado y scroll.** Jose revisa en `prototipos/estilo-b/` la transformación del hero (wireframe → app → datos → IA), los estados (Cargando, Error, 404, Deshabilitado) y la barra de scroll, y dice qué cambia antes de portarlo (`public/home-hero-*`).
 
 ## Abiertas (resumen)
@@ -111,5 +111,4 @@
 |---|---|---|
 | 10.7 | Crear el proyecto Supabase `josecoded-dev` y pegar URL y clave publicable en los secretos de CI | Jose (acción) |
 | 10.8 | Crear el repo GitHub `josecoded-omen` | Jose (acción) |
-| 10.9 | Elegir navegación A cápsula / B terminal / C raíl | Jose (navegador) |
 | 10.10 | Feedback del hero animado y del scroll del prototipo | Jose (navegador) |
