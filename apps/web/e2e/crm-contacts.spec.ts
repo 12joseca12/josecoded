@@ -54,12 +54,13 @@ test('changing the status asks for the next action and leaves a status_change in
   const sheet = page.getByRole('dialog', { name: 'Estado y siguiente acción' });
   await sheet.getByRole('radio', { name: 'Invitación enviada' }).check();
   // the seed gives the agency a next action and the form preselects it: empty it, or there is nothing to ask for
-  await sheet.getByLabel('Siguiente acción').fill('');
-  await sheet.getByLabel('Fecha').fill('');
+  // exact: the form itself is named «Estado y siguiente acción», and a substring match would find it as well
+  await sheet.getByLabel('Siguiente acción', { exact: true }).fill('');
+  await sheet.getByLabel('Fecha', { exact: true }).fill('');
   await sheet.getByRole('button', { name: 'Guardar' }).click();
   await expect(sheet.getByText(/necesita siguiente acción|Dinos qué toca hacer/)).toBeVisible();
-  await sheet.getByLabel('Siguiente acción').fill('Seguimiento si no responde');
-  await sheet.getByLabel('Fecha').fill('2026-12-01');
+  await sheet.getByLabel('Siguiente acción', { exact: true }).fill('Seguimiento si no responde');
+  await sheet.getByLabel('Fecha', { exact: true }).fill('2026-12-01');
   await sheet.getByRole('button', { name: 'Guardar' }).click();
   await expect(sheet).toBeHidden();
   await page.goto(`/crm/contactos/${CARLA_AGENCY}`);
@@ -73,7 +74,10 @@ test('a closer never sees «Cerrar cobrado»: she can ask Jose to close', async 
   await expect(page.getByRole('button', { name: 'Reasignar' })).toHaveCount(0);
   await expect(page.getByText('Carla Méndez')).toHaveCount(0);
   await page.getByRole('button', { name: 'Pedir cierre a Jose' }).click();
-  await page.getByRole('dialog', { name: 'Pedir cierre a Jose' }).getByRole('button', { name: 'Pedir cierre' }).click();
+  const dialog = page.getByRole('dialog', { name: 'Pedir cierre a Jose' });
+  await dialog.getByRole('button', { name: 'Pedir cierre' }).click();
+  // the sheet closes when the action has saved: reloading before that cancels the request in flight
+  await expect(dialog).toBeHidden();
   await page.reload();
   await expect(page.getByRole('group', { name: 'Siguiente acción' })).toContainText('Jose: cerrar cobrado');
 });

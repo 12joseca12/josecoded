@@ -72,7 +72,10 @@ test('the same file again changes nothing and says it was already imported; the 
   const history = page.getByRole('table', { name: 'Historial de importaciones' });
   await expect(history.getByRole('row', { name: /contacts-30\.csv/ })).toHaveCount(1);
   await expect(page.getByText('Fila 30 · contacts-30.csv')).toBeVisible();
-  await expect(page.getByText('Pendiente', { exact: true })).toBeVisible();
+  // the seed leaves another pending row of Carla («Fila 4 · seed.csv»): look at the badge of this file's row
+  await expect(
+    page.getByRole('listitem').filter({ hasText: 'Fila 30 · contacts-30.csv' }).getByText('Pendiente', { exact: true }),
+  ).toBeVisible();
   // she learns that the row waits, never who has the contact
   await expect(page.getByText('Recruiter Test')).toHaveCount(0);
   await expectNoSeriousViolations(page);
