@@ -1,4 +1,11 @@
 export type MessageKey =
+  | "dev.scroll.block"
+  | "dev.scroll.intro"
+  | "dev.scroll.more"
+  | "dev.scroll.progress"
+  | "dev.scroll.short"
+  | "dev.scroll.tall"
+  | "dev.scroll.title"
   | "dev.tokens.colors"
   | "dev.tokens.durations"
   | "dev.tokens.radii"
