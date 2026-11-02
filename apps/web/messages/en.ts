@@ -3,7 +3,6 @@ import about from './en/about.json';
 import adminNotifications from './en/admin-notifications.json';
 import adminPricing from './en/admin-pricing.json';
 import adminTexts from './en/admin-texts.json';
-import adminTexts from './en/admin-texts.json';
 import adminTeam from './en/admin-team.json';
 import area from './en/area.json';
 import auth from './en/auth.json';
@@ -44,7 +43,6 @@ const messages = {
   ...crm,
   ...adminNotifications,
   ...adminPricing,
-  ...adminTexts,
   ...adminTexts,
   ...adminTeam,
   ...crmClients,
