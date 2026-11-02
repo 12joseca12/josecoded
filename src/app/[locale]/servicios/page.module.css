@@ -1,0 +1,21 @@
+.ways {
+  width: 100%;
+  max-width: var(--max);
+  margin-inline: auto;
+}
+
+.sections {
+  padding-inline: var(--gutter);
+}
+
+@media (min-width: 64rem) {
+  .ways {
+    display: grid;
+    grid-template-columns: 14rem minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .sections {
+    padding-inline: var(--space-6) var(--gutter);
+  }
+}

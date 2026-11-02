@@ -132,5 +132,67 @@
     "privacy": "Privacy",
     "cookies": "Cookies",
     "copyright": "© 2026 Jose · Full stack, React Native and AI"
+  },
+  "services": {
+    "meta": {
+      "title": "Services | josecoded"
+    },
+    "head": {
+      "title": "Three ways to",
+      "accent": "work together.",
+      "lead": "On your team, as a freelancer or with a fixed pack. You choose how; I make sure it reaches production."
+    },
+    "nav": {
+      "label": "Ways to work"
+    },
+    "audience": "Who it is for",
+    "ways": {
+      "contratacion": {
+        "nav": "Employment",
+        "title": "Employment",
+        "text": "I join your mobile or web product team and own a part of the product end to end.",
+        "audience": "Teams looking for a profile that joins design, development and release.",
+        "bullets": {
+          "a": "React Native and web with TypeScript",
+          "b": "Code review, tests and continuous integration from day one",
+          "c": "Product in production, not just in the prototype"
+        },
+        "cv": "Download CV",
+        "chat": "Talk to me"
+      },
+      "freelance": {
+        "nav": "Freelance",
+        "title": "Freelance",
+        "text": "A feature, an audit or a push on an existing project, with the scope agreed before starting.",
+        "audience": "Teams and businesses with a concrete task that does not justify a hire.",
+        "bullets": {
+          "a": "Hourly rate or per-task quote",
+          "b": "Short deliveries you can try",
+          "c": "Real-time progress tracking"
+        },
+        "cta": "Ask for a proposal"
+      },
+      "packs": {
+        "nav": "Packs",
+        "title": "Web and app packs",
+        "text": "Design, development and release with scope, price and date defined up front.",
+        "audience": "Anyone who needs a complete website or app without managing the project piece by piece.",
+        "bullets": {
+          "a": "Web, app or both",
+          "b": "Store release and domain included",
+          "c": "Optional maintenance afterwards"
+        },
+        "view": "See packs",
+        "cta": "Talk about a pack"
+      }
+    },
+    "rates": {
+      "label": "Rates",
+      "hour": "Per hour",
+      "task": "Per task",
+      "unitHour": "€ / hour",
+      "unitTask": "€ / task",
+      "note": "Indicative: the final amount is agreed before starting."
+    }
   }
 }
