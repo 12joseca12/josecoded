@@ -4,7 +4,7 @@ import { getOptionalSession } from '@/lib/auth/guards';
 
 import type { StaffRole } from '@/lib/auth/staff';
 import type { ServerSupabase } from '@/lib/supabase/server';
-import type { ContactKind, ContactListQuery } from '@josecoded/types';
+import type { ContactKind, ContactListQuery, Tables } from '@josecoded/types';
 
 // Reads of the contacts screens (K2 inbox, K3 detail). They run with the JWT of the person: RLS decides which
 // contacts exist for them (a closer gets her portfolio, the admin everything). Nothing here filters by owner to
@@ -12,10 +12,30 @@ import type { ContactKind, ContactListQuery } from '@josecoded/types';
 // owner id or an owner name.
 
 export const CONTACT_LIST_COLUMNS =
-  'id, display_name, kind, status, next_action, next_action_at, last_interaction_at, owner_id, crm_organizations(name)';
+  'id, display_name, kind, status, source, next_action, next_action_at, last_interaction_at, owner_id, crm_organizations(name)';
 /** The same without the owner: a closer's rows never carry it. */
 const CONTACT_LIST_COLUMNS_CLOSER =
-  'id, display_name, kind, status, next_action, next_action_at, last_interaction_at, crm_organizations(name)';
+  'id, display_name, kind, status, source, next_action, next_action_at, last_interaction_at, crm_organizations(name)';
+
+/** How the person was last reached: a value of `interaction_channel`, which is also the key of `crmContacts.channels`. */
+export type ContactChannel = NonNullable<Tables<'crm_interactions'>['channel']>;
+
+/** Origins that are a channel in themselves: a lead that came by a form has not been answered by any other yet. */
+const SOURCE_CHANNEL: Partial<Record<Tables<'crm_contacts'>['source'], ContactChannel>> = {
+  web_form: 'web_form',
+  partner_form: 'web_form',
+  web_proposal: 'web_proposal',
+  chat: 'chat',
+  calcom: 'calcom',
+};
+
+/** The «Canal» column: the channel of the last interaction that had one, else the one the contact came through. */
+export function contactChannel(
+  lastChannel: ContactChannel | null,
+  source: Tables<'crm_contacts'>['source'] | null,
+): ContactChannel | null {
+  return lastChannel ?? (source ? (SOURCE_CHANNEL[source] ?? null) : null);
+}
 
 export interface ContactRow {
   id: string;
@@ -26,6 +46,8 @@ export interface ContactRow {
   next_action_at: string | null;
   last_interaction_at: string | null;
   organization: string | null;
+  /** See `contactChannel`; `null` when nothing says how to reach them yet. */
+  channel: ContactChannel | null;
   /** Admin only: `null` for a closer's rows (and for the contacts of Jose). */
   owner_id: string | null;
 }
@@ -92,8 +114,15 @@ export function applyContactFilters<T extends Filterable<T>>(
   return next;
 }
 
-function toRow(row: unknown, role: StaffRole): ContactRow {
-  const record = row as ContactRow & { crm_organizations: { name: string } | null };
+function toRow(
+  row: unknown,
+  role: StaffRole,
+  lastChannels: ReadonlyMap<string, ContactChannel> = new Map(),
+): ContactRow {
+  const record = row as ContactRow & {
+    crm_organizations: { name: string } | null;
+    source: Tables<'crm_contacts'>['source'] | null;
+  };
   return {
     id: record.id,
     display_name: record.display_name,
@@ -103,6 +132,7 @@ function toRow(row: unknown, role: StaffRole): ContactRow {
     next_action_at: record.next_action_at,
     last_interaction_at: record.last_interaction_at,
     organization: record.crm_organizations?.name ?? null,
+    channel: contactChannel(lastChannels.get(record.id) ?? null, record.source),
     owner_id: role === 'admin' ? (record.owner_id ?? null) : null,
   };
 }
@@ -136,7 +166,29 @@ export async function getOwners(supabase: ServerSupabase): Promise<Owner[]> {
   });
 }
 
-export async function getContactPage(role: StaffRole, raw: Record<string, string | string[] | undefined>): Promise<ContactPage> {
+/** The newest channel of each contact of the page: one read of their interactions, newest first, first one wins. */
+async function getLastChannels(
+  supabase: ServerSupabase,
+  ids: readonly string[],
+): Promise<Map<string, ContactChannel>> {
+  const found = new Map<string, ContactChannel>();
+  if (ids.length === 0) return found;
+  const { data } = await supabase
+    .from('crm_interactions')
+    .select('contact_id, channel')
+    .in('contact_id', [...ids])
+    .not('channel', 'is', null)
+    .order('occurred_at', { ascending: false })
+    .limit(ids.length * 20);
+  for (const row of data ?? [])
+    if (row.channel && !found.has(row.contact_id)) found.set(row.contact_id, row.channel);
+  return found;
+}
+
+export async function getContactPage(
+  role: StaffRole,
+  raw: Record<string, string | string[] | undefined>,
+): Promise<ContactPage> {
   const session = await getOptionalSession();
   if (!session) throw new Error('no session');
   const { supabase, user } = session;
@@ -169,8 +221,19 @@ export async function getContactPage(role: StaffRole, raw: Record<string, string
   ]);
   if (list.error) throw new Error(list.error.message);
 
-  const rows = (list.data ?? []).map((row) => toRow(row, role));
-  return { rows, total: list.count ?? rows.length, page, pageSize: CONTACTS_PAGE_SIZE, owners, query };
+  const lastChannels = await getLastChannels(
+    supabase,
+    (list.data ?? []).map((row) => (row as unknown as { id: string }).id),
+  );
+  const rows = (list.data ?? []).map((row) => toRow(row, role, lastChannels));
+  return {
+    rows,
+    total: list.count ?? rows.length,
+    page,
+    pageSize: CONTACTS_PAGE_SIZE,
+    owners,
+    query,
+  };
 }
 
 /** Contacts with an overdue next action, the oldest first: the mini-list of K1. */

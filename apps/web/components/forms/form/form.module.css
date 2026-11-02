@@ -3,11 +3,19 @@
   gap: var(--sp-5);
 }
 
+.form[data-compact] {
+  gap: var(--sp-2);
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;
   gap: var(--sp-3);
   align-items: center;
+}
+
+.actions[data-align='end'] {
+  justify-content: flex-end;
 }
 
 /* Errors: there is no red in the palette (DESIGN.md), so the state is carried by the weight of the

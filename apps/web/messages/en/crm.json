@@ -51,12 +51,15 @@
         "all": "contacts whose next action is past due across the CRM.",
         "none": "Nothing overdue right now.",
         "cta": "See overdue",
-        "contacts": "All contacts"
+        "contacts": "All contacts",
+        "allUnassigned": "contacts whose next action is past due across the CRM ({unassigned} unassigned)."
       },
       "leads": {
         "titleMine": "My open leads",
         "titleAll": "Open leads",
-        "open": "Open"
+        "new": "New",
+        "contacted": "Contacted",
+        "proposal_sent": "Proposal sent"
       },
       "commissions": {
         "titleMine": "My commissions",
@@ -70,7 +73,8 @@
         "mine": "Proposed by your clients. They are accepted with hours or rejected with a reason.",
         "all": "Proposed by clients. They are accepted with hours or rejected with a reason.",
         "none": "No story to decide.",
-        "link": "See clients"
+        "link": "See clients",
+        "linkNamed": "Decide {name}'s"
       },
       "import": {
         "title": "Last import",
@@ -78,7 +82,10 @@
         "result": "{created, plural, one {# created} other {# created}} · {updated, plural, one {# updated} other {# updated}} · {skipped, plural, one {# invalid} other {# invalid}}",
         "review": "{count} under review",
         "again": "Import another CSV",
-        "first": "Import a CSV"
+        "first": "Import a CSV",
+        "when": "{day}, {time}",
+        "byAuthor": "{when} · {author}",
+        "unnamed": "Unnamed file"
       },
       "team": {
         "title": "Team",
@@ -92,7 +99,9 @@
       "title": "Administration",
       "omen": {
         "online": "Omen online",
-        "offline": "Omen offline"
+        "offline": "Omen offline",
+        "onlineChecked": "Omen online · checked {ago}",
+        "offlineChecked": "Omen offline · checked {ago}"
       },
       "link": "Go to Administration",
       "counters": {

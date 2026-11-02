@@ -144,3 +144,126 @@ textarea.control {
     transition: none;
   }
 }
+
+/* ---- toolbar variants (ref/crm .search, .select, .chip-toggle) ---- */
+
+.control[data-size='compact'] {
+  min-height: var(--size-control-md);
+  padding: 0 var(--sp-3);
+  background: var(--tint-cmdk);
+  box-shadow: var(--shadow-hairline);
+  font-size: var(--font-label-size);
+}
+
+.control[data-size='compact']:focus-visible {
+  box-shadow: inset 0 0 0 var(--stroke-line) var(--violet-soft);
+}
+
+/* the composer of a note (ref/crm textarea.control): the field of the prototype, not the toolbar's */
+textarea.control[data-size='compact'] {
+  min-height: var(--size-crm-note-min-h);
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--bg-prompt);
+  box-shadow: var(--shadow-hairline-strong);
+  line-height: var(--font-body-leading);
+}
+
+textarea.control[data-size='compact']:focus-visible {
+  box-shadow: inset 0 0 0 var(--stroke-line) var(--violet-soft);
+}
+
+/* the arrow of a compact select is drawn here: the native one is a different weight on every system */
+select.control[data-size='compact'] {
+  appearance: none;
+  width: auto;
+  padding-inline-end: var(--sp-8);
+  background:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238c86bd' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>")
+      no-repeat right var(--sp-2-5) center / 1em,
+    var(--tint-cmdk);
+  cursor: pointer;
+}
+
+select.control[data-size='compact'] option {
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* an input with an icon on the left and a key cap on the right */
+.adorned {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.adorned > svg {
+  position: absolute;
+  inset-inline-start: var(--sp-3);
+  color: var(--text-3);
+  pointer-events: none;
+}
+
+.control[data-adorned='true'] {
+  padding-inline: var(--sp-9) var(--sp-10);
+}
+
+.trailing {
+  position: absolute;
+  inset-inline-end: var(--sp-2-5);
+  pointer-events: none;
+}
+
+/* a key to press is no use on a phone or a touch screen */
+@media (pointer: coarse), (width < 64rem) {
+  .trailing {
+    display: none;
+  }
+}
+
+.chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  min-height: var(--size-control-md);
+  padding: 0 var(--sp-3-5);
+  border-radius: var(--r-pill);
+  box-shadow: var(--shadow-hairline);
+  color: var(--text-2);
+  font-size: var(--font-small-size);
+  cursor: pointer;
+}
+
+.chip input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.chip:has(input:checked) {
+  background: var(--tint-danger);
+  box-shadow: inset 0 0 0 var(--stroke-hairline) var(--edge-danger);
+  color: var(--danger);
+}
+
+.chip:has(input:focus-visible) {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.count {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (pointer: coarse) {
+  .control[data-size='compact'],
+  .chip {
+    min-height: var(--size-hit);
+  }
+
+  .control[data-size='compact'] {
+    font-size: var(--font-body-size);
+  }
+}

@@ -23,7 +23,7 @@ export async function OverdueList({ rows, locale }: { rows: readonly ContactRow[
             <span className={styles.name}>{row.display_name}</span>
             <span className={styles.what}>{row.next_action ?? row.organization ?? t('none')}</span>
             <span className={styles.due}>
-              <DueLabel at={row.next_action_at} locale={locale} />
+              <DueLabel at={row.next_action_at} locale={locale} relative />
             </span>
           </Action>
         </li>

@@ -7,6 +7,14 @@
   margin-bottom: var(--sp-6);
 }
 
+.head[data-flush] {
+  margin-bottom: 0;
+}
+
+.head[data-align='start'] {
+  align-items: flex-start;
+}
+
 .text {
   display: grid;
   gap: var(--sp-2);

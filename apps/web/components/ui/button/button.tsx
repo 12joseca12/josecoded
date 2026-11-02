@@ -12,7 +12,12 @@ type ButtonBase = {
   size?: ButtonSize;
 };
 
-type WithLabel = ButtonBase & { iconOnly?: false; icon?: IconName };
+type WithLabel = ButtonBase & {
+  iconOnly?: false;
+  icon?: IconName;
+  /** An icon after the label (a «Siguiente ›»). */
+  iconAfter?: IconName;
+};
 
 /** An icon-only button has no text, so its translated `aria-label` is mandatory. */
 type IconOnly = ButtonBase & { iconOnly: true; icon: IconName; 'aria-label': string };
@@ -36,9 +41,10 @@ export function Button({
   children,
   ...rest
 }: ButtonProps) {
+  const { iconAfter, ...action } = rest as typeof rest & { iconAfter?: IconName };
   return (
     <Action
-      {...rest}
+      {...action}
       className={styles.btn}
       data-variant={variant}
       data-size={size}
@@ -46,6 +52,7 @@ export function Button({
     >
       {icon ? <Icon name={icon} /> : null}
       {iconOnly ? null : <span data-slot="label">{children}</span>}
+      {iconAfter && !iconOnly ? <Icon name={iconAfter} /> : null}
     </Action>
   );
 }

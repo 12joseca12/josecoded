@@ -26,7 +26,7 @@ import styles from './ui-catalogue.module.css';
 import type { ButtonSize, ButtonVariant, IconName } from '@josecoded/types';
 import type { ReactNode } from 'react';
 
-const variants: ButtonVariant[] = ['solid', 'ghost'];
+const variants: ButtonVariant[] = ['solid', 'ghost', 'quiet'];
 const sizes: ButtonSize[] = ['sm', 'md', 'lg'];
 const iconNames = Object.keys(icons) as IconName[];
 // a text Jose still owes: written as the marker, never translated

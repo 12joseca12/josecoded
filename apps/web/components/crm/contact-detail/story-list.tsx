@@ -16,7 +16,7 @@ export async function StoryList({ stories, clientId, locale }: { stories: readon
     <div>
       <div className={styles.sectionHead}>
         <h2>{t('title')}</h2>
-        {clientId ? <ArrowLink href={`/crm/clientes/${clientId}`}>{t('decide')}</ArrowLink> : null}
+        {clientId ? <ArrowLink size="sm" href={`/crm/clientes/${clientId}`}>{t('decide')}</ArrowLink> : null}
       </div>
       {stories.length === 0 ? (
         <p className={`${styles.small} ${styles.muted}`}>{t('empty')}</p>

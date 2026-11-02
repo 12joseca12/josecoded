@@ -73,9 +73,9 @@
   font-weight: var(--font-emphasis-weight);
 }
 
-.actor {
-  color: var(--text-2);
-  font-size: var(--font-small-size);
+/* «· WhatsApp», «· Carla»: each part after the kind, in the weight of the line, with the dot of the prototype */
+.inline::before {
+  content: '· ';
 }
 
 .time {

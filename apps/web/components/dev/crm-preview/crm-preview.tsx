@@ -6,11 +6,30 @@ import { getStatusOptions, getStatusSheetLabels } from '@/components/crm/status-
 import { PageHead } from '@/components/staff/page-head';
 import { StaffShell } from '@/components/staff/staff-shell';
 import { AdminSummary, CrmSummary } from '@/components/staff/summary';
-import { ADMIN_COUNTERS, PREVIEW_IDENTITY, PREVIEW_OMEN, previewContactDetail, previewContactPage, previewOverdue, previewSummary } from '@/lib/dev/crm-fixtures';
+import {
+  ADMIN_COUNTERS,
+  PREVIEW_IDENTITY,
+  PREVIEW_OMEN,
+  previewContactDetail,
+  previewContactPage,
+  previewExtras,
+  previewOmenCheckedAt,
+  previewOverdue,
+  previewSummary,
+} from '@/lib/dev/crm-fixtures';
 
 import type { StaffRole } from '@/lib/auth/staff';
 import type { PreviewScreen } from '@/lib/dev/crm-previews';
 import type { Locale } from '@josecoded/types';
+
+/** The logical path each preview stands for, so the rail marks its destination as it would on the real page. */
+const CURRENT_PATH: Record<PreviewScreen, string> = {
+  resumen: '/crm',
+  contactos: '/crm/contactos',
+  'contacto-lead': '/crm/contactos/preview',
+  'contacto-cliente': '/crm/contactos/preview',
+  admin: '/admin',
+};
 
 /**
  * One screen of /crm or /admin with fixtures instead of Supabase, inside the real `StaffShell`. It composes the same
@@ -23,7 +42,14 @@ export async function CrmPreview({ locale, screen, role, tab }: { locale: Locale
   const [statusOptions, statusLabels] = await Promise.all([getStatusOptions(role, locale), getStatusSheetLabels(locale)]);
 
   return (
-    <StaffShell locale={locale} zone={screen === 'admin' ? 'admin' : 'crm'} role={role} identity={PREVIEW_IDENTITY[role]} overdue={overdue}>
+    <StaffShell
+      locale={locale}
+      zone={screen === 'admin' ? 'admin' : 'crm'}
+      role={role}
+      identity={PREVIEW_IDENTITY[role]}
+      overdue={overdue}
+      currentPath={CURRENT_PATH[screen]}
+    >
       {await screenOf()}
     </StaffShell>
   );
@@ -31,9 +57,27 @@ export async function CrmPreview({ locale, screen, role, tab }: { locale: Locale
   async function screenOf() {
     switch (screen) {
       case 'resumen':
-        return <CrmSummary locale={locale} summary={summary} overdue={previewOverdue(role)} omen={PREVIEW_OMEN} />;
+        return (
+          <CrmSummary
+            locale={locale}
+            summary={summary}
+            extras={previewExtras(role)}
+            overdue={previewOverdue(role).slice(0, 3)}
+            omen={PREVIEW_OMEN}
+            omenCheckedAt={previewOmenCheckedAt()}
+          />
+        );
       case 'contactos':
-        return <ContactsView locale={locale} role={role} page={previewContactPage(role)} statusOptions={statusOptions} statusLabels={statusLabels} />;
+        return (
+          <ContactsView
+            locale={locale}
+            role={role}
+            page={previewContactPage(role)}
+            statusOptions={statusOptions}
+            statusLabels={statusLabels}
+            overdue={overdue}
+          />
+        );
       case 'contacto-lead':
       case 'contacto-cliente':
         return (
@@ -52,7 +96,12 @@ export async function CrmPreview({ locale, screen, role, tab }: { locale: Locale
         return (
           <>
             <PageHead title={t('summary.title')} tone={t('summary.titleTone.admin')} />
-            <AdminSummary locale={locale} counters={ADMIN_COUNTERS} omen={PREVIEW_OMEN} />
+            <AdminSummary
+              locale={locale}
+              counters={ADMIN_COUNTERS}
+              omen={PREVIEW_OMEN}
+              omenCheckedAt={previewOmenCheckedAt()}
+            />
           </>
         );
       }

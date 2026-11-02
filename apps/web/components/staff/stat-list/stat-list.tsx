@@ -3,7 +3,7 @@ import { Icon } from '@/components/ui/icon';
 
 import styles from './stat-list.module.css';
 
-import type { Href } from '@josecoded/types';
+import type { Href, IconName } from '@josecoded/types';
 import type { ReactNode } from 'react';
 
 /** Rows of «label … value» inside a cell. `columns` lays them out in two columns from 40rem and three from 60rem. */
@@ -16,12 +16,23 @@ export function StatList({ children, columns = false }: { children: ReactNode; c
 }
 
 /**
- * One row. With `href` the whole row is a link (a chevron says so); without it, a plain row. The name of the
- * link is «label value», so the number is read with what it counts.
+ * One row, with an optional icon before the label. With `href` the whole row is a link (a chevron says so); without
+ * it, a plain row. The name of the link is «label value», so the number is read with what it counts.
  */
-export function StatRow({ label, value, href }: { label: string; value: ReactNode; href?: Href }) {
+export function StatRow({
+  label,
+  value,
+  href,
+  icon,
+}: {
+  label: string;
+  value: ReactNode;
+  href?: Href;
+  icon?: IconName;
+}) {
   const content = (
     <>
+      {icon ? <Icon name={icon} /> : null}
       <span>{label}</span>
       <b className={styles.value}>{value}</b>
     </>

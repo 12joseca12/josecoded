@@ -187,6 +187,8 @@ export type TokenName =
   | '--size-crm-row'
   | '--size-crm-sheet-w'
   | '--size-crm-dialog-w'
+  | '--size-crm-search-max'
+  | '--size-crm-note-min-h'
   | '--focus-ring-width'
   | '--focus-ring-offset'
   | '--focus-ring-color'
@@ -587,6 +589,8 @@ export const tokens = {
   'size-crm-row': '--size-crm-row',
   'size-crm-sheet-w': '--size-crm-sheet-w',
   'size-crm-dialog-w': '--size-crm-dialog-w',
+  'size-crm-search-max': '--size-crm-search-max',
+  'size-crm-note-min-h': '--size-crm-note-min-h',
   'focus-ring-width': '--focus-ring-width',
   'focus-ring-offset': '--focus-ring-offset',
   'focus-ring-color': '--focus-ring-color',

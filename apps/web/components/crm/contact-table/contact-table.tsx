@@ -32,10 +32,11 @@ export async function ContactTable({
   owners: readonly Owner[] | null;
   locale: Locale;
 }) {
-  const [t, tKinds, tStatus, format] = await Promise.all([
+  const [t, tKinds, tStatus, tChannels, format] = await Promise.all([
     getTranslations({ locale, namespace: 'crmContacts.table' }),
     getTranslations({ locale, namespace: 'crmContacts.kinds' }),
     getTranslations({ locale, namespace: 'crmContacts.status' }),
+    getTranslations({ locale, namespace: 'crmContacts.channelsShort' }),
     getFormatter({ locale }),
   ]);
   const byId = new Map((owners ?? []).map((owner) => [owner.user_id, owner]));
@@ -49,13 +50,32 @@ export async function ContactTable({
         <caption className="sr-only">{t('caption')}</caption>
         <thead role="rowgroup" className={styles.head}>
           <tr role="row">
-            <th role="columnheader" scope="col" className={styles.th}>{t('contact')}</th>
-            <th role="columnheader" scope="col" className={styles.th}>{t('kind')}</th>
-            <th role="columnheader" scope="col" className={styles.th}>{t('status')}</th>
-            <th role="columnheader" scope="col" className={styles.th}>{t('next')}</th>
-            <th role="columnheader" scope="col" className={styles.th}>{t('last')}</th>
-            {showOwner ? <th role="columnheader" scope="col" className={styles.th}>{t('owner')}</th> : null}
-            <th role="columnheader" scope="col" className={styles.th}><span className="sr-only">{t('actions')}</span></th>
+            <th role="columnheader" scope="col" className={styles.th}>
+              {t('contact')}
+            </th>
+            <th role="columnheader" scope="col" className={styles.th}>
+              {t('kind')}
+            </th>
+            <th role="columnheader" scope="col" className={styles.th}>
+              {t('status')}
+            </th>
+            <th role="columnheader" scope="col" className={styles.th}>
+              {t('next')}
+            </th>
+            <th role="columnheader" scope="col" className={styles.th}>
+              {t('last')}
+            </th>
+            <th role="columnheader" scope="col" className={styles.th}>
+              {t('channel')}
+            </th>
+            {showOwner ? (
+              <th role="columnheader" scope="col" className={styles.th}>
+                {t('owner')}
+              </th>
+            ) : null}
+            <th role="columnheader" scope="col" className={styles.th}>
+              <span className="sr-only">{t('actions')}</span>
+            </th>
           </tr>
         </thead>
         <tbody role="rowgroup" className={styles.body}>
@@ -87,6 +107,9 @@ export async function ContactTable({
                 </td>
                 <td role="cell" data-col="meta" data-label={t('last')} className={`${styles.cell} ${styles.num}`}>
                   {day(row.last_interaction_at)}
+                </td>
+                <td role="cell" data-col="meta" data-label={t('channel')} className={styles.cell}>
+                  {row.channel ? tChannels(row.channel) : t('none')}
                 </td>
                 {showOwner ? (
                   <td role="cell" data-col="meta" data-label={t('owner')} className={styles.cell}>

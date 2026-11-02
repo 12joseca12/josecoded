@@ -13,18 +13,28 @@ export function PageHead({
   title,
   tone,
   lead,
+  meta,
+  align = 'end',
+  flush = false,
   actions,
 }: {
   title: string;
   tone: string;
   lead?: ReactNode;
+  /** A row under the title (the kind, status and owner of a contact): it belongs to the title, not to the page. */
+  meta?: ReactNode;
+  /** Where the actions sit against the text: at its foot (a list) or at its top (a record with a meta row). */
+  align?: 'end' | 'start';
+  /** No space below: the head is part of a larger one (a contact's head also holds how to reach them). */
+  flush?: boolean;
   actions?: ReactNode;
 }) {
   return (
-    <header className={styles.head}>
+    <header className={styles.head} data-align={align} data-flush={flush || undefined}>
       <div className={styles.text}>
         <TwoToneHeading level="h1" size="crm" lead={title} tail={tone} />
         {lead ? <p className={styles.lead}>{lead}</p> : null}
+        {meta}
       </div>
       {actions ? <div className={styles.actions}>{actions}</div> : null}
     </header>

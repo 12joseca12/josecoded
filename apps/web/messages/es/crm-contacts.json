@@ -23,7 +23,6 @@
       "label": "Filtrar contactos",
       "kind": "Tipo",
       "kindAll": "Todos",
-      "search": "Buscar por nombre, empresa o email",
       "status": "Estado",
       "statusAll": "Todos los estados",
       "owner": "Dueño",
@@ -33,7 +32,10 @@
       "ownerOff": "(desactivado)",
       "due": "Solo vencidas",
       "apply": "Filtrar",
-      "clear": "Quitar filtros"
+      "clear": "Quitar filtros",
+      "searchLabel": "Buscar contactos",
+      "searchPlaceholder": "Buscar nombre, empresa o email",
+      "hotkey": "/"
     },
     "kinds": {
       "lead": "Lead",
@@ -107,7 +109,8 @@
       "noOrganization": "Sin organización",
       "none": "—",
       "unassigned": "Sin asignar",
-      "ownerOff": "(desactivado)"
+      "ownerOff": "(desactivado)",
+      "channel": "Canal"
     },
     "pager": {
       "label": "Páginas de contactos",
@@ -195,10 +198,10 @@
         "commission": "Comisión"
       },
       "line": {
-        "status_change": "Estado: {from} → {to}",
+        "status_change": "Estado: {from} → <b>{to}</b>",
         "lead_won": "Cobrado {amount}",
         "commission": "Comisión del {percent} %: {amount}",
-        "withChannel": "{kind} · {channel}"
+        "subject": "«{subject}»"
       },
       "actor": {
         "jose": "Jose",
@@ -239,12 +242,19 @@
         "label": "Secciones del contacto",
         "historial": "Historial",
         "mensajes": "Mensajes",
-        "historias": "Historias"
+        "historias": "Historias",
+        "presupuestos": "Presupuestos"
       },
       "note": {
-        "label": "Añadir una nota (solo la ve el equipo)",
+        "label": "Añadir nota",
         "submit": "Guardar nota",
-        "saved": "Nota guardada"
+        "saved": "Nota guardada",
+        "placeholder": "Añadir una nota (solo la ve el equipo)"
+      },
+      "quotes": {
+        "title": "Presupuestos a medida",
+        "empty": "Los presupuestos a medida llegan pronto",
+        "text": "Aquí irán los de este contacto, con su estado y el botón para duplicarlos."
       }
     },
     "opportunity": {
@@ -277,7 +287,9 @@
       "requestSubmit": "Pedir cierre",
       "requested": "Cierre solicitado",
       "cancel": "Cancelar",
-      "close": "Cerrar"
+      "close": "Cerrar",
+      "titleOpen": "Oportunidad abierta",
+      "net": "{amount} sin IVA"
     },
     "client": {
       "title": "Cliente",
@@ -315,7 +327,8 @@
       "source": "Origen",
       "language": "Idioma",
       "tags": "Etiquetas",
-      "since": "Alta"
+      "since": "Alta",
+      "edit": "Editar datos"
     },
     "stories": {
       "title": "Historias",
@@ -369,6 +382,17 @@
     "overdueList": {
       "label": "Contactos con la acción vencida",
       "none": "Sin detalle"
+    },
+    "channelsShort": {
+      "linkedin_invite": "LinkedIn",
+      "linkedin_inmail": "LinkedIn",
+      "email": "Correo",
+      "whatsapp": "WhatsApp",
+      "calcom": "Cal.com",
+      "web_form": "Formulario",
+      "web_proposal": "Propuesta web",
+      "chat": "Chat",
+      "other": "Otro"
     }
   }
 }

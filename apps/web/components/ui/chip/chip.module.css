@@ -8,3 +8,14 @@
   font-size: var(--font-label-size);
   white-space: nowrap;
 }
+
+/* ref/crm .chip: the small tag of a data card */
+.chip[data-size='sm'] {
+  display: inline-flex;
+  align-items: center;
+  height: var(--sp-6);
+  padding: 0 var(--sp-2);
+  background: var(--tint-chip);
+  box-shadow: none;
+  font-size: var(--font-caption-size);
+}

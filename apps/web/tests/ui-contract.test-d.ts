@@ -24,7 +24,7 @@ import type { ComponentProps } from 'react';
 
 describe('variant unions', () => {
   it('are exactly the values of the design', () => {
-    expectTypeOf<ButtonVariant>().toEqualTypeOf<'solid' | 'ghost'>();
+    expectTypeOf<ButtonVariant>().toEqualTypeOf<'solid' | 'ghost' | 'quiet'>();
     expectTypeOf<ButtonSize>().toEqualTypeOf<'sm' | 'md' | 'lg'>();
     expectTypeOf<IconTileSize>().toEqualTypeOf<'sm' | 'md'>();
     expectTypeOf<IconTileTone>().toEqualTypeOf<'soft' | 'solid'>();
@@ -38,7 +38,7 @@ describe('variant unions', () => {
 
 describe('primitives reject what the contract forbids', () => {
   it('Button', () => {
-    // @ts-expect-error `primary` is not a variant (the names are solid and ghost)
+    // @ts-expect-error `primary` is not a variant (the names are solid, ghost and quiet)
     const wrongVariant: ButtonProps = { variant: 'primary' };
     // @ts-expect-error a link takes no onClick
     const linkWithClick: ButtonProps = { href: '/proyectos', onClick: () => undefined };

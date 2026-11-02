@@ -41,12 +41,27 @@
   font-size: var(--font-body-size);
 }
 
-/* 2.75rem square for every size: the touch target of the header's icon buttons */
+/* 2.75rem square: the touch target of the header's icon buttons */
 .btn[data-icon-only] {
   width: var(--size-hit);
   height: var(--size-hit);
   min-height: 0;
   padding: 0;
+}
+
+/* the small icon button of a dense row (ref/crm .icon-btn[data-size='sm']): 2rem with a fine pointer, the hit
+   area comes back to 2.75rem with a coarse one */
+.btn[data-icon-only][data-size='sm'] {
+  width: var(--size-control-sm);
+  height: var(--size-control-sm);
+  border-radius: var(--r-md);
+}
+
+@media (pointer: coarse) {
+  .btn[data-icon-only][data-size='sm'] {
+    width: var(--size-hit);
+    height: var(--size-hit);
+  }
 }
 
 .btn[data-variant='solid'] {
@@ -61,7 +76,17 @@
   box-shadow: var(--shadow-hairline-strong);
 }
 
+/* ref/crm .btn[data-variant='quiet']: no fill, no edge; the hover gives it the ghost tint */
+.btn[data-variant='quiet'] {
+  color: var(--text-2);
+}
+
 @media (hover: hover) and (pointer: fine) {
+  .btn[data-variant='quiet']:is(:hover, [data-hover]):not(:disabled, [aria-disabled='true']) {
+    background: var(--tint-ghost);
+    color: var(--text);
+  }
+
   .btn[data-variant='solid']:is(:hover, [data-hover]):not(:disabled, [aria-disabled='true']) {
     background: var(--violet-hi);
   }

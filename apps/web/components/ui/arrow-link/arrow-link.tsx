@@ -4,11 +4,12 @@ import { Icon } from '@/components/ui/icon';
 import styles from './arrow-link.module.css';
 
 import type { PrimitiveActionProps } from '@/components/ui/action';
-import type { ArrowLinkEmphasis, IconName } from '@josecoded/types';
+import type { ArrowLinkEmphasis, ArrowLinkSize, IconName } from '@josecoded/types';
 
 export type ArrowLinkProps = PrimitiveActionProps & {
   /** `regular` (500) closes the hero; `strong` (550) is the exit of a bento cell. */
   emphasis?: ArrowLinkEmphasis;
+  size?: ArrowLinkSize;
   /** Trailing icon; the arrow by default, `download` or `message-circle` for those actions. */
   icon?: IconName;
 };
@@ -23,12 +24,13 @@ export type ArrowLinkProps = PrimitiveActionProps & {
  */
 export function ArrowLink({
   emphasis = 'regular',
+  size = 'inherit',
   icon = 'arrow-right',
   children,
   ...rest
 }: ArrowLinkProps) {
   return (
-    <Action {...rest} className={styles.link} data-emphasis={emphasis}>
+    <Action {...rest} className={styles.link} data-emphasis={emphasis} data-size={size}>
       {children}
       <Icon name={icon} />
     </Action>

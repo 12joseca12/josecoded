@@ -87,7 +87,7 @@ export async function ClientCard({
             />
           </SheetTrigger>
         ) : null}
-        <ArrowLink href={`/crm/clientes/${client.id}`}>{t('file')}</ArrowLink>
+        <ArrowLink size="sm" href={`/crm/clientes/${client.id}`}>{t('file')}</ArrowLink>
       </div>
     </DetailCard>
   );

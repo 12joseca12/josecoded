@@ -61,10 +61,12 @@ export async function InteractionTimeline({ items, locale }: { items: readonly I
         const channel = item.channel ? tChannel(item.channel) : null;
         const when = new Date(item.occurred_at);
         let line: string;
+        // what follows the kind on the same line («WhatsApp», «Tu propuesta»): never in the box
+        let inline: string[] = [];
         let detail: string | null = item.body;
         switch (item.kind) {
           case 'status_change':
-            line = t('line.status_change', { from: status(payload.from), to: status(payload.to) });
+            line = '';
             detail = null;
             break;
           case 'lead_won':
@@ -77,8 +79,11 @@ export async function InteractionTimeline({ items, locale }: { items: readonly I
             break;
           case 'message_sent':
           case 'message_received':
-            line = channel ? t('line.withChannel', { kind: t(`kind.${item.kind}`), channel }) : t(`kind.${item.kind}`);
-            detail = item.subject ? `${item.subject}${item.body ? `: ${item.body}` : ''}` : item.body;
+            line = t(`kind.${item.kind}`);
+            inline = [
+              channel,
+              item.subject ? t('line.subject', { subject: item.subject }) : null,
+            ].filter((part): part is string => part !== null);
             break;
           default:
             line = t(`kind.${item.kind}`);
@@ -90,8 +95,23 @@ export async function InteractionTimeline({ items, locale }: { items: readonly I
             </span>
             <div className={styles.body}>
               <p className={styles.line}>
-                <strong>{line}</strong>
-                <span className={styles.actor}>{t(`actor.${item.actor}`)}</span>
+                {item.kind === 'status_change' ? (
+                  <span>
+                    {t.rich('line.status_change', {
+                      from: status(payload.from),
+                      to: status(payload.to),
+                      b: (chunks) => <strong>{chunks}</strong>,
+                    })}
+                  </span>
+                ) : (
+                  <strong>{line}</strong>
+                )}
+                {inline.map((part) => (
+                  <span key={part} className={styles.inline}>
+                    {part}
+                  </span>
+                ))}
+                <span className={styles.inline}>{t(`actor.${item.actor}`)}</span>
                 <time className={styles.time} dateTime={item.occurred_at}>
                   {format.dateTime(when, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Madrid' })}
                 </time>

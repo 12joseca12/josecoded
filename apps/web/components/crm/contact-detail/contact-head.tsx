@@ -19,6 +19,7 @@ import type { ContactRecord } from '@/lib/crm/contact-detail';
 import type { Owner } from '@/lib/crm/contacts';
 import type { StatusKey } from '@/lib/crm/status';
 import type { Locale } from '@josecoded/types';
+import type { ReactNode } from 'react';
 
 /**
  * Head of the contact (K3): the way back, the name with its company, the kind, the status and (admin only) the
@@ -31,6 +32,7 @@ export async function ContactHead({
   statusOptions,
   statusLabels,
   locale,
+  children,
 }: {
   contact: ContactRecord;
   /** The staff, for the admin only. */
@@ -38,6 +40,8 @@ export async function ContactHead({
   statusOptions: readonly StatusOption[];
   statusLabels: StatusSheetLabels;
   locale: Locale;
+  /** What goes under the title block, still part of the head: the ways to reach the person and the next action. */
+  children?: ReactNode;
 }) {
   const [t, tKinds, tStatus] = await Promise.all([
     getTranslations({ locale, namespace: 'crmContacts.head' }),
@@ -64,6 +68,53 @@ export async function ContactHead({
       <PageHead
         title={contact.display_name}
         tone={contact.organization?.name ?? tKinds(contact.kind)}
+        align="start"
+        flush
+        meta={
+          <div className={styles.meta}>
+            <span className={styles.kind}>{tKinds(contact.kind)}</span>
+            <StatusBadge tone={statusTone(contact.status)}>
+              {tStatus(contact.status as StatusKey)}
+            </StatusBadge>
+            {owners ? (
+              <>
+                {owner ? (
+                  <OwnerBadge
+                    state={owner.disabled ? 'off' : 'assigned'}
+                    name={owner.display_name}
+                    suffix={owner.disabled ? t('ownerOff') : undefined}
+                  />
+                ) : (
+                  <OwnerBadge state="unassigned" name={t('unassigned')} />
+                )}
+                <SheetTrigger
+                  label={t('reassign')}
+                  icon="user-cog"
+                  variant="quiet"
+                  size="sm"
+                  title={t('reassignTitle')}
+                  description={t('reassignHelp')}
+                  sheetVariant="dialog"
+                  closeLabel={t('close')}
+                  savedMessage={t('reassigned')}
+                >
+                  <ReassignForm
+                    contactId={contact.id}
+                    currentOwner={contact.owner_id ?? ''}
+                    labels={{
+                      title: t('reassignTitle'),
+                      owner: t('owner'),
+                      options: ownerOptions,
+                      submit: t('reassignSubmit'),
+                      cancel: t('cancel'),
+                      locale,
+                    }}
+                  />
+                </SheetTrigger>
+              </>
+            ) : null}
+          </div>
+        }
         actions={
           <>
             <SheetTrigger
@@ -94,35 +145,7 @@ export async function ContactHead({
           </>
         }
       />
-      <div className={styles.meta}>
-        <span className={styles.kind}>{tKinds(contact.kind)}</span>
-        <StatusBadge tone={statusTone(contact.status)}>{tStatus(contact.status as StatusKey)}</StatusBadge>
-        {owners ? (
-          <>
-            {owner ? (
-              <OwnerBadge state={owner.disabled ? 'off' : 'assigned'} name={owner.display_name} suffix={owner.disabled ? t('ownerOff') : undefined} />
-            ) : (
-              <OwnerBadge state="unassigned" name={t('unassigned')} />
-            )}
-            <SheetTrigger
-              label={t('reassign')}
-              icon="user-cog"
-              size="sm"
-              title={t('reassignTitle')}
-              description={t('reassignHelp')}
-              sheetVariant="dialog"
-              closeLabel={t('close')}
-              savedMessage={t('reassigned')}
-            >
-              <ReassignForm
-                contactId={contact.id}
-                currentOwner={contact.owner_id ?? ''}
-                labels={{ title: t('reassignTitle'), owner: t('owner'), options: ownerOptions, submit: t('reassignSubmit'), cancel: t('cancel'), locale }}
-              />
-            </SheetTrigger>
-          </>
-        ) : null}
-      </div>
+      {children}
     </header>
   );
 }

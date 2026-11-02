@@ -196,6 +196,8 @@
   --size-crm-row: 3rem;
   --size-crm-sheet-w: 34rem;
   --size-crm-dialog-w: 28rem;
+  --size-crm-search-max: 24rem;
+  --size-crm-note-min-h: 6rem;
 
   /* focus */
   --focus-ring-width: 2px;

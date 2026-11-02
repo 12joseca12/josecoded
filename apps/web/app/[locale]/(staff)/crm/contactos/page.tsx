@@ -4,6 +4,7 @@ import { ContactsView } from '@/components/crm/contacts-view';
 import { getStatusOptions, getStatusSheetLabels } from '@/components/crm/status-sheet';
 import { requireStaff } from '@/lib/auth/staff';
 import { getContactPage } from '@/lib/crm/contacts';
+import { getOverdueCount } from '@/lib/crm/queries';
 import { resolveLocale } from '@/lib/locale';
 
 import type { LocaleParams } from '@/lib/locale';
@@ -27,10 +28,21 @@ export default async function ContactsPage({ params, searchParams }: { params: L
   const locale = await resolveLocale(params);
   const raw = await searchParams;
   const { role } = await requireStaff({ locale, next: '/crm/contactos' });
-  const [page, statusOptions, statusLabels] = await Promise.all([
+  const [page, statusOptions, statusLabels, overdue] = await Promise.all([
     getContactPage(role, raw),
     getStatusOptions(role, locale),
     getStatusSheetLabels(locale),
+    getOverdueCount(role),
   ]);
-  return <ContactsView locale={locale} role={role} page={page} statusOptions={statusOptions} statusLabels={statusLabels} openNew={raw.nuevo === '1'} />;
+  return (
+    <ContactsView
+      locale={locale}
+      role={role}
+      page={page}
+      statusOptions={statusOptions}
+      statusLabels={statusLabels}
+      openNew={raw.nuevo === '1'}
+      overdue={overdue}
+    />
+  );
 }

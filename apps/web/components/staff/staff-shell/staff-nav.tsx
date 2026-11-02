@@ -21,8 +21,18 @@ export interface StaffNavView extends StaffNavItem {
  * A list of destinations. Client island only to mark the current one (`aria-current="page"`) from the
  * localized path; the links are plain anchors. Rows are at least 2.5rem tall (2.75rem with a coarse pointer).
  */
-export function StaffLinks({ items, size = 'rail' }: { items: readonly StaffNavView[]; size?: StaffLinksSize }) {
-  const pathname = usePathname();
+export function StaffLinks({
+  items,
+  size = 'rail',
+  currentPath,
+}: {
+  items: readonly StaffNavView[];
+  size?: StaffLinksSize;
+  /** The logical path to mark as current instead of the URL's (the dev previews live under `/dev/crm`). */
+  currentPath?: string;
+}) {
+  const live = usePathname();
+  const pathname = currentPath ?? live;
   return (
     <ul role="list" className={styles.list}>
       {items.map((item) => (
@@ -57,20 +67,22 @@ export function StaffRail({
   moreLabel,
   primary,
   more,
+  currentPath,
 }: {
   label: string;
   moreLabel: string;
   primary: readonly StaffNavView[];
   more: readonly StaffNavView[];
+  currentPath?: string;
 }) {
   return (
     <nav aria-label={label} className={styles.rail}>
-      <StaffLinks items={primary} />
+      <StaffLinks items={primary} currentPath={currentPath} />
       <p className={styles.heading} id="staff-rail-more">
         {moreLabel}
       </p>
       <div role="group" aria-labelledby="staff-rail-more">
-        <StaffLinks items={more} />
+        <StaffLinks items={more} currentPath={currentPath} />
       </div>
     </nav>
   );

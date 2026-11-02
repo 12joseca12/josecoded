@@ -1,7 +1,7 @@
 import { getFormatter, getTranslations } from 'next-intl/server';
 
 import { Icon } from '@/components/ui/icon';
-import { dueState, toInputParts } from '@/lib/crm/next-action';
+import { dueState, relativeFromNow, toInputParts } from '@/lib/crm/next-action';
 
 import { NextActionForm } from '../contact-forms';
 import { SheetTrigger } from '../sheet';
@@ -42,7 +42,7 @@ export async function NextActionBanner({
   const day = at ? format.dateTime(new Date(at), { day: 'numeric', month: 'short', timeZone: 'Europe/Madrid' }) : '';
   const when =
     state === 'overdue'
-      ? t('overdue', { day, ago: format.relativeTime(new Date(at!), now) })
+      ? t('overdue', { day, ago: relativeFromNow(at!, now, locale) })
       : state === 'today'
         ? t('today')
         : state === 'later'
@@ -74,6 +74,7 @@ export async function NextActionBanner({
         ) : null}
         <SheetTrigger
           label={text ? t('change') : t('set')}
+          variant="quiet"
           size="sm"
           title={labels.title}
           closeLabel={t('close')}

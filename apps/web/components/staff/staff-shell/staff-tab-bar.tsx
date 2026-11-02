@@ -28,6 +28,7 @@ export function StaffTabBar({
   moreSections,
   close,
   sheetItems,
+  currentPath,
 }: {
   label: string;
   items: readonly StaffNavView[];
@@ -35,8 +36,11 @@ export function StaffTabBar({
   moreSections: string;
   close: string;
   sheetItems: readonly StaffNavView[];
+  /** The logical path to mark as current instead of the URL's (the dev previews live under `/dev/crm`). */
+  currentPath?: string;
 }) {
-  const pathname = usePathname();
+  const live = usePathname();
+  const pathname = currentPath ?? live;
   const dialog = useRef<HTMLDialogElement>(null);
   const titleId = useId();
 
@@ -104,7 +108,7 @@ export function StaffTabBar({
           </button>
         </div>
         <nav aria-label={moreSections} className={styles.sheetNav}>
-          <StaffLinks items={sheetItems} size="sheet" />
+          <StaffLinks items={sheetItems} size="sheet" currentPath={currentPath} />
         </nav>
       </dialog>
     </>

@@ -41,6 +41,20 @@
   font-variant-numeric: tabular-nums;
 }
 
+.file {
+  margin: 0;
+  font-size: var(--font-small-size);
+}
+
+.file strong {
+  font-weight: var(--font-emphasis-weight);
+}
+
 .when {
   color: var(--text-3);
+}
+
+/* «· » between the figures of the import and its badge */
+.sep::before {
+  content: ' · ';
 }

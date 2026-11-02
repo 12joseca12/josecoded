@@ -5,6 +5,8 @@ export interface K1Figures {
   /** `mine`: the closer's portfolio. `all`: the admin reads the whole CRM (README §4 H: C1 folds into K1). */
   scope: 'mine' | 'all';
   contactsDue: number;
+  /** Overdue contacts nobody owns. Only the admin has them: they are his own scope, read by `crm_my_counters()`. */
+  unassignedDue: number;
   leadsOpen: number;
   storiesProposed: number;
   commissionsPending: number;
@@ -23,6 +25,7 @@ export function k1Figures({ role, my, team, admin }: CrmSummary): K1Figures {
   return {
     scope: all ? 'all' : 'mine',
     contactsDue: all ? admin.contacts_due : my.contacts_due,
+    unassignedDue: all ? my.contacts_due : 0,
     leadsOpen: all ? admin.leads_open : my.leads_open,
     storiesProposed: all ? admin.stories_proposed : my.stories_proposed,
     commissionsPending: all ? admin.commissions_pending : my.commissions_pending,

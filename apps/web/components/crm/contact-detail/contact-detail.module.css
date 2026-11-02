@@ -184,13 +184,14 @@
 }
 
 .crumbs {
-  margin: 0 0 var(--sp-4);
+  margin: 0;
 }
 
 .back {
   display: inline-flex;
   align-items: center;
   gap: var(--sp-1-5);
+  min-height: var(--size-control-sm);
   color: var(--text-2);
   font-size: var(--font-small-size);
 }
@@ -248,6 +249,30 @@
 
 .panel {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--sp-5);
   align-content: start;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* the language code is one of the three places Geist Mono is for (DESIGN.md) */
+.lang {
+  color: var(--text-3);
+  font-family: var(--font-mono);
+  font-size: var(--font-mono-lang-size);
+  font-weight: var(--font-mono-lang-weight);
+}
+
+.tags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1-5);
+}
+
+/* the note composer sits above the history with room to breathe */
+.composer {
+  margin-bottom: var(--sp-8);
 }

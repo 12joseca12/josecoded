@@ -30,3 +30,20 @@ export function contactsHref(query: ContactListQuery, patch: Patch = {}): string
 export function hasFilters(query: ContactListQuery): boolean {
   return Boolean(query.kind || query.status || query.due || query.q || query.owner);
 }
+
+/**
+ * The URL of the inbox for what a filter form holds (`?q=&status=&due=1…`): empty fields drop out and so does the
+ * page, since any change of filter starts again at the first one. The same rule as `contactsHref`, applied to the
+ * entries of the form, so submitting with JavaScript (client navigation) lands where the plain GET would.
+ */
+export function contactsHrefFromEntries(entries: Iterable<[string, unknown]>): string {
+  const params = new URLSearchParams();
+  for (const [key, value] of entries) {
+    if (typeof value !== 'string' || key === 'page') continue;
+    const text = key === 'q' ? value.trim() : value;
+    if (!text || (key === 'due' && text !== '1')) continue;
+    params.set(key, text);
+  }
+  const search = params.toString();
+  return search ? `${CONTACTS_PATH}?${search}` : CONTACTS_PATH;
+}

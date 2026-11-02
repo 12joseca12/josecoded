@@ -25,6 +25,8 @@ export interface StaffShellProps {
   identity: { name: string | null; rate: number };
   /** Contacts with the next action past due: the badge of Contactos. */
   overdue?: number;
+  /** Logical path of the screen, to mark its destination when the URL is not the real one (the dev previews). */
+  currentPath?: string;
   children: ReactNode;
 }
 
@@ -38,7 +40,15 @@ export interface StaffShellProps {
  * one is ever displayed); the current destination carries `aria-current="page"`; every target is at least
  * 2.5rem tall in the rail and 2.75rem on touch.
  */
-export async function StaffShell({ locale, zone, role, identity, overdue = 0, children }: StaffShellProps) {
+export async function StaffShell({
+  locale,
+  zone,
+  role,
+  identity,
+  overdue = 0,
+  currentPath,
+  children,
+}: StaffShellProps) {
   const [t, a11y, site] = await Promise.all([
     getTranslations({ locale, namespace: 'crm' }),
     getTranslations({ locale, namespace: 'a11y' }),
@@ -83,6 +93,7 @@ export async function StaffShell({ locale, zone, role, identity, overdue = 0, ch
           moreLabel={t('shell.moreGroup')}
           primary={view(nav.primary)}
           more={view(nav.more)}
+          currentPath={currentPath}
         />
         <div className={styles.foot}>
           <Action href="/crm/ajustes" className={styles.me}>
@@ -116,6 +127,7 @@ export async function StaffShell({ locale, zone, role, identity, overdue = 0, ch
         moreButton={t('shell.moreButton')}
         moreSections={t('shell.moreSections')}
         close={t('shell.close')}
+        currentPath={currentPath}
       />
     </div>
   );

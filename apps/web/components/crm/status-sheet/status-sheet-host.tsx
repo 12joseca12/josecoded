@@ -46,5 +46,15 @@ export function StatusSheetHost({
 /** The pencil of a row. Its name says whose contact it changes. */
 export function StatusSheetButton({ contact, ariaLabel }: { contact: StatusSheetContact; ariaLabel: string }) {
   const open = useContext(OpenContext);
-  return <Button iconOnly icon="pencil" variant="ghost" size="sm" aria-label={ariaLabel} aria-haspopup="dialog" onClick={() => open?.(contact)} />;
+  return (
+    <Button
+      iconOnly
+      icon="pencil"
+      variant="quiet"
+      size="sm"
+      aria-label={ariaLabel}
+      aria-haspopup="dialog"
+      onClick={() => open?.(contact)}
+    />
+  );
 }

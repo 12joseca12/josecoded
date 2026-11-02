@@ -49,3 +49,44 @@ export function dueState(iso: string | null, now: Date = new Date()): DueState {
   if (at.getTime() <= now.getTime()) return 'overdue';
   return toInputParts(iso)?.date === toInputParts(now.toISOString())?.date ? 'today' : 'later';
 }
+
+const DAY_MS = 86_400_000;
+
+/**
+ * «hace 3 días» as the overdue lists say it: whole calendar days on the Madrid clock when the date is another day,
+ * hours or minutes when it is today. `numeric: 'always'` so a single day reads «hace 1 día», as in the prototype.
+ */
+export function relativeFromNow(
+  iso: string,
+  now: Date = new Date(),
+  locale: string = 'es',
+  style: 'long' | 'short' = 'long',
+): string {
+  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'always', style });
+  const at = new Date(iso);
+  const day = (value: Date) => Date.parse(`${toInputParts(value.toISOString())?.date}T00:00:00Z`);
+  const days = Math.round((day(at) - day(now)) / DAY_MS);
+  if (days !== 0) return rtf.format(days, 'day');
+  const minutes = Math.round((at.getTime() - now.getTime()) / 60_000);
+  if (minutes === 0)
+    return new Intl.RelativeTimeFormat(locale, { numeric: 'auto' }).format(0, 'second');
+  return Math.abs(minutes) < 60
+    ? rtf.format(minutes, 'minute')
+    : rtf.format(Math.round(minutes / 60), 'hour');
+}
+
+/**
+ * «hoy», «ayer» or «mañana» (in the reader's language) when the instant falls on that Madrid day, `null` for any
+ * other day: the caller then writes the date.
+ */
+export function nearbyDay(
+  iso: string,
+  now: Date = new Date(),
+  locale: string = 'es',
+): string | null {
+  const day = (value: Date) => Date.parse(`${toInputParts(value.toISOString())?.date}T00:00:00Z`);
+  const days = Math.round((day(new Date(iso)) - day(now)) / DAY_MS);
+  return Math.abs(days) <= 1
+    ? new Intl.RelativeTimeFormat(locale, { numeric: 'auto' }).format(days, 'day')
+    : null;
+}

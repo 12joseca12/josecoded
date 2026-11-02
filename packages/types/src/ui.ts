@@ -16,8 +16,10 @@ export type FormState<T> = {
 // Each union is spilled to a `data-variant` / `data-size` / `data-tone` attribute and selected in the
 // component's CSS Module by attribute. No CVA, no clsx.
 
-export type ButtonVariant = 'solid' | 'ghost';
+export type ButtonVariant = 'solid' | 'ghost' | 'quiet';
 export type ButtonSize = 'sm' | 'md' | 'lg';
+/** `sm` is the tag of a data card (a contact's labels); `md` the pill of a marquee. */
+export type ChipSize = 'md' | 'sm';
 export type IconTileSize = 'sm' | 'md';
 export type IconTileTone = 'soft' | 'solid';
 /** Corner radius family of a glass surface: bento cell or project card. */
@@ -25,6 +27,8 @@ export type SurfaceRadius = 'cell' | 'tcard';
 /** `card` is the resting glass sheet; `overlay` floats above everything (open cell, menu, palette). */
 export type SurfaceLayer = 'card' | 'overlay';
 export type ArrowLinkEmphasis = 'regular' | 'strong';
+/** `inherit` takes the size of its context (the public site); `label` and `sm` are the sizes of a staff screen. */
+export type ArrowLinkSize = 'inherit' | 'label' | 'sm';
 export type TwoToneHeadingLevel = 'h1' | 'h2';
 /** `crm` is the title of a staff screen (`--font-crm-title-*`). */
 export type TwoToneHeadingSize = 'headline' | 'display-closing' | 'crm';

@@ -6,11 +6,13 @@ import { NextActionBanner } from '@/components/crm/next-action-banner';
 import { TabNav } from '@/components/crm/tab-nav';
 
 import { ClientCard } from './client-card';
+import styles from './contact-detail.module.css';
 import { ContactHead } from './contact-head';
 import { ContactLayout } from './contact-layout';
 import { DataCard } from './data-card';
 import { DraftList } from './draft-list';
 import { OpportunityCard } from './opportunity-card';
+import { QuoteList } from './quote-list';
 import { ReachLinks } from './reach-links';
 import { StoryList } from './story-list';
 
@@ -19,7 +21,7 @@ import type { StaffRole } from '@/lib/auth/staff';
 import type { ContactDetail, PackChoice } from '@/lib/crm/contact-detail';
 import type { Locale } from '@josecoded/types';
 
-const TABS = ['historial', 'mensajes', 'historias'] as const;
+const TABS = ['historial', 'mensajes', 'historias', 'presupuestos'] as const;
 
 export interface ContactDetailViewProps {
   locale: Locale;
@@ -56,13 +58,19 @@ export async function ContactDetailView({ locale, role, detail, requestedTab, st
         statusOptions={statusOptions[contact.kind]}
         statusLabels={statusLabels}
         locale={locale}
-      />
+      >
+        <ReachLinks contact={contact} isAdmin={isAdmin} locale={locale} />
+        <NextActionBanner
+          contactId={contact.id}
+          text={contact.next_action}
+          at={contact.next_action_at}
+          locale={locale}
+        />
+      </ContactHead>
       <ContactLayout
         sideLabel={t('detail.side')}
         main={
           <>
-            <ReachLinks contact={contact} isAdmin={isAdmin} locale={locale} />
-            <NextActionBanner contactId={contact.id} text={contact.next_action} at={contact.next_action_at} locale={locale} />
             <div>
               <TabNav
                 label={t('detail.tabs.label')}
@@ -76,13 +84,27 @@ export async function ContactDetailView({ locale, role, detail, requestedTab, st
               />
               {tab === 'historial' ? (
                 <>
-                  <NoteForm contactId={contact.id} labels={{ label: t('detail.note.label'), submit: t('detail.note.submit'), saved: t('detail.note.saved'), locale }} />
+                  <div className={styles.composer}>
+                  <NoteForm
+                    contactId={contact.id}
+                    labels={{
+                      label: t('detail.note.label'),
+                      placeholder: t('detail.note.placeholder'),
+                      submit: t('detail.note.submit'),
+                      saved: t('detail.note.saved'),
+                      locale,
+                    }}
+                  />
+                  </div>
                   <h2 className="sr-only">{t('detail.tabs.historial')}</h2>
                   <InteractionTimeline items={interactions} locale={locale} />
                 </>
               ) : null}
               {tab === 'mensajes' ? <DraftList drafts={drafts} locale={locale} /> : null}
-              {tab === 'historias' && client ? <StoryList stories={stories} clientId={client.id} locale={locale} /> : null}
+              {tab === 'historias' && client ? (
+                <StoryList stories={stories} clientId={client.id} locale={locale} />
+              ) : null}
+              {tab === 'presupuestos' ? <QuoteList locale={locale} /> : null}
             </div>
           </>
         }

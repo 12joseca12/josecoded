@@ -3,9 +3,11 @@
 import { useId } from 'react';
 
 import { useFormContext } from '@/components/forms/form';
+import { Icon } from '@/components/ui/icon';
 
 import styles from './field.module.css';
 
+import type { IconName } from '@josecoded/types';
 import type { ChangeEvent, HTMLInputAutoCompleteAttribute, ReactNode } from 'react';
 
 type Common = {
@@ -17,10 +19,19 @@ type Common = {
   error?: string;
   required?: boolean;
   disabled?: boolean;
+  /** The label stays in the DOM for assistive technology and the form, but is not drawn (a toolbar has its own context). */
+  hideLabel?: boolean;
 };
 
 type TextLike = Common & {
-  kind?: 'text' | 'email' | 'tel' | 'date' | 'time';
+  kind?: 'text' | 'email' | 'tel' | 'date' | 'time' | 'search';
+  placeholder?: string;
+  /** An icon inside the field, on the left (a search). Decoration: the label names the field. */
+  leading?: IconName;
+  /** Something inside the field, on the right (the key that focuses it). Never interactive. */
+  trailing?: ReactNode;
+  /** A single key that focuses the field from anywhere (`/`): announced with `aria-keyshortcuts`, bound by the screen. */
+  hotkey?: string;
   defaultValue?: string;
   autoComplete?: HTMLInputAutoCompleteAttribute;
   inputMode?: 'text' | 'numeric' | 'email' | 'tel';
@@ -29,13 +40,16 @@ type TextLike = Common & {
   minLength?: number;
   autoFocus?: boolean;
   spellCheck?: boolean;
-  /** Visual size: `code` is the big centred field of a one-time code. */
-  size?: 'md' | 'code';
+  /** Visual size: `code` is the big centred field of a one-time code, `compact` the one of a toolbar. */
+  size?: 'md' | 'code' | 'compact';
 };
 type Textarea = Common & {
   kind: 'textarea';
   defaultValue?: string;
+  placeholder?: string;
   rows?: number;
+  /** `compact` is the composer of a note: smaller type, a floor of 6rem. */
+  size?: 'md' | 'compact';
   maxLength?: number;
   autoComplete?: HTMLInputAutoCompleteAttribute;
 };
@@ -43,12 +57,18 @@ type Select = Common & {
   kind: 'select';
   defaultValue?: string;
   options: readonly { value: string; label: string }[];
+  size?: 'md' | 'compact';
 };
 type Checkbox = Common & {
   kind: 'checkbox';
   value?: string;
   defaultChecked?: boolean;
   onChange?: (checked: boolean) => void;
+  /** `chip` is the filter toggle of a toolbar: a pill that reads as pressed when it is on. */
+  appearance?: 'check' | 'chip';
+  /** Chip only: icon before the label and a number after it. */
+  icon?: IconName;
+  count?: ReactNode;
 };
 type RadioGroup = Common & {
   kind: 'radio-group';
@@ -142,6 +162,26 @@ export function Field(props: FieldProps) {
     );
   }
 
+  if (props.kind === 'checkbox' && props.appearance === 'chip') {
+    return (
+      <label className={styles.chip}>
+        <input
+          type="checkbox"
+          name={props.name}
+          value={props.value ?? 'on'}
+          defaultChecked={props.defaultChecked}
+          disabled={disabled}
+          onChange={(event: ChangeEvent<HTMLInputElement>) =>
+            props.onChange?.(event.currentTarget.checked)
+          }
+        />
+        {props.icon ? <Icon name={props.icon} /> : null}
+        {props.label}
+        {props.count !== undefined ? <span className={styles.count}>{props.count}</span> : null}
+      </label>
+    );
+  }
+
   if (props.kind === 'checkbox') {
     return (
       <div className={styles.field}>
@@ -181,12 +221,14 @@ export function Field(props: FieldProps) {
 
   return (
     <div className={styles.field}>
-      <label htmlFor={id} className={styles.label}>
+      <label htmlFor={id} className={props.hideLabel ? 'sr-only' : styles.label}>
         {props.label}
       </label>
       {props.kind === 'textarea' ? (
         <textarea
           {...shared}
+          data-size={props.size}
+          placeholder={props.placeholder}
           rows={props.rows ?? 5}
           maxLength={props.maxLength}
           readOnly={pending || undefined}
@@ -202,31 +244,55 @@ export function Field(props: FieldProps) {
           onChange={(event) => props.onChange?.(event.currentTarget.files?.[0] ?? null)}
         />
       ) : props.kind === 'select' ? (
-        <select {...shared} key={`${props.name}:${kept ?? ''}`} defaultValue={kept ?? props.defaultValue}>
+        <select
+          {...shared}
+          data-size={props.size}
+          key={`${props.name}:${kept ?? ''}`}
+          defaultValue={kept ?? props.defaultValue}
+        >
           {props.options.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
             </option>
           ))}
         </select>
+      ) : props.leading || props.trailing ? (
+        <div className={styles.adorned}>
+          {props.leading ? <Icon name={props.leading} /> : null}
+          <input key={`${props.name}:${kept ?? ''}`} {...textProps(props, shared, pending, kept)} />
+          {props.trailing ? <span className={styles.trailing}>{props.trailing}</span> : null}
+        </div>
       ) : (
-        <input
-          {...shared}
-          type={props.kind ?? 'text'}
-          data-size={props.size}
-          readOnly={pending || undefined}
-          key={`${props.name}:${kept ?? ''}`}
-          defaultValue={kept ?? props.defaultValue}
-          autoComplete={props.autoComplete}
-          inputMode={props.inputMode}
-          pattern={props.pattern}
-          maxLength={props.maxLength}
-          minLength={props.minLength}
-          autoFocus={props.autoFocus}
-          spellCheck={props.spellCheck}
-        />
+        <input key={`${props.name}:${kept ?? ''}`} {...textProps(props, shared, pending, kept)} />
       )}
       {message}
     </div>
   );
+}
+
+/** The attributes of a text-like `<input>`, shared by the plain and the adorned forms. */
+function textProps(
+  props: TextLike,
+  shared: Record<string, unknown>,
+  pending: boolean,
+  kept: string | undefined,
+) {
+  return {
+    ...shared,
+    type: props.kind ?? 'text',
+    placeholder: props.placeholder,
+    'data-size': props.size,
+    'data-adorned': props.leading || props.trailing ? 'true' : undefined,
+    'data-hotkey': props.hotkey,
+    'aria-keyshortcuts': props.hotkey,
+    readOnly: pending || undefined,
+    defaultValue: kept ?? props.defaultValue,
+    autoComplete: props.autoComplete,
+    inputMode: props.inputMode,
+    pattern: props.pattern,
+    maxLength: props.maxLength,
+    minLength: props.minLength,
+    autoFocus: props.autoFocus,
+    spellCheck: props.spellCheck,
+  };
 }

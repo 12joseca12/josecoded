@@ -11,6 +11,24 @@
   font-weight: var(--font-cell-title-weight);
 }
 
+.link[data-size='label'],
+.link[data-size='sm'] {
+  min-height: var(--size-control-sm);
+  font-size: var(--font-label-size);
+  font-weight: var(--font-label-button-weight);
+}
+
+.link[data-size='sm'] {
+  font-size: var(--font-small-size);
+}
+
+@media (pointer: coarse) {
+  .link[data-size='label'],
+  .link[data-size='sm'] {
+    min-height: var(--size-hit);
+  }
+}
+
 .link svg {
   transition: transform var(--dur-nudge) var(--ease-out);
 }

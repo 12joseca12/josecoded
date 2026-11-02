@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { FormContext } from './form-context';
 import styles from './form.module.css';
 
-import type { ButtonVariant, FormState } from '@josecoded/types';
+import type { ButtonSize, ButtonVariant, FormState } from '@josecoded/types';
 import type { ReactNode } from 'react';
 
 type Action<S> = (previous: S, data: FormData) => Promise<S>;
@@ -17,6 +17,11 @@ export interface FormProps<S> {
   /** Already translated by the page. */
   submitLabel: string;
   submitVariant?: ButtonVariant;
+  submitSize?: ButtonSize;
+  /** `end` pushes the actions to the trailing edge (a composer's small button). */
+  actionsAlign?: 'start' | 'end';
+  /** Tighter gap between the fields and the actions (a one-field composer). */
+  compact?: boolean;
   /** Accessible name of the form (a `<form>` is a landmark only when it has one). */
   label?: string;
   /** Shown (and announced) when the action answers `ok`. */
@@ -47,6 +52,9 @@ export function Form<S extends FormState<never> = FormState<Record<string, unkno
   action,
   submitLabel,
   submitVariant = 'solid',
+  submitSize = 'md',
+  actionsAlign = 'start',
+  compact = false,
   label,
   successMessage,
   resetOnSuccess = false,
@@ -86,6 +94,7 @@ export function Form<S extends FormState<never> = FormState<Record<string, unkno
       <form
         ref={formRef}
         className={styles.form}
+        data-compact={compact || undefined}
         action={formAction}
         aria-label={label}
         aria-busy={pending || undefined}
@@ -101,10 +110,11 @@ export function Form<S extends FormState<never> = FormState<Record<string, unkno
           {state.status === 'ok' && successMessage ? successMessage : null}
         </div>
         {typeof children === 'function' ? children(state as S) : children}
-        <div className={styles.actions}>
+        <div className={styles.actions} data-align={actionsAlign}>
           <Button
             type="submit"
             variant={submitVariant}
+            size={submitSize}
             aria-disabled={pending || undefined}
             onClick={(event) => {
               // not `disabled`: the button keeps focus while the action runs, and a second click does nothing

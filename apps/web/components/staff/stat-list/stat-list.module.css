@@ -28,6 +28,11 @@
 }
 
 .row > svg {
+  color: var(--text-3);
+}
+
+/* the chevron of a link row is the one violet-soft glyph */
+.row[data-link='true'] > svg:last-child {
   color: var(--violet-soft);
 }
 

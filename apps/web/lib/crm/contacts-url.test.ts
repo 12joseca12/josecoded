@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { contactsHref, hasFilters } from './contacts-url';
+import { contactsHref, contactsHrefFromEntries, hasFilters } from './contacts-url';
 
 describe('contactsHref', () => {
   it('is the bare inbox without filters', () => {
@@ -31,5 +31,39 @@ describe('hasFilters', () => {
   it('ignores the page', () => {
     expect(hasFilters({ page: 2 })).toBe(false);
     expect(hasFilters({ owner: 'mine' })).toBe(true);
+  });
+});
+
+describe('contactsHrefFromEntries', () => {
+  it('is the bare inbox for an empty form', () => {
+    expect(
+      contactsHrefFromEntries([
+        ['q', ''],
+        ['status', ''],
+        ['owner', ''],
+      ]),
+    ).toBe('/crm/contactos');
+  });
+
+  it('keeps what is filled and drops the empty, the page and files', () => {
+    const entries: [string, unknown][] = [
+      ['kind', 'lead'],
+      ['q', '  laura '],
+      ['status', ''],
+      ['due', '1'],
+      ['page', '4'],
+      ['file', new Blob()],
+    ];
+    expect(contactsHrefFromEntries(entries)).toBe('/crm/contactos?kind=lead&q=laura&due=1');
+  });
+
+  it('agrees with contactsHref for the same filters', () => {
+    expect(
+      contactsHrefFromEntries([
+        ['kind', 'agency'],
+        ['due', '1'],
+        ['owner', 'unassigned'],
+      ]),
+    ).toBe(contactsHref({ kind: 'agency', owner: 'unassigned', due: true }));
   });
 });

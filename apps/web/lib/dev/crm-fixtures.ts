@@ -5,6 +5,7 @@ import type { StaffRole } from '@/lib/auth/staff';
 import type { ClientRecord, ContactDetail, ContactRecord, DraftRecord, InteractionRecord, LeadRecord, StoryRecord } from '@/lib/crm/contact-detail';
 import type { ContactPage, ContactRow, Owner } from '@/lib/crm/contacts';
 import type { CrmSummary } from '@/lib/crm/queries';
+import type { SummaryExtras } from '@/lib/crm/summary-extras';
 import type { AdminCounters, CloserCounters, TeamCounters } from '@josecoded/types';
 
 // Invented data for the dev previews of /crm and /admin (`/dev/crm`): the same shapes the Supabase reads return,
@@ -72,6 +73,30 @@ export const ADMIN_COUNTERS: AdminCounters = {
 };
 
 export const PREVIEW_OMEN: OmenStatus = 'online';
+/** The preview says Omen was checked a minute ago, as the prototype does. */
+export const previewOmenCheckedAt = (): Date => new Date(Date.now() - 60_000);
+
+/** What K1 reads besides the counters; the closer's figures are her own share of the admin's. */
+export function previewExtras(role: StaffRole): SummaryExtras {
+  const admin = role === 'admin';
+  return {
+    leads: admin
+      ? { new: 4, contacted: 7, proposal_sent: 5 }
+      : { new: 1, contacted: 3, proposal_sent: 2 },
+    commissions: admin
+      ? { pending: { count: 2, amount: 248 }, approved: { count: 1, amount: 90 } }
+      : { pending: { count: 1, amount: 140 }, approved: { count: 1, amount: 90 } },
+    lastImport: {
+      fileName: 'contactos-feria-octubre.csv',
+      at: at(-1 * HOUR),
+      created: 26,
+      updated: 2,
+      skipped: 1,
+      author: admin ? 'Marta Quintana' : null,
+    },
+    nextStory: { clientId: ID.client, name: 'Beltrán Reformas' },
+  };
+}
 
 export function previewSummary(role: StaffRole): CrmSummary {
   return { role, my: closerCounters, team, admin: role === 'admin' ? ADMIN_COUNTERS : null };
@@ -89,22 +114,166 @@ const row = (
   next_action_at: string | null,
   last_interaction_at: string | null,
   owner_id: string | null,
-): ContactRow => ({ id, display_name, kind, status, organization, next_action, next_action_at, last_interaction_at, owner_id });
+  channel: ContactRow['channel'],
+): ContactRow => ({
+  id,
+  display_name,
+  kind,
+  status,
+  organization,
+  next_action,
+  next_action_at,
+  last_interaction_at,
+  owner_id,
+  channel,
+});
 
 /** Rows as the database holds them. A closer's copy never carries the owner (`contactRows`). */
 const ROWS: ContactRow[] = [
-  row(ID.lucia, 'Lucía Ferrándiz', 'lead', 'proposal_sent', 'Panadería Ferrándiz', 'Llamar para cerrar el pack', inDays(-6), inDays(-8), ID.marta),
-  row('10000000-0000-4000-8000-000000000003', 'Rubén Calatayud', 'lead', 'contacted', 'Calatayud Fisioterapia', 'Enviar propuesta con dos opciones', inDays(-3), inDays(-5), ID.inigo),
-  row('10000000-0000-4000-8000-000000000004', 'Pilar Montoya', 'lead', 'new', null, 'Primer contacto por WhatsApp', inDays(-1), inDays(-1), null),
-  row('10000000-0000-4000-8000-000000000005', 'Gonzalo Arrieta', 'agency', 'replied', 'Estudio Arrieta & Rey', 'Proponer videollamada de 20 minutos', inDays(-0.2), inDays(-2), ID.marta),
-  row('10000000-0000-4000-8000-000000000006', 'Sofía Beltrán', 'lead', 'proposal_sent', 'Clínica Dental Beltrán', 'Preguntar si ha visto la propuesta', inDays(0.3), inDays(-4), ID.marta),
-  row(ID.alvaro, 'Álvaro Beltrán', 'client', 'active_client', 'Beltrán Reformas', 'Revisar la fase de diseño con él', inDays(2), inDays(-1), ID.marta),
-  row('10000000-0000-4000-8000-000000000007', 'Carmen Ortuño', 'recruiter', 'interview', 'Talentia Selección', 'Confirmar hora de la entrevista', inDays(1), inDays(-3), ID.jose),
-  row('10000000-0000-4000-8000-000000000008', 'Hugo Sepúlveda', 'agency', 'invited', 'Sepúlveda Digital', 'Esperar respuesta a la invitación', inDays(5), inDays(-6), ID.inigo),
-  row('10000000-0000-4000-8000-000000000009', 'Irene Mascaró', 'lead', 'contacted', 'Mascaró Estudio de Yoga', 'Mandar ejemplos de webs de estudios', inDays(3), inDays(-2), null),
-  row('10000000-0000-4000-8000-00000000000a', 'Tomás Villalba', 'other', 'active', null, null, null, inDays(-12), ID.jose),
-  row('10000000-0000-4000-8000-00000000000b', 'Beatriz Cuenca', 'lead', 'lost', 'Cuenca Asesores', null, null, inDays(-20), ID.inigo),
-  row('10000000-0000-4000-8000-00000000000c', 'Nuria Esteve', 'agency', 'pending', 'Esteve y Asociados', 'Enviar invitación de LinkedIn', inDays(-9), null, ID.marta),
+  row(
+    ID.lucia,
+    'Lucía Ferrándiz',
+    'lead',
+    'proposal_sent',
+    'Panadería Ferrándiz',
+    'Llamar para cerrar el pack',
+    inDays(-6),
+    inDays(-8),
+    ID.marta,
+    'whatsapp',
+  ),
+  row(
+    '10000000-0000-4000-8000-000000000003',
+    'Rubén Calatayud',
+    'lead',
+    'contacted',
+    'Calatayud Fisioterapia',
+    'Enviar propuesta con dos opciones',
+    inDays(-3),
+    inDays(-5),
+    ID.inigo,
+    'email',
+  ),
+  row(
+    '10000000-0000-4000-8000-000000000004',
+    'Pilar Montoya',
+    'lead',
+    'new',
+    null,
+    'Primer contacto por WhatsApp',
+    inDays(-1),
+    inDays(-1),
+    null,
+    'web_form',
+  ),
+  row(
+    '10000000-0000-4000-8000-000000000005',
+    'Gonzalo Arrieta',
+    'agency',
+    'replied',
+    'Estudio Arrieta & Rey',
+    'Proponer videollamada de 20 minutos',
+    inDays(-0.2),
+    inDays(-2),
+    ID.marta,
+    'linkedin_inmail',
+  ),
+  row(
+    '10000000-0000-4000-8000-000000000006',
+    'Sofía Beltrán',
+    'lead',
+    'proposal_sent',
+    'Clínica Dental Beltrán',
+    'Preguntar si ha visto la propuesta',
+    inDays(0.3),
+    inDays(-4),
+    ID.marta,
+    'email',
+  ),
+  row(
+    ID.alvaro,
+    'Álvaro Beltrán',
+    'client',
+    'active_client',
+    'Beltrán Reformas',
+    'Revisar la fase de diseño con él',
+    inDays(2),
+    inDays(-1),
+    ID.marta,
+    'whatsapp',
+  ),
+  row(
+    '10000000-0000-4000-8000-000000000007',
+    'Carmen Ortuño',
+    'recruiter',
+    'interview',
+    'Talentia Selección',
+    'Confirmar hora de la entrevista',
+    inDays(1),
+    inDays(-3),
+    ID.jose,
+    'email',
+  ),
+  row(
+    '10000000-0000-4000-8000-000000000008',
+    'Hugo Sepúlveda',
+    'agency',
+    'invited',
+    'Sepúlveda Digital',
+    'Esperar respuesta a la invitación',
+    inDays(5),
+    inDays(-6),
+    ID.inigo,
+    'linkedin_invite',
+  ),
+  row(
+    '10000000-0000-4000-8000-000000000009',
+    'Irene Mascaró',
+    'lead',
+    'contacted',
+    'Mascaró Estudio de Yoga',
+    'Mandar ejemplos de webs de estudios',
+    inDays(3),
+    inDays(-2),
+    null,
+    'email',
+  ),
+  row(
+    '10000000-0000-4000-8000-00000000000a',
+    'Tomás Villalba',
+    'other',
+    'active',
+    null,
+    null,
+    null,
+    inDays(-12),
+    ID.jose,
+    null,
+  ),
+  row(
+    '10000000-0000-4000-8000-00000000000b',
+    'Beatriz Cuenca',
+    'lead',
+    'lost',
+    'Cuenca Asesores',
+    null,
+    null,
+    inDays(-20),
+    ID.inigo,
+    'whatsapp',
+  ),
+  row(
+    '10000000-0000-4000-8000-00000000000c',
+    'Nuria Esteve',
+    'agency',
+    'pending',
+    'Esteve y Asociados',
+    'Enviar invitación de LinkedIn',
+    inDays(-9),
+    null,
+    ID.marta,
+    'linkedin_invite',
+  ),
 ];
 
 export function contactRows(role: StaffRole): ContactRow[] {

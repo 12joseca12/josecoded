@@ -33,20 +33,20 @@ export async function Pager({
       <p className={styles.range}>{t('range', { from, to, total })}</p>
       <div className={styles.buttons}>
         {page > 1 ? (
-          <Button href={hrefFor(page - 1)} variant="ghost" size="sm" icon="chevron-left">
+          <Button href={hrefFor(page - 1)} variant="quiet" size="sm">
             {t('previous')}
           </Button>
         ) : (
-          <Button variant="ghost" size="sm" icon="chevron-left" disabled>
+          <Button variant="quiet" size="sm" disabled>
             {t('previous')}
           </Button>
         )}
         {page < last ? (
-          <Button href={hrefFor(page + 1)} variant="ghost" size="sm" icon="chevron-right">
+          <Button href={hrefFor(page + 1)} variant="ghost" size="sm" iconAfter="chevron-right">
             {t('next')}
           </Button>
         ) : (
-          <Button variant="ghost" size="sm" icon="chevron-right" disabled>
+          <Button variant="ghost" size="sm" iconAfter="chevron-right" disabled>
             {t('next')}
           </Button>
         )}

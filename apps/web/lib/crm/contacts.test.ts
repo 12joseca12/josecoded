@@ -20,6 +20,8 @@ class Builder {
   lte = (...a: unknown[]) => this.note('lte', a);
   or = (...a: unknown[]) => this.note('or', a);
   ilike = (...a: unknown[]) => this.note('ilike', a);
+  in = (...a: unknown[]) => this.note('in', a);
+  not = (...a: unknown[]) => this.note('not', a);
   order = (...a: unknown[]) => this.note('order', a);
   limit = (...a: unknown[]) => this.note('limit', a);
   range = async (...a: unknown[]) => {
@@ -33,7 +35,13 @@ vi.mock('@/lib/auth/guards', () => ({
   getOptionalSession: async () => ({ user: { id: 'me' }, supabase: { from: () => new Builder() } }),
 }));
 
-import { applyContactFilters, getContactPage, parseContactQuery, sanitizeSearch } from './contacts';
+import {
+  applyContactFilters,
+  contactChannel,
+  getContactPage,
+  parseContactQuery,
+  sanitizeSearch,
+} from './contacts';
 
 const calls = (name: string) => state.calls.filter(([n]) => n === name).map(([, ...args]) => args);
 
@@ -126,5 +134,23 @@ describe('getContactPage', () => {
     expect(String(calls('select')[0]?.[0])).toContain('owner_id');
     expect(page.rows[0]?.owner_id).toBe('carla');
     expect(page.owners).toEqual([]);
+  });
+});
+
+describe('contactChannel', () => {
+  it('prefers the channel of the last interaction', () => {
+    expect(contactChannel('whatsapp', 'web_form')).toBe('whatsapp');
+  });
+
+  it('falls back to the channel the contact came through', () => {
+    expect(contactChannel(null, 'web_form')).toBe('web_form');
+    expect(contactChannel(null, 'partner_form')).toBe('web_form');
+    expect(contactChannel(null, 'calcom')).toBe('calcom');
+  });
+
+  it('says nothing when the origin is not a channel', () => {
+    expect(contactChannel(null, 'manual')).toBeNull();
+    expect(contactChannel(null, 'import_csv')).toBeNull();
+    expect(contactChannel(null, null)).toBeNull();
   });
 });

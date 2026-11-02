@@ -15,6 +15,9 @@ import type { ContactRecord, LeadRecord, PackChoice } from '@/lib/crm/contact-de
 import type { Owner } from '@/lib/crm/contacts';
 import type { Locale } from '@josecoded/types';
 
+const leadTone = (status: LeadRecord['status']) =>
+  status === 'open' ? 'active' : status === 'won' ? 'live' : 'muted';
+
 /**
  * The opportunities (leads) of the contact. An open one carries the actions that belong to the role: the admin
  * closes it as paid («Cerrar cobrado», ghost: the violet action of the view is «Redactar mensaje»); a closer
@@ -50,6 +53,8 @@ export async function OpportunityCard({
     getFormatter({ locale }),
   ]);
   if (leads.length === 0) return null;
+  // one opportunity says its state in the head of the card, as in the prototype; several carry theirs inline
+  const single = leads.length === 1 ? leads[0] : null;
   const today = toInputParts(new Date().toISOString())?.date ?? '';
   const parts = toInputParts(contact.next_action_at);
   const statusContact = {
@@ -64,24 +69,58 @@ export async function OpportunityCard({
   };
 
   return (
-    <DetailCard icon="receipt" title={t('title', { count: leads.length })}>
+    <DetailCard
+      icon="receipt"
+      title={
+        single
+          ? t(single.status === 'open' ? 'titleOpen' : 'title', { count: 1 })
+          : t('title', { count: leads.length })
+      }
+      badge={
+        single ? (
+          <StatusBadge tone={leadTone(single.status)}>{t(`status.${single.status}`)}</StatusBadge>
+        ) : undefined
+      }
+    >
       {leads.map((lead) => {
         const open = lead.status === 'open';
         const needsPack = open && !lead.pack_code && !hasClient;
         return (
           <div key={lead.id} className={styles.lead}>
             <p className={styles.small}>
-              <StatusBadge tone={open ? 'active' : lead.status === 'won' ? 'live' : 'muted'}>{t(`status.${lead.status}`)}</StatusBadge>{' '}
-              <strong>{lead.pack_code ? `${lead.pack_code}${lead.pack_option ? ` · ${lead.pack_option}` : ''}` : t('noPack')}</strong>
-            </p>
-            <p className={`${styles.small} ${styles.muted}`}>
-              {[
-                tSource.has(lead.source) ? tSource(lead.source) : lead.source,
-                format.dateTime(new Date(lead.created_at), { day: 'numeric', month: 'short', timeZone: 'Europe/Madrid' }),
-                lead.amount !== null ? format.number(Number(lead.amount), { style: 'currency', currency: 'EUR' }) : null,
-              ]
-                .filter(Boolean)
-                .join(' · ')}
+              {single ? null : (
+                <>
+                  <StatusBadge tone={leadTone(lead.status)}>
+                    {t(`status.${lead.status}`)}
+                  </StatusBadge>{' '}
+                </>
+              )}
+              <strong>
+                {lead.pack_code
+                  ? `${lead.pack_code}${lead.pack_option ? ` · ${lead.pack_option}` : ''}`
+                  : t('noPack')}
+              </strong>
+              <br />
+              <span className={styles.muted}>
+                {[
+                  tSource.has(lead.source) ? tSource(lead.source) : lead.source,
+                  format.dateTime(new Date(lead.created_at), {
+                    day: 'numeric',
+                    month: 'short',
+                    timeZone: 'Europe/Madrid',
+                  }),
+                  lead.amount !== null
+                    ? t('net', {
+                        amount: format.number(Number(lead.amount), {
+                          style: 'currency',
+                          currency: 'EUR',
+                        }),
+                      })
+                    : null,
+                ]
+                  .filter(Boolean)
+                  .join(' · ')}
+              </span>
             </p>
             {lead.message ? <p className={`${styles.small} ${styles.muted}`}>{lead.message}</p> : null}
             {open && role === 'admin' ? (
@@ -139,6 +178,7 @@ export async function OpportunityCard({
                 ) : null}
                 <SheetTrigger
                   label={t('requestClose')}
+                  variant="quiet"
                   size="sm"
                   title={t('requestTitle')}
                   description={t('requestHelp')}

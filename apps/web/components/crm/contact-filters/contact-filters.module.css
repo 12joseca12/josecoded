@@ -1,11 +1,26 @@
-.filters {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--sp-4);
-  margin-bottom: var(--sp-5);
+/* ref/crm .toolbar: search, kind, selects and the toggle on one wrapping row */
+.toolbar {
+  display: block;
+  margin-bottom: var(--sp-4);
 }
 
-/* the kind: a segmented row that scrolls inside itself on a phone, never the page */
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.search {
+  flex: 1 1 16rem;
+  max-width: var(--size-crm-search-max);
+}
+
+.kind {
+  max-width: 100%;
+}
+
+/* the kind: a segmented pill that scrolls inside itself on a phone, never the page */
 .seg {
   display: inline-flex;
   max-width: 100%;
@@ -40,38 +55,44 @@
 }
 
 .segLink[aria-current='true'] {
-  background: var(--tint-emphasis);
-  box-shadow: var(--shadow-selected-row);
-  color: var(--text);
+  background: var(--violet);
+  color: var(--ink);
   font-weight: var(--font-emphasis-weight);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .segLink:hover {
+  .segLink:not([aria-current='true']):hover {
     color: var(--text);
   }
 }
 
-.form {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-  align-items: end;
-  gap: var(--sp-3) var(--sp-4);
-}
-
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--sp-3);
+@media (pointer: coarse) {
+  .segLink {
+    min-height: var(--size-control-md);
+  }
 }
 
 .clear {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--size-control-md);
+  padding: 0 var(--sp-2);
   color: var(--text-2);
   font-size: var(--font-small-size);
   text-decoration: underline;
   text-decoration-color: var(--line-2);
   text-underline-offset: 0.2em;
+}
+
+/* «Filtrar» only for who has no JavaScript to apply the changes */
+.apply {
+  display: none;
+}
+
+@media (scripting: none) {
+  .apply {
+    display: block;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

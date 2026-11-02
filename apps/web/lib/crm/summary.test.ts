@@ -28,6 +28,7 @@ describe('k1Figures', () => {
       commissionsPending: 1,
       commissionsApprovedAmount: 90,
       conflictsPending: 1,
+      unassignedDue: 0,
       scope: 'mine',
     });
   });
@@ -42,6 +43,8 @@ describe('k1Figures', () => {
       // what only the portfolio knows stays his own
       commissionsApprovedAmount: 90,
       conflictsPending: 1,
+      // his own portfolio is the contacts without an owner: those are the overdue ones nobody has
+      unassignedDue: 3,
       scope: 'all',
     });
   });

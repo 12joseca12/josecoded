@@ -26,13 +26,23 @@ export interface ContactsViewProps {
   statusLabels: StatusSheetLabels;
   /** `?nuevo=1`: the sheet of a new contact starts open. */
   openNew?: boolean;
+  /** Overdue contacts of the person, for the «Solo vencidas» toggle. */
+  overdue?: number | null;
 }
 
 /**
  * K2, the inbox of contacts, as a view of already-read data: the page fetches (RLS decides what exists for the
  * person) and the dev previews feed it fixtures. The owner filter and column exist only for the admin.
  */
-export async function ContactsView({ locale, role, page, statusOptions, statusLabels, openNew = false }: ContactsViewProps) {
+export async function ContactsView({
+  locale,
+  role,
+  page,
+  statusOptions,
+  statusLabels,
+  openNew = false,
+  overdue = null,
+}: ContactsViewProps) {
   const [t, tKinds] = await Promise.all([
     getTranslations({ locale, namespace: 'crmContacts' }),
     getTranslations({ locale, namespace: 'crmContacts.kinds' }),
@@ -80,7 +90,8 @@ export async function ContactsView({ locale, role, page, statusOptions, statusLa
             <SheetTrigger
               label={t('inbox.new')}
               icon="plus"
-              variant="ghost"
+              variant="quiet"
+              size="sm"
               defaultOpen={openNew}
               title={t('newContact.title')}
               closeLabel={t('newContact.close')}
@@ -91,7 +102,7 @@ export async function ContactsView({ locale, role, page, statusOptions, statusLa
           </>
         }
       />
-      <ContactFilters query={page.query} owners={page.owners} locale={locale} />
+      <ContactFilters query={page.query} owners={page.owners} overdue={overdue} locale={locale} />
       {page.rows.length === 0 ? (
         <EmptyState
           live

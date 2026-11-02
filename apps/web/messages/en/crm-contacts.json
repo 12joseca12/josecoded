@@ -23,7 +23,6 @@
       "label": "Filter contacts",
       "kind": "Kind",
       "kindAll": "All",
-      "search": "Search by name, company or email",
       "status": "Status",
       "statusAll": "All statuses",
       "owner": "Owner",
@@ -33,7 +32,10 @@
       "ownerOff": "(deactivated)",
       "due": "Overdue only",
       "apply": "Filter",
-      "clear": "Clear filters"
+      "clear": "Clear filters",
+      "searchLabel": "Search contacts",
+      "searchPlaceholder": "Search name, company or email",
+      "hotkey": "/"
     },
     "kinds": {
       "lead": "Lead",
@@ -107,7 +109,8 @@
       "noOrganization": "No organization",
       "none": "—",
       "unassigned": "Unassigned",
-      "ownerOff": "(deactivated)"
+      "ownerOff": "(deactivated)",
+      "channel": "Channel"
     },
     "pager": {
       "label": "Contact pages",
@@ -195,10 +198,10 @@
         "commission": "Commission"
       },
       "line": {
-        "status_change": "Status: {from} → {to}",
+        "status_change": "Status: {from} → <b>{to}</b>",
         "lead_won": "Paid {amount}",
         "commission": "Commission of {percent} %: {amount}",
-        "withChannel": "{kind} · {channel}"
+        "subject": "“{subject}”"
       },
       "actor": {
         "jose": "Jose",
@@ -239,12 +242,19 @@
         "label": "Sections of the contact",
         "historial": "History",
         "mensajes": "Messages",
-        "historias": "Stories"
+        "historias": "Stories",
+        "presupuestos": "Quotes"
       },
       "note": {
-        "label": "Add a note (only the team sees it)",
+        "label": "Add note",
         "submit": "Save note",
-        "saved": "Note saved"
+        "saved": "Note saved",
+        "placeholder": "Add a note (only the team sees it)"
+      },
+      "quotes": {
+        "title": "Custom quotes",
+        "empty": "Custom quotes are coming soon",
+        "text": "The ones for this contact will be here, with their status and a button to duplicate them."
       }
     },
     "opportunity": {
@@ -277,7 +287,9 @@
       "requestSubmit": "Ask to close",
       "requested": "Closing requested",
       "cancel": "Cancel",
-      "close": "Close"
+      "close": "Close",
+      "titleOpen": "Open opportunity",
+      "net": "{amount} excl. VAT"
     },
     "client": {
       "title": "Client",
@@ -315,7 +327,8 @@
       "source": "Origin",
       "language": "Language",
       "tags": "Tags",
-      "since": "Added"
+      "since": "Added",
+      "edit": "Edit details"
     },
     "stories": {
       "title": "Stories",
@@ -369,6 +382,17 @@
     "overdueList": {
       "label": "Contacts with an overdue action",
       "none": "No detail"
+    },
+    "channelsShort": {
+      "linkedin_invite": "LinkedIn",
+      "linkedin_inmail": "LinkedIn",
+      "email": "Email",
+      "whatsapp": "WhatsApp",
+      "calcom": "Cal.com",
+      "web_form": "Form",
+      "web_proposal": "Web proposal",
+      "chat": "Chat",
+      "other": "Other"
     }
   }
 }

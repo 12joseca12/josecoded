@@ -51,12 +51,15 @@
         "all": "contactos con la siguiente acción pasada en todo el CRM.",
         "none": "Nada vencido ahora mismo.",
         "cta": "Ver vencidas",
-        "contacts": "Todos los contactos"
+        "contacts": "Todos los contactos",
+        "allUnassigned": "contactos con la siguiente acción pasada en todo el CRM ({unassigned} sin dueño)."
       },
       "leads": {
         "titleMine": "Mis leads abiertos",
         "titleAll": "Leads abiertos",
-        "open": "Abiertos"
+        "new": "Nuevos",
+        "contacted": "Contactados",
+        "proposal_sent": "Propuesta enviada"
       },
       "commissions": {
         "titleMine": "Mis comisiones",
@@ -70,7 +73,8 @@
         "mine": "Propuestas por tus clientes. Se aceptan con horas o se rechazan con motivo.",
         "all": "Propuestas por clientes. Se aceptan con horas o se rechazan con motivo.",
         "none": "Ninguna historia por decidir.",
-        "link": "Ver clientes"
+        "link": "Ver clientes",
+        "linkNamed": "Decidir la de {name}"
       },
       "import": {
         "title": "Última importación",
@@ -78,7 +82,10 @@
         "result": "{created, plural, one {# creado} other {# creados}} · {updated, plural, one {# actualizado} other {# actualizados}} · {skipped, plural, one {# inválida} other {# inválidas}}",
         "review": "{count} en revisión",
         "again": "Importar otro CSV",
-        "first": "Importar un CSV"
+        "first": "Importar un CSV",
+        "when": "{day}, {time}",
+        "byAuthor": "{when} · {author}",
+        "unnamed": "Sin nombre de fichero"
       },
       "team": {
         "title": "Equipo",
@@ -92,7 +99,9 @@
       "title": "Administración",
       "omen": {
         "online": "Omen en línea",
-        "offline": "Omen sin conexión"
+        "offline": "Omen sin conexión",
+        "onlineChecked": "Omen en línea · comprobado {ago}",
+        "offlineChecked": "Omen sin conexión · comprobado {ago}"
       },
       "link": "Ir a Administración",
       "counters": {
