@@ -1,4 +1,4 @@
-import { defineConfig } from '@playwright/test';
+import { defineConfig, devices } from '@playwright/test';
 
 // The URL matrix runs against the LOCAL preview: `opennextjs-cloudflare preview` (populates the
 // incremental cache like production, then wrangler dev) serving `.open-next`
@@ -13,6 +13,14 @@ export default defineConfig({
   // Jose's 2 % tolerance for screenshot comparisons (working-agreements §5). Baselines are produced ONLY by the
   // `update-snapshots` workflow (CI's Playwright Chromium), never locally; see e2e/README.md.
   expect: { toHaveScreenshot: { maxDiffPixelRatio: 0.02 } },
+  // WebKit is opt-in (`E2E_WEBKIT=1`, after `playwright install webkit`): CI installs Chromium only today.
+  // The fallbacks spec (Safari: stacked tour, cell without transition, opaque header) runs only there.
+  projects: [
+    { name: 'chromium', testIgnore: /fallbacks\.spec\.ts/ },
+    ...(process.env.E2E_WEBKIT
+      ? [{ name: 'webkit', testMatch: /fallbacks\.spec\.ts/, use: { ...devices['Desktop Safari'] } }]
+      : []),
+  ],
   use: {
     baseURL: `http://127.0.0.1:${port}`,
     browserName: 'chromium',

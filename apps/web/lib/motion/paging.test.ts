@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
-import { ease, keyDirection, nextStop, shouldHandleKey, stops } from './paging';
+import { createPagedScroll, ease, keyDirection, nextStop, shouldHandleKey, stops } from './paging';
 
 describe('stops', () => {
   it('adds intermediate stops every 85 % of viewport in tall scenes and one per card in the tour', () => {
@@ -56,4 +56,22 @@ it('eases from 0 to 1 and is symmetric around the middle', () => {
   expect(ease(1)).toBe(1);
   expect(ease(0.5)).toBeCloseTo(0.5);
   expect(ease(0.25) + ease(0.75)).toBeCloseTo(1);
+});
+
+describe('internal links', () => {
+  it('slides to a scene but leaves the skip link and other anchors to the browser', () => {
+    document.body.innerHTML = '<a id="skip" href="#main">skip</a><a id="go" href="#two">two</a><main id="main"><section id="one"></section><section id="two"></section></main>';
+    vi.stubGlobal('scrollTo', vi.fn());
+    vi.stubGlobal('matchMedia', () => ({ matches: true, addEventListener: () => undefined, removeEventListener: () => undefined }));
+    const stop = createPagedScroll({ blocked: () => false, scenes: () => [], step: 0.85 });
+    const click = (id: string) => {
+      const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+      document.getElementById(id)!.dispatchEvent(event);
+      return event.defaultPrevented;
+    };
+    expect(click('skip')).toBe(false);
+    expect(click('go')).toBe(true);
+    stop();
+    vi.unstubAllGlobals();
+  });
 });

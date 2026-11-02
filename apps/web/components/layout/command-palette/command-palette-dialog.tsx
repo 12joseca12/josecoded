@@ -1,11 +1,13 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+import { useLocale } from 'next-intl';
 import { useEffect, useId, useReducer, useRef } from 'react';
 
 import { useShell } from '@/components/layout/shell-provider';
 import { Icon } from '@/components/ui/icon';
 import { Kbd } from '@/components/ui/kbd';
-import { useRouter } from '@/i18n/navigation';
+import { getPathname } from '@/i18n/navigation';
 import { isInternalHref, toLinkTarget } from '@/lib/href';
 import { filter, reduce } from '@/lib/motion/palette';
 
@@ -43,12 +45,18 @@ export interface PaletteCopy {
 export default function CommandPaletteDialog({ commands, copy }: { commands: readonly PaletteItem[]; copy: PaletteCopy }) {
   const { palette, closePalette } = useShell();
   const dialog = useRef<HTMLDialogElement>(null);
+  // the native `close` event arrives in a later task: when we closed it ourselves it must not touch
+  // the state again (a quick ⌘K in between would be undone)
+  const closedByUs = useRef(false);
 
   useEffect(() => {
     const element = dialog.current;
     if (!element) return;
     if (palette && !element.open) element.showModal();
-    if (!palette && element.open) element.close();
+    if (!palette && element.open) {
+      closedByUs.current = true;
+      element.close();
+    }
   }, [palette]);
 
   return (
@@ -56,7 +64,15 @@ export default function CommandPaletteDialog({ commands, copy }: { commands: rea
       ref={dialog}
       className={styles.palette}
       aria-label={copy.label}
-      onClose={closePalette}
+      // Esc: the shell state flips first and the effect closes the dialog, so the store never lags behind the element
+      onCancel={(event) => {
+        event.preventDefault();
+        closePalette();
+      }}
+      onClose={() => {
+        if (closedByUs.current) closedByUs.current = false;
+        else closePalette();
+      }}
       onClick={(event) => {
         if (event.target === event.currentTarget) closePalette();
       }}
@@ -66,9 +82,20 @@ export default function CommandPaletteDialog({ commands, copy }: { commands: rea
   );
 }
 
+/**
+ * The final, localized URL of an internal command (`/servicios#packs` becomes `/services#packs` in
+ * English), so that the plain Next router can take it and keep the hash.
+ */
+function localizedPath(href: Href, locale: string): string {
+  const { pathname, query, hash } = toLinkTarget(href);
+  const path = getPathname({ href: query ? { pathname, query } : pathname, locale } as Parameters<typeof getPathname>[0]);
+  return hash ? `${path}#${hash}` : path;
+}
+
 function PaletteBody({ commands, copy }: { commands: readonly PaletteItem[]; copy: PaletteCopy }) {
   const { closePalette, closeCell } = useShell();
   const router = useRouter();
+  const locale = useLocale();
   const id = useId();
   const [state, dispatch] = useReducer((current: { query: string; index: number }, action: Parameters<typeof reduce>[1]) => reduce(current, action, commands), {
     query: '',
@@ -86,7 +113,7 @@ function PaletteBody({ commands, copy }: { commands: readonly PaletteItem[]; cop
     if (!command) return;
     closePalette();
     closeCell();
-    if (isInternalHref(command.href)) router.push(toLinkTarget(command.href) as Parameters<typeof router.push>[0]);
+    if (isInternalHref(command.href)) router.push(localizedPath(command.href, locale));
     else window.open(command.href, '_blank', 'noopener');
   }
 

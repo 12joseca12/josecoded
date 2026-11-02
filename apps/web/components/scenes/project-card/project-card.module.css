@@ -10,6 +10,8 @@
 }
 
 .art {
+  opacity: var(--art-dim, 1);
+  transition: opacity var(--dur-card) var(--ease-standard);
   display: grid;
   place-items: center;
   min-height: var(--size-tcard-art-min);
@@ -71,6 +73,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .art {
+    transition: none;
+  }
+
   .art img {
     animation: none;
   }

@@ -72,16 +72,20 @@
     .track > [data-tcard] {
       width: var(--w-tcard);
       height: var(--h-tcard);
-      opacity: var(--opacity-tcard-idle);
+
+      /* deviation: a card out of focus dims its art, not its text (the prototype dimmed the whole card to
+         0.4, which leaves 1.8:1 for the small text: WCAG 1.4.3). The scale and the missing shadow do the rest. */
+      --art-dim: var(--opacity-tcard-idle);
+
       transform: scale(var(--scale-tcard-idle));
       transition:
-        opacity var(--dur-card) var(--ease-standard),
         transform var(--dur-card) var(--ease-out),
         box-shadow var(--dur-state) var(--ease-standard);
     }
 
     .track > [data-tcard][data-active] {
-      opacity: 1;
+      --art-dim: 1;
+
       transform: none;
       box-shadow: var(--shadow-card-focus);
     }

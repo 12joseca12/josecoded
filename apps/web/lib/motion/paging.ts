@@ -159,8 +159,9 @@ export function createPagedScroll({ blocked, scenes, step }: PagedScrollOptions)
     const anchor = event.target.closest<HTMLAnchorElement>('a[href^="#"]');
     const hash = anchor?.getAttribute('href');
     if (!anchor || !hash || hash === '#') return;
+    // only the scenes slide; the skip link and any other anchor keep the browser's own jump and focus
     const target = document.querySelector(hash);
-    if (!target) return;
+    if (!target?.matches('main > section')) return;
     event.preventDefault();
     glideTo(target.getBoundingClientRect().top + scrollY);
   };

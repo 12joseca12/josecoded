@@ -12,8 +12,8 @@ import CommandPaletteDialog from './command-palette-dialog';
 import type { PaletteCopy, PaletteItem } from './command-palette-dialog';
 
 const push = vi.fn();
-vi.mock('@/i18n/navigation', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@/i18n/navigation')>()),
+vi.mock('next/navigation', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('next/navigation')>()),
   useRouter: () => ({ push }),
 }));
 
@@ -63,7 +63,7 @@ it('opens from the search button, filters without accents, opens a command and c
   expect(await axe(container)).toHaveNoViolations();
 
   fireEvent.keyDown(input, { key: 'Enter' });
-  expect(push).toHaveBeenCalledWith({ pathname: '/servicios', hash: 'packs' });
+  expect(push).toHaveBeenCalledWith('/servicios#packs');
   await act(async () => undefined);
   expect(search.getAttribute('aria-expanded')).toBe('false');
 });
