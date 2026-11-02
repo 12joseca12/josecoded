@@ -981,7 +981,7 @@ isOneToOne: false
                            },
 "notification_recipients":
 { Args: { "p_event": string,"p_owner_id": string }; Returns: {
-              "address": string,"channel": Database["public"]['Enums']["notification_channel"]
+              "address": string,"admin_fallback": boolean,"channel": Database["public"]['Enums']["notification_channel"]
             }[]
                            },
 "outbox_ack":
