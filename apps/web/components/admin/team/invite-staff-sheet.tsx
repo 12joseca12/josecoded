@@ -1,22 +1,23 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
+import { inviteStaff } from '@/app/[locale]/(staff)/admin/equipo/actions';
 import { CloseWhenSaved, SheetCancel, SheetTrigger } from '@/components/crm/sheet';
 import { Field } from '@/components/forms/field';
 import { Form } from '@/components/forms/form';
 import { Icon } from '@/components/ui/icon';
-import { stubTeamAction } from '@/lib/team/stub-actions';
 
 import styles from './team-sheets.module.css';
 
 /**
  * «Invitar»: the one violet action of D1. Email, role, the commission rate (mandatory: the closer is paid by it, and a
- * missing one would be a silent 0 %) and a note only the admin reads. The rate is frozen into every commission when it
- * is created, which the help says. Submitting is a stub until B33.
+ * missing one would be a silent 0 %). The rate is frozen into every commission when it is created, which the help says.
+ * There is no note: `staff_invites` has no column for it (DATOS §14) and the email is a fixed template.
  */
 export function InviteStaffSheet() {
   const t = useTranslations('adminTeam.sheets');
+  const locale = useLocale();
   return (
     <SheetTrigger
       label={t('invite.trigger')}
@@ -26,8 +27,9 @@ export function InviteStaffSheet() {
       closeLabel={t('close')}
       savedMessage={t('invite.saved')}
     >
-      <Form action={stubTeamAction} submitLabel={t('invite.submit')} label={t('invite.title')} actions={<SheetCancel>{t('cancel')}</SheetCancel>}>
+      <Form action={inviteStaff} submitLabel={t('invite.submit')} label={t('invite.title')} actions={<SheetCancel>{t('cancel')}</SheetCancel>}>
         <CloseWhenSaved />
+        <Field kind="hidden" name="locale" value={locale} />
         <Field kind="email" name="email" label={t('invite.email')} placeholder={t('invite.emailPlaceholder')} autoComplete="off" required />
         <Field
           kind="radio-group"
@@ -48,7 +50,6 @@ export function InviteStaffSheet() {
           trailing="%"
           required
         />
-        <Field kind="textarea" name="note" label={t('invite.note')} placeholder={t('invite.notePlaceholder')} rows={2} maxLength={500} />
         <p className={styles.note}>
           <Icon name="info" />
           <span>{t('invite.totpNote')}</span>

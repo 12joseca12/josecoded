@@ -905,7 +905,7 @@ export function previewClientFile(role: StaffRole, empty = false): ClientFile {
 
 // ---- D1 · Team -------------------------------------------------------------------------------------------------
 
-const portfolio = (all: number, openLeads: number, agencies: number) => ({ all, openLeads, agencies });
+const portfolio = (all: number) => ({ all });
 
 /** The admin, three closers (one without Telegram, one who has not logged in yet, one deactivated) and two invitations (one expired). */
 export function previewTeam(): { members: TeamMember[]; invites: TeamInvite[] } {
@@ -918,22 +918,22 @@ export function previewTeam(): { members: TeamMember[]; invites: TeamInvite[] } 
     rate: 10,
     telegram: false,
     totp: true,
-    portfolio: portfolio(0, 0, 0),
+    portfolio: portfolio(0),
     pendingCount: 0,
     pendingAmount: 0,
     ...rest,
   });
   return {
     members: [
-      member(ID.jose, 'Jose Sánchez', 'admin@josecoded.test', { role: 'admin', rate: null, telegram: true, portfolio: portfolio(61, 18, 9) }),
-      member(ID.marta, 'Marta Quintana', 'marta@correo.test', { rate: 20, telegram: true, portfolio: portfolio(34, 12, 5), pendingCount: 1, pendingAmount: 140 }),
-      member(ID.inigo, 'Íñigo Valdés', 'inigo@correo.test', { rate: 15, portfolio: portfolio(29, 9, 3), pendingCount: 2, pendingAmount: 108 }),
+      member(ID.jose, 'Jose Sánchez', 'admin@josecoded.test', { role: 'admin', rate: null, telegram: true, portfolio: portfolio(61) }),
+      member(ID.marta, 'Marta Quintana', 'marta@correo.test', { rate: 20, telegram: true, portfolio: portfolio(34), pendingCount: 1, pendingAmount: 140 }),
+      member(ID.inigo, 'Íñigo Valdés', 'inigo@correo.test', { rate: 15, portfolio: portfolio(29), pendingCount: 2, pendingAmount: 108 }),
       member('00000000-0000-4000-8000-000000000005', 'Lucía Prado', 'lucia@correo.test', { totp: false }),
-      member(ID.noelia, 'Noelia Ferrer', 'noelia@correo.test', { rate: 15, disabled: true, portfolio: portfolio(4, 2, 1) }),
+      member(ID.noelia, 'Noelia Ferrer', 'noelia@correo.test', { rate: 15, disabled: true, portfolio: portfolio(4) }),
     ],
     invites: [
-      { id: '30000000-0000-4000-8000-000000000001', email: 'clara.nieto@correo.test', role: 'closer', rate: 10, note: 'empieza con clínicas de Madrid', expiresAt: at(5 * DAY) },
-      { id: '30000000-0000-4000-8000-000000000002', email: 'martin.f@correo.test', role: 'closer', rate: 12, note: null, expiresAt: at(-8 * DAY) },
+      { id: '30000000-0000-4000-8000-000000000001', email: 'clara.nieto@correo.test', role: 'closer', rate: 10, expiresAt: at(5 * DAY) },
+      { id: '30000000-0000-4000-8000-000000000002', email: 'martin.f@correo.test', role: 'closer', rate: 12, expiresAt: at(-8 * DAY) },
     ],
   };
 }

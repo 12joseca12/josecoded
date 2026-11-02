@@ -1,9 +1,9 @@
 import { getTranslations } from 'next-intl/server';
 
-import { EmptyState } from '@/components/shared/empty-state';
-import { PageHead } from '@/components/staff/page-head';
+import { TeamView } from '@/components/admin/team';
 import { requireAdmin } from '@/lib/auth/guards';
 import { resolveLocale } from '@/lib/locale';
+import { getTeam } from '@/lib/team/queries';
 import { TEAM_PATH } from '@/lib/team/team';
 
 import type { LocaleParams } from '@/lib/locale';
@@ -16,18 +16,13 @@ export async function generateMetadata({ params }: { params: LocaleParams }): Pr
 }
 
 /**
- * D1. B32 draws the screen (`TeamView`, see `/dev/admin/equipo/admin`); B33 reads `staff_members` / `staff_invites`
- * and wires the Server Actions. Until then the real page shows a placeholder: the sheets answer `ok` without writing,
- * so they must not be offered on real data.
+ * D1, the team. The page reads (`admin_staff_list()`, the open invitations, the pending amounts) and `TeamView` draws
+ * the same screen as `/dev/admin/equipo/admin`; the writes are the Server Actions of `./actions`, each behind
+ * `requireAdmin()` again.
  */
 export default async function AdminTeamPage({ params }: { params: LocaleParams }) {
   const locale = await resolveLocale(params);
-  await requireAdmin({ locale, next: TEAM_PATH });
-  const t = await getTranslations({ locale, namespace: 'adminTeam' });
-  return (
-    <>
-      <PageHead title={t('title')} tone={t('tone')} lead={t('lead')} />
-      <EmptyState title={t('pending.title')} text={t('pending.text')} />
-    </>
-  );
+  const { supabase } = await requireAdmin({ locale, next: TEAM_PATH });
+  const { members, invites } = await getTeam(supabase);
+  return <TeamView locale={locale} members={members} invites={invites} />;
 }

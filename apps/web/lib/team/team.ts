@@ -2,11 +2,9 @@ import type { StaffRole } from '@/lib/auth/staff';
 
 export const TEAM_PATH = '/admin/equipo';
 
-/** What the admin may reassign from a closer's portfolio: everything, the open leads, or the agencies. */
+/** What the admin may reassign from a closer's portfolio: all of it (`admin_reassign_contacts` moves the whole portfolio). */
 export interface TeamPortfolio {
   all: number;
-  openLeads: number;
-  agencies: number;
 }
 
 /** One person of the team as D1 shows them (the admin reads everyone's rate, contacts and pending commissions). */
@@ -32,7 +30,6 @@ export interface TeamInvite {
   email: string;
   role: StaffRole;
   rate: number;
-  note: string | null;
   expiresAt: string;
 }
 

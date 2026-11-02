@@ -1,23 +1,19 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 
+import { reassignContacts } from '@/app/[locale]/(staff)/admin/equipo/actions';
 import { CloseWhenSaved, SheetCancel, SheetTrigger } from '@/components/crm/sheet';
 import { Field } from '@/components/forms/field';
 import { Form } from '@/components/forms/form';
 import { Icon } from '@/components/ui/icon';
-import { stubTeamAction } from '@/lib/team/stub-actions';
 
 import styles from './team-sheets.module.css';
 
 import type { TeamPortfolio } from '@/lib/team/team';
 
-type Scope = keyof TeamPortfolio;
-const SCOPES: readonly Scope[] = ['all', 'openLeads', 'agencies'];
-
 /**
- * «Reasignar cartera»: which of a closer's contacts (all, the open leads, the agencies), and to whom. The commissions
+ * «Reasignar cartera»: a closer's whole portfolio, and to whom (`admin_reassign_contacts` moves all of it). The commissions
  * already created stay with the closer they were made for, which the warning says. The button counts what will move.
  */
 export function ReassignSheet({
@@ -34,7 +30,7 @@ export function ReassignSheet({
 }) {
   const t = useTranslations('adminTeam.sheets.reassign');
   const tShared = useTranslations('adminTeam.sheets');
-  const [scope, setScope] = useState<Scope>('all');
+  const locale = useLocale();
   return (
     <SheetTrigger
       label={t('trigger')}
@@ -47,22 +43,15 @@ export function ReassignSheet({
       savedMessage={t('saved')}
     >
       <Form
-        action={stubTeamAction}
-        submitLabel={t('submit', { count: portfolio[scope] })}
+        action={reassignContacts}
+        submitLabel={t('submit', { count: portfolio.all })}
         label={t('title', { name })}
         actions={<SheetCancel>{tShared('cancel')}</SheetCancel>}
       >
         <CloseWhenSaved />
+        <Field kind="hidden" name="locale" value={locale} />
         <Field kind="hidden" name="from" value={memberId} />
-        <Field
-          kind="radio-group"
-          name="scope"
-          label={t('scope')}
-          defaultValue="all"
-          onChange={(value) => setScope(value as Scope)}
-          options={SCOPES.map((value) => ({ value, label: t(`scopes.${value}`), description: String(portfolio[value]) }))}
-        />
-        <Field kind="select" name="to" label={t('to')} options={targets} />
+        <Field kind="select" name="to" label={t('to')} options={targets} required />
         <p className={styles.note} data-tone="attention">
           <Icon name="triangle-alert" />
           <span>{t('warning', { name })}</span>

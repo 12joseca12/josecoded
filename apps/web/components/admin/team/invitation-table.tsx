@@ -41,7 +41,7 @@ export async function InvitationTable({ invites, locale }: { invites: readonly T
                 <td role="cell" data-col="main" className={table.cell}>
                   <div className={table.main}>
                     <strong>{invite.email}</strong>
-                    <span>{invite.note ? t('withNote', { role, note: invite.note }) : role}</span>
+                    <span>{role}</span>
                   </div>
                 </td>
                 <td role="cell" data-col="meta" data-label={t('rate')} className={`${table.cell} ${table.right} ${table.num}`}>

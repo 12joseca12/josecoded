@@ -1,24 +1,28 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
+import { cancelInvite, resendInvite, setRate, setStaff } from '@/app/[locale]/(staff)/admin/equipo/actions';
 import { CloseWhenSaved, SheetCancel, SheetTrigger } from '@/components/crm/sheet';
 import { Field } from '@/components/forms/field';
 import { Form } from '@/components/forms/form';
-import { stubTeamAction } from '@/lib/team/stub-actions';
 
 import type { ButtonVariant, IconName, TeamConfirmKind } from '@josecoded/types';
 
-const CONFIRM: Record<TeamConfirmKind, { variant: ButtonVariant; submit: ButtonVariant; icon?: IconName }> = {
-  deactivate: { variant: 'ghost', submit: 'danger', icon: 'ban' },
-  activate: { variant: 'quiet', submit: 'solid' },
-  resend: { variant: 'ghost', submit: 'solid' },
-  revoke: { variant: 'quiet', submit: 'danger' },
+const CONFIRM: Record<
+  TeamConfirmKind,
+  { variant: ButtonVariant; submit: ButtonVariant; icon?: IconName; action: typeof setStaff | typeof resendInvite | typeof cancelInvite; disabled?: 'true' | 'false' }
+> = {
+  deactivate: { variant: 'ghost', submit: 'danger', icon: 'ban', action: setStaff, disabled: 'true' },
+  activate: { variant: 'quiet', submit: 'solid', action: setStaff, disabled: 'false' },
+  resend: { variant: 'ghost', submit: 'solid', action: resendInvite },
+  revoke: { variant: 'quiet', submit: 'danger', action: cancelInvite },
 };
 
 /** «Editar tasa»: the new rate only touches closings to come; the commissions already created keep theirs. */
 export function RateSheet({ memberId, name, rate }: { memberId: string; name: string; rate: number }) {
   const t = useTranslations('adminTeam.sheets');
+  const locale = useLocale();
   return (
     <SheetTrigger
       label={t('rate.trigger')}
@@ -30,8 +34,9 @@ export function RateSheet({ memberId, name, rate }: { memberId: string; name: st
       closeLabel={t('close')}
       savedMessage={t('rate.saved')}
     >
-      <Form action={stubTeamAction} submitLabel={t('rate.submit')} label={t('rate.title', { name })} actions={<SheetCancel>{t('cancel')}</SheetCancel>}>
+      <Form action={setRate} submitLabel={t('rate.submit')} label={t('rate.title', { name })} actions={<SheetCancel>{t('cancel')}</SheetCancel>}>
         <CloseWhenSaved />
+        <Field kind="hidden" name="locale" value={locale} />
         <Field kind="hidden" name="user_id" value={memberId} />
         <Field
           kind="text"
@@ -57,7 +62,8 @@ export function RateSheet({ memberId, name, rate }: { memberId: string; name: st
 export function ConfirmSheet({ kind, id, target, count = 0 }: { kind: TeamConfirmKind; id: string; target: string; count?: number }) {
   const t = useTranslations(`adminTeam.sheets.confirm.${kind}`);
   const tShared = useTranslations('adminTeam.sheets');
-  const { icon, variant, submit } = CONFIRM[kind];
+  const locale = useLocale();
+  const { icon, variant, submit, action, disabled } = CONFIRM[kind];
   const values = { target, count };
   return (
     <SheetTrigger
@@ -73,9 +79,11 @@ export function ConfirmSheet({ kind, id, target, count = 0 }: { kind: TeamConfir
       closeLabel={tShared('close')}
       savedMessage={t('saved', values)}
     >
-      <Form action={stubTeamAction} submitLabel={t('submit')} submitVariant={submit} label={t('title', values)} actions={<SheetCancel>{tShared('cancel')}</SheetCancel>}>
+      <Form action={action} submitLabel={t('submit')} submitVariant={submit} label={t('title', values)} actions={<SheetCancel>{tShared('cancel')}</SheetCancel>}>
         <CloseWhenSaved />
+        <Field kind="hidden" name="locale" value={locale} />
         <Field kind="hidden" name="id" value={id} />
+        {disabled ? <Field kind="hidden" name="disabled" value={disabled} /> : null}
       </Form>
     </SheetTrigger>
   );

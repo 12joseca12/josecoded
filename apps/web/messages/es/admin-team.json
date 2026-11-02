@@ -4,10 +4,6 @@
     "title": "Equipo.",
     "tone": "Quién vende contigo.",
     "lead": "Closers con acceso al CRM. Cada uno ve solo su cartera; tú lo ves todo.",
-    "pending": {
-      "title": "La lista del equipo llega con la conexión a datos",
-      "text": "La pantalla ya está dibujada (vista previa en /dev/admin/equipo/admin); falta leer el equipo y guardar las invitaciones."
-    },
     "table": {
       "caption": "Personas del equipo",
       "person": "Persona",
@@ -43,7 +39,6 @@
       "actions": "Acciones",
       "expires": "Caduca el {date}",
       "expired": "Caducada el {date}",
-      "withNote": "{role} · nota: «{note}»",
       "emptyTitle": "No hay invitaciones pendientes",
       "emptyText": "Las que envíes aparecen aquí hasta que la persona entre."
     },
@@ -60,9 +55,7 @@
         "roleCloserHint": "ve y trabaja su cartera",
         "rate": "Tasa de comisión",
         "ratePlaceholder": "10",
-      "rateHelp": "Porcentaje de lo cobrado en cada proyecto; habitual 10 %. Se congela en cada comisión al crearse.",
-        "note": "Nota (opcional)",
-        "notePlaceholder": "Solo la ves tú.",
+        "rateHelp": "Porcentaje de lo cobrado en cada proyecto; habitual 10 %. Se congela en cada comisión al crearse.",
         "totpNote": "El correo de invitación avisa de que el primer acceso pide configurar un autenticador (TOTP).",
         "submit": "Enviar invitación",
         "saved": "Invitación enviada"
@@ -79,12 +72,6 @@
         "trigger": "Reasignar cartera",
         "triggerFor": "Reasignar la cartera de {name}",
         "title": "Reasignar cartera de {name}",
-        "scope": "Qué contactos",
-        "scopes": {
-          "all": "Toda la cartera",
-          "openLeads": "Solo leads abiertos",
-          "agencies": "Solo agencias"
-        },
         "to": "A quién",
         "you": "{name} (tú)",
         "warning": "Las comisiones ya creadas siguen siendo de {name}.",
@@ -125,6 +112,17 @@
           "saved": "Invitación anulada"
         }
       }
+    },
+    "errors": {
+      "invalid": "No se ha podido leer el formulario. Recarga la pantalla e inténtalo de nuevo.",
+      "email": "Escribe un email válido.",
+      "rate": "Escribe un porcentaje entre 0 y 100, con hasta dos decimales.",
+      "alreadyStaff": "Esa persona ya forma parte del equipo.",
+      "notFound": "Ya no existe: la pantalla estaba desactualizada. Recárgala.",
+      "self": "No puedes hacerlo sobre tu propia fila.",
+      "sameTarget": "Elige a otra persona: la cartera ya está a su nombre.",
+      "forbidden": "No tienes permiso para hacerlo.",
+      "failed": "No se ha podido guardar. Inténtalo de nuevo."
     }
   }
 }
