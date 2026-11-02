@@ -11,8 +11,8 @@ export default async function ThrowPage({ params }: { params: Promise<{ locale: 
   if (!devPagesEnabled || !isLocale(locale)) notFound();
   const t = await getTranslator(locale);
   return (
-    <main>
+    <>
       <Bomb recovered={t("dev.errors.recovered")} />
-    </main>
+    </>
   );
 }

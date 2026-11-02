@@ -1,0 +1,10 @@
+.page {
+  display: grid;
+  gap: var(--space-5);
+  width: 100%;
+  max-width: var(--max);
+  min-height: 70svh;
+  align-content: start;
+  margin-inline: auto;
+  padding: calc(var(--nav-h) + var(--space-5)) var(--gutter) var(--space-7);
+}

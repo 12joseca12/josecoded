@@ -43,7 +43,7 @@ export default async function TokensPage({ params }: { params: Promise<{ locale:
   const durations = withPrefix(["--dur"]);
 
   return (
-    <main className={styles.page}>
+    <div className={styles.page}>
       <h1 className={styles.title}>{t("dev.tokens.title")}</h1>
 
       <section className={styles.section} aria-labelledby="tokens-colors">
@@ -119,6 +119,6 @@ export default async function TokensPage({ params }: { params: Promise<{ locale:
           ))}
         </ul>
       </section>
-    </main>
+    </div>
   );
 }

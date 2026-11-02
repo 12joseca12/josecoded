@@ -103,4 +103,8 @@ export type MessageKey =
   | "nav.navLabel"
   | "nav.projects"
   | "nav.services"
-  | "nav.skipLink";
+  | "nav.skipLink"
+  | "projects.emptyText"
+  | "projects.emptyTitle"
+  | "projects.metaTitle"
+  | "projects.title";

@@ -5,31 +5,36 @@
   "home": {
     "name": "josecoded"
   },
-  "nav": {
-    "skipLink": "Skip to content",
-    "brandLabel": "josecoded, go to home",
-    "brandWord": "josecoded",
-    "navLabel": "Main",
-    "home": "Home",
-    "cta": "Let's talk",
-    "loading": "Loading",
-    "menuOpen": "Open menu",
-    "menuClose": "Close menu",
-    "menuTitle": "Menu",
-    "here": "Here",
-    "projects": "Projects",
-    "services": "Services",
-    "about": "About me",
-    "blog": "Blog",
-    "contact": "Contact"
+  "projects": {
+    "metaTitle": "Projects · josecoded",
+    "title": "Projects",
+    "emptyTitle": "Soon",
+    "emptyText": "I am preparing the case studies. Check back in a few days."
   },
-  "footer": {
-    "navLabel": "Footer",
-    "legalLabel": "Legal",
-    "notice": "Legal notice",
-    "privacy": "Privacy",
-    "cookies": "Cookies",
-    "copyright": "© 2026 Jose · Full stack, React Native and AI"
+  "errors": {
+    "notFound": {
+      "title": "This page does not exist",
+      "text": "The link is broken or the page has moved. You can go back home or see the projects."
+    },
+    "serverError": {
+      "title": "Something went wrong",
+      "text": "An unexpected error happened. You can try again or go back home."
+    },
+    "rateLimited": {
+      "title": "Too many requests",
+      "text": "You made many requests in a row. Wait a moment and try again."
+    },
+    "maintenance": {
+      "title": "Back soon",
+      "text": "The site is under maintenance. Come back in a few minutes."
+    },
+    "actions": {
+      "home": "Back to home",
+      "projects": "See projects",
+      "chat": "Open the chat",
+      "retry": "Try again",
+      "retrying": "Retrying"
+    }
   },
   "dev": {
     "tokens": {
@@ -103,37 +108,38 @@
       "block": "Block",
       "more": "More content of the tall block to travel with the wheel."
     },
-    "prose": {
-      "title": "Prose: MDX content"
-    },
     "errors": {
       "title": "Error pages",
       "recovered": "Recovered"
+    },
+    "prose": {
+      "title": "Prose: MDX content"
     }
   },
-  "errors": {
-    "notFound": {
-      "title": "This page does not exist",
-      "text": "The link is broken or the page has moved. You can go back home or see the projects."
-    },
-    "serverError": {
-      "title": "Something went wrong",
-      "text": "An unexpected error happened. You can try again or go back home."
-    },
-    "rateLimited": {
-      "title": "Too many requests",
-      "text": "You made many requests in a row. Wait a moment and try again."
-    },
-    "maintenance": {
-      "title": "Back soon",
-      "text": "The site is under maintenance. Come back in a few minutes."
-    },
-    "actions": {
-      "home": "Back to home",
-      "projects": "See projects",
-      "chat": "Open the chat",
-      "retry": "Try again",
-      "retrying": "Retrying"
-    }
+  "nav": {
+    "skipLink": "Skip to content",
+    "brandLabel": "josecoded, go to home",
+    "brandWord": "josecoded",
+    "navLabel": "Main",
+    "home": "Home",
+    "cta": "Let's talk",
+    "loading": "Loading",
+    "menuOpen": "Open menu",
+    "menuClose": "Close menu",
+    "menuTitle": "Menu",
+    "here": "Here",
+    "projects": "Projects",
+    "services": "Services",
+    "about": "About me",
+    "blog": "Blog",
+    "contact": "Contact"
+  },
+  "footer": {
+    "navLabel": "Footer",
+    "legalLabel": "Legal",
+    "notice": "Legal notice",
+    "privacy": "Privacy",
+    "cookies": "Cookies",
+    "copyright": "© 2026 Jose · Full stack, React Native and AI"
   }
 }

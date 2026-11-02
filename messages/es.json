@@ -5,31 +5,36 @@
   "home": {
     "name": "josecoded"
   },
-  "nav": {
-    "skipLink": "Saltar al contenido",
-    "brandLabel": "josecoded, ir al inicio",
-    "brandWord": "josecoded",
-    "navLabel": "Principal",
-    "home": "Inicio",
-    "cta": "Hablemos",
-    "loading": "Cargando",
-    "menuOpen": "Abrir menú",
-    "menuClose": "Cerrar menú",
-    "menuTitle": "Menú",
-    "here": "Aquí",
-    "projects": "Proyectos",
-    "services": "Servicios",
-    "about": "Sobre mí",
-    "blog": "Blog",
-    "contact": "Contacto"
+  "projects": {
+    "metaTitle": "Proyectos · josecoded",
+    "title": "Proyectos",
+    "emptyTitle": "Pronto",
+    "emptyText": "Estoy preparando los casos. Vuelve en unos días."
   },
-  "footer": {
-    "navLabel": "Pie de página",
-    "legalLabel": "Legal",
-    "notice": "Aviso legal",
-    "privacy": "Privacidad",
-    "cookies": "Cookies",
-    "copyright": "© 2026 Jose · Full stack, React Native e IA"
+  "errors": {
+    "notFound": {
+      "title": "Esta pantalla no existe",
+      "text": "El enlace está roto o la página se ha movido. Puedes volver al inicio o ver los proyectos."
+    },
+    "serverError": {
+      "title": "Algo ha fallado",
+      "text": "Ha ocurrido un error inesperado. Puedes reintentar o volver al inicio."
+    },
+    "rateLimited": {
+      "title": "Demasiadas peticiones",
+      "text": "Has hecho muchas peticiones seguidas. Espera un momento y vuelve a intentarlo."
+    },
+    "maintenance": {
+      "title": "Volvemos enseguida",
+      "text": "La web está en mantenimiento. Vuelve en unos minutos."
+    },
+    "actions": {
+      "home": "Volver al inicio",
+      "projects": "Ver proyectos",
+      "chat": "Abrir el chat",
+      "retry": "Reintentar",
+      "retrying": "Reintentando"
+    }
   },
   "dev": {
     "tokens": {
@@ -103,37 +108,38 @@
       "block": "Bloque",
       "more": "Más contenido del bloque alto para recorrer con la rueda."
     },
-    "prose": {
-      "title": "Prosa: contenido MDX"
-    },
     "errors": {
       "title": "Páginas de error",
       "recovered": "Recuperado"
+    },
+    "prose": {
+      "title": "Prosa: contenido MDX"
     }
   },
-  "errors": {
-    "notFound": {
-      "title": "Esta pantalla no existe",
-      "text": "El enlace está roto o la página se ha movido. Puedes volver al inicio o ver los proyectos."
-    },
-    "serverError": {
-      "title": "Algo ha fallado",
-      "text": "Ha ocurrido un error inesperado. Puedes reintentar o volver al inicio."
-    },
-    "rateLimited": {
-      "title": "Demasiadas peticiones",
-      "text": "Has hecho muchas peticiones seguidas. Espera un momento y vuelve a intentarlo."
-    },
-    "maintenance": {
-      "title": "Volvemos enseguida",
-      "text": "La web está en mantenimiento. Vuelve en unos minutos."
-    },
-    "actions": {
-      "home": "Volver al inicio",
-      "projects": "Ver proyectos",
-      "chat": "Abrir el chat",
-      "retry": "Reintentar",
-      "retrying": "Reintentando"
-    }
+  "nav": {
+    "skipLink": "Saltar al contenido",
+    "brandLabel": "josecoded, ir al inicio",
+    "brandWord": "josecoded",
+    "navLabel": "Principal",
+    "home": "Inicio",
+    "cta": "Hablemos",
+    "loading": "Cargando",
+    "menuOpen": "Abrir menú",
+    "menuClose": "Cerrar menú",
+    "menuTitle": "Menú",
+    "here": "Aquí",
+    "projects": "Proyectos",
+    "services": "Servicios",
+    "about": "Sobre mí",
+    "blog": "Blog",
+    "contact": "Contacto"
+  },
+  "footer": {
+    "navLabel": "Pie de página",
+    "legalLabel": "Legal",
+    "notice": "Aviso legal",
+    "privacy": "Privacidad",
+    "cookies": "Cookies",
+    "copyright": "© 2026 Jose · Full stack, React Native e IA"
   }
 }

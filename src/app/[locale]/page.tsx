@@ -8,8 +8,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   if (!isLocale(locale)) notFound();
   const t = await getTranslator(locale);
   return (
-    <main>
+    <section>
       <h1>{t("home.name")}</h1>
-    </main>
+    </section>
   );
 }

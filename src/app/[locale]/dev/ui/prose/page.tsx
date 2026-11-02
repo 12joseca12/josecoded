@@ -15,13 +15,13 @@ export default async function ProsePage({ params }: { params: Promise<{ locale: 
   const t = await getTranslator(locale);
 
   return (
-    <main className={styles.page}>
+    <section className={styles.page}>
       <Heading level={1} size="h2">
         {t("dev.prose.title")}
       </Heading>
       <Prose>
         <Sample />
       </Prose>
-    </main>
+    </section>
   );
 }
