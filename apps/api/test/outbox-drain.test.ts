@@ -7,6 +7,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createFakeSupabase, type FakeSupabase } from './fakes/supabase-rest.fake';
 import { batchLimit, formatOutboxEvent, MAX_BATCH, noticeKey } from '../src/jobs/outbox-drain';
 import { scheduled } from '../src/scheduled';
+import { resetRecipientsCache } from '../src/services/notifications.service';
 
 import type { Env } from '../src/types/env.types';
 
@@ -36,6 +37,7 @@ async function tick(bindings: Partial<Env> = {}) {
 const comment = { id: 'c1', post_slug: 'hola', locale: 'es', author_name: 'Bob' };
 
 beforeEach(() => {
+  resetRecipientsCache();
   sb = createFakeSupabase({ secret: SECRET });
   sb.jobs.push({ name: 'outbox.drain', cron: '* * * * *', tz: null, next_run_at: new Date().toISOString(), enabled: true });
   vi.stubGlobal('fetch', sb.fetch);
@@ -74,7 +76,7 @@ describe('outbox.drain', () => {
     expect(sb.telegram[0]?.text).toContain('Bob');
     expect(row).toMatchObject({ attempts: 1, last_error: null });
     expect(row.delivered_at).not.toBeNull();
-    expect(sb.rpcCalls).toEqual(['scheduled_jobs_due', 'outbox_claim', 'outbox_ack', 'scheduled_jobs_mark_ran']);
+    expect(sb.rpcCalls).toEqual(['scheduled_jobs_due', 'outbox_claim', 'notification_recipients', 'outbox_ack', 'scheduled_jobs_mark_ran']);
     // the job was rescheduled to the next minute
     expect(Date.parse(sb.jobs[0]?.next_run_at ?? '')).toBeGreaterThan(Date.now());
   });
@@ -179,8 +181,8 @@ describe('outbox.drain', () => {
 
     expect(rows.filter((r) => r.delivered_at !== null)).toEqual(rows.slice(0, perTick));
     expect(rows.slice(perTick).every((r) => r.attempts === 0)).toBe(true);
-    // 1 listDue + 1 claim + 12 Telegram + 1 ack + 1 markRan
-    expect(sb.requests).toHaveLength(16);
+    // 1 listDue + 1 claim + 1 recipients lookup (cached for the rest) + 12 Telegram + 1 ack + 1 markRan
+    expect(sb.requests).toHaveLength(17);
 
     await tick();
     expect(rows.every((r) => r.delivered_at !== null)).toBe(true);
@@ -197,6 +199,119 @@ describe('outbox.drain', () => {
     sb.enqueue('comment.pending', comment);
     await tick({ SUPABASE_SECRET_KEY: undefined });
     expect(sb.requests).toEqual([]);
+  });
+});
+
+describe('outbox.drain with the admin rules (task 3.8b)', () => {
+  const ADMIN = { channel: 'telegram', address: '1000' } as const;
+  const OWNER = { channel: 'telegram', address: '2000' } as const;
+  const OWNER_ID = '11111111-1111-4111-8111-111111111111';
+
+  it('tells the admin and the owner of the contact, each in his own chat, and acks once', async () => {
+    sb.recipients = { 'story.proposed': [ADMIN, OWNER] };
+    const row = sb.enqueue('story.proposed', { story_id: 's1', client_id: 'c1', owner_id: OWNER_ID, title: 'Quiero un blog' });
+
+    await tick();
+
+    expect(sb.telegram.map((m) => m.chatId)).toEqual(['1000', '2000']);
+    expect(sb.telegram[0]?.text).toBe('Historia propuesta por un cliente: «Quiero un blog».\nHistoria s1 · cliente c1');
+    expect(row.delivered_at).not.toBeNull();
+    expect(sb.rpcCalls.filter((r) => r === 'notification_recipients')).toHaveLength(1);
+  });
+
+  it('an event with no rules tells nobody and is acked', async () => {
+    sb.recipients = {};
+    const row = sb.enqueue('quote.sent', { quote_id: 'q', contact_id: 'c', owner_id: OWNER_ID, total: 1088 });
+    await tick();
+    expect(sb.telegram).toEqual([]);
+    expect(row.delivered_at).not.toBeNull();
+  });
+
+  it('system.* tells Jose whatever the rules say', async () => {
+    sb.recipients = {};
+    const dead = sb.enqueue('system.outbox_dead', { id: 3, event: 'x', last_error: 'boom' });
+    await tick();
+    expect(sb.telegram).toHaveLength(1);
+    expect(sb.telegram[0]?.chatId).toBe('4242');
+    expect(dead.delivered_at).not.toBeNull();
+    expect(sb.rpcCalls).not.toContain('notification_recipients');
+  });
+
+  it('keeps telling Jose, through his own chat, while the rules cannot be read (migration not applied)', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    sb.recipients = null;
+    const row = sb.enqueue('comment.pending', comment);
+    await tick();
+    expect(sb.telegram.map((m) => m.chatId)).toEqual(['4242']);
+    expect(row.delivered_at).not.toBeNull();
+  });
+
+  it('staff.invited sends the fixed email through Resend, once, and no Telegram', async () => {
+    sb.recipients = { 'staff.invited': [{ channel: 'email', address: null }] };
+    const row = sb.enqueue('staff.invited', { email: 'carla@example.com', role: 'closer', locale: 'es' });
+
+    await tick({ RESEND_API_KEY: 're_test_0123456789' });
+
+    expect(sb.emails).toHaveLength(1);
+    expect(sb.emails[0]).toMatchObject({ to: ['carla@example.com'], idempotencyKey: `outbox-${row.id}` });
+    expect(sb.emails[0]?.subject).toMatch(/invitado/);
+    expect(sb.emails[0]?.text).toMatch(/autenticador/);
+    expect(sb.telegram).toEqual([]);
+    expect(row.delivered_at).not.toBeNull();
+  });
+
+  it('an invitation with email not configured fails in the outbox (retried, then dead-lettered) instead of being dropped', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    sb.recipients = { 'client.invited': [{ channel: 'email', address: null }] };
+    const row = sb.enqueue('client.invited', { client_id: 'c', email: 'ana@example.com', locale: 'es' });
+    await tick();
+    expect(row.delivered_at).toBeNull();
+    expect(row.last_error).toBe('email_not_configured');
+  });
+
+  it('a Resend failure is recorded without the address and retried', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    sb.recipients = { 'client.invited': [{ channel: 'email', address: null }] };
+    sb.resendStatus = 500;
+    const row = sb.enqueue('client.invited', { client_id: 'c', email: 'ana@example.com', locale: 'es' });
+    await tick({ RESEND_API_KEY: 're_test_0123456789' });
+    expect(row.last_error).toBe('resend 500');
+    sb.resendStatus = 200;
+    await tick({ RESEND_API_KEY: 're_test_0123456789' });
+    expect(sb.emails).toHaveLength(1);
+    expect(row.delivered_at).not.toBeNull();
+  });
+
+  it('never starts an event it cannot finish in the tick: every delivered event got all its messages', async () => {
+    sb.recipients = { 'story.proposed': [ADMIN, OWNER] };
+    const rows = Array.from({ length: 14 }, (_, i) => sb.enqueue('story.proposed', { story_id: `s${i}`, client_id: 'c', owner_id: OWNER_ID, title: 't' }));
+
+    await tick();
+
+    const done = rows.filter((r) => r.delivered_at !== null);
+    expect(done.length).toBeGreaterThan(0);
+    expect(sb.telegram).toHaveLength(done.length * 2);
+    expect(sb.requests.length).toBeLessThanOrEqual(40);
+
+    await tick();
+    await tick();
+    expect(rows.every((r) => r.delivered_at !== null)).toBe(true);
+    expect(sb.telegram).toHaveLength(rows.length * 2);
+  });
+
+  it('formats the new events without any payload text but ids, numbers and quoted short fields', () => {
+    const at = (event: string, payload: Record<string, unknown>) => formatOutboxEvent({ id: 1, event, payload, attempts: 1, createdAt: new Date() });
+    expect(at('lead.created', { id: 'l', contact_id: 'c', source: 'x', owner_id: OWNER_ID })).toBe(`Nuevo lead (x).\nLead l · contacto c · propietario ${OWNER_ID}`);
+    expect(at('lead.owner_collision', { lead_id: 'l', contact_id: 'c', existing_contact_id: 'e', existing_owner_id: 'o' })).toMatch(/Colisión de cartera.*\nLead l · contacto nuevo c · contacto existente e$/s);
+    expect(at('lead.owner_collision', { lead_id: 'l', contact_id: 'c', existing_contact_id: 'e', existing_owner_id: 'o' })).not.toContain('o\n');
+    expect(at('crm.import_conflicts', { import_id: 'i', owner_id: 'u', conflicts: 3 })).toBe('Importación con 3 filas en conflicto pendientes de tu decisión.\nImportación i · importador u');
+    expect(at('crm.import_done', { import_id: 'i', created: 4, updated: 1, skipped: 0, conflicts: 2 })).toMatch(/4 creados, 1 actualizados, 0 omitidos, 2 en conflicto/);
+    expect(at('comment.client', { id: 'm', client_id: 'k', task_id: 't' })).toBe('Comentario nuevo de un cliente en una tarea.\nComentario m · cliente k · tarea t');
+    expect(at('quote.sent', { quote_id: 'q', contact_id: 'c', total: 1088 })).toMatch(/total 1088 € sin IVA/);
+    expect(at('commission.paid', { commission_id: 'k', closer_id: 'u', amount: 100 })).toBe('Comisión pagada: 100 €.\nComisión k · closer u');
+    expect(at('content.deployed', { publication_id: 'p', commit_sha: 'abcdef1234567' })).toBe('Contenido publicado y desplegado.\nPublicación p · commit abcdef1');
+    expect(at('content.deploy_failed', { publication_id: 'p', commit_sha: null, error: 'x'.repeat(200) })).toContain(`«${'x'.repeat(59)}…»`);
+    expect(at('story.proposed', { story_id: 's', client_id: 'c', title: 'a\nb' })).toContain('«a b»');
   });
 });
 

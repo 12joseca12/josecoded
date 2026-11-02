@@ -91,7 +91,9 @@ Los contadores usan la RPC `increment_quota` (sin KV); si no responde, la petici
 
 | Secreto/var | Cuándo |
 |---|---|
-| `RESEND_API_KEY` | Canal email (Resend, DATOS Q5). Ningún evento del lanzamiento se envía por email todavía. |
+| `RESEND_API_KEY` | Canal email (Resend, DATOS Q5): solo las plantillas fijas `staff-invited`, `client-invited` y `story-decided` (tarea 3.8b). Sin él, esos eventos fallan en el outbox (y acaban en `system.outbox_dead`), no se pierden en silencio. |
+| `EMAIL_FROM` | Remitente de esos correos (`Nombre <dirección@dominio-verificado>`); por defecto `josecoded.com <no-reply@josecoded.com>`. El dominio debe estar verificado en Resend. |
+| `TELEGRAM_WEBHOOK_SECRET` | Modo webhook del bot: el `secret_token` de `setWebhook` (cabecera `X-Telegram-Bot-Api-Secret-Token`), 16–256 caracteres `A-Za-z0-9_-`. Con él, `POST /api/v1/telegram/webhook` vincula chats y el job `telegram.poll_updates` no hace nada (Telegram rechaza `getUpdates` con webhook activo). Sin él, el job vincula por sondeo. `setWebhook` es un paso de producción con OK de Jose. |
 | `ADMIN_REQUIRE_MFA` | Solo `false` desactiva la exigencia de `aal2` (TOTP) en `requireAdmin`; **nunca** en producción ni preview (DATOS Q3). Pensado para `wrangler dev` contra Supabase local, cuyas cuentas del seed no tienen TOTP. |
 | `WORKER_URL` + `WORKER_INTERNAL_TOKEN` | Integración opcional con el worker de Omen (1.8d). **Los dos o ninguno** (`refine` en `env.ts`). **No se fijan en producción ni en preview.** Sin ellos, `GET /api/v1/system/status` responde 503 `worker_not_configured` y `/api/dev/worker/*` no existe. `WORKER_INTERNAL_TOKEN` debe ser idéntico a `BACKEND_INTERNAL_TOKEN` del worker. |
 | `DEV_API_KEY` | Con `WORKER_URL` y `API_MODE=development`, monta `/api/dev/worker/*` (proxy de desarrollo). Sin alguno de los tres, esa ruta responde 404. |

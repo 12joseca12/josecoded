@@ -12,8 +12,11 @@ ADMIN_REQUIRE_MFA=false
 # --- Outbox notifications (job outbox.drain). Without both, the drain claims nothing. ---
 # TELEGRAM_BOT_TOKEN=123456:...
 # TELEGRAM_ADMIN_CHAT_ID=123456789
-# Email channel (Resend), not used by any launch event yet
+# Fixed-template emails (staff.invited, client.invited, story.decided): Resend. Without it those events fail in the outbox.
 # RESEND_API_KEY=re_...
+# EMAIL_FROM="josecoded.com <no-reply@josecoded.com>"
+# Telegram webhook mode (instead of the telegram.poll_updates job): the secret_token given to setWebhook. 16+ chars of A-Za-z0-9_-
+# TELEGRAM_WEBHOOK_SECRET=
 
 # --- Public modules (proposals 3.7, leads 3.8) ---
 # Turnstile always-pass dummy secret for local runs (https://developers.cloudflare.com/turnstile/troubleshooting/testing/)

@@ -1,7 +1,10 @@
-// Job `outbox.drain` (`* * * * *`: every tick of the `*/5` Cron Trigger; DATOS §4.7, §8.4, Q2). Claims the live
-// events of `private.outbox`, tells Jose about each one by Telegram and acks the delivered ones; a failed delivery
-// is recorded with `outbox_fail` and retried on a later tick. After the 10th attempt the SQL dead-letters the
-// event and enqueues `system.outbox_dead`, which this same job delivers on the next tick.
+// Job `outbox.drain` (`* * * * *`: every tick of the `*/5` Cron Trigger; DATOS §4.7, §8.4, §14.6, Q2). Claims the live
+// events of `private.outbox`, tells whoever the admin's rules name (Telegram per staff member, fixed-template emails;
+// services/notifications.service.ts) and acks the delivered ones; a failed delivery is recorded with `outbox_fail`
+// and retried on a later tick. After the 10th attempt the SQL dead-letters the event and enqueues `system.outbox_dead`,
+// which this same job delivers (to Jose, outside the rules) on the next tick.
+import { deliverAll, resolveRecipients } from '../services/notifications.service';
+
 import type { JobHandler } from './job';
 import type { OutboxEvent } from '@josecoded/types';
 
@@ -9,7 +12,11 @@ export const OUTBOX_DRAIN = 'outbox.drain';
 
 /** Events per tick. Telegram allows about one message per second to one chat; the rest waits five minutes. */
 export const MAX_BATCH = 20;
-/** Worst case per event: the once-only probe, the Telegram call and `outbox_fail`. */
+/**
+ * Budget per event when claiming: the Telegram call and `outbox_fail`, plus one for the recipients lookup (cached
+ * after the first event of its kind) or a second recipient. An event with more recipients or an email to a client
+ * costs more; the loop below checks the budget before it starts one, and stops when it would not fit.
+ */
 const SUBREQUESTS_PER_EVENT = 3;
 
 /**
@@ -55,14 +62,56 @@ export function groupingThread(event: OutboxEvent): string | undefined {
   return event.event === 'chat.visitor_message' && typeof id === 'string' && id ? id : undefined;
 }
 
-/** Plain-text Telegram message for Jose. Payloads carry ids and short fields only, never message content. */
+const COMMISSION_STATE = {
+  'commission.created': 'creada',
+  'commission.approved': 'aprobada',
+  'commission.paid': 'pagada',
+  'commission.rejected': 'rechazada',
+} as const;
+
+function shortSha(value: unknown): string {
+  return typeof value === 'string' && /^[0-9a-f]{7,40}$/i.test(value) ? value.slice(0, 7) : '?';
+}
+
+/** Plain-text Telegram message. Payloads carry ids and short fields only, never message content. */
 export function formatOutboxEvent({ event, payload }: OutboxEvent): string {
   const p = (key: string) => text(payload, key);
   switch (event) {
     case 'lead.created': {
       const pack = typeof payload.pack_code === 'string' ? ` · ${payload.pack_code}` : '';
-      return `Nuevo lead (${p('source')}${pack}).\nLead ${p('id')} · contacto ${p('contact_id')}`;
+      // the owner of the contact (a closer) is told too (rules); his id is in the notice
+      const owner = typeof payload.owner_id === 'string' ? ` · propietario ${payload.owner_id}` : '';
+      return `Nuevo lead (${p('source')}${pack}).\nLead ${p('id')} · contacto ${p('contact_id')}${owner}`;
     }
+    case 'lead.close_requested':
+      return `Cierre solicitado por un closer.\nLead ${p('lead_id')} · contacto ${p('contact_id')} · closer ${p('owner_id')}`;
+    case 'lead.owner_collision':
+      return `Colisión de cartera: el email de un lead web coincide con un contacto de un closer. Revísalo antes de contestar.\nLead ${p('lead_id')} · contacto nuevo ${p('contact_id')} · contacto existente ${p('existing_contact_id')}`;
+    case 'crm.import_done':
+      return `Importación terminada: ${p('created')} creados, ${p('updated')} actualizados, ${p('skipped')} omitidos, ${p('conflicts')} en conflicto.\nImportación ${p('import_id')}`;
+    case 'crm.import_conflicts':
+      return `Importación con ${p('conflicts')} filas en conflicto pendientes de tu decisión.\nImportación ${p('import_id')} · importador ${p('owner_id')}`;
+    case 'crm.import_conflict_resolved':
+      return `Conflicto de importación resuelto: ${payload.outcome === 'assigned' ? 'asignado a ti' : 'no asignado'}.\nConflicto ${p('conflict_id')}`;
+    case 'quote.sent':
+      return `Presupuesto enviado por un closer (total ${p('total')} € sin IVA).\nPresupuesto ${p('quote_id')} · contacto ${p('contact_id')}`;
+    case 'staff.claimed':
+      return `Alta de staff: ${p('role')} ha activado su acceso.\nUsuario ${p('user_id')}`;
+    case 'story.proposed':
+      return `Historia propuesta por un cliente: ${quoted(payload, 'title')}.\nHistoria ${p('story_id')} · cliente ${p('client_id')}`;
+    case 'story.decided':
+      return `Historia decidida (${p('status')}).\nHistoria ${p('story_id')} · cliente ${p('client_id')}`;
+    case 'comment.client':
+      return `Comentario nuevo de un cliente en una tarea.\nComentario ${p('id')} · cliente ${p('client_id')} · tarea ${p('task_id')}`;
+    case 'commission.created':
+    case 'commission.approved':
+    case 'commission.paid':
+    case 'commission.rejected':
+      return `Comisión ${COMMISSION_STATE[event]}: ${p('amount')} €.\nComisión ${p('commission_id')} · closer ${p('closer_id')}`;
+    case 'content.deployed':
+      return `Contenido publicado y desplegado.\nPublicación ${p('publication_id')} · commit ${shortSha(payload.commit_sha)}`;
+    case 'content.deploy_failed':
+      return `La publicación de contenido ha fallado: ${quoted(payload, 'error')}.\nPublicación ${p('publication_id')} · commit ${shortSha(payload.commit_sha)}`;
     case 'comment.pending':
       return `Comentario pendiente de moderar de ${quoted(payload, 'author_name')} en ${quoted(payload, 'post_slug')} (${p('locale')}).\nComentario ${p('id')}`;
     case 'asset.uploaded':
@@ -114,21 +163,26 @@ export const drainOutbox: JobHandler = async ({ deps, budget }) => {
             delivered.push(event.id);
             continue;
           }
-          budget.take();
-          await telegram.sendMessage(formatOutboxEvent(event));
-          delivered.push(event.id);
-          continue;
-        }
-        const key = noticeKey(event);
-        if (key && notices) {
-          budget.take();
-          if (await notices.wasSent(key)) {
-            delivered.push(event.id);
-            continue;
+        } else {
+          // already told by the request that created it (lead, chat): nothing more to send
+          const key = noticeKey(event);
+          if (key && notices) {
+            budget.take();
+            if (await notices.wasSent(key)) {
+              delivered.push(event.id);
+              continue;
+            }
           }
         }
-        budget.take();
-        await telegram.sendMessage(formatOutboxEvent(event));
+
+        const recipients = await resolveRecipients(deps, event.event, event.payload, { beforeFetch: () => budget.take() });
+        // an event is started only if every message of it fits (and one more call for `outbox_fail`); otherwise it
+        // waits claimed until the claim expires, which costs one attempt of ten but never a half-sent event
+        if (budget.remaining < recipients.length + 1) {
+          console.warn(JSON.stringify({ scope: 'scheduled', job: OUTBOX_DRAIN, deferred: event.id }));
+          break;
+        }
+        await deliverAll(deps, event, recipients, formatOutboxEvent(event), () => budget.take());
         delivered.push(event.id);
       } catch (error) {
         budget.take();

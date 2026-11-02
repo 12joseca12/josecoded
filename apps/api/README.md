@@ -44,7 +44,8 @@ gate. `ALL /api/dev/worker/*` only with `API_MODE=development`, `WORKER_URL` and
   `ADMIN_REQUIRE_MFA=false`), security headers, rate limits, `withDeps`.
 - `src/modules/` — Hono routers; they read `c.var.deps` and never import adapters (lint-enforced).
 - `src/scheduled.ts` + `src/jobs/` — the single `*/5` cron dispatching `private.scheduled_jobs`; `outbox.drain`
-  claims, sends by Telegram, acks or fails (dead letter after 10 attempts is SQL).
+  claims, resolves who is told (`notification_recipients`), sends by Telegram or fixed-template email, acks or fails (dead letter
+  after 10 attempts is SQL). `telegram.poll_updates` links staff chats from `/start <code>`.
 - `test/fakes/` — in-memory ports and an in-memory Supabase/Telegram `fetch` for end-to-end tests in workerd.
 
 ## Env vars

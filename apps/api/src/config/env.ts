@@ -30,8 +30,11 @@ const envSchema = z.object({
   // Outbox notifications (plan 1.8c, DATOS §8.4): without both, outbox.drain leaves the events where they are.
   TELEGRAM_BOT_TOKEN: z.string().min(10).optional(),
   TELEGRAM_ADMIN_CHAT_ID: z.string().regex(/^-?\d+$/).optional(),
-  // Email channel (Resend, DATOS Q5); no launch event is routed to it yet.
+  // Email channel (Resend, DATOS Q5): fixed-template transactional emails (task 3.8b).
   RESEND_API_KEY: z.string().min(10).optional(),
+  EMAIL_FROM: z.string().min(5).max(200).optional(),
+  // Telegram's secret_token alphabet (A-Z a-z 0-9 _ -), 1..256 chars; at least 16 here.
+  TELEGRAM_WEBHOOK_SECRET: z.string().regex(/^[A-Za-z0-9_-]{16,256}$/).optional(),
   // Signs `chat_sid` (assistant, task 4.4).
   CHAT_SID_SECRET: z.string().min(32).optional(),
   // New modules (plan 1.7, DT §9). Optional for now; every new binding must be listed here or parseEnv strips it.

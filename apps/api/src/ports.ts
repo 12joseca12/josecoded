@@ -92,3 +92,51 @@ export interface ChatRepo {
 export interface ChatContextsRepo {
   published(chatCase: ChatCase, locale: 'es' | 'en'): Promise<ChatContextPublished | null>;
 }
+
+/** One way to reach somebody about an outbox event (`notification_recipients`). `address` is `null` for the client of the event. */
+export interface Recipient {
+  channel: 'telegram' | 'email';
+  address: string | null;
+  /** Set by the gateway, never by the database: Jose's own chat (`TELEGRAM_ADMIN_CHAT_ID`), for `system.*` and as the safety net. */
+  adminChat?: true;
+}
+
+/** `public.notification_recipients(event, owner)` (service role): who is told about an event, from the admin's rules. */
+export interface RecipientsRepo {
+  forEvent(event: string, ownerId: string | null): Promise<Recipient[]>;
+}
+
+/** `staff_telegram_link(code, chat_id)` (service role): binds the Telegram chat of whoever holds a live code and burns it. */
+export interface StaffTelegramLinks {
+  link(code: string, chatId: string): Promise<boolean>;
+}
+
+/** Where to write to the client of a `story.decided` / `client.invited` event, read with the service role. */
+export interface ClientContacts {
+  /** The email and language of a client: the account's email once he signed in, the invited one before. `null` when unknown. */
+  contactOf(clientId: string): Promise<{ email: string; locale: 'es' | 'en' } | null>;
+}
+
+/** Content publications (`site_content_publications`, service role) and the RPC that notes their progress (task 3.8c). */
+export interface ContentPublication {
+  id: string;
+  status: 'queued' | 'committed' | 'deployed' | 'failed';
+  /** `{files: {path: content}}` as `content_publish()` built it. */
+  snapshot: unknown;
+  commitSha: string | null;
+  committedAt: Date | null;
+}
+
+export interface ContentPublicationsRepo {
+  get(id: string): Promise<ContentPublication | null>;
+  /** Publications in `committed`, oldest first. */
+  listCommitted(limit: number): Promise<ContentPublication[]>;
+  mark(update: {
+    id: string;
+    status: 'committed' | 'deployed' | 'failed';
+    commitSha?: string;
+    files?: Record<string, string>;
+    runId?: number;
+    error?: string;
+  }): Promise<void>;
+}

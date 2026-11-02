@@ -24,6 +24,8 @@ exports[`exact route surface > matches the committed snapshot 1`] = `
   "POST /api/v1/assistant/threads/:id/messages",
   "POST /api/v1/assistant/threads/:id/quick-contact",
   "POST /api/v1/leads",
+  "POST /api/v1/notify/test",
   "POST /api/v1/proposals/generate",
+  "POST /api/v1/telegram/webhook",
 ]
 `;

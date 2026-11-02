@@ -2,21 +2,36 @@
 // Ports live in @josecoded/types (api.ts); real adapters live in src/adapters/ and are the only files
 // that import SDKs or call third parties. Routes and middlewares receive `c.var.deps`; they never import adapters.
 import { createChatContextsRepo, createChatRepo } from './adapters/chat';
+import { createClientContacts } from './adapters/client-contacts';
+import { createEmailSender } from './adapters/email';
 import { createAffiliatesRepo, createLeadsRepo } from './adapters/leads';
+import { createRecipientsRepo } from './adapters/notification-recipients';
 import { createNoticeLedger, createOutboxRepo } from './adapters/outbox';
 import { createCompiledPricingSource, createPricingSource } from './adapters/pricing.supabase.adapter';
 import { createQuotaStore } from './adapters/quota';
 import { createRawRpc } from './adapters/raw-rpc';
 import { createScheduledJobsRepo } from './adapters/scheduled-jobs';
+import { createStaffTelegramLinks } from './adapters/staff-telegram';
 import { createSupabaseAdapters, type SupabaseGateway } from './adapters/supabase';
-import { createTelegramNotifier } from './adapters/telegram';
+import { createTelegramInbox, createTelegramNotifier, type TelegramInbox } from './adapters/telegram';
 import { createTurnstileVerifier } from './adapters/turnstile';
 import { createAiClient } from './adapters/workers-ai';
 import { parseEnv } from './config/env';
 
-import type { AffiliatesRepo, AiClient, ChatContextsRepo, ChatRepo, LeadsRepo, QuotaStore, TurnstileVerifier } from './ports';
+import type {
+  AffiliatesRepo,
+  AiClient,
+  ChatContextsRepo,
+  ChatRepo,
+  ClientContacts,
+  LeadsRepo,
+  QuotaStore,
+  RecipientsRepo,
+  StaffTelegramLinks,
+  TurnstileVerifier,
+} from './ports';
 import type { Env } from './types/env.types';
-import type { Clock, NoticeLedger, Notifier, OutboxRepo, PricingSource, ScheduledJobsRepo } from '@josecoded/types';
+import type { Clock, EmailSender, NoticeLedger, Notifier, OutboxRepo, PricingSource, ScheduledJobsRepo } from '@josecoded/types';
 
 export interface Deps {
   clock: Clock;
@@ -47,6 +62,16 @@ export interface Deps {
   chat?: ChatRepo;
   /** Published chat contexts (`chat_context_published`). Undefined without SUPABASE_SECRET_KEY. */
   chatContexts?: ChatContextsRepo;
+  /** Fixed-template emails (Resend). Undefined without RESEND_API_KEY: events that need one fail loudly in the outbox. */
+  email?: EmailSender;
+  /** Who is told about each event (`notification_recipients`). Undefined without the secret key: Jose's chat is the only recipient. */
+  recipients?: RecipientsRepo;
+  /** Email and language of the client of an event. Undefined without the secret key. */
+  clientContacts?: ClientContacts;
+  /** `staff_telegram_link`. Undefined without the secret key. */
+  staffTelegram?: StaffTelegramLinks;
+  /** `getUpdates` of the bot. Undefined without TELEGRAM_BOT_TOKEN. */
+  telegramInbox?: TelegramInbox;
   /** The published price catalogue (`pricing_published()`, 5-minute cache, compiled fallback). Services read it once per request through `loadPricing`. */
   pricing?: PricingSource;
 }
@@ -69,6 +94,8 @@ export function buildDeps(env: Env): Deps {
   const telegram = createTelegramNotifier(env);
   const turnstile = createTurnstileVerifier(env);
   const ai = createAiClient(env);
+  const email = createEmailSender(env);
+  const telegramInbox = createTelegramInbox(env);
   return {
     clock: { now: () => new Date() },
     supabase: gateway,
@@ -83,9 +110,14 @@ export function buildDeps(env: Env): Deps {
           chat: createChatRepo(gateway.admin),
           chatContexts: createChatContextsRepo(rpc),
           pricing: createPricingSource(createRawRpc(gateway)),
+          recipients: createRecipientsRepo(createRawRpc(gateway)),
+          clientContacts: createClientContacts(gateway),
+          staffTelegram: createStaffTelegramLinks(createRawRpc(gateway)),
         }
       : { pricing: createCompiledPricingSource() }),
     ...(telegram ? { telegram } : {}),
+    ...(email ? { email } : {}),
+    ...(telegramInbox ? { telegramInbox } : {}),
     ...(turnstile ? { turnstile } : {}),
     ...(ai ? { ai } : {}),
   };

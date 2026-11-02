@@ -38,6 +38,19 @@ export interface FakeSupabase {
   quota: Map<string, { count: number; expiresAt: number }>;
   /** What `pricing_published()` answers: the published catalogue, `null` before the first publication, or an Error to throw (500). */
   pricingPublished: unknown;
+  /** `notification_recipients` answers by event (`[]` for an event with no rules). `null` makes the RPC fail (migration not applied). */
+  recipients: Record<string, { channel: 'telegram' | 'email'; address: string | null }[]> | null;
+  /** Emails posted to Resend, in order. */
+  emails: { to: string[]; subject: string; text: string; html: string; idempotencyKey: string | null }[];
+  /** Status Resend answers with (200 by default). */
+  resendStatus: number;
+  /** Pending Telegram updates (`getUpdates`); asking with `offset = n` drops every update below it, like Telegram. */
+  telegramUpdates: { update_id: number; message?: { text?: string; chat: { id: number; type: string } } }[];
+  /** Offsets `getUpdates` was called with, in order. */
+  getUpdatesOffsets: number[];
+  /** Live `staff_telegram_codes`: code -> user id. `staff_telegram_link` burns the code and fills `telegramLinks`. */
+  telegramCodes: Map<string, string>;
+  telegramLinks: Map<string, string>;
   /** Texts posted to Telegram, in order. */
   telegram: { chatId: unknown; text: string }[];
   /** Status Telegram answers with (200 by default). */
@@ -74,6 +87,13 @@ export function createFakeSupabase(options: { url?: string; secret?: string; sta
     users: [],
     quota: new Map(),
     pricingPublished: null,
+    recipients: null,
+    emails: [],
+    resendStatus: 200,
+    telegramUpdates: [],
+    getUpdatesOffsets: [],
+    telegramCodes: new Map(),
+    telegramLinks: new Map(),
     telegram: [],
     telegramStatus: 200,
     rpcCalls: [],
@@ -161,6 +181,18 @@ export function createFakeSupabase(options: { url?: string; secret?: string; sta
       else q.count += 1;
       return (state.quota.get(key)?.count ?? 0) <= Number(p_limit);
     },
+    notification_recipients({ p_event }) {
+      if (state.recipients === null) throw new Error('function not found');
+      return state.recipients[String(p_event)] ?? [];
+    },
+    staff_telegram_link({ p_code, p_chat_id }) {
+      const code = String(p_code).trim().toUpperCase();
+      const user = state.telegramCodes.get(code);
+      if (!user || !String(p_chat_id).trim()) return false;
+      state.telegramLinks.set(user, String(p_chat_id).trim());
+      state.telegramCodes.delete(code);
+      return true;
+    },
     pricing_published() {
       if (state.pricingPublished instanceof Error) throw state.pricingPublished;
       return state.pricingPublished;
@@ -187,6 +219,20 @@ export function createFakeSupabase(options: { url?: string; secret?: string; sta
     const req = new Request(input, init);
     const url = new URL(req.url);
     state.requests.push(`${req.method} ${url.origin}${url.pathname}`);
+
+    if (url.hostname === 'api.resend.com') {
+      const body = (await req.json()) as { to: string[]; subject: string; text: string; html: string };
+      if (state.resendStatus !== 200) return json(state.resendStatus, { message: 'nope for ' + body.to.join(',') });
+      state.emails.push({ ...body, idempotencyKey: req.headers.get('idempotency-key') });
+      return json(200, { id: `email-${state.emails.length}` });
+    }
+
+    if (url.hostname === 'api.telegram.org' && url.pathname.endsWith('/getUpdates')) {
+      const body = (await req.json()) as { offset?: number; limit?: number };
+      state.getUpdatesOffsets.push(body.offset ?? 0);
+      if (body.offset) state.telegramUpdates = state.telegramUpdates.filter((u) => u.update_id >= body.offset!);
+      return json(200, { ok: true, result: state.telegramUpdates.slice(0, body.limit ?? 100) });
+    }
 
     if (url.hostname === 'api.telegram.org') {
       const body = (await req.json()) as { chat_id: unknown; text: string };

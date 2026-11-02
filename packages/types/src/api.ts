@@ -46,10 +46,29 @@ export interface AuthUser {
 /** Events written to `private.outbox` by triggers and RPCs (DATOS §4.7, §8.4). Others may appear later. */
 export type OutboxEventName =
   | 'lead.created'
+  | 'lead.close_requested'
+  | 'lead.owner_collision'
   | 'comment.pending'
+  | 'comment.client'
   | 'asset.uploaded'
   | 'upgrade.requested'
   | 'chat.visitor_message'
+  | 'crm.import_done'
+  | 'crm.import_conflicts'
+  | 'crm.import_conflict_resolved'
+  | 'quote.sent'
+  | 'staff.invited'
+  | 'staff.claimed'
+  | 'client.invited'
+  | 'story.proposed'
+  | 'story.decided'
+  | 'commission.created'
+  | 'commission.approved'
+  | 'commission.paid'
+  | 'commission.rejected'
+  | 'content.publish_requested'
+  | 'content.deployed'
+  | 'content.deploy_failed'
   | 'system.outbox_dead';
 
 /** One claimed row of `private.outbox` (`public.outbox_claim`). `attempts` already counts this claim. */
@@ -87,9 +106,31 @@ export interface NoticeLedger {
   wasSent(key: string): Promise<boolean>;
 }
 
-/** Jose's Telegram (bot `TELEGRAM_BOT_TOKEN`, chat `TELEGRAM_ADMIN_CHAT_ID`). Plain text, no parse mode. */
+/**
+ * The Telegram bot (`TELEGRAM_BOT_TOKEN`). Without `chatId` the text goes to Jose's chat (`TELEGRAM_ADMIN_CHAT_ID`); with
+ * one, to that chat (a staff member who linked his Telegram, task 3.8b). Plain text, no parse mode.
+ */
 export interface Notifier {
-  sendMessage(text: string): Promise<void>;
+  sendMessage(text: string, chatId?: string): Promise<void>;
+}
+
+/** The fixed transactional emails of the gateway (DATOS §14.4): the catalogue lives in apps/api/src/templates. */
+export type EmailTemplateId = 'staff-invited' | 'client-invited' | 'story-decided';
+
+/**
+ * Resend, templates only (Q5, task 3.8b): the caller names a template of the catalogue and its few enum variables; the
+ * subject and the body are fixed text of the gateway, so there is no free body to send and a compromised caller cannot
+ * use it to write to anyone. A `templateId` that is not in the catalogue throws.
+ */
+export interface EmailSender {
+  sendEmail(message: {
+    templateId: EmailTemplateId;
+    to: string;
+    locale: 'es' | 'en';
+    vars?: Record<string, string>;
+    /** Resend deduplicates equal keys for 24 h: the outbox event id, so a retried event sends once. */
+    idempotencyKey?: string;
+  }): Promise<void>;
 }
 
 /**

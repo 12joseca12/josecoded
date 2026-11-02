@@ -47,8 +47,16 @@ export type Env = {
   TELEGRAM_BOT_TOKEN?: string;
   /** Jose's chat with the bot. */
   TELEGRAM_ADMIN_CHAT_ID?: string;
-  /** Resend (DATOS Q5): email channel; no launch event uses it yet. */
+  /** Resend (DATOS Q5): fixed-template transactional emails (task 3.8b). Without it those events wait in the outbox. */
   RESEND_API_KEY?: string;
+  /** Sender of those emails, `Name <address@verified-domain>`. Defaults to the site's no-reply address. */
+  EMAIL_FROM?: string;
+  /**
+   * Secret of the Telegram webhook (`setWebhook` secret_token, header `X-Telegram-Bot-Api-Secret-Token`). When set, the bot is in
+   * webhook mode: POST /api/v1/telegram/webhook links chats and the `telegram.poll_updates` job does nothing (Telegram refuses
+   * `getUpdates` while a webhook is active).
+   */
+  TELEGRAM_WEBHOOK_SECRET?: string;
   /** Signs `chat_sid` of the case-based chat (task 4.4). */
   CHAT_SID_SECRET?: string;
 

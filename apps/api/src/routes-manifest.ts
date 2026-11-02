@@ -10,6 +10,8 @@ export type RouteModule =
   | 'assistant'
   | 'leads'
   | 'affiliates'
+  | 'notify'
+  | 'telegram'
   | 'dev-worker-proxy';
 
 export type RouteEntry = {
@@ -35,7 +37,9 @@ export const routes = [
   { method: 'GET', path: '/api/v1/auth/me', module: 'v1-protected' },
   { method: 'GET', path: '/api/v1/health', module: 'v1' },
   { method: 'POST', path: '/api/v1/leads', module: 'leads' },
+  { method: 'POST', path: '/api/v1/notify/test', module: 'notify' },
   { method: 'POST', path: '/api/v1/proposals/generate', module: 'proposals' },
+  { method: 'POST', path: '/api/v1/telegram/webhook', module: 'telegram' },
   { method: 'GET', path: '/api/v1/system/status', module: 'v1-protected' },
   { method: 'GET', path: '/health', module: 'health' },
 ] as const satisfies readonly RouteEntry[];

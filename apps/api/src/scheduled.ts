@@ -4,6 +4,7 @@
 import { parseEnv } from './config/env';
 import { resolveDeps, type Deps } from './deps';
 import { drainOutbox, OUTBOX_DRAIN } from './jobs/outbox-drain';
+import { pollTelegramUpdates, TELEGRAM_POLL } from './jobs/telegram-poll';
 import { nextRun } from './utils/cron';
 import { BudgetExhaustedError, createSubrequestBudget } from './utils/subrequest-budget';
 
@@ -13,7 +14,10 @@ import type { Env } from './types/env.types';
 export type { JobContext, JobHandler } from './jobs/job';
 
 /** name (row of scheduled_jobs) -> handler. Each module registers its jobs here (chat 4.x, Radar 7.x, newsletter 10.x). */
-export const jobHandlers = new Map<string, JobHandler>([[OUTBOX_DRAIN, drainOutbox]]);
+export const jobHandlers = new Map<string, JobHandler>([
+  [OUTBOX_DRAIN, drainOutbox],
+  [TELEGRAM_POLL, pollTelegramUpdates],
+]);
 
 export type TickReport = {
   ran: string[];

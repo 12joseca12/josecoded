@@ -2,7 +2,9 @@ import { Hono } from 'hono';
 
 import { assistantRoutes } from './assistant.routes';
 import { affiliatesRoutes, leadsRoutes } from './leads.routes';
+import { notifyRoutes } from './notify.routes';
 import { proposalsRoutes } from './proposals.routes';
+import { telegramRoutes } from './telegram.routes';
 import { protectedV1Routes } from './v1-protected.routes';
 import { ok } from '../utils/api-response';
 
@@ -27,5 +29,7 @@ v1Routes.route('/proposals', proposalsRoutes);
 v1Routes.route('/assistant', assistantRoutes);
 v1Routes.route('/leads', leadsRoutes);
 v1Routes.route('/affiliates', affiliatesRoutes);
+v1Routes.route('/notify', notifyRoutes);
+v1Routes.route('/telegram', telegramRoutes);
 
 v1Routes.route('/', protectedV1Routes);

@@ -6,10 +6,13 @@ import type {
   CreateLeadPayload,
   LeadsRepo,
   QuotaStore,
+  Recipient,
+  RecipientsRepo,
+  StaffTelegramLinks,
   TurnstileVerdict,
   TurnstileVerifier,
 } from '../../src/ports';
-import type { NoticeLedger, Notifier } from '@josecoded/types';
+import type { EmailSender, NoticeLedger, Notifier } from '@josecoded/types';
 
 export interface FakeTurnstile extends TurnstileVerifier {
   verdict: TurnstileVerdict;
@@ -74,15 +77,81 @@ export function createFakeAi(...replies: unknown[]): FakeAi {
 
 export interface FakeTelegram extends Notifier {
   sent: string[];
+  /** Every message with the chat it went to (`undefined`: Jose's own chat). */
+  calls: { text: string; chatId: string | undefined }[];
   fail?: boolean;
+  /** Chats whose delivery fails (the others succeed). */
+  failChats?: Set<string>;
 }
 
 export function createFakeTelegram(): FakeTelegram {
   const fake: FakeTelegram = {
     sent: [],
-    async sendMessage(text) {
-      if (fake.fail) throw new Error('telegram down');
+    calls: [],
+    async sendMessage(text, chatId) {
+      if (fake.fail || (chatId !== undefined && fake.failChats?.has(chatId))) throw new Error('telegram down');
       fake.sent.push(text);
+      fake.calls.push({ text, chatId });
+    },
+  };
+  return fake;
+}
+
+export interface FakeRecipients extends RecipientsRepo {
+  /** By event; an event that is not here has no rules. Set `outage` to make the lookup fail. */
+  rules: Record<string, Recipient[]>;
+  outage?: Error;
+  lookups: { event: string; ownerId: string | null }[];
+}
+
+export function createFakeRecipients(rules: Record<string, Recipient[]> = {}): FakeRecipients {
+  const fake: FakeRecipients = {
+    rules,
+    lookups: [],
+    async forEvent(event, ownerId) {
+      fake.lookups.push({ event, ownerId });
+      if (fake.outage) throw fake.outage;
+      return fake.rules[event] ?? [];
+    },
+  };
+  return fake;
+}
+
+export interface FakeEmail extends EmailSender {
+  sent: Parameters<EmailSender['sendEmail']>[0][];
+  fail?: boolean;
+}
+
+export function createFakeEmail(): FakeEmail {
+  const fake: FakeEmail = {
+    sent: [],
+    async sendEmail(message) {
+      if (fake.fail) throw new Error('resend 500');
+      fake.sent.push(message);
+    },
+  };
+  return fake;
+}
+
+export interface FakeStaffTelegram extends StaffTelegramLinks {
+  /** Live codes: code -> user id. */
+  codes: Map<string, string>;
+  links: Map<string, string>;
+  attempts: { code: string; chatId: string }[];
+}
+
+export function createFakeStaffTelegram(codes: Record<string, string> = {}): FakeStaffTelegram {
+  const fake: FakeStaffTelegram = {
+    codes: new Map(Object.entries(codes)),
+    links: new Map(),
+    attempts: [],
+    async link(code, chatId) {
+      fake.attempts.push({ code, chatId });
+      const user = fake.codes.get(code.toUpperCase());
+      if (!user) return false;
+      fake.links.set(user, chatId);
+      fake.codes.delete(code.toUpperCase());
+      return true;
     },
   };
   return fake;
