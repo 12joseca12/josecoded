@@ -14,6 +14,15 @@
       "shadows": "Shadows",
       "durations": "Durations",
       "sample": "A website that works for you"
+    },
+    "scroll": {
+      "title": "Block scrolling",
+      "intro": "With a mouse on desktop, each gesture jumps to the next block. On mobile scrolling is native.",
+      "progress": "Scroll progress",
+      "tall": "Tall block: scrolls normally inside and jumps only at the edges.",
+      "short": "Short block: fills one screen.",
+      "block": "Block",
+      "more": "More content of the tall block to travel with the wheel."
     }
   }
 }

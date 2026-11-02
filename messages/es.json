@@ -14,6 +14,15 @@
       "shadows": "Sombras",
       "durations": "Duraciones",
       "sample": "Una web que trabaja para ti"
+    },
+    "scroll": {
+      "title": "Scroll por bloques",
+      "intro": "Con ratón en escritorio, cada gesto salta al bloque siguiente. En móvil el scroll es nativo.",
+      "progress": "Progreso del scroll",
+      "tall": "Bloque alto: se desplaza con normalidad por dentro y salta solo en los bordes.",
+      "short": "Bloque corto: ocupa una pantalla.",
+      "block": "Bloque",
+      "more": "Más contenido del bloque alto para recorrer con la rueda."
     }
   }
 }
