@@ -40,6 +40,12 @@ Datos exactos de cada parte, componentes de cada pantalla, organización, seccio
 - Responsiva en web y móvil.
 - Repositorio muy limpio y elegante, sin comentarios en el código, presentable como muestra de trabajo.
 - Componentes limpios y elegantes con aspecto tecnológico; para clientes, sobre todo limpio y estructurado.
+- UX cuidada en todo:
+  - animaciones de cambio de pantalla;
+  - botones que reaccionan (hover, foco, pulsado y desactivado);
+  - esqueleto en todo lo que cargue desde cero;
+  - estado de carga en cualquier botón que lance una acción;
+  - pantallas propias para 404 y para cada tipo de error.
 
 ## Estilo
 
