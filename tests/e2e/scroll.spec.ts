@@ -54,3 +54,20 @@ test.describe("native scrolling", () => {
     await expect.poll(() => page.evaluate(() => scrollY)).toBe(120);
   });
 });
+
+test.describe("page scrollbar", () => {
+  test.use({ viewport: { width: 1440, height: 900 } });
+
+  test("is hidden while the page keeps scrolling", async ({ page }) => {
+    await page.goto("/es/dev/scroll");
+    const metrics = await page.evaluate(() => ({
+      width: getComputedStyle(document.documentElement).scrollbarWidth,
+      gap: window.innerWidth - document.documentElement.clientWidth,
+    }));
+    expect(metrics.width).toBe("none");
+    expect(metrics.gap).toBe(0);
+
+    await page.keyboard.press("End");
+    await expect.poll(() => page.evaluate(() => scrollY), { timeout: 3000 }).toBeGreaterThan(0);
+  });
+});

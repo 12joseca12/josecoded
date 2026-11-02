@@ -30,3 +30,7 @@ test("ink on bg reaches 4.5:1", () => {
 test("on-dark on charcoal reaches 4.5:1", () => {
   assert.ok(contrast(token("--on-dark"), token("--charcoal")) >= 4.5);
 });
+
+test("charcoal on coral reaches 4.5:1", () => {
+  assert.ok(contrast(token("--charcoal"), token("--coral")) >= 4.5);
+});

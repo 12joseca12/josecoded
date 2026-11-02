@@ -7,7 +7,6 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  scrollbar-gutter: stable;
   background: var(--bg);
 }
 
@@ -21,43 +20,17 @@ html:has(dialog[open]) {
   }
 }
 
-@supports not selector(::-webkit-scrollbar) {
-  html {
-    scrollbar-color: var(--ink-faint) var(--bg-track);
-    scrollbar-width: thin;
-  }
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-faint) transparent;
 }
 
-::-webkit-scrollbar {
-  width: 0.875rem;
-  height: 0.875rem;
+html {
+  scrollbar-width: none;
 }
 
-::-webkit-scrollbar-track {
-  background: var(--bg-track);
-  box-shadow: inset 1px 0 0 var(--line);
-}
-
-::-webkit-scrollbar-thumb {
-  min-height: 3rem;
-  border: 5px solid transparent;
-  border-radius: var(--radius-xl);
-  background-color: var(--ink-faint);
-  background-clip: padding-box;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  border-width: 3px;
-  background-color: var(--charcoal);
-}
-
-::-webkit-scrollbar-thumb:active {
-  border-width: 3px;
-  background-color: var(--coral-deep);
-}
-
-::-webkit-scrollbar-corner {
-  background: var(--bg-track);
+html::-webkit-scrollbar {
+  display: none;
 }
 
 body {
