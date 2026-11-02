@@ -16,7 +16,9 @@
     "lint:rules": "node --test tests/lint/rules.test.js",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "i18n:keys": "node scripts/i18n.mjs --write",
+    "i18n:check": "node scripts/i18n.mjs"
   },
   "dependencies": {
     "next": "16.4.3",
