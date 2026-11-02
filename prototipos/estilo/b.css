@@ -23,6 +23,26 @@
   --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
   --brand-weight: 800;
   --brand-tracking: -0.03em;
+  --accent: var(--coral);
+  --accent-text: var(--coral-text);
+  --error: #b8260f;
+  --error-ring: rgb(184 38 15 / 0.15);
+  --sk-base: rgb(23 25 28 / 0.08);
+  --sk-hi: rgb(255 255 255 / 0.7);
+  --card-bg: rgb(255 255 255 / 0.62);
+  --card-border: rgb(255 255 255 / 0.85);
+  --field-bg: #ffffff;
+  --nf-weight: 800;
+}
+
+.nf-code {
+  font-size: 6rem;
+  letter-spacing: -0.06em;
+}
+
+.not-found {
+  backdrop-filter: blur(16px);
+  box-shadow: 0 30px 60px -30px rgb(23 25 28 / 0.35);
 }
 
 body {
@@ -418,4 +438,10 @@ body {
   .browser {
     top: 18%;
   }
+}
+
+.not-found h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
 }

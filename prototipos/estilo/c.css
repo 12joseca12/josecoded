@@ -22,6 +22,26 @@
   --font-brand: var(--font-display);
   --brand-weight: 600;
   --brand-tracking: 0.18em;
+  --accent: var(--crimson);
+  --accent-text: var(--crimson);
+  --error: #ff5a57;
+  --error-ring: rgb(255 90 87 / 0.18);
+  --sk-base: rgb(205 203 202 / 0.06);
+  --sk-hi: rgb(205 203 202 / 0.14);
+  --card-bg: rgb(14 14 14 / 0.88);
+  --card-border: rgb(212 21 20 / 0.45);
+  --card-radius: 0.75rem;
+  --field-bg: rgb(255 255 255 / 0.03);
+}
+
+.nf-code {
+  font-size: 5rem;
+  font-stretch: 125%;
+  text-shadow: 0 0 40px rgb(212 21 20 / 0.5);
+}
+
+.not-found {
+  box-shadow: 0 0 80px -30px var(--crimson-glow);
 }
 
 body {
@@ -454,4 +474,17 @@ body {
   .stats {
     max-width: 30rem;
   }
+}
+
+.not-found h2 {
+  font-size: 1rem;
+  font-stretch: 125%;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.not-found p:not(.nf-code),
+.field-error,
+.field label {
+  font-family: var(--font-mono);
 }

@@ -21,6 +21,21 @@
   --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
   --petal-size: 64cqmin;
   --pivot-y: 84%;
+  --accent: var(--lime);
+  --accent-text: var(--lime);
+  --error: #ff7a6b;
+  --error-ring: rgb(255 122 107 / 0.2);
+  --sk-base: rgb(255 255 255 / 0.06);
+  --sk-hi: rgb(255 255 255 / 0.14);
+  --card-bg: rgb(8 12 24 / 0.8);
+  --card-border: rgb(110 156 240 / 0.3);
+  --field-bg: rgb(255 255 255 / 0.04);
+  --nf-weight: 400;
+}
+
+.nf-code {
+  font-size: 6rem;
+  font-style: italic;
 }
 
 .h-script {
@@ -410,4 +425,10 @@
     height: 1px;
     background: var(--ink-faint);
   }
+}
+
+.not-found h2 {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 400;
 }

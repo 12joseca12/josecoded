@@ -19,6 +19,12 @@
       background: #0b0b0d;
     }
 
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation-duration: 420ms;
+      animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
     .stage {
       display: block;
       width: 100%;
@@ -28,7 +34,7 @@
 
     .switcher {
       position: fixed;
-      left: 50%;
+      left: 1rem;
       bottom: 1rem;
       z-index: 1;
       display: flex;
@@ -39,7 +45,7 @@
       background: var(--switch-bg);
       backdrop-filter: blur(12px);
       box-shadow: 0 10px 30px rgb(0 0 0 / 0.35);
-      transform: translateX(-50%);
+      view-transition-name: switcher;
       font: 600 0.75rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
       letter-spacing: 0.08em;
     }
