@@ -16,7 +16,10 @@ test.beforeEach(async ({ page }) => {
 
 test('the intro reports intro_played with how it ran', async ({ page }) => {
   await page.goto('/?intro');
-  await expect.poll(async () => (await events(page)).map(([name]) => name)).toContain('intro_played');
+  // the intro waits for the scene (software GL in CI is slow) and then falls: hero.spec allows it 8 s, so 5 s was too tight
+  await expect
+    .poll(async () => (await events(page)).map(([name]) => name), { timeout: 15_000 })
+    .toContain('intro_played');
   const [, data] = (await events(page)).find(([name]) => name === 'intro_played') as Recorded;
   expect(data).toMatchObject({ skipped: expect.any(Boolean), reduced: false, mode: expect.stringMatching(/^(full|letters)$/) });
 });

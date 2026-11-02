@@ -257,7 +257,8 @@ test.describe('page transition', () => {
     await header(page).evaluate((el) => el.setAttribute('data-probe', 'same-node'));
     await header(page).getByRole('link', { name: 'Servicios' }).click();
     await expect(page).toHaveURL(/\/servicios$/);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Servicios');
+    // the page swapped: /servicios has its own h1 (the placeholder that said «Servicios» is gone)
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('cuatro formas de trabajar');
     await expect(header(page)).toHaveAttribute('data-probe', 'same-node');
   });
 });
