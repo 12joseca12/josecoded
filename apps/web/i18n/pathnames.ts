@@ -27,6 +27,7 @@ export const pathnames = {
   '/auth/registro': { es: '/auth/registro', en: '/auth/sign-up' },
   '/auth/codigo': { es: '/auth/codigo', en: '/auth/code' },
   '/auth/callback': '/auth/callback',
+  '/auth/oauth': '/auth/oauth',
   '/perfil': { es: '/perfil', en: '/profile' },
   '/area-clientes': { es: '/area-clientes', en: '/client-area' },
   '/area-clientes/tareas': { es: '/area-clientes/tareas', en: '/client-area/tasks' },
@@ -35,6 +36,11 @@ export const pathnames = {
     en: '/client-area/tasks/[id]',
   },
   '/area-clientes/material': { es: '/area-clientes/material', en: '/client-area/files' },
+  // route handler (GET, signed download); the Spanish child segment is kept in English so the translated parent rewrites it
+  '/area-clientes/material/descargar': {
+    es: '/area-clientes/material/descargar',
+    en: '/client-area/files/descargar',
+  },
   '/area-clientes/pack': { es: '/area-clientes/pack', en: '/client-area/plan' },
   '/area-clientes/pack/ampliar': {
     es: '/area-clientes/pack/ampliar',

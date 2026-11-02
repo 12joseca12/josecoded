@@ -3,7 +3,7 @@ import { getTranslations } from 'next-intl/server';
 
 import { formatPrice, pricing } from '@josecoded/pricing';
 
-import { UmamiScript } from '@/components/analytics';
+import { RefCapture, UmamiScript } from '@/components/analytics';
 import { JsonLd } from '@/components/seo';
 import { routing } from '@/i18n/routing';
 import { env } from '@/lib/env';
@@ -58,6 +58,7 @@ export default async function LocaleLayout({
         </NextIntlClientProvider>
         <JsonLd data={await loadSiteGraph(locale)} />
         <UmamiScript />
+        <RefCapture />
       </body>
     </html>
   );

@@ -4,7 +4,8 @@ import { env } from '@/lib/env';
 /**
  * Umami tracker (task 2.12). `async` so it never blocks the render, and it fails silently if Omen is off (`track` is a
  * no-op until `window.umami` exists). Nothing renders without the instance URL and the website id; `data-domains` limits
- * recording to the production host.
+ * recording to the production host and `data-exclude-search` drops the query string from every recorded URL (it can carry
+ * `?ref=`, `?next=` or other identifiers).
  */
 export function UmamiScript() {
   const script = umamiScript({
@@ -13,5 +14,5 @@ export function UmamiScript() {
     siteUrl: env.client.NEXT_PUBLIC_SITE_URL,
   });
   if (!script) return null;
-  return <script async src={script.src} data-website-id={script.websiteId} data-domains={script.domains} />;
+  return <script async src={script.src} data-website-id={script.websiteId} data-domains={script.domains} data-exclude-search="true" />;
 }

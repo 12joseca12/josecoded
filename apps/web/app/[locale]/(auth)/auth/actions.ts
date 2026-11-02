@@ -4,24 +4,27 @@ import { cookies, headers } from 'next/headers';
 import { redirect as redirectTo } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
-import { oauthSignInSchema, localeSchema, signInEmailSchema, verifyOtpSchema } from '@josecoded/types';
+import { localeSchema, signInEmailSchema, verifyOtpSchema } from '@josecoded/types';
 
 import { getPathname } from '@/i18n/navigation';
 import { afterSignIn } from '@/lib/auth/after-sign-in';
 import { safeNext } from '@/lib/auth/next-param';
+import { forgetPendingEmail, readPendingEmail, rememberPendingEmail } from '@/lib/auth/pending-email';
+import { allowAttempt } from '@/lib/auth/rate-limit';
 import { env } from '@/lib/env';
 import { createServerSupabase } from '@/lib/supabase/server';
-import { verifyTurnstileToken } from '@/lib/turnstile/verify';
 
 import type { FormState, Locale } from '@josecoded/types';
 
 // Server Actions of the passwordless sign-in (plan 4.1, DATOS §8.1). Next compares Origin and Host on
 // every action call (CSRF), and nothing here trusts the client: every field is parsed with zod, `next`
-// goes through `safeNext`, the locale is checked against the closed list, and the CAPTCHA is verified
-// with the secret key before Supabase is asked to send anything.
+// goes through `safeNext` and the locale is checked against the closed list. The CAPTCHA has a single
+// layer: the Turnstile token goes to Supabase Auth (`options.captchaToken`), which verifies it with
+// its own secret before sending anything. Verifying it here too would spend the single-use token twice.
+// The OAuth start is a GET route handler (`../oauth/route.ts`), so `form-action 'self'` stays strict.
 
 type EmailFields = { email: string; turnstileToken: string };
-type CodeFields = { token: string; email: string };
+type CodeFields = { token: string };
 
 const str = (data: FormData, key: string) => {
   const value = data.get(key);
@@ -58,16 +61,12 @@ export async function requestOtp(
       : { status: 'error', formError: t('captcha') };
   }
 
-  const ip = (await headers()).get('cf-connecting-ip');
-  if (!(await verifyTurnstileToken(parsed.data.turnstileToken, { ip, action: 'login' }))) {
-    return { status: 'error', formError: t('captcha') };
-  }
-
   const next = safeNext(parsed.data.next, areaHome(locale));
   const supabase = await createServerSupabase();
   const { error } = await supabase.auth.signInWithOtp({
     email: parsed.data.email,
     options: {
+      captchaToken: parsed.data.turnstileToken,
       shouldCreateUser: true,
       // read by the `handle_new_user` trigger to give the profile its language
       data: { locale },
@@ -75,13 +74,15 @@ export async function requestOtp(
     },
   });
   if (error) {
+    if (error.code === 'captcha_failed') return { status: 'error', formError: t('captcha') };
     return {
       status: 'error',
       formError: error.code === 'over_email_send_rate_limit' || error.status === 429 ? t('rateLimited') : t('generic'),
     };
   }
 
-  const query = new URLSearchParams({ email: parsed.data.email, next });
+  await rememberPendingEmail(parsed.data.email);
+  const query = new URLSearchParams({ next });
   if (parsed.data.audience) query.set('audience', parsed.data.audience);
   redirectTo(`${getPathname({ href: '/auth/codigo', locale })}?${query}`);
 }
@@ -94,14 +95,20 @@ export async function verifyOtp(
   const locale = localeOf(data);
   const t = await getTranslations({ locale, namespace: 'auth.errors' });
 
+  // the address comes from the cookie set when the code was sent, never from the form or the URL
   const parsed = verifyOtpSchema.safeParse({
-    email: str(data, 'email')?.trim().toLowerCase(),
+    email: await readPendingEmail(),
     token: str(data, 'token')?.replace(/\s/g, ''),
     next: str(data, 'next') || undefined,
     audience: str(data, 'audience') || undefined,
   });
   if (!parsed.success) {
     return { status: 'error', fieldErrors: { token: t('invalidCode') } };
+  }
+
+  const ip = (await headers()).get('cf-connecting-ip');
+  if (!(await allowAttempt('otp', { ip, subject: parsed.data.email }))) {
+    return { status: 'error', formError: t('rateLimited') };
   }
 
   const supabase = await createServerSupabase();
@@ -117,35 +124,10 @@ export async function verifyOtp(
       : { status: 'error', fieldErrors: { token: t('invalidCode') } };
   }
 
+  await forgetPendingEmail();
   const ref = (await cookies()).get('ref')?.value;
   await afterSignIn(supabase, result.user, { ref, audience: parsed.data.audience });
   redirectTo(safeNext(parsed.data.next, areaHome(locale)));
-}
-
-/** Starts the OAuth flow (PKCE; the verifier is kept in a cookie by the server client). */
-export async function signInWithProvider(data: FormData): Promise<void> {
-  const locale = localeOf(data);
-  const parsed = oauthSignInSchema.safeParse({
-    provider: str(data, 'provider'),
-    next: str(data, 'next') || undefined,
-    audience: str(data, 'audience') || undefined,
-  });
-  const failed = () => redirectTo(`${getPathname({ href: '/auth/login', locale })}?error=callback`);
-  if (!parsed.success) return failed();
-
-  const next = safeNext(parsed.data.next, areaHome(locale));
-  const query = new URLSearchParams({ next });
-  if (parsed.data.audience) query.set('audience', parsed.data.audience);
-
-  const supabase = await createServerSupabase();
-  const { data: result, error } = await supabase.auth.signInWithOAuth({
-    provider: parsed.data.provider,
-    options: {
-      redirectTo: `${env.client.NEXT_PUBLIC_SITE_URL}${getPathname({ href: '/auth/callback', locale })}?${query}`,
-    },
-  });
-  if (error || !result.url) return failed();
-  redirectTo(result.url);
 }
 
 export async function signOut(data: FormData): Promise<void> {

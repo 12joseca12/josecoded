@@ -12,9 +12,10 @@ import { OtpForm } from './otp-form';
 import type { Locale } from '@josecoded/types';
 
 /**
- * Second step: the 6-digit code. The email travels in the URL (it is not a secret and keeps the
- * screen working without JavaScript and across a reload); it is validated again by the action.
- * Without a usable email the screen says so and offers the way back instead of an empty form.
+ * Second step: the 6-digit code. The address comes from a short-lived httpOnly cookie set when the code
+ * was sent (never from the URL, which ends up in history, Referer and logs); the action reads the same
+ * cookie, so the form does not carry it. Without a usable email (no cookie, or it expired) the screen
+ * says so and offers the way back instead of an empty form.
  */
 export async function CodeScreen({
   locale,
@@ -32,7 +33,7 @@ export async function CodeScreen({
   const headingId = 'code-heading';
   const back = (
     <Link
-      href={{ pathname: '/auth/login', query: valid ? { email, ...(next ? { next } : {}) } : {} }}
+      href={{ pathname: '/auth/login', query: next ? { next } : {} }}
       className={styles.link}
     >
       {t('code.otherEmail')}
@@ -58,7 +59,6 @@ export async function CodeScreen({
             {valid ? (
               <OtpForm
                 locale={locale}
-                email={email as string}
                 next={next}
                 audience={audience}
                 labels={{

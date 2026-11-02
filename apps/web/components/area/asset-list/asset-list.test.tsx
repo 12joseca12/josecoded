@@ -6,7 +6,6 @@ import { renderIntl } from '@/tests/helpers/render-intl';
 import { serverIntlMock } from '@/tests/helpers/server-intl';
 
 vi.mock('next-intl/server', () => serverIntlMock);
-vi.mock('@/app/[locale]/(area)/area-clientes/material/actions', () => ({ downloadAsset: vi.fn() }));
 
 import { AssetList } from './asset-list';
 
@@ -21,12 +20,12 @@ const asset = (id: string, source: 'client' | 'admin', file_name: string | null,
 });
 
 describe('AssetList', () => {
-  it('names each download button after its file and tells who uploaded it in words', async () => {
+  it('names each download link after its file and tells who uploaded it in words', async () => {
     const { container } = renderIntl(
       await AssetList({ locale: 'es', assets: [asset('a1', 'client', 'logo.png', 10_240), asset('a2', 'admin', '<b>brief</b>.pdf', 2_000_000)] }),
     );
-    expect(screen.getByRole('button', { name: 'Descargar logo.png' })).toBeTruthy();
-    expect(screen.getByRole('button', { name: 'Descargar <b>brief</b>.pdf' })).toBeTruthy();
+    expect(screen.getByRole('link', { name: 'Descargar logo.png' }).getAttribute('href')).toBe('/area-clientes/material/descargar?asset=a1');
+    expect(screen.getByRole('link', { name: 'Descargar <b>brief</b>.pdf' })).toBeTruthy();
     expect(container.querySelector('b')).toBeNull(); // the name is text
     expect(screen.getByText(/^Tuyo · 10 kB/)).toBeTruthy();
     expect(screen.getByText(/^De Jose · /)).toBeTruthy();

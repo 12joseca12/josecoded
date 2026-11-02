@@ -214,11 +214,15 @@ token_verifications = 30
 web3 = 30
 
 # Configure one of the supported captcha providers: `hcaptcha`, `turnstile`.
-# josecoded (DATOS §8.1): Turnstile in production (dashboard, same site key as the web); off locally.
-# [auth.captcha]
-# enabled = true
-# provider = "turnstile"
-# secret = "env(SUPABASE_AUTH_CAPTCHA_SECRET)"
+# josecoded (DATOS §8.1): the CAPTCHA has ONE layer, Supabase Auth: the web passes the Turnstile token as
+# `options.captchaToken` of signInWithOtp and Auth verifies it. It MUST be on in production (dashboard:
+# Authentication > Attack Protection > Turnstile, same site key as the web; docs/runbooks/supabase-gate.md).
+# Off locally on purpose: the widget needs a real site key and the local e2e flow has no Cloudflare. To try
+# it locally set enabled = true and export SUPABASE_AUTH_CAPTCHA_SECRET (Cloudflare's test secret works).
+[auth.captcha]
+enabled = false
+provider = "turnstile"
+secret = "env(SUPABASE_AUTH_CAPTCHA_SECRET)"
 
 [auth.email]
 # Allow/disallow new user signups via email to your project.
@@ -236,7 +240,8 @@ max_frequency = "1s"
 # Number of characters used in the email OTP.
 otp_length = 6
 # Number of seconds before the email OTP expires (defaults to 1 hour).
-otp_expiry = 3600
+# josecoded: 10 minutes. A 6-digit code is guessable, so its window is short (the web also throttles verification).
+otp_expiry = 600
 
 # Use a production-ready SMTP server
 # [auth.email.smtp]

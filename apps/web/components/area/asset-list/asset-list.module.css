@@ -31,3 +31,9 @@
   color: var(--text-3);
   font-size: var(--font-small-size);
 }
+
+/* the ghost / sm look of the system's button, on a plain anchor */
+.download {
+  /* stylelint-disable-next-line property-no-unknown -- CSS Modules keyword */
+  composes: btn from '../../ui/button/button.module.css';
+}

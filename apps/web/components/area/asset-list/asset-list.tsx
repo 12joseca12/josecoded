@@ -1,9 +1,8 @@
 import { getFormatter, getTranslations } from 'next-intl/server';
 
-import { downloadAsset } from '@/app/[locale]/(area)/area-clientes/material/actions';
 import { AreaEmpty } from '@/components/area/area-empty';
-import { Field } from '@/components/forms/field';
-import { Button } from '@/components/ui/button';
+import { Icon } from '@/components/ui/icon';
+import { getPathname } from '@/i18n/navigation';
 import { formatBytes } from '@/lib/area/assets';
 
 import styles from './asset-list.module.css';
@@ -13,9 +12,9 @@ import type { Locale } from '@josecoded/types';
 
 
 /**
- * Files of the project, theirs and Jose's. Each download is its own form posting to the action, which
- * answers with a 60-second signed URL (it works without JavaScript and the URL never sits in the
- * page). The visible name is the stored label, escaped as text.
+ * Files of the project, theirs and Jose's. Each download is a plain link (GET, no form: the CSP keeps
+ * `form-action 'self'`; not the framework `Link`, which would prefetch it) to a route handler that answers with a
+ * 60-second signed URL, so the URL never sits in the page. The visible name is the stored label, escaped as text.
  *
  * A11y: a list; every button names its file («Descargar informe.pdf») so the buttons are
  * distinguishable out of context; the origin («Tuyo» / «De Jose») is text, not only a colour.
@@ -42,13 +41,15 @@ export async function AssetList({ locale, assets }: { locale: Locale; assets: re
                 })}
               </span>
             </div>
-            <form action={downloadAsset}>
-              <Field kind="hidden" name="assetId" value={asset.id} />
-              <Field kind="hidden" name="locale" value={locale} />
-              <Button type="submit" variant="ghost" size="sm" icon="download">
-                {t('download', { name })}
-              </Button>
-            </form>
+            <a
+              href={`${getPathname({ href: '/area-clientes/material/descargar', locale })}?asset=${asset.id}`}
+              className={styles.download}
+              data-variant="ghost"
+              data-size="sm"
+            >
+              <Icon name="download" />
+              <span data-slot="label">{t('download', { name })}</span>
+            </a>
           </li>
         );
       })}

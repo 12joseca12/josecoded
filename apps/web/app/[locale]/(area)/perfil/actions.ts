@@ -1,12 +1,14 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
 import { localeSchema, profileUpdateSchema, totpCodeSchema } from '@josecoded/types';
 
 import { getPathname } from '@/i18n/navigation';
+import { allowAttempt } from '@/lib/auth/rate-limit';
 import { createServerSupabase } from '@/lib/supabase/server';
 
 import type { FormState, Locale } from '@josecoded/types';
@@ -103,6 +105,12 @@ export async function verifyTotp(_previous: TotpState, data: FormData): Promise<
   const supabase = await createServerSupabase();
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) return { status: 'error', formError: t('failed') };
+
+  // a TOTP code is as guessable as the email one: throttle by network and by account
+  const ip = (await headers()).get('cf-connecting-ip');
+  if (!(await allowAttempt('totp', { ip, subject: auth.user.id }))) {
+    return { status: 'error', formError: t('rateLimited') };
+  }
 
   const { error } = await supabase.auth.mfa.challengeAndVerify({
     factorId: parsed.data.factorId,

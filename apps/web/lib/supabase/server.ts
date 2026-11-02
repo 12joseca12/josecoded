@@ -2,6 +2,7 @@ import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
 import { env } from '@/lib/env';
+import { supabaseCookieOptions } from '@/lib/supabase/cookie-options';
 
 import type { Database } from '@josecoded/types';
 
@@ -19,6 +20,7 @@ export async function createServerSupabase() {
     env.client.NEXT_PUBLIC_SUPABASE_URL,
     env.client.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
     {
+      cookieOptions: supabaseCookieOptions(),
       cookies: {
         getAll: () => cookieStore.getAll(),
         setAll: (toSet) => {

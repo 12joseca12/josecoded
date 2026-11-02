@@ -62,7 +62,15 @@ Nunca `db reset` ni `db push --include-seed`. Si `--dry-run` lista algo que no e
       `double_confirm_changes` y `secure_password_change` on.
 - [ ] SMTP propio (Resend, Q5), remitente `cuenta@josecoded.com`; enviar una prueba y comprobar que llega.
 - [ ] **Plantillas** (ver «Plantillas de Auth» abajo): pegar las cinco, con asunto.
-- [ ] CAPTCHA Turnstile con la site key de la web.
+- [ ] **CAPTCHA Turnstile activado en Supabase Auth** (Authentication > Attack Protection > Enable CAPTCHA protection,
+      proveedor Turnstile, secret key de Cloudflare; site key = la de la web). Es la **única capa**: la web envía el token
+      como `options.captchaToken` en `signInWithOtp` y Auth lo verifica; la acción de la web ya no llama a siteverify.
+      Sin esto el login queda sin CAPTCHA en producción. `supabase/config.toml` lo deja `enabled = false` solo en local.
+- [ ] **Límites de Auth**: `otp_expiry = 600` (Authentication > Providers > Email > Email OTP Expiration = 600 s; el
+      `config.toml` local ya lo tiene) y Rate Limits (Authentication > Rate Limits): `token_verifications` ≤ 30 por 5 min
+      por IP, `sign_in_sign_ups` ≤ 30, `email_sent` según el SMTP de Resend. Además la web limita la verificación del
+      código por red (IPv4 / IPv6 /64) y por cuenta con el binding Workers Rate Limiting de `apps/web/wrangler.jsonc`
+      (`AUTH_IP_RATE_LIMITER` 20/min, `AUTH_SUBJECT_RATE_LIMITER` 5/min; email o `user.id` en TOTP).
 - [ ] MFA TOTP habilitado (enroll y verify).
 - [ ] `site_url = https://josecoded.com`; redirect allowlist de DATOS §8.1: `https://josecoded.com/**` y
       `https://josecoded-web-preview.*.workers.dev/**` (solo previews; se revisa en 9.5b). **No** añadir

@@ -54,6 +54,8 @@ export const getAreaContext = cache(async (): Promise<AreaContext | null> => {
   let client: AreaClient | null = null;
   if (!isAdmin) {
     const read = async () => {
+      // TODO(1.8e): replace this table read with the RPC `area_client()` (security definer, own client only) once the
+      // migration lands and `database.ts` is regenerated; until then RLS on `clients` is the authority.
       const { data } = await supabase.from('clients').select(CLIENT_COLUMNS).limit(1).maybeSingle();
       return data;
     };

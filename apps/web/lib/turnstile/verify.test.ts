@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
-vi.mock('@/lib/env', () => ({ env: { server: { TURNSTILE_SECRET_KEY: 'secret' } } }));
+vi.mock('@/lib/env', () => ({ env: { server: { TURNSTILE_SECRET_KEY: 'secret' }, client: { NEXT_PUBLIC_SITE_URL: 'https://josecoded.com' } } }));
 
 import { verifyTurnstileToken } from './verify';
 
@@ -20,7 +20,7 @@ it('refuses an empty token without calling Cloudflare', async () => {
 });
 
 it('posts secret, token and ip, and accepts a successful answer', async () => {
-  fetchMock.mockResolvedValue(ok({ success: true, action: 'login' }));
+  fetchMock.mockResolvedValue(ok({ success: true, action: 'login', hostname: 'josecoded.com' }));
   expect(await verifyTurnstileToken('tok', { ip: '1.2.3.4', action: 'login' })).toBe(true);
   const [url, init] = fetchMock.mock.calls[0] as [string, { body: URLSearchParams }];
   expect(url).toBe('https://challenges.cloudflare.com/turnstile/v0/siteverify');
@@ -30,7 +30,7 @@ it('posts secret, token and ip, and accepts a successful answer', async () => {
 });
 
 it('refuses a token minted for another action', async () => {
-  fetchMock.mockResolvedValue(ok({ success: true, action: 'comment' }));
+  fetchMock.mockResolvedValue(ok({ success: true, action: 'comment', hostname: 'josecoded.com' }));
   expect(await verifyTurnstileToken('tok', { action: 'login' })).toBe(false);
 });
 
@@ -41,4 +41,9 @@ it('fails closed on a rejected token, an HTTP error and a network error', async 
   expect(await verifyTurnstileToken('tok')).toBe(false);
   fetchMock.mockRejectedValueOnce(new Error('offline'));
   expect(await verifyTurnstileToken('tok')).toBe(false);
+});
+
+it('refuses a token solved on another hostname', async () => {
+  fetchMock.mockResolvedValue(ok({ success: true, action: 'login', hostname: 'evil.example' }));
+  expect(await verifyTurnstileToken('tok', { action: 'login' })).toBe(false);
 });

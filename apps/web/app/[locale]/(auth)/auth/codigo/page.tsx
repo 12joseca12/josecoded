@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 
 import { CodeScreen } from '@/components/auth/code-screen';
+import { readPendingEmail } from '@/lib/auth/pending-email';
 import { resolveLocale } from '@/lib/locale';
 
 import type { LocaleParams } from '@/lib/locale';
@@ -27,7 +28,7 @@ export default async function CodePage({
   return (
     <CodeScreen
       locale={locale}
-      email={first(query.email)}
+      email={await readPendingEmail()}
       next={first(query.next)}
       audience={first(query.audience)}
     />

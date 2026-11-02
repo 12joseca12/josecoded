@@ -1,7 +1,6 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
 import { assetUploadIntentSchema, localeSchema } from '@josecoded/types';
@@ -18,7 +17,6 @@ import { createServerSupabase } from '@/lib/supabase/server';
 // of that exact path. The storage policy then only accepts an object whose row already exists.
 
 const BUCKET = 'client-assets';
-const SIGNED_DOWNLOAD_SECONDS = 60;
 const idSchema = z.uuid();
 
 export type PrepareUploadResult =
@@ -75,33 +73,13 @@ export async function deleteAsset(assetId: string): Promise<{ ok: boolean }> {
   const supabase = await createServerSupabase();
   const { data: row } = await supabase.from('client_assets').select('id, storage_path').eq('id', id.data).maybeSingle();
   if (!row) return { ok: false };
-  await supabase.storage.from(BUCKET).remove([row.storage_path]);
-  const { error } = await supabase.from('client_assets').delete().eq('id', row.id);
-  if (error) return { ok: false };
+  // both steps must be confirmed: a failed storage removal leaves the row (and the object) in place so the
+  // client can retry, and a delete RLS silently turns into zero rows is not reported as done
+  const { error: removeError } = await supabase.storage.from(BUCKET).remove([row.storage_path]);
+  if (removeError) return { ok: false };
+  const { data: deleted, error } = await supabase.from('client_assets').delete().eq('id', row.id).select('id');
+  if (error || deleted?.length !== 1) return { ok: false };
   return { ok: true };
-}
-
-/** Form action of the «Download» button: a 60-second signed URL for a file the session can read. */
-export async function downloadAsset(data: FormData): Promise<void> {
-  const locale = localeSchema.catch('es').parse(data.get('locale'));
-  const back = getPathname({ href: '/area-clientes/material', locale });
-  const id = idSchema.safeParse(data.get('assetId'));
-  if (!id.success) redirect(`${back}?error=download`);
-
-  const supabase = await createServerSupabase();
-  // the select goes through RLS: a file of another client is not found
-  const { data: row } = await supabase
-    .from('client_assets')
-    .select('storage_path, file_name')
-    .eq('id', id.data)
-    .maybeSingle();
-  if (!row) redirect(`${back}?error=download`);
-
-  const { data: signed } = await supabase.storage
-    .from(BUCKET)
-    .createSignedUrl(row.storage_path, SIGNED_DOWNLOAD_SECONDS, { download: row.file_name ?? true });
-  if (!signed) redirect(`${back}?error=download`);
-  redirect(signed.signedUrl);
 }
 
 /** Refreshes the list after the browser finished an upload. */

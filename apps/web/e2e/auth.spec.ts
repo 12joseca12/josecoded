@@ -28,8 +28,8 @@ test.describe('sign-in screens', () => {
       await page.setViewportSize({ width, height: 900 });
       await page.goto('/auth/login');
       await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
-      await expect(page.getByRole('button', { name: 'Continuar con Google' })).toBeVisible();
-      await expect(page.getByRole('button', { name: 'Continuar con GitHub' })).toBeVisible();
+      await expect(page.getByRole('link', { name: 'Continuar con Google' })).toBeVisible();
+      await expect(page.getByRole('link', { name: 'Continuar con GitHub' })).toBeVisible();
       await expect(page.getByLabel('Email')).toBeVisible();
       await expect(page.getByRole('button', { name: 'Enviarme el código' })).toBeVisible();
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
@@ -41,7 +41,7 @@ test.describe('sign-in screens', () => {
     await page.goto('/en/auth/login');
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
-    await expect(page.getByRole('button', { name: 'Continue with Google' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Continue with Google' })).toBeVisible();
     await page.goto('/en/auth/sign-up');
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Create your account');
   });
@@ -53,17 +53,21 @@ test.describe('sign-in screens', () => {
     await expectNoSeriousViolations(page);
   });
 
-  test('the code screen is a single numeric one-time-code field', async ({ page }) => {
-    await page.goto('/auth/codigo?email=ana%40example.com');
+  test('the code screen is a single numeric one-time-code field, and the email is in a cookie, not the URL', async ({ page, context, baseURL }) => {
+    await context.addCookies([{ name: 'jc_otp_email', value: 'ana@example.com', url: baseURL as string }]);
+    await page.goto('/auth/codigo');
+    await expect(page.getByText(/ana@example\.com/)).toBeVisible();
+    expect(page.url()).not.toContain('ana');
     const input = page.getByLabel('Código de 6 cifras');
     await expect(input).toHaveAttribute('autocomplete', 'one-time-code');
     await expect(input).toHaveAttribute('inputmode', 'numeric');
     await expectNoSeriousViolations(page);
   });
 
-  test('an invalid code is refused on the field without leaving the screen', async ({ page }) => {
+  test('an invalid code is refused on the field without leaving the screen', async ({ page, context, baseURL }) => {
     test.skip(!(await supabaseIsUp()), 'needs Supabase local');
-    await page.goto('/auth/codigo?email=ana%40example.com');
+    await context.addCookies([{ name: 'jc_otp_email', value: 'ana@example.com', url: baseURL as string }]);
+    await page.goto('/auth/codigo');
     await page.getByLabel('Código de 6 cifras').fill('000000');
     await page.getByRole('button', { name: 'Entrar' }).click();
     await expect(page.getByText(/El código no es correcto/)).toBeVisible();
@@ -102,6 +106,7 @@ test.describe('session', () => {
     await expect(page.locator('input[name="cf-turnstile-response"]')).not.toHaveValue('', { timeout: 15_000 });
     await page.getByRole('button', { name: 'Enviarme el código' }).click();
     await page.waitForURL('**/auth/codigo**');
+    expect(page.url()).not.toContain(encodeURIComponent(email)); // the address travels in a cookie
 
     await page.getByLabel('Código de 6 cifras').fill(await latestOtp(email));
     await page.getByRole('button', { name: 'Entrar' }).click();

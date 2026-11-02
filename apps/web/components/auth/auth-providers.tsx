@@ -1,18 +1,16 @@
-import { signInWithProvider } from '@/app/[locale]/(auth)/auth/actions';
-import { Field } from '@/components/forms/field';
-import { Button } from '@/components/ui/button';
+import { getPathname } from '@/i18n/navigation';
 
 import styles from './auth-providers.module.css';
 
 import type { Locale, OAuthProvider } from '@josecoded/types';
 
-
 const PROVIDERS: readonly OAuthProvider[] = ['google', 'github'];
 
 /**
- * Google and GitHub as two independent forms (a Server Action each, no JavaScript needed): the
- * button posts the provider and the action returns the OAuth redirect. Each button carries the
- * provider in its text, so its name is never ambiguous.
+ * Google and GitHub as two plain links to the OAuth route handler (GET, no JavaScript needed, and no
+ * form so the CSP keeps `form-action 'self'`). They are `<a>`, not the localized `Link`: a framework
+ * link prefetches, and a prefetch would start (and overwrite the PKCE verifier of) a sign-in. They
+ * wear the ghost button of the system through `composes`. Each carries the provider in its text.
  */
 export function AuthProviders({
   locale,
@@ -30,17 +28,22 @@ export function AuthProviders({
 }) {
   return (
     <div role="group" aria-label={label} className={styles.group}>
-      {PROVIDERS.map((provider) => (
-        <form key={provider} action={signInWithProvider} className={styles.form}>
-          <Field kind="hidden" name="provider" value={provider} />
-          <Field kind="hidden" name="locale" value={locale} />
-          <Field kind="hidden" name="next" value={next ?? ''} />
-          <Field kind="hidden" name="audience" value={audience ?? ''} />
-          <Button type="submit" variant="ghost" size="lg">
-            {names[provider]}
-          </Button>
-        </form>
-      ))}
+      {PROVIDERS.map((provider) => {
+        const query = new URLSearchParams({ provider });
+        if (next) query.set('next', next);
+        if (audience) query.set('audience', audience);
+        return (
+          <a
+            key={provider}
+            href={`${getPathname({ href: '/auth/oauth', locale })}?${query}`}
+            className={styles.link}
+            data-variant="ghost"
+            data-size="lg"
+          >
+            <span data-slot="label">{names[provider]}</span>
+          </a>
+        );
+      })}
     </div>
   );
 }

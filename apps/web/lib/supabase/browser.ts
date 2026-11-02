@@ -1,6 +1,7 @@
 import { createBrowserClient } from '@supabase/ssr';
 
 import { env } from '@/lib/env';
+import { supabaseCookieOptions } from '@/lib/supabase/cookie-options';
 
 import type { Database } from '@josecoded/types';
 
@@ -14,5 +15,6 @@ export function createClient() {
   return createBrowserClient<Database>(
     env.client.NEXT_PUBLIC_SUPABASE_URL,
     env.client.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+    { cookieOptions: supabaseCookieOptions() },
   );
 }

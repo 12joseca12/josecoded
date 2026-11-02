@@ -8,16 +8,11 @@ const mocks = vi.hoisted(() => ({
   createSignedUploadUrl: vi.fn(),
   createSignedUrl: vi.fn(),
   remove: vi.fn(),
+  deletedRows: [{ id: 'x' }] as unknown[],
   row: null as null | { id?: string; storage_path: string; file_name?: string | null },
 }));
 
 vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }));
-vi.mock('next/navigation', async (importActual) => ({
-  ...(await importActual<typeof import('next/navigation')>()),
-  redirect: vi.fn((url: string) => {
-    throw new Error(`REDIRECT ${url}`);
-  }),
-}));
 
 const supabase = {
   from: () => ({
@@ -27,9 +22,11 @@ const supabase = {
     },
     select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: mocks.row }) }) }),
     delete: () => ({
-      eq: async (...args: unknown[]) => {
+      eq: (...args: unknown[]) => {
         mocks.deleteRow(...args);
-        return { error: null };
+        const result = { data: mocks.deletedRows, error: null };
+        // awaited bare (rollback of a failed upload) or chained with `.select('id')` (deleteAsset)
+        return Object.assign(Promise.resolve(result), { select: async () => result });
       },
     }),
   }),
@@ -44,7 +41,7 @@ const supabase = {
 vi.mock('@/lib/supabase/server', () => ({ createServerSupabase: async () => supabase }));
 vi.mock('@/lib/area/queries', () => ({ getAreaContext: async () => mocks.context }));
 
-import { deleteAsset, downloadAsset, prepareAssetUpload } from './actions';
+import { deleteAsset, prepareAssetUpload } from './actions';
 
 const clientContext = { client: { id: 'client-1' }, isAdmin: false, session: { supabase, user: { id: 'me' } } };
 const intent = { fileName: '../report.pdf', mimeType: 'application/pdf', sizeBytes: 1000 };
@@ -54,6 +51,8 @@ beforeEach(() => {
   vi.clearAllMocks();
   mocks.context = clientContext;
   mocks.row = null;
+  mocks.deletedRows = [{ id: 'x' }];
+  mocks.remove.mockResolvedValue({ error: null });
   mocks.createSignedUploadUrl.mockResolvedValue({ data: { token: 'tok' }, error: null });
 });
 
@@ -95,36 +94,30 @@ describe('prepareAssetUpload', () => {
   });
 });
 
-describe('downloadAsset', () => {
-  const form = (fields: Record<string, string>) => {
-    const data = new FormData();
-    for (const [k, v] of Object.entries(fields)) data.set(k, v);
-    return data;
-  };
-
-  it('redirects to a 60-second signed URL of a file the session can read', async () => {
-    mocks.row = { storage_path: 'clients/client-1/a1', file_name: 'report.pdf' };
-    mocks.createSignedUrl.mockResolvedValue({ data: { signedUrl: 'https://x.supabase.co/signed' } });
-    await expect(downloadAsset(form({ assetId: UUID, locale: 'es' }))).rejects.toThrow('REDIRECT https://x.supabase.co/signed');
-    expect(mocks.createSignedUrl).toHaveBeenCalledWith('clients/client-1/a1', 60, { download: 'report.pdf' });
-  });
-
-  it('answers a file of another client (not visible through RLS) and a bad id with the error screen', async () => {
-    mocks.row = null;
-    await expect(downloadAsset(form({ assetId: UUID, locale: 'en' }))).rejects.toThrow('REDIRECT /en/client-area/files?error=download');
-    await expect(downloadAsset(form({ assetId: 'x', locale: 'es' }))).rejects.toThrow('REDIRECT /area-clientes/material?error=download');
-    expect(mocks.createSignedUrl).not.toHaveBeenCalled();
-  });
-});
-
 describe('deleteAsset', () => {
   it('removes the object first and then the row', async () => {
     mocks.row = { id: UUID, storage_path: 'clients/client-1/a1' };
     const order: string[] = [];
-    mocks.remove.mockImplementation(async () => void order.push('object'));
+    mocks.remove.mockImplementation(async () => {
+      order.push('object');
+      return { error: null };
+    });
     mocks.deleteRow.mockImplementation(() => void order.push('row'));
     expect(await deleteAsset(UUID)).toEqual({ ok: true });
     expect(order).toEqual(['object', 'row']);
+  });
+
+  it('aborts, keeping the row, when Storage fails to remove the object', async () => {
+    mocks.row = { id: UUID, storage_path: 'clients/client-1/a1' };
+    mocks.remove.mockResolvedValue({ error: new Error('storage down') });
+    expect(await deleteAsset(UUID)).toEqual({ ok: false });
+    expect(mocks.deleteRow).not.toHaveBeenCalled();
+  });
+
+  it('reports failure when the delete touched no row (RLS)', async () => {
+    mocks.row = { id: UUID, storage_path: 'clients/client-1/a1' };
+    mocks.deletedRows = [];
+    expect(await deleteAsset(UUID)).toEqual({ ok: false });
   });
 
   it('does nothing for an id that is not a uuid or not visible', async () => {

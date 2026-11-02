@@ -3,11 +3,10 @@
   gap: var(--sp-3);
 }
 
-.form {
-  display: grid;
-}
-
-.form > button {
+/* the ghost / lg look of the system's button, on a plain anchor */
+.link {
+  /* stylelint-disable-next-line property-no-unknown -- CSS Modules keyword */
+  composes: btn from '../ui/button/button.module.css';
   width: 100%;
 }
 

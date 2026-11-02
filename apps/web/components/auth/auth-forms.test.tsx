@@ -18,9 +18,9 @@ afterEach(() => {
 describe('OtpForm', () => {
   const labels = { code: 'Code', help: 'Check spam', submit: 'Sign in', form: 'Enter the code' };
 
-  it('is one numeric one-time-code field of six digits, with the email and next as hidden fields', async () => {
+  it('is one numeric one-time-code field of six digits, with next as a hidden field and no email in the form', async () => {
     const { container } = render(
-      <OtpForm locale="es" email="ana@test.com" next="/area-clientes" labels={labels} actions={<a href="/auth/login">Other</a>} />,
+      <OtpForm locale="es" next="/area-clientes" labels={labels} actions={<a href="/auth/login">Other</a>} />,
     );
     const input = screen.getByLabelText('Code');
     expect(input.getAttribute('autocomplete')).toBe('one-time-code');
@@ -28,7 +28,7 @@ describe('OtpForm', () => {
     expect(input.getAttribute('maxlength')).toBe('6');
     expect(input.getAttribute('pattern')).toBe('[0-9]{6}');
     expect(input.getAttribute('name')).toBe('token');
-    expect(container.querySelector('input[name="email"]')?.getAttribute('value')).toBe('ana@test.com');
+    expect(container.querySelector('input[name="email"]')).toBeNull();
     expect(container.querySelector('input[name="next"]')?.getAttribute('value')).toBe('/area-clientes');
     expect(screen.getByRole('link', { name: 'Other' })).toBeTruthy();
     expect(await axe(container)).toHaveNoViolations();
