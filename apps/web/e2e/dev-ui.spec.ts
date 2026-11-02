@@ -1,6 +1,10 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
+// Screenshot specs inject a stylesheet (addStyleTag) to freeze motion; the site's CSP (style-src 'self')
+// would block it. CSP itself is covered by csp.spec.ts, which never bypasses it.
+test.use({ bypassCSP: true });
+
 // The /dev/ui catalogue (working-agreements §15.4, §16.4): every primitive of components/ui ×
 // variants × sizes × states. The build of this suite sets NEXT_PUBLIC_DEV_UI=1 (as ci.yml does).
 // Axe is blocking for serious/critical; one reference screenshot per primitive at 360 and 1440

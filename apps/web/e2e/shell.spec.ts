@@ -3,6 +3,10 @@ import { expect, test } from '@playwright/test';
 
 import type { Page } from '@playwright/test';
 
+// Screenshot specs inject a stylesheet (addStyleTag) to freeze motion; the site's CSP (style-src 'self')
+// would block it. CSP itself is covered by csp.spec.ts, which never bypasses it.
+test.use({ bypassCSP: true });
+
 // The public shell (task 2.3): skip link, header, ☰ menu, language switch, ⌘K trigger and footer.
 // Axe blocks on serious/critical (working-agreements §16.4). The `toHaveScreenshot` assertions at the
 // end need baselines from the `update-snapshots` workflow (spec `shell.spec.ts`), never from a local run.
