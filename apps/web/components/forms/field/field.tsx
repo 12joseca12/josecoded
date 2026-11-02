@@ -56,9 +56,15 @@ type RadioGroup = Common & {
   options: readonly { value: string; label: ReactNode; description?: string }[];
   onChange?: (value: string) => void;
 };
+type FileInput = Common & {
+  kind: 'file';
+  /** Comma-separated MIME types or extensions: a convenience for the picker, never the check. */
+  accept?: string;
+  onChange?: (file: File | null) => void;
+};
 type Hidden = { kind: 'hidden'; name: string; value: string };
 
-export type FieldProps = TextLike | Textarea | Select | Checkbox | RadioGroup | Hidden;
+export type FieldProps = TextLike | Textarea | Select | Checkbox | RadioGroup | FileInput | Hidden;
 
 /**
  * One component for every control of a form (working-agreements §15, §17.3): it paints label, help
@@ -179,6 +185,13 @@ export function Field(props: FieldProps) {
           maxLength={props.maxLength}
           defaultValue={props.defaultValue}
           autoComplete={props.autoComplete}
+        />
+      ) : props.kind === 'file' ? (
+        <input
+          {...shared}
+          type="file"
+          accept={props.accept}
+          onChange={(event) => props.onChange?.(event.currentTarget.files?.[0] ?? null)}
         />
       ) : props.kind === 'select' ? (
         <select {...shared} defaultValue={props.defaultValue}>

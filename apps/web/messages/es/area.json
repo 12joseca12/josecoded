@@ -161,6 +161,36 @@
           "failed": "No hemos podido enviar el comentario. Inténtalo de nuevo."
         }
       }
+    },
+    "files": {
+      "metaTitle": "Material",
+      "title": {
+        "lead": "Tu material,",
+        "tail": "a mano"
+      },
+      "lede": "Los archivos de tu proyecto: lo que me envías y lo que te entrego.",
+      "listTitle": "Archivos",
+      "listLabel": "Archivos del proyecto",
+      "emptyTitle": "Aún no hay archivos",
+      "emptyBody": "Sube aquí logos, textos o fotos, y verás también lo que Jose comparta contigo.",
+      "unnamed": "Archivo sin nombre",
+      "mine": "Tuyo",
+      "fromJose": "De Jose",
+      "meta": "{origin} · {size} · {date}",
+      "download": "Descargar {name}",
+      "downloadError": "No hemos podido preparar la descarga. Inténtalo de nuevo.",
+      "upload": {
+        "title": "Subir un archivo",
+        "label": "Archivo",
+        "help": "Imágenes, PDF, texto, CSV, ZIP u Office. Hasta 25 MB.",
+        "submit": "Subir archivo",
+        "uploading": "Subiendo el archivo…",
+        "done": "Archivo subido.",
+        "chooseFirst": "Elige un archivo primero.",
+        "tooBig": "El archivo supera los 25 MB.",
+        "notAllowed": "Ese tipo de archivo no se admite. Prueba con imagen, PDF, texto, CSV, ZIP u Office.",
+        "failed": "No hemos podido subir el archivo. Inténtalo de nuevo."
+      }
     }
   }
 }

@@ -59,6 +59,26 @@ textarea.control {
   text-align: center;
 }
 
+/* native file picker: the button inside the control follows the ghost button of the system */
+.control[type='file'] {
+  padding: var(--sp-2);
+  color: var(--text-2);
+  font-size: var(--font-label-size);
+}
+
+.control[type='file']::file-selector-button {
+  min-height: var(--size-control-sm);
+  margin-inline-end: var(--sp-3);
+  padding: 0 var(--sp-3-5);
+  border-width: 0;
+  border-radius: var(--r-pill);
+  background: var(--tint-ghost);
+  box-shadow: var(--shadow-hairline-strong);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
 .help {
   margin: 0;
   color: var(--text-3);

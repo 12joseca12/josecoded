@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 import { expectNoSeriousViolations } from './helpers/axe';
 import { signInAs, supabaseIsUp } from './helpers/supabase';
-import { serviceClient } from '../tests/helpers/supabase-test-clients';
+import { SEED, clientFor, serviceClient } from '../tests/helpers/supabase-test-clients';
 
 // Client area against Supabase local (seed accounts: Ana is a client, Bob and the others are not).
 // Everything here skips itself without a stack; CI starts one (ci.yml, job e2e).
@@ -94,5 +94,44 @@ test.describe('tasks', () => {
     expect((await page.goto(`/area-clientes/tareas/${ANA_PENDING_TASK}`))?.status()).toBe(404);
     expect((await page.goto('/area-clientes/tareas'))?.status()).toBe(404);
     expect((await page.goto('/area-clientes/tareas/not-a-uuid'))?.status()).toBe(404);
+  });
+});
+
+test.describe('material', () => {
+  test('a client uploads a PDF, sees it in the list and can download it; the page has no serious axe violations', async ({
+    page,
+    context,
+    baseURL,
+  }) => {
+    await signInAs(context, baseURL as string, 'ana');
+    await page.goto('/area-clientes/material');
+    const name = `informe-${Date.now()}.pdf`;
+    await page.getByLabel('Archivo').setInputFiles({ name, mimeType: 'application/pdf', buffer: Buffer.alloc(10_240, 0x20) });
+    await page.getByRole('button', { name: 'Subir archivo' }).click();
+    await expect(page.getByText('Archivo subido.')).toBeVisible();
+    await expect(page.getByRole('button', { name: `Descargar ${name}` })).toBeVisible();
+    await expectNoSeriousViolations(page);
+
+    const [download] = await Promise.all([
+      page.waitForEvent('download'),
+      page.getByRole('button', { name: `Descargar ${name}` }).click(),
+    ]);
+    expect(download.suggestedFilename()).toBe(name);
+  });
+
+  test('a type outside the allowlist is refused before anything is sent', async ({ page, context, baseURL }) => {
+    await signInAs(context, baseURL as string, 'ana');
+    await page.goto('/area-clientes/material');
+    await page.getByLabel('Archivo').setInputFiles({ name: 'logo.svg', mimeType: 'image/svg+xml', buffer: Buffer.from('<svg/>') });
+    await page.getByRole('button', { name: 'Subir archivo' }).click();
+    await expect(page.getByRole('alert')).toContainText('no se admite');
+  });
+
+  test("another user has no material section and cannot list Ana's folder in the bucket", async ({ page, context, baseURL }) => {
+    await signInAs(context, baseURL as string, 'bob');
+    expect((await page.goto('/area-clientes/material'))?.status()).toBe(404);
+    const bob = await clientFor('bob');
+    const { data } = await bob.storage.from('client-assets').list(`clients/${SEED.clients.ana}`);
+    expect(data ?? []).toEqual([]);
   });
 });

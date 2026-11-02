@@ -127,3 +127,20 @@ export async function getComments(
   const { data } = await query;
   return data ?? [];
 }
+
+export type AreaAsset = Pick<
+  Tables<'client_assets'>,
+  'id' | 'source' | 'file_name' | 'mime_type' | 'size_bytes' | 'title' | 'created_at'
+>;
+
+/** Files of the client (theirs and Jose's), newest first. The storage path is never selected. */
+export async function getAssets(clientId: string): Promise<AreaAsset[]> {
+  const session = await getOptionalSession();
+  if (!session) return [];
+  const { data } = await session.supabase
+    .from('client_assets')
+    .select('id, source, file_name, mime_type, size_bytes, title, created_at')
+    .eq('client_id', clientId)
+    .order('created_at', { ascending: false });
+  return data ?? [];
+}

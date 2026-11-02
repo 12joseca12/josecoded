@@ -161,6 +161,36 @@
           "failed": "We could not send the comment. Please try again."
         }
       }
+    },
+    "files": {
+      "metaTitle": "Files",
+      "title": {
+        "lead": "Your files,",
+        "tail": "at hand"
+      },
+      "lede": "The files of your project: what you send me and what I deliver.",
+      "listTitle": "Files",
+      "listLabel": "Project files",
+      "emptyTitle": "No files yet",
+      "emptyBody": "Upload logos, texts or photos here, and you will also see what Jose shares with you.",
+      "unnamed": "Unnamed file",
+      "mine": "Yours",
+      "fromJose": "From Jose",
+      "meta": "{origin} · {size} · {date}",
+      "download": "Download {name}",
+      "downloadError": "We could not prepare the download. Please try again.",
+      "upload": {
+        "title": "Upload a file",
+        "label": "File",
+        "help": "Images, PDF, text, CSV, ZIP or Office. Up to 25 MB.",
+        "submit": "Upload file",
+        "uploading": "Uploading the file…",
+        "done": "File uploaded.",
+        "chooseFirst": "Choose a file first.",
+        "tooBig": "The file is over 25 MB.",
+        "notAllowed": "That file type is not accepted. Try an image, PDF, text, CSV, ZIP or Office file.",
+        "failed": "We could not upload the file. Please try again."
+      }
     }
   }
 }

@@ -1,0 +1,33 @@
+.list {
+  display: grid;
+  gap: var(--sp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3) var(--sp-4);
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-hairline);
+}
+
+.info {
+  display: grid;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.name {
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  color: var(--text-3);
+  font-size: var(--font-small-size);
+}
