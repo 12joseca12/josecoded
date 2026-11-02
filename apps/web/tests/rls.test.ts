@@ -229,8 +229,8 @@ describe.skipIf(!up && !inCi)('RLS with jose (admin), ana (P2 client + affiliate
       expect(Object.keys(data as Row).sort()).toEqual([
         'agencies_replied',
         'chat_unread',
-        'commissions_pending',
         'comments_pending',
+        'commissions_pending',
         'contacts_due',
         'content_pending',
         'import_conflicts_pending',
@@ -1235,7 +1235,7 @@ describe.skipIf(!up && !inCi)('RLS with closers: carla (active), dani (switched 
       expect((await carla.rpc('notification_recipients', { p_event: 'lead.created', p_owner_id: carla.userId })).error?.code).toBe('42501');
       const { data, error } = await service.rpc('notification_recipients', { p_event: 'client.invited', p_owner_id: null });
       expect(error).toBeNull();
-      expect(data).toEqual([{ channel: 'email', address: null }]);
+      expect(data).toEqual([{ channel: 'email', address: null, admin_fallback: false }]);
     });
   });
 });
