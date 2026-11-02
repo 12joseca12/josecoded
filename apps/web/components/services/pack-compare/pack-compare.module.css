@@ -1,0 +1,150 @@
+.wrap {
+  container-type: inline-size;
+  display: grid;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+.tabs {
+  display: none;
+  gap: var(--sp-1);
+  padding: var(--sp-1);
+  border-radius: var(--r-pill);
+  background: var(--bg-segmented);
+  box-shadow: var(--shadow-hairline);
+}
+
+.tab {
+  flex: 1;
+  min-height: var(--size-hit);
+  border-width: 0;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-2);
+  font: inherit;
+  font-size: var(--font-label-size);
+  font-weight: var(--font-label-button-weight);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    color var(--dur-hover) var(--ease-standard),
+    background-color var(--dur-hover) var(--ease-standard);
+}
+
+.tab[aria-selected='true'] {
+  background: var(--tint-emphasis);
+  color: var(--text);
+}
+
+.tab:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: calc(var(--focus-ring-offset) - var(--sp-1));
+}
+
+.panel {
+  min-width: 0;
+  border-radius: var(--r-cell);
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.caption {
+  padding: var(--sp-4) var(--sp-5);
+  color: var(--text-3);
+  font-size: var(--font-small-size);
+  text-align: start;
+}
+
+.corner {
+  width: var(--sp-16);
+}
+
+.col {
+  padding: var(--sp-3) var(--sp-3);
+  text-align: start;
+  vertical-align: bottom;
+}
+
+.code {
+  display: block;
+  color: var(--violet-soft);
+  font-family: var(--font-mono);
+  font-size: var(--font-mono-lang-size);
+}
+
+.name {
+  display: block;
+  font-size: var(--font-cell-title-size);
+  font-weight: var(--font-cell-title-weight);
+  line-height: var(--font-title-leading);
+}
+
+.row {
+  padding: var(--sp-3);
+  color: var(--text-3);
+  font-size: var(--font-small-size);
+  font-weight: var(--font-label-weight);
+  text-align: start;
+  vertical-align: top;
+}
+
+.cell {
+  padding: var(--sp-3);
+  color: var(--text-2);
+  font-size: var(--font-label-size);
+  line-height: var(--font-lead-leading);
+  vertical-align: top;
+  box-shadow: var(--shadow-edge-top);
+}
+
+.cell :where(p) {
+  margin: 0;
+}
+
+.price {
+  color: var(--text);
+  font-size: var(--font-title-sm-size);
+  font-weight: var(--font-title-sm-weight);
+  letter-spacing: var(--font-title-sm-tracking);
+}
+
+.option {
+  display: grid;
+  gap: var(--sp-1);
+  margin-top: var(--sp-3);
+  padding: var(--sp-3);
+  border-radius: var(--r-md);
+  background: var(--tint-ghost);
+}
+
+.optionTitle {
+  color: var(--text);
+  font-weight: var(--font-emphasis-weight);
+}
+
+/* a phone: one pack per view, picked with the tabs; the other columns stay in the table */
+@container (width < 52rem) {
+  .tabs {
+    display: flex;
+  }
+
+  .table :is(.col, .cell):not([data-selected]) {
+    display: none;
+  }
+
+  .corner {
+    width: 28%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab {
+    transition: none;
+  }
+}

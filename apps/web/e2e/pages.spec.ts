@@ -34,8 +34,8 @@ for (const [path, lang, home, heading] of notFound) {
 const titled: [path: string, lang: string, expected: RegExp][] = [
   ['/', 'es', /^Desarrollador freelance: web, móvil e IA · josecoded$/],
   ['/en', 'en', /^Freelance developer: web, mobile and AI · josecoded$/],
-  ['/servicios', 'es', /^Servicios · josecoded$/],
-  ['/en/services', 'en', /^Services · josecoded$/],
+  ['/servicios', 'es', /^Servicios y precios: por horas, encargo y packs · josecoded$/],
+  ['/en/services', 'en', /^Services and pricing: hourly, fixed-price, packs · josecoded$/],
 ];
 
 for (const [path, lang, expected] of titled) {

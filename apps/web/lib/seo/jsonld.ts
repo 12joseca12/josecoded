@@ -132,6 +132,8 @@ export interface ServicesJsonLdInput {
   /** Absolute URL of the services page in this locale (the `?pack=` links and anchors hang from it). */
   servicesUrl: string;
   labels: { hourly: string; fixed: string; packs: string };
+  /** The `id` of each way's section in this language (`por-hora` / `hourly`). The anchors are not the same in es and en. */
+  anchors?: { hourly: string; fixed: string; packs: string };
 }
 
 const EUR = 'EUR';
@@ -152,7 +154,7 @@ const offerName = (text: { es: string; en: string }, locale: Locale, fallback: s
  * extended one as a sixth offer). Prices exclude VAT (`valueAddedTaxIncluded: false`) and carry no `price` for packs,
  * only `minPrice`: they are "from" prices.
  */
-export function serviceOfferJsonLd({ siteUrl, locale, pricing, servicesUrl, labels }: ServicesJsonLdInput): JsonLdNode[] {
+export function serviceOfferJsonLd({ siteUrl, locale, pricing, servicesUrl, labels, anchors = { hourly: 'hourly', fixed: 'fixed', packs: 'packs' } }: ServicesJsonLdInput): JsonLdNode[] {
   const provider = { '@id': ids(siteUrl).person };
   const common = { provider, areaServed: 'ES' } as const;
 
@@ -160,18 +162,18 @@ export function serviceOfferJsonLd({ siteUrl, locale, pricing, servicesUrl, labe
     '@type': 'Offer',
     itemOffered: { '@type': 'Service', name: offerName(name, locale, code) },
     priceSpecification: minPrice(price),
-    url: `${servicesUrl}?pack=${query}#packs`,
+    url: `${servicesUrl}?pack=${query}#${anchors.packs}`,
   });
   const [appMvp, appPlus] = pricing.apps;
 
   return [
     {
       '@type': 'Service',
-      '@id': `${servicesUrl}#hourly`,
+      '@id': `${servicesUrl}#${anchors.hourly}`,
       name: labels.hourly,
       serviceType: 'Software development',
       ...common,
-      url: `${servicesUrl}#hourly`,
+      url: `${servicesUrl}#${anchors.hourly}`,
       offers: {
         '@type': 'Offer',
         priceSpecification: {
@@ -185,20 +187,20 @@ export function serviceOfferJsonLd({ siteUrl, locale, pricing, servicesUrl, labe
     },
     {
       '@type': 'Service',
-      '@id': `${servicesUrl}#fixed`,
+      '@id': `${servicesUrl}#${anchors.fixed}`,
       name: labels.fixed,
       serviceType: 'Software development',
       ...common,
-      url: `${servicesUrl}#fixed`,
+      url: `${servicesUrl}#${anchors.fixed}`,
       offers: { '@type': 'Offer', priceSpecification: minPrice(pricing.feature) },
     },
     {
       '@type': 'Service',
-      '@id': `${servicesUrl}#packs`,
+      '@id': `${servicesUrl}#${anchors.packs}`,
       name: labels.packs,
       serviceType: 'Web and mobile app development',
       ...common,
-      url: `${servicesUrl}#packs`,
+      url: `${servicesUrl}#${anchors.packs}`,
       hasOfferCatalog: {
         '@type': 'OfferCatalog',
         name: labels.packs,

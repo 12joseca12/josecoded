@@ -1,1 +1,10 @@
-{}
+{
+  "about": {
+    "identity": {
+      "full": "I am {name}, a freelance full-stack developer in {city}, Spain.",
+      "named": "I am {name}, a freelance full-stack developer in Spain.",
+      "city": "Freelance full-stack developer in {city}, Spain.",
+      "bare": "Freelance full-stack developer in Spain."
+    }
+  }
+}

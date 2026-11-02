@@ -1,0 +1,42 @@
+.list {
+  display: grid;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--sp-4);
+  align-items: start;
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-lg);
+  background: var(--tint-ghost);
+  box-shadow: var(--shadow-hairline);
+}
+
+.copy {
+  display: grid;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.label {
+  margin: 0;
+  font-weight: var(--font-cell-title-weight);
+}
+
+.description {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--font-label-size);
+}
+
+.price {
+  margin: 0;
+  color: var(--text);
+  font-weight: var(--font-emphasis-weight);
+  white-space: nowrap;
+}

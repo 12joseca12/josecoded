@@ -1,0 +1,27 @@
+.projects {
+  display: grid;
+  gap: var(--sp-gap-tcard);
+}
+
+@media (width >= 64rem) {
+  .projects {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.faqs {
+  display: grid;
+  gap: var(--sp-8);
+}
+
+.faqGroup {
+  display: grid;
+  gap: var(--sp-3);
+}
+
+.faqTitle {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--font-cell-title-size);
+  font-weight: var(--font-cell-title-weight);
+}

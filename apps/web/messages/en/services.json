@@ -1,5 +1,207 @@
 {
   "services": {
-    "title": "Services"
+    "title": "Services",
+    "meta": {
+      "title": "Services and pricing: hourly, fixed-price, packs",
+      "description": "Four ways to work with me: {hourly} per hour, fixed-price work from {feature}, website and app packs from {packFrom}, or hiring me. Prices published, VAT excluded."
+    },
+    "head": {
+      "lead": "Freelance developer, four ways to work.",
+      "accent": "Hourly, fixed-price, packs or inside your team.",
+      "citable": "{identity} I build websites with Next.js, apps with React Native and Expo, and AI integrations. You can hire me by the hour ({hourly}), for fixed-price work (from {feature}), with website and app packs (from {packFrom}) or as part of your staff. Prices exclude VAT.",
+      "proposal": "Ask for a rough proposal",
+      "seePacks": "See packs and prices"
+    },
+    "nav": {
+      "label": "Ways to work",
+      "hourly": "Hourly",
+      "fixed": "Fixed-price",
+      "packs": "Packs",
+      "hiring": "Hiring"
+    },
+    "ways": {
+      "hourly": {
+        "lead": "Hourly:",
+        "accent": "{price} inside your team",
+        "text": "I reinforce your team or your agency with web, mobile or AI development. An hour costs {price}, excluding VAT.",
+        "includesTitle": "What an hour includes",
+        "includes": {
+          "dev": "Development",
+          "consulting": "Consulting",
+          "audit": "Code audit",
+          "training": "In-house training"
+        },
+        "rateTitle": "Rate",
+        "rateNote": "Excluding VAT.",
+        "email": "Email"
+      },
+      "fixed": {
+        "lead": "Fixed-price work,",
+        "accent": "from {price}",
+        "text": "A feature whose scope, price and deadline are agreed before starting. For something bigger, look at the packs.",
+        "whatTitle": "What a closed feature is",
+        "what": "Scope, price and deadline are agreed before a line is written. Anything outside the scope is quoted separately, never charged by surprise.",
+        "priceNote": "Excluding VAT."
+      },
+      "packs": {
+        "lead": "Website and app packs,",
+        "accent": "from {price}",
+        "text": "A website or an app with a fixed price and deadline. Pick the pack closest to what you need and I will prepare the proposal.",
+        "indexTitle": "The five packs",
+        "note": "Prices are starting prices, excluding VAT. Domain, hosting and store accounts in your name."
+      },
+      "hiring": {
+        "lead": "Open to hiring:",
+        "accent": "in-house or long-term contractor",
+        "text": "{{DATO: honest sentence about hiring: in-house or long-term contractor, remote or on site (only if Jose wants it public)}}",
+        "stackTitle": "What I work with",
+        "stack": "TypeScript, Next.js, React Native, Expo, Supabase and Cloudflare Workers.",
+        "stackLink": "See stack and education",
+        "cardTitle": "Talk about a role"
+      }
+    },
+    "hiringCard": {
+      "cv": "Download CV (PDF)",
+      "assistant": "Ask the assistant",
+      "linkedin": "LinkedIn",
+      "email": "Email",
+      "copy": "Copy email",
+      "copied": "Email copied",
+      "failed": "Could not copy: select it by hand"
+    },
+    "compare": {
+      "caption": "Five packs, starting prices, excluding VAT",
+      "tabs": "Choose a pack",
+      "pack": "Pack",
+      "includes": "What it includes",
+      "forWhom": "Who it is for",
+      "weeks": "Timeline",
+      "price": "Price",
+      "from": "From {price}",
+      "request": "Ask for a proposal with this pack",
+      "requestName": "Ask for a proposal with this pack: {name} ({code})",
+      "option": "Extended option",
+      "optionIntro": "{name}: from {price} · {weeks}.",
+      "web": "Web",
+      "app": "App"
+    },
+    "packs": {
+      "P1": {
+        "includes": "Presentation website + contact + base SEO + legal texts. No management or orders."
+      },
+      "P2": {
+        "includes": "Everything in P1 + orders or bookings + basic management (add, edit and delete products or appointments). No internal panel."
+      },
+      "P3": {
+        "includes": "Everything in P2 + internal panel with roles: orders, customers, stock, schedule, exports, basic invoicing or a connection to one of your tools."
+      },
+      "P4": {
+        "includes": "Everything in P3 + automations (alerts, emails, WhatsApp, syncing with tools, reports) + AI (replies, classification, summaries)."
+      },
+      "P5": {
+        "includes": "iOS and Android app, 3 to 5 screens, user accounts, a simple server and publishing on the stores."
+      },
+      "P5plus": {
+        "name": "Extended app",
+        "includes": "Everything in the MVP + notifications, payments or a connection to your system's API."
+      }
+    },
+    "extras": {
+      "title": "Extras",
+      "lead": "Added to any pack. Prices exclude VAT.",
+      "monthly": "/month",
+      "oneOff": "one-off",
+      "names": {
+        "maintenance_basic": {
+          "label": "Basic maintenance",
+          "description": "Backups, dependency and security updates, and one round of content changes a month. No hosting."
+        },
+        "maintenance_extended": {
+          "label": "Extended maintenance",
+          "description": "Everything in basic + priority support (24 working hours), three rounds of changes, a monthly report and 2 hours of development a month that accumulate."
+        },
+        "seo_basic": {
+          "label": "Basic SEO",
+          "description": "Metadata, Google Business, sitemap and speed."
+        },
+        "seo_full": {
+          "label": "Full SEO",
+          "description": "Basic SEO + keywords, five optimized pages, internal linking and a report."
+        },
+        "geo": {
+          "label": "GEO",
+          "description": "Optimization for AI search and agents: structured data, llms.txt, citable content and directories."
+        },
+        "security_audit": {
+          "label": "Cybersecurity review",
+          "description": "Review of headers, dependencies, forms, permissions and backups; a report with the fixes applied."
+        }
+      }
+    },
+    "process": {
+      "title": "How I work",
+      "accent": "from the first call to delivery",
+      "steps": {
+        "talk": {
+          "title": "We talk",
+          "text": "A 20-minute call or a message: what you need and by when."
+        },
+        "proposal": {
+          "title": "Closed proposal",
+          "text": "Scope, price and deadline in writing before starting."
+        },
+        "demos": {
+          "title": "Weekly demo",
+          "text": "You see the progress every week and can steer in time."
+        },
+        "delivery": {
+          "title": "Delivery and 30 days",
+          "text": "Code and access in your name, and 30 days of warranty after delivery."
+        }
+      }
+    },
+    "proofs": {
+      "title": "Projects in use",
+      "accent": "linked to the store, the site or the code",
+      "all": "See all projects"
+    },
+    "facts": {
+      "title": "In short",
+      "terms": {
+        "what": "What I do",
+        "where": "Where",
+        "stack": "Stack",
+        "rates": "Rates",
+        "ways": "How to hire me",
+        "languages": "Languages"
+      },
+      "what": "Websites with Next.js, apps with React Native and Expo, AI integrations",
+      "whereCity": "{city} and remote",
+      "whereRemote": "Remote, from Spain",
+      "stack": "TypeScript, Next.js, React Native, Expo, Supabase, Cloudflare Workers",
+      "rates": "{hourly} per hour · from {feature} fixed-price · packs from {packFrom} (excluding VAT)",
+      "ways": "Hourly, fixed-price, with packs or as staff",
+      "languages": "Spanish and English"
+    },
+    "faq": {
+      "title": "Questions about each",
+      "accent": "way to work",
+      "ways": {
+        "hourly": "Hourly",
+        "fixed": "Fixed-price work",
+        "packs": "Website and app packs",
+        "hiring": "Hiring"
+      }
+    },
+    "closing": {
+      "lead": "Not sure where to start?",
+      "accent": "Tell me and I will say which way fits.",
+      "more": "Other ways to talk"
+    },
+    "sticky": {
+      "label": "Quick actions for the packs",
+      "whatsapp": "WhatsApp",
+      "proposal": "Proposal"
+    }
   }
 }
