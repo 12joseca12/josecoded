@@ -1,0 +1,9 @@
+.wrap {
+  display: grid;
+  gap: var(--sp-gap-scene);
+}
+
+.list {
+  display: grid;
+  gap: var(--sp-gap-tcard);
+}

@@ -1,1 +1,66 @@
-{}
+{
+  "projects": {
+    "title": "Projects",
+    "meta": {
+      "title": "Projects: apps and websites in use",
+      "description": "Apps and websites I built that are in use: 3cat, 3catinfo and josecoded.com. Linked to the store, the site or the code.",
+      "fallbackDescription": "{name}: a josecoded project in use."
+    },
+    "head": {
+      "lead": "Projects in use.",
+      "accent": "Linked to the store, the site or the code.",
+      "citable": "Apps and websites I built that are in use. Each project has its own page with the challenge, what I did and a link to the store or the site, with no figures or metrics."
+    },
+    "filter": {
+      "legend": "Project type",
+      "all": "All",
+      "app": "Apps",
+      "web": "Websites",
+      "empty": "There are no projects of this type yet.",
+      "emptyText": "Try another filter.",
+      "reset": "See all"
+    },
+    "kind": {
+      "app": "App",
+      "web": "Web"
+    },
+    "status": {
+      "in-use": "in use",
+      "published": "published",
+      "private": "private"
+    },
+    "card": {
+      "view": "See project",
+      "viewNamed": "View project {name}"
+    },
+    "case": {
+      "titleApp": "{name}: app {status}",
+      "titleWeb": "{name}: website {status}",
+      "headTail": "{kind} {status}.",
+      "challenge": "The challenge",
+      "work": "What I did",
+      "result": "Result",
+      "stack": "Stack",
+      "gallery": "Screenshots",
+      "galleryAlt": "Screenshot {n} of {name}",
+      "proof": {
+        "appStore": "See on the App Store",
+        "play": "See on Google Play",
+        "web": "Visit the site",
+        "repo": "See the code"
+      },
+      "links": "Links of {name}",
+      "pager": "More projects",
+      "prev": "Previous",
+      "next": "Next",
+      "closing": {
+        "lead": "Shall we talk about a project like this?",
+        "accent": "Tell me what you need.",
+        "cta": "Ask for a rough proposal",
+        "more": "Other ways to talk"
+      },
+      "breadcrumb": "Projects",
+      "home": "Home"
+    }
+  }
+}

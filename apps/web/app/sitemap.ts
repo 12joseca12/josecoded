@@ -1,4 +1,6 @@
+import { projects } from '@/content/projects';
 import { getPathname } from '@/i18n/navigation';
+import { hasOneLiner } from '@/lib/content/projects';
 import { getSectionAvailability } from '@/lib/content/sections';
 import { sitemapPages, toSitemapEntries } from '@/lib/seo/sitemap';
 import { isIndexableSite, siteUrl } from '@/lib/seo/urls';
@@ -14,5 +16,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     const path = getPathname({ href: pathname, locale });
     return `${siteUrl()}${path === '/' ? '' : path}`;
   };
-  return toSitemapEntries(sitemapPages(getSectionAvailability(), urlOf));
+  // a case study joins the sitemap once its sentence is real (a sheet that still holds a marker is noindex)
+  const cases = projects
+    .filter((project) => hasOneLiner(project, 'es') && hasOneLiner(project, 'en'))
+    .map((project) => {
+      const urlFor = (locale: 'es' | 'en') =>
+        `${siteUrl()}${getPathname({ href: { pathname: '/proyectos/[slug]', params: { slug: project.slug } }, locale })}`;
+      return { urls: { es: urlFor('es'), en: urlFor('en') } };
+    });
+  return toSitemapEntries(sitemapPages(getSectionAvailability(), urlOf, cases));
 }
