@@ -11,6 +11,7 @@ import { getTranslator } from "@/i18n/messages";
 import { buttonVariants, linkVariants } from "@/types/ui";
 
 import styles from "./page.module.css";
+import { StatesDemo } from "./states-demo";
 
 export const dynamic = "force-dynamic";
 
@@ -90,6 +91,49 @@ export default async function UiCatalogPage({ params }: { params: Promise<{ loca
         </Heading>
         <Heading level={4}>{t("dev.ui.headingSmall")}</Heading>
       </section>
+
+      <StatesDemo
+        labels={{
+          skeleton: t("dev.ui.skeleton"),
+          skeletonText: t("dev.ui.skeletonText"),
+          skeletonBlock: t("dev.ui.skeletonBlock"),
+          skeletonCircle: t("dev.ui.skeletonCircle"),
+          loadingRegion: t("dev.ui.loadingRegion"),
+          loadingRegionLabel: t("dev.ui.loadingRegionLabel"),
+          toggleLoading: t("dev.ui.toggleLoading"),
+          loadedContent: t("dev.ui.loadedContent"),
+          empty: t("dev.ui.empty"),
+          emptyTitle: t("dev.ui.emptyTitle"),
+          emptyText: t("dev.ui.emptyText"),
+          emptyAction: t("dev.ui.emptyAction"),
+          error: t("dev.ui.error"),
+          errorTitle: t("dev.ui.errorTitle"),
+          errorText: t("dev.ui.errorText"),
+          errorRetry: t("dev.ui.errorRetry"),
+          errorRetried: t("dev.ui.errorRetried"),
+          loading: t("dev.ui.loading"),
+          toasts: t("dev.ui.toasts"),
+          toastRegion: t("dev.ui.toastRegion"),
+          toastClose: t("dev.ui.toastClose"),
+          tones: {
+            success: {
+              trigger: t("dev.ui.toastSuccess"),
+              title: t("dev.ui.toastSuccessTitle"),
+              text: t("dev.ui.toastSuccessText"),
+            },
+            error: {
+              trigger: t("dev.ui.toastError"),
+              title: t("dev.ui.toastErrorTitle"),
+              text: t("dev.ui.toastErrorText"),
+            },
+            info: {
+              trigger: t("dev.ui.toastInfo"),
+              title: t("dev.ui.toastInfoTitle"),
+              text: t("dev.ui.toastInfoText"),
+            },
+          },
+        }}
+      />
     </main>
   );
 }
