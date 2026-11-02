@@ -1,4 +1,5 @@
 export type MessageKey =
+  | "dev.prose.title"
   | "dev.scroll.block"
   | "dev.scroll.intro"
   | "dev.scroll.more"

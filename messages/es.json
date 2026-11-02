@@ -76,6 +76,9 @@
       "short": "Bloque corto: ocupa una pantalla.",
       "block": "Bloque",
       "more": "Más contenido del bloque alto para recorrer con la rueda."
+    },
+    "prose": {
+      "title": "Prosa: contenido MDX"
     }
   }
 }

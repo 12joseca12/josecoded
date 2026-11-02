@@ -76,6 +76,9 @@
       "short": "Short block: fills one screen.",
       "block": "Block",
       "more": "More content of the tall block to travel with the wheel."
+    },
+    "prose": {
+      "title": "Prose: MDX content"
     }
   }
 }
