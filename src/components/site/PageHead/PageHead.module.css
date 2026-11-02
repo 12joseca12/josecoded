@@ -1,0 +1,14 @@
+.head {
+  display: grid;
+  gap: var(--space-5);
+  width: 100%;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding: calc(var(--nav-h) + var(--space-7)) var(--gutter) var(--space-7);
+}
+
+.lead {
+  max-width: 38rem;
+  color: var(--ink-soft);
+  font-size: var(--fs-lead);
+}

@@ -147,5 +147,67 @@
     "privacy": "Privacidad",
     "cookies": "Cookies",
     "copyright": "© 2026 Jose · Full stack, React Native e IA"
+  },
+  "services": {
+    "meta": {
+      "title": "Servicios | josecoded"
+    },
+    "head": {
+      "title": "Tres formas de",
+      "accent": "trabajar juntos.",
+      "lead": "En plantilla, como freelance o con un pack cerrado. Tú eliges cómo, yo me encargo de que llegue a producción."
+    },
+    "nav": {
+      "label": "Vías de trabajo"
+    },
+    "audience": "Para quién",
+    "ways": {
+      "contratacion": {
+        "nav": "Contratación",
+        "title": "Contratación",
+        "text": "Me incorporo a tu equipo de producto móvil o web y me hago cargo de una parte del producto de principio a fin.",
+        "audience": "Equipos que buscan un perfil que una diseño, desarrollo y publicación.",
+        "bullets": {
+          "a": "React Native y web con TypeScript",
+          "b": "Revisión de código, pruebas e integración continua desde el primer día",
+          "c": "Producto en producción, no solo en el prototipo"
+        },
+        "cv": "Descargar CV",
+        "chat": "Hablar conmigo"
+      },
+      "freelance": {
+        "nav": "Freelance",
+        "title": "Freelance",
+        "text": "Una funcionalidad, una auditoría o un empujón a un proyecto que ya existe, con el alcance acordado antes de empezar.",
+        "audience": "Equipos y negocios con una tarea concreta que no justifica una contratación.",
+        "bullets": {
+          "a": "Tarifa por hora o presupuesto por tarea",
+          "b": "Entregas cortas que puedes probar",
+          "c": "Seguimiento del avance en tiempo real"
+        },
+        "cta": "Pedir propuesta"
+      },
+      "packs": {
+        "nav": "Packs",
+        "title": "Packs web y app",
+        "text": "Diseño, desarrollo y publicación con alcance, precio y fecha definidos de antemano.",
+        "audience": "Quien necesita una web o una app completa sin gestionar el proyecto por piezas.",
+        "bullets": {
+          "a": "Web, app o las dos",
+          "b": "Publicación en tiendas y dominio incluida",
+          "c": "Mantenimiento opcional después"
+        },
+        "view": "Ver packs",
+        "cta": "Hablar de un pack"
+      }
+    },
+    "rates": {
+      "label": "Tarifas",
+      "hour": "Por hora",
+      "task": "Por tarea",
+      "unitHour": "€ / hora",
+      "unitTask": "€ / tarea",
+      "note": "Orientativas: el importe final se acuerda antes de empezar."
+    }
   }
 }
