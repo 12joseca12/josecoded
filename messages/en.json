@@ -105,6 +105,35 @@
     },
     "prose": {
       "title": "Prose: MDX content"
+    },
+    "errors": {
+      "title": "Error pages",
+      "recovered": "Recovered"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "This page does not exist",
+      "text": "The link is broken or the page has moved. You can go back home or see the projects."
+    },
+    "serverError": {
+      "title": "Something went wrong",
+      "text": "An unexpected error happened. You can try again or go back home."
+    },
+    "rateLimited": {
+      "title": "Too many requests",
+      "text": "You made many requests in a row. Wait a moment and try again."
+    },
+    "maintenance": {
+      "title": "Back soon",
+      "text": "The site is under maintenance. Come back in a few minutes."
+    },
+    "actions": {
+      "home": "Back to home",
+      "projects": "See projects",
+      "chat": "Open the chat",
+      "retry": "Try again",
+      "retrying": "Retrying"
     }
   }
 }

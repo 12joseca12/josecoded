@@ -105,6 +105,35 @@
     },
     "prose": {
       "title": "Prosa: contenido MDX"
+    },
+    "errors": {
+      "title": "Páginas de error",
+      "recovered": "Recuperado"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "Esta pantalla no existe",
+      "text": "El enlace está roto o la página se ha movido. Puedes volver al inicio o ver los proyectos."
+    },
+    "serverError": {
+      "title": "Algo ha fallado",
+      "text": "Ha ocurrido un error inesperado. Puedes reintentar o volver al inicio."
+    },
+    "rateLimited": {
+      "title": "Demasiadas peticiones",
+      "text": "Has hecho muchas peticiones seguidas. Espera un momento y vuelve a intentarlo."
+    },
+    "maintenance": {
+      "title": "Volvemos enseguida",
+      "text": "La web está en mantenimiento. Vuelve en unos minutos."
+    },
+    "actions": {
+      "home": "Volver al inicio",
+      "projects": "Ver proyectos",
+      "chat": "Abrir el chat",
+      "retry": "Reintentar",
+      "retrying": "Reintentando"
     }
   }
 }
