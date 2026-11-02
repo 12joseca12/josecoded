@@ -25,7 +25,7 @@ export default tseslint.config(
   {
     languageOptions: {
       parserOptions: {
-        projectService: { allowDefaultProject: ["*.js"] },
+        projectService: { allowDefaultProject: ["*.js", "scripts/*.js"] },
         tsconfigRootDir: import.meta.dirname,
       },
     },
@@ -46,6 +46,10 @@ export default tseslint.config(
       "simple-import-sort/imports": "error",
       "simple-import-sort/exports": "error",
     },
+  },
+  {
+    files: ["src/**/*.tsx"],
+    rules: { "react/jsx-no-literals": ["error", { noStrings: true, ignoreProps: true }] },
   },
   {
     files: ["**/*.js"],
