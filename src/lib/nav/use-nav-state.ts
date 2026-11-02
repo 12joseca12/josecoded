@@ -12,7 +12,7 @@ export interface NavState {
 
 const initial: NavState = { scrolled: false, condensed: false, section: null };
 
-function readBlocks(): BlockBounds[] {
+export function readBlocks(): BlockBounds[] {
   return [...document.querySelectorAll<HTMLElement>("[data-block][id]")].map((element) => {
     const rect = element.getBoundingClientRect();
     return { id: element.id, top: rect.top, bottom: rect.bottom };

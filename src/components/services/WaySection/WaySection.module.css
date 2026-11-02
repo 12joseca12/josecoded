@@ -1,0 +1,63 @@
+.way {
+  display: flex;
+  align-items: center;
+  min-height: 100svh;
+  padding: calc(var(--nav-h) + 5.5rem) 0 var(--space-8);
+  border-top: 1px solid var(--line);
+}
+
+.body {
+  display: grid;
+  gap: var(--space-5);
+  width: 100%;
+  max-width: 44rem;
+}
+
+.text {
+  color: var(--ink);
+  font-size: var(--fs-lead);
+}
+
+.audience {
+  color: var(--ink-soft);
+}
+
+.audience strong {
+  color: var(--ink);
+  font-weight: var(--fw-semibold);
+}
+
+.bullets {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.bullets li {
+  position: relative;
+  padding-left: var(--space-5);
+}
+
+.bullets li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: var(--radius-xs);
+  background: var(--coral);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  padding-top: var(--space-2);
+}
+
+@media (min-width: 64rem) {
+  .way {
+    padding-top: calc(var(--nav-h) + var(--space-6));
+  }
+}
