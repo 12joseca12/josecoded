@@ -1,0 +1,40 @@
+.inner {
+  display: grid;
+  gap: var(--sp-gap-tcopy);
+  padding: var(--sp-pad-cell);
+}
+
+.inner > * {
+  margin: 0;
+}
+
+.title {
+  color: var(--text);
+  font-size: var(--font-title-size);
+  font-weight: var(--font-title-weight);
+  letter-spacing: var(--font-title-tracking);
+  line-height: var(--font-title-leading);
+}
+
+.text {
+  max-width: var(--size-measure-prose);
+  color: var(--text-2);
+  font-size: var(--font-body-size);
+  line-height: var(--font-body-leading);
+}
+
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--sp-3);
+}
+
+.form > :first-child {
+  flex: 1 1 16rem;
+}
+
+.soon {
+  color: var(--text-3);
+  font-size: var(--font-small-size);
+}

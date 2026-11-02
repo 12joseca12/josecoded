@@ -158,6 +158,17 @@ describe('other nodes', () => {
     expect(post).toMatchObject({ '@type': ['BlogPosting', 'TechArticle'], author: { '@id': ids(siteUrl).person } });
   });
 
+  it('the article has its own @id, belongs to the WebSite and carries keywords and level when it has them', () => {
+    const post = blogPostingJsonLd({ siteUrl, locale: 'en', url: `${siteUrl}/en/blog/x`, headline: 'h', description: 'd', datePublished: '2026-10-01', dateModified: '2026-10-01', keywords: ['nextjs', 'i18n'], proficiencyLevel: 'Intermediate' });
+    expect(post).toMatchObject({ '@id': `${siteUrl}/en/blog/x#article`, isPartOf: { '@id': ids(siteUrl).website }, keywords: 'nextjs, i18n', proficiencyLevel: 'Intermediate', inLanguage: 'en' });
+  });
+
+  it('a pending description is dropped, never published', () => {
+    const post = blogPostingJsonLd({ siteUrl, locale: 'es', url: `${siteUrl}/blog/x`, headline: 'h', description: '{{DATO: frase}}', datePublished: '2026-10-01', dateModified: '2026-10-01' });
+    expect(post).not.toHaveProperty('description');
+    expect(JSON.stringify(post)).not.toContain('DATO');
+  });
+
   it('serialises without a way out of the script element', () => {
     const html = serializeJsonLd(graphOf({ '@type': 'Thing', name: '</script><script>alert(1)</script>' }));
     expect(html).not.toContain('</script>');

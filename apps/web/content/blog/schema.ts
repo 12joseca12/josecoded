@@ -21,6 +21,8 @@ export const frontmatterSchema = z.strictObject({
   kind: z.enum(['guide', 'note']).default('guide'),
   tags: z.array(z.string().trim().min(1).max(30)).max(5).default([]),
   readingMinutes: z.number().int().min(1).max(120),
+  /** Who the guide is for (TechArticle `proficiencyLevel`); left out when not stated. */
+  level: z.enum(['beginner', 'intermediate', 'advanced']).optional(),
   /** The lab demo this guide explains, for «Probar la demo →». */
   labSlug: z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/).optional(),
 });
@@ -35,6 +37,8 @@ export const blogPostMetaSchema = frontmatterSchema.extend({
   pending: z.boolean(),
   /** The same slug exists in the other language. */
   hasTranslation: z.boolean(),
+  /** The `h2` of the body for the page's table of contents (content/blog/headings.ts). */
+  headings: z.array(z.object({ id: z.string().min(1), label: z.string().min(1) })).default([]),
 });
 
 export type BlogPostMeta = z.infer<typeof blogPostMetaSchema>;

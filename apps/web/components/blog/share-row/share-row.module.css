@@ -1,0 +1,12 @@
+.row {
+  display: grid;
+  gap: var(--sp-3);
+  max-width: var(--size-measure-prose);
+}
+
+.title {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--font-cell-title-size);
+  font-weight: var(--font-cell-title-weight);
+}

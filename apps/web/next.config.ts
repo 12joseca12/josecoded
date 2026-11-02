@@ -1,5 +1,6 @@
 import createMDX from '@next/mdx';
 import createNextIntlPlugin from 'next-intl/plugin';
+import { createCssVariablesTheme } from 'shiki';
 
 import { pathnames } from './i18n/pathnames';
 import { buildLocaleRules } from './i18n/route-rules';
@@ -11,7 +12,19 @@ const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
 // Guides (`content/blog/<locale>/<slug>.mdx`) are compiled at build when a page imports them, so the worker carries no MDX
 // compiler. Plugins go by name: Turbopack cannot receive functions. The YAML frontmatter is validated by
 // scripts/content-index.ts and only stripped here.
-const withMDX = createMDX({ options: { remarkPlugins: ['remark-frontmatter', 'remark-gfm'], rehypePlugins: ['rehype-slug'] } });
+// Code is highlighted at build (shiki through rehype-pretty-code) with the CSS-variables theme: tokens carry
+// `var(--shiki-token-*)`, which prose.module.css maps to the palette, so no colour is written here. Headings get an
+// id (rehype-slug) and are wrapped in a link to themselves (rehype-autolink-headings), in that order.
+const withMDX = createMDX({
+  options: {
+    remarkPlugins: ['remark-frontmatter', 'remark-gfm'],
+    rehypePlugins: [
+      'rehype-slug',
+      ['rehype-autolink-headings', { behavior: 'wrap', properties: { 'data-heading-link': '' } }],
+      ['rehype-pretty-code', { theme: createCssVariablesTheme({ name: 'josecoded', variablePrefix: '--shiki-' }), keepBackground: false }],
+    ],
+  },
+});
 const { rewrites, redirects } = buildLocaleRules(pathnames);
 
 const config: NextConfig = {

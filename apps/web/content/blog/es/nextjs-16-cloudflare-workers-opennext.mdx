@@ -18,6 +18,17 @@ tags: [nextjs, cloudflare, i18n]
 
 \{\{DATO: explicación con el código de rewrites y redirects de josecoded.com\}\}
 
+```ts title="next.config.ts"
+const { rewrites, redirects } = buildLocaleRules(pathnames);
+
+export default {
+  // i18n without middleware: rules derived from `pathnames`
+  async rewrites() {
+    return { beforeFiles: rewrites, afterFiles: [], fallback: [] };
+  },
+};
+```
+
 ## ¿Qué cambia en el despliegue con OpenNext?
 
 | Paso | Local | Cloudflare |

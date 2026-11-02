@@ -287,13 +287,15 @@ export function blogPostingJsonLd(post: {
   datePublished: string;
   dateModified: string;
   image?: string;
-  proficiencyLevel?: 'Beginner' | 'Expert';
+  proficiencyLevel?: 'Beginner' | 'Intermediate' | 'Expert';
+  keywords?: readonly string[];
 }): JsonLdNode {
-  const { person, organization } = ids(post.siteUrl);
+  const { person, organization, website } = ids(post.siteUrl);
   return compact({
     '@type': ['BlogPosting', 'TechArticle'],
+    '@id': `${post.url}#article`,
     headline: post.headline,
-    description: post.description,
+    description: hasDato(post.description) ? post.description : undefined,
     datePublished: post.datePublished,
     dateModified: post.dateModified,
     author: { '@id': person },
@@ -301,6 +303,8 @@ export function blogPostingJsonLd(post: {
     image: post.image,
     inLanguage: post.locale,
     proficiencyLevel: post.proficiencyLevel,
+    keywords: post.keywords?.length ? post.keywords.join(', ') : undefined,
+    isPartOf: { '@id': website },
     mainEntityOfPage: post.url,
   });
 }

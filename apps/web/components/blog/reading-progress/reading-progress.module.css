@@ -1,0 +1,27 @@
+.bar {
+  display: none;
+}
+
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .bar {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: var(--z-header);
+      display: block;
+      height: var(--stroke-line-active);
+      background: var(--violet);
+      transform: scaleX(0);
+      transform-origin: left;
+      pointer-events: none;
+      animation: read var(--ease-linear) both;
+      animation-timeline: scroll(root block);
+    }
+  }
+}
+
+@keyframes read {
+  to {
+    transform: scaleX(1);
+  }
+}

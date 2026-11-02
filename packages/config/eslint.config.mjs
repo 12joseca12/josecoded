@@ -133,6 +133,8 @@ const boundaries = [
     rules: restrict(without('messages', 'dynamicImports')),
   },
   { files: ['packages/glyph-scene/**'], rules: restrict(without('three', 'dynamicImports')) },
+  // the guides: `content/blog/<locale>/<slug>.mdx` is a closed list compiled at build
+  { files: ['apps/web/lib/content/guide-loader.ts'], rules: restrict(without('dynamicImports')) },
   {
     files: ['apps/web/lib/supabase/**', 'apps/api/src/adapters/**', 'apps/web/tests/helpers/**'],
     rules: restrict(without('supabase')),

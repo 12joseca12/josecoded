@@ -24,6 +24,51 @@
     "empty": {
       "title": "Todavía no hay guías.",
       "text": "Vuelve pronto: las primeras están en camino."
+    },
+    "article": {
+      "crumb": "Guías",
+      "back": "Todas las guías",
+      "contents": "En esta guía",
+      "updated": "Actualizada el {date}",
+      "level": {
+        "label": "Nivel",
+        "beginner": "Básico",
+        "intermediate": "Intermedio",
+        "advanced": "Avanzado"
+      },
+      "otherLanguage": {
+        "note": "Esta guía está escrita en {language}.",
+        "link": "Ver la web en {language}",
+        "es": "español",
+        "en": "inglés"
+      },
+      "fallbackDescription": "Guía técnica de Jose con el código que uso en producción.",
+      "share": {
+        "title": "Compartir la guía",
+        "label": "Enlace a la guía",
+        "copy": "Copiar enlace",
+        "copied": "Enlace copiado",
+        "failed": "No se pudo copiar solo: el enlace está seleccionado para que lo copies."
+      },
+      "demo": {
+        "title": "Pruébalo tú",
+        "text": "Esta guía tiene una demo en vivo.",
+        "cta": "Probar la demo"
+      },
+      "notify": {
+        "title": "Avísame de nuevas guías",
+        "text": "Un correo cuando publique una guía nueva. Nada más.",
+        "email": "Correo electrónico",
+        "submit": "Avisarme",
+        "soon": "Muy pronto podrás apuntarte aquí.",
+        "name": "Avisarme de nuevas guías"
+      },
+      "closing": {
+        "lead": "¿Hablamos de algo así en tu proyecto?",
+        "accent": "Cuéntame qué necesitas.",
+        "cta": "Pedir propuesta orientativa",
+        "more": "Otras formas de hablar"
+      }
     }
   }
 }

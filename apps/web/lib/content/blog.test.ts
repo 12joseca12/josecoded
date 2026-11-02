@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { listPosts } from './blog';
+import { listPosts, resolvePost } from './blog';
 
 import type { BlogPostMeta } from '@/content/blog/schema';
 
@@ -15,6 +15,7 @@ const post = (slug: string, locale: 'es' | 'en', date: string, extra: Partial<Bl
   readingMinutes: 5,
   pending: false,
   hasTranslation: false,
+  headings: [],
   ...extra,
 });
 
@@ -43,5 +44,22 @@ describe('listPosts', () => {
 
   it('leaves out the pending ones when they must not show', () => {
     expect(listPosts(index, 'es', { pending: false }).map((p) => p.slug)).toEqual(['only-en', 'both']);
+  });
+});
+
+describe('resolvePost', () => {
+  it('returns the guide in the page language', () => {
+    expect(resolvePost(index, 'en', 'both', { pending: false })).toMatchObject({ locale: 'en', fallback: false });
+  });
+
+  it('falls back to the other language when the translation is missing, and says so', () => {
+    expect(resolvePost(index, 'es', 'only-en', { pending: false })).toMatchObject({ locale: 'en', fallback: true });
+    expect(resolvePost(index, 'en', 'only-en', { pending: false })).toMatchObject({ locale: 'en', fallback: false });
+  });
+
+  it('is undefined for an unknown slug and for a pending guide where pending texts do not show', () => {
+    expect(resolvePost(index, 'es', 'nope', { pending: true })).toBeUndefined();
+    expect(resolvePost(index, 'es', 'draft', { pending: false })).toBeUndefined();
+    expect(resolvePost(index, 'es', 'draft', { pending: true })).toMatchObject({ slug: 'draft' });
   });
 });

@@ -12,6 +12,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { contentIndexSchema } from '@josecoded/types';
 
 import { frontmatterBlock, parseFrontmatter } from '../content/blog/frontmatter.ts';
+import { extractHeadings } from '../content/blog/headings.ts';
 import { BLOG_LOCALES, blogIndexSchema } from '../content/blog/schema.ts';
 import { rankProjects } from '../content/projects/rank.ts';
 import { projectSchema } from '../content/projects/schema.ts';
@@ -86,7 +87,7 @@ export function computeBlogIndex({ contentRoot }: { contentRoot: string }): Blog
     for (const name of readdirSync(dir).filter((f) => /\.mdx?$/.test(f))) {
       const text = readFileSync(join(dir, name), 'utf8');
       try {
-        found.push({ ...parseFrontmatter(text), slug: name.replace(/\.mdx?$/, ''), locale, pending: isPending(text, false) });
+        found.push({ ...parseFrontmatter(text), slug: name.replace(/\.mdx?$/, ''), locale, pending: isPending(text, false), headings: extractHeadings(text) });
       } catch (error) {
         throw new Error(`blog/${locale}/${name}: ${error instanceof Error ? error.message : String(error)}`, { cause: error });
       }

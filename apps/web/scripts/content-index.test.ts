@@ -84,6 +84,14 @@ describe('computeBlogIndex', () => {
     expect(computeBlogIndex({ contentRoot: root }).posts[0]).toMatchObject({ pending: true, tags: ['x'] });
   });
 
+  it('carries the h2 of the body for the table of contents', () => {
+    const root = fixture({ 'blog/es/a.mdx': `${guide('A', '2026-10-01')}\n## En resumen\n\ntexto\n\n## Preguntas\n` });
+    expect(computeBlogIndex({ contentRoot: root }).posts[0]?.headings).toEqual([
+      { id: 'en-resumen', label: 'En resumen' },
+      { id: 'preguntas', label: 'Preguntas' },
+    ]);
+  });
+
   it('fails the build on an invalid frontmatter, naming the file', () => {
     const root = fixture({ 'blog/es/rota.mdx': '---\ntitle: A\n---\nx' });
     expect(() => computeBlogIndex({ contentRoot: root })).toThrow(/blog\/es\/rota\.mdx/);
