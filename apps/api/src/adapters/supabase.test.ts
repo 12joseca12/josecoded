@@ -63,6 +63,25 @@ describe('SupabaseGateway.isAdmin and the service client', () => {
     expect(sb.requests).toContain('GET http://127.0.0.1:54321/rest/v1/staff_members');
   });
 
+  it('a deactivated admin is not an admin', async () => {
+    const { sb, gateway } = setup();
+    sb.staff.add('u-jose');
+    sb.disabledStaff.add('u-jose');
+    expect(await gateway.isAdmin('u-jose')).toBe(false);
+  });
+
+  it('staffRole: admin and closer when active, null for a deactivated closer and for anyone else', async () => {
+    const { sb, gateway } = setup();
+    sb.staff.add('u-jose');
+    sb.closers.add('u-carla');
+    sb.closers.add('u-dani');
+    sb.disabledStaff.add('u-dani');
+    expect(await gateway.staffRole('u-jose')).toBe('admin');
+    expect(await gateway.staffRole('u-carla')).toBe('closer');
+    expect(await gateway.staffRole('u-dani')).toBeNull();
+    expect(await gateway.staffRole('u-ana')).toBeNull();
+  });
+
   it('turns a PostgREST error into an exception', async () => {
     const sb = createFakeSupabase({ secret: 'another-secret-entirely' });
     const { gateway } = createSupabaseAdapters({ ...env, SUPABASE_SECRET_KEY: SECRET }, sb.fetch);

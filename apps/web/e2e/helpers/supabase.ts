@@ -25,7 +25,7 @@ export const MAIL_URL = process.env.SUPABASE_MAIL_URL ?? 'http://127.0.0.1:54324
 export async function signInAs(
   context: BrowserContext,
   baseURL: string,
-  name: 'jose' | 'ana' | 'bob' | 'sin',
+  name: 'jose' | 'ana' | 'bob' | 'sin' | 'carla' | 'dani',
 ): Promise<void> {
   const jar = new Map<string, string>();
   const client = createServerClient(LOCAL_URL, PUBLISHABLE_KEY, {

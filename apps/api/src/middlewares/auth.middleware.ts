@@ -4,11 +4,14 @@ import { createMiddleware } from 'hono/factory';
 
 import { fail } from '../utils/api-response';
 
+import type { StaffRole } from '../adapters/supabase';
 import type { AppEnv } from '../deps';
 import type { AuthUser } from '@josecoded/types';
 import type { Context } from 'hono';
 
 export type AuthEnv = AppEnv & { Variables: AppEnv['Variables'] & { user: AuthUser } };
+
+export type StaffEnv = AuthEnv & { Variables: AuthEnv['Variables'] & { staffRole: StaffRole } };
 
 function logAuthError(action: string, error: unknown): void {
   console.error(
@@ -62,5 +65,33 @@ export const requireAdmin = createMiddleware<AuthEnv>(async (c, next) => {
   if (c.env.ADMIN_REQUIRE_MFA !== 'false' && user.aal !== 'aal2') {
     return c.json(fail('forbidden', 'Second factor required', { reason: 'mfa_required' }), 403);
   }
+  await next();
+});
+
+/**
+ * Staff = `requireUser` + an ACTIVE `admin` or `closer` row in `staff_members` + `aal2` for both roles (DATOS
+ * §14.12.4, Q24). For any route that accepts a closer's JWT: RLS cannot see `aal`, so this is where an `aal1` session
+ * of a closer with an enrolled factor is stopped. Not staff (a deactivated closer included) is a 404, as in the web:
+ * the CRM does not exist for them. The second factor is required unless `ADMIN_REQUIRE_MFA` is exactly `'false'`.
+ * The role is left in `c.var.staffRole`; routes that are admin-only keep using `requireAdmin`.
+ */
+export const requireStaff = createMiddleware<StaffEnv>(async (c, next) => {
+  // StaffEnv only adds a variable that is set below, after authenticating
+  const denied = await authenticate(c as unknown as Context<AuthEnv>);
+  if (denied) return denied;
+  const user = c.var.user;
+
+  let role: StaffRole | null;
+  try {
+    role = await c.var.deps.supabase.staffRole(user.id);
+  } catch (error) {
+    logAuthError('staff-role-failed', error);
+    return c.json(fail('upstream_error', 'Could not check the staff role'), 502);
+  }
+  if (!role) return c.json(fail('not_found', 'Not found'), 404);
+  if (c.env.ADMIN_REQUIRE_MFA !== 'false' && user.aal !== 'aal2') {
+    return c.json(fail('forbidden', 'Second factor required', { reason: 'mfa_required' }), 403);
+  }
+  c.set('staffRole', role);
   await next();
 });

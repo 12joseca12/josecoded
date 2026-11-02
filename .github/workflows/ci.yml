@@ -142,7 +142,7 @@ jobs:
       # Runtime secrets of the preview (wrangler reads .dev.vars; it is git-ignored). Cloudflare's documented test secret
       # always passes, and the widget uses the always-pass test site key of the job env.
       - run: |
-          printf '%s\n' 'TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA' 'SERVER_KEY=e2e' 'CALCOM_WEBHOOK_SECRET=e2e' > apps/web/.dev.vars
+          printf '%s\n' 'TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA' 'SERVER_KEY=e2e' 'CALCOM_WEBHOOK_SECRET=e2e' 'ADMIN_REQUIRE_MFA=false' > apps/web/.dev.vars
       - run: pnpm build
         env:
           # the publishable key every local Supabase stack prints (the same default tests/helpers uses)

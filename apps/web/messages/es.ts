@@ -7,6 +7,7 @@ import auth from './es/auth.json';
 import blog from './es/blog.json';
 import common from './es/common.json';
 import contact from './es/contact.json';
+import crm from './es/crm.json';
 import dev from './es/dev.json';
 import home from './es/home.json';
 import lab from './es/lab.json';
@@ -27,6 +28,7 @@ const messages = {
   ...projects,
   ...blog,
   ...contact,
+  ...crm,
   ...dev,
   ...proposal,
   ...auth,

@@ -8,11 +8,19 @@ import type { RpcClient } from './scheduled-jobs';
 import type { Env } from '../types/env.types';
 import type { AuthUser, Database } from '@josecoded/types';
 
+export type StaffRole = 'admin' | 'closer';
+
+// `database.ts` predates migration 20261101100100 (`staff_members.disabled_at`): until it is regenerated on the Mac
+// (`pnpm --filter @josecoded/types db:types`) the column name is cast to a known one for the query builder only.
+const DISABLED_AT = 'disabled_at' as 'role';
+
 export interface SupabaseGateway {
   /** The user of a browser JWT, or `null` when Auth rejects it. Throws when Auth cannot be reached. */
   verifyUser(jwt: string): Promise<AuthUser | null>;
-  /** Whether `userId` has an `admin` row in `public.staff_members`. Needs `SUPABASE_SECRET_KEY`. */
+  /** Whether `userId` has an active (`disabled_at is null`) `admin` row in `public.staff_members`. Needs `SUPABASE_SECRET_KEY`. */
   isAdmin(userId: string): Promise<boolean>;
+  /** The role of an active staff member (`admin` or `closer`), `null` for anyone else, a deactivated closer included. */
+  staffRole(userId: string): Promise<StaffRole | null>;
   /** Service client (secret key, bypasses RLS). Throws without `SUPABASE_SECRET_KEY`. */
   admin(): SupabaseClient<Database>;
 }
@@ -88,9 +96,21 @@ export function createSupabaseAdapters(env: Env, fetchImpl: typeof fetch = fetch
         .select('user_id')
         .eq('user_id', userId)
         .eq('role', 'admin')
+        .is(DISABLED_AT, null)
         .limit(1);
       if (error) throw new Error(`staff_members: ${error.message}`);
       return Array.isArray(data) && data.length > 0;
+    },
+    async staffRole(userId) {
+      const { data, error } = await service()
+        .from('staff_members')
+        .select('role')
+        .eq('user_id', userId)
+        .is(DISABLED_AT, null)
+        .limit(1);
+      if (error) throw new Error(`staff_members: ${error.message}`);
+      const role: unknown = Array.isArray(data) ? data[0]?.role : undefined;
+      return role === 'admin' || role === 'closer' ? role : null;
     },
     admin: service,
   };

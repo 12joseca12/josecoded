@@ -30,6 +30,10 @@ export interface FakeSupabase {
   outbox: OutboxRow[];
   jobs: JobRow[];
   staff: Set<string>;
+  /** Active closers (`staff_members.role = 'closer'`). */
+  closers: Set<string>;
+  /** Staff rows with `disabled_at` set: never returned by a query that filters `disabled_at is null`. */
+  disabledStaff: Set<string>;
   users: FakeUser[];
   quota: Map<string, { count: number; expiresAt: number }>;
   /** Texts posted to Telegram, in order. */
@@ -63,6 +67,8 @@ export function createFakeSupabase(options: { url?: string; secret?: string; sta
     outbox: [],
     jobs: [],
     staff: new Set(),
+    closers: new Set(),
+    disabledStaff: new Set(),
     users: [],
     quota: new Map(),
     telegram: [],
@@ -196,7 +202,13 @@ export function createFakeSupabase(options: { url?: string; secret?: string; sta
       if (!secretOk) return json(401, { message: 'Invalid API key' });
       const userId = url.searchParams.get('user_id')?.replace(/^eq\./, '');
       const role = url.searchParams.get('role')?.replace(/^eq\./, '');
-      const rows = userId && role === 'admin' && state.staff.has(userId) ? [{ user_id: userId }] : [];
+      const activeOnly = url.searchParams.get('disabled_at') === 'is.null';
+      const isDisabled = userId !== undefined && state.disabledStaff.has(userId);
+      const myRole = userId === undefined ? undefined : state.staff.has(userId) ? 'admin' : state.closers.has(userId) ? 'closer' : undefined;
+      const rows =
+        userId && myRole && (role === undefined || role === myRole) && !(activeOnly && isDisabled)
+          ? [{ user_id: userId, role: myRole }]
+          : [];
       return json(200, rows);
     }
 

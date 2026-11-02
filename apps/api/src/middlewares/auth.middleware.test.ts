@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { describe, expect, it, vi } from 'vitest';
 
-import { requireAdmin, requireUser, type AuthEnv } from './auth.middleware';
+import { requireAdmin, requireStaff, requireUser, type AuthEnv, type StaffEnv } from './auth.middleware';
 import { createFakeClock } from '../../test/fakes/clock.fake';
 import { createFakeSupabaseGateway } from '../../test/fakes/supabase.fake';
 
@@ -98,5 +98,63 @@ describe('requireAdmin (DATOS Q3: staff_members + TOTP)', () => {
     const isAdmin = vi.spyOn(supabase, 'isAdmin');
     expect((await get(a, '/admin')).status).toBe(401);
     expect(isAdmin).not.toHaveBeenCalled();
+  });
+});
+
+describe('requireStaff (DATOS Q24: active admin or closer, aal2 for both)', () => {
+  const carla: AuthUser = { id: 'u-carla', email: 'carla@test', aal: 'aal2' };
+  const carlaNoTotp: AuthUser = { ...carla, aal: 'aal1' };
+  const dani: AuthUser = { id: 'u-dani', email: 'dani@test', aal: 'aal2' };
+
+  function staffApp() {
+    const supabase = createFakeSupabaseGateway(
+      { 't-jose': jose, 't-jose-aal1': joseNoTotp, 't-ana': ana, 't-carla': carla, 't-carla-aal1': carlaNoTotp, 't-dani': dani },
+      ['u-jose'],
+      ['u-carla'], // dani is a deactivated closer: the gateway never reports her
+    );
+    const a = new Hono<StaffEnv>();
+    a.use('*', async (c, next) => {
+      c.set('deps', { clock: createFakeClock(), supabase });
+      await next();
+    });
+    a.get('/staff', requireStaff, (c) => c.json({ role: c.var.staffRole, id: c.var.user.id }));
+    return { a: a as unknown as Hono<AuthEnv>, supabase };
+  }
+
+  it('lets an admin and an active closer through with aal2, leaving the role', async () => {
+    const { a } = staffApp();
+    const closer = await get(a, '/staff', 'Bearer t-carla');
+    expect(closer.status).toBe(200);
+    expect(await closer.json()).toEqual({ role: 'closer', id: 'u-carla' });
+    expect(await (await get(a, '/staff', 'Bearer t-jose')).json()).toEqual({ role: 'admin', id: 'u-jose' });
+  });
+
+  it('refuses a closer with a first-factor session (aal1) with mfa_required: no route accepts it', async () => {
+    const res = await get(staffApp().a, '/staff', 'Bearer t-carla-aal1');
+    expect(res.status).toBe(403);
+    expect(await res.json()).toMatchObject({ ok: false, error: { code: 'forbidden', details: { reason: 'mfa_required' } } });
+    expect((await get(staffApp().a, '/staff', 'Bearer t-jose-aal1')).status).toBe(403);
+  });
+
+  it('answers 404 for a client and for a deactivated closer, even with aal2', async () => {
+    expect((await get(staffApp().a, '/staff', 'Bearer t-ana')).status).toBe(404);
+    const res = await get(staffApp().a, '/staff', 'Bearer t-dani');
+    expect(res.status).toBe(404);
+    expect(await res.json()).toMatchObject({ error: { code: 'not_found' } });
+  });
+
+  it("lifts only the second factor when ADMIN_REQUIRE_MFA is exactly 'false'", async () => {
+    expect((await get(staffApp().a, '/staff', 'Bearer t-carla-aal1', { ADMIN_REQUIRE_MFA: 'false' })).status).toBe(200);
+    expect((await get(staffApp().a, '/staff', 'Bearer t-carla-aal1', { ADMIN_REQUIRE_MFA: 'False' })).status).toBe(403);
+    expect((await get(staffApp().a, '/staff', 'Bearer t-ana', { ADMIN_REQUIRE_MFA: 'false' })).status).toBe(404);
+  });
+
+  it('answers 401 without a session and 502 when the role cannot be checked', async () => {
+    const errors = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const { a, supabase } = staffApp();
+    expect((await get(a, '/staff')).status).toBe(401);
+    vi.spyOn(supabase, 'staffRole').mockRejectedValue(new Error('down'));
+    expect((await get(a, '/staff', 'Bearer t-carla')).status).toBe(502);
+    errors.mockRestore();
   });
 });
