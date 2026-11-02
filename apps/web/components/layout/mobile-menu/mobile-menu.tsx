@@ -7,7 +7,7 @@ import { MenuItem, MenuPanel } from '@/components/layout/menu-panel';
 import { useShell } from '@/components/layout/shell-provider';
 import { Icon } from '@/components/ui/icon';
 import { usePathname } from '@/i18n/navigation';
-import { currentFor } from '@/lib/layout/nav';
+import { currentFor } from '@/lib/layout/current';
 import { createDisclosure } from '@/lib/motion/disclosure';
 import { bp } from '@/styles/breakpoints';
 

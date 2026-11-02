@@ -1,11 +1,11 @@
 // Video mode (DT §1.6.3): every phone and small tablet, and any desktop without WebGL2. After the
-// LCP the sources are added (no `<source>` in the HTML: poster mode and Save-Data download nothing),
+// LCP, the page `load` and the first input (or a few seconds) the sources are added (no `<source>` in the HTML: poster mode and Save-Data download nothing),
 // `load()` waits for idle and `play()` follows at once (iOS Safari with `preload="none"` never fires
 // `canplay` without it). The stage turns `live` (poster hidden, bars shown) only when playback has
 // actually started (`playing`): if `play()` is refused (low-power mode) the poster stays and the bars
 // stay hidden. The clip is paused outside the viewport and with the tab hidden; the bars follow
 // `currentTime`.
-import { afterLcp, idle } from './after-lcp';
+import { afterLcp, afterLoadAndIntent, idle } from './after-lcp';
 import { createBarWriter } from './bars';
 import { barsAt } from './cycle-clock';
 
@@ -46,6 +46,7 @@ export function startVideo(el: HeroVideoElements, sources: VideoSources): () => 
 
   void (async () => {
     await afterLcp();
+    await afterLoadAndIntent(signal);
     if (signal.aborted) return;
     for (const [src, type] of [
       [sources.webm, 'video/webm; codecs="vp9"'],

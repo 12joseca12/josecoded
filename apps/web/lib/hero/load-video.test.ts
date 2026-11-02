@@ -2,7 +2,11 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
 import { startVideo } from './load-video';
 
-vi.mock('./after-lcp', () => ({ afterLcp: () => Promise.resolve(), idle: () => Promise.resolve() }));
+vi.mock('./after-lcp', () => ({
+  afterLcp: () => Promise.resolve(),
+  afterLoadAndIntent: () => Promise.resolve(),
+  idle: () => Promise.resolve(),
+}));
 
 const sources = { webm: '/v.webm', mp4: '/v.mp4' };
 

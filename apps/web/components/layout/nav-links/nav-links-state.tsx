@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 
 import { usePathname } from '@/i18n/navigation';
-import { currentFor } from '@/lib/layout/nav';
+import { currentFor } from '@/lib/layout/current';
 import { observeActiveSection } from '@/lib/motion/active-section';
 
 /**

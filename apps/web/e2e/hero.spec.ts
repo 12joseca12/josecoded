@@ -49,6 +49,10 @@ test.describe('hero · phone 390×844', () => {
     await hydrated(page, '#servicios input');
     await expect(page.locator('canvas')).toHaveCount(0);
     await expect(page.locator('[data-hero-stage] img').first()).toBeAttached();
+    // the clip stays out of the way of the poster (the LCP) until the page has loaded and a few seconds
+    // (or the first input) have passed
+    await expect(page.locator('[data-hero-stage] video source')).toHaveCount(0);
+    await expect(page.locator('[data-hero-stage] video source')).toHaveCount(2, { timeout: 12_000 });
     await expectNoAxeViolations(page, { name: 'hero-390', include: '#top', freeze: true });
   });
 });

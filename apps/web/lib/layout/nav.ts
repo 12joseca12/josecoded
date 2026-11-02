@@ -27,17 +27,4 @@ export function getNavItems(availability: SectionAvailability = getSectionAvaila
   return ALL.filter((item) => (item.key === 'lab' ? availability.lab : item.key === 'blog' ? availability.blog : true));
 }
 
-/** True when `pathname` is `href` or lives below it (`/proyectos/hazmefila` is inside `/proyectos`). */
-export function isInside(pathname: string | null, href: string): boolean {
-  return pathname !== null && (pathname === href || pathname.startsWith(`${href}/`));
-}
-
-/**
- * `aria-current` of a link for the page being shown. The exact page is `page`; a page inside the
- * section (a project detail) marks its section with `true`. The home marks nothing: its scenes
- * are shown with `data-here` instead, because the page itself is still the home (README §16.1).
- */
-export function currentFor(pathname: string | null, href: string): 'page' | 'true' | undefined {
-  if (pathname === href) return 'page';
-  return isInside(pathname, href) ? 'true' : undefined;
-}
+export { currentFor, isInside } from './current';
