@@ -2,4 +2,4 @@ apps/web/styles/tokens.css
 apps/web/styles/tokens.ts
 apps/web/styles/breakpoints.ts
 .impeccable/design.json
-packages/pricing/pricing.json
+content/pricing.json

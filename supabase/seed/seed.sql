@@ -66,8 +66,8 @@ insert into public.staff_invites (id, email, role, commission_rate, invited_by, 
    now() - interval '20 days', '00000000-0000-4000-8000-0000000000a6')
 on conflict (id) do nothing;
 
--- 3) Price catalogue with the values of packages/pricing/pricing.json (version 2026-09-14), names and texts included
---    (the form of `pnpm pricing:sync-db`). P5 is the mobile app (pricing.json lists it as APP_MVP / APP_PLUS: option plus
+-- 3) Price catalogue with the values of content/pricing.json (version 2026-09-14), names and texts included
+--    (the form of `pnpm pricing:sync-db --seed`). P5 is the mobile app (the file lists it as APP_MVP / APP_PLUS: option plus
 --    of P5, D37). HIDDEN_PACK is not in the file: it exists to prove that a hidden pack never reaches the snapshot.
 --    The published snapshot is set at the end so the catalogue starts «published» (pricing_published() has a value).
 insert into public.packs (code, kind, slug, name, includes, for_whom, price, weeks, sort, visible, pricing_version) values

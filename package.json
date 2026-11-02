@@ -15,7 +15,7 @@
     "tokens:build": "turbo run tokens:build",
     "visual": "turbo run visual",
     "i18n:check": "turbo run i18n:check",
-    "pricing:sync": "turbo run pricing:sync",
+    "pricing:pull": "turbo run pricing:pull",
     "pricing:sync-db": "turbo run pricing:sync-db",
     "hero:media": "turbo run hero:media",
     "hero:media:check": "turbo run hero:media:check",

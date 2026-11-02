@@ -14,7 +14,7 @@ No se repite aquí. Se aplica tal cual:
 - **Restricciones globales de ejecución, Conventional Commits, ramas por feature, comandos raíz**: plan `docs/superpowers/plans/2026-09-19-josecoded-v1.md`, apartados «Restricciones globales», «Cómo se ejecuta este plan» y «Ramas sugeridas».
 - **Producto, personas, presupuestos de rendimiento y rechazos visuales**: `PRODUCT.md`.
 - **Sistema visual**: `DESIGN.md` y `.impeccable/design.json` (pendiente de volcar la v6; hasta entonces el prototipo manda, §4).
-- **Precios**: solo desde `packages/pricing/pricing.json`, generado de `Comercial/tarifas.md`.
+- **Precios**: solo desde `content/pricing.json` (el catálogo publicado, D54: lo edita el admin en Supabase y el bot del gateway lo commitea); la web importa `@josecoded/pricing`.
 
 ## 1. Estilos: CSS Modules que consumen solo tokens
 

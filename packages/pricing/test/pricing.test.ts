@@ -9,7 +9,7 @@ import {
   UpgradeError,
 } from '../src';
 
-describe('pricing.json', () => {
+describe('content/pricing.json', () => {
   it('has version 2026-09-14 and four packs', () => {
     expect(pricing.version).toBe('2026-09-14');
     expect(pricing.packs.map((p) => [p.code, p.price, p.weeks])).toEqual([
@@ -53,7 +53,7 @@ describe('pricing.json', () => {
     for (const offer of offers) {
       for (const lang of ['es', 'en'] as const) {
         expect(offer.name[lang].length, `${offer.code}.name.${lang}`).toBeGreaterThan(0);
-        expect(offer.forWhom[lang].length, `${offer.code}.forWhom.${lang}`).toBeGreaterThan(0);
+        expect(offer.forWhom?.[lang]?.length, `${offer.code}.forWhom.${lang}`).toBeGreaterThan(0);
         expect(offer.includes[lang].length, `${offer.code}.includes.${lang}`).toBeGreaterThan(0);
         for (const line of offer.includes[lang]) expect(line.length).toBeGreaterThan(0);
       }
@@ -61,9 +61,7 @@ describe('pricing.json', () => {
     for (const extra of pricing.extras) {
       for (const lang of ['es', 'en'] as const) {
         expect(extra.label[lang].length, `${extra.code}.label.${lang}`).toBeGreaterThan(0);
-        expect(extra.description[lang].length, `${extra.code}.description.${lang}`).toBeGreaterThan(
-          0,
-        );
+        expect(extra.description?.[lang]?.length, `${extra.code}.description.${lang}`).toBeGreaterThan(0);
       }
     }
   });
@@ -87,7 +85,6 @@ describe('priceForProposal', () => {
   });
 
   it('rejects an unknown pack', () => {
-    // @ts-expect-error deliberately wrong code
     expect(() => priceForProposal('P9', [])).toThrow();
   });
 });

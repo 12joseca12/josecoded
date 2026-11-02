@@ -30,7 +30,7 @@
       "cache": false
     },
     "i18n:check": {},
-    "pricing:sync": {
+    "pricing:pull": {
       "cache": false
     },
     "pricing:sync-db": {

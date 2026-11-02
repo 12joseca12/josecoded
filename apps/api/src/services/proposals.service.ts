@@ -2,7 +2,7 @@
 // -> model (JSON mode, through the AI Gateway) -> zod -> deterministic guard -> price by rules. Any model failure
 // ends in the rule classifier: the visitor never sees an error because of the AI.
 import { priceForProposal, pricing } from '@josecoded/pricing';
-import { proposalModelOutputSchema, type ExtraCode, type ProposalResponse } from '@josecoded/types';
+import { extraCodeSchema, proposalModelOutputSchema, type ExtraCode, type ProposalResponse } from '@josecoded/types';
 
 import {
   buildSystemPrompt,
@@ -138,12 +138,13 @@ export async function generateProposal(deps: Deps, config: ProposalsConfig, inpu
     },
     priceFrom: price.priceFrom,
     isApp,
-    recommendedExtras: price.recommendedExtras.map((e) => ({
-      code: e.code,
-      label: e.label[input.locale],
-      price: e.price,
-      billing: e.billing,
-    })),
+    // the response lists the launch extras the generator can recommend (`extraCodeSchema`) with their launch billing
+    recommendedExtras: price.recommendedExtras.flatMap((e) => {
+      const code = extraCodeSchema.safeParse(e.code);
+      return code.success && e.billing !== 'yearly'
+        ? [{ code: code.data, label: e.label[input.locale], price: e.price, billing: e.billing }]
+        : [];
+    }),
     summary,
     scope,
     questions: texts.questions,

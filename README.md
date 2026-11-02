@@ -30,7 +30,7 @@ Architecture, layers and the rules the lint enforces: [`docs/architecture.md`](d
 | `pnpm tokens:build`                                                  | `design.json` -> `tokens.css` (skeleton; task 1.10)                                                                          |
 | `pnpm visual`                                                        | Screenshot diff app vs prototype (skeleton; task 2.13)                                                                       |
 | `pnpm i18n:check`                                                    | Missing keys and `{{DATO}}` placeholders (skeleton; task 2.1)                                                                 |
-| `pnpm pricing:sync`, `pnpm pricing:sync-db`                          | Prices from `Comercial/tarifas.md` (task 1.4)                                                                                |
+| `pnpm pricing:sync-db`, `pnpm pricing:pull`                          | Initial load of `content/pricing.json` into Supabase (refuses once the database has price changes), and the reverse (local)  |
 | `pnpm hero:media`, `pnpm hero:media:check`, `pnpm check:hero-bundle` | Hero media and bundle budget (phase 2)                                                                                       |
 | `pnpm lhci`                                                          | Lighthouse CI (task 2.9)                                                                                                     |
 
@@ -43,7 +43,7 @@ apps/web/          Next 16 + OpenNext: app/ (routes) -> components/ -> lib/; mes
 apps/api/          Hono gateway: index.ts -> modules/*.routes.ts -> services -> ports (@josecoded/types) <- adapters/
 packages/config/   shared eslint (boundaries), stylelint (tokens only), tsconfig, prettier, with tests
 packages/types/    @josecoded/types: one file per domain, zod schemas, generated database.ts
-packages/pricing/  pricing.json, price rules, affiliates, DB sync
+packages/pricing/  price rules, affiliates, DB load and pull (the catalogue is content/pricing.json)
 packages/design-tokens/  .impeccable/design.json -> apps/web/styles/tokens.css|ts, drift test
 supabase/          migrations (the only source of the schema), seed, migration tests, test/pg harness; RLS tests in apps/web
 docs/              architecture, working agreements, specs, technical design, plans, prototypes

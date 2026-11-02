@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { localizedListSchema, localizedTextSchema } from './pricing.ts';
+import { EXTRA_CODE_RE, localizedListSchema, localizedTextSchema, OPTION_CODE_RE, PACK_CODE_RE } from './pricing.ts';
 
 // Inputs of the admin RPCs of the price catalogue (task 1.8e, DATOS v1.4 §14.12.3, Q23/D54): `admin_pricing_set_pack`,
 // `admin_pricing_set_option`, `admin_pricing_set_extra`, `admin_pricing_set_settings`. A key that is absent keeps the
@@ -10,10 +10,6 @@ export const PACK_KINDS = ['web', 'app'] as const;
 export const EXTRA_BILLINGS = ['one_off', 'monthly', 'yearly'] as const;
 export const PRICING_ITEMS = ['pack', 'pack_option', 'extra', 'settings'] as const;
 
-/** `packs.code` and `extras.code` checks of the database. */
-export const PACK_CODE_RE = /^[A-Z][A-Z0-9_]{1,15}$/;
-export const EXTRA_CODE_RE = /^[a-z][a-z0-9_]{1,31}$/;
-export const OPTION_CODE_RE = /^[a-z][a-z0-9_]{0,31}$/;
 
 const price = z.number().int().positive().max(1_000_000);
 const weeks = z.number().int().positive().max(104);

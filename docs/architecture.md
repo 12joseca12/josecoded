@@ -93,7 +93,7 @@ josecoded/
 ├─ packages/
 │  ├─ config/                   shared eslint (boundaries), stylelint (tokens only), tsconfig, prettier; tested
 │  ├─ types/                    @josecoded/types: one file per domain + zod schemas; the only home of shared types
-│  ├─ pricing/                  pricing.json (from Comercial/tarifas.md), price rules, affiliate and upgrade logic, DB sync script
+│  ├─ pricing/                  price rules, affiliate and upgrade logic over content/pricing.json (published catalogue, D54), initial-load and pull scripts
 │  ├─ design-tokens/            .impeccable/design.json -> apps/web/styles/tokens.css|ts with drift test
 │  ├─ glyph-scene/              *planned*: Three.js hero scene, no React; renders the hero video/poster at build time
 │  ├─ radar-core/               *planned, post-launch*: state machine, scoring and materials of the job-hunting module
