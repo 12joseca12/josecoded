@@ -1,1 +1,99 @@
-{}
+{
+  "contact": {
+    "title": "Contact",
+    "meta": {
+      "title": "Contact: WhatsApp, a 20-minute call or email",
+      "description": "Write to me on WhatsApp, book a 20-minute call, use the form or email. One route depending on whether you are a client, an agency or hiring."
+    },
+    "head": {
+      "lead": "Shall we start?",
+      "accent": "Tell me what you need.",
+      "citable": "There are four ways to talk to me: WhatsApp, a 20-minute call, the form or email. Pick who you are and I will show you the most direct one."
+    },
+    "tabs": {
+      "label": "Who are you?",
+      "client": "I am a client",
+      "partner": "I am an agency",
+      "recruiter": "I am hiring",
+      "other": "Something else"
+    },
+    "client": {
+      "title": "For a website, an app or an idea",
+      "text": "WhatsApp is the fastest. If you would rather see a price before writing, I can prepare a rough proposal in a minute.",
+      "proposal": "Ask for a rough proposal",
+      "leave": "I would rather leave my details"
+    },
+    "partner": {
+      "title": "For agencies and consultancies",
+      "text": "A 20-minute call or a short message is enough to see whether I fit. You can also leave your details and I will write to you.",
+      "page": "How I work with agencies"
+    },
+    "recruiter": {
+      "title": "For hiring",
+      "text": "Book a 20-minute call or write to me. The CV and a summary of my stack are in About.",
+      "about": "See stack and education",
+      "cv": "Download CV (PDF)",
+      "assistant": "Ask the assistant"
+    },
+    "other": {
+      "title": "For anything else",
+      "text": "Tell me with the form. If you would rather ask first, the assistant can point you in the right direction.",
+      "assistant": "Ask the assistant"
+    },
+    "quick": {
+      "group": "Quick ways to get in touch",
+      "whatsapp": "Write on WhatsApp",
+      "book": "Book 20 min",
+      "linkedin": "LinkedIn",
+      "email": "Email",
+      "copy": "Copy email",
+      "copied": "Email copied",
+      "failed": "Could not copy: select it by hand"
+    },
+    "form": {
+      "label": "Contact form",
+      "name": "Name",
+      "email": "Email",
+      "company": "Agency or company",
+      "message": "What you need",
+      "messageHelp": "The more specific the better: what you want to do and by when.",
+      "submit": "Send",
+      "sent": "Received. I will answer you myself by email.",
+      "fallbackIntro": "I could not send it right now. Write to me directly:",
+      "fallbackMail": "by email",
+      "fallbackWhatsapp": "on WhatsApp"
+    },
+    "partnerForm": {
+      "label": "Agency form",
+      "message": "What you need",
+      "messageHelp": "The kind of project, the technology and the date, if you already have them."
+    },
+    "errors": {
+      "name": "Enter your name.",
+      "email": "Enter a valid email.",
+      "company": "Check the agency name.",
+      "message": "Tell me what you need (2,000 characters at most).",
+      "captcha": "I could not check that you are not a robot. Please try again.",
+      "generic": "It could not be sent. Check the details and try again.",
+      "down": "I could not send it right now."
+    },
+    "booking": {
+      "title": "A 20-minute call",
+      "accent": "to see if we fit",
+      "text": "Pick the slot that suits you. No commitment.",
+      "open": "Book 20 min",
+      "frame": "Calendar to book a 20-minute call",
+      "external": "Open on cal.com"
+    },
+    "data": {
+      "title": "My details",
+      "terms": {
+        "email": "Email",
+        "linkedin": "LinkedIn",
+        "github": "GitHub",
+        "response": "Response time"
+      },
+      "response": "{{DATO: response time, e.g. “I answer within 24 working hours”}}"
+    }
+  }
+}

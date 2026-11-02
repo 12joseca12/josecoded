@@ -1,1 +1,99 @@
-{}
+{
+  "contact": {
+    "title": "Contacto",
+    "meta": {
+      "title": "Contacto: WhatsApp, llamada de 20 min o email",
+      "description": "Escríbeme por WhatsApp, reserva una llamada de 20 minutos, usa el formulario o el email. Una vía según seas cliente, agencia o estés contratando."
+    },
+    "head": {
+      "lead": "¿Empezamos?",
+      "accent": "Cuéntame qué necesitas.",
+      "citable": "Hay cuatro formas de hablar conmigo: WhatsApp, una llamada de 20 minutos, el formulario o el email. Elige quién eres y te enseño la más directa."
+    },
+    "tabs": {
+      "label": "¿Quién eres?",
+      "client": "Soy cliente",
+      "partner": "Soy agencia",
+      "recruiter": "Estoy contratando",
+      "other": "Otra cosa"
+    },
+    "client": {
+      "title": "Para una web, una app o una idea",
+      "text": "WhatsApp es lo más rápido. Si prefieres ver un precio antes de escribir, te preparo una propuesta orientativa en un minuto.",
+      "proposal": "Pedir propuesta orientativa",
+      "leave": "Prefiero dejar mis datos"
+    },
+    "partner": {
+      "title": "Para agencias y consultoras",
+      "text": "Una llamada de 20 minutos o un mensaje corto bastan para ver si encajo. También puedes dejar tus datos y te escribo.",
+      "page": "Cómo trabajo con agencias"
+    },
+    "recruiter": {
+      "title": "Para contratación",
+      "text": "Reserva una llamada de 20 minutos o escríbeme. El CV y el resumen de mi stack están en Sobre mí.",
+      "about": "Ver stack y formación",
+      "cv": "Descargar CV (PDF)",
+      "assistant": "Preguntar al asistente"
+    },
+    "other": {
+      "title": "Para cualquier otra cosa",
+      "text": "Cuéntamelo con el formulario. Si prefieres preguntar antes, el asistente te orienta.",
+      "assistant": "Preguntar al asistente"
+    },
+    "quick": {
+      "group": "Formas de contacto rápidas",
+      "whatsapp": "Escribir por WhatsApp",
+      "book": "Reservar 20 min",
+      "linkedin": "LinkedIn",
+      "email": "Email",
+      "copy": "Copiar email",
+      "copied": "Email copiado",
+      "failed": "No se pudo copiar: selecciónalo a mano"
+    },
+    "form": {
+      "label": "Formulario de contacto",
+      "name": "Nombre",
+      "email": "Email",
+      "company": "Agencia o empresa",
+      "message": "Qué necesitas",
+      "messageHelp": "Cuanto más concreto, mejor: qué quieres hacer y para cuándo.",
+      "submit": "Enviar",
+      "sent": "Recibido. Te respondo yo mismo por email.",
+      "fallbackIntro": "No he podido enviarlo ahora mismo. Escríbeme directamente:",
+      "fallbackMail": "por email",
+      "fallbackWhatsapp": "por WhatsApp"
+    },
+    "partnerForm": {
+      "label": "Formulario para agencias",
+      "message": "Qué necesitáis",
+      "messageHelp": "El tipo de proyecto, la tecnología y la fecha, si ya las tenéis."
+    },
+    "errors": {
+      "name": "Escribe tu nombre.",
+      "email": "Escribe un email válido.",
+      "company": "Revisa el nombre de la agencia.",
+      "message": "Cuéntame qué necesitas (máximo 2.000 caracteres).",
+      "captcha": "No he podido comprobar que no eres un robot. Inténtalo de nuevo.",
+      "generic": "No se ha podido enviar. Revisa los datos e inténtalo de nuevo.",
+      "down": "No he podido enviarlo ahora mismo."
+    },
+    "booking": {
+      "title": "Una llamada de 20 minutos",
+      "accent": "para ver si encajamos",
+      "text": "Elige el hueco que te venga bien. Sin compromiso.",
+      "open": "Reservar 20 min",
+      "frame": "Calendario para reservar una llamada de 20 minutos",
+      "external": "Abrir en cal.com"
+    },
+    "data": {
+      "title": "Mis datos",
+      "terms": {
+        "email": "Email",
+        "linkedin": "LinkedIn",
+        "github": "GitHub",
+        "response": "Plazo de respuesta"
+      },
+      "response": "{{DATO: plazo de respuesta, p. ej. «Respondo en menos de 24 h laborables»}}"
+    }
+  }
+}

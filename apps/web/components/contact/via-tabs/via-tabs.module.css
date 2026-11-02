@@ -1,0 +1,60 @@
+.wrap {
+  display: grid;
+  gap: var(--sp-5);
+  min-width: 0;
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+  justify-self: start;
+  max-width: 100%;
+  padding: var(--sp-1);
+  border-radius: var(--r-cell);
+  background: var(--bg-segmented);
+  box-shadow: var(--shadow-hairline);
+}
+
+.tab {
+  min-height: var(--size-hit);
+  padding: 0 var(--sp-4);
+  border-width: 0;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-2);
+  font: inherit;
+  font-size: var(--font-label-size);
+  font-weight: var(--font-label-button-weight);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    color var(--dur-hover) var(--ease-standard),
+    background-color var(--dur-hover) var(--ease-standard);
+}
+
+.tab[aria-selected='true'] {
+  background: var(--tint-emphasis);
+  color: var(--text);
+}
+
+.tab:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: calc(var(--focus-ring-offset) - var(--sp-1));
+}
+
+.panel {
+  display: grid;
+  gap: var(--sp-gap-cell);
+  min-width: 0;
+}
+
+.panel[hidden] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab {
+    transition: none;
+  }
+}

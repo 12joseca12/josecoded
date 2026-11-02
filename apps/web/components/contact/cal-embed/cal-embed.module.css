@@ -1,0 +1,13 @@
+.box {
+  display: grid;
+  gap: var(--sp-3);
+  justify-items: start;
+}
+
+.frame {
+  width: 100%;
+  min-height: calc(var(--size-palette-list) * 2);
+  border-width: 0;
+  border-radius: var(--r-lg);
+  background: var(--card);
+}

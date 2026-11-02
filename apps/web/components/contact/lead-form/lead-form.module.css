@@ -1,0 +1,11 @@
+.fallback {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--font-label-size);
+}
+
+.fallback a {
+  color: var(--violet-soft);
+  text-decoration: underline;
+  text-underline-offset: var(--sp-0-5);
+}
