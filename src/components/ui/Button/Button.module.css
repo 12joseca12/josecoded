@@ -1,0 +1,197 @@
+.button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  min-height: 2.75rem;
+  padding: 0 var(--space-4) 0 var(--space-5);
+  border: 1px solid transparent;
+  border-radius: var(--radius-xl);
+  background: transparent;
+  color: var(--ink);
+  font-family: inherit;
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-tight);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+  transition-property: background-color, color, border-color, box-shadow, transform;
+  transition-duration: var(--dur-fast);
+  transition-timing-function: var(--ease-out);
+}
+
+.button:focus-visible {
+  border-radius: var(--radius-xl);
+}
+
+.button[data-variant="primary"] {
+  background: var(--charcoal);
+  color: var(--on-dark);
+}
+
+.button[data-variant="accent"] {
+  background: var(--coral);
+  color: var(--charcoal);
+  font-weight: var(--fw-semibold);
+}
+
+.button[data-variant="light"] {
+  background: var(--on-dark);
+  color: var(--charcoal);
+}
+
+.button[data-variant="ghost"] {
+  padding: 0;
+}
+
+.button[data-size="sm"] {
+  min-height: 2.25rem;
+  font-size: var(--fs-m);
+}
+
+.button[data-size="sm"]::before {
+  content: "";
+  position: absolute;
+  inset: -0.25rem;
+}
+
+.slot {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+}
+
+.slot svg {
+  width: 1.1em;
+  height: 1.1em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition-property: transform;
+  transition-duration: var(--dur);
+  transition-timing-function: var(--ease-out);
+}
+
+.button[data-variant="ghost"] .slot {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-xl);
+  background: var(--on-dark);
+  box-shadow: var(--shadow-soft);
+  transition-property: background-color, color, transform;
+  transition-duration: var(--dur-fast);
+  transition-timing-function: var(--ease-out);
+}
+
+.button[data-variant="ghost"] .slot svg {
+  width: 0.7rem;
+  height: 0.7rem;
+  translate: 0.1em 0;
+  fill: currentColor;
+  stroke: none;
+}
+
+.spinner {
+  width: 1em;
+  height: 1em;
+  border: 1.5px solid currentColor;
+  border-right-color: transparent;
+  border-radius: var(--radius-xl);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .button[data-variant="primary"]:hover {
+    background: var(--charcoal-hover);
+  }
+
+  .button[data-variant="accent"]:hover {
+    background: var(--coral-soft);
+  }
+
+  .button[data-variant="light"]:hover {
+    background: var(--bg-top);
+  }
+
+  .button:hover .slot svg {
+    transform: translateX(0.2em);
+  }
+
+  .button[data-variant="ghost"]:hover .slot {
+    background: var(--charcoal);
+    color: var(--on-dark);
+  }
+
+  .button[data-variant="ghost"]:hover .slot svg {
+    transform: none;
+  }
+}
+
+.button:active {
+  transform: scale(0.97);
+}
+
+.button[data-variant="ghost"]:active {
+  transform: none;
+}
+
+.button[data-variant="ghost"]:active .slot {
+  transform: scale(0.94);
+}
+
+.button[aria-busy="true"],
+.button[aria-busy="true"]:disabled,
+.button[aria-busy="true"][aria-disabled="true"] {
+  cursor: progress;
+}
+
+.button:disabled,
+.button[aria-disabled="true"] {
+  opacity: 0.42;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.button:disabled .slot svg,
+.button[aria-disabled="true"] .slot svg {
+  transform: none;
+}
+
+.button[data-variant="primary"]:disabled,
+.button[data-variant="primary"][aria-disabled="true"] {
+  background: var(--charcoal);
+}
+
+.button[data-variant="accent"]:disabled,
+.button[data-variant="accent"][aria-disabled="true"] {
+  background: var(--coral);
+}
+
+.button[data-variant="light"]:disabled,
+.button[data-variant="light"][aria-disabled="true"] {
+  background: var(--on-dark);
+}
+
+.button[data-variant="ghost"]:disabled .slot,
+.button[data-variant="ghost"][aria-disabled="true"] .slot {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+  color: inherit;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .spinner {
+    animation: spin 640ms linear infinite;
+  }
+}

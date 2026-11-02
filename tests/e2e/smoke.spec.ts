@@ -6,12 +6,20 @@ import { expect, test } from "@playwright/test";
 const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
   meta: { title: string };
   home: { name: string };
+  dev: { ui: { title: string } };
 };
 
 test("/es renders the translated title and passes axe", async ({ page }) => {
   await page.goto("/es");
   await expect(page).toHaveTitle(es.meta.title);
   await expect(page.getByRole("main")).toHaveText(es.home.name);
+  const { violations } = await new AxeBuilder({ page }).analyze();
+  expect(violations).toEqual([]);
+});
+
+test("/es/dev/ui catalog passes axe", async ({ page }) => {
+  await page.goto("/es/dev/ui");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(es.dev.ui.title);
   const { violations } = await new AxeBuilder({ page }).analyze();
   expect(violations).toEqual([]);
 });
