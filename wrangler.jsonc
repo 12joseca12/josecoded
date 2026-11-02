@@ -23,6 +23,7 @@
         "binding": "ASSETS",
       },
       "vars": {
+        "ENABLE_DEV_PAGES": "true",
         "NEXT_PUBLIC_SITE_URL": "https://josecoded-preview.josecoded-api.workers.dev",
         "NEXT_PUBLIC_SUPABASE_URL": "https://placeholder.supabase.co",
         "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY": "placeholder",
