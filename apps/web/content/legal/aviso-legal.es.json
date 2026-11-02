@@ -1,0 +1,63 @@
+{
+  "title": "Aviso legal",
+  "description": "Datos del titular del sitio, condiciones de uso, propiedad intelectual, responsabilidad y legislación aplicable de josecoded.com.",
+  "updated": "2026-11-02",
+  "sections": [
+    {
+      "id": "titular",
+      "heading": "Titular del sitio",
+      "paragraphs": [
+        "En cumplimiento del artículo 10 de la Ley 34/2002 de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE), se informa de que josecoded.com es un sitio web titularidad de:"
+      ],
+      "items": [
+        "Titular: {{DATO: nombre y apellidos del titular}}",
+        "NIF: {{DATO: NIF del titular}}",
+        "Domicilio: {{DATO: domicilio fiscal del titular}}",
+        "Email: {{DATO: email de contacto del titular}}",
+        "Actividad: desarrollo de software (webs, apps móviles e integraciones de IA) como autónomo."
+      ]
+    },
+    {
+      "id": "objeto",
+      "heading": "Objeto y condiciones de uso",
+      "paragraphs": [
+        "Este sitio presenta los servicios del titular, sus proyectos y vías de contacto. Usar el sitio implica aceptar este aviso legal. El visitante se compromete a hacer un uso lícito del sitio y de sus formularios, sin enviar contenido ilícito ni intentar vulnerar su seguridad."
+      ]
+    },
+    {
+      "id": "propiedad",
+      "heading": "Propiedad intelectual e industrial",
+      "paragraphs": [
+        "Los textos, el diseño, el código y los elementos gráficos del sitio son del titular o se usan con licencia, y están protegidos por la normativa de propiedad intelectual. Los nombres y marcas de terceros que aparezcan pertenecen a sus propietarios. Queda prohibida su reproducción o distribución sin autorización, salvo cita con indicación de la fuente."
+      ]
+    },
+    {
+      "id": "responsabilidad",
+      "heading": "Responsabilidad",
+      "paragraphs": [
+        "El titular procura que la información del sitio sea correcta y esté al día, pero no garantiza la ausencia de errores ni la disponibilidad ininterrumpida. Los precios publicados son orientativos «desde», sin IVA, y no constituyen una oferta vinculante hasta que se cierra una propuesta por escrito. El sitio puede enlazar a páginas de terceros: el titular no responde de su contenido."
+      ]
+    },
+    {
+      "id": "datos",
+      "heading": "Protección de datos",
+      "paragraphs": [
+        "El tratamiento de datos personales se describe en la política de privacidad, y el uso de cookies y almacenamiento local en la política de cookies."
+      ]
+    },
+    {
+      "id": "ley",
+      "heading": "Legislación aplicable y jurisdicción",
+      "paragraphs": [
+        "Este aviso se rige por la legislación española. Para cualquier controversia, las partes se someten a los juzgados y tribunales que correspondan conforme a la ley, respetando el fuero del consumidor cuando sea aplicable."
+      ]
+    },
+    {
+      "id": "idioma",
+      "heading": "Idioma",
+      "paragraphs": [
+        "La versión en español de este aviso es la que tiene validez legal; la versión en inglés es una traducción de cortesía."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "legal": {
+    "title": "Legal",
+    "home": "Home",
+    "toc": "Contents",
+    "updated": "Last updated: {date}",
+    "translation": "Courtesy translation: the Spanish version is the legally binding one.",
+    "docs": {
+      "aviso-legal": "Legal notice",
+      "privacidad": "Privacy",
+      "cookies": "Cookies"
+    }
+  },
+  "errors": {
+    "useful": "Meanwhile, you can go to",
+    "notFound": {
+      "code": "404",
+      "text": "This address does not exist or has moved.",
+      "links": {
+        "services": "Services and prices",
+        "projects": "Projects",
+        "contact": "Contact"
+      }
+    },
+    "server": {
+      "code": "500",
+      "title": "Something went wrong",
+      "text": "It is not your fault: the page hit an error. Try again and, if it persists, write to me.",
+      "retry": "Try again",
+      "home": "Back to home",
+      "contact": "Contact"
+    },
+    "global": {
+      "title": "Something went wrong",
+      "text": "The site hit an error. Reload the page; if it persists, write to {{DATO: contact email}}.",
+      "retry": "Reload"
+    }
+  }
+}

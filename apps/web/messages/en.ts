@@ -9,6 +9,7 @@ import crm from './en/crm.json';
 import dev from './en/dev.json';
 import home from './en/home.json';
 import lab from './en/lab.json';
+import legal from './en/legal.json';
 import newsletter from './en/newsletter.json';
 import partners from './en/partners.json';
 import projects from './en/projects.json';
@@ -24,6 +25,7 @@ const messages = {
   ...services,
   ...partners,
   ...lab,
+  ...legal,
   ...about,
   ...projects,
   ...blog,

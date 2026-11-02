@@ -22,7 +22,10 @@ const cases: [path: string, status: number, lang?: string][] = [
   // deep Spanish paths must 404, never 500
   ['/servicios/x', 404],
   ['/a/b/c', 404],
-  ['/legal/aviso-legal', 404],
+  ['/legal/aviso-legal', 200],
+  ['/en/legal/notice', 200],
+  ['/en/legal/privacy', 200],
+  ['/legal/cookies', 200],
   // private routes: an anonymous visitor is sent to the login (e2e/auth.spec.ts checks where to)
   ['/area-clientes', 307],
   ['/en/client-area', 307],

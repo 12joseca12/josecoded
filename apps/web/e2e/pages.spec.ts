@@ -26,7 +26,7 @@ for (const [path, lang, home, heading] of notFound) {
     await expect(page.locator('html')).toHaveAttribute('lang', lang);
     expect(await page.title()).not.toBe('');
     await expect(page.getByRole('main')).toBeVisible();
-    const link = page.getByRole('main').getByRole('link');
+    const link = page.getByRole('main').locator(`a[href="${home}"]`);
     await expect(link).toHaveAttribute('href', home);
   });
 }

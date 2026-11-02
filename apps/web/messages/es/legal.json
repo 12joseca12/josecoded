@@ -1,0 +1,39 @@
+{
+  "legal": {
+    "title": "Legal",
+    "home": "Inicio",
+    "toc": "Contenido",
+    "updated": "Última actualización: {date}",
+    "translation": "Traducción de cortesía: la versión en español es la que tiene validez legal.",
+    "docs": {
+      "aviso-legal": "Aviso legal",
+      "privacidad": "Privacidad",
+      "cookies": "Cookies"
+    }
+  },
+  "errors": {
+    "useful": "Mientras tanto, puedes ir a",
+    "notFound": {
+      "code": "404",
+      "text": "Esta dirección no existe o ha cambiado de sitio.",
+      "links": {
+        "services": "Servicios y precios",
+        "projects": "Proyectos",
+        "contact": "Contacto"
+      }
+    },
+    "server": {
+      "code": "500",
+      "title": "Algo ha fallado",
+      "text": "No es culpa tuya: la página ha tenido un error. Prueba otra vez y, si sigue, escríbeme.",
+      "retry": "Intentarlo de nuevo",
+      "home": "Volver al inicio",
+      "contact": "Contacto"
+    },
+    "global": {
+      "title": "Algo ha fallado",
+      "text": "La web ha tenido un error. Recarga la página; si sigue, escribe a {{DATO: email de contacto}}.",
+      "retry": "Recargar"
+    }
+  }
+}

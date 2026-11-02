@@ -1,0 +1,63 @@
+{
+  "title": "Legal notice",
+  "description": "Owner details, terms of use, intellectual property, liability and governing law of josecoded.com.",
+  "updated": "2026-11-02",
+  "sections": [
+    {
+      "id": "titular",
+      "heading": "Site owner",
+      "paragraphs": [
+        "In compliance with article 10 of Spanish Law 34/2002 on Information Society Services and Electronic Commerce (LSSI-CE), josecoded.com is a website owned by:"
+      ],
+      "items": [
+        "Owner: {{DATO: full name of the owner}}",
+        "Tax ID (NIF): {{DATO: tax ID of the owner}}",
+        "Address: {{DATO: registered address of the owner}}",
+        "Email: {{DATO: owner's contact email}}",
+        "Activity: software development (websites, mobile apps and AI integrations) as a self-employed professional."
+      ]
+    },
+    {
+      "id": "objeto",
+      "heading": "Purpose and terms of use",
+      "paragraphs": [
+        "This site presents the owner's services, projects and ways to get in touch. Using the site means accepting this legal notice. Visitors agree to use the site and its forms lawfully, without sending unlawful content or trying to breach its security."
+      ]
+    },
+    {
+      "id": "propiedad",
+      "heading": "Intellectual and industrial property",
+      "paragraphs": [
+        "The texts, design, code and graphic elements of the site belong to the owner or are used under licence, and are protected by intellectual property law. Third-party names and trademarks belong to their owners. Reproduction or distribution without authorisation is prohibited, except quotations that credit the source."
+      ]
+    },
+    {
+      "id": "responsabilidad",
+      "heading": "Liability",
+      "paragraphs": [
+        "The owner works to keep the information on the site correct and up to date, but does not guarantee the absence of errors or uninterrupted availability. Published prices are starting prices, excluding VAT, and are not a binding offer until a proposal is closed in writing. The site may link to third-party pages: the owner is not responsible for their content."
+      ]
+    },
+    {
+      "id": "datos",
+      "heading": "Data protection",
+      "paragraphs": [
+        "The processing of personal data is described in the privacy policy, and the use of cookies and local storage in the cookie policy."
+      ]
+    },
+    {
+      "id": "ley",
+      "heading": "Governing law and jurisdiction",
+      "paragraphs": [
+        "This notice is governed by Spanish law. For any dispute, the parties submit to the courts that have jurisdiction under the law, respecting the consumer's own forum where applicable."
+      ]
+    },
+    {
+      "id": "idioma",
+      "heading": "Language",
+      "paragraphs": [
+        "The Spanish version of this notice is the legally binding one; the English version is a courtesy translation."
+      ]
+    }
+  ]
+}

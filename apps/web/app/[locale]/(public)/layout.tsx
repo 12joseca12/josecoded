@@ -1,3 +1,6 @@
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
+
 import { PageFrame } from '@/components/layout/page-frame';
 import { resolveLocale } from '@/lib/locale';
 
@@ -13,5 +16,11 @@ export default async function PublicLayout({
   params: LocaleParams;
 }) {
   await resolveLocale(params);
-  return <PageFrame>{children}</PageFrame>;
+  // the error boundary of the public pages is a client component: it gets its own few sentences, nothing else
+  const messages = await getMessages();
+  return (
+    <NextIntlClientProvider messages={{ errors: { server: messages.errors.server } }}>
+      <PageFrame>{children}</PageFrame>
+    </NextIntlClientProvider>
+  );
 }
