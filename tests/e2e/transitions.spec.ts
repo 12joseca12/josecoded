@@ -65,7 +65,7 @@ test("navigating to proyectos keeps the header, focuses main and passes axe", as
 });
 
 test("a single main landmark exists on every public page", async ({ page }) => {
-  for (const path of ["/es", "/es/proyectos"]) {
+  for (const path of ["/es", "/es/proyectos", "/es/no-existe"]) {
     await page.goto(path);
     await expect(page.locator("main")).toHaveCount(1);
   }
