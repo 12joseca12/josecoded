@@ -36,7 +36,8 @@ test('/proyectos/josecoded has the three blocks, a WebApplication node (never a 
   expect(graph).toContain('BreadcrumbList');
   expect(graph).toContain('"@type":"WebApplication"');
   expect(graph).toContain('/proyectos/josecoded#project');
-  expect(graph).not.toContain('"@type":"WebSite"');
+  // the only WebSite is the site's own (layout); the case study adds none
+  expect(graph.match(/"@type":"WebSite"/g) ?? []).toHaveLength(1);
 });
 
 test('a sheet without its sentence still renders, hides the pending blocks and stays out of the index', async ({ page, request }) => {
