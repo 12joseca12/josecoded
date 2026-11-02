@@ -25,6 +25,10 @@ pnpm dev
 | `pnpm lint:rules` | Prueba que las reglas fallan con los ficheros de `tests/lint/fixtures/`.                             |
 | `pnpm format`     | prettier escribe el formato; `pnpm format:check` solo comprueba.                                     |
 | `pnpm typecheck`  | `tsc --noEmit`.                                                                                      |
+| `pnpm test`       | Vitest sobre la lógica (`src/**/*.test.ts`).                                                         |
+| `pnpm e2e`        | Playwright de humo con axe bloqueante contra `next start` (requiere `pnpm build`).                   |
+| `pnpm i18n:keys`  | Regenera `src/i18n/keys.generated.ts` desde `messages/es.json`.                                      |
+| `pnpm i18n:check` | Falla si falta o sobra una clave entre idiomas, hay marcadores `{{DATO` o los tipos están viejos.    |
 
 ## Estructura
 

@@ -7,5 +7,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const t = await getTranslator(locale);
-  return <main>{t("home.name")}</main>;
+  return (
+    <main>
+      <h1>{t("home.name")}</h1>
+    </main>
+  );
 }
