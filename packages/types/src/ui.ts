@@ -50,6 +50,8 @@ export type SummaryCardRows = 1 | 2;
 export type FigureSize = 'lg' | 'sm';
 export type FigureTone = 'default' | 'overdue';
 export type StaffLinksSize = 'rail' | 'sheet';
+/** What a small confirmation of the admin's team screen (D1) does: the button, the sentence and the colour of the submit follow it. */
+export type TeamConfirmKind = 'deactivate' | 'activate' | 'resend' | 'revoke';
 
 /**
  * Lucide icons the interface may name (the registry in `components/ui/icon` maps each to its
@@ -58,6 +60,7 @@ export type StaffLinksSize = 'rail' | 'sheet';
 export type IconName =
   | 'arrow-left'
   | 'arrow-right'
+  | 'ban'
   | 'bell'
   | 'book-open'
   | 'briefcase'
@@ -119,6 +122,7 @@ export type IconName =
   | 'user'
   | 'user-check'
   | 'user-cog'
+  | 'user-plus'
   | 'user-round'
   | 'users'
   | 'wallet'

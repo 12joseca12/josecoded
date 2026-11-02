@@ -1,6 +1,7 @@
 import {
   ArrowLeft,
   ArrowRight,
+  Ban,
   Bell,
   BookOpen,
   Briefcase,
@@ -62,6 +63,7 @@ import {
   User,
   UserCheck,
   UserCog,
+  UserPlus,
   UserRound,
   Users,
   Wallet,
@@ -76,6 +78,7 @@ import type { LucideIcon } from 'lucide-react';
 export const icons = {
   'arrow-left': ArrowLeft,
   'arrow-right': ArrowRight,
+  ban: Ban,
   bell: Bell,
   'book-open': BookOpen,
   briefcase: Briefcase,
@@ -137,6 +140,7 @@ export const icons = {
   user: User,
   'user-check': UserCheck,
   'user-cog': UserCog,
+  'user-plus': UserPlus,
   'user-round': UserRound,
   users: Users,
   wallet: Wallet,

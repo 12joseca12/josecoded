@@ -37,7 +37,7 @@ export function SheetTrigger({
   size?: ButtonSize;
   defaultOpen?: boolean;
   title: string;
-  description?: string;
+  description?: ReactNode;
   sheetVariant?: SheetVariant;
   closeLabel: string;
   savedMessage: string;

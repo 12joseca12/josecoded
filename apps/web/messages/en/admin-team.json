@@ -1,0 +1,130 @@
+{
+  "adminTeam": {
+    "metaTitle": "Team",
+    "title": "Team.",
+    "tone": "Who sells with you.",
+    "lead": "Closers with access to the CRM. Each one sees only their own portfolio; you see everything.",
+    "pending": {
+      "title": "The team list arrives with the data connection",
+      "text": "The screen is already drawn (preview at /dev/admin/equipo/admin); reading the team and saving invitations is still to come."
+    },
+    "table": {
+      "caption": "People on the team",
+      "person": "Person",
+      "role": "Role",
+      "status": "Status",
+      "rate": "Rate",
+      "telegram": "Telegram",
+      "totp": "TOTP",
+      "contacts": "Contacts",
+      "pending": "Pending commissions",
+      "actions": "Actions",
+      "roles": {
+        "admin": "Admin",
+        "closer": "Closer"
+      },
+      "active": "Active",
+      "off": "Deactivated",
+      "linked": "Linked",
+      "unlinked": "Not linked",
+      "totpYes": "Yes",
+      "totpNo": "Pending",
+      "ownedByName": "{count} in their name",
+      "pendingValue": "{amount} · {count}",
+      "none": "—"
+    },
+    "invitations": {
+      "title": "Invitations",
+      "expiry": "They expire after 14 days",
+      "caption": "Pending invitations",
+      "email": "Email",
+      "rate": "Rate",
+      "status": "Status",
+      "actions": "Actions",
+      "expires": "Expires on {date}",
+      "expired": "Expired on {date}",
+      "withNote": "{role} · note: “{note}”",
+      "emptyTitle": "No pending invitations",
+      "emptyText": "The ones you send show up here until the person signs in."
+    },
+    "sheets": {
+      "close": "Close",
+      "cancel": "Cancel",
+      "invite": {
+        "trigger": "Invite",
+        "title": "Invite to the team",
+        "email": "Email",
+        "emailPlaceholder": "name@company.com",
+        "role": "Role",
+        "roleCloser": "Closer",
+        "roleCloserHint": "sees and works their own portfolio",
+        "rate": "Commission rate",
+        "ratePlaceholder": "10",
+      "rateHelp": "Percentage of what is collected on each project; usually 10 %. It is frozen into each commission when it is created.",
+        "note": "Note (optional)",
+        "notePlaceholder": "Only you see it.",
+        "totpNote": "The invitation email says that the first login asks to set up an authenticator (TOTP).",
+        "submit": "Send invitation",
+        "saved": "Invitation sent"
+      },
+      "rate": {
+        "trigger": "Edit rate",
+        "triggerFor": "Edit the rate of {name}",
+        "title": "{name}'s rate",
+        "help": "It only affects new closings. Commissions already created keep their %.",
+        "submit": "Save rate",
+        "saved": "Rate updated"
+      },
+      "reassign": {
+        "trigger": "Reassign portfolio",
+        "triggerFor": "Reassign the portfolio of {name}",
+        "title": "Reassign {name}'s portfolio",
+        "scope": "Which contacts",
+        "scopes": {
+          "all": "The whole portfolio",
+          "openLeads": "Open leads only",
+          "agencies": "Agencies only"
+        },
+        "to": "To whom",
+        "you": "{name} (you)",
+        "warning": "Commissions already created stay with {name}.",
+        "submit": "{count, plural, one {Reassign # contact} other {Reassign # contacts}}",
+        "saved": "Portfolio reassigned"
+      },
+      "confirm": {
+        "deactivate": {
+          "trigger": "Deactivate",
+          "triggerFor": "Deactivate {target}",
+          "title": "Deactivate {target}",
+          "summary": "They stop getting into the CRM right away. Their <strong>{count, plural, one {# contact} other {# contacts}}</strong> stay in their name until you reassign them. Their pending commissions do not change.",
+          "submit": "Deactivate",
+          "saved": "{target} deactivated"
+        },
+        "activate": {
+          "trigger": "Activate",
+          "triggerFor": "Activate {target}",
+          "title": "Activate {target}",
+          "summary": "<strong>{target}</strong> gets back into the CRM with their portfolio and their rate.",
+          "submit": "Activate",
+          "saved": "{target} has access again"
+        },
+        "resend": {
+          "trigger": "Resend",
+          "triggerFor": "Resend the invitation to {target}",
+          "title": "Resend invitation",
+          "summary": "A new link is sent to <strong>{target}</strong>; the previous one stops working and the new one expires after 14 days.",
+          "submit": "Resend",
+          "saved": "Invitation resent"
+        },
+        "revoke": {
+          "trigger": "Cancel",
+          "triggerFor": "Cancel the invitation to {target}",
+          "title": "Cancel invitation",
+          "summary": "The link sent to <strong>{target}</strong> stops working.",
+          "submit": "Cancel invitation",
+          "saved": "Invitation cancelled"
+        }
+      }
+    }
+  }
+}
