@@ -4,6 +4,8 @@ canvas_padre: "Plataforma web personal"
 
 # josecoded
 
+> **Reinicio 2026-11-02.** El repositorio se vació por decisión de Jose para empezar con una metodología nueva. Lo que sigue en este fichero describe el proyecto anterior (v1, en la rama `archivo/v1-2026-11-02`) y se reescribirá cuando la metodología nueva esté decidida. Hoy solo existen `archivo/`, `.claude/` y este fichero; ver `README.md` y `ESTADO.md`.
+
 Brief (qué y por qué): nota del vault `Proyectos/josecoded.md`. Estado volátil: `ESTADO.md`. Este fichero es el cómo.
 
 ## Stack

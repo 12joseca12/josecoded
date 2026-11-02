@@ -1,6 +1,0 @@
-/* home-v7 base.css:38 and 158 (.todo, defined twice in the prototype) */
-.pending {
-  color: var(--pending);
-  font-family: var(--font-mono);
-  font-size: var(--font-pending-size);
-}
