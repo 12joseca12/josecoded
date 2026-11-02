@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07060F">
+<meta name="robots" content="noindex">
+<meta name="description" content="Prototipo de la zona /crm y de administración de josecoded.">
+<title>Resumen · CRM josecoded</title>
+<script>(function(){var r=document.documentElement,q=new URLSearchParams(location.search);r.classList.add('js');r.dataset.role=q.get('role')==='closer'?'closer':'admin';var d={density:'comfortable',overdue:'danger',title:'v7',mbar:'4',k3:'split'};for(var k in d){var v=null;try{v=localStorage.getItem('crm.'+k)}catch(x){}r.dataset[k]=q.get(k)||v||d[k]}if(q.has('shot'))r.classList.add('shot')})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css?v=1">
+<link rel="stylesheet" href="crm.css?v=1">
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+<div class="grain" aria-hidden="true"></div>
+<div class="app" data-zone="crm">
+<aside class="rail">
+  <a class="brand" href="resumen.html">josecoded <span class="zone">CRM</span></a>
+  <nav class="nav" aria-label="Navegación del CRM">
+    <a class="nav__item" href="resumen.html" aria-current="page"><svg class="i" aria-hidden="true"><use href="icons.svg#house"/></svg><span>Resumen</span></a><a class="nav__item" href="contactos.html"><svg class="i" aria-hidden="true"><use href="icons.svg#users"/></svg><span>Contactos</span><span class="nav__count" data-tone="attention" data-only="admin" aria-label="4 vencidas">4</span><span class="nav__count" data-tone="attention" data-only="closer" aria-label="3 vencidas">3</span></a><a class="nav__item" href="clientes.html"><svg class="i" aria-hidden="true"><use href="icons.svg#briefcase-business"/></svg><span>Clientes</span></a><a class="nav__item" href="comisiones.html"><svg class="i" aria-hidden="true"><use href="icons.svg#wallet"/></svg><span>Comisiones</span></a>
+    <p class="nav__label" id="rail-more">Más</p>
+    <div class="nav" role="group" aria-labelledby="rail-more"><a class="nav__item" href="importar.html"><svg class="i" aria-hidden="true"><use href="icons.svg#upload"/></svg><span>Importar</span></a><a class="nav__item" href="ajustes.html"><svg class="i" aria-hidden="true"><use href="icons.svg#settings"/></svg><span>Ajustes</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#message-square"/></svg><span>Chat</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#building-2"/></svg><span>Organizaciones</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#file-text"/></svg><span>Contextos del chat</span></a><a class="nav__item" href="equipo.html" data-only="admin"><svg class="i" aria-hidden="true"><use href="icons.svg#shield-check"/></svg><span>Administración</span></a></div>
+  </nav>
+  <div class="rail__foot">
+    <a class="me" href="ajustes.html" data-only="admin"><span class="avatar" aria-hidden="true">J</span><span><span class="me__name">Jose</span><br><span class="me__role">Administrador</span></span></a>
+    <a class="me" href="ajustes.html" data-only="closer"><span class="avatar" aria-hidden="true">CM</span><span><span class="me__name">Carla Méndez</span><br><span class="me__role">Closer · 10&nbsp;%</span></span></a>
+  </div>
+</aside>
+<header class="topbar">
+  <a class="brand" href="resumen.html">josecoded <span class="zone">CRM</span></a>
+  <div class="topbar__end">
+    <a class="icon-btn" href="ajustes.html" aria-label="Ajustes y cuenta"><span class="avatar" data-only="admin" aria-hidden="true">J</span><span class="avatar" data-only="closer" aria-hidden="true">CM</span></a>
+  </div>
+</header>
+<main class="page" id="main">
+
+<div>
+<header class="head"><div class="head__text"><h1 class="h1">Resumen. <span class="t2">Lo que te toca hoy.</span></h1><p class="lead">Lunes, 2 de noviembre. <span data-only="closer">Tu cartera: 34 contactos.</span><span data-only="admin">Ves todo el CRM: 128 contactos, 3 closers activos.</span></p></div></header>
+<div class="grid grid--k1">
+  <section class="card" data-tone="hero" data-w="7" data-rows="2" aria-labelledby="c-due">
+    <div class="card__head"><span class="tile"><svg class="i" aria-hidden="true"><use href="icons.svg#clock"/></svg></span><h2 class="h3" id="c-due">Acciones vencidas</h2></div>
+    <p><span class="figure" data-tone="overdue" data-only="admin">4</span><span class="figure" data-tone="overdue" data-only="closer">3</span></p>
+    <p class="soft small">contactos con la siguiente acción pasada<span data-only="admin"> en todo el CRM (1 sin dueño)</span>.</p>
+    <div class="mini-list"><a href="contacto.html"><span>Laura Campos</span><small>Enviar presupuesto de SEO completo</small><span class="due" data-state="overdue"><svg class="i" aria-hidden="true"><use href="icons.svg#triangle-alert"/></svg><span class="vh">Vencida, </span>hace 3 días</span></a><a href="contacto.html" data-only="admin"><span>Tomás Gil · Gil Asesores</span><small>Primer contacto (formulario web)</small><span class="due" data-state="overdue"><svg class="i" aria-hidden="true"><use href="icons.svg#triangle-alert"/></svg><span class="vh">Vencida, </span>hace 1 día</span></a><a href="contacto.html"><span>Marina Soler · Clínica Dental Soler</span><small>Llamar para resolver dudas del P2</small><span class="due" data-state="overdue"><svg class="i" aria-hidden="true"><use href="icons.svg#triangle-alert"/></svg><span class="vh">Vencida, </span>hace 2 días</span></a><a href="contacto.html" data-only="closer"><span>Panadería La Espiga · Ana Ruiz</span><small>Revisar historia «Reservar encargos»</small><span class="due" data-state="today"><svg class="i" aria-hidden="true"><use href="icons.svg#clock"/></svg><span class="vh">Para </span>hoy</span></a></div>
+    <div class="cell-actions"><a class="btn" data-variant="solid" href="contactos.html?due=1"><svg class="i" aria-hidden="true"><use href="icons.svg#triangle-alert"/></svg>Ver vencidas</a><a class="link" href="contactos.html">Todos los contactos <svg class="i" aria-hidden="true"><use href="icons.svg#arrow-right"/></svg></a></div>
+  </section>
+  <section class="card" data-w="5" aria-labelledby="c-leads">
+    <div class="card__head"><span class="tile"><svg class="i" aria-hidden="true"><use href="icons.svg#inbox"/></svg></span><h2 class="h3" id="c-leads"><span data-only="closer">Mis leads abiertos</span><span data-only="admin">Leads abiertos</span></h2></div>
+    <div class="stat-list">
+      <a class="stat-row" href="contactos.html"><span>Nuevos</span><b><span data-only="admin">4</span><span data-only="closer">1</span></b><svg class="i" aria-hidden="true"><use href="icons.svg#chevron-right"/></svg></a>
+      <a class="stat-row" href="contactos.html"><span>Contactados</span><b><span data-only="admin">7</span><span data-only="closer">3</span></b><svg class="i" aria-hidden="true"><use href="icons.svg#chevron-right"/></svg></a>
+      <a class="stat-row" href="contactos.html"><span>Propuesta enviada</span><b><span data-only="admin">5</span><span data-only="closer">2</span></b><svg class="i" aria-hidden="true"><use href="icons.svg#chevron-right"/></svg></a>
+    </div>
+  </section>
+  <section class="card" data-w="5" aria-labelledby="c-com">
+    <div class="card__head"><span class="tile"><svg class="i" aria-hidden="true"><use href="icons.svg#wallet"/></svg></span><h2 class="h3" id="c-com"><span data-only="closer">Mis comisiones</span><span data-only="admin">Comisiones del equipo</span></h2><a class="link" data-size="sm" href="comisiones.html">Ver <svg class="i" aria-hidden="true"><use href="icons.svg#arrow-right"/></svg></a></div>
+    <div class="stat-list">
+      <div class="stat-row"><span>Pendientes de aprobar</span><b><span data-only="admin">248,00&nbsp;€ · 2</span><span data-only="closer">140,00&nbsp;€ · 1</span></b></div>
+      <div class="stat-row"><span>Aprobadas, sin pagar</span><b>90,00&nbsp;€ · 1</b></div>
+    </div>
+  </section>
+  <section class="card" aria-labelledby="c-st">
+    <div class="card__head"><span class="tile"><svg class="i" aria-hidden="true"><use href="icons.svg#list-checks"/></svg></span><h2 class="h3" id="c-st">Historias por decidir</h2></div>
+    <p class="figure figure--sm"><span data-only="admin">3</span><span data-only="closer">1</span></p>
+    <p class="soft small">Propuestas por <span data-only="closer">tus clientes</span><span data-only="admin">clientes</span>. Se aceptan con horas o se rechazan con motivo.</p>
+    <a class="link" href="cliente.html">Decidir la de Panadería La Espiga <svg class="i" aria-hidden="true"><use href="icons.svg#arrow-right"/></svg></a>
+  </section>
+  <section class="card" aria-labelledby="c-imp">
+    <div class="card__head"><span class="tile"><svg class="i" aria-hidden="true"><use href="icons.svg#upload"/></svg></span><h2 class="h3" id="c-imp">Última importación</h2></div>
+    <p class="small"><strong>contactos-feria-octubre.csv</strong><br><span class="muted">hoy, 10:42<span data-only="admin"> · Carla Méndez</span></span></p>
+    <p class="small soft num">26 creados · 2 actualizados · 1 inválida · <span class="badge" data-tone="attention">1 en revisión</span></p>
+    <a class="link" href="importar.html">Importar otro CSV <svg class="i" aria-hidden="true"><use href="icons.svg#arrow-right"/></svg></a>
+  </section>
+  <section class="card" aria-labelledby="c-team">
+    <div class="card__head"><span class="tile"><svg class="i" aria-hidden="true"><use href="icons.svg#users"/></svg></span><h2 class="h3" id="c-team">Equipo</h2></div>
+    <div class="stat-list">
+      <div class="stat-row"><span>Leads ganados en noviembre</span><b>0</b></div>
+      <div class="stat-row"><span>Leads ganados en octubre</span><b>5</b></div>
+      <div class="stat-row"><span>Contactos del equipo</span><b>128</b></div>
+    </div>
+    <p class="hint">Agregados de todos, sin nombres.</p>
+  </section>
+  <section class="card" data-w="12" data-only="admin" aria-labelledby="c-adm">
+    <div class="card__head"><span class="tile"><svg class="i" aria-hidden="true"><use href="icons.svg#shield-check"/></svg></span><h2 class="h3" id="c-adm">Administración</h2><span class="omen"><span class="live-dot" aria-hidden="true"></span>Omen en línea · comprobado hace 1 min</span></div>
+    <div class="grid grid--3 grid--rows"><a class="stat-row" href="index.html#fuera" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#message-square"/></svg><span>Hilos de chat sin leer</span><b>3</b><svg class="i" aria-hidden="true"><use href="icons.svg#chevron-right"/></svg></a><a class="stat-row" href="index.html#fuera" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#building-2"/></svg><span>Agencias que han respondido</span><b>2</b><svg class="i" aria-hidden="true"><use href="icons.svg#chevron-right"/></svg></a><a class="stat-row" href="index.html#fuera" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#inbox"/></svg><span>Leads nuevos</span><b>4</b><svg class="i" aria-hidden="true"><use href="icons.svg#chevron-right"/></svg></a><a class="stat-row" href="index.html#fuera" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#message-square"/></svg><span>Comentarios por moderar</span><b>1</b><svg class="i" aria-hidden="true"><use href="icons.svg#chevron-right"/></svg></a><a class="stat-row" href="index.html#fuera" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#file-up"/></svg><span>Ampliaciones pendientes</span><b>1</b><svg class="i" aria-hidden="true"><use href="icons.svg#chevron-right"/></svg></a><a class="stat-row" href="index.html#fuera" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#receipt"/></svg><span>Recompensas pendientes</span><b>0</b><svg class="i" aria-hidden="true"><use href="icons.svg#chevron-right"/></svg></a><a class="stat-row" href="clientes.html"><svg class="i" aria-hidden="true"><use href="icons.svg#list-checks"/></svg><span>Historias propuestas</span><b>2</b><svg class="i" aria-hidden="true"><use href="icons.svg#chevron-right"/></svg></a><a class="stat-row" href="comisiones.html"><svg class="i" aria-hidden="true"><use href="icons.svg#wallet"/></svg><span>Comisiones pendientes</span><b>2</b><svg class="i" aria-hidden="true"><use href="icons.svg#chevron-right"/></svg></a><a class="stat-row" href="importar.html?tab=conflictos"><svg class="i" aria-hidden="true"><use href="icons.svg#git-merge"/></svg><span>Conflictos de importación</span><b>1</b><svg class="i" aria-hidden="true"><use href="icons.svg#chevron-right"/></svg></a><a class="stat-row" href="index.html#fuera" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#circle-x"/></svg><span>Importaciones fallidas (24 h)</span><b>0</b><svg class="i" aria-hidden="true"><use href="icons.svg#chevron-right"/></svg></a><a class="stat-row" href="contenido.html"><svg class="i" aria-hidden="true"><use href="icons.svg#layers"/></svg><span>Contenido sin publicar</span><b>7</b><svg class="i" aria-hidden="true"><use href="icons.svg#chevron-right"/></svg></a><a class="stat-row" href="index.html#fuera" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#file-text"/></svg><span>Presupuestos en borrador</span><b>1</b><svg class="i" aria-hidden="true"><use href="icons.svg#chevron-right"/></svg></a></div>
+    <a class="link" href="equipo.html">Ir a Administración <svg class="i" aria-hidden="true"><use href="icons.svg#arrow-right"/></svg></a>
+  </section>
+</div>
+</div>
+</main>
+<nav class="tabbar" aria-label="Navegación del CRM"><ul role="list"><li data-mbar-only><a class="tab" href="resumen.html" aria-current="page"><svg class="i" aria-hidden="true"><use href="icons.svg#house"/></svg><span>Resumen</span></a></li><li><a class="tab" href="contactos.html"><svg class="i" aria-hidden="true"><use href="icons.svg#users"/></svg><span>Contactos</span></a></li><li><a class="tab" href="clientes.html"><svg class="i" aria-hidden="true"><use href="icons.svg#briefcase-business"/></svg><span>Clientes</span></a></li><li><a class="tab" href="comisiones.html"><svg class="i" aria-hidden="true"><use href="icons.svg#wallet"/></svg><span>Comisiones</span></a></li><li><button class="tab" type="button" data-open="more" aria-haspopup="dialog"><svg class="i" aria-hidden="true"><use href="icons.svg#ellipsis"/></svg><span>Más</span></button></li></ul></nav>
+</div>
+<dialog class="sheet" id="more" aria-labelledby="more-t">
+  <span class="grabber" aria-hidden="true"></span>
+  <div class="dlg__head"><h2 class="h2" id="more-t">Más</h2><form method="dialog"><button class="icon-btn" aria-label="Cerrar"><svg class="i" aria-hidden="true"><use href="icons.svg#x"/></svg></button></form></div>
+  <nav class="more-list" aria-label="Más secciones"><a class="nav__item" href="resumen.html" aria-current="page"><svg class="i" aria-hidden="true"><use href="icons.svg#house"/></svg><span>Resumen</span></a><a class="nav__item" href="importar.html"><svg class="i" aria-hidden="true"><use href="icons.svg#upload"/></svg><span>Importar</span></a><a class="nav__item" href="ajustes.html"><svg class="i" aria-hidden="true"><use href="icons.svg#settings"/></svg><span>Ajustes</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#message-square"/></svg><span>Chat</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#building-2"/></svg><span>Organizaciones</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#file-text"/></svg><span>Contextos del chat</span></a><a class="nav__item" href="equipo.html" data-only="admin"><svg class="i" aria-hidden="true"><use href="icons.svg#shield-check"/></svg><span>Administración</span></a>
+    <p class="nav__label">Cuenta</p>
+    <a class="nav__item" href="index.html#fuera" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#log-out"/></svg><span>Cerrar sesión</span></a>
+  </nav>
+</dialog>
+
+<details class="proto">
+  <summary><svg class="i" aria-hidden="true"><use href="icons.svg#sliders-horizontal"/></svg>Prototipo</summary>
+  <div class="proto__panel">
+    <fieldset><legend>Rol (también ?role=closer)</legend><div class="seg"><label><input type="radio" name="role" value="admin">Admin</label><label><input type="radio" name="role" value="closer">Closer</label></div></fieldset>
+    <fieldset><legend>A · Color de «vencida»</legend><div class="seg"><label><input type="radio" name="overdue" value="danger">Coral (nuevo)</label><label><input type="radio" name="overdue" value="pending">Oro (--pending)</label></div></fieldset>
+    <fieldset><legend>B · Densidad de tablas</legend><div class="seg"><label><input type="radio" name="density" value="comfortable">Cómoda</label><label><input type="radio" name="density" value="compact">Compacta</label></div></fieldset>
+    <fieldset><legend>C · Segundo tono del titular</legend><div class="seg"><label><input type="radio" name="title" value="v7">Ámbar</label><label><input type="radio" name="title" value="v6">Lavanda</label></div></fieldset>
+    <fieldset><legend>D · Barra inferior en móvil</legend><div class="seg"><label><input type="radio" name="mbar" value="4">4 (PANT)</label><label><input type="radio" name="mbar" value="5">5 con Resumen</label></div></fieldset>
+    <fieldset><legend>E · Detalle de contacto (≥ 60rem)</legend><div class="seg"><label><input type="radio" name="k3" value="split">Dos columnas</label><label><input type="radio" name="k3" value="stack">Una columna</label></div></fieldset>
+    <p>Se guarda en este navegador. Opciones explicadas en el README §4. <a class="link" data-size="sm" href="index.html">Índice de pantallas</a></p>
+  </div>
+</details>
+<div class="toast" id="toast" role="status" aria-live="polite"><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg><span></span></div>
+<script src="crm.js?v=1" defer></script>
+</body>
+</html>

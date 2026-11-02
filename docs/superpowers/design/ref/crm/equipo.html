@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07060F">
+<meta name="robots" content="noindex">
+<meta name="description" content="Prototipo de la zona /crm y de administración de josecoded.">
+<title>Equipo · Admin josecoded</title>
+<script>(function(){var r=document.documentElement,q=new URLSearchParams(location.search);r.classList.add('js');r.dataset.role=q.get('role')==='closer'?'closer':'admin';var d={density:'comfortable',overdue:'danger',title:'v7',mbar:'4',k3:'split'};for(var k in d){var v=null;try{v=localStorage.getItem('crm.'+k)}catch(x){}r.dataset[k]=q.get(k)||v||d[k]}if(q.has('shot'))r.classList.add('shot')})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css?v=1">
+<link rel="stylesheet" href="crm.css?v=1">
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+<div class="grain" aria-hidden="true"></div>
+<div class="app" data-zone="admin">
+<aside class="rail">
+  <a class="brand" href="resumen.html">josecoded <span class="zone">Admin</span></a>
+  <nav class="nav" aria-label="Navegación de administración">
+    <a class="nav__item" href="resumen.html"><svg class="i" aria-hidden="true"><use href="icons.svg#house"/></svg><span>Resumen</span></a><a class="nav__item" href="clientes.html"><svg class="i" aria-hidden="true"><use href="icons.svg#briefcase-business"/></svg><span>Clientes</span></a><a class="nav__item" href="equipo.html" aria-current="page"><svg class="i" aria-hidden="true"><use href="icons.svg#users"/></svg><span>Equipo</span></a>
+    <p class="nav__label" id="rail-more">Más</p>
+    <div class="nav" role="group" aria-labelledby="rail-more"><a class="nav__item" href="contenido.html"><svg class="i" aria-hidden="true"><use href="icons.svg#layers"/></svg><span>Contenido</span></a><a class="nav__item" href="notificaciones.html"><svg class="i" aria-hidden="true"><use href="icons.svg#bell"/></svg><span>Notificaciones</span></a><a class="nav__item" href="index.html#fuera" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#link"/></svg><span>Afiliados</span></a><a class="nav__item" href="index.html#fuera" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#message-square"/></svg><span>Moderación</span></a><a class="nav__item" href="index.html#fuera" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#file-up"/></svg><span>Ampliaciones</span></a><a class="nav__item" href="resumen.html"><svg class="i" aria-hidden="true"><use href="icons.svg#arrow-left"/></svg><span>Ir al CRM</span></a></div>
+  </nav>
+  <div class="rail__foot">
+    <a class="me" href="ajustes.html" data-only="admin"><span class="avatar" aria-hidden="true">J</span><span><span class="me__name">Jose</span><br><span class="me__role">Administrador</span></span></a>
+    <a class="me" href="ajustes.html" data-only="closer"><span class="avatar" aria-hidden="true">CM</span><span><span class="me__name">Carla Méndez</span><br><span class="me__role">Closer · 10&nbsp;%</span></span></a>
+  </div>
+</aside>
+<header class="topbar">
+  <a class="brand" href="resumen.html">josecoded <span class="zone">Admin</span></a>
+  <div class="topbar__end">
+    <a class="icon-btn" href="ajustes.html" aria-label="Ajustes y cuenta"><span class="avatar" data-only="admin" aria-hidden="true">J</span><span class="avatar" data-only="closer" aria-hidden="true">CM</span></a>
+  </div>
+</header>
+<main class="page" id="main" data-admin-page>
+<div class="empty not-found"><span class="tile"><svg class="i" aria-hidden="true"><use href="icons.svg#ban"/></svg></span><h1 class="h2">Esta página no existe</h1><p>Vista de un closer en <code>/admin</code>: responde 404 (no 403), así no se revela que la zona existe.</p><a class="link" href="resumen.html">Ir al CRM <svg class="i" aria-hidden="true"><use href="icons.svg#arrow-right"/></svg></a></div>
+<div>
+<header class="head"><div class="head__text"><h1 class="h1">Equipo. <span class="t2">Quién vende contigo.</span></h1><p class="lead">Closers con acceso al CRM. Cada uno ve solo su cartera; tú lo ves todo.</p></div><div class="head__actions"><button class="btn" data-variant="solid" type="button" data-open="sheet-invite"><svg class="i" aria-hidden="true"><use href="icons.svg#user-plus"/></svg>Invitar</button></div></header><div class="tablebox"><table class="table" role="table" data-stack><caption class="vh">Personas del equipo</caption><thead role="rowgroup"><tr role="row"><th role="columnheader" scope="col">Persona</th><th role="columnheader" scope="col">Rol</th><th role="columnheader" scope="col">Estado</th><th role="columnheader" scope="col" class="r">Tasa</th><th role="columnheader" scope="col">Telegram</th><th role="columnheader" scope="col">TOTP</th><th role="columnheader" scope="col" class="r">Contactos</th><th role="columnheader" scope="col" class="r">Comisiones pendientes</th><th role="columnheader" scope="col"><span class="vh">Acciones</span></th></tr></thead><tbody role="rowgroup"><tr role="row">
+<td role="cell" data-col="main"><div class="owner owner--row"><span class="avatar" aria-hidden="true">J</span><span class="cell-main"><strong>Jose</strong><span>admin@josecoded.test</span></span></div></td>
+<td role="cell" data-col="meta" data-label="Rol">Admin</td>
+<td role="cell" data-col="status"><span class="badge" data-tone="live">Activo</span></td>
+<td role="cell" data-col="meta" data-label="Tasa" class="r">—</td>
+<td role="cell" data-col="meta" data-label="Telegram"><span class="badge" data-tone="live">Vinculado</span></td>
+<td role="cell" data-col="meta" data-label="TOTP"><span class="verdict" data-ok><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg>Sí</span></td>
+<td role="cell" data-col="meta" data-label="Contactos" class="r">61</td>
+<td role="cell" data-col="meta" data-label="Pendiente" class="r">—</td>
+<td role="cell" class="act"></td>
+</tr><tr role="row">
+<td role="cell" data-col="main"><div class="owner owner--row"><span class="avatar" aria-hidden="true">CM</span><span class="cell-main"><strong>Carla Méndez</strong><span>carla@correo.test</span></span></div></td>
+<td role="cell" data-col="meta" data-label="Rol">Closer</td>
+<td role="cell" data-col="status"><span class="badge" data-tone="live">Activa</span></td>
+<td role="cell" data-col="meta" data-label="Tasa" class="r">10&nbsp;%</td>
+<td role="cell" data-col="meta" data-label="Telegram"><span class="badge" data-tone="live">Vinculado</span></td>
+<td role="cell" data-col="meta" data-label="TOTP"><span class="verdict" data-ok><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg>Sí</span></td>
+<td role="cell" data-col="meta" data-label="Contactos" class="r">34</td>
+<td role="cell" data-col="meta" data-label="Pendiente" class="r">140,00&nbsp;€ · 1</td>
+<td role="cell" class="act"><button class="icon-btn" data-size="sm" type="button" data-open="sheet-rate" aria-label="Editar la tasa de Carla Méndez"><svg class="i" aria-hidden="true"><use href="icons.svg#pencil"/></svg></button><button class="icon-btn" data-size="sm" type="button" data-open="sheet-portfolio" aria-label="Reasignar la cartera de Carla Méndez"><svg class="i" aria-hidden="true"><use href="icons.svg#user-cog"/></svg></button><button class="icon-btn" data-size="sm" type="button" data-open="confirm-deactivate" aria-label="Desactivar a Carla Méndez"><svg class="i" aria-hidden="true"><use href="icons.svg#ban"/></svg></button></td>
+</tr><tr role="row">
+<td role="cell" data-col="main"><div class="owner owner--row"><span class="avatar" aria-hidden="true">IR</span><span class="cell-main"><strong>Iván Robles</strong><span>ivan@correo.test</span></span></div></td>
+<td role="cell" data-col="meta" data-label="Rol">Closer</td>
+<td role="cell" data-col="status"><span class="badge" data-tone="live">Activo</span></td>
+<td role="cell" data-col="meta" data-label="Tasa" class="r">12&nbsp;%</td>
+<td role="cell" data-col="meta" data-label="Telegram"><span class="badge" data-tone="muted">No vinculado</span></td>
+<td role="cell" data-col="meta" data-label="TOTP"><span class="verdict" data-ok><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg>Sí</span></td>
+<td role="cell" data-col="meta" data-label="Contactos" class="r">29</td>
+<td role="cell" data-col="meta" data-label="Pendiente" class="r">108,00&nbsp;€ · 1</td>
+<td role="cell" class="act"><button class="icon-btn" data-size="sm" type="button" data-open="sheet-rate" aria-label="Editar la tasa de Iván Robles"><svg class="i" aria-hidden="true"><use href="icons.svg#pencil"/></svg></button><button class="icon-btn" data-size="sm" type="button" data-open="sheet-portfolio" aria-label="Reasignar la cartera de Iván Robles"><svg class="i" aria-hidden="true"><use href="icons.svg#user-cog"/></svg></button><button class="icon-btn" data-size="sm" type="button" data-open="confirm-deactivate" aria-label="Desactivar a Iván Robles"><svg class="i" aria-hidden="true"><use href="icons.svg#ban"/></svg></button></td>
+</tr><tr role="row">
+<td role="cell" data-col="main"><div class="owner owner--row"><span class="avatar" aria-hidden="true">MR</span><span class="cell-main"><strong>Marta Ruiz</strong><span>marta@correo.test</span></span></div></td>
+<td role="cell" data-col="meta" data-label="Rol">Closer</td>
+<td role="cell" data-col="status"><span class="badge" data-tone="live">Activa</span></td>
+<td role="cell" data-col="meta" data-label="Tasa" class="r">10&nbsp;%</td>
+<td role="cell" data-col="meta" data-label="Telegram"><span class="badge" data-tone="muted">No vinculado</span></td>
+<td role="cell" data-col="meta" data-label="TOTP"><span class="verdict" data-bad><svg class="i" aria-hidden="true"><use href="icons.svg#circle-alert"/></svg>No: aún no ha entrado</span></td>
+<td role="cell" data-col="meta" data-label="Contactos" class="r">0</td>
+<td role="cell" data-col="meta" data-label="Pendiente" class="r">—</td>
+<td role="cell" class="act"><button class="icon-btn" data-size="sm" type="button" data-open="sheet-rate" aria-label="Editar la tasa de Marta Ruiz"><svg class="i" aria-hidden="true"><use href="icons.svg#pencil"/></svg></button><button class="icon-btn" data-size="sm" type="button" data-open="sheet-portfolio" aria-label="Reasignar la cartera de Marta Ruiz"><svg class="i" aria-hidden="true"><use href="icons.svg#user-cog"/></svg></button><button class="icon-btn" data-size="sm" type="button" data-open="confirm-deactivate" aria-label="Desactivar a Marta Ruiz"><svg class="i" aria-hidden="true"><use href="icons.svg#ban"/></svg></button></td>
+</tr>
+<tr role="row" data-off>
+<td role="cell" data-col="main"><div class="owner owner--row"><span class="avatar" data-tone="off" aria-hidden="true">DO</span><span class="cell-main"><strong>Dani Ortega</strong><span>dani@correo.test</span></span></div></td>
+<td role="cell" data-col="meta" data-label="Rol">Closer</td>
+<td role="cell" data-col="status"><span class="badge" data-tone="muted">Desactivado</span></td>
+<td role="cell" data-col="meta" data-label="Tasa" class="r">10&nbsp;%</td>
+<td role="cell" data-col="meta" data-label="Telegram"><span class="badge" data-tone="muted">No vinculado</span></td>
+<td role="cell" data-col="meta" data-label="TOTP"><span class="verdict" data-ok><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg>Sí</span></td>
+<td role="cell" data-col="meta" data-label="Contactos" class="r">4 a su nombre</td>
+<td role="cell" data-col="meta" data-label="Pendiente" class="r">—</td>
+<td role="cell" class="act"><button class="icon-btn" data-size="sm" type="button" data-open="sheet-rate" aria-label="Editar la tasa de Dani Ortega"><svg class="i" aria-hidden="true"><use href="icons.svg#pencil"/></svg></button><button class="icon-btn" data-size="sm" type="button" data-open="sheet-portfolio" aria-label="Reasignar la cartera de Dani Ortega"><svg class="i" aria-hidden="true"><use href="icons.svg#user-cog"/></svg></button><button class="btn" data-variant="quiet" data-size="sm" type="button" data-say="Dani vuelve a tener acceso">Activar</button></td>
+</tr></tbody></table></div>
+<section class="section" aria-labelledby="inv-t"><div class="section__head"><h2 class="h2" id="inv-t">Invitaciones</h2><span class="caption muted">Caducan a los 7 días</span></div>
+<div class="tablebox"><table class="table" role="table" data-stack><caption class="vh">Invitaciones pendientes</caption><thead role="rowgroup"><tr role="row"><th role="columnheader" scope="col">Email</th><th role="columnheader" scope="col" class="r">Tasa</th><th role="columnheader" scope="col">Estado</th><th role="columnheader" scope="col"><span class="vh">Acciones</span></th></tr></thead><tbody role="rowgroup"><tr role="row"><td role="cell" data-col="main"><div class="cell-main"><strong>lucia.prado@correo.test</strong><span>Closer · nota: «empieza con clínicas de Madrid»</span></div></td><td role="cell" data-col="meta" data-label="Tasa" class="r">10&nbsp;%</td><td role="cell" data-col="status"><span class="badge" data-tone="attention">Caduca el 7 nov</span></td><td role="cell" class="act"><button class="btn" data-variant="ghost" data-size="sm" type="button" data-say="Invitación reenviada">Reenviar</button><button class="btn" data-variant="quiet" data-size="sm" type="button" data-open="confirm-revoke">Anular</button></td></tr>
+<tr role="row" data-off><td role="cell" data-col="main"><div class="cell-main"><strong>martin.f@correo.test</strong><span>Closer</span></div></td><td role="cell" data-col="meta" data-label="Tasa" class="r">12&nbsp;%</td><td role="cell" data-col="status"><span class="badge" data-tone="muted">Caducada el 25 oct</span></td><td role="cell" class="act"><button class="btn" data-variant="ghost" data-size="sm" type="button" data-say="Invitación reenviada">Reenviar</button></td></tr></tbody></table></div></section>
+</div>
+</main>
+<nav class="tabbar" aria-label="Navegación de administración"><ul role="list"><li><a class="tab" href="resumen.html"><svg class="i" aria-hidden="true"><use href="icons.svg#house"/></svg><span>Resumen</span></a></li><li><a class="tab" href="clientes.html"><svg class="i" aria-hidden="true"><use href="icons.svg#briefcase-business"/></svg><span>Clientes</span></a></li><li><a class="tab" href="equipo.html" aria-current="page"><svg class="i" aria-hidden="true"><use href="icons.svg#users"/></svg><span>Equipo</span></a></li><li><button class="tab" type="button" data-open="more" aria-haspopup="dialog"><svg class="i" aria-hidden="true"><use href="icons.svg#ellipsis"/></svg><span>Más</span></button></li></ul></nav>
+</div>
+<dialog class="sheet" id="more" aria-labelledby="more-t">
+  <span class="grabber" aria-hidden="true"></span>
+  <div class="dlg__head"><h2 class="h2" id="more-t">Más</h2><form method="dialog"><button class="icon-btn" aria-label="Cerrar"><svg class="i" aria-hidden="true"><use href="icons.svg#x"/></svg></button></form></div>
+  <nav class="more-list" aria-label="Más secciones"><a class="nav__item" href="contenido.html"><svg class="i" aria-hidden="true"><use href="icons.svg#layers"/></svg><span>Contenido</span></a><a class="nav__item" href="notificaciones.html"><svg class="i" aria-hidden="true"><use href="icons.svg#bell"/></svg><span>Notificaciones</span></a><a class="nav__item" href="index.html#fuera" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#link"/></svg><span>Afiliados</span></a><a class="nav__item" href="index.html#fuera" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#message-square"/></svg><span>Moderación</span></a><a class="nav__item" href="index.html#fuera" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#file-up"/></svg><span>Ampliaciones</span></a><a class="nav__item" href="resumen.html"><svg class="i" aria-hidden="true"><use href="icons.svg#arrow-left"/></svg><span>Ir al CRM</span></a>
+    <p class="nav__label">Cuenta</p>
+    <a class="nav__item" href="index.html#fuera" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#log-out"/></svg><span>Cerrar sesión</span></a>
+  </nav>
+</dialog>
+<dialog class="sheet" id="sheet-invite" aria-labelledby="sheet-invite-t">
+<span class="grabber" aria-hidden="true"></span><div class="dlg__head"><h2 class="h2" id="sheet-invite-t">Invitar al equipo</h2><form method="dialog"><button class="icon-btn" aria-label="Cerrar"><svg class="i" aria-hidden="true"><use href="icons.svg#x"/></svg></button></form></div>
+<div class="dlg__body"><div class="field"><label for="iv-email">Email</label><input class="control" id="iv-email" name="iv-email" type="email" placeholder="nombre@empresa.es" required></div>
+<fieldset class="field"><legend>Rol</legend><div class="radio-list"><label><input type="radio" name="iv-role" checked>Closer<small>ve y trabaja su cartera</small></label></div></fieldset>
+<div class="field"><label for="iv-rate">Tasa de comisión</label><div class="affix"><input class="control" id="iv-rate" name="iv-rate" type="number" placeholder="10" aria-describedby="iv-rate-h" required min="0" max="50" step="0.5" inputmode="decimal"><span aria-hidden="true">%</span></div><p class="hint" id="iv-rate-h">Porcentaje de lo cobrado en cada proyecto; habitual 10 %. Se congela en cada comisión al crearse.</p></div>
+<div class="field"><label for="iv-note">Nota (opcional)</label><textarea class="control" id="iv-note" name="iv-note" rows="2" placeholder="Solo la ves tú."></textarea></div>
+<p class="note"><svg class="i" aria-hidden="true"><use href="icons.svg#info"/></svg><span>El correo de invitación avisa de que el primer acceso pide configurar un autenticador (TOTP).</span></p></div>
+<form method="dialog" class="dlg__foot"><button class="btn" data-variant="quiet" value="cancel">Cancelar</button><button class="btn" data-variant="solid" value="ok" data-say="Invitación enviada" data-close><svg class="i" aria-hidden="true"><use href="icons.svg#send"/></svg>Enviar invitación</button></form>
+</dialog><dialog class="sheet" id="sheet-rate" aria-labelledby="sheet-rate-t">
+<span class="grabber" aria-hidden="true"></span><div class="dlg__head"><h2 class="h2" id="sheet-rate-t">Tasa de Carla Méndez</h2><form method="dialog"><button class="icon-btn" aria-label="Cerrar"><svg class="i" aria-hidden="true"><use href="icons.svg#x"/></svg></button></form></div>
+<div class="dlg__body"><div class="field"><label for="rt">Tasa de comisión</label><div class="affix"><input class="control" id="rt" name="rt" type="number" value="10" aria-describedby="rt-h" required><span aria-hidden="true">%</span></div><p class="hint" id="rt-h">Solo afecta a cierres nuevos. Las comisiones ya creadas guardan su %.</p></div></div>
+<form method="dialog" class="dlg__foot"><button class="btn" data-variant="quiet" value="cancel">Cancelar</button><button class="btn" data-variant="solid" value="ok" data-say="Tasa actualizada" data-close>Guardar tasa</button></form>
+</dialog><dialog class="sheet" id="sheet-portfolio" aria-labelledby="sheet-portfolio-t">
+<span class="grabber" aria-hidden="true"></span><div class="dlg__head"><h2 class="h2" id="sheet-portfolio-t">Reasignar cartera de Dani Ortega</h2><form method="dialog"><button class="icon-btn" aria-label="Cerrar"><svg class="i" aria-hidden="true"><use href="icons.svg#x"/></svg></button></form></div>
+<div class="dlg__body"><fieldset class="field"><legend>Qué contactos</legend><div class="radio-list"><label><input type="radio" name="pf" checked>Toda la cartera<small>4</small></label><label><input type="radio" name="pf">Solo leads abiertos<small>2</small></label><label><input type="radio" name="pf">Solo agencias<small>1</small></label></div></fieldset>
+<div class="field"><label for="pf-to">A quién</label><select class="control select" id="pf-to" name="pf-to"><option>Carla Méndez</option><option>Iván Robles</option><option>Jose (tú)</option></select></div>
+<p class="note" data-tone="attention"><svg class="i" aria-hidden="true"><use href="icons.svg#triangle-alert"/></svg><span>Las comisiones ya creadas siguen siendo de Dani.</span></p></div>
+<form method="dialog" class="dlg__foot"><button class="btn" data-variant="quiet" value="cancel">Cancelar</button><button class="btn" data-variant="solid" value="ok" data-say="Cartera reasignada" data-close>Reasignar 4 contactos</button></form>
+</dialog><dialog class="confirm" id="confirm-deactivate" aria-labelledby="confirm-deactivate-t" role="alertdialog">
+<div class="dlg__head"><h2 class="h2" id="confirm-deactivate-t">Desactivar a Iván Robles</h2></div>
+<div class="dlg__body"><p>Deja de entrar en el CRM al momento. Sus <strong>29 contactos</strong> siguen a su nombre hasta que los reasignes. Sus comisiones pendientes no cambian.</p></div>
+<form method="dialog" class="dlg__foot"><button class="btn" data-variant="quiet" value="cancel">Cancelar</button><button class="btn" data-variant="danger" value="ok" data-say="Iván Robles desactivado" data-close>Desactivar</button></form>
+</dialog><dialog class="confirm" id="confirm-revoke" aria-labelledby="confirm-revoke-t" role="alertdialog">
+<div class="dlg__head"><h2 class="h2" id="confirm-revoke-t">Anular invitación</h2></div>
+<div class="dlg__body"><p>El enlace enviado a <strong>lucia.prado@correo.test</strong> deja de funcionar.</p></div>
+<form method="dialog" class="dlg__foot"><button class="btn" data-variant="quiet" value="cancel">Cancelar</button><button class="btn" data-variant="danger" value="ok" data-say="Invitación anulada" data-close>Anular</button></form>
+</dialog>
+<details class="proto">
+  <summary><svg class="i" aria-hidden="true"><use href="icons.svg#sliders-horizontal"/></svg>Prototipo</summary>
+  <div class="proto__panel">
+    <fieldset><legend>Rol (también ?role=closer)</legend><div class="seg"><label><input type="radio" name="role" value="admin">Admin</label><label><input type="radio" name="role" value="closer">Closer</label></div></fieldset>
+    <fieldset><legend>A · Color de «vencida»</legend><div class="seg"><label><input type="radio" name="overdue" value="danger">Coral (nuevo)</label><label><input type="radio" name="overdue" value="pending">Oro (--pending)</label></div></fieldset>
+    <fieldset><legend>B · Densidad de tablas</legend><div class="seg"><label><input type="radio" name="density" value="comfortable">Cómoda</label><label><input type="radio" name="density" value="compact">Compacta</label></div></fieldset>
+    <fieldset><legend>C · Segundo tono del titular</legend><div class="seg"><label><input type="radio" name="title" value="v7">Ámbar</label><label><input type="radio" name="title" value="v6">Lavanda</label></div></fieldset>
+    <fieldset><legend>D · Barra inferior en móvil</legend><div class="seg"><label><input type="radio" name="mbar" value="4">4 (PANT)</label><label><input type="radio" name="mbar" value="5">5 con Resumen</label></div></fieldset>
+    <fieldset><legend>E · Detalle de contacto (≥ 60rem)</legend><div class="seg"><label><input type="radio" name="k3" value="split">Dos columnas</label><label><input type="radio" name="k3" value="stack">Una columna</label></div></fieldset>
+    <p>Se guarda en este navegador. Opciones explicadas en el README §4. <a class="link" data-size="sm" href="index.html">Índice de pantallas</a></p>
+  </div>
+</details>
+<div class="toast" id="toast" role="status" aria-live="polite"><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg><span></span></div>
+<script src="crm.js?v=1" defer></script>
+</body>
+</html>

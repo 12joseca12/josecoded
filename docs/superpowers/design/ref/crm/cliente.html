@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07060F">
+<meta name="robots" content="noindex">
+<meta name="description" content="Prototipo de la zona /crm y de administración de josecoded.">
+<title>Panadería La Espiga · CRM josecoded</title>
+<script>(function(){var r=document.documentElement,q=new URLSearchParams(location.search);r.classList.add('js');r.dataset.role=q.get('role')==='closer'?'closer':'admin';var d={density:'comfortable',overdue:'danger',title:'v7',mbar:'4',k3:'split'};for(var k in d){var v=null;try{v=localStorage.getItem('crm.'+k)}catch(x){}r.dataset[k]=q.get(k)||v||d[k]}if(q.has('shot'))r.classList.add('shot')})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css?v=1">
+<link rel="stylesheet" href="crm.css?v=1">
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+<div class="grain" aria-hidden="true"></div>
+<div class="app" data-zone="crm">
+<aside class="rail">
+  <a class="brand" href="resumen.html">josecoded <span class="zone">CRM</span></a>
+  <nav class="nav" aria-label="Navegación del CRM">
+    <a class="nav__item" href="resumen.html"><svg class="i" aria-hidden="true"><use href="icons.svg#house"/></svg><span>Resumen</span></a><a class="nav__item" href="contactos.html"><svg class="i" aria-hidden="true"><use href="icons.svg#users"/></svg><span>Contactos</span><span class="nav__count" data-tone="attention" data-only="admin" aria-label="4 vencidas">4</span><span class="nav__count" data-tone="attention" data-only="closer" aria-label="3 vencidas">3</span></a><a class="nav__item" href="clientes.html" aria-current="page"><svg class="i" aria-hidden="true"><use href="icons.svg#briefcase-business"/></svg><span>Clientes</span></a><a class="nav__item" href="comisiones.html"><svg class="i" aria-hidden="true"><use href="icons.svg#wallet"/></svg><span>Comisiones</span></a>
+    <p class="nav__label" id="rail-more">Más</p>
+    <div class="nav" role="group" aria-labelledby="rail-more"><a class="nav__item" href="importar.html"><svg class="i" aria-hidden="true"><use href="icons.svg#upload"/></svg><span>Importar</span></a><a class="nav__item" href="ajustes.html"><svg class="i" aria-hidden="true"><use href="icons.svg#settings"/></svg><span>Ajustes</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#message-square"/></svg><span>Chat</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#building-2"/></svg><span>Organizaciones</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#file-text"/></svg><span>Contextos del chat</span></a><a class="nav__item" href="equipo.html" data-only="admin"><svg class="i" aria-hidden="true"><use href="icons.svg#shield-check"/></svg><span>Administración</span></a></div>
+  </nav>
+  <div class="rail__foot">
+    <a class="me" href="ajustes.html" data-only="admin"><span class="avatar" aria-hidden="true">J</span><span><span class="me__name">Jose</span><br><span class="me__role">Administrador</span></span></a>
+    <a class="me" href="ajustes.html" data-only="closer"><span class="avatar" aria-hidden="true">CM</span><span><span class="me__name">Carla Méndez</span><br><span class="me__role">Closer · 10&nbsp;%</span></span></a>
+  </div>
+</aside>
+<header class="topbar">
+  <a class="brand" href="resumen.html">josecoded <span class="zone">CRM</span></a>
+  <div class="topbar__end">
+    <a class="icon-btn" href="ajustes.html" aria-label="Ajustes y cuenta"><span class="avatar" data-only="admin" aria-hidden="true">J</span><span class="avatar" data-only="closer" aria-hidden="true">CM</span></a>
+  </div>
+</header>
+<main class="page" id="main">
+
+<div>
+<header class="contact-head">
+<nav class="crumbs" aria-label="Ruta"><a href="clientes.html"><svg class="i" aria-hidden="true"><use href="icons.svg#arrow-left"/></svg>Clientes</a></nav>
+<div class="contact-head__top"><div class="head__text"><h1 class="h1">Panadería La Espiga. <span class="t2">Ana Ruiz</span></h1>
+<div class="contact-head__meta"><span class="chip">P2 · Pedidos / reservas</span><span class="badge" data-tone="live">Con acceso</span><span class="caption muted">entró hace 2 días</span><span class="owner"><span class="avatar" data-size="sm" aria-hidden="true">CM</span>Carla Méndez</span></div></div>
+<div class="head__actions"><a class="btn" data-variant="ghost" href="contacto.html"><svg class="i" aria-hidden="true"><use href="icons.svg#user-round"/></svg>Ver contacto</a></div></div>
+<ol class="phases" role="list" aria-label="Fases del proyecto"><li data-done>Propuesta</li><li data-done>Diseño</li><li aria-current=step>Desarrollo</li><li>Revisión</li><li>Entrega</li></ol>
+</header>
+<div class="split">
+<div class="panel">
+<div class="section__head"><h2 class="h2">Historias de usuario</h2><span class="caption muted">1 por decidir · 1 aceptada · 1 en tareas · 1 rechazada</span></div>
+<div class="story-list"><article class="story" aria-labelledby="st-reservar-encargos-para-recoger">
+<div class="story__head"><h3 class="h3" id="st-reservar-encargos-para-recoger">Reservar encargos para recoger</h3><span class="badge" data-tone="attention">Por decidir</span><span class="caption muted">30 oct</span></div>
+<div class="story__cqp"><p><b>Como</b> cliente habitual de la panadería</p><p><b>quiero</b> reservar una tarta o un pan especial para un día y una hora</p><p><b>para</b> recogerlo sin esperar cola</p></div>
+<ul class="criteria" role="list" aria-label="Criterios de aceptación"><li><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg>Elijo producto, día y franja de recogida</li><li><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg>Solo veo franjas con hueco</li><li><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg>Recibo la confirmación por correo</li><li><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg>La panadería ve la reserva en su panel</li></ul><div class="story__verdict"><button class="btn" data-variant="solid" type="button" data-open="sheet-story">Decidir</button></div>
+</article><article class="story" aria-labelledby="st-aviso-cuando-el-pedido-este-listo">
+<div class="story__head"><h3 class="h3" id="st-aviso-cuando-el-pedido-este-listo">Aviso cuando el pedido esté listo</h3><span class="badge" data-tone="active">Aceptada</span><span class="caption muted">22 oct</span></div>
+<div class="story__cqp"><p><b>Como</b> cliente que encarga por la web</p><p><b>quiero</b> recibir un aviso cuando mi pedido esté listo</p><p><b>para</b> no ir antes de tiempo</p></div>
+<ul class="criteria" role="list" aria-label="Criterios de aceptación"><li><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg>Aviso por correo al marcarlo listo</li><li><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg>Texto con hora de recogida</li></ul><div class="story__verdict"><span><strong>6 h</strong> · 240,00&nbsp;€ orientativo, sin IVA</span><span class="muted">«Va con el módulo de pedidos.»</span><button class="btn" data-variant="ghost" data-size="sm" type="button" data-say="Tarea creada desde la historia"><svg class="i" aria-hidden="true"><use href="icons.svg#list-checks"/></svg>Convertir en tarea</button></div>
+</article><article class="story" aria-labelledby="st-ocultar-productos-agotados">
+<div class="story__head"><h3 class="h3" id="st-ocultar-productos-agotados">Ocultar productos agotados</h3><span class="badge" data-tone="live">En tareas</span><span class="caption muted">15 oct</span></div>
+<div class="story__cqp"><p><b>Como</b> dueña de la panadería</p><p><b>quiero</b> marcar un producto como agotado</p><p><b>para</b> que no me lo pidan</p></div>
+<ul class="criteria" role="list" aria-label="Criterios de aceptación"><li><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg>Un interruptor por producto</li><li><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg>Se oculta en la carta al momento</li></ul><div class="story__verdict"><span><strong>2 h</strong> · incluida en el pack</span><a class="link" data-size="sm" href="index.html#fuera" data-missing>Ver tarea <svg class="i" aria-hidden="true"><use href="icons.svg#arrow-right"/></svg></a></div>
+</article><article class="story" aria-labelledby="st-cambiar-la-tipografia-de-la-carta">
+<div class="story__head"><h3 class="h3" id="st-cambiar-la-tipografia-de-la-carta">Cambiar la tipografía de la carta</h3><span class="badge" data-tone="muted">Rechazada</span><span class="caption muted">10 oct</span></div>
+<div class="story__cqp"><p><b>Como</b> dueña de la panadería</p><p><b>quiero</b> otra tipografía en la carta</p><p><b>para</b> que se parezca a mi letrero</p></div>
+<ul class="criteria" role="list" aria-label="Criterios de aceptación"><li><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg>Misma letra que el letrero</li></ul><div class="story__verdict"><span class="muted">Motivo: queda fuera del pack; lo vemos en una ampliación de diseño.</span></div>
+</article></div>
+</div>
+<aside class="grid" aria-label="Proyecto">
+<section class="card" aria-labelledby="t-tasks"><div class="card__head"><span class="tile"><svg class="i" aria-hidden="true"><use href="icons.svg#list-checks"/></svg></span><h2 class="h3" id="t-tasks">Tareas</h2><span class="caption muted">2 de 5 hechas</span></div><ul class="tasks" role="list"><li data-done><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg><span>Carta de productos con fotos</span><small>Hecha</small></li><li><svg class="i" aria-hidden="true"><use href="icons.svg#circle-dashed"/></svg><span>Pagos con Bizum en la recogida</span><small>En curso</small></li><li><svg class="i" aria-hidden="true"><use href="icons.svg#circle-dashed"/></svg><span>Pedidos para recoger</span><small>En curso</small></li><li><svg class="i" aria-hidden="true"><use href="icons.svg#circle-dashed"/></svg><span>Ocultar agotados en la carta</span><small>Pendiente</small></li><li data-done><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg><span>Textos legales</span><small>Hecha</small></li></ul><p class="hint" data-only="admin">Se editan en Administración · Clientes.</p><p class="hint" data-only="closer">Solo lectura: las gestiona Jose.</p></section>
+<section class="card" data-only="admin" aria-labelledby="t-mat"><div class="card__head"><span class="tile"><svg class="i" aria-hidden="true"><use href="icons.svg#folder-kanban"/></svg></span><h2 class="h3" id="t-mat">Material</h2></div><ul class="tasks" role="list"><li><svg class="i" aria-hidden="true"><use href="icons.svg#file-text"/></svg><span>logo-la-espiga.svg</span><small>12 KB</small></li><li><svg class="i" aria-hidden="true"><use href="icons.svg#file-text"/></svg><span>fotos-productos.zip</span><small>18 MB</small></li><li><svg class="i" aria-hidden="true"><use href="icons.svg#file-text"/></svg><span>textos-carta.docx</span><small>40 KB</small></li></ul></section>
+</aside>
+</div>
+</div>
+</main>
+<nav class="tabbar" aria-label="Navegación del CRM"><ul role="list"><li data-mbar-only><a class="tab" href="resumen.html"><svg class="i" aria-hidden="true"><use href="icons.svg#house"/></svg><span>Resumen</span></a></li><li><a class="tab" href="contactos.html"><svg class="i" aria-hidden="true"><use href="icons.svg#users"/></svg><span>Contactos</span></a></li><li><a class="tab" href="clientes.html" aria-current="page"><svg class="i" aria-hidden="true"><use href="icons.svg#briefcase-business"/></svg><span>Clientes</span></a></li><li><a class="tab" href="comisiones.html"><svg class="i" aria-hidden="true"><use href="icons.svg#wallet"/></svg><span>Comisiones</span></a></li><li><button class="tab" type="button" data-open="more" aria-haspopup="dialog"><svg class="i" aria-hidden="true"><use href="icons.svg#ellipsis"/></svg><span>Más</span></button></li></ul></nav>
+</div>
+<dialog class="sheet" id="more" aria-labelledby="more-t">
+  <span class="grabber" aria-hidden="true"></span>
+  <div class="dlg__head"><h2 class="h2" id="more-t">Más</h2><form method="dialog"><button class="icon-btn" aria-label="Cerrar"><svg class="i" aria-hidden="true"><use href="icons.svg#x"/></svg></button></form></div>
+  <nav class="more-list" aria-label="Más secciones"><a class="nav__item" href="resumen.html"><svg class="i" aria-hidden="true"><use href="icons.svg#house"/></svg><span>Resumen</span></a><a class="nav__item" href="importar.html"><svg class="i" aria-hidden="true"><use href="icons.svg#upload"/></svg><span>Importar</span></a><a class="nav__item" href="ajustes.html"><svg class="i" aria-hidden="true"><use href="icons.svg#settings"/></svg><span>Ajustes</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#message-square"/></svg><span>Chat</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#building-2"/></svg><span>Organizaciones</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#file-text"/></svg><span>Contextos del chat</span></a><a class="nav__item" href="equipo.html" data-only="admin"><svg class="i" aria-hidden="true"><use href="icons.svg#shield-check"/></svg><span>Administración</span></a>
+    <p class="nav__label">Cuenta</p>
+    <a class="nav__item" href="index.html#fuera" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#log-out"/></svg><span>Cerrar sesión</span></a>
+  </nav>
+</dialog>
+<dialog class="sheet decide" id="sheet-story" aria-labelledby="sheet-story-t">
+<span class="grabber" aria-hidden="true"></span><div class="dlg__head"><h2 class="h2" id="sheet-story-t">Decidir historia</h2><form method="dialog"><button class="icon-btn" aria-label="Cerrar"><svg class="i" aria-hidden="true"><use href="icons.svg#x"/></svg></button></form></div>
+<div class="dlg__body"><div class="note"><svg class="i" aria-hidden="true"><use href="icons.svg#list-checks"/></svg><span><strong>Reservar encargos para recoger</strong> · Ana Ruiz, Panadería La Espiga. Como cliente habitual de la panadería, quiero reservar una tarta o un pan especial para un día y una hora, para recogerlo sin esperar cola. 4 criterios.</span></div>
+<div class="decide">
+<fieldset class="field"><legend>Decisión</legend><div class="seg"><label><input type="radio" name="dec" id="dec-accept" checked><svg class="i" aria-hidden="true"><use href="icons.svg#check"/></svg>Aceptar</label><label><input type="radio" name="dec" id="dec-reject"><svg class="i" aria-hidden="true"><use href="icons.svg#x"/></svg>Rechazar</label></div></fieldset>
+<div data-when="accept" class="stack">
+<div class="row-2"><div class="field"><label for="st-hours">Estimación</label><div class="affix"><input class="control" id="st-hours" name="st-hours" type="number" value="6" required min="0.5" step="0.5" inputmode="decimal"><span aria-hidden="true">h</span></div></div><div class="field"><label for="st-amount">Importe (opcional)</label><div class="affix"><input class="control" id="st-amount" name="st-amount" type="number" aria-describedby="st-amount-h" min="0" inputmode="decimal"><span aria-hidden="true">€</span></div><p class="hint" id="st-amount-h">Orientativo, sin IVA. El cliente lo ve.</p></div></div>
+<div class="field"><label for="st-note">Nota para el cliente (opcional)</label><textarea class="control" id="st-note" name="st-note" rows="3">Encaja con el módulo de pedidos que ya tienes; lo hago en la misma entrega.</textarea></div>
+<label class="check"><input type="checkbox" checked>Crear tarea en su proyecto al aceptar</label>
+</div>
+<div data-when="reject" class="stack">
+<div class="field"><label for="st-reason">Motivo</label><textarea class="control" id="st-reason" name="st-reason" rows="4" placeholder="Ej.: queda fuera del pack; lo vemos como ampliación." aria-describedby="st-reason-h" required></textarea><p class="hint" id="st-reason-h">El cliente lo lee tal cual. Explica qué haría falta para que encaje.</p></div>
+</div>
+</div></div>
+<form method="dialog" class="dlg__foot"><button class="btn" data-variant="quiet" value="cancel">Cancelar</button><button class="btn" data-variant="solid" value="ok" data-say="Historia aceptada y tarea creada" data-close data-when="accept"><svg class="i" aria-hidden="true"><use href="icons.svg#check"/></svg>Aceptar historia</button><button class="btn" data-variant="danger" value="ok" data-say="Historia rechazada" data-close data-when="reject">Rechazar historia</button></form>
+</dialog>
+<details class="proto">
+  <summary><svg class="i" aria-hidden="true"><use href="icons.svg#sliders-horizontal"/></svg>Prototipo</summary>
+  <div class="proto__panel">
+    <fieldset><legend>Rol (también ?role=closer)</legend><div class="seg"><label><input type="radio" name="role" value="admin">Admin</label><label><input type="radio" name="role" value="closer">Closer</label></div></fieldset>
+    <fieldset><legend>A · Color de «vencida»</legend><div class="seg"><label><input type="radio" name="overdue" value="danger">Coral (nuevo)</label><label><input type="radio" name="overdue" value="pending">Oro (--pending)</label></div></fieldset>
+    <fieldset><legend>B · Densidad de tablas</legend><div class="seg"><label><input type="radio" name="density" value="comfortable">Cómoda</label><label><input type="radio" name="density" value="compact">Compacta</label></div></fieldset>
+    <fieldset><legend>C · Segundo tono del titular</legend><div class="seg"><label><input type="radio" name="title" value="v7">Ámbar</label><label><input type="radio" name="title" value="v6">Lavanda</label></div></fieldset>
+    <fieldset><legend>D · Barra inferior en móvil</legend><div class="seg"><label><input type="radio" name="mbar" value="4">4 (PANT)</label><label><input type="radio" name="mbar" value="5">5 con Resumen</label></div></fieldset>
+    <fieldset><legend>E · Detalle de contacto (≥ 60rem)</legend><div class="seg"><label><input type="radio" name="k3" value="split">Dos columnas</label><label><input type="radio" name="k3" value="stack">Una columna</label></div></fieldset>
+    <p>Se guarda en este navegador. Opciones explicadas en el README §4. <a class="link" data-size="sm" href="index.html">Índice de pantallas</a></p>
+  </div>
+</details>
+<div class="toast" id="toast" role="status" aria-live="polite"><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg><span></span></div>
+<script src="crm.js?v=1" defer></script>
+</body>
+</html>

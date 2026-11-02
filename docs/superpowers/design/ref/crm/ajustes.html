@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07060F">
+<meta name="robots" content="noindex">
+<meta name="description" content="Prototipo de la zona /crm y de administración de josecoded.">
+<title>Ajustes · CRM josecoded</title>
+<script>(function(){var r=document.documentElement,q=new URLSearchParams(location.search);r.classList.add('js');r.dataset.role=q.get('role')==='closer'?'closer':'admin';var d={density:'comfortable',overdue:'danger',title:'v7',mbar:'4',k3:'split'};for(var k in d){var v=null;try{v=localStorage.getItem('crm.'+k)}catch(x){}r.dataset[k]=q.get(k)||v||d[k]}if(q.has('shot'))r.classList.add('shot')})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css?v=1">
+<link rel="stylesheet" href="crm.css?v=1">
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+<div class="grain" aria-hidden="true"></div>
+<div class="app" data-zone="crm">
+<aside class="rail">
+  <a class="brand" href="resumen.html">josecoded <span class="zone">CRM</span></a>
+  <nav class="nav" aria-label="Navegación del CRM">
+    <a class="nav__item" href="resumen.html"><svg class="i" aria-hidden="true"><use href="icons.svg#house"/></svg><span>Resumen</span></a><a class="nav__item" href="contactos.html"><svg class="i" aria-hidden="true"><use href="icons.svg#users"/></svg><span>Contactos</span><span class="nav__count" data-tone="attention" data-only="admin" aria-label="4 vencidas">4</span><span class="nav__count" data-tone="attention" data-only="closer" aria-label="3 vencidas">3</span></a><a class="nav__item" href="clientes.html"><svg class="i" aria-hidden="true"><use href="icons.svg#briefcase-business"/></svg><span>Clientes</span></a><a class="nav__item" href="comisiones.html"><svg class="i" aria-hidden="true"><use href="icons.svg#wallet"/></svg><span>Comisiones</span></a>
+    <p class="nav__label" id="rail-more">Más</p>
+    <div class="nav" role="group" aria-labelledby="rail-more"><a class="nav__item" href="importar.html"><svg class="i" aria-hidden="true"><use href="icons.svg#upload"/></svg><span>Importar</span></a><a class="nav__item" href="ajustes.html" aria-current="page"><svg class="i" aria-hidden="true"><use href="icons.svg#settings"/></svg><span>Ajustes</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#message-square"/></svg><span>Chat</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#building-2"/></svg><span>Organizaciones</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#file-text"/></svg><span>Contextos del chat</span></a><a class="nav__item" href="equipo.html" data-only="admin"><svg class="i" aria-hidden="true"><use href="icons.svg#shield-check"/></svg><span>Administración</span></a></div>
+  </nav>
+  <div class="rail__foot">
+    <a class="me" href="ajustes.html" data-only="admin"><span class="avatar" aria-hidden="true">J</span><span><span class="me__name">Jose</span><br><span class="me__role">Administrador</span></span></a>
+    <a class="me" href="ajustes.html" data-only="closer"><span class="avatar" aria-hidden="true">CM</span><span><span class="me__name">Carla Méndez</span><br><span class="me__role">Closer · 10&nbsp;%</span></span></a>
+  </div>
+</aside>
+<header class="topbar">
+  <a class="brand" href="resumen.html">josecoded <span class="zone">CRM</span></a>
+  <div class="topbar__end">
+    <a class="icon-btn" href="ajustes.html" aria-label="Ajustes y cuenta"><span class="avatar" data-only="admin" aria-hidden="true">J</span><span class="avatar" data-only="closer" aria-hidden="true">CM</span></a>
+  </div>
+</header>
+<main class="page" id="main">
+
+<div>
+<header class="head"><div class="head__text"><h1 class="h1">Ajustes. <span class="t2">Avisos y seguridad.</span></h1></div></header><div class="grid grid--2">
+<section class="card tg" data-state="unlinked" aria-labelledby="tg-t">
+<div class="card__head"><span class="tile"><svg class="i" aria-hidden="true"><use href="icons.svg#send"/></svg></span><h2 class="h3" id="tg-t">Telegram</h2><span data-tg="unlinked"><span class="badge" data-tone="muted">No vinculado</span></span><span data-tg="linked"><span class="badge" data-tone="live">Vinculado</span></span></div>
+<p class="small soft" data-tg="unlinked">Recibe por Telegram los avisos de tu cartera: leads nuevos, historias propuestas, comisiones.</p>
+<div data-tg="unlinked" data-tg-start><button class="btn" data-variant="solid" type="button" data-tg-go="code"><svg class="i" aria-hidden="true"><use href="icons.svg#link"/></svg>Vincular Telegram</button></div>
+<div data-tg="code" class="panel"><p class="small soft">Envía este mensaje al bot desde tu Telegram antes de las 18:42 (15 min):</p>
+<div class="code-box"><code>/start 4F7K2Q</code><button class="btn" data-variant="ghost" data-size="sm" type="button" data-copy="/start 4F7K2Q" data-copied="Código copiado"><svg class="i" aria-hidden="true"><use href="icons.svg#copy"/></svg>Copiar</button></div>
+<p class="small">Bot: <strong>@josecoded_crm_bot</strong></p>
+<div class="cell-actions"><a class="btn" data-variant="ghost" href="https://t.me/" rel="noopener"><svg class="i" aria-hidden="true"><use href="icons.svg#external-link"/></svg>Abrir Telegram</a><button class="btn" data-variant="quiet" type="button" data-tg-go="linked">Ya lo he enviado</button></div></div>
+<div data-tg="linked" class="panel"><p class="small"><strong>@carla_m</strong> <span class="muted">· desde hoy, 18:29</span></p>
+<div class="cell-actions"><button class="btn" data-variant="ghost" data-size="sm" type="button" data-say="Mensaje de prueba enviado a tu Telegram">Enviar prueba</button><button class="btn" data-variant="quiet" data-size="sm" type="button" data-tg-go="unlinked">Desvincular</button></div></div>
+</section>
+<section class="card" aria-labelledby="rules-t">
+<div class="card__head"><span class="tile"><svg class="i" aria-hidden="true"><use href="icons.svg#bell"/></svg></span><h2 class="h3" id="rules-t">Qué avisos recibo</h2></div>
+<div class="stat-list">
+<div class="stat-row"><span>Lead nuevo en mi cartera</span><b class="caption soft">Telegram</b></div>
+<div class="stat-row"><span>Un cliente mío propone una historia</span><b class="caption soft">Telegram</b></div>
+<div class="stat-row"><span>Comisión aprobada o pagada</span><b class="caption soft">Telegram</b></div>
+<div class="stat-row"><span>Conflicto de importación resuelto</span><b class="caption soft">Telegram</b></div>
+</div>
+<p class="hint" data-only="closer">Los configura Jose.</p><a class="link" data-size="sm" href="notificaciones.html" data-only="admin">Configurar en Notificaciones <svg class="i" aria-hidden="true"><use href="icons.svg#arrow-right"/></svg></a>
+</section>
+<section class="card" aria-labelledby="sec-t">
+<div class="card__head"><span class="tile"><svg class="i" aria-hidden="true"><use href="icons.svg#lock"/></svg></span><h2 class="h3" id="sec-t">Seguridad</h2><span class="badge" data-tone="live">Autenticador configurado</span></div>
+<p class="small soft">Sin autenticador (TOTP) no se entra en el CRM: por eso aquí siempre aparece configurado.</p>
+<a class="link" data-size="sm" href="index.html#fuera" data-missing>Cambiar de dispositivo <svg class="i" aria-hidden="true"><use href="icons.svg#arrow-right"/></svg></a>
+</section>
+<section class="card" data-only="closer" aria-labelledby="rate-t">
+<div class="card__head"><span class="tile"><svg class="i" aria-hidden="true"><use href="icons.svg#wallet"/></svg></span><h2 class="h3" id="rate-t">Mi comisión</h2></div>
+<p class="figure figure--sm">10&nbsp;% <span class="unit">de lo cobrado</span></p>
+<p class="hint">La fijó Jose al darte de alta. Cada comisión guarda el % del momento del cierre.</p>
+</section>
+<section class="card" aria-labelledby="ses-t">
+<div class="card__head"><span class="tile"><svg class="i" aria-hidden="true"><use href="icons.svg#log-out"/></svg></span><h2 class="h3" id="ses-t">Sesión</h2></div>
+<p class="small soft"><span data-only="admin">jose@josecoded.com</span><span data-only="closer">carla@correo.test</span> · este dispositivo</p>
+<div><button class="btn" data-variant="ghost" type="button" data-missing>Cerrar sesión</button></div>
+</section>
+</div>
+</div>
+</main>
+<nav class="tabbar" aria-label="Navegación del CRM"><ul role="list"><li data-mbar-only><a class="tab" href="resumen.html"><svg class="i" aria-hidden="true"><use href="icons.svg#house"/></svg><span>Resumen</span></a></li><li><a class="tab" href="contactos.html"><svg class="i" aria-hidden="true"><use href="icons.svg#users"/></svg><span>Contactos</span></a></li><li><a class="tab" href="clientes.html"><svg class="i" aria-hidden="true"><use href="icons.svg#briefcase-business"/></svg><span>Clientes</span></a></li><li><a class="tab" href="comisiones.html"><svg class="i" aria-hidden="true"><use href="icons.svg#wallet"/></svg><span>Comisiones</span></a></li><li><button class="tab" type="button" data-open="more" aria-haspopup="dialog" aria-current="page"><svg class="i" aria-hidden="true"><use href="icons.svg#ellipsis"/></svg><span>Más</span></button></li></ul></nav>
+</div>
+<dialog class="sheet" id="more" aria-labelledby="more-t">
+  <span class="grabber" aria-hidden="true"></span>
+  <div class="dlg__head"><h2 class="h2" id="more-t">Más</h2><form method="dialog"><button class="icon-btn" aria-label="Cerrar"><svg class="i" aria-hidden="true"><use href="icons.svg#x"/></svg></button></form></div>
+  <nav class="more-list" aria-label="Más secciones"><a class="nav__item" href="resumen.html"><svg class="i" aria-hidden="true"><use href="icons.svg#house"/></svg><span>Resumen</span></a><a class="nav__item" href="importar.html"><svg class="i" aria-hidden="true"><use href="icons.svg#upload"/></svg><span>Importar</span></a><a class="nav__item" href="ajustes.html" aria-current="page"><svg class="i" aria-hidden="true"><use href="icons.svg#settings"/></svg><span>Ajustes</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#message-square"/></svg><span>Chat</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#building-2"/></svg><span>Organizaciones</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#file-text"/></svg><span>Contextos del chat</span></a><a class="nav__item" href="equipo.html" data-only="admin"><svg class="i" aria-hidden="true"><use href="icons.svg#shield-check"/></svg><span>Administración</span></a>
+    <p class="nav__label">Cuenta</p>
+    <a class="nav__item" href="index.html#fuera" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#log-out"/></svg><span>Cerrar sesión</span></a>
+  </nav>
+</dialog>
+
+<details class="proto">
+  <summary><svg class="i" aria-hidden="true"><use href="icons.svg#sliders-horizontal"/></svg>Prototipo</summary>
+  <div class="proto__panel">
+    <fieldset><legend>Rol (también ?role=closer)</legend><div class="seg"><label><input type="radio" name="role" value="admin">Admin</label><label><input type="radio" name="role" value="closer">Closer</label></div></fieldset>
+    <fieldset><legend>A · Color de «vencida»</legend><div class="seg"><label><input type="radio" name="overdue" value="danger">Coral (nuevo)</label><label><input type="radio" name="overdue" value="pending">Oro (--pending)</label></div></fieldset>
+    <fieldset><legend>B · Densidad de tablas</legend><div class="seg"><label><input type="radio" name="density" value="comfortable">Cómoda</label><label><input type="radio" name="density" value="compact">Compacta</label></div></fieldset>
+    <fieldset><legend>C · Segundo tono del titular</legend><div class="seg"><label><input type="radio" name="title" value="v7">Ámbar</label><label><input type="radio" name="title" value="v6">Lavanda</label></div></fieldset>
+    <fieldset><legend>D · Barra inferior en móvil</legend><div class="seg"><label><input type="radio" name="mbar" value="4">4 (PANT)</label><label><input type="radio" name="mbar" value="5">5 con Resumen</label></div></fieldset>
+    <fieldset><legend>E · Detalle de contacto (≥ 60rem)</legend><div class="seg"><label><input type="radio" name="k3" value="split">Dos columnas</label><label><input type="radio" name="k3" value="stack">Una columna</label></div></fieldset>
+    <p>Se guarda en este navegador. Opciones explicadas en el README §4. <a class="link" data-size="sm" href="index.html">Índice de pantallas</a></p>
+  </div>
+</details>
+<div class="toast" id="toast" role="status" aria-live="polite"><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg><span></span></div>
+<script src="crm.js?v=1" defer></script>
+</body>
+</html>

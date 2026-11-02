@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07060F">
+<meta name="robots" content="noindex">
+<meta name="description" content="Prototipo de la zona /crm y de administración de josecoded.">
+<title>Clientes · CRM josecoded</title>
+<script>(function(){var r=document.documentElement,q=new URLSearchParams(location.search);r.classList.add('js');r.dataset.role=q.get('role')==='closer'?'closer':'admin';var d={density:'comfortable',overdue:'danger',title:'v7',mbar:'4',k3:'split'};for(var k in d){var v=null;try{v=localStorage.getItem('crm.'+k)}catch(x){}r.dataset[k]=q.get(k)||v||d[k]}if(q.has('shot'))r.classList.add('shot')})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css?v=1">
+<link rel="stylesheet" href="crm.css?v=1">
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+<div class="grain" aria-hidden="true"></div>
+<div class="app" data-zone="crm">
+<aside class="rail">
+  <a class="brand" href="resumen.html">josecoded <span class="zone">CRM</span></a>
+  <nav class="nav" aria-label="Navegación del CRM">
+    <a class="nav__item" href="resumen.html"><svg class="i" aria-hidden="true"><use href="icons.svg#house"/></svg><span>Resumen</span></a><a class="nav__item" href="contactos.html"><svg class="i" aria-hidden="true"><use href="icons.svg#users"/></svg><span>Contactos</span><span class="nav__count" data-tone="attention" data-only="admin" aria-label="4 vencidas">4</span><span class="nav__count" data-tone="attention" data-only="closer" aria-label="3 vencidas">3</span></a><a class="nav__item" href="clientes.html" aria-current="page"><svg class="i" aria-hidden="true"><use href="icons.svg#briefcase-business"/></svg><span>Clientes</span></a><a class="nav__item" href="comisiones.html"><svg class="i" aria-hidden="true"><use href="icons.svg#wallet"/></svg><span>Comisiones</span></a>
+    <p class="nav__label" id="rail-more">Más</p>
+    <div class="nav" role="group" aria-labelledby="rail-more"><a class="nav__item" href="importar.html"><svg class="i" aria-hidden="true"><use href="icons.svg#upload"/></svg><span>Importar</span></a><a class="nav__item" href="ajustes.html"><svg class="i" aria-hidden="true"><use href="icons.svg#settings"/></svg><span>Ajustes</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#message-square"/></svg><span>Chat</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#building-2"/></svg><span>Organizaciones</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#file-text"/></svg><span>Contextos del chat</span></a><a class="nav__item" href="equipo.html" data-only="admin"><svg class="i" aria-hidden="true"><use href="icons.svg#shield-check"/></svg><span>Administración</span></a></div>
+  </nav>
+  <div class="rail__foot">
+    <a class="me" href="ajustes.html" data-only="admin"><span class="avatar" aria-hidden="true">J</span><span><span class="me__name">Jose</span><br><span class="me__role">Administrador</span></span></a>
+    <a class="me" href="ajustes.html" data-only="closer"><span class="avatar" aria-hidden="true">CM</span><span><span class="me__name">Carla Méndez</span><br><span class="me__role">Closer · 10&nbsp;%</span></span></a>
+  </div>
+</aside>
+<header class="topbar">
+  <a class="brand" href="resumen.html">josecoded <span class="zone">CRM</span></a>
+  <div class="topbar__end">
+    <a class="icon-btn" href="ajustes.html" aria-label="Ajustes y cuenta"><span class="avatar" data-only="admin" aria-hidden="true">J</span><span class="avatar" data-only="closer" aria-hidden="true">CM</span></a>
+  </div>
+</header>
+<main class="page" id="main">
+
+<div>
+<header class="head"><div class="head__text"><h1 class="h1">Clientes. <span class="t2"><span data-only="closer">Tu cartera en marcha.</span><span data-only="admin">Todos los proyectos en marcha.</span></span></h1><p class="lead">Pack, fase, acceso al portal e historias que esperan respuesta.</p></div></header><div class="toolbar" role="search" aria-label="Filtrar clientes"><div class="search"><svg class="i" aria-hidden="true"><use href="icons.svg#search"/></svg><input type="search" placeholder="Buscar cliente o negocio" aria-label="Buscar clientes"></div>
+<div class="seg" role="group" aria-label="Acceso al portal"><button type="button" aria-pressed="true">Todos</button><button type="button" aria-pressed="false">Sin invitar</button><button type="button" aria-pressed="false">Invitados</button><button type="button" aria-pressed="false">Con acceso</button></div>
+<button class="chip-toggle" type="button" aria-pressed="false"><svg class="i" aria-hidden="true"><use href="icons.svg#list-checks"/></svg>Con historias por decidir</button></div>
+<div class="tablebox"><table class="table" role="table" data-stack><caption class="vh">Clientes</caption><thead role="rowgroup"><tr role="row"><th role="columnheader" scope="col">Cliente</th><th role="columnheader" scope="col">Pack</th><th role="columnheader" scope="col">Fase</th><th role="columnheader" scope="col">Acceso</th><th role="columnheader" scope="col">Historias</th><th role="columnheader" scope="col" data-only="admin">Dueño</th><th role="columnheader" scope="col"><span class="vh">Acciones</span></th></tr></thead><tbody role="rowgroup"><tr role="row" data-href>
+<td role="cell" data-col="main"><div class="cell-main"><a class="row-link" href="cliente.html">Panadería La Espiga</a><span>Ana Ruiz</span></div></td>
+<td role="cell" data-col="meta" data-label="Pack">P2 · Pedidos / reservas</td>
+<td role="cell" data-col="wide"><span class="phase-mini"><span class="phase-mini__bar" aria-hidden="true"><i data-done></i><i data-done></i><i data-done></i><i></i><i></i></span>Desarrollo <span class="muted num">3/5</span></span></td>
+<td role="cell" data-col="status"><span class="badge" data-tone="live">Con acceso</span></td>
+<td role="cell" data-col="meta" data-label="Historias"><span class="badge" data-tone="attention">1 por decidir</span></td>
+<td role="cell" data-col="meta" data-only="admin"><span class="owner"><span class="avatar" data-size="sm" aria-hidden="true">CM</span>Carla Méndez</span></td>
+<td role="cell" class="act"></td>
+</tr><tr role="row" data-href>
+<td role="cell" data-col="main"><div class="cell-main"><a class="row-link" href="cliente.html">Fisio Campos</a><span>Laura Campos</span></div></td>
+<td role="cell" data-col="meta" data-label="Pack">P1 · Web básica</td>
+<td role="cell" data-col="wide"><span class="phase-mini"><span class="phase-mini__bar" aria-hidden="true"><i data-done></i><i data-done></i><i data-done></i><i data-done></i><i data-done></i></span>Entregado <span class="muted num">5/5</span></span></td>
+<td role="cell" data-col="status"><span class="badge" data-tone="muted">Sin invitar</span></td>
+<td role="cell" data-col="meta" data-label="Historias"><span class="badge" data-tone="attention">1 por decidir</span></td>
+<td role="cell" data-col="meta" data-only="admin"><span class="owner"><span class="avatar" data-size="sm" aria-hidden="true">CM</span>Carla Méndez</span></td>
+<td role="cell" class="act"><button class="btn" data-variant="ghost" data-size="sm" type="button" data-open="sheet-access"><svg class="i" aria-hidden="true"><use href="icons.svg#key-round"/></svg>Habilitar acceso</button></td>
+</tr><tr role="row" data-href data-only="admin">
+<td role="cell" data-col="main"><div class="cell-main"><a class="row-link" href="cliente.html">Cooperativa Olivar Alto</a><span>Ramón Peña</span></div></td>
+<td role="cell" data-col="meta" data-label="Pack">P3 · Gestión</td>
+<td role="cell" data-col="wide"><span class="phase-mini"><span class="phase-mini__bar" aria-hidden="true"><i data-done></i><i data-done></i><i></i><i></i><i></i></span>Diseño <span class="muted num">2/5</span></span></td>
+<td role="cell" data-col="status"><span class="badge" data-tone="active">Invitado el 28 oct</span></td>
+<td role="cell" data-col="meta" data-label="Historias"><span class="muted">—</span></td>
+<td role="cell" data-col="meta" data-only="admin"><span class="owner"><span class="avatar" data-size="sm" aria-hidden="true">IR</span>Iván Robles</span></td>
+<td role="cell" class="act"></td>
+</tr><tr role="row" data-href data-only="admin">
+<td role="cell" data-col="main"><div class="cell-main"><a class="row-link" href="cliente.html">Vega Fontanería</a><span>Martín Vega</span></div></td>
+<td role="cell" data-col="meta" data-label="Pack">P1 · Web básica</td>
+<td role="cell" data-col="wide"><span class="phase-mini"><span class="phase-mini__bar" aria-hidden="true"><i data-done></i><i data-done></i><i data-done></i><i data-done></i><i></i></span>Revisión <span class="muted num">4/5</span></span></td>
+<td role="cell" data-col="status"><span class="badge" data-tone="live">Con acceso</span></td>
+<td role="cell" data-col="meta" data-label="Historias"><span class="badge" data-tone="attention">2 por decidir</span></td>
+<td role="cell" data-col="meta" data-only="admin"><span class="owner"><span class="avatar" data-size="sm" aria-hidden="true">IR</span>Iván Robles</span></td>
+<td role="cell" class="act"></td>
+</tr><tr role="row" data-href data-only="admin">
+<td role="cell" data-col="main"><div class="cell-main"><a class="row-link" href="cliente.html">Academia Soto</a><span>Beatriz Soto</span></div></td>
+<td role="cell" data-col="meta" data-label="Pack">P5 · App móvil</td>
+<td role="cell" data-col="wide"><span class="phase-mini"><span class="phase-mini__bar" aria-hidden="true"><i data-done></i><i></i><i></i><i></i><i></i></span>Propuesta <span class="muted num">1/5</span></span></td>
+<td role="cell" data-col="status"><span class="badge" data-tone="muted">Sin invitar</span></td>
+<td role="cell" data-col="meta" data-label="Historias"><span class="muted">—</span></td>
+<td role="cell" data-col="meta" data-only="admin"><span class="owner"><span class="avatar" data-size="sm" aria-hidden="true">J</span>Jose</span></td>
+<td role="cell" class="act"><button class="btn" data-variant="ghost" data-size="sm" type="button" data-open="sheet-access"><svg class="i" aria-hidden="true"><use href="icons.svg#key-round"/></svg>Habilitar acceso</button></td>
+</tr></tbody></table></div>
+</div>
+</main>
+<nav class="tabbar" aria-label="Navegación del CRM"><ul role="list"><li data-mbar-only><a class="tab" href="resumen.html"><svg class="i" aria-hidden="true"><use href="icons.svg#house"/></svg><span>Resumen</span></a></li><li><a class="tab" href="contactos.html"><svg class="i" aria-hidden="true"><use href="icons.svg#users"/></svg><span>Contactos</span></a></li><li><a class="tab" href="clientes.html" aria-current="page"><svg class="i" aria-hidden="true"><use href="icons.svg#briefcase-business"/></svg><span>Clientes</span></a></li><li><a class="tab" href="comisiones.html"><svg class="i" aria-hidden="true"><use href="icons.svg#wallet"/></svg><span>Comisiones</span></a></li><li><button class="tab" type="button" data-open="more" aria-haspopup="dialog"><svg class="i" aria-hidden="true"><use href="icons.svg#ellipsis"/></svg><span>Más</span></button></li></ul></nav>
+</div>
+<dialog class="sheet" id="more" aria-labelledby="more-t">
+  <span class="grabber" aria-hidden="true"></span>
+  <div class="dlg__head"><h2 class="h2" id="more-t">Más</h2><form method="dialog"><button class="icon-btn" aria-label="Cerrar"><svg class="i" aria-hidden="true"><use href="icons.svg#x"/></svg></button></form></div>
+  <nav class="more-list" aria-label="Más secciones"><a class="nav__item" href="resumen.html"><svg class="i" aria-hidden="true"><use href="icons.svg#house"/></svg><span>Resumen</span></a><a class="nav__item" href="importar.html"><svg class="i" aria-hidden="true"><use href="icons.svg#upload"/></svg><span>Importar</span></a><a class="nav__item" href="ajustes.html"><svg class="i" aria-hidden="true"><use href="icons.svg#settings"/></svg><span>Ajustes</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#message-square"/></svg><span>Chat</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#building-2"/></svg><span>Organizaciones</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#file-text"/></svg><span>Contextos del chat</span></a><a class="nav__item" href="equipo.html" data-only="admin"><svg class="i" aria-hidden="true"><use href="icons.svg#shield-check"/></svg><span>Administración</span></a>
+    <p class="nav__label">Cuenta</p>
+    <a class="nav__item" href="index.html#fuera" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#log-out"/></svg><span>Cerrar sesión</span></a>
+  </nav>
+</dialog>
+<dialog class="sheet" id="sheet-access" aria-labelledby="sheet-access-t">
+<span class="grabber" aria-hidden="true"></span><div class="dlg__head"><h2 class="h2" id="sheet-access-t">Habilitar acceso al portal</h2><form method="dialog"><button class="icon-btn" aria-label="Cerrar"><svg class="i" aria-hidden="true"><use href="icons.svg#x"/></svg></button></form></div>
+<div class="dlg__body"><p class="soft small">Laura Campos · Fisio Campos</p><div class="field"><label for="acc-email">Email de acceso</label><input class="control" id="acc-email" name="acc-email" type="email" value="laura@fisiocampos.test" aria-describedby="acc-email-h" required><p class="hint" id="acc-email-h">Prellenado con el del contacto.</p></div><p class="note"><svg class="i" aria-hidden="true"><use href="icons.svg#info"/></svg><span>El enlace caduca en 7 días.</span></p></div>
+<form method="dialog" class="dlg__foot"><button class="btn" data-variant="quiet" value="cancel">Cancelar</button><button class="btn" data-variant="solid" value="ok" data-say="Invitación enviada" data-close><svg class="i" aria-hidden="true"><use href="icons.svg#send"/></svg>Enviar invitación</button></form>
+</dialog>
+<details class="proto">
+  <summary><svg class="i" aria-hidden="true"><use href="icons.svg#sliders-horizontal"/></svg>Prototipo</summary>
+  <div class="proto__panel">
+    <fieldset><legend>Rol (también ?role=closer)</legend><div class="seg"><label><input type="radio" name="role" value="admin">Admin</label><label><input type="radio" name="role" value="closer">Closer</label></div></fieldset>
+    <fieldset><legend>A · Color de «vencida»</legend><div class="seg"><label><input type="radio" name="overdue" value="danger">Coral (nuevo)</label><label><input type="radio" name="overdue" value="pending">Oro (--pending)</label></div></fieldset>
+    <fieldset><legend>B · Densidad de tablas</legend><div class="seg"><label><input type="radio" name="density" value="comfortable">Cómoda</label><label><input type="radio" name="density" value="compact">Compacta</label></div></fieldset>
+    <fieldset><legend>C · Segundo tono del titular</legend><div class="seg"><label><input type="radio" name="title" value="v7">Ámbar</label><label><input type="radio" name="title" value="v6">Lavanda</label></div></fieldset>
+    <fieldset><legend>D · Barra inferior en móvil</legend><div class="seg"><label><input type="radio" name="mbar" value="4">4 (PANT)</label><label><input type="radio" name="mbar" value="5">5 con Resumen</label></div></fieldset>
+    <fieldset><legend>E · Detalle de contacto (≥ 60rem)</legend><div class="seg"><label><input type="radio" name="k3" value="split">Dos columnas</label><label><input type="radio" name="k3" value="stack">Una columna</label></div></fieldset>
+    <p>Se guarda en este navegador. Opciones explicadas en el README §4. <a class="link" data-size="sm" href="index.html">Índice de pantallas</a></p>
+  </div>
+</details>
+<div class="toast" id="toast" role="status" aria-live="polite"><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg><span></span></div>
+<script src="crm.js?v=1" defer></script>
+</body>
+</html>

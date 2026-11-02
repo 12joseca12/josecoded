@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07060F">
+<meta name="robots" content="noindex">
+<meta name="description" content="Prototipo de la zona /crm y de administración de josecoded.">
+<title>Comisiones · CRM josecoded</title>
+<script>(function(){var r=document.documentElement,q=new URLSearchParams(location.search);r.classList.add('js');r.dataset.role=q.get('role')==='closer'?'closer':'admin';var d={density:'comfortable',overdue:'danger',title:'v7',mbar:'4',k3:'split'};for(var k in d){var v=null;try{v=localStorage.getItem('crm.'+k)}catch(x){}r.dataset[k]=q.get(k)||v||d[k]}if(q.has('shot'))r.classList.add('shot')})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css?v=1">
+<link rel="stylesheet" href="crm.css?v=1">
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+<div class="grain" aria-hidden="true"></div>
+<div class="app" data-zone="crm">
+<aside class="rail">
+  <a class="brand" href="resumen.html">josecoded <span class="zone">CRM</span></a>
+  <nav class="nav" aria-label="Navegación del CRM">
+    <a class="nav__item" href="resumen.html"><svg class="i" aria-hidden="true"><use href="icons.svg#house"/></svg><span>Resumen</span></a><a class="nav__item" href="contactos.html"><svg class="i" aria-hidden="true"><use href="icons.svg#users"/></svg><span>Contactos</span><span class="nav__count" data-tone="attention" data-only="admin" aria-label="4 vencidas">4</span><span class="nav__count" data-tone="attention" data-only="closer" aria-label="3 vencidas">3</span></a><a class="nav__item" href="clientes.html"><svg class="i" aria-hidden="true"><use href="icons.svg#briefcase-business"/></svg><span>Clientes</span></a><a class="nav__item" href="comisiones.html" aria-current="page"><svg class="i" aria-hidden="true"><use href="icons.svg#wallet"/></svg><span>Comisiones</span></a>
+    <p class="nav__label" id="rail-more">Más</p>
+    <div class="nav" role="group" aria-labelledby="rail-more"><a class="nav__item" href="importar.html"><svg class="i" aria-hidden="true"><use href="icons.svg#upload"/></svg><span>Importar</span></a><a class="nav__item" href="ajustes.html"><svg class="i" aria-hidden="true"><use href="icons.svg#settings"/></svg><span>Ajustes</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#message-square"/></svg><span>Chat</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#building-2"/></svg><span>Organizaciones</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#file-text"/></svg><span>Contextos del chat</span></a><a class="nav__item" href="equipo.html" data-only="admin"><svg class="i" aria-hidden="true"><use href="icons.svg#shield-check"/></svg><span>Administración</span></a></div>
+  </nav>
+  <div class="rail__foot">
+    <a class="me" href="ajustes.html" data-only="admin"><span class="avatar" aria-hidden="true">J</span><span><span class="me__name">Jose</span><br><span class="me__role">Administrador</span></span></a>
+    <a class="me" href="ajustes.html" data-only="closer"><span class="avatar" aria-hidden="true">CM</span><span><span class="me__name">Carla Méndez</span><br><span class="me__role">Closer · 10&nbsp;%</span></span></a>
+  </div>
+</aside>
+<header class="topbar">
+  <a class="brand" href="resumen.html">josecoded <span class="zone">CRM</span></a>
+  <div class="topbar__end">
+    <a class="icon-btn" href="ajustes.html" aria-label="Ajustes y cuenta"><span class="avatar" data-only="admin" aria-hidden="true">J</span><span class="avatar" data-only="closer" aria-hidden="true">CM</span></a>
+  </div>
+</header>
+<main class="page" id="main">
+
+<div>
+<header class="head"><div class="head__text"><h1 class="h1">Comisiones. <span class="t2">Lo que genera cada cierre.</span></h1><p class="lead"><span data-only="closer">Las aprueba y registra Jose. El % de cada fila es el que tenías al cerrarse esa operación.</span><span data-only="admin">Aquí solo se registra: el pago se hace por transferencia, fuera de la web.</span></p></div></header><div class="toolbar" data-only="admin"><label class="vh" for="f-closer">Closer</label><select class="select" id="f-closer"><option>Todos los closers</option><option>Carla Méndez</option><option>Iván Robles</option><option>Dani Ortega (desactivado)</option></select><span class="filter-sum">Pulsa un total para filtrar por estado.</span></div>
+<div class="totals totals--gap" role="group" aria-label="Totales por estado; filtran la lista"><span data-only="admin" class="contents"><button class="total" type="button" aria-pressed="false" data-tone="attention"><span>Pendientes</span><b>248,00&nbsp;€</b><small>2 comisiones</small></button><button class="total" type="button" aria-pressed="false"><span>Aprobadas</span><b>90,00&nbsp;€</b><small>1 comisión</small></button><button class="total" type="button" aria-pressed="false" data-tone="live"><span>Pagadas</span><b>412,00&nbsp;€</b><small>2 comisiones</small></button><button class="total" type="button" aria-pressed="false"><span>Rechazadas</span><b>90,00&nbsp;€</b><small>1 comisión</small></button></span><span data-only="closer" class="contents"><button class="total" type="button" aria-pressed="false" data-tone="attention"><span>Pendientes</span><b>140,00&nbsp;€</b><small>1 comisión</small></button><button class="total" type="button" aria-pressed="false"><span>Aprobadas</span><b>90,00&nbsp;€</b><small>1 comisión</small></button><button class="total" type="button" aria-pressed="false" data-tone="live"><span>Pagadas</span><b>112,00&nbsp;€</b><small>1 comisión</small></button><button class="total" type="button" aria-pressed="false"><span>Rechazadas</span><b>0,00&nbsp;€</b><small>ninguna</small></button></span></div>
+<div class="tablebox"><table class="table" role="table" data-stack><caption class="vh">Comisiones por fecha de cierre</caption><thead role="rowgroup"><tr role="row"><th role="columnheader" scope="col">Contacto y pack</th><th role="columnheader" scope="col">Cierre</th><th role="columnheader" scope="col" data-only="admin">Closer</th><th role="columnheader" scope="col" class="r">Cobrado</th><th role="columnheader" scope="col" class="r">%</th><th role="columnheader" scope="col" class="r">Comisión</th><th role="columnheader" scope="col">Estado</th><th role="columnheader" scope="col">Pago</th><th role="columnheader" scope="col" data-only="admin"><span class="vh">Acciones</span></th></tr></thead><tbody role="rowgroup"><tr role="row">
+<td role="cell" data-col="main"><div class="cell-main"><strong>Marina Soler</strong><span>Clínica Dental Soler · P2 · Pedidos / reservas</span></div></td>
+<td role="cell" data-col="meta" data-label="Cierre" class="num">31 oct</td>
+<td role="cell" data-col="meta" data-only="admin"><span class="owner"><span class="avatar" data-size="sm" aria-hidden="true">CM</span>Carla Méndez</span></td>
+<td role="cell" data-col="meta" data-label="Cobrado" class="r">1.400,00&nbsp;€</td>
+<td role="cell" data-col="meta" class="r"><span class="num">10&nbsp;%</span> </td>
+<td role="cell" data-col="meta" data-label="Comisión" class="r"><strong class="strong">140,00&nbsp;€</strong></td>
+<td role="cell" data-col="status"><span class="status-stack"><span class="badge" data-tone="attention">Pendiente</span></span></td>
+<td role="cell" data-col="meta" data-label="Pago" class="num">—</td>
+<td role="cell" class="act" data-only="admin"><button class="btn" data-variant="ghost" data-size="sm" type="button" data-open="confirm-approve"><svg class="i" aria-hidden="true"><use href="icons.svg#check"/></svg>Aprobar</button><button class="btn" data-variant="quiet" data-size="sm" type="button" data-open="confirm-reject">Rechazar</button></td>
+</tr><tr role="row" data-only="admin">
+<td role="cell" data-col="main"><div class="cell-main"><strong>Hugo Navarro</strong><span>Taller Navarro · P1 · Web básica</span></div></td>
+<td role="cell" data-col="meta" data-label="Cierre" class="num">28 oct</td>
+<td role="cell" data-col="meta" data-only="admin"><span class="owner"><span class="avatar" data-size="sm" aria-hidden="true">IR</span>Iván Robles</span></td>
+<td role="cell" data-col="meta" data-label="Cobrado" class="r">900,00&nbsp;€</td>
+<td role="cell" data-col="meta" class="r"><span class="num">12&nbsp;%</span> </td>
+<td role="cell" data-col="meta" data-label="Comisión" class="r"><strong class="strong">108,00&nbsp;€</strong></td>
+<td role="cell" data-col="status"><span class="status-stack"><span class="badge" data-tone="attention">Pendiente</span></span></td>
+<td role="cell" data-col="meta" data-label="Pago" class="num">—</td>
+<td role="cell" class="act" data-only="admin"><button class="btn" data-variant="ghost" data-size="sm" type="button" data-open="confirm-approve"><svg class="i" aria-hidden="true"><use href="icons.svg#check"/></svg>Aprobar</button><button class="btn" data-variant="quiet" data-size="sm" type="button" data-open="confirm-reject">Rechazar</button></td>
+</tr><tr role="row">
+<td role="cell" data-col="main"><div class="cell-main"><strong>Laura Campos</strong><span>Fisio Campos · P1 · Web básica</span></div></td>
+<td role="cell" data-col="meta" data-label="Cierre" class="num">20 oct</td>
+<td role="cell" data-col="meta" data-only="admin"><span class="owner"><span class="avatar" data-size="sm" aria-hidden="true">CM</span>Carla Méndez</span></td>
+<td role="cell" data-col="meta" data-label="Cobrado" class="r">900,00&nbsp;€</td>
+<td role="cell" data-col="meta" class="r"><span class="num">10&nbsp;%</span> </td>
+<td role="cell" data-col="meta" data-label="Comisión" class="r"><strong class="strong">90,00&nbsp;€</strong></td>
+<td role="cell" data-col="status"><span class="status-stack"><span class="badge" data-tone="active">Aprobada</span></span></td>
+<td role="cell" data-col="meta" data-label="Pago" class="num">—</td>
+<td role="cell" class="act" data-only="admin"><button class="btn" data-variant="ghost" data-size="sm" type="button" data-open="confirm-paid"><svg class="i" aria-hidden="true"><use href="icons.svg#euro"/></svg>Marcar pagada</button></td>
+</tr><tr role="row">
+<td role="cell" data-col="main"><div class="cell-main"><strong>Ana Ruiz</strong><span>Panadería La Espiga · P2 · Pedidos / reservas</span></div></td>
+<td role="cell" data-col="meta" data-label="Cierre" class="num">2 oct</td>
+<td role="cell" data-col="meta" data-only="admin"><span class="owner"><span class="avatar" data-size="sm" aria-hidden="true">CM</span>Carla Méndez</span></td>
+<td role="cell" data-col="meta" data-label="Cobrado" class="r">1.400,00&nbsp;€</td>
+<td role="cell" data-col="meta" class="r"><span class="num">8&nbsp;%</span> <span class="caption muted">tasa actual: 10&nbsp;%</span></td>
+<td role="cell" data-col="meta" data-label="Comisión" class="r"><strong class="strong">112,00&nbsp;€</strong></td>
+<td role="cell" data-col="status"><span class="status-stack"><span class="badge" data-tone="live">Pagada</span></span></td>
+<td role="cell" data-col="meta" data-label="Pago" class="num">15 oct</td>
+<td role="cell" class="act" data-only="admin"></td>
+</tr><tr role="row" data-only="admin">
+<td role="cell" data-col="main"><div class="cell-main"><strong>Ramón Peña</strong><span>Cooperativa Olivar Alto · P3 · Gestión</span></div></td>
+<td role="cell" data-col="meta" data-label="Cierre" class="num">25 sep</td>
+<td role="cell" data-col="meta" data-only="admin"><span class="owner"><span class="avatar" data-size="sm" aria-hidden="true">IR</span>Iván Robles</span></td>
+<td role="cell" data-col="meta" data-label="Cobrado" class="r">2.500,00&nbsp;€</td>
+<td role="cell" data-col="meta" class="r"><span class="num">12&nbsp;%</span> </td>
+<td role="cell" data-col="meta" data-label="Comisión" class="r"><strong class="strong">300,00&nbsp;€</strong></td>
+<td role="cell" data-col="status"><span class="status-stack"><span class="badge" data-tone="live">Pagada</span></span></td>
+<td role="cell" data-col="meta" data-label="Pago" class="num">10 oct</td>
+<td role="cell" class="act" data-only="admin"></td>
+</tr><tr role="row" data-only="admin" data-off>
+<td role="cell" data-col="main"><div class="cell-main"><strong>Óscar Prieto</strong><span>Prieto Reformas · P1 · Web básica</span></div></td>
+<td role="cell" data-col="meta" data-label="Cierre" class="num">12 sep</td>
+<td role="cell" data-col="meta" data-only="admin"><span class="owner" data-state="off"><span class="avatar" data-size="sm" aria-hidden="true">DO</span>Dani Ortega <small>(desactivado)</small></span></td>
+<td role="cell" data-col="meta" data-label="Cobrado" class="r">900,00&nbsp;€</td>
+<td role="cell" data-col="meta" class="r"><span class="num">10&nbsp;%</span> </td>
+<td role="cell" data-col="meta" data-label="Comisión" class="r"><strong class="strong">90,00&nbsp;€</strong></td>
+<td role="cell" data-col="status"><span class="status-stack"><span class="badge" data-tone="muted">Rechazada</span><span class="caption muted">Motivo: Cobro devuelto por el banco</span></span></td>
+<td role="cell" data-col="meta" data-label="Pago" class="num">—</td>
+<td role="cell" class="act" data-only="admin"></td>
+</tr></tbody></table></div>
+</div>
+</main>
+<nav class="tabbar" aria-label="Navegación del CRM"><ul role="list"><li data-mbar-only><a class="tab" href="resumen.html"><svg class="i" aria-hidden="true"><use href="icons.svg#house"/></svg><span>Resumen</span></a></li><li><a class="tab" href="contactos.html"><svg class="i" aria-hidden="true"><use href="icons.svg#users"/></svg><span>Contactos</span></a></li><li><a class="tab" href="clientes.html"><svg class="i" aria-hidden="true"><use href="icons.svg#briefcase-business"/></svg><span>Clientes</span></a></li><li><a class="tab" href="comisiones.html" aria-current="page"><svg class="i" aria-hidden="true"><use href="icons.svg#wallet"/></svg><span>Comisiones</span></a></li><li><button class="tab" type="button" data-open="more" aria-haspopup="dialog"><svg class="i" aria-hidden="true"><use href="icons.svg#ellipsis"/></svg><span>Más</span></button></li></ul></nav>
+</div>
+<dialog class="sheet" id="more" aria-labelledby="more-t">
+  <span class="grabber" aria-hidden="true"></span>
+  <div class="dlg__head"><h2 class="h2" id="more-t">Más</h2><form method="dialog"><button class="icon-btn" aria-label="Cerrar"><svg class="i" aria-hidden="true"><use href="icons.svg#x"/></svg></button></form></div>
+  <nav class="more-list" aria-label="Más secciones"><a class="nav__item" href="resumen.html"><svg class="i" aria-hidden="true"><use href="icons.svg#house"/></svg><span>Resumen</span></a><a class="nav__item" href="importar.html"><svg class="i" aria-hidden="true"><use href="icons.svg#upload"/></svg><span>Importar</span></a><a class="nav__item" href="ajustes.html"><svg class="i" aria-hidden="true"><use href="icons.svg#settings"/></svg><span>Ajustes</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#message-square"/></svg><span>Chat</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#building-2"/></svg><span>Organizaciones</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#file-text"/></svg><span>Contextos del chat</span></a><a class="nav__item" href="equipo.html" data-only="admin"><svg class="i" aria-hidden="true"><use href="icons.svg#shield-check"/></svg><span>Administración</span></a>
+    <p class="nav__label">Cuenta</p>
+    <a class="nav__item" href="index.html#fuera" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#log-out"/></svg><span>Cerrar sesión</span></a>
+  </nav>
+</dialog>
+<dialog class="confirm" id="confirm-approve" aria-labelledby="confirm-approve-t" role="alertdialog">
+<div class="dlg__head"><h2 class="h2" id="confirm-approve-t">Aprobar comisión</h2></div>
+<div class="dlg__body"><p><strong>140,00&nbsp;€</strong> para <strong>Carla Méndez</strong> · Clínica Dental Soler · P2 (10&nbsp;% de 1.400,00&nbsp;€).</p><p>Solo registra la aprobación. Carla la verá como aprobada.</p></div>
+<form method="dialog" class="dlg__foot"><button class="btn" data-variant="quiet" value="cancel">Cancelar</button><button class="btn" data-variant="solid" value="ok" data-say="Comisión aprobada" data-close>Aprobar 140,00 €</button></form>
+</dialog><dialog class="confirm" id="confirm-reject" aria-labelledby="confirm-reject-t" role="alertdialog">
+<div class="dlg__head"><h2 class="h2" id="confirm-reject-t">Rechazar comisión</h2></div>
+<div class="dlg__body"><p><strong>140,00&nbsp;€</strong> para <strong>Carla Méndez</strong> · Clínica Dental Soler.</p><div class="field"><label for="rj-reason">Motivo</label><textarea class="control" id="rj-reason" name="rj-reason" rows="3" aria-describedby="rj-reason-h" required></textarea><p class="hint" id="rj-reason-h">Carla lo verá en la fila.</p></div></div>
+<form method="dialog" class="dlg__foot"><button class="btn" data-variant="quiet" value="cancel">Cancelar</button><button class="btn" data-variant="danger" value="ok" data-say="Comisión rechazada" data-close>Rechazar</button></form>
+</dialog><dialog class="confirm" id="confirm-paid" aria-labelledby="confirm-paid-t" role="alertdialog">
+<div class="dlg__head"><h2 class="h2" id="confirm-paid-t">Marcar pagada</h2></div>
+<div class="dlg__body"><p><strong>90,00&nbsp;€</strong> para <strong>Carla Méndez</strong> · Fisio Campos.</p><p>Esto solo registra el pago: la transferencia la haces tú fuera de la web.</p><div class="field"><label for="pd-date">Fecha de pago</label><input class="control" id="pd-date" name="pd-date" type="date" value="2026-11-02" required></div><div class="field"><label for="pd-note">Nota (opcional)</label><input class="control" id="pd-note" name="pd-note" type="text" placeholder="Ej.: transferencia del 2 nov"></div></div>
+<form method="dialog" class="dlg__foot"><button class="btn" data-variant="quiet" value="cancel">Cancelar</button><button class="btn" data-variant="solid" value="ok" data-say="Pago registrado" data-close>Registrar pago</button></form>
+</dialog>
+<details class="proto">
+  <summary><svg class="i" aria-hidden="true"><use href="icons.svg#sliders-horizontal"/></svg>Prototipo</summary>
+  <div class="proto__panel">
+    <fieldset><legend>Rol (también ?role=closer)</legend><div class="seg"><label><input type="radio" name="role" value="admin">Admin</label><label><input type="radio" name="role" value="closer">Closer</label></div></fieldset>
+    <fieldset><legend>A · Color de «vencida»</legend><div class="seg"><label><input type="radio" name="overdue" value="danger">Coral (nuevo)</label><label><input type="radio" name="overdue" value="pending">Oro (--pending)</label></div></fieldset>
+    <fieldset><legend>B · Densidad de tablas</legend><div class="seg"><label><input type="radio" name="density" value="comfortable">Cómoda</label><label><input type="radio" name="density" value="compact">Compacta</label></div></fieldset>
+    <fieldset><legend>C · Segundo tono del titular</legend><div class="seg"><label><input type="radio" name="title" value="v7">Ámbar</label><label><input type="radio" name="title" value="v6">Lavanda</label></div></fieldset>
+    <fieldset><legend>D · Barra inferior en móvil</legend><div class="seg"><label><input type="radio" name="mbar" value="4">4 (PANT)</label><label><input type="radio" name="mbar" value="5">5 con Resumen</label></div></fieldset>
+    <fieldset><legend>E · Detalle de contacto (≥ 60rem)</legend><div class="seg"><label><input type="radio" name="k3" value="split">Dos columnas</label><label><input type="radio" name="k3" value="stack">Una columna</label></div></fieldset>
+    <p>Se guarda en este navegador. Opciones explicadas en el README §4. <a class="link" data-size="sm" href="index.html">Índice de pantallas</a></p>
+  </div>
+</details>
+<div class="toast" id="toast" role="status" aria-live="polite"><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg><span></span></div>
+<script src="crm.js?v=1" defer></script>
+</body>
+</html>

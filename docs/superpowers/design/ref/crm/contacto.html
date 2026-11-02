@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07060F">
+<meta name="robots" content="noindex">
+<meta name="description" content="Prototipo de la zona /crm y de administración de josecoded.">
+<title>Laura Campos · CRM josecoded</title>
+<script>(function(){var r=document.documentElement,q=new URLSearchParams(location.search);r.classList.add('js');r.dataset.role=q.get('role')==='closer'?'closer':'admin';var d={density:'comfortable',overdue:'danger',title:'v7',mbar:'4',k3:'split'};for(var k in d){var v=null;try{v=localStorage.getItem('crm.'+k)}catch(x){}r.dataset[k]=q.get(k)||v||d[k]}if(q.has('shot'))r.classList.add('shot')})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css?v=1">
+<link rel="stylesheet" href="crm.css?v=1">
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+<div class="grain" aria-hidden="true"></div>
+<div class="app" data-zone="crm">
+<aside class="rail">
+  <a class="brand" href="resumen.html">josecoded <span class="zone">CRM</span></a>
+  <nav class="nav" aria-label="Navegación del CRM">
+    <a class="nav__item" href="resumen.html"><svg class="i" aria-hidden="true"><use href="icons.svg#house"/></svg><span>Resumen</span></a><a class="nav__item" href="contactos.html" aria-current="page"><svg class="i" aria-hidden="true"><use href="icons.svg#users"/></svg><span>Contactos</span><span class="nav__count" data-tone="attention" data-only="admin" aria-label="4 vencidas">4</span><span class="nav__count" data-tone="attention" data-only="closer" aria-label="3 vencidas">3</span></a><a class="nav__item" href="clientes.html"><svg class="i" aria-hidden="true"><use href="icons.svg#briefcase-business"/></svg><span>Clientes</span></a><a class="nav__item" href="comisiones.html"><svg class="i" aria-hidden="true"><use href="icons.svg#wallet"/></svg><span>Comisiones</span></a>
+    <p class="nav__label" id="rail-more">Más</p>
+    <div class="nav" role="group" aria-labelledby="rail-more"><a class="nav__item" href="importar.html"><svg class="i" aria-hidden="true"><use href="icons.svg#upload"/></svg><span>Importar</span></a><a class="nav__item" href="ajustes.html"><svg class="i" aria-hidden="true"><use href="icons.svg#settings"/></svg><span>Ajustes</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#message-square"/></svg><span>Chat</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#building-2"/></svg><span>Organizaciones</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#file-text"/></svg><span>Contextos del chat</span></a><a class="nav__item" href="equipo.html" data-only="admin"><svg class="i" aria-hidden="true"><use href="icons.svg#shield-check"/></svg><span>Administración</span></a></div>
+  </nav>
+  <div class="rail__foot">
+    <a class="me" href="ajustes.html" data-only="admin"><span class="avatar" aria-hidden="true">J</span><span><span class="me__name">Jose</span><br><span class="me__role">Administrador</span></span></a>
+    <a class="me" href="ajustes.html" data-only="closer"><span class="avatar" aria-hidden="true">CM</span><span><span class="me__name">Carla Méndez</span><br><span class="me__role">Closer · 10&nbsp;%</span></span></a>
+  </div>
+</aside>
+<header class="topbar">
+  <a class="brand" href="resumen.html">josecoded <span class="zone">CRM</span></a>
+  <div class="topbar__end">
+    <a class="icon-btn" href="ajustes.html" aria-label="Ajustes y cuenta"><span class="avatar" data-only="admin" aria-hidden="true">J</span><span class="avatar" data-only="closer" aria-hidden="true">CM</span></a>
+  </div>
+</header>
+<main class="page" id="main">
+
+<div>
+<header class="contact-head">
+<nav class="crumbs" aria-label="Ruta"><a href="contactos.html"><svg class="i" aria-hidden="true"><use href="icons.svg#arrow-left"/></svg>Contactos</a></nav>
+<div class="contact-head__top">
+<div class="head__text"><h1 class="h1">Laura Campos. <span class="t2">Fisio Campos</span></h1>
+<div class="contact-head__meta"><span class="kind">Cliente</span><span class="badge" data-tone="live">Cliente activo</span><span class="owner"><span class="avatar" data-size="sm" aria-hidden="true">CM</span>Carla Méndez</span><button class="btn" data-variant="quiet" data-size="sm" type="button" data-open="sheet-reassign" data-only="admin"><svg class="i" aria-hidden="true"><use href="icons.svg#user-cog"/></svg>Reasignar</button></div></div>
+<div class="head__actions"><button class="btn" data-variant="ghost" type="button" data-open="sheet-status">Estado</button><button class="btn" data-variant="solid" type="button" data-open="sheet-draft"><svg class="i" aria-hidden="true"><use href="icons.svg#pen-line"/></svg>Redactar mensaje</button></div>
+</div>
+<div class="reach"><button type="button" data-copy="laura@fisiocampos.test" data-copied="Email copiado"><svg class="i" aria-hidden="true"><use href="icons.svg#mail"/></svg>laura@fisiocampos.test <svg class="i" aria-hidden="true"><use href="icons.svg#copy"/></svg></button><a href="https://wa.me/34600000112" rel="noopener"><svg class="i" aria-hidden="true"><use href="icons.svg#phone"/></svg>WhatsApp</a><a href="https://www.linkedin.com/in/ejemplo" rel="noopener"><svg class="i" aria-hidden="true"><use href="icons.svg#linkedin"/></svg>LinkedIn</a><a href="https://fisiocampos.test" rel="noopener"><svg class="i" aria-hidden="true"><use href="icons.svg#globe"/></svg>Web</a><a href="https://www.notion.so/" rel="noopener" data-only="admin"><svg class="i" aria-hidden="true"><use href="icons.svg#book-open-text"/></svg>Notion</a></div>
+<div class="next-action" role="group" aria-label="Siguiente acción"><svg class="i" aria-hidden="true"><use href="icons.svg#triangle-alert"/></svg><div class="next-action__text"><strong>Enviar presupuesto de SEO completo</strong><span>Vencida · 30 oct, hace 3 días</span></div><div class="next-action__btns"><button class="btn" data-variant="ghost" data-size="sm" type="button" data-open="sheet-status"><svg class="i" aria-hidden="true"><use href="icons.svg#check"/></svg>Hecho</button><button class="btn" data-variant="quiet" data-size="sm" type="button" data-open="sheet-status">Cambiar</button></div></div>
+</header>
+<div class="split">
+<div><div class="tabs" role="tablist" aria-label="Secciones del contacto" data-param="tab"><button role="tab" type="button" id="tab-historial" aria-controls="p-historial" aria-selected="true" data-value="historial">Historial</button><button role="tab" type="button" id="tab-mensajes" aria-controls="p-mensajes" aria-selected="false" data-value="mensajes">Mensajes <span class=nav__count>1</span></button><button role="tab" type="button" id="tab-historias" aria-controls="p-historias" aria-selected="false" data-value="historias">Historias <span class=nav__count>1</span></button><button role="tab" type="button" id="tab-presupuestos" aria-controls="p-presupuestos" aria-selected="false" data-value="presupuestos">Presupuestos <span class=nav__count>3</span></button></div><section role="tabpanel" id="p-historial" aria-labelledby="tab-historial" tabindex="0" class="panel"><div class="composer"><label class="vh" for="n-new">Añadir nota</label><textarea class="control" id="n-new" rows="2" placeholder="Añadir una nota (solo la ve el equipo)"></textarea><div class="composer__actions"><button class="btn" data-variant="ghost" data-size="sm" type="button" data-say="Nota guardada">Guardar nota</button></div></div><ol class="timeline" role="list"><li class="tl" data-kind="note"><span class="tl__icon"><svg class="i" aria-hidden="true"><use href="icons.svg#pen-line"/></svg></span><div class="tl__body"><p class="tl__line"><strong>Nota</strong> · Carla Méndez <time class="tl__time">29 oct, 18:10</time></p><p class="tl__text">Quiere salir en Google Maps cuando buscan «fisioterapia Vallecas». Le paso el SEO completo y el mantenimiento básico antes del viernes.</p></div></li><li class="tl" data-kind="in"><span class="tl__icon"><svg class="i" aria-hidden="true"><use href="icons.svg#message-square"/></svg></span><div class="tl__body"><p class="tl__line"><strong>Mensaje recibido</strong> · WhatsApp <time class="tl__time">29 oct, 12:02</time></p><p class="tl__text">Hola Carla, ¿cuánto sería lo de salir mejor en Google? La web va genial.</p></div></li><li class="tl" data-kind="status"><span class="tl__icon"><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg></span><div class="tl__body"><p class="tl__line">Estado: Propuesta enviada → <strong>Cliente activo</strong> · Jose cerró cobrado P1 (900,00&nbsp;€) <time class="tl__time">14 oct</time></p></div></li><li class="tl" data-kind="out"><span class="tl__icon"><svg class="i" aria-hidden="true"><use href="icons.svg#calendar"/></svg></span><div class="tl__body"><p class="tl__line"><strong>Reunión</strong> · 20 min por Cal.com <time class="tl__time">7 oct, 10:00</time></p></div></li><li class="tl" data-kind="out"><span class="tl__icon"><svg class="i" aria-hidden="true"><use href="icons.svg#send"/></svg></span><div class="tl__body"><p class="tl__line"><strong>Mensaje enviado</strong> · Correo · «Tu propuesta: Web básica (P1)» <time class="tl__time">3 oct, 9:41</time></p></div></li><li class="tl" data-kind="status"><span class="tl__icon"><svg class="i" aria-hidden="true"><use href="icons.svg#inbox"/></svg></span><div class="tl__body"><p class="tl__line"><strong>Lead creado</strong> · generador de propuesta (P1) <time class="tl__time">1 oct</time></p></div></li></ol></section><section role="tabpanel" id="p-mensajes" aria-labelledby="tab-mensajes" tabindex="0" class="panel"><div class="section__head"><h2 class="h2">Borradores y mensajes</h2></div>
+<div class="tablebox"><table class="table" role="table" data-stack><caption class="vh">Mensajes de Laura Campos</caption>
+<thead role="rowgroup"><tr role="row"><th role="columnheader" scope="col">Mensaje</th><th role="columnheader" scope="col">Canal</th><th role="columnheader" scope="col">Fecha</th><th role="columnheader" scope="col">Estado</th></tr></thead>
+<tbody role="rowgroup">
+<tr role="row" data-href><td role="cell" data-col="main"><div class="cell-main"><a class="row-link" href="#" data-open="sheet-draft">Seguimiento del presupuesto de SEO</a><span>Plantilla: seguimiento · cliente</span></div></td><td role="cell" data-col="meta" data-label="Canal">Correo</td><td role="cell" data-col="meta" data-label="Fecha">31 oct</td><td role="cell" data-col="status"><span class="badge">Borrador</span></td></tr>
+<tr role="row"><td role="cell" data-col="main"><div class="cell-main"><strong>Tu propuesta: Web básica (P1)</strong><span>Escrito por Carla</span></div></td><td role="cell" data-col="meta" data-label="Canal">Correo</td><td role="cell" data-col="meta" data-label="Fecha">3 oct</td><td role="cell" data-col="status"><span class="badge" data-tone="active">Enviado</span></td></tr>
+</tbody></table></div></section><section role="tabpanel" id="p-historias" aria-labelledby="tab-historias" tabindex="0" class="panel"><div class="section__head"><h2 class="h2">Historias de Laura</h2><a class="link" data-size="sm" href="cliente.html">Ficha de cliente <svg class="i" aria-hidden="true"><use href="icons.svg#arrow-right"/></svg></a></div>
+<div class="story-list"><article class="story" aria-labelledby="st-pedir-cita-desde-la-web">
+<div class="story__head"><h3 class="h3" id="st-pedir-cita-desde-la-web">Pedir cita desde la web</h3><span class="badge" data-tone="attention">Por decidir</span><span class="caption muted">1 nov</span></div>
+<div class="story__cqp"><p><b>Como</b> paciente nuevo</p><p><b>quiero</b> pedir cita eligiendo fisioterapeuta y hora</p><p><b>para</b> no tener que llamar en horario de consulta</p></div>
+<ul class="criteria" role="list" aria-label="Criterios de aceptación"><li><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg>Veo huecos de la semana</li><li><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg>Recibo un correo con la cita</li><li><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg>Puedo cancelar hasta 24 h antes</li></ul><div class="story__verdict"><button class="btn" data-variant="ghost" data-size="sm" type="button" data-open="sheet-story">Decidir</button></div>
+</article></div></section><section role="tabpanel" id="p-presupuestos" aria-labelledby="tab-presupuestos" tabindex="0" class="panel"><div class="section__head"><h2 class="h2">Presupuestos a medida</h2><button class="btn" data-variant="ghost" data-size="sm" type="button" data-open="sheet-quote"><svg class="i" aria-hidden="true"><use href="icons.svg#plus"/></svg>Nuevo presupuesto</button></div>
+<div class="tablebox"><table class="table" role="table" data-stack><caption class="vh">Presupuestos de Laura Campos</caption>
+<thead role="rowgroup"><tr role="row"><th role="columnheader" scope="col">Título</th><th role="columnheader" scope="col">Fecha</th><th role="columnheader" scope="col" class="r">Total sin IVA</th><th role="columnheader" scope="col">Estado</th><th role="columnheader" scope="col"><span class="vh">Acciones</span></th></tr></thead>
+<tbody role="rowgroup">
+<tr role="row"><td role="cell" data-col="main"><div class="cell-main"><strong>SEO local y mantenimiento</strong><span>2 líneas · creado por Carla</span></div></td><td role="cell" data-col="meta" data-label="Fecha">31 oct</td><td role="cell" data-col="meta" class="r">1.088,00&nbsp;€</td><td role="cell" data-col="status"><span class="badge">Borrador</span></td><td role="cell" class="act"><button class="btn" data-variant="quiet" data-size="sm" type="button" data-open="sheet-quote"><svg class="i" aria-hidden="true"><use href="icons.svg#pencil"/></svg>Editar</button></td></tr>
+<tr role="row"><td role="cell" data-col="main"><div class="cell-main"><strong>Análisis de seguridad de la web</strong><span>1 línea</span></div></td><td role="cell" data-col="meta" data-label="Fecha">12 oct</td><td role="cell" data-col="meta" class="r">250,00&nbsp;€</td><td role="cell" data-col="status"><span class="badge" data-tone="live">Aceptado</span></td><td role="cell" class="act"><button class="btn" data-variant="quiet" data-size="sm" type="button" data-say="Duplicado como borrador"><svg class="i" aria-hidden="true"><use href="icons.svg#copy"/></svg>Duplicar</button></td></tr>
+<tr role="row" data-off><td role="cell" data-col="main"><div class="cell-main"><strong>Mantenimiento extendido</strong><span>1 línea</span></div></td><td role="cell" data-col="meta" data-label="Fecha">2 oct</td><td role="cell" data-col="meta" class="r">1.788,00&nbsp;€</td><td role="cell" data-col="status"><span class="badge" data-tone="muted">Caducado</span></td><td role="cell" class="act"><button class="btn" data-variant="quiet" data-size="sm" type="button" data-say="Duplicado como borrador"><svg class="i" aria-hidden="true"><use href="icons.svg#copy"/></svg>Duplicar</button></td></tr>
+</tbody></table></div></section></div>
+<aside class="grid" aria-label="Datos del contacto">
+<section class="card" aria-labelledby="a-opp">
+<div class="card__head"><span class="tile"><svg class="i" aria-hidden="true"><use href="icons.svg#receipt"/></svg></span><h2 class="h3" id="a-opp">Oportunidad abierta</h2><span class="badge" data-tone="active">Abierta</span></div>
+<p class="small"><strong>Ampliación: SEO local</strong><br><span class="muted">desde el presupuesto del 31 oct · 1.088,00&nbsp;€ sin IVA</span></p>
+<div class="cell-actions" data-only="admin"><button class="btn" data-variant="ghost" type="button" data-open="confirm-close"><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg>Cerrar cobrado</button></div>
+<div class="cell-actions" data-only="closer"><button class="btn" data-variant="ghost" data-size="sm" type="button" data-say="Propuesta marcada como enviada">Marcar propuesta enviada</button><button class="btn" data-variant="quiet" data-size="sm" type="button" data-open="confirm-ask">Pedir cierre a Jose</button></div>
+</section>
+<section class="card" aria-labelledby="a-client">
+<div class="card__head"><span class="tile"><svg class="i" aria-hidden="true"><use href="icons.svg#briefcase-business"/></svg></span><h2 class="h3" id="a-client">Cliente</h2></div>
+<p class="small">P1 · Web básica · <span class="phase-mini"><span class="phase-mini__bar" aria-hidden="true"><i data-done></i><i data-done></i><i data-done></i><i data-done></i><i data-done></i></span>Entregado</span></p>
+<p class="small"><span class="badge" data-tone="muted">Sin acceso al portal</span></p>
+<div class="cell-actions"><button class="btn" data-variant="ghost" data-size="sm" type="button" data-open="sheet-access"><svg class="i" aria-hidden="true"><use href="icons.svg#key-round"/></svg>Habilitar acceso</button><a class="link" data-size="sm" href="cliente.html">Ficha <svg class="i" aria-hidden="true"><use href="icons.svg#arrow-right"/></svg></a></div>
+</section>
+<section class="card" aria-labelledby="a-data">
+<div class="card__head"><span class="tile"><svg class="i" aria-hidden="true"><use href="icons.svg#user-round"/></svg></span><h2 class="h3" id="a-data">Datos</h2><button class="icon-btn" data-size="sm" type="button" aria-label="Editar datos" data-say="Edición de datos: fuera del prototipo"><svg class="i" aria-hidden="true"><use href="icons.svg#pencil"/></svg></button></div>
+<dl class="dl"><div><dt>Teléfono</dt><dd class="num">+34 600 000 112</dd></div><div><dt>Ciudad</dt><dd>Madrid</dd></div><div><dt>Cargo</dt><dd>Fisioterapeuta, dueña</dd></div><div><dt>Origen</dt><dd>Generador de propuesta</dd></div><div><dt>Idioma</dt><dd><span class="lang">ES</span></dd></div><div><dt>Etiquetas</dt><dd><span class="chip">vallecas</span> <span class="chip">salud</span></dd></div><div><dt>Alta</dt><dd>1 oct 2026</dd></div></dl>
+</section>
+</aside>
+</div>
+</div>
+</main>
+<nav class="tabbar" aria-label="Navegación del CRM"><ul role="list"><li data-mbar-only><a class="tab" href="resumen.html"><svg class="i" aria-hidden="true"><use href="icons.svg#house"/></svg><span>Resumen</span></a></li><li><a class="tab" href="contactos.html" aria-current="page"><svg class="i" aria-hidden="true"><use href="icons.svg#users"/></svg><span>Contactos</span></a></li><li><a class="tab" href="clientes.html"><svg class="i" aria-hidden="true"><use href="icons.svg#briefcase-business"/></svg><span>Clientes</span></a></li><li><a class="tab" href="comisiones.html"><svg class="i" aria-hidden="true"><use href="icons.svg#wallet"/></svg><span>Comisiones</span></a></li><li><button class="tab" type="button" data-open="more" aria-haspopup="dialog"><svg class="i" aria-hidden="true"><use href="icons.svg#ellipsis"/></svg><span>Más</span></button></li></ul></nav>
+</div>
+<dialog class="sheet" id="more" aria-labelledby="more-t">
+  <span class="grabber" aria-hidden="true"></span>
+  <div class="dlg__head"><h2 class="h2" id="more-t">Más</h2><form method="dialog"><button class="icon-btn" aria-label="Cerrar"><svg class="i" aria-hidden="true"><use href="icons.svg#x"/></svg></button></form></div>
+  <nav class="more-list" aria-label="Más secciones"><a class="nav__item" href="resumen.html"><svg class="i" aria-hidden="true"><use href="icons.svg#house"/></svg><span>Resumen</span></a><a class="nav__item" href="importar.html"><svg class="i" aria-hidden="true"><use href="icons.svg#upload"/></svg><span>Importar</span></a><a class="nav__item" href="ajustes.html"><svg class="i" aria-hidden="true"><use href="icons.svg#settings"/></svg><span>Ajustes</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#message-square"/></svg><span>Chat</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#building-2"/></svg><span>Organizaciones</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#file-text"/></svg><span>Contextos del chat</span></a><a class="nav__item" href="equipo.html" data-only="admin"><svg class="i" aria-hidden="true"><use href="icons.svg#shield-check"/></svg><span>Administración</span></a>
+    <p class="nav__label">Cuenta</p>
+    <a class="nav__item" href="index.html#fuera" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#log-out"/></svg><span>Cerrar sesión</span></a>
+  </nav>
+</dialog>
+<dialog class="sheet" id="sheet-draft" aria-labelledby="sheet-draft-t">
+<span class="grabber" aria-hidden="true"></span><div class="dlg__head"><h2 class="h2" id="sheet-draft-t">Redactar mensaje</h2><form method="dialog"><button class="icon-btn" aria-label="Cerrar"><svg class="i" aria-hidden="true"><use href="icons.svg#x"/></svg></button></form></div>
+<div class="dlg__body"><fieldset class="field"><legend>Canal</legend><div class="seg"><label><input type="radio" name="ch">Invitación LinkedIn</label><label><input type="radio" name="ch">InMail</label><label><input type="radio" name="ch" checked>Correo</label></div></fieldset>
+<div class="field"><label for="d-tpl">Plantilla</label><select class="control select" id="d-tpl" name="d-tpl"><option>Seguimiento de presupuesto · cliente</option><option>Primer mensaje · lead</option><option>Agencia 2-10 · presentación</option><option>Sin plantilla</option></select></div>
+<div class="field"><div class="section__head"><label for="d-body">Mensaje</label><button class="btn" data-variant="ghost" data-size="sm" type="button" data-say="Borrador generado con tu voz y las reglas"><svg class="i" aria-hidden="true"><use href="icons.svg#pen-line"/></svg>Generar con IA</button></div>
+<textarea class="control" id="d-body" rows="9" aria-describedby="d-count d-lint">Hola Laura:
+
+Te paso lo que hablamos para que Fisio Campos salga cuando buscan fisioterapia en Vallecas. Es el SEO completo (ficha de Google, textos y velocidad) y el mantenimiento básico durante un año para que no se quede parado.
+
+Si te encaja, lo empezamos la semana que viene. ¿Te viene bien una llamada corta el jueves?
+
+Carla</textarea>
+<p class="counter" id="d-count">Correo · 412 caracteres</p></div>
+<div class="field"><p class="label">Reglas</p><ul class="linter" id="d-lint" role="list">
+<li data-ok><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg>Sin emojis</li><li data-ok><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg>Sin exclamaciones</li><li data-ok><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg>Sin precios en el mensaje (van en el presupuesto)</li><li data-bad><svg class="i" aria-hidden="true"><use href="icons.svg#circle-alert"/></svg>«semana que viene»: pon una fecha concreta</li></ul></div>
+<p class="note"><svg class="i" aria-hidden="true"><use href="icons.svg#info"/></svg><span>El sistema nunca envía. Copias, lo mandas tú y lo marcas como enviado.</span></p></div>
+<form method="dialog" class="dlg__foot"><button class="btn" data-variant="quiet" value="ok" data-say="Interacción «mensaje enviado» registrada" data-close>Lo he enviado</button><a class="btn" data-variant="ghost" href="mailto:laura@fisiocampos.test"><svg class="i" aria-hidden="true"><use href="icons.svg#mail"/></svg>Abrir correo</a><button class="btn" data-variant="solid" type="button" data-copy="Hola Laura:" data-copied="Mensaje copiado"><svg class="i" aria-hidden="true"><use href="icons.svg#copy"/></svg>Copiar</button></form>
+</dialog><dialog class="sheet" id="sheet-status" aria-labelledby="sheet-status-t">
+<span class="grabber" aria-hidden="true"></span><div class="dlg__head"><h2 class="h2" id="sheet-status-t">Estado y siguiente acción</h2><form method="dialog"><button class="icon-btn" aria-label="Cerrar"><svg class="i" aria-hidden="true"><use href="icons.svg#x"/></svg></button></form></div>
+<div class="dlg__body"><p class="small soft">Laura Campos · Fisio Campos</p>
+<fieldset class="field"><legend>Estado</legend><div class="radio-list"><label><input type="radio" name="st">Nuevo</label><label><input type="radio" name="st">Contactado</label><label><input type="radio" name="st" checked>Propuesta enviada</label><label><input type="radio" name="st" disabled>Ganado<small>con «Cerrar cobrado»</small></label><label><input type="radio" name="st" disabled>Cliente activo<small>con «Cerrar cobrado»</small></label><label><input type="radio" name="st">Perdido<small>final</small></label><label><input type="radio" name="st">Cerrado<small>final</small></label></div></fieldset>
+<div class="field"><label for="na-text">Siguiente acción</label><input class="control" id="na-text" name="na-text" type="text" value="Llamar para resolver dudas del P2" aria-describedby="na-text-h" required><p class="hint" id="na-text-h">Obligatoria salvo en los estados finales. Es lo que ordena la bandeja.</p></div>
+<div class="row-2"><div class="field"><label for="na-date">Fecha</label><input class="control" id="na-date" name="na-date" type="date" value="2026-11-04" required></div><div class="field"><label for="na-time">Hora (opcional)</label><input class="control" id="na-time" name="na-time" type="time" value="10:00"></div></div></div>
+<form method="dialog" class="dlg__foot"><button class="btn" data-variant="quiet" value="cancel">Cancelar</button><button class="btn" data-variant="solid" value="ok" data-say="Estado y siguiente acción guardados" data-close>Guardar</button></form>
+</dialog><dialog class="sheet" id="sheet-access" aria-labelledby="sheet-access-t">
+<span class="grabber" aria-hidden="true"></span><div class="dlg__head"><h2 class="h2" id="sheet-access-t">Habilitar acceso al portal</h2><form method="dialog"><button class="icon-btn" aria-label="Cerrar"><svg class="i" aria-hidden="true"><use href="icons.svg#x"/></svg></button></form></div>
+<div class="dlg__body"><p class="soft small">Laura recibirá un correo para entrar en su área de cliente. Allí verá su proyecto y sus tareas y podrá proponer historias.</p>
+<div class="field"><label for="acc-email">Email de acceso</label><input class="control" id="acc-email" name="acc-email" type="email" value="laura@fisiocampos.test" aria-describedby="acc-email-h" required><p class="hint" id="acc-email-h">Prellenado con el del contacto. Debe ser el que usará para entrar.</p></div>
+<p class="note"><svg class="i" aria-hidden="true"><use href="icons.svg#info"/></svg><span>El enlace caduca en 7 días. Mientras tanto, el estado será «Invitado el 2 nov» y podrás reenviarlo.</span></p></div>
+<form method="dialog" class="dlg__foot"><button class="btn" data-variant="quiet" value="cancel">Cancelar</button><button class="btn" data-variant="solid" value="ok" data-say="Invitación enviada a laura@fisiocampos.test" data-close><svg class="i" aria-hidden="true"><use href="icons.svg#send"/></svg>Enviar invitación</button></form>
+</dialog><dialog class="sheet" id="sheet-reassign" aria-labelledby="sheet-reassign-t">
+<span class="grabber" aria-hidden="true"></span><div class="dlg__head"><h2 class="h2" id="sheet-reassign-t">Reasignar contacto</h2><form method="dialog"><button class="icon-btn" aria-label="Cerrar"><svg class="i" aria-hidden="true"><use href="icons.svg#x"/></svg></button></form></div>
+<div class="dlg__body"><p class="soft small">Laura Campos · ahora de Carla Méndez</p>
+<fieldset class="field"><legend>Nuevo dueño</legend><div class="radio-list">
+<label><input type="radio" name="ow" checked disabled>Carla Méndez<small>dueña actual</small></label>
+<label><input type="radio" name="ow">Iván Robles<small>29 contactos</small></label>
+<label><input type="radio" name="ow">Jose (tú)<small>61 contactos</small></label>
+<label><input type="radio" name="ow" disabled>Dani Ortega<small>desactivado</small></label></div></fieldset>
+<p class="note" data-tone="attention"><svg class="i" aria-hidden="true"><use href="icons.svg#triangle-alert"/></svg><span>Carla deja de verlo al momento. Las comisiones ya creadas no cambian de dueño.</span></p></div>
+<form method="dialog" class="dlg__foot"><button class="btn" data-variant="quiet" value="cancel">Cancelar</button><button class="btn" data-variant="solid" value="ok" data-say="Contacto reasignado" data-close>Reasignar</button></form>
+</dialog><dialog class="sheet" id="sheet-quote" aria-labelledby="sheet-quote-t" data-size="wide">
+<span class="grabber" aria-hidden="true"></span><div class="dlg__head"><h2 class="h2" id="sheet-quote-t">Nuevo presupuesto</h2><form method="dialog"><button class="icon-btn" aria-label="Cerrar"><svg class="i" aria-hidden="true"><use href="icons.svg#x"/></svg></button></form></div>
+<div class="dlg__body" data-quote><div class="field"><label for="q-title">Título</label><input class="control" id="q-title" name="q-title" type="text" value="SEO local y mantenimiento" required maxlength="140"></div>
+<div class="field"><label for="q-search">Añadir extra del catálogo</label>
+<div class="search search--full"><svg class="i" aria-hidden="true"><use href="icons.svg#search"/></svg><input id="q-search" type="search" placeholder="Buscar por nombre" aria-controls="q-picker"></div>
+<div class="picker" id="q-picker" role="group" aria-label="Extras del catálogo"><button type="button" data-say="Línea añadida: Mantenimiento básico"><span>Mantenimiento básico</span><small>49 € al mes</small><b>49&nbsp;€</b></button><button type="button" data-say="Línea añadida: Mantenimiento extendido"><span>Mantenimiento extendido</span><small>149 € al mes</small><b>149&nbsp;€</b></button><button type="button" data-say="Línea añadida: SEO básico"><span>SEO básico</span><small>pago único</small><b>250&nbsp;€</b></button><button type="button" data-say="Línea añadida: SEO completo"><span>SEO completo</span><small>pago único</small><b>600&nbsp;€</b></button><button type="button" data-say="Línea añadida: GEO"><span>GEO</span><small>pago único</small><b>300&nbsp;€</b></button><button type="button" data-say="Línea añadida: Análisis de ciberseguridad"><span>Análisis de ciberseguridad</span><small>pago único</small><b>250&nbsp;€</b></button><button type="button" data-say="Línea añadida: Hora de desarrollo"><span>Hora de desarrollo</span><small>interno · oculto en la web</small><b>40&nbsp;€</b></button></div>
+<p class="hint">Solo extras del catálogo, con su precio de hoy. Para algo a medida, Jose crea antes un extra interno.</p></div>
+<div class="field"><p class="label" id="q-lines">Líneas</p>
+<ul class="quote-lines" role="list" aria-labelledby="q-lines">
+<li class="quote-line" data-price="600"><span>SEO completo</span><small>600,00&nbsp;€ · pago único</small><span class="qty stepper" role="group" aria-label="Cantidad de SEO completo"><button type="button" data-qty="-1" aria-label="Quitar uno"><svg class="i" aria-hidden="true"><use href="icons.svg#minus"/></svg></button><output aria-live="polite">1</output><button type="button" data-qty="1" aria-label="Añadir uno"><svg class="i" aria-hidden="true"><use href="icons.svg#plus"/></svg></button></span><span class="amount"></span></li>
+<li class="quote-line" data-price="49"><span>Mantenimiento básico</span><small>49,00&nbsp;€ al mes · 12 meses</small><span class="qty stepper" role="group" aria-label="Cantidad de Mantenimiento básico"><button type="button" data-qty="-1" aria-label="Quitar uno"><svg class="i" aria-hidden="true"><use href="icons.svg#minus"/></svg></button><output aria-live="polite">12</output><button type="button" data-qty="1" aria-label="Añadir uno"><svg class="i" aria-hidden="true"><use href="icons.svg#plus"/></svg></button></span><span class="amount"></span></li>
+</ul></div>
+<div class="row-2" data-only="admin"><div class="field"><label for="discount">Descuento</label><div class="affix"><input class="control" id="discount" name="discount" type="number" value="100" min="0" inputmode="decimal"><span aria-hidden="true">€</span></div></div><div class="field"><label for="q-dnote">Nota del descuento</label><input class="control" id="q-dnote" name="q-dnote" type="text" value="Cliente desde octubre"></div></div>
+<div class="sum" aria-live="polite">
+<div><span>Subtotal</span><b data-sub></b></div>
+<div data-only="admin"><span>Descuento</span><b data-disc></b></div>
+<div class="locked" data-only="closer"><span>Descuento</span><span>lo fija Jose</span></div>
+<div class="sum__total"><span>Total sin IVA</span><span data-total></span></div>
+</div>
+<div class="row-2"><div class="field"><label for="q-valid">Válido hasta</label><input class="control" id="q-valid" name="q-valid" type="date" value="2026-11-30"></div><div class="field"><p class="label" id="q-lang">Idioma del texto</p><div class="seg" role="group" aria-labelledby="q-lang"><button type="button" aria-pressed="true">Español</button><button type="button" aria-pressed="false">English</button></div></div></div>
+<p class="note"><svg class="i" aria-hidden="true"><use href="icons.svg#info"/></svg><span>El CRM no envía nada: copia el texto, pégalo en WhatsApp o en el correo y márcalo como enviado. Un presupuesto enviado ya no se edita: se duplica.</span></p></div>
+<form method="dialog" class="dlg__foot"><button class="btn" data-variant="quiet" value="ok" data-say="Borrador guardado" data-close>Guardar borrador</button><button class="btn" data-variant="ghost" value="ok" data-say="Marcado como enviado" data-close><svg class="i" aria-hidden="true"><use href="icons.svg#send"/></svg>Marcar enviado</button><button class="btn" data-variant="solid" type="button" data-copy="SEO local y mantenimiento&#10;SEO completo × 1 · 600,00 €&#10;Mantenimiento básico × 12 · 588,00 €&#10;Total sin IVA: 1.188,00 €" data-copied="Texto del presupuesto copiado"><svg class="i" aria-hidden="true"><use href="icons.svg#copy"/></svg>Copiar texto</button></form>
+</dialog><dialog class="sheet decide" id="sheet-story" aria-labelledby="sheet-story-t">
+<span class="grabber" aria-hidden="true"></span><div class="dlg__head"><h2 class="h2" id="sheet-story-t">Decidir historia</h2><form method="dialog"><button class="icon-btn" aria-label="Cerrar"><svg class="i" aria-hidden="true"><use href="icons.svg#x"/></svg></button></form></div>
+<div class="dlg__body"><div class="note"><svg class="i" aria-hidden="true"><use href="icons.svg#list-checks"/></svg><span><strong>Reservar encargos para recoger</strong> · Ana Ruiz, Panadería La Espiga. Como cliente habitual de la panadería, quiero reservar una tarta o un pan especial para un día y una hora, para recogerlo sin esperar cola. 4 criterios.</span></div>
+<div class="decide">
+<fieldset class="field"><legend>Decisión</legend><div class="seg"><label><input type="radio" name="dec" id="dec-accept" checked><svg class="i" aria-hidden="true"><use href="icons.svg#check"/></svg>Aceptar</label><label><input type="radio" name="dec" id="dec-reject"><svg class="i" aria-hidden="true"><use href="icons.svg#x"/></svg>Rechazar</label></div></fieldset>
+<div data-when="accept" class="stack">
+<div class="row-2"><div class="field"><label for="st-hours">Estimación</label><div class="affix"><input class="control" id="st-hours" name="st-hours" type="number" value="6" required min="0.5" step="0.5" inputmode="decimal"><span aria-hidden="true">h</span></div></div><div class="field"><label for="st-amount">Importe (opcional)</label><div class="affix"><input class="control" id="st-amount" name="st-amount" type="number" aria-describedby="st-amount-h" min="0" inputmode="decimal"><span aria-hidden="true">€</span></div><p class="hint" id="st-amount-h">Orientativo, sin IVA. El cliente lo ve.</p></div></div>
+<div class="field"><label for="st-note">Nota para el cliente (opcional)</label><textarea class="control" id="st-note" name="st-note" rows="3">Encaja con el módulo de pedidos que ya tienes; lo hago en la misma entrega.</textarea></div>
+<label class="check"><input type="checkbox" checked>Crear tarea en su proyecto al aceptar</label>
+</div>
+<div data-when="reject" class="stack">
+<div class="field"><label for="st-reason">Motivo</label><textarea class="control" id="st-reason" name="st-reason" rows="4" placeholder="Ej.: queda fuera del pack; lo vemos como ampliación." aria-describedby="st-reason-h" required></textarea><p class="hint" id="st-reason-h">El cliente lo lee tal cual. Explica qué haría falta para que encaje.</p></div>
+</div>
+</div></div>
+<form method="dialog" class="dlg__foot"><button class="btn" data-variant="quiet" value="cancel">Cancelar</button><button class="btn" data-variant="solid" value="ok" data-say="Historia aceptada y tarea creada" data-close data-when="accept"><svg class="i" aria-hidden="true"><use href="icons.svg#check"/></svg>Aceptar historia</button><button class="btn" data-variant="danger" value="ok" data-say="Historia rechazada" data-close data-when="reject">Rechazar historia</button></form>
+</dialog><dialog class="confirm" id="confirm-close" aria-labelledby="confirm-close-t" role="alertdialog">
+<div class="dlg__head"><h2 class="h2" id="confirm-close-t">Cerrar cobrado</h2></div>
+<div class="dlg__body"><p>La oportunidad <strong>Ampliación: SEO local</strong> pasa a ganada, se crea la comisión de <strong>Carla Méndez (10&nbsp;%)</strong> y el contacto sigue como cliente activo.</p>
+<div class="row-2"><div class="field"><label for="cc-amount">Importe cobrado</label><div class="affix"><input class="control" id="cc-amount" name="cc-amount" type="number" value="1088.00" required><span aria-hidden="true">€</span></div></div><div class="field"><label for="cc-date">Fecha de cobro</label><input class="control" id="cc-date" name="cc-date" type="date" value="2026-11-02" required></div></div>
+<p class="hint">Comisión resultante: 108,80&nbsp;€, pendiente de aprobar.</p></div>
+<form method="dialog" class="dlg__foot"><button class="btn" data-variant="quiet" value="cancel">Cancelar</button><button class="btn" data-variant="solid" value="ok" data-say="Cobro registrado; comisión creada" data-close>Cerrar cobrado</button></form>
+</dialog><dialog class="confirm" id="confirm-ask" aria-labelledby="confirm-ask-t" role="alertdialog">
+<div class="dlg__head"><h2 class="h2" id="confirm-ask-t">Pedir cierre a Jose</h2></div>
+<div class="dlg__body"><p>La siguiente acción pasa a <strong>«Jose: cerrar cobrado»</strong> y Jose recibe un aviso por Telegram. El cobro lo registra él.</p></div>
+<form method="dialog" class="dlg__foot"><button class="btn" data-variant="quiet" value="cancel">Cancelar</button><button class="btn" data-variant="solid" value="ok" data-say="Cierre pedido a Jose" data-close>Pedir cierre</button></form>
+</dialog>
+<details class="proto">
+  <summary><svg class="i" aria-hidden="true"><use href="icons.svg#sliders-horizontal"/></svg>Prototipo</summary>
+  <div class="proto__panel">
+    <fieldset><legend>Rol (también ?role=closer)</legend><div class="seg"><label><input type="radio" name="role" value="admin">Admin</label><label><input type="radio" name="role" value="closer">Closer</label></div></fieldset>
+    <fieldset><legend>A · Color de «vencida»</legend><div class="seg"><label><input type="radio" name="overdue" value="danger">Coral (nuevo)</label><label><input type="radio" name="overdue" value="pending">Oro (--pending)</label></div></fieldset>
+    <fieldset><legend>B · Densidad de tablas</legend><div class="seg"><label><input type="radio" name="density" value="comfortable">Cómoda</label><label><input type="radio" name="density" value="compact">Compacta</label></div></fieldset>
+    <fieldset><legend>C · Segundo tono del titular</legend><div class="seg"><label><input type="radio" name="title" value="v7">Ámbar</label><label><input type="radio" name="title" value="v6">Lavanda</label></div></fieldset>
+    <fieldset><legend>D · Barra inferior en móvil</legend><div class="seg"><label><input type="radio" name="mbar" value="4">4 (PANT)</label><label><input type="radio" name="mbar" value="5">5 con Resumen</label></div></fieldset>
+    <fieldset><legend>E · Detalle de contacto (≥ 60rem)</legend><div class="seg"><label><input type="radio" name="k3" value="split">Dos columnas</label><label><input type="radio" name="k3" value="stack">Una columna</label></div></fieldset>
+    <p>Se guarda en este navegador. Opciones explicadas en el README §4. <a class="link" data-size="sm" href="index.html">Índice de pantallas</a></p>
+  </div>
+</details>
+<div class="toast" id="toast" role="status" aria-live="polite"><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg><span></span></div>
+<script src="crm.js?v=1" defer></script>
+</body>
+</html>

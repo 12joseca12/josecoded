@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07060F">
+<meta name="robots" content="noindex">
+<meta name="description" content="Prototipo de la zona /crm y de administración de josecoded.">
+<title>Contactos · CRM josecoded</title>
+<script>(function(){var r=document.documentElement,q=new URLSearchParams(location.search);r.classList.add('js');r.dataset.role=q.get('role')==='closer'?'closer':'admin';var d={density:'comfortable',overdue:'danger',title:'v7',mbar:'4',k3:'split'};for(var k in d){var v=null;try{v=localStorage.getItem('crm.'+k)}catch(x){}r.dataset[k]=q.get(k)||v||d[k]}if(q.has('shot'))r.classList.add('shot')})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css?v=1">
+<link rel="stylesheet" href="crm.css?v=1">
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+<div class="grain" aria-hidden="true"></div>
+<div class="app" data-zone="crm">
+<aside class="rail">
+  <a class="brand" href="resumen.html">josecoded <span class="zone">CRM</span></a>
+  <nav class="nav" aria-label="Navegación del CRM">
+    <a class="nav__item" href="resumen.html"><svg class="i" aria-hidden="true"><use href="icons.svg#house"/></svg><span>Resumen</span></a><a class="nav__item" href="contactos.html" aria-current="page"><svg class="i" aria-hidden="true"><use href="icons.svg#users"/></svg><span>Contactos</span><span class="nav__count" data-tone="attention" data-only="admin" aria-label="4 vencidas">4</span><span class="nav__count" data-tone="attention" data-only="closer" aria-label="3 vencidas">3</span></a><a class="nav__item" href="clientes.html"><svg class="i" aria-hidden="true"><use href="icons.svg#briefcase-business"/></svg><span>Clientes</span></a><a class="nav__item" href="comisiones.html"><svg class="i" aria-hidden="true"><use href="icons.svg#wallet"/></svg><span>Comisiones</span></a>
+    <p class="nav__label" id="rail-more">Más</p>
+    <div class="nav" role="group" aria-labelledby="rail-more"><a class="nav__item" href="importar.html"><svg class="i" aria-hidden="true"><use href="icons.svg#upload"/></svg><span>Importar</span></a><a class="nav__item" href="ajustes.html"><svg class="i" aria-hidden="true"><use href="icons.svg#settings"/></svg><span>Ajustes</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#message-square"/></svg><span>Chat</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#building-2"/></svg><span>Organizaciones</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#file-text"/></svg><span>Contextos del chat</span></a><a class="nav__item" href="equipo.html" data-only="admin"><svg class="i" aria-hidden="true"><use href="icons.svg#shield-check"/></svg><span>Administración</span></a></div>
+  </nav>
+  <div class="rail__foot">
+    <a class="me" href="ajustes.html" data-only="admin"><span class="avatar" aria-hidden="true">J</span><span><span class="me__name">Jose</span><br><span class="me__role">Administrador</span></span></a>
+    <a class="me" href="ajustes.html" data-only="closer"><span class="avatar" aria-hidden="true">CM</span><span><span class="me__name">Carla Méndez</span><br><span class="me__role">Closer · 10&nbsp;%</span></span></a>
+  </div>
+</aside>
+<header class="topbar">
+  <a class="brand" href="resumen.html">josecoded <span class="zone">CRM</span></a>
+  <div class="topbar__end">
+    <a class="icon-btn" href="ajustes.html" aria-label="Ajustes y cuenta"><span class="avatar" data-only="admin" aria-hidden="true">J</span><span class="avatar" data-only="closer" aria-hidden="true">CM</span></a>
+  </div>
+</header>
+<main class="page" id="main">
+
+<div>
+<header class="head"><div class="head__text"><h1 class="h1">Contactos. <span class="t2"><span data-only="admin">Todo el CRM.</span><span data-only="closer">Tu cartera.</span></span></h1><p class="lead">Ordenados por siguiente acción: lo vencido arriba.</p></div><div class="head__actions"><a class="btn" data-variant="ghost" href="importar.html"><svg class="i" aria-hidden="true"><use href="icons.svg#upload"/></svg>Importar CSV</a></div></header>
+<div class="toolbar" role="search" aria-label="Filtrar contactos">
+  <div class="search"><svg class="i" aria-hidden="true"><use href="icons.svg#search"/></svg><input type="search" placeholder="Buscar nombre, empresa o email" aria-label="Buscar contactos" data-hotkey="/" aria-keyshortcuts="/"><kbd>/</kbd></div>
+  <div class="seg" role="group" aria-label="Tipo"><button type="button" aria-pressed="true">Todos</button><button type="button" aria-pressed="false">Leads</button><button type="button" aria-pressed="false">Clientes</button><button type="button" aria-pressed="false">Agencias</button><button type="button" aria-pressed="false">Reclutadores</button><button type="button" aria-pressed="false">Otros</button></div>
+  <label class="vh" for="f-status">Estado</label>
+  <select class="select" id="f-status"><option>Todos los estados</option><option>Nuevo</option><option>Contactado</option><option>Propuesta enviada</option><option>Cliente activo</option><option>Perdido</option></select>
+  <label class="vh" for="f-owner" data-only="admin">Dueño</label>
+  <select class="select" id="f-owner" data-only="admin"><option>Todos los dueños</option><option>Míos</option><option>Sin asignar (1)</option><option>Carla Méndez</option><option>Iván Robles</option><option>Dani Ortega (desactivado)</option></select>
+  <button class="chip-toggle" type="button" aria-pressed="false"><svg class="i" aria-hidden="true"><use href="icons.svg#triangle-alert"/></svg>Solo vencidas <span class="num" data-only="admin">4</span><span class="num" data-only="closer">3</span></button>
+</div>
+<div class="tablebox">
+<table class="table" role="table" data-stack>
+<caption class="vh">Contactos, ordenados por siguiente acción</caption>
+<thead role="rowgroup"><tr role="row"><th role="columnheader" scope="col">Contacto</th><th role="columnheader" scope="col">Tipo</th><th role="columnheader" scope="col">Estado</th><th role="columnheader" scope="col">Siguiente acción</th><th role="columnheader" scope="col">Último</th><th role="columnheader" scope="col">Canal</th><th role="columnheader" scope="col" data-only="admin">Dueño</th><th role="columnheader" scope="col"><span class="vh">Acciones</span></th></tr></thead>
+<tbody role="rowgroup"><tr role="row" data-href>
+<td role="cell" data-col="main"><div class="cell-main"><a class="row-link" href="contacto.html">Laura Campos</a><span>Fisio Campos</span></div></td>
+<td role="cell" data-col="meta" data-label="Tipo"><span class="kind">Cliente</span></td>
+<td role="cell" data-col="status"><span class="badge" data-tone="live">Cliente activo</span></td>
+<td role="cell" data-col="wide"><div class="next"><span class="next__text">Enviar presupuesto de SEO completo</span><span class="due" data-state="overdue"><svg class="i" aria-hidden="true"><use href="icons.svg#triangle-alert"/></svg><span class="vh">Vencida: </span>30 oct</span></div></td>
+<td role="cell" data-col="meta" data-label="Último" class="num">29 oct</td>
+<td role="cell" data-col="meta" data-label="Canal">WhatsApp</td>
+<td role="cell" data-col="meta" data-only="admin"><span class="owner"><span class="avatar" data-size="sm" aria-hidden="true">CM</span>Carla Méndez</span></td>
+<td role="cell" class="act"><button class="icon-btn" data-size="sm" type="button" data-open="sheet-status" aria-label="Estado y siguiente acción de Laura Campos"><svg class="i" aria-hidden="true"><use href="icons.svg#pencil"/></svg></button></td>
+</tr><tr role="row" data-href>
+<td role="cell" data-col="main"><div class="cell-main"><a class="row-link" href="contacto.html">Marina Soler</a><span>Clínica Dental Soler</span></div></td>
+<td role="cell" data-col="meta" data-label="Tipo"><span class="kind">Lead</span></td>
+<td role="cell" data-col="status"><span class="badge" data-tone="active">Propuesta enviada</span></td>
+<td role="cell" data-col="wide"><div class="next"><span class="next__text">Llamar para resolver dudas del P2</span><span class="due" data-state="overdue"><svg class="i" aria-hidden="true"><use href="icons.svg#triangle-alert"/></svg><span class="vh">Vencida: </span>31 oct</span></div></td>
+<td role="cell" data-col="meta" data-label="Último" class="num">28 oct</td>
+<td role="cell" data-col="meta" data-label="Canal">WhatsApp</td>
+<td role="cell" data-col="meta" data-only="admin"><span class="owner"><span class="avatar" data-size="sm" aria-hidden="true">CM</span>Carla Méndez</span></td>
+<td role="cell" class="act"><button class="icon-btn" data-size="sm" type="button" data-open="sheet-status" aria-label="Estado y siguiente acción de Marina Soler"><svg class="i" aria-hidden="true"><use href="icons.svg#pencil"/></svg></button></td>
+</tr><tr role="row" data-href data-only="admin">
+<td role="cell" data-col="main"><div class="cell-main"><a class="row-link" href="contacto.html">Tomás Gil</a><span>Gil Asesores</span></div></td>
+<td role="cell" data-col="meta" data-label="Tipo"><span class="kind">Lead</span></td>
+<td role="cell" data-col="status"><span class="badge">Nuevo</span></td>
+<td role="cell" data-col="wide"><div class="next"><span class="next__text">Primer contacto (formulario web)</span><span class="due" data-state="overdue"><svg class="i" aria-hidden="true"><use href="icons.svg#triangle-alert"/></svg><span class="vh">Vencida: </span>1 nov</span></div></td>
+<td role="cell" data-col="meta" data-label="Último" class="num">—</td>
+<td role="cell" data-col="meta" data-label="Canal">Formulario</td>
+<td role="cell" data-col="meta" data-only="admin"><span class="owner" data-state="unassigned"><span class="avatar" data-size="sm" aria-hidden="true">?</span>Sin asignar</span></td>
+<td role="cell" class="act"><button class="icon-btn" data-size="sm" type="button" data-open="sheet-status" aria-label="Estado y siguiente acción de Tomás Gil"><svg class="i" aria-hidden="true"><use href="icons.svg#pencil"/></svg></button></td>
+</tr><tr role="row" data-href data-only="admin">
+<td role="cell" data-col="main"><div class="cell-main"><a class="row-link" href="contacto.html">Hugo Navarro</a><span>Taller Navarro</span></div></td>
+<td role="cell" data-col="meta" data-label="Tipo"><span class="kind">Lead</span></td>
+<td role="cell" data-col="status"><span class="badge" data-tone="active">Contactado</span></td>
+<td role="cell" data-col="wide"><div class="next"><span class="next__text">Mandar ejemplo de web de taller</span><span class="due" data-state="overdue"><svg class="i" aria-hidden="true"><use href="icons.svg#triangle-alert"/></svg><span class="vh">Vencida: </span>1 nov</span></div></td>
+<td role="cell" data-col="meta" data-label="Último" class="num">27 oct</td>
+<td role="cell" data-col="meta" data-label="Canal">WhatsApp</td>
+<td role="cell" data-col="meta" data-only="admin"><span class="owner"><span class="avatar" data-size="sm" aria-hidden="true">IR</span>Iván Robles</span></td>
+<td role="cell" class="act"><button class="icon-btn" data-size="sm" type="button" data-open="sheet-status" aria-label="Estado y siguiente acción de Hugo Navarro"><svg class="i" aria-hidden="true"><use href="icons.svg#pencil"/></svg></button></td>
+</tr><tr role="row" data-href>
+<td role="cell" data-col="main"><div class="cell-main"><a class="row-link" href="contacto.html">Ana Ruiz</a><span>Panadería La Espiga</span></div></td>
+<td role="cell" data-col="meta" data-label="Tipo"><span class="kind">Cliente</span></td>
+<td role="cell" data-col="status"><span class="badge" data-tone="live">Cliente activo</span></td>
+<td role="cell" data-col="wide"><div class="next"><span class="next__text">Revisar historia «Reservar encargos»</span><span class="due" data-state="today"><svg class="i" aria-hidden="true"><use href="icons.svg#clock"/></svg><span class="vh">Para </span>hoy</span></div></td>
+<td role="cell" data-col="meta" data-label="Último" class="num">30 oct</td>
+<td role="cell" data-col="meta" data-label="Canal">Correo</td>
+<td role="cell" data-col="meta" data-only="admin"><span class="owner"><span class="avatar" data-size="sm" aria-hidden="true">CM</span>Carla Méndez</span></td>
+<td role="cell" class="act"><button class="icon-btn" data-size="sm" type="button" data-open="sheet-status" aria-label="Estado y siguiente acción de Ana Ruiz"><svg class="i" aria-hidden="true"><use href="icons.svg#pencil"/></svg></button></td>
+</tr><tr role="row" data-href data-only="admin">
+<td role="cell" data-col="main"><div class="cell-main"><a class="row-link" href="contacto.html">Raúl Ibáñez</a><span>Estudio Albahaca</span></div></td>
+<td role="cell" data-col="meta" data-label="Tipo"><span class="kind">Agencia</span></td>
+<td role="cell" data-col="status"><span class="badge" data-tone="active">InMail enviado</span></td>
+<td role="cell" data-col="wide"><div class="next"><span class="next__text">Seguimiento si no responde</span><span class="due"><span class="vh">Para el </span>4 nov</span></div></td>
+<td role="cell" data-col="meta" data-label="Último" class="num">28 oct</td>
+<td role="cell" data-col="meta" data-label="Canal">LinkedIn</td>
+<td role="cell" data-col="meta" data-only="admin"><span class="owner"><span class="avatar" data-size="sm" aria-hidden="true">J</span>Jose</span></td>
+<td role="cell" class="act"><button class="icon-btn" data-size="sm" type="button" data-open="sheet-status" aria-label="Estado y siguiente acción de Raúl Ibáñez"><svg class="i" aria-hidden="true"><use href="icons.svg#pencil"/></svg></button></td>
+</tr><tr role="row" data-href data-only="admin">
+<td role="cell" data-col="main"><div class="cell-main"><a class="row-link" href="contacto.html">Elena Vidal</a><span>Norte Digital</span></div></td>
+<td role="cell" data-col="meta" data-label="Tipo"><span class="kind">Agencia</span></td>
+<td role="cell" data-col="status"><span class="badge" data-tone="attention">Ha respondido</span></td>
+<td role="cell" data-col="wide"><div class="next"><span class="next__text">Reunión de 20 min</span><span class="due"><span class="vh">Para el </span>5 nov</span></div></td>
+<td role="cell" data-col="meta" data-label="Último" class="num">31 oct</td>
+<td role="cell" data-col="meta" data-label="Canal">LinkedIn</td>
+<td role="cell" data-col="meta" data-only="admin"><span class="owner"><span class="avatar" data-size="sm" aria-hidden="true">J</span>Jose</span></td>
+<td role="cell" class="act"><button class="icon-btn" data-size="sm" type="button" data-open="sheet-status" aria-label="Estado y siguiente acción de Elena Vidal"><svg class="i" aria-hidden="true"><use href="icons.svg#pencil"/></svg></button></td>
+</tr><tr role="row" data-href data-only="admin">
+<td role="cell" data-col="main"><div class="cell-main"><a class="row-link" href="contacto.html">Patricia Lozano</a><span>Talento Hub</span></div></td>
+<td role="cell" data-col="meta" data-label="Tipo"><span class="kind">Reclutador</span></td>
+<td role="cell" data-col="status"><span class="badge" data-tone="active">Entrevista</span></td>
+<td role="cell" data-col="wide"><div class="next"><span class="next__text">Entrevista técnica</span><span class="due"><span class="vh">Para el </span>6 nov</span></div></td>
+<td role="cell" data-col="meta" data-label="Último" class="num">29 oct</td>
+<td role="cell" data-col="meta" data-label="Canal">Correo</td>
+<td role="cell" data-col="meta" data-only="admin"><span class="owner"><span class="avatar" data-size="sm" aria-hidden="true">J</span>Jose</span></td>
+<td role="cell" class="act"><button class="icon-btn" data-size="sm" type="button" data-open="sheet-status" aria-label="Estado y siguiente acción de Patricia Lozano"><svg class="i" aria-hidden="true"><use href="icons.svg#pencil"/></svg></button></td>
+</tr><tr role="row" data-href data-only="admin">
+<td role="cell" data-col="main"><div class="cell-main"><a class="row-link" href="contacto.html">Ramón Peña</a><span>Cooperativa Olivar Alto</span></div></td>
+<td role="cell" data-col="meta" data-label="Tipo"><span class="kind">Lead</span></td>
+<td role="cell" data-col="status"><span class="badge" data-tone="active">Propuesta enviada</span></td>
+<td role="cell" data-col="wide"><div class="next"><span class="next__text">Confirmar fecha de inicio</span><span class="due"><span class="vh">Para el </span>7 nov</span></div></td>
+<td role="cell" data-col="meta" data-label="Último" class="num">30 oct</td>
+<td role="cell" data-col="meta" data-label="Canal">Correo</td>
+<td role="cell" data-col="meta" data-only="admin"><span class="owner"><span class="avatar" data-size="sm" aria-hidden="true">IR</span>Iván Robles</span></td>
+<td role="cell" class="act"><button class="icon-btn" data-size="sm" type="button" data-open="sheet-status" aria-label="Estado y siguiente acción de Ramón Peña"><svg class="i" aria-hidden="true"><use href="icons.svg#pencil"/></svg></button></td>
+</tr><tr role="row" data-href>
+<td role="cell" data-col="main"><div class="cell-main"><a class="row-link" href="contacto.html">Nerea Gómez</a><span>Floristería Gómez</span></div></td>
+<td role="cell" data-col="meta" data-label="Tipo"><span class="kind">Lead</span></td>
+<td role="cell" data-col="status"><span class="badge" data-tone="active">Contactado</span></td>
+<td role="cell" data-col="wide"><div class="next"><span class="next__text">Enviar el P1 con fotos de ejemplo</span><span class="due"><span class="vh">Para el </span>9 nov</span></div></td>
+<td role="cell" data-col="meta" data-label="Último" class="num">30 oct</td>
+<td role="cell" data-col="meta" data-label="Canal">WhatsApp</td>
+<td role="cell" data-col="meta" data-only="admin"><span class="owner"><span class="avatar" data-size="sm" aria-hidden="true">CM</span>Carla Méndez</span></td>
+<td role="cell" class="act"><button class="icon-btn" data-size="sm" type="button" data-open="sheet-status" aria-label="Estado y siguiente acción de Nerea Gómez"><svg class="i" aria-hidden="true"><use href="icons.svg#pencil"/></svg></button></td>
+</tr><tr role="row" data-href data-only="admin">
+<td role="cell" data-col="main"><div class="cell-main"><a class="row-link" href="contacto.html">Irene Calvo</a><span class="muted">Sin organización</span></div></td>
+<td role="cell" data-col="meta" data-label="Tipo"><span class="kind">Otro</span></td>
+<td role="cell" data-col="status"><span class="badge">Activo</span></td>
+<td role="cell" data-col="wide"><div class="next"><span class="next__text">Contestar sobre la charla de React Native</span><span class="due"><span class="vh">Para el </span>10 nov</span></div></td>
+<td role="cell" data-col="meta" data-label="Último" class="num">26 oct</td>
+<td role="cell" data-col="meta" data-label="Canal">Correo</td>
+<td role="cell" data-col="meta" data-only="admin"><span class="owner"><span class="avatar" data-size="sm" aria-hidden="true">J</span>Jose</span></td>
+<td role="cell" class="act"><button class="icon-btn" data-size="sm" type="button" data-open="sheet-status" aria-label="Estado y siguiente acción de Irene Calvo"><svg class="i" aria-hidden="true"><use href="icons.svg#pencil"/></svg></button></td>
+</tr><tr role="row" data-href data-only="admin">
+<td role="cell" data-col="main"><div class="cell-main"><a class="row-link" href="contacto.html">Sergio Martín</a><span>Bitwise Partners</span></div></td>
+<td role="cell" data-col="meta" data-label="Tipo"><span class="kind">Agencia</span></td>
+<td role="cell" data-col="status"><span class="badge">Pendiente</span></td>
+<td role="cell" data-col="wide"><div class="next"><span class="next__text">Enviar invitación de LinkedIn</span><span class="due"><span class="vh">Para el </span>12 nov</span></div></td>
+<td role="cell" data-col="meta" data-label="Último" class="num">—</td>
+<td role="cell" data-col="meta" data-label="Canal">LinkedIn</td>
+<td role="cell" data-col="meta" data-only="admin"><span class="owner"><span class="avatar" data-size="sm" aria-hidden="true">J</span>Jose</span></td>
+<td role="cell" class="act"><button class="icon-btn" data-size="sm" type="button" data-open="sheet-status" aria-label="Estado y siguiente acción de Sergio Martín"><svg class="i" aria-hidden="true"><use href="icons.svg#pencil"/></svg></button></td>
+</tr><tr role="row" data-href data-only="admin" data-off>
+<td role="cell" data-col="main"><div class="cell-main"><a class="row-link" href="contacto.html">Óscar Prieto</a><span>Prieto Reformas</span></div></td>
+<td role="cell" data-col="meta" data-label="Tipo"><span class="kind">Lead</span></td>
+<td role="cell" data-col="status"><span class="badge" data-tone="muted">Perdido</span></td>
+<td role="cell" data-col="wide"><div class="next"><span class="next__text">—</span></div></td>
+<td role="cell" data-col="meta" data-label="Último" class="num">14 sep</td>
+<td role="cell" data-col="meta" data-label="Canal">WhatsApp</td>
+<td role="cell" data-col="meta" data-only="admin"><span class="owner" data-state="off"><span class="avatar" data-size="sm" aria-hidden="true">DO</span>Dani Ortega <small>(desactivado)</small></span></td>
+<td role="cell" class="act"><button class="icon-btn" data-size="sm" type="button" data-open="sheet-status" aria-label="Estado y siguiente acción de Óscar Prieto"><svg class="i" aria-hidden="true"><use href="icons.svg#pencil"/></svg></button></td>
+</tr></tbody>
+</table>
+<div class="table-foot"><span><span data-only="admin">1–13 de 128</span><span data-only="closer">1–5 de 34</span></span><span class="head__actions"><button class="btn" data-variant="quiet" data-size="sm" type="button" disabled>Anterior</button><button class="btn" data-variant="ghost" data-size="sm" type="button">Siguiente <svg class="i" aria-hidden="true"><use href="icons.svg#chevron-right"/></svg></button></span></div>
+</div>
+</div>
+</main>
+<nav class="tabbar" aria-label="Navegación del CRM"><ul role="list"><li data-mbar-only><a class="tab" href="resumen.html"><svg class="i" aria-hidden="true"><use href="icons.svg#house"/></svg><span>Resumen</span></a></li><li><a class="tab" href="contactos.html" aria-current="page"><svg class="i" aria-hidden="true"><use href="icons.svg#users"/></svg><span>Contactos</span></a></li><li><a class="tab" href="clientes.html"><svg class="i" aria-hidden="true"><use href="icons.svg#briefcase-business"/></svg><span>Clientes</span></a></li><li><a class="tab" href="comisiones.html"><svg class="i" aria-hidden="true"><use href="icons.svg#wallet"/></svg><span>Comisiones</span></a></li><li><button class="tab" type="button" data-open="more" aria-haspopup="dialog"><svg class="i" aria-hidden="true"><use href="icons.svg#ellipsis"/></svg><span>Más</span></button></li></ul></nav>
+</div>
+<dialog class="sheet" id="more" aria-labelledby="more-t">
+  <span class="grabber" aria-hidden="true"></span>
+  <div class="dlg__head"><h2 class="h2" id="more-t">Más</h2><form method="dialog"><button class="icon-btn" aria-label="Cerrar"><svg class="i" aria-hidden="true"><use href="icons.svg#x"/></svg></button></form></div>
+  <nav class="more-list" aria-label="Más secciones"><a class="nav__item" href="resumen.html"><svg class="i" aria-hidden="true"><use href="icons.svg#house"/></svg><span>Resumen</span></a><a class="nav__item" href="importar.html"><svg class="i" aria-hidden="true"><use href="icons.svg#upload"/></svg><span>Importar</span></a><a class="nav__item" href="ajustes.html"><svg class="i" aria-hidden="true"><use href="icons.svg#settings"/></svg><span>Ajustes</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#message-square"/></svg><span>Chat</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#building-2"/></svg><span>Organizaciones</span></a><a class="nav__item" href="index.html#fuera" data-only="admin" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#file-text"/></svg><span>Contextos del chat</span></a><a class="nav__item" href="equipo.html" data-only="admin"><svg class="i" aria-hidden="true"><use href="icons.svg#shield-check"/></svg><span>Administración</span></a>
+    <p class="nav__label">Cuenta</p>
+    <a class="nav__item" href="index.html#fuera" data-missing><svg class="i" aria-hidden="true"><use href="icons.svg#log-out"/></svg><span>Cerrar sesión</span></a>
+  </nav>
+</dialog>
+<dialog class="sheet" id="sheet-status" aria-labelledby="sheet-status-t">
+<span class="grabber" aria-hidden="true"></span><div class="dlg__head"><h2 class="h2" id="sheet-status-t">Estado y siguiente acción</h2><form method="dialog"><button class="icon-btn" aria-label="Cerrar"><svg class="i" aria-hidden="true"><use href="icons.svg#x"/></svg></button></form></div>
+<div class="dlg__body"><p class="small soft">Marina Soler · Clínica Dental Soler</p>
+<fieldset class="field"><legend>Estado</legend><div class="radio-list"><label><input type="radio" name="st">Nuevo</label><label><input type="radio" name="st">Contactado</label><label><input type="radio" name="st" checked>Propuesta enviada</label><label><input type="radio" name="st" disabled>Ganado<small>con «Cerrar cobrado»</small></label><label><input type="radio" name="st" disabled>Cliente activo<small>con «Cerrar cobrado»</small></label><label><input type="radio" name="st">Perdido<small>final</small></label><label><input type="radio" name="st">Cerrado<small>final</small></label></div></fieldset>
+<div class="field"><label for="na-text">Siguiente acción</label><input class="control" id="na-text" name="na-text" type="text" value="Llamar para resolver dudas del P2" aria-describedby="na-text-h" required><p class="hint" id="na-text-h">Obligatoria salvo en los estados finales. Es lo que ordena la bandeja.</p></div>
+<div class="row-2"><div class="field"><label for="na-date">Fecha</label><input class="control" id="na-date" name="na-date" type="date" value="2026-11-04" required></div><div class="field"><label for="na-time">Hora (opcional)</label><input class="control" id="na-time" name="na-time" type="time" value="10:00"></div></div></div>
+<form method="dialog" class="dlg__foot"><button class="btn" data-variant="quiet" value="cancel">Cancelar</button><button class="btn" data-variant="solid" value="ok" data-say="Estado y siguiente acción guardados" data-close>Guardar</button></form>
+</dialog>
+<details class="proto">
+  <summary><svg class="i" aria-hidden="true"><use href="icons.svg#sliders-horizontal"/></svg>Prototipo</summary>
+  <div class="proto__panel">
+    <fieldset><legend>Rol (también ?role=closer)</legend><div class="seg"><label><input type="radio" name="role" value="admin">Admin</label><label><input type="radio" name="role" value="closer">Closer</label></div></fieldset>
+    <fieldset><legend>A · Color de «vencida»</legend><div class="seg"><label><input type="radio" name="overdue" value="danger">Coral (nuevo)</label><label><input type="radio" name="overdue" value="pending">Oro (--pending)</label></div></fieldset>
+    <fieldset><legend>B · Densidad de tablas</legend><div class="seg"><label><input type="radio" name="density" value="comfortable">Cómoda</label><label><input type="radio" name="density" value="compact">Compacta</label></div></fieldset>
+    <fieldset><legend>C · Segundo tono del titular</legend><div class="seg"><label><input type="radio" name="title" value="v7">Ámbar</label><label><input type="radio" name="title" value="v6">Lavanda</label></div></fieldset>
+    <fieldset><legend>D · Barra inferior en móvil</legend><div class="seg"><label><input type="radio" name="mbar" value="4">4 (PANT)</label><label><input type="radio" name="mbar" value="5">5 con Resumen</label></div></fieldset>
+    <fieldset><legend>E · Detalle de contacto (≥ 60rem)</legend><div class="seg"><label><input type="radio" name="k3" value="split">Dos columnas</label><label><input type="radio" name="k3" value="stack">Una columna</label></div></fieldset>
+    <p>Se guarda en este navegador. Opciones explicadas en el README §4. <a class="link" data-size="sm" href="index.html">Índice de pantallas</a></p>
+  </div>
+</details>
+<div class="toast" id="toast" role="status" aria-live="polite"><svg class="i" aria-hidden="true"><use href="icons.svg#circle-check"/></svg><span></span></div>
+<script src="crm.js?v=1" defer></script>
+</body>
+</html>
