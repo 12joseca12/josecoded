@@ -4,5 +4,16 @@
   },
   "home": {
     "name": "josecoded"
+  },
+  "dev": {
+    "tokens": {
+      "title": "Tokens del estilo B",
+      "colors": "Color",
+      "typeScale": "Escala tipográfica",
+      "radii": "Radios",
+      "shadows": "Sombras",
+      "durations": "Duraciones",
+      "sample": "Una web que trabaja para ti"
+    }
   }
 }

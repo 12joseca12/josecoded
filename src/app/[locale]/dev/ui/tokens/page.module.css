@@ -1,0 +1,116 @@
+.page {
+  width: 100%;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding: var(--gutter);
+}
+
+.title {
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-black);
+  letter-spacing: var(--tracking-display);
+  line-height: var(--lh-tight);
+  margin-bottom: var(--gutter);
+}
+
+.section {
+  margin-bottom: var(--gutter);
+}
+
+.heading {
+  font-size: var(--fs-h4);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-tight);
+  margin-bottom: var(--fs-body);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  gap: var(--fs-body);
+}
+
+.stack {
+  display: grid;
+  gap: var(--fs-s);
+}
+
+.card {
+  display: grid;
+  gap: var(--fs-s);
+}
+
+.name {
+  font-family: var(--font-mono);
+  font-size: var(--fs-s);
+  color: var(--ink-soft);
+  overflow-wrap: anywhere;
+}
+
+.swatch {
+  display: block;
+  height: 4rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-s);
+  background: var(--sample);
+}
+
+.typeRow {
+  display: grid;
+  gap: var(--fs-2xs);
+  padding-block: var(--fs-s);
+  border-bottom: 1px solid var(--line);
+}
+
+.type {
+  font-size: var(--sample);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-snug);
+}
+
+.radius {
+  display: block;
+  height: 5rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--sample);
+  background: var(--panel);
+}
+
+.shadow {
+  display: block;
+  height: 5rem;
+  border-radius: var(--radius-m);
+  background: var(--panel);
+  box-shadow: var(--sample);
+}
+
+.track {
+  display: block;
+  height: 0.5rem;
+  border-radius: var(--radius-s);
+  background: var(--bg-track);
+  container-type: inline-size;
+}
+
+.runner {
+  display: block;
+  width: 2rem;
+  height: 100%;
+  border-radius: var(--radius-s);
+  background: var(--coral);
+  animation-name: run;
+  animation-duration: var(--sample);
+  animation-timing-function: var(--ease-in-out);
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+@keyframes run {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(100cqw - 2rem));
+  }
+}
