@@ -32,6 +32,10 @@
   font-weight: var(--font-label-button-weight);
   line-height: var(--font-body-leading);
   text-decoration: none;
+  width: 100%;
+  font-family: inherit;
+  text-align: start;
+  cursor: pointer;
   transition:
     background var(--dur-hover) var(--ease-standard),
     color var(--dur-hover) var(--ease-standard);

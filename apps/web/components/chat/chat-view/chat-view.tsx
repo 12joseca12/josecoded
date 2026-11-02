@@ -1,112 +1,109 @@
 import { getTranslations } from 'next-intl/server';
 
-import { CaseSelector } from '@/components/chat/case-selector';
-import { ChatComposer } from '@/components/chat/chat-composer';
-import { ChatThread } from '@/components/chat/chat-thread';
-import { HandoverBand } from '@/components/chat/handover-band';
-import { QuotaNotice } from '@/components/chat/quota-notice';
-import { SaveThreadHint } from '@/components/chat/save-thread-hint';
+import { ChatLive } from '@/components/chat/chat-live';
+import { ChatScreen } from '@/components/chat/chat-screen';
 import { PageHead } from '@/components/shared/page-head';
-import { QuickContact } from '@/components/shared/quick-contact';
-import { Surface } from '@/components/ui/surface';
 
-import styles from './chat-view.module.css';
+import type { ChatScreenLabels } from '@/components/chat/chat-screen';
+import type { ChatCase, ChatContact, ChatViewData, Locale } from '@josecoded/types';
 
-import type { ChatCase, ChatContact, ChatViewData, Href, Locale } from '@josecoded/types';
+/** What the page needs to talk to the gateway; without it the screen paints `data` as it is (fixtures, `/dev/chat`). */
+export interface ChatLiveConfig {
+  apiUrl: string;
+  siteKey: string;
+  signedIn: boolean;
+  initialCase: ChatCase;
+}
 
 /**
- * `/chat` as a pure composition: it gets everything by props (`data`, the ways to contact) and fetches
- * nothing, so the fixtures screen (`/dev/chat/<state>`), the page with example data and, later, the
- * page with the real thread paint the same thing. The state is derived from `data`: no visitor line
- * yet → full selector; limit reached (and Jose not in) → `QuotaNotice` instead of the composer; Jose
- * in → `HandoverBand` and a composer whose note says who answers.
+ * `/chat` as a composition fed by props. It translates everything on the server and hands plain strings to
+ * `ChatScreen` (static, from `data`) or to `ChatLive` (the thread of the gateway, B03), so the fixtures screen and the
+ * real page paint the same thing.
  */
 export async function ChatView({
   data,
   contact,
   locale,
+  live,
 }: {
   data: ChatViewData;
   contact: ChatContact;
   locale: Locale;
+  live?: ChatLiveConfig;
 }) {
   const t = await getTranslations({ locale, namespace: 'chat' });
-  const started = data.thread.some((item) => item.kind === 'message' && item.from === 'visitor');
-  const blocked = data.quota.used >= data.quota.limit && !data.handover;
-  const labels: Record<ChatCase, string> = {
-    client: t('cases.client'),
-    partner: t('cases.partner'),
-    recruiter: t('cases.recruiter'),
-    curious: t('cases.curious'),
+  const screen: ChatScreenLabels = {
+    casesLabel: t('cases.label'),
+    cases: { client: t('cases.client'), partner: t('cases.partner'), recruiter: t('cases.recruiter'), curious: t('cases.curious') },
+    thread: {
+      label: t('thread.label'),
+      visitor: t('thread.visitor'),
+      assistant: t('thread.assistant'),
+      jose: t('thread.jose'),
+      // the case name is put in by the client: `{case}` stays in the string
+      caseSwitch: t.raw('thread.caseSwitch') as string,
+    },
+    composer: {
+      label: t('composer.label'),
+      placeholder: t('composer.placeholder'),
+      send: t('composer.send'),
+      hintSend: t('composer.hintSend'),
+      hintBreak: t('composer.hintBreak'),
+      keyEnter: t('composer.keyEnter'),
+      keyShift: t('composer.keyShift'),
+      noteAi: t('composer.noteAi'),
+      noteJose: t('composer.noteJose'),
+    },
+    quota: { title: t('quota.title'), text: t('quota.text') },
+    save: { text: t('save.text'), action: t('save.action') },
+    handover: { title: t('handover.title'), text: t('handover.text') },
+    quick: {
+      group: t('quick.group'),
+      whatsapp: t('quick.whatsapp'),
+      book: t('quick.book'),
+      linkedin: t('quick.linkedin'),
+      email: t('quick.email'),
+      copy: t('quick.copy'),
+      copied: t('quick.copied'),
+      failed: t('quick.failed'),
+    },
   };
-
-  const quick = (
-    <QuickContact
-      page="chat"
-      whatsapp={contact.whatsapp}
-      book={contact.book}
-      email={contact.email}
-      linkedin={contact.linkedin}
-      labels={{
-        group: t('quick.group'),
-        whatsapp: t('quick.whatsapp'),
-        book: t('quick.book'),
-        linkedin: t('quick.linkedin'),
-        email: t('quick.email'),
-        copy: t('quick.copy'),
-        copied: t('quick.copied'),
-        failed: t('quick.failed'),
-      }}
-    />
-  );
 
   return (
     <>
       <PageHead lead={t('head.lead')} tail={t('head.accent')} />
-      <div className={styles.stage}>
-        <CaseSelector
-          label={t('cases.label')}
-          labels={labels}
-          current={data.case}
-          hrefFor={(id) => `/chat?case=${id}` as Href}
-          variant={started ? 'compact' : 'full'}
+      {live ? (
+        <ChatLive
+          initialCase={live.initialCase}
+          locale={locale}
+          apiUrl={live.apiUrl}
+          siteKey={live.siteKey}
+          signedIn={live.signedIn}
+          contact={contact}
+          labels={{
+            screen,
+            greeting: { client: t('greeting.client'), partner: t('greeting.partner'), recruiter: t('greeting.recruiter'), curious: t('greeting.curious') },
+            notices: {
+              captcha: t('notice.captcha'),
+              rate: t('notice.rate'),
+              closed: t('notice.closed'),
+              invalid: t('notice.invalid'),
+              down: t('notice.down'),
+            },
+            waiting: t('check.waiting'),
+            leave: {
+              label: t('leave.label'),
+              placeholder: t('leave.placeholder'),
+              submit: t('leave.submit'),
+              saved: t('leave.saved'),
+              invalid: t('leave.invalid'),
+              failed: t('leave.failed'),
+            },
+          }}
         />
-        <div className={styles.column}>
-          {data.handover ? <HandoverBand title={t('handover.title')} text={t('handover.text')} /> : null}
-          <Surface as="section" aria-label={t('thread.label')}>
-            <ChatThread
-              items={data.thread}
-              label={t('thread.label')}
-              senders={{ visitor: t('thread.visitor'), assistant: t('thread.assistant'), jose: t('thread.jose') }}
-              caseSwitch={(to) => t('thread.caseSwitch', { case: labels[to] })}
-              quickContact={quick}
-            />
-          </Surface>
-          {blocked ? (
-            <QuotaNotice title={t('quota.title')} text={t('quota.text')}>
-              {quick}
-            </QuotaNotice>
-          ) : (
-            <div className={styles.dock}>
-              <ChatComposer
-                labels={{
-                  label: t('composer.label'),
-                  placeholder: t('composer.placeholder'),
-                  send: t('composer.send'),
-                  hintSend: t('composer.hintSend'),
-                  hintBreak: t('composer.hintBreak'),
-                  keyEnter: t('composer.keyEnter'),
-                  keyShift: t('composer.keyShift'),
-                  note: data.handover ? t('composer.noteJose') : t('composer.noteAi'),
-                }}
-              />
-            </div>
-          )}
-          {started && !data.signedIn ? (
-            <SaveThreadHint text={t('save.text')} action={t('save.action')} href="/auth/login?next=/chat" />
-          ) : null}
-        </div>
-      </div>
+      ) : (
+        <ChatScreen data={data} contact={contact} labels={screen} />
+      )}
     </>
   );
 }

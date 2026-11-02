@@ -64,6 +64,28 @@ export const chatThreadViewSchema = z.object({
   context_version: z.number().int().nullable(),
 });
 
+/** Response bodies of the visitor routes (`{ ok: true, data }` envelope): the web client validates what the gateway returns. */
+export const createThreadResponseSchema = z.object({
+  threadId: z.uuid(),
+  case: chatCaseSchema,
+  contextVersion: z.number().int().nullable(),
+  aiEnabled: z.boolean(),
+});
+export const currentThreadResponseSchema = z.object({ thread: chatThreadViewSchema, messages: z.array(chatMessageViewSchema) });
+export const postMessageResponseSchema = z.object({
+  visitor: chatMessageViewSchema,
+  assistant: chatMessageViewSchema.nullable(),
+  aiEnabled: z.boolean(),
+});
+export const switchCaseResponseSchema = z.object({ thread: chatThreadViewSchema, message: chatMessageViewSchema.nullable() });
+export const claimResponseSchema = z.object({ thread: chatThreadViewSchema });
+export const quickContactResponseSchema = z.object({ saved: z.literal(true), notified: z.string() });
+
 export type CreateThreadRequest = z.infer<typeof createThreadRequestSchema>;
 export type ChatMessageView = z.infer<typeof chatMessageViewSchema>;
 export type ChatThreadView = z.infer<typeof chatThreadViewSchema>;
+export type CreateThreadResponse = z.infer<typeof createThreadResponseSchema>;
+export type CurrentThreadResponse = z.infer<typeof currentThreadResponseSchema>;
+export type PostMessageResponse = z.infer<typeof postMessageResponseSchema>;
+export type SwitchCaseResponse = z.infer<typeof switchCaseResponseSchema>;
+export type QuickContactRequest = z.infer<typeof quickContactRequestSchema>;

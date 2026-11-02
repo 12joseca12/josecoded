@@ -1,3 +1,5 @@
+'use client';
+
 import { Action } from '@/components/ui/action';
 import { Icon } from '@/components/ui/icon';
 
@@ -20,6 +22,8 @@ const CASES: readonly { id: ChatCase; icon: IconName }[] = [
  *
  * A11y: a named group (the visible question names it), a list of real links, current one marked
  * with `aria-current="true"` and a border (not colour alone); targets are at least 2.75 rem.
+ * With `onSelect` (the live chat, where changing the case must not reload the thread) each option is a
+ * button with the same look and the same `aria-current`.
  */
 export function CaseSelector({
   label,
@@ -27,12 +31,14 @@ export function CaseSelector({
   current,
   hrefFor,
   variant = 'full',
+  onSelect,
 }: {
   label: string;
   labels: Record<ChatCase, string>;
   current: ChatCase;
   hrefFor: (id: ChatCase) => Href;
   variant?: ChatCaseSelectorVariant;
+  onSelect?: (id: ChatCase) => void;
 }) {
   return (
     <div className={styles.box} role="group" aria-labelledby="chat-case-label" data-variant={variant}>
@@ -43,7 +49,7 @@ export function CaseSelector({
         {CASES.map(({ id, icon }) => (
           <li key={id}>
             <Action
-              href={hrefFor(id)}
+              {...(onSelect ? { onClick: () => onSelect(id) } : { href: hrefFor(id) })}
               className={styles.option}
               aria-current={id === current ? 'true' : undefined}
             >

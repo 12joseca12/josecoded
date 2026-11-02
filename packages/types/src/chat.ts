@@ -46,3 +46,8 @@ export type ChatCaseSelectorVariant = 'full' | 'compact';
 
 /** Ways to reach Jose offered inside the chat (`QuickContact`); a way without data is not drawn. */
 export type ChatContact = { whatsapp?: Href; book?: Href; email?: string; linkedin?: Href };
+
+/** Why a call to the assistant routes failed, in the words the screen cares about (B03); the client maps the gateway's status and code. */
+export type ChatFailure = 'captcha' | 'rate' | 'quota' | 'closed' | 'forbidden' | 'missing' | 'invalid' | 'down';
+
+export type ChatResult<T> = { status: 'ok'; data: T } | { status: 'error'; reason: ChatFailure };
