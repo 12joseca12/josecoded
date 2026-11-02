@@ -42,7 +42,6 @@
   --sk-base: rgb(23 25 28 / 0.08);
   --sk-hi: rgb(255 255 255 / 0.7);
   --gutter: clamp(1.25rem, 4vw, 3.5rem);
-  --rail-space: 0rem;
   --max: 90rem;
   --nav-h: 4.75rem;
   --radius-s: 0.625rem;
@@ -219,7 +218,7 @@ svg {
   width: 100%;
   max-width: var(--max);
   margin-inline: auto;
-  padding-inline: var(--gutter) calc(var(--gutter) + var(--rail-space));
+  padding-inline: var(--gutter);
 }
 
 .brand {
@@ -587,89 +586,6 @@ svg {
   text-decoration-color: currentColor;
 }
 
-.lab {
-  position: fixed;
-  left: 1rem;
-  bottom: calc(1rem + env(safe-area-inset-bottom));
-  z-index: 60;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.25rem;
-  border: 1px solid rgb(255 255 255 / 0.12);
-  border-radius: 999px;
-  background: var(--charcoal);
-  box-shadow: 0 10px 30px rgb(23 25 28 / 0.3);
-  color: #f2f2f2;
-  font: 600 0.75rem/1 var(--font-mono);
-  letter-spacing: 0.06em;
-  view-transition-name: lab;
-}
-
-.lab__label {
-  padding: 0 0.5rem 0 0.6rem;
-  color: var(--on-dark-soft);
-  text-transform: uppercase;
-}
-
-.lab button {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  min-width: 2.75rem;
-  height: 2.75rem;
-  padding: 0 0.85rem;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
-  justify-content: center;
-  transition: background-color var(--dur-fast) ease, color var(--dur-fast) ease, transform var(--dur-press) var(--ease-out);
-}
-
-.lab__name {
-  display: none;
-  font-family: var(--font-body);
-  letter-spacing: 0;
-  font-weight: 500;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .lab button:hover {
-    background: rgb(255 255 255 / 0.1);
-  }
-}
-
-.lab button:active {
-  transform: scale(0.95);
-}
-
-.lab button[aria-pressed="true"] {
-  background: #f2f2f2;
-  color: var(--charcoal);
-}
-
-.lab button[aria-pressed="true"] .lab__key {
-  color: var(--coral-deep);
-}
-
-.lab button:focus-visible {
-  outline-color: #f2f2f2;
-}
-
-@media (min-width: 48rem) {
-  .lab__name {
-    display: inline;
-  }
-
-  .lab {
-    left: 50%;
-    translate: -50% 0;
-  }
-}
-
 .states {
   position: fixed;
   right: 1rem;
@@ -755,42 +671,6 @@ svg {
 
 .states__list input:focus-visible {
   outline: none;
-}
-
-.progress-fill {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: var(--coral);
-  transform: scaleX(var(--progress, 0));
-  transform-origin: 0 50%;
-}
-
-@supports (animation-timeline: scroll()) {
-  .progress-fill {
-    animation: progress-x linear both;
-    animation-timeline: scroll(root block);
-  }
-}
-
-@keyframes progress-x {
-  from {
-    transform: scaleX(0);
-  }
-
-  to {
-    transform: scaleX(1);
-  }
-}
-
-@keyframes progress-y {
-  from {
-    transform: scaleY(0);
-  }
-
-  to {
-    transform: scaleY(1);
-  }
 }
 
 @keyframes spin {

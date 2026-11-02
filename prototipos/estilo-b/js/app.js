@@ -1,7 +1,6 @@
 const root = document.documentElement;
 const reduced = matchMedia("(prefers-reduced-motion: reduce)");
 const wide = matchMedia("(min-width: 64rem)");
-const isMac = /Mac|iPhone|iPad/.test(navigator.userAgentData?.platform ?? navigator.platform ?? "");
 const status = document.querySelector("[data-status]");
 const sections = [...document.querySelectorAll("[data-section]")];
 const scrollBehavior = () => (reduced.matches ? "auto" : "smooth");
@@ -17,10 +16,188 @@ const closeDialogs = () => {
   for (const dialog of document.querySelectorAll("dialog[open]")) dialog.close();
 };
 
+const blockQuery = matchMedia("(hover: hover) and (pointer: fine) and (min-width: 64rem) and (min-height: 37.5rem)");
+
+const blocks = (() => {
+  const quiet = 220;
+  const merge = 0.12;
+  const tall = 1.08;
+  const ignoreKeys = 'input, textarea, select, button, summary, label, [contenteditable=""], [contenteditable="true"], [role="listbox"], [role="radiogroup"], [role="slider"], .states';
+  let stops = [];
+  let frame = 0;
+  let moving = false;
+  let lockedUntil = 0;
+  let settling = false;
+  let lastTime = 0;
+  let lastAbs = 0;
+  let measureFrame = 0;
+
+  const enabled = () => blockQuery.matches && !reduced.matches;
+  const active = () => enabled() && !document.querySelector("dialog[open]");
+  const maxScroll = () => Math.max(0, root.scrollHeight - innerHeight);
+  const topOf = (element) => element.getBoundingClientRect().top + scrollY;
+  const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
+
+  const measure = () => {
+    const vh = innerHeight;
+    const max = maxScroll();
+    const shown = sections.filter((section) => section.getClientRects().length);
+    const next = [];
+    shown.forEach((section, index) => {
+      const top = topOf(section);
+      const end = index < shown.length - 1 ? topOf(shown[index + 1]) : root.scrollHeight;
+      if (end - top > vh * tall) {
+        next.push({ y: Math.min(top, max), inside: true });
+        next.push({ y: Math.min(end - vh, max), inside: false });
+      } else {
+        next.push({ y: Math.min(top, max), inside: false });
+      }
+    });
+    next.push({ y: max, inside: false });
+    next.sort((a, b) => a.y - b.y);
+    stops = [];
+    for (const stop of next) {
+      const last = stops.at(-1);
+      if (last && stop.y - last.y < vh * merge) {
+        if (last.y > 0) stops[stops.length - 1] = { y: stop.y, inside: stop.inside };
+      } else stops.push({ ...stop, y: Math.round(stop.y) });
+    }
+  };
+
+  const schedule = () => {
+    cancelAnimationFrame(measureFrame);
+    measureFrame = requestAnimationFrame(measure);
+  };
+
+  const stop = () => {
+    if (!moving) return;
+    cancelAnimationFrame(frame);
+    moving = false;
+  };
+
+  const glide = (to) => {
+    cancelAnimationFrame(frame);
+    const from = scrollY;
+    const target = Math.round(Math.max(0, Math.min(to, maxScroll())));
+    const distance = Math.abs(target - from);
+    if (!enabled() || distance < 2) {
+      scrollTo({ top: target, behavior: "instant" });
+      moving = false;
+      return;
+    }
+    const vh = innerHeight;
+    const duration = distance < vh * 0.35 ? 300 : Math.min(1100, 640 + 160 * (distance / vh));
+    const start = performance.now();
+    moving = true;
+    const tick = (now) => {
+      const t = Math.min(1, (now - start) / duration);
+      scrollTo({ top: from + (target - from) * ease(t), behavior: "instant" });
+      if (t < 1) {
+        frame = requestAnimationFrame(tick);
+        return;
+      }
+      moving = false;
+      settling = true;
+      lockedUntil = performance.now() + quiet;
+    };
+    frame = requestAnimationFrame(tick);
+  };
+
+  const plan = (dir, delta) => {
+    const y = scrollY;
+    if (dir > 0) {
+      const index = stops.findLastIndex((item) => item.y <= y + 1);
+      const here = stops[index];
+      const next = stops[index + 1];
+      if (!next) return null;
+      if (here?.inside) return y + delta >= next.y - 1 ? next.y : null;
+      return next.y;
+    }
+    const index = stops.findLastIndex((item) => item.y < y - 1);
+    const above = stops[index];
+    if (!above) return null;
+    if (above.inside) return y + delta <= above.y + 1 ? above.y : null;
+    return above.y;
+  };
+
+  const scrollsInside = (element, delta) => {
+    for (let node = element; node && node !== document.body && node !== root; node = node.parentElement) {
+      if (!/(auto|scroll)/.test(getComputedStyle(node).overflowY)) continue;
+      if (node.scrollHeight <= node.clientHeight + 1) continue;
+      if (delta > 0 ? node.scrollTop + node.clientHeight < node.scrollHeight - 1 : node.scrollTop > 0) return true;
+    }
+    return false;
+  };
+
+  const onWheel = (event) => {
+    if (!active() || event.ctrlKey || event.defaultPrevented) return;
+    const delta = event.deltaMode === 1 ? event.deltaY * 16 : event.deltaMode === 2 ? event.deltaY * innerHeight : event.deltaY;
+    if (!delta || Math.abs(event.deltaX) > Math.abs(delta)) return;
+    if (scrollsInside(event.target, delta)) return;
+    const now = performance.now();
+    const abs = Math.abs(delta);
+    const inertia = settling && now - lastTime < 500 && abs <= lastAbs * 1.05;
+    lastTime = now;
+    lastAbs = abs;
+    if (moving || now < lockedUntil || inertia) {
+      event.preventDefault();
+      if (!moving) lockedUntil = now + quiet;
+      return;
+    }
+    settling = false;
+    const target = plan(Math.sign(delta), delta);
+    if (target === null) return;
+    event.preventDefault();
+    glide(target);
+  };
+
+  const onKey = (event) => {
+    if (!active() || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
+    if (event.target instanceof Element && event.target.closest(ignoreKeys)) return;
+    const steps = { PageDown: 1, PageUp: -1, ArrowDown: 1, ArrowUp: -1, " ": event.shiftKey ? -1 : 1 };
+    if (event.key === "Home" || event.key === "End") {
+      event.preventDefault();
+      glide(event.key === "Home" ? 0 : maxScroll());
+      return;
+    }
+    if (!(event.key in steps)) return;
+    if (moving) {
+      event.preventDefault();
+      return;
+    }
+    const dir = steps[event.key];
+    const delta = dir * (event.key.startsWith("Arrow") ? 40 : innerHeight * 0.875);
+    const target = plan(dir, delta);
+    if (target === null) return;
+    event.preventDefault();
+    glide(target);
+  };
+
+  const yFor = (element) => {
+    if (element.matches("[data-section]")) {
+      const top = Math.min(topOf(element), maxScroll());
+      const near = stops.reduce((best, item) => (Math.abs(item.y - top) < Math.abs(best.y - top) ? item : best), stops[0] ?? { y: top });
+      return Math.abs(near.y - top) < innerHeight * merge ? near.y : top;
+    }
+    return topOf(element) - parseFloat(getComputedStyle(root).fontSize) * 5.75;
+  };
+
+  addEventListener("wheel", onWheel, { passive: false });
+  addEventListener("keydown", onKey);
+  addEventListener("pointerdown", stop, { passive: true });
+  addEventListener("resize", schedule);
+  new ResizeObserver(schedule).observe(document.body);
+  blockQuery.addEventListener("change", schedule);
+  measure();
+
+  return { enabled, glide, yFor, measure };
+})();
+
 const goTo = (id, { focus = true } = {}) => {
   const target = document.getElementById(id);
   if (!target) return;
-  target.scrollIntoView({ behavior: scrollBehavior(), block: "start" });
+  if (blocks.enabled()) blocks.glide(blocks.yFor(target));
+  else target.scrollIntoView({ behavior: scrollBehavior(), block: "start" });
   if (location.hash !== `#${id}`) history.pushState(null, "", `#${id}`);
   if (focus) target.focus({ preventScroll: true });
 };
@@ -37,13 +214,12 @@ document.addEventListener("click", (event) => {
 });
 
 let current = "";
-const pathLabels = [...document.querySelectorAll("[data-path]")];
 const indicator = document.querySelector(".nav-a__indicator");
 
 const moveIndicator = () => {
   if (!indicator) return;
   const link = document.querySelector(".nav-a__links a[aria-current]");
-  if (!link || root.dataset.nav !== "a" || !wide.matches) {
+  if (!link || !wide.matches) {
     indicator.style.opacity = "0";
     indicator.dataset.hidden = "";
     return;
@@ -68,7 +244,6 @@ const setCurrent = (id) => {
     if (link.hash === `#${id}`) link.setAttribute("aria-current", "location");
     else link.removeAttribute("aria-current");
   }
-  for (const label of pathLabels) label.textContent = id === "inicio" ? "~" : `~/${id}`;
   moveIndicator();
 };
 
@@ -114,38 +289,43 @@ addEventListener(
 );
 onScroll();
 
-document.querySelector(".nav-a__bar")?.addEventListener("transitionend", (event) => {
+const capsule = document.querySelector(".nav-a__bar");
+const ring = capsule.querySelector(".capsule-ring__fill");
+
+const drawRing = () => {
+  const { width, height } = capsule.getBoundingClientRect();
+  if (!width || !height) return;
+  const inset = 1;
+  const r = height / 2 - inset;
+  const left = inset;
+  const right = width - inset;
+  const top = inset;
+  const bottom = height - inset;
+  const f = (n) => n.toFixed(2);
+  ring.setAttribute(
+    "d",
+    `M${f(width / 2)} ${f(top)}H${f(right - r)}A${f(r)} ${f(r)} 0 0 1 ${f(right)} ${f(top + r)}A${f(r)} ${f(r)} 0 0 1 ${f(right - r)} ${f(bottom)}H${f(left + r)}A${f(r)} ${f(r)} 0 0 1 ${f(left)} ${f(top + r)}A${f(r)} ${f(r)} 0 0 1 ${f(left + r)} ${f(top)}Z`,
+  );
+};
+
+new ResizeObserver(drawRing).observe(capsule);
+drawRing();
+
+capsule.addEventListener("transitionend", (event) => {
   if (event.propertyName === "max-width") moveIndicator();
 });
-
-const placeTicks = () => {
-  const max = root.scrollHeight - innerHeight;
-  if (max <= 0) return;
-  for (const box of document.querySelectorAll("[data-ticks]")) {
-    box.replaceChildren(
-      ...sections.slice(1).map((section) => {
-        const tick = document.createElement("span");
-        const top = section.getBoundingClientRect().top + scrollY;
-        tick.style.setProperty("--x", `${Math.min(100, (top / max) * 100).toFixed(2)}%`);
-        return tick;
-      }),
-    );
-  }
-};
 
 let resizeFrame = 0;
 addEventListener("resize", () => {
   cancelAnimationFrame(resizeFrame);
-  resizeFrame = requestAnimationFrame(() => {
-    placeTicks();
-    moveIndicator();
-  });
+  resizeFrame = requestAnimationFrame(moveIndicator);
 });
 document.fonts?.ready.then(() => {
-  placeTicks();
   moveIndicator();
+  drawRing();
+  blocks.measure();
 });
-addEventListener("load", placeTicks);
+addEventListener("load", blocks.measure);
 
 const dialogs = [...document.querySelectorAll("dialog")];
 
@@ -183,132 +363,6 @@ const startContact = () => {
   const field = contactForm && !contactForm.hidden ? contactForm.querySelector("input") : document.querySelector("[data-contact-done]");
   field?.focus({ preventScroll: true });
 };
-
-const copyEmail = async () => {
-  try {
-    await navigator.clipboard.writeText("hola@josecoded.com");
-    announce("Email copiado: hola@josecoded.com");
-  } catch {
-    announce("No se pudo copiar. El email es hola@josecoded.com");
-  }
-};
-
-const palette = document.getElementById("palette");
-const paletteInput = palette.querySelector("input");
-const paletteList = palette.querySelector("[role=listbox]");
-const paletteEmpty = palette.querySelector("[data-empty]");
-const paletteQuery = palette.querySelector("[data-query]");
-
-const commands = [
-  ...sections.map((section, index) => ({
-    group: "Secciones",
-    label: section.dataset.section,
-    icon: String(index).padStart(2, "0"),
-    hint: `#${section.id}`,
-    run: () => goTo(section.id),
-  })),
-  { group: "Acciones", label: "Pedir propuesta", icon: "→", hint: "contacto", run: startContact },
-  { group: "Acciones", label: "Copiar email", icon: "@", hint: "hola@josecoded.com", run: copyEmail },
-  { group: "Acciones", label: "Volver arriba", icon: "↑", hint: "inicio", run: () => goTo("inicio") },
-];
-
-const normalize = (text) => text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
-
-const groups = [...new Set(commands.map((command) => command.group))].map((name, index) => {
-  const group = document.createElement("div");
-  group.setAttribute("role", "group");
-  group.setAttribute("aria-labelledby", `palette-group-${index}`);
-  const label = document.createElement("div");
-  label.className = "palette__group-label";
-  label.id = `palette-group-${index}`;
-  label.setAttribute("role", "presentation");
-  label.textContent = name;
-  group.append(label);
-  paletteList.append(group);
-  return { name, group };
-});
-
-const options = commands.map((command, index) => {
-  const option = document.createElement("div");
-  option.className = "palette__opt";
-  option.id = `palette-opt-${index}`;
-  option.setAttribute("role", "option");
-  option.setAttribute("aria-selected", "false");
-  option.innerHTML = `<span class="palette__ico" aria-hidden="true"></span><span class="palette__label"></span><span class="palette__hint" aria-hidden="true"></span>`;
-  option.querySelector(".palette__ico").textContent = command.icon;
-  option.querySelector(".palette__label").textContent = command.label;
-  option.querySelector(".palette__hint").textContent = command.hint;
-  groups.find((group) => group.name === command.group).group.append(option);
-  return { command, option, text: normalize(`${command.label} ${command.hint}`) };
-});
-
-let visible = options;
-let active = 0;
-
-const setActive = (index) => {
-  if (!visible.length) {
-    paletteInput.removeAttribute("aria-activedescendant");
-    return;
-  }
-  active = (index + visible.length) % visible.length;
-  for (const item of options) item.option.setAttribute("aria-selected", "false");
-  const item = visible[active];
-  item.option.setAttribute("aria-selected", "true");
-  paletteInput.setAttribute("aria-activedescendant", item.option.id);
-  item.option.scrollIntoView({ block: "nearest" });
-};
-
-const filter = () => {
-  const query = normalize(paletteInput.value.trim());
-  visible = options.filter((item) => !query || item.text.includes(query));
-  for (const item of options) item.option.hidden = !visible.includes(item);
-  for (const { group } of groups) group.hidden = !group.querySelector("[role=option]:not([hidden])");
-  paletteEmpty.hidden = visible.length > 0;
-  paletteQuery.textContent = paletteInput.value.trim();
-  setActive(0);
-};
-
-const runActive = (item = visible[active]) => {
-  if (!item) return;
-  palette.close();
-  item.command.run();
-};
-
-paletteInput.addEventListener("input", filter);
-paletteInput.addEventListener("keydown", (event) => {
-  const moves = { ArrowDown: active + 1, ArrowUp: active - 1, Home: 0, End: visible.length - 1 };
-  if (event.key in moves) {
-    event.preventDefault();
-    setActive(moves[event.key]);
-  } else if (event.key === "Enter") {
-    event.preventDefault();
-    runActive();
-  }
-});
-for (const item of options) {
-  item.option.addEventListener("pointermove", () => {
-    const index = visible.indexOf(item);
-    if (index !== active) setActive(index);
-  });
-  item.option.addEventListener("click", () => runActive(item));
-}
-palette.addEventListener("opened", () => {
-  paletteInput.value = "";
-  filter();
-  const index = visible.findIndex((item) => item.command.hint === `#${current}`);
-  setActive(Math.max(0, index));
-  paletteInput.focus();
-});
-
-for (const kbd of document.querySelectorAll("[data-kbd]")) kbd.textContent = isMac ? "⌘K" : "Ctrl K";
-
-document.addEventListener("keydown", (event) => {
-  if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k" && root.dataset.nav === "b") {
-    event.preventDefault();
-    if (palette.open) palette.close();
-    else openDialog(palette);
-  }
-});
 
 document.addEventListener("click", (event) => {
   const cta = event.target.closest("[data-cta]");
@@ -419,45 +473,6 @@ if (!CSS.supports("animation-timeline: view()") && !reduced.matches) {
   document.querySelectorAll(".reveal").forEach((element) => revealer.observe(element));
 }
 
-const variants = ["a", "b", "c"];
-const headers = [...document.querySelectorAll("[data-nav-variant]")];
-const switches = [...document.querySelectorAll("[data-set-nav]")];
-
-const applyVariant = (variant) => {
-  root.dataset.nav = variant;
-  for (const header of headers) header.hidden = header.dataset.navVariant !== variant;
-  for (const button of switches) button.setAttribute("aria-pressed", String(button.dataset.setNav === variant));
-  const url = new URL(location.href);
-  url.searchParams.set("nav", variant);
-  history.replaceState(null, "", url);
-  try {
-    localStorage.setItem("estilo-b-nav", variant);
-  } catch {}
-  placeTicks();
-  moveIndicator();
-};
-
-const setVariant = (variant) => {
-  if (variant === root.dataset.nav) return;
-  closeDialogs();
-  if (document.startViewTransition && !reduced.matches) document.startViewTransition(() => applyVariant(variant));
-  else applyVariant(variant);
-  const name = switches.find((button) => button.dataset.setNav === variant)?.querySelector(".lab__name")?.textContent;
-  announce(`Navegación ${name}`);
-};
-
-for (const button of switches) button.addEventListener("click", () => setVariant(button.dataset.setNav));
-
-const stored = (() => {
-  try {
-    return localStorage.getItem("estilo-b-nav");
-  } catch {
-    return null;
-  }
-})();
-const requested = new URLSearchParams(location.search).get("nav") ?? stored;
-applyVariant(variants.includes(requested) ? requested : "a");
-
 const statesPanel = document.querySelector(".states");
 const statesToggle = statesPanel.querySelector(".states__toggle");
 const statesList = statesPanel.querySelector(".states__list");
@@ -501,7 +516,7 @@ function applyState(state) {
     setEmailError(false);
   }
   if (state === "loading") announce("Cargando proyectos…");
-  placeTicks();
+  blocks.measure();
 }
 
 statesPanel.addEventListener("change", (event) => {

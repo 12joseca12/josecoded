@@ -13,7 +13,7 @@
   max-width: var(--max);
   min-height: 100svh;
   margin-inline: auto;
-  padding: calc(var(--nav-h) + 1.25rem) calc(var(--gutter) + var(--rail-space)) 2.5rem var(--gutter);
+  padding: calc(var(--nav-h) + 2rem) var(--gutter) 2.5rem;
   view-timeline: --hero block;
 }
 
@@ -39,16 +39,6 @@
 
 .hero-copy[hidden] {
   display: none;
-}
-
-.eyebrow {
-  margin-bottom: 1.5rem;
-  color: var(--ink);
-  font-size: 0.625rem;
-  font-weight: 600;
-  letter-spacing: 0.3em;
-  line-height: 1.75;
-  text-transform: uppercase;
 }
 
 .headline {
