@@ -5,6 +5,12 @@
   "home": {
     "name": "josecoded"
   },
+  "projects": {
+    "metaTitle": "Proyectos · josecoded",
+    "title": "Proyectos",
+    "emptyTitle": "Pronto",
+    "emptyText": "Estoy preparando los casos. Vuelve en unos días."
+  },
   "nav": {
     "skipLink": "Saltar al contenido",
     "brandLabel": "josecoded, ir al inicio",

@@ -5,6 +5,12 @@
   "home": {
     "name": "josecoded"
   },
+  "projects": {
+    "metaTitle": "Projects · josecoded",
+    "title": "Projects",
+    "emptyTitle": "Soon",
+    "emptyText": "I am preparing the case studies. Check back in a few days."
+  },
   "nav": {
     "skipLink": "Skip to content",
     "brandLabel": "josecoded, go to home",
