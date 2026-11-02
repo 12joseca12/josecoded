@@ -1,0 +1,57 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  height: var(--size-crm-badge-h);
+  padding: 0 var(--sp-2-5);
+  border-radius: var(--r-pill);
+  background: var(--tint-chip);
+  box-shadow: var(--shadow-hairline);
+  color: var(--text-2);
+  font-size: var(--font-caption-size);
+  font-weight: var(--font-emphasis-weight);
+  white-space: nowrap;
+}
+
+.badge::before {
+  content: '';
+  flex: none;
+  width: var(--size-dot);
+  height: var(--size-dot);
+  border-radius: var(--r-circle);
+  background: currentcolor;
+}
+
+.badge[data-tone='active'] {
+  background: var(--tint-current);
+  box-shadow: var(--shadow-selected-row);
+  color: var(--violet-soft);
+}
+
+.badge[data-tone='live'] {
+  background: var(--tint-live);
+  box-shadow: inset 0 0 0 1px var(--edge-live);
+  color: var(--green);
+}
+
+.badge[data-tone='attention'] {
+  background: var(--tint-pending);
+  box-shadow: inset 0 0 0 1px var(--edge-pending);
+  color: var(--pending);
+}
+
+.badge[data-tone='overdue'] {
+  background: var(--tint-overdue, var(--tint-danger));
+  box-shadow: inset 0 0 0 1px var(--edge-overdue, var(--edge-danger));
+  color: var(--overdue, var(--danger));
+}
+
+.badge[data-tone='muted'] {
+  background: transparent;
+  color: var(--text-3);
+}
+
+.badge[data-tone='muted']::before {
+  background: transparent;
+  box-shadow: inset 0 0 0 2px currentcolor;
+}

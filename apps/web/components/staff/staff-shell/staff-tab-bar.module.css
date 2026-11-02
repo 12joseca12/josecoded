@@ -1,0 +1,165 @@
+/* ref/crm crm.css «.tabbar», «.tab», «.sheet», «.more-list» */
+.bar {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: var(--z-header);
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--bg);
+  box-shadow: var(--shadow-edge-top);
+}
+
+@supports (backdrop-filter: blur(1px)) {
+  .bar {
+    background: var(--header-scrolled);
+    backdrop-filter: blur(var(--blur-header)) saturate(var(--saturate-header));
+  }
+}
+
+.tabs {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  height: var(--size-crm-tabbar-h);
+  max-width: var(--size-crm-tabbar-max);
+  margin: 0 auto;
+  padding: 0 var(--sp-1);
+  list-style: none;
+}
+
+.tabs > li {
+  display: contents;
+}
+
+.tab {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--sp-1);
+  min-height: var(--size-hit);
+  margin: var(--sp-1) var(--sp-0-5);
+  border-radius: var(--r-md);
+  color: var(--text-3);
+  font-size: var(--font-caption-size);
+  font-weight: var(--font-emphasis-weight);
+  line-height: var(--font-brand-leading);
+  user-select: none;
+  transition: color var(--dur-hover) var(--ease-standard);
+}
+
+.tab > svg {
+  font-size: var(--size-icon-lg);
+}
+
+.tab[aria-current='page'] {
+  color: var(--text);
+}
+
+.tab[aria-current='page'] > svg {
+  color: var(--violet-soft);
+}
+
+.tab:active {
+  background: var(--tint-hover);
+}
+
+/* --bp-rail: the rail takes over */
+@media (width >= 64rem) {
+  .bar,
+  .sheet,
+  .sheet[open] {
+    display: none;
+  }
+}
+
+/* The «Más» sheet: a bottom sheet that rises in --dur-card; nothing moves with reduced motion. */
+.sheet {
+  inset: auto 0 0;
+  flex-direction: column;
+  width: 100%;
+  max-width: var(--size-crm-tabbar-max);
+  max-height: var(--size-crm-sheet-max-h);
+  margin: 0 auto;
+  padding: 0;
+  border-width: 0;
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+  background: var(--overlay);
+  box-shadow: var(--shadow-overlay);
+  color: var(--text);
+  overflow-x: clip;
+  transition:
+    translate var(--dur-card) var(--ease-vt),
+    display var(--dur-card) allow-discrete,
+    overlay var(--dur-card) allow-discrete;
+}
+
+.sheet:not([open]) {
+  translate: 0 100%;
+}
+
+.sheet[open] {
+  display: flex;
+  translate: 0 0;
+}
+
+@starting-style {
+  .sheet[open] {
+    translate: 0 100%;
+  }
+}
+
+.sheet::backdrop {
+  background: var(--scrim);
+}
+
+@supports (backdrop-filter: blur(1px)) {
+  .sheet::backdrop {
+    backdrop-filter: blur(var(--blur-scrim));
+  }
+}
+
+.grabber {
+  display: block;
+  width: var(--size-crm-grabber-w);
+  height: var(--size-crm-grabber-h);
+  margin: var(--sp-2) auto 0;
+  border-radius: var(--r-pill);
+  background: var(--line-2);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-4) var(--sp-3) var(--sp-5);
+  box-shadow: var(--shadow-edge-bottom);
+}
+
+.title {
+  margin: 0 auto 0 0;
+  font-size: var(--font-title-sm-size);
+  font-weight: var(--font-title-sm-weight);
+  letter-spacing: var(--font-title-sm-tracking);
+  line-height: var(--font-title-sm-leading);
+}
+
+.closeButton {
+  display: inline-grid;
+  place-items: center;
+  width: var(--size-hit);
+  height: var(--size-hit);
+  border-radius: var(--r-md);
+  color: var(--text-2);
+}
+
+.sheetNav {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--sp-2) var(--sp-3) calc(var(--sp-4) + env(safe-area-inset-bottom));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet,
+  .tab {
+    transition: none;
+  }
+}

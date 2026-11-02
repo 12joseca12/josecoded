@@ -1,0 +1,17 @@
+.figure {
+  margin: 0;
+  font-size: var(--font-crm-figure-size);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--font-crm-figure-weight);
+  letter-spacing: var(--font-crm-figure-tracking);
+  line-height: var(--font-crm-figure-leading);
+}
+
+.figure[data-size='sm'] {
+  font-size: var(--font-figure-pack-size);
+  letter-spacing: var(--font-figure-pack-tracking);
+}
+
+.figure[data-tone='overdue'] {
+  color: var(--overdue, var(--danger));
+}

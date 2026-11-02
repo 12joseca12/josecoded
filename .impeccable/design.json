@@ -20,7 +20,8 @@
     "beam": "#5b4bff",
     "green": "#3ddc84",
     "pending": "#e9c46a",
-    "scrollbar-thumb": "#2c2660"
+    "scrollbar-thumb": "#2c2660",
+    "danger": "#ff8a7a"
   },
   "fontFamilies": {
     "sans": "\"Geist\", ui-sans-serif, system-ui, sans-serif",
@@ -174,6 +175,20 @@
     "pending": {
       "family": "mono",
       "fontSize": "0.85em"
+    },
+    "crm-title": {
+      "family": "sans",
+      "fontSize": "clamp(1.5rem, 1.1rem + 1.2vw, 2.125rem)",
+      "fontWeight": 600,
+      "lineHeight": 1.08,
+      "letterSpacing": "-0.04em"
+    },
+    "crm-figure": {
+      "family": "sans",
+      "fontSize": "clamp(2rem, 1.4rem + 2cqi, 2.75rem)",
+      "fontWeight": 600,
+      "lineHeight": 1,
+      "letterSpacing": "-0.045em"
     }
   },
   "rounded": {
@@ -245,7 +260,18 @@
     "tcard-art-max": "16rem",
     "tour-rail": "clamp(16rem, 40vw, 36rem)",
     "palette": "min(40rem, calc(100vw - 2rem))",
-    "palette-list": "22rem"
+    "palette-list": "22rem",
+    "crm-rail": "15.5rem",
+    "crm-topbar-h": "3.5rem",
+    "crm-tabbar-h": "3.75rem",
+    "crm-tabbar-max": "36rem",
+    "crm-page-max": "90rem",
+    "avatar": "1.75rem",
+    "crm-badge-h": "1.5rem",
+    "crm-grabber-w": "2.5rem",
+    "crm-grabber-h": "0.25rem",
+    "screen": "100svh",
+    "crm-sheet-max-h": "92svh"
   },
   "extensions": {
     "colorMeta": {
@@ -758,6 +784,36 @@
         "name": "opacity-disabled",
         "value": "0.5",
         "purpose": "Opacidad de un control deshabilitado (Button disabled; sin hover)."
+      },
+      {
+        "name": "tint-danger",
+        "value": "rgb(255 138 122 / 0.1)",
+        "purpose": "Fondo de lo vencido y de las acciones destructivas del CRM (propuesta A de ref/crm, provisional hasta que Jose la apruebe)."
+      },
+      {
+        "name": "edge-danger",
+        "value": "rgb(255 138 122 / 0.32)",
+        "purpose": "Filete de lo vencido y de las acciones destructivas del CRM (propuesta A)."
+      },
+      {
+        "name": "tint-pending",
+        "value": "rgb(233 196 106 / 0.1)",
+        "purpose": "Fondo de lo que espera una decisión (insignia «attention», bandas del CRM)."
+      },
+      {
+        "name": "edge-pending",
+        "value": "rgb(233 196 106 / 0.3)",
+        "purpose": "Filete de lo que espera una decisión."
+      },
+      {
+        "name": "tint-live",
+        "value": "rgb(61 220 132 / 0.1)",
+        "purpose": "Fondo de lo vivo o hecho (insignia «live», punto de Omen en línea)."
+      },
+      {
+        "name": "edge-live",
+        "value": "rgb(61 220 132 / 0.28)",
+        "purpose": "Filete de lo vivo o hecho."
       }
     ],
     "shadows": [
@@ -1167,6 +1223,11 @@
         "name": "menu",
         "value": "67.5rem",
         "purpose": "Cabecera con menú ☰."
+      },
+      {
+        "name": "rail",
+        "value": "64rem",
+        "purpose": "/crm y /admin: el raíl lateral sustituye a la barra superior e inferior."
       }
     ],
     "containers": [
@@ -1214,6 +1275,16 @@
         "name": "bento-12",
         "value": "52rem",
         "purpose": "Bento de 12 columnas."
+      },
+      {
+        "name": "crm-2",
+        "value": "40rem",
+        "purpose": "/crm y /admin: las celdas del resumen pasan a dos columnas."
+      },
+      {
+        "name": "crm-3",
+        "value": "60rem",
+        "purpose": "/crm y /admin: el resumen pasa a rejilla de doce columnas."
       }
     ],
     "gradients": [

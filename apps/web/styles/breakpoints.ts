@@ -5,6 +5,7 @@ export const bp = {
   short: '43.75rem',
   compact: '56.25rem',
   menu: '67.5rem',
+  rail: '64rem',
 } as const;
 
 export const cq = {
@@ -17,4 +18,6 @@ export const cq = {
   'packs-dividers': '40rem',
   'vias-split': '40rem',
   'bento-12': '52rem',
+  'crm-2': '40rem',
+  'crm-3': '60rem',
 } as const;

@@ -1,9 +1,115 @@
 {
   "crm": {
     "metaTitle": "CRM",
-    "placeholder": {
-      "title": "CRM",
-      "lead": "Your workspace arrives in the next delivery."
+    "adminMetaTitle": "Administration",
+    "shell": {
+      "zone": {
+        "crm": "CRM",
+        "admin": "Admin"
+      },
+      "navLabel": {
+        "crm": "CRM navigation",
+        "admin": "Administration navigation"
+      },
+      "moreGroup": "More",
+      "moreSections": "More sections",
+      "moreButton": "More",
+      "close": "Close",
+      "account": "Settings and account",
+      "overdueCount": "{count, plural, one {# overdue} other {# overdue}}",
+      "role": {
+        "admin": "Administrator",
+        "closer": "Closer · {rate}%"
+      }
+    },
+    "nav": {
+      "summary": "Summary",
+      "contacts": "Contacts",
+      "clients": "Clients",
+      "commissions": "Commissions",
+      "team": "Team",
+      "import": "Import",
+      "settings": "Settings",
+      "admin": "Administration",
+      "crm": "CRM",
+      "content": "Content",
+      "notifications": "Notifications"
+    },
+    "summary": {
+      "title": "Summary.",
+      "titleTone": {
+        "crm": "What is on your plate today.",
+        "admin": "What needs attention."
+      },
+      "lead": {
+        "closer": "{date}. Your portfolio and your commissions at a glance.",
+        "admin": "{date}. You see the whole CRM: {contacts, plural, one {# contact} other {# contacts}}."
+      },
+      "due": {
+        "title": "Overdue actions",
+        "mine": "contacts whose next action is past due.",
+        "all": "contacts whose next action is past due across the CRM.",
+        "none": "Nothing overdue right now.",
+        "cta": "See overdue",
+        "contacts": "All contacts"
+      },
+      "leads": {
+        "titleMine": "My open leads",
+        "titleAll": "Open leads",
+        "open": "Open"
+      },
+      "commissions": {
+        "titleMine": "My commissions",
+        "titleAll": "Team commissions",
+        "pending": "Waiting for approval",
+        "approved": "Approved, not paid",
+        "view": "View"
+      },
+      "stories": {
+        "title": "Stories to decide",
+        "mine": "Proposed by your clients. They are accepted with hours or rejected with a reason.",
+        "all": "Proposed by clients. They are accepted with hours or rejected with a reason.",
+        "none": "No story to decide.",
+        "link": "See clients"
+      },
+      "import": {
+        "title": "Last import",
+        "none": "You have not imported a CSV yet.",
+        "result": "{created, plural, one {# created} other {# created}} · {updated, plural, one {# updated} other {# updated}} · {skipped, plural, one {# invalid} other {# invalid}}",
+        "review": "{count} under review",
+        "again": "Import another CSV",
+        "first": "Import a CSV"
+      },
+      "team": {
+        "title": "Team",
+        "wonMonth": "Leads won this month",
+        "open": "Open leads",
+        "contacts": "Team contacts",
+        "hint": "Totals for everyone, no names."
+      }
+    },
+    "admin": {
+      "title": "Administration",
+      "omen": {
+        "online": "Omen online",
+        "offline": "Omen offline"
+      },
+      "link": "Go to Administration",
+      "counters": {
+        "chat_unread": "Unread chat threads",
+        "agencies_replied": "Agencies that replied",
+        "leads_open": "Open leads",
+        "contacts_due": "Overdue actions",
+        "comments_pending": "Comments to moderate",
+        "upgrades_pending": "Pending upgrades",
+        "rewards_pending": "Pending rewards",
+        "stories_proposed": "Proposed stories",
+        "commissions_pending": "Pending commissions",
+        "import_conflicts_pending": "Import conflicts",
+        "imports_failed_24h": "Failed imports (24 h)",
+        "content_pending": "Unpublished content",
+        "quotes_draft": "Draft quotes"
+      }
     }
   }
 }

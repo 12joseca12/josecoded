@@ -1,9 +1,115 @@
 {
   "crm": {
     "metaTitle": "CRM",
-    "placeholder": {
-      "title": "CRM",
-      "lead": "Tu espacio de trabajo llega en la siguiente entrega."
+    "adminMetaTitle": "Administración",
+    "shell": {
+      "zone": {
+        "crm": "CRM",
+        "admin": "Admin"
+      },
+      "navLabel": {
+        "crm": "Navegación del CRM",
+        "admin": "Navegación de administración"
+      },
+      "moreGroup": "Más",
+      "moreSections": "Más secciones",
+      "moreButton": "Más",
+      "close": "Cerrar",
+      "account": "Ajustes y cuenta",
+      "overdueCount": "{count, plural, one {# vencida} other {# vencidas}}",
+      "role": {
+        "admin": "Administrador",
+        "closer": "Closer · {rate} %"
+      }
+    },
+    "nav": {
+      "summary": "Resumen",
+      "contacts": "Contactos",
+      "clients": "Clientes",
+      "commissions": "Comisiones",
+      "team": "Equipo",
+      "import": "Importar",
+      "settings": "Ajustes",
+      "admin": "Administración",
+      "crm": "CRM",
+      "content": "Contenido",
+      "notifications": "Notificaciones"
+    },
+    "summary": {
+      "title": "Resumen.",
+      "titleTone": {
+        "crm": "Lo que te toca hoy.",
+        "admin": "Lo que hay que atender."
+      },
+      "lead": {
+        "closer": "{date}. Tu cartera y tus comisiones, de un vistazo.",
+        "admin": "{date}. Ves todo el CRM: {contacts, plural, one {# contacto} other {# contactos}}."
+      },
+      "due": {
+        "title": "Acciones vencidas",
+        "mine": "contactos con la siguiente acción pasada.",
+        "all": "contactos con la siguiente acción pasada en todo el CRM.",
+        "none": "Nada vencido ahora mismo.",
+        "cta": "Ver vencidas",
+        "contacts": "Todos los contactos"
+      },
+      "leads": {
+        "titleMine": "Mis leads abiertos",
+        "titleAll": "Leads abiertos",
+        "open": "Abiertos"
+      },
+      "commissions": {
+        "titleMine": "Mis comisiones",
+        "titleAll": "Comisiones del equipo",
+        "pending": "Pendientes de aprobar",
+        "approved": "Aprobadas, sin pagar",
+        "view": "Ver"
+      },
+      "stories": {
+        "title": "Historias por decidir",
+        "mine": "Propuestas por tus clientes. Se aceptan con horas o se rechazan con motivo.",
+        "all": "Propuestas por clientes. Se aceptan con horas o se rechazan con motivo.",
+        "none": "Ninguna historia por decidir.",
+        "link": "Ver clientes"
+      },
+      "import": {
+        "title": "Última importación",
+        "none": "Aún no has importado ningún CSV.",
+        "result": "{created, plural, one {# creado} other {# creados}} · {updated, plural, one {# actualizado} other {# actualizados}} · {skipped, plural, one {# inválida} other {# inválidas}}",
+        "review": "{count} en revisión",
+        "again": "Importar otro CSV",
+        "first": "Importar un CSV"
+      },
+      "team": {
+        "title": "Equipo",
+        "wonMonth": "Leads ganados este mes",
+        "open": "Leads abiertos",
+        "contacts": "Contactos del equipo",
+        "hint": "Agregados de todos, sin nombres."
+      }
+    },
+    "admin": {
+      "title": "Administración",
+      "omen": {
+        "online": "Omen en línea",
+        "offline": "Omen sin conexión"
+      },
+      "link": "Ir a Administración",
+      "counters": {
+        "chat_unread": "Hilos de chat sin leer",
+        "agencies_replied": "Agencias que han respondido",
+        "leads_open": "Leads abiertos",
+        "contacts_due": "Acciones vencidas",
+        "comments_pending": "Comentarios por moderar",
+        "upgrades_pending": "Ampliaciones pendientes",
+        "rewards_pending": "Recompensas pendientes",
+        "stories_proposed": "Historias propuestas",
+        "commissions_pending": "Comisiones pendientes",
+        "import_conflicts_pending": "Conflictos de importación",
+        "imports_failed_24h": "Importaciones fallidas (24 h)",
+        "content_pending": "Contenido sin publicar",
+        "quotes_draft": "Presupuestos en borrador"
+      }
     }
   }
 }

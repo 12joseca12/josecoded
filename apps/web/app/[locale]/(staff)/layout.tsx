@@ -1,12 +1,12 @@
-import { PageFrame } from '@/components/layout/page-frame';
 import { resolveLocale } from '@/lib/locale';
 
 import type { LocaleParams } from '@/lib/locale';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
-// Staff screens (CRM): same frame as the other private groups, never indexed. The guard lives in each page
-// and in the CRM layout (`requireStaff`), because a layout alone does not re-run on client navigation.
+// Staff screens (/crm, /admin): never indexed. They bring their own frame (`StaffShell`, with its rail and bars)
+// instead of the public header and footer. The guard lives in each page and in the layout of each zone, because a
+// layout alone does not re-run on client navigation.
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default async function StaffGroupLayout({
@@ -17,5 +17,5 @@ export default async function StaffGroupLayout({
   params: LocaleParams;
 }) {
   await resolveLocale(params);
-  return <PageFrame>{children}</PageFrame>;
+  return children;
 }

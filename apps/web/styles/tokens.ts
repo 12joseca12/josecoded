@@ -20,6 +20,7 @@ export type TokenName =
   | '--green'
   | '--pending'
   | '--scrollbar-thumb'
+  | '--danger'
   | '--font-sans'
   | '--font-mono'
   | '--font-emphasis-weight'
@@ -99,6 +100,14 @@ export type TokenName =
   | '--font-title-sm-leading'
   | '--font-title-sm-tracking'
   | '--font-pending-size'
+  | '--font-crm-title-size'
+  | '--font-crm-title-weight'
+  | '--font-crm-title-leading'
+  | '--font-crm-title-tracking'
+  | '--font-crm-figure-size'
+  | '--font-crm-figure-weight'
+  | '--font-crm-figure-leading'
+  | '--font-crm-figure-tracking'
   | '--r-kbd'
   | '--r-icon'
   | '--r-sm'
@@ -164,6 +173,17 @@ export type TokenName =
   | '--size-tour-rail'
   | '--size-palette'
   | '--size-palette-list'
+  | '--size-crm-rail'
+  | '--size-crm-topbar-h'
+  | '--size-crm-tabbar-h'
+  | '--size-crm-tabbar-max'
+  | '--size-crm-page-max'
+  | '--size-avatar'
+  | '--size-crm-badge-h'
+  | '--size-crm-grabber-w'
+  | '--size-crm-grabber-h'
+  | '--size-screen'
+  | '--size-crm-sheet-max-h'
   | '--focus-ring-width'
   | '--focus-ring-offset'
   | '--focus-ring-color'
@@ -201,6 +221,12 @@ export type TokenName =
   | '--beam-3-a'
   | '--beam-3-b'
   | '--opacity-disabled'
+  | '--tint-danger'
+  | '--edge-danger'
+  | '--tint-pending'
+  | '--edge-pending'
+  | '--tint-live'
+  | '--edge-live'
   | '--shadow-hairline'
   | '--shadow-hairline-strong'
   | '--shadow-card'
@@ -280,6 +306,7 @@ export type TokenName =
   | '--bp-short'
   | '--bp-compact'
   | '--bp-menu'
+  | '--bp-rail'
   | '--cq-card-stack'
   | '--cq-prompt-stack'
   | '--cq-list-meta'
@@ -289,6 +316,8 @@ export type TokenName =
   | '--cq-packs-dividers'
   | '--cq-vias-split'
   | '--cq-bento-12'
+  | '--cq-crm-2'
+  | '--cq-crm-3'
   | '--grad-keycap'
   | '--grad-photo'
   | '--grad-cell-tint'
@@ -387,6 +416,7 @@ export const tokens = {
   green: '--green',
   pending: '--pending',
   'scrollbar-thumb': '--scrollbar-thumb',
+  danger: '--danger',
   'font-sans': '--font-sans',
   'font-mono': '--font-mono',
   'font-emphasis-weight': '--font-emphasis-weight',
@@ -466,6 +496,14 @@ export const tokens = {
   'font-title-sm-leading': '--font-title-sm-leading',
   'font-title-sm-tracking': '--font-title-sm-tracking',
   'font-pending-size': '--font-pending-size',
+  'font-crm-title-size': '--font-crm-title-size',
+  'font-crm-title-weight': '--font-crm-title-weight',
+  'font-crm-title-leading': '--font-crm-title-leading',
+  'font-crm-title-tracking': '--font-crm-title-tracking',
+  'font-crm-figure-size': '--font-crm-figure-size',
+  'font-crm-figure-weight': '--font-crm-figure-weight',
+  'font-crm-figure-leading': '--font-crm-figure-leading',
+  'font-crm-figure-tracking': '--font-crm-figure-tracking',
   'r-kbd': '--r-kbd',
   'r-icon': '--r-icon',
   'r-sm': '--r-sm',
@@ -531,6 +569,17 @@ export const tokens = {
   'size-tour-rail': '--size-tour-rail',
   'size-palette': '--size-palette',
   'size-palette-list': '--size-palette-list',
+  'size-crm-rail': '--size-crm-rail',
+  'size-crm-topbar-h': '--size-crm-topbar-h',
+  'size-crm-tabbar-h': '--size-crm-tabbar-h',
+  'size-crm-tabbar-max': '--size-crm-tabbar-max',
+  'size-crm-page-max': '--size-crm-page-max',
+  'size-avatar': '--size-avatar',
+  'size-crm-badge-h': '--size-crm-badge-h',
+  'size-crm-grabber-w': '--size-crm-grabber-w',
+  'size-crm-grabber-h': '--size-crm-grabber-h',
+  'size-screen': '--size-screen',
+  'size-crm-sheet-max-h': '--size-crm-sheet-max-h',
   'focus-ring-width': '--focus-ring-width',
   'focus-ring-offset': '--focus-ring-offset',
   'focus-ring-color': '--focus-ring-color',
@@ -568,6 +617,12 @@ export const tokens = {
   'beam-3-a': '--beam-3-a',
   'beam-3-b': '--beam-3-b',
   'opacity-disabled': '--opacity-disabled',
+  'tint-danger': '--tint-danger',
+  'edge-danger': '--edge-danger',
+  'tint-pending': '--tint-pending',
+  'edge-pending': '--edge-pending',
+  'tint-live': '--tint-live',
+  'edge-live': '--edge-live',
   'shadow-hairline': '--shadow-hairline',
   'shadow-hairline-strong': '--shadow-hairline-strong',
   'shadow-card': '--shadow-card',
@@ -647,6 +702,7 @@ export const tokens = {
   'bp-short': '--bp-short',
   'bp-compact': '--bp-compact',
   'bp-menu': '--bp-menu',
+  'bp-rail': '--bp-rail',
   'cq-card-stack': '--cq-card-stack',
   'cq-prompt-stack': '--cq-prompt-stack',
   'cq-list-meta': '--cq-list-meta',
@@ -656,6 +712,8 @@ export const tokens = {
   'cq-packs-dividers': '--cq-packs-dividers',
   'cq-vias-split': '--cq-vias-split',
   'cq-bento-12': '--cq-bento-12',
+  'cq-crm-2': '--cq-crm-2',
+  'cq-crm-3': '--cq-crm-3',
   'grad-keycap': '--grad-keycap',
   'grad-photo': '--grad-photo',
   'grad-cell-tint': '--grad-cell-tint',

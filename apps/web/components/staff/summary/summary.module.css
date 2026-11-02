@@ -1,0 +1,46 @@
+.grid {
+  display: grid;
+  gap: var(--sp-gap-bento);
+}
+
+/* K1: one column on a phone and a tablet, twelve columns (the cells say how many they take) from --cq-crm-3 */
+@container page (min-width: 60rem) {
+  .k1 {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  .k1 > * {
+    grid-column: span 4;
+  }
+}
+
+.text {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--font-small-size);
+}
+
+.hint {
+  margin: 0;
+  color: var(--text-3);
+  font-size: var(--font-small-size);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2) var(--sp-4);
+  margin-top: var(--sp-1);
+}
+
+.result {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--font-small-size);
+  font-variant-numeric: tabular-nums;
+}
+
+.when {
+  color: var(--text-3);
+}

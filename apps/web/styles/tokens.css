@@ -19,6 +19,7 @@
   --green: #3ddc84;
   --pending: #e9c46a;
   --scrollbar-thumb: #2c2660;
+  --danger: #ff8a7a;
 
   /* fonts */
   --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
@@ -102,6 +103,14 @@
   --font-title-sm-leading: 1.15;
   --font-title-sm-tracking: -0.03em;
   --font-pending-size: 0.85em;
+  --font-crm-title-size: clamp(1.5rem, 1.1rem + 1.2vw, 2.125rem);
+  --font-crm-title-weight: 600;
+  --font-crm-title-leading: 1.08;
+  --font-crm-title-tracking: -0.04em;
+  --font-crm-figure-size: clamp(2rem, 1.4rem + 2cqi, 2.75rem);
+  --font-crm-figure-weight: 600;
+  --font-crm-figure-leading: 1;
+  --font-crm-figure-tracking: -0.045em;
 
   /* rounded */
   --r-kbd: 0.3125rem;
@@ -173,6 +182,17 @@
   --size-tour-rail: clamp(16rem, 40vw, 36rem);
   --size-palette: min(40rem, calc(100vw - 2rem));
   --size-palette-list: 22rem;
+  --size-crm-rail: 15.5rem;
+  --size-crm-topbar-h: 3.5rem;
+  --size-crm-tabbar-h: 3.75rem;
+  --size-crm-tabbar-max: 36rem;
+  --size-crm-page-max: 90rem;
+  --size-avatar: 1.75rem;
+  --size-crm-badge-h: 1.5rem;
+  --size-crm-grabber-w: 2.5rem;
+  --size-crm-grabber-h: 0.25rem;
+  --size-screen: 100svh;
+  --size-crm-sheet-max-h: 92svh;
 
   /* focus */
   --focus-ring-width: 2px;
@@ -216,6 +236,12 @@
   --beam-3-a: rgb(61 40 200 / 0.35);
   --beam-3-b: rgb(91 75 255 / 0.3);
   --opacity-disabled: 0.5;
+  --tint-danger: rgb(255 138 122 / 0.1);
+  --edge-danger: rgb(255 138 122 / 0.32);
+  --tint-pending: rgb(233 196 106 / 0.1);
+  --edge-pending: rgb(233 196 106 / 0.3);
+  --tint-live: rgb(61 220 132 / 0.1);
+  --edge-live: rgb(61 220 132 / 0.28);
 
   /* shadows */
   --shadow-hairline: inset 0 0 0 1px var(--line);
@@ -309,6 +335,7 @@
   --bp-short: 43.75rem;
   --bp-compact: 56.25rem;
   --bp-menu: 67.5rem;
+  --bp-rail: 64rem;
 
   /* containers */
   --cq-card-stack: 15rem;
@@ -320,6 +347,8 @@
   --cq-packs-dividers: 40rem;
   --cq-vias-split: 40rem;
   --cq-bento-12: 52rem;
+  --cq-crm-2: 40rem;
+  --cq-crm-3: 60rem;
 
   /* gradients */
   --grad-keycap: linear-gradient(180deg, #1f1a44, #151233);
