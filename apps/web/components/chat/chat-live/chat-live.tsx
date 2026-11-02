@@ -11,7 +11,8 @@ import { track } from '@/lib/analytics';
 import { createChatApi } from '@/lib/chat/api';
 import { initialState, reduce } from '@/lib/chat/state';
 import { accessToken } from '@/lib/chat/token';
-import { usePolling } from '@/lib/chat/use-polling';
+import { createTokenGate } from '@/lib/chat/token-gate';
+import { usePolling, type PollOutcome } from '@/lib/chat/use-polling';
 
 import styles from './chat-live.module.css';
 
@@ -20,6 +21,7 @@ import type { LeaveContactLabels, LeaveContactResult } from '@/components/chat/l
 import type { ChatCase, ChatContact, ChatFailure, ChatViewData, Locale } from '@josecoded/types';
 
 const POLL_MS = 6000;
+const TOKEN_WAIT_MS = 20_000;
 
 export interface ChatLiveLabels {
   screen: ChatScreenLabels;
@@ -56,7 +58,8 @@ export function ChatLive({
   const api = useMemo(() => createChatApi({ apiUrl, ...(signedIn ? { getToken: accessToken } : {}) }), [apiUrl, signedIn]);
   const [state, dispatch] = useReducer(reduce, initialCase, initialState);
   const [attempt, setAttempt] = useState(0);
-  const token = useRef<{ value?: string; waiters: ((value: string) => void)[] }>({ waiters: [] });
+  const [gate] = useState(createTokenGate);
+  const [pollEnded, setPollEnded] = useState(false);
   const counter = useRef(0);
   const claimed = useRef(false);
 
@@ -79,19 +82,29 @@ export function ChatLive({
   }, [api, signedIn, state.threadId]);
 
   usePolling(
-    async () => {
+    async (): Promise<PollOutcome> => {
       const result = await api.current(state.cursor);
-      if (result.status === 'ok') dispatch({ type: 'polled', ...result.data });
+      if (result.status === 'ok') {
+        dispatch({ type: 'polled', ...result.data });
+        if (result.data.thread.status === 'closed') {
+          setPollEnded(true);
+          dispatch({ type: 'failed', reason: 'closed' });
+          return 'stop';
+        }
+        return 'ok';
+      }
+      // the thread is gone or closed: nothing more to ask for; show the matching notice
+      if (result.reason === 'missing' || result.reason === 'closed') {
+        setPollEnded(true);
+        dispatch({ type: 'failed', reason: result.reason });
+        return 'stop';
+      }
+      return 'fail';
     },
-    { intervalMs: POLL_MS, enabled: state.threadId !== undefined && !state.sending },
+    { intervalMs: POLL_MS, enabled: state.threadId !== undefined && !state.sending && !pollEnded },
   );
 
-  const onToken = (value: string | null) => {
-    token.current.value = value ?? undefined;
-    if (value) token.current.waiters.splice(0).forEach((resolve) => resolve(value));
-  };
-  const waitForToken = () =>
-    token.current.value ? Promise.resolve(token.current.value) : new Promise<string>((resolve) => token.current.waiters.push(resolve));
+  const onToken = (value: string | null) => gate.set(value);
 
   const send = async (text: string) => {
     if (state.sending || state.blocked) return;
@@ -99,9 +112,15 @@ export function ChatLive({
     dispatch({ type: 'sendStarted', localId, text });
     let threadId = state.threadId;
     if (!threadId) {
-      const turnstileToken = await waitForToken();
+      const turnstileToken = await gate.wait(TOKEN_WAIT_MS);
+      if (!turnstileToken) {
+        // the check never answered or expired: leave «enviando», remount the widget and offer the retry
+        setAttempt((n) => n + 1);
+        dispatch({ type: 'sendFailed', localId, reason: 'captcha' });
+        return;
+      }
       const created = await api.createThread({ case: state.case, locale, originPath: '/chat', turnstileToken });
-      token.current.value = undefined; // single use
+      gate.clear(); // single use
       if (created.status === 'error') {
         setAttempt((n) => n + 1);
         dispatch({ type: 'sendFailed', localId, reason: created.reason });

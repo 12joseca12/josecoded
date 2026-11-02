@@ -122,11 +122,12 @@ assistantRoutes.post('/threads', async (c) => {
   return c.json(ok({ threadId: thread.id, case: thread.case, contextVersion: thread.context_version, aiEnabled: thread.ai_enabled }), 201);
 });
 
-/** GET /threads/current?after=<iso>: the visitor's (cookie) or user's (JWT) open thread with its messages. */
+/** GET /threads/current?after=<iso>: the visitor's (cookie) or user's (JWT) open thread with its messages; ~30/min per visitor (the page polls). */
 assistantRoutes.get('/threads/current', async (c) => {
   const after = parseWith(afterSchema, c.req.query('after'));
   const access = await accessOf(c);
   if (!access.visitorId && !access.userId) throw new HttpError(404, 'not_found', 'No conversation');
+  await enforceNativeLimit(c.env.ASSISTANT_READ_RATE_LIMITER, `assistant-read:${access.visitorId ?? `user:${access.userId}`}`);
   const found = await service(c).current(access, after);
   if (!found) throw new HttpError(404, 'not_found', 'No conversation');
   return c.json(ok({ thread: toThreadView(found.thread), messages: found.messages.map(toMessageView) }));

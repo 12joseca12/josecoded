@@ -464,6 +464,27 @@ describe('GET /threads/current', () => {
     expect((await req('GET', '/threads/current?after=yesterday', { headers: { cookie } })).status).toBe(400);
   });
 
+  it('the polling read is rate limited per visitor (429), never by anything the request says', async () => {
+    const { open, req } = setup();
+    const { cookie } = await open('partner');
+    const keys: string[] = [];
+    const limiter = { limit: async ({ key }: { key: string }) => (keys.push(key), { success: keys.length < 2 }) };
+    const env = { ASSISTANT_READ_RATE_LIMITER: limiter };
+    expect((await req('GET', '/threads/current', { headers: { cookie }, env })).status).toBe(200);
+    const limited = await req('GET', '/threads/current', { headers: { cookie }, env });
+    expect(limited.status).toBe(429);
+    expect(limited.headers.get('retry-after')).toBe('60');
+    expect(new Set(keys).size).toBe(1);
+    expect(keys[0]).toMatch(/^assistant-read:/);
+  });
+
+  it('a request with no identity is 404 before it touches the limiter', async () => {
+    const { req } = setup();
+    const limiter = { limit: vi.fn(async () => ({ success: true })) };
+    expect((await req('GET', '/threads/current', { env: { ASSISTANT_READ_RATE_LIMITER: limiter } })).status).toBe(404);
+    expect(limiter.limit).not.toHaveBeenCalled();
+  });
+
   it('finds the thread of a logged-in user on any device', async () => {
     const { open, req, chat } = setup();
     const { threadId } = await open('partner');

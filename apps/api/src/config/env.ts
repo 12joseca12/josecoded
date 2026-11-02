@@ -55,6 +55,7 @@ const envSchema = z.object({
   AFFILIATE_RATE_LIMITER: rateLimiterSchema,
   RADAR_RATE_LIMITER: rateLimiterSchema,
   ASSISTANT_RATE_LIMITER: rateLimiterSchema,
+  ASSISTANT_READ_RATE_LIMITER: rateLimiterSchema,
   CHAT_DAILY_THREADS_IP: z.string().regex(/^\d+$/).optional(),
   CHAT_DAILY_THREADS_ALL: z.string().regex(/^\d+$/).optional(),
   CHAT_DAILY_MESSAGES_IP: z.string().regex(/^\d+$/).optional(),

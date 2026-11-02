@@ -85,6 +85,8 @@ export type Env = {
   RADAR_RATE_LIMITER?: RateLimiterBinding;
   /** Assistant messages, keyed by visitor (task 4.4). */
   ASSISTANT_RATE_LIMITER?: RateLimiterBinding;
+  /** Assistant polling read (`GET /threads/current`), 30/min keyed by visitor. */
+  ASSISTANT_READ_RATE_LIMITER?: RateLimiterBinding;
   /** Assistant daily caps (defaults: 20 threads and 40 messages per IP, 500 threads and 2000 messages in total). */
   CHAT_DAILY_THREADS_IP?: string;
   CHAT_DAILY_THREADS_ALL?: string;

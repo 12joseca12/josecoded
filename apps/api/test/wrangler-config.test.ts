@@ -103,6 +103,11 @@ describe('wrangler.jsonc: cron and preview Worker', () => {
     expect(limiter).toMatchObject({ namespace_id: '1005', simple: { limit: 10, period: 60 } });
   });
 
+  it('declares the assistant polling-read limiter, 30 per minute per visitor (B03.y)', () => {
+    const limiter = (config.ratelimits ?? []).find((r) => r.name === 'ASSISTANT_READ_RATE_LIMITER');
+    expect(limiter).toMatchObject({ namespace_id: '1006', simple: { limit: 30, period: 60 } });
+  });
+
   it('routes every Workers AI call through an AI Gateway in every environment', () => {
     for (const [, section] of sections.filter(([name]) => name === 'top level' || name === 'env.preview')) {
       expect(String(section.vars?.AI_GATEWAY_ID ?? '')).not.toBe('');
