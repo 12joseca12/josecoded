@@ -80,8 +80,9 @@ export default async function ProjectCasePage({ params }: { params: Params }) {
 
   const challenge = datoText(texts.challenge);
   const result = datoText(texts.result);
-  const workLines = texts.work.split('\n').map((line) => line.trim()).filter(Boolean);
-  const work = isPendingDato(texts.work) ? datoText(texts.work) : null;
+  const workPending = isPendingDato(texts.work);
+  const workLines = workPending ? [] : texts.work.split('\n').map((line) => line.trim()).filter(Boolean);
+  const work = workPending ? datoText(texts.work) : null;
   const status = t(`status.${sheet.status}`);
   const url = absoluteUrl(locale, '/proyectos/[slug]', { slug });
 
