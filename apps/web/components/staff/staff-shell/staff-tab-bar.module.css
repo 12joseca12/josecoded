@@ -73,48 +73,11 @@
 
 /* The «Más» sheet: a bottom sheet that rises in --dur-card; nothing moves with reduced motion. */
 .sheet {
-  inset: auto 0 0;
-  flex-direction: column;
-  width: 100%;
+  /* the bottom sheet of the CRM, only narrower and centred */
+  /* stylelint-disable-next-line property-no-unknown -- CSS Modules keyword */
+  composes: sheet from '../../crm/sheet/sheet.module.css';
   max-width: var(--size-crm-tabbar-max);
-  max-height: var(--size-crm-sheet-max-h);
   margin: 0 auto;
-  padding: 0;
-  border-width: 0;
-  border-radius: var(--r-lg) var(--r-lg) 0 0;
-  background: var(--overlay);
-  box-shadow: var(--shadow-overlay);
-  color: var(--text);
-  overflow-x: clip;
-  transition:
-    translate var(--dur-card) var(--ease-vt),
-    display var(--dur-card) allow-discrete,
-    overlay var(--dur-card) allow-discrete;
-}
-
-.sheet:not([open]) {
-  translate: 0 100%;
-}
-
-.sheet[open] {
-  display: flex;
-  translate: 0 0;
-}
-
-@starting-style {
-  .sheet[open] {
-    translate: 0 100%;
-  }
-}
-
-.sheet::backdrop {
-  background: var(--scrim);
-}
-
-@supports (backdrop-filter: blur(1px)) {
-  .sheet::backdrop {
-    backdrop-filter: blur(var(--blur-scrim));
-  }
 }
 
 .grabber {
