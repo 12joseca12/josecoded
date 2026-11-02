@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>josecoded · estilo</title>
+  <style>
+    :root {
+      --switch-bg: rgb(20 20 24 / 0.82);
+      --switch-ink: #f2f2f2;
+      --switch-active: #f2f2f2;
+      --switch-active-ink: #0b0b0d;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      background: #0b0b0d;
+    }
+
+    .stage {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .switcher {
+      position: fixed;
+      left: 50%;
+      bottom: 1rem;
+      z-index: 1;
+      display: flex;
+      gap: 0.25rem;
+      padding: 0.25rem;
+      border: 1px solid rgb(255 255 255 / 0.14);
+      border-radius: 999px;
+      background: var(--switch-bg);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px rgb(0 0 0 / 0.35);
+      transform: translateX(-50%);
+      font: 600 0.75rem/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+      letter-spacing: 0.08em;
+    }
+
+    .switcher a {
+      display: grid;
+      place-items: center;
+      min-width: 2.75rem;
+      height: 2.75rem;
+      border-radius: 999px;
+      color: var(--switch-ink);
+      text-decoration: none;
+    }
+
+    .switcher a:hover {
+      background: rgb(255 255 255 / 0.1);
+    }
+
+    .switcher a[aria-current] {
+      background: var(--switch-active);
+      color: var(--switch-active-ink);
+    }
+
+    .switcher a:focus-visible {
+      outline: 2px solid #f2f2f2;
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="switcher" aria-label="Variante de estilo">
+    <a href="#a" data-title="Variante A: medianoche, cobalto y lima">A</a>
+    <a href="#b" data-title="Variante B: acero, carbón y coral">B</a>
+    <a href="#c" data-title="Variante C: obsidiana, cromo y carmesí">C</a>
+  </nav>
+  <iframe class="stage" src="a.html" title="Variante A: medianoche, cobalto y lima"></iframe>
+  <script src="estilo.js" type="module"></script>
+</body>
+</html>

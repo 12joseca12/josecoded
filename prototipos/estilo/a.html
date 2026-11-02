@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>josecoded · A · medianoche, cobalto y lima</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="estilo.css?v=1">
+  <link rel="stylesheet" href="a.css?v=1">
+</head>
+<body>
+  <a class="skip" href="#main">Saltar al contenido</a>
+  <div class="page">
+    <header class="nav">
+      <a class="brand" href="#">
+        <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="7" fill="var(--lime)"/><path d="M9.5 7.5 6 12l3.5 4.5M14.5 7.5 18 12l-3.5 4.5" fill="none" stroke="var(--bg)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        josecoded
+      </a>
+      <nav aria-label="Principal">
+        <ul class="nav-links">
+          <li><a href="#">Proyectos</a></li>
+          <li><a href="#">Servicios</a></li>
+          <li><a href="#">Stack</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Contacto</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <a class="nav-login" href="#">Login</a>
+        <a class="btn btn-primary btn-sm" href="#">Hablemos<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <button class="menu-button" type="button" aria-expanded="false" aria-controls="menu" aria-label="Menú">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 7h14M3 13h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <ul class="menu-panel" id="menu">
+        <li><a href="#">Proyectos</a></li>
+        <li><a href="#">Servicios</a></li>
+        <li><a href="#">Stack</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Contacto</a></li>
+        <li><a href="#">Login</a></li>
+      </ul>
+    </header>
+
+    <main class="hero" id="main">
+      <div class="hero-copy">
+        <p class="eyebrow enter" style="--i:0">Código que<br>se mueve<br>contigo</p>
+        <h1 class="headline">
+          <span class="h-script enter" style="--i:1">Apps</span>
+          <span class="h-serif enter" style="--i:2">que se sienten</span>
+          <span class="h-sans enter" style="--i:3">nativas</span>
+        </h1>
+        <p class="lead enter" style="--i:4">Soy Jose, desarrollador full stack centrado en React Native. Diseño y construyo apps móviles, webs e IA propia, de la idea a la tienda.</p>
+        <div class="ctas enter" style="--i:5">
+          <a class="btn btn-primary" href="#">Pide propuesta<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <a class="btn-ghost" href="#"><span class="play"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1l7 4-7 4z" fill="currentColor"/></svg></span>Ver<br>proyectos</a>
+        </div>
+      </div>
+
+      <div class="hero-visual enter-visual" aria-hidden="true">
+        <div class="bloom">
+          <div class="petal" style="--r:-74deg;--d:0.55"></div>
+          <div class="petal" style="--r:74deg;--d:0.55"></div>
+          <div class="petal" style="--r:-50deg;--d:0.72"></div>
+          <div class="petal" style="--r:50deg;--d:0.72"></div>
+          <div class="petal" style="--r:-26deg;--d:0.88"></div>
+          <div class="petal" style="--r:26deg;--d:0.88"></div>
+          <div class="petal petal-back" style="--r:0deg;--d:1"></div>
+        </div>
+        <div class="glow"></div>
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="ui">
+              <div class="ui-top"><span>Hoy</span><span class="ui-pill">Sync</span></div>
+              <div class="ring">
+                <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" class="ring-track"/><circle cx="50" cy="50" r="42" class="ring-fill"/></svg>
+                <div class="ring-label"><strong>82%</strong><span>sprint</span></div>
+              </div>
+              <div class="ui-row"><i></i><span class="ui-bar" style="width:62%"></span><em>iOS</em></div>
+              <div class="ui-row"><i></i><span class="ui-bar" style="width:48%"></span><em>Android</em></div>
+              <div class="ui-row"><i></i><span class="ui-bar" style="width:56%"></span><em>Web</em></div>
+              <div class="ui-cta">Publicar build</div>
+            </div>
+          </div>
+        </div>
+        <div class="chat">
+          <span class="chat-dot"></span>
+          <p><b>IA · Omen</b>Build 1.4 lista en TestFlight. ¿La envío al cliente?</p>
+        </div>
+        <div class="code">
+          <span><em>const</em> app = <strong>createApp</strong>(&#123;</span>
+          <span>&nbsp;&nbsp;platforms: [<q>ios</q>, <q>android</q>, <q>web</q>],</span>
+          <span>&nbsp;&nbsp;fps: <strong>60</strong>,</span>
+          <span>&#125;)</span>
+        </div>
+      </div>
+
+      <aside class="side-notes" aria-label="Notas">
+        <p>iOS, Android<br>y web<br>desde un código</p>
+        <p>IA alojada<br>en servidor<br>propio</p>
+      </aside>
+
+      <dl class="stats enter" style="--i:6">
+        <div class="stat"><dt>Animaciones<br>nativas</dt><dd>60 fps</dd></div>
+        <div class="stat"><dt>iOS, Android<br>y web</dt><dd>1 código</dd></div>
+        <div class="stat"><dt>Servidor<br>propio</dt><dd>IA local</dd></div>
+      </dl>
+    </main>
+  </div>
+  <script src="estilo.js" type="module"></script>
+</body>
+</html>

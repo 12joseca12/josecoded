@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>josecoded · C · obsidiana, cromo y carmesí</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100,400;100,500;125,500;125,600;125,700&family=Geist+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="estilo.css?v=1">
+  <link rel="stylesheet" href="c.css?v=1">
+</head>
+<body>
+  <a class="skip" href="#main">Saltar al contenido</a>
+  <div class="page">
+    <header class="nav">
+      <a class="brand" href="#">
+        <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.5" fill="none" stroke="var(--chrome)" stroke-width="1.2"/><circle cx="12" cy="12" r="4" fill="var(--crimson)"/></svg>
+        josecoded
+      </a>
+      <nav aria-label="Principal">
+        <ul class="nav-links">
+          <li><a href="#">Proyectos</a></li>
+          <li><a href="#">Servicios</a></li>
+          <li><a href="#">Stack</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Contacto</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <a class="nav-login" href="#">Login</a>
+        <a class="btn btn-primary btn-sm" href="#">Hablemos<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <button class="menu-button" type="button" aria-expanded="false" aria-controls="menu" aria-label="Menú">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 7h14M3 13h9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <ul class="menu-panel" id="menu">
+        <li><a href="#">Proyectos</a></li>
+        <li><a href="#">Servicios</a></li>
+        <li><a href="#">Stack</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Contacto</a></li>
+        <li><a href="#">Login</a></li>
+      </ul>
+    </header>
+
+    <main class="hero" id="main">
+      <div class="hero-copy">
+        <p class="eyebrow enter" style="--i:0">Idea<br>Código<br>Producción<br>IA propia</p>
+        <h1 class="headline">
+          <span class="enter" style="--i:1">Interfaces</span>
+          <span class="h-accent enter" style="--i:2">nativas</span>
+          <span class="enter" style="--i:3">con IA</span>
+        </h1>
+        <p class="lead enter" style="--i:4">Apps React Native, webs y asistentes de IA alojados en servidor propio. Diseñados, construidos y mantenidos por Jose.</p>
+        <div class="ctas enter" style="--i:5">
+          <a class="btn btn-primary" href="#">Pide propuesta<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <a class="btn-ghost" href="#"><span class="play"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1l7 4-7 4z" fill="currentColor"/></svg></span>Ver proyectos</a>
+        </div>
+      </div>
+
+      <div class="hero-visual enter-visual" aria-hidden="true">
+        <div class="orb"></div>
+        <div class="flare"></div>
+        <div class="code">
+          <div class="code-head"><i></i><i></i><i></i><span>omen/assistant.ts</span></div>
+          <span><em>const</em> reply = <em>await</em> omen.ai.<strong>chat</strong>(&#123;</span>
+          <span>&nbsp;&nbsp;model: <q>local</q>,</span>
+          <span>&nbsp;&nbsp;context: project.<strong>stories</strong>,</span>
+          <span>&nbsp;&nbsp;stream: <em>true</em>,</span>
+          <span>&#125;)</span>
+        </div>
+        <div class="chrome-phone">
+          <div class="phone">
+            <div class="phone-screen">
+              <div class="ui">
+                <div class="ui-head"><span class="ui-live"></span>Asistente<em>Omen</em></div>
+                <div class="msg msg-user">¿Cómo va mi app?</div>
+                <div class="msg msg-ai">Sprint 4 al 82&nbsp;%. Login y pagos en revisión; la build de iOS sale el jueves.</div>
+                <div class="ui-task"><span>Build iOS 1.4</span><em>TestFlight</em><b><i></i></b></div>
+                <div class="msg msg-user">Envíame el enlace cuando esté.</div>
+                <div class="wave"><i style="--h:30%"></i><i style="--h:70%"></i><i style="--h:45%"></i><i style="--h:90%"></i><i style="--h:55%"></i><i style="--h:75%"></i><i style="--h:35%"></i><i style="--h:60%"></i><i style="--h:25%"></i><i style="--h:50%"></i><i style="--h:80%"></i><i style="--h:40%"></i></div>
+                <div class="ui-input"><span>Pregunta algo…</span><i></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <dl class="stats enter" style="--i:6">
+        <div class="stat"><dt>iOS y Android</dt><dd>React Native</dd></div>
+        <div class="stat"><dt>Webs y paneles</dt><dd>Next.js</dd></div>
+        <div class="stat"><dt>Servidor propio</dt><dd>IA local</dd></div>
+      </dl>
+    </main>
+  </div>
+  <script src="estilo.js" type="module"></script>
+</body>
+</html>
