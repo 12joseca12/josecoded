@@ -109,12 +109,12 @@ test.describe('material', () => {
     await page.locator('input[type="file"][name="file"]').setInputFiles({ name, mimeType: 'application/pdf', buffer: Buffer.alloc(10_240, 0x20) });
     await page.getByRole('button', { name: 'Subir archivo' }).click();
     await expect(page.getByText('Archivo subido.')).toBeVisible();
-    await expect(page.getByRole('button', { name: `Descargar ${name}` })).toBeVisible();
+    await expect(page.getByRole('link', { name: `Descargar ${name}` })).toBeVisible();
     await expectNoSeriousViolations(page);
 
     const [download] = await Promise.all([
       page.waitForEvent('download'),
-      page.getByRole('button', { name: `Descargar ${name}` }).click(),
+      page.getByRole('link', { name: `Descargar ${name}` }).click(),
     ]);
     expect(download.suggestedFilename()).toBe(name);
   });
@@ -124,7 +124,8 @@ test.describe('material', () => {
     await page.goto('/area-clientes/material');
     await page.locator('input[type="file"][name="file"]').setInputFiles({ name: 'logo.svg', mimeType: 'image/svg+xml', buffer: Buffer.from('<svg/>') });
     await page.getByRole('button', { name: 'Subir archivo' }).click();
-    await expect(page.getByRole('alert')).toContainText('no se admite');
+    // not a bare getByRole('alert'): the Next route announcer is a second live region with that role
+    await expect(page.getByRole('alert').filter({ hasText: 'no se admite' })).toBeVisible();
   });
 
   test("another user has no material section and cannot list Ana's folder in the bucket", async ({ page, context, baseURL }) => {
