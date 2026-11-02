@@ -94,8 +94,8 @@ select t.ok(not exists (select 1 from information_schema.role_table_grants
             'catalogue, commissions, imports and content history: no write grant for authenticated (RPC only)');
 select t.ok((select string_agg(column_name, ',' order by column_name) from information_schema.column_privileges
              where grantee = 'authenticated' and table_schema = 'public' and table_name = 'custom_quotes'
-               and privilege_type = 'UPDATE') = 'lead_id,notes,status,title,valid_until',
-            'custom_quotes: update only title, lead_id, status, valid_until, notes (discount and totals are RPC)');
+               and privilege_type = 'UPDATE') = 'notes,title,valid_until',
+            'custom_quotes: update only title, valid_until, notes (status, lead, discount and totals are RPC)');
 select t.ok((select string_agg(column_name, ',' order by column_name) from information_schema.column_privileges
              where grantee = 'authenticated' and table_schema = 'public' and table_name = 'client_user_stories'
                and privilege_type = 'UPDATE') = 'acceptance_criteria,as_a,i_want,so_that,sort,title',
@@ -119,10 +119,10 @@ select t.ok(not exists (
     and not exists (select 1 from pg_index i where i.indrelid = k.conrelid
                       and (i.indkey::int2[])[0:array_length(k.conkey, 1) - 1] = k.conkey)),
   'every foreign key in public is covered by an index (P4), the new ones included');
-select t.ok((select count(*) from public.notification_rules) = 26
+select t.ok((select count(*) from public.notification_rules) = 27
             and (select count(*) from public.notification_rules where event = 'comment.client') = 2
             and not exists (select 1 from public.notification_rules where enabled is not true),
-            'notification_rules: the 26 seeded rules of DATOS §14.6 plus the existing events and comment.client');
+            'notification_rules: the 27 seeded rules (DATOS §14.6, the existing events, comment.client and lead.owner_collision)');
 select t.ok((select count(*) from private.scheduled_jobs where name in ('content.poll_deploy', 'telegram.poll_updates')) = 2,
             'scheduled_jobs: content.poll_deploy and telegram.poll_updates');
 select t.ok((select string_agg(c, ',' order by c) from (
@@ -157,7 +157,7 @@ select t.ok(t.n('select user_id from public.staff_members') = 3 and t.n('select 
             and t.n('select id from public.custom_quote_items') = 2,
             'jose: staff, invitations, imports, commissions, stories and quotes');
 select t.ok(t.n('select id from public.site_content_entries') = 2 and t.n('select id from public.site_content_versions') = 2
-            and t.n('select id from public.notification_rules') = 26 and t.n('select id from public.pricing_price_history') > 0,
+            and t.n('select id from public.notification_rules') = 27 and t.n('select id from public.pricing_price_history') > 0,
             'jose: content entries and versions, notification rules and the price history');
 select t.ok(t.err('select existing_contact_id from public.crm_import_conflicts') like '42501 %'
             and t.n('select id from public.crm_import_conflicts') = 1
@@ -326,7 +326,7 @@ select t.ok(t.err($q$select public.crm_request_close('00000000-0000-4000-8000-00
 select t.ok(t.err($q$select public.crm_request_close('00000000-0000-4000-8000-000000000301')$q$) = '42501 forbidden'
             and t.err($q$select public.crm_request_close('00000000-0000-4000-8000-000000000310')$q$) = '22023 lead_not_open',
             'carla cannot request the close of Jose''s lead (forbidden) nor of one already won');
-select t.ok(t.err($q$select public.invite_client_access('00000000-0000-4000-8000-000000000410', 'portal@example.test')$q$) is null
+select t.ok(t.err($q$select public.invite_client_access('00000000-0000-4000-8000-000000000410', 'cliente-carla@example.test')$q$) is null
             and t.err($q$select public.invite_client_access('00000000-0000-4000-8000-000000000401', 'x@example.test')$q$) = '42501 forbidden'
             and t.err($q$select public.invite_client_access('00000000-0000-4000-8000-000000000410', 'sin-arroba')$q$) = '22023 invalid_email',
             'carla invites her client to the portal; Ana''s client is forbidden; a bad email is refused');
@@ -336,9 +336,9 @@ select t.ok(t.val('select length(public.staff_telegram_begin())') = '8'
 reset role;
 select t.ok((select count(*) from private.outbox where event = 'lead.close_requested' and payload ->> 'owner_id' = '00000000-0000-4000-8000-0000000000a5') = 1
             and (select count(*) from private.outbox where event = 'client.invited'
-                  and payload ->> 'client_id' = '00000000-0000-4000-8000-000000000410' and payload ->> 'email' = 'portal@example.test') = 1
-            and (select invite_email::text from public.clients where id = '00000000-0000-4000-8000-000000000410') = 'portal@example.test'
-            and (select count(*) from public.crm_interactions where contact_id = '00000000-0000-4000-8000-000000000210' and kind = 'client_invited') = 1,
+                  and payload ->> 'client_id' = '00000000-0000-4000-8000-000000000410' and payload ->> 'email' = 'cliente-carla@example.test') = 1
+            and (select invite_email::text from public.clients where id = '00000000-0000-4000-8000-000000000410') = 'cliente-carla@example.test'
+            and (select count(*) from public.crm_interactions where contact_id = '00000000-0000-4000-8000-000000000210' and kind = 'client_invited' and actor = 'closer') = 1,
             'outbox lead.close_requested (with the owner) and client.invited; invite_email stored; timeline entry');
 rollback;
 
@@ -387,8 +387,8 @@ select t.ok(t.n('select id from public.staff_invites') = 0 and t.n('select id fr
             and t.n('select id from public.site_content_entries') = 0 and t.n('select id from public.notification_rules') = 0
             and t.n('select user_id from public.staff_members') = 0 and t.n('select id from public.crm_import_conflicts') = 0,
             'ana: 0 rows of invitations, imports, commissions, quotes, content, rules and staff');
-select t.ok(t.n('select code from public.packs') = 6 and t.n('select code from public.extras') = 6,
-            'ana reads the catalogue (area): packs and extras');
+select t.ok(t.n('select code from public.packs') = 5 and t.n('select code from public.extras') = 6,
+            'ana reads the visible catalogue (area): 5 packs (the hidden one is not hers) and 6 extras');
 select t.ok(t.err($q$update public.packs set price = 1 where code = 'P2'$q$) like '42501 %'
             and t.err('select public.pricing_catalog_snapshot()') = '42501 forbidden'
             and t.err('select public.staff_telegram_begin()') = '42501 forbidden'
@@ -400,8 +400,8 @@ select t.ok(t.val('select count(*) from public.area_client()') = '1'
             and t.val('select project_phase::text from public.area_client()') = 'build',
             'ana: area_client() returns her own client row');
 set local request.jwt.claims = :'bob';
-select t.ok(t.val('select count(*) from public.area_client()') = '0' and t.n('select code from public.packs') = 6,
-            'bob: area_client() returns nothing; he still reads the catalogue');
+select t.ok(t.val('select count(*) from public.area_client()') = '0' and t.n('select code from public.packs') = 5,
+            'bob: area_client() returns nothing; he still reads the visible catalogue (5 packs)');
 reset role;
 set local role anon;
 select t.ok(t.err('select public.area_client()') like '42501 %' and t.err('select public.pricing_published()') like '42501 %'
@@ -623,6 +623,9 @@ insert into public.leads (id, contact_id, status, source, via, pack_code, idempo
   ('00000000-0000-4000-8000-000000000320', '00000000-0000-4000-8000-000000000230', 'open', 'manual', 'client', 'P1', 'k:ca'),
   ('00000000-0000-4000-8000-000000000321', '00000000-0000-4000-8000-000000000201', 'open', 'manual', 'client', 'P1', 'k:marta2'),
   ('00000000-0000-4000-8000-000000000322', '00000000-0000-4000-8000-000000000220', 'open', 'manual', 'client', 'P1', 'k:dani');
+-- Commission without p_commission only for leads the owner closer opened (created_by): these three were opened by their closers.
+update public.leads set created_by = '00000000-0000-4000-8000-0000000000a5' where id in ('00000000-0000-4000-8000-000000000311', '00000000-0000-4000-8000-000000000320');
+update public.leads set created_by = '00000000-0000-4000-8000-0000000000a6' where id = '00000000-0000-4000-8000-000000000322';
 set local role authenticated;
 set local request.jwt.claims = :'jose';
 select t.ok(t.err($q$select public.admin_close_lead_paid('00000000-0000-4000-8000-000000000311', 1400, now(), false)$q$) is null
@@ -809,7 +812,7 @@ rollback;
 begin;
 set local role authenticated;
 set local request.jwt.claims = :'jose';
-select t.ok(t.n('select id from public.notification_rules') = 26 and t.affected($q$update public.notification_rules set enabled = false where event = 'quote.sent'$q$) = 1
+select t.ok(t.n('select id from public.notification_rules') = 27 and t.affected($q$update public.notification_rules set enabled = false where event = 'quote.sent'$q$) = 1
             and t.err($q$insert into public.notification_rules (event, recipient, channel) values ('quote.sent', 'staff_user', 'telegram')$q$) like '23514 %'
             and t.err($q$insert into public.notification_rules (event, recipient, channel) values ('lead.created', 'admin', 'telegram')$q$) like '23505 %',
             'admin edits rules; staff_user needs a recipient and a rule is unique');

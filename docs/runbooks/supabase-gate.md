@@ -123,6 +123,18 @@ de `redactor`, que solo corre en el Mac: **pasar los cinco por `redactor` antes 
 - [ ] El bucket `client-assets` existe (lo creó la migración) y es privado; límite 25 MiB y lista de MIME explícita
       (nunca `image/*`, DATOS §8.3).
 - [ ] Con la cuenta de Jose: subir un fichero de prueba, descargarlo con URL firmada de 60 s y borrarlo.
+- [ ] **El trigger sobre `storage.objects` dispara.** La migración `20261101100300` crea `client_assets_object_uploaded`
+      (`after insert on storage.objects`, bucket `client-assets`), que encola `asset.uploaded`. Supabase hospeda
+      `storage.objects` con otro propietario y la migración corre como `postgres`: no se ha probado fuera de la plataforma
+      (la prueba local de `supabase/test/pg` usa un `storage.objects` emulado). Comprobar tras subir el fichero de prueba:
+      1. `select tgname, tgenabled from pg_trigger where tgrelid = 'storage.objects'::regclass and not tgisinternal;`
+         lista `client_assets_object_uploaded` con `tgenabled = 'O'` (si el `create trigger` falló en `db push`, no estará).
+      2. Subir con la cuenta de un cliente de prueba (no la de Jose) y mirar `select event, payload from private.outbox
+         where event = 'asset.uploaded' order by id desc limit 1;`: debe aparecer una fila con ese `file_name`.
+      **Plan B si no dispara o la plataforma no deja crear el trigger:** el cliente llama a un RPC tras subir (`client_asset_register(p_path)`
+      invoker sobre un `private.*_impl` definer que comprueba que el objeto existe en `storage.objects` y que la fila de
+      `client_assets` es suya, y encola `asset.uploaded` una sola vez), y `storage_client_asset_uploaded()` se queda como
+      segunda vía idempotente. Se abre como tarea nueva (migración aditiva, con OK de Jose). No dar por cerrado el paso 8 sin una de las dos vías.
 
 ## 8. Secretos y variables (paso 9)
 

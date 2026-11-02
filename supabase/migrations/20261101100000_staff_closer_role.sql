@@ -13,3 +13,7 @@ alter type public.interaction_kind add value if not exists 'client_invited';
 alter type public.interaction_kind add value if not exists 'story_proposed';
 alter type public.interaction_kind add value if not exists 'story_decided';
 alter type public.interaction_kind add value if not exists 'commission';
+
+-- Security review 1.8e: what a closer writes by hand is marked as his own (interactions and drafts), never as Jose or the AI.
+alter type public.interaction_actor add value if not exists 'closer';
+alter type public.draft_author add value if not exists 'closer';

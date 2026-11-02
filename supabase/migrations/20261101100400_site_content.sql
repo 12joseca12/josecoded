@@ -40,7 +40,11 @@ create table public.site_content_entries (
   published_by     uuid references auth.users (id) on delete set null,
   created_at       timestamptz not null default now(),
   updated_at       timestamptz not null default now(),
-  constraint site_content_entries_locale check ((kind in ('settings', 'project')) = (locale is null))
+  constraint site_content_entries_locale check ((kind in ('settings', 'project')) = (locale is null)),
+  -- A blog key becomes a file name in the repo (content/blog/<key>.<locale>.md): slug only. The size caps keep a
+  -- draft (or a published value) from filling the table or the snapshot.
+  constraint site_content_entries_key check (char_length(key) <= 200 and (kind <> 'blog_post' or key ~ '^[a-z0-9-]{1,80}$')),
+  constraint site_content_entries_size check (octet_length(draft::text) < 204800 and octet_length(published::text) < 204800)
 );
 alter table public.site_content_entries enable row level security;
 -- One entry per (kind, key, locale); two partial indexes because locale::text is not immutable for an index expression.
@@ -56,7 +60,11 @@ create policy site_content_entries_insert on public.site_content_entries for ins
 create policy site_content_entries_update on public.site_content_entries for update to authenticated
   using ((select private.is_admin())) with check ((select private.is_admin()));
 create policy site_content_entries_delete on public.site_content_entries for delete to authenticated using ((select private.is_admin()));
-grant select, insert, update, delete on public.site_content_entries to authenticated;
+-- published, its version and its audit columns are never written with a JWT, not even the admin's: content_publish()
+-- and content_rollback() (definer) are the only way to a published value. The draft can be edited directly.
+grant select, delete on public.site_content_entries to authenticated;
+grant insert (kind, key, locale, draft) on public.site_content_entries to authenticated;
+grant update (draft) on public.site_content_entries to authenticated;
 
 create table public.site_content_versions (
   id             uuid primary key default gen_random_uuid(),

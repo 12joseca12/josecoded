@@ -225,23 +225,37 @@ create policy clients_select on public.clients for select to authenticated
   using (user_id = (select auth.uid()) or (select private.is_admin()) or (select private.owns_client(id)));
 
 -- Habilitar acceso al portal (K3/K6): puts the email on a client without access and asks the gateway for the invitation.
+-- The invitation goes to the email of the contact (crm_contacts.email); an empty p_email means exactly that. A different
+-- address is the admin's decision (a client that changed address), never a closer's: otherwise a closer could invite
+-- himself into the portal of his client. An address that belongs to a staff member is never invited.
 create or replace function private.invite_client_access_impl(p_client_id uuid, p_email extensions.citext) returns void
 language plpgsql security definer set search_path = '' as $$
 declare
   v_client  public.clients;
   v_locale  public.locale;
+  v_contact extensions.citext;
   v_email   extensions.citext := nullif(btrim(p_email::text), '')::extensions.citext;
 begin
   select * into v_client from public.clients c where c.id = p_client_id;
   if v_client.id is null then raise exception 'client_not_found' using errcode = 'P0002'; end if;
   if not (private.is_admin() or private.owns_client(p_client_id)) then raise exception 'forbidden' using errcode = '42501'; end if;
-  if v_email is null or position('@' in v_email::text) = 0 then raise exception 'invalid_email' using errcode = '22023'; end if;
   if v_client.user_id is not null then raise exception 'client_already_has_access' using errcode = '22023'; end if;
 
+  select nullif(btrim(c.email::text), '')::extensions.citext, coalesce(c.locale, 'es') into v_contact, v_locale
+    from public.crm_contacts c where c.id = v_client.contact_id;
+  v_email := coalesce(v_email, v_contact);
+  if v_email is null or position('@' in v_email::text) = 0 then raise exception 'invalid_email' using errcode = '22023'; end if;
+  if v_email is distinct from v_contact and not private.is_admin() then
+    raise exception 'email_must_match_contact' using errcode = '42501';
+  end if;
+  if exists (select 1 from auth.users u join public.staff_members s on s.user_id = u.id
+              where u.email::extensions.citext operator(extensions.=) v_email) then
+    raise exception 'email_is_staff' using errcode = '22023';
+  end if;
+
   update public.clients set invite_email = v_email where id = p_client_id;
-  select coalesce(c.locale, 'es') into v_locale from public.crm_contacts c where c.id = v_client.contact_id;
   insert into public.crm_interactions (contact_id, kind, direction, actor, payload)
-  values (v_client.contact_id, 'client_invited', 'internal', 'jose', jsonb_build_object('client_id', p_client_id));
+  values (v_client.contact_id, 'client_invited', 'internal', private.staff_actor(), jsonb_build_object('client_id', p_client_id));
   perform private.enqueue('client.invited', jsonb_build_object(
     'client_id', p_client_id, 'email', v_email::text, 'locale', v_locale));
 end $$;

@@ -54,12 +54,43 @@ create index idx_extras_public on public.extras (sort) where deleted_at is null 
 
 -- Everybody who may use the area reads the catalogue (the client sees its own pack even when it is hidden or deleted);
 -- only a disabled staff member sees nothing.
+-- Security review: hidden and deleted items are for the staff and for the client that bought them, not for any account.
+create or replace function private.client_has_pack(p_code text) returns boolean
+language sql stable security definer set search_path = '' as $$
+  select exists (select 1 from public.clients c where c.user_id = (select auth.uid()) and c.pack_code = p_code)
+$$;
+revoke all on function private.client_has_pack(text) from public, anon, authenticated;
+grant execute on function private.client_has_pack(text) to authenticated;
+
+create or replace function private.client_has_pack_option(p_pack_code text, p_code text) returns boolean
+language sql stable security definer set search_path = '' as $$
+  select exists (select 1 from public.clients c
+                  where c.user_id = (select auth.uid()) and c.pack_code = p_pack_code and c.pack_option = p_code)
+$$;
+revoke all on function private.client_has_pack_option(text, text) from public, anon, authenticated;
+grant execute on function private.client_has_pack_option(text, text) to authenticated;
+
+create or replace function private.client_has_extra(p_code text) returns boolean
+language sql stable security definer set search_path = '' as $$
+  select exists (select 1 from public.client_extras e join public.clients c on c.id = e.client_id
+                  where c.user_id = (select auth.uid()) and e.extra_code = p_code)
+$$;
+revoke all on function private.client_has_extra(text) from public, anon, authenticated;
+grant execute on function private.client_has_extra(text) to authenticated;
+
 drop policy packs_select on public.packs;
-create policy packs_select on public.packs for select to authenticated using (not (select private.is_disabled_staff()));
+create policy packs_select on public.packs for select to authenticated
+  using (not (select private.is_disabled_staff())
+         and ((visible and deleted_at is null) or (select private.is_staff()) or (select private.client_has_pack(code))));
 drop policy pack_options_select on public.pack_options;
-create policy pack_options_select on public.pack_options for select to authenticated using (not (select private.is_disabled_staff()));
+create policy pack_options_select on public.pack_options for select to authenticated
+  using (not (select private.is_disabled_staff())
+         and ((visible and deleted_at is null) or (select private.is_staff())
+              or (select private.client_has_pack_option(pack_code, code))));
 drop policy extras_select on public.extras;
-create policy extras_select on public.extras for select to authenticated using (not (select private.is_disabled_staff()));
+create policy extras_select on public.extras for select to authenticated
+  using (not (select private.is_disabled_staff())
+         and ((visible and deleted_at is null) or (select private.is_staff()) or (select private.client_has_extra(code))));
 
 -- 2) Rates and publication state (one row).
 create table public.pricing_settings (
@@ -236,8 +267,23 @@ create policy custom_quotes_update on public.custom_quotes for update to authent
 create policy custom_quotes_delete on public.custom_quotes for delete to authenticated
   using ((select private.is_admin()) and status = 'draft');
 grant select, delete on public.custom_quotes to authenticated;
-grant insert (contact_id, lead_id, title, valid_until, notes) on public.custom_quotes to authenticated;
-grant update (title, lead_id, status, valid_until, notes) on public.custom_quotes to authenticated;
+-- status and lead_id are not granted either: the state machine and the lead of a quote move only through the RPCs
+-- (quote_create checks that the lead belongs to the contact; quote_mark_sent and quote_decide own the transitions).
+grant insert (contact_id, title, valid_until, notes) on public.custom_quotes to authenticated;
+grant update (title, valid_until, notes) on public.custom_quotes to authenticated;
+
+-- Defence in depth for the grant above: a status change through the API role is refused whatever the grants become.
+create or replace function private.custom_quotes_status_guard() returns trigger
+language plpgsql set search_path = '' as $$
+begin
+  if current_user = 'authenticated' and (new.status is distinct from old.status or new.lead_id is distinct from old.lead_id) then
+    raise exception 'quote status and lead change only through the quote RPCs' using errcode = '42501';
+  end if;
+  return new;
+end $$;
+revoke all on function private.custom_quotes_status_guard() from public, anon, authenticated;
+create trigger custom_quotes_status_guard before update on public.custom_quotes
+  for each row execute function private.custom_quotes_status_guard();
 
 create policy custom_quote_items_select on public.custom_quote_items for select to authenticated
   using ((select private.is_admin()) or (select private.owns_quote(quote_id)));
@@ -554,7 +600,7 @@ begin
   values (p_contact_id, p_lead_id, btrim(p_title), (select s.pricing_version from public.pricing_settings s), (select auth.uid()))
   returning id into v_id;
   insert into public.crm_interactions (contact_id, kind, direction, actor, lead_id, body, payload)
-  values (p_contact_id, 'note', 'internal', 'jose', p_lead_id, 'presupuesto creado', jsonb_build_object('quote_id', v_id));
+  values (p_contact_id, 'note', 'internal', private.staff_actor(), p_lead_id, 'presupuesto creado', jsonb_build_object('quote_id', v_id));
   return v_id;
 end $$;
 revoke all on function private.quote_create_impl(uuid, text, uuid) from public, anon, authenticated;
@@ -647,7 +693,7 @@ begin
   update public.custom_quotes set status = 'sent', sent_at = now() where id = q.id;
   select c.owner_id into v_owner from public.crm_contacts c where c.id = q.contact_id;
   insert into public.crm_interactions (contact_id, kind, channel, direction, actor, lead_id, payload)
-  values (q.contact_id, 'message_sent', 'other', 'out', 'jose', q.lead_id, jsonb_build_object('quote_id', q.id, 'total', q.total));
+  values (q.contact_id, 'message_sent', 'other', 'out', private.staff_actor(), q.lead_id, jsonb_build_object('quote_id', q.id, 'total', q.total));
   perform private.enqueue('quote.sent', jsonb_build_object(
     'quote_id', q.id, 'contact_id', q.contact_id, 'owner_id', v_owner, 'total', q.total));
 end $$;

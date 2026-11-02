@@ -30,6 +30,12 @@ alter table public.crm_contacts
 create index idx_crm_contacts_owner on public.crm_contacts (owner_id) where archived_at is null;
 create index idx_crm_contacts_owner_next on public.crm_contacts (owner_id, next_action_at) where archived_at is null;
 
+-- leads.created_by: who inserted the lead through the API (set by the guard trigger below, never by the caller). Null for
+-- the gateway and the definer RPCs (web, chat, cal.com): only a lead originated by the closer earns him a commission
+-- without Jose saying so (admin_close_lead_paid, 20261101100700).
+alter table public.leads add column created_by uuid references auth.users (id) on delete set null;
+create index idx_leads_created_by on public.leads (created_by);
+
 -- 2) Helpers (DATOS §14.3). The aal2 check is one function so the three roles share it.
 create or replace function private.is_aal2() returns boolean
 language sql stable set search_path = '' as $$
@@ -98,6 +104,34 @@ create or replace function private.closer_status_allowed(p_status text) returns 
 language sql immutable set search_path = '' as $$ select p_status not in ('won', 'active_client') $$;
 revoke all on function private.closer_status_allowed(text) from public, anon, authenticated;
 grant execute on function private.closer_status_allowed(text) to authenticated, service_role;
+
+-- The actor a staff member leaves in the timeline: the admin is «jose», a closer is «closer» (never Jose's name).
+create or replace function private.staff_actor() returns public.interaction_actor
+language sql stable security definer set search_path = '' as $$
+  select case when private.is_admin() then 'jose' else 'closer' end::public.interaction_actor
+$$;
+revoke all on function private.staff_actor() from public, anon, authenticated;
+grant execute on function private.staff_actor() to authenticated;
+
+-- Daily quota of contacts a closer creates (direct insert and CSV import share it): squatting emails in bulk is capped.
+-- Counts for the caller only (auth.uid()): nobody can burn another closer's quota. The admin does not call it.
+create or replace function private.closer_contact_quota_hit() returns void
+language plpgsql security definer set search_path = '' as $$
+declare
+  v_uid   uuid := (select auth.uid());
+  v_count integer;
+begin
+  if v_uid is null then return; end if;
+  insert into private.quota_counters as q (key, count, expires_at)
+  values ('closer_contacts:' || v_uid::text, 1, now() + interval '1 day')
+  on conflict (key) do update set
+    count      = case when q.expires_at <= now() then 1 else q.count + 1 end,
+    expires_at = case when q.expires_at <= now() then now() + interval '1 day' else q.expires_at end
+  returning q.count into v_count;
+  if v_count > 500 then raise exception 'contact_quota_exceeded' using errcode = '54000'; end if;
+end $$;
+revoke all on function private.closer_contact_quota_hit() from public, anon, authenticated;
+grant execute on function private.closer_contact_quota_hit() to authenticated, service_role;
 
 -- LinkedIn URLs are compared lower-cased, without query string, fragment or trailing slash (DATOS §14.4).
 create or replace function private.normalize_linkedin(p_url text) returns text
@@ -176,24 +210,99 @@ revoke all on function private.crm_contacts_closer_guard() from public, anon, au
 create trigger crm_contacts_closer_guard before insert or update on public.crm_contacts
   for each row execute function private.crm_contacts_closer_guard();
 
+-- Quota of contacts created by a closer through the API (the CSV import counts in its own function: it runs as definer).
+create or replace function private.crm_contacts_quota() returns trigger
+language plpgsql set search_path = '' as $$
+begin
+  if current_user = 'authenticated' then
+    if not private.is_admin() then perform private.closer_contact_quota_hit(); end if;
+  end if;
+  return new;
+end $$;
+revoke all on function private.crm_contacts_quota() from public, anon, authenticated;
+create trigger crm_contacts_quota before insert on public.crm_contacts
+  for each row execute function private.crm_contacts_quota();
+
+-- Leads written through the API by a closer: an insert is always an open lead without money, owner link, affiliate or
+-- idempotency key (those come from the gateway and from «Cerrar cobrado»); a lead already won or lost never goes back.
+-- created_by is stamped here and never changes.
 create or replace function private.leads_closer_guard() returns trigger
 language plpgsql set search_path = '' as $$
 begin
   if current_user = 'authenticated' then
-    if new.affiliate_code is distinct from old.affiliate_code or new.amount is distinct from old.amount
-       or new.paid_at is distinct from old.paid_at or new.user_id is distinct from old.user_id
-       or new.contact_id is distinct from old.contact_id or new.idempotency_key is distinct from old.idempotency_key
-       or (new.status = 'won' and old.status is distinct from 'won') then
+    if tg_op = 'INSERT' then
+      new.created_by := (select auth.uid());
       if not private.is_admin() then
-        raise exception 'closers cannot change amount, affiliate, owner link or win a lead' using errcode = '42501';
+        new.status := 'open';
+        new.amount := null;
+        new.paid_at := null;
+        new.user_id := null;
+        new.affiliate_code := null;
+        new.idempotency_key := null;
+      end if;
+    else
+      new.created_by := old.created_by;
+      if new.affiliate_code is distinct from old.affiliate_code or new.amount is distinct from old.amount
+         or new.paid_at is distinct from old.paid_at or new.user_id is distinct from old.user_id
+         or new.contact_id is distinct from old.contact_id or new.idempotency_key is distinct from old.idempotency_key
+         or (new.status = 'won' and old.status is distinct from 'won')
+         or (old.status in ('won', 'lost') and new.status is distinct from old.status) then
+        if not private.is_admin() then
+          raise exception 'closers cannot change amount, affiliate, owner link or the final status of a lead' using errcode = '42501';
+        end if;
       end if;
     end if;
   end if;
   return new;
 end $$;
 revoke all on function private.leads_closer_guard() from public, anon, authenticated;
-create trigger leads_closer_guard before update on public.leads
+create trigger leads_closer_guard before insert or update on public.leads
   for each row execute function private.leads_closer_guard();
+
+-- Interactions written through the API by a closer are his own: actor «closer», a manual kind (bookkeeping kinds come
+-- from the system), and the lead and draft it points to belong to the same contact. The nested insert of the status
+-- change trigger (depth > 1) keeps its kind but is signed «closer» too. A closer edits only his own rows.
+create or replace function private.crm_interactions_closer_guard() returns trigger
+language plpgsql set search_path = '' as $$
+begin
+  if current_user = 'authenticated' then
+    if not private.is_admin() then
+      if tg_op = 'UPDATE' and old.actor is distinct from 'closer' then
+        raise exception 'closers edit only their own interactions' using errcode = '42501';
+      end if;
+      if pg_trigger_depth() = 1 and new.kind not in ('note', 'message_sent', 'message_received', 'meeting', 'call') then
+        raise exception 'closers cannot log this kind of interaction' using errcode = '42501';
+      end if;
+      new.actor := 'closer';
+      if new.lead_id is not null and not exists (
+           select 1 from public.leads l where l.id = new.lead_id and l.contact_id = new.contact_id) then
+        raise exception 'lead_not_of_contact' using errcode = '22023';
+      end if;
+      if new.draft_id is not null and not exists (
+           select 1 from public.crm_message_drafts d where d.id = new.draft_id and d.contact_id = new.contact_id) then
+        raise exception 'draft_not_of_contact' using errcode = '22023';
+      end if;
+    end if;
+  end if;
+  return new;
+end $$;
+revoke all on function private.crm_interactions_closer_guard() from public, anon, authenticated;
+create trigger crm_interactions_closer_guard before insert or update on public.crm_interactions
+  for each row execute function private.crm_interactions_closer_guard();
+
+create or replace function private.crm_message_drafts_closer_guard() returns trigger
+language plpgsql set search_path = '' as $$
+begin
+  if current_user = 'authenticated' then
+    if not private.is_admin() then
+      new.generated_by := case when tg_op = 'INSERT' then 'closer'::public.draft_author else old.generated_by end;
+    end if;
+  end if;
+  return new;
+end $$;
+revoke all on function private.crm_message_drafts_closer_guard() from public, anon, authenticated;
+create trigger crm_message_drafts_closer_guard before insert or update on public.crm_message_drafts
+  for each row execute function private.crm_message_drafts_closer_guard();
 
 -- 6) Policies replaced (P2: one per role and action; P3: (select …)).
 drop policy crm_contacts_select on public.crm_contacts;
@@ -201,7 +310,8 @@ create policy crm_contacts_select on public.crm_contacts for select to authentic
   using ((select private.is_admin()) or (owner_id = (select auth.uid()) and (select private.is_closer())));
 drop policy crm_contacts_insert on public.crm_contacts;
 create policy crm_contacts_insert on public.crm_contacts for insert to authenticated
-  with check ((select private.is_admin()) or (owner_id = (select auth.uid()) and (select private.is_closer())));
+  with check ((select private.is_admin())
+              or (owner_id = (select auth.uid()) and (select private.is_closer()) and private.closer_status_allowed(status)));
 drop policy crm_contacts_update on public.crm_contacts;
 create policy crm_contacts_update on public.crm_contacts for update to authenticated
   using ((select private.is_admin()) or (owner_id = (select auth.uid()) and (select private.is_closer())))
@@ -435,7 +545,8 @@ begin
     end if;
 
     if v_existing.id is null then
-      -- (a) new contact for the importer.
+      -- (a) new contact for the importer (the closer's daily quota of contacts counts it).
+      if not v_admin then perform private.closer_contact_quota_hit(); end if;
       insert into public.crm_contacts (kind, status, display_name, role, email, phone, linkedin_url, locale, owner_note,
                                        source, tags, owner_id, organization_id)
       values (v_kind, case v_kind when 'agency' then 'pending' else 'new' end, v_name, nullif(btrim(r ->> 'role'), ''),
@@ -758,7 +869,7 @@ begin
    where id = v_lead.contact_id
   returning owner_id into v_owner;
   insert into public.crm_interactions (contact_id, kind, direction, actor, lead_id, body)
-  values (v_lead.contact_id, 'note', 'internal', 'jose', v_lead.id, 'cierre solicitado');
+  values (v_lead.contact_id, 'note', 'internal', private.staff_actor(), v_lead.id, 'cierre solicitado');
   perform private.enqueue('lead.close_requested', jsonb_build_object(
     'lead_id', v_lead.id, 'contact_id', v_lead.contact_id, 'owner_id', v_owner));
 end $$;
@@ -802,11 +913,23 @@ create table public.staff_telegram_codes (
 alter table public.staff_telegram_codes enable row level security;
 create policy staff_telegram_codes_select on public.staff_telegram_codes for select to authenticated
   using ((user_id = (select auth.uid()) and (select private.is_aal2())) or (select private.is_admin()));
-create policy staff_telegram_codes_insert on public.staff_telegram_codes for insert to authenticated
-  with check ((user_id = (select auth.uid()) and (select private.is_aal2())) or (select private.is_admin()));
 create policy staff_telegram_codes_delete on public.staff_telegram_codes for delete to authenticated
   using ((user_id = (select auth.uid()) and (select private.is_aal2())) or (select private.is_admin()));
-grant select, insert, delete on public.staff_telegram_codes to authenticated;
+-- No insert grant: the code and its expiry come from staff_telegram_begin() only (a closer never chooses them).
+grant select, delete on public.staff_telegram_codes to authenticated;
+
+-- Defence in depth for every writer (superuser aside): a code never lives longer than 15 minutes.
+create or replace function private.staff_telegram_codes_cap() returns trigger
+language plpgsql set search_path = '' as $$
+begin
+  if new.expires_at > now() + interval '15 minutes' then
+    raise exception 'telegram code expiry above 15 minutes' using errcode = '22023';
+  end if;
+  return new;
+end $$;
+revoke all on function private.staff_telegram_codes_cap() from public, anon, authenticated;
+create trigger staff_telegram_codes_cap before insert or update on public.staff_telegram_codes
+  for each row execute function private.staff_telegram_codes_cap();
 
 create or replace function private.staff_telegram_begin_impl() returns text
 language plpgsql security definer set search_path = '' as $$

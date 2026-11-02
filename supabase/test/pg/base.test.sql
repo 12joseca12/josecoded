@@ -140,7 +140,9 @@ begin
          r.sig::text in (
            'private.is_admin()', 'private.is_closer()', 'private.is_staff()', 'private.is_disabled_staff()',
            'private.owns_contact(uuid)', 'private.owns_client(uuid)', 'private.owns_quote(uuid)',
-           'private.quote_is_draft(uuid)', 'private.client_id_of()', 'private.comment_parent_ok(uuid,text,locale)')
+           'private.quote_is_draft(uuid)', 'private.client_id_of()', 'private.comment_parent_ok(uuid,text,locale)',
+           'private.staff_actor()', 'private.closer_contact_quota_hit()', 'private.client_has_pack(text)',
+           'private.client_has_pack_option(text,text)', 'private.client_has_extra(text)')
          or r.sig::text like 'private.%\_impl(%') then
       raise exception 'FAIL authenticated can execute security definer %', r.sig;
     end if;
@@ -263,12 +265,12 @@ begin
   raise notice 'PASS authenticated (ana): private.is_admin() is false';
 
   select count(*) into n from public.packs;
-  if n <> 6 then raise exception 'FAIL ana reads % packs, expected 6 (P1-P5 and the hidden test pack)', n; end if;
+  if n <> 5 then raise exception 'FAIL ana reads % packs, expected 5 (P1-P5; hidden ones are for staff and their buyers)', n; end if;
   select count(*) into n from public.pack_options;
   if n <> 1 then raise exception 'FAIL ana reads % pack_options, expected 1', n; end if;
   select count(*) into n from public.extras;
   if n <> 6 then raise exception 'FAIL ana reads % extras, expected 6', n; end if;
-  raise notice 'PASS authenticated reads the catalogue (6 packs with the hidden one, 1 option, 6 extras)';
+  raise notice 'PASS authenticated reads the visible catalogue (5 packs, 1 option, 6 extras)';
 
   begin
     update public.packs set price = 1 where code = 'P1';

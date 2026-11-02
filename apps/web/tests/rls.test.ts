@@ -135,7 +135,8 @@ describe.skipIf(!up && !inCi)('RLS with jose (admin), ana (P2 client + affiliate
     });
 
     it('packs, pack_options and extras: authenticated reads, nobody writes', async () => {
-      expect(await visible(ana, 'packs')).toBe(6); // P1-P5 and the hidden test pack
+      expect(await visible(ana, 'packs')).toBe(5); // P1-P5: the hidden test pack is for staff and for the client that bought it
+      expect((await bob.from('packs').select('code').eq('code', 'HIDDEN_PACK')).data).toEqual([]);
       expect(await visible(bob, 'extras')).toBe(6);
       const { error } = await jose.from('packs').update({ price: 1 }).eq('code', 'P1');
       expect(error).toBeTruthy();
@@ -650,7 +651,7 @@ describe.skipIf(!up && !inCi)('RLS with closers: carla (active), dani (switched 
     it('reads the global data and creates organisations but changes none', async () => {
       expect(await visible(carla, 'crm_organizations')).toBeGreaterThanOrEqual(1);
       expect(await visible(carla, 'crm_message_templates')).toBe(8);
-      expect(await visible(carla, 'packs', 'code')).toBe(6);
+      expect(await visible(carla, 'packs', 'code')).toBe(6); // staff read the hidden pack too
       const created = await carla.from('crm_organizations').insert({ name: `Org ${hex()}`, kind: 'agency' }).select('id').single();
       expect(created.error).toBeNull();
       const upd = await carla.from('crm_organizations').update({ fit: 5 }).eq('id', SEED.orgs.agenciaTest).select('id');
@@ -707,6 +708,8 @@ describe.skipIf(!up && !inCi)('RLS with closers: carla (active), dani (switched 
       expect((await carla.rpc('crm_request_close', { p_lead_id: SEED.leads.carlaWon })).error?.message).toMatch(/lead_not_open/);
       expect((await carla.rpc('invite_client_access', { p_client_id: SEED.clients.ana, p_email: 'x@example.test' })).error?.message).toMatch(/forbidden/);
       expect((await carla.rpc('invite_client_access', { p_client_id: SEED.clients.carla, p_email: 'no-arroba' })).error?.message).toMatch(/invalid_email/);
+      // Security review: the invitation goes to the contact's email; a closer cannot choose another address.
+      expect((await carla.rpc('invite_client_access', { p_client_id: SEED.clients.carla, p_email: 'carla-alt@example.test' })).error?.message).toMatch(/email_must_match_contact/);
       const contact = await mustInsert('crm_contacts', { kind: 'lead', status: 'new', display_name: `Close ${hex()}`, source: 'manual', owner_id: carla.userId });
       const lead = await mustInsert('leads', { contact_id: contact, source: 'manual', pack_code: 'P1' });
       try {
@@ -876,12 +879,12 @@ describe.skipIf(!up && !inCi)('RLS with closers: carla (active), dani (switched 
       const a = await mkLead();
       const b = await mkLead();
       try {
-        expect((await jose.rpc('admin_close_lead_paid', { p_lead_id: a.lead, p_amount: 1400, p_generate_reward: false })).error).toBeNull();
+        expect((await jose.rpc('admin_close_lead_paid', { p_lead_id: a.lead, p_amount: 1400, p_generate_reward: false, p_commission: true })).error).toBeNull();
         const first = await carla.from('closer_commissions').select('percent, amount, status').eq('lead_id', a.lead).single();
         expect(first.data).toEqual({ percent: 10, amount: 140, status: 'pending' });
         const raise = { p_user_id: carla.userId, p_disabled: false, p_commission_rate: 20, p_notes: null };
         expect((await jose.rpc('admin_staff_set', raise)).error).toBeNull();
-        expect((await jose.rpc('admin_close_lead_paid', { p_lead_id: b.lead, p_amount: 1000, p_generate_reward: false })).error).toBeNull();
+        expect((await jose.rpc('admin_close_lead_paid', { p_lead_id: b.lead, p_amount: 1000, p_generate_reward: false, p_commission: true })).error).toBeNull();
         const second = await carla.from('closer_commissions').select('percent, amount').eq('lead_id', b.lead).single();
         expect(second.data).toEqual({ percent: 20, amount: 200 });
         const firstAgain = await carla.from('closer_commissions').select('percent, amount').eq('lead_id', a.lead).single();
@@ -1029,8 +1032,9 @@ describe.skipIf(!up && !inCi)('RLS with closers: carla (active), dani (switched 
         expect((await jose.rpc('admin_pricing_delete', { p_kind: 'pack', p_code: code })).error).toBeNull();
         expect(JSON.stringify((await jose.rpc('pricing_catalog_snapshot')).data)).not.toContain(code);
         expect((await jose.rpc('admin_pricing_set_pack', { p: { code, price: 5 } })).error?.message).toMatch(/pack_deleted/);
-        // The area still reads it (a client keeps seeing its pack).
-        expect((await ana.from('packs').select('code').eq('code', code)).data).toEqual([{ code }]);
+        // A deleted pack is for staff (and for the client that bought it), not for any account.
+        expect((await ana.from('packs').select('code').eq('code', code)).data).toEqual([]);
+        expect((await carla.from('packs').select('code').eq('code', code)).data).toEqual([{ code }]);
         expect((await carla.rpc('pricing_catalog_snapshot')).error).toBeNull();
         expect((await ana.rpc('pricing_catalog_snapshot')).error?.code).toBe('42501');
         expect((await anon.rpc('pricing_published')).error).toBeTruthy();
@@ -1072,6 +1076,57 @@ describe.skipIf(!up && !inCi)('RLS with closers: carla (active), dani (switched 
       } finally {
         await service.from('crm_interactions').delete().eq('contact_id', SEED.contacts.carlaClient).eq('kind', 'message_sent');
         await service.from('custom_quotes').delete().eq('id', quote);
+      }
+    });
+  });
+
+  describe('security review of 1.8e (the exploits found, now refused)', () => {
+    it('a closer cannot forge leads, interaction actors, Telegram codes or the quote status', async () => {
+      const contact = await mustInsert('crm_contacts', { kind: 'lead', status: 'new', display_name: `Sec ${hex()}`, source: 'manual', owner_id: carla.userId });
+      let quote: string | undefined;
+      try {
+        const forged = await carla.from('leads')
+          .insert({ contact_id: contact, source: 'manual', status: 'won', amount: 99999, idempotency_key: `forged-${hex()}` })
+          .select('status, amount, idempotency_key').single();
+        expect(forged.data).toEqual({ status: 'open', amount: null, idempotency_key: null });
+        const note = await carla.from('crm_interactions')
+          .insert({ contact_id: contact, kind: 'note', direction: 'internal', actor: 'jose', body: 'x' }).select('actor').single();
+        expect(note.data).toEqual({ actor: 'closer' });
+        expect((await carla.from('crm_interactions').insert({ contact_id: contact, kind: 'lead_won', direction: 'internal', actor: 'jose' })).error?.code).toBe('42501');
+        expect((await carla.from('crm_contacts').insert({ kind: 'lead', status: 'won', display_name: `Won ${hex()}`, source: 'manual', owner_id: carla.userId })).error?.code).toBe('42501');
+        expect((await carla.from('staff_telegram_codes').insert({ user_id: carla.userId, code: 'AAAAAAAA', expires_at: '2099-01-01' })).error?.code).toBe('42501');
+        const created = await carla.rpc('quote_create', { p_contact_id: contact, p_title: `Sec ${hex()}`, p_lead_id: null });
+        expect(created.error).toBeNull();
+        quote = created.data as string;
+        expect((await carla.from('custom_quotes').update({ status: 'accepted' }).eq('id', quote)).error?.code).toBe('42501');
+      } finally {
+        if (quote) await service.from('custom_quotes').delete().eq('id', quote);
+        await service.from('crm_interactions').delete().eq('contact_id', contact);
+        await service.from('leads').delete().eq('contact_id', contact);
+        await service.from('crm_contacts').delete().eq('id', contact);
+      }
+    });
+
+    it('an inbound lead never lands in the contact a closer owns with the same email', async () => {
+      const email = `victima-${hex()}@example.test`;
+      const mine = await mustInsert('crm_contacts', { kind: 'lead', status: 'new', display_name: `Squat ${hex()}`, email, source: 'manual', owner_id: carla.userId });
+      let lead: string | undefined;
+      let contact: string | undefined;
+      try {
+        const res = await service.rpc('create_lead', { p: { source: 'web_form', email, message: 'secreto' } });
+        expect(res.error).toBeNull();
+        const row = (res.data as Row[])[0] as Row;
+        lead = row.lead_id as string;
+        contact = row.contact_id as string;
+        expect(contact).not.toBe(mine);
+        expect((await carla.from('leads').select('id').eq('id', lead)).data ?? []).toHaveLength(0);
+      } finally {
+        if (lead) {
+          await service.from('crm_interactions').delete().eq('lead_id', lead);
+          await service.from('leads').delete().eq('id', lead);
+        }
+        if (contact) await service.from('crm_contacts').delete().eq('id', contact);
+        await service.from('crm_contacts').delete().eq('id', mine);
       }
     });
   });

@@ -51,8 +51,8 @@ export const INTERACTION_CHANNELS = [
   'other',
 ] as const;
 export const INTERACTION_DIRECTIONS = ['out', 'in', 'internal'] as const;
-export const INTERACTION_ACTORS = ['jose', 'ai', 'system', 'contact'] as const;
-export const DRAFT_AUTHORS = ['ai', 'jose'] as const;
+export const INTERACTION_ACTORS = ['jose', 'ai', 'system', 'contact', 'closer'] as const;
+export const DRAFT_AUTHORS = ['ai', 'jose', 'closer'] as const;
 export const DRAFT_STATUSES = ['draft', 'copied', 'marked_sent', 'discarded'] as const;
 export const LEAD_STATUSES = ['open', 'won', 'lost'] as const;
 export const LEAD_SOURCES = [
