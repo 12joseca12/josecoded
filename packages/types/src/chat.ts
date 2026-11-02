@@ -1,4 +1,6 @@
+import type { ChatCase } from './crm.ts';
 import type { Enums } from './db.ts';
+import type { Href } from './i18n.ts';
 import type {
   chatContextFactsSchema,
   chatContextPublishedSchema,
@@ -20,3 +22,27 @@ export type ChatContextFactsRaw = z.input<typeof chatContextFactsSchema>;
 /** `chat_context_published()` result; `null` when the case has no published context in that locale. */
 export type ChatContextPublished = z.infer<typeof chatContextPublishedSchema>;
 export type ChatVisitorMessageEvent = z.infer<typeof chatVisitorMessageEventSchema>;
+
+// --- View models of `/chat` (block B02): what the screen is painted from, whatever the source (fixtures now, the gateway in B03).
+
+/** One entry of the thread. Text is plain text: the screen never renders HTML or Markdown from a message. */
+export type ChatThreadItem =
+  | { id: string; kind: 'message'; from: ChatSender; text: string }
+  | { id: string; kind: 'quick_contact' }
+  | { id: string; kind: 'case_switch'; to: ChatCase };
+
+export type ChatViewData = {
+  case: ChatCase;
+  thread: readonly ChatThreadItem[];
+  /** Messages the visitor has sent today and the daily limit (21st message is refused). */
+  quota: { used: number; limit: number };
+  /** Jose took the thread over: the assistant is off. */
+  handover: boolean;
+  /** A logged-in visitor already has the thread saved to the account. */
+  signedIn: boolean;
+};
+
+export type ChatCaseSelectorVariant = 'full' | 'compact';
+
+/** Ways to reach Jose offered inside the chat (`QuickContact`); a way without data is not drawn. */
+export type ChatContact = { whatsapp?: Href; book?: Href; email?: string; linkedin?: Href };

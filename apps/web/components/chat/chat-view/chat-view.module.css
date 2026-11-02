@@ -1,0 +1,23 @@
+.stage {
+  display: grid;
+  gap: var(--sp-6);
+  max-width: var(--size-container);
+  margin-inline: auto;
+  padding: var(--sp-4) var(--sp-pad-scene) var(--sp-gap-scene);
+}
+
+.column {
+  display: grid;
+  gap: var(--sp-4);
+  max-width: var(--size-measure-prose);
+  min-width: 0;
+}
+
+/* the box stays in reach while the thread grows */
+.dock {
+  position: sticky;
+  inset-block-end: 0;
+  z-index: var(--z-content);
+  padding-block: var(--sp-3);
+  background: linear-gradient(to bottom, transparent, var(--bg) var(--sp-4));
+}

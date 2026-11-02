@@ -198,6 +198,7 @@
   --size-crm-dialog-w: 28rem;
   --size-crm-search-max: 24rem;
   --size-crm-note-min-h: 6rem;
+  --size-chat-thread-min: clamp(10rem, 24svh, 18rem);
 
   /* focus */
   --focus-ring-width: 2px;

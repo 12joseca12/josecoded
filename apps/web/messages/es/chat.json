@@ -1,0 +1,59 @@
+{
+  "chat": {
+    "meta": {
+      "title": "Chat con el asistente de Jose",
+      "description": "Pregunta al asistente de Jose por su trabajo, su forma de colaborar y su disponibilidad, sin cuenta y sin esperar. Si hace falta, Jose entra en la conversación."
+    },
+    "head": {
+      "lead": "Habla con el asistente.",
+      "accent": "Y, si hace falta, conmigo."
+    },
+    "cases": {
+      "label": "¿Quién eres?",
+      "client": "Busco un desarrollador para mi web o app",
+      "partner": "Soy una agencia o consultora",
+      "recruiter": "Estoy contratando",
+      "curious": "Solo curioseo"
+    },
+    "thread": {
+      "label": "Conversación con el asistente",
+      "visitor": "Tú",
+      "assistant": "Asistente",
+      "jose": "Jose",
+      "caseSwitch": "Ahora hablas como: {case}"
+    },
+    "composer": {
+      "label": "Tu mensaje",
+      "placeholder": "Escribe tu pregunta",
+      "send": "Enviar",
+      "hintSend": "envía",
+      "hintBreak": "nueva línea",
+      "keyEnter": "Intro",
+      "keyShift": "Mayús",
+      "noteAi": "Responde un asistente de IA y puede equivocarse. Para algo importante, escribe a Jose.",
+      "noteJose": "Ahora te contesta Jose directamente."
+    },
+    "quota": {
+      "title": "Hoy ya hemos hablado bastante.",
+      "text": "Si quieres seguir, escríbeme directamente."
+    },
+    "save": {
+      "text": "El chat funciona sin cuenta.",
+      "action": "Entra para guardar esta conversación"
+    },
+    "handover": {
+      "title": "Jose ha entrado en la conversación.",
+      "text": "A partir de ahora te contesta él, no el asistente."
+    },
+    "quick": {
+      "group": "Formas de contacto rápidas",
+      "whatsapp": "Escribir por WhatsApp",
+      "book": "Reservar 20 min",
+      "linkedin": "LinkedIn",
+      "email": "Email",
+      "copy": "Copiar email",
+      "copied": "Email copiado",
+      "failed": "No se pudo copiar: selecciónalo a mano"
+    }
+  }
+}

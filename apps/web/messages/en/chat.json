@@ -1,0 +1,59 @@
+{
+  "chat": {
+    "meta": {
+      "title": "Chat with Jose's assistant",
+      "description": "Ask Jose's assistant about his work, how he collaborates and his availability, with no account and no waiting. If needed, Jose joins the conversation."
+    },
+    "head": {
+      "lead": "Talk to the assistant.",
+      "accent": "And, if needed, to me."
+    },
+    "cases": {
+      "label": "Who are you?",
+      "client": "I need a developer for my website or app",
+      "partner": "I'm an agency or consultancy",
+      "recruiter": "I'm hiring",
+      "curious": "Just browsing"
+    },
+    "thread": {
+      "label": "Conversation with the assistant",
+      "visitor": "You",
+      "assistant": "Assistant",
+      "jose": "Jose",
+      "caseSwitch": "You are now talking as: {case}"
+    },
+    "composer": {
+      "label": "Your message",
+      "placeholder": "Type your question",
+      "send": "Send",
+      "hintSend": "sends",
+      "hintBreak": "new line",
+      "keyEnter": "Enter",
+      "keyShift": "Shift",
+      "noteAi": "An AI assistant answers and it can be wrong. For anything important, write to Jose.",
+      "noteJose": "Jose is answering you directly now."
+    },
+    "quota": {
+      "title": "We've talked quite a lot today.",
+      "text": "If you want to go on, write to me directly."
+    },
+    "save": {
+      "text": "The chat works without an account.",
+      "action": "Log in to keep this conversation"
+    },
+    "handover": {
+      "title": "Jose has joined the conversation.",
+      "text": "From now on he answers you, not the assistant."
+    },
+    "quick": {
+      "group": "Quick ways to get in touch",
+      "whatsapp": "Message on WhatsApp",
+      "book": "Book 20 min",
+      "linkedin": "LinkedIn",
+      "email": "Email",
+      "copy": "Copy email",
+      "copied": "Email copied",
+      "failed": "Could not copy: select it by hand"
+    }
+  }
+}

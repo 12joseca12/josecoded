@@ -189,6 +189,7 @@ export type TokenName =
   | '--size-crm-dialog-w'
   | '--size-crm-search-max'
   | '--size-crm-note-min-h'
+  | '--size-chat-thread-min'
   | '--focus-ring-width'
   | '--focus-ring-offset'
   | '--focus-ring-color'
@@ -591,6 +592,7 @@ export const tokens = {
   'size-crm-dialog-w': '--size-crm-dialog-w',
   'size-crm-search-max': '--size-crm-search-max',
   'size-crm-note-min-h': '--size-crm-note-min-h',
+  'size-chat-thread-min': '--size-chat-thread-min',
   'focus-ring-width': '--focus-ring-width',
   'focus-ring-offset': '--focus-ring-offset',
   'focus-ring-color': '--focus-ring-color',

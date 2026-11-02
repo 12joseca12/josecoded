@@ -276,7 +276,8 @@
     "crm-sheet-w": "34rem",
     "crm-dialog-w": "28rem",
     "crm-search-max": "24rem",
-    "crm-note-min-h": "6rem"
+    "crm-note-min-h": "6rem",
+    "chat-thread-min": "clamp(10rem, 24svh, 18rem)"
   },
   "extensions": {
     "colorMeta": {

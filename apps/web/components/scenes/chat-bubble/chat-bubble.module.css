@@ -27,12 +27,49 @@
   color: var(--text);
 }
 
-.bubble[data-from='author'] {
+.bubble[data-from='author'],
+.bubble[data-from='assistant'],
+.bubble[data-from='jose'] {
   justify-self: start;
   border-end-start-radius: var(--r-bubble-tail);
   background: var(--tint-bubble-other);
   box-shadow: var(--shadow-hairline);
   color: var(--text-2);
+}
+
+/* Jose speaks in his own voice: the live edge marks that a person, not the assistant, is writing */
+.bubble[data-from='jose'] {
+  box-shadow: inset 0 0 0 var(--stroke-line) var(--edge-live);
+}
+
+/* a message of the chat: text as text, never HTML */
+.bubble[data-plain] {
+  max-width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.line {
+  display: grid;
+  gap: var(--sp-1);
+  max-width: 88%;
+  min-width: 0;
+}
+
+.line[data-from='visitor'] {
+  justify-self: end;
+}
+
+.line[data-from='assistant'],
+.line[data-from='jose'] {
+  justify-self: start;
+}
+
+.sender {
+  padding-inline: var(--sp-3-5);
+  color: var(--text-3);
+  font-size: var(--font-caption-size);
+  font-weight: var(--font-caption-weight);
 }
 
 @media (prefers-reduced-motion: reduce) {
