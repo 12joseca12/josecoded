@@ -37,7 +37,7 @@ type TextLike = Common & {
   value?: string;
   onChange?: (value: string) => void;
   autoComplete?: HTMLInputAutoCompleteAttribute;
-  inputMode?: 'text' | 'numeric' | 'email' | 'tel';
+  inputMode?: 'text' | 'numeric' | 'decimal' | 'email' | 'tel';
   pattern?: string;
   maxLength?: number;
   minLength?: number;

@@ -110,7 +110,54 @@
       }
     },
     "stories": {
-      "viewTask": "Ver tarea"
+      "decide": "Decidir",
+      "decideFor": "Decidir la historia {title}",
+      "convert": "Convertir en tarea",
+      "convertFor": "Convertir en tarea la historia {title}",
+      "viewTask": "Ver tarea",
+      "decideSheet": {
+        "title": "Decidir historia",
+        "summary": "{client}. Como {as}, quiero {want}, para {so}. {criteria}.",
+        "description": "<strong>{title}</strong> · {summary}",
+        "close": "Cerrar",
+        "cancel": "Cancelar",
+        "decision": "Decisión",
+        "accept": "Aceptar",
+        "reject": "Rechazar",
+        "hours": "Estimación",
+        "hoursUnit": "h",
+        "amount": "Importe (opcional)",
+        "amountUnit": "€",
+        "amountHelp": "Orientativo, sin IVA. El cliente lo ve.",
+        "note": "Nota para el cliente (opcional)",
+        "createTask": "Crear tarea en su proyecto al aceptar",
+        "reason": "Motivo",
+        "reasonPlaceholder": "Ej.: queda fuera del pack; lo vemos como ampliación.",
+        "reasonHelp": "El cliente lo lee tal cual. Explica qué haría falta para que encaje.",
+        "submitAccept": "Aceptar historia",
+        "submitReject": "Rechazar historia",
+        "savedAcceptedTask": "Historia aceptada y tarea creada",
+        "savedAccepted": "Historia aceptada",
+        "savedRejected": "Historia rechazada",
+        "criteria": "{count, plural, =0 {sin criterios} one {# criterio} other {# criterios}}"
+      },
+      "convertSheet": {
+        "title": "Convertir en tarea",
+        "note": "Se crea la tarea «{title}» en el proyecto de {client}, con el texto de la historia y sus criterios. La historia pasa a «En tareas».",
+        "submit": "Crear tarea",
+        "saved": "Tarea creada desde la historia"
+      }
+    },
+    "errors": {
+      "invalid": "Revisa los datos e inténtalo de nuevo.",
+      "failed": "No se ha podido guardar. Inténtalo de nuevo en un momento.",
+      "forbidden": "Esta historia no es de tu cartera.",
+      "notFound": "No encuentro esa historia.",
+      "invalidTransition": "Esa historia ya ha cambiado de estado. Recarga la ficha para verla.",
+      "hoursInvalid": "Escribe las horas: un número mayor que cero, con un decimal como máximo.",
+      "amountInvalid": "Escribe un importe en euros con dos decimales como máximo, o déjalo vacío.",
+      "noteTooLong": "La nota es demasiado larga: 1.000 caracteres como máximo.",
+      "reasonRequired": "Escribe el motivo: lo leerá el cliente."
     }
   }
 }

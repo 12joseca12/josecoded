@@ -748,6 +748,17 @@ select t.ok(t.val($q$select public.accept_user_story('00000000-0000-4000-8000-00
             and t.val($q$select (public.convert_user_story('00000000-0000-4000-8000-000000000e01'))::text is not null$q$) = 'true'
             and t.val($q$select status::text from public.client_user_stories where id = '00000000-0000-4000-8000-000000000e01'$q$) = 'converted',
             'admin: accept without a task leaves it accepted; convert_user_story creates the task later');
+select t.ok(t.err($q$select public.accept_user_story((select id from public.client_user_stories where title = 'Pagos online'), 0, null, null)$q$) = '22023 estimate_required'
+            and t.err($q$select public.accept_user_story((select id from public.client_user_stories where title = 'Pagos online'), null, null, null)$q$) = '22023 estimate_required'
+            and t.err($q$select public.accept_user_story((select id from public.client_user_stories where title = 'Pagos online'), 2, -1, null)$q$) like '23514 %'
+            and t.err(format($q$select public.accept_user_story((select id from public.client_user_stories where title = 'Pagos online'), 2, null, %L)$q$, repeat('x', 1001))) = '22023 note_too_long'
+            and t.val($q$select status::text from public.client_user_stories where title = 'Pagos online'$q$) = 'proposed',
+            'accepting needs hours above zero, an amount that is not negative and a note that fits: nothing changes on a refusal');
+select t.ok(t.err($q$select public.reject_user_story((select id from public.client_user_stories where title = 'Pagos online'), '   ')$q$) = '22023 reason_required'
+            and t.err($q$select public.reject_user_story((select id from public.client_user_stories where title = 'Pagos online'), null)$q$) = '22023 reason_required'
+            and t.err(format($q$select public.reject_user_story((select id from public.client_user_stories where title = 'Pagos online'), %L)$q$, repeat('x', 1001))) = '22023 note_too_long'
+            and t.val($q$select status::text from public.client_user_stories where title = 'Pagos online'$q$) = 'proposed',
+            'rejecting needs a reason that fits: blank, missing or too long is refused and the story stays proposed');
 select t.ok(t.err($q$select public.reject_user_story((select id from public.client_user_stories where title = 'Pagos online'), 'fuera de alcance')$q$) is null
             and t.val($q$select status::text || ':' || estimate_note from public.client_user_stories where title = 'Pagos online'$q$) = 'rejected:fuera de alcance',
             'admin rejects a story with a note');
@@ -760,6 +771,20 @@ set local request.jwt.claims = :'ana';
 select t.ok(t.n($q$select id from public.client_tasks where story_id is not null$q$) = 1
             and t.affected($q$update public.client_user_stories set title = 'cambio' where id = '00000000-0000-4000-8000-000000000e01'$q$) = 0,
             'ana sees the task born from her story («De tu historia») and cannot edit a converted story (0 rows)');
+-- The material is the client's: the owner closer reads none of it (rows), the admin and the client do.
+reset role;
+insert into public.client_assets (id, client_id, uploaded_by_user_id, source, storage_path, file_name)
+values ('00000000-0000-4000-8000-000000000d90', '00000000-0000-4000-8000-000000000410', '00000000-0000-4000-8000-0000000000a1', 'admin',
+        'clients/00000000-0000-4000-8000-000000000410/00000000-0000-4000-8000-000000000d90', 'brief.pdf');
+set local role authenticated;
+set local request.jwt.claims = :'carla';
+select t.ok(t.n('select id from public.client_assets') = 0
+            and t.n($q$select id from public.client_assets where client_id = '00000000-0000-4000-8000-000000000410'$q$) = 0
+            and t.n('select id from public.client_tasks') = 1 and t.n('select id from public.client_user_stories') = 1,
+            'carla reads no asset row of her own client, but still its tasks and stories');
+set local request.jwt.claims = :'jose';
+select t.ok(t.n($q$select id from public.client_assets where client_id = '00000000-0000-4000-8000-000000000410'$q$) = 1,
+            'jose (admin) reads the asset rows of every client');
 rollback;
 
 -- ================================================================ site content (D53)

@@ -1,5 +1,6 @@
 export { announce, resetAnnouncer } from './announce';
 export { focusableWithin } from './focusable';
+export { focusWhenGone } from './focus-when-gone';
 export { trapFocus } from './focus-trap';
 export { inertSiblings } from './inert-others';
 export { captureFocus } from './return-focus';

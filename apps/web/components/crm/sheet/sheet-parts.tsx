@@ -20,6 +20,17 @@ export function CloseWhenSaved() {
   return null;
 }
 
+/** Put it inside a `Form`: calls `onSaved` once when the action behind it answers `ok` (a screen moves the focus after it). */
+export function WhenSaved({ onSaved }: { onSaved: () => void }) {
+  const status = useFormContext()?.state.status;
+  useEffect(() => {
+    if (status === 'ok') onSaved();
+    // the answer of the action is what matters, not the identity of the callback
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
+  return null;
+}
+
 /** The «Cancelar» next to the submit button of a form in a sheet. */
 export function SheetCancel({ children }: { children: string }) {
   const sheet = useSheet();

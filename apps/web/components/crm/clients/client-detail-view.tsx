@@ -25,9 +25,9 @@ import type { Locale } from '@josecoded/types';
 /**
  * K6, the file of one client, as a view of already-read data: the page fetches and guards (a closer asking for a
  * client that is not in her portfolio gets a 404 there) and the dev previews feed it fixtures. The head says who
- * it is and where the project is, with «Habilitar acceso» when there is none; «Historias» is the main column (to read),
- * and the tasks (to read) and, for the admin only, the material sit beside it. A closer is never given the material:
- * the page does not even read it.
+ * it is and where the project is, with «Habilitar acceso» when there is none; «Historias» is the main column, with the
+ * one violet action of the file («Decidir» on a proposed story), and the tasks (to read) and, for the admin only, the
+ * material sit beside it. A closer is never given the material: the page does not even read it (nor may RLS).
  */
 export async function ClientDetailView({ locale, role, file }: { locale: Locale; role: StaffRole; file: ClientFile }) {
   const { client, owner, tasks, stories, assets } = file;
@@ -73,7 +73,7 @@ export async function ClientDetailView({ locale, role, file }: { locale: Locale;
       </header>
       <ContactLayout
         sideLabel={tFile('sideLabel')}
-        main={<ClientStories stories={stories} locale={locale} />}
+        main={<ClientStories stories={stories} client={`${client.name}${client.organization ? `, ${client.organization}` : ''}`} role={role} locale={locale} />}
         side={
           <>
             <ClientTasks tasks={tasks} role={role} locale={locale} />

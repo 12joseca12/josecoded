@@ -103,6 +103,9 @@ begin
   if s.id is null then raise exception 'story_not_found' using errcode = 'P0002'; end if;
   if not (private.is_admin() or private.owns_client(s.client_id)) then raise exception 'forbidden' using errcode = '42501'; end if;
   if s.status <> 'proposed' then raise exception 'story_not_proposed' using errcode = '22023'; end if;
+  -- an acceptance is a commitment with hours: the estimate is not optional (the amount is), nor is the note an essay
+  if p_estimate_hours is null or p_estimate_hours <= 0 then raise exception 'estimate_required' using errcode = '22023'; end if;
+  if char_length(coalesce(p_note, '')) > 1000 then raise exception 'note_too_long' using errcode = '22023'; end if;
 
   update public.client_user_stories set estimate_hours = p_estimate_hours, estimate_amount = p_estimate_amount,
          estimate_note = p_note, decided_by = (select auth.uid()), decided_at = now(), status = 'accepted'
@@ -139,6 +142,9 @@ begin
   if s.id is null then raise exception 'story_not_found' using errcode = 'P0002'; end if;
   if not (private.is_admin() or private.owns_client(s.client_id)) then raise exception 'forbidden' using errcode = '42501'; end if;
   if s.status <> 'proposed' then raise exception 'story_not_proposed' using errcode = '22023'; end if;
+  -- the client reads the reason as it is written: a rejection without one is not accepted
+  if btrim(coalesce(p_note, '')) = '' then raise exception 'reason_required' using errcode = '22023'; end if;
+  if char_length(p_note) > 1000 then raise exception 'note_too_long' using errcode = '22023'; end if;
   update public.client_user_stories set status = 'rejected', estimate_note = p_note, decided_by = (select auth.uid()),
          decided_at = now()
    where id = s.id;
@@ -190,9 +196,11 @@ drop policy client_task_comments_select on public.client_task_comments;
 create policy client_task_comments_select on public.client_task_comments for select to authenticated
   using (((client_id = (select private.client_id_of()) or (select private.owns_client(client_id))) and not internal)
          or (select private.is_admin()));
+-- The material is the client's own (briefs, logos, access notes): the owner closer does not read it, only the client and
+-- the admin (DATOS §14.3). Same predicate as before this migration, restated here so the policy has no closer branch.
 drop policy client_assets_select on public.client_assets;
 create policy client_assets_select on public.client_assets for select to authenticated
-  using (client_id = (select private.client_id_of()) or (select private.is_admin()) or (select private.owns_client(client_id)));
+  using (client_id = (select private.client_id_of()) or (select private.is_admin()));
 
 -- Closer counters for K1: own portfolio (the admin: his own, null owner; commissions: all, he is the payer).
 create or replace function private.crm_my_counters_impl() returns jsonb

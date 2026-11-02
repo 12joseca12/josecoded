@@ -1003,6 +1003,49 @@ describe.skipIf(!up && !inCi)('RLS with closers: carla (active), dani (switched 
       expect((await carla.rpc('reject_user_story', { p_story_id: SEED.stories.ana, p_note: 'no' })).error?.message).toMatch(/forbidden/);
     });
 
+    it('accepting needs hours and rejecting a reason; Carla decides the stories of her own client, with a task', async () => {
+      const row = { client_id: SEED.clients.carla, title: `Cita ${hex()}`, as_a: 'dueño', i_want: 'reservar', so_that: 'no perder citas', acceptance_criteria: ['Formulario'] };
+      const { data } = await service.from('client_user_stories').insert(row).select('id').single();
+      const storyId = (data as Row).id as string;
+      try {
+        const accept = (hours: number | null, note: string | null = null) =>
+          carla.rpc('accept_user_story', { p_story_id: storyId, p_estimate_hours: hours as number, p_estimate_amount: null as unknown as number, p_note: note as string });
+        expect((await accept(0)).error?.message).toMatch(/estimate_required/);
+        expect((await accept(null)).error?.message).toMatch(/estimate_required/);
+        expect((await accept(2, 'x'.repeat(1001))).error?.message).toMatch(/note_too_long/);
+        for (const reason of ['   ', null, 'x'.repeat(1001)]) {
+          const rejected = await carla.rpc('reject_user_story', { p_story_id: storyId, p_note: reason as string });
+          expect(rejected.error?.message, String(reason?.length)).toMatch(/reason_required|note_too_long/);
+        }
+        const stored = await service.from('client_user_stories').select('status').eq('id', storyId).single();
+        expect((stored.data as Row).status).toBe('proposed');
+
+        const done = await accept(6, 'Encaja');
+        expect(done.error).toBeNull();
+        expect(done.data).toEqual(expect.any(String));
+        expect((await carla.from('client_tasks').select('id').eq('story_id', storyId)).data).toHaveLength(1);
+        expect((await carla.rpc('convert_user_story', { p_story_id: storyId })).error?.message).toMatch(/story_not_accepted/);
+      } finally {
+        await service.from('client_tasks').delete().eq('story_id', storyId);
+        await service.from('crm_interactions').delete().eq('contact_id', SEED.contacts.carlaClient).in('kind', ['story_proposed', 'story_decided']).like('body', 'Cita %');
+        await service.from('client_user_stories').delete().eq('id', storyId);
+      }
+    });
+
+    it('the material is the client\'s: the owner closer reads no asset row of her own client, the admin does', async () => {
+      const id = randomUUID();
+      const inserted = await service
+        .from('client_assets')
+        .insert({ id, client_id: SEED.clients.carla, source: 'admin', storage_path: `clients/${SEED.clients.carla}/${id}`, file_name: 'brief.pdf' });
+      expect(inserted.error).toBeNull();
+      try {
+        expect((await carla.from('client_assets').select('id').eq('id', id)).data ?? []).toHaveLength(0);
+        expect((await jose.from('client_assets').select('id').eq('id', id)).data).toHaveLength(1);
+      } finally {
+        await service.from('client_assets').delete().eq('id', id);
+      }
+    });
+
     it("area_client() returns the caller's own client row", async () => {
       const mine = await ana.rpc('area_client');
       expect(mine.error).toBeNull();

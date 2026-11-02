@@ -110,7 +110,54 @@
       }
     },
     "stories": {
-      "viewTask": "View task"
+      "decide": "Decide",
+      "decideFor": "Decide the story {title}",
+      "convert": "Turn into a task",
+      "convertFor": "Turn the story {title} into a task",
+      "viewTask": "View task",
+      "decideSheet": {
+        "title": "Decide story",
+        "summary": "{client}. As {as}, I want {want}, so that {so}. {criteria}.",
+        "description": "<strong>{title}</strong> · {summary}",
+        "close": "Close",
+        "cancel": "Cancel",
+        "decision": "Decision",
+        "accept": "Accept",
+        "reject": "Reject",
+        "hours": "Estimate",
+        "hoursUnit": "h",
+        "amount": "Amount (optional)",
+        "amountUnit": "€",
+        "amountHelp": "Indicative, without VAT. The client sees it.",
+        "note": "Note for the client (optional)",
+        "createTask": "Create a task in their project when accepted",
+        "reason": "Reason",
+        "reasonPlaceholder": "E.g. it is outside the pack; we can do it as an upgrade.",
+        "reasonHelp": "The client reads it as written. Say what it would take for it to fit.",
+        "submitAccept": "Accept story",
+        "submitReject": "Reject story",
+        "savedAcceptedTask": "Story accepted and task created",
+        "savedAccepted": "Story accepted",
+        "savedRejected": "Story rejected",
+        "criteria": "{count, plural, =0 {no criteria} one {# criterion} other {# criteria}}"
+      },
+      "convertSheet": {
+        "title": "Turn into a task",
+        "note": "The task «{title}» is created in {client}'s project, with the text of the story and its criteria. The story moves to «In tasks».",
+        "submit": "Create task",
+        "saved": "Task created from the story"
+      }
+    },
+    "errors": {
+      "invalid": "Check the data and try again.",
+      "failed": "It could not be saved. Try again in a moment.",
+      "forbidden": "This story is not in your portfolio.",
+      "notFound": "I cannot find that story.",
+      "invalidTransition": "That story has already changed status. Reload the file to see it.",
+      "hoursInvalid": "Enter the hours: a number above zero, one decimal at most.",
+      "amountInvalid": "Enter an amount in euros with two decimals at most, or leave it empty.",
+      "noteTooLong": "The note is too long: 1,000 characters at most.",
+      "reasonRequired": "Write the reason: the client will read it."
     }
   }
 }

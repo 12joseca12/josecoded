@@ -1,7 +1,27 @@
 import type { StatusBadgeTone, StoryStatus } from '@josecoded/types';
 
-// The life of a user story as the interface draws it (DATOS §14.4, D52). The database is the authority over every
-// transition; this is only how a status is shown.
+// The life of a user story as the interface offers it (DATOS §14.4, D52). The database is the authority
+// (`accept_/reject_/convert_user_story` check the status under lock and who may decide); this mirrors it so a screen
+// draws only the buttons that will be accepted.
+
+export type StoryRole = 'admin' | 'closer' | 'client';
+export type StoryAction = 'accept' | 'reject' | 'convert' | 'edit' | 'delete';
+
+/**
+ * What a person can do with a story in a status. The staff decides (`accept`, `reject`) a proposed one and converts an
+ * accepted one; the client only edits or deletes her own while it is proposed. A converted or rejected story is final.
+ */
+export function nextActions(status: StoryStatus, role: StoryRole): readonly StoryAction[] {
+  if (role === 'client') return status === 'proposed' ? ['edit', 'delete'] : [];
+  switch (status) {
+    case 'proposed':
+      return ['accept', 'reject'];
+    case 'accepted':
+      return ['convert'];
+    default:
+      return [];
+  }
+}
 
 /** Tone of the badge of a status (the badge always carries the text too). */
 export function storyTone(status: StoryStatus): StatusBadgeTone {
