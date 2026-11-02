@@ -13,7 +13,7 @@ export default function LocaleError({ reset }: { error: Error; reset: () => void
   const [retrying, setRetrying] = useState(false);
 
   return (
-    <main>
+    <>
       <ErrorPage
         variant="serverError"
         copy={getErrorCopy(locale)}
@@ -24,6 +24,6 @@ export default function LocaleError({ reset }: { error: Error; reset: () => void
           reset();
         }}
       />
-    </main>
+    </>
   );
 }

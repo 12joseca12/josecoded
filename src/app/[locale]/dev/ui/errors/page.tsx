@@ -21,11 +21,11 @@ export default async function ErrorsPreviewPage({
   const copy = getErrorCopy(locale);
 
   return (
-    <main>
+    <>
       <Heading level={1} size="h2">
         {t("dev.errors.title")}
       </Heading>
       <ErrorPreviews variants={previews} copy={copy} locale={locale} />
-    </main>
+    </>
   );
 }

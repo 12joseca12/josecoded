@@ -1,6 +1,7 @@
 export type MessageKey =
   | "dev.errors.recovered"
   | "dev.errors.title"
+  | "dev.prose.title"
   | "dev.scroll.block"
   | "dev.scroll.intro"
   | "dev.scroll.more"
@@ -103,6 +104,10 @@ export type MessageKey =
   | "nav.projects"
   | "nav.services"
   | "nav.skipLink"
+  | "projects.emptyText"
+  | "projects.emptyTitle"
+  | "projects.metaTitle"
+  | "projects.title"
   | "services.audience"
   | "services.head.accent"
   | "services.head.lead"

@@ -24,7 +24,7 @@ export function ScrollDemo({ title, progressLabel, more, blocks }: ScrollDemoPro
   const progress = useScrollProgress();
 
   return (
-    <main>
+    <div>
       <h1 className={styles.title}>{title}</h1>
       <div className={styles.progress} role="status" aria-label={progressLabel}>
         <span className={styles.value} data-testid="progress">
@@ -51,6 +51,6 @@ export function ScrollDemo({ title, progressLabel, more, blocks }: ScrollDemoPro
             : null}
         </section>
       ))}
-    </main>
+    </div>
   );
 }

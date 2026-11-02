@@ -1,10 +1,12 @@
 import "@/styles/tokens.css";
 import "@/styles/base.css";
+import "@/styles/transitions.css";
 
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import type { ReactNode } from "react";
+import { type ReactNode, ViewTransition } from "react";
 
+import { RouteFocus } from "@/components/site/RouteFocus/RouteFocus";
 import { SiteFooter } from "@/components/site/SiteFooter/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader/SiteHeader";
 import { contentId, SkipLink } from "@/components/site/SkipLink/SkipLink";
@@ -64,9 +66,12 @@ export default async function LocaleLayout({
       <body>
         <SkipLink label={t("nav.skipLink")} />
         <SiteHeader locale={locale} items={items} labels={labels} />
-        <div id={contentId} tabIndex={-1}>
-          {children}
-        </div>
+        <ViewTransition default="none" update="page-swap">
+          <main id={contentId} tabIndex={-1}>
+            {children}
+          </main>
+        </ViewTransition>
+        <RouteFocus />
         <SiteFooter locale={locale} items={items} />
       </body>
     </html>

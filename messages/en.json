@@ -5,6 +5,12 @@
   "home": {
     "name": "josecoded"
   },
+  "projects": {
+    "metaTitle": "Projects · josecoded",
+    "title": "Projects",
+    "emptyTitle": "Soon",
+    "emptyText": "I am preparing the case studies. Check back in a few days."
+  },
   "errors": {
     "notFound": {
       "title": "This page does not exist",
@@ -105,6 +111,9 @@
     "errors": {
       "title": "Error pages",
       "recovered": "Recovered"
+    },
+    "prose": {
+      "title": "Prose: MDX content"
     }
   },
   "nav": {
