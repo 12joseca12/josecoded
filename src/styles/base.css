@@ -11,6 +11,55 @@ html {
   background: var(--bg);
 }
 
+html:has(dialog[open]) {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  html {
+    scrollbar-color: var(--ink-faint) var(--bg-track);
+    scrollbar-width: thin;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-track);
+  box-shadow: inset 1px 0 0 var(--line);
+}
+
+::-webkit-scrollbar-thumb {
+  min-height: 3rem;
+  border: 5px solid transparent;
+  border-radius: var(--radius-xl);
+  background-color: var(--ink-faint);
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  border-width: 3px;
+  background-color: var(--charcoal);
+}
+
+::-webkit-scrollbar-thumb:active {
+  border-width: 3px;
+  background-color: var(--coral-deep);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--bg-track);
+}
+
 body {
   margin: 0;
   min-height: 100svh;
