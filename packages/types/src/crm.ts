@@ -1,6 +1,8 @@
 import type { Enums } from './db.ts';
 import type {
   COMMISSION_STATUSES,
+  commissionPayInputSchema,
+  commissionRejectInputSchema,
   CONFLICT_RESOLUTIONS,
   CONFLICT_STATUSES,
   CONTACT_STATUSES,
@@ -70,6 +72,8 @@ export type CsvImportInput = z.infer<typeof csvImportInputSchema>;
 export type ImportResult = z.infer<typeof importResultSchema>;
 export type ConflictResolution = z.infer<typeof conflictResolutionInputSchema>;
 export type StaffInviteInput = z.infer<typeof staffInviteInputSchema>;
+export type CommissionRejectInput = z.infer<typeof commissionRejectInputSchema>;
+export type CommissionPayInput = z.infer<typeof commissionPayInputSchema>;
 
 /** Row of `create_lead()`. */
 export interface CreateLeadResult {

@@ -14,7 +14,7 @@ import { statusTone } from '@/lib/crm/status';
 
 import { ConflictActions } from './conflict-actions';
 import styles from './conflict-queue.module.css';
-import table from './import-table.module.css';
+import table from '../table-stack/crm-table.module.css';
 
 import type { ConflictActionLabels } from './conflict-actions';
 import type { ComparedField } from '@/lib/crm/conflicts';

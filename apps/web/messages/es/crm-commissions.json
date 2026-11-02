@@ -1,0 +1,103 @@
+{
+  "crmCommissions": {
+    "metaTitle": "Comisiones",
+    "title": "Comisiones.",
+    "tone": "Lo que genera cada cierre.",
+    "lead": {
+      "closer": "Las aprueba y registra Jose. El % de cada fila es el que tenías al cerrarse esa operación.",
+      "admin": "Aquí solo se registra: el pago se hace por transferencia, fuera de la web."
+    },
+    "filters": {
+      "label": "Filtrar comisiones",
+      "closer": "Closer",
+      "closerAll": "Todos los closers",
+      "closerOff": "(desactivado)",
+      "hint": "Pulsa un total para filtrar por estado.",
+      "apply": "Filtrar",
+      "clear": "Quitar filtros"
+    },
+    "totals": {
+      "label": "Totales por estado; filtran la lista",
+      "count": "{count, plural, =0 {ninguna} one {# comisión} other {# comisiones}}",
+      "pending": "Pendientes",
+      "approved": "Aprobadas",
+      "paid": "Pagadas",
+      "rejected": "Rechazadas"
+    },
+    "status": {
+      "pending": "Pendiente",
+      "approved": "Aprobada",
+      "paid": "Pagada",
+      "rejected": "Rechazada"
+    },
+    "table": {
+      "caption": "Comisiones por fecha de cierre",
+      "contact": "Contacto y pack",
+      "closed": "Cierre",
+      "closer": "Closer",
+      "charged": "Cobrado",
+      "percent": "%",
+      "commission": "Comisión",
+      "status": "Estado",
+      "paid": "Pago",
+      "actions": "Acciones",
+      "none": "—",
+      "rateNow": "tasa actual: {rate}",
+      "reason": "Motivo: {reason}",
+      "closerOff": "(desactivado)"
+    },
+    "empty": {
+      "title": "Aún no hay comisiones",
+      "text": "Aparecen cuando Jose cierra como cobrada una operación de tu cartera.",
+      "textAdmin": "Aparecen al cerrar como cobrada una operación de un contacto con closer.",
+      "filteredTitle": "Ninguna comisión con estos filtros",
+      "filteredText": "Quita el filtro de estado o de closer para ver el resto."
+    },
+    "actions": {
+      "approve": "Aprobar",
+      "reject": "Rechazar",
+      "pay": "Marcar pagada",
+      "approveFor": "Aprobar la comisión de {contact}",
+      "rejectFor": "Rechazar la comisión de {contact}",
+      "payFor": "Marcar pagada la comisión de {contact}"
+    },
+    "dialogs": {
+      "close": "Cerrar",
+      "cancel": "Cancelar",
+      "approve": {
+        "title": "Aprobar comisión",
+        "summary": "<strong>{amount}</strong> para <strong>{closer}</strong> · {detail} ({percent} de {base}).",
+        "note": "Solo registra la aprobación. {closer} la verá como aprobada.",
+        "submit": "Aprobar {amount}",
+        "saved": "Comisión aprobada"
+      },
+      "reject": {
+        "title": "Rechazar comisión",
+        "summary": "<strong>{amount}</strong> para <strong>{closer}</strong> · {detail}.",
+        "reason": "Motivo",
+        "hint": "{closer} lo verá en la fila.",
+        "submit": "Rechazar",
+        "saved": "Comisión rechazada"
+      },
+      "pay": {
+        "title": "Marcar pagada",
+        "summary": "<strong>{amount}</strong> para <strong>{closer}</strong> · {detail}.",
+        "note": "Esto solo registra el pago: la transferencia la haces tú fuera de la web.",
+        "date": "Fecha de pago",
+        "noteLabel": "Nota (opcional)",
+        "notePlaceholder": "Ej.: transferencia del 2 nov",
+        "submit": "Registrar pago",
+        "saved": "Pago registrado"
+      }
+    },
+    "errors": {
+      "invalid": "Revisa los datos e inténtalo de nuevo.",
+      "failed": "No se ha podido guardar. Inténtalo de nuevo en un momento.",
+      "forbidden": "Solo el administrador puede hacerlo.",
+      "notFound": "No encuentro esa comisión.",
+      "invalidTransition": "Esa comisión ya ha cambiado de estado. Recarga la lista para verla.",
+      "reasonRequired": "Escribe el motivo: lo verá el closer.",
+      "futureDate": "La fecha de pago no puede ser posterior a hoy."
+    }
+  }
+}

@@ -5,7 +5,7 @@ import { StatusBadge } from '@/components/shared/status-badge';
 import { StatList, StatRow } from '@/components/staff/stat-list';
 
 import styles from './import-history.module.css';
-import table from './import-table.module.css';
+import table from '../table-stack/crm-table.module.css';
 
 import type { StaffRole } from '@/lib/auth/staff';
 import type { ImporterOutcome } from '@/lib/crm/conflicts';

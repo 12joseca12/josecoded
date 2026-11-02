@@ -1041,6 +1041,11 @@ isOneToOne: false
               "contact_id": string,"created_at": string,"delivered_at": string,"has_access": boolean,"id": string,"invite_email": string,"lead_id": string,"pack_code": string,"pack_option": string,"project_phase": Database["public"]['Enums']["project_phase"],"starts_at": string,"updated_at": string,"user_id": string
             }[]
                            },
+"staff_commissions":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "amount": number,"approved_at": string,"base_amount": number,"closed_at": string,"closer_disabled": boolean,"closer_id": string,"closer_name": string,"closer_rate": number,"contact_name": string,"id": string,"organization": string,"pack_code": string,"pack_option": string,"paid_at": string,"paid_note": string,"percent": number,"rejected_reason": string,"status": Database["public"]['Enums']["commission_status"]
+            }[]
+                           },
 "staff_telegram_begin":
 { Args: Record<PropertyKey, never>; Returns: string
                            },

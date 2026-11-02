@@ -4,6 +4,7 @@ import { analyzeImport } from '@/lib/crm/import-analysis';
 
 import type { OmenStatus } from '@/lib/admin/queries';
 import type { StaffRole } from '@/lib/auth/staff';
+import type { CommissionRecord } from '@/lib/crm/commissions';
 import type {
   ClientRecord,
   ContactDetail,
@@ -732,4 +733,61 @@ export function previewConflictQueue(): ConflictQueueData {
       },
     ],
   };
+}
+
+// ---- K5 --------------------------------------------------------------------------------------------------------
+
+/**
+ * The commissions of the previews. Marta (20 %) has one of each live state and an old one closed when her rate was
+ * 8 %, so the row that explains «tasa actual» is there; Íñigo and Noelia (switched off, still owed) complete the admin's
+ * list with the rejected one. The totals of the admin are 248, 90, 412 and 90 euros: those of ref/crm/comisiones.html.
+ */
+const commission = (
+  id: string,
+  closer: Owner,
+  contactName: string,
+  organization: string,
+  packCode: string,
+  packOption: string,
+  closedDaysAgo: number,
+  baseAmount: number,
+  percent: number,
+  status: CommissionRecord['status'],
+  extra: Partial<CommissionRecord> = {},
+): CommissionRecord => ({
+  id,
+  closerId: closer.user_id,
+  closerName: closer.display_name,
+  closerDisabled: closer.disabled,
+  closerRate: closer.rate,
+  contactName,
+  organization,
+  packCode,
+  packOption,
+  closedAt: at(-closedDaysAgo * DAY),
+  baseAmount,
+  percent,
+  amount: Math.round(baseAmount * percent) / 100,
+  status,
+  approvedAt: null,
+  paidAt: null,
+  paidNote: null,
+  rejectedReason: null,
+  ...extra,
+});
+
+const [, MARTA, INIGO, NOELIA] = OWNERS as [Owner, Owner, Owner, Owner];
+
+const COMMISSIONS: CommissionRecord[] = [
+  commission('50000000-0000-4000-8000-000000000001', MARTA, 'Marina Soler', 'Clínica Dental Soler', 'P2', 'Pedidos / reservas', 2, 700, 20, 'pending'),
+  commission('50000000-0000-4000-8000-000000000002', INIGO, 'Hugo Navarro', 'Taller Navarro', 'P1', 'Web básica', 5, 720, 15, 'pending'),
+  commission('50000000-0000-4000-8000-000000000003', MARTA, 'Laura Campos', 'Fisio Campos', 'P1', 'Web básica', 13, 450, 20, 'approved', { approvedAt: at(-10 * DAY) }),
+  commission('50000000-0000-4000-8000-000000000004', MARTA, 'Ana Ruiz', 'Panadería La Espiga', 'P2', 'Pedidos / reservas', 31, 1400, 8, 'paid', { approvedAt: at(-24 * DAY), paidAt: at(-18 * DAY), paidNote: 'Transferencia' }),
+  commission('50000000-0000-4000-8000-000000000005', INIGO, 'Ramón Peña', 'Cooperativa Olivar Alto', 'P3', 'Gestión', 38, 2000, 15, 'paid', { approvedAt: at(-30 * DAY), paidAt: at(-23 * DAY), paidNote: 'Transferencia' }),
+  commission('50000000-0000-4000-8000-000000000006', NOELIA, 'Óscar Prieto', 'Prieto Reformas', 'P1', 'Web básica', 51, 600, 15, 'rejected', { rejectedReason: 'Cobro devuelto por el banco' }),
+];
+
+/** What `staff_commissions()` returns: a closer her own rows, the admin all of them. */
+export function previewCommissions(role: StaffRole): CommissionRecord[] {
+  return role === 'admin' ? COMMISSIONS : COMMISSIONS.filter((row) => row.closerId === MARTA.user_id);
 }

@@ -1,0 +1,58 @@
+/* ref/crm .totals: the four statuses as tiles; each one is a link that filters the list by it (and a second press clears it) */
+.totals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-5);
+}
+
+.tile {
+  display: grid;
+  flex: 1 1 9rem;
+  gap: var(--sp-1);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-hairline);
+  color: var(--text-2);
+  font-size: var(--font-small-size);
+  transition: background-color var(--dur-hover) var(--ease-standard);
+}
+
+.tile[aria-current='true'] {
+  background: var(--tint-selected);
+  box-shadow: var(--shadow-selected-row);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tile:hover {
+    background: var(--tint-preview);
+  }
+}
+
+.figure {
+  color: var(--text);
+  font-size: var(--font-figure-pack-size);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--font-figure-pack-weight);
+  letter-spacing: var(--font-figure-pack-tracking);
+  line-height: var(--font-figure-leading);
+}
+
+.tile[data-tone='attention'] .figure {
+  color: var(--pending);
+}
+
+.tile[data-tone='live'] .figure {
+  color: var(--green);
+}
+
+.count {
+  color: var(--text-3);
+  font-size: var(--font-caption-size);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tile {
+    transition: none;
+  }
+}

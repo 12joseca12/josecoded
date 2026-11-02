@@ -24,7 +24,7 @@ import type { ComponentProps } from 'react';
 
 describe('variant unions', () => {
   it('are exactly the values of the design', () => {
-    expectTypeOf<ButtonVariant>().toEqualTypeOf<'solid' | 'ghost' | 'quiet'>();
+    expectTypeOf<ButtonVariant>().toEqualTypeOf<'solid' | 'ghost' | 'quiet' | 'danger'>();
     expectTypeOf<ButtonSize>().toEqualTypeOf<'sm' | 'md' | 'lg'>();
     expectTypeOf<IconTileSize>().toEqualTypeOf<'sm' | 'md'>();
     expectTypeOf<IconTileTone>().toEqualTypeOf<'soft' | 'solid'>();

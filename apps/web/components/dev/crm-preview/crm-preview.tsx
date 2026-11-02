@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 
+import { CommissionsView } from '@/components/crm/commissions';
 import { ContactDetailView } from '@/components/crm/contact-detail';
 import { ContactsView } from '@/components/crm/contacts-view';
 import { ImportView } from '@/components/crm/import';
@@ -7,12 +8,14 @@ import { getStatusOptions, getStatusSheetLabels } from '@/components/crm/status-
 import { PageHead } from '@/components/staff/page-head';
 import { StaffShell } from '@/components/staff/staff-shell';
 import { AdminSummary, CrmSummary } from '@/components/staff/summary';
+import { parseCommissionQuery } from '@/lib/crm/commissions';
 import {
   ADMIN_COUNTERS,
   PREVIEW_IDENTITY,
   PREVIEW_OMEN,
   IMPORT_PREVIEW_FILE,
   previewConflictQueue,
+  previewCommissions,
   previewContactDetail,
   previewContactPage,
   previewExtras,
@@ -25,6 +28,7 @@ import {
   previewOwnConflicts,
   previewSummary,
 } from '@/lib/dev/crm-fixtures';
+
 
 import type { StaffRole } from '@/lib/auth/staff';
 import type { PreviewScreen } from '@/lib/dev/crm-previews';
@@ -40,6 +44,7 @@ const CURRENT_PATH: Record<PreviewScreen, string> = {
   'importar-columnas': '/crm/importar',
   'importar-resultado': '/crm/importar',
   conflictos: '/crm/importar',
+  comisiones: '/crm/comisiones',
   admin: '/admin',
 };
 
@@ -53,11 +58,14 @@ export async function CrmPreview({
   screen,
   role,
   tab,
+  search = {},
 }: {
   locale: Locale;
   screen: PreviewScreen;
   role: StaffRole;
   tab?: string;
+  /** The query of the URL: `?status` and `?closer` of K5. */
+  search?: Record<string, string | string[] | undefined>;
 }) {
   const summary = previewSummary(role);
   const overdue = (role === 'admin' ? summary.admin?.contacts_due : summary.my.contacts_due) ?? 0;
@@ -145,6 +153,15 @@ export async function CrmPreview({
           />
         );
       }
+      case 'comisiones':
+        return (
+          <CommissionsView
+            locale={locale}
+            role={role}
+            rows={previewCommissions(role)}
+            query={parseCommissionQuery(search)}
+          />
+        );
       case 'admin': {
         const t = await getTranslations({ locale, namespace: 'crm' });
         return (

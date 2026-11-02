@@ -3,7 +3,7 @@ import { useTranslations } from 'next-intl';
 import { Icon } from '@/components/ui/icon';
 
 import styles from './import-preview.module.css';
-import table from './import-table.module.css';
+import table from '../table-stack/crm-table.module.css';
 
 import type { ImportAnalysis } from '@/lib/crm/import-analysis';
 

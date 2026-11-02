@@ -74,6 +74,7 @@
         "importar-columnas": "K4 · Importar, paso 2 (columnas y vista previa con errores)",
         "importar-resultado": "K4 · Importar, paso 3 (resultado con una fila pendiente)",
         "conflictos": "K4 · Conflictos de importación (cola del admin)",
+        "comisiones": "K5 · Comisiones (pendiente, aprobada, pagada y rechazada, con totales)",
         "admin": "C1 · Resumen de admin (/admin)"
       },
       "roles": {

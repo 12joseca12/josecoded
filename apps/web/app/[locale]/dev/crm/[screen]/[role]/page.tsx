@@ -22,5 +22,5 @@ export default async function DevCrmScreenPage({ params, searchParams }: { param
   const preview = findPreview(screen, role);
   if (!preview) notFound();
   const tab = Array.isArray(raw.tab) ? raw.tab[0] : raw.tab;
-  return <CrmPreview locale={locale} screen={preview.screen} role={preview.role} tab={tab} />;
+  return <CrmPreview locale={locale} screen={preview.screen} role={preview.role} tab={tab} search={raw} />;
 }

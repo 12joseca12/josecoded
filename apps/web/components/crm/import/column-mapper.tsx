@@ -6,7 +6,7 @@ import { Field } from '@/components/forms/field';
 import { fieldOfColumn, guessMapping, IMPORT_FIELDS } from '@/lib/crm/import-mapping';
 
 import styles from './column-mapper.module.css';
-import table from './import-table.module.css';
+import table from '../table-stack/crm-table.module.css';
 
 import type { ColumnMapping, ImportField } from '@/lib/crm/import-mapping';
 

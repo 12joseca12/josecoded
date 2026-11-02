@@ -246,6 +246,19 @@ export const conflictResolutionInputSchema = z.object({
   note: z.string().trim().max(1000).optional(),
 });
 
+/** Arguments of the admin's commission actions (K5): `admin_commission_approve/reject/mark_paid`. */
+export const commissionApproveInputSchema = z.object({ commission_id: z.uuid() });
+export const commissionRejectInputSchema = z.object({
+  commission_id: z.uuid(),
+  reason: z.string().trim().min(1).max(1000),
+});
+export const commissionPayInputSchema = z.object({
+  commission_id: z.uuid(),
+  /** The day the transfer was made, `YYYY-MM-DD` on the Madrid clock. */
+  paid_at: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  note: z.string().trim().max(500).optional(),
+});
+
 /** Arguments of `admin_staff_invite()` (Q21: the commission rate is mandatory, 0..100). */
 export const staffInviteInputSchema = z.object({
   email: z.email().max(320),

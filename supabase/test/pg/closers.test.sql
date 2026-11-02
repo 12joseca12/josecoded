@@ -156,6 +156,9 @@ select t.ok(t.n('select user_id from public.staff_members') = 3 and t.n('select 
             and t.n('select id from public.client_user_stories') = 1 and t.n('select id from public.custom_quotes') = 1
             and t.n('select id from public.custom_quote_items') = 2,
             'jose: staff, invitations, imports, commissions, stories and quotes');
+select t.ok(t.n('select id from public.staff_commissions()') = 1
+            and t.val($q$select concat_ws(':', closer_name, contact_name, pack_code, percent, amount, status) from public.staff_commissions()$q$) = 'Carla:Cliente de Carla:P1:10.00:100.00:pending',
+            'jose: staff_commissions() lists every commission with closer, contact and pack');
 select t.ok(t.n('select id from public.site_content_entries') = 2 and t.n('select id from public.site_content_versions') = 2
             and t.n('select id from public.notification_rules') = 27 and t.n('select id from public.pricing_price_history') > 0,
             'jose: content entries and versions, notification rules and the price history');
@@ -279,6 +282,11 @@ select t.ok(t.n('select id from public.closer_commissions') = 1
             and t.err($q$select public.admin_commission_approve('00000000-0000-4000-8000-000000000f01')$q$) = '42501 forbidden'
             and t.err($q$select public.admin_commission_mark_paid('00000000-0000-4000-8000-000000000f01', now(), 'x')$q$) = '42501 forbidden',
             'carla reads her commission (10 %) and cannot approve, edit or pay it');
+select t.ok(t.n('select id from public.staff_commissions()') = 1
+            and t.val('select closer_id::text from public.staff_commissions()') = '00000000-0000-4000-8000-0000000000a5'
+            and t.val('select closer_rate::text from public.staff_commissions()') = '10.00'
+            and t.err($q$select public.admin_commission_reject('00000000-0000-4000-8000-000000000f01', 'x')$q$) = '42501 forbidden',
+            'carla: staff_commissions() returns her own row with the contact and pack she cannot read directly, and no reject');
 select t.ok(t.n('select id from public.clients') = 1
             and t.err('select notes_internal from public.clients') like '42501 %'
             and t.err('select contact_id from public.clients') like '42501 %'
@@ -367,6 +375,10 @@ select t.ok(t.n('select user_id from public.staff_members') = 1
             'dani sees his own staff row and its disabled_at');
 select t.ok(t.n('select id from public.closer_commissions') = 1,
             'dani still sees the commissions he is owed');
+select t.ok(t.n('select id from public.staff_commissions()') = 1
+            and t.val('select contact_name from public.staff_commissions()') is not null
+            and t.val('select closer_disabled::text from public.staff_commissions()') = 'true',
+            'dani reads his commission through staff_commissions() although he reads no contact nor lead');
 select t.ok(t.err($q$select public.crm_import_contacts_csv('[]', 'a.csv', 'dani')$q$) = '42501 forbidden'
             and t.err('select public.staff_telegram_begin()') = '42501 forbidden'
             and t.err('select public.crm_team_counters()') = '42501 forbidden'
@@ -387,6 +399,8 @@ select t.ok(t.n('select id from public.staff_invites') = 0 and t.n('select id fr
             and t.n('select id from public.site_content_entries') = 0 and t.n('select id from public.notification_rules') = 0
             and t.n('select user_id from public.staff_members') = 0 and t.n('select id from public.crm_import_conflicts') = 0,
             'ana: 0 rows of invitations, imports, commissions, quotes, content, rules and staff');
+select t.ok(t.err('select * from public.staff_commissions()') = '42501 forbidden',
+            'ana (a client) cannot call staff_commissions()');
 select t.ok(t.n('select code from public.packs') = 5 and t.n('select code from public.extras') = 6,
             'ana reads the visible catalogue (area): 5 packs (the hidden one is not hers) and 6 extras');
 select t.ok(t.err($q$update public.packs set price = 1 where code = 'P2'$q$) like '42501 %'
@@ -654,6 +668,10 @@ select t.ok(t.err($q$select public.admin_commission_mark_paid((select id from pu
 select t.ok(t.err($q$select public.admin_commission_reject((select id from public.closer_commissions where lead_id = '00000000-0000-4000-8000-000000000320'), 'duplicada')$q$) is null
             and t.val($q$select status::text || ':' || rejected_reason from public.closer_commissions where lead_id = '00000000-0000-4000-8000-000000000320'$q$) = 'rejected:duplicada',
             'a pending commission can be rejected with a reason');
+select t.ok(t.err($q$select public.admin_commission_reject((select id from public.closer_commissions where lead_id = '00000000-0000-4000-8000-000000000322'), '   ')$q$) = '22023 reason_required'
+            and t.err($q$select public.admin_commission_reject((select id from public.closer_commissions where lead_id = '00000000-0000-4000-8000-000000000322'), null)$q$) = '22023 reason_required'
+            and t.val($q$select status::text from public.closer_commissions where lead_id = '00000000-0000-4000-8000-000000000322'$q$) = 'pending',
+            'a rejection needs a reason: blank or null is refused and the commission stays pending');
 select t.ok(t.err($q$select public.admin_commission_create('00000000-0000-4000-8000-0000000000a5', '00000000-0000-4000-8000-000000000311', 500, 'extra')$q$) like '23505 %'
             and t.err($q$select public.admin_commission_create('00000000-0000-4000-8000-0000000000a5', '00000000-0000-4000-8000-000000000331', 500, null)$q$) = 'P0002 lead_not_found'
             and t.err($q$select public.admin_commission_create('00000000-0000-4000-8000-0000000000a2', '00000000-0000-4000-8000-000000000311', 500, null)$q$) = 'P0002 closer_not_found',

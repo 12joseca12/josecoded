@@ -145,7 +145,11 @@ language plpgsql security definer set search_path = '' as $$
 declare c public.closer_commissions;
 begin
   if not private.is_admin() then raise exception 'forbidden' using errcode = '42501'; end if;
-  update public.closer_commissions set status = 'rejected', rejected_reason = p_reason
+  -- the closer reads the reason in her row: a rejection without one is not accepted
+  if p_reason is null or btrim(p_reason) = '' or length(p_reason) > 1000 then
+    raise exception 'reason_required' using errcode = '22023';
+  end if;
+  update public.closer_commissions set status = 'rejected', rejected_reason = btrim(p_reason)
    where id = p_id and status = 'pending'
   returning * into c;
   if c.id is null then raise exception 'commission_not_pending' using errcode = '22023'; end if;
@@ -169,6 +173,50 @@ begin
 end $$;
 revoke all on function private.admin_commission_mark_paid_impl(uuid, timestamptz, text) from public, anon, authenticated;
 grant execute on function private.admin_commission_mark_paid_impl(uuid, timestamptz, text) to authenticated, service_role;
+
+-- K5 «Comisiones»: the list with who, what and which pack, in one read. The closer cannot read `leads` (admin only) nor
+-- the contact of a commission that was reassigned or of a closer switched off, and she is owed the money all the same,
+-- so the join happens here: the rows are the caller's own (`closer_id = auth.uid()`; a disabled closer still reads
+-- hers, as the policy of the table does) or all of them for the admin. Nobody else gets rows: not even an empty
+-- answer to a client (forbidden). `closer_rate` is the current rate, only to explain a frozen `percent` that differs.
+create or replace function private.staff_commissions_impl()
+returns table (id uuid, closer_id uuid, closer_name text, closer_disabled boolean, closer_rate numeric,
+               contact_name text, organization text, pack_code text, pack_option text, closed_at timestamptz,
+               base_amount numeric, percent numeric, amount numeric, status public.commission_status,
+               approved_at timestamptz, paid_at timestamptz, paid_note text, rejected_reason text)
+language plpgsql stable security definer set search_path = '' as $$
+#variable_conflict use_column
+begin
+  if not (private.is_admin() or (private.is_aal2()
+          and exists (select 1 from public.staff_members s where s.user_id = (select auth.uid())))) then
+    raise exception 'forbidden' using errcode = '42501';
+  end if;
+  return query
+  select k.id, k.closer_id, s.display_name, s.disabled_at is not null, s.commission_rate,
+         ct.display_name, o.name, l.pack_code, l.pack_option, coalesce(l.paid_at, k.created_at),
+         k.base_amount, k.percent, k.amount, k.status, k.approved_at, k.paid_at, k.paid_note, k.rejected_reason
+    from public.closer_commissions k
+    join public.staff_members s on s.user_id = k.closer_id
+    join public.crm_contacts ct on ct.id = k.contact_id
+    left join public.crm_organizations o on o.id = ct.organization_id
+    join public.leads l on l.id = k.lead_id
+   where private.is_admin() or k.closer_id = (select auth.uid())
+   order by coalesce(l.paid_at, k.created_at) desc, k.id
+   limit 500;
+end $$;
+revoke all on function private.staff_commissions_impl() from public, anon, authenticated;
+grant execute on function private.staff_commissions_impl() to authenticated, service_role;
+
+create or replace function public.staff_commissions()
+returns table (id uuid, closer_id uuid, closer_name text, closer_disabled boolean, closer_rate numeric,
+               contact_name text, organization text, pack_code text, pack_option text, closed_at timestamptz,
+               base_amount numeric, percent numeric, amount numeric, status public.commission_status,
+               approved_at timestamptz, paid_at timestamptz, paid_note text, rejected_reason text)
+language sql stable security invoker set search_path = '' as $$
+  select * from private.staff_commissions_impl()
+$$;
+revoke all on function public.staff_commissions() from public, anon, authenticated;
+grant execute on function public.staff_commissions() to authenticated;
 
 -- Manual commission (extras and upgrades do not generate one by themselves, §14.12.1): applies the current rate.
 create or replace function private.admin_commission_create_impl(

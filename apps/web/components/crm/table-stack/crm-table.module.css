@@ -1,5 +1,5 @@
-/* The tables of K4 (column mapper, preview, history, resolved conflicts): real table semantics with explicit roles,
-   because below 46rem of their own width each row is stacked into a block and the browser would drop them. */
+/* The generic table of the CRM screens (import, commissions): real table semantics with explicit roles, because below
+   46rem of its own width each row is stacked into a block and the browser would drop them. */
 .box {
   container-type: inline-size;
   min-width: 0;
@@ -32,7 +32,7 @@
 
 .cell {
   /* stylelint-disable-next-line property-no-unknown -- CSS Modules keyword */
-  composes: cell from '../table-stack/table-stack.module.css';
+  composes: cell from './table-stack.module.css';
   height: var(--size-crm-row);
   padding: var(--sp-1) var(--sp-3);
   box-shadow: var(--shadow-edge-bottom);

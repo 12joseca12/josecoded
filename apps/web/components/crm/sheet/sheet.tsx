@@ -35,7 +35,8 @@ export function Sheet({
   open: boolean;
   onClose: () => void;
   title: string;
-  description?: string;
+  /** What the dialog is about, read with its name; a string or inline markup (an amount in bold). */
+  description?: ReactNode;
   variant?: SheetVariant;
   /** Already translated: the accessible name of the close button. */
   closeLabel: string;

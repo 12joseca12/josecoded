@@ -16,7 +16,7 @@ export type FormState<T> = {
 // Each union is spilled to a `data-variant` / `data-size` / `data-tone` attribute and selected in the
 // component's CSS Module by attribute. No CVA, no clsx.
 
-export type ButtonVariant = 'solid' | 'ghost' | 'quiet';
+export type ButtonVariant = 'solid' | 'ghost' | 'quiet' | 'danger';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 /** `sm` is the tag of a data card (a contact's labels); `md` the pill of a marquee. */
 export type ChipSize = 'md' | 'sm';
@@ -74,6 +74,7 @@ export type IconName =
   | 'copy'
   | 'download'
   | 'ellipsis'
+  | 'euro'
   | 'file-text'
   | 'file-up'
   | 'flask-conical'

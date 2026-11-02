@@ -81,6 +81,13 @@
   color: var(--text-2);
 }
 
+/* ref/crm .btn[data-variant='danger']: what cannot be undone (a rejection); coral, never the violet of the view */
+.btn[data-variant='danger'] {
+  background: var(--tint-danger);
+  color: var(--danger);
+  box-shadow: inset 0 0 0 var(--stroke-hairline) var(--edge-danger);
+}
+
 @media (hover: hover) and (pointer: fine) {
   .btn[data-variant='quiet']:is(:hover, [data-hover]):not(:disabled, [aria-disabled='true']) {
     background: var(--tint-ghost);
