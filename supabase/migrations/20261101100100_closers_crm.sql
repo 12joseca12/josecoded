@@ -183,7 +183,9 @@ create policy staff_invites_select on public.staff_invites for select to authent
 create policy staff_invites_insert on public.staff_invites for insert to authenticated with check ((select private.is_admin()));
 create policy staff_invites_update on public.staff_invites for update to authenticated
   using ((select private.is_admin())) with check ((select private.is_admin()));
-create policy staff_invites_delete on public.staff_invites for delete to authenticated using ((select private.is_admin()));
+-- only an unclaimed invitation can be deleted: a claimed one is the record of who joined and when
+create policy staff_invites_delete on public.staff_invites for delete to authenticated
+  using ((select private.is_admin()) and claimed_at is null);
 grant select, insert, update, delete on public.staff_invites to authenticated;
 
 -- 5) Guards and the LinkedIn index.
@@ -712,12 +714,19 @@ begin
   if not private.is_admin() then raise exception 'forbidden' using errcode = '42501'; end if;
   if v_email is null or position('@' in v_email::text) = 0 then raise exception 'invalid_email' using errcode = '22023'; end if;
   if p_role is null then raise exception 'role_required' using errcode = '22023'; end if;
+  -- there is one admin (Jose): nobody is invited as admin, not even through the RPC
+  if p_role = 'admin' then raise exception 'invalid_role' using errcode = '22023'; end if;
   if p_commission_rate is null or p_commission_rate < 0 or p_commission_rate > 100 then
     raise exception 'invalid_commission_rate' using errcode = '22023';
   end if;
   if exists (select 1 from auth.users u join public.staff_members s on s.user_id = u.id
               where u.email::extensions.citext operator(extensions.=) v_email) then
     raise exception 'already_staff' using errcode = '22023';
+  end if;
+  -- a resend renews the invitation and queues the email again: not more than once every 5 minutes per address
+  if exists (select 1 from public.staff_invites i where i.email operator(extensions.=) v_email and i.claimed_at is null
+              and i.updated_at > now() - interval '5 minutes') then
+    raise exception 'invite_recently_sent' using errcode = '22023';
   end if;
 
   insert into public.staff_invites as i (email, role, commission_rate, invited_by)
@@ -795,6 +804,9 @@ begin
   if p_disabled is true and p_user_id = (select auth.uid()) then
     raise exception 'cannot_disable_self' using errcode = '22023';
   end if;
+  if p_user_id = (select auth.uid()) and (p_disabled is not null or p_commission_rate is not null) then
+    raise exception 'cannot_edit_self' using errcode = '22023';
+  end if;
   update public.staff_members set
     disabled_at     = case when p_disabled is null then disabled_at when p_disabled then coalesce(disabled_at, now()) else null end,
     commission_rate = coalesce(round(p_commission_rate, 2), commission_rate),
@@ -824,6 +836,9 @@ begin
   if v_to is not null then
     if not exists (select 1 from public.staff_members s where s.user_id = v_to) then
       raise exception 'staff_not_found' using errcode = 'P0002';
+    end if;
+    if exists (select 1 from public.staff_members s where s.user_id = v_to and s.role <> 'admin' and s.disabled_at is not null) then
+      raise exception 'staff_disabled' using errcode = '22023';
     end if;
     if exists (select 1 from public.staff_members s where s.user_id = v_to and s.role = 'admin') then v_to := null; end if;
   end if;

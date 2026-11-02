@@ -120,6 +120,8 @@
       "alreadyStaff": "That person is already on the team.",
       "notFound": "It no longer exists: the screen was out of date. Reload it.",
       "self": "You cannot do this on your own row.",
+      "tooSoon": "It was sent less than 5 minutes ago. Wait a little before resending it.",
+      "targetDisabled": "That person is switched off: switch them on first or choose someone else.",
       "sameTarget": "Choose someone else: the portfolio is already in their name.",
       "forbidden": "You are not allowed to do this.",
       "failed": "Could not save. Try again."

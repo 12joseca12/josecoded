@@ -120,6 +120,8 @@
       "alreadyStaff": "Esa persona ya forma parte del equipo.",
       "notFound": "Ya no existe: la pantalla estaba desactualizada. Recárgala.",
       "self": "No puedes hacerlo sobre tu propia fila.",
+      "tooSoon": "Ya se envió hace menos de 5 minutos. Espera un poco antes de reenviarla.",
+      "targetDisabled": "Esa persona está desactivada: actívala antes o elige a otra.",
       "sameTarget": "Elige a otra persona: la cartera ya está a su nombre.",
       "forbidden": "No tienes permiso para hacerlo.",
       "failed": "No se ha podido guardar. Inténtalo de nuevo."

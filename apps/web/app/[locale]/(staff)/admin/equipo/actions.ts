@@ -26,15 +26,17 @@ type InviteState = FormState<{ email: string; rate: string }>;
 type RateState = FormState<{ rate: string }>;
 type PlainState = FormState<{ id: string }>;
 
-type Failure = 'invalid' | 'alreadyStaff' | 'notFound' | 'self' | 'forbidden' | 'failed';
+type Failure = 'invalid' | 'alreadyStaff' | 'notFound' | 'self' | 'tooSoon' | 'targetDisabled' | 'forbidden' | 'failed';
 
 /** What the database says when a rule is broken, as a key of `adminTeam.errors`. Unknown → `failed`. */
 function failureOf(error: { code?: string; message?: string }): Failure {
   const message = error.message ?? '';
   if (/already_staff/.test(message)) return 'alreadyStaff';
   if (/staff_not_found/.test(message)) return 'notFound';
-  if (/cannot_disable_self/.test(message)) return 'self';
-  if (/invalid_email|invalid_commission_rate|role_required/.test(message)) return 'invalid';
+  if (/cannot_disable_self|cannot_edit_self/.test(message)) return 'self';
+  if (/invite_recently_sent/.test(message)) return 'tooSoon';
+  if (/staff_disabled/.test(message)) return 'targetDisabled';
+  if (/invalid_email|invalid_commission_rate|role_required|invalid_role/.test(message)) return 'invalid';
   return error.code === '42501' ? 'forbidden' : 'failed';
 }
 

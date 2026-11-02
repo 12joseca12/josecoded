@@ -565,10 +565,20 @@ select t.ok(t.err($q$select public.admin_staff_invite('eva@test', 'closer', 101)
             and t.err($q$select public.admin_staff_invite('no-es-email', 'closer', 10)$q$) = '22023 invalid_email'
             and t.err($q$select public.admin_staff_invite('carla@test', 'closer', 10)$q$) = '22023 already_staff',
             'invitation: rate out of range or missing, bad email and an existing staff member are refused');
+select t.ok(t.err($q$select public.admin_staff_invite('eva@test', 'admin', 10)$q$) = '22023 invalid_role',
+            'nobody is invited as admin, not even through the RPC');
 select t.ok(t.err($q$select public.admin_staff_invite('eva@test', 'closer', 12.5)$q$) is null
-            and t.err($q$select public.admin_staff_invite('eva@test', 'closer', 12.5)$q$) is null
+            and t.err($q$select public.admin_staff_invite('eva@test', 'closer', 12.5)$q$) = '22023 invite_recently_sent',
+            'a resend within 5 minutes is refused (no email flood to one address)');
+reset role;
+alter table public.staff_invites disable trigger staff_invites_set_updated_at;
+update public.staff_invites set updated_at = now() - interval '6 minutes' where email = 'eva@test';
+alter table public.staff_invites enable trigger staff_invites_set_updated_at;
+set local role authenticated;
+set local request.jwt.claims = :'jose';
+select t.ok(t.err($q$select public.admin_staff_invite('eva@test', 'closer', 12.5)$q$) is null
             and t.n($q$select id from public.staff_invites where email = 'eva@test'$q$) = 1,
-            'invitation: upsert by email (resending does not duplicate)');
+            'invitation: after 5 minutes a resend renews it (upsert by email, no duplicate)');
 select t.ok(t.err($q$select public.admin_staff_invite('old@test', 'closer', 8)$q$) is null
             and t.err($q$select public.admin_staff_invite('raw@test', 'closer', 8)$q$) is null,
             'invitations for old@test and raw@test');
@@ -596,6 +606,12 @@ select t.ok((select claimed_user_id from public.staff_invites where email = 'eva
             'the claimed invitation is marked and staff.claimed is queued');
 set local role authenticated;
 set local request.jwt.claims = :'jose';
+delete from public.staff_invites where email = 'eva@test';
+reset role;
+select t.ok((select count(*) from public.staff_invites where email = 'eva@test') = 1,
+            'a claimed invitation cannot be deleted, not even by the admin (it records who joined)');
+set local role authenticated;
+set local request.jwt.claims = :'jose';
 select t.ok(t.n('select * from public.admin_staff_list()') = 4
             and t.val($q$select mfa_enrolled::text from public.admin_staff_list() where user_id = '00000000-0000-4000-8000-0000000000a5'$q$) = 'false'
             and t.val($q$select contacts_count::text from public.admin_staff_list() where user_id = '00000000-0000-4000-8000-0000000000a5'$q$) = '3'
@@ -612,16 +628,17 @@ select t.ok(t.val($q$select mfa_enrolled::text from public.admin_staff_list() wh
 select t.ok(t.err($q$select public.admin_staff_set('00000000-0000-4000-8000-0000000000a5', true, 20, 'nota interna')$q$) is null
             and t.val($q$select (disabled_at is not null)::text || ':' || commission_rate::text || ':' || notes from public.admin_staff_list() where user_id = '00000000-0000-4000-8000-0000000000a5'$q$) = 'true:20.00:nota interna'
             and t.err($q$select public.admin_staff_set('00000000-0000-4000-8000-0000000000a1', true, null, null)$q$) = '22023 cannot_disable_self'
+            and t.err($q$select public.admin_staff_set('00000000-0000-4000-8000-0000000000a1', null, 20, null)$q$) = '22023 cannot_edit_self'
             and t.err($q$select public.admin_staff_set('00000000-0000-4000-8000-0000000000a5', null, 101, null)$q$) = '22023 invalid_commission_rate'
             and t.err($q$select public.admin_staff_set('00000000-0000-4000-8000-0000000000a2', true, null, null)$q$) = 'P0002 staff_not_found',
             'admin_staff_set: switches off, changes the rate and the notes; self and bad values are refused');
 select t.ok(t.val($q$select public.admin_reassign_contacts('00000000-0000-4000-8000-0000000000a5', null)$q$) = '3'
             and t.n($q$select id from public.crm_contacts where owner_id = '00000000-0000-4000-8000-0000000000a5'$q$) = 0
-            and t.val($q$select public.admin_reassign_contacts(null, '00000000-0000-4000-8000-0000000000a5')$q$) = '8'
+            and t.err($q$select public.admin_reassign_contacts(null, '00000000-0000-4000-8000-0000000000a5')$q$) = '22023 staff_disabled'
             and t.err($q$select public.admin_reassign_contacts(null, '00000000-0000-4000-8000-0000000000a2')$q$) = 'P0002 staff_not_found',
-            'admin_reassign_contacts moves a whole portfolio (to Jose with null) and logs a note per contact');
+            'admin_reassign_contacts moves a whole portfolio (to Jose with null), never to a switched-off closer, and logs a note per contact');
 reset role;
-select t.ok((select count(*) from public.crm_interactions where body = 'reasignado') = 11,
+select t.ok((select count(*) from public.crm_interactions where body = 'reasignado') = 3,
             'every reassigned contact got a timeline note');
 set local role authenticated;
 set local request.jwt.claims = :'carla';
