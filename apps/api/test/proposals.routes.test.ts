@@ -31,7 +31,7 @@ afterEach(() => vi.restoreAllMocks());
 
 describe('happy path', () => {
   it('AI returns valid JSON -> P2, priceFrom by rules, extras aside, signed token', async () => {
-    const { post, ai } = setup();
+    const { post, ai, clock } = setup();
     const res = await post();
     expect(res.status).toBe(200);
     expect(res.headers.get('cache-control')).toBe('no-store');
@@ -40,7 +40,7 @@ describe('happy path', () => {
     expect(data.pack).toMatchObject({ code: 'P2', price: 1400 });
     expect(data.recommendedExtras[0]).toMatchObject({ code: 'seo_basic', price: 250, billing: 'one_off' });
     expect(data.disclaimer).toMatch(/Orientativo/);
-    const payload = await verifyProposalToken('server-key-test-0123456789abcdef', data.proposalToken, Math.floor(Date.now() / 1000));
+    const payload = await verifyProposalToken('server-key-test-0123456789abcdef', data.proposalToken, Math.floor(clock.now().getTime() / 1000));
     expect(payload).toMatchObject({ pack: 'P2', priceFrom: 1400, id: data.proposalId });
     // the model got JSON mode, the consumer tag and no price
     expect(ai!.requests[0]).toMatchObject({ consumer: 'proposals', maxTokens: 700 });
@@ -289,12 +289,12 @@ describe('CORS', () => {
 describe('published catalogue (plan 3.7b)', () => {
   it('prices from the published catalogue, versions the token with it and reads it once per request', async () => {
     const pricing = createFakePricing({ P2: 1500 });
-    const { deps } = setup();
+    const { deps, clock } = setup();
     const res = await call('POST', '/api/v1/proposals/generate', { body, deps: { ...deps, pricing } });
     const { data } = await json(res);
     expect(data).toMatchObject({ priceFrom: 1500, pricingVersion: '2026-11-02.1' });
     expect(data.pack).toMatchObject({ code: 'P2', price: 1500 });
-    const payload = await verifyProposalToken('server-key-test-0123456789abcdef', data.proposalToken, Math.floor(Date.now() / 1000));
+    const payload = await verifyProposalToken('server-key-test-0123456789abcdef', data.proposalToken, Math.floor(clock.now().getTime() / 1000));
     expect(payload).toMatchObject({ priceFrom: 1500, pricingVersion: '2026-11-02.1' });
     expect(pricing.calls).toBe(1);
   });
