@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { CONTACT_STATUSES, contactKindSchema } from './crm.ts';
+import { CONTACT_STATUSES, PACK_CODE_DB_RE, contactKindSchema } from './crm.ts';
 
 // Inputs of the contacts screens of /crm (task 6.2, K2 and K3): the filters of the inbox in the URL and the forms of
 // the Server Actions. Every action parses with these before it touches the database; RLS stays the authority.
@@ -141,5 +141,8 @@ export const closePaidInputSchema = z.object({
     }),
   paid_at: dateField.optional().catch(undefined),
   commission: z.enum(['auto', 'yes', 'no']).catch('auto'),
+  /** Only for a manual lead without pack: the pack bought (an empty field means none). */
+  pack_code: z.union([z.string().regex(PACK_CODE_DB_RE), z.literal('')]).optional().transform((v) => v || undefined),
+  pack_option: z.union([z.string().trim().min(1).max(40), z.literal('')]).optional().transform((v) => v || undefined),
 });
 export type ClosePaidInput = z.infer<typeof closePaidInputSchema>;

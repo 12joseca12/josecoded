@@ -45,6 +45,12 @@ describe('closePaidInputSchema', () => {
       commission: 'auto',
     });
   });
+  it('validates the pack and treats an empty one as none', () => {
+    const base = { lead_id: lead, contact_id: lead, amount: '10' };
+    expect(closePaidInputSchema.parse({ ...base, pack_code: 'P2', pack_option: 'pro' })).toMatchObject({ pack_code: 'P2', pack_option: 'pro' });
+    expect(closePaidInputSchema.parse({ ...base, pack_code: '', pack_option: '' }).pack_code).toBeUndefined();
+    expect(closePaidInputSchema.safeParse({ ...base, pack_code: 'p2; --' }).success).toBe(false);
+  });
   it('refuses a missing or bad amount', () => {
     expect(closePaidInputSchema.safeParse({ lead_id: lead, contact_id: lead, amount: 'mucho' }).success).toBe(false);
   });

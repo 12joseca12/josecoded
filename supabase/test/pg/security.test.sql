@@ -270,6 +270,92 @@ select t.ok((select invite_email::text from public.clients where id = '00000000-
             'M3 the different address is the one stored for the invitation');
 rollback;
 
+-- ================================================================ M3b: a closer cannot redirect the portal invitation
+begin;
+set local role authenticated;
+set local request.jwt.claims = :'carla';
+select t.ok(t.err($q$update public.crm_contacts set email = 'atacante@evil.test' where id = '00000000-0000-4000-8000-000000000210'$q$) = '42501 closers cannot change the email of a contact with a lead or a client'
+            and t.err($q$update public.crm_contacts set email = 'atacante@evil.test' where id = '00000000-0000-4000-8000-000000000211'$q$) like '42501 %',
+            'M3b a closer cannot change the email of a won / active_client contact nor of one with a lead');
+select t.ok(t.err($q$update public.crm_contacts set email = 'agencia-nueva@example.test' where id = '00000000-0000-4000-8000-000000000212'$q$) is null
+            and t.err($q$update public.crm_contacts set display_name = 'Lead de Carla 2' where id = '00000000-0000-4000-8000-000000000211'$q$) is null,
+            'M3b a closer still fixes the email of a contact without leads and edits the other fields');
+select t.ok(t.err($q$select public.invite_client_access('00000000-0000-4000-8000-000000000410', null)$q$) is null,
+            'M3b the invitation of the closer still works');
+reset role;
+select t.ok((select payload ->> 'email' from private.outbox where event = 'client.invited' order by id desc limit 1) = 'cliente-carla@example.test',
+            'M3b the exploit fails: the invitation goes to the frozen address, not to the attacker''s');
+rollback;
+begin;
+-- Even if the contact email were changed behind the guard (admin typo fixed later), a closer still invites the frozen one.
+update public.crm_contacts set email = 'cambiado@example.test' where id = '00000000-0000-4000-8000-000000000210';
+set local role authenticated;
+set local request.jwt.claims = :'carla';
+select t.ok(t.err($q$select public.invite_client_access('00000000-0000-4000-8000-000000000410', 'cambiado@example.test')$q$) = '42501 email_must_match_contact'
+            and t.err($q$select public.invite_client_access('00000000-0000-4000-8000-000000000410', null)$q$) is null,
+            'M3b a closer invites only the frozen invite_email, never the current contact email');
+reset role;
+select t.ok((select payload ->> 'email' from private.outbox where event = 'client.invited' order by id desc limit 1) = 'cliente-carla@example.test',
+            'M3b the frozen address is the one queued');
+rollback;
+begin;
+-- A staff address answers the same generic error to a closer (no oracle), and email_is_staff stays for the admin.
+update public.clients set invite_email = 'jose@test' where id = '00000000-0000-4000-8000-000000000410';
+set local role authenticated;
+set local request.jwt.claims = :'carla';
+select t.ok(t.err($q$select public.invite_client_access('00000000-0000-4000-8000-000000000410', null)$q$) = '22023 invalid_email',
+            'M3b a closer gets invalid_email for a staff address');
+set local request.jwt.claims = :'jose';
+select t.ok(t.err($q$select public.invite_client_access('00000000-0000-4000-8000-000000000410', null)$q$) = '22023 email_is_staff',
+            'M3b the admin still gets email_is_staff');
+rollback;
+begin;
+-- One send per client every 10 minutes for a closer; the admin is not throttled.
+set local role authenticated;
+set local request.jwt.claims = :'carla';
+select t.ok(t.err($q$select public.invite_client_access('00000000-0000-4000-8000-000000000410', null)$q$) is null
+            and t.err($q$select public.invite_client_access('00000000-0000-4000-8000-000000000410', null)$q$) = '54000 invite_recently_sent',
+            'M3b a second invitation of the same client within 10 minutes is refused');
+reset role;
+select t.ok((select count(*) from private.outbox where event = 'client.invited' and payload ->> 'client_id' = '00000000-0000-4000-8000-000000000410') = 1,
+            'M3b only one event was queued');
+update private.quota_counters set expires_at = now() - interval '1 second' where key like 'client_invite_at:%';
+set local role authenticated;
+set local request.jwt.claims = :'carla';
+select t.ok(t.err($q$select public.invite_client_access('00000000-0000-4000-8000-000000000410', null)$q$) is null,
+            'M3b after the interval the closer can re-send');
+set local request.jwt.claims = :'jose';
+select t.ok(t.err($q$select public.invite_client_access('00000000-0000-4000-8000-000000000410', null)$q$) is null
+            and t.err($q$select public.invite_client_access('00000000-0000-4000-8000-000000000410', null)$q$) is null,
+            'M3b the admin can re-send without waiting');
+rollback;
+begin;
+-- Daily quota per closer.
+insert into private.quota_counters (key, count, expires_at)
+values ('client_invites:00000000-0000-4000-8000-0000000000a5', 20, now() + interval '1 hour');
+set local role authenticated;
+set local request.jwt.claims = :'carla';
+select t.ok(t.err($q$select public.invite_client_access('00000000-0000-4000-8000-000000000410', null)$q$) = '54000 invite_quota_exceeded',
+            'M3b a closer over his daily invitation quota is refused');
+rollback;
+
+-- ================================================================ M4b: a closer cannot swap the pack of a lead
+begin;
+-- A lead without pack takes one (set once); afterwards neither the pack nor the option change.
+insert into public.leads (id, contact_id, source) values ('00000000-0000-4000-8000-000000000391', '00000000-0000-4000-8000-000000000212', 'manual');
+set local role authenticated;
+set local request.jwt.claims = :'carla';
+select t.ok(t.err($q$update public.leads set pack_code = 'P1' where id = '00000000-0000-4000-8000-000000000391'$q$) is null,
+            'M4b a closer sets the pack of a lead that has none');
+select t.ok(t.err($q$update public.leads set pack_code = 'P2' where id = '00000000-0000-4000-8000-000000000391'$q$) like '42501 %'
+            and t.err($q$update public.leads set pack_option = 'pro' where id = '00000000-0000-4000-8000-000000000391'$q$) like '42501 %'
+            and t.err($q$update public.leads set pack_code = 'P1' where id = '00000000-0000-4000-8000-000000000311'$q$) like '42501 %',
+            'M4b a closer cannot change the pack or option of a lead that has one');
+set local request.jwt.claims = :'jose';
+select t.ok(t.err($q$update public.leads set pack_code = 'P2' where id = '00000000-0000-4000-8000-000000000391'$q$) is null,
+            'M4b the admin can');
+rollback;
+
 -- ================================================================ B1: a closer cannot create a contact already won
 begin;
 set local role authenticated;

@@ -226,6 +226,14 @@ describe('reassignContact', () => {
     expect(updates()).toHaveLength(0);
   });
 
+  it('maps an admin target to «sin asignar» (owner null), like the bulk reassignment', async () => {
+    db.role = 'admin';
+    db.results['staff_members.maybeSingle'] = { user_id: other, display_name: 'Jose', role: 'admin', disabled_at: null };
+    expect(await reassignContact(idle, form({ contact_id: id, owner_id: other }))).toEqual({ status: 'ok' });
+    expect(updates()[0]?.args[0]).toEqual({ owner_id: null });
+    expect(inserts('crm_interactions')[0]?.args[0]).toMatchObject({ payload: { owner_id: null } });
+  });
+
   it('can leave the contact unassigned', async () => {
     db.role = 'admin';
     await reassignContact(idle, form({ contact_id: id, owner_id: '' }));
@@ -243,11 +251,28 @@ describe('inviteClientAccess', () => {
     await inviteClientAccess(idle, form({ client_id: id, contact_id: id, email: 'new@client.test' }));
     expect(db.rpc).toHaveBeenCalledWith('invite_client_access', { p_client_id: id, p_email: 'new@client.test' });
   });
-  it('explains a rule of the database', async () => {
+  it('explains a rule of the database to the admin, staff address included', async () => {
+    db.role = 'admin';
     db.rpc.mockResolvedValue({ data: null, error: { message: 'email_is_staff' } });
     expect(await inviteClientAccess(idle, form({ client_id: id, contact_id: id, email: '' }))).toMatchObject({
       status: 'error',
       formError: 'crmContacts.errors.accessEmailStaff',
+    });
+  });
+  it('never tells a closer that an address belongs to the team', async () => {
+    db.rpc.mockResolvedValue({ data: null, error: { message: 'email_is_staff' } });
+    expect(await inviteClientAccess(idle, form({ client_id: id, contact_id: id, email: '' }))).toMatchObject({
+      formError: 'crmContacts.errors.accessInvalidEmail',
+    });
+  });
+  it('explains the throttle and the daily quota of invitations', async () => {
+    db.rpc.mockResolvedValue({ data: null, error: { code: '54000', message: 'invite_recently_sent' } });
+    expect(await inviteClientAccess(idle, form({ client_id: id, contact_id: id, email: '' }))).toMatchObject({
+      formError: 'crmContacts.errors.inviteTooSoon',
+    });
+    db.rpc.mockResolvedValue({ data: null, error: { code: '54000', message: 'invite_quota_exceeded' } });
+    expect(await inviteClientAccess(idle, form({ client_id: id, contact_id: id, email: '' }))).toMatchObject({
+      formError: 'crmContacts.errors.inviteQuota',
     });
   });
 });
@@ -313,5 +338,23 @@ describe('closeLeadPaid', () => {
     await closeLeadPaid(idle, form({ lead_id: id, contact_id: id, amount: '900', pack_code: 'P2' }));
     expect(updates()[0]?.args[0]).toEqual({ pack_code: 'P2' });
     expect(db.rpc).toHaveBeenCalled();
+  });
+
+  it('sends the pack option with the pack, both validated', async () => {
+    db.role = 'admin';
+    db.results['leads.maybeSingle'] = { id, status: 'open', pack_code: null, affiliate_code: null, contact_id: id };
+    await closeLeadPaid(idle, form({ lead_id: id, contact_id: id, amount: '900', pack_code: 'P2', pack_option: 'pro' }));
+    expect(updates()[0]?.args[0]).toEqual({ pack_code: 'P2', pack_option: 'pro' });
+  });
+
+  it('refuses a malformed pack before anything is written', async () => {
+    db.role = 'admin';
+    db.results['leads.maybeSingle'] = { id, status: 'open', pack_code: null, affiliate_code: null, contact_id: id };
+    expect(await closeLeadPaid(idle, form({ lead_id: id, contact_id: id, amount: '900', pack_code: "p2'; drop" }))).toMatchObject({
+      status: 'error',
+      fieldErrors: { pack_code: 'crmContacts.errors.leadWithoutPack' },
+    });
+    expect(updates()).toHaveLength(0);
+    expect(db.rpc).not.toHaveBeenCalled();
   });
 });

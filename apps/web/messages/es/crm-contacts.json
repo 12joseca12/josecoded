@@ -362,7 +362,9 @@
       "amountInvalid": "Escribe el importe cobrado, por ejemplo 1.400 o 1400,50.",
       "leadClosed": "Esa oportunidad ya no está abierta.",
       "leadWithoutPack": "Elige el pack contratado para poder cerrar la oportunidad.",
-      "quota": "Has llegado al límite de contactos nuevos de hoy."
+      "quota": "Has llegado al límite de contactos nuevos de hoy.",
+      "inviteTooSoon": "Esta invitación se acaba de enviar; espera unos minutos para reenviarla.",
+      "inviteQuota": "Has enviado demasiadas invitaciones hoy."
     },
     "overdueList": {
       "label": "Contactos con la acción vencida",

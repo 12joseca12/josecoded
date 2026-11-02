@@ -362,7 +362,9 @@
       "amountInvalid": "Write the amount charged, for example 1,400 or 1400.50.",
       "leadClosed": "That opportunity is no longer open.",
       "leadWithoutPack": "Choose the pack bought to be able to close the opportunity.",
-      "quota": "You have reached today's limit of new contacts."
+      "quota": "You have reached today's limit of new contacts.",
+      "inviteTooSoon": "This invitation was just sent; wait a few minutes before sending it again.",
+      "inviteQuota": "You have sent too many invitations today."
     },
     "overdueList": {
       "label": "Contacts with an overdue action",

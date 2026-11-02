@@ -723,6 +723,45 @@ describe.skipIf(!up && !inCi)('RLS with closers: carla (active), dani (switched 
       }
     });
 
+    it('cannot redirect the portal invitation: no email change once there is a lead or client, frozen invite_email, throttle', async () => {
+      const contact = await mustInsert('crm_contacts', { kind: 'client', status: 'active_client', display_name: `Portal ${hex()}`, email: `portal-${hex()}@example.test`, source: 'manual', owner_id: carla.userId });
+      const frozen = (await service.from('crm_contacts').select('email').eq('id', contact).single()).data as Row;
+      const client = await mustInsert('clients', { contact_id: contact, invite_email: frozen.email, pack_code: 'P1' });
+      try {
+        // The exploit: patch the email, then ask for the invitation. The patch is refused and the invite stays on the frozen address.
+        expect((await carla.from('crm_contacts').update({ email: 'atacante@evil.test' }).eq('id', contact)).error?.code).toBe('42501');
+        expect((await carla.from('crm_contacts').update({ email: 'atacante@evil.test' }).eq('id', SEED.contacts.carlaLead)).error?.code).toBe('42501');
+        expect((await carla.rpc('invite_client_access', { p_client_id: client, p_email: 'atacante@evil.test' })).error?.message).toMatch(/email_must_match_contact/);
+        expect((await carla.rpc('invite_client_access', { p_client_id: client, p_email: '' })).error).toBeNull();
+        // Re-sending within 10 minutes is refused.
+        expect((await carla.rpc('invite_client_access', { p_client_id: client, p_email: '' })).error?.message).toMatch(/invite_recently_sent/);
+        // Even if the contact email moved (an admin fix), the closer still invites the frozen address.
+        await service.from('crm_contacts').update({ email: `otro-${hex()}@example.test` }).eq('id', contact);
+        expect((await carla.rpc('invite_client_access', { p_client_id: client, p_email: String(frozen.email) })).error?.message).toMatch(/invite_recently_sent/);
+        // The generic error for a staff address and the admin's exemption from the throttle are asserted in supabase/test/pg/security.test.sql.
+      } finally {
+        await service.from('crm_interactions').delete().eq('contact_id', contact);
+        await service.from('clients').delete().eq('id', client);
+        await service.from('crm_contacts').delete().eq('id', contact);
+      }
+    });
+
+    it('cannot swap the pack of a lead that already has one', async () => {
+      const contact = await mustInsert('crm_contacts', { kind: 'lead', status: 'new', display_name: `Pack ${hex()}`, source: 'manual', owner_id: carla.userId });
+      const lead = await mustInsert('leads', { contact_id: contact, source: 'manual' });
+      try {
+        expect((await carla.from('leads').update({ pack_code: 'P1' }).eq('id', lead).select('id')).data).toHaveLength(1);
+        expect((await carla.from('leads').update({ pack_code: 'P2' }).eq('id', lead)).error?.code).toBe('42501');
+        expect((await carla.from('leads').update({ pack_option: 'x' }).eq('id', lead)).error?.code).toBe('42501');
+        expect((await carla.from('leads').update({ pack_code: 'P1' }).eq('id', SEED.leads.carlaOpen)).error?.code).toBe('42501');
+        expect((await jose.from('leads').update({ pack_code: 'P2' }).eq('id', lead).select('id')).data).toHaveLength(1);
+      } finally {
+        await service.from('crm_interactions').delete().eq('contact_id', contact);
+        await service.from('leads').delete().eq('id', lead);
+        await service.from('crm_contacts').delete().eq('id', contact);
+      }
+    });
+
     it('reads her client without notes_internal nor CRM links; staff_clients() returns hers only', async () => {
       const own = await carla.from('clients').select('id, pack_code');
       expect(own.error).toBeNull();

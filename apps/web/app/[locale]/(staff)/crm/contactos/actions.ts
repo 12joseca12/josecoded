@@ -18,7 +18,7 @@ import {
 import { buildClosePaidArgs } from '@/lib/admin/close-paid';
 import { requireAdmin } from '@/lib/auth/guards';
 import { requireStaff } from '@/lib/auth/staff';
-import { fieldsOf, localeOf, organizationKindFor, rpcErrorKey } from '@/lib/crm/action-support';
+import { fieldsOf, inviteErrorKey, localeOf, organizationKindFor, rpcErrorKey } from '@/lib/crm/action-support';
 import { getAffiliateLevel } from '@/lib/crm/contact-detail';
 import { toNextActionAt } from '@/lib/crm/next-action';
 import { canTransition, requiresNextAction, statusesFor } from '@/lib/crm/status';
@@ -205,20 +205,23 @@ export async function reassignContact(_previous: State, data: FormData): Promise
   const { contact_id, owner_id } = parsed.data;
 
   let label = t('unassignedName');
+  // An admin target means «Jose's portfolio» (owner null), as admin_reassign_contacts does.
+  let newOwner: string | null = owner_id || null;
   if (owner_id) {
     const { data: staff } = await supabase
       .from('staff_members')
-      .select('user_id, display_name, disabled_at' as 'user_id, display_name')
+      .select('user_id, display_name, role, disabled_at' as 'user_id, display_name')
       .eq('user_id', owner_id)
       .maybeSingle();
-    const member = staff as unknown as { display_name: string | null; disabled_at: string | null } | null;
+    const member = staff as unknown as { display_name: string | null; role: string | null; disabled_at: string | null } | null;
     if (!member || member.disabled_at) return { status: 'error', fieldErrors: { owner_id: t('ownerInvalid') } };
-    label = member.display_name ?? label;
+    if (member.role === 'admin') newOwner = null;
+    else label = member.display_name ?? label;
   }
 
   const { data: updated, error } = await supabase
     .from('crm_contacts')
-    .update({ owner_id: owner_id || null })
+    .update({ owner_id: newOwner })
     .eq('id', contact_id)
     .select('id');
   if (error) return { status: 'error', formError: t(rpcErrorKey(error)) };
@@ -230,7 +233,7 @@ export async function reassignContact(_previous: State, data: FormData): Promise
     direction: 'internal',
     actor: 'jose',
     body: t('reassignedNote', { owner: label }),
-    payload: { reassigned_by: user.id, owner_id: owner_id || null },
+    payload: { reassigned_by: user.id, owner_id: newOwner },
   });
 
   refresh();
@@ -252,7 +255,7 @@ export async function inviteClientAccess(_previous: State, data: FormData): Prom
     p_client_id: parsed.data.client_id,
     p_email: parsed.data.email,
   });
-  if (error) return { status: 'error', formError: t(rpcErrorKey(error)), values: fields };
+  if (error) return { status: 'error', formError: t(inviteErrorKey(error, role === 'admin')), values: fields };
 
   refresh();
   return { status: 'ok' };
@@ -279,9 +282,16 @@ export async function closeLeadPaid(_previous: State, data: FormData): Promise<S
   // «Cerrar cobrado» is the admin's: a closer never reaches the RPC from here, and the RPC refuses her too
   const { supabase } = await requireAdmin({ locale, next: '/crm/contactos' });
 
-  const values = fieldsOf(data, ['lead_id', 'contact_id', 'amount', 'paid_at', 'commission', 'pack_code']);
+  const values = fieldsOf(data, ['lead_id', 'contact_id', 'amount', 'paid_at', 'commission', 'pack_code', 'pack_option']);
   const parsed = closePaidInputSchema.safeParse(values);
-  if (!parsed.success) return { status: 'error', fieldErrors: { amount: t('amountInvalid') }, values };
+  if (!parsed.success) {
+    const packBad = parsed.error.issues.some((issue) => issue.path[0] === 'pack_code' || issue.path[0] === 'pack_option');
+    return {
+      status: 'error',
+      fieldErrors: packBad ? { pack_code: t('leadWithoutPack') } : { amount: t('amountInvalid') },
+      values,
+    };
+  }
   const input = parsed.data;
 
   const { data: lead } = await supabase
@@ -292,10 +302,12 @@ export async function closeLeadPaid(_previous: State, data: FormData): Promise<S
   if (!lead || lead.contact_id !== input.contact_id) return { status: 'error', formError: t('notFound'), values };
   if (lead.status !== 'open') return { status: 'error', formError: t('leadClosed'), values };
 
-  // a manual lead has no pack yet and «Cerrar cobrado» creates the client from it
-  const pack = values.pack_code;
-  if (!lead.pack_code && pack) {
-    const { error } = await supabase.from('leads').update({ pack_code: pack }).eq('id', lead.id);
+  // a manual lead has no pack yet and «Cerrar cobrado» creates the client from it (the validated pack, never the raw field)
+  if (!lead.pack_code && input.pack_code) {
+    const { error } = await supabase
+      .from('leads')
+      .update({ pack_code: input.pack_code, ...(input.pack_option ? { pack_option: input.pack_option } : {}) })
+      .eq('id', lead.id);
     if (error) return { status: 'error', formError: t(rpcErrorKey(error)), values };
   }
 

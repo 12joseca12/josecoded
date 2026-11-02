@@ -147,6 +147,7 @@ declare
   v_rate       numeric(5, 2);
   v_commission uuid;
   v_wanted     boolean;
+  v_invite     extensions.citext;
 begin
   if not private.is_admin() then raise exception 'forbidden' using errcode = '42501'; end if;
   if p_amount is null or p_amount < 0 then raise exception 'amount_required' using errcode = '22023'; end if;
@@ -212,8 +213,10 @@ begin
   values (v_lead.contact_id, 'lead_won', 'internal', 'jose', v_lead.id,
           jsonb_build_object('amount', p_amount, 'client_id', v_client, 'reward_id', v_reward));
 
+  -- The address frozen for the portal invitation, so the admin sees what a closer will be allowed to (re)send.
+  select c.invite_email into v_invite from public.clients c where c.id = v_client;
   return jsonb_build_object('lead_id', v_lead.id, 'client_id', v_client, 'reward_id', v_reward,
-                            'commission_id', v_commission);
+                            'commission_id', v_commission, 'invite_email', v_invite);
 end $$;
 revoke all on function private.admin_close_lead_paid_impl(uuid, numeric, timestamptz, boolean, public.reward_type, numeric, smallint, text, boolean) from public, anon, authenticated;
 grant execute on function private.admin_close_lead_paid_impl(uuid, numeric, timestamptz, boolean, public.reward_type, numeric, smallint, text, boolean) to authenticated, service_role;
@@ -240,3 +243,147 @@ grant execute on function public.admin_close_lead_paid(uuid, numeric, timestampt
 insert into public.notification_rules (event, recipient, channel) values
   ('lead.owner_collision', 'admin', 'telegram')
 on conflict do nothing;
+
+-- ================================================================ Review of «CRM contactos» (f977b0a)
+-- 1) A closer could PATCH crm_contacts.email and then invite himself into the portal of his client (the invite goes to the
+--    contact email, claim_client_access binds whoever opens it), or change it before the close so that admin_close copies
+--    it into clients.invite_email. Now:
+--      * a closer cannot change the email of a contact that has a lead, a client or a won / active_client status
+--        (fix it before opening the first lead; after that it is Jose's call);
+--      * a closer invites only to clients.invite_email, frozen when the client was created (or by Jose);
+--      * the close returns that frozen address.
+-- Definer: the API role has no grant on clients.contact_id, and the guard must see every lead and client of the contact.
+create or replace function private.contact_has_deal(p_contact_id uuid) returns boolean
+language sql stable security definer set search_path = '' as $$
+  select exists (select 1 from public.clients c where c.contact_id = p_contact_id)
+      or exists (select 1 from public.leads l where l.contact_id = p_contact_id)
+$$;
+revoke all on function private.contact_has_deal(uuid) from public, anon, authenticated;
+grant execute on function private.contact_has_deal(uuid) to authenticated, service_role;
+
+create or replace function private.crm_contacts_closer_guard() returns trigger
+language plpgsql set search_path = '' as $$
+begin
+  -- Nested on purpose: private.is_admin() is only executable by authenticated, so it must not be evaluated for other roles.
+  if current_user = 'authenticated' then
+    if (tg_op = 'INSERT' and new.user_id is not null)
+       or (tg_op = 'UPDATE' and new.user_id is distinct from old.user_id) then
+      if not private.is_admin() then
+        raise exception 'closers cannot link a contact to a user' using errcode = '42501';
+      end if;
+    end if;
+    if tg_op = 'UPDATE' and new.email is distinct from old.email then
+      if not private.is_admin() then
+        if old.status in ('won', 'active_client') or new.status in ('won', 'active_client')
+           or private.contact_has_deal(old.id) then
+          raise exception 'closers cannot change the email of a contact with a lead or a client' using errcode = '42501';
+        end if;
+      end if;
+    end if;
+  end if;
+  return new;
+end $$;
+
+-- 4) A closer sets the pack of a lead that has none; he never swaps it afterwards (the close builds the client from it).
+create or replace function private.leads_closer_guard() returns trigger
+language plpgsql set search_path = '' as $$
+begin
+  if current_user = 'authenticated' then
+    if tg_op = 'INSERT' then
+      new.created_by := (select auth.uid());
+      if not private.is_admin() then
+        new.status := 'open';
+        new.amount := null;
+        new.paid_at := null;
+        new.user_id := null;
+        new.affiliate_code := null;
+        new.idempotency_key := null;
+      end if;
+    else
+      new.created_by := old.created_by;
+      if new.affiliate_code is distinct from old.affiliate_code or new.amount is distinct from old.amount
+         or new.paid_at is distinct from old.paid_at or new.user_id is distinct from old.user_id
+         or new.contact_id is distinct from old.contact_id or new.idempotency_key is distinct from old.idempotency_key
+         or (new.status = 'won' and old.status is distinct from 'won')
+         or (old.status in ('won', 'lost') and new.status is distinct from old.status)
+         or (old.pack_code is not null
+             and (new.pack_code is distinct from old.pack_code or new.pack_option is distinct from old.pack_option)) then
+        if not private.is_admin() then
+          raise exception 'closers cannot change amount, affiliate, owner link, pack or the final status of a lead' using errcode = '42501';
+        end if;
+      end if;
+    end if;
+  end if;
+  return new;
+end $$;
+
+-- 1b, 2, 3) Portal invitation.
+--   * Admin: p_email, else the frozen invite_email, else the contact email; a staff address is refused (email_is_staff).
+--   * Closer: only clients.invite_email; another address is email_must_match_contact; a staff address answers the same
+--     generic invalid_email (no oracle of who is staff).
+--   * Closer: at most 20 invitations per day and one per client every 10 minutes (invite_recently_sent).
+create or replace function private.invite_client_access_impl(p_client_id uuid, p_email extensions.citext) returns void
+language plpgsql security definer set search_path = '' as $$
+declare
+  v_client  public.clients;
+  v_locale  public.locale;
+  v_contact extensions.citext;
+  v_admin   boolean := private.is_admin();
+  v_uid     uuid := (select auth.uid());
+  v_email   extensions.citext := nullif(btrim(p_email::text), '')::extensions.citext;
+  v_count   integer;
+begin
+  select * into v_client from public.clients c where c.id = p_client_id;
+  if v_client.id is null then raise exception 'client_not_found' using errcode = 'P0002'; end if;
+  if not (v_admin or private.owns_client(p_client_id)) then raise exception 'forbidden' using errcode = '42501'; end if;
+  if v_client.user_id is not null then raise exception 'client_already_has_access' using errcode = '22023'; end if;
+
+  select nullif(btrim(c.email::text), '')::extensions.citext, coalesce(c.locale, 'es') into v_contact, v_locale
+    from public.crm_contacts c where c.id = v_client.contact_id;
+
+  if v_admin then
+    v_email := coalesce(v_email, v_client.invite_email, v_contact);
+  else
+    -- The address is the one frozen when the client was created; the current contact email is never trusted here.
+    if v_client.invite_email is null or position('@' in v_client.invite_email::text) = 0 then
+      raise exception 'invalid_email' using errcode = '22023';
+    end if;
+    if v_email is not null and position('@' in v_email::text) = 0 then raise exception 'invalid_email' using errcode = '22023'; end if;
+    if v_email is not null and v_email is distinct from v_client.invite_email then
+      raise exception 'email_must_match_contact' using errcode = '42501';
+    end if;
+    v_email := v_client.invite_email;
+  end if;
+  if v_email is null or position('@' in v_email::text) = 0 then raise exception 'invalid_email' using errcode = '22023'; end if;
+
+  if exists (select 1 from auth.users u join public.staff_members s on s.user_id = u.id
+              where u.email::extensions.citext operator(extensions.=) v_email) then
+    if v_admin then raise exception 'email_is_staff' using errcode = '22023'; end if;
+    raise exception 'invalid_email' using errcode = '22023';
+  end if;
+
+  if not v_admin then
+    -- One send per client per 10 minutes; a refused call rolls its own increment back, so the window stays the first one.
+    insert into private.quota_counters as q (key, count, expires_at)
+    values ('client_invite_at:' || p_client_id::text, 1, now() + interval '10 minutes')
+    on conflict (key) do update set
+      count      = case when q.expires_at <= now() then 1 else q.count + 1 end,
+      expires_at = case when q.expires_at <= now() then now() + interval '10 minutes' else q.expires_at end
+    returning q.count into v_count;
+    if v_count > 1 then raise exception 'invite_recently_sent' using errcode = '54000'; end if;
+
+    insert into private.quota_counters as q (key, count, expires_at)
+    values ('client_invites:' || v_uid::text, 1, now() + interval '1 day')
+    on conflict (key) do update set
+      count      = case when q.expires_at <= now() then 1 else q.count + 1 end,
+      expires_at = case when q.expires_at <= now() then now() + interval '1 day' else q.expires_at end
+    returning q.count into v_count;
+    if v_count > 20 then raise exception 'invite_quota_exceeded' using errcode = '54000'; end if;
+  end if;
+
+  update public.clients set invite_email = v_email where id = p_client_id;
+  insert into public.crm_interactions (contact_id, kind, direction, actor, payload)
+  values (v_client.contact_id, 'client_invited', 'internal', private.staff_actor(), jsonb_build_object('client_id', p_client_id));
+  perform private.enqueue('client.invited', jsonb_build_object(
+    'client_id', p_client_id, 'email', v_email::text, 'locale', v_locale));
+end $$;

@@ -142,7 +142,7 @@ begin
            'private.owns_contact(uuid)', 'private.owns_client(uuid)', 'private.owns_quote(uuid)',
            'private.quote_is_draft(uuid)', 'private.client_id_of()', 'private.comment_parent_ok(uuid,text,locale)',
            'private.staff_actor()', 'private.closer_contact_quota_hit()', 'private.client_has_pack(text)',
-           'private.client_has_pack_option(text,text)', 'private.client_has_extra(text)')
+           'private.client_has_pack_option(text,text)', 'private.client_has_extra(text)', 'private.contact_has_deal(uuid)')
          or r.sig::text like 'private.%\_impl(%') then
       raise exception 'FAIL authenticated can execute security definer %', r.sig;
     end if;

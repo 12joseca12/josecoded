@@ -35,7 +35,9 @@ export type ErrorKey =
   | 'accessAlreadyHas'
   | 'accessInvalidEmail'
   | 'accessEmailStaff'
-  | 'accessEmailMustMatch';
+  | 'accessEmailMustMatch'
+  | 'inviteTooSoon'
+  | 'inviteQuota';
 
 export function rpcErrorKey(error: { code?: string; message?: string } | null | undefined): ErrorKey {
   if (!error) return 'failed';
@@ -47,12 +49,24 @@ export function rpcErrorKey(error: { code?: string; message?: string } | null | 
     [/email_must_match_contact/, 'accessEmailMustMatch'],
     [/lead_already_closed_or_missing|lead_not_open/, 'leadClosed'],
     [/lead_without_pack/, 'leadWithoutPack'],
+    [/invite_recently_sent/, 'inviteTooSoon'],
+    [/invite_quota_exceeded/, 'inviteQuota'],
     [/contact_quota_exceeded/, 'quota'],
     [/next_action_required/, 'nextActionRequired'],
   ];
   for (const [pattern, key] of known) if (pattern.test(message)) return key;
   if (error.code === '42501') return 'forbidden';
   return 'failed';
+}
+
+/**
+ * Same as `rpcErrorKey` for the portal invitation, with one difference: only the admin learns that an address belongs to
+ * the team. To anybody else it is just an invalid email (the database already answers so; this keeps the screen from
+ * becoming an oracle if it ever did not).
+ */
+export function inviteErrorKey(error: { code?: string; message?: string } | null | undefined, isAdmin: boolean): ErrorKey {
+  const key = rpcErrorKey(error);
+  return !isAdmin && key === 'accessEmailStaff' ? 'accessInvalidEmail' : key;
 }
 
 /** Kind of organisation a new contact's company gets when it is created from the contact sheet. */
