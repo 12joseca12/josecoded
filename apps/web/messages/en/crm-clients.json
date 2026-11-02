@@ -1,0 +1,72 @@
+{
+  "crmClients": {
+    "metaTitle": "Clients",
+    "title": "Clients.",
+    "tone": {
+      "closer": "Your portfolio in motion.",
+      "admin": "Every project in motion."
+    },
+    "lead": "Pack, phase, portal access and the stories waiting for an answer.",
+    "filters": {
+      "label": "Filter clients",
+      "searchLabel": "Search clients",
+      "searchPlaceholder": "Search client or business",
+      "hotkey": "/",
+      "access": "Portal access",
+      "accessAll": "All",
+      "accessNone": "Not invited",
+      "accessInvited": "Invited",
+      "accessActive": "With access",
+      "stories": "With stories to decide",
+      "apply": "Filter",
+      "clear": "Clear filters"
+    },
+    "empty": {
+      "title": "You have no clients yet",
+      "textCloser": "They appear here when Jose closes one of your opportunities as paid.",
+      "textAdmin": "They appear here when you close an opportunity as paid.",
+      "filteredTitle": "No client matches these filters",
+      "filteredText": "Try another search or clear the filters."
+    },
+    "table": {
+      "caption": "Clients",
+      "client": "Client",
+      "pack": "Pack",
+      "phase": "Phase",
+      "access": "Access",
+      "stories": "Stories",
+      "owner": "Owner",
+      "actions": "Actions",
+      "noBusiness": "No business",
+      "none": "—"
+    },
+    "phase": {
+      "kickoff": "Proposal",
+      "design": "Design",
+      "build": "Development",
+      "review": "Review",
+      "delivered": "Delivered",
+      "maintenance": "Maintenance"
+    },
+    "phaseMini": "{done}/{total}",
+    "access": {
+      "none": "Not invited",
+      "invited": "Invited on {date}",
+      "active": "With access"
+    },
+    "storiesPending": "{count, plural, one {# to decide} other {# to decide}}",
+    "invite": {
+      "button": "Enable access",
+      "again": "Invite again",
+      "buttonFor": "Enable access for {client}",
+      "title": "Enable portal access",
+      "email": "Email",
+      "help": "The invitation goes to the contact's email.",
+      "helpAdmin": "By default, the contact's email. Change it only if the client has a new address.",
+      "submit": "Send invitation",
+      "done": "Invitation sent",
+      "cancel": "Cancel",
+      "close": "Close"
+    }
+  }
+}

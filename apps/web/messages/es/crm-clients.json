@@ -1,0 +1,72 @@
+{
+  "crmClients": {
+    "metaTitle": "Clientes",
+    "title": "Clientes.",
+    "tone": {
+      "closer": "Tu cartera en marcha.",
+      "admin": "Todos los proyectos en marcha."
+    },
+    "lead": "Pack, fase, acceso al portal e historias que esperan respuesta.",
+    "filters": {
+      "label": "Filtrar clientes",
+      "searchLabel": "Buscar clientes",
+      "searchPlaceholder": "Buscar cliente o negocio",
+      "hotkey": "/",
+      "access": "Acceso al portal",
+      "accessAll": "Todos",
+      "accessNone": "Sin invitar",
+      "accessInvited": "Invitados",
+      "accessActive": "Con acceso",
+      "stories": "Con historias por decidir",
+      "apply": "Filtrar",
+      "clear": "Quitar filtros"
+    },
+    "empty": {
+      "title": "Aún no tienes clientes",
+      "textCloser": "Aparecen aquí cuando Jose cierra como cobrada una de tus oportunidades.",
+      "textAdmin": "Aparecen aquí cuando cierras una oportunidad como cobrada.",
+      "filteredTitle": "Ningún cliente con estos filtros",
+      "filteredText": "Prueba con otra búsqueda o quita los filtros."
+    },
+    "table": {
+      "caption": "Clientes",
+      "client": "Cliente",
+      "pack": "Pack",
+      "phase": "Fase",
+      "access": "Acceso",
+      "stories": "Historias",
+      "owner": "Dueño",
+      "actions": "Acciones",
+      "noBusiness": "Sin negocio",
+      "none": "—"
+    },
+    "phase": {
+      "kickoff": "Propuesta",
+      "design": "Diseño",
+      "build": "Desarrollo",
+      "review": "Revisión",
+      "delivered": "Entregado",
+      "maintenance": "Mantenimiento"
+    },
+    "phaseMini": "{done}/{total}",
+    "access": {
+      "none": "Sin invitar",
+      "invited": "Invitado el {date}",
+      "active": "Con acceso"
+    },
+    "storiesPending": "{count, plural, one {# por decidir} other {# por decidir}}",
+    "invite": {
+      "button": "Habilitar acceso",
+      "again": "Volver a invitar",
+      "buttonFor": "Habilitar acceso a {client}",
+      "title": "Habilitar acceso al portal",
+      "email": "Correo",
+      "help": "La invitación va al correo del contacto.",
+      "helpAdmin": "Por defecto, el correo del contacto. Cámbialo solo si el cliente ha cambiado de dirección.",
+      "submit": "Enviar invitación",
+      "done": "Invitación enviada",
+      "cancel": "Cancelar",
+      "close": "Cerrar"
+    }
+  }
+}

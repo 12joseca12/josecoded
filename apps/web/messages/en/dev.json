@@ -75,6 +75,7 @@
         "importar-resultado": "K4 · Import, step 3 (result with one pending row)",
         "conflictos": "K4 · Import conflicts (admin queue)",
         "comisiones": "K5 · Commissions (pending, approved, paid and rejected, with totals)",
+        "clientes": "K6 · Clients (portfolio with access, phase and stories to decide)",
         "admin": "C1 · Admin summary (/admin)"
       },
       "roles": {

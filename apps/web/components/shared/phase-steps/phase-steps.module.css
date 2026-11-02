@@ -1,0 +1,29 @@
+/* ref/crm .phase-mini: five strokes, the reached ones in soft violet */
+.mini {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  white-space: nowrap;
+}
+
+.bar {
+  display: inline-grid;
+  grid-auto-flow: column;
+  gap: var(--sp-0-5);
+}
+
+.bar i {
+  width: var(--sp-3);
+  height: var(--stroke-line);
+  border-radius: var(--r-pill);
+  background: var(--line-2);
+}
+
+.bar i[data-done] {
+  background: var(--violet-soft);
+}
+
+.count {
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}

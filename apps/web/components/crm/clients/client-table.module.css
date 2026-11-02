@@ -1,0 +1,95 @@
+/* What K6 adds to the generic CRM table (`table-stack/crm-table.module.css`): the whole row as the link of the client
+   and the access button above it */
+.box {
+  /* contains the visually hidden texts of the header: placed at their static position they would widen the page */
+  position: relative;
+  overflow-x: auto;
+}
+
+.box:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: calc(-1 * var(--focus-ring-width));
+}
+
+.row {
+  position: relative;
+}
+
+/* «P2 · Pedidos / reservas» stays on one line: the table scrolls first */
+.pack {
+  white-space: nowrap;
+}
+
+/* the name never shrinks to an ellipsis of three letters: the table scrolls first */
+.mainCell {
+  min-width: calc(var(--sp-16) * 2.75);
+}
+
+/* the whole row is the link of the name: this covers it, so no interactive element is nested in another */
+.link {
+  overflow: hidden;
+  color: var(--text);
+  font-weight: var(--font-emphasis-weight);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.link:focus-visible {
+  outline: none;
+}
+
+.link:focus-visible::after {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: calc(-1 * var(--focus-ring-width));
+  border-radius: var(--r-sm);
+}
+
+.act {
+  width: 1%;
+  text-align: end;
+  white-space: nowrap;
+}
+
+/* the button sits above the cover of the row */
+.act > * {
+  position: relative;
+  z-index: 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .row:hover .cell {
+    background: var(--tint-preview);
+  }
+}
+
+@container (width < 46rem) {
+  .pack {
+    white-space: normal;
+  }
+
+  .mainCell {
+    min-width: 0;
+  }
+
+  .link {
+    white-space: normal;
+  }
+
+  .act {
+    order: 4;
+    flex: none;
+    width: auto;
+    margin-inline-start: auto;
+    white-space: normal;
+  }
+
+  .act:empty {
+    display: none;
+  }
+}

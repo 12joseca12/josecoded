@@ -14,6 +14,7 @@ export const PREVIEW_SCREENS = [
   'importar-resultado',
   'conflictos',
   'comisiones',
+  'clientes',
   'admin',
 ] as const;
 export type PreviewScreen = (typeof PREVIEW_SCREENS)[number];

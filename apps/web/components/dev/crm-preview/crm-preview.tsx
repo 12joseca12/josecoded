@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 
+import { ClientsView } from '@/components/crm/clients';
 import { CommissionsView } from '@/components/crm/commissions';
 import { ContactDetailView } from '@/components/crm/contact-detail';
 import { ContactsView } from '@/components/crm/contacts-view';
@@ -8,12 +9,14 @@ import { getStatusOptions, getStatusSheetLabels } from '@/components/crm/status-
 import { PageHead } from '@/components/staff/page-head';
 import { StaffShell } from '@/components/staff/staff-shell';
 import { AdminSummary, CrmSummary } from '@/components/staff/summary';
+import { parseClientQuery } from '@/lib/crm/clients';
 import { parseCommissionQuery } from '@/lib/crm/commissions';
 import {
   ADMIN_COUNTERS,
   PREVIEW_IDENTITY,
   PREVIEW_OMEN,
   IMPORT_PREVIEW_FILE,
+  previewClientList,
   previewConflictQueue,
   previewCommissions,
   previewContactDetail,
@@ -45,6 +48,7 @@ const CURRENT_PATH: Record<PreviewScreen, string> = {
   'importar-resultado': '/crm/importar',
   conflictos: '/crm/importar',
   comisiones: '/crm/comisiones',
+  clientes: '/crm/clientes',
   admin: '/admin',
 };
 
@@ -162,6 +166,10 @@ export async function CrmPreview({
             query={parseCommissionQuery(search)}
           />
         );
+      case 'clientes': {
+        const { rows, owners } = previewClientList(role);
+        return <ClientsView locale={locale} role={role} rows={rows} owners={owners} query={parseClientQuery(search)} />;
+      }
       case 'admin': {
         const t = await getTranslations({ locale, namespace: 'crm' });
         return (

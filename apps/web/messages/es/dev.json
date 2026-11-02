@@ -75,6 +75,7 @@
         "importar-resultado": "K4 · Importar, paso 3 (resultado con una fila pendiente)",
         "conflictos": "K4 · Conflictos de importación (cola del admin)",
         "comisiones": "K5 · Comisiones (pendiente, aprobada, pagada y rechazada, con totales)",
+        "clientes": "K6 · Clientes (cartera con acceso, fase e historias por decidir)",
         "admin": "C1 · Resumen de admin (/admin)"
       },
       "roles": {

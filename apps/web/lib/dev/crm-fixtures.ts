@@ -4,6 +4,8 @@ import { analyzeImport } from '@/lib/crm/import-analysis';
 
 import type { OmenStatus } from '@/lib/admin/queries';
 import type { StaffRole } from '@/lib/auth/staff';
+import type { ClientList } from '@/lib/crm/client-queries';
+import type { ClientRow } from '@/lib/crm/clients';
 import type { CommissionRecord } from '@/lib/crm/commissions';
 import type {
   ClientRecord,
@@ -790,4 +792,46 @@ const COMMISSIONS: CommissionRecord[] = [
 /** What `staff_commissions()` returns: a closer her own rows, the admin all of them. */
 export function previewCommissions(role: StaffRole): CommissionRecord[] {
   return role === 'admin' ? COMMISSIONS : COMMISSIONS.filter((row) => row.closerId === MARTA.user_id);
+}
+
+// ---- K6 --------------------------------------------------------------------------------------------------------
+
+const clientRow = (
+  n: number,
+  owner: Owner,
+  name: string,
+  organization: string,
+  packCode: string,
+  packOption: string,
+  phase: ClientRow['phase'],
+  access: ClientRow['access'],
+  storiesPending: number,
+): ClientRow => ({
+  id: `60000000-0000-4000-8000-00000000000${n}`,
+  contactId: `60000000-0000-4000-8000-00000000010${n}`,
+  name,
+  organization,
+  email: `cliente${n}@ejemplo.test`,
+  packCode,
+  packOption,
+  phase,
+  access,
+  ownerId: owner.user_id,
+  storiesPending,
+});
+
+const CLIENT_ROWS: ClientRow[] = [
+  clientRow(1, MARTA, 'Ana Ruiz', 'Panadería La Espiga', 'P2', 'Pedidos / reservas', 'build', { state: 'active' }, 1),
+  clientRow(2, MARTA, 'Laura Campos', 'Fisio Campos', 'P1', 'Web básica', 'delivered', { state: 'none' }, 1),
+  clientRow(3, INIGO, 'Ramón Peña', 'Cooperativa Olivar Alto', 'P3', 'Gestión', 'design', { state: 'invited', at: inDays(-5) }, 0),
+  clientRow(4, INIGO, 'Martín Vega', 'Vega Fontanería', 'P1', 'Web básica', 'review', { state: 'active' }, 2),
+  clientRow(5, OWNERS[0] as Owner, 'Beatriz Soto', 'Academia Soto', 'P5', 'App móvil', 'kickoff', { state: 'none' }, 0),
+  clientRow(6, MARTA, 'Óscar Prieto', 'Prieto Reformas', 'P1', 'Web básica', 'maintenance', { state: 'active' }, 0),
+];
+
+/** What `staff_clients()` and the reads around it return: a closer her own clients, the admin all of them with the staff. */
+export function previewClientList(role: StaffRole): ClientList {
+  return role === 'admin'
+    ? { rows: CLIENT_ROWS, owners: OWNERS }
+    : { rows: CLIENT_ROWS.filter((row) => row.ownerId === MARTA.user_id).map((row) => ({ ...row, ownerId: null })), owners: null };
 }
