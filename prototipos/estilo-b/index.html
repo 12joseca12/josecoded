@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="es" data-nav="a">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#eef0f2">
+  <title>josecoded · estilo B v2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/base.css?v=1">
+  <link rel="stylesheet" href="css/nav.css?v=1">
+  <link rel="stylesheet" href="css/hero.css?v=1">
+  <link rel="stylesheet" href="css/sections.css?v=1">
+</head>
+<body data-state="normal">
+  <a class="skip" href="#main">Saltar al contenido</a>
+
+  <header class="nav-a" data-nav-variant="a">
+    <div class="nav-a__bar">
+      <a class="brand" href="#inicio" aria-label="josecoded, ir al inicio">
+        <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><rect class="m-bg" x="1" y="1" width="22" height="22" rx="11"/><circle class="m-dot" cx="16.5" cy="7.5" r="3"/><path class="m-j" d="M8 9.5v5.5a2 2 0 0 1-3 1.7"/></svg>
+        <span class="brand-word">josecoded</span>
+      </a>
+      <nav class="nav-a__nav" aria-label="Principal">
+        <div class="nav-a__track">
+          <span class="nav-a__indicator" aria-hidden="true"></span>
+          <ul class="nav-a__links" data-spy>
+            <li><a href="#proyectos">Proyectos</a></li>
+            <li><a href="#servicios">Servicios</a></li>
+            <li><a href="#stack">Stack</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+          </ul>
+        </div>
+      </nav>
+      <div class="nav-a__actions">
+        <button class="btn" data-variant="primary" data-size="sm" type="button" data-cta><span>Hablemos</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
+        <button class="icon-btn nav-a__menu" type="button" aria-expanded="false" aria-controls="sheet-a" data-opens="sheet-a" aria-label="Abrir menú">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 7h14M3 13h14"/></svg>
+        </button>
+      </div>
+    </div>
+    <dialog class="sheet sheet-a" id="sheet-a" aria-labelledby="sheet-a-title">
+      <div class="sheet__inner">
+        <div class="sheet__head">
+          <p class="sheet__title" id="sheet-a-title">Menú</p>
+          <button class="icon-btn" type="button" data-close aria-label="Cerrar menú"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
+        </div>
+        <ul class="sheet__links" data-spy>
+          <li><a href="#inicio"><span class="sheet__num">00</span><span class="sheet__label">Inicio</span><span class="sheet__here">Aquí</span></a></li>
+          <li><a href="#proyectos"><span class="sheet__num">01</span><span class="sheet__label">Proyectos</span><span class="sheet__here">Aquí</span></a></li>
+          <li><a href="#servicios"><span class="sheet__num">02</span><span class="sheet__label">Servicios</span><span class="sheet__here">Aquí</span></a></li>
+          <li><a href="#stack"><span class="sheet__num">03</span><span class="sheet__label">Stack</span><span class="sheet__here">Aquí</span></a></li>
+          <li><a href="#contacto"><span class="sheet__num">04</span><span class="sheet__label">Contacto</span><span class="sheet__here">Aquí</span></a></li>
+        </ul>
+        <button class="btn sheet__cta" data-variant="primary" type="button" data-cta><span>Hablemos</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
+      </div>
+    </dialog>
+  </header>
+
+  <header class="nav-b" data-nav-variant="b" hidden>
+    <div class="nav-b__bar">
+      <a class="brand" href="#inicio" aria-label="josecoded, ir al inicio">
+        <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><rect class="m-bg" x="1" y="1" width="22" height="22" rx="11"/><circle class="m-dot" cx="16.5" cy="7.5" r="3"/><path class="m-j" d="M8 9.5v5.5a2 2 0 0 1-3 1.7"/></svg>
+        <span class="brand-word">josecoded</span>
+      </a>
+      <span class="nav-b__path" aria-hidden="true"><span class="nav-b__slash">/</span><span data-path>~</span></span>
+      <nav class="nav-b__nav" aria-label="Principal">
+        <ul class="nav-b__links" data-spy>
+          <li><a href="#proyectos">Proyectos</a></li>
+          <li><a href="#servicios">Servicios</a></li>
+          <li><a href="#stack">Stack</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </nav>
+      <div class="nav-b__actions">
+        <button class="cmdk" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="palette" data-opens="palette" aria-label="Ir a una sección o acción">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="5.5"/><path d="M13 13l4 4"/></svg>
+          <span class="cmdk__label">Ir a…</span>
+          <kbd class="cmdk__kbd" data-kbd>⌘K</kbd>
+        </button>
+        <button class="btn" data-variant="primary" data-size="sm" type="button" data-cta><span>Hablemos</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
+      </div>
+    </div>
+    <div class="nav-b__progress" aria-hidden="true">
+      <span class="progress-fill"></span>
+      <span class="nav-b__ticks" data-ticks></span>
+    </div>
+  </header>
+
+  <header class="nav-c" data-nav-variant="c" hidden>
+    <div class="nav-c__bar">
+      <a class="brand" href="#inicio" aria-label="josecoded, ir al inicio">
+        <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><rect class="m-bg" x="1" y="1" width="22" height="22" rx="11"/><circle class="m-dot" cx="16.5" cy="7.5" r="3"/><path class="m-j" d="M8 9.5v5.5a2 2 0 0 1-3 1.7"/></svg>
+        <span class="brand-word">josecoded</span>
+      </a>
+      <div class="nav-c__actions">
+        <button class="btn" data-variant="primary" data-size="sm" type="button" data-cta><span>Hablemos</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
+        <button class="nav-c__menu" type="button" aria-expanded="false" aria-controls="sheet-c" data-opens="sheet-c">
+          <span class="nav-c__menu-label">Índice</span>
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 6h12M4 10h8M4 14h12"/></svg>
+        </button>
+      </div>
+      <span class="nav-c__progress" aria-hidden="true"><span class="progress-fill"></span></span>
+    </div>
+    <nav class="rail" aria-label="Secciones">
+      <span class="rail__track" aria-hidden="true"><span class="rail__fill"></span></span>
+      <ol class="rail__list" data-spy>
+        <li><a href="#inicio"><span class="rail__label">Inicio</span><span class="rail__num" aria-hidden="true">00</span><span class="rail__tick" aria-hidden="true"></span></a></li>
+        <li><a href="#proyectos"><span class="rail__label">Proyectos</span><span class="rail__num" aria-hidden="true">01</span><span class="rail__tick" aria-hidden="true"></span></a></li>
+        <li><a href="#servicios"><span class="rail__label">Servicios</span><span class="rail__num" aria-hidden="true">02</span><span class="rail__tick" aria-hidden="true"></span></a></li>
+        <li><a href="#stack"><span class="rail__label">Stack</span><span class="rail__num" aria-hidden="true">03</span><span class="rail__tick" aria-hidden="true"></span></a></li>
+        <li><a href="#contacto"><span class="rail__label">Contacto</span><span class="rail__num" aria-hidden="true">04</span><span class="rail__tick" aria-hidden="true"></span></a></li>
+      </ol>
+    </nav>
+    <dialog class="sheet sheet-c" id="sheet-c" aria-labelledby="sheet-c-title">
+      <div class="sheet__inner">
+        <div class="sheet__head">
+          <p class="sheet__title" id="sheet-c-title">Índice</p>
+          <button class="icon-btn" type="button" data-close aria-label="Cerrar índice"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
+        </div>
+        <ol class="sheet__links" data-spy>
+          <li><a href="#inicio"><span class="sheet__num">00</span><span class="sheet__label">Inicio</span><span class="sheet__here">Aquí</span></a></li>
+          <li><a href="#proyectos"><span class="sheet__num">01</span><span class="sheet__label">Proyectos</span><span class="sheet__here">Aquí</span></a></li>
+          <li><a href="#servicios"><span class="sheet__num">02</span><span class="sheet__label">Servicios</span><span class="sheet__here">Aquí</span></a></li>
+          <li><a href="#stack"><span class="sheet__num">03</span><span class="sheet__label">Stack</span><span class="sheet__here">Aquí</span></a></li>
+          <li><a href="#contacto"><span class="sheet__num">04</span><span class="sheet__label">Contacto</span><span class="sheet__here">Aquí</span></a></li>
+        </ol>
+        <button class="btn sheet__cta" data-variant="accent" type="button" data-cta><span>Hablemos</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
+      </div>
+    </dialog>
+  </header>
+
+  <dialog class="palette" id="palette" aria-label="Ir a una sección o acción">
+    <div class="palette__field">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="5.5"/><path d="M13 13l4 4"/></svg>
+      <input type="text" role="combobox" aria-expanded="true" aria-controls="palette-list" aria-autocomplete="list" aria-label="Busca una sección o acción" placeholder="Busca una sección o acción" autocomplete="off" spellcheck="false" autofocus>
+      <button class="palette__esc" type="button" data-close aria-label="Cerrar">Esc</button>
+    </div>
+    <div class="palette__list" id="palette-list" role="listbox" aria-label="Resultados"></div>
+    <p class="palette__empty" data-empty hidden>Nada coincide con «<span data-query></span>».</p>
+    <p class="palette__foot" aria-hidden="true"><span><kbd>↑</kbd><kbd>↓</kbd> moverte</span><span><kbd>↵</kbd> abrir</span><span><kbd>esc</kbd> cerrar</span></p>
+  </dialog>
+
+  <main id="main" tabindex="-1">
+    <section class="hero" id="inicio" data-section="Inicio" tabindex="-1" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow enter" style="--i:0">De la idea a la tienda<br>con web, móvil e IA</p>
+        <h1 class="headline" id="hero-title">
+          <span class="enter" style="--i:1">Ideas que</span>
+          <span class="enter" style="--i:2">llegan a</span>
+          <span class="h-accent enter" style="--i:3">producción.</span>
+        </h1>
+        <p class="lead enter" style="--i:4">Soy Jose, desarrollador full stack centrado en React Native. Apps móviles, webs y asistentes de IA que se publican, se miden y se mantienen.</p>
+        <div class="ctas enter" style="--i:5">
+          <button class="btn" data-variant="primary" type="button" data-cta><span>Pide propuesta</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
+          <a class="btn-ghost" href="#proyectos" data-ghost><span class="play"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1l7 4-7 4z"/></svg></span>Ver proyectos</a>
+        </div>
+        <form class="field hero-field" novalidate hidden data-hero-field>
+          <label for="hero-email">Tu email para la propuesta</label>
+          <div class="field__row">
+            <input id="hero-email" name="email" type="email" autocomplete="email" value="jose.gmail.com" aria-invalid="true" aria-describedby="hero-email-error">
+            <button class="btn" data-variant="primary" type="submit"><span>Enviar</span></button>
+          </div>
+          <p class="field__error" id="hero-email-error"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7"/><path d="M8 4.5v4.2M8 11v.5"/></svg>Falta la @. Escribe un email como nombre@dominio.com.</p>
+        </form>
+      </div>
+
+      <div class="hero-visual enter-visual" aria-hidden="true">
+        <div class="halo"></div>
+
+        <div class="browser-track track">
+          <div class="browser">
+            <div class="browser-bar"><i></i><i></i><i></i><span class="browser-url">app.cliente.com/panel</span></div>
+            <div class="browser-body">
+              <div class="b-layer b-wire">
+                <div class="bw-side"><span></span><span></span><span></span><span></span></div>
+                <div class="bw-main">
+                  <div class="bw-kpis"><span>kpi</span><span>kpi</span><span>kpi</span></div>
+                  <div class="bw-chart"><span>chart</span></div>
+                </div>
+              </div>
+              <div class="b-layer b-app">
+                <div class="dash-side"><span></span><span></span><span></span><span></span></div>
+                <div class="dash-main">
+                  <div class="dash-kpis">
+                    <span><b class="users"></b>usuarios</span>
+                    <span><b>99.9%</b>uptime</span>
+                    <span class="kpi-swap"><b><em class="ks-a">1.2s</em><em class="ks-b">0.8s</em></b>LCP</span>
+                  </div>
+                  <div class="dash-chart">
+                    <div class="bars">
+                      <i style="--h:38%;--d:0"></i><i style="--h:52%;--d:1"></i><i style="--h:44%;--d:2"></i><i style="--h:66%;--d:3"></i><i style="--h:58%;--d:4"></i><i style="--h:80%;--d:5"></i><i style="--h:72%;--d:6"></i><i style="--h:94%;--d:7"></i>
+                    </div>
+                    <svg class="forecast" viewBox="0 0 100 40" preserveAspectRatio="none"><path pathLength="1" d="M2 30 C 20 26, 30 28, 44 20 S 70 14, 82 9 S 94 4, 98 2"/></svg>
+                  </div>
+                </div>
+              </div>
+              <span class="b-scan"></span>
+            </div>
+          </div>
+        </div>
+
+        <svg class="ribbon ribbon-back" viewBox="0 0 600 600" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="rb" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#ff7a62" stop-opacity="0"/>
+              <stop offset="0.35" stop-color="#ff4b32" stop-opacity="0.75"/>
+              <stop offset="1" stop-color="#c8200b" stop-opacity="0.2"/>
+            </linearGradient>
+          </defs>
+          <path class="ribbon-body" d="M60 520 C 200 360, 320 600, 590 120" stroke="url(#rb)" stroke-width="16">
+            <animate attributeName="d" dur="14s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.45 0 0.55 1;0.45 0 0.55 1" values="M60 520 C 200 360, 320 600, 590 120;M50 500 C 220 400, 300 560, 590 150;M60 520 C 200 360, 320 600, 590 120"/>
+          </path>
+          <path class="ribbon-glint" pathLength="1" d="M60 513 C 200 353, 320 593, 590 113">
+            <animate attributeName="d" dur="14s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.45 0 0.55 1;0.45 0 0.55 1" values="M60 513 C 200 353, 320 593, 590 113;M50 493 C 220 393, 300 553, 590 143;M60 513 C 200 353, 320 593, 590 113"/>
+          </path>
+        </svg>
+
+        <div class="phone-track track">
+          <div class="phone-float">
+            <div class="phone">
+              <div class="phone-screen">
+                <div class="ui wire">
+                  <div class="w w-head"><span>header</span><i></i></div>
+                  <div class="w w-hero"><span>kpi · sparkline</span></div>
+                  <div class="w w-row"><i></i><span>row</span></div>
+                  <div class="w w-row"><i></i><span>row</span></div>
+                  <div class="w w-row"><i></i><span>row</span></div>
+                  <div class="w w-ai"><span>ai · sugerencia</span></div>
+                  <div class="w w-tab"><i></i><i></i><i></i><i></i></div>
+                </div>
+                <div class="ui app">
+                  <div class="ui-head"><span>Pedidos</span><span class="ui-avatar"></span></div>
+                  <div class="ui-card ui-card-hero">
+                    <b class="count"><span class="count-word">nuevos</span></b>
+                    <span>hoy · +18%</span>
+                    <svg viewBox="0 0 100 30" preserveAspectRatio="none"><path class="spark" pathLength="1" d="M0 24 L14 20 L28 22 L42 14 L56 16 L70 8 L84 10 L100 3"/></svg>
+                  </div>
+                  <div class="ui-list">
+                    <div class="ui-list-in">
+                      <div class="ui-row ui-row-new" style="--r:0"><i><svg class="ok" viewBox="0 0 12 12"><path d="M3 6.2l2 2 4-4.4"/></svg></i><span class="ui-bar" style="width:52%"></span><em>48 €</em></div>
+                      <div class="ui-row" style="--r:1"><i><svg class="ok" viewBox="0 0 12 12"><path d="M3 6.2l2 2 4-4.4"/></svg></i><span class="ui-bar" style="width:62%"></span><em>32 €</em></div>
+                      <div class="ui-row" style="--r:2"><i><svg class="ok" viewBox="0 0 12 12"><path d="M3 6.2l2 2 4-4.4"/></svg></i><span class="ui-bar" style="width:44%"></span><em>19 €</em></div>
+                      <div class="ui-row" style="--r:3"><i></i><span class="ui-bar" style="width:66%"></span><em>27 €</em></div>
+                    </div>
+                  </div>
+                  <div class="ui-card ui-card-ai">
+                    <b>Asistente</b>
+                    <p class="ai-text"><span class="ai-a">3 pedidos esperan respuesta. ¿Preparo los mensajes?</span><span class="ai-b">Mensajes enviados a 3 clientes.</span></p>
+                    <span class="chip"><span class="chip-a">Aplicar</span><span class="chip-b">Hecho</span></span>
+                  </div>
+                  <div class="ui-tabbar"><i></i><i></i><i></i><i></i></div>
+                </div>
+                <span class="scan"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <svg class="ribbon ribbon-front" viewBox="0 0 600 600" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="rf" x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0" stop-color="#ff4b32" stop-opacity="0.1"/>
+              <stop offset="0.5" stop-color="#ff5a40" stop-opacity="0.7"/>
+              <stop offset="1" stop-color="#ff9a85" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path class="ribbon-body" d="M120 600 C 220 420, 380 470, 470 300 S 520 90, 600 60" stroke="url(#rf)" stroke-width="22">
+            <animate attributeName="d" dur="11s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.45 0 0.55 1;0.45 0 0.55 1" values="M120 600 C 220 420, 380 470, 470 300 S 520 90, 600 60;M100 600 C 240 450, 360 430, 480 320 S 540 110, 600 80;M120 600 C 220 420, 380 470, 470 300 S 520 90, 600 60"/>
+          </path>
+          <path class="ribbon-glint ribbon-glint-front" pathLength="1" d="M114 592 C 214 412, 374 462, 464 292 S 514 82, 594 52">
+            <animate attributeName="d" dur="11s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.45 0 0.55 1;0.45 0 0.55 1" values="M114 592 C 214 412, 374 462, 464 292 S 514 82, 594 52;M94 592 C 234 442, 354 422, 474 312 S 534 102, 594 72;M114 592 C 214 412, 374 462, 464 292 S 514 82, 594 52"/>
+          </path>
+        </svg>
+
+        <div class="chat-track track">
+          <div class="chat">
+            <span class="chat-dot"></span>
+            <div class="chat-body">
+              <b>IA · Omen</b>
+              <p class="chat-msgs">
+                <span class="m m1">Nueva iteración: partimos del wireframe.</span>
+                <span class="m m2">Aplicando el sistema de diseño a 7 bloques.</span>
+                <span class="m m3">Datos en vivo conectados: 3 pedidos nuevos.</span>
+                <span class="m m4">Sugerencia aplicada y LCP a 0,8 s.</span>
+              </p>
+              <ol class="steps">
+                <li style="--s:1"><span class="steps__bar"></span>Wireframe</li>
+                <li style="--s:2"><span class="steps__bar"></span>Diseño</li>
+                <li style="--s:3"><span class="steps__bar"></span>Datos</li>
+                <li style="--s:4"><span class="steps__bar"></span>IA</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <div class="skeleton">
+          <span class="sk sk-browser"></span>
+          <span class="sk sk-phone"></span>
+          <span class="sk sk-card"></span>
+        </div>
+      </div>
+
+      <dl class="stats enter" style="--i:6">
+        <div class="stat"><dt>iOS, Android y web</dt><dd>React Native</dd></div>
+        <div class="stat"><dt>Por hora, tarea o pack</dt><dd>Freelance</dd></div>
+        <div class="stat"><dt>En servidor propio</dt><dd>IA privada</dd></div>
+      </dl>
+
+      <section class="not-found" aria-labelledby="nf-title" hidden data-not-found>
+        <p class="nf-code" aria-hidden="true">404</p>
+        <h2 id="nf-title">Esta pantalla no existe</h2>
+        <p>El enlace está roto o la página se ha movido. Puedes volver al inicio o ver los proyectos.</p>
+        <div class="nf-actions">
+          <a class="btn" data-variant="primary" href="#inicio" data-reset-state><span>Volver al inicio</span></a>
+          <a class="nf-link" href="#proyectos" data-reset-state>Ver proyectos</a>
+        </div>
+      </section>
+
+    </section>
+
+    <section class="section projects" id="proyectos" data-section="Proyectos" tabindex="-1" aria-labelledby="projects-title">
+      <div class="wrap projects__grid">
+        <div class="projects__aside">
+          <header class="sec-head reveal">
+            <p class="kicker"><span class="kicker__num">01</span>Proyectos</p>
+            <h2 class="sec-title" id="projects-title">Apps que ya<br><span class="h-accent">están en uso.</span></h2>
+            <p class="sec-lead">Tres ejemplos de lo que construyo de principio a fin: diseño, app, backend y despliegue.</p>
+          </header>
+          <ol class="pindex reveal" aria-label="Índice de proyectos" style="--i:1">
+            <li data-pindex="p1"><a href="#p1"><span>01</span>App de reservas</a></li>
+            <li data-pindex="p2"><a href="#p2"><span>02</span>Panel de operaciones</a></li>
+            <li data-pindex="p3"><a href="#p3"><span>03</span>Asistente de pedidos</a></li>
+          </ol>
+        </div>
+        <div class="projects__list" data-loading-region>
+          <article class="pcard reveal" id="p1" tabindex="-1" aria-labelledby="p1-title">
+            <div class="pmedia pmedia-1" aria-hidden="true">
+              <div class="pmedia__in">
+                <div class="mini-phone mp-a"><i class="mp-head"></i><i class="mp-card"></i><i class="mp-line"></i><i class="mp-line short"></i><i class="mp-line"></i></div>
+                <div class="mini-phone mp-b"><i class="mp-head"></i><i class="mp-cal"></i><i class="mp-line"></i><i class="mp-line short"></i></div>
+              </div>
+            </div>
+            <div class="pcard__body">
+              <p class="pcard__meta">Móvil · iOS y Android</p>
+              <h3 class="pcard__title" id="p1-title">App de reservas para clínicas</h3>
+              <p class="pcard__text">Citas, recordatorios y pagos en una app nativa con panel web para el equipo.</p>
+              <ul class="tags" aria-label="Tecnologías"><li>React Native</li><li>Expo</li><li>Supabase</li></ul>
+              <a class="link-arrow" href="#contacto">Ver caso<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+            </div>
+          </article>
+          <article class="pcard reveal" id="p2" tabindex="-1" aria-labelledby="p2-title">
+            <div class="pmedia pmedia-2" aria-hidden="true">
+              <div class="pmedia__in">
+                <div class="mini-browser"><i class="mb-bar"></i><div class="mb-body"><i class="mb-side"></i><div class="mb-main"><i class="mb-kpi"></i><i class="mb-kpi"></i><i class="mb-kpi accent"></i><i class="mb-chart"></i></div></div></div>
+              </div>
+            </div>
+            <div class="pcard__body">
+              <p class="pcard__meta">Web · Panel interno</p>
+              <h3 class="pcard__title" id="p2-title">Panel de operaciones en tiempo real</h3>
+              <p class="pcard__text">Métricas, alertas y estado de servicios en un panel que carga en menos de un segundo.</p>
+              <ul class="tags" aria-label="Tecnologías"><li>Next.js</li><li>Fastify</li><li>Postgres</li></ul>
+              <a class="link-arrow" href="#contacto">Ver caso<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+            </div>
+          </article>
+          <article class="pcard reveal" id="p3" tabindex="-1" aria-labelledby="p3-title">
+            <div class="pmedia pmedia-3" aria-hidden="true">
+              <div class="pmedia__in">
+                <div class="bubbles"><i class="bb in">¿Tenéis hueco el jueves?</i><i class="bb out">Sí, a las 17:30. ¿Te lo reservo?</i><i class="bb in short">Perfecto</i><i class="bb out done">Reservado y confirmado</i></div>
+              </div>
+            </div>
+            <div class="pcard__body">
+              <p class="pcard__meta">IA · Servidor propio</p>
+              <h3 class="pcard__title" id="p3-title">Asistente que responde pedidos</h3>
+              <p class="pcard__text">Un modelo alojado en Omen contesta, reserva y avisa a una persona cuando hace falta.</p>
+              <ul class="tags" aria-label="Tecnologías"><li>Node</li><li>RAG</li><li>Modelo local</li></ul>
+              <a class="link-arrow" href="#contacto">Ver caso<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section services" id="servicios" data-section="Servicios" tabindex="-1" aria-labelledby="services-title">
+      <div class="wrap">
+        <header class="sec-head sec-head--row reveal">
+          <div>
+            <p class="kicker"><span class="kicker__num">02</span>Servicios</p>
+            <h2 class="sec-title" id="services-title">Tres formas de<br><span class="h-accent">trabajar juntos.</span></h2>
+          </div>
+          <p class="sec-lead">En plantilla, como freelance o con un pack cerrado. Tú eliges cómo, yo me encargo de que llegue a producción.</p>
+        </header>
+        <div class="plans">
+          <article class="plan reveal" style="--i:0">
+            <p class="plan__kind">Por cuenta ajena</p>
+            <h3 class="plan__title">Contratación</h3>
+            <p class="plan__text">Me incorporo a tu equipo de producto móvil o web.</p>
+            <ul class="checks"><li>React Native y web</li><li>Revisión de código y CI</li><li>Remoto o híbrido</li></ul>
+            <a class="link-arrow" href="#contacto">Hablar de la vacante<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+          </article>
+          <article class="plan plan--featured reveal" style="--i:1">
+            <p class="plan__kind">Precio cerrado</p>
+            <h3 class="plan__title">Packs web y app</h3>
+            <p class="plan__text">Diseño, desarrollo y publicación con alcance y fecha definidos.</p>
+            <ul class="checks"><li>Web, app o las dos</li><li>Publicación en tiendas</li><li>Mantenimiento opcional</li></ul>
+            <a class="btn" data-variant="light" href="#contacto"><span>Ver packs</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+          </article>
+          <article class="plan reveal" style="--i:2">
+            <p class="plan__kind">Por hora o por tarea</p>
+            <h3 class="plan__title">Freelance</h3>
+            <p class="plan__text">Una funcionalidad, una auditoría o un empujón al proyecto.</p>
+            <ul class="checks"><li>Presupuesto por tarea</li><li>Entregas semanales</li><li>Seguimiento en tiempo real</li></ul>
+            <a class="link-arrow" href="#contacto">Contar la tarea<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+          </article>
+        </div>
+        <div class="process reveal">
+          <p class="process__title" id="process-title">Cómo trabajo</p>
+          <ol class="process__list" aria-labelledby="process-title" tabindex="0">
+            <li><span class="process__num">01</span><b>Descubrir</b>Objetivos, usuarios y alcance.</li>
+            <li><span class="process__num">02</span><b>Diseñar</b>Flujos y pantallas en el navegador.</li>
+            <li><span class="process__num">03</span><b>Construir</b>Entregas cortas que puedes probar.</li>
+            <li><span class="process__num">04</span><b>Publicar</b>Tiendas, dominio y métricas.</li>
+            <li><span class="process__num">05</span><b>Mantener</b>Mejoras con datos reales.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="section stack" id="stack" data-section="Stack" tabindex="-1" aria-labelledby="stack-title">
+      <div class="wrap">
+        <header class="sec-head sec-head--row reveal">
+          <div>
+            <p class="kicker"><span class="kicker__num">03</span>Stack</p>
+            <h2 class="sec-title" id="stack-title">Herramientas<br><span class="h-accent">probadas.</span></h2>
+          </div>
+          <p class="sec-lead">Lo justo para que el producto sea rápido, seguro y fácil de mantener.</p>
+        </header>
+        <div class="tiles">
+          <article class="tile reveal" style="--i:0"><p class="tile__key">01 · móvil</p><h3 class="tile__title">Apps nativas</h3><ul class="chips"><li>React Native</li><li>Expo</li><li>Reanimated</li><li>TypeScript</li></ul></article>
+          <article class="tile reveal" style="--i:1"><p class="tile__key">02 · web</p><h3 class="tile__title">Webs rápidas</h3><ul class="chips"><li>Next.js</li><li>React</li><li>CSS moderno</li><li>Cloudflare</li></ul></article>
+          <article class="tile reveal" style="--i:2"><p class="tile__key">03 · backend</p><h3 class="tile__title">Datos y APIs</h3><ul class="chips"><li>Node</li><li>Fastify</li><li>Supabase</li><li>Postgres</li></ul></article>
+          <article class="tile tile--dark reveal" style="--i:3"><p class="tile__key">04 · ia</p><h3 class="tile__title">IA privada</h3><ul class="chips"><li>Modelos locales</li><li>RAG</li><li>Agentes</li><li>Omen</li></ul></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section contact" id="contacto" data-section="Contacto" tabindex="-1" aria-labelledby="contact-title">
+      <div class="wrap">
+        <div class="contact__panel reveal">
+          <div class="contact__copy">
+            <p class="kicker kicker--dark"><span class="kicker__num">04</span>Contacto</p>
+            <h2 class="sec-title" id="contact-title">¿Lo llevamos<br><span class="h-accent">a producción?</span></h2>
+            <p class="sec-lead">Cuéntame qué necesitas. Te respondo yo, con una propuesta concreta.</p>
+            <p class="contact__direct"><span>O escribe a</span> <a href="mailto:hola@josecoded.com">hola@josecoded.com</a></p>
+          </div>
+          <form class="contact__form" novalidate data-contact>
+            <div class="cfield">
+              <label for="c-name">Nombre</label>
+              <input id="c-name" name="name" type="text" autocomplete="name" placeholder="Cómo te llamas">
+            </div>
+            <div class="cfield">
+              <label for="c-email">Email</label>
+              <input id="c-email" name="email" type="email" autocomplete="email" placeholder="nombre@dominio.com" required aria-describedby="c-email-error">
+              <p class="cfield__error" id="c-email-error" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7"/><path d="M8 4.5v4.2M8 11v.5"/></svg><span>Escribe un email como nombre@dominio.com.</span></p>
+            </div>
+            <fieldset class="cfield picks">
+              <legend>Qué necesitas</legend>
+              <label><input type="radio" name="kind" value="app" checked><span>App móvil</span></label>
+              <label><input type="radio" name="kind" value="web"><span>Web</span></label>
+              <label><input type="radio" name="kind" value="ia"><span>IA</span></label>
+              <label><input type="radio" name="kind" value="otro"><span>Otro</span></label>
+            </fieldset>
+            <div class="cfield">
+              <label for="c-msg">Mensaje</label>
+              <textarea id="c-msg" name="message" rows="3" placeholder="Qué quieres construir y para cuándo"></textarea>
+            </div>
+            <button class="btn contact__submit" data-variant="accent" type="submit"><span>Enviar propuesta</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
+          </form>
+          <div class="contact__done" hidden data-contact-done tabindex="-1">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M7.5 12.4l3 3 6-6.6"/></svg>
+            <p><b>Recibido.</b> Te escribo en cuanto lo lea.</p>
+            <button class="nf-link nf-link--dark" type="button" data-contact-reset>Enviar otro mensaje</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer__row">
+      <a class="brand" href="#inicio" aria-label="josecoded, ir al inicio">
+        <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><rect class="m-bg" x="1" y="1" width="22" height="22" rx="11"/><circle class="m-dot" cx="16.5" cy="7.5" r="3"/><path class="m-j" d="M8 9.5v5.5a2 2 0 0 1-3 1.7"/></svg>
+        <span class="brand-word">josecoded</span>
+      </a>
+      <p class="footer__note">© 2026 Jose · Full stack, React Native e IA</p>
+      <a class="footer__top" href="#inicio">Volver arriba<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 13V3M4 7l4-4 4 4"/></svg></a>
+    </div>
+  </footer>
+
+  <div class="lab" role="group" aria-label="Opción de navegación">
+    <span class="lab__label" aria-hidden="true">Nav</span>
+    <button type="button" aria-pressed="true" data-set-nav="a"><span class="lab__key" aria-hidden="true">A</span><span class="lab__name">Cápsula</span></button>
+    <button type="button" aria-pressed="false" data-set-nav="b"><span class="lab__key" aria-hidden="true">B</span><span class="lab__name">Terminal</span></button>
+    <button type="button" aria-pressed="false" data-set-nav="c"><span class="lab__key" aria-hidden="true">C</span><span class="lab__name">Raíl</span></button>
+  </div>
+
+  <div class="states">
+    <button class="states__toggle" type="button" aria-expanded="false" aria-controls="states-list">Estados</button>
+    <fieldset class="states__list" id="states-list" hidden>
+      <legend>Vista previa de estados</legend>
+      <label><input type="radio" name="state" value="normal" checked><span>Normal</span></label>
+      <label><input type="radio" name="state" value="loading"><span>Cargando</span></label>
+      <label><input type="radio" name="state" value="error"><span>Error</span></label>
+      <label><input type="radio" name="state" value="empty"><span>404</span></label>
+      <label><input type="radio" name="state" value="disabled"><span>Deshabilitado</span></label>
+    </fieldset>
+  </div>
+
+  <p class="sr-only" role="status" data-status></p>
+  <script src="js/app.js?v=1" type="module"></script>
+</body>
+</html>
