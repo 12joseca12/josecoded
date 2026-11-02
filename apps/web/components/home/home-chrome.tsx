@@ -1,8 +1,8 @@
 import { getTranslations } from 'next-intl/server';
 
+import { navLabel } from '@/lib/content/nav';
 import { getSectionAvailability } from '@/lib/content/sections';
 
-import { labBlogVariant } from './lab-blog-data';
 import { PagedScroll } from './paged-scroll';
 import { SectionIndicator } from './section-indicator';
 
@@ -16,13 +16,13 @@ import type { IndicatorSection } from './section-indicator';
 export async function HomeChrome() {
   const nav = await getTranslations('nav');
   const t = await getTranslations('home');
-  const variant = labBlogVariant(getSectionAvailability());
+  const label = navLabel(getSectionAvailability());
 
   const sections: IndicatorSection[] = [
     { id: 'sobre-mi', name: nav('about') },
     { id: 'servicios', name: nav('services') },
     { id: 'proyectos', name: nav('projects') },
-    ...(variant ? [{ id: 'lab-blog', name: variant === 'both' ? nav('labBlog') : variant === 'lab' ? nav('lab') : nav('blog') }] : []),
+    ...(label ? [{ id: 'lab-blog', name: nav(label) }] : []),
     { id: 'hablamos', name: nav('contact') },
   ];
 

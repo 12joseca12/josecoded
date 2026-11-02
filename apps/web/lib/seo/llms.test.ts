@@ -50,4 +50,12 @@ describe('buildLlms', () => {
     expect(text).toContain('Email: hola@example.com');
     expect(text).not.toContain('{{DATO');
   });
+
+  it('the full version lists the guides with their summary; the short one does not', () => {
+    const guides = [{ title: 'Scroll por gestos', url: 'https://josecoded.com/blog/scroll', summary: 'Paginado con CSS.' }];
+    const labels = { ...input.labels, guides: 'Guías' };
+    expect(buildLlms({ ...input, labels, guides, full: true })).toContain('## Guías\n- [Scroll por gestos](https://josecoded.com/blog/scroll): Paginado con CSS.');
+    expect(buildLlms({ ...input, labels, guides, full: false })).not.toContain('Scroll por gestos');
+    expect(buildLlms({ ...input, labels, guides: [], full: true })).not.toContain('## Guías');
+  });
 });

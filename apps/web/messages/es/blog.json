@@ -60,7 +60,13 @@
         "text": "Un correo cuando publique una guía nueva. Nada más.",
         "email": "Correo electrónico",
         "submit": "Avisarme",
-        "soon": "Muy pronto podrás apuntarte aquí.",
+        "sent": "Listo. Te escribiré cuando publique una guía nueva.",
+        "errors": {
+          "email": "Escribe un email válido.",
+          "captcha": "No he podido comprobar que no eres un robot. Inténtalo de nuevo.",
+          "generic": "No se ha podido apuntar. Revisa el correo e inténtalo de nuevo.",
+          "down": "No he podido apuntarte ahora mismo. Inténtalo de nuevo en unos minutos."
+        },
         "name": "Avisarme de nuevas guías"
       },
       "closing": {

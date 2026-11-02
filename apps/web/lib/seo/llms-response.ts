@@ -2,6 +2,8 @@ import { getTranslations } from 'next-intl/server';
 
 import { formatPrice, pricing } from '@josecoded/pricing';
 
+import { blogPosts } from '@/lib/content/blog';
+import { hasDato } from '@/lib/content/dato';
 import { getSectionAvailability } from '@/lib/content/sections';
 
 import { loadFacts } from './facts-server';
@@ -35,6 +37,14 @@ async function pagesOf(locale: Locale): Promise<LlmsPage[]> {
   ];
 }
 
+/** The real guides written in `locale` (a guide that only exists in the other language is listed under that one). */
+function guidesOf(locale: Locale): LlmsPage[] {
+  if (!getSectionAvailability().blog) return [];
+  return blogPosts(locale, false)
+    .filter((post) => !post.fallback && hasDato(post.title) && hasDato(post.description))
+    .map((post) => ({ title: post.title, url: absoluteUrl(locale, '/blog/[slug]', { slug: post.slug }), summary: post.description }));
+}
+
 /** Body of `/llms.txt` (`full: false`) and `/llms-full.txt`, Spanish with the English pages listed apart. */
 export async function llmsBody(full: boolean): Promise<string> {
   const locale: Locale = 'es';
@@ -52,7 +62,8 @@ export async function llmsBody(full: boolean): Promise<string> {
     facts,
     pricing,
     pages,
-    otherLanguagePages,
+    otherLanguagePages: full ? [...otherLanguagePages, ...guidesOf('en')] : otherLanguagePages,
+    guides: guidesOf(locale),
     full,
     labels: {
       pages: seo('llms.pages'),
@@ -65,6 +76,7 @@ export async function llmsBody(full: boolean): Promise<string> {
       english: seo('llms.english'),
       author: seo('llms.author'),
       includes: seo('llms.includes'),
+      guides: seo('llms.guides'),
     },
   });
 }

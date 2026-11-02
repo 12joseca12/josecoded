@@ -2,7 +2,7 @@ import { getFormatter, getLocale, getTranslations } from 'next-intl/server';
 
 import { Action } from '@/components/ui/action';
 import { getBuildInfo } from '@/lib/content/build-info';
-import { getNavItems } from '@/lib/layout/nav';
+import { getFooterNavItems } from '@/lib/layout/nav';
 import { isLegalPublishable } from '@/lib/legal/publishable';
 
 import styles from './site-footer.module.css';
@@ -28,7 +28,7 @@ export async function SiteFooter() {
   const { reviewedAt } = getBuildInfo();
 
   const links: { href: Href; label: string }[] = [
-    ...getNavItems().map(({ key, href }) => ({ href, label: nav(key) })),
+    ...getFooterNavItems().map(({ key, href }) => ({ href, label: nav(key) })),
     { href: '/partners', label: nav('partners') },
     { href: '/contacto', label: nav('contact') },
     { href: '/area-clientes', label: t('clientArea') },

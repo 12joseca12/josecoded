@@ -7,7 +7,7 @@ import { cleanText, turnstileTokenSchema } from './text.ts';
 // stored as the client sent it.
 
 /** Sources a visitor or the web can claim. `chat` is written by the assistant, `manual`/`referral` by the admin. */
-export const PUBLIC_LEAD_SOURCES = ['web_form', 'web_proposal', 'calcom', 'partner_form'] as const;
+export const PUBLIC_LEAD_SOURCES = ['web_form', 'web_proposal', 'calcom', 'partner_form', 'web_notify'] as const;
 
 const phone = z
   .string()

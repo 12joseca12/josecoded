@@ -28,6 +28,8 @@ export interface LlmsInput {
   pages: LlmsPage[];
   /** Pages in the other language, under their own heading. */
   otherLanguagePages: LlmsPage[];
+  /** The blog guides in this language; listed in `llms-full.txt` only. */
+  guides?: LlmsPage[];
   labels: {
     pages: string;
     prices: string;
@@ -39,6 +41,7 @@ export interface LlmsInput {
     english: string;
     author: string;
     includes: string;
+    guides?: string;
   };
   /** `llms-full.txt`: adds what each pack includes and every profile link. */
   full: boolean;
@@ -46,7 +49,7 @@ export interface LlmsInput {
 
 const real = (line: string) => !line.includes('{{DATO');
 
-export function buildLlms({ siteUrl, locale, description, facts, pricing, pages, otherLanguagePages, labels, full }: LlmsInput): string {
+export function buildLlms({ siteUrl, locale, description, facts, pricing, pages, otherLanguagePages, guides = [], labels, full }: LlmsInput): string {
   const price = (amount: number) => formatPrice(amount, locale);
   const link = (page: LlmsPage) => `- [${page.title}](${page.url})${page.summary && hasDato(page.summary) ? `: ${page.summary}` : ''}`;
   const name = fullName(facts);
@@ -72,6 +75,7 @@ export function buildLlms({ siteUrl, locale, description, facts, pricing, pages,
     `- ${labels.hourly}: ${price(pricing.hourly)}/h`,
     `- ${labels.fixed} ${price(pricing.feature)}`,
     ...packs,
+    ...(full && guides.length > 0 && labels.guides ? ['', `## ${labels.guides}`, ...guides.map(link)] : []),
     ...(otherLanguagePages.length > 0 ? ['', `## ${labels.english}`, ...otherLanguagePages.map(link)] : []),
     ...(full
       ? [

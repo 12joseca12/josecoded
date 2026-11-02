@@ -22,19 +22,3 @@
   font-size: var(--font-body-size);
   line-height: var(--font-body-leading);
 }
-
-.form {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: end;
-  gap: var(--sp-3);
-}
-
-.form > :first-child {
-  flex: 1 1 16rem;
-}
-
-.soon {
-  color: var(--text-3);
-  font-size: var(--font-small-size);
-}

@@ -63,6 +63,7 @@ export const LEAD_SOURCES = [
   'partner_form',
   'manual',
   'referral',
+  'web_notify',
 ] as const;
 export const CONTACT_VIAS = ['client', 'partner', 'recruiter', 'other'] as const;
 export const PROJECT_PHASES = ['kickoff', 'design', 'build', 'review', 'delivered', 'maintenance'] as const;

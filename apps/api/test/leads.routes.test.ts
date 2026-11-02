@@ -100,6 +100,13 @@ describe('POST /leads: creation and notification', () => {
     expect(leads.payloads[0]).toMatchObject({ via: 'partner', chat_case: 'partner' });
   });
 
+  it('web_notify (notify me of new guides) is a plain client lead from an email only', async () => {
+    const { post, leads } = setup();
+    const res = await post(lead({ source: 'web_notify', message: undefined, contact: { name: 'marta@example.com', email: 'marta@example.com' } }));
+    expect(res.status).toBe(201);
+    expect(leads.payloads[0]).toMatchObject({ source: 'web_notify', via: 'client', email: 'marta@example.com' });
+  });
+
   it('a phone is enough', async () => {
     const { post, leads } = setup();
     const res = await post(lead({ contact: { name: 'Marta', phone: '+34 600 111 222' } }));

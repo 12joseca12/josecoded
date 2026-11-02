@@ -3,6 +3,7 @@ import { getLocale, getTranslations } from 'next-intl/server';
 import { Bento, BentoCell, DemoCard, PostTeaser, Scene } from '@/components/scenes';
 import { ArrowLink } from '@/components/ui/arrow-link';
 import { isPendingVisible } from '@/components/ui/pending';
+import { isPendingDato } from '@/lib/content/dato';
 import { getSectionAvailability } from '@/lib/content/sections';
 
 import { datoText } from './dato';
@@ -36,15 +37,15 @@ export async function LabBlogScene() {
   const locale = (await getLocale()) as Locale;
   const t = await getTranslations('home.scenes.labBlog');
   const nav = await getTranslations('nav');
-  const { posts, demos } = getHomeLabBlogContent();
   const showPlaceholders = isPendingVisible();
+  const { posts, demos } = getHomeLabBlogContent(locale, showPlaceholders);
   const placeholder = (key: 'date' | 'title' | 'lead' | 'demoName' | 'demoLead') => datoText(String(t.raw(`placeholder.${key}`)));
   const date = (iso: string) => new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(new Date(iso));
 
   // an article or a demo, real or (outside production) a placeholder; null when neither exists
   const article = (post: HomePost | undefined): Teaser | null =>
     post
-      ? { note: date(post.date), title: post.title, lead: post.description, href: `/blog/${post.slug}`, name: t('readNamed', { title: post.title }) }
+      ? { note: date(post.date), title: datoText(post.title), lead: datoText(post.description), href: `/blog/${post.slug}`, name: isPendingDato(post.title) ? undefined : t('readNamed', { title: post.title }) }
       : showPlaceholders
         ? { note: placeholder('date'), title: placeholder('title'), lead: placeholder('lead'), href: '/blog' }
         : null;

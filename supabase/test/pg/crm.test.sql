@@ -77,7 +77,7 @@ select t.ok(
                                                  'project_phase', 'affiliate_level', 'reward_type', 'comment_status'))
   = 'affiliate_level=standard,premium comment_status=pending,approved,rejected '
     'contact_kind=lead,client,agency,recruiter,other contact_via=client,partner,recruiter,other '
-    'lead_source=web_form,web_proposal,chat,calcom,partner_form,manual,referral lead_status=open,won,lost '
+    'lead_source=web_form,web_proposal,chat,calcom,partner_form,manual,referral,web_notify lead_status=open,won,lost '
     'project_phase=kickoff,design,build,review,delivered,maintenance reward_type=maintenance_months,percent',
   'enums match DATOS §4.3-4.5');
 

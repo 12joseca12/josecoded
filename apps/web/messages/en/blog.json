@@ -60,7 +60,13 @@
         "text": "One email when I publish a new guide. Nothing else.",
         "email": "Email",
         "submit": "Notify me",
-        "soon": "You will be able to sign up here very soon.",
+        "sent": "Done. I will write when a new guide is out.",
+        "errors": {
+          "email": "Enter a valid email.",
+          "captcha": "I could not check that you are not a robot. Try again.",
+          "generic": "Could not sign you up. Check the email and try again.",
+          "down": "I could not sign you up right now. Try again in a few minutes."
+        },
         "name": "Notify me about new guides"
       },
       "closing": {

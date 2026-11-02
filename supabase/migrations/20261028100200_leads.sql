@@ -1,10 +1,11 @@
--- Task 1.8a (plan v3.2; DATOS v1.1 §4.3, §5, §6). Leads = opportunities of a crm_contacts row (several per contact).
+-- Task 1.8a (plan v3.2; DATOS v1.1 §4.3, §5, §6). `web_notify` (block B06) is «Avísame de nuevas guías»: an email only, kept as an
+-- `other` contact tagged newsletter_interest, not a sales lead. Leads = opportunities of a crm_contacts row (several per contact).
 -- Admin reads and writes them directly (manual lead); the gateway creates them with create_lead() (service role); a
 -- client only sees their summary through area_lead_summary() (20261028100300). affiliate_code gets its FK in
 -- 20261028100500_affiliates.sql.
 
 create type public.lead_status as enum ('open', 'won', 'lost');
-create type public.lead_source as enum ('web_form', 'web_proposal', 'chat', 'calcom', 'partner_form', 'manual', 'referral');
+create type public.lead_source as enum ('web_form', 'web_proposal', 'chat', 'calcom', 'partner_form', 'manual', 'referral', 'web_notify');
 create type public.contact_via as enum ('client', 'partner', 'recruiter', 'other');
 
 create table public.leads (

@@ -17,6 +17,7 @@ import { blogPost, blogSlugs } from '@/lib/content/blog';
 import { hasDato } from '@/lib/content/dato';
 import { loadGuide } from '@/lib/content/guide-loader';
 import { getSectionAvailability } from '@/lib/content/sections';
+import { env } from '@/lib/env';
 import { resolveLocale } from '@/lib/locale';
 import { blogPostingJsonLd, breadcrumbJsonLd, graphOf } from '@/lib/seo/jsonld';
 import { pageMetadata } from '@/lib/seo/page-metadata';
@@ -124,7 +125,7 @@ export default async function BlogPostPage({ params }: { params: Params }) {
           </section>
         ) : null}
         <ShareRow title={tArticle('share.title')} label={tArticle('share.label')} url={url} labels={{ copy: tArticle('share.copy'), copied: tArticle('share.copied'), failed: tArticle('share.failed') }} />
-        <NotifyBlock labels={{ title: tArticle('notify.title'), text: tArticle('notify.text'), email: tArticle('notify.email'), submit: tArticle('notify.submit'), soon: tArticle('notify.soon') }} />
+        <NotifyBlock locale={locale} siteKey={env.client.NEXT_PUBLIC_TURNSTILE_SITE_KEY} labels={{ title: tArticle('notify.title'), text: tArticle('notify.text'), email: tArticle('notify.email'), submit: tArticle('notify.submit'), sent: tArticle('notify.sent') }} />
       </div>
 
       <ClosingCompact

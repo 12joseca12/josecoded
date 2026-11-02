@@ -66,11 +66,15 @@ begin
     end if;
   end if;
   if v_contact is null then
-    insert into public.crm_contacts (kind, status, display_name, email, phone, locale, user_id, source, chat_case)
-    values ('lead', 'new', coalesce(nullif(btrim(p ->> 'display_name'), ''), v_email::text, btrim(p ->> 'phone')),
+    -- web_notify (an email asking for new guides) is not a sales lead: an `other` contact tagged for the newsletter
+    insert into public.crm_contacts (kind, status, display_name, email, phone, locale, user_id, source, chat_case, tags)
+    values (case when v_source = 'web_notify' then 'other' else 'lead' end::public.contact_kind, 'new',
+            coalesce(nullif(btrim(p ->> 'display_name'), ''), v_email::text, btrim(p ->> 'phone')),
             v_email, nullif(btrim(p ->> 'phone'), ''), v_locale, v_link_user,
-            case v_source when 'referral' then 'manual' else v_source::text end::public.contact_source,
-            (p ->> 'chat_case')::public.chat_case)
+            case v_source when 'referral' then 'manual' when 'web_notify' then 'newsletter_interest'
+                          else v_source::text end::public.contact_source,
+            (p ->> 'chat_case')::public.chat_case,
+            case when v_source = 'web_notify' then array['newsletter_interest'] else '{}'::text[] end)
     returning id into v_contact;
   elsif v_link_user is not null then
     update public.crm_contacts set user_id = v_link_user where id = v_contact and user_id is null;

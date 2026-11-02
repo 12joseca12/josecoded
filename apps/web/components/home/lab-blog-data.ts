@@ -1,4 +1,7 @@
+import { blogPosts } from '@/lib/content/blog';
+
 import type { SectionAvailability } from '@/lib/content/sections';
+import type { Locale } from '@josecoded/types';
 
 export interface HomePost {
   slug: string;
@@ -30,10 +33,13 @@ export function labBlogVariant({ lab, blog }: SectionAvailability): LabBlogVaria
 }
 
 /**
- * Real articles and demos for the scene, newest first. The content loaders arrive with the blog
- * (4.2) and the lab (4.5); until then there is nothing real, and the scene shows `{{DATO}}`
- * placeholders in development and previews only (production has neither section enabled yet).
+ * Real guides and demos for the scene, newest first. The guides come from the blog index (only `kind: guide`, in the
+ * page's language or the other one when it has no translation); the demos arrive with the lab (4.5). Where one is
+ * missing the scene shows `{{DATO}}` placeholders in development and previews only.
  */
-export function getHomeLabBlogContent(): { posts: readonly HomePost[]; demos: readonly HomeDemo[] } {
-  return { posts: [], demos: [] };
+export function getHomeLabBlogContent(locale: Locale, pending: boolean): { posts: readonly HomePost[]; demos: readonly HomeDemo[] } {
+  const posts = blogPosts(locale, pending)
+    .filter((post) => post.kind === 'guide')
+    .map(({ slug, title, description, date }) => ({ slug, title, description, date }));
+  return { posts, demos: [] };
 }
