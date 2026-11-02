@@ -1,0 +1,23 @@
+.box {
+  display: grid;
+  gap: var(--sp-3);
+  justify-items: start;
+  padding: var(--sp-8) var(--sp-6);
+  border-radius: var(--r-cell);
+  background: var(--tint-ghost);
+  box-shadow: var(--shadow-hairline);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--font-title-sm-size);
+  font-weight: var(--font-title-sm-weight);
+  letter-spacing: var(--font-title-sm-tracking);
+  line-height: var(--font-title-sm-leading);
+}
+
+.text {
+  max-width: var(--size-measure-prose);
+  margin: 0;
+  color: var(--text-2);
+}

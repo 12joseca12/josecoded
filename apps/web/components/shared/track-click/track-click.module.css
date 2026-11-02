@@ -1,0 +1,4 @@
+/* the wrapper takes no part in the layout: the links inside keep sitting where they would without it */
+.box {
+  display: contents;
+}

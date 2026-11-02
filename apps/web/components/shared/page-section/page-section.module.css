@@ -1,0 +1,16 @@
+.section {
+  display: grid;
+  gap: var(--sp-gap-scene);
+  max-width: var(--size-container);
+  margin-inline: auto;
+  padding: var(--sp-gap-scene) var(--sp-pad-scene);
+  scroll-margin-top: var(--header-height);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--sp-4) var(--sp-8);
+}

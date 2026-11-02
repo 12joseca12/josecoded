@@ -1,0 +1,17 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--r-pill);
+  background: var(--tint-chip);
+  box-shadow: var(--shadow-hairline);
+  color: var(--text-2);
+  font-size: var(--font-small-size);
+  font-weight: var(--font-emphasis-weight);
+  line-height: var(--font-body-leading);
+}
+
+.badge[data-tone='live'] {
+  color: var(--text);
+}

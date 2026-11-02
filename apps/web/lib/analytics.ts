@@ -1,6 +1,6 @@
 // Typed event tracker over Umami (self-hosted on Omen, task 2.12; DT §5.6). The tracker never throws and does nothing when
 // Umami is not on the page: the script is optional (no URL or website id configured), loads async, and Omen may be off.
-// The 12 events are the whole vocabulary; `Radar` is not measured here. No payload carries personal data.
+// The 13 events are the whole vocabulary; `Radar` is not measured here. No payload carries personal data.
 export interface EventMap {
   whatsapp_click: { origin: string; pack?: string; ref?: string };
   contact_submit: { via: string };
@@ -14,6 +14,7 @@ export interface EventMap {
   booking_open: { origin: string };
   referral_copy: undefined;
   palette_open: undefined;
+  quick_contact: { channel: string; page: string };
 }
 
 export type EventName = keyof EventMap;
