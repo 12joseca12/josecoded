@@ -1,0 +1,111 @@
+.timeline {
+  display: grid;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.item {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--sp-8) minmax(0, 1fr);
+  gap: var(--sp-3);
+  padding-bottom: var(--sp-5);
+}
+
+/* the thread between two icons */
+.item::before {
+  content: '';
+  position: absolute;
+  top: var(--sp-9);
+  bottom: var(--sp-1);
+  left: calc(var(--sp-4) - var(--stroke-hairline) / 2);
+  width: var(--stroke-hairline);
+  background: var(--line);
+}
+
+.item:last-child::before {
+  display: none;
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: var(--sp-8);
+  height: var(--sp-8);
+  border-radius: var(--r-circle);
+  background: var(--tint-chip);
+  box-shadow: var(--shadow-hairline);
+  color: var(--text-2);
+}
+
+.item[data-tone='in'] .icon {
+  background: var(--tint-current);
+  color: var(--violet-soft);
+}
+
+.item[data-tone='status'] {
+  padding-bottom: var(--sp-4);
+}
+
+.item[data-tone='status'] .icon {
+  background: transparent;
+  box-shadow: none;
+}
+
+.body {
+  display: grid;
+  gap: var(--sp-1);
+  min-width: 0;
+  padding-top: var(--sp-1);
+}
+
+.line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-1) var(--sp-2);
+  margin: 0;
+  font-size: var(--font-label-size);
+}
+
+.line strong {
+  font-weight: var(--font-emphasis-weight);
+}
+
+.actor {
+  color: var(--text-2);
+  font-size: var(--font-small-size);
+}
+
+.time {
+  color: var(--text-3);
+  font-size: var(--font-caption-size);
+  font-variant-numeric: tabular-nums;
+}
+
+.text {
+  max-width: var(--size-measure-prose);
+  padding: var(--sp-3) var(--sp-3-5);
+  margin: 0;
+  border-radius: var(--r-md);
+  background: var(--tint-cmdk);
+  box-shadow: var(--shadow-hairline);
+  color: var(--text-2);
+  font-size: var(--font-small-size);
+  line-height: var(--font-body-leading);
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.plain {
+  margin: 0;
+  color: var(--text-3);
+  font-size: var(--font-small-size);
+}
+
+.empty {
+  margin: 0;
+  color: var(--text-3);
+  font-size: var(--font-label-size);
+}

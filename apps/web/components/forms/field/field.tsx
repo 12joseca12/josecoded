@@ -20,7 +20,7 @@ type Common = {
 };
 
 type TextLike = Common & {
-  kind?: 'text' | 'email' | 'tel';
+  kind?: 'text' | 'email' | 'tel' | 'date' | 'time';
   defaultValue?: string;
   autoComplete?: HTMLInputAutoCompleteAttribute;
   inputMode?: 'text' | 'numeric' | 'email' | 'tel';

@@ -1,0 +1,372 @@
+{
+  "crmContacts": {
+    "metaTitle": "Contactos",
+    "inbox": {
+      "title": "Contactos.",
+      "tone": {
+        "admin": "Todo el CRM.",
+        "closer": "Tu cartera."
+      },
+      "lead": "Ordenados por siguiente acción: lo vencido, arriba.",
+      "import": "Importar CSV",
+      "new": "Nuevo contacto",
+      "empty": {
+        "title": "Aún no hay contactos",
+        "text": "Crea el primero con «Nuevo contacto» o importa un CSV."
+      },
+      "emptyFiltered": {
+        "title": "Ningún contacto con estos filtros",
+        "text": "Prueba con menos filtros o con otra búsqueda."
+      }
+    },
+    "filters": {
+      "label": "Filtrar contactos",
+      "kind": "Tipo",
+      "kindAll": "Todos",
+      "search": "Buscar por nombre, empresa o email",
+      "status": "Estado",
+      "statusAll": "Todos los estados",
+      "owner": "Dueño",
+      "ownerAll": "Todos los dueños",
+      "ownerMine": "Míos",
+      "ownerUnassigned": "Sin asignar",
+      "ownerOff": "(desactivado)",
+      "due": "Solo vencidas",
+      "apply": "Filtrar",
+      "clear": "Quitar filtros"
+    },
+    "kinds": {
+      "lead": "Lead",
+      "client": "Cliente",
+      "agency": "Agencia",
+      "recruiter": "Reclutador",
+      "other": "Otro"
+    },
+    "kindsPlural": {
+      "lead": "Leads",
+      "client": "Clientes",
+      "agency": "Agencias",
+      "recruiter": "Reclutadores",
+      "other": "Otros"
+    },
+    "status": {
+      "new": "Nuevo",
+      "contacted": "Contactado",
+      "proposal_sent": "Propuesta enviada",
+      "won": "Ganado",
+      "lost": "Perdido",
+      "active_client": "Cliente activo",
+      "closed": "Cerrado",
+      "pending": "Pendiente",
+      "invited": "Invitación enviada",
+      "inmail_sent": "InMail enviado",
+      "replied": "Ha respondido",
+      "meeting": "Reunión",
+      "collaborating": "Colaborando",
+      "discarded": "Descartada",
+      "in_process": "En proceso",
+      "interview": "Entrevista",
+      "offer": "Oferta",
+      "rejected": "Rechazado",
+      "active": "Activo"
+    },
+    "channels": {
+      "linkedin_invite": "Invitación de LinkedIn",
+      "linkedin_inmail": "InMail de LinkedIn",
+      "email": "Correo",
+      "whatsapp": "WhatsApp",
+      "calcom": "Cal.com",
+      "web_form": "Formulario",
+      "web_proposal": "Propuesta web",
+      "chat": "Chat",
+      "other": "Otro"
+    },
+    "sources": {
+      "web_form": "Formulario web",
+      "web_proposal": "Generador de propuesta",
+      "chat": "Chat",
+      "calcom": "Cal.com",
+      "partner_form": "Formulario de partners",
+      "import_agencias": "Importación de agencias",
+      "import_csv": "Importación CSV",
+      "manual": "Manual",
+      "radar": "Radar",
+      "newsletter_interest": "Newsletter",
+      "referral": "Recomendación"
+    },
+    "table": {
+      "caption": "Contactos, ordenados por siguiente acción",
+      "contact": "Contacto",
+      "kind": "Tipo",
+      "status": "Estado",
+      "next": "Siguiente acción",
+      "last": "Último",
+      "owner": "Dueño",
+      "actions": "Acciones",
+      "editStatus": "Estado y siguiente acción de {name}",
+      "noOrganization": "Sin organización",
+      "none": "—",
+      "unassigned": "Sin asignar",
+      "ownerOff": "(desactivado)"
+    },
+    "pager": {
+      "label": "Páginas de contactos",
+      "range": "{from}–{to} de {total}",
+      "previous": "Anterior",
+      "next": "Siguiente"
+    },
+    "due": {
+      "overdue": "Vencida:",
+      "today": "Para",
+      "later": "Para el",
+      "todayLabel": "hoy"
+    },
+    "statusSheet": {
+      "title": "Estado y siguiente acción",
+      "status": "Estado",
+      "nextAction": "Siguiente acción",
+      "nextActionHelp": "Obligatoria salvo en los estados finales. Es lo que ordena la bandeja.",
+      "date": "Fecha",
+      "time": "Hora (opcional)",
+      "submit": "Guardar",
+      "cancel": "Cancelar",
+      "close": "Cerrar",
+      "saved": "Estado y siguiente acción guardados"
+    },
+    "newContact": {
+      "title": "Nuevo contacto",
+      "kind": "Tipo",
+      "name": "Nombre",
+      "organization": "Empresa",
+      "email": "Email",
+      "phone": "Teléfono",
+      "linkedin": "LinkedIn",
+      "nextAction": "Siguiente acción",
+      "nextActionHelp": "Obligatoria salvo que el contacto nazca en un estado final.",
+      "date": "Fecha",
+      "time": "Hora (opcional)",
+      "owner": "Dueño",
+      "ownerHelp": "Un contacto de un closer es siempre suyo; aquí eliges el dueño del tuyo.",
+      "ownerNone": "Sin asignar",
+      "submit": "Crear contacto",
+      "cancel": "Cancelar",
+      "close": "Cerrar",
+      "saved": "Contacto creado"
+    },
+    "nextAction": {
+      "label": "Siguiente acción",
+      "field": "Qué toca hacer",
+      "date": "Fecha",
+      "time": "Hora (opcional)",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "close": "Cerrar",
+      "saved": "Siguiente acción guardada",
+      "none": "Sin siguiente acción",
+      "done": "Hecho",
+      "doneAria": "Marcar como hecha y fijar la siguiente",
+      "doneTitle": "Hecho. ¿Y ahora qué?",
+      "doneHelp": "Fija la siguiente acción para que el contacto no se pierda.",
+      "change": "Cambiar",
+      "set": "Fijar",
+      "sheetTitle": "Siguiente acción",
+      "overdue": "Vencida · {day}, {ago}",
+      "today": "Para hoy",
+      "later": "Para el {day}",
+      "noDate": "Sin fecha"
+    },
+    "timeline": {
+      "empty": "Todavía no hay nada en el historial.",
+      "kind": {
+        "note": "Nota",
+        "message_sent": "Mensaje enviado",
+        "message_received": "Mensaje recibido",
+        "meeting": "Reunión",
+        "call": "Llamada",
+        "chat_thread": "Conversación de chat",
+        "status_change": "Cambio de estado",
+        "import": "Importado",
+        "lead_created": "Lead creado",
+        "lead_won": "Cobrado",
+        "lead_lost": "Lead perdido",
+        "client_invited": "Acceso al portal solicitado",
+        "story_proposed": "Historia propuesta",
+        "story_decided": "Historia decidida",
+        "commission": "Comisión"
+      },
+      "line": {
+        "status_change": "Estado: {from} → {to}",
+        "lead_won": "Cobrado {amount}",
+        "commission": "Comisión del {percent} %: {amount}",
+        "withChannel": "{kind} · {channel}"
+      },
+      "actor": {
+        "jose": "Jose",
+        "closer": "Closer",
+        "ai": "IA",
+        "system": "Sistema",
+        "contact": "Contacto"
+      }
+    },
+    "head": {
+      "back": "Contactos",
+      "status": "Estado",
+      "compose": "Redactar mensaje",
+      "close": "Cerrar",
+      "unassigned": "Sin asignar",
+      "ownerOff": "(desactivado)",
+      "owner": "Nuevo dueño",
+      "reassign": "Reasignar",
+      "reassignTitle": "Reasignar contacto",
+      "reassignHelp": "El contacto pasa a la cartera de quien elijas y deja de verlo quien lo tenía. Queda anotado en el historial.",
+      "reassignSubmit": "Reasignar",
+      "reassigned": "Contacto reasignado",
+      "cancel": "Cancelar"
+    },
+    "reach": {
+      "copyEmail": "Copiar email",
+      "copied": "Email copiado",
+      "copyFailed": "No se pudo copiar el email",
+      "whatsapp": "WhatsApp",
+      "linkedin": "LinkedIn",
+      "web": "Web",
+      "notion": "Notion",
+      "newTab": "(se abre en otra pestaña)"
+    },
+    "detail": {
+      "side": "Datos del contacto",
+      "tabs": {
+        "label": "Secciones del contacto",
+        "historial": "Historial",
+        "mensajes": "Mensajes",
+        "historias": "Historias"
+      },
+      "note": {
+        "label": "Añadir una nota (solo la ve el equipo)",
+        "submit": "Guardar nota",
+        "saved": "Nota guardada"
+      }
+    },
+    "opportunity": {
+      "title": "{count, plural, one {Oportunidad} other {Oportunidades}}",
+      "status": {
+        "open": "Abierta",
+        "won": "Cobrada",
+        "lost": "Perdida"
+      },
+      "noPack": "Sin pack",
+      "closePaid": "Cerrar cobrado",
+      "closeTitle": "Cerrar cobrado",
+      "closeHelp": "Marca la oportunidad como cobrada, crea el cliente y la recompensa del afiliado si la hay.",
+      "amount": "Importe cobrado (sin IVA)",
+      "amountHelp": "Por ejemplo 1.400 o 1400,50.",
+      "paidAt": "Fecha del cobro",
+      "pack": "Pack contratado",
+      "commission": {
+        "legend": "Comisión de {name}",
+        "auto": "Según la regla: solo si {name} abrió el lead",
+        "yes": "Pagar la comisión a {name} ({rate} %)",
+        "no": "No pagar comisión"
+      },
+      "closeSubmit": "Cerrar cobrado",
+      "closed": "Oportunidad cerrada como cobrada",
+      "markSent": "Marcar propuesta enviada",
+      "requestClose": "Pedir cierre a Jose",
+      "requestTitle": "Pedir cierre a Jose",
+      "requestHelp": "Jose recibe un aviso para cerrar la oportunidad como cobrada. El contacto queda con la acción «Jose: cerrar cobrado».",
+      "requestSubmit": "Pedir cierre",
+      "requested": "Cierre solicitado",
+      "cancel": "Cancelar",
+      "close": "Cerrar"
+    },
+    "client": {
+      "title": "Cliente",
+      "phase": {
+        "kickoff": "Arranque",
+        "design": "Diseño",
+        "build": "Desarrollo",
+        "review": "Revisión",
+        "delivered": "Entregado",
+        "maintenance": "Mantenimiento"
+      },
+      "access": {
+        "none": "Sin invitar al portal",
+        "invited": "Invitado el {date}",
+        "active": "Con acceso al portal"
+      },
+      "noEmail": "El contacto no tiene email: añádelo para poder invitarle.",
+      "invite": "Habilitar acceso",
+      "inviteAgain": "Volver a invitar",
+      "inviteTitle": "Habilitar acceso al portal",
+      "email": "Email",
+      "emailHelp": "La invitación va al email del contacto.",
+      "emailHelpAdmin": "Por defecto, el email del contacto. Cámbialo solo si el cliente ha cambiado de dirección.",
+      "inviteSubmit": "Enviar invitación",
+      "invited": "Invitación enviada",
+      "file": "Ficha",
+      "cancel": "Cancelar",
+      "close": "Cerrar"
+    },
+    "data": {
+      "title": "Datos",
+      "phone": "Teléfono",
+      "city": "Ciudad",
+      "role": "Cargo",
+      "source": "Origen",
+      "language": "Idioma",
+      "tags": "Etiquetas",
+      "since": "Alta"
+    },
+    "stories": {
+      "title": "Historias",
+      "decide": "Decidir en la ficha del cliente",
+      "empty": "El cliente aún no ha propuesto historias.",
+      "status": {
+        "proposed": "Por decidir",
+        "accepted": "Aceptada",
+        "rejected": "Rechazada",
+        "converted": "En tareas"
+      },
+      "as": "Como",
+      "want": "quiero",
+      "so": "para",
+      "criteria": "Criterios de aceptación"
+    },
+    "drafts": {
+      "title": "Borradores y mensajes",
+      "composerSoon": "El redactor de mensajes llega con la tarea 6.8; aquí ya se ven los borradores que existan.",
+      "empty": "No hay borradores todavía.",
+      "status": {
+        "draft": "Borrador",
+        "copied": "Copiado",
+        "marked_sent": "Enviado",
+        "discarded": "Descartado"
+      }
+    },
+    "errors": {
+      "invalid": "Revisa los datos e inténtalo de nuevo.",
+      "failed": "No se ha podido guardar. Inténtalo de nuevo en un momento.",
+      "notFound": "No encuentro ese contacto, o no es tuyo.",
+      "forbidden": "No tienes permiso para hacer esto.",
+      "statusNotAllowed": "Ese estado no está disponible para este contacto.",
+      "nextActionRequired": "Dinos qué toca hacer y cuándo: este estado necesita siguiente acción.",
+      "noteInvalid": "Escribe la nota (hasta 4.000 caracteres).",
+      "emailInvalid": "Ese email no parece válido.",
+      "ownerInvalid": "Elige un dueño activo.",
+      "unassignedName": "Sin asignar",
+      "reassignedNote": "Reasignado a {owner}.",
+      "accessAlreadyHas": "Este cliente ya tiene acceso al portal.",
+      "accessInvalidEmail": "Ese email no es válido.",
+      "accessEmailStaff": "Esa dirección es de una persona del equipo y no puede ser un cliente.",
+      "accessEmailMustMatch": "La invitación va al email del contacto; solo Jose puede usar otro.",
+      "amountInvalid": "Escribe el importe cobrado, por ejemplo 1.400 o 1400,50.",
+      "leadClosed": "Esa oportunidad ya no está abierta.",
+      "leadWithoutPack": "Elige el pack contratado para poder cerrar la oportunidad.",
+      "quota": "Has llegado al límite de contactos nuevos de hoy."
+    },
+    "overdueList": {
+      "label": "Contactos con la acción vencida",
+      "none": "Sin detalle"
+    }
+  }
+}

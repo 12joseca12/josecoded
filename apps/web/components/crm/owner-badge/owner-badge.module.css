@@ -1,0 +1,41 @@
+.owner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+
+.owner small {
+  color: var(--text-3);
+  font-size: var(--font-caption-size);
+}
+
+.avatar {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: var(--size-avatar);
+  height: var(--size-avatar);
+  border-radius: var(--r-circle);
+  background: var(--tint-icon);
+  color: var(--violet-soft);
+  font-size: var(--font-caption-size);
+  font-weight: var(--font-emphasis-weight);
+}
+
+.owner[data-state='unassigned'] {
+  color: var(--text-3);
+}
+
+.owner[data-state='unassigned'] .avatar {
+  background: transparent;
+  box-shadow: inset 0 0 0 var(--stroke-hairline) var(--line-2);
+  color: var(--text-3);
+}
+
+.owner[data-state='off'] .avatar {
+  background: var(--tint-chip);
+  color: var(--text-3);
+}

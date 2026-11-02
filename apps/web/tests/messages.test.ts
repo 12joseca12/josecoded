@@ -22,7 +22,7 @@ function screens(locale: string): Record<string, Record<string, unknown>> {
 }
 
 describe('message catalogs', () => {
-  it('has the 17 screens in both languages', () => {
+  it('has the 18 screens in both languages', () => {
     const expected = [
       'about',
       'area',
@@ -30,6 +30,7 @@ describe('message catalogs', () => {
       'blog',
       'common',
       'contact',
+      'crm-contacts',
       'crm',
       'dev',
       'home',

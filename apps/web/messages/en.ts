@@ -6,6 +6,7 @@ import blog from './en/blog.json';
 import common from './en/common.json';
 import contact from './en/contact.json';
 import crm from './en/crm.json';
+import crmContacts from './en/crm-contacts.json';
 import dev from './en/dev.json';
 import home from './en/home.json';
 import lab from './en/lab.json';
@@ -31,6 +32,7 @@ const messages = {
   ...blog,
   ...contact,
   ...crm,
+  ...crmContacts,
   ...dev,
   ...proposal,
   ...auth,

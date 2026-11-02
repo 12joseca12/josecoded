@@ -193,6 +193,9 @@
   --size-crm-grabber-h: 0.25rem;
   --size-screen: 100svh;
   --size-crm-sheet-max-h: 92svh;
+  --size-crm-row: 3rem;
+  --size-crm-sheet-w: 34rem;
+  --size-crm-dialog-w: 28rem;
 
   /* focus */
   --focus-ring-width: 2px;
@@ -421,6 +424,7 @@
   --viewport-width: 100vw;
   --opacity-tcard-idle: 0.4;
   --scale-tcard-idle: 0.96;
+  --scale-dialog-enter: 0.98;
   --rail-grow-from: 0.04;
   --pager-idle-scale: 0.55;
   --keycap-travel: 2px;

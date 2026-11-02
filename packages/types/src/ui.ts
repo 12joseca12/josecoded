@@ -29,6 +29,12 @@ export type TwoToneHeadingLevel = 'h1' | 'h2';
 /** `crm` is the title of a staff screen (`--font-crm-title-*`). */
 export type TwoToneHeadingSize = 'headline' | 'display-closing' | 'crm';
 export type LangSwitchVariant = 'inline' | 'segmented';
+
+// CRM contacts (task 6.2).
+/** `side` rises from the right (bottom sheet on a phone); `dialog` is the small centred one for a decision. */
+export type SheetVariant = 'side' | 'dialog';
+/** `unassigned` is a contact nobody owns yet; `off` belongs to a deactivated closer. */
+export type OwnerBadgeState = 'assigned' | 'unassigned' | 'off';
 /** `attention` waits for a decision, `live` is alive or done, `overdue` is the urgency, `active` the current one. */
 export type StatusBadgeTone = 'neutral' | 'active' | 'live' | 'attention' | 'overdue' | 'muted';
 
@@ -46,6 +52,7 @@ export type StaffLinksSize = 'rail' | 'sheet';
  * component by named import, so only these end up in the bundle). Add a name here and there.
  */
 export type IconName =
+  | 'arrow-left'
   | 'arrow-right'
   | 'bell'
   | 'book-open'
@@ -53,9 +60,13 @@ export type IconName =
   | 'briefcase-business'
   | 'building-2'
   | 'calendar'
+  | 'check'
+  | 'chevron-left'
   | 'chevron-right'
+  | 'circle-check'
   | 'circle-x'
   | 'clock'
+  | 'copy'
   | 'download'
   | 'ellipsis'
   | 'file-text'
@@ -66,8 +77,10 @@ export type IconName =
   | 'handshake'
   | 'house'
   | 'inbox'
+  | 'key-round'
   | 'layers'
   | 'layout-grid'
+  | 'link'
   | 'list-checks'
   | 'log-in'
   | 'log-out'
@@ -78,9 +91,14 @@ export type IconName =
   | 'message-square'
   | 'package'
   | 'package-check'
+  | 'pen-line'
+  | 'pencil'
+  | 'phone'
+  | 'plus'
   | 'receipt'
   | 'route'
   | 'search'
+  | 'send'
   | 'settings'
   | 'shield-check'
   | 'smartphone'
@@ -89,6 +107,8 @@ export type IconName =
   | 'triangle-alert'
   | 'upload'
   | 'user'
+  | 'user-cog'
+  | 'user-round'
   | 'users'
   | 'wallet'
   | 'x';

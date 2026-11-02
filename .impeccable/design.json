@@ -271,7 +271,10 @@
     "crm-grabber-w": "2.5rem",
     "crm-grabber-h": "0.25rem",
     "screen": "100svh",
-    "crm-sheet-max-h": "92svh"
+    "crm-sheet-max-h": "92svh",
+    "crm-row": "3rem",
+    "crm-sheet-w": "34rem",
+    "crm-dialog-w": "28rem"
   },
   "extensions": {
     "colorMeta": {
@@ -1673,6 +1676,11 @@
         "name": "scale-tcard-idle",
         "value": "0.96",
         "purpose": "Escala de una tarjeta de proyecto que no está en foco."
+      },
+      {
+        "name": "scale-dialog-enter",
+        "value": "0.98",
+        "purpose": "Escala de la que parte un diálogo de decisión del CRM al abrirse."
       },
       {
         "name": "rail-grow-from",

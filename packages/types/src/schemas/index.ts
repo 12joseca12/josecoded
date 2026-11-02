@@ -5,6 +5,7 @@ export * from './assistant.ts';
 export * from './auth.ts';
 export * from './build.ts';
 export * from './chat.ts';
+export * from './contacts.ts';
 export * from './content.ts';
 export * from './crm.ts';
 export * from './env.ts';

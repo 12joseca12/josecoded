@@ -1,0 +1,372 @@
+{
+  "crmContacts": {
+    "metaTitle": "Contacts",
+    "inbox": {
+      "title": "Contacts.",
+      "tone": {
+        "admin": "The whole CRM.",
+        "closer": "Your portfolio."
+      },
+      "lead": "Sorted by next action: what is overdue comes first.",
+      "import": "Import CSV",
+      "new": "New contact",
+      "empty": {
+        "title": "No contacts yet",
+        "text": "Create the first one with “New contact” or import a CSV."
+      },
+      "emptyFiltered": {
+        "title": "No contact matches these filters",
+        "text": "Try fewer filters or another search."
+      }
+    },
+    "filters": {
+      "label": "Filter contacts",
+      "kind": "Kind",
+      "kindAll": "All",
+      "search": "Search by name, company or email",
+      "status": "Status",
+      "statusAll": "All statuses",
+      "owner": "Owner",
+      "ownerAll": "All owners",
+      "ownerMine": "Mine",
+      "ownerUnassigned": "Unassigned",
+      "ownerOff": "(deactivated)",
+      "due": "Overdue only",
+      "apply": "Filter",
+      "clear": "Clear filters"
+    },
+    "kinds": {
+      "lead": "Lead",
+      "client": "Client",
+      "agency": "Agency",
+      "recruiter": "Recruiter",
+      "other": "Other"
+    },
+    "kindsPlural": {
+      "lead": "Leads",
+      "client": "Clients",
+      "agency": "Agencies",
+      "recruiter": "Recruiters",
+      "other": "Others"
+    },
+    "status": {
+      "new": "New",
+      "contacted": "Contacted",
+      "proposal_sent": "Proposal sent",
+      "won": "Won",
+      "lost": "Lost",
+      "active_client": "Active client",
+      "closed": "Closed",
+      "pending": "Pending",
+      "invited": "Invitation sent",
+      "inmail_sent": "InMail sent",
+      "replied": "Replied",
+      "meeting": "Meeting",
+      "collaborating": "Collaborating",
+      "discarded": "Discarded",
+      "in_process": "In process",
+      "interview": "Interview",
+      "offer": "Offer",
+      "rejected": "Rejected",
+      "active": "Active"
+    },
+    "channels": {
+      "linkedin_invite": "LinkedIn invitation",
+      "linkedin_inmail": "LinkedIn InMail",
+      "email": "Email",
+      "whatsapp": "WhatsApp",
+      "calcom": "Cal.com",
+      "web_form": "Form",
+      "web_proposal": "Web proposal",
+      "chat": "Chat",
+      "other": "Other"
+    },
+    "sources": {
+      "web_form": "Web form",
+      "web_proposal": "Proposal generator",
+      "chat": "Chat",
+      "calcom": "Cal.com",
+      "partner_form": "Partners form",
+      "import_agencias": "Agency import",
+      "import_csv": "CSV import",
+      "manual": "Manual",
+      "radar": "Radar",
+      "newsletter_interest": "Newsletter",
+      "referral": "Referral"
+    },
+    "table": {
+      "caption": "Contacts, sorted by next action",
+      "contact": "Contact",
+      "kind": "Kind",
+      "status": "Status",
+      "next": "Next action",
+      "last": "Last",
+      "owner": "Owner",
+      "actions": "Actions",
+      "editStatus": "Status and next action of {name}",
+      "noOrganization": "No organization",
+      "none": "—",
+      "unassigned": "Unassigned",
+      "ownerOff": "(deactivated)"
+    },
+    "pager": {
+      "label": "Contact pages",
+      "range": "{from}–{to} of {total}",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "due": {
+      "overdue": "Overdue:",
+      "today": "For",
+      "later": "For",
+      "todayLabel": "today"
+    },
+    "statusSheet": {
+      "title": "Status and next action",
+      "status": "Status",
+      "nextAction": "Next action",
+      "nextActionHelp": "Required except in final statuses. It is what sorts the inbox.",
+      "date": "Date",
+      "time": "Time (optional)",
+      "submit": "Save",
+      "cancel": "Cancel",
+      "close": "Close",
+      "saved": "Status and next action saved"
+    },
+    "newContact": {
+      "title": "New contact",
+      "kind": "Kind",
+      "name": "Name",
+      "organization": "Company",
+      "email": "Email",
+      "phone": "Phone",
+      "linkedin": "LinkedIn",
+      "nextAction": "Next action",
+      "nextActionHelp": "Required unless the contact starts in a final status.",
+      "date": "Date",
+      "time": "Time (optional)",
+      "owner": "Owner",
+      "ownerHelp": "A closer's contact is always hers; here you choose the owner of yours.",
+      "ownerNone": "Unassigned",
+      "submit": "Create contact",
+      "cancel": "Cancel",
+      "close": "Close",
+      "saved": "Contact created"
+    },
+    "nextAction": {
+      "label": "Next action",
+      "field": "What needs doing",
+      "date": "Date",
+      "time": "Time (optional)",
+      "save": "Save",
+      "cancel": "Cancel",
+      "close": "Close",
+      "saved": "Next action saved",
+      "none": "No next action",
+      "done": "Done",
+      "doneAria": "Mark as done and set the next one",
+      "doneTitle": "Done. What now?",
+      "doneHelp": "Set the next action so the contact does not get lost.",
+      "change": "Change",
+      "set": "Set",
+      "sheetTitle": "Next action",
+      "overdue": "Overdue · {day}, {ago}",
+      "today": "For today",
+      "later": "For {day}",
+      "noDate": "No date"
+    },
+    "timeline": {
+      "empty": "Nothing in the history yet.",
+      "kind": {
+        "note": "Note",
+        "message_sent": "Message sent",
+        "message_received": "Message received",
+        "meeting": "Meeting",
+        "call": "Call",
+        "chat_thread": "Chat conversation",
+        "status_change": "Status change",
+        "import": "Imported",
+        "lead_created": "Lead created",
+        "lead_won": "Paid",
+        "lead_lost": "Lead lost",
+        "client_invited": "Portal access requested",
+        "story_proposed": "Story proposed",
+        "story_decided": "Story decided",
+        "commission": "Commission"
+      },
+      "line": {
+        "status_change": "Status: {from} → {to}",
+        "lead_won": "Paid {amount}",
+        "commission": "Commission of {percent} %: {amount}",
+        "withChannel": "{kind} · {channel}"
+      },
+      "actor": {
+        "jose": "Jose",
+        "closer": "Closer",
+        "ai": "AI",
+        "system": "System",
+        "contact": "Contact"
+      }
+    },
+    "head": {
+      "back": "Contacts",
+      "status": "Status",
+      "compose": "Write message",
+      "close": "Close",
+      "unassigned": "Unassigned",
+      "ownerOff": "(deactivated)",
+      "owner": "New owner",
+      "reassign": "Reassign",
+      "reassignTitle": "Reassign contact",
+      "reassignHelp": "The contact moves to the portfolio of the person you choose, and whoever had it stops seeing it. It is noted in the history.",
+      "reassignSubmit": "Reassign",
+      "reassigned": "Contact reassigned",
+      "cancel": "Cancel"
+    },
+    "reach": {
+      "copyEmail": "Copy email",
+      "copied": "Email copied",
+      "copyFailed": "The email could not be copied",
+      "whatsapp": "WhatsApp",
+      "linkedin": "LinkedIn",
+      "web": "Website",
+      "notion": "Notion",
+      "newTab": "(opens in a new tab)"
+    },
+    "detail": {
+      "side": "Contact details",
+      "tabs": {
+        "label": "Sections of the contact",
+        "historial": "History",
+        "mensajes": "Messages",
+        "historias": "Stories"
+      },
+      "note": {
+        "label": "Add a note (only the team sees it)",
+        "submit": "Save note",
+        "saved": "Note saved"
+      }
+    },
+    "opportunity": {
+      "title": "{count, plural, one {Opportunity} other {Opportunities}}",
+      "status": {
+        "open": "Open",
+        "won": "Paid",
+        "lost": "Lost"
+      },
+      "noPack": "No pack",
+      "closePaid": "Close as paid",
+      "closeTitle": "Close as paid",
+      "closeHelp": "Marks the opportunity as paid, creates the client and the affiliate's reward if there is one.",
+      "amount": "Amount charged (without VAT)",
+      "amountHelp": "For example 1,400 or 1400.50.",
+      "paidAt": "Payment date",
+      "pack": "Pack bought",
+      "commission": {
+        "legend": "Commission of {name}",
+        "auto": "By the rule: only if {name} opened the lead",
+        "yes": "Pay the commission to {name} ({rate} %)",
+        "no": "Do not pay a commission"
+      },
+      "closeSubmit": "Close as paid",
+      "closed": "Opportunity closed as paid",
+      "markSent": "Mark proposal as sent",
+      "requestClose": "Ask Jose to close",
+      "requestTitle": "Ask Jose to close",
+      "requestHelp": "Jose gets a notice to close the opportunity as paid. The contact is left with the action “Jose: cerrar cobrado”.",
+      "requestSubmit": "Ask to close",
+      "requested": "Closing requested",
+      "cancel": "Cancel",
+      "close": "Close"
+    },
+    "client": {
+      "title": "Client",
+      "phase": {
+        "kickoff": "Kick-off",
+        "design": "Design",
+        "build": "Build",
+        "review": "Review",
+        "delivered": "Delivered",
+        "maintenance": "Maintenance"
+      },
+      "access": {
+        "none": "Not invited to the portal",
+        "invited": "Invited on {date}",
+        "active": "Has portal access"
+      },
+      "noEmail": "The contact has no email: add one to be able to invite them.",
+      "invite": "Enable access",
+      "inviteAgain": "Invite again",
+      "inviteTitle": "Enable portal access",
+      "email": "Email",
+      "emailHelp": "The invitation goes to the email of the contact.",
+      "emailHelpAdmin": "The email of the contact by default. Change it only if the client changed address.",
+      "inviteSubmit": "Send invitation",
+      "invited": "Invitation sent",
+      "file": "File",
+      "cancel": "Cancel",
+      "close": "Close"
+    },
+    "data": {
+      "title": "Details",
+      "phone": "Phone",
+      "city": "City",
+      "role": "Role",
+      "source": "Origin",
+      "language": "Language",
+      "tags": "Tags",
+      "since": "Added"
+    },
+    "stories": {
+      "title": "Stories",
+      "decide": "Decide in the client file",
+      "empty": "The client has not proposed any story yet.",
+      "status": {
+        "proposed": "To decide",
+        "accepted": "Accepted",
+        "rejected": "Rejected",
+        "converted": "In tasks"
+      },
+      "as": "As",
+      "want": "I want",
+      "so": "so that",
+      "criteria": "Acceptance criteria"
+    },
+    "drafts": {
+      "title": "Drafts and messages",
+      "composerSoon": "The message composer arrives with task 6.8; the drafts that exist are already listed here.",
+      "empty": "No drafts yet.",
+      "status": {
+        "draft": "Draft",
+        "copied": "Copied",
+        "marked_sent": "Sent",
+        "discarded": "Discarded"
+      }
+    },
+    "errors": {
+      "invalid": "Check the data and try again.",
+      "failed": "It could not be saved. Try again in a moment.",
+      "notFound": "I cannot find that contact, or it is not yours.",
+      "forbidden": "You are not allowed to do this.",
+      "statusNotAllowed": "That status is not available for this contact.",
+      "nextActionRequired": "Tell us what to do and when: this status needs a next action.",
+      "noteInvalid": "Write the note (up to 4,000 characters).",
+      "emailInvalid": "That email does not look valid.",
+      "ownerInvalid": "Choose an active owner.",
+      "unassignedName": "Unassigned",
+      "reassignedNote": "Reassigned to {owner}.",
+      "accessAlreadyHas": "This client already has portal access.",
+      "accessInvalidEmail": "That email is not valid.",
+      "accessEmailStaff": "That address belongs to a team member and cannot be a client.",
+      "accessEmailMustMatch": "The invitation goes to the email of the contact; only Jose can use another one.",
+      "amountInvalid": "Write the amount charged, for example 1,400 or 1400.50.",
+      "leadClosed": "That opportunity is no longer open.",
+      "leadWithoutPack": "Choose the pack bought to be able to close the opportunity.",
+      "quota": "You have reached today's limit of new contacts."
+    },
+    "overdueList": {
+      "label": "Contacts with an overdue action",
+      "none": "No detail"
+    }
+  }
+}

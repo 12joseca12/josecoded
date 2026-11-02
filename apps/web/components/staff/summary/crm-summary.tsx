@@ -1,5 +1,6 @@
 import { getFormatter, getTranslations } from 'next-intl/server';
 
+import { OverdueList } from '@/components/crm/overdue-list';
 import { StatusBadge } from '@/components/shared/status-badge';
 import { Figure } from '@/components/staff/figure';
 import { PageHead } from '@/components/staff/page-head';
@@ -12,6 +13,7 @@ import { k1Figures } from '@/lib/crm/summary';
 import { AdminSummary } from './admin-summary';
 import styles from './summary.module.css';
 
+import type { ContactRow } from '@/lib/crm/contacts';
 import type { CrmSummary as Summary } from '@/lib/crm/queries';
 import type { Locale } from '@josecoded/types';
 
@@ -19,7 +21,16 @@ import type { Locale } from '@josecoded/types';
  * K1, the summary of `/crm` (PANT K1): what is due today, the leads, the commissions, the stories to decide, the
  * last import and the team in numbers. The admin sees the whole CRM and, as the last cell, the counters of C1.
  */
-export async function CrmSummary({ locale, summary }: { locale: Locale; summary: Summary }) {
+export async function CrmSummary({
+  locale,
+  summary,
+  overdue = [],
+}: {
+  locale: Locale;
+  summary: Summary;
+  /** The oldest overdue contacts, for the short list under the figure. */
+  overdue?: readonly ContactRow[];
+}) {
   const [t, format] = await Promise.all([getTranslations({ locale, namespace: 'crm' }), getFormatter({ locale })]);
   const f = k1Figures(summary);
   const mine = f.scope === 'mine';
@@ -42,6 +53,7 @@ export async function CrmSummary({ locale, summary }: { locale: Locale; summary:
         <SummaryCard icon="clock" title={t('summary.due.title')} tone="hero" cols={7} rows={2}>
           <Figure tone={f.contactsDue > 0 ? 'overdue' : 'default'}>{format.number(f.contactsDue)}</Figure>
           <p className={styles.text}>{f.contactsDue > 0 ? t(`summary.due.${f.scope}`) : t('summary.due.none')}</p>
+          <OverdueList rows={overdue} locale={locale} />
           <div className={styles.actions}>
             <Button
               href="/crm/contactos?due=1"

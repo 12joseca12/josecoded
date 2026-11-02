@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 
 import { CrmSummary } from '@/components/staff/summary';
 import { requireStaff } from '@/lib/auth/staff';
+import { getOverdueContacts } from '@/lib/crm/contacts';
 import { getCrmSummary } from '@/lib/crm/queries';
 import { resolveLocale } from '@/lib/locale';
 
@@ -19,5 +20,8 @@ export default async function CrmHomePage({ params }: { params: LocaleParams }) 
   const locale = await resolveLocale(params);
   const { role } = await requireStaff({ locale, next: '/crm' });
   const summary = await getCrmSummary(role);
-  return <CrmSummary locale={locale} summary={summary} />;
+  // the list is a detail of the figure: without overdue contacts there is nothing to ask for
+  const dueNow = role === 'admin' ? (summary.admin?.contacts_due ?? 0) : summary.my.contacts_due;
+  const overdue = dueNow > 0 ? await getOverdueContacts(role) : [];
+  return <CrmSummary locale={locale} summary={summary} overdue={overdue} />;
 }

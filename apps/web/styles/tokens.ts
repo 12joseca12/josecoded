@@ -184,6 +184,9 @@ export type TokenName =
   | '--size-crm-grabber-h'
   | '--size-screen'
   | '--size-crm-sheet-max-h'
+  | '--size-crm-row'
+  | '--size-crm-sheet-w'
+  | '--size-crm-dialog-w'
   | '--focus-ring-width'
   | '--focus-ring-offset'
   | '--focus-ring-color'
@@ -384,6 +387,7 @@ export type TokenName =
   | '--viewport-width'
   | '--opacity-tcard-idle'
   | '--scale-tcard-idle'
+  | '--scale-dialog-enter'
   | '--rail-grow-from'
   | '--pager-idle-scale'
   | '--keycap-travel'
@@ -580,6 +584,9 @@ export const tokens = {
   'size-crm-grabber-h': '--size-crm-grabber-h',
   'size-screen': '--size-screen',
   'size-crm-sheet-max-h': '--size-crm-sheet-max-h',
+  'size-crm-row': '--size-crm-row',
+  'size-crm-sheet-w': '--size-crm-sheet-w',
+  'size-crm-dialog-w': '--size-crm-dialog-w',
   'focus-ring-width': '--focus-ring-width',
   'focus-ring-offset': '--focus-ring-offset',
   'focus-ring-color': '--focus-ring-color',
@@ -780,6 +787,7 @@ export const tokens = {
   'viewport-width': '--viewport-width',
   'opacity-tcard-idle': '--opacity-tcard-idle',
   'scale-tcard-idle': '--scale-tcard-idle',
+  'scale-dialog-enter': '--scale-dialog-enter',
   'rail-grow-from': '--rail-grow-from',
   'pager-idle-scale': '--pager-idle-scale',
   'keycap-travel': '--keycap-travel',
