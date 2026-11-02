@@ -1,0 +1,18 @@
+.state {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border: 1px solid var(--error);
+  border-radius: var(--radius-l);
+  background: var(--panel);
+  box-shadow: 0 0 0 0.25rem var(--error-ring);
+}
+
+.text {
+  max-width: 44ch;
+  margin-bottom: var(--space-2);
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+  line-height: var(--lh-body);
+}

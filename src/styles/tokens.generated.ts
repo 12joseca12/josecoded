@@ -75,6 +75,7 @@ export const tokenNames = [
   "--dur-reduced",
   "--z-raised",
   "--z-header",
+  "--z-toast",
   "--z-skip",
   "--space-1",
   "--space-2",

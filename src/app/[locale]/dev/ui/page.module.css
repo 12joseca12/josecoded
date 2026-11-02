@@ -36,3 +36,8 @@
   color: var(--ink-soft);
   font-size: var(--fs-base);
 }
+
+.grow {
+  flex: 1;
+  min-width: 12rem;
+}

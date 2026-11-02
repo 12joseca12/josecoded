@@ -12,3 +12,18 @@ export type HeadingLevel = (typeof headingLevels)[number];
 
 export const headingSizes = ["h1", "h2", "h3", "h4"] as const;
 export type HeadingSize = (typeof headingSizes)[number];
+
+export const skeletonShapes = ["text", "block", "circle"] as const;
+export type SkeletonShape = (typeof skeletonShapes)[number];
+
+export const toastTones = ["success", "error", "info"] as const;
+export type ToastTone = (typeof toastTones)[number];
+
+export interface ToastItem {
+  id: number;
+  tone: ToastTone;
+  title?: string;
+  message: string;
+}
+
+export type ToastInput = Omit<ToastItem, "id">;
