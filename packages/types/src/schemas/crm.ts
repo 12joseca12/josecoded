@@ -19,6 +19,7 @@ export const CONTACT_SOURCES = [
   'manual',
   'radar',
   'newsletter_interest',
+  'import_csv',
 ] as const;
 export const CHAT_CASES = ['client', 'partner', 'recruiter', 'curious'] as const;
 export const INTERACTION_KINDS = [
@@ -33,6 +34,10 @@ export const INTERACTION_KINDS = [
   'lead_created',
   'lead_won',
   'lead_lost',
+  'client_invited',
+  'story_proposed',
+  'story_decided',
+  'commission',
 ] as const;
 export const INTERACTION_CHANNELS = [
   'linkedin_invite',
@@ -69,6 +74,14 @@ export const AFFILIATE_LEVELS = ['standard', 'premium'] as const;
 export const REWARD_TYPES = ['maintenance_months', 'percent'] as const;
 export const REWARD_STATUSES = ['pending', 'paid'] as const;
 export const COMMENT_STATUSES = ['pending', 'approved', 'rejected'] as const;
+// Closers (task 1.8e, DATOS v1.4 §14): mirrors of the enums of supabase/migrations/20261101100*.
+export const STAFF_ROLES = ['admin', 'closer'] as const;
+export const IMPORT_STATUSES = ['done', 'failed'] as const;
+export const CONFLICT_STATUSES = ['pending', 'resolved'] as const;
+export const CONFLICT_RESOLUTIONS = ['assign_existing', 'assign_importer', 'merge', 'discard'] as const;
+export const COMMISSION_STATUSES = ['pending', 'approved', 'paid', 'rejected'] as const;
+export const NOTIFICATION_RECIPIENTS = ['admin', 'owner', 'staff_user', 'client'] as const;
+export const NOTIFICATION_CHANNELS = ['telegram', 'email'] as const;
 
 /** Valid `crm_contacts.status` per kind: mirror of `private.contact_status_ok()`. */
 export const CONTACT_STATUSES = {
@@ -99,6 +112,9 @@ export const leadStatusSchema = z.enum(LEAD_STATUSES);
 export const leadSourceSchema = z.enum(LEAD_SOURCES);
 export const contactViaSchema = z.enum(CONTACT_VIAS);
 
+/** `packs.code` check of the database (task 1.8e: the admin can create packs beyond P1–P5). */
+export const PACK_CODE_DB_RE = /^[A-Z][A-Z0-9_]{1,15}$/;
+
 /**
  * `affiliates.code` check of the database: the single contract of `AFFILIATE_CODE_RE` in `@josecoded/pricing` (prefix
  * 3–12, suffix of exactly 6, what `private.set_affiliate_code()` generates). Tests in both packages compare them.
@@ -121,7 +137,7 @@ export const createLeadInputSchema = z
     message: z.string().trim().max(5000).optional(),
     pack_code: z
       .string()
-      .regex(/^P[1-9]$/)
+      .regex(PACK_CODE_DB_RE)
       .optional(),
     pack_option: z.string().min(1).max(40).optional(),
     ai_proposal: aiProposalSchema.optional(),
@@ -177,4 +193,62 @@ export const importOrganizationsRowSchema = z.object({
   notes: z.string().max(5000).optional(),
   source: contactSourceSchema.optional(),
   notion_url: z.url().optional(),
+});
+
+export const staffRoleSchema = z.enum(STAFF_ROLES);
+export const conflictResolutionSchema = z.enum(CONFLICT_RESOLUTIONS);
+
+/** One row of a closer's CSV (task 1.8e, DATOS §14.4): at least one of email, phone or LinkedIn identifies the person. */
+export const csvContactRowSchema = z
+  .object({
+    display_name: z.string().trim().min(1).max(200),
+    email: z.email().max(320).optional(),
+    phone: z.string().trim().min(6).max(32).optional(),
+    linkedin_url: z.url().max(500).optional(),
+    kind: z.enum(['lead', 'agency', 'recruiter', 'other']).default('lead'),
+    organization: z.string().trim().min(1).max(200).optional(),
+    role: z.string().trim().max(120).optional(),
+    city: z.string().trim().max(120).optional(),
+    notes: z.string().max(5000).optional(),
+    tags: z.array(z.string().trim().min(1).max(40)).max(20).default([]),
+    locale: z.enum(['es', 'en']).optional(),
+  })
+  .refine((v) => v.email !== undefined || v.phone !== undefined || v.linkedin_url !== undefined, {
+    path: ['email'],
+    message: 'email, phone or linkedin_url is required',
+  });
+
+/** At most 500 rows per call (`too_many_rows` in the database). */
+export const CSV_IMPORT_MAX_ROWS = 500;
+export const csvImportInputSchema = z.object({
+  rows: z.array(csvContactRowSchema).min(1).max(CSV_IMPORT_MAX_ROWS),
+  file_name: z.string().trim().min(1).max(255),
+  /** sha-256 hex of the normalised CSV, computed by the Server Action: the idempotency key of the import. */
+  checksum: z.string().regex(/^[0-9a-f]{64}$/),
+});
+
+/** Answer of `crm_import_contacts_csv()`: the number of conflicts, never who owns the other side. */
+export const importResultSchema = z.object({
+  import_id: z.uuid(),
+  created: z.number().int().nonnegative(),
+  updated: z.number().int().nonnegative(),
+  skipped: z.number().int().nonnegative(),
+  conflicts: z.number().int().nonnegative(),
+  errors: z.array(z.object({ row: z.number().int().positive(), reason: z.string() })),
+  /** true when the same checksum was imported before and the previous result is returned. */
+  replayed: z.boolean().optional(),
+});
+
+/** Arguments of `admin_import_conflict_resolve()` (Q22). */
+export const conflictResolutionInputSchema = z.object({
+  conflict_id: z.uuid(),
+  resolution: conflictResolutionSchema,
+  note: z.string().trim().max(1000).optional(),
+});
+
+/** Arguments of `admin_staff_invite()` (Q21: the commission rate is mandatory, 0..100). */
+export const staffInviteInputSchema = z.object({
+  email: z.email().max(320),
+  role: staffRoleSchema,
+  commission_rate: z.number().min(0).max(100),
 });

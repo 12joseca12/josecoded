@@ -68,7 +68,10 @@ describe('createLeadInputSchema', () => {
     expect(createLeadInputSchema.safeParse({ ...base, affiliate_code: 'ANA-TEST01' }).success).toBe(true);
     expect(createLeadInputSchema.safeParse({ ...base, affiliate_code: 'ana-test01' }).success).toBe(false);
     expect(createLeadInputSchema.safeParse({ ...base, affiliate_code: 'ANA-TEST' }).success).toBe(false);
-    expect(createLeadInputSchema.safeParse({ ...base, pack_code: 'P0' }).success).toBe(false);
+    // packs.code check of the database (the admin can create packs beyond P1-P5, task 1.8e)
+    expect(createLeadInputSchema.safeParse({ ...base, pack_code: 'LANDING' }).success).toBe(true);
+    expect(createLeadInputSchema.safeParse({ ...base, pack_code: 'p1' }).success).toBe(false);
+    expect(createLeadInputSchema.safeParse({ ...base, pack_code: 'P' }).success).toBe(false);
   });
 });
 

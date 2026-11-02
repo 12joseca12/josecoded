@@ -11,7 +11,7 @@
 --   t.affected(dml)    rows changed by an insert/update/delete.
 --   t.val(query)       first column of the first row, as text.
 \o /dev/null
-\set jose '{"sub":"00000000-0000-4000-8000-0000000000a1","role":"authenticated","email":"jose@test"}'
+\set jose '{"sub":"00000000-0000-4000-8000-0000000000a1","role":"authenticated","aal":"aal2","email":"jose@test"}'
 \set ana '{"sub":"00000000-0000-4000-8000-0000000000a2","role":"authenticated","email":"ana@test"}'
 \set bob '{"sub":"00000000-0000-4000-8000-0000000000a3","role":"authenticated","email":"bob@test"}'
 \set sin '{"sub":"00000000-0000-4000-8000-0000000000a4","role":"authenticated","email":"sin@test"}'
@@ -84,8 +84,8 @@ select t.ok(
 select t.ok((select count(*) from pg_type t join pg_namespace s on s.oid = t.typnamespace
              where s.nspname = 'public' and t.typtype = 'e'
                and t.typname not in ('context_status', 'thread_status', 'chat_sender', 'chat_message_type'))
-            = 3 + 10 + 3 + 5 + 3 + 1,
-            'public has the 25 enums of DATOS §4.1 and §4.3-4.5 (chat_case included, used by crm_contacts; the other '
+            = 3 + 10 + 3 + 5 + 3 + 1 + 13,
+            'public has the 38 enums of DATOS §4.1, §4.3-4.5 and the 13 of 1.8e (chat_case included, used by crm_contacts; the other '
             'chat enums are counted in chat.test.sql)');
 
 -- Grants: anon only reads the public columns of blog_comments; nothing else of 1.8a.
@@ -476,11 +476,11 @@ rollback;
 begin;
 set local role authenticated;
 set local request.jwt.claims = :'jose';
-select t.ok(t.n('select id from public.crm_organizations') = 1 and t.n('select id from public.crm_contacts') = 5
-            and t.n('select id from public.crm_interactions') = 2 and t.n('select id from public.crm_message_templates') = 8
-            and t.n('select id from public.crm_message_drafts') = 0 and t.n('select id from public.leads') = 3,
+select t.ok(t.n('select id from public.crm_organizations') = 1 and t.n('select id from public.crm_contacts') = 9
+            and t.n('select id from public.crm_interactions') = 3 and t.n('select id from public.crm_message_templates') = 8
+            and t.n('select id from public.crm_message_drafts') = 0 and t.n('select id from public.leads') = 5,
             'jose: reads every crm_* row and every lead');
-select t.ok(t.n('select id from public.clients') = 2 and t.n('select id from public.client_tasks') = 2
+select t.ok(t.n('select id from public.clients') = 3 and t.n('select id from public.client_tasks') = 2
             and t.n('select id from public.client_task_comments') = 2 and t.n('select id from public.client_extras') = 1
             and t.n('select id from public.affiliates') = 2 and t.n('select id from public.affiliate_rewards') = 1
             and t.n('select id from public.blog_comments') = 3,
@@ -491,7 +491,7 @@ select t.ok(t.err('select notes_internal from public.clients') like '42501 %'
 select t.ok(t.val($q$select notes_internal || ':' || contact_id || ':' || user_id || ':' || invite_email
                     from public.admin_clients('00000000-0000-4000-8000-000000000401')$q$)
             = 'updated:00000000-0000-4000-8000-000000000202:00000000-0000-4000-8000-0000000000a2:ana@test'
-            and t.n('select id from public.admin_clients()') = 2
+            and t.n('select id from public.admin_clients()') = 3
             and t.n($q$select id from public.admin_clients('00000000-0000-4000-8000-0000000004ff')$q$) = 0,
             'jose: admin_clients reads every column (notes_internal, CRM links, invite_email), one or all clients');
 select t.ok(t.err($q$insert into public.crm_contacts (kind, display_name, status, source)
@@ -530,9 +530,10 @@ select t.ok(t.val($q$select created || ':' || updated from public.crm_import_org
             and t.val($q$select name_normalized from public.crm_organizations where fit = 3$q$) = 'agencia nueva',
             'crm_import_organizations normalizes case, accents and spaces');
 select t.ok(public.admin_counters()
-            = '{"chat_unread": 1, "leads_open": 2, "contacts_due": 1, "rewards_pending": 1, "agencies_replied": 0,
-                "comments_pending": 2, "upgrades_pending": 0}'::jsonb,
-            'admin_counters returns the seven counters of C1 (chat_unread: the seeded anonymous thread)');
+            = '{"chat_unread": 1, "leads_open": 3, "contacts_due": 2, "rewards_pending": 1, "agencies_replied": 0,
+                "comments_pending": 2, "upgrades_pending": 0, "commissions_pending": 1, "imports_failed_24h": 0,
+                "import_conflicts_pending": 1, "stories_proposed": 1, "content_pending": 1, "quotes_draft": 1}'::jsonb,
+            'admin_counters returns the seven counters of C1 plus the six of 1.8e (chat_unread: the seeded anonymous thread)');
 select t.ok(t.err($q$select public.admin_close_lead_paid('00000000-0000-4000-8000-000000000301', 1400)$q$)
             like '22023 reward_params_required',
             'admin_close_lead_paid asks for the reward values when the lead carries an affiliate code');

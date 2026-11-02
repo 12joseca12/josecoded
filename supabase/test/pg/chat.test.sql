@@ -13,7 +13,7 @@
 --   t.affected(dml)    rows changed by an insert/update/delete.
 --   t.val(query)       first column of the first row, as text.
 \o /dev/null
-\set jose '{"sub":"00000000-0000-4000-8000-0000000000a1","role":"authenticated","email":"jose@test"}'
+\set jose '{"sub":"00000000-0000-4000-8000-0000000000a1","role":"authenticated","aal":"aal2","email":"jose@test"}'
 \set ana '{"sub":"00000000-0000-4000-8000-0000000000a2","role":"authenticated","email":"ana@test"}'
 \set bob '{"sub":"00000000-0000-4000-8000-0000000000a3","role":"authenticated","email":"bob@test"}'
 \set sin '{"sub":"00000000-0000-4000-8000-0000000000a4","role":"authenticated","email":"sin@test"}'
@@ -70,8 +70,8 @@ select t.ok(
     'chat_sender=visitor,assistant,jose context_status=draft,published,archived thread_status=open,handed_over,closed',
   'chat enums match DATOS §4.6 (chat_case reused from the CRM migration)');
 select t.ok((select count(*) from pg_type t join pg_namespace s on s.oid = t.typnamespace
-             where s.nspname = 'public' and t.typtype = 'e') = 25 + 4,
-            'public has 29 enums: the 25 of §4.1/§4.3-4.5 plus the four new chat ones');
+             where s.nspname = 'public' and t.typtype = 'e') = 25 + 4 + 13,
+            'public has 42 enums: the 25 of §4.1/§4.3-4.5, the four chat ones and the 13 of 1.8e (DATOS §14)');
 
 select t.ok((select indexdef from pg_indexes where schemaname = 'public' and indexname = 'uq_chat_contexts_published')
             = 'CREATE UNIQUE INDEX uq_chat_contexts_published ON public.chat_contexts USING btree ("case", locale) '

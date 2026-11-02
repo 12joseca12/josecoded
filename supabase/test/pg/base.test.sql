@@ -9,11 +9,11 @@ do $$
 declare n integer;
 begin
   select count(*) into n from auth.users;
-  if n <> 4 then raise exception 'FAIL seed has % auth users, expected 4', n; end if;
-  raise notice 'PASS seed has the four auth users';
+  if n <> 6 then raise exception 'FAIL seed has % auth users, expected 6', n; end if;
+  raise notice 'PASS seed has the six auth users (jose, ana, bob, sin, carla, dani)';
 
   select count(*) into n from auth.identities;
-  if n <> 4 then raise exception 'FAIL seed has % identities, expected 4', n; end if;
+  if n <> 6 then raise exception 'FAIL seed has % identities, expected 6', n; end if;
   raise notice 'PASS seed has one email identity per user';
 
   if (select email_confirmed_at from auth.users where email = 'sin@test') is not null then
@@ -22,14 +22,18 @@ begin
   raise notice 'PASS sin@test is unconfirmed';
 
   select count(*) into n from public.staff_members;
-  if n <> 1 or not exists (select 1 from public.staff_members
-                           where user_id = '00000000-0000-4000-8000-0000000000a1' and role = 'admin') then
-    raise exception 'FAIL staff_members must hold only Jose as admin';
+  if n <> 3 or not exists (select 1 from public.staff_members
+                           where user_id = '00000000-0000-4000-8000-0000000000a1' and role = 'admin')
+     or (select string_agg(user_id::text || ':' || role || ':' || commission_rate || ':' || (disabled_at is not null),
+                           ',' order by user_id)
+           from public.staff_members where role = 'closer')
+        <> '00000000-0000-4000-8000-0000000000a5:closer:10.00:false,00000000-0000-4000-8000-0000000000a6:closer:15.00:true' then
+    raise exception 'FAIL staff_members must hold Jose (admin), carla (closer, 10, active) and dani (closer, 15, disabled)';
   end if;
-  raise notice 'PASS staff_members holds only Jose as admin';
+  raise notice 'PASS staff_members holds Jose (admin), carla (closer 10 %%, active) and dani (closer 15 %%, disabled)';
 
   select count(*) into n from public.user_profiles;
-  if n <> 4 then raise exception 'FAIL handle_new_user created % profiles, expected 4', n; end if;
+  if n <> 6 then raise exception 'FAIL handle_new_user created % profiles, expected 6', n; end if;
   if (select display_name from public.user_profiles where user_id = '00000000-0000-4000-8000-0000000000a2') <> 'Ana Test'
      or (select locale from public.user_profiles where user_id = '00000000-0000-4000-8000-0000000000a3') <> 'en'
      or (select locale from public.user_profiles where user_id = '00000000-0000-4000-8000-0000000000a4') <> 'es' then
@@ -37,7 +41,7 @@ begin
   end if;
   raise notice 'PASS handle_new_user created one profile per user with name and locale';
 
-  if (select string_agg(code || ':' || price, ',' order by code) from public.packs)
+  if (select string_agg(code || ':' || price, ',' order by code) from public.packs where code <> 'HIDDEN_PACK')
      <> 'P1:900,P2:1400,P3:2500,P4:4200,P5:4000' then
     raise exception 'FAIL packs differ from pricing.json';
   end if;
@@ -55,13 +59,13 @@ begin
   raise notice 'PASS extras match pricing.json';
 
   if (select string_agg(name || '|' || cron || '|' || coalesce(tz, '-'), ',' order by name) from private.scheduled_jobs)
-     <> 'chat.notify_digest|*/10 * * * *|-,chat.purge_anonymous|0 4 * * *|-,crm.due_digest|0 8 * * 1-5|Europe/Madrid,outbox.drain|* * * * *|-' then
+     <> 'chat.notify_digest|*/10 * * * *|-,chat.purge_anonymous|0 4 * * *|-,content.poll_deploy|*/5 * * * *|-,crm.due_digest|0 8 * * 1-5|Europe/Madrid,outbox.drain|* * * * *|-,telegram.poll_updates|*/5 * * * *|-' then
     raise exception 'FAIL scheduled_jobs rows differ from plan 1.6 (v3.2: outbox.drain every tick)';
   end if;
   if exists (select 1 from private.scheduled_jobs where not enabled) then
     raise exception 'FAIL every seeded job starts enabled';
   end if;
-  raise notice 'PASS scheduled_jobs holds exactly the four launch rows of plan 1.6';
+  raise notice 'PASS scheduled_jobs holds the four launch rows of plan 1.6 plus content.poll_deploy and telegram.poll_updates (1.8e)';
 
   if exists (select 1 from pg_class c join pg_namespace s on s.oid = c.relnamespace
              where s.nspname in ('public', 'private') and c.relkind = 'r' and not c.relrowsecurity) then
@@ -129,13 +133,15 @@ begin
 
   for r in select p.oid, p.oid::regprocedure as sig from pg_proc p join pg_namespace s on s.oid = p.pronamespace
            where s.nspname in ('public', 'private') and p.prosecdef loop
-    -- Allowlist: the policy helpers and the RPCs that DATOS §6 grants to authenticated (they check the caller inside).
-    if has_function_privilege('authenticated', r.oid, 'execute') and r.sig::text not in (
-         'private.is_admin()', 'private.client_id_of()', 'private.comment_parent_ok(uuid,text,locale)',
-         'private.crm_import_organizations_impl(jsonb)', 'private.request_upgrade_impl(text,text[])',
-         'private.claim_client_access_impl()', 'private.area_lead_summary_impl()', 'private.affiliate_leads_impl()',
-         'private.admin_counters_impl()', 'private.admin_clients_impl(uuid)',
-         'private.admin_close_lead_paid_impl(uuid,numeric,timestamp with time zone,boolean,reward_type,numeric,smallint,text)') then
+    -- Allowlist: the policy helpers and the private.*_impl bodies of the RPCs DATOS §6 and §14.4 grant to authenticated
+    -- (they check the caller inside; private is not exposed by the API). No definer function in public may be executable
+    -- by authenticated: that is what the security advisor flags (the public RPCs are invoker wrappers).
+    if has_function_privilege('authenticated', r.oid, 'execute') and not (
+         r.sig::text in (
+           'private.is_admin()', 'private.is_closer()', 'private.is_staff()', 'private.is_disabled_staff()',
+           'private.owns_contact(uuid)', 'private.owns_client(uuid)', 'private.owns_quote(uuid)',
+           'private.quote_is_draft(uuid)', 'private.client_id_of()', 'private.comment_parent_ok(uuid,text,locale)')
+         or r.sig::text like 'private.%\_impl(%') then
       raise exception 'FAIL authenticated can execute security definer %', r.sig;
     end if;
   end loop;
@@ -161,7 +167,7 @@ begin
   if (select string_agg(table_name || ':' || privilege_type, ',' order by table_name, privilege_type)
       from information_schema.role_table_grants where grantee = 'authenticated' and table_schema = 'public'
         and table_name in ('extras', 'pack_options', 'packs', 'staff_members', 'user_profiles'))
-     <> 'extras:SELECT,pack_options:SELECT,packs:SELECT,staff_members:SELECT,user_profiles:SELECT' then
+     <> 'extras:SELECT,pack_options:SELECT,packs:SELECT,staff_members:DELETE,staff_members:INSERT,staff_members:UPDATE,user_profiles:SELECT' then
     raise exception 'FAIL authenticated table grants differ from DATOS §4.1-4.2';
   end if;
   if (select string_agg(column_name, ',' order by column_name) from information_schema.column_privileges
@@ -257,12 +263,12 @@ begin
   raise notice 'PASS authenticated (ana): private.is_admin() is false';
 
   select count(*) into n from public.packs;
-  if n <> 5 then raise exception 'FAIL ana reads % packs, expected 5', n; end if;
+  if n <> 6 then raise exception 'FAIL ana reads % packs, expected 6 (P1-P5 and the hidden test pack)', n; end if;
   select count(*) into n from public.pack_options;
   if n <> 1 then raise exception 'FAIL ana reads % pack_options, expected 1', n; end if;
   select count(*) into n from public.extras;
   if n <> 6 then raise exception 'FAIL ana reads % extras, expected 6', n; end if;
-  raise notice 'PASS authenticated reads the catalogue (5 packs, 1 option, 6 extras)';
+  raise notice 'PASS authenticated reads the catalogue (6 packs with the hidden one, 1 option, 6 extras)';
 
   begin
     update public.packs set price = 1 where code = 'P1';
@@ -407,7 +413,7 @@ rollback;
 -- ---------------------------------------------------------------- admin: jose
 begin;
 set local role authenticated;
-set local request.jwt.claims = '{"sub":"00000000-0000-4000-8000-0000000000a1","role":"authenticated","email":"jose@test"}';
+set local request.jwt.claims = '{"sub":"00000000-0000-4000-8000-0000000000a1","role":"authenticated","aal":"aal2","email":"jose@test"}';
 do $$
 declare n integer;
 begin
@@ -415,11 +421,11 @@ begin
   raise notice 'PASS authenticated (jose): private.is_admin() is true';
 
   select count(*) into n from public.staff_members;
-  if n <> 1 then raise exception 'FAIL jose sees % staff rows, expected his own', n; end if;
-  raise notice 'PASS jose sees his own staff row';
+  if n <> 3 then raise exception 'FAIL jose sees % staff rows, expected the three', n; end if;
+  raise notice 'PASS the admin sees every staff row (jose, carla, dani)';
 
   select count(*) into n from public.user_profiles;
-  if n <> 4 then raise exception 'FAIL admin sees % profiles, expected 4', n; end if;
+  if n <> 6 then raise exception 'FAIL admin sees % profiles, expected 6', n; end if;
   raise notice 'PASS admin reads every profile';
 
   update public.user_profiles set display_name = 'x' where user_id = '00000000-0000-4000-8000-0000000000a2';
@@ -567,17 +573,17 @@ declare
   h jsonb;
 begin
   select count(*) into n from public.scheduled_jobs_due(now());
-  if n <> 4 then raise exception 'FAIL % jobs due at start, expected 4', n; end if;
+  if n <> 6 then raise exception 'FAIL % jobs due at start, expected 6', n; end if;
   raise notice 'PASS the four jobs start due';
 
   perform public.scheduled_jobs_mark_ran('outbox.drain', now(), now() + interval '5 minutes');
   select count(*) into n from public.scheduled_jobs_due(now());
-  if n <> 3 then raise exception 'FAIL mark_ran did not move next_run_at (% due)', n; end if;
+  if n <> 5 then raise exception 'FAIL mark_ran did not move next_run_at (% due)', n; end if;
   raise notice 'PASS scheduled_jobs_mark_ran moves the job out of the due list';
 
   perform public.scheduled_jobs_disable('crm.due_digest', 'bad cron');
   select count(*) into n from public.scheduled_jobs_due(now() + interval '1 day');
-  if n <> 3 then raise exception 'FAIL a disabled job is still due (% due)', n; end if;
+  if n <> 5 then raise exception 'FAIL a disabled job is still due (% due)', n; end if;
   h := public.system_health();
   if h -> 'jobs_disabled' <> '["crm.due_digest"]'::jsonb then raise exception 'FAIL system_health jobs_disabled %', h; end if;
   raise notice 'PASS scheduled_jobs_disable stops the job and system_health lists it';

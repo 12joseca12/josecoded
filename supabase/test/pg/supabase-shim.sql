@@ -66,6 +66,18 @@ create table auth.identities (
   unique (provider_id, provider)
 );
 
+-- MFA factors: admin_staff_list() looks for a verified one (task 1.8e). Supabase types status as auth.factor_status.
+create table auth.mfa_factors (
+  id            uuid primary key default gen_random_uuid(),
+  user_id       uuid not null references auth.users (id) on delete cascade,
+  friendly_name text,
+  factor_type   text not null default 'totp',
+  status        text not null default 'unverified',
+  secret        text,
+  created_at    timestamptz not null default now(),
+  updated_at    timestamptz not null default now()
+);
+
 -- Same resolution order as Supabase: the legacy per-claim GUC first, then the claims JSON that PostgREST sets.
 create function auth.uid() returns uuid language sql stable as $$
   select coalesce(
