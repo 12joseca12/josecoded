@@ -106,7 +106,7 @@ test.describe('material', () => {
     await signInAs(context, baseURL as string, 'ana');
     await page.goto('/area-clientes/material');
     const name = `informe-${Date.now()}.pdf`;
-    await page.getByLabel('Archivo').setInputFiles({ name, mimeType: 'application/pdf', buffer: Buffer.alloc(10_240, 0x20) });
+    await page.locator('input[type="file"][name="file"]').setInputFiles({ name, mimeType: 'application/pdf', buffer: Buffer.alloc(10_240, 0x20) });
     await page.getByRole('button', { name: 'Subir archivo' }).click();
     await expect(page.getByText('Archivo subido.')).toBeVisible();
     await expect(page.getByRole('button', { name: `Descargar ${name}` })).toBeVisible();
@@ -122,7 +122,7 @@ test.describe('material', () => {
   test('a type outside the allowlist is refused before anything is sent', async ({ page, context, baseURL }) => {
     await signInAs(context, baseURL as string, 'ana');
     await page.goto('/area-clientes/material');
-    await page.getByLabel('Archivo').setInputFiles({ name: 'logo.svg', mimeType: 'image/svg+xml', buffer: Buffer.from('<svg/>') });
+    await page.locator('input[type="file"][name="file"]').setInputFiles({ name: 'logo.svg', mimeType: 'image/svg+xml', buffer: Buffer.from('<svg/>') });
     await page.getByRole('button', { name: 'Subir archivo' }).click();
     await expect(page.getByRole('alert')).toContainText('no se admite');
   });
