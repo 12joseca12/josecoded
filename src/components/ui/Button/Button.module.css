@@ -1,6 +1,6 @@
 .button {
-  --fill: var(--coral);
-  --fill-ink: var(--charcoal);
+  --fill: var(--charcoal-raised);
+  --fill-ink: var(--on-dark);
   --ring-color: var(--ring-coral);
   position: relative;
   isolation: isolate;
@@ -46,16 +46,16 @@
 }
 
 .button[data-variant="primary"] {
-  --fill: var(--coral);
-  --fill-ink: var(--charcoal);
+  --fill: var(--charcoal-raised);
+  --fill-ink: var(--on-dark);
   --ring-color: var(--ring-coral);
   background: var(--charcoal);
   color: var(--on-dark);
 }
 
 .button[data-variant="accent"] {
-  --fill: var(--charcoal);
-  --fill-ink: var(--on-dark);
+  --fill: var(--coral-raised);
+  --fill-ink: var(--charcoal);
   --ring-color: var(--ring-charcoal);
   background: var(--coral);
   color: var(--charcoal);
@@ -63,8 +63,8 @@
 }
 
 .button[data-variant="light"] {
-  --fill: var(--charcoal);
-  --fill-ink: var(--on-dark);
+  --fill: var(--on-dark-raised);
+  --fill-ink: var(--charcoal);
   --ring-color: var(--ring-charcoal);
   background: var(--on-dark);
   color: var(--charcoal);
@@ -75,8 +75,8 @@
 }
 
 .button[data-variant="ghost"] {
-  --fill: var(--charcoal);
-  --fill-ink: var(--on-dark);
+  --fill: var(--on-dark-raised);
+  --fill-ink: var(--charcoal);
   --ring-color: var(--ring-charcoal);
   padding: 0;
 }

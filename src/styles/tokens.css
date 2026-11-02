@@ -8,15 +8,18 @@
   --charcoal: #17191c;
   --charcoal-2: #212428;
   --charcoal-hover: #33373d;
+  --charcoal-raised: #2b2f34;
   --coral: #ff4b32;
   --coral-text: #e2361e;
   --coral-deep: #b42a14;
   --coral-soft: #ff8a75;
+  --coral-raised: #ff6550;
   --ink: #17191c;
   --ink-soft: #4a5058;
   --ink-faint: #5a616a;
   --on-dark: #f3f4f5;
   --on-dark-soft: #b4bcc4;
+  --on-dark-raised: #e1e4e7;
   --line: rgb(23 25 28 / 0.12);
   --line-strong: rgb(23 25 28 / 0.4);
   --line-dark: rgb(255 255 255 / 0.14);
