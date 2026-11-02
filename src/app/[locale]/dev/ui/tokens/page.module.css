@@ -21,23 +21,23 @@
   font-size: var(--fs-h4);
   font-weight: var(--fw-bold);
   letter-spacing: var(--tracking-tight);
-  margin-bottom: var(--fs-body);
+  margin-bottom: var(--space-4);
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
-  gap: var(--fs-body);
+  gap: var(--space-4);
 }
 
 .stack {
   display: grid;
-  gap: var(--fs-s);
+  gap: var(--space-3);
 }
 
 .card {
   display: grid;
-  gap: var(--fs-s);
+  gap: var(--space-3);
 }
 
 .name {
@@ -57,8 +57,8 @@
 
 .typeRow {
   display: grid;
-  gap: var(--fs-2xs);
-  padding-block: var(--fs-s);
+  gap: var(--space-2);
+  padding-block: var(--space-3);
   border-bottom: 1px solid var(--line);
 }
 

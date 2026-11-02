@@ -73,6 +73,16 @@ export const tokenNames = [
   "--lh-body",
   "--radius-xs",
   "--dur-reduced",
+  "--space-1",
+  "--space-2",
+  "--space-3",
+  "--space-4",
+  "--space-5",
+  "--space-6",
+  "--space-7",
+  "--space-8",
+  "--space-9",
+  "--space-10",
 ] as const;
 
 export type TokenName = (typeof tokenNames)[number];
