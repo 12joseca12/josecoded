@@ -1,6 +1,7 @@
 export type MessageKey =
   | "dev.errors.recovered"
   | "dev.errors.title"
+  | "dev.prose.title"
   | "dev.scroll.block"
   | "dev.scroll.intro"
   | "dev.scroll.more"

@@ -111,6 +111,9 @@
     "errors": {
       "title": "Páginas de error",
       "recovered": "Recuperado"
+    },
+    "prose": {
+      "title": "Prosa: contenido MDX"
     }
   },
   "nav": {
