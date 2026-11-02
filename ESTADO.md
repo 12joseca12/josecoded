@@ -10,10 +10,10 @@ Definir con Jose la metodología nueva y tomar las decisiones de base (producto,
 
 ## Pendientes
 
-- Borrar en GitHub las ramas antiguas: `chore/monorepo-base`, `chore/supabase`, `claude/eloquent-pasteur-9sr6px`, `claude/sleepy-gauss-6mtw0z`, `design/home-v7`, `docs/reposicionamiento`. Desde la sesión en la nube el proxy no permite borrar ramas; se hace desde GitHub o desde el Mac (`git push origin --delete <rama>`). Su contenido está en `archivo/v1-2026-11-02` salvo commits sueltos ya integrados por squash.
 - Supabase de producción (`echlwywbucgbhwpncviy`): sigue con el esquema aplicado en el gate 1.9 (base + `definer_wrappers`) y los precios cargados. Limpiarlo es una acción en producción y necesita el OK explícito de Jose.
 - Rotar los tokens que Jose pegó en el chat (Supabase, Cloudflare) si no se ha hecho.
 
 ## Decisiones recientes
 
+- **2026-11-02 — Ramas limpias.** Solo quedan `main`, `develop` y las de archivo (`archivo/v1-2026-11-02`, `archivo/chore-monorepo-base`, `archivo/chore-supabase`). Worktrees antiguos del Mac eliminados.
 - **2026-11-02 — Reinicio.** Se vacía `main` con un commit (historial conservado), se archiva todo en `archivo/v1-2026-11-02` y se crea `develop` desde el `main` vacío.
