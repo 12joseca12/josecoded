@@ -1,7 +1,6 @@
 .button {
-  --fill: var(--charcoal-raised);
-  --fill-ink: var(--on-dark);
   --ring-color: var(--ring-coral);
+  --bubble: var(--charcoal);
   position: relative;
   isolation: isolate;
   display: inline-flex;
@@ -29,43 +28,28 @@
     transform var(--dur) var(--ease-spring);
 }
 
-.button::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: var(--z-behind);
-  border-radius: inherit;
-  background: var(--fill);
-  clip-path: inset(0 100% 0 0);
-  transition: clip-path var(--dur) var(--ease-out);
-  pointer-events: none;
-}
-
 .button:focus-visible {
   border-radius: var(--radius-xl);
 }
 
 .button[data-variant="primary"] {
-  --fill: var(--charcoal-raised);
-  --fill-ink: var(--on-dark);
   --ring-color: var(--ring-coral);
+  --bubble: var(--charcoal);
   background: var(--charcoal);
   color: var(--on-dark);
 }
 
 .button[data-variant="accent"] {
-  --fill: var(--coral-raised);
-  --fill-ink: var(--charcoal);
   --ring-color: var(--ring-charcoal);
+  --bubble: var(--coral);
   background: var(--coral);
   color: var(--charcoal);
   font-weight: var(--fw-semibold);
 }
 
 .button[data-variant="light"] {
-  --fill: var(--on-dark-raised);
-  --fill-ink: var(--charcoal);
   --ring-color: var(--ring-charcoal);
+  --bubble: var(--on-dark);
   background: var(--on-dark);
   color: var(--charcoal);
 }
@@ -75,14 +59,9 @@
 }
 
 .button[data-variant="ghost"] {
-  --fill: var(--on-dark-raised);
-  --fill-ink: var(--charcoal);
   --ring-color: var(--ring-charcoal);
+  --bubble: var(--on-dark);
   padding: 0;
-}
-
-.button[data-variant="ghost"]::after {
-  content: none;
 }
 
 .button[data-size="sm"] {
@@ -130,17 +109,6 @@
     transform var(--dur) var(--ease-spring);
 }
 
-.button[data-variant="ghost"] .slot::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: var(--z-behind);
-  border-radius: inherit;
-  background: var(--fill);
-  clip-path: inset(0 100% 0 0);
-  transition: clip-path var(--dur) var(--ease-out);
-}
-
 .button[data-variant="ghost"] .slot svg {
   width: 0.7rem;
   height: 0.7rem;
@@ -160,14 +128,8 @@
 @media (hover: hover) and (pointer: fine) {
   .button:hover,
   .button[data-hover="true"] {
-    color: var(--fill-ink);
-    box-shadow: var(--shadow-lift);
-    transform: translateY(var(--lift));
-  }
-
-  .button:hover::after,
-  .button[data-hover="true"]::after {
-    clip-path: inset(0);
+    box-shadow: 0 0 0 var(--ring) var(--ring-color);
+    transform: scale(0.97);
   }
 
   .button:hover .slot svg,
@@ -177,21 +139,14 @@
 
   .button[data-variant="ghost"]:hover,
   .button[data-variant="ghost"][data-hover="true"] {
-    color: inherit;
     box-shadow: none;
     transform: none;
   }
 
   .button[data-variant="ghost"]:hover .slot,
   .button[data-variant="ghost"][data-hover="true"] .slot {
-    color: var(--fill-ink);
-    box-shadow: var(--shadow-lift);
-    transform: translateY(var(--lift));
-  }
-
-  .button[data-variant="ghost"]:hover .slot::before,
-  .button[data-variant="ghost"][data-hover="true"] .slot::before {
-    clip-path: inset(0);
+    box-shadow: 0 0 0 var(--ring) var(--ring-color);
+    transform: scale(0.94);
   }
 }
 
@@ -241,25 +196,6 @@
   transform: none;
 }
 
-.button:disabled::after,
-.button[aria-disabled="true"]::after,
-.button:disabled .slot::before,
-.button[aria-disabled="true"] .slot::before {
-  display: none;
-}
-
-.button:disabled:is(:hover, [data-hover="true"]),
-.button[aria-disabled="true"]:is(:hover, [data-hover="true"]) {
-  color: var(--on-dark);
-}
-
-.button[data-variant="accent"]:disabled:is(:hover, [data-hover="true"]),
-.button[data-variant="light"]:disabled:is(:hover, [data-hover="true"]),
-.button[data-variant="accent"][aria-disabled="true"]:is(:hover, [data-hover="true"]),
-.button[data-variant="light"][aria-disabled="true"]:is(:hover, [data-hover="true"]) {
-  color: var(--charcoal);
-}
-
 .button:disabled .slot svg,
 .button[aria-disabled="true"] .slot svg,
 .button:disabled:is(:hover, [data-hover="true"]) .slot svg,
@@ -267,13 +203,22 @@
   transform: none;
 }
 
-.button[data-variant="ghost"]:disabled:is(:hover, [data-hover="true"]),
-.button[data-variant="ghost"][aria-disabled="true"]:is(:hover, [data-hover="true"]) {
-  color: inherit;
-}
-
 .button[data-variant="ghost"]:disabled .slot,
-.button[data-variant="ghost"][aria-disabled="true"] .slot {
+.button[data-variant="ghost"][aria-disabled="true"] .slot,
+.button[data-variant="ghost"]:disabled:is(
+    :hover,
+    [data-hover="true"],
+    :active,
+    [data-pressed="true"]
+  )
+  .slot,
+.button[data-variant="ghost"][aria-disabled="true"]:is(
+    :hover,
+    [data-hover="true"],
+    :active,
+    [data-pressed="true"]
+  )
+  .slot {
   transform: none;
 }
 
@@ -315,9 +260,49 @@
     transform: none;
     transition-duration: var(--dur-reduced);
   }
+}
 
-  .button::after,
-  .button .slot::before {
-    transition-duration: var(--dur-reduced);
+.burst {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.bubble {
+  position: absolute;
+  left: var(--ox);
+  top: var(--oy);
+  width: var(--size);
+  height: var(--size);
+  margin: calc(var(--size) / -2);
+  border-radius: var(--radius-xl);
+  background: var(--bubble);
+  box-shadow: 0 0 0 1px var(--line);
+  pointer-events: none;
+}
+
+@keyframes bubble-out {
+  from {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+  }
+
+  to {
+    opacity: 0;
+    translate: var(--dx) var(--dy);
+    scale: 0.4;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bubble {
+    animation: bubble-out var(--dur-bubble) var(--ease-out) forwards;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .burst {
+    display: none;
   }
 }

@@ -1,3 +1,4 @@
+import { Card } from "@/components/ui/Card/Card";
 import type { RateItem } from "@/types/services";
 
 import styles from "./RateFigure.module.css";
@@ -13,13 +14,13 @@ export function RateFigure({ label, note, items }: RateFigureProps) {
     <figure className={styles.rates} aria-label={label}>
       <dl className={styles.list}>
         {items.map((item) => (
-          <div key={item.id} className={styles.item}>
+          <Card key={item.id} size="sm" className={styles.item}>
             <dt className={styles.term}>{item.label}</dt>
             <dd className={styles.value}>
               <strong>{item.value}</strong>
               <span className={styles.unit}>{item.unit}</span>
             </dd>
-          </div>
+          </Card>
         ))}
       </dl>
       <figcaption className={styles.note}>{note}</figcaption>

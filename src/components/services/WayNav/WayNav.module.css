@@ -56,6 +56,10 @@
     background: transparent;
   }
 
+  .list[data-snap] {
+    scroll-snap-type: none;
+  }
+
   .list {
     flex-direction: column;
     align-items: flex-start;

@@ -5,6 +5,7 @@ import { useState } from "react";
 import type { HeadingLevel } from "@/types/ui";
 
 import { Button } from "../Button/Button";
+import { Card } from "../Card/Card";
 import { Heading } from "../Heading/Heading";
 import styles from "./ErrorState.module.css";
 
@@ -37,7 +38,7 @@ export function ErrorState({
   };
 
   return (
-    <div className={styles.state} role="alert">
+    <Card tone="error" className={styles.state} role="alert">
       <Heading level={headingLevel} size="h4">
         {title}
       </Heading>
@@ -53,6 +54,6 @@ export function ErrorState({
       >
         {retryLabel}
       </Button>
-    </div>
+    </Card>
   );
 }

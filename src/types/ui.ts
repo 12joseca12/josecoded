@@ -16,6 +16,12 @@ export type HeadingSize = (typeof headingSizes)[number];
 export const skeletonShapes = ["text", "block", "circle"] as const;
 export type SkeletonShape = (typeof skeletonShapes)[number];
 
+export const cardTones = ["panel", "glass", "error"] as const;
+export type CardTone = (typeof cardTones)[number];
+
+export const cardSizes = ["sm", "md", "lg"] as const;
+export type CardSize = (typeof cardSizes)[number];
+
 export const toastTones = ["success", "error", "info"] as const;
 export type ToastTone = (typeof toastTones)[number];
 
