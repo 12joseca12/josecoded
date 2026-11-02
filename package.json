@@ -11,6 +11,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "cf:build": "opennextjs-cloudflare build",
+    "cf:preview": "opennextjs-cloudflare preview --env preview",
+    "cf:deploy:preview": "opennextjs-cloudflare deploy --env preview",
     "lint": "eslint .",
     "lint:css": "stylelint \"src/**/*.css\" --allow-empty-input",
     "lint:rules": "node --test tests/lint/rules.test.js",
@@ -30,6 +33,7 @@
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",
     "@eslint/js": "10.0.1",
+    "@opennextjs/cloudflare": "1.20.12",
     "@playwright/test": "1.64.1",
     "@types/node": "22.20.5",
     "@types/react": "19.3.0",
@@ -42,6 +46,7 @@
     "stylelint-declaration-strict-value": "1.12.1",
     "typescript": "6.0.3",
     "typescript-eslint": "8.71.2",
-    "vitest": "4.1.12"
+    "vitest": "4.1.12",
+    "wrangler": "4.151.1"
   }
 }

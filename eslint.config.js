@@ -9,6 +9,8 @@ export default tseslint.config(
   {
     ignores: [
       ".next/**",
+      ".open-next/**",
+      ".wrangler/**",
       "node_modules/**",
       "archivo/**",
       "prototipos/**",
