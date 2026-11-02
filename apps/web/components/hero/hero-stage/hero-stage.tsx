@@ -9,6 +9,9 @@ import styles from './hero-stage.module.css';
 // Transparent pixel for the desktop that will run the live scene: the poster is never shown there,
 // so it is not downloaded either (the preload scanner evaluates `media` and `scripting`).
 const BLANK_PIXEL = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+// Phones and small tablets up to 2 dppx (Lighthouse mobile is 1.75) get the 560 px poster: it is the LCP there and
+// ~40% lighter. Denser screens (3 dppx phones) fall through to the 720 px one, so they are not upscaled.
+const POSTER_SMALL = '(max-width: 37.5rem) and (max-resolution: 2dppx)';
 const SCENE_DESKTOP =
   '(min-width: 56.25rem) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) and (scripting: enabled)';
 
@@ -42,6 +45,7 @@ export function HeroStage({ label }: { label: string }) {
       <HeroModeScript />
       <picture className={styles.poster}>
         <source data-poster-placeholder media={SCENE_DESKTOP} srcSet={BLANK_PIXEL} type="image/gif" />
+        <source media={POSTER_SMALL} srcSet={media.posterAvifSm} type="image/avif" />
         <source srcSet={media.posterAvif} type="image/avif" />
         <img
           className={styles.posterImage}

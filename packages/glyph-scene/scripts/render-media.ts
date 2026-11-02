@@ -30,6 +30,8 @@ const force = args.includes('--force');
 const framesArg = args.indexOf('--frames-dir');
 const keepFrames = framesArg >= 0;
 const MIN_LOOP_PSNR = 35;
+/** Side of the phone poster (a 1.75 dppx stage of ~313 css px needs ~550 px; the 720 px one serves denser screens). */
+const POSTER_SM = 560;
 const log = (m: string) => console.log(`hero:media: ${m}`);
 
 /* ---------- freshness ---------- */
@@ -184,6 +186,7 @@ try {
     'hero/video.webm': readFileSync(join(stage, 'video.webm')),
     'hero/video.mp4': readFileSync(join(stage, 'video.mp4')),
     'hero/poster.avif': Buffer.from(await fit('poster.avif', (q) => sharp(posterPng).avif({ quality: q, effort: 6 }).toBuffer(), 50, LIMITS['hero/poster.avif'] as number)),
+    'hero/poster-sm.avif': Buffer.from(await fit('poster-sm.avif', async (q) => sharp(await sharp(posterPng).resize(POSTER_SM, POSTER_SM, { kernel: 'lanczos3' }).png().toBuffer()).avif({ quality: q, effort: 6 }).toBuffer(), 50, LIMITS['hero/poster-sm.avif'] as number)),
     'hero/poster.webp': Buffer.from(await fit('poster.webp', (q) => sharp(posterPng).webp({ quality: q, alphaQuality: 60, effort: 6 }).toBuffer(), 78, LIMITS['hero/poster.webp'] as number)),
     'art/glyph-phone.avif': Buffer.from(await fit('glyph-phone.avif', (q) => sharp(art.phone).avif({ quality: q, effort: 6 }).toBuffer(), 60, LIMITS['art/glyph-phone.avif'] as number)),
     'art/glyph-web.avif': Buffer.from(await fit('glyph-web.avif', (q) => sharp(art.web).avif({ quality: q, effort: 6 }).toBuffer(), 60, LIMITS['art/glyph-web.avif'] as number)),

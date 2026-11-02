@@ -8,7 +8,7 @@ import manifestJson from '@/public/hero/media.json';
 
 const manifest = mediaManifestSchema.parse(manifestJson);
 
-const REQUIRED = ['hero/poster.avif', 'hero/poster.webp', 'hero/video.webm', 'hero/video.mp4'] as const;
+const REQUIRED = ['hero/poster.avif', 'hero/poster-sm.avif', 'hero/poster.webp', 'hero/video.webm', 'hero/video.mp4'] as const;
 for (const name of REQUIRED) {
   if (!(name in manifest.files)) throw new Error(`public/hero/media.json has no entry for ${name}`);
 }
@@ -17,6 +17,8 @@ export interface HeroMedia {
   /** Side of the square the poster and the video were rendered at. */
   size: number;
   posterAvif: string;
+  /** 560 px AVIF for phones up to 2 dppx (the LCP image there); denser screens keep the 720 px one. */
+  posterAvifSm: string;
   posterWebp: string;
   videoWebm: string;
   videoMp4: string;
@@ -28,6 +30,7 @@ export function heroMedia(version: string): HeroMedia {
   return {
     size: 720,
     posterAvif: url('hero/poster.avif'),
+    posterAvifSm: url('hero/poster-sm.avif'),
     posterWebp: url('hero/poster.webp'),
     videoWebm: url('hero/video.webm'),
     videoMp4: url('hero/video.mp4'),

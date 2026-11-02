@@ -18,6 +18,7 @@ const ok: MediaManifest = {
     'hero/video.mp4': f(350000),
     'hero/poster.avif': f(40000),
     'hero/poster.webp': f(55000),
+    'hero/poster-sm.avif': f(30000),
     'art/glyph-phone.avif': f(50000),
     'art/glyph-web.avif': f(52000),
   },

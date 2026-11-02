@@ -10,6 +10,8 @@ export const LIMITS: Readonly<Record<string, number>> = {
   'hero/video.mp4': 700_000,
   'hero/poster.avif': 60_000,
   'hero/poster.webp': 60_000,
+  // phones at <= 2 dppx get this one (the LCP image there): 560 px is what a 1.75 dppx 360-412 px stage needs
+  'hero/poster-sm.avif': 32_000,
   'art/glyph-phone.avif': 60_000,
   'art/glyph-web.avif': 60_000,
 };

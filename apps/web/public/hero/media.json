@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-10-31T18:27:04.412Z",
-  "paramsHash": "606f854cb27b548b",
+  "generatedAt": "2026-11-02T09:21:27.411Z",
+  "paramsHash": "2794b733cf122f85",
   "seed": 1,
   "files": {
     "hero/video.webm": {
@@ -14,6 +14,10 @@
     "hero/poster.avif": {
       "bytes": 57656,
       "sha256": "2f7f9b87f43a811a082e5409937abdc4136c667854ee6d5cf1bf0c261a5f2e83"
+    },
+    "hero/poster-sm.avif": {
+      "bytes": 29242,
+      "sha256": "b9469f8a95f7e9946d1797a7d1364d9ba5ae9ad3dfa207aa0bd1bd34643d3158"
     },
     "hero/poster.webp": {
       "bytes": 59024,
