@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
-import { guardModelOutput, parseAmount } from './ai-guard';
+import { pricing as compiled } from '@josecoded/pricing';
+
+import { allowedAmountsOf, guardModelOutput, parseAmount } from './ai-guard';
 
 const prices = new Set([900, 1400, 49]);
 const es = { locale: 'es' as const };
@@ -116,5 +118,25 @@ describe('guardModelOutput: instruction leaks (security review B3)', () => {
   it('allows short overlaps and unrelated text', () => {
     expect(guardModelOutput('We never invent discounts, so the price is what you see on the page.', options).ok).toBe(true);
     expect(guardModelOutput('No hacemos WordPress', { ...es, forbiddenTexts: options.forbiddenTexts }).ok).toBe(true);
+  });
+});
+
+describe('allowedAmountsOf (the published catalogue decides)', () => {
+  const published = structuredClone(compiled);
+  published.packs[1]!.price = 1500;
+  published.hourly = 55;
+
+  it('lists packs, apps, extras, hourly and feature', () => {
+    const amounts = allowedAmountsOf(compiled);
+    for (const n of [900, 1400, 2500, 4200, 4000, 6000, 250, 600, 300, 49, 149, 40, 150]) expect(amounts.has(n)).toBe(true);
+  });
+
+  it('an amount that only exists in the published catalogue passes', () => {
+    expect(guardModelOutput('El pack de pedidos son 1.500 €.', { ...es, allowedAmounts: allowedAmountsOf(published) })).toEqual({ ok: true });
+    expect(guardModelOutput('La hora son 55 €.', { ...es, allowedAmounts: allowedAmountsOf(published) })).toEqual({ ok: true });
+  });
+
+  it('one that only exists in the compiled file does not', () => {
+    expect(guardModelOutput('El pack de pedidos son 1.400 €.', { ...es, allowedAmounts: allowedAmountsOf(published) })).toEqual({ ok: false, reason: 'amount' });
   });
 });

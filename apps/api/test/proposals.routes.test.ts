@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { createFakeClock } from './fakes/clock.fake';
 import { createFakeAi, createFakeQuota, createFakeTelegram, createFakeTurnstile } from './fakes/ports.fake';
+import { createFakePricing } from './fakes/pricing.fake';
 import { call, json } from './helpers';
 import { verifyProposalToken } from '../src/services/proposal-token';
 
@@ -282,5 +283,37 @@ describe('CORS', () => {
     expect(ok.headers.get('access-control-allow-credentials')).toBe('true');
     const evil = await call('POST', '/api/v1/proposals/generate', { body, deps, headers: { origin: 'https://evil.example' } });
     expect(evil.headers.get('access-control-allow-origin') ?? '').toBe('');
+  });
+});
+
+describe('published catalogue (plan 3.7b)', () => {
+  it('prices from the published catalogue, versions the token with it and reads it once per request', async () => {
+    const pricing = createFakePricing({ P2: 1500 });
+    const { deps } = setup();
+    const res = await call('POST', '/api/v1/proposals/generate', { body, deps: { ...deps, pricing } });
+    const { data } = await json(res);
+    expect(data).toMatchObject({ priceFrom: 1500, pricingVersion: '2026-11-02.1' });
+    expect(data.pack).toMatchObject({ code: 'P2', price: 1500 });
+    const payload = await verifyProposalToken('server-key-test-0123456789abcdef', data.proposalToken, Math.floor(Date.now() / 1000));
+    expect(payload).toMatchObject({ priceFrom: 1500, pricingVersion: '2026-11-02.1' });
+    expect(pricing.calls).toBe(1);
+  });
+
+  it('a pack the admin took off sale falls back to the compiled price instead of failing', async () => {
+    const pricing = createFakePricing();
+    pricing.data.packs.find((p) => p.code === 'P2')!.active = false;
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const { deps } = setup();
+    const res = await call('POST', '/api/v1/proposals/generate', { body, deps: { ...deps, pricing } });
+    expect(res.status).toBe(200);
+    expect((await json(res)).data).toMatchObject({ priceFrom: 1400, pricingVersion: '2026-09-14' });
+  });
+
+  it('an extra the admin took off sale is not recommended', async () => {
+    const pricing = createFakePricing();
+    pricing.data.extras.find((e) => e.code === 'seo_basic')!.active = false;
+    const { deps } = setup();
+    const { data } = await json(await call('POST', '/api/v1/proposals/generate', { body, deps: { ...deps, pricing } }));
+    expect(data.recommendedExtras.map((e: { code: string }) => e.code)).not.toContain('seo_basic');
   });
 });

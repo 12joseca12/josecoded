@@ -1,15 +1,15 @@
 // Proposal generator (plan 3.7, DT §3.2). Order: Turnstile (a bot costs no quota) -> per-IP and global daily quota
 // -> model (JSON mode, through the AI Gateway) -> zod -> deterministic guard -> price by rules. Any model failure
 // ends in the rule classifier: the visitor never sees an error because of the AI.
-import { priceForProposal, pricing } from '@josecoded/pricing';
-import { extraCodeSchema, proposalModelOutputSchema, type ExtraCode, type ProposalResponse } from '@josecoded/types';
+import { extraCodeSchema, proposalModelOutputSchema, type ExtraCode, type PricingData, type ProposalResponse } from '@josecoded/types';
 
+import { loadPricing, priceProposalSafely } from './pricing-lookup';
 import {
   buildSystemPrompt,
   buildUserMessage,
   classifyByRules,
   PROPOSAL_JSON_SCHEMA,
-  rulesTexts,
+  rulesTextsFor,
   type Locale,
   type ProposalAnswers,
   type ProposalPackCode,
@@ -43,13 +43,13 @@ const DISCLAIMER = {
 } as const;
 
 /** Model proposal if it parses, passes the guard and is in the right language; `undefined` otherwise. */
-async function askModel(deps: Deps, input: ProposalInput) {
+async function askModel(deps: Deps, input: ProposalInput, data: PricingData) {
   if (!deps.ai) return undefined;
   let raw: unknown;
   try {
     raw = await deps.ai.complete({
       consumer: 'proposals',
-      system: buildSystemPrompt(input.locale),
+      system: buildSystemPrompt(input.locale, data),
       messages: [{ role: 'user', content: buildUserMessage(input.answers, input.preselectedPack) }],
       jsonSchema: PROPOSAL_JSON_SCHEMA,
       maxTokens: 700,
@@ -93,16 +93,17 @@ export async function generateProposal(deps: Deps, config: ProposalsConfig, inpu
     throw new HttpError(429, 'quota_exceeded', 'Daily limit reached', { headers: { 'Retry-After': '3600' } });
   }
 
-  // 3) model, with the rules as the net
-  const modelOutput = await askModel(deps, input);
+  // 3) model, with the rules as the net. The catalogue is read once: the published one (plan 3.7b)
+  const catalogue = await loadPricing(deps);
+  const modelOutput = await askModel(deps, input, catalogue);
   const rules = classifyByRules(input.answers);
   const source = modelOutput ? 'ai' : 'rules';
   const packCode: ProposalPackCode = modelOutput?.pack ?? rules.pack;
   const extras: ExtraCode[] = [...new Set([...(modelOutput?.extras ?? []), ...rules.extras])].slice(0, 3);
-  const texts = modelOutput ?? rulesTexts(packCode, input.locale);
+  // the price is always the rules' (never the model's), from the published catalogue
+  const price = priceProposalSafely(catalogue, packCode, extras);
+  const texts = modelOutput ?? rulesTextsFor(price.pack, input.locale);
 
-  // 4) the price is always the rules' (never the model's)
-  const price = priceForProposal(packCode, extras);
   const isApp = packCode.startsWith('APP_');
   const proposalId = crypto.randomUUID();
   const summary = texts.summary;
@@ -116,7 +117,7 @@ export async function generateProposal(deps: Deps, config: ProposalsConfig, inpu
         extras,
         priceFrom: price.priceFrom,
         isApp,
-        pricingVersion: pricing.version,
+        pricingVersion: price.pricingVersion,
         locale: input.locale,
         source,
         summary,

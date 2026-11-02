@@ -4,7 +4,9 @@
 import { createChatContextsRepo, createChatRepo } from './adapters/chat';
 import { createAffiliatesRepo, createLeadsRepo } from './adapters/leads';
 import { createNoticeLedger, createOutboxRepo } from './adapters/outbox';
+import { createCompiledPricingSource, createPricingSource } from './adapters/pricing.supabase.adapter';
 import { createQuotaStore } from './adapters/quota';
+import { createRawRpc } from './adapters/raw-rpc';
 import { createScheduledJobsRepo } from './adapters/scheduled-jobs';
 import { createSupabaseAdapters, type SupabaseGateway } from './adapters/supabase';
 import { createTelegramNotifier } from './adapters/telegram';
@@ -14,7 +16,7 @@ import { parseEnv } from './config/env';
 
 import type { AffiliatesRepo, AiClient, ChatContextsRepo, ChatRepo, LeadsRepo, QuotaStore, TurnstileVerifier } from './ports';
 import type { Env } from './types/env.types';
-import type { Clock, NoticeLedger, Notifier, OutboxRepo, ScheduledJobsRepo } from '@josecoded/types';
+import type { Clock, NoticeLedger, Notifier, OutboxRepo, PricingSource, ScheduledJobsRepo } from '@josecoded/types';
 
 export interface Deps {
   clock: Clock;
@@ -45,6 +47,8 @@ export interface Deps {
   chat?: ChatRepo;
   /** Published chat contexts (`chat_context_published`). Undefined without SUPABASE_SECRET_KEY. */
   chatContexts?: ChatContextsRepo;
+  /** The published price catalogue (`pricing_published()`, 5-minute cache, compiled fallback). Services read it once per request through `loadPricing`. */
+  pricing?: PricingSource;
 }
 
 /** Hono generics of the gateway app: the bindings plus what the middlewares leave in `c.var`. */
@@ -78,8 +82,9 @@ export function buildDeps(env: Env): Deps {
           affiliates: createAffiliatesRepo(gateway.admin),
           chat: createChatRepo(gateway.admin),
           chatContexts: createChatContextsRepo(rpc),
+          pricing: createPricingSource(createRawRpc(gateway)),
         }
-      : {}),
+      : { pricing: createCompiledPricingSource() }),
     ...(telegram ? { telegram } : {}),
     ...(turnstile ? { turnstile } : {}),
     ...(ai ? { ai } : {}),

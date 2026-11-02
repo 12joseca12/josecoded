@@ -3,6 +3,8 @@
 // and answers with rules or with a fixed sentence. Heuristics are deliberately blunt: a false positive costs a
 // fallback answer, a false negative costs an invented price on the site.
 
+import type { PricingData } from '@josecoded/types';
+
 export type GuardReason = 'html' | 'url' | 'amount' | 'giveaway' | 'language' | 'injection_echo' | 'prompt_leak';
 export type GuardResult = { ok: true } | { ok: false; reason: GuardReason };
 
@@ -10,7 +12,7 @@ export interface GuardOptions {
   /** Language the answer must be in (`locale` of the request). */
   locale: 'es' | 'en';
   /**
-   * Amounts the text may state (the prices of `pricing.json`). Absent: no amount, currency or number of three or more
+   * Amounts the text may state (`allowedAmountsOf` the published catalogue). Absent: no amount, currency or number of three or more
    * digits is allowed at all (proposals, where prices come from rules).
    */
   allowedAmounts?: ReadonlySet<number>;
@@ -53,6 +55,17 @@ const STOPWORDS = {
   es: ['el', 'la', 'los', 'las', 'de', 'que', 'y', 'en', 'un', 'una', 'con', 'para', 'por', 'se', 'del', 'al', 'como', 'más', 'pero', 'su', 'tu', 'puedes', 'tienes', 'si'],
   en: ['the', 'and', 'of', 'to', 'in', 'is', 'that', 'for', 'with', 'you', 'your', 'are', 'it', 'on', 'as', 'this', 'be', 'can', 'will', 'we', 'have', 'not'],
 } as const;
+
+/** Every figure of a price catalogue (prices of packs, apps and extras, hourly and feature): the only amounts a text may state. */
+export function allowedAmountsOf(data: PricingData): Set<number> {
+  return new Set([
+    data.hourly,
+    data.feature,
+    ...data.packs.map((p) => p.price),
+    ...data.apps.map((a) => a.price),
+    ...data.extras.map((e) => e.price),
+  ]);
+}
 
 /** `1.400`, `1,400` and `1400` are 1400; `49,50` is 49.5. */
 export function parseAmount(raw: string): number {

@@ -1,9 +1,9 @@
 // Lead intake (plan 3.8, DATOS §4.3, §8.4). The route authenticates (Turnstile or server key); this service turns a
 // valid request into the `p` of `create_lead`, re-prices the proposal and tells Jose. Nothing the client says about
 // money, `meta` or the contact kind is stored as sent.
-import { priceForProposal } from '@josecoded/pricing';
 import { AFFILIATE_CODE_DB_RE, aiProposalSchema, createLeadInputSchema, type LeadRequest, type LeadResponse } from '@josecoded/types';
 
+import { loadPricing, priceProposalSafely } from './pricing-lookup';
 import { verifyProposalToken } from './proposal-token';
 import { formatOutboxEvent } from '../jobs/outbox-drain';
 import { HttpError, logEvent } from '../utils/http-error';
@@ -41,8 +41,8 @@ async function proposalFor(deps: Deps, request: LeadRequest, ctx: LeadContext) {
   if (!ctx.serverKey) throw new HttpError(503, 'service_unavailable', 'Proposals are not available');
   const payload = await verifyProposalToken(ctx.serverKey, request.proposalToken, Math.floor(deps.clock.now().getTime() / 1000));
   if (!payload) throw new HttpError(400, 'invalid_proposal', 'The proposal is invalid or has expired');
-  // the token carries a price for the visitor's screen; the lead is priced again from pricing.json
-  const price = priceForProposal(payload.pack, payload.extras);
+  // the token carries a price for the visitor's screen; the lead is priced again from the published catalogue
+  const price = priceProposalSafely(await loadPricing(deps), payload.pack, payload.extras);
   const aiProposal = aiProposalSchema.parse({
     pack: payload.pack,
     priceFrom: price.priceFrom,

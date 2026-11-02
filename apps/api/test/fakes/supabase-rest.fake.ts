@@ -36,6 +36,8 @@ export interface FakeSupabase {
   disabledStaff: Set<string>;
   users: FakeUser[];
   quota: Map<string, { count: number; expiresAt: number }>;
+  /** What `pricing_published()` answers: the published catalogue, `null` before the first publication, or an Error to throw (500). */
+  pricingPublished: unknown;
   /** Texts posted to Telegram, in order. */
   telegram: { chatId: unknown; text: string }[];
   /** Status Telegram answers with (200 by default). */
@@ -71,6 +73,7 @@ export function createFakeSupabase(options: { url?: string; secret?: string; sta
     disabledStaff: new Set(),
     users: [],
     quota: new Map(),
+    pricingPublished: null,
     telegram: [],
     telegramStatus: 200,
     rpcCalls: [],
@@ -158,6 +161,10 @@ export function createFakeSupabase(options: { url?: string; secret?: string; sta
       else q.count += 1;
       return (state.quota.get(key)?.count ?? 0) <= Number(p_limit);
     },
+    pricing_published() {
+      if (state.pricingPublished instanceof Error) throw state.pricingPublished;
+      return state.pricingPublished;
+    },
     scheduled_jobs_due({ p_now }) {
       return state.jobs
         .filter((j) => j.enabled && Date.parse(j.next_run_at) <= Date.parse(String(p_now)))
@@ -219,7 +226,11 @@ export function createFakeSupabase(options: { url?: string; secret?: string; sta
       if (!handler) return json(404, { code: 'PGRST202', message: `Could not find the function public.${rpc}` });
       state.rpcCalls.push(rpc);
       const args = (await req.json().catch(() => ({}))) as Record<string, unknown>;
-      return json(200, handler(args));
+      try {
+        return json(200, handler(args));
+      } catch (error) {
+        return json(500, { message: error instanceof Error ? error.message : 'error' });
+      }
     }
 
     return json(404, { message: `unexpected ${req.method} ${url.pathname}` });

@@ -1,4 +1,4 @@
-import type { aiProposalSchema, envClientSchema, envServerSchema } from './schemas';
+import type { aiProposalSchema, envClientSchema, envServerSchema, pricingSchema } from './schemas';
 import type { z } from 'zod';
 
 // Process boundaries: web <-> gateway contracts (ai_proposal now; leads, affiliates and chat from
@@ -90,6 +90,15 @@ export interface NoticeLedger {
 /** Jose's Telegram (bot `TELEGRAM_BOT_TOKEN`, chat `TELEGRAM_ADMIN_CHAT_ID`). Plain text, no parse mode. */
 export interface Notifier {
   sendMessage(text: string): Promise<void>;
+}
+
+/**
+ * The price catalogue the gateway prices with (plan 3.7b, D54): the PUBLISHED one (`pricing_published()`), the same that
+ * the live site shows, never the draft the admin is editing. Cached in the isolate for five minutes; when the database
+ * cannot answer it is the catalogue compiled from `content/pricing.json`. Callers read it once per request.
+ */
+export interface PricingSource {
+  get(): Promise<z.infer<typeof pricingSchema>>;
 }
 
 export type AiProposal = z.infer<typeof aiProposalSchema>;

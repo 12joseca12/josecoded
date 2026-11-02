@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createFakeChat, createFakeContexts } from './fakes/chat.fake';
 import { createFakeClock } from './fakes/clock.fake';
 import { createFakeAi, createFakeLeads, createFakeNotices, createFakeQuota, createFakeTelegram, createFakeTurnstile } from './fakes/ports.fake';
+import { createFakePricing, type FakePricing } from './fakes/pricing.fake';
 import { createFakeSupabaseGateway } from './fakes/supabase.fake';
 import { baseEnv, call, json } from './helpers';
 import { resetContextCache } from '../src/services/assistant.service';
@@ -24,7 +25,7 @@ const CONTEXTS = {
   'client:en': { version: 2, body_md: 'I build websites for local businesses.' },
 };
 
-function setup(over: { ai?: ReturnType<typeof createFakeAi> | false; contexts?: Parameters<typeof createFakeContexts>[0]; verdict?: 'ok' | 'failed' | 'unavailable' } = {}) {
+function setup(over: { pricing?: FakePricing; ai?: ReturnType<typeof createFakeAi> | false; contexts?: Parameters<typeof createFakeContexts>[0]; verdict?: 'ok' | 'failed' | 'unavailable' } = {}) {
   resetContextCache();
   const chat = createFakeChat();
   const chatContexts = createFakeContexts(over.contexts ?? CONTEXTS);
@@ -53,6 +54,7 @@ function setup(over: { ai?: ReturnType<typeof createFakeAi> | false; contexts?: 
     supabase,
     notices,
     clock: createFakeClock('2026-11-01T10:00:00.000Z'),
+    ...(over.pricing ? { pricing: over.pricing } : {}),
     ...(ai ? { ai } : {}),
   };
   const req = (method: string, path: string, options: Parameters<typeof call>[2] = {}) =>
@@ -235,6 +237,22 @@ describe('messages and the AI', () => {
       expect(assistant.content).not.toMatch(/700/);
       expect(assistant.message_type).toBe('quick_contact');
       expect(chat.messages.at(-1)!.metadata).toMatchObject({ guard: 'amount' });
+    });
+
+    it('follows the published catalogue: a price only it has passes, one only the compiled file has is rejected', async () => {
+      const pricing = createFakePricing({ P2: 1500 });
+      const ask = async (text: string) => {
+        const { open, say, ai } = setup({ ai: createFakeAi(text), pricing });
+        const { cookie, threadId } = await open('partner');
+        const { data } = await json(await say(threadId, cookie, 'pregunta'));
+        return { assistant: data.assistant, ai: ai! };
+      };
+      const ok = await ask('El pack de pedidos son 1.500 €.');
+      expect(ok.assistant.message_type).toBe('text');
+      // the prompt lists the published price, once per request
+      expect(ok.ai.requests[0]!.system).toContain('1500 €');
+      expect(ok.ai.requests[0]!.system).not.toContain('1400 €');
+      expect((await ask('El pack de pedidos son 1.400 €.')).assistant.message_type).toBe('quick_contact');
     });
 
     it('lets a price of pricing.json through', async () => {

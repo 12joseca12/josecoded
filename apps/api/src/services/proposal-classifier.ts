@@ -2,7 +2,7 @@
 // its answer and the keyword classifier that backs it up. Prices never pass through here.
 import { pricing } from '@josecoded/pricing';
 
-import type { AppCode, ExtraCode, PackCode, proposalAnswersSchema } from '@josecoded/types';
+import type { AppCode, ExtraCode, PackCode, PricingData, proposalAnswersSchema } from '@josecoded/types';
 import type { z } from 'zod';
 
 export type ProposalAnswers = z.infer<typeof proposalAnswersSchema>;
@@ -52,16 +52,19 @@ export function classifyByRules(answers: ProposalAnswers): RuleClassification {
   return { pack, extras };
 }
 
-function offerFor(code: ProposalPackCode) {
-  const offer = [...pricing.packs, ...pricing.apps].find((p) => p.code === code);
+function offerFor(code: ProposalPackCode, data: PricingData) {
+  const offer = [...data.packs, ...data.apps].find((p) => p.code === code);
   if (!offer) throw new Error(`Unknown pack: ${code}`);
   return offer;
 }
 
 /** Fallback texts when the model is unavailable or its answer is dropped: the pack's own `includes`, in the locale. */
-export function rulesTexts(pack: ProposalPackCode, locale: Locale) {
-  const offer = offerFor(pack);
-  const scope = offer.includes[locale].slice(0, 6);
+export function rulesTexts(pack: ProposalPackCode, locale: Locale, data: PricingData = pricing) {
+  return rulesTextsFor(offerFor(pack, data), locale);
+}
+
+/** The same texts for an offer already at hand (the one the price came from). */
+export function rulesTextsFor(offer: { name: { es: string; en: string }; includes: { es: string[]; en: string[] } }, locale: Locale) {  const scope = offer.includes[locale].slice(0, 6);
   return {
     summary:
       locale === 'es'
@@ -92,12 +95,13 @@ export const PROPOSAL_JSON_SCHEMA = {
   },
 } as const;
 
-/** System prompt: the packs come from `pricing.json` (`includes`, never prices), the rules are fixed. */
-export function buildSystemPrompt(locale: Locale): string {
-  const packs = [...pricing.packs, ...pricing.apps]
+/** System prompt: the packs come from the published catalogue (`includes`, never prices), the rules are fixed. */
+export function buildSystemPrompt(locale: Locale, data: PricingData = pricing): string {
+  const packs = [...data.packs, ...data.apps]
+    .filter((p) => p.active !== false)
     .map((p) => `- ${p.code} — ${p.name[locale]}: ${p.includes[locale].join('; ')}`)
     .join('\n');
-  const extras = pricing.extras.map((e) => `- ${e.code}: ${e.label[locale]}`).join('\n');
+  const extras = data.extras.filter((e) => e.active !== false).map((e) => `- ${e.code}: ${e.label[locale]}`).join('\n');
   return [
     'You classify requests from small local businesses into exactly one of the packs below, and write a short summary and scope.',
     `Write every text in ${locale === 'es' ? 'Spanish' : 'English'}.`,
