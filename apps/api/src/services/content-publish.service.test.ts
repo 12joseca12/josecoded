@@ -19,6 +19,8 @@ import { createFakePublications, createFakeRepoWriter } from '../../test/fakes/c
 import type { Deps } from '../deps';
 
 const ID = '33333333-3333-4333-8333-333333333333';
+const PREVIOUS = '22222222-2222-4222-8222-222222222222';
+const NEWER = '44444444-4444-4444-8444-444444444444';
 const code = (fn: () => unknown) => {
   try {
     fn();
@@ -71,9 +73,10 @@ describe('buildTree', () => {
     expect(code(() => buildTree({ files: { 'content/pricing.json': { hello: 'world' } } }))).toBe('invalid_content');
   });
 
-  it('removes a post that is in the repo and no longer in the snapshot (sha: null), and keeps the published ones', () => {
+  it('removes a post the bot published before that is in the repo and no longer in the snapshot (sha: null), and keeps the published ones', () => {
     const tree = buildTree(
       { files: { 'content/blog/uno.es.md': { title: 'Uno', body_md: 'Hola' } } },
+      ['content/blog/uno.es.md', 'content/blog/viejo.es.md'],
       ['content/blog/uno.es.md', 'content/blog/viejo.es.md'],
     );
     expect(tree.map((e) => [e.path, 'sha' in e ? e.sha : 'content'])).toEqual([
@@ -82,8 +85,20 @@ describe('buildTree', () => {
     ]);
   });
 
+  it('never deletes a post that is not in the previous manifest (written by hand), nor one the manifest names that is not in the repo', () => {
+    const tree = buildTree({ files: {} }, ['content/blog/a-mano.es.md', 'content/blog/bot.es.md'], ['content/blog/bot.es.md', 'content/blog/ya-no-esta.es.md']);
+    expect(tree.map((e) => [e.path, 'sha' in e ? e.sha : 'content'])).toEqual([['content/blog/bot.es.md', null]]);
+    expect(buildTree({ files: {} }, ['content/blog/a-mano.es.md'])).toEqual([]);
+  });
+
   it('never deletes anything outside content/blog/*.md, whatever the listing says', () => {
-    const tree = buildTree({ files: {} }, ['content/blog/x.es.md', 'content/pricing.json', 'apps/web/page.tsx', 'content/blog/../x.md', 'content/blog/readme.txt']);
+    const tree = buildTree({ files: {} }, ['content/blog/x.es.md', 'content/pricing.json', 'apps/web/page.tsx', 'content/blog/../x.md', 'content/blog/readme.txt'], [
+      'content/blog/x.es.md',
+      'content/pricing.json',
+      'apps/web/page.tsx',
+      'content/blog/../x.md',
+      'content/blog/readme.txt',
+    ]);
     expect(tree.map((e) => e.path)).toEqual(['content/blog/x.es.md']);
   });
 
@@ -156,6 +171,16 @@ describe('handlePublishRequested', () => {
   it('commits the snapshot once and marks the publication committed with the sha and the files', async () => {
     const { deps, publications, repoWriter, spend } = setup();
     repoWriter.blog = ['content/blog/viejo.es.md'];
+    publications.rows.set(PREVIOUS, {
+      id: PREVIOUS,
+      status: 'deployed',
+      snapshot: { files: {} },
+      commitSha: 'b'.repeat(40),
+      committedAt: null,
+      createdAt: new Date(1000),
+      files: { 'content/blog/viejo.es.md': 'sha' },
+    });
+    publications.rows.get(ID)!.createdAt = new Date(2000);
     await handlePublishRequested(deps, { publication_id: ID }, spend);
     expect(repoWriter.commits).toHaveLength(1);
     expect(repoWriter.commits[0]?.message).toBe(`content: publish 2 entries (${ID})`);
@@ -165,6 +190,30 @@ describe('handlePublishRequested', () => {
       { id: ID, status: 'committed', commitSha: 'a'.repeat(40), files: { 'content/overrides/settings.json': 'sha-of-content/overrides/settings.json', 'content/pricing.json': 'sha-of-content/pricing.json' } },
     ]);
     expect(spend).toHaveBeenCalled();
+  });
+
+  it('does not delete a hand-written post: it is not in the previous manifest', async () => {
+    const { deps, repoWriter } = setup();
+    repoWriter.blog = ['content/blog/a-mano.es.md'];
+    await handlePublishRequested(deps, { publication_id: ID }, vi.fn());
+    expect(repoWriter.commits[0]?.entries.map((e) => e.path)).not.toContain('content/blog/a-mano.es.md');
+  });
+
+  it.each(['queued', 'committed', 'deployed'] as const)('never commits over a newer publication (%s): it is marked failed: superseded', async (status) => {
+    const { deps, publications, repoWriter } = setup();
+    publications.rows.get(ID)!.createdAt = new Date(1000);
+    publications.rows.set(NEWER, { id: NEWER, status, snapshot: { files: {} }, commitSha: null, committedAt: null, createdAt: new Date(2000) });
+    await handlePublishRequested(deps, { publication_id: ID }, vi.fn());
+    expect(repoWriter.commits).toHaveLength(0);
+    expect(publications.marks).toEqual([{ id: ID, status: 'failed', error: 'superseded' }]);
+  });
+
+  it('a newer publication that failed does not block an older one', async () => {
+    const { deps, publications, repoWriter } = setup();
+    publications.rows.get(ID)!.createdAt = new Date(1000);
+    publications.rows.set(NEWER, { id: NEWER, status: 'failed', snapshot: { files: {} }, commitSha: null, committedAt: null, createdAt: new Date(2000) });
+    await handlePublishRequested(deps, { publication_id: ID }, vi.fn());
+    expect(repoWriter.commits).toHaveLength(1);
   });
 
   it('without the GitHub App secrets the publication is marked failed: github_not_configured', async () => {

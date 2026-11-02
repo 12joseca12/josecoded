@@ -13,6 +13,8 @@ const START = /^\/start(?:@[A-Za-z0-9_]{1,64})?[ \t]+([A-Za-z0-9]{8})[ \t]*$/;
 /** Codes tried per chat per window: the code space is 2^32 and lives 15 minutes, this keeps guessing out of reach. */
 export const LINK_ATTEMPTS = 5;
 export const LINK_WINDOW_SECONDS = 900;
+/** And across all chats: a botnet of chats cannot add up to a guessable number of tries (the code space is 2^32). */
+export const LINK_GLOBAL_ATTEMPTS = 50;
 
 export const LINKED_REPLY = 'Telegram vinculado. Desde ahora recibirás aquí los avisos que te correspondan.';
 export const REJECTED_REPLY = 'Código no válido o caducado. Genera uno nuevo en el CRM y envíalo aquí.';
@@ -34,6 +36,11 @@ export async function handleTelegramUpdate(deps: Deps, update: TelegramUpdate, s
     spend();
     if (!(await deps.quota.hit(`tglink:${chatId}`, LINK_ATTEMPTS, LINK_WINDOW_SECONDS))) {
       logEvent('telegram', 'link_limited');
+      return 'limited';
+    }
+    spend();
+    if (!(await deps.quota.hit('tglink:global', LINK_GLOBAL_ATTEMPTS, LINK_WINDOW_SECONDS))) {
+      logEvent('telegram', 'link_limited_global');
       return 'limited';
     }
   }

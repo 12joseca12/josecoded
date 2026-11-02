@@ -82,6 +82,18 @@ describe('resolveRecipients', () => {
     expect(await resolveRecipients(deps, 'comment.pending', {})).toEqual([ADMIN_CHAT]);
   });
 
+  it("an admin rule with no linked chat falls back to Jose's chat; a client Telegram stays without one", async () => {
+    const fallback: Recipient = { channel: 'telegram', address: null, adminChat: true };
+    const recipients = createFakeRecipients({ 'lead.created': [fallback, { channel: 'telegram', address: null }] });
+    const out = await resolveRecipients({ recipients, clock: createFakeClock() }, 'lead.created', {});
+    expect(out).toEqual([fallback, { channel: 'telegram', address: null }]);
+
+    const telegram = createFakeTelegram();
+    const deps = { telegram, notices: createFakeNotices(), clock: createFakeClock() } as unknown as Deps;
+    await deliverAll(deps, ev('lead.created'), out, 'hola', () => undefined);
+    expect(telegram.calls).toEqual([{ text: 'hola', chatId: undefined }]); // undefined = TELEGRAM_ADMIN_CHAT_ID
+  });
+
   it('drops malformed addresses, duplicates and anything over the cap', async () => {
     const many: Recipient[] = Array.from({ length: 8 }, (_, i) => ({ channel: 'telegram', address: String(100 + i) }));
     const recipients = createFakeRecipients({
@@ -119,8 +131,20 @@ describe('deliver', () => {
     const { deps, email } = base();
     await deliver(deps, ev('staff.invited', { email: 'carla@example.com', role: 'closer', locale: 'en' }, 1, 33), { channel: 'email', address: null }, 'ignored', spend);
     expect(email.sent).toEqual([
-      { templateId: 'staff-invited', to: 'carla@example.com', locale: 'en', vars: { role: 'closer' }, idempotencyKey: 'outbox-33' },
+      { templateId: 'staff-invited', to: 'carla@example.com', locale: 'en', vars: { role: 'closer' }, idempotencyKey: expect.stringMatching(/^outbox-33-[0-9a-f]{16}$/) },
     ]);
+  });
+
+  it('the email idempotency key is per recipient: two recipients of one event never share it', async () => {
+    const { deps, email } = base();
+    const event = ev('staff.invited', { role: 'closer' }, 1, 40);
+    await deliver(deps, event, { channel: 'email', address: 'a@example.com' }, 'x', spend);
+    await deliver(deps, event, { channel: 'email', address: 'b@example.com' }, 'x', spend);
+    await deliver(deps, event, { channel: 'email', address: 'a@example.com' }, 'x', spend);
+    const keys = email.sent.map((m) => m.idempotencyKey);
+    expect(keys[0]).toMatch(/^outbox-40-[0-9a-f]{16}$/);
+    expect(keys[1]).not.toBe(keys[0]);
+    expect(keys[2]).toBe(keys[0]); // the same recipient on a retry keeps its key
   });
 
   it('story.decided looks the client up and writes in his language', async () => {

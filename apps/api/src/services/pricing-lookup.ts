@@ -24,3 +24,22 @@ export function priceProposalSafely(data: PricingData, pack: string, extras: rea
   const base = compiled;
   return priceForProposal(pack, extras.filter((code) => base.extras.some((e) => e.code === code)), base);
 }
+
+/** Is `code` a pack or app of the catalogue that is on sale? */
+export function isOnSale(data: PricingData, code: string): boolean {
+  return [...data.packs, ...data.apps].some((p) => p.code === code && p.active !== false);
+}
+
+/**
+ * The offer a proposal may point at: `code` itself when it is on sale, otherwise the on-sale offer of the same kind (pack or app)
+ * with the nearest price (the cheaper one on a tie), so a rule that names a pack the admin switched off never prices a hidden pack.
+ * `null` when nothing of that kind is on sale.
+ */
+export function nearestOnSale(data: PricingData, code: string): { code: string; reassigned: boolean } | null {
+  if (isOnSale(data, code)) return { code, reassigned: false };
+  const isApp = data.apps.some((a) => a.code === code);
+  const target = [...data.packs, ...data.apps].find((p) => p.code === code)?.price ?? compiled[isApp ? 'apps' : 'packs'].find((p) => p.code === code)?.price ?? 0;
+  const candidates = (isApp ? data.apps : data.packs).filter((p) => p.active !== false);
+  const best = [...candidates].sort((a, b) => Math.abs(a.price - target) - Math.abs(b.price - target) || a.price - b.price)[0];
+  return best ? { code: best.code, reassigned: true } : null;
+}

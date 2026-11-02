@@ -254,7 +254,7 @@ describe('outbox.drain with the admin rules (task 3.8b)', () => {
     await tick({ RESEND_API_KEY: 're_test_0123456789' });
 
     expect(sb.emails).toHaveLength(1);
-    expect(sb.emails[0]).toMatchObject({ to: ['carla@example.com'], idempotencyKey: `outbox-${row.id}` });
+    expect(sb.emails[0]).toMatchObject({ to: ['carla@example.com'], idempotencyKey: expect.stringMatching(new RegExp(`^outbox-${row.id}-[0-9a-f]{16}$`)) });
     expect(sb.emails[0]?.subject).toMatch(/invitado/);
     expect(sb.emails[0]?.text).toMatch(/autenticador/);
     expect(sb.telegram).toEqual([]);

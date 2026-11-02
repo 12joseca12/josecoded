@@ -116,9 +116,18 @@ export function createRepoWriter(
 
   const repoPath = (rest: string) => `/repos/${owner}/${name}${rest}`;
 
+  /** A repo request with the installation token. A 401 means the cached token was revoked or expired early: it is dropped and the request is retried once with a new one. */
+  async function authed(method: string, rest: string, body: unknown, hooks: RepoCallHooks | undefined, step: string) {
+    let res = await request(method, repoPath(rest), await installationToken(hooks), body, hooks, step);
+    if (res.status === 401) {
+      tokens.entry = undefined;
+      res = await request(method, repoPath(rest), await installationToken(hooks), body, hooks, step);
+    }
+    return res;
+  }
+
   async function call(method: string, rest: string, body: unknown, hooks: RepoCallHooks | undefined, step: string, expected: number[]): Promise<Json> {
-    const token = await installationToken(hooks);
-    const res = await request(method, repoPath(rest), token, body, hooks, step);
+    const res = await authed(method, rest, body, hooks, step);
     if (!expected.includes(res.status)) throw new Error(`github ${step} ${res.status}`);
     return (res.data ?? {}) as Json;
   }
@@ -154,8 +163,7 @@ export function createRepoWriter(
     );
     const commitSha = str(commit.sha, 'commit sha');
 
-    const token = await installationToken(hooks);
-    const update = await request('PATCH', repoPath(`/git/refs/heads/${branch}`), token, { sha: commitSha, force: false }, hooks, 'update ref');
+    const update = await authed('PATCH', `/git/refs/heads/${branch}`, { sha: commitSha, force: false }, hooks, 'update ref');
     if (update.status === 422) return 'moved'; // not a fast-forward: somebody pushed in between
     if (update.status !== 200) throw new Error(`github update ref ${update.status}`);
     return { commitSha, files, changed: true };
@@ -163,8 +171,7 @@ export function createRepoWriter(
 
   return {
     async listDirectory(dir, hooks) {
-      const token = await installationToken(hooks);
-      const res = await request('GET', repoPath(`/contents/${dir}?ref=${encodeURIComponent(branch)}`), token, undefined, hooks, 'list directory');
+      const res = await authed('GET', `/contents/${dir}?ref=${encodeURIComponent(branch)}`, undefined, hooks, 'list directory');
       if (res.status === 404) return [];
       if (res.status !== 200 || !Array.isArray(res.data)) throw new Error(`github list directory ${res.status}`);
       return (res.data as Json[]).flatMap((e) => (e.type === 'file' && typeof e.path === 'string' ? [e.path] : []));
@@ -180,15 +187,7 @@ export function createRepoWriter(
 
     async workflowRunForSha(sha, hooks): Promise<WorkflowRunSummary | null> {
       if (!/^[0-9a-f]{40}$/.test(sha)) throw new Error('github invalid sha');
-      const token = await installationToken(hooks);
-      const res = await request(
-        'GET',
-        repoPath(`/actions/workflows/${DEPLOY_WORKFLOW}/runs?head_sha=${sha}&per_page=5`),
-        token,
-        undefined,
-        hooks,
-        'list runs',
-      );
+      const res = await authed('GET', `/actions/workflows/${DEPLOY_WORKFLOW}/runs?head_sha=${sha}&per_page=5`, undefined, hooks, 'list runs');
       if (res.status !== 200) throw new Error(`github list runs ${res.status}`);
       const run = ((res.data as Json | null)?.workflow_runs as Json[] | undefined)?.[0];
       if (!run || typeof run.id !== 'number') return null;

@@ -299,14 +299,17 @@ describe('published catalogue (plan 3.7b)', () => {
     expect(pricing.calls).toBe(1);
   });
 
-  it('a pack the admin took off sale falls back to the compiled price instead of failing', async () => {
+  it('a pack the admin took off sale is replaced by the nearest pack on sale, with the rules\' texts', async () => {
     const pricing = createFakePricing();
     pricing.data.packs.find((p) => p.code === 'P2')!.active = false;
     vi.spyOn(console, 'error').mockImplementation(() => undefined);
     const { deps } = setup();
     const res = await call('POST', '/api/v1/proposals/generate', { body, deps: { ...deps, pricing } });
     expect(res.status).toBe(200);
-    expect((await json(res)).data).toMatchObject({ priceFrom: 1400, pricingVersion: '2026-09-14' });
+    const { data } = await json(res);
+    expect(data.pack.code).not.toBe('P2');
+    expect(data).toMatchObject({ source: 'rules', pricingVersion: '2026-11-02.1' });
+    expect(data.priceFrom).toBe(pricing.data.packs.find((p) => p.code === data.pack.code)!.price);
   });
 
   it('an extra the admin took off sale is not recommended', async () => {

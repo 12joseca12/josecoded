@@ -71,14 +71,17 @@ on conflict (name) do nothing;
 
 -- Gateway only (service role): the channels and addresses for an event. admin = every active admin, owner = the owner of
 -- the contact (p_owner_id), staff_user = the indicated person; a null address means «the gateway resolves it» (client).
--- Telegram address = telegram_chat_id (rows without one are skipped); email address = the account email.
+-- Telegram address = telegram_chat_id. An admin rule whose admin has no linked chat yet is NOT skipped: it comes back with
+-- admin_fallback = true and a null address, and the gateway sends it to TELEGRAM_ADMIN_CHAT_ID (the alert is never lost).
+-- Other rows without a chat (owner, staff_user) are skipped; email address = the account email.
 create or replace function public.notification_recipients(p_event text, p_owner_id uuid)
-returns table (channel public.notification_channel, address text)
+returns table (channel public.notification_channel, address text, admin_fallback boolean)
 language sql stable security definer set search_path = '' as $$
-  select distinct t.channel, t.address
+  select distinct t.channel, t.address, t.admin_fallback
     from (
       select r.channel, false as external,
-             case r.channel when 'telegram' then s.telegram_chat_id else u.email::text end as address
+             case r.channel when 'telegram' then s.telegram_chat_id else u.email::text end as address,
+             (r.recipient = 'admin' and r.channel = 'telegram' and s.telegram_chat_id is null) as admin_fallback
         from public.notification_rules r
         join public.staff_members s
           on s.disabled_at is null
@@ -88,11 +91,11 @@ language sql stable security definer set search_path = '' as $$
         left join auth.users u on u.id = s.user_id
        where r.event = p_event and r.enabled and r.recipient <> 'client'
       union all
-      select r.channel, true, null::text
+      select r.channel, true, null::text, false
         from public.notification_rules r
        where r.event = p_event and r.enabled and r.recipient = 'client'
     ) t
-   where t.external or t.address is not null
+   where t.external or t.address is not null or t.admin_fallback
 $$;
 revoke all on function public.notification_recipients(text, uuid) from public, anon, authenticated;
 grant execute on function public.notification_recipients(text, uuid) to service_role;

@@ -70,10 +70,12 @@ function renderFile(path: string, value: unknown): string {
 }
 
 /**
- * The tree of the commit: every file of the snapshot, plus the removal (`sha: null`) of each post that is in the repo and no longer
- * in the snapshot (`existingBlogPaths`: the `.md` files now under `content/blog/`). Sorted by path, so the same snapshot is the same commit.
+ * The tree of the commit: every file of the snapshot, plus the removal (`sha: null`) of each post that the bot itself published
+ * before (`managedBlogPaths`: the files of the previous publication's manifest), that is still in the repo (`existingBlogPaths`:
+ * the `.md` files now under `content/blog/`) and is no longer in the snapshot. A post written by hand, or by anyone else, is never
+ * deleted: it is not in a manifest. Sorted by path, so the same snapshot is the same commit.
  */
-export function buildTree(snapshot: unknown, existingBlogPaths: readonly string[] = []): TreeEntry[] {
+export function buildTree(snapshot: unknown, existingBlogPaths: readonly string[] = [], managedBlogPaths: readonly string[] = []): TreeEntry[] {
   const parsed = snapshotSchema.safeParse(snapshot);
   if (!parsed.success) throw new ContentPublishError('invalid_snapshot');
   const paths = Object.keys(parsed.data.files);
@@ -91,9 +93,10 @@ export function buildTree(snapshot: unknown, existingBlogPaths: readonly string[
   if (total > MAX_TOTAL_BYTES) throw new ContentPublishError('file_too_large');
 
   const kept = new Set(paths);
+  const managed = new Set(managedBlogPaths);
   for (const path of existingBlogPaths) {
-    // only posts this bot manages: allowed shape, directly under content/blog/
-    if (isAllowedPath(path) && path.startsWith(`${BLOG_DIR}/`) && !kept.has(path)) {
+    // only posts this bot published before: allowed shape, directly under content/blog/, in the previous manifest
+    if (isAllowedPath(path) && path.startsWith(`${BLOG_DIR}/`) && managed.has(path) && !kept.has(path)) {
       entries.push({ path, mode: '100644', type: 'blob', sha: null });
     }
   }
@@ -146,11 +149,20 @@ export async function handlePublishRequested(deps: Deps, payload: Record<string,
     return;
   }
 
+  // A newer publication carries the whole state again: committing this one over it would bring back old content.
+  spend();
+  if (await publications.hasNewer(publication)) {
+    await fail('superseded');
+    return;
+  }
+
   let result;
   try {
     const hooks = { onRequest: spend };
     const existing = (await writer.listDirectory(BLOG_DIR, hooks)).filter((p) => p.endsWith('.md'));
-    const entries = buildTree(publication.snapshot, existing);
+    spend();
+    const managed = await publications.previousManifest(publication);
+    const entries = buildTree(publication.snapshot, existing, managed);
     result = await writer.commit({ message: commitMessage(entries.filter((e) => 'content' in e).length, id), entries }, hooks);
   } catch (error) {
     await fail(failureReason(error));

@@ -787,6 +787,9 @@ begin
 
   v_price_pending := private.pricing_pending();
   insert into public.site_content_publications (id, snapshot, created_by) values (v_pub, '{}'::jsonb, v_uid);
+  -- The snapshot always carries the whole state, so an older publication still waiting is obsolete: it must never be
+  -- committed over this one (the gateway also checks before committing).
+  update public.site_content_publications set status = 'failed', error = 'superseded' where status = 'queued' and id <> v_pub;
 
   for e in select x.* from public.site_content_entries x
             where x.draft is distinct from x.published and x.draft is not null

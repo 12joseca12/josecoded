@@ -131,6 +131,17 @@ describe('allowedAmountsOf (the published catalogue decides)', () => {
     for (const n of [900, 1400, 2500, 4200, 4000, 6000, 250, 600, 300, 49, 149, 40, 150]) expect(amounts.has(n)).toBe(true);
   });
 
+  it('prices of inactive packs, apps and extras are not allowed', () => {
+    const off = structuredClone(compiled);
+    off.packs[1]!.active = false;
+    off.extras[0]!.active = false;
+    const amounts = allowedAmountsOf(off);
+    expect(amounts.has(compiled.packs[1]!.price)).toBe(false);
+    expect(amounts.has(compiled.extras[0]!.price)).toBe(false);
+    expect(amounts.has(compiled.packs[0]!.price)).toBe(true);
+    expect(guardModelOutput(`El pack son ${compiled.packs[1]!.price} €.`, { ...es, allowedAmounts: amounts })).toEqual({ ok: false, reason: 'amount' });
+  });
+
   it('an amount that only exists in the published catalogue passes', () => {
     expect(guardModelOutput('El pack de pedidos son 1.500 €.', { ...es, allowedAmounts: allowedAmountsOf(published) })).toEqual({ ok: true });
     expect(guardModelOutput('La hora son 55 €.', { ...es, allowedAmounts: allowedAmountsOf(published) })).toEqual({ ok: true });

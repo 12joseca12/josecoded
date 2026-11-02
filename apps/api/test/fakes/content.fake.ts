@@ -60,6 +60,17 @@ export function createFakePublications(rows: (Partial<ContentPublication> & { id
     async get(id) {
       return fake.rows.get(id) ?? null;
     },
+    async hasNewer(publication) {
+      return [...fake.rows.values()].some(
+        (r) => r.createdAt > publication.createdAt && (r.status === 'queued' || r.status === 'committed' || r.status === 'deployed'),
+      );
+    },
+    async previousManifest(publication) {
+      const previous = [...fake.rows.values()]
+        .filter((r) => r.createdAt < publication.createdAt && (r.status === 'committed' || r.status === 'deployed'))
+        .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())[0];
+      return Object.keys(previous?.files ?? {});
+    },
     async listCommitted(limit) {
       return [...fake.rows.values()].filter((r) => r.status === 'committed').slice(0, limit);
     },
@@ -77,6 +88,6 @@ export function createFakePublications(rows: (Partial<ContentPublication> & { id
       }
     },
   };
-  for (const r of rows) fake.rows.set(r.id, { status: 'queued', snapshot: { files: {} }, commitSha: null, committedAt: null, ...r });
+  for (const r of rows) fake.rows.set(r.id, { status: 'queued', snapshot: { files: {} }, commitSha: null, committedAt: null, createdAt: new Date(0), ...r });
   return fake;
 }

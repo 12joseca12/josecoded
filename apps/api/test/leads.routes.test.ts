@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { createFakeClock } from './fakes/clock.fake';
 import { createFakeAffiliates, createFakeLeads, createFakeNotices, createFakeTelegram, createFakeTurnstile } from './fakes/ports.fake';
+import { createFakePricing } from './fakes/pricing.fake';
 import { createFakeSupabaseGateway } from './fakes/supabase.fake';
 import { baseEnv, call, json } from './helpers';
 import { signProposalToken } from '../src/services/proposal-token';
@@ -248,6 +249,17 @@ describe('POST /leads: proposals', () => {
     const stored = leads.payloads[0]!;
     expect(stored.pack_code).toBe('P2');
     expect(stored.ai_proposal).toMatchObject({ pack: 'P2', priceFrom: 1400, pricingVersion: '2026-09-14', extras: ['seo_basic'], isApp: false });
+  });
+
+  it('a proposal whose pack was taken off sale since still creates the lead, flagged pack_inactive in meta', async () => {
+    const { post, leads, deps } = setup();
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const pricing = createFakePricing();
+    pricing.data.packs.find((p) => p.code === 'P2')!.active = false;
+    const token = await signProposalToken(baseEnv.SERVER_KEY, payload);
+    const res = await post(lead({ source: 'web_proposal', proposalToken: token }), { deps: { ...deps, pricing } });
+    expect(res.status).toBe(201);
+    expect(leads.payloads[0]!.meta).toMatchObject({ pack_inactive: true });
   });
 
   it('an app proposal sets ai_proposal but no pack_code', async () => {

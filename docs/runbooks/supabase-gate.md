@@ -153,6 +153,13 @@ gateway (`josecoded-api` y, con `--env preview`, `josecoded-api-preview`).
       sitios donde estuvieran y se anota.
 - [ ] `grep -rn nrgrmymsjtgayzejtawa .` vacío en el repo; `wrangler secret list` (prod y preview) y `.env` de Omen sin referencias.
 
+### GitHub App `josecoded-bot` (tarea 1.9c, paso 5)
+
+- [ ] Permisos de la App: `Contents: Read and write` y `Actions: Read-only` (el gateway pide exactamente esos dos al emitir el token), solo sobre este repo.
+- [ ] La App está en la **lista de bypass del ruleset de `main`** (Settings, Rules, Rulesets, «Bypass list»). Sin ello `main` protegida rechaza
+      el commit del bot y cada publicación acaba `failed: github update ref 422/403`.
+- [ ] Probar con una publicación de D2 de un cambio mínimo: commit del bot en `main` y run de `deploy-production.yml` encontrado.
+
 ## 9. Precios (paso 10)
 
 - [ ] `pnpm pricing:sync-db`, revisar `supabase/generated/pricing-sync.sql`, aplicarlo (`apply_migration` por MCP o `psql`).

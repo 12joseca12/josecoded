@@ -3,7 +3,7 @@
 // ends in the rule classifier: the visitor never sees an error because of the AI.
 import { extraCodeSchema, proposalModelOutputSchema, type ExtraCode, type PricingData, type ProposalResponse } from '@josecoded/types';
 
-import { loadPricing, priceProposalSafely } from './pricing-lookup';
+import { loadPricing, nearestOnSale, priceProposalSafely } from './pricing-lookup';
 import {
   buildSystemPrompt,
   buildUserMessage,
@@ -97,12 +97,18 @@ export async function generateProposal(deps: Deps, config: ProposalsConfig, inpu
   const catalogue = await loadPricing(deps);
   const modelOutput = await askModel(deps, input, catalogue);
   const rules = classifyByRules(input.answers);
-  const source = modelOutput ? 'ai' : 'rules';
-  const packCode: ProposalPackCode = modelOutput?.pack ?? rules.pack;
+  const wanted: ProposalPackCode = modelOutput?.pack ?? rules.pack;
+  // the model or the rules may name a pack the admin has switched off: the nearest one on sale takes its place
+  const onSale = nearestOnSale(catalogue, wanted);
+  if (onSale?.reassigned) logEvent('pricing', 'pack_reassigned', { pack: wanted });
+  const packCode = (onSale?.code ?? wanted) as ProposalPackCode;
+  // the model wrote about the pack it chose: with another pack in its place its texts no longer fit, the rules' do
+  const aiTexts = modelOutput && !onSale?.reassigned ? modelOutput : null;
+  const source = aiTexts ? 'ai' : 'rules';
   const extras: ExtraCode[] = [...new Set([...(modelOutput?.extras ?? []), ...rules.extras])].slice(0, 3);
   // the price is always the rules' (never the model's), from the published catalogue
   const price = priceProposalSafely(catalogue, packCode, extras);
-  const texts = modelOutput ?? rulesTextsFor(price.pack, input.locale);
+  const texts = aiTexts ?? rulesTextsFor(price.pack, input.locale);
 
   const isApp = packCode.startsWith('APP_');
   const proposalId = crypto.randomUUID();

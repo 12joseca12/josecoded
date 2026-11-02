@@ -964,7 +964,8 @@ language plpgsql security definer set search_path = '' as $$
 declare v_user uuid;
 begin
   select c.user_id into v_user from public.staff_telegram_codes c
-   where c.code = upper(btrim(p_code)) and c.expires_at > now() for update;
+    join public.staff_members m on m.user_id = c.user_id and m.disabled_at is null
+   where c.code = upper(btrim(p_code)) and c.expires_at > now() for update of c;
   if v_user is null or nullif(btrim(p_chat_id), '') is null then return false; end if;
   update public.staff_members set telegram_chat_id = btrim(p_chat_id) where user_id = v_user;
   delete from public.staff_telegram_codes where user_id = v_user;

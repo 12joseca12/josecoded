@@ -97,7 +97,7 @@ export interface ChatContextsRepo {
 export interface Recipient {
   channel: 'telegram' | 'email';
   address: string | null;
-  /** Set by the gateway, never by the database: Jose's own chat (`TELEGRAM_ADMIN_CHAT_ID`), for `system.*` and as the safety net. */
+  /** Jose's own chat (`TELEGRAM_ADMIN_CHAT_ID`): `system.*`, the safety net, and an admin rule whose admin has no linked chat. */
   adminChat?: true;
 }
 
@@ -125,10 +125,15 @@ export interface ContentPublication {
   snapshot: unknown;
   commitSha: string | null;
   committedAt: Date | null;
+  createdAt: Date;
 }
 
 export interface ContentPublicationsRepo {
   get(id: string): Promise<ContentPublication | null>;
+  /** Is there a publication created after `publication` that is `queued`, `committed` or `deployed`? Then this one is obsolete. */
+  hasNewer(publication: ContentPublication): Promise<boolean>;
+  /** Paths the bot wrote in the latest `committed`/`deployed` publication before `publication` (its `files` manifest). */
+  previousManifest(publication: ContentPublication): Promise<string[]>;
   /** Publications in `committed`, oldest first. */
   listCommitted(limit: number): Promise<ContentPublication[]>;
   mark(update: {

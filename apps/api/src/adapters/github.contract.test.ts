@@ -156,6 +156,18 @@ describe('createRepoWriter', () => {
     expect(calls.filter((c) => c.path.includes('access_tokens'))).toHaveLength(2);
   });
 
+  it('drops the cached token on a 401 and retries once with a new one; a second 401 fails', async () => {
+    const unauthorized = reply(401, { message: 'Bad credentials' });
+    const tokens: TokenCache = {};
+    const { calls, fetchImpl } = strictFetch([tokenStep, unauthorized, tokenStep, reply(200, [{ type: 'file', path: 'content/blog/a.es.md' }])]);
+    const writer = createRepoWriter(env(), fetchImpl, { tokens })!;
+    expect(await writer.listDirectory('content/blog')).toEqual(['content/blog/a.es.md']);
+    expect(calls.filter((c) => c.path.includes('access_tokens'))).toHaveLength(2);
+
+    const twice = strictFetch([tokenStep, unauthorized, tokenStep, unauthorized]);
+    await expect(createRepoWriter(env(), twice.fetchImpl, { tokens: {} })!.listDirectory('content/blog')).rejects.toThrow('github list directory 401');
+  });
+
   it('retries once when the branch moved (422 on the ref update), on top of the new head', async () => {
     const NEWER = 'e'.repeat(40);
     const { calls, fetchImpl } = strictFetch([

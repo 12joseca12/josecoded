@@ -53,10 +53,11 @@ function clean(recipients: Recipient[]): Recipient[] {
   for (const r of recipients) {
     if (r.channel === 'telegram' && r.address !== null && !TELEGRAM_CHAT_ID.test(r.address)) continue;
     if (r.channel === 'email' && r.address !== null && !EMAIL.test(r.address)) continue;
-    const key = `${r.channel}:${r.address ?? ''}`;
+    const adminChat = r.channel === 'telegram' && r.address === null && r.adminChat === true;
+    const key = `${r.channel}:${r.address ?? ''}${adminChat ? ':admin' : ''}`;
     if (seen.has(key)) continue;
     seen.add(key);
-    out.push({ channel: r.channel, address: r.address });
+    out.push(adminChat ? { channel: r.channel, address: null, adminChat: true } : { channel: r.channel, address: r.address });
   }
   if (out.length > MAX_RECIPIENTS) logEvent('notifications', 'recipients_truncated', { count: out.length });
   return out.slice(0, MAX_RECIPIENTS);
@@ -150,12 +151,14 @@ export async function deliver(deps: Deps, event: OutboxEvent, recipient: Recipie
     return;
   }
   spend();
+  // one key per (event, recipient): two emails of the same event (a client and a staff rule) must not collapse into one in Resend
+  const who = await sha256Hex(`${recipient.channel}:${to}`);
   await deps.email.sendEmail({
     templateId,
     to,
     locale: locale ?? 'es',
     vars: emailVars(templateId, event.payload),
-    idempotencyKey: `outbox-${event.id}`,
+    idempotencyKey: `outbox-${event.id}-${who.slice(0, 16)}`,
   });
 }
 

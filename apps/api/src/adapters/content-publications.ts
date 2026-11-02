@@ -8,18 +8,22 @@ import type { ContentPublication, ContentPublicationsRepo } from '../ports';
 
 interface Query extends PromiseLike<{ data: unknown; error: { message: string } | null }> {
   eq(column: string, value: string): Query;
+  in(column: string, values: string[]): Query;
+  gt(column: string, value: string): Query;
+  lt(column: string, value: string): Query;
   order(column: string, options: { ascending: boolean }): Query;
   limit(count: number): Query;
   maybeSingle(): PromiseLike<{ data: unknown; error: { message: string } | null }>;
 }
 
-const COLUMNS = 'id, status, snapshot, commit_sha, committed_at';
+const COLUMNS = 'id, status, snapshot, commit_sha, committed_at, created_at';
 const rowSchema = z.object({
   id: z.uuid(),
   status: z.enum(['queued', 'committed', 'deployed', 'failed']),
   snapshot: z.unknown(),
   commit_sha: z.string().nullable(),
   committed_at: z.string().nullable(),
+  created_at: z.string(),
 });
 
 const toPublication = (row: z.infer<typeof rowSchema>): ContentPublication => ({
@@ -28,6 +32,7 @@ const toPublication = (row: z.infer<typeof rowSchema>): ContentPublication => ({
   snapshot: row.snapshot,
   commitSha: row.commit_sha,
   committedAt: row.committed_at ? new Date(row.committed_at) : null,
+  createdAt: new Date(row.created_at),
 });
 
 export function createContentPublicationsRepo(gateway: Pick<SupabaseGateway, 'admin'>, rpc: RawRpc): ContentPublicationsRepo {
@@ -37,6 +42,26 @@ export function createContentPublicationsRepo(gateway: Pick<SupabaseGateway, 'ad
       const { data, error } = await table().select(COLUMNS).eq('id', id).maybeSingle();
       if (error) throw new Error(`site_content_publications: ${error.message}`);
       return data ? toPublication(rowSchema.parse(data)) : null;
+    },
+    async hasNewer(publication) {
+      const { data, error } = await table()
+        .select('id')
+        .in('status', ['queued', 'committed', 'deployed'])
+        .gt('created_at', publication.createdAt.toISOString())
+        .limit(1);
+      if (error) throw new Error(`site_content_publications: ${error.message}`);
+      return Array.isArray(data) && data.length > 0;
+    },
+    async previousManifest(publication) {
+      const { data, error } = await table()
+        .select('files')
+        .in('status', ['committed', 'deployed'])
+        .lt('created_at', publication.createdAt.toISOString())
+        .order('created_at', { ascending: false })
+        .limit(1);
+      if (error) throw new Error(`site_content_publications: ${error.message}`);
+      const parsed = z.array(z.object({ files: z.record(z.string(), z.unknown()).nullable() })).safeParse(data ?? []);
+      return parsed.success ? Object.keys(parsed.data[0]?.files ?? {}) : [];
     },
     async listCommitted(limit) {
       const { data, error } = await table().select(COLUMNS).eq('status', 'committed').order('created_at', { ascending: true }).limit(limit);

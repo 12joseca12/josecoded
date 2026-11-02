@@ -79,13 +79,28 @@ describe('POST /api/v1/telegram/webhook', () => {
     expect(telegram.calls).toEqual([]);
   });
 
-  it('rejects an oversized or non-JSON body', async () => {
-    const { deps } = setup();
+  it('accepts an update of a few KB, and acks (200) an oversized or non-JSON body after the secret is valid, doing nothing', async () => {
+    const { deps, staffTelegram } = setup();
     const headers = { 'x-telegram-bot-api-secret-token': SECRET };
-    const big = await post(deps, { update_id: 1, pad: 'x'.repeat(20_000) }, headers);
-    expect(big.status).toBe(413);
+    expect((await post(deps, startMessage('/start ABCDEFGH', { pad: 'x'.repeat(30_000) }), headers)).status).toBe(200);
+    expect(staffTelegram.links.get(CLOSER)).toBe('9001');
+    const big = await post(deps, { update_id: 1, pad: 'x'.repeat(70_000) }, headers);
+    expect(big.status).toBe(200);
     const wrongType = await call('POST', '/api/v1/telegram/webhook', { raw: 'x', headers: { ...headers, 'content-type': 'text/plain' }, deps, env: { TELEGRAM_WEBHOOK_SECRET: SECRET } });
-    expect(wrongType.status).toBe(415);
+    expect(wrongType.status).toBe(200);
+    expect(staffTelegram.attempts).toHaveLength(1);
+    // without the secret an oversized body is still a 401, not a free 200
+    expect((await post(deps, { update_id: 1, pad: 'x'.repeat(70_000) }, {})).status).toBe(401);
+  });
+
+  it('a global quota across chats stops link guessing even from many chats', async () => {
+    const { deps, staffTelegram, quota } = setup();
+    const headers = { 'x-telegram-bot-api-secret-token': SECRET };
+    for (let chat = 1; chat <= 52; chat += 1) {
+      await post(deps, { update_id: chat, message: { text: '/start ZZZZZZZZ', chat: { id: chat, type: 'private' } } }, headers);
+    }
+    expect(staffTelegram.attempts).toHaveLength(50);
+    expect(quota.counts.get('tglink:global')).toBe(52);
   });
 
   it('never logs the message, the chat or the code', async () => {

@@ -56,14 +56,18 @@ const STOPWORDS = {
   en: ['the', 'and', 'of', 'to', 'in', 'is', 'that', 'for', 'with', 'you', 'your', 'are', 'it', 'on', 'as', 'this', 'be', 'can', 'will', 'we', 'have', 'not'],
 } as const;
 
-/** Every figure of a price catalogue (prices of packs, apps and extras, hourly and feature): the only amounts a text may state. */
+/**
+ * Every figure of a price catalogue that is on sale (prices of active packs, apps and extras, hourly and feature): the only amounts
+ * a text may state. The price of an inactive offer is not one: the assistant must not quote what the admin switched off.
+ */
 export function allowedAmountsOf(data: PricingData): Set<number> {
+  const onSale = <T extends { active?: boolean }>(items: readonly T[]) => items.filter((i) => i.active !== false);
   return new Set([
     data.hourly,
     data.feature,
-    ...data.packs.map((p) => p.price),
-    ...data.apps.map((a) => a.price),
-    ...data.extras.map((e) => e.price),
+    ...onSale(data.packs).map((p) => p.price),
+    ...onSale(data.apps).map((a) => a.price),
+    ...onSale(data.extras).map((e) => e.price),
   ]);
 }
 

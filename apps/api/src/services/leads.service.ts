@@ -3,7 +3,7 @@
 // money, `meta` or the contact kind is stored as sent.
 import { AFFILIATE_CODE_DB_RE, aiProposalSchema, createLeadInputSchema, type LeadRequest, type LeadResponse } from '@josecoded/types';
 
-import { loadPricing, priceProposalSafely } from './pricing-lookup';
+import { isOnSale, loadPricing, priceProposalSafely } from './pricing-lookup';
 import { verifyProposalToken } from './proposal-token';
 import { formatOutboxEvent } from '../jobs/outbox-drain';
 import { HttpError, logEvent } from '../utils/http-error';
@@ -42,7 +42,8 @@ async function proposalFor(deps: Deps, request: LeadRequest, ctx: LeadContext) {
   const payload = await verifyProposalToken(ctx.serverKey, request.proposalToken, Math.floor(deps.clock.now().getTime() / 1000));
   if (!payload) throw new HttpError(400, 'invalid_proposal', 'The proposal is invalid or has expired');
   // the token carries a price for the visitor's screen; the lead is priced again from the published catalogue
-  const price = priceProposalSafely(await loadPricing(deps), payload.pack, payload.extras);
+  const catalogue = await loadPricing(deps);
+  const price = priceProposalSafely(catalogue, payload.pack, payload.extras);
   const aiProposal = aiProposalSchema.parse({
     pack: payload.pack,
     priceFrom: price.priceFrom,
@@ -53,7 +54,8 @@ async function proposalFor(deps: Deps, request: LeadRequest, ctx: LeadContext) {
     summary: payload.summary,
     scope: payload.scope,
   });
-  return { aiProposal, packCode: payload.isApp ? undefined : payload.pack, proposalId: payload.id };
+  // the proposal named a pack that is no longer on sale: the lead is priced from the fallback and flagged for Jose
+  return { aiProposal, packCode: payload.isApp ? undefined : payload.pack, proposalId: payload.id, packInactive: !isOnSale(catalogue, payload.pack) };
 }
 
 /**
@@ -128,6 +130,7 @@ export async function submitLead(
     ...(request.meta?.utm && Object.keys(request.meta.utm).length <= 6 ? { utm: request.meta.utm } : {}),
     ...(request.contact.company ? { company: request.contact.company } : {}),
     ...(proposal ? { proposal_id: proposal.proposalId } : {}),
+    ...(proposal?.packInactive ? { pack_inactive: true } : {}),
   };
   let affiliateCode: string | undefined;
   const rawCode = request.affiliateCode?.toUpperCase();

@@ -55,10 +55,10 @@ export async function requireAdmin(options: GuardOptions): Promise<Session> {
   const session = await requireUser(options);
   const { data: staff } = await session.supabase
     .from('staff_members')
-    .select('role')
+    .select('role, disabled_at' as 'role') // `disabled_at` is newer than the generated types (as in staff.ts)
     .eq('user_id', session.user.id)
     .maybeSingle();
-  if (staff?.role !== 'admin') notFound();
+  if (staff?.role !== 'admin' || Boolean((staff as unknown as { disabled_at?: string | null }).disabled_at)) notFound();
 
   const { data: aal } = await session.supabase.auth.mfa.getAuthenticatorAssuranceLevel();
   if (aal?.currentLevel !== 'aal2') {

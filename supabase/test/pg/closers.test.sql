@@ -847,6 +847,19 @@ insert into public.staff_telegram_codes (user_id, code, expires_at) values ('000
 set local role service_role;
 select t.ok(public.staff_telegram_link('OLD00000', '111') is false, 'an expired telegram code does not link');
 reset role;
+insert into public.staff_telegram_codes (user_id, code, expires_at) values ('00000000-0000-4000-8000-0000000000a6', 'DANI0000', now() + interval '10 minutes');
+set local role service_role;
+select t.ok(public.staff_telegram_link('DANI0000', '222') is false, 'B4 a switched-off member cannot link a Telegram chat');
+reset role;
+select t.ok((select telegram_chat_id from public.staff_members where user_id = '00000000-0000-4000-8000-0000000000a6') is distinct from '222',
+            'B4 and his row stays without that chat');
+update public.staff_members set telegram_chat_id = null where role = 'admin';
+set local role service_role;
+select t.ok((select string_agg(channel::text || ':' || coalesce(address, 'null') || ':' || admin_fallback::text, ',') from public.notification_recipients('lead.created', null)) = 'telegram:null:true'
+            and (select count(*) from public.notification_recipients('client.invited', null) where admin_fallback) = 0
+            and (select count(*) from public.notification_recipients('lead.created', '00000000-0000-4000-8000-0000000000a5') where address = '999' and not admin_fallback) = 1,
+            'M3 an admin rule whose admin has no chat comes back as admin_fallback (the gateway uses TELEGRAM_ADMIN_CHAT_ID); owner rows without chat are still skipped');
+reset role;
 rollback;
 
 -- ================================================================ price catalogue (Q23, D54)
@@ -911,6 +924,13 @@ select t.ok(t.val($q$select (snapshot -> 'files' -> 'content/pricing.json' -> 'p
             and t.val($q$select (snapshot -> 'files' -> 'content/pricing.json')::text not like '%HIDDEN_PACK%' from public.site_content_publications where id = (select id from pub)$q$) = 'true'
             and t.val('select (public.admin_counters() ->> ''content_pending'')::int') = '0',
             'content_publish writes content/pricing.json with 1.500 and a new version, without the hidden pack; nothing is pending');
+select t.ok(t.err($q$select public.admin_pricing_set_settings(60, 150)$q$) is null, 'a second change to publish');
+create temp table pub2 (id uuid);
+grant all on pub2 to authenticated, service_role;
+insert into pub2 select public.content_publish();
+select t.ok(t.val($q$select status::text || ':' || error from public.site_content_publications where id = (select id from pub)$q$) = 'failed:superseded'
+            and t.val($q$select status::text from public.site_content_publications where id = (select id from pub2)$q$) = 'queued',
+            'M1 a newer publication marks the older queued one failed: superseded in the same transaction; the newer stays queued');
 reset role;
 select t.ok((select (published_snapshot -> 'packs' -> 1 ->> 'price') from public.pricing_settings) = '1500'
             and (select published_hash from public.pricing_settings) = md5(private.pricing_snapshot_build()::text)

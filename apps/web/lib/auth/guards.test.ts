@@ -2,7 +2,7 @@ import { beforeEach, expect, it, vi } from 'vitest';
 
 const state = vi.hoisted(() => ({
   user: null as null | { id: string },
-  staff: null as null | { role: string },
+  staff: null as null | { role: string; disabled_at?: string | null },
   level: 'aal1' as string,
 }));
 
@@ -55,6 +55,13 @@ it('passes a signed-in user', async () => {
 
 it('404s users that are not staff', async () => {
   state.user = { id: 'u' };
+  await expect(requireAdmin({ locale: 'es' })).rejects.toThrow('NOT_FOUND');
+});
+
+it('404s a deactivated admin, even at aal2 (disabled_at, as staff.ts)', async () => {
+  state.user = { id: 'u' };
+  state.staff = { role: 'admin', disabled_at: '2026-11-01T00:00:00Z' };
+  state.level = 'aal2';
   await expect(requireAdmin({ locale: 'es' })).rejects.toThrow('NOT_FOUND');
 });
 
