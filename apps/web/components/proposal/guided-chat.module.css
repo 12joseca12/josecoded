@@ -1,0 +1,82 @@
+.chat {
+  display: grid;
+  gap: var(--sp-5);
+  max-width: var(--size-measure-prose);
+  min-width: 0;
+}
+
+.thread {
+  display: grid;
+  gap: var(--sp-2);
+}
+
+.step {
+  display: grid;
+  gap: var(--sp-3);
+}
+
+.progress {
+  margin: 0;
+  color: var(--text-3);
+  font-size: var(--font-small-size);
+}
+
+.form {
+  display: grid;
+  gap: var(--sp-4);
+}
+
+.question {
+  margin: 0;
+  font-size: var(--font-title-sm-size);
+  font-weight: var(--font-title-sm-weight);
+  letter-spacing: var(--font-title-sm-tracking);
+  line-height: var(--font-title-sm-leading);
+}
+
+.help {
+  margin: 0;
+  color: var(--text-3);
+  font-size: var(--font-small-size);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.needs {
+  display: grid;
+  gap: var(--sp-2);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border-width: 0;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+}
+
+.error {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--font-label-size);
+}
+
+.error a {
+  color: var(--violet-soft);
+  text-decoration: underline;
+}
+
+.verify {
+  min-height: var(--sp-10);
+}
+
+.result {
+  display: grid;
+  gap: var(--sp-gap-scene);
+}

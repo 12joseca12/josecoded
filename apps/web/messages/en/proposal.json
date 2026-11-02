@@ -1,1 +1,122 @@
-{}
+{
+  "proposal": {
+    "title": "Proposal",
+    "meta": {
+      "title": "Rough proposal for your website or app",
+      "description": "Answer four questions and I will show you which pack fits your business, from what price and in how long. The price comes from the published rates, not from the AI."
+    },
+    "head": {
+      "lead": "Your rough proposal,",
+      "accent": "in a minute.",
+      "citable": "Answer four questions about your business and I will show you which pack fits, from what price and in how long. The price comes from the published rates, not from the AI: the AI only understands what you need. It is a rough estimate, with no commitment."
+    },
+    "progress": "Question {current} of {total}",
+    "chat": {
+      "label": "Proposal conversation",
+      "assistant": "Question",
+      "you": "Your answer"
+    },
+    "steps": {
+      "business": {
+        "question": "What kind of business do you have?",
+        "chips": {
+          "restaurant": "Restaurant",
+          "clinic": "Clinic",
+          "shop": "Shop",
+          "services": "Professional services"
+        },
+        "other": "Another kind of business",
+        "otherHelp": "Write it in your own words.",
+        "next": "Next"
+      },
+      "needs": {
+        "question": "What do you need it to do?",
+        "legend": "Choose everything that helps",
+        "chips": {
+          "presence": "Let people find me (presence)",
+          "bookings": "Bookings or appointments",
+          "orders": "Orders or sales",
+          "management": "Manage customers or stock",
+          "automation": "Automate tasks",
+          "app": "A mobile app"
+        },
+        "text": "Anything else you want to tell me",
+        "next": "Next"
+      },
+      "sales": {
+        "question": "Do you sell or take bookings online?",
+        "options": {
+          "none": "No, just inform",
+          "orders": "I sell products",
+          "bookings": "I manage bookings or appointments",
+          "both": "Both"
+        }
+      },
+      "timeline": {
+        "question": "When do you need it?",
+        "options": {
+          "asap": "As soon as possible",
+          "one_month": "In a month",
+          "three_months": "In three months",
+          "flexible": "No rush"
+        }
+      }
+    },
+    "back": "Back",
+    "verify": {
+      "label": "Anti-robot check"
+    },
+    "generating": "Preparing your proposal…",
+    "errors": {
+      "captcha": "Wait for the check to finish and choose again.",
+      "rate": "You have made many requests in a row. Wait a minute and try again.",
+      "quota": "Today's automatic proposals have run out. Write to me and I will prepare it myself.",
+      "down": "I could not prepare the proposal right now. Try again or write to me.",
+      "invalid": "Some answer is not valid. Check them and try again.",
+      "contact": "Write to me"
+    },
+    "card": {
+      "title": "Your rough proposal",
+      "pack": "Pack {code}: {name}",
+      "from": "From {price}",
+      "vat": "excl. VAT",
+      "weeksOne": "{weeks} week",
+      "weeksMany": "{weeks} weeks",
+      "includes": "What it includes",
+      "scope": "Expected scope",
+      "extras": "Extras you might like",
+      "extrasMonthly": "/month",
+      "questions": "To refine it I would like to know",
+      "source": {
+        "ai": "Prepared with the help of AI. The price comes from the published rates.",
+        "rules": "Prepared with rules. The price comes from the published rates."
+      },
+      "appTitle": "This is an app",
+      "appText": "A mobile app starts at {price} and {weeks}. The web pack does not apply.",
+      "send": "Send the proposal to Jose",
+      "restart": "Start again",
+      "packs": "See all packs"
+    },
+    "send": {
+      "title": "Shall we go on?",
+      "text": "Leave me your details and we go through it together. I will answer you.",
+      "label": "Send proposal",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone (optional)",
+      "submit": "Send proposal",
+      "sent": "Received. I will answer you myself as soon as I see it.",
+      "fallbackIntro": "I could not send it right now. Write to me directly:",
+      "fallbackMail": "by email",
+      "fallbackWhatsapp": "on WhatsApp",
+      "errors": {
+        "name": "Enter your name.",
+        "email": "Enter a valid email.",
+        "phone": "Check the phone number.",
+        "captcha": "I could not check that you are not a robot. Please try again.",
+        "expired": "The proposal has expired. Start again to generate another.",
+        "down": "I could not send it right now."
+      }
+    }
+  }
+}

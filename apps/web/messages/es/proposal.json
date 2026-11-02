@@ -1,1 +1,122 @@
-{}
+{
+  "proposal": {
+    "title": "Propuesta",
+    "meta": {
+      "title": "Propuesta orientativa de tu web o app",
+      "description": "Responde cuatro preguntas y te enseño qué pack encaja con tu negocio, desde cuánto y en cuánto tiempo. El precio sale de la tarifa publicada, no de la IA."
+    },
+    "head": {
+      "lead": "Tu propuesta orientativa,",
+      "accent": "en un minuto.",
+      "citable": "Responde cuatro preguntas sobre tu negocio y te enseño qué pack encaja, desde cuánto y en cuánto tiempo. El precio sale de la tarifa publicada, no de la IA: la IA solo entiende lo que necesitas. Es orientativa, sin compromiso."
+    },
+    "progress": "Pregunta {current} de {total}",
+    "chat": {
+      "label": "Conversación de la propuesta",
+      "assistant": "Pregunta",
+      "you": "Tu respuesta"
+    },
+    "steps": {
+      "business": {
+        "question": "¿Qué tipo de negocio tienes?",
+        "chips": {
+          "restaurant": "Restaurante",
+          "clinic": "Clínica",
+          "shop": "Tienda",
+          "services": "Servicios profesionales"
+        },
+        "other": "Otro tipo de negocio",
+        "otherHelp": "Escríbelo con tus palabras.",
+        "next": "Siguiente"
+      },
+      "needs": {
+        "question": "¿Qué necesitas que haga?",
+        "legend": "Elige todo lo que te sirva",
+        "chips": {
+          "presence": "Que me encuentren (presencia)",
+          "bookings": "Reservas o citas",
+          "orders": "Pedidos o ventas",
+          "management": "Gestionar clientes o stock",
+          "automation": "Automatizar tareas",
+          "app": "Una app móvil"
+        },
+        "text": "Algo más que quieras contar",
+        "next": "Siguiente"
+      },
+      "sales": {
+        "question": "¿Vendes o reservas por internet?",
+        "options": {
+          "none": "No, solo informar",
+          "orders": "Vendo productos",
+          "bookings": "Gestiono reservas o citas",
+          "both": "Las dos cosas"
+        }
+      },
+      "timeline": {
+        "question": "¿Para cuándo lo necesitas?",
+        "options": {
+          "asap": "Cuanto antes",
+          "one_month": "En un mes",
+          "three_months": "En tres meses",
+          "flexible": "Sin prisa"
+        }
+      }
+    },
+    "back": "Atrás",
+    "verify": {
+      "label": "Verificación anti-robots"
+    },
+    "generating": "Preparando tu propuesta…",
+    "errors": {
+      "captcha": "Espera a que termine la verificación y vuelve a elegir.",
+      "rate": "Has hecho muchas peticiones seguidas. Espera un minuto e inténtalo de nuevo.",
+      "quota": "Hoy se han agotado las propuestas automáticas. Escríbeme y te la preparo yo.",
+      "down": "No he podido preparar la propuesta ahora mismo. Inténtalo de nuevo o escríbeme.",
+      "invalid": "Alguna respuesta no es válida. Revísalas e inténtalo de nuevo.",
+      "contact": "Escribirme"
+    },
+    "card": {
+      "title": "Tu propuesta orientativa",
+      "pack": "Pack {code}: {name}",
+      "from": "Desde {price}",
+      "vat": "sin IVA",
+      "weeksOne": "{weeks} semana",
+      "weeksMany": "{weeks} semanas",
+      "includes": "Qué incluye",
+      "scope": "Alcance previsto",
+      "extras": "Extras que podrían interesarte",
+      "extrasMonthly": "/mes",
+      "questions": "Para afinarla me gustaría saber",
+      "source": {
+        "ai": "Preparada con ayuda de IA. El precio sale de la tarifa publicada.",
+        "rules": "Preparada con reglas. El precio sale de la tarifa publicada."
+      },
+      "appTitle": "Es una app",
+      "appText": "Una app móvil parte de {price} y {weeks}. El pack web no aplica.",
+      "send": "Enviar la propuesta a Jose",
+      "restart": "Empezar de nuevo",
+      "packs": "Ver todos los packs"
+    },
+    "send": {
+      "title": "¿La seguimos?",
+      "text": "Déjame tus datos y la revisamos juntos. Te respondo yo.",
+      "label": "Enviar propuesta",
+      "name": "Nombre",
+      "email": "Email",
+      "phone": "Teléfono (opcional)",
+      "submit": "Enviar propuesta",
+      "sent": "Recibida. Te respondo yo mismo en cuanto la vea.",
+      "fallbackIntro": "No he podido enviarla ahora mismo. Escríbeme directamente:",
+      "fallbackMail": "por email",
+      "fallbackWhatsapp": "por WhatsApp",
+      "errors": {
+        "name": "Escribe tu nombre.",
+        "email": "Escribe un email válido.",
+        "phone": "Revisa el teléfono.",
+        "captcha": "No he podido comprobar que no eres un robot. Inténtalo de nuevo.",
+        "expired": "La propuesta ha caducado. Empieza de nuevo para generar otra.",
+        "down": "No he podido enviarla ahora mismo."
+      }
+    }
+  }
+}
