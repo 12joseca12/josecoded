@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "generate": "node scripts/build-info.ts && node scripts/content-index.ts",
+    "generate": "node scripts/build-info.ts && node scripts/content-index.ts && node scripts/csp-config.ts",
     "dev": "pnpm run generate && pnpm run og && next dev",
     "build": "opennextjs-cloudflare build",
     "preview": "opennextjs-cloudflare preview",

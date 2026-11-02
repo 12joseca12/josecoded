@@ -2,6 +2,7 @@ import createNextIntlPlugin from 'next-intl/plugin';
 
 import { pathnames } from './i18n/pathnames';
 import { buildLocaleRules } from './i18n/route-rules';
+import { PREVIEW_HEADERS, STATIC_SECURITY_HEADERS } from './lib/security/headers';
 
 import type { NextConfig } from 'next';
 
@@ -27,11 +28,12 @@ const config: NextConfig = {
   async redirects() {
     return redirects;
   },
-  // Previews (`*.workers.dev`) must never be indexed: the build of a preview says so on every response, and also in its
-  // robots.txt and meta tags (lib/seo). Production builds send no X-Robots-Tag.
+  // Security headers on everything Next serves (the assets binding serves public/_headers; the CSP is added per HTML
+  // response by worker.ts, see lib/security). A preview (`*.workers.dev`) is never indexed: its build says so on every
+  // response, and also in its robots.txt and meta tags (lib/seo). Production builds send no X-Robots-Tag.
   async headers() {
-    if (process.env.NEXT_PUBLIC_SITE_ENV !== 'preview') return [];
-    return [{ source: '/:path*', headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }] }];
+    const headers = [...STATIC_SECURITY_HEADERS, ...(process.env.NEXT_PUBLIC_SITE_ENV === 'preview' ? PREVIEW_HEADERS : [])];
+    return [{ source: '/:path*', headers: headers.map(({ key, value }) => ({ key, value })) }];
   },
 };
 

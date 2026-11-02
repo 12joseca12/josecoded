@@ -224,6 +224,8 @@ export default tseslint.config(
       '**/node_modules/**',
       '**/.next/**',
       '**/.open-next/**',
+      // imports OpenNext's multi-megabyte worker: import-x/no-cycle would parse it and run out of memory
+      'apps/web/worker.mjs',
       '**/.wrangler/**',
       '**/.turbo/**',
       '**/dist/**',

@@ -32,8 +32,8 @@ for (const [path, lang, home, heading] of notFound) {
 }
 
 const titled: [path: string, lang: string, expected: RegExp][] = [
-  ['/', 'es', /^josecoded$/],
-  ['/en', 'en', /^josecoded$/],
+  ['/', 'es', /^Desarrollador freelance: web, móvil e IA · josecoded$/],
+  ['/en', 'en', /^Freelance developer: web, mobile and AI · josecoded$/],
   ['/servicios', 'es', /^Servicios · josecoded$/],
   ['/en/services', 'en', /^Services · josecoded$/],
 ];
@@ -53,5 +53,5 @@ test('the home link of a 404 works', async ({ page }) => {
   await page.getByRole('link', { name: 'Back to home' }).click();
   await expect(page).toHaveURL(/\/en$/);
   // the title is swapped when the page transition commits, not at the URL change
-  await expect(page).toHaveTitle('josecoded');
+  await expect(page).toHaveTitle('Freelance developer: web, mobile and AI · josecoded');
 });

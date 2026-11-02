@@ -1,0 +1,8 @@
+# Headers of the static assets, which the assets binding serves without running the worker (HTML goes through the worker,
+# where next.config.ts and worker.ts add the same ones and the CSP). A test keeps this file equal to lib/security/headers.ts.
+/*
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), microphone=(), payment=(), usb=()
+  Cross-Origin-Opener-Policy: same-origin

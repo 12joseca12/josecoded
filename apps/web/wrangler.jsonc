@@ -1,6 +1,7 @@
 {
   "name": "josecoded-web",
-  "main": ".open-next/worker.js",
+  // worker.mjs wraps OpenNext's .open-next/worker.js to add the Content-Security-Policy (hashes of each page's inline scripts)
+  "main": "worker.mjs",
   "compatibility_date": "2026-09-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "assets": { "directory": ".open-next/assets", "binding": "ASSETS" },
