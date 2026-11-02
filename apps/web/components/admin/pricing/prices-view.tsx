@@ -9,17 +9,29 @@ import { PRICE_FORMAT, PRICING_PATH, pendingCount } from '@/lib/pricing/catalogu
 import { PriceItemSheet } from './price-item-sheet';
 import { PriceTable } from './price-table';
 import styles from './prices-view.module.css';
+import { PricingChanges } from './pricing-changes';
 
 import type { Catalogue } from '@/lib/pricing/catalogue';
+import type { CatalogChange } from '@/lib/pricing/diff';
 import type { Locale } from '@josecoded/types';
 
 /**
  * The Precios tab of D2 as a view of already-read data (admin only): the page fetches and the dev preview feeds it
- * fixtures. Only the sentences of the sheet travel to the browser. `notice` is a line the page may add (the real page
- * says that saving is not wired yet). The head and the tab strip are the Contenido ones, lifted out when the other
+ * fixtures. Only the sentences of the sheet travel to the browser. `notice` is a line the page may add. The head and the tab strip are the Contenido ones, lifted out when the other
  * tabs arrive.
  */
-export async function PricesView({ locale, catalogue, notice }: { locale: Locale; catalogue: Catalogue; notice?: string }) {
+export async function PricesView({
+  locale,
+  catalogue,
+  notice,
+  changes,
+}: {
+  locale: Locale;
+  catalogue: Catalogue;
+  notice?: string;
+  /** The diff against the published catalogue (`null`: the draft is not valid yet). Absent in the dev preview. */
+  changes?: readonly CatalogChange[] | null;
+}) {
   const [t, format, messages] = await Promise.all([
     getTranslations({ locale, namespace: 'adminPricing' }),
     getFormatter({ locale }),
@@ -46,6 +58,7 @@ export async function PricesView({ locale, catalogue, notice }: { locale: Locale
         <Icon name="info" />
         <span>{t('vatNote')}</span>
       </p>
+      {changes === undefined ? null : <PricingChanges changes={changes} locale={locale} />}
       <section className={styles.section} aria-labelledby="prices-packs">
         <div className={styles.sectionHead}>
           <h2 id="prices-packs">{t('packs')}</h2>

@@ -6,7 +6,6 @@
     "lead": "Textos, preguntas, proyectos, blog, secciones y precios. Nada llega al sitio hasta que publicas.",
     "tabsLabel": "Contenido",
     "tab": "Precios",
-    "notWired": "Esto es el catálogo publicado. Guardar cambios llega en el siguiente bloque: de momento los formularios se abren, pero no escriben nada.",
     "pendingBand": "<strong>Precios cambiados sin publicar · {count}.</strong> Salen con el botón Publicar, junto a los textos.",
     "vatNote": "Todo precio es sin IVA. Lo oculto o borrado nunca llega al sitio ni al fichero público. Los clientes conservan el pack que contrataron aunque lo borres.",
     "packs": "Packs",
@@ -85,6 +84,52 @@
       "onSaleHelp": "Se puede pedir desde /servicios y /propuesta.",
       "visible": "Visible",
       "visibleHelp": "Oculto, no llega ni al sitio ni a pricing.json."
+    },
+    "errors": {
+      "invalid": "Revisa los campos: algo no cumple los límites.",
+      "code": "Código no válido. Packs en mayúsculas (P6), opciones y extras en minúsculas (copywriting).",
+      "codeTaken": "Ya existe un elemento con ese código. El código no se puede reutilizar.",
+      "name": "Falta el nombre en español.",
+      "price": "Precio en euros enteros, de 1 a 999999.",
+      "weeks": "Semanas: un entero de 1 a 104.",
+      "rate": "Tarifa en euros enteros, mayor que 0.",
+      "notFound": "No encuentro ese elemento. Recarga la página.",
+      "deleted": "Está borrado: restáuralo antes de editarlo.",
+      "forbidden": "No tienes permiso para esto.",
+      "failed": "No se ha podido guardar. Inténtalo de nuevo."
+    },
+    "changes": {
+      "title": "Cambios sin publicar",
+      "lead": "Esto es lo que cambiaría en el sitio al publicar.",
+      "added": "Nuevo",
+      "removed": "Fuera del sitio",
+      "changed": "Cambia",
+      "priceMove": "{from} → {to}",
+      "fields": {
+        "name": "nombre",
+        "label": "nombre",
+        "price": "precio",
+        "weeks": "semanas",
+        "includes": "qué incluye",
+        "forWhom": "para quién es",
+        "description": "descripción",
+        "billing": "facturación",
+        "active": "en venta"
+      },
+      "sections": {
+        "packs": "Pack",
+        "apps": "App",
+        "extras": "Extra",
+        "rates": "Tarifa"
+      },
+      "rates": {
+        "hourly": "Por hora",
+        "feature": "Función cerrada"
+      },
+      "publish": "Publicar",
+      "publishPending": "La publicación del catálogo se conecta con la de los textos, que todavía no está lista: hasta entonces los cambios quedan como borrador y el sitio sigue con lo publicado.",
+      "none": "El borrador coincide con lo publicado.",
+      "invalid": "El borrador no es un catálogo válido todavía (por ejemplo, un precio a 0): no se puede calcular qué cambia."
     }
   }
 }

@@ -1,0 +1,74 @@
+/* The unpublished changes of the catalogue: a hairline box, one row per item. */
+.box {
+  display: grid;
+  gap: var(--sp-3);
+  margin-top: var(--sp-6);
+  padding: var(--sp-4);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-hairline);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2) var(--sp-4);
+}
+
+.head h2 {
+  margin: 0;
+  font-size: var(--font-title-sm-size);
+  font-weight: var(--font-title-sm-weight);
+}
+
+.note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--font-small-size);
+  line-height: var(--font-body-leading);
+}
+
+.note svg {
+  flex: none;
+  width: var(--size-icon);
+  height: var(--size-icon);
+}
+
+.list {
+  display: grid;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-1) var(--sp-3);
+  font-size: var(--font-small-size);
+}
+
+.kind {
+  color: var(--text-3);
+  font-size: var(--font-caption-size);
+}
+
+.what {
+  color: var(--text-2);
+}
+
+.item[data-type='removed'] .what {
+  color: var(--pending);
+}
+
+.price {
+  margin-inline-start: auto;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}

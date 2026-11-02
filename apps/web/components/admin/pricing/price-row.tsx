@@ -19,10 +19,13 @@ export async function PriceRow({
   item,
   variant,
   locale,
+  packCode,
 }: {
   item: PriceItem;
   variant: 'packs' | 'extras';
   locale: Locale;
+  /** The pack an option belongs to (the sheet sends it to the action). */
+  packCode?: string;
 }) {
   const [t, format] = await Promise.all([getTranslations({ locale, namespace: 'adminPricing.table' }), getFormatter({ locale })]);
   const option = item.kind === 'option';
@@ -57,7 +60,7 @@ export async function PriceRow({
         <StatusBadge tone={item.visible ? 'live' : 'muted'}>{t(item.visible ? 'visible' : 'hidden')}</StatusBadge>
       </td>
       <td role="cell" className={`${table.cell} ${styles.act}`}>
-        <PriceItemSheet kind={item.kind} item={item} />
+        <PriceItemSheet kind={item.kind} item={item} packCode={packCode} />
         {item.kind === 'pack' ? <PriceItemSheet kind="option" packCode={item.code} /> : null}
       </td>
     </tr>

@@ -2,21 +2,24 @@
 
 import { useLocale, useTranslations } from 'next-intl';
 
+import { saveExtra, saveOption, savePack } from '@/app/[locale]/(staff)/admin/contenido/actions';
 import { CloseWhenSaved, SheetCancel, SheetTrigger } from '@/components/crm/sheet';
 import { Field } from '@/components/forms/field';
 import { Form } from '@/components/forms/form';
-import { stubPriceAction } from '@/lib/pricing/stub-actions';
 
 import type { PriceItem, PriceItemKind } from '@/lib/pricing/catalogue';
 
 const LANGS = ['es', 'en'] as const;
-const MONEY_PATTERN = '[0-9]{1,6}([.,][0-9]{1,2})?';
+const MONEY_PATTERN = '[0-9]{1,6}';
+const CODE_PATTERN = { pack: '[A-Z][A-Z0-9_]{1,15}', option: '[a-z][a-z0-9_]{0,31}', extra: '[a-z][a-z0-9_]{1,31}' } as const;
+const SAVE = { pack: savePack, option: saveOption, extra: saveExtra } as const;
 
 /**
  * One sheet for every line of the catalogue (pack, option, extra): edit the line it is given, or create a new one
  * (`item` absent; an option is created inside the pack `packCode`). Each text goes in both languages, side by side in
  * reading order; the English one may stay empty (the site then shows the Spanish). The code is chosen once and never
- * edited again: the proposals and the area refer to it. Deleting, history and restoring are the next block.
+ * edited again: the proposals and the area refer to it (the edit form sends it hidden, with `mode`). Deleting, history
+ * and restoring are the next block's screen.
  */
 export function PriceItemSheet({ kind, item, packCode }: { kind: PriceItemKind; item?: PriceItem; packCode?: string }) {
   const t = useTranslations('adminPricing.sheet');
@@ -40,15 +43,15 @@ export function PriceItemSheet({ kind, item, packCode }: { kind: PriceItemKind; 
       closeLabel={t('close')}
       savedMessage={t('saved', { name: title })}
     >
-      <Form action={stubPriceAction} submitLabel={t('submit')} label={title} actions={<SheetCancel>{t('cancel')}</SheetCancel>}>
+      <Form action={SAVE[kind]} submitLabel={t('submit')} label={title} actions={<SheetCancel>{t('cancel')}</SheetCancel>}>
         <CloseWhenSaved />
         <Field kind="hidden" name="locale" value={locale} />
-        <Field kind="hidden" name="kind" value={kind} />
+        <Field kind="hidden" name="mode" value={item ? 'edit' : 'create'} />
         {packCode ? <Field kind="hidden" name="pack" value={packCode} /> : null}
         {item ? (
           <Field kind="hidden" name="code" value={item.code} />
         ) : (
-          <Field kind="text" name="code" label={t('code')} help={t('codeHelp')} pattern="[A-Za-z0-9_]{1,40}" maxLength={40} autoComplete="off" required />
+          <Field kind="text" name="code" label={t('code')} help={t('codeHelp')} pattern={CODE_PATTERN[kind]} maxLength={32} autoComplete="off" required />
         )}
         {LANGS.map((lang) => (
           <Field
@@ -117,13 +120,15 @@ export function PriceItemSheet({ kind, item, packCode }: { kind: PriceItemKind; 
               name="weeks"
               label={t('weeks')}
               inputMode="numeric"
-              pattern="[0-9]{1,2}"
-              maxLength={2}
+              pattern="[0-9]{1,3}"
+              maxLength={3}
               defaultValue={item?.weeks != null ? String(item.weeks) : ''}
               trailing={t('weeksUnit')}
               required
             />
-            <Field kind="checkbox" name="on_sale" label={t('onSale')} help={t('onSaleHelp')} defaultChecked={item?.onSale ?? true} />
+            {kind === 'pack' ? (
+              <Field kind="checkbox" name="on_sale" label={t('onSale')} help={t('onSaleHelp')} defaultChecked={item?.onSale ?? true} />
+            ) : null}
           </>
         )}
         <Field kind="checkbox" name="visible" label={t('visible')} help={t('visibleHelp')} defaultChecked={item?.visible ?? true} />

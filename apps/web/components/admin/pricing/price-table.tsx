@@ -55,9 +55,11 @@ export async function PriceTable({
           </tr>
         </thead>
         <tbody role="rowgroup" className={table.body}>
-          {items.flatMap((item) => [item, ...('options' in item ? item.options : [])]).map((item) => (
-            <PriceRow key={`${item.kind}-${item.code}`} item={item} variant={variant} locale={locale} />
-          ))}
+          {items
+            .flatMap((item) => [{ item, pack: undefined }, ...('options' in item ? item.options : []).map((option) => ({ item: option, pack: item.code }))])
+            .map(({ item, pack }) => (
+              <PriceRow key={`${item.kind}-${pack ?? ''}-${item.code}`} item={item} variant={variant} locale={locale} packCode={pack} />
+            ))}
         </tbody>
       </table>
     </div>

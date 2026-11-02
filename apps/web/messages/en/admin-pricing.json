@@ -6,7 +6,6 @@
     "lead": "Texts, questions, projects, blog, sections and prices. Nothing reaches the site until you publish.",
     "tabsLabel": "Content",
     "tab": "Prices",
-    "notWired": "This is the published catalogue. Saving changes comes in the next block: for now the forms open but write nothing.",
     "pendingBand": "<strong>Prices changed and not published · {count}.</strong> They go out with the Publish button, along with the texts.",
     "vatNote": "Every price is without VAT. Anything hidden or deleted never reaches the site or the public file. Clients keep the pack they bought even if you delete it.",
     "packs": "Packs",
@@ -85,6 +84,52 @@
       "onSaleHelp": "It can be ordered from /servicios and /propuesta.",
       "visible": "Visible",
       "visibleHelp": "Hidden, it reaches neither the site nor pricing.json."
+    },
+    "errors": {
+      "invalid": "Check the fields: something is out of bounds.",
+      "code": "Invalid code. Packs in capitals (P6), options and extras in lowercase (copywriting).",
+      "codeTaken": "An item with that code already exists. A code cannot be reused.",
+      "name": "The Spanish name is missing.",
+      "price": "Price in whole euros, from 1 to 999999.",
+      "weeks": "Weeks: a whole number from 1 to 104.",
+      "rate": "Rate in whole euros, above 0.",
+      "notFound": "That item was not found. Reload the page.",
+      "deleted": "It is deleted: restore it before editing.",
+      "forbidden": "You are not allowed to do this.",
+      "failed": "Could not save. Try again."
+    },
+    "changes": {
+      "title": "Unpublished changes",
+      "lead": "This is what would change on the site when you publish.",
+      "added": "New",
+      "removed": "Off the site",
+      "changed": "Changes",
+      "priceMove": "{from} → {to}",
+      "fields": {
+        "name": "name",
+        "label": "name",
+        "price": "price",
+        "weeks": "weeks",
+        "includes": "what it includes",
+        "forWhom": "who it is for",
+        "description": "description",
+        "billing": "billing",
+        "active": "on sale"
+      },
+      "sections": {
+        "packs": "Pack",
+        "apps": "App",
+        "extras": "Extra",
+        "rates": "Rate"
+      },
+      "rates": {
+        "hourly": "Per hour",
+        "feature": "Closed feature"
+      },
+      "publish": "Publish",
+      "publishPending": "Publishing the catalogue joins the publishing of the texts, which is not ready yet: until then changes stay as a draft and the site keeps what is published.",
+      "none": "The draft matches what is published.",
+      "invalid": "The draft is not a valid catalogue yet (a price at 0, for example): what changes cannot be computed."
     }
   }
 }
