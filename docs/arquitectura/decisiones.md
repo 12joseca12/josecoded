@@ -1,0 +1,99 @@
+# Decisiones de arquitectura
+
+**2026-11-02 · cerradas por Jose sobre `docs/arquitectura/preguntas.md`.** Una línea por pregunta, con su id. Jose aceptó las recomendaciones salvo donde se indica **(Jose)**. Las marcadas **ABIERTA** esperan su confirmación. Lo que cambie después se añade aquí con fecha, no se reescribe.
+
+## 1. Repositorios
+
+- **1.1 (Jose) Dos repos.** `josecoded` (este): la web Next y todo lo que despliega en Cloudflare, más `supabase/` (migraciones, tests RLS) y `contracts/`. `josecoded-omen` (nombre propuesto, corto y ordena junto al primero en GitHub): backend Node que corre en Omen (IA, RAG, Radar, trabajos). Sustituye a `josecoded-worker`, que se archiva.
+- **1.1b Tipos compartidos entre repos.** La frontera entre los dos repos es la base de datos, no una API: por eso el contrato es `database.ts` generado desde `supabase/migrations/` del repo web (`supabase gen types`), y las columnas se tipan en SQL en vez de usar `jsonb` siempre que se pueda. Lo poco que viaja como JSON (`jobs.payload`, `jobs.result`, `radar_findings.raw`) se valida con zod en los dos lados a partir de fixtures en `josecoded/contracts/`. `josecoded-omen` copia `database.ts` y `contracts/` con un script (`pnpm contracts:pull`, commit fijado en `contracts.lock`) y su CI falla si difieren. Descartados: paquete npm publicado (versionar y publicar para una persona sola) y submódulo (fricción en cada clon).
+- **1.1c Repo web sin workspace.** Al salir Omen del repo solo queda una app: `josecoded` es un único paquete Next (`src/`), sin `apps/*` ni `packages/*`. Se extrae a workspace cuando exista una segunda app. (Deriva de 1.1; sustituye a 1.6.)
+- **1.2 Sin gateway.** El servidor de Next (route handlers, Server Actions, cron de Cloudflare) es la capa pública; Omen es la privada.
+- **1.3 Next 16 App Router en Cloudflare Workers vía OpenNext.** Dominio, DNS, Turnstile y R2 (si hace falta) en la cuenta Cloudflare.
+- **1.4 CSS Modules con tokens.** Cada componente consume solo `var(--token)`; stylelint lo vigila. Sin Tailwind ni shadcn.
+- **1.5 `tokens.css` a mano es la fuente** de los tokens; los nombres tipados se generan desde él.
+- **1.6 Sustituida por 1.1c.** Los tipos viven en `src/types/` (un fichero por dominio, barrel único) y la configuración de lint en la raíz.
+- **1.7 Tests nivel medio:** typecheck + lint + E2E de humo por pantalla + Vitest solo en lógica con comportamiento + axe bloqueante en E2E + tests RLS cuando haya esquema.
+- **1.8 CI en cada PR:** lint, typecheck, test, build, E2E, preview en Cloudflare. En `josecoded-omen`: lint, typecheck, test, contrato, imagen Docker.
+- **1.9 Código sin comentarios, vigilado por lint** (incluye `eslint-disable` y `@ts-expect-error`). El porqué va al nombre, al commit o a este documento.
+- **1.10 Repo como muestra:** Conventional Commits con el área como scope, README con mapa y arranque, decisiones aquí, CI visible. Público tras el lanzamiento y una auditoría de secretos e historial.
+
+## 2. Página
+
+- **2.1 Mapa público:** `/` · `/sobre-mi` (stack como sección `#stack`) · `/proyectos` y `/proyectos/[slug]` · `/servicios` · `/blog` y `/blog/[slug]` · `/contacto` · `/chat` · `/legal/*` · `/lab` reservada.
+- **2.2 Packs dentro de `/servicios#packs`** con comparador.
+- **2.3 Español publicado, inglés preparado:** textos solo en `messages/es.json` (y `en.json` cuando llegue), rutas con segmento de idioma.
+- **2.4 Sin redirecciones.** Comprobado el 2026-11-02: nada indexado en `josecoded.com` y el dominio responde 521 (origen caído). Se apunta al nuevo Worker en el primer despliegue.
+- **2.5 SEO básico en el lanzamiento** (metadatos, sitemap, robots, Open Graph, JSON-LD `Person`, `llms.txt`); guías y FAQ con schema según crezca el blog; Search Console y Semrush cuando haya qué medir.
+- **2.6 Blog y proyectos en el repo** (MDX con frontmatter validado por zod). Publicar es un PR.
+
+## 3. Roles y zonas
+
+- **3.1 Un `role` por usuario:** `admin` · `closer` · `freelance` · `client`. Subcloser = `closer` con `parent_closer_id` (un nivel).
+- **3.2 Una app con grupos de rutas:** `/admin`, `/crm`, `/freelance`, `/area`. Guardia por rol en el layout; 404 si no tienes la zona.
+- **3.3 Sin contraseña:** OTP por email para todos, Google opcional, TOTP obligatorio para admin, closers y freelance (sin `aal2` no se entra en sus zonas).
+- **3.4 Solo por invitación del admin.** Nadie se registra solo.
+- **3.5 Rol en `profiles.role`** con helper `private.role()` en RLS.
+
+## 4. Omen y Supabase
+
+- **4.1 Reparto:** Supabase = base de datos, auth, storage, realtime, pgvector. Omen = IA, RAG, Radar, trabajos privados, GPU.
+- **4.2 Omen solo sale, nunca recibe.** Se conecta a Supabase con la clave de servicio, escucha Realtime y la cola `private.jobs`, y escribe resultados. Sin puerto abierto ni túnel.
+- **4.3 Si Omen está apagado:** latido en Supabase, semáforo en `/admin`, el chat guarda el mensaje y avisa; trabajos y Radar esperan. Sin IA de reserva en la nube. Lo que debe funcionar siempre (email, Telegram, notificaciones) lo hace el servidor de Next, no Omen (ver datos.md, `private.outbox`).
+- **4.4 Omen limpio:** `josecoded-omen` nuevo (Node + Docker Compose). n8n y el resto de servicios de Omen no se tocan. Despliegue: la CI publica la imagen y Omen la recoge (coherente con 4.2); cada despliegue con OK de Jose.
+- **4.5 (Jose) Modelo local + RAG propio + Groq. ABIERTA el reparto de papeles.** Recomendación: Groq para el chat público (latencia baja, el visitante no espera) con el modelo local como reserva si Groq falla; modelo local para Radar, embeddings, indexado del RAG y borradores (volumen, sin prisa, sin coste); vectores en pgvector de Supabase (esquema `private`) para que Omen no guarde estado. Contrapartida de Groq: los mensajes de visitantes salen a un tercero (se recoge en privacidad).
+
+## 5. Chat
+
+- **5.1 Chat público anónimo:** identificador en cookie firmada, Turnstile en el primer mensaje, cuota por IP y día; hilos purgados a los 90 días.
+- **5.2 IA primero en lo público; en hilos de clientes, closers y freelance solo si Jose la activa en ese hilo.** Interruptor por hilo.
+- **5.3 Firma «Asistente de Jose»** con etiqueta visible; «Jose» cuando interviene él.
+- **5.4 Supabase Realtime** sobre `chat_messages` filtrado por RLS.
+- **5.5 Panel lateral en toda la web** abierto desde la barra; `/chat` a pantalla completa y para usuarios con cuenta.
+
+## 6. Área de clientes
+
+- **6.1 Tablero de tareas por fases** con porcentaje calculado. Feed de commits en un bloque posterior.
+- **6.2 Supabase Storage,** bucket privado, URL firmadas, límites de tamaño y tipo.
+- **6.3 Historias de usuario** con «Como… quiero… para…» y criterios; estados `propuesta → aceptada | rechazada → en tareas`; decide el admin.
+- **6.4 Notificaciones:** campana en la app + email transaccional al cliente (Resend) + Telegram a Jose.
+
+## 7. CRM
+
+- **7.1 Entidades:** `contacts` · `deals` · `activities` · `commissions`. Organización como campo del contacto.
+- **7.2 Pipeline fijo:** `new → contacted → meeting → proposal → won | lost`.
+- **7.3 Visibilidad por RLS:** el subcloser ve su cartera; su closer, la suya y las de sus subclosers; el admin, todo. Reasignar es acción explícita del admin.
+- **7.4 Comisiones con dos tasas fijadas al invitar** y los importes congelados en campos separados (`closer_amount`, `subcloser_amount`); estados `pending → approved → paid | rejected`; el pago se registra, no se ejecuta.
+- **7.5 Importación CSV con plantilla fija,** duplicados a una cola que resuelve el admin. Bloque posterior al CRM básico.
+
+## 8. Admin
+
+- **8.1 El admin controla:** usuarios y roles, precios y packs, interruptores de secciones, Radar, estado de Omen, notificaciones. Los textos siguen en el repo.
+- **8.2 Precios en Supabase,** editados en el admin, leídos en servidor con caché, con historial.
+- **8.3 (Jose) Radar detecta:** ofertas de empleo, negocios sin web o app, proyectos freelance, y además «operar por mí en plataformas freelance». **ABIERTA la versión segura.** Riesgo: las condiciones de Upwork, Freelancer, Malt y LinkedIn prohíben la automatización de cuentas y la sancionan con el cierre; además, una propuesta enviada sola compromete el nombre de Jose. Recomendación: Radar encuentra, puntúa y redacta; Jose envía con un clic desde `/admin/radar` (y sin salir de ahí donde haya API oficial autorizada, como Upwork con partner API o Freelancer.com); nunca sesiones de navegador automatizadas ni envío sin revisión. Es la misma regla que el chat de clientes: borrador automático, acción humana.
+- **8.4 Reglas de notificación fijas en código** con pocos interruptores en el admin.
+
+## 9. Seguridad, accesibilidad, rendimiento, responsive
+
+- **9.1 Lista base de seguridad + ZAP baseline contra la preview en CI.** La lista: RLS en toda tabla por operación; `anon` sin permisos salvo lo público explícito; clave de servicio solo en servidor y Omen; RPC `security definer` con `search_path` vacío; CSP estricta con nonce, HSTS, `frame-ancestors 'none'`; Turnstile y límite de peticiones en todo formulario público; TOTP para el personal; URL firmadas; zod en toda frontera; sin datos personales en logs; `pnpm audit` y escaneo de secretos en CI; advisors de Supabase a cero.
+- **9.2 WCAG 2.2 AA** + lector de pantalla por pantalla.
+- **9.3 Presupuestos:** LCP < 2,5 s, INP < 200 ms, CLS < 0,1, JS de la home ≤ 150 KB gz, Lighthouse ≥ 95 en CI.
+- **9.4 Hero animado en CSS + SVG/Canvas ligero,** sin librería 3D; vídeo de reserva en móvil y con `reduced-motion`.
+- **9.5 Mobile-first,** dos breakpoints en `rem` + container queries; Baseline 2024 con `@supports`.
+
+## 10. Método
+
+- **10.1 (Jose) Ramas cortas, legibles y coherentes, en los dos repos.** Convención `<area>/<tema>`: área de una lista fija, tema en kebab-case de 1 a 3 palabras, sin números ni fechas. Áreas: `public` · `auth` · `admin` · `crm` · `area` · `freelance` · `chat` · `radar` · `lab` · `ai` · `data` · `infra` · `docs` · `fix`. Ejemplos: `public/home-hero`, `crm/contacts-list`, `data/commissions`, `ai/rag-index`, `fix/otp-expiry`. El scope del commit es el área. `main` protegida, PR por bloque, squash, producción desde `main` con OK de Jose. `develop` y las ramas `chore/*`, `design/*`, `docs/*`, `claude/*` del remoto se borran (las `archivo/*` se quedan).
+- **10.2 Un bloque = una pantalla con sus componentes o una función completa;** ≤ ~400 líneas de diff, ≤ 1 h de agente. Si no cabe, se parte antes de empezar.
+- **10.3 `revisor` en cada bloque; `/puerta-calidad` una vez por pantalla antes del merge;** Jose aprueba en la preview.
+- **10.4 Jose aprueba:** decisiones de arquitectura, cada pantalla en el navegador antes de implementarla, cada PR en la preview, cada despliegue y migración en producción.
+- **10.5 Tablón en GitHub Issues + Projects,** una issue por bloque enlazada a su PR; `ESTADO.md` es la vista resumida.
+- **10.6 Orden por zonas:** público (home → servicios → proyectos → sobre mí → contacto → chat → blog → legales y errores) → auth y admin base → CRM → área de clientes → freelance → Radar → lab.
+- **10.7 Dos proyectos de Supabase. ABIERTA: Jose crea `josecoded-dev`** (gratuito, misma región) en su cuenta para previews y sesiones en la nube; producción sigue en `echlwywbucgbhwpncviy`; local con Docker en el Mac. La CI aplica las mismas migraciones a los dos.
+
+## Abiertas (resumen)
+
+| Id | Qué falta | Recomendación |
+|---|---|---|
+| 4.5 | Reparto local / Groq | Groq en el chat público con reserva local; local para Radar, embeddings, RAG y borradores; pgvector en Supabase |
+| 8.3 | Versión segura de «operar por mí» | Borradores + envío con un clic; API oficial donde exista; nunca navegador automatizado |
+| 10.7 | Proyecto `josecoded-dev` | Lo crea Jose; después se pegan URL y clave publicable en los secretos de CI |

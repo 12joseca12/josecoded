@@ -4,46 +4,38 @@ canvas_padre: "Plataforma web personal"
 
 # josecoded
 
-> **Reinicio 2026-11-02.** El repositorio se vació por decisión de Jose para empezar con una metodología nueva. Lo que sigue en este fichero describe el proyecto anterior (v1, en la rama `archivo/v1-2026-11-02`) y se reescribirá cuando la metodología nueva esté decidida. Hoy solo existen `archivo/`, `.claude/` y este fichero; ver `README.md` y `ESTADO.md`.
+Web personal de Jose: muestra su trabajo y capta clientes por tres vías (contratación, freelance, packs). Qué y por qué: `docs/brief.md`. Decisiones cerradas: `docs/arquitectura/decisiones.md`. Pantallas: `docs/arquitectura/pantallas.md`. Datos: `docs/arquitectura/datos.md`. Estado volátil: `ESTADO.md`. Este fichero es el cómo. La v1 vive en la rama `archivo/v1-2026-11-02` y solo se consulta.
 
-Brief (qué y por qué): nota del vault `Proyectos/josecoded.md`. Estado volátil: `ESTADO.md`. Este fichero es el cómo.
+## Dos repos
+- `josecoded` (este): la web Next, `supabase/` (migraciones y tests RLS, única fuente del esquema) y `contracts/` (fixtures zod de lo que cruza como JSON). Despliega en Cloudflare.
+- `josecoded-omen`: backend Node en el servidor casero Omen (IA, RAG, Radar, trabajos). Solo sale hacia Supabase, nunca recibe. Copia `database.ts` y `contracts/` de aquí con `pnpm contracts:pull`. Sustituye a `josecoded-worker`.
 
 ## Stack
-- Frontend: Next 16 App Router en Cloudflare Workers vía OpenNext, sin middleware Node; monorepo pnpm + turbo (`apps/web`, `apps/api`, `packages/*`). Detalle en la spec (`docs/superpowers/specs/2026-09-13-josecoded-plataforma.md` §5) y el diseño técnico (`docs/superpowers/design/2026-09-17-josecoded-diseno-tecnico.md` §1). Se rehace desde cero: estilos, objetivos y UI/UX nuevos.
-- **Se conserva, no se reescribe:**
-  - `josecoded-api` (Cloudflare Worker, gateway), ya movido a `apps/api` (rama `chore/supabase`): rutas `health`, `system`, `v1/health`, `v1-protected` (`auth/me`, `system/status`). **`forum/*` y `admin-chat/*` retirados** en la tarea 1.8c (sus tablas ya no existen; Jose lo confirmó, DATOS Q1). Referencia histórica en `~/Documents/GitHub/josedev/josecoded-api/`.
-  - `josecoded-worker` (backend Fastify en el servidor casero "Omen", `https://worker.josecoded.com`): módulos `ai`, `n8n`, `storage`, `system`, `health`. Repo `~/Documents/GitHub/josecoded-worker`. No usa Supabase.
-  - Dominio `https://josecoded.com` y cuenta Cloudflare.
-- **Supabase: proyecto nuevo, esquema desde cero (D49, 2026-10-28).** Ref `echlwywbucgbhwpncviy` (`josecoded`, eu-west-1, Postgres 17) en la cuenta nueva de Jose. El heredado `nrgrmymsjtgayzejtawa` está abandonado (sin acceso) y **nada se migra**. `supabase/migrations/` es la única fuente del esquema (sin baseline); diseño normativo en `docs/superpowers/design/2026-10-28-datos-v2.md` (**DATOS**): `private` para helpers/contadores/jobs/outbox, `anon` sin grants salvo `blog_comments` aprobados, RPC `security definer` con `search_path = ''` y grants explícitos, notificaciones por `private.outbox` que drena el gateway (sin `pg_net` ni Edge Function), `get_advisors` a cero como criterio. Local: `supabase start && supabase db reset`; producción solo en gates con OK de Jose (`supabase db push`, nunca `db reset`).
-- Variables de entorno: `NEXT_PUBLIC_JOSECODED_API_URL`, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (valores del proyecto nuevo desde el gate 1.9).
-- Referencia de lo anterior: repo `josedev` (`~/Documents/GitHub/josedev`, indexado en codebase-memory como `Users-jose-Documents-GitHub-josedev`, con ADR). No se evoluciona; se consulta.
+- Next 16 App Router en Cloudflare Workers vía OpenNext; un solo paquete (`src/`), sin workspace. TypeScript estricto, pnpm.
+- Supabase (Postgres 17, auth OTP + Google, TOTP para personal, storage, realtime, pgvector). Producción `echlwywbucgbhwpncviy`; desarrollo `josecoded-dev` (pendiente de crear); local con Docker en el Mac.
+- Omen: modelo local + RAG propio + Groq (reparto pendiente, decisión 4.5).
+- Email Resend, Telegram para Jose, Turnstile en formularios públicos.
 
 ## Comandos
-- Instalar: `pnpm install` · Dev: `pnpm dev` · Test: `pnpm test` · Lint (eslint + stylelint): `pnpm lint` · Types: `pnpm typecheck` · Build: `pnpm build` · E2E: `pnpm e2e`.
-- Más scripts raíz (todos `turbo run`, se rellenan en sus tareas): `tokens:build`, `visual`, `i18n:check`, `pricing:sync-db`, `pricing:pull`, `hero:media`, `hero:media:check`, `check:hero-bundle`, `lhci`. Por paquete: `pnpm --filter <nombre> test -- <patrón>`. Detalle en `README.md`.
+Placeholders hasta que exista el scaffold (primer bloque de `infra/`): `pnpm install` · `pnpm dev` · `pnpm lint` · `pnpm typecheck` · `pnpm test` · `pnpm e2e` · `pnpm build` · `pnpm db:reset` (local) · `pnpm db:types` (regenera `database.ts`). Se confirman en `README.md` cuando existan. **pnpm siempre, nunca npm/npx.**
 
 ## Reglas del proyecto
-- Agentes: `implementador-web` implementa; `revisor` revisa cada tarea; `/puerta-calidad` antes de merge.
-- Aplicar `vercel-react-best-practices` y `web-design-guidelines`.
-- Supabase: `supabase start && supabase db reset` + `rls.test.ts` en local antes de proponer esquema; producción solo en gates con OK de Jose (`supabase db push`, `get_advisors` antes y después, nunca `db reset` ni seed contra producción).
-- Persona objetivo (para `usuario-ejemplo`): definir en la spec de la primera feature.
+1. **Estilo B** (acero `#929DA7`, carbón `#17191C`, coral `#FF4B32`; `prototipos/estilo-b/`). `tokens.css` a mano es la fuente; los componentes consumen solo `var(--token)` desde CSS Modules. Sin Tailwind ni shadcn.
+2. **Sin comentarios en el código**, vigilado por lint. El porqué va al nombre, al commit o a `decisiones.md`.
+3. **Un componente por concepto con variantes** (`variant`/`size`/`tone` como `data-*`), textos solo en `messages/es.json`, tipos en `src/types/` (zod en las fronteras, tipos inferidos), `database.ts` generado y nunca editado.
+4. **UX del brief en todo:** transición de pantalla (View Transitions), botones con hover/foco/pulsado/desactivado, esqueleto en todo lo que carga, estado de carga en todo botón que lanza una acción, pantalla propia para 404 y cada error. Motion en CSS nativo; `prefers-reduced-motion` sin animaciones.
+5. **Accesibilidad WCAG 2.2 AA** por componente: teclado, foco visible, contraste, axe bloqueante en E2E, lector de pantalla por pantalla.
+6. **Seguridad base** (decisión 9.1): RLS en toda tabla, `anon` sin permisos salvo lo público explícito, clave de servicio solo en servidor y Omen, CSP con nonce, Turnstile y límite de peticiones en lo público, URL firmadas, zod en toda frontera, advisors de Supabase a cero.
+7. **Responsive:** mobile-first, dos breakpoints en `rem`, container queries, unidades relativas; `px` solo en hairlines, sombras y offsets de motion.
+8. **Presupuesto:** LCP < 2,5 s, INP < 200 ms, CLS < 0,1, JS de la home ≤ 150 KB gz, Lighthouse ≥ 95.
+9. **Ramas `<area>/<tema>`** (áreas: `public` `auth` `admin` `crm` `area` `freelance` `chat` `radar` `lab` `ai` `data` `infra` `docs` `fix`; tema kebab-case, 1–3 palabras). Commits Conventional con el área como scope. `main` protegida, PR por bloque, squash, nunca push a `main`.
+10. Skills obligatorias en interfaz: `impeccable`, las de movimiento de Emil Kowalski, `vercel-react-best-practices`, `web-design-guidelines`. Dependencias solo las del plan; una extra la decide `revisor`.
 
-## Reglas de trabajo (resumen; el documento normativo es `docs/working-agreements.md`)
-1. CSS Modules por componente que consumen solo `var(--token)`; sin Tailwind ni shadcn. Lo vigila stylelint.
-2. `.impeccable/design.json` genera `apps/web/styles/tokens.css` (`pnpm tokens:build`) con test de deriva; el CSS generado no se edita.
-3. Motion en CSS nativo (`scroll-snap`, `animation-timeline`, View Transitions); JS propio mínimo en TypeScript; GSAP solo con justificación aceptada por `revisor`.
-4. Navegadores: Baseline 2024; `animation-timeline`, View Transitions y `backdrop-filter` bajo `@supports` con los fallbacks de working-agreements §6, que `qa` comprueba en Safari.
-5. Prototipo `docs/superpowers/design/ref/home-v6/` 1:1 (estructura y valores, ya como tokens); React solo compone. Todo desvío se marca `deviation:` en el commit y lo decide Jose en el navegador.
-6. Cada tarea con UI adjunta capturas app/prototipo a 360, 900 y 1440 comparadas por diff; `ui` revisa; Jose aprueba en la preview antes del merge.
-7. TDD solo en lo que tiene comportamiento; los componentes sin lógica no llevan unit test (E2E, capturas y accesibilidad los cubren).
-8. Unidades relativas para todo lo que escala con el texto, breakpoints en `rem`; `px` solo en hairlines, trazos, sombras, desenfoques y offsets de motion.
-9. PR por rama, squash merge, `main` protegida (la configura Jose en GitHub); nunca push a `main`.
-10. Textos solo en `messages/{es,en}.json` (ningún literal en componentes; `i18n:check` lista `{{DATO}}` y claves faltantes). **pnpm siempre, nunca npm/npx.** Dependencias solo las del plan; una extra, con justificación de peso y alternativa nativa, la decide `revisor`.
-11. Tipos compartidos solo en `@josecoded/types` (un fichero por dominio, barrel único); zod es la fuente en las fronteras y los tipos se infieren; `database.ts` (Supabase), claves de `messages` y nombres de token tipados y generados (working-agreements §14).
-12. Un componente por concepto con variantes (`variant`/`size`/`tone` como uniones volcadas a `data-*`, sin CVA ni clsx); polimorfismo por `href`; se parte solo si cambia rol, elemento raíz o slots; catálogo `/dev/ui` fuera de producción; `jscpd` en CI (§15).
-13. Accesibilidad por componente: contrato a11y en cada tarea, helpers únicos en `lib/a11y/`, axe bloqueante en Vitest y E2E. Gateway nuevo con puertos y adaptadores (`buildDeps(env)`), estado en cliente sin librería (`ShellProvider`), formularios con Server Actions + `Form`/`Field` (§16, §17).
+## Método: tablón y bloques
+- Tablón en GitHub Issues + Projects: una issue por bloque, enlazada a su PR y a su preview; `ESTADO.md` resume.
+- Un bloque = una pantalla con sus componentes o una función de principio a fin; ≤ ~400 líneas, ≤ 1 h de agente. Tareas claras y concisas; si no cabe, se parte antes.
+- Pipeline por bloque: `implementador-web` → `revisor` → fixes; `/puerta-calidad` una vez por pantalla antes del merge.
+- Orden: público → auth y admin base → CRM → área → freelance → Radar → lab (`pantallas.md`).
 
-## Estado durable
-- ADR de codebase-memory (proyecto indexado tras el primer commit con código).
-- Checkpoints de gstack en `~/.gstack/projects/` (carpeta con el nombre del repo) si se usa `/ship`.
-- Grafo de código en `graphify-out/` (hook post-commit de graphify, ignorado por git): `graphify query "..."` para estructura. Lo transversal (decisiones, otros proyectos) está en el cerebro: `/cerebro <pregunta>`.
+## Qué aprueba Jose
+Decisiones de arquitectura · cada pantalla en el navegador (prototipo HTML en `prototipos/`) antes de implementarla · cada PR en la preview · cada migración y despliegue en producción (`supabase db push` con advisors antes y después, nunca `db reset`; despliegue de Omen). Sin su OK en la misma sesión, no se toca producción.
