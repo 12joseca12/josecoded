@@ -5,6 +5,32 @@
   "home": {
     "name": "josecoded"
   },
+  "nav": {
+    "skipLink": "Skip to content",
+    "brandLabel": "josecoded, go to home",
+    "brandWord": "josecoded",
+    "navLabel": "Main",
+    "home": "Home",
+    "cta": "Let's talk",
+    "loading": "Loading",
+    "menuOpen": "Open menu",
+    "menuClose": "Close menu",
+    "menuTitle": "Menu",
+    "here": "Here",
+    "projects": "Projects",
+    "services": "Services",
+    "about": "About me",
+    "blog": "Blog",
+    "contact": "Contact"
+  },
+  "footer": {
+    "navLabel": "Footer",
+    "legalLabel": "Legal",
+    "notice": "Legal notice",
+    "privacy": "Privacy",
+    "cookies": "Cookies",
+    "copyright": "© 2026 Jose · Full stack, React Native and AI"
+  },
   "dev": {
     "tokens": {
       "title": "Style B tokens",
