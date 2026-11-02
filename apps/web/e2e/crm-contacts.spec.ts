@@ -53,6 +53,9 @@ test('changing the status asks for the next action and leaves a status_change in
   await page.getByRole('button', { name: 'Estado y siguiente acción de Agencia de Carla' }).click();
   const sheet = page.getByRole('dialog', { name: 'Estado y siguiente acción' });
   await sheet.getByRole('radio', { name: 'Invitación enviada' }).check();
+  // the seed gives the agency a next action and the form preselects it: empty it, or there is nothing to ask for
+  await sheet.getByLabel('Siguiente acción').fill('');
+  await sheet.getByLabel('Fecha').fill('');
   await sheet.getByRole('button', { name: 'Guardar' }).click();
   await expect(sheet.getByText(/necesita siguiente acción|Dinos qué toca hacer/)).toBeVisible();
   await sheet.getByLabel('Siguiente acción').fill('Seguimiento si no responde');
@@ -117,7 +120,8 @@ test('the admin closes a lead as paid and the contact becomes an active client',
   await expect(dialog).toBeHidden();
   await page.reload();
   await expect(page.getByText('Cliente activo').first()).toBeVisible();
-  await expect(page.getByText('Cobrado 1.400,00 €')).toBeVisible();
+  // es-ES writes four digits without a thousands separator («1400,00 €»)
+  await expect(page.getByText(/Cobrado 1\.?400,00\s€/)).toBeVisible();
 });
 
 test('the overdue list of K1 links to the contacts', async ({ page, context, baseURL }) => {
