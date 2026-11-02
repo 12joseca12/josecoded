@@ -1,0 +1,56 @@
+.link {
+  color: var(--ink);
+  font-weight: var(--fw-semibold);
+  text-decoration: underline;
+  text-decoration-color: var(--coral-deep);
+  text-decoration-thickness: 0.0625rem;
+  text-underline-offset: 0.3em;
+  transition-property: text-decoration-color, color;
+  transition-duration: var(--dur-fast);
+  transition-timing-function: var(--ease-out);
+}
+
+.link[data-variant="arrow"] {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 2.75rem;
+  border-radius: var(--radius-xs);
+  font-size: var(--fs-base);
+  text-decoration: none;
+}
+
+.icon {
+  display: inline-grid;
+  flex: none;
+}
+
+.icon svg {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: var(--coral-deep);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition-property: transform;
+  transition-duration: var(--dur);
+  transition-timing-function: var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .link:hover {
+    text-decoration-color: var(--ink);
+  }
+
+  .link[data-variant="arrow"]:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--coral-deep);
+    text-decoration-thickness: 0.0625rem;
+    text-underline-offset: 0.3em;
+  }
+
+  .link:hover .icon svg {
+    transform: translateX(0.25rem);
+  }
+}

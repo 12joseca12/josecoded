@@ -1,0 +1,38 @@
+.page {
+  display: grid;
+  gap: var(--space-7);
+  width: 100%;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding: var(--gutter);
+}
+
+.section {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.row {
+  display: grid;
+  gap: var(--space-3);
+  padding-block: var(--space-4);
+  border-top: 1px solid var(--line);
+}
+
+.name {
+  font-family: var(--font-mono);
+  font-size: var(--fs-s);
+  color: var(--ink-soft);
+}
+
+.cells {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4) var(--space-6);
+}
+
+.note {
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+}

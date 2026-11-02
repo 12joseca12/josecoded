@@ -14,6 +14,30 @@
       "shadows": "Shadows",
       "durations": "Durations",
       "sample": "A website that works for you"
+    },
+    "ui": {
+      "title": "UI kit: button, link and heading",
+      "buttons": "Button",
+      "links": "Link",
+      "headings": "Heading",
+      "stateDefault": "Request a proposal",
+      "withoutIcon": "No icon",
+      "sizeSmall": "Compact",
+      "stateDisabled": "Disabled",
+      "stateLoading": "Sending",
+      "loading": "Loading",
+      "asLink": "As link",
+      "interactiveStates": "Hover, focus, pressed and disabled are tested with mouse and keyboard.",
+      "linkInternal": "Internal link",
+      "linkExternal": "External link",
+      "newTab": "(opens in a new tab)",
+      "link_inline": "Inline underlined",
+      "link_arrow": "View case",
+      "accent": "production.",
+      "headingDisplay": "Ideas that reach",
+      "headingTitle": "Three ways to work",
+      "headingSub": "Apps already in",
+      "headingSmall": "Small heading without accent"
     }
   }
 }

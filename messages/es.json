@@ -14,6 +14,30 @@
       "shadows": "Sombras",
       "durations": "Duraciones",
       "sample": "Una web que trabaja para ti"
+    },
+    "ui": {
+      "title": "Kit de interfaz: botón, enlace y titular",
+      "buttons": "Botón",
+      "links": "Enlace",
+      "headings": "Titular",
+      "stateDefault": "Pide propuesta",
+      "withoutIcon": "Sin icono",
+      "sizeSmall": "Compacto",
+      "stateDisabled": "Desactivado",
+      "stateLoading": "Enviando",
+      "loading": "Cargando",
+      "asLink": "Como enlace",
+      "interactiveStates": "Hover, foco, pulsado y desactivado se prueban con ratón y teclado.",
+      "linkInternal": "Enlace interno",
+      "linkExternal": "Enlace externo",
+      "newTab": "(se abre en una pestaña nueva)",
+      "link_inline": "Subrayado en línea",
+      "link_arrow": "Ver caso",
+      "accent": "producción.",
+      "headingDisplay": "Ideas que llegan a",
+      "headingTitle": "Tres formas de trabajar",
+      "headingSub": "Apps que ya están en",
+      "headingSmall": "Titular pequeño sin acento"
     }
   }
 }
