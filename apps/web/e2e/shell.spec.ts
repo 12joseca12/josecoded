@@ -255,8 +255,12 @@ test.describe('page transition', () => {
   test('navigating between pages keeps the header mounted (only the page swaps)', async ({ page }) => {
     await open(page, '/');
     await header(page).evaluate((el) => el.setAttribute('data-probe', 'same-node'));
-    await header(page).getByRole('link', { name: 'Servicios' }).click();
-    await expect(page).toHaveURL(/\/servicios$/);
+    const link = header(page).getByRole('link', { name: 'Servicios' });
+    // the soft navigation needs the link itself hydrated (the header button being hydrated says nothing of it), and the
+    // first RSC fetch of a route on a loaded CI runner can take longer than the default 5 s (seen once in update-snapshots)
+    await expect.poll(() => link.evaluate((el) => Object.keys(el).some((key) => key.startsWith('__reactProps')))).toBe(true);
+    await link.click();
+    await expect(page).toHaveURL(/\/servicios$/, { timeout: 15_000 });
     // the page swapped: /servicios has its own h1 (the placeholder that said «Servicios» is gone)
     await expect(page.getByRole('heading', { level: 1 })).toContainText('cuatro formas de trabajar');
     await expect(header(page)).toHaveAttribute('data-probe', 'same-node');
