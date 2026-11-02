@@ -57,6 +57,8 @@
     "label": "Ir a",
     "placeholder": "Busca «precio», «cv»…",
     "hintMove": "mover",
+    "resultsOne": "1 resultado",
+    "resultsMany": "{count} resultados",
     "hintOpen": "abrir",
     "empty": "Nada con «{query}». Prueba con «precio», «cv» o «agencia».",
     "groups": {

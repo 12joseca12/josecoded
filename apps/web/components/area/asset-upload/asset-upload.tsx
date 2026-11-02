@@ -3,7 +3,8 @@
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 
-import { ASSET_MAX_BYTES, ASSET_MIME_TYPES } from '@josecoded/types';
+// by subpath: the barrel would put zod in this client bundle (see packages/types/src/constants)
+import { ASSET_MAX_BYTES, ASSET_MIME_TYPES } from '@josecoded/types/constants';
 
 import { deleteAsset, prepareAssetUpload, refreshMaterial } from '@/app/[locale]/(area)/area-clientes/material/actions';
 import { Field } from '@/components/forms/field';

@@ -6,7 +6,7 @@ import { observeCenterActive } from '@/lib/motion/center-active';
 
 import styles from './projects-tour.module.css';
 
-import type { ReactNode } from 'react';
+import type { FocusEvent, ReactNode } from 'react';
 
 /**
  * Scene 4 of the home: the projects as a pinned horizontal tour. The section is tall (`--tour-height`)
@@ -21,7 +21,8 @@ import type { ReactNode } from 'react';
  *
  * A11y: a `section` named by its heading; the rail is `aria-hidden` (the cards already say it all);
  * every card is reachable by keyboard in the stacked and in the pinned layout, because the page
- * scroll is what moves the track and focus brings a card into view.
+ * scroll is what moves the track: focus inside a card scrolls the PAGE to the stop where that card is
+ * centered (the same stops the pager uses, `readScenes` in `paged-scroll.tsx`), never the track.
  */
 export function ProjectsTour({
   titleId,
@@ -51,11 +52,30 @@ export function ProjectsTour({
     });
   }, []);
 
+  // Pinned: the track moves with the page scroll, so a focused link has to bring the page to its card.
+  // The sticky box is `overflow: clip`, which focus cannot scroll; scrollLeft is reset as a safety net.
+  function revealFocused(event: FocusEvent<HTMLDivElement>) {
+    const element = track.current;
+    const section = element?.closest('section');
+    const sticky = section?.querySelector<HTMLElement>('[data-tour-sticky]');
+    const card = (event.target as HTMLElement).closest('[data-tcard]');
+    if (!element || !section || !sticky || !card) return;
+    sticky.scrollLeft = 0;
+    element.scrollLeft = 0;
+    if (getComputedStyle(sticky).position !== 'sticky') return;
+    const cards = [...element.querySelectorAll('[data-tcard]')];
+    const index = cards.indexOf(card);
+    if (index < 0 || cards.length < 2) return;
+    const top = section.getBoundingClientRect().top + scrollY;
+    const run = section.offsetHeight - innerHeight;
+    scrollTo({ top: top + (run * index) / (cards.length - 1), behavior: 'instant' });
+  }
+
   return (
     <section id="proyectos" className={styles.tour} aria-labelledby={titleId} data-snap="" data-tour="">
       <div className={styles.sticky} data-tour-sticky="">
         <header className={styles.head}>{head}</header>
-        <div ref={track} className={styles.track}>
+        <div ref={track} className={styles.track} onFocus={revealFocused}>
           {children}
         </div>
         <div className={styles.rail} aria-hidden="true">

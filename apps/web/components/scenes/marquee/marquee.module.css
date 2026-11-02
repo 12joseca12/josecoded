@@ -30,8 +30,16 @@
   display: flex;
 }
 
-[data-cell]:hover .track {
+/* hovering, focusing anything in the cell, or the pause button (`data-paused="true"`) stops both bands;
+   once the visitor resumes with the button (`data-paused="false"`) its own focus no longer holds them */
+[data-cell]:hover .track,
+[data-cell][data-paused='true'] .track,
+[data-cell]:focus-within:not([data-paused='false']) .track {
   animation-play-state: paused;
+}
+
+.pause {
+  margin-inline-start: auto;
 }
 
 @keyframes drift {
@@ -57,6 +65,11 @@
   }
 
   .track > [aria-hidden] {
+    display: none;
+  }
+
+  /* nothing moves, so there is nothing to pause */
+  .pause {
     display: none;
   }
 }

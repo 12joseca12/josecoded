@@ -42,6 +42,9 @@
 }
 
 .brand {
+  /* target size (WCAG 2.5.8, 24 px): padding grows the hit area, the negative margin keeps the layout */
+  padding-block: var(--sp-2);
+  margin-block: calc(-1 * var(--sp-2));
   font-size: var(--font-brand-size);
   font-weight: var(--font-brand-weight);
   letter-spacing: var(--font-brand-tracking);

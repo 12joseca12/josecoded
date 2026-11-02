@@ -2,7 +2,8 @@
 
 import { useSyncExternalStore } from 'react';
 
-import { originAudienceSchema } from '@josecoded/types';
+// by subpath: the barrel would put zod in this client bundle (see packages/types/src/constants)
+import { ORIGIN_AUDIENCES } from '@josecoded/types/constants';
 
 import { Field } from '@/components/forms/field';
 
@@ -10,8 +11,8 @@ const noSubscription = () => () => undefined;
 
 function readStoredAudience(): string {
   try {
-    const stored = originAudienceSchema.safeParse(sessionStorage.getItem('audience'));
-    return stored.success ? stored.data : '';
+    const stored = sessionStorage.getItem('audience');
+    return ORIGIN_AUDIENCES.find((audience) => audience === stored) ?? '';
   } catch {
     return ''; // storage blocked: no hint
   }

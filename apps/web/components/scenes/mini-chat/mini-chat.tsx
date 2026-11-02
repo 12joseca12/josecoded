@@ -7,16 +7,17 @@ import { typeOnce } from '@/lib/motion/typewriter';
 
 import styles from './mini-chat.module.css';
 
-/** Characters per beat (22 ms in the prototype) and the pauses between lines and between loops. */
+/** Characters per beat (22 ms in the prototype) and the pause between the lines. */
 const TYPE_MS = 22;
 const REPLY_DELAY_MS = 700;
-const LOOP_MS = 5000;
 
 /**
  * The example conversation of «Trato directo». The server renders both lines complete (no
  * JavaScript, reduced motion and search engines see the real text); once hydrated, and only with
- * motion welcome, it clears them and types them while the chat is in view, in a slow loop, and
- * stops when it leaves. Port of `v7.js` (mini-chat).
+ * motion welcome, it clears them and types them once, the first time the chat is in view, and leaves
+ * the final text in place. Deviation from `v7.js` (mini-chat), which loops: a loop is moving content
+ * that never stops (WCAG 2.2.2), and the chat has no pause control of its own. Leaving the view
+ * before it ends completes the lines at once, so the text is never left half typed.
  *
  * A11y: a named group; every bubble keeps a visually hidden copy of its text (`ChatBubble`), so the
  * typing is never announced. Nothing here takes focus.
@@ -33,6 +34,7 @@ export function MiniChat({ label, visitor, reply }: { label: string; visitor: st
     let timers: ReturnType<typeof setTimeout>[] = [];
     let cancel: (() => void) | undefined;
     let alive = false;
+    let done = false;
 
     const clear = () => {
       timers.forEach(clearTimeout);
@@ -47,6 +49,15 @@ export function MiniChat({ label, visitor, reply }: { label: string; visitor: st
         if (span) span.textContent = '';
       });
     };
+    const finish = () => {
+      clear();
+      bubbles.forEach((bubble, i) => {
+        bubble.setAttribute('data-on', '');
+        const span = typed[i];
+        if (span) span.textContent = lines[i] ?? '';
+      });
+      done = true;
+    };
     const run = () => {
       reset();
       const [first, second] = [bubbles[0], bubbles[1]];
@@ -58,7 +69,8 @@ export function MiniChat({ label, visitor, reply }: { label: string; visitor: st
           setTimeout(() => {
             second.setAttribute('data-on', '');
             cancel = typeOnce(secondText, lines[1] ?? '', TYPE_MS, () => {
-              timers.push(setTimeout(run, LOOP_MS));
+              done = true;
+              observer.disconnect();
             });
           }, REPLY_DELAY_MS),
         );
@@ -70,8 +82,9 @@ export function MiniChat({ label, visitor, reply }: { label: string; visitor: st
       ([entry]) => {
         const was = alive;
         alive = Boolean(entry?.isIntersecting);
+        if (done) return;
         if (alive && !was) run();
-        if (!alive) clear();
+        if (!alive && was) finish();
       },
       { threshold: 0.4 },
     );

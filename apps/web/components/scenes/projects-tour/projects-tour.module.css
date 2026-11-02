@@ -53,7 +53,9 @@
       top: 0;
       grid-template-rows: auto 1fr auto;
       height: var(--scene-min-height);
-      overflow: hidden;
+
+      /* clip, not hidden: a clipped box can never be scrolled by focus, so the track only moves with the page */
+      overflow: clip;
     }
 
     .track {

@@ -27,6 +27,9 @@
 }
 
 .link {
+  /* target size (WCAG 2.5.8, 24 px): padding grows the hit area, the negative margin keeps the layout */
+  padding-block: var(--sp-1);
+  margin-block: calc(-1 * var(--sp-1));
   transition: color var(--dur-hover) var(--ease-standard);
 }
 

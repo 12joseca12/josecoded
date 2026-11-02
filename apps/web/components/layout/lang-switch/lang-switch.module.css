@@ -9,6 +9,14 @@
   transition: color var(--dur-hover) var(--ease-standard);
 }
 
+.inline a {
+  display: inline-block;
+
+  /* target size (WCAG 2.5.8, 24 px): the two-letter code is 14 px wide; padding grows the hit area, the negative margin keeps the layout */
+  padding: var(--sp-2);
+  margin: calc(-1 * var(--sp-2));
+}
+
 .segmented {
   display: grid;
   grid-template-columns: 1fr 1fr;

@@ -37,6 +37,8 @@
         "stack": {
           "title": "What I work with",
           "caption": "What I use every day, in production.",
+          "pause": "Pause animation",
+          "resume": "Resume",
           "items": [
             "Next.js",
             "React Native",

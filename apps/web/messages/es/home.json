@@ -37,6 +37,8 @@
         "stack": {
           "title": "Con qué trabajo",
           "caption": "Lo que uso a diario, en producción.",
+          "pause": "Pausar animación",
+          "resume": "Reanudar",
           "items": [
             "Next.js",
             "React Native",

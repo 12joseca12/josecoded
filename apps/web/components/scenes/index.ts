@@ -11,7 +11,7 @@ export { Closing } from './closing';
 export { CursorLight } from './cursor-light';
 export { DemoCard } from './demo-card';
 export { CellExpander } from './expanded-cell';
-export { Marquee } from './marquee';
+export { Marquee, MarqueePause } from './marquee';
 export { MiniChat } from './mini-chat';
 export { Scene, SceneAside } from './scene';
 export { CtaRow } from './cta-row';

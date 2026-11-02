@@ -28,7 +28,12 @@ const copy: PaletteCopy = {
   hintOpen: 'abrir',
   empty: 'Nada con «{query}».',
   listLabel: 'Resultados',
+  resultsOne: '1 resultado',
+  resultsMany: '{count} resultados',
 };
+
+// the polite live region of the dialog (the opener's <output> is a status too)
+const live = () => document.querySelector('dialog [role="status"]')?.textContent;
 
 // stands in for the island of the palette: it tells the shell a palette exists
 function Opener() {
@@ -57,8 +62,12 @@ it('opens from the search button, filters without accents, opens a command and c
 
   const input = screen.getByRole('combobox');
   expect(screen.getAllByRole('option')).toHaveLength(2);
+  expect(live()).toBe('2 resultados');
+  expect(screen.getByRole('group', { name: 'Ir a' })).toBeTruthy();
+  expect(screen.getByRole('group', { name: 'Acciones' })).toBeTruthy();
   fireEvent.change(input, { target: { value: 'PRÉCIO' } });
   expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual(['Packsdesde 900 €']);
+  expect(live()).toBe('1 resultado');
   expect(input.getAttribute('aria-activedescendant')).toBe(screen.getByRole('option').id);
   expect(await axe(container)).toHaveNoViolations();
 
@@ -80,5 +89,6 @@ it('says so when nothing matches and wraps the arrows', async () => {
   fireEvent.keyDown(input, { key: 'ArrowUp' });
   expect(screen.getAllByRole('option')[1]?.getAttribute('aria-selected')).toBe('true');
   fireEvent.change(input, { target: { value: 'zzz' } });
-  expect(screen.getByText('Nada con «zzz».')).toBeTruthy();
+  expect(screen.getAllByText('Nada con «zzz».')).toHaveLength(2);
+  expect(live()).toBe('Nada con «zzz».');
 });

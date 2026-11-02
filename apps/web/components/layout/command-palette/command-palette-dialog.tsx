@@ -33,6 +33,10 @@ export interface PaletteCopy {
   /** The empty message with a `{query}` placeholder. */
   empty: string;
   listLabel: string;
+  /** Announced when exactly one command matches. */
+  resultsOne: string;
+  /** Announced for any other count, with a `{count}` placeholder. */
+  resultsMany: string;
 }
 
 /**
@@ -117,7 +121,16 @@ function PaletteBody({ commands, copy }: { commands: readonly PaletteItem[]; cop
     else window.open(command.href, '_blank', 'noopener');
   }
 
-  let group = '';
+  // the commands come sorted by group: one `group` per run, so a screen reader hears the heading before its options
+  const groups: { id: string; label: string; items: { command: PaletteItem; index: number }[] }[] = [];
+  shown.forEach((command, index) => {
+    const last = groups.at(-1);
+    if (last && last.id === command.group) last.items.push({ command, index });
+    else groups.push({ id: command.group, label: command.groupLabel, items: [{ command, index }] });
+  });
+  const announcement =
+    shown.length === 0 ? copy.empty.replace('{query}', state.query) : shown.length === 1 ? copy.resultsOne : copy.resultsMany.replace('{count}', String(shown.length));
+
   return (
     <div className={styles.box}>
       <div className={styles.field}>
@@ -147,32 +160,39 @@ function PaletteBody({ commands, copy }: { commands: readonly PaletteItem[]; cop
         />
         <Kbd>esc</Kbd>
       </div>
+      <p className="sr-only" role="status">
+        {announcement}
+      </p>
       <ul className={styles.list} id={`${id}-list`} role="listbox" aria-label={copy.listLabel}>
         {shown.length === 0 ? (
           <li className={styles.empty} role="presentation">
             {copy.empty.replace('{query}', state.query)}
           </li>
         ) : (
-          shown.map((command, i) => {
-            const heading = command.group !== group ? ((group = command.group), command.groupLabel) : null;
-            return (
-              <li key={command.id} role="presentation">
-                {heading ? <p className={`${styles.item} ${styles.group}`} role="presentation">{heading}</p> : null}
-                <div
-                  id={`${id}-${command.id}`}
-                  className={styles.item}
-                  role="option"
-                  aria-selected={i === state.index}
-                  onPointerMove={() => i !== state.index && dispatch({ type: 'hover', index: i })}
-                  onClick={() => open(command)}
-                >
-                  <Icon name={command.icon} />
-                  <span>{command.label}</span>
-                  {command.hint ? <span className={styles.hint}>{command.hint}</span> : null}
-                </div>
-              </li>
-            );
-          })
+          groups.map((entry) => (
+            <li key={entry.id} role="presentation">
+              <div role="group" aria-labelledby={`${id}-group-${entry.id}`}>
+                <p id={`${id}-group-${entry.id}`} className={`${styles.item} ${styles.group}`} role="presentation">
+                  {entry.label}
+                </p>
+                {entry.items.map(({ command, index }) => (
+                  <div
+                    key={command.id}
+                    id={`${id}-${command.id}`}
+                    className={styles.item}
+                    role="option"
+                    aria-selected={index === state.index}
+                    onPointerMove={() => index !== state.index && dispatch({ type: 'hover', index })}
+                    onClick={() => open(command)}
+                  >
+                    <Icon name={command.icon} />
+                    <span>{command.label}</span>
+                    {command.hint ? <span className={styles.hint}>{command.hint}</span> : null}
+                  </div>
+                ))}
+              </div>
+            </li>
+          ))
         )}
       </ul>
       <div className={styles.foot}>

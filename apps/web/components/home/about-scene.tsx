@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
 
-import { AboutSummary, Bento, BentoCell, CellText, Marquee, MiniChat, Scene } from '@/components/scenes';
+import { AboutSummary, Bento, BentoCell, CellText, Marquee, MarqueePause, MiniChat, Scene } from '@/components/scenes';
 import { ArrowLink } from '@/components/ui/arrow-link';
 import { Pending } from '@/components/ui/pending';
 
@@ -85,7 +85,12 @@ export async function AboutScene() {
             }
           />
         </BentoCell>
-        <BentoCell span={5} icon="layers" title={t('stack.title')}>
+        <BentoCell
+          span={5}
+          icon="layers"
+          title={t('stack.title')}
+          action={<MarqueePause pauseLabel={t('stack.pause')} resumeLabel={t('stack.resume')} />}
+        >
           <Marquee items={stack} label={stack.join(', ')} />
           <Marquee items={stack} reverse />
           <CellText variant="muted">{t('stack.caption')}</CellText>

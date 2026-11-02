@@ -57,6 +57,8 @@
     "label": "Go to",
     "placeholder": "Search “price”, “cv”…",
     "hintMove": "move",
+    "resultsOne": "1 result",
+    "resultsMany": "{count} results",
     "hintOpen": "open",
     "empty": "Nothing for “{query}”. Try “price”, “cv” or “agency”.",
     "groups": {

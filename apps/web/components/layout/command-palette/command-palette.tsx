@@ -69,6 +69,8 @@ export async function CommandPalette() {
     hintOpen: t('hintOpen'),
     empty: String(t.raw('empty')),
     listLabel: t('label'),
+    resultsOne: t('resultsOne'),
+    resultsMany: String(t.raw('resultsMany')),
   };
 
   return <CommandPaletteIsland commands={commands} copy={copy} />;

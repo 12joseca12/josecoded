@@ -646,12 +646,12 @@
       },
       {
         "name": "pager-idle",
-        "value": "rgb(157 140 255 / 0.3)",
+        "value": "rgb(157 140 255 / 0.65)",
         "purpose": "Línea del indicador de sección en reposo."
       },
       {
         "name": "pager-hover",
-        "value": "rgb(157 140 255 / 0.6)",
+        "value": "rgb(157 140 255 / 0.85)",
         "purpose": "Línea del indicador de sección bajo el cursor."
       },
       {

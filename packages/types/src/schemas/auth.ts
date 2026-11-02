@@ -1,12 +1,14 @@
 import { z } from 'zod';
 
+import { ORIGIN_AUDIENCES } from '../constants/index.ts';
+
 // Boundaries of the passwordless sign-in, the profile and the TOTP factor (plan 4.1; DATOS §8.1).
 // Validated only on the server (Server Actions, working-agreements §17.3).
 
 export const emailSchema = z.email().max(254);
 
 /** Audience hints a public page may carry into the sign-up (DT §1.12). `referral` comes from the `ref` cookie only. */
-export const originAudienceSchema = z.enum(['business', 'company', 'blog']);
+export const originAudienceSchema = z.enum(ORIGIN_AUDIENCES);
 export type OriginAudience = z.infer<typeof originAudienceSchema>;
 
 export const localeSchema = z.enum(['es', 'en']);

@@ -209,6 +209,70 @@ test.describe('paging', () => {
   });
 });
 
+test.describe('keyboard and motion controls · 1440', () => {
+  test.use({ viewport: { width: 1440, height: 900 } });
+
+  test('Projects: tabbing through the three project links keeps each one fully inside the viewport', async ({ page }) => {
+    await page.goto('/');
+    await hydrated(page, '#servicios input');
+    const scene = page.locator('#proyectos');
+    expect(await scene.locator('[data-tour-sticky]').evaluate((el) => getComputedStyle(el).position)).toBe('sticky');
+    for (const name of ['3cat', '3catinfo', 'josecoded.com']) {
+      const link = scene.getByRole('link', { name: `Ver proyecto ${name}`, exact: true });
+      await link.focus();
+      await expect(link).toBeFocused();
+      // the scroll-driven pan catches up with the page scroll one frame later: poll until the card has arrived
+      await expect
+        .poll(
+          () =>
+            link.evaluate((el) => {
+              const { left, right, top, bottom } = el.getBoundingClientRect();
+              return left >= 0 && right <= innerWidth && top >= 0 && bottom <= innerHeight;
+            }),
+          { message: `${name} fully inside the viewport` },
+        )
+        .toBe(true);
+      expect(await scene.locator('[data-tour-sticky]').evaluate((el) => el.scrollLeft)).toBe(0);
+    }
+  });
+
+  test('Marquee: the pause button stops both bands and resumes them', async ({ page }) => {
+    await page.goto('/');
+    await hydrated(page, '#servicios input');
+    const cell = page.locator('#sobre-mi').getByRole('article', { name: 'Con qué trabajo' });
+    const states = () => cell.locator('ul').evaluateAll((lists) => lists.map((list) => getComputedStyle(list).animationPlayState));
+    const pause = cell.getByRole('button', { name: 'Pausar animación' });
+    await expect(pause).toHaveAttribute('aria-pressed', 'false');
+    await pause.click();
+    await page.mouse.move(0, 0);
+    const resume = cell.getByRole('button', { name: 'Reanudar' });
+    await expect(resume).toHaveAttribute('aria-pressed', 'true');
+    expect(await states()).toEqual(['paused', 'paused']);
+    await resume.click();
+    await page.mouse.move(0, 0);
+    await expect(cell.getByRole('button', { name: 'Pausar animación' })).toHaveAttribute('aria-pressed', 'false');
+    expect(await states()).toEqual(['running', 'running']);
+  });
+});
+
+for (const width of [360, 1440]) {
+  test.describe(`target size · ${width}`, () => {
+    test.use({ viewport: { width, height: 900 } });
+
+    test('every visible link and button of the header and the footer is at least 24×24 px (WCAG 2.5.8)', async ({ page }) => {
+      await page.goto('/');
+      await hydrated(page, '#servicios input');
+      const small = await page.locator('header, footer').locator('a, button').evaluateAll((els) =>
+        els
+          .map((el) => ({ name: (el.textContent || el.getAttribute('aria-label') || '').trim(), box: el.getBoundingClientRect(), shown: getComputedStyle(el).visibility !== 'hidden' }))
+          .filter(({ box, shown }) => shown && box.width > 0 && box.height > 0 && (box.width < 24 || box.height < 24))
+          .map(({ name, box }) => `${name}: ${Math.round(box.width)}×${Math.round(box.height)}`),
+      );
+      expect(small).toEqual([]);
+    });
+  });
+}
+
 test.describe('reduced motion', () => {
   test.use({ viewport: { width: 1440, height: 900 } });
 

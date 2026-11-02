@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { EXTRA_CODES, PACK_CODES } from './pricing.ts';
+import { ASSET_MAX_BYTES, ASSET_MIME_TYPES } from '../constants/index.ts';
 
 // Boundaries of the client area (plan 5.x). Validated only on the server.
 
@@ -9,26 +10,6 @@ export const taskCommentSchema = z.object({
   body: z.string().trim().min(1).max(4000),
 });
 export type TaskCommentInput = z.infer<typeof taskCommentSchema>;
-
-/** Client-side upload limits; the bucket enforces the same ones (20261028100400_client_assets.sql). */
-export const ASSET_MAX_BYTES = 26_214_400;
-export const ASSET_MIME_TYPES = [
-  'image/png',
-  'image/jpeg',
-  'image/webp',
-  'image/avif',
-  'image/gif',
-  'application/pdf',
-  'text/plain',
-  'text/csv',
-  'application/zip',
-  'application/msword',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'application/vnd.ms-excel',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  'application/vnd.ms-powerpoint',
-  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-] as const;
 
 export const assetUploadIntentSchema = z.object({
   fileName: z.string().min(1).max(255),
