@@ -1,3 +1,4 @@
+import createMDX from '@next/mdx';
 import createNextIntlPlugin from 'next-intl/plugin';
 
 import { pathnames } from './i18n/pathnames';
@@ -7,6 +8,10 @@ import { PREVIEW_HEADERS, STATIC_SECURITY_HEADERS } from './lib/security/headers
 import type { NextConfig } from 'next';
 
 const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
+// Guides (`content/blog/<locale>/<slug>.mdx`) are compiled at build when a page imports them, so the worker carries no MDX
+// compiler. Plugins go by name: Turbopack cannot receive functions. The YAML frontmatter is validated by
+// scripts/content-index.ts and only stripped here.
+const withMDX = createMDX({ options: { remarkPlugins: ['remark-frontmatter', 'remark-gfm'], rehypePlugins: ['rehype-slug'] } });
 const { rewrites, redirects } = buildLocaleRules(pathnames);
 
 const config: NextConfig = {
@@ -39,4 +44,4 @@ const config: NextConfig = {
   },
 };
 
-export default withNextIntl(config);
+export default withMDX(withNextIntl(config));

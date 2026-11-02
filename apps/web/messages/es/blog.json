@@ -1,1 +1,29 @@
-{}
+{
+  "blog": {
+    "title": "Guías",
+    "home": "Inicio",
+    "meta": {
+      "title": "Blog: guías de Next.js, React Native e IA",
+      "description": "Guías técnicas largas sobre Next.js, React Native e IA, con el código que uso en producción."
+    },
+    "head": {
+      "lead": "Lo que voy aprendiendo.",
+      "accent": "Artículos sobre lo que construyo.",
+      "citable": "{{DATO: dos o tres frases que se entiendan solas: qué guías hay, de qué temas y que llevan código probado en producción [redactor]}}"
+    },
+    "card": {
+      "read": "Leer guía",
+      "readNamed": "Leer guía: {title}",
+      "minutes": "{minutes} min de lectura",
+      "tags": "Etiquetas",
+      "only": {
+        "es": "Solo en español",
+        "en": "Solo en inglés"
+      }
+    },
+    "empty": {
+      "title": "Todavía no hay guías.",
+      "text": "Vuelve pronto: las primeras están en camino."
+    }
+  }
+}

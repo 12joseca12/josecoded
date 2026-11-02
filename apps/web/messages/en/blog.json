@@ -1,1 +1,29 @@
-{}
+{
+  "blog": {
+    "title": "Guides",
+    "home": "Home",
+    "meta": {
+      "title": "Blog: Next.js, React Native and AI guides",
+      "description": "Long technical guides on Next.js, React Native and AI, with the code I run in production."
+    },
+    "head": {
+      "lead": "What I keep learning.",
+      "accent": "Articles about what I build.",
+      "citable": "{{DATO: two or three sentences that stand on their own: which guides there are, on which topics, and that they carry code proven in production [redactor]}}"
+    },
+    "card": {
+      "read": "Read guide",
+      "readNamed": "Read guide: {title}",
+      "minutes": "{minutes} min read",
+      "tags": "Tags",
+      "only": {
+        "es": "Only in Spanish",
+        "en": "Only in English"
+      }
+    },
+    "empty": {
+      "title": "No guides yet.",
+      "text": "Come back soon: the first ones are on their way."
+    }
+  }
+}

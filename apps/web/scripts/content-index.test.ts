@@ -4,7 +4,7 @@ import { join } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import { computeContentIndex } from './content-index';
+import { computeBlogIndex, computeContentIndex } from './content-index';
 
 function fixture(files: Record<string, string>): string {
   const root = mkdtempSync(join(tmpdir(), 'content-index-'));
@@ -61,5 +61,35 @@ describe('computeContentIndex', () => {
       'blog/es/c.mdx': '---\ntitle: C\nkind: note\n---\nx',
     });
     expect(computeContentIndex({ contentRoot: root })).toMatchObject({ blog: { guides: 2 } });
+  });
+});
+
+const guide = (title: string, date: string, extra = '') =>
+  `---\ntitle: ${title}\ndescription: Una frase.\ndate: ${date}\nreadingMinutes: 8\n${extra}---\nCuerpo`;
+
+describe('computeBlogIndex', () => {
+  it('lists every guide with its locale, newest first, and links the translations', () => {
+    const root = fixture({
+      'blog/es/a.mdx': guide('A', '2026-10-01'),
+      'blog/en/a.mdx': guide('A en', '2026-10-01'),
+      'blog/es/solo-es.md': guide('Solo', '2026-10-05'),
+    });
+    const { posts } = computeBlogIndex({ contentRoot: root });
+    expect(posts.map((p) => `${p.slug}/${p.locale}`)).toEqual(['solo-es/es', 'a/en', 'a/es']);
+    expect(posts.map((p) => p.hasTranslation)).toEqual([false, true, true]);
+  });
+
+  it('marks a post with a {{DATO}} in its frontmatter as pending and keeps it in the list', () => {
+    const root = fixture({ 'blog/es/a.mdx': guide('A', '2026-10-01', 'tags: [x]\n').replace('Una frase.', "'{{DATO: frase}}'") });
+    expect(computeBlogIndex({ contentRoot: root }).posts[0]).toMatchObject({ pending: true, tags: ['x'] });
+  });
+
+  it('fails the build on an invalid frontmatter, naming the file', () => {
+    const root = fixture({ 'blog/es/rota.mdx': '---\ntitle: A\n---\nx' });
+    expect(() => computeBlogIndex({ contentRoot: root })).toThrow(/blog\/es\/rota\.mdx/);
+  });
+
+  it('is empty without a blog folder', () => {
+    expect(computeBlogIndex({ contentRoot: fixture({}) }).posts).toEqual([]);
   });
 });

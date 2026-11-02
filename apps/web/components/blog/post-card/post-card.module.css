@@ -1,0 +1,62 @@
+/* home-v7 Lab/Blog scene (guide cell: note, title, link) on the tcard surface of the projects */
+.inner {
+  display: grid;
+  align-content: start;
+  gap: var(--sp-gap-tcopy);
+  height: 100%;
+  padding: var(--sp-pad-cell);
+}
+
+.inner > * {
+  margin: 0;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-2);
+  color: var(--text-3);
+  font-size: var(--font-small-size);
+  font-weight: var(--font-small-weight);
+}
+
+/* the dot between date and reading time is drawn, not typed: nothing for a screen reader to announce */
+.reading::before {
+  content: '';
+  display: inline-block;
+  width: var(--size-dot);
+  height: var(--size-dot);
+  margin-inline-end: var(--sp-2);
+  border-radius: var(--r-circle);
+  background: currentcolor;
+  vertical-align: middle;
+}
+
+.note {
+  padding: 0 var(--sp-2);
+  border-radius: var(--r-pill);
+  box-shadow: var(--shadow-hairline);
+}
+
+.title {
+  font-size: var(--font-title-size);
+  font-weight: var(--font-title-weight);
+  letter-spacing: var(--font-title-tracking);
+  line-height: var(--font-title-leading);
+}
+
+.description {
+  max-width: var(--size-measure-prose);
+  color: var(--text-2);
+  font-size: var(--font-lead-size);
+  line-height: var(--font-lead-leading);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  padding: 0;
+  list-style: none;
+}
