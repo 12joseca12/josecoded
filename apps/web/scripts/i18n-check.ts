@@ -4,11 +4,18 @@
 // files, present in one locale and absent in the other. Exit code 1 only when something is
 // missing: pending markers are listed, never fatal (working-agreements §10).
 // Runs with plain Node (type stripping, Node >= 22.18), so internal imports carry `.ts`.
-import { readdirSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+
+import { loadCatalogs } from './catalogs.ts';
+import { composeCatalogs, mergeMessages, readOverrides } from './merge-overrides.ts';
 import { isPendingDato } from '../lib/content/dato.ts';
+
+import type { Catalogs } from './catalogs.ts';
+
+export { loadCatalogs };
+export type { Catalogs };
+
 
 export interface CheckResult {
   /** Keys with a {{DATO}} marker in either locale. */
@@ -16,8 +23,6 @@ export interface CheckResult {
   missingInEs: string[];
   missingInEn: string[];
 }
-
-export type Catalogs = Record<string, Record<string, unknown>>;
 
 export interface CatalogsReport {
   missingFilesInEs: string[];
@@ -92,19 +97,29 @@ export function formatReport(report: CatalogsReport): string {
   return lines.join('\n');
 }
 
-export function loadCatalogs(locale: string, root = join(import.meta.dirname, '..', 'messages')) {
-  const dir = join(root, locale);
-  const catalogs: Catalogs = {};
-  for (const file of readdirSync(dir).filter((name) => name.endsWith('.json'))) {
-    catalogs[file.replace(/\.json$/, '')] = JSON.parse(readFileSync(join(dir, file), 'utf8'));
+/** Published overrides that the build would refuse (unknown key, namespace not editable, {{DATO}}, HTML), per locale. */
+export function checkOverrides(locales: readonly string[] = ['es', 'en']): string[] {
+  const problems: string[] = [];
+  for (const locale of locales) {
+    try {
+      mergeMessages(composeCatalogs(locale), readOverrides(locale));
+    } catch (error) {
+      problems.push(`OVERRIDE ${locale}  ${error instanceof Error ? error.message : String(error)}`);
+    }
   }
-  return catalogs;
+  return problems;
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const report = checkCatalogs(loadCatalogs('es'), loadCatalogs('en'));
   const text = formatReport(report);
   console.log(text === '' ? 'i18n: es and en are in sync, nothing pending.' : text);
+  const overrideProblems = checkOverrides();
+  for (const line of overrideProblems) console.error(line);
+  if (overrideProblems.length > 0) {
+    console.error('\ni18n:check failed: a published override would break the build.');
+    process.exit(1);
+  }
   if (hasMissing(report)) {
     console.error('\ni18n:check failed: keys or files are missing in one locale.');
     process.exit(1);
