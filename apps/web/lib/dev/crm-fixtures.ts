@@ -1,9 +1,25 @@
 import { contactListQuerySchema, CONTACTS_PAGE_SIZE } from '@josecoded/types';
 
+import { analyzeImport } from '@/lib/crm/import-analysis';
+
 import type { OmenStatus } from '@/lib/admin/queries';
 import type { StaffRole } from '@/lib/auth/staff';
-import type { ClientRecord, ContactDetail, ContactRecord, DraftRecord, InteractionRecord, LeadRecord, StoryRecord } from '@/lib/crm/contact-detail';
+import type {
+  ClientRecord,
+  ContactDetail,
+  ContactRecord,
+  DraftRecord,
+  InteractionRecord,
+  LeadRecord,
+  StoryRecord,
+} from '@/lib/crm/contact-detail';
 import type { ContactPage, ContactRow, Owner } from '@/lib/crm/contacts';
+import type {
+  ConflictQueueData,
+  ImportDone,
+  ImportRecord,
+  OwnConflict,
+} from '@/lib/crm/import-types';
 import type { CrmSummary } from '@/lib/crm/queries';
 import type { SummaryExtras } from '@/lib/crm/summary-extras';
 import type { AdminCounters, CloserCounters, TeamCounters } from '@josecoded/types';
@@ -51,7 +67,14 @@ const closerCounters: CloserCounters = {
   commissions_pending: 3,
   commissions_approved_amount: 420,
   conflicts_pending: 2,
-  imports_last: { id: '30000000-0000-4000-8000-000000000001', created: 38, updated: 6, skipped: 4, conflicts: 2, created_at: at(-2 * DAY) },
+  imports_last: {
+    id: '30000000-0000-4000-8000-000000000001',
+    created: 38,
+    updated: 6,
+    skipped: 4,
+    conflicts: 2,
+    created_at: at(-2 * DAY),
+  },
 };
 
 const team: TeamCounters = { team_contacts: 214, team_leads_won_month: 5, team_leads_open: 19 };
@@ -346,13 +369,18 @@ const leadContact = (role: StaffRole): ContactRecord => ({
   linkedin_url: 'https://www.linkedin.com/in/lucia-ferrandiz-test',
   next_action: 'Llamar para cerrar el pack',
   next_action_at: inDays(-6),
-  owner_note: 'Quiere tienda online para el obrador. Duda entre dos packs; le preocupa el mantenimiento.',
+  owner_note:
+    'Quiere tienda online para el obrador. Duda entre dos packs; le preocupa el mantenimiento.',
   source: 'web_proposal',
   tags: ['obrador', 'tienda online'],
   owner_id: role === 'admin' ? ID.marta : null,
   created_at: inDays(-21),
   last_interaction_at: inDays(-8),
-  organization: { name: 'Panadería Ferrándiz', website: 'https://panaderia-ferrandiz.test', city: 'Valencia' },
+  organization: {
+    name: 'Panadería Ferrándiz',
+    website: 'https://panaderia-ferrandiz.test',
+    city: 'Valencia',
+  },
 });
 
 const openLead: LeadRecord = {
@@ -363,20 +391,44 @@ const openLead: LeadRecord = {
   pack_option: 'tienda',
   amount: null,
   paid_at: null,
-  message: 'Hola, quiero vender el pan y los dulces por encargo y que la gente reserve para recoger.',
+  message:
+    'Hola, quiero vender el pan y los dulces por encargo y que la gente reserve para recoger.',
   affiliate_code: null,
   created_at: inDays(-21),
   created_by: null,
 };
 
 const leadTimeline: InteractionRecord[] = [
-  interaction('7', 'note', 'closer', inDays(-8), { body: 'Hablamos 15 minutos. Le gusta la opción con reservas; quiere ver el precio con mantenimiento.' }),
-  interaction('6', 'status_change', 'closer', inDays(-9), { payload: { from: 'contacted', to: 'proposal_sent' } }),
-  interaction('5', 'message_sent', 'closer', inDays(-9), { channel: 'email', direction: 'out', subject: 'Tu propuesta de tienda online', body: 'Te adjunto las dos opciones con precios cerrados.' }),
-  interaction('4', 'call', 'closer', inDays(-14), { channel: 'other', direction: 'out', body: 'Primera llamada: necesidades y plazos.' }),
-  interaction('3', 'status_change', 'closer', inDays(-14), { payload: { from: 'new', to: 'contacted' } }),
-  interaction('2', 'message_received', 'contact', inDays(-21), { channel: 'web_proposal', direction: 'in', subject: 'Propuesta', body: 'Quiero vender el pan por encargo y que reserven para recoger.' }),
-  interaction('1', 'lead_created', 'system', inDays(-21), { payload: { source: 'web_proposal', via: 'client' }, lead_id: openLead.id }),
+  interaction('7', 'note', 'closer', inDays(-8), {
+    body: 'Hablamos 15 minutos. Le gusta la opción con reservas; quiere ver el precio con mantenimiento.',
+  }),
+  interaction('6', 'status_change', 'closer', inDays(-9), {
+    payload: { from: 'contacted', to: 'proposal_sent' },
+  }),
+  interaction('5', 'message_sent', 'closer', inDays(-9), {
+    channel: 'email',
+    direction: 'out',
+    subject: 'Tu propuesta de tienda online',
+    body: 'Te adjunto las dos opciones con precios cerrados.',
+  }),
+  interaction('4', 'call', 'closer', inDays(-14), {
+    channel: 'other',
+    direction: 'out',
+    body: 'Primera llamada: necesidades y plazos.',
+  }),
+  interaction('3', 'status_change', 'closer', inDays(-14), {
+    payload: { from: 'new', to: 'contacted' },
+  }),
+  interaction('2', 'message_received', 'contact', inDays(-21), {
+    channel: 'web_proposal',
+    direction: 'in',
+    subject: 'Propuesta',
+    body: 'Quiero vender el pan por encargo y que reserven para recoger.',
+  }),
+  interaction('1', 'lead_created', 'system', inDays(-21), {
+    payload: { source: 'web_proposal', via: 'client' },
+    lead_id: openLead.id,
+  }),
 ];
 
 const clientContact = (role: StaffRole): ContactRecord => ({
@@ -396,7 +448,11 @@ const clientContact = (role: StaffRole): ContactRecord => ({
   owner_id: role === 'admin' ? ID.marta : null,
   created_at: inDays(-60),
   last_interaction_at: inDays(-1),
-  organization: { name: 'Beltrán Reformas', website: 'https://beltran-reformas.test', city: 'Alicante' },
+  organization: {
+    name: 'Beltrán Reformas',
+    website: 'https://beltran-reformas.test',
+    city: 'Alicante',
+  },
 });
 
 const wonLead: LeadRecord = {
@@ -448,18 +504,40 @@ const stories: StoryRecord[] = [
 ];
 
 const drafts: DraftRecord[] = [
-  { id: '80000000-0000-4000-8000-000000000001', channel: 'whatsapp', subject: 'Seguimiento de diseño', status: 'draft', generated_by: 'ai', created_at: inDays(-1) },
+  {
+    id: '80000000-0000-4000-8000-000000000001',
+    channel: 'whatsapp',
+    subject: 'Seguimiento de diseño',
+    status: 'draft',
+    generated_by: 'ai',
+    created_at: inDays(-1),
+  },
 ];
 
 const clientTimeline: InteractionRecord[] = [
-  interaction('16', 'story_proposed', 'contact', inDays(-3), { body: 'Pedir presupuesto desde la web' }),
-  interaction('15', 'note', 'closer', inDays(-1), { body: 'Le ha gustado la primera propuesta de portada. Pide cambiar el azul por uno más oscuro.' }),
+  interaction('16', 'story_proposed', 'contact', inDays(-3), {
+    body: 'Pedir presupuesto desde la web',
+  }),
+  interaction('15', 'note', 'closer', inDays(-1), {
+    body: 'Le ha gustado la primera propuesta de portada. Pide cambiar el azul por uno más oscuro.',
+  }),
   interaction('14', 'commission', 'system', inDays(-40), { payload: { percent: 20, amount: 380 } }),
   interaction('13', 'client_invited', 'closer', inDays(-39), {}),
-  interaction('12', 'lead_won', 'jose', inDays(-40), { payload: { amount: 1900 }, lead_id: wonLead.id }),
-  interaction('11', 'status_change', 'jose', inDays(-40), { payload: { from: 'proposal_sent', to: 'active_client' } }),
-  interaction('10', 'meeting', 'closer', inDays(-52), { channel: 'calcom', body: 'Videollamada de 20 minutos: alcance, plazos y forma de pago.' }),
-  interaction('9', 'lead_created', 'system', inDays(-60), { payload: { source: 'calcom', via: 'client' }, lead_id: wonLead.id }),
+  interaction('12', 'lead_won', 'jose', inDays(-40), {
+    payload: { amount: 1900 },
+    lead_id: wonLead.id,
+  }),
+  interaction('11', 'status_change', 'jose', inDays(-40), {
+    payload: { from: 'proposal_sent', to: 'active_client' },
+  }),
+  interaction('10', 'meeting', 'closer', inDays(-52), {
+    channel: 'calcom',
+    body: 'Videollamada de 20 minutos: alcance, plazos y forma de pago.',
+  }),
+  interaction('9', 'lead_created', 'system', inDays(-60), {
+    payload: { source: 'calcom', via: 'client' },
+    lead_id: wonLead.id,
+  }),
 ];
 
 export type PreviewContact = 'lead' | 'client';
@@ -468,6 +546,190 @@ export type PreviewContact = 'lead' | 'client';
 export function previewContactDetail(which: PreviewContact, role: StaffRole): ContactDetail {
   const owners = role === 'admin' ? OWNERS : null;
   return which === 'lead'
-    ? { contact: leadContact(role), interactions: leadTimeline, leads: [openLead], client: null, stories: [], drafts: [], owners }
-    : { contact: clientContact(role), interactions: clientTimeline, leads: [wonLead], client: clientRecord(role), stories, drafts, owners };
+    ? {
+        contact: leadContact(role),
+        interactions: leadTimeline,
+        leads: [openLead],
+        client: null,
+        stories: [],
+        drafts: [],
+        owners,
+      }
+    : {
+        contact: clientContact(role),
+        interactions: clientTimeline,
+        leads: [wonLead],
+        client: clientRecord(role),
+        stories,
+        drafts,
+        owners,
+      };
+}
+
+// ---- K4 --------------------------------------------------------------------------------------------------------
+
+const IMPORT_HEAD = 'Nombre;E-mail;Móvil;LinkedIn;Empresa;Puesto;Ciudad;Tipo;Observaciones;Fuente';
+const IMPORT_ROWS = [
+  'Raúl Ibáñez;raul@albahaca.test;+34 600 000 431;linkedin.com/in/ejemplo-raul;Estudio Albahaca;Director creativo;Valencia;agencia;Conocido en la feria;Feria Digital Oct',
+  'Silvia Rey;silvia@reyabogados.test;;;Rey Abogados;Socia;Madrid;lead;;Feria Digital Oct',
+  'Pablo Ortiz;;+34 600 000 205;;Ortiz Climatización;Gerente;Sevilla;lead;;Feria Digital Oct',
+  'Lidia Cano;lidia@canoyasociados.test;;;Cano y Asociados;Gerente;Bilbao;lead;;Feria Digital Oct',
+  'Mario Esteban;mario@pixelmarea.test;;;Pixel Marea;Fundador;Vigo;agencia;;Feria Digital Oct',
+  'Carmen Ruiz;;;;Ruiz Interiores;Directora;Málaga;lead;;Feria Digital Oct',
+  'Jorge Lara;jorge@laradental.test;+34 600 000 377;;=HYPERLINK("http://x.test");Odontólogo;Murcia;lead;;Feria Digital Oct',
+  'Eva Molina;eva@talentoplus.test;;;Talento Plus;Selección;Madrid;reclutador;;Feria Digital Oct',
+];
+const IMPORT_FILLER = Array.from(
+  { length: 22 },
+  (_, i) =>
+    `Contacto ${i + 9};contacto${i + 9}@feria.test;;;Empresa ${i + 9};Gerente;Madrid;lead;;Feria Digital Oct`,
+);
+const IMPORT_TEXT = [IMPORT_HEAD, ...IMPORT_ROWS, ...IMPORT_FILLER].join('\n');
+export const IMPORT_PREVIEW_FILE = 'contactos-feria-octubre.csv';
+
+/** What the preview of step 2 returns for a 30-row file with one row that cannot be reached (the real analysis, not a mock). */
+export const previewImportText = (): string => IMPORT_TEXT;
+export const previewImportAnalysis = () => analyzeImport(IMPORT_TEXT, null);
+
+export const previewImportResult = (): ImportDone => ({
+  import_id: '30000000-0000-4000-8000-000000000002',
+  created: 26,
+  updated: 2,
+  skipped: 1,
+  conflicts: 1,
+  errors: [{ row: 6, reason: 'invalid' }],
+});
+
+export function previewImportHistory(role: StaffRole): ImportRecord[] {
+  const rows: ImportRecord[] = [
+    {
+      id: '30000000-0000-4000-8000-000000000002',
+      fileName: IMPORT_PREVIEW_FILE,
+      createdAt: at(-2 * HOUR),
+      rows: 30,
+      created: 26,
+      updated: 2,
+      skipped: 1,
+      conflicts: 1,
+      importer: 'Marta Quintana',
+    },
+    {
+      id: '30000000-0000-4000-8000-000000000001',
+      fileName: 'clinicas-madrid.csv',
+      createdAt: at(-9 * DAY),
+      rows: 58,
+      created: 51,
+      updated: 3,
+      skipped: 2,
+      conflicts: 0,
+      importer: 'Marta Quintana',
+    },
+    {
+      id: '30000000-0000-4000-8000-000000000003',
+      fileName: 'agencias-levante.csv',
+      createdAt: at(-13 * DAY),
+      rows: 18,
+      created: 18,
+      updated: 0,
+      skipped: 0,
+      conflicts: 0,
+      importer: 'Íñigo Valdés',
+    },
+  ];
+  // a closer's history is her own (the database gives her nothing else) and carries nobody's name
+  return role === 'admin'
+    ? rows
+    : rows
+        .filter((row) => row.importer === 'Marta Quintana')
+        .map((row) => ({ ...row, importer: null }));
+}
+
+export function previewOwnConflicts(role: StaffRole): OwnConflict[] {
+  // the admin imports into his own portfolio, so his rows never clash; the closer sees hers with an outcome only
+  return role === 'admin'
+    ? []
+    : [
+        {
+          id: '50000000-0000-4000-8000-000000000001',
+          fileName: IMPORT_PREVIEW_FILE,
+          line: 15,
+          outcome: 'pending',
+        },
+        {
+          id: '50000000-0000-4000-8000-000000000002',
+          fileName: 'clinicas-madrid.csv',
+          line: 4,
+          outcome: 'assigned',
+        },
+        {
+          id: '50000000-0000-4000-8000-000000000003',
+          fileName: 'clinicas-madrid.csv',
+          line: 31,
+          outcome: 'not_assigned',
+        },
+      ];
+}
+
+export function previewConflictQueue(): ConflictQueueData {
+  return {
+    pending: [
+      {
+        id: '50000000-0000-4000-8000-000000000001',
+        fileName: IMPORT_PREVIEW_FILE,
+        line: 15,
+        importerId: ID.marta,
+        importerName: 'Marta Quintana',
+        createdAt: at(-2 * HOUR),
+        imported: {
+          display_name: 'Raúl Ibáñez',
+          email: 'raul@albahaca.test',
+          phone: '+34 600 000 431',
+          linkedin_url: null,
+          organization: 'Estudio Albahaca',
+          role: 'Director creativo',
+          city: null,
+          kind: 'agency',
+          notes: null,
+          tags: [],
+        },
+        existing: {
+          id: '60000000-0000-4000-8000-000000000001',
+          name: 'Raúl Ibáñez',
+          kind: 'agency',
+          status: 'inmail_sent',
+          ownerName: 'Jose Sánchez',
+          email: 'raul@albahaca.test',
+          phone: null,
+          linkedin_url: null,
+          organization: 'Estudio Albahaca',
+          role: null,
+          lastInteractionAt: at(-5 * DAY),
+        },
+      },
+    ],
+    resolved: [
+      {
+        id: '50000000-0000-4000-8000-000000000002',
+        fileName: 'clinicas-madrid.csv',
+        line: 4,
+        importerName: 'Marta Quintana',
+        rowName: 'Clínica Sanz',
+        rowKind: 'lead',
+        resolution: 'assign_importer',
+        ownerName: 'Marta Quintana',
+        resolvedAt: at(-8 * DAY),
+      },
+      {
+        id: '50000000-0000-4000-8000-000000000003',
+        fileName: 'clinicas-madrid.csv',
+        line: 31,
+        importerName: 'Marta Quintana',
+        rowName: 'Dental Arganzuela',
+        rowKind: 'lead',
+        resolution: 'assign_existing',
+        ownerName: 'Íñigo Valdés',
+        resolvedAt: at(-8 * DAY),
+      },
+    ],
+  };
 }

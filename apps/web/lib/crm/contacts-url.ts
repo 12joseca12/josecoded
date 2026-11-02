@@ -21,6 +21,7 @@ export function contactsHref(query: ContactListQuery, patch: Patch = {}): string
   if (next.due) params.set('due', '1');
   if (next.q) params.set('q', next.q);
   if (next.owner) params.set('owner', next.owner);
+  if (next.import) params.set('import', next.import);
   if (next.page && next.page > 1) params.set('page', String(next.page));
   const search = params.toString();
   return search ? `${CONTACTS_PATH}?${search}` : CONTACTS_PATH;
@@ -28,7 +29,7 @@ export function contactsHref(query: ContactListQuery, patch: Patch = {}): string
 
 /** Whether any filter is on (the «quitar filtros» link and the empty state depend on it). */
 export function hasFilters(query: ContactListQuery): boolean {
-  return Boolean(query.kind || query.status || query.due || query.q || query.owner);
+  return Boolean(query.kind || query.status || query.due || query.q || query.owner || query.import);
 }
 
 /**

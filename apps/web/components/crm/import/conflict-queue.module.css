@@ -1,0 +1,169 @@
+.queue {
+  display: grid;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.band {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2) var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-md);
+  background: var(--tint-pending);
+  box-shadow: inset 0 0 0 1px var(--edge-pending);
+  font-size: var(--font-label-size);
+}
+
+.band svg {
+  color: var(--pending);
+}
+
+.band strong {
+  font-weight: var(--font-emphasis-weight);
+}
+
+.card {
+  display: grid;
+  gap: var(--sp-4);
+  min-width: 0;
+  padding: var(--sp-5);
+  border-radius: var(--r-lg);
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+}
+
+.cardHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-1) var(--sp-4);
+}
+
+.cardTitle {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--font-cell-title-size);
+  font-weight: var(--font-emphasis-weight);
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  color: var(--text-3);
+  font-size: var(--font-caption-size);
+}
+
+.faces {
+  display: grid;
+  gap: var(--sp-2);
+}
+
+@container page (min-width: 44rem) {
+  .faces {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.face {
+  display: grid;
+  align-content: start;
+  gap: var(--sp-2);
+  min-width: 0;
+  padding: var(--sp-4);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-hairline-strong);
+}
+
+.faceTitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  color: var(--text-3);
+  font-size: var(--font-caption-size);
+}
+
+.dl {
+  display: grid;
+  margin: 0;
+  font-size: var(--font-small-size);
+}
+
+.dl > div {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: var(--sp-3);
+  padding: var(--sp-2) 0;
+  box-shadow: var(--shadow-edge-bottom);
+}
+
+.dl > div:last-child {
+  box-shadow: none;
+}
+
+.dl dt {
+  color: var(--text-3);
+}
+
+.dl dd {
+  margin: 0;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.dl dd[data-empty='true'] {
+  color: var(--text-3);
+}
+
+.dl dd[data-diff='true']::after {
+  content: ' · ' attr(data-diff-label);
+  color: var(--pending);
+  font-size: var(--font-caption-size);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.dialogBody {
+  display: grid;
+  gap: var(--sp-4);
+}
+
+.dialogText {
+  margin: 0;
+  color: var(--text-2);
+}
+
+.section {
+  display: grid;
+  gap: var(--sp-3);
+  margin-top: var(--sp-8);
+}
+
+.heading {
+  margin: 0;
+  font-size: var(--font-title-sm-size);
+  font-weight: var(--font-title-sm-weight);
+  letter-spacing: var(--font-title-sm-tracking);
+  line-height: var(--font-title-sm-leading);
+}
+
+.kindLine {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+/* the dot between type and status is decoration: no text for the screen reader to read */
+.kindLine > span:first-child::after {
+  content: '·' / '';
+  margin-inline-start: var(--sp-2);
+  color: var(--text-3);
+}

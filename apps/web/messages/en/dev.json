@@ -70,6 +70,10 @@
         "contactos": "K2 · Contacts",
         "contacto-lead": "K3 · Contact (lead with an opportunity)",
         "contacto-cliente": "K3 · Contact (client with portal access)",
+        "importar-archivo": "K4 · Import, step 1 (file)",
+        "importar-columnas": "K4 · Import, step 2 (columns and preview with errors)",
+        "importar-resultado": "K4 · Import, step 3 (result with one pending row)",
+        "conflictos": "K4 · Import conflicts (admin queue)",
         "admin": "C1 · Admin summary (/admin)"
       },
       "roles": {

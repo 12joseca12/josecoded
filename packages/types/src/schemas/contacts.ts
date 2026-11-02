@@ -32,6 +32,8 @@ export const contactListQuerySchema = z.object({
     .catch(undefined),
   q: z.string().trim().max(80).optional().catch(undefined),
   owner: ownerFilterSchema.optional().catch(undefined),
+  /** `?import=<id>`: the contacts one CSV import created (the link of its result). */
+  import: z.uuid().optional().catch(undefined),
   page: z.coerce.number().int().min(1).max(10_000).optional().catch(undefined),
 });
 export type ContactListQuery = z.infer<typeof contactListQuerySchema>;

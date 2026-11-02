@@ -1,0 +1,14 @@
+.origin {
+  color: var(--text-3);
+  font-size: var(--font-caption-size);
+}
+
+.origin[data-state='ignored'] {
+  color: var(--pending);
+}
+
+/* the selector is as wide as its longest option, not as the column (ref/crm .select) */
+.select {
+  width: max-content;
+  max-width: 100%;
+}

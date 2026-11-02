@@ -19,6 +19,8 @@
 }
 
 .heading[data-size='crm'] {
+  /* the title of a screen of the zone is one line (ref/crm .h1 has no measure): «Importar contactos. Desde un CSV.» is 33 characters */
+  max-width: none;
   font-size: var(--font-crm-title-size);
   font-weight: var(--font-crm-title-weight);
   letter-spacing: var(--font-crm-title-tracking);

@@ -18,6 +18,8 @@ const config: NextConfig = {
   poweredByHeader: false,
   // next dev must not write AGENTS.md / CLAUDE.md into the app
   agentRules: false,
+  // the CSV import (K4) sends the file text (≤ 1 MB, checked again in the action) in the body of a Server Action
+  experimental: { serverActions: { bodySizeLimit: '2mb' } },
 
   // trailing slashes are redirected by our own rules (one hop to the canonical URL)
   skipTrailingSlashRedirect: true,

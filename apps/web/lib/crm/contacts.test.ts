@@ -93,6 +93,12 @@ describe('applyContactFilters', () => {
     expect(calls('eq')).toContainEqual(['owner_id', '22222222-2222-4222-8222-222222222222']);
   });
 
+  it('?import=<id> keeps the contacts that import created and nothing else', () => {
+    applyContactFilters(new Builder() as never, { import: 'imp' }, { role: 'closer', userId: 'me', organizationIds: null, importedIds: ['a', 'b'] });
+    expect(calls('eq')).toContainEqual(['source', 'import_csv']);
+    expect(calls('in')).toEqual([['id', ['a', 'b']]]);
+  });
+
   it('ignores the owner filter for a closer: another closer’s id in her URL never reaches the query', () => {
     run({ owner: '22222222-2222-4222-8222-222222222222' }, 'closer');
     run({ owner: 'unassigned' }, 'closer');

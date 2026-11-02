@@ -82,6 +82,7 @@ interface Filterable<T> {
   eq(column: string, value: unknown): T;
   is(column: string, value: null): T;
   or(filter: string): T;
+  in(column: string, values: readonly string[]): T;
   lte(column: string, value: string): T;
 }
 
@@ -92,7 +93,14 @@ interface Filterable<T> {
 export function applyContactFilters<T extends Filterable<T>>(
   builder: T,
   query: ContactListQuery,
-  options: { role: StaffRole; userId: string; organizationIds: readonly string[] | null; now?: Date },
+  options: {
+    role: StaffRole;
+    userId: string;
+    organizationIds: readonly string[] | null;
+    /** The contacts one import touched (`?import=`); `null` when the URL does not ask for it. */
+    importedIds?: readonly string[] | null;
+    now?: Date;
+  },
 ): T {
   let next = builder.is('archived_at', null);
   if (query.kind) next = next.eq('kind', query.kind);
@@ -106,6 +114,7 @@ export function applyContactFilters<T extends Filterable<T>>(
       next = next.or(parts.join(','));
     }
   }
+  if (options.importedIds) next = next.eq('source', 'import_csv').in('id', options.importedIds);
   if (options.role === 'admin' && query.owner) {
     if (query.owner === 'unassigned') next = next.is('owner_id', null);
     else if (query.owner === 'mine') next = next.or(`owner_id.is.null,owner_id.eq.${options.userId}`);
@@ -203,6 +212,18 @@ export async function getContactPage(
     organizationIds = (data ?? []).map((row) => row.id);
   }
 
+  // `?import=<id>`: the contacts that import created, found by the `import` interaction its RPC left on each one
+  let importedIds: string[] | null = null;
+  if (query.import) {
+    const { data } = await supabase
+      .from('crm_interactions')
+      .select('contact_id')
+      .eq('kind', 'import')
+      .eq('payload->>import_id', query.import)
+      .limit(500);
+    importedIds = (data ?? []).map((row) => row.contact_id);
+  }
+
   const from = (page - 1) * CONTACTS_PAGE_SIZE;
   const base = supabase
     .from('crm_contacts')
@@ -211,6 +232,7 @@ export async function getContactPage(
     role,
     userId: user.id,
     organizationIds,
+    importedIds,
   }) as unknown as typeof base;
   const [list, owners] = await Promise.all([
     filtered

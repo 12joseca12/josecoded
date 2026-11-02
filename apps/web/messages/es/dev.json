@@ -70,6 +70,10 @@
         "contactos": "K2 · Contactos",
         "contacto-lead": "K3 · Contacto (lead con oportunidad)",
         "contacto-cliente": "K3 · Contacto (cliente con acceso al portal)",
+        "importar-archivo": "K4 · Importar, paso 1 (fichero)",
+        "importar-columnas": "K4 · Importar, paso 2 (columnas y vista previa con errores)",
+        "importar-resultado": "K4 · Importar, paso 3 (resultado con una fila pendiente)",
+        "conflictos": "K4 · Conflictos de importación (cola del admin)",
         "admin": "C1 · Resumen de admin (/admin)"
       },
       "roles": {

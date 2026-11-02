@@ -1,0 +1,148 @@
+/* The tables of K4 (column mapper, preview, history, resolved conflicts): real table semantics with explicit roles,
+   because below 46rem of their own width each row is stacked into a block and the browser would drop them. */
+.box {
+  container-type: inline-size;
+  min-width: 0;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: var(--font-label-size);
+}
+
+.caption {
+  padding: 0 var(--sp-3) var(--sp-3);
+  color: var(--text-2);
+  font-size: var(--font-small-size);
+  text-align: start;
+}
+
+.th {
+  height: var(--sp-9);
+  padding: 0 var(--sp-3);
+  box-shadow: var(--shadow-edge-bottom);
+  color: var(--text-3);
+  font-size: var(--font-caption-size);
+  font-weight: var(--font-emphasis-weight);
+  text-align: start;
+  white-space: nowrap;
+}
+
+.cell {
+  height: var(--size-crm-row);
+  padding: var(--sp-1) var(--sp-3);
+  box-shadow: var(--shadow-edge-bottom);
+  color: var(--text-2);
+  vertical-align: middle;
+}
+
+.row:last-child .cell {
+  box-shadow: none;
+}
+
+.right {
+  text-align: end;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.main {
+  display: grid;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.main strong {
+  overflow: hidden;
+  color: var(--text);
+  font-weight: var(--font-emphasis-weight);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.main span {
+  overflow: hidden;
+  color: var(--text-3);
+  font-size: var(--font-caption-size);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.muted {
+  color: var(--text-3);
+}
+
+@container (width < 46rem) {
+  .table,
+  .body {
+    display: block;
+  }
+
+  .head {
+    display: none;
+  }
+
+  .caption {
+    display: block;
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-1-5) var(--sp-3);
+    padding: var(--sp-3) var(--sp-1);
+    box-shadow: var(--shadow-edge-bottom);
+  }
+
+  .row:last-child {
+    box-shadow: none;
+  }
+
+  .cell {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  .cell[data-col='main'] {
+    flex: 1 1 10rem;
+    min-width: 0;
+  }
+
+  .cell[data-col='status'] {
+    order: 1;
+    flex: none;
+    margin-inline-start: auto;
+  }
+
+  .cell[data-col='wide'] {
+    order: 2;
+    flex: 1 1 100%;
+  }
+
+  .cell[data-col='meta'] {
+    order: 3;
+    flex: none;
+    color: var(--text-3);
+    font-size: var(--font-caption-size);
+  }
+
+  .cell[data-label]::before {
+    content: attr(data-label) ' · ';
+    color: var(--text-3);
+    font-size: var(--font-caption-size);
+  }
+
+  .main strong,
+  .main span {
+    white-space: normal;
+  }
+}

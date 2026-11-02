@@ -1,0 +1,31 @@
+﻿Nombre;Email;Teléfono;Empresa;Tipo;Notas
+Raúl Ibáñez;nuevo-01@import.test;;Empresa 01;lead;"Conocido en la feria; pidió llamada"
+Silvia Rey;nuevo-02@import.test;;Empresa 02;lead;
+Pablo Ortiz;nuevo-03@import.test;+34 600 100 003;Empresa 03;lead;
+Lidia Cano;nuevo-04@import.test;;Empresa 04;agencia;
+Mario Esteban;nuevo-05@import.test;;Empresa 05;reclutador;
+Eva Molina;nuevo-06@import.test;+34 600 100 006;Empresa 06;agencia;
+"=HYPERLINK(""http://x.test"")";nuevo-07@import.test;;Empresa 07;lead;
+Nuria Gil;nuevo-08@import.test;;Empresa 08;lead;
+Hugo Prieto;nuevo-09@import.test;+34 600 100 009;Empresa 09;lead;
+Irene Soler;nuevo-10@import.test;;Empresa 10;agencia;
+Óscar Vidal;nuevo-11@import.test;;Empresa 11;reclutador;
+Marta Beltrán;nuevo-12@import.test;+34 600 100 012;Empresa 12;agencia;
+Álvaro Ruiz;nuevo-13@import.test;;Empresa 13;lead;
+Lucía Navarro;nuevo-14@import.test;;Empresa 14;lead;
+Sergio Marín;nuevo-15@import.test;+34 600 100 015;Empresa 15;lead;
+Paula Ferrer;nuevo-16@import.test;;Empresa 16;agencia;
+Diego Campos;nuevo-17@import.test;;Empresa 17;reclutador;
+Elena Roca;nuevo-18@import.test;+34 600 100 018;Empresa 18;agencia;
+Iván Pons;nuevo-19@import.test;;Empresa 19;lead;
+Carmen Ortega;nuevo-20@import.test;;Empresa 20;lead;
+Rubén Lozano;nuevo-21@import.test;+34 600 100 021;Empresa 21;lead;
+Alba Crespo;nuevo-22@import.test;;Empresa 22;agencia;
+Tomás Haro;nuevo-23@import.test;;Empresa 23;reclutador;
+Noelia Bravo;nuevo-24@import.test;+34 600 100 024;Empresa 24;agencia;
+Adrián Pastor;nuevo-25@import.test;;Empresa 25;lead;
+Sara Medina;nuevo-26@import.test;;Empresa 26;lead;
+Lead de Carla;lead-carla@example.test;;Empresa Carla;lead;
+Cliente de Carla;cliente-carla@example.test;;Empresa Carla;lead;
+Recruiter Test;recruiter@example.test;+34 600 200 001;Selección Test;reclutador;Ya estaba en la cartera de Jose
+Sin datos de contacto;;;Empresa Fantasma;lead;

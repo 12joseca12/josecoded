@@ -22,6 +22,12 @@ describe('contactsHref', () => {
     expect(contactsHref({ due: true, page: 2 }, { page: 1 })).toBe('/crm/contactos?due=1');
   });
 
+  it('keeps ?import= with the rest of the filters', () => {
+    const id = '11111111-1111-4111-8111-111111111111';
+    expect(contactsHref({ import: id }, { kind: 'lead' })).toBe(`/crm/contactos?kind=lead&import=${id}`);
+    expect(hasFilters({ import: id })).toBe(true);
+  });
+
   it('encodes what the person typed', () => {
     expect(contactsHref({}, { q: 'a&b c' })).toBe('/crm/contactos?q=a%26b+c');
   });

@@ -33,6 +33,9 @@ type TextLike = Common & {
   /** A single key that focuses the field from anywhere (`/`): announced with `aria-keyshortcuts`, bound by the screen. */
   hotkey?: string;
   defaultValue?: string;
+  /** Controlled: the screen keeps the text (a note shared by several dialogs). */
+  value?: string;
+  onChange?: (value: string) => void;
   autoComplete?: HTMLInputAutoCompleteAttribute;
   inputMode?: 'text' | 'numeric' | 'email' | 'tel';
   pattern?: string;
@@ -58,6 +61,9 @@ type Select = Common & {
   defaultValue?: string;
   options: readonly { value: string; label: string }[];
   size?: 'md' | 'compact';
+  /** Controlled: the screen decides what is selected (a mapping where choosing in one select changes another). */
+  value?: string;
+  onChange?: (value: string) => void;
 };
 type Checkbox = Common & {
   kind: 'checkbox';
@@ -131,7 +137,12 @@ export function Field(props: FieldProps) {
 
   if (props.kind === 'radio-group') {
     return (
-      <fieldset className={styles.field} aria-describedby={describedBy} aria-disabled={pending || undefined} disabled={disabled}>
+      <fieldset
+        className={styles.field}
+        aria-describedby={describedBy}
+        aria-disabled={pending || undefined}
+        disabled={disabled}
+      >
         <legend className={styles.label}>{props.label}</legend>
         <div className={styles.options}>
           {props.options.map((option, index) => {
@@ -248,7 +259,10 @@ export function Field(props: FieldProps) {
           {...shared}
           data-size={props.size}
           key={`${props.name}:${kept ?? ''}`}
-          defaultValue={kept ?? props.defaultValue}
+          {...(props.value !== undefined
+            ? { value: props.value }
+            : { defaultValue: kept ?? props.defaultValue })}
+          onChange={(event) => props.onChange?.(event.currentTarget.value)}
         >
           {props.options.map((option) => (
             <option key={option.value} value={option.value}>
@@ -286,7 +300,12 @@ function textProps(
     'data-hotkey': props.hotkey,
     'aria-keyshortcuts': props.hotkey,
     readOnly: pending || undefined,
-    defaultValue: kept ?? props.defaultValue,
+    ...(props.value !== undefined
+      ? { value: props.value }
+      : { defaultValue: kept ?? props.defaultValue }),
+    onChange: props.onChange
+      ? (event: ChangeEvent<HTMLInputElement>) => props.onChange?.(event.currentTarget.value)
+      : undefined,
     autoComplete: props.autoComplete,
     inputMode: props.inputMode,
     pattern: props.pattern,
