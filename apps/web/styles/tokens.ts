@@ -167,6 +167,9 @@ export type TokenName =
   | '--size-visually-hidden'
   | '--size-icon-lg'
   | '--size-measure-hero-sub'
+  | '--size-measure-hint'
+  | '--size-switch-knob'
+  | '--size-switch-pad'
   | '--size-photo-column'
   | '--size-tcard-art-min'
   | '--size-tcard-art-max'
@@ -570,6 +573,9 @@ export const tokens = {
   'size-visually-hidden': '--size-visually-hidden',
   'size-icon-lg': '--size-icon-lg',
   'size-measure-hero-sub': '--size-measure-hero-sub',
+  'size-measure-hint': '--size-measure-hint',
+  'size-switch-knob': '--size-switch-knob',
+  'size-switch-pad': '--size-switch-pad',
   'size-photo-column': '--size-photo-column',
   'size-tcard-art-min': '--size-tcard-art-min',
   'size-tcard-art-max': '--size-tcard-art-max',

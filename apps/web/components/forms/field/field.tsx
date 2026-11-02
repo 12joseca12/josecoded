@@ -71,7 +71,7 @@ type Checkbox = Common & {
   defaultChecked?: boolean;
   onChange?: (checked: boolean) => void;
   /** `chip` is the filter toggle of a toolbar: a pill that reads as pressed when it is on. */
-  appearance?: 'check' | 'chip';
+  appearance?: 'check' | 'chip' | 'switch';
   /** Chip only: icon before the label and a number after it. */
   icon?: IconName;
   count?: ReactNode;
@@ -189,6 +189,24 @@ export function Field(props: FieldProps) {
         {props.icon ? <Icon name={props.icon} /> : null}
         {props.label}
         {props.count !== undefined ? <span className={styles.count}>{props.count}</span> : null}
+      </label>
+    );
+  }
+
+  if (props.kind === 'checkbox' && props.appearance === 'switch') {
+    // the label is the accessible name only: the switch sits in a table cell or a row that already says what it is
+    return (
+      <label className={styles.switch}>
+        <input
+          type="checkbox"
+          role="switch"
+          name={props.name}
+          value={props.value ?? 'on'}
+          defaultChecked={props.defaultChecked}
+          disabled={disabled}
+          onChange={(event: ChangeEvent<HTMLInputElement>) => props.onChange?.(event.currentTarget.checked)}
+        />
+        <span className="sr-only">{props.label}</span>
       </label>
     );
   }

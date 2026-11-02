@@ -176,6 +176,9 @@
   --size-visually-hidden: 1ch;
   --size-icon-lg: 1.375rem;
   --size-measure-hero-sub: 34ch;
+  --size-measure-hint: 34ch;
+  --size-switch-knob: 1.125rem;
+  --size-switch-pad: 0.1875rem;
   --size-photo-column: clamp(5.5rem, 38cqi, 16rem);
   --size-tcard-art-min: clamp(9rem, 22svh, 14rem);
   --size-tcard-art-max: 16rem;

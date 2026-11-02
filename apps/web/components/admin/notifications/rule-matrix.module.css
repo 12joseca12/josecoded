@@ -1,0 +1,118 @@
+/* D3, the matrix (ref/crm .matrix). Real table semantics with explicit roles: below 46rem of its own width each row is
+   stacked into a block with its switches in a grid and the browser would drop them. */
+.box {
+  container-type: inline-size;
+  min-width: 0;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: var(--font-label-size);
+}
+
+.head th {
+  padding: var(--sp-2) var(--sp-3);
+  box-shadow: var(--shadow-edge-bottom);
+  color: var(--text-3);
+  font-size: var(--font-caption-size);
+  font-weight: var(--font-emphasis-weight);
+  line-height: var(--font-title-leading);
+  text-align: center;
+  vertical-align: bottom;
+}
+
+.head th.start {
+  text-align: start;
+}
+
+.col small {
+  display: block;
+  font-weight: var(--font-body-weight);
+}
+
+.event {
+  padding: var(--sp-2) var(--sp-3);
+  box-shadow: var(--shadow-edge-bottom);
+  color: var(--text);
+  font-weight: var(--font-emphasis-weight);
+  text-align: start;
+}
+
+.event span {
+  display: block;
+  max-width: var(--size-measure-hint);
+  color: var(--text-3);
+  font-size: var(--font-caption-size);
+  font-weight: var(--font-body-weight);
+}
+
+.cell,
+.na {
+  height: var(--size-crm-row);
+  padding: var(--sp-1) var(--sp-3);
+  box-shadow: var(--shadow-edge-bottom);
+  text-align: center;
+  vertical-align: middle;
+}
+
+.na {
+  color: var(--text-3);
+}
+
+.row:last-child > * {
+  box-shadow: none;
+}
+
+@container (width < 46rem) {
+  .table,
+  .body {
+    display: block;
+  }
+
+  .head {
+    display: none;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+    gap: var(--sp-2) var(--sp-3);
+    padding: var(--sp-3) 0;
+    box-shadow: var(--shadow-edge-bottom);
+  }
+
+  .row:last-child {
+    box-shadow: none;
+  }
+
+  .row .event {
+    grid-column: 1 / -1;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  .row .cell {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-2);
+    height: auto;
+    min-height: var(--size-hit);
+    padding: 0 var(--sp-3);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow-hairline);
+    text-align: start;
+  }
+
+  .cell::before {
+    content: attr(data-label);
+    color: var(--text-2);
+    font-size: var(--font-caption-size);
+  }
+
+  .na {
+    display: none;
+  }
+}

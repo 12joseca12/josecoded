@@ -253,6 +253,77 @@ select.control[data-size='compact'] option {
   outline-offset: var(--focus-ring-offset);
 }
 
+/* the switch of a matrix of notices (ref/crm .switch): a checkbox with `role="switch"`, drawn as a track and a knob */
+.switch {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: var(--sp-10);
+  height: var(--sp-6);
+}
+
+.switch input {
+  appearance: none;
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  border-radius: var(--r-pill);
+  background: var(--tint-chip);
+  box-shadow: var(--shadow-hairline-strong);
+  cursor: pointer;
+  transition: background-color var(--dur-state) var(--ease-out);
+}
+
+.switch input::after {
+  content: '';
+  position: absolute;
+  inset-block-start: var(--size-switch-pad);
+  inset-inline-start: var(--size-switch-pad);
+  width: var(--size-switch-knob);
+  height: var(--size-switch-knob);
+  border-radius: var(--r-circle);
+  background: var(--text-3);
+  transition:
+    translate var(--dur-state) var(--ease-out),
+    background-color var(--dur-state) var(--ease-out);
+}
+
+.switch input:checked {
+  background: var(--violet);
+  box-shadow: none;
+}
+
+.switch input:checked::after {
+  translate: var(--sp-4) 0;
+  background: var(--ink);
+}
+
+.switch input:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.switch input:disabled {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+}
+
+/* a finger needs a bigger target than the track */
+@media (pointer: coarse) {
+  .switch::before {
+    content: '';
+    position: absolute;
+    inset: calc(-1 * var(--sp-2-5)) calc(-1 * var(--sp-1));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .switch input,
+  .switch input::after {
+    transition: none;
+  }
+}
+
 .count {
   font-variant-numeric: tabular-nums;
 }

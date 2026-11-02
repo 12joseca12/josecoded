@@ -1,0 +1,132 @@
+{
+  "adminNotifications": {
+    "metaTitle": "Notificaciones",
+    "title": "Notificaciones.",
+    "tone": "Quién se entera de qué.",
+    "lead": "Cada interruptor es un aviso de un evento a un destinatario por un canal.",
+    "cacheNote": "El gateway guarda las reglas 5 min en caché: un cambio tarda eso como mucho.",
+    "readOnlyBand": "Guardar y Enviar prueba aún no están activos: de momento las reglas solo se ven.",
+    "tableCaption": "Avisos por evento, destinatario y canal",
+    "event": "Evento",
+    "dash": "—",
+      "notApplicable": "No aplica",
+    "cellLabel": "{event} → {column}",
+    "columnLabel": "{recipient} · {channel}",
+    "channels": {
+      "telegram": "Telegram",
+      "email": "correo"
+    },
+    "recipients": {
+      "admin": "Admin",
+      "owner": "Dueño del contacto",
+      "client": "Cliente"
+    },
+    "test": "Enviar prueba",
+    "testDone": "Mensaje de prueba enviado a tu Telegram.",
+    "save": "Guardar",
+    "saveDone": "Reglas guardadas. El gateway las aplica en 5 min como mucho.",
+    "changes": "{count, plural, one {# cambio sin guardar} other {# cambios sin guardar}}",
+    "addPerson": "Añadir persona",
+    "events": {
+      "leadCreated": {
+        "name": "Lead nuevo",
+        "hint": "entra un lead por la web, el chat o Cal.com"
+      },
+      "leadCloseRequested": {
+        "name": "Pedir cierre",
+        "hint": "un closer pide cerrar cobrado"
+      },
+      "importDone": {
+        "name": "Importación terminada",
+        "hint": "alguien del equipo importa un CSV"
+      },
+      "importConflicts": {
+        "name": "Conflicto de importación",
+        "hint": "una fila choca con un contacto de otro dueño"
+      },
+      "importConflictResolved": {
+        "name": "Conflicto resuelto",
+        "hint": "el admin resuelve un conflicto de importación"
+      },
+      "quoteSent": {
+        "name": "Presupuesto enviado",
+        "hint": "se envía un presupuesto a un cliente"
+      },
+      "storyProposed": {
+        "name": "Historia propuesta",
+        "hint": "un cliente propone una historia de usuario"
+      },
+      "storyDecided": {
+        "name": "Historia decidida",
+        "hint": "se acepta o se rechaza una historia"
+      },
+      "commissionCreated": {
+        "name": "Comisión creada",
+        "hint": "se cierra cobrado un lead con dueño"
+      },
+      "commissionApproved": {
+        "name": "Comisión aprobada",
+        "hint": "el admin aprueba una comisión"
+      },
+      "commissionPaid": {
+        "name": "Comisión pagada",
+        "hint": "se marca una comisión como pagada"
+      },
+      "commissionRejected": {
+        "name": "Comisión rechazada",
+        "hint": "el admin rechaza una comisión"
+      },
+      "commentClient": {
+        "name": "Comentario de un cliente",
+        "hint": "un cliente comenta en su proyecto"
+      },
+      "commentPending": {
+        "name": "Comentario pendiente",
+        "hint": "comentario del blog por moderar"
+      },
+      "upgradeRequested": {
+        "name": "Ampliación solicitada",
+        "hint": "un cliente pide una ampliación"
+      },
+      "assetUploaded": {
+        "name": "Archivo subido",
+        "hint": "un cliente sube un archivo a su proyecto"
+      },
+      "contentDeployed": {
+        "name": "Contenido desplegado",
+        "hint": "termina una publicación de Contenido"
+      },
+      "contentDeployFailed": {
+        "name": "Publicación fallida",
+        "hint": "una publicación de Contenido falla"
+      },
+      "chatVisitorMessage": {
+        "name": "Chat sin leer",
+        "hint": "un visitante escribe en el chat"
+      },
+      "staffInvited": {
+        "name": "Invitación al equipo",
+        "hint": "se invita a alguien al equipo"
+      },
+      "staffClaimed": {
+        "name": "Invitación aceptada",
+        "hint": "alguien acepta su invitación al equipo"
+      },
+      "clientInvited": {
+        "name": "Invitación de cliente",
+        "hint": "se invita a un cliente a su área"
+      }
+    },
+    "sheet": {
+      "title": "Añadir persona concreta",
+      "description": "Una columna nueva para alguien del equipo; elige después de qué eventos se entera.",
+      "person": "Persona",
+      "channel": "Canal",
+      "submit": "Añadir columna",
+      "cancel": "Cancelar",
+      "close": "Cerrar",
+      "saved": "Columna añadida a la matriz.",
+      "empty": "Todo el equipo activo tiene ya su columna."
+    }
+  }
+}
