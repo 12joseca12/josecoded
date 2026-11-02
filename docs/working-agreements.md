@@ -1,5 +1,6 @@
 # josecoded — convenciones de trabajo
 
+> **Versión 1.3 (2026-11-02: trabajo por bloques, pedido por Jose).** Añade §18 Trabajo por bloques: qué es un bloque, qué entrega, cómo se tratan los cambios que pide Jose, cuándo se revisa y qué hace el arquitecto con el backlog vivo (`docs/superpowers/plans/2026-11-02-bloques.md`). No cambia ninguna regla de §1–§17; cambia el tamaño de la unidad de trabajo y el momento en que Jose ve resultados.
 > **Versión 1.2 (2026-09-30, tarde: batería de stack y metodologías de producción, 12 respuestas de Jose, todas la opción recomendada salvo las reglas TypeScript extra de lint, que no marcó).** Añade §14 Tipos, §15 Componentes con variantes, §16 Accesibilidad por componente, §17 Servicios, estado y formularios; amplía la lista blanca de §11 y las reglas duras 11–13 de §13. Impacto en el plan: v2.2 (changelog al inicio del plan).
 > Versión 1.1 (2026-09-30: §4, §5 y §9 ajustados con las decisiones de Jose sobre `/plan-eng-review`; tolerancia 2 % y auto-merge de la newsletter). Versión 1.0, 2026-09-29. Decidido por Jose en la batería de preguntas del 2026-09-29 (12 respuestas, anotadas en `ESTADO.md`). Este documento es normativo: si una tarea del plan lo contradice, manda este documento y la tarea se corrige. Es el «cómo se trabaja»; el «qué» está en la spec y en la nota del vault.
 
@@ -278,3 +279,67 @@ Tareas y decisiones que estas convenciones dejan obsoletas o abren:
 
 - Todo formulario (contacto, generador, newsletter, auth, área, admin, Radar) es un Server Action con `useActionState`, validación **solo en servidor** con el esquema zod de `@josecoded/types/schemas` y respuesta tipada `FormState<T> = { status: 'idle' | 'ok' | 'error'; fieldErrors?: Partial<Record<keyof T, string>>; formError?: string; values?: Partial<Record<keyof T, string>> }` (`values` devuelve lo tecleado en un error, nunca secretos, WCAG 3.3.7). Funciona sin JS; con JS muestra estado `pending` y errores por campo sin recargar.
 - `components/forms/form/` y `components/forms/field/`: `Form` monta `useActionState`, el `aria-live` de errores generales y el botón de envío con `pending`; `Field` es **un componente con variantes** (`kind: 'text' | 'email' | 'tel' | 'textarea' | 'select' | 'checkbox' | 'radio-group' | 'hidden'`) que pinta label, ayuda, error, `id`/`name`, `aria-describedby`, `aria-invalid` y `autocomplete` siempre igual. Ninguna pantalla escribe un `<input>` fuera de `Field` (salvo `ProposalPrompt`, que es un campo especial del inventario y consume los mismos helpers). react-hook-form queda descartado también para el admin y Radar.
+
+## 18. Trabajo por bloques: resultado visible al final de cada uno
+
+**Decisión (Jose, 2026-11-02).** «No me estoy sintiendo cómodo con trabajos tan grandes en los que no vaya viendo resultados, porque además si quiero cambiar algo, los cambios van a ser igual de grandes. Quiero adaptar a que se hagan bloques de trabajo, incluyendo en el sistema un arquitecto que desglose los campos de acción, para poder ir construyendo por bloques (pantallas, componentes) y que la lógica se adapte a esto.»
+
+La unidad de trabajo deja de ser la tarea del plan (varias horas, varias pantallas) y pasa a ser el **bloque**: una pieza que un agente termina en 30–60 minutos y que Jose puede abrir en el navegador al acabar. El plan v3.4 sigue siendo el «qué» (objetivo, ficheros, tests, criterios de cada tarea); el backlog de bloques es el «en qué trozos y en qué orden». Cuando un bloque y su tarea del plan discrepan en alcance, manda el bloque (más pequeño) y el resto de la tarea queda como bloque siguiente, nunca se cuela en el actual.
+
+### 18.1 Qué es un bloque
+
+Un bloque es **una** de estas cosas, nunca dos a la vez:
+
+| Campo de acción | Qué es | Ejemplo |
+|---|---|---|
+| **pantalla** | Una pantalla, o una vista/pestaña de una pantalla, pintada con datos de ejemplo | `/crm/clientes` lista con fixtures |
+| **componente** | Un componente o una familia pequeña (con sus variantes y su contrato a11y, §15–§16) en `/dev/ui` | `StoryCard` + `StoryDecisionSheet` |
+| **lógica** | Datos y acciones conectados a una pantalla que **ya se ve**: Server Actions, RPC, RLS, guards, job del gateway, script de build | SA `acceptStory` → RPC → la ficha real cambia |
+| **infra** | Gate de producción, CI, secretos, Omen; siempre con el paso «pedir OK a Jose» | Aplicar migraciones `20261101*` en producción |
+| **contenido** | Textos, `{{DATO}}`, fixtures, imágenes, Markdown | Rellenar los 20 `{{DATO}}` de `home.json` |
+
+Reglas de tamaño y forma:
+
+- **Tamaño:** 30–60 minutos de trabajo de agente y **≤ ~400 líneas de diff** (sin contar `messages/*.json`, fixtures, snapshots y `database.ts`). Si al planificar o a mitad de camino se ve que no cabe, se **para y se parte**: el bloque actual se cierra en un estado visible y el resto se anota como bloque nuevo en el backlog. Nunca se «termina de un tirón» para no partir.
+- **Resultado visible en localhost al final, siempre.** Público: su URL en `wrangler dev` o `pnpm dev`. Autenticado (área, `/crm`, `/admin`): una **vista previa en `/dev/<zona>/<pantalla>/<rol>`** con fixtures (`apps/web/lib/dev/<zona>-fixtures.ts` + `<zona>-previews.ts`, patrón de `crm-previews.ts`), tras el único interruptor `requireDevUi()` (`NEXT_PUBLIC_DEV_UI=1`; 404 en producción, fuera del sitemap). La vista previa monta **los mismos componentes** que la página real, que reciben los datos por props: no hay copias «de preview». Un bloque de lógica se ve en la página real con la base local (`supabase start` + seed: `jose`, `carla`, `dani`, `ana`).
+- **UI primero, lógica después.** Toda pantalla nueva son al menos **dos bloques**: (1) la pantalla con fixtures, que Jose ve y corrige; (2) la lógica (datos, acciones, RLS) que la deja funcionando. Los componentes del bloque (1) no hacen `fetch` ni conocen Supabase; el bloque (2) no toca CSS Modules salvo un arreglo de una línea. Así un cambio de Jose en la pantalla no arrastra la lógica, y al revés.
+- **Fixtures con los nombres del seed** (Jose, Carla, Dani, Ana) y `{{DATO}}` donde falte el dato real; correos `.test`, teléfonos `+34 600 000 xxx`.
+- Un bloque de **contenido** que necesita datos de Jose no se arranca sin ellos: queda en el backlog marcado «insumo de Jose» y se hace en la tanda en que lleguen.
+
+### 18.2 Qué entrega cada bloque
+
+Al cerrar, el agente deja en el mensaje de cierre (y el controlador lo pasa a Jose tal cual):
+
+1. **Dónde verlo:** la URL en localhost y el comando para arrancar (`pnpm dev`, `pnpm --filter web dev`, `supabase start`, qué cuenta del seed).
+2. **Capturas a 360, 900 y 1440** de lo que cambia (reglas §5; las comparadas contra el prototipo solo donde hay prototipo). Se guardan en `.impeccable/review/bloques/<id>/` (ignorado por git) y se adjuntan.
+3. **Qué he hecho**, en español llano, 3–6 líneas: qué se ve, qué hace, qué no hace todavía. Sin nombres de ficheros ni de componentes salvo que Jose los pida.
+4. **Qué queda:** lo que faltaba de la tarea del plan y ya es otro bloque, y las **dudas para Jose** (como preguntas cerradas con recomendación).
+5. **Commit(s)** con Conventional Commits y la línea `Block: B##` en el cuerpo, para que el backlog y el log se crucen.
+6. **Backlog al día:** el bloque pasa a «hecho» (fecha y commit) en `docs/superpowers/plans/2026-11-02-bloques.md`; `ESTADO.md` solo cambia al cerrar un grupo de bloques (§18.5).
+
+`pnpm lint && pnpm typecheck && pnpm test && pnpm build` en verde en cada bloque (el CI de `main` sigue siendo la red). TDD como en §7: los bloques de lógica llevan su test que falla primero; los de pantalla y componente no llevan unit test (los cubren E2E, axe y capturas). Las reglas de textos (§10), tokens (§1–§2), tipos (§14), variantes (§15) y a11y (§16) se aplican por bloque igual que se aplicaban por tarea; un bloque que crea un componente trae su contrato a11y escrito.
+
+### 18.3 Los cambios que pide Jose son bloques
+
+- Jose mira el resultado y pide cambios **en el navegador**, no por descripción de la dirección (regla de la memoria del proyecto). Cada cambio se anota como **bloque de ajuste** `B##.1`, `B##.2`… en el backlog, con el mismo contrato de §18.2, y se hace antes de pasar al siguiente bloque del grupo, salvo que Jose diga «luego».
+- Un cambio que **contradice una decisión escrita** (spec, PANT, DATOS, prototipo aprobado) se hace igual, pero el arquitecto lo anota como decisión nueva en el backlog y en `ESTADO.md` (y en el vault y el ADR desde el Mac), para que el documento normativo se corrija después y no quede deriva silenciosa.
+- Un cambio que no cabe en un bloque (más de ~400 líneas o más de una pantalla) lo parte el arquitecto antes de empezar, como cualquier otro trabajo.
+- Nunca se mezclan en un commit el ajuste de Jose y el bloque siguiente.
+
+### 18.4 Cuándo se revisa
+
+| Momento | Quién | Sobre qué |
+|---|---|---|
+| **Por bloque, solo si es de lógica, infra o toca seguridad o dinero** (SA, RPC, RLS, guards, gateway, migraciones, comisiones, precios, publicación) | `revisor` ligero, solo lectura, ≤ 10 min | El diff del bloque: contrato, tipos fuera de `@josecoded/types`, `requireAdmin`/`requireStaff` dentro de cada SA, textos en `messages`, test que falla primero |
+| **Por bloque de pantalla o componente** | Nadie | Lo cubren lint, axe en Vitest/E2E, capturas y la mirada de Jose. `web-design-guidelines` lo pasa el implementador antes de cerrar |
+| **Al cerrar un grupo de bloques** (una zona: p. ej. K6 completa, D2 completa, `/blog` completo) | `ui` (impeccable `audit`/`critique` sobre las capturas), `revisor-accesibilidad`, `revisor-seguridad` (solo si el grupo tiene lógica) | El grupo entero, en lote; los hallazgos vuelven como bloques de ajuste |
+| **Gate del día 4** (tarea 9.7) | `/puerta-calidad` completa + `revisor` sobre `main` acumulado + pentest de lista cerrada | Todo lo mergeado |
+
+La integración no cambia con esta sección: rige lo que diga §9 o la excepción vigente que anote `ESTADO.md` (hoy, trabajo directo en `main`, 2026-10-29). Si se vuelve a ramas y PR, **un grupo de bloques = una rama**, no un bloque = una rama.
+
+### 18.5 El arquitecto y el backlog vivo
+
+- El `arquitecto` mantiene **`docs/superpowers/plans/2026-11-02-bloques.md`**: cada bloque con id, campo de acción, qué verá Jose y dónde, tarea del plan de la que sale, dependencias, tamaño, si necesita algo de Jose, si es recortable para la fecha, y estado (pendiente · en curso · hecho con fecha y commit · descartado).
+- **Antes de arrancar cualquier trabajo**, el arquitecto comprueba que cabe en un bloque; si no, lo parte. Nadie implementa una tarea del plan «entera» si su bloque no está en el backlog.
+- **Al cerrar cada grupo**, el arquitecto repasa el orden con Jose (qué se adelanta, qué se recorta), actualiza `ESTADO.md` (Ahora · Siguiente paso · decisiones) y deja anotado qué va al vault y al ADR desde el Mac.
+- El backlog ordena por las prioridades de Jose (hoy: acabar home y páginas enlazadas → portal del cliente → CRM de closers → admin → SEO/GEO; Radar después) y marca los **cinco siguientes**. Los grupos que no comparten ficheros (carriles del plan) pueden ir en paralelo.
