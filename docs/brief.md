@@ -67,3 +67,11 @@ Gana la **opción B** (Cool Steel Grey `#929DA7` · Midnight Charcoal `#17191C` 
 - Visual del hero animado: transición fluida, sin saltos y dinámica, como si la app se estuviera transformando.
 - Barra de navegación limpia y elegante pero tecnológica, que facilite moverse por la web.
 - Barra de scroll lateral personalizada.
+
+## Ajustes de estilo B (2026-11-02, tras la v2)
+
+- Sin títulos pequeños (eyebrows) encima de los textos, en ninguna sección.
+- Navegación: **cápsula** (opción A).
+- Scroll por bloques en escritorio: cada gesto lleva suavemente al bloque siguiente; en móvil, scroll nativo.
+- El progreso del scroll es el borde coral de la cápsula: 0 % sin borde, 100 % borde completo.
+- Los componentes de cada sección se depuran más adelante, al definir cada pantalla.
