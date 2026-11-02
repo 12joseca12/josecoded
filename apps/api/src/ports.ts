@@ -140,3 +140,37 @@ export interface ContentPublicationsRepo {
     error?: string;
   }): Promise<void>;
 }
+
+/** A line of the tree of a commit: a file with its full content, or the removal of a path (`sha: null`). */
+export type TreeEntry =
+  | { path: string; mode: '100644'; type: 'blob'; content: string }
+  | { path: string; mode: '100644'; type: 'blob'; sha: null };
+
+export interface RepoCallHooks {
+  /** Called before every HTTP request the adapter makes, so the caller can count it against its subrequest budget. */
+  onRequest?: () => void;
+}
+
+export interface RepoCommitResult {
+  /** The new commit, or the current head when the tree did not change (`changed: false`). */
+  commitSha: string;
+  /** `{path: blob sha}` of the files the commit wrote. */
+  files: Record<string, string>;
+  changed: boolean;
+}
+
+export interface WorkflowRunSummary {
+  id: number;
+  status: string;
+  conclusion: string | null;
+}
+
+/** The GitHub App `josecoded-bot` (task 3.8c): one commit on the main branch through the Git Data API, and the deploy run to watch. */
+export interface RepoWriter {
+  /** Paths of the files directly under `dir` on the branch; `[]` when the directory does not exist. */
+  listDirectory(dir: string, hooks?: RepoCallHooks): Promise<string[]>;
+  /** One commit with all `entries`, fast-forward only (one retry if the branch moved). */
+  commit(input: { message: string; entries: TreeEntry[] }, hooks?: RepoCallHooks): Promise<RepoCommitResult>;
+  /** The run of the deploy workflow whose head is `sha`, or `null` if there is none (yet). */
+  workflowRunForSha(sha: string, hooks?: RepoCallHooks): Promise<WorkflowRunSummary | null>;
+}

@@ -76,6 +76,9 @@ export type Env = {
   GITHUB_APP_ID?: string;
   GITHUB_APP_INSTALLATION_ID?: string;
   GITHUB_APP_PRIVATE_KEY?: string;
+  /** `owner/name` of the repo the bot commits to (default 12joseca12/josecoded) and its branch (default main). */
+  GITHUB_REPO?: string;
+  GITHUB_BRANCH?: string;
   /** Native rate limiting bindings (wrangler `ratelimits`). Absent in local dev. */
   LEADS_RATE_LIMITER?: RateLimiterBinding;
   AFFILIATE_RATE_LIMITER?: RateLimiterBinding;

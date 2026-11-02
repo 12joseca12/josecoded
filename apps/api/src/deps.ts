@@ -3,7 +3,9 @@
 // that import SDKs or call third parties. Routes and middlewares receive `c.var.deps`; they never import adapters.
 import { createChatContextsRepo, createChatRepo } from './adapters/chat';
 import { createClientContacts } from './adapters/client-contacts';
+import { createContentPublicationsRepo } from './adapters/content-publications';
 import { createEmailSender } from './adapters/email';
+import { createRepoWriter } from './adapters/github';
 import { createAffiliatesRepo, createLeadsRepo } from './adapters/leads';
 import { createRecipientsRepo } from './adapters/notification-recipients';
 import { createNoticeLedger, createOutboxRepo } from './adapters/outbox';
@@ -24,9 +26,11 @@ import type {
   ChatContextsRepo,
   ChatRepo,
   ClientContacts,
+  ContentPublicationsRepo,
   LeadsRepo,
   QuotaStore,
   RecipientsRepo,
+  RepoWriter,
   StaffTelegramLinks,
   TurnstileVerifier,
 } from './ports';
@@ -72,6 +76,10 @@ export interface Deps {
   staffTelegram?: StaffTelegramLinks;
   /** `getUpdates` of the bot. Undefined without TELEGRAM_BOT_TOKEN. */
   telegramInbox?: TelegramInbox;
+  /** Publications of site content and their progress mark. Undefined without the secret key. */
+  contentPublications?: ContentPublicationsRepo;
+  /** The GitHub App `josecoded-bot`. Undefined without GITHUB_APP_ID, GITHUB_APP_INSTALLATION_ID and GITHUB_APP_PRIVATE_KEY: publications then fail with `github_not_configured`. */
+  repoWriter?: RepoWriter;
   /** The published price catalogue (`pricing_published()`, 5-minute cache, compiled fallback). Services read it once per request through `loadPricing`. */
   pricing?: PricingSource;
 }
@@ -96,6 +104,7 @@ export function buildDeps(env: Env): Deps {
   const ai = createAiClient(env);
   const email = createEmailSender(env);
   const telegramInbox = createTelegramInbox(env);
+  const repoWriter = createRepoWriter(env);
   return {
     clock: { now: () => new Date() },
     supabase: gateway,
@@ -113,10 +122,12 @@ export function buildDeps(env: Env): Deps {
           recipients: createRecipientsRepo(createRawRpc(gateway)),
           clientContacts: createClientContacts(gateway),
           staffTelegram: createStaffTelegramLinks(createRawRpc(gateway)),
+          contentPublications: createContentPublicationsRepo(gateway, createRawRpc(gateway)),
         }
       : { pricing: createCompiledPricingSource() }),
     ...(telegram ? { telegram } : {}),
     ...(email ? { email } : {}),
+    ...(repoWriter ? { repoWriter } : {}),
     ...(telegramInbox ? { telegramInbox } : {}),
     ...(turnstile ? { turnstile } : {}),
     ...(ai ? { ai } : {}),

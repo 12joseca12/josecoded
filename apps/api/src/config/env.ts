@@ -49,6 +49,8 @@ const envSchema = z.object({
   GITHUB_APP_ID: z.string().min(1).optional(),
   GITHUB_APP_INSTALLATION_ID: z.string().min(1).optional(),
   GITHUB_APP_PRIVATE_KEY: z.string().min(1).optional(),
+  GITHUB_REPO: z.string().regex(/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/).optional(),
+  GITHUB_BRANCH: z.string().regex(/^[A-Za-z0-9_./-]{1,100}$/).optional(),
   LEADS_RATE_LIMITER: rateLimiterSchema,
   AFFILIATE_RATE_LIMITER: rateLimiterSchema,
   RADAR_RATE_LIMITER: rateLimiterSchema,

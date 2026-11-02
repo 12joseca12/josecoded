@@ -3,6 +3,7 @@
 // each tick runs the DUE ones, in order, inside a subrequest budget; what does not fit waits for the next tick.
 import { parseEnv } from './config/env';
 import { resolveDeps, type Deps } from './deps';
+import { CONTENT_POLL_DEPLOY, pollContentDeploys } from './jobs/content-poll-deploy';
 import { drainOutbox, OUTBOX_DRAIN } from './jobs/outbox-drain';
 import { pollTelegramUpdates, TELEGRAM_POLL } from './jobs/telegram-poll';
 import { nextRun } from './utils/cron';
@@ -17,6 +18,7 @@ export type { JobContext, JobHandler } from './jobs/job';
 export const jobHandlers = new Map<string, JobHandler>([
   [OUTBOX_DRAIN, drainOutbox],
   [TELEGRAM_POLL, pollTelegramUpdates],
+  [CONTENT_POLL_DEPLOY, pollContentDeploys],
 ]);
 
 export type TickReport = {

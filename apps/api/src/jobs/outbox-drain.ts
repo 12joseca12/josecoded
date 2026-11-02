@@ -3,12 +3,16 @@
 // services/notifications.service.ts) and acks the delivered ones; a failed delivery is recorded with `outbox_fail`
 // and retried on a later tick. After the 10th attempt the SQL dead-letters the event and enqueues `system.outbox_dead`,
 // which this same job delivers (to Jose, outside the rules) on the next tick.
+import { handlePublishRequested } from '../services/content-publish.service';
 import { deliverAll, resolveRecipients } from '../services/notifications.service';
 
 import type { JobHandler } from './job';
 import type { OutboxEvent } from '@josecoded/types';
 
 export const OUTBOX_DRAIN = 'outbox.drain';
+const CONTENT_PUBLISH_REQUESTED = 'content.publish_requested';
+/** Worst case of a publication: its row, token, branch listing, ref, commit, tree, commit, ref update, a retry's ref and the mark. */
+const PUBLISH_SUBREQUESTS = 14;
 
 /** Events per tick. Telegram allows about one message per second to one chat; the rest waits five minutes. */
 export const MAX_BATCH = 20;
@@ -155,6 +159,17 @@ export const drainOutbox: JobHandler = async ({ deps, budget }) => {
   try {
     for (const event of events) {
       try {
+        // the site content is committed to the repo by the bot (task 3.8c): no message, its own handler
+        if (event.event === CONTENT_PUBLISH_REQUESTED) {
+          // the publication, up to a handful of calls to GitHub, and the mark; otherwise it waits for a quieter tick
+          if (budget.remaining < PUBLISH_SUBREQUESTS) {
+            console.warn(JSON.stringify({ scope: 'scheduled', job: OUTBOX_DRAIN, deferred: event.id }));
+            break;
+          }
+          await handlePublishRequested(deps, event.payload, () => budget.take());
+          delivered.push(event.id);
+          continue;
+        }
         const thread = groupingThread(event);
         if (thread && quota) {
           // chat notices are grouped: one per thread every 10 minutes (the rest of the burst is acked unsent)

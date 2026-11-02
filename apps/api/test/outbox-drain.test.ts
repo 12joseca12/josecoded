@@ -7,6 +7,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createFakeSupabase, type FakeSupabase } from './fakes/supabase-rest.fake';
 import { batchLimit, formatOutboxEvent, MAX_BATCH, noticeKey } from '../src/jobs/outbox-drain';
 import { scheduled } from '../src/scheduled';
+import { createFakePublications, createFakeRepoWriter } from './fakes/content.fake';
 import { resetRecipientsCache } from '../src/services/notifications.service';
 
 import type { Env } from '../src/types/env.types';
@@ -312,6 +313,65 @@ describe('outbox.drain with the admin rules (task 3.8b)', () => {
     expect(at('content.deployed', { publication_id: 'p', commit_sha: 'abcdef1234567' })).toBe('Contenido publicado y desplegado.\nPublicación p · commit abcdef1');
     expect(at('content.deploy_failed', { publication_id: 'p', commit_sha: null, error: 'x'.repeat(200) })).toContain(`«${'x'.repeat(59)}…»`);
     expect(at('story.proposed', { story_id: 's', client_id: 'c', title: 'a\nb' })).toContain('«a b»');
+  });
+});
+
+describe('outbox.drain publishes site content (task 3.8c)', () => {
+  const PUB = '33333333-3333-4333-8333-333333333333';
+  const snapshot = { files: { 'content/overrides/settings.json': { a: 1 } } };
+
+  /** The drain with the content ports replaced by fakes (env.__deps, test builds only). */
+  async function tickWith(deps: object) {
+    for (const job of sb.jobs) job.next_run_at = new Date(Date.now() - 60_000).toISOString();
+    await scheduled(controller, { ...env, TEST: '1', __deps: deps } as unknown as Env);
+  }
+
+  it('commits the publication through the bot and acks the event; no Telegram message is involved', async () => {
+    const publications = createFakePublications([{ id: PUB, snapshot }]);
+    const repoWriter = createFakeRepoWriter();
+    const row = sb.enqueue('content.publish_requested', { publication_id: PUB });
+
+    await tickWith({ contentPublications: publications, repoWriter });
+
+    expect(repoWriter.commits).toHaveLength(1);
+    expect(publications.marks[0]).toMatchObject({ id: PUB, status: 'committed', commitSha: 'a'.repeat(40) });
+    expect(row.delivered_at).not.toBeNull();
+    expect(sb.telegram).toEqual([]);
+    expect(sb.rpcCalls).not.toContain('notification_recipients');
+  });
+
+  it('without the App secrets the publication ends failed: github_not_configured, and the event is acked', async () => {
+    const publications = createFakePublications([{ id: PUB, snapshot }]);
+    const row = sb.enqueue('content.publish_requested', { publication_id: PUB });
+    await tickWith({ contentPublications: publications });
+    expect(publications.marks).toEqual([{ id: PUB, status: 'failed', error: 'github_not_configured' }]);
+    expect(row.delivered_at).not.toBeNull();
+  });
+
+  it('when the outcome cannot be recorded the event fails and is retried; the second try finds the tree already committed and returns the head', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const publications = createFakePublications([{ id: PUB, snapshot }]);
+    const repoWriter = createFakeRepoWriter();
+    publications.markFails = new Error('rpc down');
+    const row = sb.enqueue('content.publish_requested', { publication_id: PUB });
+
+    await tickWith({ contentPublications: publications, repoWriter });
+    expect(row).toMatchObject({ delivered_at: null, attempts: 1 });
+
+    publications.markFails = undefined;
+    repoWriter.unchanged = true; // the repo already has exactly this tree: the head is returned
+    await tickWith({ contentPublications: publications, repoWriter });
+    expect(publications.marks[0]).toMatchObject({ status: 'committed', commitSha: 'f'.repeat(40) });
+    expect(row.delivered_at).not.toBeNull();
+  });
+
+  it('stays inside the tick budget next to other events', async () => {
+    const publications = createFakePublications([{ id: PUB, snapshot }]);
+    const repoWriter = createFakeRepoWriter();
+    for (let i = 0; i < 6; i += 1) sb.enqueue('comment.pending', { ...comment, id: `c${i}` });
+    sb.enqueue('content.publish_requested', { publication_id: PUB });
+    await tickWith({ contentPublications: publications, repoWriter });
+    expect(sb.requests.length + repoWriter.requests).toBeLessThanOrEqual(40);
   });
 });
 

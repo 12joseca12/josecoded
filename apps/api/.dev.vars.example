@@ -18,6 +18,16 @@ ADMIN_REQUIRE_MFA=false
 # Telegram webhook mode (instead of the telegram.poll_updates job): the secret_token given to setWebhook. 16+ chars of A-Za-z0-9_-
 # TELEGRAM_WEBHOOK_SECRET=
 
+# --- Content publication (task 3.8c): the GitHub App josecoded-bot commits the admin's published content to the repo. ---
+# Secrets of the App (contents:write + actions:read on this repo only). Without them a publication ends failed: github_not_configured.
+# GITHUB_APP_ID=
+# GITHUB_APP_INSTALLATION_ID=
+# The key as PKCS8 PEM (GitHub gives PKCS#1): openssl pkcs8 -topk8 -nocrypt -in app.pem -out app.pkcs8.pem ; then paste with \n for newlines
+# GITHUB_APP_PRIVATE_KEY=
+# Optional: repo and branch (defaults 12joseca12/josecoded and main)
+# GITHUB_REPO=owner/name
+# GITHUB_BRANCH=main
+
 # --- Public modules (proposals 3.7, leads 3.8) ---
 # Turnstile always-pass dummy secret for local runs (https://developers.cloudflare.com/turnstile/troubleshooting/testing/)
 # TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
