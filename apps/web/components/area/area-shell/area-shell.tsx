@@ -15,10 +15,13 @@ import type { ReactNode } from 'react';
 export async function AreaShell({
   locale,
   isClient,
+  currentPath,
   children,
 }: {
   locale: Locale;
   isClient: boolean;
+  /** The logical path to mark as current instead of the real one (the `/dev` previews stand for a real screen). */
+  currentPath?: string;
   children: ReactNode;
 }) {
   const t = await getTranslations({ locale, namespace: 'area.nav' });
@@ -27,6 +30,7 @@ export async function AreaShell({
     ...(isClient
       ? ([
           { href: '/area-clientes/tareas', label: t('tasks') },
+          { href: '/area-clientes/historias', label: t('stories') },
           { href: '/area-clientes/material', label: t('files') },
           { href: '/area-clientes/pack', label: t('plan') },
         ] as const)
@@ -38,7 +42,7 @@ export async function AreaShell({
   return (
     <div className={styles.shell}>
       <div className={styles.frame}>
-        <AreaNav label={t('label')} items={items} />
+        <AreaNav label={t('label')} items={items} currentPath={currentPath} />
         <div className={styles.content}>{children}</div>
       </div>
     </div>

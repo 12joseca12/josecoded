@@ -6,6 +6,7 @@
       "home": "Inicio",
       "project": "Mi proyecto",
       "tasks": "Tareas",
+      "stories": "Historias",
       "files": "Material",
       "plan": "Pack",
       "referrals": "Recomiéndame",
@@ -46,7 +47,15 @@
         "newsEmpty": "Aún no hay novedades. Aquí verás los comentarios de Jose sobre tus tareas.",
         "newsFrom": "{name} el {date}",
         "newsSelf": "Tú el {date}",
-        "newsJose": "Jose el {date}"
+        "newsJose": "Jose el {date}",
+        "storiesTitle": "Tus historias",
+        "storiesEmpty": "Aún no has propuesto ninguna. Cuéntame qué quieres que haga tu web con «Como… quiero… para…».",
+        "storiesCount": "{count, plural, one {# historia propuesta} other {# historias propuestas}}",
+        "storiesWaiting": "{count, plural, =0 {Ninguna espera a Jose} one {# espera a Jose} other {# esperan a Jose}}",
+        "storiesAccepted": "{count, plural, =0 {Ninguna aceptada todavía} one {# aceptada} other {# aceptadas}}",
+        "storiesSee": "Ver historias",
+        "storiesStart": "Contar la primera",
+        "storiesBreakdown": "{waiting} · {accepted}"
       },
       "proposal": {
         "title": {
@@ -299,6 +308,73 @@
       "rewardStatus": {
         "pending": "Pendiente",
         "paid": "Abonada"
+      }
+    },
+    "stories": {
+      "metaTitle": "Historias",
+      "title": {
+        "lead": "Tus historias,",
+        "tail": "en tus palabras"
+      },
+      "lede": "Cuéntame qué quieres que pueda hacer tu web con la forma «Como… quiero… para…». Jose las revisa, te dice cuántas horas llevan y las que entran pasan a tus tareas.",
+      "propose": "Proponer una historia",
+      "list": "Historias {group}",
+      "groups": {
+        "proposed": "Esperando a Jose",
+        "accepted": "Aceptadas",
+        "rejected": "Fuera por ahora"
+      },
+      "open": "Ver historia",
+      "back": "Volver a las historias",
+      "empty": {
+        "title": "Aún no has propuesto ninguna historia",
+        "body": "Una historia es una cosa que quieres que haga tu web, contada en tres frases y con una lista de lo que debe cumplir. Así queda una:",
+        "example": "Ejemplo",
+        "story": {
+          "title": "Ver cómo va mi pedido",
+          "as_a": "cliente que ha encargado una tarta",
+          "i_want": "ver en qué punto está mi pedido",
+          "so_that": "saber cuándo pasar a recogerlo",
+          "criteriaOne": "Veo si está recibido, en preparación o listo",
+          "criteriaTwo": "Recibo un aviso cuando esté listo"
+        }
+      },
+      "next": {
+        "heading": "Qué pasa ahora",
+        "proposed": "Jose la revisará y te dirá si entra y cuántas horas lleva. Te avisaremos cuando la decida.",
+        "accepted": "Está aceptada. Jose la convertirá en una tarea de tu proyecto y la verás en Tareas.",
+        "acceptedTask": "Está aceptada y ya es una tarea de tu proyecto: ahí verás cómo avanza.",
+        "rejected": "Jose la ha dejado fuera por ahora. Arriba tienes el motivo; si quieres, propón otra con otro enfoque."
+      },
+      "form": {
+        "label": "Proponer una historia",
+        "title": "Título",
+        "titleHelp": "Un nombre corto, por ejemplo «Reservar encargos para recoger».",
+        "as_a": "Como…",
+        "asHelp": "Quién eres tú en esta historia, por ejemplo «cliente habitual de la panadería».",
+        "i_want": "Quiero…",
+        "wantHelp": "Lo que quieres poder hacer.",
+        "so_that": "Para…",
+        "soHelp": "Para qué te sirve.",
+        "criteriaLegend": "Criterios de aceptación",
+        "criteriaHelp": "Cómo sabremos que está bien hecha. Opcional, hasta {max}.",
+        "criterion": "Criterio {n}",
+        "remove": "Quitar criterio {n}",
+        "add": "Añadir criterio",
+        "max": "Has llegado al máximo de {max} criterios.",
+        "added": "Criterio {n} añadido. Llevas {count} de {max}.",
+        "removed": "Criterio {n} quitado. Llevas {count} de {max}.",
+        "submit": "Enviar historia",
+        "sent": "Historia enviada. Jose la revisará.",
+        "required": "Este campo es obligatorio.",
+        "tooLong": "Es demasiado largo (máximo {max} caracteres).",
+        "failed": "No hemos podido enviar la historia. Inténtalo de nuevo.",
+        "heading": {
+          "lead": "Una historia nueva,",
+          "tail": "en tres frases"
+        },
+        "intro": "Rellena las tres frases y, si quieres, apunta cómo sabremos que está bien hecha. Jose la verá en cuanto la envíes.",
+        "removeShort": "Quitar"
       }
     }
   }

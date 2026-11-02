@@ -15,6 +15,12 @@
       "included": "<strong>{hours} h</strong> · included in the pack",
       "reason": "Reason: {reason}",
       "note": "«{note}»"
+    },
+    "clientStatus": {
+      "proposed": "Waiting for Jose",
+      "accepted": "Accepted",
+      "converted": "In your tasks",
+      "rejected": "Not now"
     }
   }
 }

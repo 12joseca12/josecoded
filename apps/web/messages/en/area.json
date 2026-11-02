@@ -6,6 +6,7 @@
       "home": "Home",
       "project": "My project",
       "tasks": "Tasks",
+      "stories": "Stories",
       "files": "Files",
       "plan": "Plan",
       "referrals": "Refer a friend",
@@ -46,7 +47,15 @@
         "newsEmpty": "No news yet. Here you will see Jose's comments on your tasks.",
         "newsFrom": "{name} on {date}",
         "newsSelf": "You on {date}",
-        "newsJose": "Jose on {date}"
+        "newsJose": "Jose on {date}",
+        "storiesTitle": "Your stories",
+        "storiesEmpty": "You have not proposed any yet. Tell me what you want your site to do with «As a… I want… so that…».",
+        "storiesCount": "{count, plural, one {# story proposed} other {# stories proposed}}",
+        "storiesWaiting": "{count, plural, =0 {None waiting for Jose} one {# waiting for Jose} other {# waiting for Jose}}",
+        "storiesAccepted": "{count, plural, =0 {None accepted yet} one {# accepted} other {# accepted}}",
+        "storiesSee": "See stories",
+        "storiesStart": "Tell the first one",
+        "storiesBreakdown": "{waiting} · {accepted}"
       },
       "proposal": {
         "title": {
@@ -299,6 +308,73 @@
       "rewardStatus": {
         "pending": "Pending",
         "paid": "Paid"
+      }
+    },
+    "stories": {
+      "metaTitle": "Stories",
+      "title": {
+        "lead": "Your stories,",
+        "tail": "in your words"
+      },
+      "lede": "Tell me what you want your site to do in the form «As a… I want… so that…». Jose reviews them, tells you how many hours they take, and the ones that fit become your tasks.",
+      "propose": "Propose a story",
+      "list": "Stories {group}",
+      "groups": {
+        "proposed": "Waiting for Jose",
+        "accepted": "Accepted",
+        "rejected": "Not now"
+      },
+      "open": "View story",
+      "back": "Back to the stories",
+      "empty": {
+        "title": "You have not proposed any story yet",
+        "body": "A story is one thing you want your site to do, told in three sentences with a list of what it must meet. Here is one:",
+        "example": "Example",
+        "story": {
+          "title": "See how my order is going",
+          "as_a": "customer who ordered a cake",
+          "i_want": "see where my order stands",
+          "so_that": "know when to pick it up",
+          "criteriaOne": "I see whether it is received, being prepared or ready",
+          "criteriaTwo": "I get a notice when it is ready"
+        }
+      },
+      "next": {
+        "heading": "What happens now",
+        "proposed": "Jose will review it and tell you whether it fits and how many hours it takes. We will let you know when he decides.",
+        "accepted": "It is accepted. Jose will turn it into a task of your project and you will see it under Tasks.",
+        "acceptedTask": "It is accepted and already a task of your project: that is where you will see its progress.",
+        "rejected": "Jose has left it out for now. The reason is above; if you like, propose another one with a different approach."
+      },
+      "form": {
+        "label": "Propose a story",
+        "title": "Title",
+        "titleHelp": "A short name, for example «Book orders for pickup».",
+        "as_a": "As a…",
+        "asHelp": "Who you are in this story, for example «regular customer of the bakery».",
+        "i_want": "I want…",
+        "wantHelp": "What you want to be able to do.",
+        "so_that": "So that…",
+        "soHelp": "What it is for.",
+        "criteriaLegend": "Acceptance criteria",
+        "criteriaHelp": "How we will know it is done right. Optional, up to {max}.",
+        "criterion": "Criterion {n}",
+        "remove": "Remove criterion {n}",
+        "add": "Add criterion",
+        "max": "You have reached the maximum of {max} criteria.",
+        "added": "Criterion {n} added. You have {count} of {max}.",
+        "removed": "Criterion {n} removed. You have {count} of {max}.",
+        "submit": "Send story",
+        "sent": "Story sent. Jose will review it.",
+        "required": "This field is required.",
+        "tooLong": "This is too long (maximum {max} characters).",
+        "failed": "We could not send the story. Please try again.",
+        "heading": {
+          "lead": "A new story,",
+          "tail": "in three sentences"
+        },
+        "intro": "Fill in the three sentences and, if you like, note how we will know it is done right. Jose will see it as soon as you send it.",
+        "removeShort": "Remove"
       }
     }
   }

@@ -6,7 +6,7 @@ import { packLabel } from '@/lib/area/packs';
 
 import styles from './home.module.css';
 
-import type { AreaClient, AreaComment, AreaTask } from '@/lib/area/queries';
+import type { AreaClient, AreaComment, AreaStory, AreaTask } from '@/lib/area/queries';
 import type { Locale } from '@josecoded/types';
 
 const PHASES = ['kickoff', 'design', 'build', 'review', 'delivered', 'maintenance'] as const;
@@ -25,12 +25,15 @@ export async function ProjectSummary({
   client,
   tasks,
   news,
+  stories,
 }: {
   locale: Locale;
   userId: string;
   client: AreaClient;
   tasks: readonly AreaTask[];
   news: readonly AreaComment[];
+  /** The stories she proposed; without them the «Tus historias» cell is not drawn. */
+  stories?: readonly Pick<AreaStory, 'status'>[];
 }) {
   const t = await getTranslations({ locale, namespace: 'area.home.client' });
   const format = await getFormatter({ locale });
@@ -38,6 +41,8 @@ export async function ProjectSummary({
 
   const current = PHASES.indexOf(client.project_phase);
   const waiting = tasks.filter((task) => task.status !== 'done').length;
+  const storiesWaiting = stories?.filter((story) => story.status === 'proposed').length ?? 0;
+  const storiesAccepted = stories?.filter((story) => story.status === 'accepted' || story.status === 'converted').length ?? 0;
   const taskTitle = new Map(tasks.map((task) => [task.id, task.title]));
 
   return (
@@ -72,7 +77,30 @@ export async function ProjectSummary({
         </div>
       </AreaCard>
 
-      <AreaCard id="area-news" title={t('news')}>
+      {stories ? (
+        <AreaCard id="area-stories" title={t('storiesTitle')}>
+          {stories.length === 0 ? (
+            <p className={styles.muted}>{t('storiesEmpty')}</p>
+          ) : (
+            <div className={styles.fact}>
+              <p className={styles.big}>{t('storiesCount', { count: stories.length })}</p>
+              <p className={styles.muted}>
+                {t('storiesBreakdown', {
+                  waiting: t('storiesWaiting', { count: storiesWaiting }),
+                  accepted: t('storiesAccepted', { count: storiesAccepted }),
+                })}
+              </p>
+            </div>
+          )}
+          <div className={styles.actions}>
+            <Button href="/area-clientes/historias" variant="ghost">
+              {stories.length === 0 ? t('storiesStart') : t('storiesSee')}
+            </Button>
+          </div>
+        </AreaCard>
+      ) : null}
+
+      <AreaCard id="area-news" title={t('news')} span={stories ? 'full' : 'half'}>
         {news.length === 0 ? (
           <p className={styles.muted}>{t('newsEmpty')}</p>
         ) : (

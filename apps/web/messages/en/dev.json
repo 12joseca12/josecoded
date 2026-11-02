@@ -84,6 +84,18 @@
         "admin": "admin"
       },
       "note": "Links inside each screen point to the real routes and ask for a login; forms render but save nothing."
+    },
+    "areaStories": {
+      "title": "Area stories",
+      "intro": "The /client-area/stories screens with sample data, inside the real area frame. It only exists with NEXT_PUBLIC_DEV_UI=1.",
+      "states": {
+        "inicio": "Client home («Your stories» cell)",
+        "vacio": "No stories (with a filled example)",
+        "lista": "List with every status",
+        "nueva": "New story form",
+        "detalle": "Detail of an accepted story"
+      },
+      "note": "The /new form really validates, but saves nothing."
     }
   }
 }

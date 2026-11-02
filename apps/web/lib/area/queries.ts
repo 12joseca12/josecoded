@@ -130,6 +130,50 @@ export async function getComments(
   return data ?? [];
 }
 
+export type AreaStory = Pick<
+  Tables<'client_user_stories'>,
+  | 'id'
+  | 'title'
+  | 'as_a'
+  | 'i_want'
+  | 'so_that'
+  | 'acceptance_criteria'
+  | 'status'
+  | 'created_at'
+  | 'estimate_hours'
+  | 'estimate_amount'
+  | 'estimate_note'
+  | 'task_id'
+>;
+
+const STORY_COLUMNS =
+  'id, title, as_a, i_want, so_that, acceptance_criteria, status, created_at, estimate_hours, estimate_amount, estimate_note, task_id';
+
+/** Stories the client proposed, newest first. RLS lets a client read only her own. */
+export const getStories = cache(async (clientId: string): Promise<AreaStory[]> => {
+  const session = await getOptionalSession();
+  if (!session) return [];
+  const { data } = await session.supabase
+    .from('client_user_stories')
+    .select(STORY_COLUMNS)
+    .eq('client_id', clientId)
+    .order('created_at', { ascending: false });
+  return data ?? [];
+});
+
+/** One story of this client, or null (also when it belongs to someone else: RLS hides it). */
+export async function getStory(clientId: string, storyId: string): Promise<AreaStory | null> {
+  const session = await getOptionalSession();
+  if (!session) return null;
+  const { data } = await session.supabase
+    .from('client_user_stories')
+    .select(STORY_COLUMNS)
+    .eq('client_id', clientId)
+    .eq('id', storyId)
+    .maybeSingle();
+  return data;
+}
+
 export type AreaAsset = Pick<
   Tables<'client_assets'>,
   'id' | 'source' | 'file_name' | 'mime_type' | 'size_bytes' | 'title' | 'created_at'

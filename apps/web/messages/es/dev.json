@@ -84,6 +84,18 @@
         "admin": "admin"
       },
       "note": "Los enlaces dentro de cada pantalla apuntan a las rutas reales y piden login; los formularios se muestran pero no guardan nada."
+    },
+    "areaStories": {
+      "title": "Historias del área",
+      "intro": "Las pantallas de /area-clientes/historias con datos de ejemplo, dentro del marco real del área. Solo existe con NEXT_PUBLIC_DEV_UI=1.",
+      "states": {
+        "inicio": "Inicio del cliente (celda «Tus historias»)",
+        "vacio": "Sin historias (con ejemplo relleno)",
+        "lista": "Lista con todos los estados",
+        "nueva": "Formulario de historia nueva",
+        "detalle": "Detalle de una historia aceptada"
+      },
+      "note": "El formulario de /nueva valida de verdad, pero no guarda nada."
     }
   }
 }

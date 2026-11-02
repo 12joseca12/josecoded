@@ -24,7 +24,16 @@ function isCurrent(pathname: string, href: string): boolean {
  * A11y: `nav` landmark named by `label`; each link is read by its text; the current one is
  * announced; targets are at least 2.75rem tall; on a phone the list wraps instead of scrolling.
  */
-export function AreaNav({ label, items }: { label: string; items: readonly AreaNavItem[] }) {
+export function AreaNav({
+  label,
+  items,
+  currentPath,
+}: {
+  label: string;
+  items: readonly AreaNavItem[];
+  /** Overrides the real path (a `/dev` preview marks the screen it stands for). */
+  currentPath?: string;
+}) {
   const pathname = usePathname();
   return (
     <nav aria-label={label} className={styles.nav}>
@@ -34,7 +43,7 @@ export function AreaNav({ label, items }: { label: string; items: readonly AreaN
             <Action
               href={item.href}
               className={styles.link}
-              aria-current={isCurrent(pathname, item.href) ? 'page' : undefined}
+              aria-current={isCurrent(currentPath ?? pathname, item.href) ? 'page' : undefined}
             >
               {item.label}
             </Action>

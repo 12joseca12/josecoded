@@ -1,0 +1,118 @@
+.head {
+  display: grid;
+  gap: var(--sp-3);
+}
+
+.lede {
+  max-width: var(--size-measure-prose);
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--font-lead-size);
+  line-height: var(--font-lead-leading);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+}
+
+/* empty state: what a story is, then the sample card under it */
+.empty {
+  display: grid;
+  gap: var(--sp-4);
+  max-width: var(--size-measure-prose);
+}
+
+.groups {
+  display: grid;
+  gap: var(--sp-gap-scene);
+}
+
+.group {
+  display: grid;
+  gap: var(--sp-3);
+}
+
+.groupTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  font-size: var(--font-title-sm-size);
+  font-weight: var(--font-title-sm-weight);
+  line-height: var(--font-title-sm-leading);
+  letter-spacing: var(--font-title-sm-tracking);
+}
+
+.count {
+  min-width: var(--sp-6);
+  padding: var(--sp-0-5) var(--sp-2);
+  border-radius: var(--r-pill);
+  background: var(--tint-ghost);
+  color: var(--text-2);
+  font-size: var(--font-caption-size);
+  font-weight: var(--font-label-button-weight);
+  text-align: center;
+}
+
+.cards {
+  display: grid;
+  gap: var(--sp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* the form stays readable on a wide screen: lines of text never stretch past the prose measure */
+.formBox {
+  max-width: var(--size-measure-prose);
+}
+
+.criteria {
+  display: grid;
+  gap: var(--sp-3);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border-width: 0;
+}
+
+.legend {
+  padding: 0;
+  color: var(--text);
+  font-size: var(--font-label-size);
+  font-weight: var(--font-label-button-weight);
+}
+
+.help {
+  margin: 0;
+  color: var(--text-3);
+  font-size: var(--font-small-size);
+}
+
+.error {
+  margin: 0;
+  color: var(--pending);
+  font-size: var(--font-small-size);
+}
+
+.rows {
+  display: grid;
+  gap: var(--sp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* the input takes the row, «Quitar» sits at the foot of its label line so both share a baseline */
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--sp-2);
+  align-items: end;
+}
+
+.add {
+  display: flex;
+}

@@ -12,7 +12,7 @@ import { ReferralFirst } from '@/components/area/home/referral-first';
 import { TwoToneHeading } from '@/components/ui/two-tone-heading';
 import { getPathname } from '@/i18n/navigation';
 import { resolveAreaVariant } from '@/lib/area/audience';
-import { getAreaContext, getComments, getTasks } from '@/lib/area/queries';
+import { getAreaContext, getComments, getStories, getTasks } from '@/lib/area/queries';
 import { requireUser } from '@/lib/auth/guards';
 import { resolveLocale } from '@/lib/locale';
 
@@ -44,9 +44,9 @@ export default async function AreaHomePage({ params }: { params: LocaleParams })
   const tHome = await getTranslations({ locale, namespace: 'area.home' });
   const name = profile?.display_name ?? '';
 
-  const [tasks, news] = client
-    ? await Promise.all([getTasks(client.id), getComments(client.id, { limit: 3 })])
-    : [[], []];
+  const [tasks, news, stories] = client
+    ? await Promise.all([getTasks(client.id), getComments(client.id, { limit: 3 }), getStories(client.id)])
+    : [[], [], []];
 
   return (
     <>
@@ -57,7 +57,7 @@ export default async function AreaHomePage({ params }: { params: LocaleParams })
       </header>
       <AreaGrid>
         {variant === 'client' && client ? (
-          <ProjectSummary locale={locale} userId={session.user.id} client={client} tasks={tasks} news={news} />
+          <ProjectSummary locale={locale} userId={session.user.id} client={client} tasks={tasks} news={news} stories={stories} />
         ) : null}
         {variant === 'proposal' && lead ? <ProposalSummary locale={locale} lead={lead} /> : null}
         {variant === 'referral' ? <ReferralFirst locale={locale} /> : null}

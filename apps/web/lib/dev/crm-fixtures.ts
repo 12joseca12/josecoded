@@ -867,7 +867,7 @@ const story = (
 const TASK_ID = '71000000-0000-4000-8000-000000000003';
 
 /** Ana's stories, one in each state: the sheet of the decision is opened from the first one. */
-const CLIENT_STORIES: ClientStory[] = [
+export const CLIENT_STORIES: ClientStory[] = [
   story(1, 'proposed', 'Reservar encargos para recoger', 'cliente habitual de la panadería', 'reservar una tarta o un pan especial para un día y una hora', 'recogerlo sin esperar cola', ['Elijo producto, día y franja de recogida', 'Solo veo franjas con hueco', 'Recibo la confirmación por correo', 'La panadería ve la reserva en su panel'], 3),
   story(2, 'accepted', 'Aviso cuando el pedido esté listo', 'cliente que encarga por la web', 'recibir un aviso cuando mi pedido esté listo', 'no ir antes de tiempo', ['Aviso por correo al marcarlo listo', 'Texto con hora de recogida'], 11, { estimate_hours: 6, estimate_amount: 240, estimate_note: 'Va con el módulo de pedidos.', decided_at: inDays(-9) }),
   story(3, 'converted', 'Ocultar productos agotados', 'dueña de la panadería', 'marcar un producto como agotado', 'que no me lo pidan', ['Un interruptor por producto', 'Se oculta en la carta al momento'], 18, { estimate_hours: 2, decided_at: inDays(-16), task_id: TASK_ID }),

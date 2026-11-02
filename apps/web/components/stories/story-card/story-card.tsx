@@ -32,6 +32,10 @@ export interface StoryCardData {
  * is rejected, the link to the task when it became one. `actions` is what the staff can do with it (the button that
  * opens the decision); the card itself decides nothing.
  *
+ * `audience="client"` is the same card read by who wrote it: the status in her words («Pendiente de Jose», one
+ * «Aceptada» for an accepted story and for the one already turned into a task). `example` draws it as a sample (a
+ * «Ejemplo» badge instead of the status, no date) for the empty state.
+ *
  * The card can take the focus (`tabIndex=-1`): after a decision the button that opened the sheet is gone with the old
  * status, and the focus lands here, where the new one is read.
  */
@@ -40,6 +44,9 @@ export async function StoryCard({
   locale,
   actions,
   taskHref,
+  audience = 'staff',
+  example,
+  titleAs: Title = 'h3',
 }: {
   story: StoryCardData;
   locale: Locale;
@@ -47,6 +54,12 @@ export async function StoryCard({
   actions?: ReactNode;
   /** Where the task born from the story is (`converted`). */
   taskHref?: string;
+  /** Whose words the status is told in. */
+  audience?: 'staff' | 'client';
+  /** Already translated badge text: draws the card as a sample, not as a real story. */
+  example?: string;
+  /** The heading level of the title: `h1` when the card is the whole screen (the detail of a story). */
+  titleAs?: 'h1' | 'h2' | 'h3';
 }) {
   const [t, tClients, format] = await Promise.all([
     getTranslations({ locale, namespace: 'stories' }),
@@ -63,13 +76,17 @@ export async function StoryCard({
   return (
     <article id={`story-${story.id}`} className={styles.story} aria-labelledby={titleId} tabIndex={-1}>
       <div className={styles.head}>
-        <h3 id={titleId} className={styles.title}>
+        <Title id={titleId} className={styles.title}>
           {story.title}
-        </h3>
-        <StatusBadge tone={storyTone(story.status)}>{t(`status.${story.status}`)}</StatusBadge>
-        <span className={styles.date}>
-          {format.dateTime(new Date(story.created_at), { day: 'numeric', month: 'short', timeZone: 'Europe/Madrid' })}
-        </span>
+        </Title>
+        <StatusBadge tone={example ? 'muted' : storyTone(story.status)}>
+          {example ?? t(`${audience === 'client' ? 'clientStatus' : 'status'}.${story.status}`)}
+        </StatusBadge>
+        {example ? null : (
+          <span className={styles.date}>
+            {format.dateTime(new Date(story.created_at), { day: 'numeric', month: 'short', timeZone: 'Europe/Madrid' })}
+          </span>
+        )}
       </div>
       <div className={styles.cqp}>
         <p>

@@ -35,6 +35,11 @@ export const pathnames = {
     es: '/area-clientes/tareas/[id]',
     en: '/client-area/tasks/[id]',
   },
+  '/area-clientes/historias': { es: '/area-clientes/historias', en: '/client-area/stories' },
+  '/area-clientes/historias/[id]': {
+    es: '/area-clientes/historias/[id]',
+    en: '/client-area/stories/[id]',
+  },
   '/area-clientes/material': { es: '/area-clientes/material', en: '/client-area/files' },
   // route handler (GET, signed download); the Spanish child segment is kept in English so the translated parent rewrites it
   '/area-clientes/material/descargar': {
