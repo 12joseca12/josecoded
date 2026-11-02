@@ -53,6 +53,7 @@ export const tokenNames = [
   "--shadow-card",
   "--nudge",
   "--ring",
+  "--ring-press",
   "--ring-coral",
   "--ring-charcoal",
   "--z-behind",

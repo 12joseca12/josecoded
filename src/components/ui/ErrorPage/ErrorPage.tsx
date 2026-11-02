@@ -46,7 +46,7 @@ export function ErrorPage({
 
   return (
     <section ref={root} className={styles.page} data-variant={variant} data-layout={layout}>
-      <Card tone="glass" size="lg" className={styles.card}>
+      <Card tone="glass" size="lg" elevation="float" className={styles.card}>
         <p className={styles.code} aria-hidden="true">
           {errorCodes[variant]}
         </p>

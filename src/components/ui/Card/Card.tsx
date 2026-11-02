@@ -1,6 +1,6 @@
 import type { ComponentPropsWithoutRef, ElementType } from "react";
 
-import type { CardSize, CardTone } from "@/types/ui";
+import type { CardElevation, CardSize, CardTone } from "@/types/ui";
 
 import styles from "./Card.module.css";
 
@@ -8,6 +8,7 @@ type CardProps<T extends ElementType> = {
   as?: T;
   tone?: CardTone;
   size?: CardSize;
+  elevation?: CardElevation;
   className?: string;
 } & Omit<ComponentPropsWithoutRef<T>, "as" | "className">;
 
@@ -15,6 +16,7 @@ export function Card<T extends ElementType = "div">({
   as,
   tone = "panel",
   size = "md",
+  elevation = "card",
   className,
   ...rest
 }: CardProps<T>) {
@@ -25,6 +27,7 @@ export function Card<T extends ElementType = "div">({
       className={className ? `${styles.card} ${className}` : styles.card}
       data-tone={tone}
       data-size={size}
+      data-elevation={elevation}
     />
   );
 }

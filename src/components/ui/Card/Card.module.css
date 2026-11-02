@@ -1,8 +1,9 @@
 .card {
+  --elevation: var(--shadow-card);
   border: 1px solid var(--line);
   border-radius: var(--radius-l);
   background: var(--panel);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--elevation);
 }
 
 .card[data-tone="glass"] {
@@ -13,8 +14,12 @@
 .card[data-tone="error"] {
   border-color: var(--error);
   box-shadow:
-    var(--shadow-card),
+    var(--elevation),
     0 0 0 var(--ring) var(--error-ring);
+}
+
+.card[data-elevation="float"] {
+  --elevation: var(--shadow-float);
 }
 
 .card[data-size="sm"] {

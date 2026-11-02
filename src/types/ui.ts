@@ -19,6 +19,9 @@ export type SkeletonShape = (typeof skeletonShapes)[number];
 export const cardTones = ["panel", "glass", "error"] as const;
 export type CardTone = (typeof cardTones)[number];
 
+export const cardElevations = ["card", "float"] as const;
+export type CardElevation = (typeof cardElevations)[number];
+
 export const cardSizes = ["sm", "md", "lg"] as const;
 export type CardSize = (typeof cardSizes)[number];
 

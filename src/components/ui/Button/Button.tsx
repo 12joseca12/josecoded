@@ -4,6 +4,7 @@ import NextLink from "next/link";
 import {
   type ComponentPropsWithoutRef,
   type KeyboardEvent,
+  type MouseEvent,
   type PointerEvent,
   type ReactNode,
 } from "react";
@@ -35,12 +36,21 @@ type ButtonAsLinkProps = ButtonBaseProps &
 export type ButtonProps = ButtonAsButtonProps | ButtonAsLinkProps;
 
 const pressKeys = new Set(["Enter", " "]);
+const linkPressKeys = new Set(["Enter"]);
 const pressedHoldMs = 160;
 
 const disabledSelector = ":disabled, [aria-disabled='true']";
 const centre = { x: 50, y: 50 };
 
 const bubbleClass = styles.bubble ?? "";
+
+function originOf(event: MouseEvent<HTMLElement>) {
+  const rect = event.currentTarget.getBoundingClientRect();
+  return {
+    x: rect.width > 0 ? ((event.clientX - rect.left) / rect.width) * 100 : centre.x,
+    y: rect.height > 0 ? ((event.clientY - rect.top) / rect.height) * 100 : centre.y,
+  };
+}
 
 function emit(element: HTMLElement, origin: typeof centre) {
   if (element.matches(disabledSelector)) return;
@@ -49,8 +59,9 @@ function emit(element: HTMLElement, origin: typeof centre) {
 }
 
 function markPressed(event: KeyboardEvent<HTMLElement>) {
-  if (event.repeat || !pressKeys.has(event.key)) return;
   const element = event.currentTarget;
+  const keys = element instanceof HTMLAnchorElement ? linkPressKeys : pressKeys;
+  if (event.repeat || !keys.has(event.key)) return;
   emit(element, centre);
   element.dataset.pressed = "true";
   const release = () => {
@@ -108,12 +119,16 @@ export function Button(props: ButtonProps) {
   const withPointer =
     <E extends HTMLElement>(handler?: (event: PointerEvent<E>) => void) =>
     (event: PointerEvent<E>) => {
-      if (event.button === 0) {
-        const rect = event.currentTarget.getBoundingClientRect();
-        emit(event.currentTarget, {
-          x: rect.width > 0 ? ((event.clientX - rect.left) / rect.width) * 100 : centre.x,
-          y: rect.height > 0 ? ((event.clientY - rect.top) / rect.height) * 100 : centre.y,
-        });
+      if (event.button === 0 && event.pointerType !== "touch") {
+        emit(event.currentTarget, originOf(event));
+      }
+      handler?.(event);
+    };
+  const withTouchClick =
+    <E extends HTMLElement>(handler?: (event: MouseEvent<E>) => void) =>
+    (event: MouseEvent<E>) => {
+      if ("pointerType" in event.nativeEvent && event.nativeEvent.pointerType === "touch") {
+        emit(event.currentTarget, originOf(event));
       }
       handler?.(event);
     };
@@ -124,6 +139,7 @@ export function Button(props: ButtonProps) {
       type = "button",
       onKeyDown,
       onPointerDown,
+      onClick,
       ...buttonRest
     } = rest as ButtonAsButtonProps;
     return (
@@ -134,13 +150,15 @@ export function Button(props: ButtonProps) {
         disabled={disabled === true || loading}
         onKeyDown={withPress(onKeyDown)}
         onPointerDown={withPointer(onPointerDown)}
+        onClick={withTouchClick(onClick)}
       >
         {content}
       </button>
     );
   }
 
-  const { href, disabled, onKeyDown, onPointerDown, ...linkRest } = rest as ButtonAsLinkProps;
+  const { href, disabled, onKeyDown, onPointerDown, onClick, ...linkRest } =
+    rest as ButtonAsLinkProps;
   if (disabled === true || loading) {
     return (
       <a {...linkRest} {...shared} role="link" aria-disabled="true">
@@ -155,6 +173,7 @@ export function Button(props: ButtonProps) {
       href={href}
       onKeyDown={withPress(onKeyDown)}
       onPointerDown={withPointer(onPointerDown)}
+      onClick={withTouchClick(onClick)}
     >
       {content}
     </NextLink>
