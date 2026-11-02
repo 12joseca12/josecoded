@@ -1,0 +1,167 @@
+/* The pager of the home (lib/motion/paging.ts) in a small viewport: three scenes, one gesture each. */
+.stage {
+  position: relative;
+}
+
+.view {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--r-md);
+  background: var(--bg-segmented);
+  box-shadow: var(--shadow-hairline);
+}
+
+.view:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.scene {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: var(--sp-3);
+  height: 100%;
+  padding: var(--sp-5) var(--sp-12) var(--sp-5) var(--sp-5);
+}
+
+.name {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  margin: 0;
+  color: var(--text);
+  font-size: var(--font-title-sm-size);
+  font-weight: var(--font-title-sm-weight);
+  letter-spacing: var(--font-title-sm-tracking);
+}
+
+.number {
+  color: var(--text-3);
+  font-size: var(--font-small-size);
+  font-variant-numeric: tabular-nums;
+}
+
+.bento {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-auto-rows: minmax(0, 1fr);
+  gap: var(--sp-2);
+}
+
+.block {
+  border-radius: var(--r-sm);
+  background: var(--card);
+  box-shadow: var(--shadow-card-edge);
+}
+
+.block:first-child {
+  background: var(--tint-emphasis);
+}
+
+.block[data-w='2'] {
+  grid-column: span 2;
+}
+
+.block[data-w='3'] {
+  grid-column: span 3;
+}
+
+.block[data-w='4'] {
+  grid-column: span 4;
+}
+
+.block[data-w='6'] {
+  grid-column: span 6;
+}
+
+.block[data-tall] {
+  grid-row: span 2;
+}
+
+.dots {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: var(--sp-4);
+  display: grid;
+  align-content: center;
+  gap: var(--sp-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dot {
+  width: var(--sp-3);
+  height: var(--stroke-line);
+  border-radius: var(--stroke-line);
+  background: var(--pager-idle);
+  transform: scaleX(var(--pager-idle-scale));
+  transition:
+    background-color var(--dur-pager) var(--ease-slide),
+    transform var(--dur-pager) var(--ease-slide);
+}
+
+.dot[data-active] {
+  background: var(--violet-soft);
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot {
+    transition: none;
+  }
+}
+
+/* controls under the viewport */
+.controls {
+  display: grid;
+  gap: var(--sp-4);
+  margin-top: var(--sp-4);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3) var(--sp-4);
+}
+
+.position {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--font-label-size);
+  font-variant-numeric: tabular-nums;
+}
+
+.ranges {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: var(--sp-3) var(--sp-6);
+}
+
+.range {
+  display: grid;
+  gap: var(--sp-1);
+  color: var(--text-2);
+  font-size: var(--font-label-size);
+}
+
+.range output {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.range > span {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.range input {
+  width: 100%;
+  min-height: var(--size-hit);
+  margin: 0;
+  accent-color: var(--violet);
+  cursor: pointer;
+  touch-action: manipulation;
+}

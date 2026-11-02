@@ -1,0 +1,43 @@
+.frame {
+  display: grid;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  border-radius: var(--r-tcard);
+  background: var(--card);
+  box-shadow: var(--shadow-card-edge);
+}
+
+.stage {
+  position: relative;
+  min-width: 0;
+}
+
+.island {
+  display: grid;
+  gap: var(--sp-4);
+}
+
+/* before the first interaction: the still, dimmed, with the one action of the page over it */
+.cover {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--bg) 28%, transparent);
+}
+
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2) var(--sp-4);
+  min-height: var(--size-hit);
+}
+
+.hint {
+  margin: 0;
+  color: var(--text-3);
+  font-size: var(--font-small-size);
+}

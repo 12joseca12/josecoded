@@ -1,5 +1,6 @@
 import { CellText } from '@/components/scenes/cell-text';
 import { ArrowLink } from '@/components/ui/arrow-link';
+import { Chip } from '@/components/ui/chip';
 
 import styles from './demo-card.module.css';
 
@@ -28,12 +29,15 @@ export function DemoCard({
   href,
   linkLabel,
   linkName,
+  tags,
 }: {
   name: ReactNode;
   lead: ReactNode;
   href: Href;
   linkLabel: string;
   linkName?: string;
+  /** The index of the lab lists the demo's tags under its sentence; the home cell has none. */
+  tags?: { label: string; items: readonly string[] };
 }) {
   return (
     <>
@@ -60,6 +64,15 @@ export function DemoCard({
       </div>
       {name ? <CellText variant="title">{name}</CellText> : null}
       {lead ? <CellText>{lead}</CellText> : null}
+      {tags && tags.items.length > 0 ? (
+        <ul className={styles.tags} aria-label={tags.label}>
+          {tags.items.map((tag) => (
+            <li key={tag}>
+              <Chip size="sm">{tag}</Chip>
+            </li>
+          ))}
+        </ul>
+      ) : null}
       <ArrowLink href={href} emphasis="strong" aria-label={linkName}>
         {linkLabel}
       </ArrowLink>

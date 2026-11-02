@@ -1,5 +1,106 @@
 {
   "lab": {
-    "title": "Lab"
+    "title": "Lab",
+    "home": "Inicio",
+    "meta": {
+      "title": "Lab: demos y herramientas pequeñas",
+      "description": "Demos que puedes tocar en el navegador, con la explicación de qué muestran y cómo están hechas."
+    },
+    "head": {
+      "lead": "Cosas que pruebo.",
+      "accent": "Demos y herramientas pequeñas, con su explicación.",
+      "citable": "{{DATO: dos o tres frases que se entiendan solas: qué es el lab, que cada demo corre en el navegador sin servidor y que viene con su explicación [redactor]}}"
+    },
+    "list": {
+      "title": "Demos"
+    },
+    "tag": {
+      "motion": "Motion"
+    },
+    "card": {
+      "try": "Probar la demo",
+      "tryNamed": "Probar la demo: {name}",
+      "tags": "Etiquetas"
+    },
+    "demo": {
+      "crumb": "Lab",
+      "back": "Todo el lab",
+      "contents": "En esta demo",
+      "frameLabel": "Demo: {name}",
+      "start": "Probar la demo",
+      "restart": "Reiniciar",
+      "running": "Demo en marcha",
+      "stopped": "Demo reiniciada",
+      "still": "Imagen fija de la demo. Pulsa «Probar la demo» para manejarla.",
+      "loading": "Cargando la demo…",
+      "what": "Qué muestra",
+      "how": "Cómo está hecho",
+      "meta": {
+        "title": "Ficha de la demo",
+        "tag": "Tipo",
+        "input": "Se maneja con",
+        "motion": "Con movimiento reducido",
+        "stack": "Hecho con"
+      },
+      "read": "Léelo largo",
+      "closing": {
+        "lead": "¿Quieres algo así en tu producto?",
+        "accent": "Cuéntame qué necesitas.",
+        "cta": "Pedir propuesta orientativa",
+        "more": "Otras formas de hablar"
+      },
+      "headTail": "Una demo para tocar."
+    },
+    "demos": {
+      "paging": {
+        "name": "Paginado por gesto",
+        "lead": "{{DATO: una frase: un gesto, una escena}}",
+        "what": "{{DATO: qué muestra el paginado por gesto: un gesto de rueda o una tecla mueve una escena entera, con umbral y bloqueo contra la inercia [redactor]}}",
+        "how": "{{DATO: cómo está hecho: paradas calculadas, curva cuártica, rAF cancelable y reduced motion que salta [redactor]}}",
+        "input": "Rueda, flechas, Re Pág, Av Pág, Inicio, Fin y botones",
+        "motion": "Salta de escena sin deslizar",
+        "stack": "CSS nativo y TypeScript"
+      },
+      "marker": {
+        "name": "Selección deslizante",
+        "lead": "{{DATO: una frase: la marca va a donde eliges}}",
+        "what": "{{DATO: qué muestra la selección deslizante: una marca que se desliza hasta el elemento elegido, en vertical o en horizontal [redactor]}}",
+        "how": "{{DATO: cómo está hecho: se mide el elemento, se calcula la posición y solo se anima transform [redactor]}}",
+        "input": "Puntero, teclado y táctil",
+        "motion": "La marca aparece en su sitio sin deslizar",
+        "stack": "CSS nativo y TypeScript"
+      }
+    },
+    "island": {
+      "paging": {
+        "viewport": "Escenas de la demo. Usa las flechas arriba y abajo para cambiar de escena.",
+        "scenes": [
+          "Primera escena",
+          "Segunda escena",
+          "Tercera escena"
+        ],
+        "prev": "Escena anterior",
+        "next": "Escena siguiente",
+        "position": "Escena {n} de {total}",
+        "duration": "Duración",
+        "threshold": "Umbral de la rueda",
+        "ms": "{value} ms",
+        "px": "{value} px",
+        "hint": "Rueda, flechas o botones"
+      },
+      "marker": {
+        "axis": "Dirección de la marca",
+        "y": "Lista",
+        "x": "Barra",
+        "list": "Elementos de la demo",
+        "items": [
+          "Por hora",
+          "Proyecto",
+          "Packs",
+          "Contratación"
+        ],
+        "hint": "Elige un elemento"
+      }
+    }
   }
 }
