@@ -1,0 +1,32 @@
+{
+  "slug": "3cat",
+  "name": "3cat",
+  "type": "app",
+  "status": "in-use",
+  "order": 1,
+  "year": "{{DATO: año en que se construyó}}",
+  "proofs": {
+    "appStoreId": "{{DATO: id de la app en la App Store}}",
+    "playPackage": "{{DATO: paquete de la app en Google Play}}"
+  },
+  "hideMetrics": false,
+  "hideStack": false,
+  "stack": [],
+  "applicationCategory": "{{DATO: categoría de la app (JSON-LD)}}",
+  "screenshots": [],
+  "art": "phone",
+  "texts": {
+    "es": {
+      "oneLiner": "{{DATO: qué hace, para quién y en qué plataforma, en una frase}}",
+      "challenge": "{{DATO: qué problema resolvía y para quién}}",
+      "work": "{{DATO: decisiones y trabajo, de tres a cinco puntos, uno por línea}}",
+      "result": "{{DATO: hechos verificables (publicada, en uso, qué permite), sin métricas}}"
+    },
+    "en": {
+      "oneLiner": "{{DATO: what it does, for whom and on which platform, in one sentence}}",
+      "challenge": "{{DATO: which problem it solved and for whom}}",
+      "work": "{{DATO: decisions and work, three to five points, one per line}}",
+      "result": "{{DATO: verifiable facts (published, in use, what it allows), no metrics}}"
+    }
+  }
+}

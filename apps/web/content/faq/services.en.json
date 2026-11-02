@@ -1,0 +1,98 @@
+[
+  {
+    "id": "hourly-billing",
+    "via": "hourly",
+    "question": "How are hours billed and is there a minimum?",
+    "answer": "{{DATO: Jose's answer: weekly or monthly billing, timesheet, minimum}}"
+  },
+  {
+    "id": "hourly-rate",
+    "via": "hourly",
+    "question": "What does an hour cost?",
+    "answer": "An hour costs {hourly}, excluding VAT."
+  },
+  {
+    "id": "hourly-repo",
+    "via": "hourly",
+    "question": "Do you work in my repository and with my tools?",
+    "answer": "{{DATO: Jose's answer}}"
+  },
+  {
+    "id": "fixed-what",
+    "via": "fixed",
+    "question": "What is fixed-price work?",
+    "answer": "A feature with its scope, price and deadline agreed before starting. From {feature} excluding VAT; the exact price depends on the scope and is settled before starting."
+  },
+  {
+    "id": "fixed-change",
+    "via": "fixed",
+    "question": "What if the scope changes?",
+    "answer": "{{DATO: Jose's answer}}"
+  },
+  {
+    "id": "fixed-proposal",
+    "via": "fixed",
+    "question": "How long does a proposal take?",
+    "answer": "{{DATO: real response time}}"
+  },
+  {
+    "id": "packs-time",
+    "via": "packs",
+    "question": "How long does a website or an app take?",
+    "answer": "A basic website (P1) takes {weeksP1}; with orders or bookings (P2), {weeksP2}; with a management panel (P3), {weeksP3}; with automations and AI (P4), {weeksP4}. A mobile app (P5) takes {weeksP5}; the extended one, {weeksP5plus}."
+  },
+  {
+    "id": "packs-domain",
+    "via": "packs",
+    "question": "Do I own the domain and the hosting?",
+    "answer": "Yes. The domain, the hosting and the store accounts are in your name."
+  },
+  {
+    "id": "packs-app",
+    "via": "packs",
+    "question": "How much does a mobile app cost?",
+    "answer": "From {priceP5} excluding VAT and {weeksP5}. The extended one, from {priceP5plus} and {weeksP5plus}, adds notifications, payments or a connection to your system."
+  },
+  {
+    "id": "packs-start",
+    "via": "packs",
+    "question": "What do I need to give you to start?",
+    "answer": "{{DATO: Jose's answer}}"
+  },
+  {
+    "id": "packs-upgrade",
+    "via": "packs",
+    "question": "What happens when I want to expand?",
+    "answer": "Moving from one pack to another costs the difference between their list prices; extras are added at their list price."
+  },
+  {
+    "id": "hiring-remote",
+    "via": "hiring",
+    "question": "Do you work remotely or on site?",
+    "answer": "{{DATO: Jose's answer}}"
+  },
+  {
+    "id": "hiring-contract",
+    "via": "hiring",
+    "question": "What kind of contract are you looking for?",
+    "answer": "{{DATO: Jose's answer (only if he wants it public; otherwise it points to the assistant)}}"
+  },
+  {
+    "id": "hiring-start",
+    "via": "hiring",
+    "question": "When could you start?",
+    "answer": "{{DATO: Jose's answer}}"
+  },
+  {
+    "id": "general-which",
+    "via": "packs",
+    "question": "What if I do not know which way suits me?",
+    "answer": "Tell me through the assistant or the form and I will tell you which one fits."
+  },
+  {
+    "id": "general-nda",
+    "via": "packs",
+    "question": "Do you sign an NDA?",
+    "answer": "{{DATO: Jose's answer}}"
+  }
+]

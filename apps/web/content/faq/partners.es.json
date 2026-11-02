@@ -1,0 +1,44 @@
+[
+  {
+    "id": "partners-invoice",
+    "via": "partners",
+    "question": "¿Facturas como autónomo?",
+    "answer": "{{DATO: respuesta de Jose}}"
+  },
+  {
+    "id": "partners-nda",
+    "via": "partners",
+    "question": "¿Firmas NDA?",
+    "answer": "{{DATO: respuesta de Jose}}"
+  },
+  {
+    "id": "partners-repo",
+    "via": "partners",
+    "question": "¿Trabajas en nuestro repositorio?",
+    "answer": "{{DATO: respuesta de Jose}}"
+  },
+  {
+    "id": "partners-white",
+    "via": "partners",
+    "question": "¿Puedes trabajar en marca blanca?",
+    "answer": "{{DATO: respuesta de Jose}}"
+  },
+  {
+    "id": "partners-availability",
+    "via": "partners",
+    "question": "¿Qué disponibilidad tienes?",
+    "answer": "{{DATO: respuesta de Jose}}"
+  },
+  {
+    "id": "partners-grow",
+    "via": "partners",
+    "question": "¿Qué pasa si el proyecto crece?",
+    "answer": "{{DATO: respuesta de Jose}}"
+  },
+  {
+    "id": "partners-team",
+    "via": "partners",
+    "question": "¿Podéis presentarme como parte de vuestro equipo?",
+    "answer": "{{DATO: respuesta de Jose}}"
+  }
+]

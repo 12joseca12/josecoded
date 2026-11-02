@@ -1,0 +1,44 @@
+[
+  {
+    "id": "partners-invoice",
+    "via": "partners",
+    "question": "Do you invoice as a freelancer?",
+    "answer": "{{DATO: Jose's answer}}"
+  },
+  {
+    "id": "partners-nda",
+    "via": "partners",
+    "question": "Do you sign an NDA?",
+    "answer": "{{DATO: Jose's answer}}"
+  },
+  {
+    "id": "partners-repo",
+    "via": "partners",
+    "question": "Do you work in our repository?",
+    "answer": "{{DATO: Jose's answer}}"
+  },
+  {
+    "id": "partners-white",
+    "via": "partners",
+    "question": "Can you work white label?",
+    "answer": "{{DATO: Jose's answer}}"
+  },
+  {
+    "id": "partners-availability",
+    "via": "partners",
+    "question": "What is your availability?",
+    "answer": "{{DATO: Jose's answer}}"
+  },
+  {
+    "id": "partners-grow",
+    "via": "partners",
+    "question": "What if the project grows?",
+    "answer": "{{DATO: Jose's answer}}"
+  },
+  {
+    "id": "partners-team",
+    "via": "partners",
+    "question": "Can you present me as part of your team?",
+    "answer": "{{DATO: Jose's answer}}"
+  }
+]

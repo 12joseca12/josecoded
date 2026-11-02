@@ -11,6 +11,8 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { contentIndexSchema } from '@josecoded/types';
 
+import { rankProjects } from '../content/projects/rank.ts';
+import { projectSchema } from '../content/projects/schema.ts';
 import { isPendingDato } from '../lib/content/dato.ts';
 
 import type { ContentIndex } from '@josecoded/types';
@@ -71,10 +73,30 @@ export function computeContentIndex({ contentRoot }: { contentRoot: string }): C
   });
 }
 
+export interface ProjectsIndex {
+  /** Slugs in the order of the projects index (proofs, recency, never a reduced sheet or this site first). */
+  ranked: string[];
+}
+
+/**
+ * Validates every sheet in `content/projects/*.json` and ranks them (UX v4.0 §4.5). The index feeds the
+ * sitemap, `llms.txt` and the case-study pager; the pages rank at runtime with the same function.
+ */
+export function computeProjectsIndex({ contentRoot }: { contentRoot: string }): ProjectsIndex {
+  const dir = join(contentRoot, 'projects');
+  if (!existsSync(dir)) return { ranked: [] };
+  const sheets = readdirSync(dir)
+    .filter((name) => name.endsWith('.json'))
+    .map((name) => projectSchema.parse(JSON.parse(readFileSync(join(dir, name), 'utf8'))));
+  return { ranked: rankProjects(sheets).map((sheet) => sheet.slug) };
+}
+
 if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
   const contentRoot = fileURLToPath(new URL('../content', import.meta.url));
   const index = computeContentIndex({ contentRoot });
   mkdirSync(join(contentRoot, 'generated'), { recursive: true });
   writeFileSync(join(contentRoot, 'generated/content-index.json'), `${JSON.stringify(index, null, 2)}\n`);
-  console.log(`content-index: ${index.blog.guides} guides (blog ${index.blogEnabled}), ${index.lab.demos} demos (lab ${index.labEnabled})`);
+  const projectsIndex = computeProjectsIndex({ contentRoot });
+  writeFileSync(join(contentRoot, 'generated/projects-index.json'), `${JSON.stringify(projectsIndex, null, 2)}\n`);
+  console.log(`content-index: ${index.blog.guides} guides (blog ${index.blogEnabled}), ${index.lab.demos} demos (lab ${index.labEnabled}), ${projectsIndex.ranked.length} projects`);
 }

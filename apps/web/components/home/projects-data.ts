@@ -1,20 +1,27 @@
-import type { Href } from '@josecoded/types';
+import { projectBySlug, tourProjects } from '@/lib/content/projects';
+
+import type { Href, Locale } from '@josecoded/types';
 
 /**
  * The projects the home shows, in the order of the tour (Jose, 2026-10-31): 3cat, 3catinfo and this
- * site. 3catinfo is never first and neither is josecoded.com (UX v4.0 §4.1). HazmeFila and
- * Oportunix are out everywhere. This is the one seam between the scene and the project content:
- * when `content/projects/*` exists (task 3.1) the list, the names and the sentences come from it and
- * this module reads them; until then names and sentences come from `messages`
- * (`home.scenes.projects.items.<slug>`, the sentences still `{{DATO}}`).
+ * site. HazmeFila and Oportunix are out everywhere. The list, the names, the kind, the art and the
+ * sentences come from the project sheets in `content/projects/` (task 3.1): adding a sheet adds a
+ * card. 3catinfo and josecoded.com never take the first place of the index (`rankProjects`), and the
+ * tour keeps the order of the sheets' own `order`.
  */
-export const HOME_PROJECTS = [
-  { slug: '3cat', kind: 'app', art: 'phone' },
-  { slug: '3catinfo', kind: 'app', art: 'phone' },
-  { slug: 'josecoded', kind: 'web', art: 'web' },
-] as const;
+export const HOME_PROJECTS = tourProjects().map((project) => ({
+  slug: project.slug,
+  name: project.name,
+  kind: project.type,
+  art: project.art,
+}));
 
-export type HomeProjectSlug = (typeof HOME_PROJECTS)[number]['slug'];
+export type HomeProjectSlug = string;
+
+/** The one sentence of a project in this language; a `{{DATO}}` marker while it is pending. */
+export function projectLead(slug: HomeProjectSlug, locale: Locale): string {
+  return projectBySlug(slug)?.texts[locale].oneLiner ?? '';
+}
 
 export function projectHref(slug: HomeProjectSlug): Href {
   return `/proyectos/${slug}`;

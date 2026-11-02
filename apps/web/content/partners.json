@@ -1,0 +1,8 @@
+{
+  "cells": ["apps", "web", "ai"],
+  "steps": ["brief", "estimate", "repo", "demo", "delivery"],
+  "fit": {
+    "yes": ["peaks", "profile", "mvp"],
+    "no": ["team", "stack", "oncall"]
+  }
+}

@@ -1,4 +1,4 @@
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 
 import { ProjectCard, ProjectsTour } from '@/components/scenes';
 import { ArrowLink } from '@/components/ui/arrow-link';
@@ -6,22 +6,24 @@ import { TwoToneHeading } from '@/components/ui/two-tone-heading';
 import { env } from '@/lib/env';
 
 import { datoText } from './dato';
-import { HOME_PROJECTS, projectArt, projectHref } from './projects-data';
+import { HOME_PROJECTS, projectArt, projectHref, projectLead } from './projects-data';
+
+import type { Locale } from '@josecoded/types';
 
 /**
  * Scene 4 of the home: the projects in use as a pinned tour (3cat, 3catinfo and this site). The
- * names come from the project data (`projects-data.ts`), the art from the glyph scene of 2.6. The
- * sentence of each project is still `{{DATO}}`: in development it shows as a marker, in production
- * the sentence is left out and the card keeps its name, kind and link.
+ * names and sentences come from the project sheets (`content/projects/`, via `projects-data.ts`), the
+ * art from the glyph scene of 2.6. A sentence that is still `{{DATO}}` shows as a marker in
+ * development; in production it is left out and the card keeps its name, kind and link.
  */
 export async function ProjectsScene() {
+  const locale = (await getLocale()) as Locale;
   const t = await getTranslations('home.scenes.projects');
   const version = env.client.NEXT_PUBLIC_HERO_MEDIA_VERSION;
 
   const items = HOME_PROJECTS.map((project) => ({
     ...project,
-    name: t(`items.${project.slug}.name`),
-    lead: datoText(String(t.raw(`items.${project.slug}.lead`))),
+    lead: datoText(projectLead(project.slug, locale)),
   }));
 
   return (

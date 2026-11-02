@@ -1,0 +1,9 @@
+{
+  "ways": [
+    { "code": "hourly", "anchor": { "es": "por-hora", "en": "hourly" }, "icon": "clock", "primaryAction": "book", "secondaryActions": ["assistant", "email"] },
+    { "code": "fixed", "anchor": { "es": "proyecto", "en": "fixed" }, "icon": "package-check", "primaryAction": "proposal", "secondaryActions": ["whatsapp"] },
+    { "code": "packs", "anchor": { "es": "packs", "en": "packs" }, "icon": "store", "primaryAction": "proposal", "secondaryActions": ["whatsapp"] },
+    { "code": "hiring", "anchor": { "es": "contratacion", "en": "hiring" }, "icon": "briefcase", "primaryAction": "book", "secondaryActions": ["cv", "assistant", "linkedin", "email"] }
+  ],
+  "process": ["talk", "proposal", "demos", "delivery"]
+}
