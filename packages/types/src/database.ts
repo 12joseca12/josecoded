@@ -199,14 +199,14 @@ isOneToOne: false
                   ]
                 },"client_tasks": {
                   Row: {
-                    "client_id": string,"created_at": string,"description": string | null,"due_at": string | null,"id": string,"sort": number,"status": Database["public"]['Enums']["task_status"],"title": string,"updated_at": string
+                    "client_id": string,"created_at": string,"description": string | null,"due_at": string | null,"id": string,"sort": number,"status": Database["public"]['Enums']["task_status"],"story_id": string | null,"title": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "client_id": string,"created_at"?: string,"description"?: string | null,"due_at"?: string | null,"id"?: string,"sort"?: number,"status"?: Database["public"]['Enums']["task_status"],"title": string,"updated_at"?: string
+                    "client_id": string,"created_at"?: string,"description"?: string | null,"due_at"?: string | null,"id"?: string,"sort"?: number,"status"?: Database["public"]['Enums']["task_status"],"story_id"?: string | null,"title": string,"updated_at"?: string
                   }
                   Update: {
-                    "client_id"?: string,"created_at"?: string,"description"?: string | null,"due_at"?: string | null,"id"?: string,"sort"?: number,"status"?: Database["public"]['Enums']["task_status"],"title"?: string,"updated_at"?: string
+                    "client_id"?: string,"created_at"?: string,"description"?: string | null,"due_at"?: string | null,"id"?: string,"sort"?: number,"status"?: Database["public"]['Enums']["task_status"],"story_id"?: string | null,"title"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -214,6 +214,38 @@ isOneToOne: false
       columns: ["client_id"]
 isOneToOne: false
       referencedRelation: "clients"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "client_tasks_story_id_fkey"
+      columns: ["story_id"]
+isOneToOne: false
+      referencedRelation: "client_user_stories"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"client_user_stories": {
+                  Row: {
+                    "acceptance_criteria": (string)[],"as_a": string,"author_user_id": string | null,"client_id": string,"created_at": string,"decided_at": string | null,"decided_by": string | null,"estimate_amount": number | null,"estimate_hours": number | null,"estimate_note": string | null,"i_want": string,"id": string,"so_that": string,"sort": number | null,"status": Database["public"]['Enums']["story_status"],"task_id": string | null,"title": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "acceptance_criteria"?: (string)[],"as_a": string,"author_user_id"?: string | null,"client_id": string,"created_at"?: string,"decided_at"?: string | null,"decided_by"?: string | null,"estimate_amount"?: number | null,"estimate_hours"?: number | null,"estimate_note"?: string | null,"i_want": string,"id"?: string,"so_that": string,"sort"?: number | null,"status"?: Database["public"]['Enums']["story_status"],"task_id"?: string | null,"title": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "acceptance_criteria"?: (string)[],"as_a"?: string,"author_user_id"?: string | null,"client_id"?: string,"created_at"?: string,"decided_at"?: string | null,"decided_by"?: string | null,"estimate_amount"?: number | null,"estimate_hours"?: number | null,"estimate_note"?: string | null,"i_want"?: string,"id"?: string,"so_that"?: string,"sort"?: number | null,"status"?: Database["public"]['Enums']["story_status"],"task_id"?: string | null,"title"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "client_user_stories_client_id_fkey"
+      columns: ["client_id"]
+isOneToOne: false
+      referencedRelation: "clients"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "client_user_stories_task_id_fkey"
+      columns: ["task_id"]
+isOneToOne: false
+      referencedRelation: "client_tasks"
       referencedColumns: ["id"]
     }
                   ]
@@ -249,16 +281,48 @@ isOneToOne: false
       referencedColumns: ["code"]
     }
                   ]
-                },"crm_contacts": {
+                },"closer_commissions": {
                   Row: {
-                    "archived_at": string | null,"chat_case": Database["public"]['Enums']["chat_case"] | null,"created_at": string,"display_name": string,"email": string | null,"id": string,"kind": Database["public"]['Enums']["contact_kind"],"last_interaction_at": string | null,"linkedin_url": string | null,"locale": Database["public"]['Enums']["locale"] | null,"next_action": string | null,"next_action_at": string | null,"notion_url": string | null,"organization_id": string | null,"owner_note": string | null,"phone": string | null,"role": string | null,"source": Database["public"]['Enums']["contact_source"],"status": string,"tags": (string)[],"updated_at": string,"user_id": string | null
+                    "amount": number,"approved_at": string | null,"approved_by": string | null,"base_amount": number,"closer_id": string,"contact_id": string,"created_at": string,"id": string,"lead_id": string,"paid_at": string | null,"paid_note": string | null,"percent": number,"rejected_reason": string | null,"status": Database["public"]['Enums']["commission_status"],"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "archived_at"?: string | null,"chat_case"?: Database["public"]['Enums']["chat_case"] | null,"created_at"?: string,"display_name": string,"email"?: string | null,"id"?: string,"kind": Database["public"]['Enums']["contact_kind"],"last_interaction_at"?: string | null,"linkedin_url"?: string | null,"locale"?: Database["public"]['Enums']["locale"] | null,"next_action"?: string | null,"next_action_at"?: string | null,"notion_url"?: string | null,"organization_id"?: string | null,"owner_note"?: string | null,"phone"?: string | null,"role"?: string | null,"source": Database["public"]['Enums']["contact_source"],"status": string,"tags"?: (string)[],"updated_at"?: string,"user_id"?: string | null
+                    "amount": number,"approved_at"?: string | null,"approved_by"?: string | null,"base_amount": number,"closer_id": string,"contact_id": string,"created_at"?: string,"id"?: string,"lead_id": string,"paid_at"?: string | null,"paid_note"?: string | null,"percent": number,"rejected_reason"?: string | null,"status"?: Database["public"]['Enums']["commission_status"],"updated_at"?: string
                   }
                   Update: {
-                    "archived_at"?: string | null,"chat_case"?: Database["public"]['Enums']["chat_case"] | null,"created_at"?: string,"display_name"?: string,"email"?: string | null,"id"?: string,"kind"?: Database["public"]['Enums']["contact_kind"],"last_interaction_at"?: string | null,"linkedin_url"?: string | null,"locale"?: Database["public"]['Enums']["locale"] | null,"next_action"?: string | null,"next_action_at"?: string | null,"notion_url"?: string | null,"organization_id"?: string | null,"owner_note"?: string | null,"phone"?: string | null,"role"?: string | null,"source"?: Database["public"]['Enums']["contact_source"],"status"?: string,"tags"?: (string)[],"updated_at"?: string,"user_id"?: string | null
+                    "amount"?: number,"approved_at"?: string | null,"approved_by"?: string | null,"base_amount"?: number,"closer_id"?: string,"contact_id"?: string,"created_at"?: string,"id"?: string,"lead_id"?: string,"paid_at"?: string | null,"paid_note"?: string | null,"percent"?: number,"rejected_reason"?: string | null,"status"?: Database["public"]['Enums']["commission_status"],"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "closer_commissions_closer_id_fkey"
+      columns: ["closer_id"]
+isOneToOne: false
+      referencedRelation: "staff_members"
+      referencedColumns: ["user_id"]
+    },{
+      foreignKeyName: "closer_commissions_contact_id_fkey"
+      columns: ["contact_id"]
+isOneToOne: false
+      referencedRelation: "crm_contacts"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "closer_commissions_lead_id_fkey"
+      columns: ["lead_id"]
+isOneToOne: false
+      referencedRelation: "leads"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"crm_contacts": {
+                  Row: {
+                    "archived_at": string | null,"chat_case": Database["public"]['Enums']["chat_case"] | null,"created_at": string,"display_name": string,"email": string | null,"id": string,"kind": Database["public"]['Enums']["contact_kind"],"last_interaction_at": string | null,"linkedin_url": string | null,"locale": Database["public"]['Enums']["locale"] | null,"next_action": string | null,"next_action_at": string | null,"notion_url": string | null,"organization_id": string | null,"owner_id": string | null,"owner_note": string | null,"phone": string | null,"role": string | null,"source": Database["public"]['Enums']["contact_source"],"status": string,"tags": (string)[],"updated_at": string,"user_id": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "archived_at"?: string | null,"chat_case"?: Database["public"]['Enums']["chat_case"] | null,"created_at"?: string,"display_name": string,"email"?: string | null,"id"?: string,"kind": Database["public"]['Enums']["contact_kind"],"last_interaction_at"?: string | null,"linkedin_url"?: string | null,"locale"?: Database["public"]['Enums']["locale"] | null,"next_action"?: string | null,"next_action_at"?: string | null,"notion_url"?: string | null,"organization_id"?: string | null,"owner_id"?: string | null,"owner_note"?: string | null,"phone"?: string | null,"role"?: string | null,"source": Database["public"]['Enums']["contact_source"],"status": string,"tags"?: (string)[],"updated_at"?: string,"user_id"?: string | null
+                  }
+                  Update: {
+                    "archived_at"?: string | null,"chat_case"?: Database["public"]['Enums']["chat_case"] | null,"created_at"?: string,"display_name"?: string,"email"?: string | null,"id"?: string,"kind"?: Database["public"]['Enums']["contact_kind"],"last_interaction_at"?: string | null,"linkedin_url"?: string | null,"locale"?: Database["public"]['Enums']["locale"] | null,"next_action"?: string | null,"next_action_at"?: string | null,"notion_url"?: string | null,"organization_id"?: string | null,"owner_id"?: string | null,"owner_note"?: string | null,"phone"?: string | null,"role"?: string | null,"source"?: Database["public"]['Enums']["contact_source"],"status"?: string,"tags"?: (string)[],"updated_at"?: string,"user_id"?: string | null
                   }
                   Relationships: [
                     {
@@ -267,6 +331,64 @@ isOneToOne: false
 isOneToOne: false
       referencedRelation: "crm_organizations"
       referencedColumns: ["id"]
+    },{
+      foreignKeyName: "crm_contacts_owner_id_fkey"
+      columns: ["owner_id"]
+isOneToOne: false
+      referencedRelation: "staff_members"
+      referencedColumns: ["user_id"]
+    }
+                  ]
+                },"crm_import_conflicts": {
+                  Row: {
+                    "created_at": string,"existing_contact_id": string,"existing_owner_id": string | null,"id": string,"import_id": string,"owner_id": string,"resolution": Database["public"]['Enums']["conflict_resolution"] | null,"resolution_note": string | null,"resolved_at": string | null,"resolved_by": string | null,"row": NonNullable<Json>,"row_index": number,"status": Database["public"]['Enums']["conflict_status"]
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"existing_contact_id": string,"existing_owner_id"?: string | null,"id"?: string,"import_id": string,"owner_id": string,"resolution"?: Database["public"]['Enums']["conflict_resolution"] | null,"resolution_note"?: string | null,"resolved_at"?: string | null,"resolved_by"?: string | null,"row": NonNullable<Json>,"row_index": number,"status"?: Database["public"]['Enums']["conflict_status"]
+                  }
+                  Update: {
+                    "created_at"?: string,"existing_contact_id"?: string,"existing_owner_id"?: string | null,"id"?: string,"import_id"?: string,"owner_id"?: string,"resolution"?: Database["public"]['Enums']["conflict_resolution"] | null,"resolution_note"?: string | null,"resolved_at"?: string | null,"resolved_by"?: string | null,"row"?: NonNullable<Json>,"row_index"?: number,"status"?: Database["public"]['Enums']["conflict_status"]
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "crm_import_conflicts_existing_contact_id_fkey"
+      columns: ["existing_contact_id"]
+isOneToOne: false
+      referencedRelation: "crm_contacts"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "crm_import_conflicts_import_id_fkey"
+      columns: ["import_id"]
+isOneToOne: false
+      referencedRelation: "crm_imports"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "crm_import_conflicts_owner_id_fkey"
+      columns: ["owner_id"]
+isOneToOne: false
+      referencedRelation: "staff_members"
+      referencedColumns: ["user_id"]
+    }
+                  ]
+                },"crm_imports": {
+                  Row: {
+                    "checksum": string,"conflicts_count": number,"created_at": string,"created_count": number,"errors": NonNullable<Json>,"file_name": string | null,"id": string,"owner_id": string,"row_count": number,"skipped_count": number,"status": Database["public"]['Enums']["import_status"],"updated_count": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "checksum": string,"conflicts_count"?: number,"created_at"?: string,"created_count"?: number,"errors"?: NonNullable<Json>,"file_name"?: string | null,"id"?: string,"owner_id": string,"row_count"?: number,"skipped_count"?: number,"status"?: Database["public"]['Enums']["import_status"],"updated_count"?: number
+                  }
+                  Update: {
+                    "checksum"?: string,"conflicts_count"?: number,"created_at"?: string,"created_count"?: number,"errors"?: NonNullable<Json>,"file_name"?: string | null,"id"?: string,"owner_id"?: string,"row_count"?: number,"skipped_count"?: number,"status"?: Database["public"]['Enums']["import_status"],"updated_count"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "crm_imports_owner_id_fkey"
+      columns: ["owner_id"]
+isOneToOne: false
+      referencedRelation: "staff_members"
+      referencedColumns: ["user_id"]
     }
                   ]
                 },"crm_interactions": {
@@ -361,30 +483,82 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
-                },"extras": {
+                },"custom_quote_items": {
                   Row: {
-                    "active": boolean,"code": string,"price": number,"pricing_version": string,"updated_at": string
+                    "extra_code": string,"id": string,"label": NonNullable<Json>,"line_total": number | null,"quantity": number,"quote_id": string,"sort": number | null,"unit_price": number
                   }
                   ComputedFields: never
                   Insert: {
-                    "active"?: boolean,"code": string,"price": number,"pricing_version": string,"updated_at"?: string
+                    "extra_code": string,"id"?: string,"label": NonNullable<Json>,"line_total"?: never,"quantity"?: number,"quote_id": string,"sort"?: number | null,"unit_price": number
                   }
                   Update: {
-                    "active"?: boolean,"code"?: string,"price"?: number,"pricing_version"?: string,"updated_at"?: string
+                    "extra_code"?: string,"id"?: string,"label"?: NonNullable<Json>,"line_total"?: never,"quantity"?: number,"quote_id"?: string,"sort"?: number | null,"unit_price"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "custom_quote_items_extra_code_fkey"
+      columns: ["extra_code"]
+isOneToOne: false
+      referencedRelation: "extras"
+      referencedColumns: ["code"]
+    },{
+      foreignKeyName: "custom_quote_items_quote_id_fkey"
+      columns: ["quote_id"]
+isOneToOne: false
+      referencedRelation: "custom_quotes"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"custom_quotes": {
+                  Row: {
+                    "contact_id": string,"created_at": string,"created_by": string | null,"decided_at": string | null,"discount_amount": number,"discount_note": string | null,"id": string,"lead_id": string | null,"notes": string | null,"pricing_version": string | null,"sent_at": string | null,"status": Database["public"]['Enums']["quote_status"],"subtotal": number,"title": string,"total": number,"updated_at": string,"valid_until": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "contact_id": string,"created_at"?: string,"created_by"?: string | null,"decided_at"?: string | null,"discount_amount"?: number,"discount_note"?: string | null,"id"?: string,"lead_id"?: string | null,"notes"?: string | null,"pricing_version"?: string | null,"sent_at"?: string | null,"status"?: Database["public"]['Enums']["quote_status"],"subtotal"?: number,"title": string,"total"?: number,"updated_at"?: string,"valid_until"?: string | null
+                  }
+                  Update: {
+                    "contact_id"?: string,"created_at"?: string,"created_by"?: string | null,"decided_at"?: string | null,"discount_amount"?: number,"discount_note"?: string | null,"id"?: string,"lead_id"?: string | null,"notes"?: string | null,"pricing_version"?: string | null,"sent_at"?: string | null,"status"?: Database["public"]['Enums']["quote_status"],"subtotal"?: number,"title"?: string,"total"?: number,"updated_at"?: string,"valid_until"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "custom_quotes_contact_id_fkey"
+      columns: ["contact_id"]
+isOneToOne: false
+      referencedRelation: "crm_contacts"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "custom_quotes_lead_id_fkey"
+      columns: ["lead_id"]
+isOneToOne: false
+      referencedRelation: "leads"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"extras": {
+                  Row: {
+                    "active": boolean,"billing": Database["public"]['Enums']["extra_billing"],"code": string,"deleted_at": string | null,"description": Json | null,"name": NonNullable<Json>,"price": number,"pricing_version": string,"sort": number | null,"updated_at": string,"updated_by": string | null,"visible": boolean
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "active"?: boolean,"billing"?: Database["public"]['Enums']["extra_billing"],"code": string,"deleted_at"?: string | null,"description"?: Json | null,"name"?: NonNullable<Json>,"price": number,"pricing_version": string,"sort"?: number | null,"updated_at"?: string,"updated_by"?: string | null,"visible"?: boolean
+                  }
+                  Update: {
+                    "active"?: boolean,"billing"?: Database["public"]['Enums']["extra_billing"],"code"?: string,"deleted_at"?: string | null,"description"?: Json | null,"name"?: NonNullable<Json>,"price"?: number,"pricing_version"?: string,"sort"?: number | null,"updated_at"?: string,"updated_by"?: string | null,"visible"?: boolean
                   }
                   Relationships: [
                     
                   ]
                 },"leads": {
                   Row: {
-                    "affiliate_code": string | null,"ai_proposal": Json | null,"amount": number | null,"contact_id": string,"created_at": string,"id": string,"idempotency_key": string | null,"locale": Database["public"]['Enums']["locale"] | null,"message": string | null,"meta": NonNullable<Json>,"pack_code": string | null,"pack_option": string | null,"paid_at": string | null,"source": Database["public"]['Enums']["lead_source"],"status": Database["public"]['Enums']["lead_status"],"updated_at": string,"user_id": string | null,"via": Database["public"]['Enums']["contact_via"]
+                    "affiliate_code": string | null,"ai_proposal": Json | null,"amount": number | null,"contact_id": string,"created_at": string,"created_by": string | null,"id": string,"idempotency_key": string | null,"locale": Database["public"]['Enums']["locale"] | null,"message": string | null,"meta": NonNullable<Json>,"pack_code": string | null,"pack_option": string | null,"paid_at": string | null,"source": Database["public"]['Enums']["lead_source"],"status": Database["public"]['Enums']["lead_status"],"updated_at": string,"user_id": string | null,"via": Database["public"]['Enums']["contact_via"]
                   }
                   ComputedFields: never
                   Insert: {
-                    "affiliate_code"?: string | null,"ai_proposal"?: Json | null,"amount"?: number | null,"contact_id": string,"created_at"?: string,"id"?: string,"idempotency_key"?: string | null,"locale"?: Database["public"]['Enums']["locale"] | null,"message"?: string | null,"meta"?: NonNullable<Json>,"pack_code"?: string | null,"pack_option"?: string | null,"paid_at"?: string | null,"source": Database["public"]['Enums']["lead_source"],"status"?: Database["public"]['Enums']["lead_status"],"updated_at"?: string,"user_id"?: string | null,"via"?: Database["public"]['Enums']["contact_via"]
+                    "affiliate_code"?: string | null,"ai_proposal"?: Json | null,"amount"?: number | null,"contact_id": string,"created_at"?: string,"created_by"?: string | null,"id"?: string,"idempotency_key"?: string | null,"locale"?: Database["public"]['Enums']["locale"] | null,"message"?: string | null,"meta"?: NonNullable<Json>,"pack_code"?: string | null,"pack_option"?: string | null,"paid_at"?: string | null,"source": Database["public"]['Enums']["lead_source"],"status"?: Database["public"]['Enums']["lead_status"],"updated_at"?: string,"user_id"?: string | null,"via"?: Database["public"]['Enums']["contact_via"]
                   }
                   Update: {
-                    "affiliate_code"?: string | null,"ai_proposal"?: Json | null,"amount"?: number | null,"contact_id"?: string,"created_at"?: string,"id"?: string,"idempotency_key"?: string | null,"locale"?: Database["public"]['Enums']["locale"] | null,"message"?: string | null,"meta"?: NonNullable<Json>,"pack_code"?: string | null,"pack_option"?: string | null,"paid_at"?: string | null,"source"?: Database["public"]['Enums']["lead_source"],"status"?: Database["public"]['Enums']["lead_status"],"updated_at"?: string,"user_id"?: string | null,"via"?: Database["public"]['Enums']["contact_via"]
+                    "affiliate_code"?: string | null,"ai_proposal"?: Json | null,"amount"?: number | null,"contact_id"?: string,"created_at"?: string,"created_by"?: string | null,"id"?: string,"idempotency_key"?: string | null,"locale"?: Database["public"]['Enums']["locale"] | null,"message"?: string | null,"meta"?: NonNullable<Json>,"pack_code"?: string | null,"pack_option"?: string | null,"paid_at"?: string | null,"source"?: Database["public"]['Enums']["lead_source"],"status"?: Database["public"]['Enums']["lead_status"],"updated_at"?: string,"user_id"?: string | null,"via"?: Database["public"]['Enums']["contact_via"]
                   }
                   Relationships: [
                     {
@@ -407,16 +581,36 @@ isOneToOne: false
       referencedColumns: ["code"]
     }
                   ]
-                },"pack_options": {
+                },"notification_rules": {
                   Row: {
-                    "code": string,"pack_code": string,"price": number,"pricing_version": string
+                    "channel": Database["public"]['Enums']["notification_channel"],"created_at": string,"enabled": boolean,"event": string,"id": string,"recipient": Database["public"]['Enums']["notification_recipient"],"recipient_user_id": string | null,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "code": string,"pack_code": string,"price": number,"pricing_version": string
+                    "channel": Database["public"]['Enums']["notification_channel"],"created_at"?: string,"enabled"?: boolean,"event": string,"id"?: string,"recipient": Database["public"]['Enums']["notification_recipient"],"recipient_user_id"?: string | null,"updated_at"?: string
                   }
                   Update: {
-                    "code"?: string,"pack_code"?: string,"price"?: number,"pricing_version"?: string
+                    "channel"?: Database["public"]['Enums']["notification_channel"],"created_at"?: string,"enabled"?: boolean,"event"?: string,"id"?: string,"recipient"?: Database["public"]['Enums']["notification_recipient"],"recipient_user_id"?: string | null,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "notification_rules_recipient_user_id_fkey"
+      columns: ["recipient_user_id"]
+isOneToOne: false
+      referencedRelation: "staff_members"
+      referencedColumns: ["user_id"]
+    }
+                  ]
+                },"pack_options": {
+                  Row: {
+                    "code": string,"deleted_at": string | null,"for_whom": Json | null,"includes": NonNullable<Json>,"name": NonNullable<Json>,"pack_code": string,"price": number,"pricing_version": string,"visible": boolean,"weeks": number | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "code": string,"deleted_at"?: string | null,"for_whom"?: Json | null,"includes"?: NonNullable<Json>,"name"?: NonNullable<Json>,"pack_code": string,"price": number,"pricing_version": string,"visible"?: boolean,"weeks"?: number | null
+                  }
+                  Update: {
+                    "code"?: string,"deleted_at"?: string | null,"for_whom"?: Json | null,"includes"?: NonNullable<Json>,"name"?: NonNullable<Json>,"pack_code"?: string,"price"?: number,"pricing_version"?: string,"visible"?: boolean,"weeks"?: number | null
                   }
                   Relationships: [
                     {
@@ -429,31 +623,147 @@ isOneToOne: false
                   ]
                 },"packs": {
                   Row: {
-                    "active": boolean,"code": string,"price": number,"pricing_version": string,"slug": string | null,"sort": number | null,"updated_at": string,"weeks": number | null
+                    "active": boolean,"code": string,"deleted_at": string | null,"for_whom": Json | null,"includes": NonNullable<Json>,"kind": Database["public"]['Enums']["pack_kind"],"name": NonNullable<Json>,"price": number,"pricing_version": string,"slug": string | null,"sort": number | null,"updated_at": string,"updated_by": string | null,"visible": boolean,"weeks": number | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "active"?: boolean,"code": string,"price": number,"pricing_version": string,"slug"?: string | null,"sort"?: number | null,"updated_at"?: string,"weeks"?: number | null
+                    "active"?: boolean,"code": string,"deleted_at"?: string | null,"for_whom"?: Json | null,"includes"?: NonNullable<Json>,"kind"?: Database["public"]['Enums']["pack_kind"],"name"?: NonNullable<Json>,"price": number,"pricing_version": string,"slug"?: string | null,"sort"?: number | null,"updated_at"?: string,"updated_by"?: string | null,"visible"?: boolean,"weeks"?: number | null
                   }
                   Update: {
-                    "active"?: boolean,"code"?: string,"price"?: number,"pricing_version"?: string,"slug"?: string | null,"sort"?: number | null,"updated_at"?: string,"weeks"?: number | null
+                    "active"?: boolean,"code"?: string,"deleted_at"?: string | null,"for_whom"?: Json | null,"includes"?: NonNullable<Json>,"kind"?: Database["public"]['Enums']["pack_kind"],"name"?: NonNullable<Json>,"price"?: number,"pricing_version"?: string,"slug"?: string | null,"sort"?: number | null,"updated_at"?: string,"updated_by"?: string | null,"visible"?: boolean,"weeks"?: number | null
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"pricing_price_history": {
+                  Row: {
+                    "changed_at": string,"changed_by": string | null,"id": number,"item_code": string,"item_kind": Database["public"]['Enums']["pricing_item"],"new_price": number,"note": string | null,"old_price": number | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "changed_at"?: string,"changed_by"?: string | null,"id"?: never,"item_code": string,"item_kind": Database["public"]['Enums']["pricing_item"],"new_price": number,"note"?: string | null,"old_price"?: number | null
+                  }
+                  Update: {
+                    "changed_at"?: string,"changed_by"?: string | null,"id"?: never,"item_code"?: string,"item_kind"?: Database["public"]['Enums']["pricing_item"],"new_price"?: number,"note"?: string | null,"old_price"?: number | null
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"pricing_settings": {
+                  Row: {
+                    "affiliate": NonNullable<Json>,"feature": number,"hourly": number,"id": boolean,"pricing_version": string,"published_at": string | null,"published_hash": string | null,"published_snapshot": Json | null,"updated_at": string,"updated_by": string | null,"upgrade_rule": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "affiliate": NonNullable<Json>,"feature": number,"hourly": number,"id"?: boolean,"pricing_version": string,"published_at"?: string | null,"published_hash"?: string | null,"published_snapshot"?: Json | null,"updated_at"?: string,"updated_by"?: string | null,"upgrade_rule"?: string
+                  }
+                  Update: {
+                    "affiliate"?: NonNullable<Json>,"feature"?: number,"hourly"?: number,"id"?: boolean,"pricing_version"?: string,"published_at"?: string | null,"published_hash"?: string | null,"published_snapshot"?: Json | null,"updated_at"?: string,"updated_by"?: string | null,"upgrade_rule"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"site_content_entries": {
+                  Row: {
+                    "created_at": string,"draft": Json | null,"draft_updated_at": string | null,"draft_updated_by": string | null,"id": string,"key": string,"kind": Database["public"]['Enums']["content_kind"],"locale": Database["public"]['Enums']["locale"] | null,"published": Json | null,"published_at": string | null,"published_by": string | null,"published_version": number,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"draft"?: Json | null,"draft_updated_at"?: string | null,"draft_updated_by"?: string | null,"id"?: string,"key": string,"kind": Database["public"]['Enums']["content_kind"],"locale"?: Database["public"]['Enums']["locale"] | null,"published"?: Json | null,"published_at"?: string | null,"published_by"?: string | null,"published_version"?: number,"updated_at"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"draft"?: Json | null,"draft_updated_at"?: string | null,"draft_updated_by"?: string | null,"id"?: string,"key"?: string,"kind"?: Database["public"]['Enums']["content_kind"],"locale"?: Database["public"]['Enums']["locale"] | null,"published"?: Json | null,"published_at"?: string | null,"published_by"?: string | null,"published_version"?: number,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"site_content_publications": {
+                  Row: {
+                    "commit_sha": string | null,"committed_at": string | null,"created_at": string,"created_by": string | null,"deployed_at": string | null,"error": string | null,"files": Json | null,"id": string,"snapshot": NonNullable<Json>,"status": Database["public"]['Enums']["publication_status"],"workflow_run_id": number | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "commit_sha"?: string | null,"committed_at"?: string | null,"created_at"?: string,"created_by"?: string | null,"deployed_at"?: string | null,"error"?: string | null,"files"?: Json | null,"id"?: string,"snapshot": NonNullable<Json>,"status"?: Database["public"]['Enums']["publication_status"],"workflow_run_id"?: number | null
+                  }
+                  Update: {
+                    "commit_sha"?: string | null,"committed_at"?: string | null,"created_at"?: string,"created_by"?: string | null,"deployed_at"?: string | null,"error"?: string | null,"files"?: Json | null,"id"?: string,"snapshot"?: NonNullable<Json>,"status"?: Database["public"]['Enums']["publication_status"],"workflow_run_id"?: number | null
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"site_content_versions": {
+                  Row: {
+                    "content": NonNullable<Json>,"entry_id": string,"id": string,"publication_id": string | null,"published_at": string,"published_by": string | null,"version": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "content": NonNullable<Json>,"entry_id": string,"id"?: string,"publication_id"?: string | null,"published_at"?: string,"published_by"?: string | null,"version": number
+                  }
+                  Update: {
+                    "content"?: NonNullable<Json>,"entry_id"?: string,"id"?: string,"publication_id"?: string | null,"published_at"?: string,"published_by"?: string | null,"version"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "site_content_versions_entry_id_fkey"
+      columns: ["entry_id"]
+isOneToOne: false
+      referencedRelation: "site_content_entries"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "site_content_versions_publication_id_fkey"
+      columns: ["publication_id"]
+isOneToOne: false
+      referencedRelation: "site_content_publications"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"staff_invites": {
+                  Row: {
+                    "claimed_at": string | null,"claimed_user_id": string | null,"commission_rate": number,"created_at": string,"email": string,"expires_at": string,"id": string,"invited_by": string | null,"role": Database["public"]['Enums']["staff_role"],"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "claimed_at"?: string | null,"claimed_user_id"?: string | null,"commission_rate": number,"created_at"?: string,"email": string,"expires_at"?: string,"id"?: string,"invited_by"?: string | null,"role": Database["public"]['Enums']["staff_role"],"updated_at"?: string
+                  }
+                  Update: {
+                    "claimed_at"?: string | null,"claimed_user_id"?: string | null,"commission_rate"?: number,"created_at"?: string,"email"?: string,"expires_at"?: string,"id"?: string,"invited_by"?: string | null,"role"?: Database["public"]['Enums']["staff_role"],"updated_at"?: string
                   }
                   Relationships: [
                     
                   ]
                 },"staff_members": {
                   Row: {
-                    "created_at": string,"display_name": string | null,"role": Database["public"]['Enums']["staff_role"],"telegram_chat_id": string | null,"updated_at": string,"user_id": string
+                    "commission_rate": number,"created_at": string,"disabled_at": string | null,"display_name": string | null,"invited_by": string | null,"notes": string | null,"role": Database["public"]['Enums']["staff_role"],"telegram_chat_id": string | null,"updated_at": string,"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"display_name"?: string | null,"role"?: Database["public"]['Enums']["staff_role"],"telegram_chat_id"?: string | null,"updated_at"?: string,"user_id": string
+                    "commission_rate"?: number,"created_at"?: string,"disabled_at"?: string | null,"display_name"?: string | null,"invited_by"?: string | null,"notes"?: string | null,"role"?: Database["public"]['Enums']["staff_role"],"telegram_chat_id"?: string | null,"updated_at"?: string,"user_id": string
                   }
                   Update: {
-                    "created_at"?: string,"display_name"?: string | null,"role"?: Database["public"]['Enums']["staff_role"],"telegram_chat_id"?: string | null,"updated_at"?: string,"user_id"?: string
+                    "commission_rate"?: number,"created_at"?: string,"disabled_at"?: string | null,"display_name"?: string | null,"invited_by"?: string | null,"notes"?: string | null,"role"?: Database["public"]['Enums']["staff_role"],"telegram_chat_id"?: string | null,"updated_at"?: string,"user_id"?: string
                   }
                   Relationships: [
                     
+                  ]
+                },"staff_telegram_codes": {
+                  Row: {
+                    "code": string,"expires_at": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "code": string,"expires_at": string,"user_id": string
+                  }
+                  Update: {
+                    "code"?: string,"expires_at"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "staff_telegram_codes_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: true
+      referencedRelation: "staff_members"
+      referencedColumns: ["user_id"]
+    }
                   ]
                 },"upgrade_requests": {
                   Row: {
@@ -507,7 +817,10 @@ isOneToOne: false
             [_ in never]: never
           }
           Functions: {
-            "admin_clients":
+            "accept_user_story":
+{ Args: { "p_create_task"?: boolean,"p_estimate_amount": number,"p_estimate_hours": number,"p_note": string,"p_story_id": string }; Returns: string
+                           },
+"admin_clients":
 { Args: { "p_client_id"?: string }; Returns: {
               "contact_id": string,
 "created_at": string,
@@ -530,14 +843,74 @@ isOneToOne: false
         isSetofReturn: true
       } },
 "admin_close_lead_paid":
-{ Args: { "p_amount": number,"p_generate_reward"?: boolean,"p_lead_id": string,"p_paid_at"?: string,"p_pricing_version"?: string,"p_reward_amount"?: number,"p_reward_percent"?: number,"p_reward_type"?: Database["public"]['Enums']["reward_type"] }; Returns: Json
+{ Args: { "p_amount": number,"p_commission"?: boolean,"p_generate_reward"?: boolean,"p_lead_id": string,"p_paid_at"?: string,"p_pricing_version"?: string,"p_reward_amount"?: number,"p_reward_percent"?: number,"p_reward_type"?: Database["public"]['Enums']["reward_type"] }; Returns: Json
+                           },
+"admin_commission_approve":
+{ Args: { "p_id": string }; Returns: undefined
+                           },
+"admin_commission_create":
+{ Args: { "p_base_amount": number,"p_closer_id": string,"p_lead_id": string,"p_note": string }; Returns: string
+                           },
+"admin_commission_mark_paid":
+{ Args: { "p_id": string,"p_note": string,"p_paid_at": string }; Returns: undefined
+                           },
+"admin_commission_reject":
+{ Args: { "p_id": string,"p_reason": string }; Returns: undefined
                            },
 "admin_counters":
 { Args: Record<PropertyKey, never>; Returns: Json
                            },
+"admin_import_conflict_resolve":
+{ Args: { "p_id": string,"p_note"?: string,"p_resolution": Database["public"]['Enums']["conflict_resolution"] }; Returns: undefined
+                           },
+"admin_import_conflicts":
+{ Args: { "p_status"?: Database["public"]['Enums']["conflict_status"] }; Returns: {
+              "created_at": string,"existing_contact_id": string,"existing_display_name": string,"existing_kind": Database["public"]['Enums']["contact_kind"],"existing_owner_id": string,"existing_owner_name": string,"existing_status": string,"id": string,"import_id": string,"importer_name": string,"importer_user_id": string,"row": Json
+            }[]
+                           },
+"admin_pricing_delete":
+{ Args: { "p_code": string,"p_kind": Database["public"]['Enums']["pricing_item"] }; Returns: undefined
+                           },
+"admin_pricing_restore":
+{ Args: { "p_code": string,"p_kind": Database["public"]['Enums']["pricing_item"] }; Returns: undefined
+                           },
+"admin_pricing_set_extra":
+{ Args: { "p": Json }; Returns: string
+                           },
+"admin_pricing_set_option":
+{ Args: { "p": Json,"p_pack_code": string }; Returns: undefined
+                           },
+"admin_pricing_set_pack":
+{ Args: { "p": Json }; Returns: string
+                           },
+"admin_pricing_set_settings":
+{ Args: { "p_feature": number,"p_hourly": number }; Returns: undefined
+                           },
+"admin_quote_set_discount":
+{ Args: { "p_amount": number,"p_note": string,"p_quote_id": string }; Returns: undefined
+                           },
+"admin_reassign_contacts":
+{ Args: { "p_from": string,"p_to": string }; Returns: number
+                           },
+"admin_staff_invite":
+{ Args: { "p_commission_rate": number,"p_email": string,"p_role": Database["public"]['Enums']["staff_role"] }; Returns: string
+                           },
+"admin_staff_list":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "commission_rate": number,"commissions_pending": number,"contacts_count": number,"disabled_at": string,"display_name": string,"email": string,"mfa_enrolled": boolean,"notes": string,"role": Database["public"]['Enums']["staff_role"],"telegram_linked": boolean,"user_id": string
+            }[]
+                           },
+"admin_staff_set":
+{ Args: { "p_commission_rate": number,"p_disabled": boolean,"p_notes": string,"p_user_id": string }; Returns: undefined
+                           },
 "affiliate_leads":
 { Args: Record<PropertyKey, never>; Returns: {
               "created_at": string,"lead_id": string,"pack_code": string,"reward_status": Database["public"]['Enums']["reward_status"],"status": Database["public"]['Enums']["lead_status"]
+            }[]
+                           },
+"area_client":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "created_at": string,"delivered_at": string,"id": string,"pack_code": string,"pack_option": string,"project_phase": Database["public"]['Enums']["project_phase"],"starts_at": string
             }[]
                            },
 "area_lead_summary":
@@ -557,18 +930,59 @@ isOneToOne: false
 "claim_client_access":
 { Args: Record<PropertyKey, never>; Returns: string
                            },
+"claim_staff_access":
+{ Args: Record<PropertyKey, never>; Returns: Database["public"]['Enums']["staff_role"]
+                           },
+"content_draft_snapshot":
+{ Args: { "p_locale": Database["public"]['Enums']["locale"] }; Returns: Json
+                           },
+"content_publication_mark":
+{ Args: { "p_commit_sha": string,"p_error": string,"p_files": Json,"p_id": string,"p_run_id": number,"p_status": Database["public"]['Enums']["publication_status"] }; Returns: undefined
+                           },
+"content_publish":
+{ Args: { "p_entry_ids"?: (string)[] }; Returns: string
+                           },
+"content_rollback":
+{ Args: { "p_entry_id": string,"p_version": number }; Returns: string
+                           },
+"content_save_draft":
+{ Args: { "p_draft": Json,"p_key": string,"p_kind": Database["public"]['Enums']["content_kind"],"p_locale": Database["public"]['Enums']["locale"] }; Returns: string
+                           },
+"convert_user_story":
+{ Args: { "p_story_id": string }; Returns: string
+                           },
 "create_lead":
 { Args: { "p": Json }; Returns: {
               "contact_id": string,"created": boolean,"lead_id": string
             }[]
+                           },
+"crm_import_contacts_csv":
+{ Args: { "p_checksum": string,"p_file_name": string,"p_rows": Json }; Returns: Json
                            },
 "crm_import_organizations":
 { Args: { "p_rows": Json }; Returns: {
               "created": number,"updated": number
             }[]
                            },
+"crm_my_counters":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"crm_request_close":
+{ Args: { "p_lead_id": string }; Returns: undefined
+                           },
+"crm_team_counters":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
 "increment_quota":
 { Args: { "p_key": string,"p_limit": number,"p_ttl": string }; Returns: boolean
+                           },
+"invite_client_access":
+{ Args: { "p_client_id": string,"p_email": string }; Returns: undefined
+                           },
+"notification_recipients":
+{ Args: { "p_event": string,"p_owner_id": string }; Returns: {
+              "address": string,"channel": Database["public"]['Enums']["notification_channel"]
+            }[]
                            },
 "outbox_ack":
 { Args: { "p_ids": (number)[],"p_worker": string }; Returns: number
@@ -580,6 +994,33 @@ isOneToOne: false
                            },
 "outbox_fail":
 { Args: { "p_error": string,"p_id": number,"p_worker": string }; Returns: boolean
+                           },
+"pricing_catalog_snapshot":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"pricing_published":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"quote_add_item":
+{ Args: { "p_extra_code": string,"p_quantity"?: number,"p_quote_id": string }; Returns: string
+                           },
+"quote_create":
+{ Args: { "p_contact_id": string,"p_lead_id"?: string,"p_title": string }; Returns: string
+                           },
+"quote_decide":
+{ Args: { "p_quote_id": string,"p_status": Database["public"]['Enums']["quote_status"] }; Returns: undefined
+                           },
+"quote_mark_sent":
+{ Args: { "p_quote_id": string }; Returns: undefined
+                           },
+"quote_remove_item":
+{ Args: { "p_item_id": string }; Returns: undefined
+                           },
+"quote_set_quantity":
+{ Args: { "p_item_id": string,"p_quantity": number }; Returns: undefined
+                           },
+"reject_user_story":
+{ Args: { "p_note": string,"p_story_id": string }; Returns: undefined
                            },
 "request_upgrade":
 { Args: { "p_extras"?: (string)[],"p_to_pack_code": string }; Returns: string
@@ -595,6 +1036,17 @@ isOneToOne: false
 "scheduled_jobs_mark_ran":
 { Args: { "p_name": string,"p_next_run_at": string,"p_ran_at": string }; Returns: undefined
                            },
+"staff_clients":
+{ Args: { "p_client_id"?: string }; Returns: {
+              "contact_id": string,"created_at": string,"delivered_at": string,"has_access": boolean,"id": string,"invite_email": string,"lead_id": string,"pack_code": string,"pack_option": string,"project_phase": Database["public"]['Enums']["project_phase"],"starts_at": string,"updated_at": string,"user_id": string
+            }[]
+                           },
+"staff_telegram_begin":
+{ Args: Record<PropertyKey, never>; Returns: string
+                           },
+"staff_telegram_link":
+{ Args: { "p_chat_id": string,"p_code": string }; Returns: boolean
+                           },
 "system_health":
 { Args: Record<PropertyKey, never>; Returns: Json
                            },
@@ -603,7 +1055,7 @@ isOneToOne: false
                            }
           }
           Enums: {
-            "affiliate_level": "standard"|"premium","asset_source": "client"|"admin","audience_signal": "client"|"partner"|"recruiter"|"curious"|"referral"|"business"|"company"|"blog"|"neutral","chat_case": "client"|"partner"|"recruiter"|"curious","chat_message_type": "text"|"quick_contact"|"case_switch"|"system","chat_sender": "visitor"|"assistant"|"jose","client_extra_status": "included"|"requested"|"active"|"rejected","comment_status": "pending"|"approved"|"rejected","contact_kind": "lead"|"client"|"agency"|"recruiter"|"other","contact_source": "web_form"|"web_proposal"|"chat"|"calcom"|"partner_form"|"import_agencias"|"manual"|"radar"|"newsletter_interest","contact_via": "client"|"partner"|"recruiter"|"other","context_status": "draft"|"published"|"archived","draft_author": "ai"|"jose","draft_status": "draft"|"copied"|"marked_sent"|"discarded","interaction_actor": "jose"|"ai"|"system"|"contact","interaction_channel": "linkedin_invite"|"linkedin_inmail"|"email"|"whatsapp"|"calcom"|"web_form"|"web_proposal"|"chat"|"other","interaction_direction": "out"|"in"|"internal","interaction_kind": "note"|"message_sent"|"message_received"|"meeting"|"call"|"chat_thread"|"status_change"|"import"|"lead_created"|"lead_won"|"lead_lost","lead_source": "web_form"|"web_proposal"|"chat"|"calcom"|"partner_form"|"manual"|"referral","lead_status": "open"|"won"|"lost","locale": "es"|"en","org_kind": "agency"|"company"|"local_business"|"recruiter_firm"|"other","project_phase": "kickoff"|"design"|"build"|"review"|"delivered"|"maintenance","reward_status": "pending"|"paid","reward_type": "maintenance_months"|"percent","staff_role": "admin","task_status": "pending"|"in_progress"|"done","thread_status": "open"|"handed_over"|"closed","upgrade_status": "pending"|"accepted"|"rejected"
+            "affiliate_level": "standard"|"premium","asset_source": "client"|"admin","audience_signal": "client"|"partner"|"recruiter"|"curious"|"referral"|"business"|"company"|"blog"|"neutral","chat_case": "client"|"partner"|"recruiter"|"curious","chat_message_type": "text"|"quick_contact"|"case_switch"|"system","chat_sender": "visitor"|"assistant"|"jose","client_extra_status": "included"|"requested"|"active"|"rejected","comment_status": "pending"|"approved"|"rejected","commission_status": "pending"|"approved"|"paid"|"rejected","conflict_resolution": "assign_existing"|"assign_importer"|"merge"|"discard","conflict_status": "pending"|"resolved","contact_kind": "lead"|"client"|"agency"|"recruiter"|"other","contact_source": "web_form"|"web_proposal"|"chat"|"calcom"|"partner_form"|"import_agencias"|"manual"|"radar"|"newsletter_interest"|"import_csv","contact_via": "client"|"partner"|"recruiter"|"other","content_kind": "message_override"|"faq"|"project"|"blog_post"|"settings","context_status": "draft"|"published"|"archived","draft_author": "ai"|"jose"|"closer","draft_status": "draft"|"copied"|"marked_sent"|"discarded","extra_billing": "one_off"|"monthly"|"yearly","import_status": "done"|"failed","interaction_actor": "jose"|"ai"|"system"|"contact"|"closer","interaction_channel": "linkedin_invite"|"linkedin_inmail"|"email"|"whatsapp"|"calcom"|"web_form"|"web_proposal"|"chat"|"other","interaction_direction": "out"|"in"|"internal","interaction_kind": "note"|"message_sent"|"message_received"|"meeting"|"call"|"chat_thread"|"status_change"|"import"|"lead_created"|"lead_won"|"lead_lost"|"client_invited"|"story_proposed"|"story_decided"|"commission","lead_source": "web_form"|"web_proposal"|"chat"|"calcom"|"partner_form"|"manual"|"referral","lead_status": "open"|"won"|"lost","locale": "es"|"en","notification_channel": "telegram"|"email","notification_recipient": "admin"|"owner"|"staff_user"|"client","org_kind": "agency"|"company"|"local_business"|"recruiter_firm"|"other","pack_kind": "web"|"app","pricing_item": "pack"|"pack_option"|"extra"|"settings","project_phase": "kickoff"|"design"|"build"|"review"|"delivered"|"maintenance","publication_status": "queued"|"committed"|"deployed"|"failed","quote_status": "draft"|"sent"|"accepted"|"rejected"|"expired","reward_status": "pending"|"paid","reward_type": "maintenance_months"|"percent","staff_role": "admin"|"closer","story_status": "proposed"|"accepted"|"rejected"|"converted","task_status": "pending"|"in_progress"|"done","thread_status": "open"|"handed_over"|"closed","upgrade_status": "pending"|"accepted"|"rejected"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -719,7 +1171,7 @@ export type CompositeTypes<
 export const Constants = {
   "public": {
           Enums: {
-            "affiliate_level": ["standard", "premium"],"asset_source": ["client", "admin"],"audience_signal": ["client", "partner", "recruiter", "curious", "referral", "business", "company", "blog", "neutral"],"chat_case": ["client", "partner", "recruiter", "curious"],"chat_message_type": ["text", "quick_contact", "case_switch", "system"],"chat_sender": ["visitor", "assistant", "jose"],"client_extra_status": ["included", "requested", "active", "rejected"],"comment_status": ["pending", "approved", "rejected"],"contact_kind": ["lead", "client", "agency", "recruiter", "other"],"contact_source": ["web_form", "web_proposal", "chat", "calcom", "partner_form", "import_agencias", "manual", "radar", "newsletter_interest"],"contact_via": ["client", "partner", "recruiter", "other"],"context_status": ["draft", "published", "archived"],"draft_author": ["ai", "jose"],"draft_status": ["draft", "copied", "marked_sent", "discarded"],"interaction_actor": ["jose", "ai", "system", "contact"],"interaction_channel": ["linkedin_invite", "linkedin_inmail", "email", "whatsapp", "calcom", "web_form", "web_proposal", "chat", "other"],"interaction_direction": ["out", "in", "internal"],"interaction_kind": ["note", "message_sent", "message_received", "meeting", "call", "chat_thread", "status_change", "import", "lead_created", "lead_won", "lead_lost"],"lead_source": ["web_form", "web_proposal", "chat", "calcom", "partner_form", "manual", "referral"],"lead_status": ["open", "won", "lost"],"locale": ["es", "en"],"org_kind": ["agency", "company", "local_business", "recruiter_firm", "other"],"project_phase": ["kickoff", "design", "build", "review", "delivered", "maintenance"],"reward_status": ["pending", "paid"],"reward_type": ["maintenance_months", "percent"],"staff_role": ["admin"],"task_status": ["pending", "in_progress", "done"],"thread_status": ["open", "handed_over", "closed"],"upgrade_status": ["pending", "accepted", "rejected"]
+            "affiliate_level": ["standard", "premium"],"asset_source": ["client", "admin"],"audience_signal": ["client", "partner", "recruiter", "curious", "referral", "business", "company", "blog", "neutral"],"chat_case": ["client", "partner", "recruiter", "curious"],"chat_message_type": ["text", "quick_contact", "case_switch", "system"],"chat_sender": ["visitor", "assistant", "jose"],"client_extra_status": ["included", "requested", "active", "rejected"],"comment_status": ["pending", "approved", "rejected"],"commission_status": ["pending", "approved", "paid", "rejected"],"conflict_resolution": ["assign_existing", "assign_importer", "merge", "discard"],"conflict_status": ["pending", "resolved"],"contact_kind": ["lead", "client", "agency", "recruiter", "other"],"contact_source": ["web_form", "web_proposal", "chat", "calcom", "partner_form", "import_agencias", "manual", "radar", "newsletter_interest", "import_csv"],"contact_via": ["client", "partner", "recruiter", "other"],"content_kind": ["message_override", "faq", "project", "blog_post", "settings"],"context_status": ["draft", "published", "archived"],"draft_author": ["ai", "jose", "closer"],"draft_status": ["draft", "copied", "marked_sent", "discarded"],"extra_billing": ["one_off", "monthly", "yearly"],"import_status": ["done", "failed"],"interaction_actor": ["jose", "ai", "system", "contact", "closer"],"interaction_channel": ["linkedin_invite", "linkedin_inmail", "email", "whatsapp", "calcom", "web_form", "web_proposal", "chat", "other"],"interaction_direction": ["out", "in", "internal"],"interaction_kind": ["note", "message_sent", "message_received", "meeting", "call", "chat_thread", "status_change", "import", "lead_created", "lead_won", "lead_lost", "client_invited", "story_proposed", "story_decided", "commission"],"lead_source": ["web_form", "web_proposal", "chat", "calcom", "partner_form", "manual", "referral"],"lead_status": ["open", "won", "lost"],"locale": ["es", "en"],"notification_channel": ["telegram", "email"],"notification_recipient": ["admin", "owner", "staff_user", "client"],"org_kind": ["agency", "company", "local_business", "recruiter_firm", "other"],"pack_kind": ["web", "app"],"pricing_item": ["pack", "pack_option", "extra", "settings"],"project_phase": ["kickoff", "design", "build", "review", "delivered", "maintenance"],"publication_status": ["queued", "committed", "deployed", "failed"],"quote_status": ["draft", "sent", "accepted", "rejected", "expired"],"reward_status": ["pending", "paid"],"reward_type": ["maintenance_months", "percent"],"staff_role": ["admin", "closer"],"story_status": ["proposed", "accepted", "rejected", "converted"],"task_status": ["pending", "in_progress", "done"],"thread_status": ["open", "handed_over", "closed"],"upgrade_status": ["pending", "accepted", "rejected"]
           }
         }
 } as const
