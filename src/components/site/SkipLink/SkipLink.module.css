@@ -1,0 +1,19 @@
+.skip {
+  position: fixed;
+  left: var(--space-4);
+  top: -4rem;
+  z-index: var(--z-skip);
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-xl);
+  background: var(--charcoal);
+  color: var(--on-dark);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+}
+
+.skip:focus-visible {
+  top: var(--space-4);
+}

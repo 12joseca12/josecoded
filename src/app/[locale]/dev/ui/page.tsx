@@ -19,7 +19,7 @@ export default async function UiCatalogPage({ params }: { params: Promise<{ loca
   const t = await getTranslator(locale);
 
   return (
-    <main className={styles.page}>
+    <div className={styles.page}>
       <Heading level={1} size="h2">
         {t("dev.ui.title")}
       </Heading>
@@ -125,6 +125,6 @@ export default async function UiCatalogPage({ params }: { params: Promise<{ loca
           },
         }}
       />
-    </main>
+    </div>
   );
 }
