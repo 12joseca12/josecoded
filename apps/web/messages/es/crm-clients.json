@@ -1,6 +1,7 @@
 {
   "crmClients": {
     "metaTitle": "Clientes",
+    "metaTitleFile": "Cliente",
     "title": "Clientes.",
     "tone": {
       "closer": "Tu cartera en marcha.",
@@ -48,6 +49,14 @@
       "delivered": "Entregado",
       "maintenance": "Mantenimiento"
     },
+    "phaseStep": {
+      "label": "Fases del proyecto",
+      "kickoff": "Propuesta",
+      "design": "Diseño",
+      "build": "Desarrollo",
+      "review": "Revisión",
+      "delivered": "Entrega"
+    },
     "phaseMini": "{done}/{total}",
     "access": {
       "none": "Sin invitar",
@@ -67,6 +76,41 @@
       "done": "Invitación enviada",
       "cancel": "Cancelar",
       "close": "Cerrar"
+    },
+    "file": {
+      "back": "Clientes",
+      "route": "Ruta",
+      "contact": "Ver contacto",
+      "maintenance": "En mantenimiento",
+      "owner": "Dueño",
+      "sideLabel": "Proyecto",
+      "storiesTitle": "Historias de usuario",
+      "storiesEmpty": "Este cliente aún no ha propuesto historias.",
+      "tasks": {
+        "title": "Tareas",
+        "progress": "{done} de {total} hechas",
+        "empty": "Aún no hay tareas.",
+        "hintAdmin": "Se editan en Administración · Clientes.",
+        "hintCloser": "Solo lectura: las gestiona Jose.",
+        "status": {
+          "pending": "Pendiente",
+          "in_progress": "En curso",
+          "done": "Hecha"
+        }
+      },
+      "assets": {
+        "title": "Material",
+        "empty": "El cliente aún no ha subido nada."
+      },
+      "storiesCount": {
+        "proposed": "{count} por decidir",
+        "accepted": "{count, plural, one {# aceptada} other {# aceptadas}}",
+        "converted": "{count} en tareas",
+        "rejected": "{count, plural, one {# rechazada} other {# rechazadas}}"
+      }
+    },
+    "stories": {
+      "viewTask": "Ver tarea"
     }
   }
 }

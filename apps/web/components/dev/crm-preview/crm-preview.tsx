@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 
-import { ClientsView } from '@/components/crm/clients';
+import { ClientDetailView, ClientsView } from '@/components/crm/clients';
 import { CommissionsView } from '@/components/crm/commissions';
 import { ContactDetailView } from '@/components/crm/contact-detail';
 import { ContactsView } from '@/components/crm/contacts-view';
@@ -16,6 +16,7 @@ import {
   PREVIEW_IDENTITY,
   PREVIEW_OMEN,
   IMPORT_PREVIEW_FILE,
+  previewClientFile,
   previewClientList,
   previewConflictQueue,
   previewCommissions,
@@ -49,6 +50,7 @@ const CURRENT_PATH: Record<PreviewScreen, string> = {
   conflictos: '/crm/importar',
   comisiones: '/crm/comisiones',
   clientes: '/crm/clientes',
+  cliente: '/crm/clientes/preview',
   admin: '/admin',
 };
 
@@ -68,7 +70,7 @@ export async function CrmPreview({
   screen: PreviewScreen;
   role: StaffRole;
   tab?: string;
-  /** The query of the URL: `?status` and `?closer` of K5. */
+  /** The query of the URL: `?status` and `?closer` of K5, `?q`, `?access` and `?stories` of K6 (`?client=vacio` on the file: the client without access, tasks or stories). */
   search?: Record<string, string | string[] | undefined>;
 }) {
   const summary = previewSummary(role);
@@ -170,6 +172,8 @@ export async function CrmPreview({
         const { rows, owners } = previewClientList(role);
         return <ClientsView locale={locale} role={role} rows={rows} owners={owners} query={parseClientQuery(search)} />;
       }
+      case 'cliente':
+        return <ClientDetailView locale={locale} role={role} file={previewClientFile(role, search?.client === 'vacio')} />;
       case 'admin': {
         const t = await getTranslations({ locale, namespace: 'crm' });
         return (

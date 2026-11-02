@@ -333,17 +333,7 @@
     "stories": {
       "title": "Stories",
       "decide": "Decide in the client file",
-      "empty": "The client has not proposed any story yet.",
-      "status": {
-        "proposed": "To decide",
-        "accepted": "Accepted",
-        "rejected": "Rejected",
-        "converted": "In tasks"
-      },
-      "as": "As",
-      "want": "I want",
-      "so": "so that",
-      "criteria": "Acceptance criteria"
+      "empty": "The client has not proposed any story yet."
     },
     "drafts": {
       "title": "Drafts and messages",

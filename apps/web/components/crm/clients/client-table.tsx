@@ -84,7 +84,7 @@ export async function ClientTable({
                   {[row.packCode, row.packOption].filter(Boolean).join(' · ')}
                 </td>
                 <td role="cell" data-col="wide" className={table.cell}>
-                  <PhaseSteps phase={row.phase} locale={locale} />
+                  <PhaseSteps phase={row.phase} variant="mini" locale={locale} />
                 </td>
                 <td role="cell" data-col="status" className={table.cell}>
                   <StatusBadge tone={accessTone(row.access)}>{labels[index]}</StatusBadge>

@@ -1,0 +1,20 @@
+{
+  "stories": {
+    "status": {
+      "proposed": "Por decidir",
+      "accepted": "Aceptada",
+      "rejected": "Rechazada",
+      "converted": "En tareas"
+    },
+    "as": "Como",
+    "want": "quiero",
+    "so": "para",
+    "criteria": "Criterios de aceptación",
+    "verdict": {
+      "estimate": "<strong>{hours} h</strong> · {amount} orientativo, sin IVA",
+      "included": "<strong>{hours} h</strong> · incluida en el pack",
+      "reason": "Motivo: {reason}",
+      "note": "«{note}»"
+    }
+  }
+}

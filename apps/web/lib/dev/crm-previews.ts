@@ -15,6 +15,7 @@ export const PREVIEW_SCREENS = [
   'conflictos',
   'comisiones',
   'clientes',
+  'cliente',
   'admin',
 ] as const;
 export type PreviewScreen = (typeof PREVIEW_SCREENS)[number];

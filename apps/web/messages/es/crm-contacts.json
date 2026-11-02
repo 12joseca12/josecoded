@@ -333,17 +333,7 @@
     "stories": {
       "title": "Historias",
       "decide": "Decidir en la ficha del cliente",
-      "empty": "El cliente aún no ha propuesto historias.",
-      "status": {
-        "proposed": "Por decidir",
-        "accepted": "Aceptada",
-        "rejected": "Rechazada",
-        "converted": "En tareas"
-      },
-      "as": "Como",
-      "want": "quiero",
-      "so": "para",
-      "criteria": "Criterios de aceptación"
+      "empty": "El cliente aún no ha propuesto historias."
     },
     "drafts": {
       "title": "Borradores y mensajes",

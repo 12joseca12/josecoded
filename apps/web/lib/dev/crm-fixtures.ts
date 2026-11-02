@@ -4,7 +4,7 @@ import { analyzeImport } from '@/lib/crm/import-analysis';
 
 import type { OmenStatus } from '@/lib/admin/queries';
 import type { StaffRole } from '@/lib/auth/staff';
-import type { ClientList } from '@/lib/crm/client-queries';
+import type { ClientAsset, ClientFile, ClientList, ClientStory, ClientTask } from '@/lib/crm/client-queries';
 import type { ClientRow } from '@/lib/crm/clients';
 import type { CommissionRecord } from '@/lib/crm/commissions';
 import type {
@@ -834,4 +834,70 @@ export function previewClientList(role: StaffRole): ClientList {
   return role === 'admin'
     ? { rows: CLIENT_ROWS, owners: OWNERS }
     : { rows: CLIENT_ROWS.filter((row) => row.ownerId === MARTA.user_id).map((row) => ({ ...row, ownerId: null })), owners: null };
+}
+
+const story = (
+  n: number,
+  status: ClientStory['status'],
+  title: string,
+  as_a: string,
+  i_want: string,
+  so_that: string,
+  acceptance_criteria: string[],
+  days: number,
+  extra: Partial<ClientStory> = {},
+): ClientStory => ({
+  id: `70000000-0000-4000-8000-00000000010${n}`,
+  title,
+  as_a,
+  i_want,
+  so_that,
+  acceptance_criteria,
+  status,
+  created_at: inDays(-days),
+  estimate_hours: null,
+  estimate_amount: null,
+  estimate_note: null,
+  decided_at: null,
+  task_id: null,
+  ...extra,
+});
+
+const TASK_ID = '71000000-0000-4000-8000-000000000003';
+
+/** Ana's stories, one in each state: the sheet of the decision is opened from the first one. */
+const CLIENT_STORIES: ClientStory[] = [
+  story(1, 'proposed', 'Reservar encargos para recoger', 'cliente habitual de la panadería', 'reservar una tarta o un pan especial para un día y una hora', 'recogerlo sin esperar cola', ['Elijo producto, día y franja de recogida', 'Solo veo franjas con hueco', 'Recibo la confirmación por correo', 'La panadería ve la reserva en su panel'], 3),
+  story(2, 'accepted', 'Aviso cuando el pedido esté listo', 'cliente que encarga por la web', 'recibir un aviso cuando mi pedido esté listo', 'no ir antes de tiempo', ['Aviso por correo al marcarlo listo', 'Texto con hora de recogida'], 11, { estimate_hours: 6, estimate_amount: 240, estimate_note: 'Va con el módulo de pedidos.', decided_at: inDays(-9) }),
+  story(3, 'converted', 'Ocultar productos agotados', 'dueña de la panadería', 'marcar un producto como agotado', 'que no me lo pidan', ['Un interruptor por producto', 'Se oculta en la carta al momento'], 18, { estimate_hours: 2, decided_at: inDays(-16), task_id: TASK_ID }),
+  story(4, 'rejected', 'Cambiar la tipografía de la carta', 'dueña de la panadería', 'otra tipografía en la carta', 'que se parezca a mi letrero', ['Misma letra que el letrero'], 23, { estimate_note: 'Queda fuera del pack; lo vemos en una ampliación de diseño.', decided_at: inDays(-21) }),
+];
+
+const CLIENT_TASKS: ClientTask[] = [
+  { id: '71000000-0000-4000-8000-000000000001', title: 'Carta de productos con fotos', status: 'done' },
+  { id: '71000000-0000-4000-8000-000000000002', title: 'Pagos con Bizum en la recogida', status: 'in_progress' },
+  { id: '71000000-0000-4000-8000-000000000004', title: 'Pedidos para recoger', status: 'in_progress' },
+  { id: TASK_ID, title: 'Ocultar agotados en la carta', status: 'pending' },
+  { id: '71000000-0000-4000-8000-000000000005', title: 'Textos legales', status: 'done' },
+];
+
+const CLIENT_ASSETS: ClientAsset[] = [
+  { id: '72000000-0000-4000-8000-000000000001', name: 'logo-la-espiga.svg', sizeBytes: 12 * 1024 },
+  { id: '72000000-0000-4000-8000-000000000002', name: 'fotos-productos.zip', sizeBytes: 18 * 1024 * 1024 },
+  { id: '72000000-0000-4000-8000-000000000003', name: 'textos-carta.docx', sizeBytes: 40 * 1024 },
+];
+
+/**
+ * The file of Ana (client 1) with everything she has, or, with `empty`, the one of Laura (client 2, not invited yet):
+ * the empty states and the «Habilitar acceso» button. The material only for the admin, the owner only for the admin.
+ */
+export function previewClientFile(role: StaffRole, empty = false): ClientFile {
+  const { rows } = previewClientList(role);
+  return {
+    client: rows[empty ? 1 : 0] as ClientRow,
+    owner: role === 'admin' ? MARTA : null,
+    tasks: empty ? [] : CLIENT_TASKS,
+    stories: empty ? [] : CLIENT_STORIES,
+    assets: role === 'admin' ? (empty ? [] : CLIENT_ASSETS) : null,
+  };
 }

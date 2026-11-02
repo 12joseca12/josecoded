@@ -1,6 +1,7 @@
 {
   "crmClients": {
     "metaTitle": "Clients",
+    "metaTitleFile": "Client",
     "title": "Clients.",
     "tone": {
       "closer": "Your portfolio in motion.",
@@ -48,6 +49,14 @@
       "delivered": "Delivered",
       "maintenance": "Maintenance"
     },
+    "phaseStep": {
+      "label": "Project phases",
+      "kickoff": "Proposal",
+      "design": "Design",
+      "build": "Development",
+      "review": "Review",
+      "delivered": "Delivery"
+    },
     "phaseMini": "{done}/{total}",
     "access": {
       "none": "Not invited",
@@ -67,6 +76,41 @@
       "done": "Invitation sent",
       "cancel": "Cancel",
       "close": "Close"
+    },
+    "file": {
+      "back": "Clients",
+      "route": "Route",
+      "contact": "View contact",
+      "maintenance": "In maintenance",
+      "owner": "Owner",
+      "sideLabel": "Project",
+      "storiesTitle": "User stories",
+      "storiesEmpty": "This client has not proposed any stories yet.",
+      "tasks": {
+        "title": "Tasks",
+        "progress": "{done} of {total} done",
+        "empty": "There are no tasks yet.",
+        "hintAdmin": "They are edited in Administration · Clients.",
+        "hintCloser": "Read only: Jose manages them.",
+        "status": {
+          "pending": "Pending",
+          "in_progress": "In progress",
+          "done": "Done"
+        }
+      },
+      "assets": {
+        "title": "Material",
+        "empty": "The client has not uploaded anything yet."
+      },
+      "storiesCount": {
+        "proposed": "{count} to decide",
+        "accepted": "{count} accepted",
+        "converted": "{count} in tasks",
+        "rejected": "{count} rejected"
+      }
+    },
+    "stories": {
+      "viewTask": "View task"
     }
   }
 }

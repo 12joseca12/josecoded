@@ -1,0 +1,107 @@
+/* ref/crm .story: the text of the client, its criteria and, under a hairline, the verdict */
+.story {
+  display: grid;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-5);
+  border-radius: var(--r-lg);
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+}
+
+.story:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-width);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2) var(--sp-3);
+}
+
+.title {
+  margin: 0 auto 0 0;
+  color: var(--text);
+  font-size: var(--font-cell-title-size);
+  font-weight: var(--font-emphasis-weight);
+}
+
+.date {
+  color: var(--text-3);
+  font-size: var(--font-caption-size);
+}
+
+.cqp {
+  display: grid;
+  gap: var(--sp-1);
+  color: var(--text-2);
+  font-size: var(--font-label-size);
+}
+
+.cqp p {
+  margin: 0;
+}
+
+.cqp b {
+  color: var(--text-3);
+  font-weight: var(--font-emphasis-weight);
+}
+
+.criteria {
+  display: grid;
+  gap: var(--sp-1);
+  padding: 0;
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--font-small-size);
+  list-style: none;
+}
+
+.criteria li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+}
+
+.criteria svg {
+  flex: none;
+  width: var(--sp-4);
+  height: var(--sp-4);
+  margin-top: var(--sp-0-5);
+  color: var(--text-3);
+}
+
+.verdict {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-3);
+  padding-top: var(--sp-3);
+  box-shadow: var(--shadow-edge-top);
+  color: var(--text-2);
+  font-size: var(--font-small-size);
+}
+
+.verdict strong {
+  color: var(--text);
+  font-weight: var(--font-emphasis-weight);
+}
+
+.muted {
+  color: var(--text-3);
+}
+
+.task {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-height: var(--size-control-sm);
+  margin-inline-start: auto;
+  color: var(--violet-soft);
+}
+
+.task svg {
+  width: var(--sp-4);
+  height: var(--sp-4);
+}

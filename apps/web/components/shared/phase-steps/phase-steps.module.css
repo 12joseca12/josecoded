@@ -1,4 +1,42 @@
-/* ref/crm .phase-mini: five strokes, the reached ones in soft violet */
+/* ref/crm .phases and .phase-mini: five strokes, the reached ones in soft violet, the current one thicker and in violet */
+.steps {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: var(--sp-1);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.steps li {
+  display: grid;
+  gap: var(--sp-1-5);
+  color: var(--text-3);
+  font-size: var(--font-caption-size);
+}
+
+.steps li::before {
+  content: '';
+  height: var(--stroke-line);
+  border-radius: var(--r-pill);
+  background: var(--line-2);
+}
+
+.steps li[data-done]::before {
+  background: var(--violet-soft);
+}
+
+.steps li[aria-current='step'] {
+  color: var(--text);
+  font-weight: var(--font-emphasis-weight);
+}
+
+.steps li[aria-current='step']::before {
+  height: var(--stroke-line-active);
+  background: var(--violet);
+}
+
 .mini {
   display: inline-flex;
   align-items: center;

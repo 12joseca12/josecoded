@@ -93,6 +93,17 @@ export function accessTone(access: AccessState): StatusBadgeTone {
 
 /** The five steps of a project; `maintenance` comes after the last one. */
 export const PHASE_STEPS = ['kickoff', 'design', 'build', 'review', 'delivered'] as const;
+export type PhaseStepKey = (typeof PHASE_STEPS)[number];
+export type PhaseStepState = 'done' | 'current' | 'todo';
+
+/** Which steps are done, which one is the current and which are still to come. In maintenance everything is done. */
+export function phaseSteps(phase: ProjectPhase): { key: PhaseStepKey; state: PhaseStepState }[] {
+  const index = phase === 'maintenance' ? PHASE_STEPS.length : PHASE_STEPS.indexOf(phase);
+  return PHASE_STEPS.map((key, position) => ({
+    key,
+    state: position < index ? 'done' : position === index ? 'current' : 'todo',
+  }));
+}
 
 /** Steps reached, the current one included: the «3/5» of the mini bar. */
 export function phaseFilled(phase: ProjectPhase): number {

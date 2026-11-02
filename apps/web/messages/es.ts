@@ -21,6 +21,7 @@ import projects from './es/projects.json';
 import proposal from './es/proposal.json';
 import seo from './es/seo.json';
 import services from './es/services.json';
+import stories from './es/stories.json';
 
 const messages = {
   ...common,
@@ -43,6 +44,7 @@ const messages = {
   ...area,
   ...newsletter,
   ...seo,
+  ...stories,
 };
 
 export default messages;

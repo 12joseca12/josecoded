@@ -76,6 +76,7 @@
         "conflictos": "K4 · Import conflicts (admin queue)",
         "comisiones": "K5 · Commissions (pending, approved, paid and rejected, with totals)",
         "clientes": "K6 · Clients (portfolio with access, phase and stories to decide)",
+        "cliente": "K6 · Client file (stories in the four states, tasks and material)",
         "admin": "C1 · Admin summary (/admin)"
       },
       "roles": {

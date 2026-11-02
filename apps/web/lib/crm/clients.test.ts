@@ -8,6 +8,7 @@ import {
   hasClientFilters,
   parseClientQuery,
   phaseFilled,
+  phaseSteps,
 } from './clients';
 
 import type { ClientRow } from './clients';
@@ -108,6 +109,16 @@ describe('accessTone', () => {
 });
 
 describe('phases', () => {
+  it('the five steps of the project: the ones before the phase are done, the phase is the current one', () => {
+    expect(phaseSteps('build').map((step) => step.state)).toEqual(['done', 'done', 'current', 'todo', 'todo']);
+    expect(phaseSteps('kickoff').map((step) => step.state)).toEqual(['current', 'todo', 'todo', 'todo', 'todo']);
+    expect(phaseSteps('delivered').map((step) => step.state)).toEqual(['done', 'done', 'done', 'done', 'current']);
+  });
+
+  it('in maintenance the project is finished: every step is done and none is current', () => {
+    expect(phaseSteps('maintenance').map((step) => step.state)).toEqual(['done', 'done', 'done', 'done', 'done']);
+  });
+
   it('counts the steps reached, for the mini bar («3/5»)', () => {
     expect(phaseFilled('kickoff')).toBe(1);
     expect(phaseFilled('build')).toBe(3);

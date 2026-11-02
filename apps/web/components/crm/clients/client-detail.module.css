@@ -1,0 +1,90 @@
+/* The file of a client (K6): the head, the stories on the left and the project cards on the right. The layout, the
+   head stack and the section head are the ones of the contact's file (`contact-detail.module.css`). */
+.headStack {
+  /* stylelint-disable-next-line property-no-unknown, value-keyword-case -- CSS Modules keyword */
+  composes: headStack from '../contact-detail/contact-detail.module.css';
+}
+
+.crumbs {
+  /* stylelint-disable-next-line property-no-unknown, value-keyword-case -- CSS Modules keyword */
+  composes: crumbs from '../contact-detail/contact-detail.module.css';
+}
+
+.back {
+  /* stylelint-disable-next-line property-no-unknown, value-keyword-case -- CSS Modules keyword */
+  composes: back from '../contact-detail/contact-detail.module.css';
+}
+
+.meta {
+  /* stylelint-disable-next-line property-no-unknown, value-keyword-case -- CSS Modules keyword */
+  composes: meta from '../contact-detail/contact-detail.module.css';
+}
+
+.sectionHead {
+  /* stylelint-disable-next-line property-no-unknown, value-keyword-case -- CSS Modules keyword */
+  composes: sectionHead from '../contact-detail/contact-detail.module.css';
+}
+
+.caption {
+  color: var(--text-3);
+  font-size: var(--font-caption-size);
+}
+
+.hint {
+  margin: 0;
+  color: var(--text-3);
+  font-size: var(--font-small-size);
+  line-height: var(--font-body-leading);
+}
+
+.stories {
+  display: grid;
+  gap: var(--sp-4);
+}
+
+.storyList {
+  display: grid;
+  gap: var(--sp-3);
+}
+
+/* the tasks and the material: a name and, at the end, its state or size */
+.items {
+  display: grid;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: var(--size-hit);
+  padding: var(--sp-1-5) 0;
+  box-shadow: var(--shadow-edge-bottom);
+  font-size: var(--font-label-size);
+}
+
+.item:last-child {
+  box-shadow: none;
+}
+
+.name {
+  margin-inline-end: auto;
+  overflow-wrap: anywhere;
+}
+
+.item > svg {
+  flex: none;
+  color: var(--text-3);
+}
+
+.item[data-done] > svg {
+  color: var(--green);
+}
+
+.size {
+  color: var(--text-3);
+  font-size: var(--font-caption-size);
+  white-space: nowrap;
+}

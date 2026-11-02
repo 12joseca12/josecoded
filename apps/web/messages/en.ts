@@ -19,6 +19,7 @@ import projects from './en/projects.json';
 import proposal from './en/proposal.json';
 import seo from './en/seo.json';
 import services from './en/services.json';
+import stories from './en/stories.json';
 
 import type es from './es';
 
@@ -43,6 +44,7 @@ const messages = {
   ...area,
   ...newsletter,
   ...seo,
+  ...stories,
 } satisfies typeof es;
 
 export default messages;
