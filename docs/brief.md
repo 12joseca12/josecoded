@@ -58,3 +58,12 @@ Tres referencias de paleta y estilo en `prototipos/estilo/referencias/`:
 | C | Obsidian Black `#080808` · Chrome Silver `#CDCBCA` · Laser Crimson Red `#D41514` | «The Next Human Interface» |
 
 Para cada una se crea un hero de home de prueba parecido a la referencia, sin robots: enfocado en aplicaciones web, móviles e IA, con esos colores.
+
+## Decisión de estilo (2026-11-02)
+
+Gana la **opción B** (Cool Steel Grey `#929DA7` · Midnight Charcoal `#17191C` · Vibrant Coral Orange `#FF4B32`; prototipo `prototipos/estilo/b.html`). Requisitos que Jose añade sobre ella:
+
+- Scroll de las páginas públicas cuidado de forma especial.
+- Visual del hero animado: transición fluida, sin saltos y dinámica, como si la app se estuviera transformando.
+- Barra de navegación limpia y elegante pero tecnológica, que facilite moverse por la web.
+- Barra de scroll lateral personalizada.

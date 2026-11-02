@@ -20,6 +20,7 @@ El arquitecto convierte eso en el tablón (https://claude.ai/artifact/VQd4B9Vtsa
 
 ## Decisiones recientes
 
+- **2026-11-02 — Estilo: opción B** (acero, carbón y coral). Pendiente: hero animado, navegación, scroll y barra lateral (ver `docs/brief.md`).
 - **2026-11-02 — Supabase de producción limpio** (OK de Jose). Borrados esquema `private`, todas las tablas, funciones, tipos y políticas de `public`, las políticas de `storage.objects`, el trigger `on_auth_user_created`, el bucket `client-assets`, las extensiones `citext` y `unaccent` y el historial de `supabase_migrations`. No había usuarios ni ficheros. Advisors de seguridad: 0. Se mantienen los privilegios por defecto endurecidos (sin grants a `anon`/`authenticated` en objetos nuevos de `public`).
 - **2026-11-02 — Ramas limpias.** Solo quedan `main`, `develop` y las de archivo (`archivo/v1-2026-11-02`, `archivo/chore-monorepo-base`, `archivo/chore-supabase`). Worktrees antiguos del Mac eliminados.
 - **2026-11-02 — Reinicio.** Se vacía `main` con un commit (historial conservado), se archiva todo en `archivo/v1-2026-11-02` y se crea `develop` desde el `main` vacío.
