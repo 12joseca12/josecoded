@@ -64,7 +64,7 @@ describe('primitives reject what the contract forbids', () => {
     // @ts-expect-error `bold` is not an emphasis
     const bold: ArrowLinkProps = { emphasis: 'bold', href: '/lab' };
     // @ts-expect-error the icon must be one of the registered Lucide names
-    const unknownIcon: ComponentProps<typeof IconTile> = { icon: 'rocket' };
+    const unknownIcon: ComponentProps<typeof IconTile> = { icon: 'unicorn' };
     // @ts-expect-error `huge` is not a radius
     const hugeRadius: ComponentProps<typeof Surface> = { radius: 'huge' };
     // @ts-expect-error `h3` is not a level of the two-tone heading

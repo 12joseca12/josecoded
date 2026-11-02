@@ -1,10 +1,11 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { getFormatter, getMessages, getTranslations } from 'next-intl/server';
 
+import { contentTabs } from '@/components/admin/texts/content-tabs';
 import { TabNav } from '@/components/crm/tab-nav';
 import { PageHead } from '@/components/staff/page-head';
 import { Icon } from '@/components/ui/icon';
-import { PRICE_FORMAT, PRICING_PATH, pendingCount } from '@/lib/pricing/catalogue';
+import { PRICE_FORMAT, pendingCount } from '@/lib/pricing/catalogue';
 
 import { PriceItemSheet } from './price-item-sheet';
 import { PriceTable } from './price-table';
@@ -25,15 +26,19 @@ export async function PricesView({
   catalogue,
   notice,
   changes,
+  textsPending = 0,
 }: {
   locale: Locale;
   catalogue: Catalogue;
   notice?: string;
   /** The diff against the published catalogue (`null`: the draft is not valid yet). Absent in the dev preview. */
   changes?: readonly CatalogChange[] | null;
+  /** Unpublished text changes, for the count on the Textos tab (the texts' draft is wired in a later block). */
+  textsPending?: number;
 }) {
-  const [t, format, messages] = await Promise.all([
+  const [t, tabs, format, messages] = await Promise.all([
     getTranslations({ locale, namespace: 'adminPricing' }),
+    getTranslations({ locale, namespace: 'adminTexts.tabs' }),
     getFormatter({ locale }),
     getMessages(),
   ]);
@@ -41,7 +46,7 @@ export async function PricesView({
   return (
     <NextIntlClientProvider messages={{ adminPricing: { sheet: messages.adminPricing.sheet } }}>
       <PageHead title={t('title')} tone={t('tone')} lead={t('lead')} />
-      <TabNav label={t('tabsLabel')} current="precios" items={[{ id: 'precios', label: t('tab'), href: PRICING_PATH, count: pending }]} />
+      <TabNav label={t('tabsLabel')} current="precios" items={contentTabs({ texts: tabs('texts'), prices: t('tab') }, { texts: textsPending, prices: pending })} />
       {notice ? (
         <p className={styles.band} data-tone="info" role="status">
           <Icon name="info" />

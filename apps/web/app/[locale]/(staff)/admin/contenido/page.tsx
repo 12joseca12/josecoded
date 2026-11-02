@@ -4,7 +4,10 @@ import { pricing } from '@josecoded/pricing';
 import { pricingSchema } from '@josecoded/types';
 
 import { PricesView } from '@/components/admin/pricing';
+import { TextsView } from '@/components/admin/texts';
+import { loadMessages } from '@/i18n/messages';
 import { requireAdmin } from '@/lib/auth/guards';
+import { collectTexts } from '@/lib/content/texts';
 import { resolveLocale } from '@/lib/locale';
 import { PRICING_PATH } from '@/lib/pricing/catalogue';
 import { diffCatalog } from '@/lib/pricing/diff';
@@ -13,20 +16,32 @@ import { catalogueFromDraft } from '@/lib/pricing/draft';
 import type { LocaleParams } from '@/lib/locale';
 import type { Metadata } from 'next';
 
-export async function generateMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
+type SearchParams = Promise<Record<string, string | string[] | undefined>>;
+
+/** `?tab=precios` is the prices; anything else is the texts, the first tab. */
+const tabOf = async (searchParams: SearchParams) => ((await searchParams).tab === 'precios' ? 'precios' : 'textos');
+
+export async function generateMetadata({ params, searchParams }: { params: LocaleParams; searchParams: SearchParams }): Promise<Metadata> {
   const locale = await resolveLocale(params);
-  const t = await getTranslations({ locale, namespace: 'adminPricing' });
+  const tab = await tabOf(searchParams);
+  const t = await getTranslations({ locale, namespace: tab === 'precios' ? 'adminPricing' : 'adminTexts' });
   return { title: t('metaTitle') };
 }
 
 /**
- * D2, Contenido: for now only its Precios tab (`?tab=precios`, the other tabs arrive with B35–B42). The page shows the
+ * D2, Contenido, with its Textos (`?tab=textos`, the default) and Precios (`?tab=precios`) tabs; the others arrive with
+ * B41–B42. Textos lists every editable text of the site from the real catalogs; saving them is B38. Precios shows the
  * DRAFT catalogue (the tables, read with the admin's JWT: what the Server Actions write) and marks what differs from
  * the published one (`content/pricing.json`, which is what the public site keeps reading until a publication).
  */
-export default async function AdminContentPage({ params }: { params: LocaleParams }) {
+export default async function AdminContentPage({ params, searchParams }: { params: LocaleParams; searchParams: SearchParams }) {
   const locale = await resolveLocale(params);
   const { supabase } = await requireAdmin({ locale, next: PRICING_PATH });
+
+  if ((await tabOf(searchParams)) === 'textos') {
+    const [es, en, t] = await Promise.all([loadMessages('es'), loadMessages('en'), getTranslations({ locale, namespace: 'adminTexts' })]);
+    return <TextsView entries={collectTexts(es, en)} notice={t('unwired')} />;
+  }
 
   const [packs, options, extras, settings, snapshot] = await Promise.all([
     supabase.from('packs').select('*'),

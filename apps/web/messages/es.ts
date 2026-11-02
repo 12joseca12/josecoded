@@ -5,6 +5,7 @@ import about from './es/about.json';
 import adminNotifications from './es/admin-notifications.json';
 import adminPricing from './es/admin-pricing.json';
 import adminTexts from './es/admin-texts.json';
+import adminTexts from './es/admin-texts.json';
 import adminTeam from './es/admin-team.json';
 import area from './es/area.json';
 import auth from './es/auth.json';
@@ -43,6 +44,7 @@ const messages = {
   ...crm,
   ...adminNotifications,
   ...adminPricing,
+  ...adminTexts,
   ...adminTexts,
   ...adminTeam,
   ...crmClients,
