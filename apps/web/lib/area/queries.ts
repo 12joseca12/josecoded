@@ -174,3 +174,44 @@ export async function getUpgradeRequests(clientId: string, limit = 5): Promise<A
     .limit(limit);
   return data ?? [];
 }
+
+export type AreaAffiliate = Pick<Tables<'affiliates'>, 'id' | 'code' | 'level'>;
+export type AreaReferredLead = {
+  lead_id: string;
+  created_at: string;
+  status: Tables<'leads'>['status'];
+  pack_code: string;
+  reward_status: Tables<'affiliate_rewards'>['status'] | null;
+};
+export type AreaReward = Pick<Tables<'affiliate_rewards'>, 'id' | 'type' | 'amount' | 'status' | 'paid_at' | 'created_at'>;
+
+/** The affiliate row of this user, if they already asked for their link (RLS: only their own). */
+export async function getAffiliate(): Promise<AreaAffiliate | null> {
+  const session = await getOptionalSession();
+  if (!session) return null;
+  const { data } = await session.supabase
+    .from('affiliates')
+    .select('id, code, level')
+    .eq('user_id', session.user.id)
+    .maybeSingle();
+  return data;
+}
+
+/** Leads referred by this user: state, date and pack, never contact data (`affiliate_leads()`). */
+export async function getReferredLeads(): Promise<AreaReferredLead[]> {
+  const session = await getOptionalSession();
+  if (!session) return [];
+  const { data } = await session.supabase.rpc('affiliate_leads');
+  return (data as AreaReferredLead[] | null) ?? [];
+}
+
+export async function getRewards(affiliateId: string): Promise<AreaReward[]> {
+  const session = await getOptionalSession();
+  if (!session) return [];
+  const { data } = await session.supabase
+    .from('affiliate_rewards')
+    .select('id, type, amount, status, paid_at, created_at')
+    .eq('affiliate_id', affiliateId)
+    .order('created_at', { ascending: false });
+  return data ?? [];
+}

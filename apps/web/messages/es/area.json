@@ -253,6 +253,53 @@
         },
         "extraMonthly": "al mes"
       }
+    },
+    "referrals": {
+      "metaTitle": "Recomiéndame",
+      "title": {
+        "lead": "Recomiéndame,",
+        "tail": "y gana"
+      },
+      "lede": "Si conoces a alguien que necesite una web o una app, comparte tu enlace. Si acaba contratando, ganas.",
+      "failed": "No hemos podido crear tu enlace. Inténtalo de nuevo.",
+      "linkTitle": "Tu enlace",
+      "getTitle": "Consigue tu enlace",
+      "getBody": "Es gratis y personal. Se genera con tu nombre y un código único.",
+      "get": "Conseguir mi enlace",
+      "form": "Conseguir mi enlace",
+      "link": "Tu enlace de recomendación",
+      "code": "Tu código: {code}",
+      "copy": "Copiar enlace",
+      "copied": "Enlace copiado.",
+      "copyFailed": "No se pudo copiar solo: el enlace está seleccionado para que lo copies.",
+      "rulesTitle": "Cómo funciona",
+      "rules": {
+        "client": "Si ya eres cliente: {months, plural, one {# mes} other {# meses}} de mantenimiento gratis por cada cliente que contrate.",
+        "standard": "Si no eres cliente: el {percent} % de la primera compra, sin IVA.",
+        "premium": "Recomendador premium: el {percent} % de la primera compra, sin IVA."
+      },
+      "rulesNote": "Cuenta la primera compra del cliente que llega con tu enlace. Jose te avisa cuando la abona.",
+      "leadsTitle": "Tus recomendaciones",
+      "leadsList": "Recomendaciones",
+      "leadsEmptyTitle": "Aún no hay recomendaciones",
+      "leadsEmptyBody": "Cuando alguien llegue con tu enlace y pida una propuesta, lo verás aquí, sin sus datos de contacto.",
+      "leadLine": "{status} · {date}",
+      "leadStatus": {
+        "open": "En curso",
+        "won": "Contratado",
+        "lost": "No ha seguido"
+      },
+      "rewardsTitle": "Tus recompensas",
+      "rewardsList": "Recompensas",
+      "rewardsEmptyTitle": "Aún no hay recompensas",
+      "rewardsEmptyBody": "Aparecerán cuando una recomendación acabe en un pedido.",
+      "rewardMonths": "{count, plural, one {# mes} other {# meses}} de mantenimiento",
+      "rewardAmount": "{amount}",
+      "rewardLine": "{status} · {date}",
+      "rewardStatus": {
+        "pending": "Pendiente",
+        "paid": "Abonada"
+      }
     }
   }
 }

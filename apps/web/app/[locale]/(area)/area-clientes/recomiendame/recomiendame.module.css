@@ -1,0 +1,17 @@
+.code {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--font-label-size);
+}
+
+.rules {
+  display: grid;
+  gap: var(--sp-2);
+  margin: 0;
+  padding-inline-start: var(--sp-5);
+}
+
+.note {
+  color: var(--text-3);
+  font-size: var(--font-small-size);
+}

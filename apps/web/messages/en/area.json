@@ -253,6 +253,53 @@
         },
         "extraMonthly": "a month"
       }
+    },
+    "referrals": {
+      "metaTitle": "Refer a friend",
+      "title": {
+        "lead": "Refer me,",
+        "tail": "and earn"
+      },
+      "lede": "If you know someone who needs a website or an app, share your link. If they end up hiring, you earn.",
+      "failed": "We could not create your link. Please try again.",
+      "linkTitle": "Your link",
+      "getTitle": "Get your link",
+      "getBody": "It is free and personal. It is built from your name and a unique code.",
+      "get": "Get my link",
+      "form": "Get my link",
+      "link": "Your referral link",
+      "code": "Your code: {code}",
+      "copy": "Copy link",
+      "copied": "Link copied.",
+      "copyFailed": "Could not copy automatically: the link is selected so you can copy it.",
+      "rulesTitle": "How it works",
+      "rules": {
+        "client": "If you are already a client: {months, plural, one {# month} other {# months}} of free maintenance for each client who hires.",
+        "standard": "If you are not a client: {percent}% of the first purchase, excluding VAT.",
+        "premium": "Premium referrer: {percent}% of the first purchase, excluding VAT."
+      },
+      "rulesNote": "The first purchase of the client who arrives with your link counts. Jose tells you when he pays it.",
+      "leadsTitle": "Your referrals",
+      "leadsList": "Referrals",
+      "leadsEmptyTitle": "No referrals yet",
+      "leadsEmptyBody": "When someone arrives with your link and asks for a proposal, you will see it here, without their contact details.",
+      "leadLine": "{status} · {date}",
+      "leadStatus": {
+        "open": "In progress",
+        "won": "Hired",
+        "lost": "Did not continue"
+      },
+      "rewardsTitle": "Your rewards",
+      "rewardsList": "Rewards",
+      "rewardsEmptyTitle": "No rewards yet",
+      "rewardsEmptyBody": "They appear when a referral ends in an order.",
+      "rewardMonths": "{count, plural, one {# month} other {# months}} of maintenance",
+      "rewardAmount": "{amount}",
+      "rewardLine": "{status} · {date}",
+      "rewardStatus": {
+        "pending": "Pending",
+        "paid": "Paid"
+      }
     }
   }
 }

@@ -175,3 +175,35 @@ test.describe('plan and upgrade', () => {
     await expect(page.getByRole('button', { name: 'Enviar solicitud' })).toHaveCount(0);
   });
 });
+
+test.describe('referrals', () => {
+  test('an affiliate sees the link with her code, the three rules, her referred lead and the pending reward', async ({
+    page,
+    context,
+    baseURL,
+  }) => {
+    await signInAs(context, baseURL as string, 'bob');
+    await page.goto('/area-clientes/recomiendame');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Recomiéndame');
+    await expect(page.getByText(/\/\?ref=BOB-TEST01$/)).toBeVisible();
+    await expect(page.getByText(/^Si ya eres cliente/)).toBeVisible();
+    await expect(page.getByText(/^Pendiente · /)).toBeVisible();
+    await expectNoSeriousViolations(page);
+  });
+
+  test('copying the link says so', async ({ page, context, baseURL }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+    await signInAs(context, baseURL as string, 'bob');
+    await page.goto('/area-clientes/recomiendame');
+    await page.getByRole('button', { name: 'Copiar enlace' }).click();
+    await expect(page.getByText('Enlace copiado.')).toBeVisible();
+    expect(await page.evaluate(() => navigator.clipboard.readText())).toMatch(/\/\?ref=BOB-TEST01$/);
+  });
+
+  test('a client reaches Recomiéndame too, in English as well', async ({ page, context, baseURL }) => {
+    await signInAs(context, baseURL as string, 'ana');
+    await page.goto('/en/client-area/referrals');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Refer me');
+    await expect(page.getByText(/\/\?ref=ANA-TEST01$/)).toBeVisible();
+  });
+});
