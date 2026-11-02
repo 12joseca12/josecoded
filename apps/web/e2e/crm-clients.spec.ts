@@ -47,12 +47,15 @@ test('Jose sees both clients, opens Ana and rejects nothing without a reason, th
 
   await story.getByRole('button', { name: /^Decidir/ }).click();
   const dialog = page.getByRole('dialog', { name: 'Decidir historia' });
-  await dialog.getByRole('radio', { name: 'Rechazar' }).check({ force: true });
+  // the radio is visually hidden and the side sheet is still sliding in: click its label, which waits for the sheet to settle
+  await dialog.locator('label').filter({ hasText: /^Rechazar$/ }).click();
+  await expect(dialog.getByRole('radio', { name: 'Rechazar' })).toBeChecked();
   await dialog.getByRole('button', { name: 'Rechazar historia' }).click();
   await expect(dialog).toBeVisible();
   await expect(story).toContainText('Por decidir');
 
-  await dialog.getByRole('radio', { name: 'Aceptar' }).check({ force: true });
+  await dialog.locator('label').filter({ hasText: /^Aceptar$/ }).click();
+  await expect(dialog.getByRole('radio', { name: 'Aceptar' })).toBeChecked();
   await dialog.getByLabel('Estimación').fill('6');
   await dialog.getByLabel('Nota para el cliente (opcional)').fill('Encaja con lo que ya tienes.');
   await dialog.getByRole('button', { name: 'Aceptar historia' }).click();

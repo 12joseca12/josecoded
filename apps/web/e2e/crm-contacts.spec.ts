@@ -60,7 +60,7 @@ test('changing the status asks for the next action and leaves a status_change in
   await sheet.getByRole('button', { name: 'Guardar' }).click();
   await expect(sheet.getByText(/necesita siguiente acción|Dinos qué toca hacer/)).toBeVisible();
   await sheet.getByLabel('Siguiente acción', { exact: true }).fill('Seguimiento si no responde');
-  await sheet.getByLabel('Fecha', { exact: true }).fill('2026-12-01');
+  await sheet.getByLabel('Fecha', { exact: true }).fill('2026-10-01'); // still overdue: the K1 spec below reads the same seeded contact
   await sheet.getByRole('button', { name: 'Guardar' }).click();
   await expect(sheet).toBeHidden();
   await page.goto(`/crm/contactos/${CARLA_AGENCY}`);

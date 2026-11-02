@@ -26,10 +26,17 @@ test('Jose invites a closer: the rate is mandatory, the invitation shows up with
   await page.getByRole('button', { name: 'Invitar' }).click();
   const dialog = page.getByRole('dialog', { name: 'Invitar al equipo' });
   await dialog.getByLabel('Email').fill(closer);
+  const rate = dialog.getByLabel('Tasa de comisión');
   await dialog.getByRole('button', { name: 'Enviar invitación' }).click();
-  await expect(dialog.getByText(/porcentaje entre 0 y 100/)).toBeVisible(); // no rate, no invitation
+  // No rate, no invitation: the field is `required`, so the browser stops the submit before the action runs.
+  await expect(rate).toHaveJSProperty('validity.valueMissing', true);
+  await expect(dialog).toBeVisible();
 
-  await dialog.getByLabel('Tasa de comisión').fill('12,5');
+  await rate.fill('150'); // passes the pattern of the input; the action (zod) and the RPC enforce the 0–100 bound
+  await dialog.getByRole('button', { name: 'Enviar invitación' }).click();
+  await expect(dialog.getByText(/porcentaje entre 0 y 100/)).toBeVisible();
+
+  await rate.fill('12,5');
   await dialog.getByRole('button', { name: 'Enviar invitación' }).click();
   await expect(dialog).toBeHidden();
 
