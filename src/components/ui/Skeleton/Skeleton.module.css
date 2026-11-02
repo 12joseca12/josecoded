@@ -1,0 +1,59 @@
+.skeleton {
+  display: block;
+  width: var(--sk-w, 100%);
+  border-radius: var(--radius-m);
+  background-image: linear-gradient(
+    100deg,
+    var(--sk-base) 30%,
+    var(--sk-hi) 50%,
+    var(--sk-base) 70%
+  );
+  background-size: 300% 100%;
+  background-position: 0 0;
+}
+
+.skeleton[data-shape="block"] {
+  height: var(--sk-h, 8rem);
+}
+
+.skeleton[data-shape="circle"] {
+  width: var(--sk-w, 3rem);
+  height: var(--sk-h, 3rem);
+  border-radius: var(--radius-xl);
+}
+
+.skeleton[data-shape="text"] {
+  height: 0.875em;
+  border-radius: var(--radius-xs);
+}
+
+.lines {
+  display: grid;
+  gap: var(--space-2);
+  width: var(--sk-w, 100%);
+  font-size: var(--sk-h, var(--fs-body));
+}
+
+.lines > .skeleton {
+  width: 100%;
+}
+
+.lines > .skeleton:last-child:not(:only-child) {
+  width: 62%;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .skeleton {
+    animation: shimmer 1600ms ease-in-out infinite;
+  }
+}

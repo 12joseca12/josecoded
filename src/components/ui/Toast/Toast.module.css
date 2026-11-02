@@ -1,0 +1,116 @@
+.region {
+  position: fixed;
+  inset: auto var(--gutter) var(--space-5) var(--gutter);
+  z-index: var(--z-toast);
+  display: grid;
+  justify-items: end;
+  gap: var(--space-3);
+  pointer-events: none;
+}
+
+.stack {
+  display: grid;
+  gap: var(--space-3);
+  width: min(100%, 24rem);
+}
+
+.stack:empty {
+  display: none;
+}
+
+.toast {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-3) var(--space-4) var(--space-5);
+  overflow: hidden;
+  border-radius: var(--radius-m);
+  background: var(--charcoal);
+  box-shadow: var(--shadow-float);
+  color: var(--on-dark);
+  pointer-events: auto;
+}
+
+.toast::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0.25rem;
+  background: var(--steel);
+}
+
+.toast[data-tone="success"]::before {
+  background: var(--on-dark);
+}
+
+.toast[data-tone="error"]::before {
+  background: var(--coral);
+}
+
+.body {
+  display: grid;
+  flex: 1;
+  gap: var(--space-1);
+}
+
+.title {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+}
+
+.message {
+  color: var(--on-dark-soft);
+  font-size: var(--fs-base);
+  line-height: var(--lh-body);
+}
+
+.close {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-xl);
+  background: transparent;
+  color: var(--on-dark);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition-property: background-color, transform;
+  transition-duration: var(--dur-fast);
+  transition-timing-function: var(--ease-out);
+}
+
+.close svg {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+.close:active {
+  transform: scale(0.94);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .close:hover {
+    background: var(--line-dark);
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .toast {
+    animation: toast-in var(--dur) var(--ease-out);
+  }
+}
