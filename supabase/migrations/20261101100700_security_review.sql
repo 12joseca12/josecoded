@@ -387,3 +387,6 @@ begin
   perform private.enqueue('client.invited', jsonb_build_object(
     'client_id', p_client_id, 'email', v_email::text, 'locale', v_locale));
 end $$;
+
+revoke all on function private.invite_client_access_impl(uuid, extensions.citext) from public, anon, authenticated;
+grant execute on function private.invite_client_access_impl(uuid, extensions.citext) to authenticated, service_role;
