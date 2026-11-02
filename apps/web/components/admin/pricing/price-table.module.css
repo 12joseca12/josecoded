@@ -1,0 +1,97 @@
+/* What D2 Precios adds to the generic CRM table (`table-stack/crm-table.module.css`): the name with its badges, the
+   option nested under its pack and the buttons of the row. */
+.box {
+  position: relative;
+  overflow-x: auto;
+}
+
+.box:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: calc(-1 * var(--focus-ring-width));
+}
+
+.nameCell {
+  min-width: calc(var(--sp-16) * 2.75);
+}
+
+.name {
+  display: grid;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-2);
+}
+
+.title strong {
+  color: var(--text);
+  font-weight: var(--font-emphasis-weight);
+}
+
+.code,
+.todo,
+.was {
+  color: var(--text-3);
+  font-size: var(--font-caption-size);
+}
+
+.todo {
+  color: var(--pending);
+}
+
+.was {
+  display: block;
+}
+
+/* the option belongs to the pack above it: indented, with a hairline on the leading edge */
+.row[data-level='option'] .nameCell {
+  padding-inline-start: var(--sp-8);
+}
+
+.act {
+  width: 1%;
+  text-align: end;
+  white-space: nowrap;
+}
+
+/* a sheet is rendered inside the cell that opens it: it must not inherit the cell's alignment and nowrap */
+.act dialog {
+  text-align: start;
+  white-space: normal;
+}
+
+.act > button {
+  margin-inline-start: var(--sp-1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .row:hover .cell {
+    background: var(--tint-preview);
+  }
+}
+
+@container (width < 46rem) {
+  .nameCell {
+    min-width: 0;
+  }
+
+  .row[data-level='option'] {
+    padding-inline-start: var(--sp-6);
+  }
+
+  .row[data-level='option'] .nameCell {
+    padding-inline-start: 0;
+  }
+
+  .act {
+    order: 4;
+    flex: none;
+    width: auto;
+    margin-inline-start: auto;
+    white-space: normal;
+  }
+}

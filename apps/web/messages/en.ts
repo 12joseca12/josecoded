@@ -1,5 +1,6 @@
 // English counterpart of messages/es.ts. `satisfies` makes a key missing in English a type error.
 import about from './en/about.json';
+import adminPricing from './en/admin-pricing.json';
 import adminTeam from './en/admin-team.json';
 import area from './en/area.json';
 import auth from './en/auth.json';
@@ -38,6 +39,7 @@ const messages = {
   ...chat,
   ...contact,
   ...crm,
+  ...adminPricing,
   ...adminTeam,
   ...crmClients,
   ...crmCommissions,

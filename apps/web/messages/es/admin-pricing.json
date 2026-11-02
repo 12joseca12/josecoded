@@ -1,0 +1,90 @@
+{
+  "adminPricing": {
+    "metaTitle": "Precios",
+    "title": "Contenido.",
+    "tone": "Lo que se edita sin tocar el repo.",
+    "lead": "Textos, preguntas, proyectos, blog, secciones y precios. Nada llega al sitio hasta que publicas.",
+    "tabsLabel": "Contenido",
+    "tab": "Precios",
+    "notWired": "Esto es el catálogo publicado. Guardar cambios llega en el siguiente bloque: de momento los formularios se abren, pero no escriben nada.",
+    "pendingBand": "<strong>Precios cambiados sin publicar · {count}.</strong> Salen con el botón Publicar, junto a los textos.",
+    "vatNote": "Todo precio es sin IVA. Lo oculto o borrado nunca llega al sitio ni al fichero público. Los clientes conservan el pack que contrataron aunque lo borres.",
+    "packs": "Packs",
+    "extras": "Extras",
+    "rates": {
+      "title": "Tarifa",
+      "hourly": "Por hora",
+      "feature": "Función cerrada, desde",
+      "noVat": "sin IVA"
+    },
+    "table": {
+      "packsCaption": "Packs y sus opciones",
+      "extrasCaption": "Extras",
+      "actions": "Acciones",
+      "columns": {
+        "pack": "Pack",
+        "extra": "Extra",
+        "price": "Precio sin IVA",
+        "weeks": "Semanas",
+        "billing": "Facturación",
+        "sale": "En venta",
+        "visibility": "Visible"
+      },
+      "option": "Opción · {name}",
+      "pending": "Sin publicar",
+      "noEnglish": "EN: pendiente",
+      "was": "Antes {amount}",
+      "billings": {
+        "one_off": "Único",
+        "monthly": "Mensual",
+        "yearly": "Anual"
+      },
+      "onSale": "En venta",
+      "paused": "Parado",
+      "visible": "Visible",
+      "hidden": "Oculto"
+    },
+    "sheet": {
+      "close": "Cerrar",
+      "cancel": "Cancelar",
+      "submit": "Guardar",
+      "saved": "{name} guardado",
+      "edit": "Editar",
+      "editFor": "Editar {name}",
+      "addOption": "Añadir opción",
+      "addOptionTo": "Añadir opción a {code}",
+      "new": {
+        "pack": "Nuevo pack",
+        "extra": "Nuevo extra",
+        "option": "Nueva opción de {code}"
+      },
+      "code": "Código",
+      "codeHelp": "Letras, números y guion bajo. No se puede cambiar después: las propuestas lo usan.",
+      "lang": {
+        "es": "español",
+        "en": "inglés"
+      },
+      "name": "Nombre ({lang})",
+      "englishHelp": "Sin nombre en inglés, /en muestra el español.",
+      "includes": "Qué incluye ({lang})",
+      "includesHelp": "Un punto por línea.",
+      "description": "Descripción ({lang})",
+      "forWhom": "Para quién es ({lang})",
+      "price": "Precio desde",
+      "priceHelp": "Sin IVA.",
+      "priceWas": "Sin IVA. Antes: {amount, number, ::currency/EUR}.",
+      "weeks": "Semanas",
+      "weeksUnit": "sem.",
+      "billing": "Facturación",
+      "billings": {
+        "one_off": "Único",
+        "monthly": "Mensual",
+        "yearly": "Anual"
+      },
+      "onSale": "En venta",
+      "onSaleHelp": "Se puede pedir desde /servicios y /propuesta.",
+      "visible": "Visible",
+      "visibleHelp": "Oculto, no llega ni al sitio ni a pricing.json."
+    }
+  }
+}
