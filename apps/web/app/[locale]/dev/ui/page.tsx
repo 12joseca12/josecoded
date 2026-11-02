@@ -2,16 +2,15 @@ import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
 import { UiCatalogue } from '@/components/dev/ui-catalogue';
-import { env } from '@/lib/env';
+import { devUiEnabled } from '@/lib/dev/gate';
 import { resolveLocale } from '@/lib/locale';
 
 import type { LocaleParams } from '@/lib/locale';
 import type { Metadata } from 'next';
 
-// Catalogue of components/ui (working-agreements §15.4): it exists only where NEXT_PUBLIC_DEV_UI=1
-// (local, wrangler dev and the preview of a PR). In production the variable is absent and the route
-// answers 404; it is never indexed and the sitemap does not list it.
-const enabled = env.client.NEXT_PUBLIC_DEV_UI === '1';
+// Catalogue of components/ui (working-agreements §15.4): gated by `devUiEnabled` (lib/dev/gate.ts), so in
+// production the route answers 404; it is never indexed and the sitemap does not list it.
+const enabled = devUiEnabled;
 
 export async function generateMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
   if (!enabled) return {};

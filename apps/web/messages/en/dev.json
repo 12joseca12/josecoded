@@ -61,6 +61,22 @@
         "chatTrigger": "ChatTrigger: link / button",
         "menuItem": "MenuItem: regular / highlighted / separated"
       }
+    },
+    "crm": {
+      "title": "CRM preview",
+      "intro": "The real /crm and /admin screens with made-up data, no Supabase and no login. It exists only with NEXT_PUBLIC_DEV_UI=1; in production this route answers 404.",
+      "screens": {
+        "resumen": "K1 · Summary",
+        "contactos": "K2 · Contacts",
+        "contacto-lead": "K3 · Contact (lead with an opportunity)",
+        "contacto-cliente": "K3 · Contact (client with portal access)",
+        "admin": "C1 · Admin summary (/admin)"
+      },
+      "roles": {
+        "closer": "closer",
+        "admin": "admin"
+      },
+      "note": "Links inside each screen point to the real routes and ask for a login; forms render but save nothing."
     }
   }
 }

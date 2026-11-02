@@ -6,3 +6,4 @@ export { DraftList } from './draft-list';
 export { OpportunityCard } from './opportunity-card';
 export { ReachLinks } from './reach-links';
 export { StoryList } from './story-list';
+export { ContactDetailView } from './contact-detail-view';

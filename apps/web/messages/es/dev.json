@@ -61,6 +61,22 @@
         "chatTrigger": "ChatTrigger: enlace / botón",
         "menuItem": "MenuItem: normal / destacado / separado"
       }
+    },
+    "crm": {
+      "title": "Previsualización del CRM",
+      "intro": "Las pantallas reales de /crm y /admin con datos inventados, sin Supabase ni login. Solo existe con NEXT_PUBLIC_DEV_UI=1; en producción esta ruta da 404.",
+      "screens": {
+        "resumen": "K1 · Resumen",
+        "contactos": "K2 · Contactos",
+        "contacto-lead": "K3 · Contacto (lead con oportunidad)",
+        "contacto-cliente": "K3 · Contacto (cliente con acceso al portal)",
+        "admin": "C1 · Resumen de admin (/admin)"
+      },
+      "roles": {
+        "closer": "closer",
+        "admin": "admin"
+      },
+      "note": "Los enlaces dentro de cada pantalla apuntan a las rutas reales y piden login; los formularios se muestran pero no guardan nada."
     }
   }
 }

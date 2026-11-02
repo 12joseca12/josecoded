@@ -13,6 +13,7 @@ import { k1Figures } from '@/lib/crm/summary';
 import { AdminSummary } from './admin-summary';
 import styles from './summary.module.css';
 
+import type { OmenStatus as OmenState } from '@/lib/admin/queries';
 import type { ContactRow } from '@/lib/crm/contacts';
 import type { CrmSummary as Summary } from '@/lib/crm/queries';
 import type { Locale } from '@josecoded/types';
@@ -25,11 +26,14 @@ export async function CrmSummary({
   locale,
   summary,
   overdue = [],
+  omen = 'unconfigured',
 }: {
   locale: Locale;
   summary: Summary;
   /** The oldest overdue contacts, for the short list under the figure. */
   overdue?: readonly ContactRow[];
+  /** State of Omen for the admin's closing cell (C1). */
+  omen?: OmenState;
 }) {
   const [t, format] = await Promise.all([getTranslations({ locale, namespace: 'crm' }), getFormatter({ locale })]);
   const f = k1Figures(summary);
@@ -131,7 +135,7 @@ export async function CrmSummary({
           <p className={styles.hint}>{t('summary.team.hint')}</p>
         </SummaryCard>
 
-        {summary.role === 'admin' ? <AdminSummary locale={locale} /> : null}
+        {summary.role === 'admin' && summary.admin ? <AdminSummary locale={locale} counters={summary.admin} omen={omen} /> : null}
       </div>
     </>
   );

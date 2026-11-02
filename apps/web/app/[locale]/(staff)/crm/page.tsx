@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 
 import { CrmSummary } from '@/components/staff/summary';
+import { getOmenStatus } from '@/lib/admin/queries';
 import { requireStaff } from '@/lib/auth/staff';
 import { getOverdueContacts } from '@/lib/crm/contacts';
 import { getCrmSummary } from '@/lib/crm/queries';
@@ -22,6 +23,9 @@ export default async function CrmHomePage({ params }: { params: LocaleParams }) 
   const summary = await getCrmSummary(role);
   // the list is a detail of the figure: without overdue contacts there is nothing to ask for
   const dueNow = role === 'admin' ? (summary.admin?.contacts_due ?? 0) : summary.my.contacts_due;
-  const overdue = dueNow > 0 ? await getOverdueContacts(role) : [];
-  return <CrmSummary locale={locale} summary={summary} overdue={overdue} />;
+  const [overdue, omen] = await Promise.all([
+    dueNow > 0 ? getOverdueContacts(role) : Promise.resolve([]),
+    role === 'admin' ? getOmenStatus() : Promise.resolve(undefined),
+  ]);
+  return <CrmSummary locale={locale} summary={summary} overdue={overdue} omen={omen} />;
 }
