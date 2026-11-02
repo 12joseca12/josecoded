@@ -23,7 +23,10 @@
     "test": "vitest run",
     "e2e": "playwright test",
     "i18n:keys": "node scripts/i18n.js --write",
-    "i18n:check": "node scripts/i18n.js"
+    "i18n:check": "node scripts/i18n.js",
+    "tokens:types": "node scripts/tokens.js --write",
+    "tokens:check": "node scripts/tokens.js",
+    "tokens:test": "node --test tests/tokens/contrast.test.js"
   },
   "dependencies": {
     "next": "16.4.3",
