@@ -2,6 +2,8 @@
 
 **2026-11-02 · cerradas por Jose sobre `docs/arquitectura/preguntas.md`.** Una línea por pregunta, con su id. Jose aceptó las recomendaciones salvo donde se indica **(Jose)**. Las marcadas **ABIERTA** esperan su confirmación. Lo que cambie después se añade aquí con fecha, no se reescribe.
 
+**2026-11-02 (segunda ronda).** Jose cerró 4.5 y 8.3 aceptando la recomendación y respondió a las preguntas de `pantallas.md` y `datos.md` (todas con la recomendación): quedan recogidas en 2.7–2.9, 4.6, 5.6, 6.5–6.7 y 7.6–7.7. Lo único abierto son acciones suyas (10.7, 10.8) y dos decisiones de diseño en el navegador (10.9, 10.10).
+
 ## 1. Repositorios
 
 - **1.1 (Jose) Dos repos.** `josecoded` (este): la web Next y todo lo que despliega en Cloudflare, más `supabase/` (migraciones, tests RLS) y `contracts/`. `josecoded-omen` (nombre propuesto, corto y ordena junto al primero en GitHub): backend Node que corre en Omen (IA, RAG, Radar, trabajos). Sustituye a `josecoded-worker`, que se archiva.
@@ -25,6 +27,9 @@
 - **2.4 Sin redirecciones.** Comprobado el 2026-11-02: nada indexado en `josecoded.com` y el dominio responde 521 (origen caído). Se apunta al nuevo Worker en el primer despliegue.
 - **2.5 SEO básico en el lanzamiento** (metadatos, sitemap, robots, Open Graph, JSON-LD `Person`, `llms.txt`); guías y FAQ con schema según crezca el blog; Search Console y Semrush cuando haya qué medir.
 - **2.6 Blog y proyectos en el repo** (MDX con frontmatter validado por zod). Publicar es un PR.
+- **2.7 Blog sin comentarios en el lanzamiento** (moderación y spam). Se revisa con el blog vivo.
+- **2.8 La vía «contratación» publica solo CV y chat;** la disponibilidad (plantilla, remoto, ciudad) la responde el asistente, no la página.
+- **2.9 Contacto por email y chat en el lanzamiento;** WhatsApp y Cal.com se añaden cuando Jose dé los datos (`{{DATO}}`), sin cambiar la pantalla.
 
 ## 3. Roles y zonas
 
@@ -40,7 +45,8 @@
 - **4.2 Omen solo sale, nunca recibe.** Se conecta a Supabase con la clave de servicio, escucha Realtime y la cola `private.jobs`, y escribe resultados. Sin puerto abierto ni túnel.
 - **4.3 Si Omen está apagado:** latido en Supabase, semáforo en `/admin`, el chat guarda el mensaje y avisa; trabajos y Radar esperan. Sin IA de reserva en la nube. Lo que debe funcionar siempre (email, Telegram, notificaciones) lo hace el servidor de Next, no Omen (ver datos.md, `private.outbox`).
 - **4.4 Omen limpio:** `josecoded-omen` nuevo (Node + Docker Compose). n8n y el resto de servicios de Omen no se tocan. Despliegue: la CI publica la imagen y Omen la recoge (coherente con 4.2); cada despliegue con OK de Jose.
-- **4.5 (Jose) Modelo local + RAG propio + Groq. ABIERTA el reparto de papeles.** Recomendación: Groq para el chat público (latencia baja, el visitante no espera) con el modelo local como reserva si Groq falla; modelo local para Radar, embeddings, indexado del RAG y borradores (volumen, sin prisa, sin coste); vectores en pgvector de Supabase (esquema `private`) para que Omen no guarde estado. Contrapartida de Groq: los mensajes de visitantes salen a un tercero (se recoge en privacidad).
+- **4.5 (Jose) Modelo local + RAG propio + Groq, reparto cerrado:** Groq para el chat público (latencia baja, el visitante no espera) con el modelo local como reserva si Groq falla; modelo local para Radar, embeddings, indexado del RAG y borradores (volumen, sin prisa, sin coste). Contrapartida de Groq: los mensajes de visitantes salen a un tercero (se recoge en la política de privacidad). `chat_messages.model` registra qué proveedor respondió.
+- **4.6 Vectores del RAG en pgvector de Supabase** (esquema `private`, tablas `rag_documents` y `rag_chunks`): Omen no guarda estado y la copia de seguridad va con la base de datos.
 
 ## 5. Chat
 
@@ -49,6 +55,7 @@
 - **5.3 Firma «Asistente de Jose»** con etiqueta visible; «Jose» cuando interviene él.
 - **5.4 Supabase Realtime** sobre `chat_messages` filtrado por RLS.
 - **5.5 Panel lateral en toda la web** abierto desde la barra; `/chat` a pantalla completa y para usuarios con cuenta.
+- **5.6 Un hilo por usuario con cuenta** (`unique(user_id) where kind = 'user'`), no por proyecto; desde el área, el mensaje enlaza al proyecto.
 
 ## 6. Área de clientes
 
@@ -56,6 +63,9 @@
 - **6.2 Supabase Storage,** bucket privado, URL firmadas, límites de tamaño y tipo.
 - **6.3 Historias de usuario** con «Como… quiero… para…» y criterios; estados `propuesta → aceptada | rechazada → en tareas`; decide el admin.
 - **6.4 Notificaciones:** campana en la app + email transaccional al cliente (Resend) + Telegram a Jose.
+- **6.5 Varios proyectos por cliente** (`projects.client_id`); el selector solo aparece si tiene más de uno.
+- **6.6 Documentos:** 25 MB por fichero, 1 GB por proyecto, tipos cerrados (PDF, imágenes, vídeo corto, zip, Office).
+- **6.7 El freelance ve brief, tareas, documentos `team` y el nombre del proyecto;** nunca cliente, contacto ni importes (vista `freelance_projects`).
 
 ## 7. CRM
 
@@ -64,12 +74,14 @@
 - **7.3 Visibilidad por RLS:** el subcloser ve su cartera; su closer, la suya y las de sus subclosers; el admin, todo. Reasignar es acción explícita del admin.
 - **7.4 Comisiones con dos tasas fijadas al invitar** y los importes congelados en campos separados (`closer_amount`, `subcloser_amount`); estados `pending → approved → paid | rejected`; el pago se registra, no se ejecuta.
 - **7.5 Importación CSV con plantilla fija,** duplicados a una cola que resuelve el admin. Bloque posterior al CRM básico.
+- **7.6 Las dos tasas se aplican sobre el importe cobrado** (closer 10 % + subcloser 5 % = 15 % del total, por ejemplo), no una sobre la otra; se fijan al invitar y se congelan por fila de `commissions` (`closer_rate`, `closer_amount`, `subcloser_rate`, `subcloser_amount`).
+- **7.7 La comisión se crea al marcar la oportunidad «ganada»** (RPC `win_deal` con el importe cobrado, estado `pending`); el admin la aprueba cuando ha cobrado y registra el pago después.
 
 ## 8. Admin
 
 - **8.1 El admin controla:** usuarios y roles, precios y packs, interruptores de secciones, Radar, estado de Omen, notificaciones. Los textos siguen en el repo.
 - **8.2 Precios en Supabase,** editados en el admin, leídos en servidor con caché, con historial.
-- **8.3 (Jose) Radar detecta:** ofertas de empleo, negocios sin web o app, proyectos freelance, y además «operar por mí en plataformas freelance». **ABIERTA la versión segura.** Riesgo: las condiciones de Upwork, Freelancer, Malt y LinkedIn prohíben la automatización de cuentas y la sancionan con el cierre; además, una propuesta enviada sola compromete el nombre de Jose. Recomendación: Radar encuentra, puntúa y redacta; Jose envía con un clic desde `/admin/radar` (y sin salir de ahí donde haya API oficial autorizada, como Upwork con partner API o Freelancer.com); nunca sesiones de navegador automatizadas ni envío sin revisión. Es la misma regla que el chat de clientes: borrador automático, acción humana.
+- **8.3 (Jose) Radar detecta** ofertas de empleo, negocios sin web o app y proyectos freelance, y «opera por mí» en su versión segura: **Radar encuentra, puntúa y redacta; Jose envía con un clic** desde `/admin/radar`. Envío sin salir de ahí solo donde haya API oficial autorizada (Upwork con partner API, Freelancer.com); en el resto, «Copiar» y «Marcar enviado». **Nunca sesiones de navegador automatizadas ni envío sin revisión**: las condiciones de Upwork, Freelancer, Malt y LinkedIn prohíben la automatización de cuentas y una propuesta enviada sola compromete el nombre de Jose. Misma regla que el chat de clientes: borrador automático, acción humana.
 - **8.4 Reglas de notificación fijas en código** con pocos interruptores en el admin.
 
 ## 9. Seguridad, accesibilidad, rendimiento, responsive
@@ -88,12 +100,16 @@
 - **10.4 Jose aprueba:** decisiones de arquitectura, cada pantalla en el navegador antes de implementarla, cada PR en la preview, cada despliegue y migración en producción.
 - **10.5 Tablón en GitHub Issues + Projects,** una issue por bloque enlazada a su PR; `ESTADO.md` es la vista resumida.
 - **10.6 Orden por zonas:** público (home → servicios → proyectos → sobre mí → contacto → chat → blog → legales y errores) → auth y admin base → CRM → área de clientes → freelance → Radar → lab.
-- **10.7 Dos proyectos de Supabase. ABIERTA: Jose crea `josecoded-dev`** (gratuito, misma región) en su cuenta para previews y sesiones en la nube; producción sigue en `echlwywbucgbhwpncviy`; local con Docker en el Mac. La CI aplica las mismas migraciones a los dos.
+- **10.7 Dos proyectos de Supabase. ABIERTA (acción de Jose): crear `josecoded-dev`** (gratuito, misma región) en su cuenta para previews y sesiones en la nube; producción sigue en `echlwywbucgbhwpncviy`; local con Docker en el Mac. La CI aplica las mismas migraciones a los dos.
+- **10.8 ABIERTA (acción de Jose): crear el repo `josecoded-omen`** en GitHub (privado, `main` protegida). Hasta entonces su backlog (`docs/plan/bloques.md`, lista O) no arranca.
+- **10.9 ABIERTA (en el navegador): navegación del estilo B.** Tres opciones en `prototipos/estilo-b/` (conmutador «Nav» abajo): **A cápsula** (barra con indicador deslizante y hoja en móvil), **B terminal** (ruta tipo `~/sección`, paleta ⌘K y barra de progreso con marcas), **C raíl** (barra mínima y raíl lateral de secciones). El bloque `public/layout-nav` queda bloqueado hasta que Jose elija.
+- **10.10 ABIERTA (en el navegador): hero animado y scroll.** Jose revisa en `prototipos/estilo-b/` la transformación del hero (wireframe → app → datos → IA), los estados (Cargando, Error, 404, Deshabilitado) y la barra de scroll, y dice qué cambia antes de portarlo (`public/home-hero-*`).
 
 ## Abiertas (resumen)
 
-| Id | Qué falta | Recomendación |
+| Id | Qué falta | Quién |
 |---|---|---|
-| 4.5 | Reparto local / Groq | Groq en el chat público con reserva local; local para Radar, embeddings, RAG y borradores; pgvector en Supabase |
-| 8.3 | Versión segura de «operar por mí» | Borradores + envío con un clic; API oficial donde exista; nunca navegador automatizado |
-| 10.7 | Proyecto `josecoded-dev` | Lo crea Jose; después se pegan URL y clave publicable en los secretos de CI |
+| 10.7 | Crear el proyecto Supabase `josecoded-dev` y pegar URL y clave publicable en los secretos de CI | Jose (acción) |
+| 10.8 | Crear el repo GitHub `josecoded-omen` | Jose (acción) |
+| 10.9 | Elegir navegación A cápsula / B terminal / C raíl | Jose (navegador) |
+| 10.10 | Feedback del hero animado y del scroll del prototipo | Jose (navegador) |

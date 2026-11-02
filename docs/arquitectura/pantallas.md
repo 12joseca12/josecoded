@@ -1,6 +1,6 @@
 # Mapa de pantallas
 
-**2026-11-02 · `arquitecto` · propuesta para que Jose la revise.** Zonas en el orden de construcción (decisión 10.6). Por pantalla: para qué sirve, componentes principales, acciones, datos que lee y escribe (entidades de `datos.md`), estados y quién la ve. Lo que necesita respuesta de Jose va marcado **Pregunta**. Reutiliza del documento de la v1 (`archivo/decisiones-pantallas/2026-09-29-pantallas-y-contenidos.md`) lo que sigue valiendo: estructura de las páginas interiores, historias de usuario, comisiones con porcentaje congelado, importación con cola de conflictos, regla de «sin inventar nada».
+**2026-11-02 · `arquitecto` · revisado por Jose el mismo día: aceptó todas las recomendaciones** (resumen al final; ids en `decisiones.md`). Zonas en el orden de construcción (decisión 10.6). Por pantalla: para qué sirve, componentes principales, acciones, datos que lee y escribe (entidades de `datos.md`), estados y quién la ve. Lo que antes era **Pregunta** aparece como **Decidido**. Reutiliza del documento de la v1 (`archivo/decisiones-pantallas/2026-09-29-pantallas-y-contenidos.md`) lo que sigue valiendo: estructura de las páginas interiores, historias de usuario, comisiones con porcentaje congelado, importación con cola de conflictos, regla de «sin inventar nada».
 
 Reglas que aplican a todas:
 
@@ -31,7 +31,7 @@ Componentes base que se hacen una vez, antes de la primera pantalla que los use:
 - **Datos:** lee `packs`, `extras`, `rates` visibles. No escribe.
 - **Estados:** esqueleto en precios; si la lectura falla, las vías se muestran sin importes y un aviso discreto.
 - **Roles:** todos.
-- **Pregunta:** ¿la vía «contratación» publica disponibilidad (plantilla, remoto, ciudad) o solo el CV y el chat? Reco: solo CV y chat; la disponibilidad la dice el asistente.
+- **Decidido (2.8):** la vía «contratación» publica solo CV y chat; la disponibilidad la dice el asistente.
 
 ### P3 Proyectos `/proyectos`
 - **Para:** prueba de oficio con enlaces verificables.
@@ -64,7 +64,7 @@ Componentes base que se hacen una vez, antes de la primera pantalla que los use:
 - **Datos:** escribe `contacts` (+ `activities` «form_submitted`) vía RPC `public_submit_contact`; lee `packs` para el selector.
 - **Estados:** botón con carga; error de validación en línea; error de servidor con reintento; éxito con mensaje y siguiente paso; cuota superada (429) con vías alternativas.
 - **Roles:** todos.
-- **Pregunta:** ¿WhatsApp y Cal.com públicos? Reco: email y chat ahora; WhatsApp y Cal.com cuando Jose dé los datos (`{{DATO}}`).
+- **Decidido (2.9):** email y chat en el lanzamiento; `QuickContact` y `CalEmbed` muestran WhatsApp y Cal.com solo cuando Jose dé los datos (`{{DATO}}`).
 
 ### P7 Chat `/chat` y `ChatPanel` (panel lateral global)
 - **Para:** hablar con el asistente (visitantes) o con Jose (usuarios con cuenta) desde cualquier página.
@@ -81,7 +81,7 @@ Componentes base que se hacen una vez, antes de la primera pantalla que los use:
 - **Datos:** MDX del repo. No escribe. Sin comentarios en esta fase.
 - **Estados:** sección oculta y `/blog` 404 si el interruptor está apagado; vacío si no hay artículos.
 - **Roles:** todos.
-- **Pregunta:** ¿comentarios en los artículos? Reco: no en el lanzamiento (moderación y spam); se revisa con el blog vivo.
+- **Decidido (2.7):** sin comentarios en el lanzamiento; se revisa con el blog vivo.
 
 ### P9 Legales `/legal/aviso`, `/legal/privacidad`, `/legal/cookies`
 - **Para:** obligatorios; privacidad recoge chat anónimo, cuota por IP, CRM, Groq y Resend como encargados.
@@ -204,7 +204,7 @@ Componentes base que se hacen una vez, antes de la primera pantalla que los use:
 - **Datos:** `contacts`, `deals`, `activities`, `commissions`, `chat_threads` enlazados. Escribe `deals`, `activities`, `commissions` (RPC `win_deal`).
 - **Estados:** esqueleto; 404 si no es de mi cartera; conflicto si otro cambió la fase (recarga).
 - **Roles:** admin, closer.
-- **Pregunta:** ¿la comisión se crea al marcar «ganada» con el importe o al registrar el cobro? Reco: al marcar ganada (estado `pending`); el admin la aprueba cuando ha cobrado.
+- **Decidido (7.7):** la comisión se crea al marcar «ganada» con el importe cobrado (estado `pending`); el admin la aprueba cuando ha cobrado.
 
 ### K4 Comisiones `/crm/comisiones` (`?status&closer`)
 - **Para:** ver qué me deben y qué está pagado; el admin aprueba y registra pagos.
@@ -212,7 +212,7 @@ Componentes base que se hacen una vez, antes de la primera pantalla que los use:
 - **Acciones:** admin: aprobar, rechazar, marcar pagada. Closer: solo lectura.
 - **Datos:** `commissions`, `deals`, `profiles`. Escribe `commissions` (RPC `set_commission_status`).
 - **Roles:** admin (acciones), closer (su parte: un closer ve también las comisiones de sus subclosers).
-- **Pregunta:** ver `datos.md` (reparto de tasas).
+- **Decidido (7.6):** las dos tasas sobre el importe cobrado, congeladas por fila; la tabla muestra las dos columnas sin cálculo derivado.
 
 ### K5 Importar `/crm/importar`
 - **Para:** subir un CSV con la plantilla fija.
@@ -233,7 +233,7 @@ Componentes base que se hacen una vez, antes de la primera pantalla que los use:
 - **Componentes:** los de P7 con `AiSwitch` solo visible para el admin.
 - **Datos:** `chat_threads` (`kind=user`, uno por usuario).
 - **Roles:** closer; el admin responde desde D6.
-- **Pregunta:** ¿un hilo por usuario o también por proyecto en el área? Reco: uno por usuario; el área enlaza al proyecto desde el mensaje.
+- **Decidido (5.6):** un hilo por usuario; el área enlaza al proyecto desde el mensaje.
 
 ---
 
@@ -245,7 +245,7 @@ Componentes base que se hacen una vez, antes de la primera pantalla que los use:
 - **Datos:** `projects`, `tasks` (porcentaje calculado), `stories`, `documents`.
 - **Estados:** esqueleto; sin proyecto aún («Jose está preparando tu proyecto»); con varios proyectos.
 - **Roles:** client.
-- **Pregunta:** ¿un cliente puede tener varios proyectos? Reco: sí (`projects.client_id`); selector solo si hay más de uno.
+- **Decidido (6.5):** un cliente puede tener varios proyectos; `ProjectSwitcher` solo si hay más de uno.
 
 ### A2 Tareas `/area/tareas`, `/area/tareas/[id]`
 - **Para:** ver el desarrollo: tablero por fases, tareas hechas y pendientes.
@@ -261,7 +261,7 @@ Componentes base que se hacen una vez, antes de la primera pantalla que los use:
 - **Datos:** `documents` + Storage `project-documents`.
 - **Estados:** subiendo con progreso; tipo o tamaño no permitido; vacío.
 - **Roles:** client (los de visibilidad `client`), admin, freelance asignado (visibilidad `team`).
-- **Pregunta:** límites. Reco: 25 MB por fichero, 1 GB por proyecto; PDF, imágenes, vídeo corto, zip, Office.
+- **Decidido (6.6):** 25 MB por fichero, 1 GB por proyecto; PDF, imágenes, vídeo corto, zip, Office.
 
 ### A4 Historias `/area/historias`, `/area/historias/[id]`, `?nueva=1`
 - **Para:** proponer «Como… quiero… para…» con criterios y seguir su decisión.
@@ -296,7 +296,7 @@ Componentes base que se hacen una vez, antes de la primera pantalla que los use:
 - **Componentes:** `ProjectHeader`, `Prose` (brief), `PhaseBoard` (solo mover las propias), `FileList`, enlace a `/freelance/chat`.
 - **Datos:** `projects`, `tasks`, `documents` (`team`).
 - **Roles:** freelance asignado.
-- **Pregunta:** ¿el freelance ve importes, cliente y contacto? Reco: no; ve brief, tareas, documentos `team` y el nombre del proyecto.
+- **Decidido (6.7):** el freelance no ve importes, cliente ni contacto; ve brief, tareas, documentos `team` y el nombre del proyecto.
 
 ### F3 Chat `/freelance/chat`
 - Igual que K7. **Roles:** freelance.
@@ -318,7 +318,7 @@ Componentes base que se hacen una vez, antes de la primera pantalla que los use:
 - **Datos:** `radar_findings`, `radar_drafts`, `contacts`, `deals`; escribe `private.jobs` (`radar.draft`, `radar.send`).
 - **Estados:** borrador generándose; Omen apagado (acciones de IA deshabilitadas con aviso); enviado; convertido.
 - **Roles:** admin.
-- **Pregunta:** decisión 8.3 (versión segura). El botón «Enviar» automático solo existe si Jose acepta una fuente con API oficial.
+- **Decidido (8.3):** Radar encuentra, puntúa y redacta; Jose envía con un clic. El botón «Enviar» solo existe en fuentes con API oficial autorizada; nunca navegador automatizado.
 
 ### R3 Fuentes y criterio `/admin/radar/fuentes`
 - **Para:** activar fuentes, frecuencia, y el criterio de encaje (stack, tarifas mínimas, ciudad, remoto, lo que no).
@@ -338,16 +338,18 @@ Componentes base que se hacen una vez, antes de la primera pantalla que los use:
 
 ---
 
-## Resumen de preguntas de este documento
+## Resumen de decisiones de este documento (Jose, 2026-11-02)
 
-| # | Pantalla | Pregunta | Recomendación |
-|---|---|---|---|
-| 1 | P2 | ¿Publicar disponibilidad en la vía contratación? | Solo CV y chat |
-| 2 | P6 | ¿WhatsApp y Cal.com públicos? | Cuando Jose dé los datos; ahora email y chat |
-| 3 | P8 | ¿Comentarios en el blog? | No en el lanzamiento |
-| 4 | K3 | ¿Comisión al ganar o al cobrar? | Al ganar (`pending`); se aprueba al cobrar |
-| 5 | K7/A5/F3 | ¿Hilo por usuario o por proyecto? | Por usuario |
-| 6 | A1 | ¿Varios proyectos por cliente? | Sí, con selector |
-| 7 | A3 | Límites de documentos | 25 MB/fichero, 1 GB/proyecto, tipos cerrados |
-| 8 | F2 | ¿Qué ve el freelance? | Brief, tareas, documentos `team`; sin importes ni cliente |
-| 9 | R2 | «Operar por mí» | Decisión 8.3: borrador + clic de Jose |
+| # | Pantalla | Pregunta | Decisión | Id |
+|---|---|---|---|---|
+| 1 | P2 | ¿Publicar disponibilidad en la vía contratación? | Solo CV y chat | 2.8 |
+| 2 | P6 | ¿WhatsApp y Cal.com públicos? | Cuando Jose dé los datos; ahora email y chat | 2.9 |
+| 3 | P8 | ¿Comentarios en el blog? | No en el lanzamiento | 2.7 |
+| 4 | K3 | ¿Comisión al ganar o al cobrar? | Al ganar (`pending`); se aprueba al cobrar | 7.7 |
+| 5 | K7/A5/F3 | ¿Hilo por usuario o por proyecto? | Por usuario | 5.6 |
+| 6 | A1 | ¿Varios proyectos por cliente? | Sí, con selector | 6.5 |
+| 7 | A3 | Límites de documentos | 25 MB/fichero, 1 GB/proyecto, tipos cerrados | 6.6 |
+| 8 | F2 | ¿Qué ve el freelance? | Brief, tareas, documentos `team`; sin importes ni cliente | 6.7 |
+| 9 | R2 | «Operar por mí» | Borrador + clic de Jose; API oficial donde exista | 8.3 |
+
+Sigue abierto, en el navegador: la navegación pública (10.9: A cápsula / B terminal / C raíl) y el feedback del hero y el scroll (10.10).

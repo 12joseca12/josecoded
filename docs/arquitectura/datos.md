@@ -1,6 +1,6 @@
 # Propuesta de datos
 
-**2026-11-02 · `arquitecto` · para que Jose la revise.** Entidades, campos clave, relaciones, principio RLS por tabla y qué vive en Supabase y qué en Omen. Nombres en inglés, `snake_case`. Columnas tipadas en SQL; `jsonb` solo donde se indica. El esquema real se escribe en `supabase/migrations/` bloque a bloque, con tests RLS, y se aplica a producción solo con OK de Jose. Las dudas van marcadas **Pregunta**.
+**2026-11-02 · `arquitecto` · revisado por Jose el mismo día: aceptó todas las recomendaciones** (resumen al final; ids en `decisiones.md`). Entidades, campos clave, relaciones, principio RLS por tabla y qué vive en Supabase y qué en Omen. Nombres en inglés, `snake_case`. Columnas tipadas en SQL; `jsonb` solo donde se indica. El esquema real se escribe en `supabase/migrations/` bloque a bloque, con tests RLS, y se aplica a producción solo con OK de Jose. Lo que antes era **Pregunta** aparece como **Decidido**.
 
 ## Principios
 
@@ -68,7 +68,7 @@
 - `id`, `deal_id` único, `base_amount` (= `deals.won_amount`), `closer_id` (quien cerró), `closer_rate`, `closer_amount`, `subcloser_id`, `subcloser_rate`, `subcloser_amount`, `status` enum `pending | approved | paid | rejected`, `approved_at`, `paid_at`, `paid_note`, `rejected_reason`, `decided_by`, `created_at`.
 - Cálculo al crear, congelado: si el que cierra no tiene padre → `closer_id = él`, `closer_amount = base × closer_rate`, campos `subcloser_*` nulos. Si tiene padre → `subcloser_id = él`, `subcloser_amount = base × su closer_rate`, `closer_id = padre`, `closer_amount = base × parent_rate` (la tasa que se fijó al invitar al subcloser).
 - **RLS:** admin todo; closer lee las filas donde es `closer_id` o `subcloser_id`; estado solo por RPC `set_commission_status` (admin).
-- **Pregunta (clave):** ¿los dos porcentajes se aplican sobre el importe cobrado (closer 10 % + subcloser 5 % = 15 % del total) o el subcloser cobra un porcentaje de la comisión del closer? Reco: ambos sobre el importe cobrado, fijados al invitar y congelados por fila; es lo que permite «campos separados» sin cálculo derivado.
+- **Decidido (7.6, 7.7):** los dos porcentajes se aplican sobre el importe cobrado (closer 10 % + subcloser 5 % = 15 % del total), fijados al invitar y congelados por fila; la fila nace en `pending` al ejecutar `win_deal` y el admin la aprueba al cobrar.
 
 ### `imports` y `import_conflicts`
 - `imports`: `id`, `owner_id`, `file_name`, `file_hash` (único por dueño), `rows_total`, `rows_created`, `rows_updated`, `rows_invalid`, `rows_pending`, `created_at`.
@@ -94,7 +94,7 @@
 
 ### `projects`
 - `id`, `client_id` → profiles, `contact_id` (origen), `deal_id`, `name`, `pack_id`, `brief` (markdown), `phase` enum `discovery | design | build | review | delivered | maintenance`, `status` enum `active | paused | closed`, `freelance_id` → profiles, `started_at`, `due_at`, `created_at`, `archived_at`.
-- **RLS:** `is_project_member(id)` lee; admin escribe. El freelance no lee `deal_id`, `contact_id` ni importes (vista `freelance_projects` con las columnas permitidas). **Pregunta:** confirmar que el freelance no ve cliente ni importes.
+- **RLS:** `is_project_member(id)` lee; admin escribe. El freelance no lee `deal_id`, `contact_id` ni importes (vista `freelance_projects` con las columnas permitidas). **Decidido (6.5, 6.7):** varios proyectos por cliente; el freelance no ve cliente ni importes.
 ### `tasks`
 - `id`, `project_id`, `phase`, `title`, `description`, `status` enum `todo | doing | done`, `assignee_id` (freelance), `story_id`, `sort`, `done_at`, `created_at`.
 - Avance del proyecto = `done / total`, calculado en una vista `project_progress`.
@@ -104,7 +104,7 @@
 - **RLS:** cliente crea y lee las de su proyecto, edita y borra solo `proposed` propias; admin lee todas y decide por RPC `decide_story`.
 ### `documents`
 - `id`, `project_id`, `uploaded_by`, `name`, `mime`, `size_bytes`, `storage_path`, `visibility` enum `client | team`, `created_at`, `deleted_at`.
-- Storage: bucket `project-documents` privado, ruta `projects/{project_id}/{document_id}`; subida y descarga con URL firmada desde el servidor tras comprobar `is_project_member` y `visibility`. Límites: 25 MB por fichero, 1 GB por proyecto, tipos cerrados (**Pregunta**, ver pantallas A3).
+- Storage: bucket `project-documents` privado, ruta `projects/{project_id}/{document_id}`; subida y descarga con URL firmada desde el servidor tras comprobar `is_project_member` y `visibility`. Límites **decididos (6.6)**: 25 MB por fichero, 1 GB por proyecto, tipos cerrados (PDF, imágenes, vídeo corto, zip, Office).
 - **RLS:** miembros leen según visibilidad; cada uno borra lo suyo; admin todo. Política equivalente en `storage.objects`.
 
 ---
@@ -119,7 +119,7 @@
 - `id`, `source_id`, `kind` enum `job | business | project`, `external_id` (único por fuente), `url`, `title`, `organization`, `summary`, `score` numeric 0–1, `reasons` text[], `status` enum `new | shortlisted | drafted | sent | converted | discarded`, `discard_reason`, `contact_id`, `raw` jsonb (lo que devolvió la fuente, para reprocesar), `found_at`, `decided_at`.
 ### `radar_drafts`
 - `id`, `finding_id`, `kind` enum `application | proposal | message`, `body`, `model`, `status` enum `draft | approved | sent`, `sent_via` enum `manual | api`, `sent_at`, `created_at`.
-- **RLS del bloque:** solo admin. Omen escribe con la clave de servicio. Las acciones de envío con API pasan por `private.jobs` (`radar.send`) y solo si la fuente lo permite (decisión 8.3, abierta).
+- **RLS del bloque:** solo admin. Omen escribe con la clave de servicio. Las acciones de envío con API pasan por `private.jobs` (`radar.send`) y solo si la fuente tiene API oficial autorizada (decisión 8.3); `radar_drafts.sent_via = 'manual'` cubre el resto («Copiar» + «Marcar enviado»).
 
 ---
 
@@ -130,7 +130,7 @@
 - **`outbox`:** `id`, `channel` `email | telegram`, `recipient`, `template`, `payload` jsonb, `status`, `attempts`, `sent_at`. Lo escriben triggers y RPC; **lo drena el servidor de Next con un cron de Cloudflare**, no Omen, para que email y Telegram funcionen con Omen apagado.
 - **`audit_log`:** `id`, `actor_id`, `table_name`, `row_id`, `action`, `before`, `after`, `at`.
 - **`chat_quota`**, **`telegram_links`**, **`telegram_codes`**: arriba.
-- **RAG (pgvector):** `rag_documents(id, source, ref, title, updated_at)` y `rag_chunks(id, document_id, chunk, embedding vector, position)`. Fuentes: `content/*` del repo (sobre mí, proyectos, servicios, FAQ, blog), `packs`/`rates` y los hechos que Jose quiera que el asistente sepa. Omen indexa (job `rag.index`) y consulta. **Pregunta** (dentro de 4.5): vectores en Supabase (reco: Omen sin estado, copia de seguridad incluida) o en Omen.
+- **RAG (pgvector):** `rag_documents(id, source, ref, title, updated_at)` y `rag_chunks(id, document_id, chunk, embedding vector, position)`. Fuentes: `content/*` del repo (sobre mí, proyectos, servicios, FAQ, blog), `packs`/`rates` y los hechos que Jose quiera que el asistente sepa. Omen indexa (job `rag.index`, embeddings con el modelo local) y consulta. **Decidido (4.5, 4.6):** vectores en Supabase (Omen sin estado, copia de seguridad incluida); el chat público responde con Groq y cae al modelo local si Groq falla.
 
 ---
 
@@ -159,14 +159,14 @@ Omen usa la clave de servicio y nunca abre un puerto. Lo que Omen necesita saber
 
 ---
 
-## Resumen de preguntas de este documento
+## Resumen de decisiones de este documento (Jose, 2026-11-02)
 
-| # | Tabla | Pregunta | Recomendación |
-|---|---|---|---|
-| 1 | `commissions` | ¿Dos porcentajes sobre el importe cobrado o el subcloser cobra parte de la comisión del closer? | Ambos sobre el importe cobrado, congelados por fila |
-| 2 | `deals`/`commissions` | ¿Comisión al marcar ganada o al registrar cobro? | Al ganar (`pending`); aprobar al cobrar |
-| 3 | `projects` | ¿El freelance ve cliente e importes? | No (vista con columnas permitidas) |
-| 4 | `projects` | ¿Varios proyectos por cliente? | Sí |
-| 5 | `documents` | Límites y tipos | 25 MB, 1 GB por proyecto, tipos cerrados |
-| 6 | `chat_threads` | ¿Un hilo por usuario? | Sí |
-| 7 | RAG | ¿Vectores en Supabase o en Omen? | Supabase (pgvector, `private`) |
+| # | Tabla | Pregunta | Decisión | Id |
+|---|---|---|---|---|
+| 1 | `commissions` | ¿Dos porcentajes sobre el importe cobrado o el subcloser cobra parte de la comisión del closer? | Ambos sobre el importe cobrado, congelados por fila | 7.6 |
+| 2 | `deals`/`commissions` | ¿Comisión al marcar ganada o al registrar cobro? | Al ganar (`pending`); aprobar al cobrar | 7.7 |
+| 3 | `projects` | ¿El freelance ve cliente e importes? | No (vista con columnas permitidas) | 6.7 |
+| 4 | `projects` | ¿Varios proyectos por cliente? | Sí | 6.5 |
+| 5 | `documents` | Límites y tipos | 25 MB, 1 GB por proyecto, tipos cerrados | 6.6 |
+| 6 | `chat_threads` | ¿Un hilo por usuario? | Sí | 5.6 |
+| 7 | RAG | ¿Vectores en Supabase o en Omen? | Supabase (pgvector, `private`) | 4.6 |
