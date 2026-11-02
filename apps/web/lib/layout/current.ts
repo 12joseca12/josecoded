@@ -1,7 +1,7 @@
 // Kept apart from `nav.ts` on purpose: that module reads the content index (and so loads zod), which a client
 // island must not drag into the initial JS of every page just to compare two paths.
 
-/** True when `pathname` is `href` or lives below it (`/proyectos/hazmefila` is inside `/proyectos`). */
+/** True when `pathname` is `href` or lives below it (`/proyectos/3cat` is inside `/proyectos`). */
 export function isInside(pathname: string | null, href: string): boolean {
   return pathname !== null && (pathname === href || pathname.startsWith(`${href}/`));
 }

@@ -1,4 +1,5 @@
 import { env } from '@/lib/env';
+import { serverEnv } from '@/lib/env.server';
 
 const SITEVERIFY = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 
@@ -20,7 +21,7 @@ export async function verifyTurnstileToken(
   options: { ip?: string | null; action?: string } = {},
 ): Promise<boolean> {
   if (!token) return false;
-  const body = new URLSearchParams({ secret: env.server.TURNSTILE_SECRET_KEY, response: token });
+  const body = new URLSearchParams({ secret: serverEnv().TURNSTILE_SECRET_KEY, response: token });
   if (options.ip) body.set('remoteip', options.ip);
   const siteHost = new URL(env.client.NEXT_PUBLIC_SITE_URL).hostname;
   try {

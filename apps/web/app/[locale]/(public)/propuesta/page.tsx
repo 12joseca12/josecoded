@@ -117,6 +117,8 @@ export default async function ProposalPage({ params }: { params: LocaleParams })
       fallbackIntro: t('send.fallbackIntro'),
       fallbackMail: t('send.fallbackMail'),
       fallbackWhatsapp: t('send.fallbackWhatsapp'),
+      privacy: t('send.privacy'),
+      privacyLink: t('send.privacyLink'),
     },
   };
 

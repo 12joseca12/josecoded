@@ -5,6 +5,11 @@ export type FormState<T> = {
   status: 'idle' | 'ok' | 'error';
   fieldErrors?: Partial<Record<keyof T, string>>;
   formError?: string;
+  /**
+   * What the visitor typed, handed back on an error so the form does not empty itself (WCAG 3.3.7).
+   * Only non-secret fields: never the Turnstile token, a password or a one-time code.
+   */
+  values?: Partial<Record<keyof T, string>>;
 };
 
 // --- Variant contract of the `components/ui` primitives (working-agreements §15) -----------------

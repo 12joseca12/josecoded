@@ -37,24 +37,25 @@ describe('sendProposal', () => {
     expect(mocks.verify).toHaveBeenCalledWith('tok', { ip: '203.0.113.9', action: 'proposal_send' });
     expect(mocks.postLead).toHaveBeenCalledWith(
       expect.objectContaining({ source: 'web_proposal', locale: 'en', proposalToken: TOKEN, contact: { name: 'Marta', email: 'marta@example.com' } }),
+      { clientIp: '203.0.113.9' },
     );
   });
 
   it('answers a field error without reaching the gateway', async () => {
     const answer = await sendProposal({ status: 'idle' }, form({ email: 'bad' }));
-    expect(answer).toEqual({ status: 'error', fieldErrors: { email: 'proposal.send.errors.email' } });
+    expect(answer).toEqual(expect.objectContaining({ status: 'error', fieldErrors: { email: 'proposal.send.errors.email' } }));
     expect(mocks.postLead).not.toHaveBeenCalled();
   });
 
   it('says the proposal expired when the token is missing, and offers the fallback when the gateway is down', async () => {
-    expect(await sendProposal({ status: 'idle' }, form({ proposalToken: '' }))).toEqual({ status: 'error', formError: 'proposal.send.errors.expired' });
+    expect(await sendProposal({ status: 'idle' }, form({ proposalToken: '' }))).toEqual(expect.objectContaining({ status: 'error', formError: 'proposal.send.errors.expired' }));
     mocks.postLead.mockResolvedValue({ status: 'down' });
-    expect(await sendProposal({ status: 'idle' }, form({}))).toEqual({ status: 'error', formError: 'proposal.send.errors.down', fallback: true });
+    expect(await sendProposal({ status: 'idle' }, form({}))).toEqual(expect.objectContaining({ status: 'error', formError: 'proposal.send.errors.down', fallback: true }));
   });
 
   it('refuses a token that does not verify', async () => {
     mocks.verify.mockResolvedValue(false);
-    expect(await sendProposal({ status: 'idle' }, form({}))).toEqual({ status: 'error', formError: 'proposal.send.errors.captcha' });
+    expect(await sendProposal({ status: 'idle' }, form({}))).toEqual(expect.objectContaining({ status: 'error', formError: 'proposal.send.errors.captcha' }));
     expect(mocks.postLead).not.toHaveBeenCalled();
   });
 });

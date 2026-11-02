@@ -72,10 +72,10 @@ describe('env', () => {
     vi.stubEnv('TURNSTILE_SECRET_KEY', 'x');
     vi.stubEnv('SERVER_KEY', 'x');
     vi.stubEnv('CALCOM_WEBHOOK_SECRET', '');
-    const { env } = await import('../lib/env');
-    expect(() => env.server.SERVER_KEY).toThrow(/CALCOM_WEBHOOK_SECRET/);
+    const { serverEnv } = await import('../lib/env.server');
+    expect(() => serverEnv().SERVER_KEY).toThrow(/CALCOM_WEBHOOK_SECRET/);
     vi.stubEnv('CALCOM_WEBHOOK_SECRET', 'x');
-    expect(env.server.SERVER_KEY).toBe('x');
+    expect(serverEnv().SERVER_KEY).toBe('x');
   });
 
   it('has no service role key in the web env schemas', () => {

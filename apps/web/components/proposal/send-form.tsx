@@ -4,6 +4,7 @@ import { sendProposal } from '@/app/[locale]/(public)/propuesta/actions';
 import { IdempotencyField } from '@/components/contact/lead-form/idempotency-field';
 import { Field } from '@/components/forms/field';
 import { Form } from '@/components/forms/form';
+import { PrivacyNotice } from '@/components/forms/privacy-notice';
 import { Turnstile } from '@/components/forms/turnstile';
 
 import { SendTracker } from './send-tracker';
@@ -23,6 +24,8 @@ export interface SendFormLabels {
   fallbackIntro: string;
   fallbackMail: string;
   fallbackWhatsapp: string;
+  privacy: string;
+  privacyLink: string;
 }
 
 /**
@@ -49,7 +52,7 @@ export function SendForm({
 }) {
   return (
     <section aria-labelledby="send-title">
-      <h2 id="send-title">{labels.title}</h2>
+      <h2 id="send-title" tabIndex={-1}>{labels.title}</h2>
       <p>{labels.text}</p>
       <Form<SendProposalState> action={sendProposal} submitLabel={labels.submit} label={labels.label} successMessage={labels.sent}>
         {(state) => (
@@ -63,6 +66,7 @@ export function SendForm({
             <Field kind="email" name="email" label={labels.email} autoComplete="email" inputMode="email" spellCheck={false} required />
             <Field kind="tel" name="phone" label={labels.phone} autoComplete="tel" inputMode="tel" />
             <Turnstile siteKey={siteKey} action="proposal_send" locale={locale} />
+            <PrivacyNotice text={labels.privacy} linkLabel={labels.privacyLink} />
             {state.fallback && (email || whatsapp) ? (
               <p>
                 {labels.fallbackIntro} {email ? <a href={`mailto:${email}`}>{labels.fallbackMail}</a> : null}

@@ -45,6 +45,13 @@ export async function sendProposal(_previous: SendProposalState, data: FormData)
   const locale: Locale = parsedLocale.success ? parsedLocale.data : 'es';
   const t = await getTranslations({ locale, namespace: 'proposal.send.errors' });
 
+  // handed back on every error so the form keeps what the visitor typed (WCAG 3.3.7); never the token
+  const values: NonNullable<SendProposalState['values']> = {
+    name: str(data, 'name') ?? '',
+    email: str(data, 'email') ?? '',
+    phone: str(data, 'phone') ?? '',
+  };
+
   const parsed = sendSchema.safeParse({
     name: str(data, 'name'),
     email: str(data, 'email')?.trim().toLowerCase(),
@@ -58,15 +65,15 @@ export async function sendProposal(_previous: SendProposalState, data: FormData)
       const field = issue.path[0];
       if (field === 'name' || field === 'email' || field === 'phone') fieldErrors[field] = t(field);
     }
-    if (Object.keys(fieldErrors).length > 0) return { status: 'error', fieldErrors };
+    if (Object.keys(fieldErrors).length > 0) return { status: 'error', fieldErrors, values };
     const token = parsed.error.issues.some((issue) => issue.path[0] === 'proposalToken');
-    return { status: 'error', formError: token ? t('expired') : t('captcha') };
+    return { status: 'error', formError: token ? t('expired') : t('captcha'), values };
   }
 
   const input = parsed.data;
   const ip = (await headers()).get('cf-connecting-ip');
   if (!(await verifyTurnstileToken(input.turnstileToken, { ip, action: 'proposal_send' }))) {
-    return { status: 'error', formError: t('captcha') };
+    return { status: 'error', formError: t('captcha'), values };
   }
 
   const sentKey = str(data, 'idempotencyKey') ?? '';
@@ -80,9 +87,9 @@ export async function sendProposal(_previous: SendProposalState, data: FormData)
     proposalToken: input.proposalToken,
     ...(hasRef && ref ? { affiliateCode: ref } : {}),
     meta: { path: '/propuesta' },
-  });
+  }, { clientIp: ip });
 
   if (result.status === 'ok') return { status: 'ok', pack: str(data, 'pack') ?? '', hasRef };
-  if (result.status === 'invalid') return { status: 'error', formError: t('expired') };
-  return { status: 'error', formError: t('down'), fallback: true };
+  if (result.status === 'invalid') return { status: 'error', formError: t('expired'), values };
+  return { status: 'error', formError: t('down'), fallback: true, values };
 }

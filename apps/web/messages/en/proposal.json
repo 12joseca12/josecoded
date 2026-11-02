@@ -116,7 +116,9 @@
         "captcha": "I could not check that you are not a robot. Please try again.",
         "expired": "The proposal has expired. Start again to generate another.",
         "down": "I could not send it right now."
-      }
+      },
+      "privacy": "I use your details only to reply to you. Legal basis: your consent when you send this. I do not share them with third parties, except the providers that host this service, and I keep them while the conversation lasts. You can access, correct or delete them at any time.",
+      "privacyLink": "Privacy policy"
     }
   }
 }

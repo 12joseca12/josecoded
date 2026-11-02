@@ -3,6 +3,7 @@
 import { submitContact } from '@/app/[locale]/(public)/contacto/actions';
 import { Field } from '@/components/forms/field';
 import { Form } from '@/components/forms/form';
+import { PrivacyNotice } from '@/components/forms/privacy-notice';
 import { Turnstile } from '@/components/forms/turnstile';
 
 import { IdempotencyField } from './idempotency-field';
@@ -25,6 +26,8 @@ export interface LeadFormLabels {
   fallbackIntro: string;
   fallbackMail: string;
   fallbackWhatsapp: string;
+  privacy: string;
+  privacyLink: string;
 }
 
 /**
@@ -72,6 +75,7 @@ export function LeadForm({
           <Field kind="email" name="email" label={labels.email} autoComplete="email" inputMode="email" spellCheck={false} required />
           <Field kind="textarea" name="message" label={labels.message} help={labels.messageHelp} maxLength={2000} required />
           <Turnstile siteKey={siteKey} action={variant === 'partner' ? 'partner' : 'contact'} locale={locale} />
+          <PrivacyNotice text={labels.privacy} linkLabel={labels.privacyLink} />
           {state.fallback && (email || whatsapp) ? (
             <p className={styles.fallback}>
               {labels.fallbackIntro}{' '}

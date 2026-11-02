@@ -48,8 +48,10 @@ export function sitemapPages(
   availability: SectionAvailability,
   urlOf: (locale: Locale, pathname: StaticPage) => string,
   extra: SitemapPage[] = [],
+  /** Lets the caller leave a page out (a legal text that is not publishable yet). */
+  isListed: (page: StaticPage) => boolean = () => true,
 ): SitemapPage[] {
-  const pages = STATIC_PAGES.filter((page) => (page === '/blog' ? availability.blog : page === '/lab' ? availability.lab : true));
+  const pages = STATIC_PAGES.filter((page) => (page === '/blog' ? availability.blog : page === '/lab' ? availability.lab : true) && isListed(page));
   return [
     ...pages.map((page) => ({ urls: { es: urlOf('es', page), en: urlOf('en', page) } })),
     ...extra,

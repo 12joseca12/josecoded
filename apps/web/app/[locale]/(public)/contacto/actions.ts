@@ -36,6 +36,14 @@ export async function submitContact(_previous: LeadFormState, data: FormData): P
   const locale = localeOf(data);
   const t = await getTranslations({ locale, namespace: 'contact.errors' });
 
+  // handed back on every error so the form keeps what the visitor typed (WCAG 3.3.7); never the token
+  const values: NonNullable<LeadFormState['values']> = {
+    name: str(data, 'name') ?? '',
+    email: str(data, 'email') ?? '',
+    company: str(data, 'company') ?? '',
+    message: str(data, 'message') ?? '',
+  };
+
   const parsed = leadFormSchema.safeParse({
     kind: str(data, 'kind'),
     locale,
@@ -55,8 +63,8 @@ export async function submitContact(_previous: LeadFormState, data: FormData): P
       }
     }
     const captchaMissing = parsed.error.issues.some((issue) => issue.path[0] === 'turnstileToken');
-    if (Object.keys(fieldErrors).length > 0) return { status: 'error', fieldErrors };
-    return { status: 'error', formError: captchaMissing ? t('captcha') : t('generic') };
+    if (Object.keys(fieldErrors).length > 0) return { status: 'error', fieldErrors, values };
+    return { status: 'error', formError: captchaMissing ? t('captcha') : t('generic'), values };
   }
 
   const input = parsed.data;
@@ -65,7 +73,7 @@ export async function submitContact(_previous: LeadFormState, data: FormData): P
     ip,
     action: input.kind === 'partner' ? 'partner' : 'contact',
   });
-  if (!verified) return { status: 'error', formError: t('captcha') };
+  if (!verified) return { status: 'error', formError: t('captcha'), values };
 
   const sentKey = str(data, 'idempotencyKey') ?? '';
   const ref = (await cookies()).get(REF_COOKIE)?.value;
@@ -78,9 +86,9 @@ export async function submitContact(_previous: LeadFormState, data: FormData): P
     message: input.message,
     ...(ref && REF_CODE_RE.test(ref) ? { affiliateCode: ref } : {}),
     meta: { path: input.kind === 'partner' ? '/partners' : `/contacto${input.via ? `?via=${input.via}` : ''}` },
-  });
+  }, { clientIp: ip });
 
   if (result.status === 'ok') return { status: 'ok' };
-  if (result.status === 'invalid') return { status: 'error', formError: t('generic') };
-  return { status: 'error', formError: t('down'), fallback: true };
+  if (result.status === 'invalid') return { status: 'error', formError: t('generic'), values };
+  return { status: 'error', formError: t('down'), fallback: true, values };
 }

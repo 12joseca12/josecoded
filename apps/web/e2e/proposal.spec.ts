@@ -26,7 +26,7 @@ async function stubExternals(page: Page, body: unknown = { ok: true, data: PROPO
   await page.route('https://challenges.cloudflare.com/**', (route) =>
     route.fulfill({
       contentType: 'text/javascript',
-      body: `window.turnstile={render(el){const i=document.createElement('input');i.type='hidden';i.name='cf-turnstile-response';i.value='tok';el.closest('form')?.append(i);return 'w1'},reset(){},remove(){}}`,
+      body: `window.turnstile={render(el,o){const i=document.createElement('input');i.type='hidden';i.name='cf-turnstile-response';i.value='tok';el.closest('form')?.append(i);o&&o.callback&&o.callback('tok');return 'w1'},reset(){},remove(){}}`,
     }),
   );
   const cors = { 'access-control-allow-origin': '*', 'access-control-allow-headers': '*', 'access-control-allow-methods': 'POST' };

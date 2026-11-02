@@ -88,7 +88,11 @@ export function Field(props: FieldProps) {
   const errorId = error ? `${uid}-error` : undefined;
   const describedBy = [helpId, errorId].filter(Boolean).join(' ') || undefined;
   const invalid = error ? true : undefined;
-  const disabled = props.disabled ?? form?.pending;
+  // while pending the controls stay focusable and keep what was typed: `readOnly` where it exists,
+  // `aria-disabled` elsewhere (a `disabled` control drops focus and, in a fieldset, its value)
+  const pending = props.disabled === undefined && form?.pending === true;
+  const disabled = props.disabled;
+  const kept = form?.state.values?.[props.name];
 
   const message = (
     <>
@@ -107,7 +111,7 @@ export function Field(props: FieldProps) {
 
   if (props.kind === 'radio-group') {
     return (
-      <fieldset className={styles.field} aria-describedby={describedBy} disabled={disabled}>
+      <fieldset className={styles.field} aria-describedby={describedBy} aria-disabled={pending || undefined} disabled={disabled}>
         <legend className={styles.label}>{props.label}</legend>
         <div className={styles.options}>
           {props.options.map((option, index) => {
@@ -149,6 +153,7 @@ export function Field(props: FieldProps) {
             defaultChecked={props.defaultChecked}
             required={props.required}
             disabled={disabled}
+            aria-disabled={pending || undefined}
             aria-invalid={invalid}
             aria-describedby={describedBy}
             onChange={(event: ChangeEvent<HTMLInputElement>) =>
@@ -168,6 +173,7 @@ export function Field(props: FieldProps) {
     name: props.name,
     required: props.required,
     disabled,
+    'aria-disabled': pending || undefined,
     'aria-invalid': invalid,
     'aria-describedby': describedBy,
     className: styles.control,
@@ -183,7 +189,9 @@ export function Field(props: FieldProps) {
           {...shared}
           rows={props.rows ?? 5}
           maxLength={props.maxLength}
-          defaultValue={props.defaultValue}
+          readOnly={pending || undefined}
+          key={`${props.name}:${kept ?? ''}`}
+          defaultValue={kept ?? props.defaultValue}
           autoComplete={props.autoComplete}
         />
       ) : props.kind === 'file' ? (
@@ -194,7 +202,7 @@ export function Field(props: FieldProps) {
           onChange={(event) => props.onChange?.(event.currentTarget.files?.[0] ?? null)}
         />
       ) : props.kind === 'select' ? (
-        <select {...shared} defaultValue={props.defaultValue}>
+        <select {...shared} key={`${props.name}:${kept ?? ''}`} defaultValue={kept ?? props.defaultValue}>
           {props.options.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
@@ -206,7 +214,9 @@ export function Field(props: FieldProps) {
           {...shared}
           type={props.kind ?? 'text'}
           data-size={props.size}
-          defaultValue={props.defaultValue}
+          readOnly={pending || undefined}
+          key={`${props.name}:${kept ?? ''}`}
+          defaultValue={kept ?? props.defaultValue}
           autoComplete={props.autoComplete}
           inputMode={props.inputMode}
           pattern={props.pattern}

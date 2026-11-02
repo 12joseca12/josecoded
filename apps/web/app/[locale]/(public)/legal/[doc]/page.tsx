@@ -6,9 +6,8 @@ import { JsonLd } from '@/components/seo';
 import { PageHead } from '@/components/shared/page-head';
 import { Prose } from '@/components/shared/prose';
 import { Toc } from '@/components/shared/toc';
-import { LEGAL_DOCS, legalContent, legalStrings } from '@/content/legal';
-import { isPendingDato } from '@/lib/content/dato';
-import { env } from '@/lib/env';
+import { LEGAL_DOCS, legalContent } from '@/content/legal';
+import { assertLegalPublishable } from '@/lib/legal/publishable';
 import { resolveLocale } from '@/lib/locale';
 import { breadcrumbJsonLd, graphOf } from '@/lib/seo/jsonld';
 import { pageMetadata } from '@/lib/seo/page-metadata';
@@ -36,16 +35,11 @@ const KEYS = {
 
 const asDoc = (value: string): LegalDoc | undefined => LEGAL_DOCS.find((doc) => doc === value);
 
-/** A legal text that still holds a marker (the owner's name, NIF, address) is not published in production. */
-function publishable(doc: LegalDoc, locale: 'es' | 'en'): boolean {
-  if (env.client.NEXT_PUBLIC_SITE_ENV !== 'production') return true;
-  return !legalStrings(legalContent(doc, locale)).some(isPendingDato);
-}
-
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const doc = asDoc((await params).doc);
   const locale = await resolveLocale(params as unknown as LocaleParams);
   if (!doc) notFound();
+  assertLegalPublishable(doc, locale);
   const content = legalContent(doc, locale);
   return pageMetadata({ locale, pathname: KEYS[doc], title: content.title, description: content.description });
 }
@@ -54,7 +48,8 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 export default async function LegalPage({ params }: { params: Params }) {
   const doc = asDoc((await params).doc);
   const locale = await resolveLocale(params as unknown as LocaleParams);
-  if (!doc || !publishable(doc, locale)) notFound();
+  if (!doc) notFound();
+  assertLegalPublishable(doc, locale);
   const t = await getTranslations({ locale, namespace: 'legal' });
   const content = legalContent(doc, locale);
   const date = new Intl.DateTimeFormat(locale, { dateStyle: 'long', timeZone: 'UTC' }).format(new Date(`${content.updated}T00:00:00Z`));

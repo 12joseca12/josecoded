@@ -121,15 +121,15 @@ describe('pageMetadata', () => {
 
 describe('dynamic pages', () => {
   it.each([
-    ['es', '/proyectos/[slug]', 'https://josecoded.com/proyectos/hazmefila'],
-    ['en', '/proyectos/[slug]', 'https://josecoded.com/en/projects/hazmefila'],
-    ['en', '/blog/[slug]', 'https://josecoded.com/en/blog/hazmefila'],
-    ['en', '/area-clientes/tareas/[id]', 'https://josecoded.com/en/client-area/tasks/hazmefila'],
+    ['es', '/proyectos/[slug]', 'https://josecoded.com/proyectos/3cat'],
+    ['en', '/proyectos/[slug]', 'https://josecoded.com/en/projects/3cat'],
+    ['en', '/blog/[slug]', 'https://josecoded.com/en/blog/3cat'],
+    ['en', '/area-clientes/tareas/[id]', 'https://josecoded.com/en/client-area/tasks/3cat'],
   ] as const)('%s %s', (locale, pathname, canonical) => {
     const m = pageMetadata({
       locale,
       pathname,
-      params: { slug: 'hazmefila', id: 'hazmefila' },
+      params: { slug: '3cat', id: '3cat' },
       title: 't',
       description: 'd',
     });

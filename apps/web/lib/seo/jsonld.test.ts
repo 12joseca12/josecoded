@@ -16,6 +16,7 @@ import {
   serviceOfferJsonLd,
   siteGraph,
   softwareApplicationJsonLd,
+  webProjectJsonLd,
 } from './jsonld';
 
 interface PriceNode {
@@ -161,5 +162,13 @@ describe('other nodes', () => {
     const html = serializeJsonLd(graphOf({ '@type': 'Thing', name: '</script><script>alert(1)</script>' }));
     expect(html).not.toContain('</script>');
     expect((JSON.parse(html) as { '@graph': { name: string }[] })['@graph'][0]?.name).toBe('</script><script>alert(1)</script>');
+  });
+
+  it('a web case study is a WebApplication or a CreativeWork with its own @id, never a WebSite', () => {
+    const live = webProjectJsonLd({ siteUrl, name: 'Web', url: `${siteUrl}/proyectos/web`, webUrl: 'https://web.example' });
+    expect(live).toMatchObject({ '@type': 'WebApplication', '@id': `${siteUrl}/proyectos/web#project`, url: 'https://web.example' });
+    const offline = webProjectJsonLd({ siteUrl, name: 'Web', url: `${siteUrl}/proyectos/web` });
+    expect(offline).toMatchObject({ '@type': 'CreativeWork', url: `${siteUrl}/proyectos/web` });
+    expect(JSON.stringify([live, offline])).not.toContain('WebSite');
   });
 });

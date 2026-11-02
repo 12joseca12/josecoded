@@ -61,7 +61,9 @@
       "sent": "Recibido. Te respondo yo mismo por email.",
       "fallbackIntro": "No he podido enviarlo ahora mismo. Escríbeme directamente:",
       "fallbackMail": "por email",
-      "fallbackWhatsapp": "por WhatsApp"
+      "fallbackWhatsapp": "por WhatsApp",
+      "privacy": "Uso tus datos solo para responderte. Base legal: tu consentimiento al enviar. No los cedo a terceros, salvo a los proveedores que alojan este servicio, y los conservo mientras dure la conversación. Puedes acceder a ellos, corregirlos o borrarlos cuando quieras.",
+      "privacyLink": "Política de privacidad"
     },
     "partnerForm": {
       "label": "Formulario para agencias",

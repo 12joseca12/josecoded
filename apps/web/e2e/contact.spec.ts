@@ -30,6 +30,40 @@ test('the booking loads nothing from Cal.com until it is asked for', async ({ pa
   await expect(page.locator('iframe[src*="cal.com"]')).toHaveCount(1);
 });
 
+test('the booking frame loads under the real CSP and takes focus', async ({ page, request }) => {
+  const reachable = await request.get('https://app.cal.com', { timeout: 4000 }).then(
+    () => true,
+    () => false,
+  );
+  test.skip(!reachable, 'cal.com is not reachable from this runner');
+  const violations: string[] = [];
+  page.on('console', (message) => {
+    if (/Content Security Policy|Refused to frame/i.test(message.text())) violations.push(message.text());
+  });
+  await page.goto('/contacto');
+  await hydrated(page, '#reserva button');
+  await page.locator('#reserva').getByRole('button', { name: 'Reservar 20 min' }).click();
+  const region = page.locator('#reserva').getByRole('region');
+  await expect(region).toBeFocused();
+  await expect(region.locator('iframe')).toBeVisible();
+  await page.waitForLoadState('load');
+  expect(violations).toEqual([]);
+});
+
+test('a validation error keeps the message the visitor typed', async ({ page }) => {
+  await page.goto('/contacto');
+  await hydrated(page, '#vias [role="tab"]');
+  await page.getByText('Prefiero dejar mis datos').click();
+  await page.getByLabel('Nombre').fill('   ');
+  await page.getByLabel('Email').fill('marta@example.com');
+  await page.getByLabel('Qué necesitas').fill('Una web con reservas');
+  await page.getByRole('button', { name: 'Enviar' }).click();
+  await expect(page.getByText('Escribe tu nombre.')).toBeVisible();
+  await expect(page.getByLabel('Qué necesitas')).toHaveValue('Una web con reservas');
+  await expect(page.getByLabel('Email')).toHaveValue('marta@example.com');
+  await expect(page.getByLabel('Nombre')).toBeFocused();
+});
+
 test('the form works without JavaScript: the server answers with the field error', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false, reducedMotion: 'reduce' });
   const page = await context.newPage();

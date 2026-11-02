@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
-vi.mock('@/lib/env', () => ({ env: { server: { TURNSTILE_SECRET_KEY: 'secret' }, client: { NEXT_PUBLIC_SITE_URL: 'https://josecoded.com' } } }));
+vi.mock('@/lib/env', () => ({ env: { client: { NEXT_PUBLIC_SITE_URL: 'https://josecoded.com' } } }));
+vi.mock('@/lib/env.server', () => ({ serverEnv: () => ({ TURNSTILE_SECRET_KEY: 'secret' }) }));
 
 import { verifyTurnstileToken } from './verify';
 

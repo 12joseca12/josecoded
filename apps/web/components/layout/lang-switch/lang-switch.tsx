@@ -19,7 +19,7 @@ const NOT_PARAMS = new Set(['locale', 'rest']);
  * page); `segmented` lists both languages inside the ☰ menu with the current one marked. Both go
  * to the same screen in the other language: the route template (`/proyectos/[slug]`) and its
  * parameters are handed to the localized `Link`, so a dynamic page keeps its slug and the
- * translated path (`/en/projects/hazmefila`) comes out right.
+ * translated path (`/en/projects/3cat`) comes out right.
  *
  * A11y: a link named by the language it goes to («English», not «EN»; the visible code is part of
  * the name) with `lang` and `hreflang`; the segmented form is a `role="group"` named «Idioma» and

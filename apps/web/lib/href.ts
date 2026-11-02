@@ -33,7 +33,7 @@ const templates = Object.keys(pathnames).map((key) => ({
 
 /**
  * Turns a Spanish canonical internal href into the object next-intl needs to localize it.
- * A string href with `?query` or `#hash`, or a dynamic one (`/proyectos/hazmefila`), is not found in
+ * A string href with `?query` or `#hash`, or a dynamic one (`/proyectos/3cat`), is not found in
  * the `pathnames` map by next-intl and would keep the Spanish slug under `/en`, which then 301s; the
  * object form is localized per language.
  */

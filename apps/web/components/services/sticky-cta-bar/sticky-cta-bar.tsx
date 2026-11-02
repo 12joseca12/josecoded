@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { TrackClick } from '@/components/shared/track-click';
 import { Button } from '@/components/ui/button';
+import { useStickyOffset } from '@/lib/layout/sticky-offset';
 
 import styles from './sticky-cta-bar.module.css';
 
@@ -34,6 +35,9 @@ export function StickyCtaBar({
 }) {
   const [visible, setVisible] = useState(false);
   const bar = useRef<HTMLDivElement>(null);
+
+  // while shown, the bar covers the bottom edge: focus and anchors stay above it (scroll-padding-block-end)
+  useStickyOffset(bar, 'bottom', visible);
 
   useEffect(() => {
     const section = document.getElementById(watch);

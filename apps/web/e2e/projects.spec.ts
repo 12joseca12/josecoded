@@ -27,14 +27,16 @@ test('the filter lives in the URL and says so when nothing is left', async ({ pa
   await expect(page).not.toHaveURL(/tipo=/);
 });
 
-test('/proyectos/josecoded has the three blocks, SoftwareApplication-free WebSite node and no code link', async ({ page, request }) => {
+test('/proyectos/josecoded has the three blocks, a WebApplication node (never a second WebSite) and no code link', async ({ page, request }) => {
   await page.goto('/proyectos/josecoded');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('josecoded.com');
   for (const heading of ['El reto', 'Qué hice', 'Resultado', 'Stack']) await expect(page.getByRole('heading', { name: heading })).toBeVisible();
   await expect(page.getByRole('link', { name: /Ver el código/ })).toHaveCount(0);
   const graph = JSON.stringify(jsonLd(await (await request.get('/proyectos/josecoded')).text()));
   expect(graph).toContain('BreadcrumbList');
-  expect(graph).toContain('"@type":"WebSite"');
+  expect(graph).toContain('"@type":"WebApplication"');
+  expect(graph).toContain('/proyectos/josecoded#project');
+  expect(graph).not.toContain('"@type":"WebSite"');
 });
 
 test('a sheet without its sentence still renders, hides the pending blocks and stays out of the index', async ({ page, request }) => {

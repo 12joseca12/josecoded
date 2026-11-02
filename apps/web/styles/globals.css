@@ -17,14 +17,29 @@
   box-sizing: border-box;
 }
 
+/* Offsets a page publishes for its sticky elements (see html below); 0 when it publishes none. */
+@property --page-sticky-top {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0;
+}
+
+@property --page-sticky-bottom {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0;
+}
+
 html {
   background: var(--bg);
   scroll-behavior: smooth;
   scrollbar-color: var(--scrollbar-thumb) var(--bg);
   scrollbar-width: thin;
 
-  /* the fixed header must not cover what an anchor or the keyboard scrolls into view */
-  scroll-padding-block-start: var(--header-height);
+  /* the fixed header must not cover what an anchor or the keyboard scrolls into view; a page with a sticky
+     bar under it (the way index of /servicios) or over the bottom edge (its CTA bar while shown) sets
+     --page-sticky-top / --page-sticky-bottom (lib/layout/sticky-offset.ts) and the padding grows with them */
+  scroll-padding-block: calc(var(--header-height) + var(--page-sticky-top)) var(--page-sticky-bottom);
   text-size-adjust: 100%;
 }
 

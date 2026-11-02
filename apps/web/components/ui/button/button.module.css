@@ -19,12 +19,13 @@
     color var(--dur-hover) var(--ease-standard);
 }
 
-.btn:disabled {
+.btn:disabled,
+.btn[aria-disabled='true'] {
   opacity: var(--opacity-disabled);
   cursor: not-allowed;
 }
 
-.btn:active:not(:disabled) {
+.btn:active:not(:disabled, [aria-disabled='true']) {
   transform: scale(var(--press-scale));
 }
 
@@ -61,17 +62,17 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .btn[data-variant='solid']:is(:hover, [data-hover]):not(:disabled) {
+  .btn[data-variant='solid']:is(:hover, [data-hover]):not(:disabled, [aria-disabled='true']) {
     background: var(--violet-hi);
   }
 
-  .btn[data-variant='ghost']:is(:hover, [data-hover]):not(:disabled) {
+  .btn[data-variant='ghost']:is(:hover, [data-hover]):not(:disabled, [aria-disabled='true']) {
     background: var(--tint-ghost-hover);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .btn:active:not(:disabled) {
+  .btn:active:not(:disabled, [aria-disabled='true']) {
     transform: none;
   }
 }

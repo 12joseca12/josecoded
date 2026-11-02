@@ -7,3 +7,6 @@ declare module 'next-intl' {
     Messages: typeof import('./messages/es').default;
   }
 }
+
+// `server-only` is resolved by Next itself (no package installed); the import has no exports.
+declare module 'server-only';

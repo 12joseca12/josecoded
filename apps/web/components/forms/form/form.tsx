@@ -39,8 +39,9 @@ const initial: FormState<never> = { status: 'idle' };
  * fields are a convenience, never the guard.
  *
  * A11y: `role="alert"` summary (focusable, receives focus on a general error); each `Field` exposes
- * `aria-invalid` + `aria-describedby`; the success message is a polite `role="status"`; the submit
- * button is disabled while pending and the form is `aria-busy`.
+ * `aria-invalid` + `aria-describedby`; the success message lives in a persistent `role="status"` that
+ * takes focus when it fills; while pending the submit button is `aria-disabled` and the fields read-only
+ * (nothing loses focus) and the form is `aria-busy`.
  */
 export function Form<S extends FormState<never> = FormState<Record<string, unknown>>>({
   action,
@@ -58,11 +59,16 @@ export function Form<S extends FormState<never> = FormState<Record<string, unkno
   );
   const formRef = useRef<HTMLFormElement>(null);
   const summaryRef = useRef<HTMLParagraphElement>(null);
+  const statusRef = useRef<HTMLDivElement>(null);
   const summaryId = useId();
 
   useEffect(() => {
     if (state.status === 'ok' && resetOnSuccess) formRef.current?.reset();
   }, [state, resetOnSuccess]);
+
+  useEffect(() => {
+    if (state.status === 'ok' && successMessage) statusRef.current?.focus();
+  }, [state, successMessage]);
 
   useEffect(() => {
     if (state.status !== 'error') return;
@@ -90,14 +96,21 @@ export function Form<S extends FormState<never> = FormState<Record<string, unkno
             {state.formError}
           </p>
         ) : null}
-        {state.status === 'ok' && successMessage ? (
-          <p className={styles.success} role="status">
-            {successMessage}
-          </p>
-        ) : null}
+        {/* always in the DOM, so a screen reader has the live region before the message arrives */}
+        <div ref={statusRef} className={styles.status} role="status" tabIndex={-1}>
+          {state.status === 'ok' && successMessage ? successMessage : null}
+        </div>
         {typeof children === 'function' ? children(state as S) : children}
         <div className={styles.actions}>
-          <Button type="submit" variant={submitVariant} disabled={pending}>
+          <Button
+            type="submit"
+            variant={submitVariant}
+            aria-disabled={pending || undefined}
+            onClick={(event) => {
+              // not `disabled`: the button keeps focus while the action runs, and a second click does nothing
+              if (pending) event.preventDefault();
+            }}
+          >
             {submitLabel}
           </Button>
           {actions}

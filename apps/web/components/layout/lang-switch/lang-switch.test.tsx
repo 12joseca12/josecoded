@@ -43,9 +43,9 @@ describe('LangSwitch inline', () => {
 
   it('keeps the parameters of a dynamic route', () => {
     route.pathname = '/proyectos/[slug]';
-    route.params = { locale: 'es', slug: 'hazmefila' };
+    route.params = { locale: 'es', slug: '3cat' };
     renderHeaderIntl(<LangSwitch />);
-    expect(screen.getByRole('link', { name: 'English' }).getAttribute('href')).toBe('/en/projects/hazmefila');
+    expect(screen.getByRole('link', { name: 'English' }).getAttribute('href')).toBe('/en/projects/3cat');
   });
 
   it('maps the home to /en and back', () => {

@@ -262,6 +262,22 @@ export function softwareApplicationJsonLd(app: {
   });
 }
 
+/**
+ * A web case study: the product is a `WebApplication` when it has its own address, otherwise a `CreativeWork`
+ * (a project the visitor cannot open). Never a `WebSite`: the only one is the site's own, with its stable `@id`.
+ * The node has its own `@id` (`<case url>#project`) so the graph can point at it.
+ */
+export function webProjectJsonLd(project: { siteUrl: string; name: string; url: string; webUrl?: string }): JsonLdNode {
+  return {
+    '@type': project.webUrl ? 'WebApplication' : 'CreativeWork',
+    '@id': `${project.url}#project`,
+    name: project.name,
+    url: project.webUrl ?? project.url,
+    author: { '@id': ids(project.siteUrl).person },
+    ...(project.webUrl ? { mainEntityOfPage: project.url } : {}),
+  };
+}
+
 export function blogPostingJsonLd(post: {
   siteUrl: string;
   locale: Locale;

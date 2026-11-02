@@ -68,6 +68,8 @@ export default async function ContactPage({ params }: { params: LocaleParams }) 
     fallbackIntro: t('form.fallbackIntro'),
     fallbackMail: t('form.fallbackMail'),
     fallbackWhatsapp: t('form.fallbackWhatsapp'),
+    privacy: t('form.privacy'),
+    privacyLink: t('form.privacyLink'),
   };
 
   const response = datoText(String(t.raw('data.response')));

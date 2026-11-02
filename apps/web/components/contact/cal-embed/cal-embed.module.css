@@ -4,7 +4,12 @@
   justify-items: start;
 }
 
+.region {
+  inline-size: 100%;
+}
+
 .frame {
+  display: block;
   width: 100%;
   min-height: calc(var(--size-palette-list) * 2);
   border-width: 0;

@@ -19,7 +19,7 @@ import { isPendingDato } from '@/lib/content/dato';
 import { hasOneLiner, projectBySlug, proofLinks, rankedProjects } from '@/lib/content/projects';
 import { env } from '@/lib/env';
 import { resolveLocale } from '@/lib/locale';
-import { breadcrumbJsonLd, graphOf, ids, softwareApplicationJsonLd } from '@/lib/seo/jsonld';
+import { breadcrumbJsonLd, graphOf, softwareApplicationJsonLd, webProjectJsonLd } from '@/lib/seo/jsonld';
 import { pageMetadata } from '@/lib/seo/page-metadata';
 import { absoluteUrl, siteUrl } from '@/lib/seo/urls';
 
@@ -96,12 +96,7 @@ export default async function ProjectCasePage({ params }: { params: Params }) {
           applicationCategory: sheet.applicationCategory,
           installUrls: links.filter((link) => link.kind === 'appStore' || link.kind === 'play').map((link) => link.href),
         })
-      : {
-          '@type': 'WebSite',
-          name: sheet.name,
-          url: sheet.proofs.webUrl ?? url,
-          author: { '@id': ids(siteUrl()).person },
-        };
+      : webProjectJsonLd({ siteUrl: siteUrl(), name: sheet.name, url, webUrl: sheet.proofs.webUrl });
 
   return (
     <>

@@ -71,6 +71,8 @@ export default async function PartnersPage({ params }: { params: LocaleParams })
     fallbackIntro: contact('form.fallbackIntro'),
     fallbackMail: contact('form.fallbackMail'),
     fallbackWhatsapp: contact('form.fallbackWhatsapp'),
+    privacy: contact('form.privacy'),
+    privacyLink: contact('form.privacyLink'),
   };
 
   return (

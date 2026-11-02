@@ -17,7 +17,7 @@ export interface PageMetadataInput {
   locale: Locale;
   /** Key of `pathnames` (Spanish canonical path or dynamic template): `/servicios`, `/proyectos/[slug]`. */
   pathname: PathnameKey;
-  /** Values of the template's dynamic segments: `{ slug: 'hazmefila' }`. */
+  /** Values of the template's dynamic segments: `{ slug: '3cat' }`. */
   params?: Record<string, string>;
   title: string;
   description: string;

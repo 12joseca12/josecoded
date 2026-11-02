@@ -61,7 +61,9 @@
       "sent": "Received. I will answer you myself by email.",
       "fallbackIntro": "I could not send it right now. Write to me directly:",
       "fallbackMail": "by email",
-      "fallbackWhatsapp": "on WhatsApp"
+      "fallbackWhatsapp": "on WhatsApp",
+      "privacy": "I use your details only to reply to you. Legal basis: your consent when you send this. I do not share them with third parties, except the providers that host this service, and I keep them while the conversation lasts. You can access, correct or delete them at any time.",
+      "privacyLink": "Privacy policy"
     },
     "partnerForm": {
       "label": "Agency form",

@@ -34,9 +34,9 @@ describe('toLinkTarget', () => {
   });
 
   it('maps a dynamic route to its template with params', () => {
-    expect(toLinkTarget('/proyectos/hazmefila')).toEqual({
+    expect(toLinkTarget('/proyectos/3cat')).toEqual({
       pathname: '/proyectos/[slug]',
-      params: { slug: 'hazmefila' },
+      params: { slug: '3cat' },
     });
     expect(toLinkTarget('/area-clientes/tareas/7#notas')).toEqual({
       pathname: '/area-clientes/tareas/[id]',

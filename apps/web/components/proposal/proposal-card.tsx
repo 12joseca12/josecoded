@@ -53,7 +53,7 @@ export function ProposalCard({
   return (
     <Surface as="section" aria-labelledby="proposal-card-title" data-pack={proposal.pack.code}>
       <div className={styles.card}>
-        <h2 id="proposal-card-title" className={styles.title}>
+        <h2 id="proposal-card-title" className={styles.title} tabIndex={-1}>
           {labels.title}
         </h2>
         <p className={styles.pack}>{labels.pack}</p>

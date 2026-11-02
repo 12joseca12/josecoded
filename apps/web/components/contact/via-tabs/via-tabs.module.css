@@ -49,8 +49,17 @@
   min-width: 0;
 }
 
-.panel[hidden] {
-  display: none;
+/* With JavaScript only the chosen way shows; without it every panel does (and the dead tabs go). */
+@media not (scripting: none) {
+  .panel[hidden] {
+    display: none;
+  }
+}
+
+@media (scripting: none) {
+  .tabs {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

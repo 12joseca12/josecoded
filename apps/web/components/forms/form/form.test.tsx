@@ -88,4 +88,47 @@ describe('Form and Field', () => {
     });
     expect((await screen.findByRole('status')).textContent).toBe('Done');
   });
+
+  it('keeps what was typed when the action hands the values back (WCAG 3.3.7)', async () => {
+    const action = vi.fn(
+      async (_previous: FormState<Fields>, data: FormData) =>
+        ({ status: 'error', fieldErrors: { email: 'Enter a valid email' }, values: { email: String(data.get('email')), note: String(data.get('note')) } }) as FormState<Fields>,
+    );
+    setup(action);
+    fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'no-email' } });
+    fireEvent.change(screen.getByLabelText('Note'), { target: { value: 'My long message' } });
+    await act(async () => {
+      fireEvent.submit(screen.getByRole('button', { name: 'Send' }).closest('form') as HTMLFormElement);
+    });
+    await screen.findByText('Enter a valid email');
+    expect((screen.getByLabelText('Note') as HTMLTextAreaElement).value).toBe('My long message');
+    expect((screen.getByLabelText('Email') as HTMLInputElement).value).toBe('no-email');
+  });
+
+  it('keeps the live region in the DOM from the start and focuses the message when it fills', async () => {
+    setup(async () => ({ status: 'ok' }));
+    const region = screen.getByRole('status');
+    expect(region.textContent).toBe('');
+    await act(async () => {
+      fireEvent.submit(screen.getByRole('button', { name: 'Send' }).closest('form') as HTMLFormElement);
+    });
+    await waitFor(() => expect(screen.getByRole('status')).toBe(region));
+    await waitFor(() => expect(region.textContent).toBe('Done'));
+    expect(document.activeElement).toBe(region);
+  });
+
+  it('does not disable the button while pending: it stays focusable and aria-disabled, and ignores the click', async () => {
+    let release: () => void = () => undefined;
+    const action = vi.fn(() => new Promise<FormState<Fields>>((resolve) => { release = () => resolve({ status: 'idle' }); }));
+    setup(action);
+    const button = screen.getByRole('button', { name: 'Send' });
+    await act(async () => {
+      fireEvent.submit(button.closest('form') as HTMLFormElement);
+    });
+    await waitFor(() => expect(button.getAttribute('aria-disabled')).toBe('true'));
+    expect(button.hasAttribute('disabled')).toBe(false);
+    expect((screen.getByLabelText('Email') as HTMLInputElement).readOnly).toBe(true);
+    await act(async () => release());
+    await waitFor(() => expect(button.hasAttribute('aria-disabled')).toBe(false));
+  });
 });

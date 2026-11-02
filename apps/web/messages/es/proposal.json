@@ -116,7 +116,9 @@
         "captcha": "No he podido comprobar que no eres un robot. Inténtalo de nuevo.",
         "expired": "La propuesta ha caducado. Empieza de nuevo para generar otra.",
         "down": "No he podido enviarla ahora mismo."
-      }
+      },
+      "privacy": "Uso tus datos solo para responderte. Base legal: tu consentimiento al enviar. No los cedo a terceros, salvo a los proveedores que alojan este servicio, y los conservo mientras dure la conversación. Puedes acceder a ellos, corregirlos o borrarlos cuando quieras.",
+      "privacyLink": "Política de privacidad"
     }
   }
 }

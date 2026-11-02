@@ -1,6 +1,6 @@
 import styles from './error-page.module.css';
 
-import type { ReactNode } from 'react';
+import type { ReactNode, Ref } from 'react';
 
 /**
  * The page for an error (404, 500): the code above the title, a sentence that says what happened and what
@@ -17,6 +17,7 @@ export function ErrorPage({
   actions,
   linksLabel,
   links,
+  headingRef,
 }: {
   code: string;
   title: string;
@@ -24,11 +25,15 @@ export function ErrorPage({
   actions: ReactNode;
   linksLabel?: string;
   links?: ReactNode;
+  /** For a boundary that replaces the page: it moves focus to the title when it appears. */
+  headingRef?: Ref<HTMLHeadingElement>;
 }) {
   return (
     <div className={styles.page}>
       <p className={styles.code}>{code}</p>
-      <h1 className={styles.title}>{title}</h1>
+      <h1 ref={headingRef} className={styles.title} tabIndex={headingRef ? -1 : undefined}>
+        {title}
+      </h1>
       <p className={styles.text}>{text}</p>
       <div className={styles.actions}>{actions}</div>
       {links ? (

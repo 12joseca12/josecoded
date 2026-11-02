@@ -24,7 +24,7 @@ beforeEach(() => {
 
 describe('NavLinks', () => {
   it('marks the page with aria-current and a page inside a section with true', async () => {
-    route.pathname = '/proyectos/hazmefila';
+    route.pathname = '/proyectos/3cat';
     const { container } = renderHeaderIntl(<NavLinks items={items} label="Principal" />);
     expect(screen.getByRole('link', { name: 'Proyectos' }).getAttribute('aria-current')).toBe('true');
     expect(screen.getByRole('link', { name: 'Lab' }).getAttribute('aria-current')).toBeNull();

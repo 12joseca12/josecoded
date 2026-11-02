@@ -5,7 +5,7 @@ import { affiliateValidateQuerySchema, AFFILIATE_CODE_DB_RE, leadRequestSchema }
 import { enforceNativeLimit, nativeRateLimit } from '../middlewares/native-rate-limit.middleware';
 import { submitLead } from '../services/leads.service';
 import { ok } from '../utils/api-response';
-import { secretsEqual } from '../utils/crypto';
+import { normalizeIp, secretsEqual } from '../utils/crypto';
 import { HttpError, logEvent } from '../utils/http-error';
 import { clientIp, clientRateKey, parseWith, readJson } from '../utils/request';
 
@@ -18,6 +18,15 @@ const TURNSTILE_ACTIONS = ['contact', 'proposal_send', 'partner'] as const;
 
 export const leadsRoutes = new Hono<AppEnv>();
 export const affiliatesRoutes = new Hono<AppEnv>();
+
+/** Header apps/web sets with the visitor's IP. Believed only on a request that proved the server key. */
+export const CLIENT_IP_HEADER = 'x-josecoded-client-ip';
+
+/** The visitor's IP as the web saw it, if the header holds something shaped like one (never trusted without the server key). */
+function forwardedClientIp(c: Context<AppEnv>): string | undefined {
+  const value = c.req.header(CLIENT_IP_HEADER)?.trim();
+  return value && /^[0-9a-f:.]{3,45}$/i.test(value) ? value : undefined;
+}
 
 /** The caller's session, if any. A bad or unreachable session never blocks a lead: it is just not linked. */
 async function optionalUserId(c: Context<AppEnv>): Promise<string | undefined> {
@@ -34,7 +43,7 @@ async function optionalUserId(c: Context<AppEnv>): Promise<string | undefined> {
 
 /**
  * POST /api/v1/leads. Auth: `x-josecoded-server-key` (Cal.com webhook through apps/web; no rate limit, no Turnstile)
- * or a Turnstile token (`contact`, `proposal_send`, `partner`) plus LEADS_RATE_LIMITER 5/min per IP. A server key that
+ * (with `x-josecoded-client-ip`, the visitor is rate limited by that IP: 5/min) or a Turnstile token (`contact`, `proposal_send`, `partner`) plus LEADS_RATE_LIMITER 5/min per IP. A server key that
  * is present but wrong is a 403, never a fallback to Turnstile. Body up to 16 KiB, idempotent by `idempotencyKey`.
  */
 leadsRoutes.post('/', async (c) => {
@@ -47,6 +56,10 @@ leadsRoutes.post('/', async (c) => {
     const expected = c.env.SERVER_KEY;
     if (!expected || !(await secretsEqual(presented, expected))) throw new HttpError(403, 'forbidden', 'Invalid server key');
     serverAuthenticated = true;
+    // apps/web posts on behalf of the visitor: limit by the IP it forwards, not by the web Worker's. Calls with no
+    // header (the Cal.com webhook) keep no limit. The header means nothing on any other request.
+    const visitor = forwardedClientIp(c);
+    if (visitor) await enforceNativeLimit(c.env.LEADS_RATE_LIMITER, `leads:${normalizeIp(visitor)}`);
   } else {
     await enforceNativeLimit(c.env.LEADS_RATE_LIMITER, `leads:${clientRateKey(c)}`);
   }

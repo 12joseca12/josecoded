@@ -1,6 +1,6 @@
 'use client';
 
-import { useReducer, useRef, useState } from 'react';
+import { useEffect, useReducer, useRef, useState } from 'react';
 
 import { Field } from '@/components/forms/field';
 import { Turnstile } from '@/components/forms/turnstile';
@@ -18,7 +18,7 @@ import type { ProposalCardLabels } from './proposal-card';
 import type { SendFormLabels } from './send-form';
 import type { NeedChip, SalesMode, Timeline } from '@/lib/proposal/machine';
 import type { Href, Locale, ProposalResponse } from '@josecoded/types';
-import type { FormEvent } from 'react';
+import type { FormEvent, RefObject } from 'react';
 
 export interface GuidedChatLabels {
   progress: string;
@@ -53,7 +53,9 @@ const fill = (template: string, values: Record<string, string | number>) =>
  * classifier and `?q=` fills the free business field. The Turnstile token is read from the check form
  * at the moment of asking (a token works once, so the widget is remounted after each attempt).
  *
- * A11y: the thread is a polite live region (`role="log"`); each new step takes focus on its question;
+ * A11y: the thread is a `role="log"` (implicitly polite); each new step takes focus on its question
+ * (`tabIndex=-1`), the proposal card on its title and the send form on its heading; the last option
+ * stays `aria-disabled` until the anti-bot check has a token;
  * chips are real buttons, needs are real checkboxes; errors are `role="alert"`; «Pregunta 2 de 4» is
  * visible text.
  */
@@ -87,9 +89,25 @@ export function GuidedChat({
   const [sending, setSending] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const verify = useRef<HTMLFormElement>(null);
-  const question = useRef<HTMLParagraphElement>(null);
+  const question = useRef<HTMLElement>(null);
+  const arrived = useRef(false);
+  const [ready, setReady] = useState(false);
 
   const { current, total } = progress(state);
+
+  // Focus follows the conversation: the question of each new step, the card when the proposal arrives, the send form when it opens.
+  useEffect(() => {
+    if (!arrived.current) {
+      arrived.current = true; // the first render is the page load: do not steal focus
+      return;
+    }
+    if (state.step === 'proposal') document.getElementById('proposal-card-title')?.focus();
+    else question.current?.focus();
+  }, [state.step]);
+
+  useEffect(() => {
+    if (sending) document.getElementById('send-title')?.focus();
+  }, [sending]);
 
   async function ask(next: ReturnType<typeof initial>) {
     const payload = toPayload(next, labelOf);
@@ -108,6 +126,7 @@ export function GuidedChat({
       preselectedPack: preselectedPackOf(next.preselectedPack),
     });
     setAttempt((value) => value + 1);
+    setReady(false);
     if (result.status === 'ok') {
       track('proposal_generated', { pack: result.proposal.pack.code, questions: result.proposal.questions.length, source: result.proposal.source });
       setProposal(result.proposal);
@@ -119,6 +138,11 @@ export function GuidedChat({
   }
 
   function answerTimeline(value: Timeline) {
+    if (!ready) {
+      setError('captcha'); // the option is aria-disabled until the check passes: say why nothing happened
+      return;
+    }
+    setError(null);
     const next = reduce(state, { type: 'answer', step: 'timeline', value }, labelOf);
     dispatch({ type: 'answer', step: 'timeline', value });
     void ask(next);
@@ -189,7 +213,7 @@ export function GuidedChat({
 
   return (
     <div className={styles.chat}>
-      <div role="log" aria-label={labels.chatLabel} aria-live="polite" className={styles.thread}>
+      <div role="log" aria-label={labels.chatLabel} className={styles.thread}>
         {thread.map((line) => (
           <ChatBubble key={line.id} from={line.from} text={line.text} />
         ))}
@@ -200,7 +224,7 @@ export function GuidedChat({
           <p className={styles.progress}>{fill(labels.progress, { current, total })}</p>
           {state.step === 'business' ? (
             <form onSubmit={submitBusiness} className={styles.form}>
-              <p ref={question} className={styles.question} tabIndex={-1}>
+              <p ref={question as RefObject<HTMLParagraphElement>} className={styles.question} tabIndex={-1}>
                 {labels.business.question}
               </p>
               <div className={styles.chips}>
@@ -219,7 +243,9 @@ export function GuidedChat({
           {state.step === 'needs' ? (
             <form onSubmit={submitNeeds} className={styles.form}>
               <fieldset className={styles.needs}>
-                <legend className={styles.question}>{labels.needs.question}</legend>
+                <legend ref={question as RefObject<HTMLLegendElement>} className={styles.question} tabIndex={-1}>
+                  {labels.needs.question}
+                </legend>
                 <p className={styles.help}>{labels.needs.legend}</p>
                 {NEED_CHIPS.map((chip) => (
                   <Field key={chip} kind="checkbox" name="chip" value={chip} label={labels.needs.chips[chip]} />
@@ -236,7 +262,9 @@ export function GuidedChat({
           ) : null}
           {state.step === 'sales' ? (
             <div className={styles.form}>
-              <p className={styles.question}>{labels.sales.question}</p>
+              <p ref={question as RefObject<HTMLParagraphElement>} className={styles.question} tabIndex={-1}>
+                {labels.sales.question}
+              </p>
               <div className={styles.chips}>
                 {salesOptions.map(([id, text]) => (
                   <Button key={id} variant="ghost" onClick={() => dispatch({ type: 'answer', step: 'sales', value: id })}>
@@ -253,10 +281,12 @@ export function GuidedChat({
           ) : null}
           {state.step === 'timeline' ? (
             <div className={styles.form}>
-              <p className={styles.question}>{labels.timeline.question}</p>
+              <p ref={question as RefObject<HTMLParagraphElement>} className={styles.question} tabIndex={-1}>
+                {labels.timeline.question}
+              </p>
               <div className={styles.chips}>
                 {timelineOptions.map(([id, text]) => (
-                  <Button key={id} variant="ghost" onClick={() => answerTimeline(id)}>
+                  <Button key={id} variant="ghost" aria-disabled={!ready || undefined} onClick={() => answerTimeline(id)}>
                     {text}
                   </Button>
                 ))}
@@ -287,8 +317,10 @@ export function GuidedChat({
         </p>
       ) : null}
 
-      <form ref={verify} className={styles.verify} aria-label={labels.verify}>
-        <Turnstile key={attempt} siteKey={siteKey} action="proposal" locale={locale} />
+      {/* a plain form (no name, so no landmark): it only holds the widget's token input */}
+      <form ref={verify} className={styles.verify}>
+        {!ready && state.step === 'timeline' ? <p className={styles.help}>{labels.verify}</p> : null}
+        <Turnstile key={attempt} siteKey={siteKey} action="proposal" locale={locale} onToken={(token) => setReady(token !== null)} />
       </form>
     </div>
   );

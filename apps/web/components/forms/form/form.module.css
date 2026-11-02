@@ -22,7 +22,7 @@
   font-size: var(--font-label-size);
 }
 
-.success {
+.status:not(:empty) {
   margin: 0;
   padding: var(--sp-3) var(--sp-4);
   border-radius: var(--r-md);
@@ -30,4 +30,13 @@
   box-shadow: inset var(--stroke-line) 0 0 var(--green);
   color: var(--text);
   font-size: var(--font-label-size);
+}
+
+/* Empty, the live region is out of the layout (no grid gap) but still in the DOM and the a11y tree. */
+.status:empty {
+  position: absolute;
+  inline-size: var(--size-visually-hidden);
+  block-size: var(--size-visually-hidden);
+  overflow: hidden;
+  clip-path: inset(50%);
 }

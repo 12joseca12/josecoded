@@ -45,6 +45,7 @@ describe('submitContact', () => {
         idempotencyKey: 'b7a1e0a0-3b0d-4b1c-9d3e-1c2d3e4f5a6b',
         contact: { name: 'Marta', email: 'marta@example.com' },
       }),
+      { clientIp: '203.0.113.9' },
     );
   });
 
@@ -61,26 +62,33 @@ describe('submitContact', () => {
     expect(mocks.verify).toHaveBeenCalledWith('tok', { ip: '203.0.113.9', action: 'partner' });
     expect(mocks.postLead).toHaveBeenCalledWith(
       expect.objectContaining({ source: 'partner_form', contact: expect.objectContaining({ company: 'Agencia X' }) }),
+      { clientIp: '203.0.113.9' },
     );
   });
 
   it('answers field errors without calling the gateway', async () => {
     const answer = await submitContact({ status: 'idle' }, form({ email: 'no', name: '' }));
-    expect(answer).toEqual({ status: 'error', fieldErrors: { name: 'contact.errors.name', email: 'contact.errors.email' } });
+    expect(answer).toEqual({
+      status: 'error',
+      fieldErrors: { name: 'contact.errors.name', email: 'contact.errors.email' },
+      // what was typed comes back (3.3.7), the token never does
+      values: { name: '', email: 'no', company: '', message: 'Una web' },
+    });
+    expect(JSON.stringify(answer)).not.toContain('tok');
     expect(mocks.postLead).not.toHaveBeenCalled();
   });
 
   it('refuses a token that does not verify and never reaches the gateway', async () => {
     mocks.verify.mockResolvedValue(false);
     const answer = await submitContact({ status: 'idle' }, form({}));
-    expect(answer).toEqual({ status: 'error', formError: 'contact.errors.captcha' });
+    expect(answer).toEqual(expect.objectContaining({ status: 'error', formError: 'contact.errors.captcha' }));
     expect(mocks.postLead).not.toHaveBeenCalled();
   });
 
   it('offers the fallback when the gateway is down, and a plain error when it rejects the data', async () => {
     mocks.postLead.mockResolvedValue({ status: 'down' });
-    expect(await submitContact({ status: 'idle' }, form({}))).toEqual({ status: 'error', formError: 'contact.errors.down', fallback: true });
+    expect(await submitContact({ status: 'idle' }, form({}))).toEqual(expect.objectContaining({ status: 'error', formError: 'contact.errors.down', fallback: true }));
     mocks.postLead.mockResolvedValue({ status: 'invalid' });
-    expect(await submitContact({ status: 'idle' }, form({}))).toEqual({ status: 'error', formError: 'contact.errors.generic' });
+    expect(await submitContact({ status: 'idle' }, form({}))).toEqual(expect.objectContaining({ status: 'error', formError: 'contact.errors.generic' }));
   });
 });

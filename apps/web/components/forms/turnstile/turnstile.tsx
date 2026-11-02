@@ -16,6 +16,9 @@ interface TurnstileApi {
       size: 'flexible';
       language: string;
       appearance: 'always' | 'interaction-only';
+      callback?: (token: string) => void;
+      'expired-callback'?: () => void;
+      'error-callback'?: () => void;
     },
   ) => string;
   reset: (widgetId: string) => void;
@@ -60,15 +63,22 @@ export function Turnstile({
   siteKey,
   action,
   locale,
+  onToken,
 }: {
   siteKey: string;
   action: string;
   locale: string;
+  /** Called with the token when the check passes and with `null` when it expires or fails. */
+  onToken?: (token: string | null) => void;
 }) {
   const form = useFormContext();
   const state = form?.state;
   const container = useRef<HTMLDivElement>(null);
   const widget = useRef<{ api: TurnstileApi; id: string } | null>(null);
+  const notify = useRef(onToken);
+  useEffect(() => {
+    notify.current = onToken;
+  });
 
   useEffect(() => {
     let cancelled = false;
@@ -84,6 +94,9 @@ export function Turnstile({
           size: 'flexible',
           language: locale,
           appearance: 'always',
+          callback: (token) => notify.current?.(token),
+          'expired-callback': () => notify.current?.(null),
+          'error-callback': () => notify.current?.(null),
         });
         widget.current = { api, id };
       })

@@ -4,7 +4,11 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   resolve: {
-    alias: { '@': fileURLToPath(new URL('.', import.meta.url)) },
+    alias: {
+      '@': fileURLToPath(new URL('.', import.meta.url)),
+      // Next resolves `server-only` itself at build time; in Vitest it is an empty module
+      'server-only': fileURLToPath(new URL('./tests/helpers/server-only.ts', import.meta.url)),
+    },
   },
   test: {
     environment: 'happy-dom',

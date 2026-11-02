@@ -1,11 +1,12 @@
-import { envClientSchema, envServerSchema } from '@josecoded/types';
+import { envClientSchema } from '@josecoded/types';
 
-import type { EnvClient, EnvServer } from '@josecoded/types';
+import type { EnvClient } from '@josecoded/types';
 import type { z } from 'zod';
 
-// The schemas live in @josecoded/types (schemas/env.ts); this file only runs them.
+// The schemas live in @josecoded/types (schemas/env.ts); this file only runs them. Server secrets are in
+// `env.server.ts` (`server-only`), so their names never reach a client bundle.
 
-function parse<T extends z.ZodType>(schema: T, source: Record<string, unknown>, label: string) {
+export function parse<T extends z.ZodType>(schema: T, source: Record<string, unknown>, label: string) {
   // an empty variable (`FOO=` in a .env file) counts as unset
   const cleaned = Object.fromEntries(
     Object.entries(source).map(([key, value]) => [key, value === '' ? undefined : value]),
@@ -40,18 +41,4 @@ const client: EnvClient = parse(
   'public',
 );
 
-export const env = {
-  client,
-  /** Server secrets are read on first access, so importing this module in a client bundle is safe. */
-  get server(): EnvServer {
-    return parse(
-      envServerSchema,
-      {
-        TURNSTILE_SECRET_KEY: process.env.TURNSTILE_SECRET_KEY,
-        SERVER_KEY: process.env.SERVER_KEY,
-        CALCOM_WEBHOOK_SECRET: process.env.CALCOM_WEBHOOK_SECRET,
-      },
-      'server',
-    );
-  },
-};
+export const env = { client };

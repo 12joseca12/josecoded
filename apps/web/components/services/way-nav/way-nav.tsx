@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
+import { useStickyOffset } from '@/lib/layout/sticky-offset';
 import { observeActiveSection } from '@/lib/motion/active-section';
 
 import styles from './way-nav.module.css';
@@ -21,11 +22,14 @@ export interface WayLink {
  */
 export function WayNav({ label, ways }: { label: string; ways: readonly WayLink[] }) {
   const [current, setCurrent] = useState<string | null>(null);
+  const nav = useRef<HTMLElement>(null);
+  // anchors and focus land below the header and this bar (scroll-padding-block-start)
+  useStickyOffset(nav, 'top');
 
   useEffect(() => observeActiveSection(ways.map((way) => way.id), setCurrent), [ways]);
 
   return (
-    <nav aria-label={label} className={styles.nav}>
+    <nav ref={nav} aria-label={label} className={styles.nav}>
       <ul className={styles.list}>
         {ways.map((way) => (
           <li key={way.id}>

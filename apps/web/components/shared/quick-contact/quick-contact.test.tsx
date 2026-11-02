@@ -41,7 +41,7 @@ describe('QuickContact', () => {
     fireEvent.click(screen.getByRole('link', { name: labels.whatsapp }));
     expect(trackSpy).toHaveBeenCalledWith('quick_contact', { channel: 'whatsapp', page: 'partners' });
 
-    fireEvent.click(screen.getByRole('button', { name: labels.copy }));
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(labels.copy) }));
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith('freelance@josecoded.com');
     expect(trackSpy).toHaveBeenCalledWith('quick_contact', { channel: 'email', page: 'partners' });
     await waitFor(() => expect(screen.getByRole('status').textContent).toBe('Copiado'));

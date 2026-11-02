@@ -183,7 +183,7 @@ describe('translated English slugs (pathnames)', () => {
     });
 
     it.each([
-      ['/en/projects/hazmefila', '/en/proyectos/:path+'],
+      ['/en/projects/3cat', '/en/proyectos/:path+'],
       ['/en/client-area/tasks/7', '/en/area-clientes/tareas/:path+'],
     ])('%s rewrites to %s', (path, destination) => {
       expect(rewrites.find((rule) => match(rule.source)(path) !== false)?.destination).toBe(
@@ -196,7 +196,7 @@ describe('translated English slugs (pathnames)', () => {
     });
 
     it('redirects the untranslated English child to the translated one', () => {
-      const rule = redirects.find((r) => match(r.source)('/en/proyectos/hazmefila') !== false);
+      const rule = redirects.find((r) => match(r.source)('/en/proyectos/3cat') !== false);
       expect(rule).toMatchObject({ destination: '/en/projects/:path+', permanent: true });
     });
   });

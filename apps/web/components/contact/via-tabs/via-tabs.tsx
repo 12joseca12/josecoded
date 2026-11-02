@@ -35,11 +35,17 @@ function readHint(): string {
  * from `?via=`, then from the audience the visitor's session remembers, then `client`. Every panel's
  * text stays in the HTML; only the chosen one is shown, and only its `live` part (the form) is mounted.
  *
- * A11y: tablist with arrow keys, Home and End and one tab stop; each tab controls its own tabpanel;
- * hidden panels use `hidden`, so they leave the reading order.
+ * Manual activation (APG): arrows, Home and End only move focus; Enter or Space picks
+ * the way, so a screen reader or keyboard user does not mount a form and a widget at every arrow. A form the
+ * visitor has started typing in stays mounted when they look at another way. Without JavaScript the tabs
+ * are hidden and every panel is visible (`@media (scripting: none)`).
+ *
+ * A11y: tablist with one tab stop; each tab controls its own tabpanel; hidden panels use `hidden`, so they
+ * leave the reading order.
  */
 export function ViaTabs({ label, vias }: { label: string; vias: readonly Via[] }) {
   const [picked, setPicked] = useState<ContactVia | null>(null);
+  const [touched, setTouched] = useState<ReadonlySet<ContactVia>>(new Set());
   const hint = useSyncExternalStore(subscribeNothing, readHint, () => '|');
   const [search = '', remembered = ''] = hint.split('|');
   const initial = resolveVia(search, remembered || null);
@@ -57,7 +63,6 @@ export function ViaTabs({ label, vias }: { label: string; vias: readonly Via[] }
     const next = vias[to];
     if (!next) return;
     event.preventDefault();
-    setPicked(next.id);
     document.getElementById(`${uid}-tab-${next.id}`)?.focus();
   }
 
@@ -89,9 +94,10 @@ export function ViaTabs({ label, vias }: { label: string; vias: readonly Via[] }
           aria-labelledby={`${uid}-tab-${via.id}`}
           hidden={via.id !== selected}
           className={styles.panel}
+          onInput={() => setTouched((current) => (current.has(via.id) ? current : new Set(current).add(via.id)))}
         >
           {via.panel}
-          {via.id === selected ? via.live : null}
+          {via.id === selected || touched.has(via.id) ? via.live : null}
         </div>
       ))}
     </div>

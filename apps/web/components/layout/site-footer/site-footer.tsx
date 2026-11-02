@@ -1,8 +1,9 @@
-import { getFormatter, getTranslations } from 'next-intl/server';
+import { getFormatter, getLocale, getTranslations } from 'next-intl/server';
 
 import { Action } from '@/components/ui/action';
 import { getBuildInfo } from '@/lib/content/build-info';
 import { getNavItems } from '@/lib/layout/nav';
+import { isLegalPublishable } from '@/lib/legal/publishable';
 
 import styles from './site-footer.module.css';
 
@@ -17,6 +18,7 @@ import type { Href } from '@josecoded/types';
  * bg 6.0:1, hover text 16.9:1.
  */
 export async function SiteFooter() {
+  const locale = await getLocale();
   const [t, nav, format] = await Promise.all([
     getTranslations('footer'),
     getTranslations('nav'),
@@ -30,7 +32,7 @@ export async function SiteFooter() {
     { href: '/partners', label: nav('partners') },
     { href: '/contacto', label: nav('contact') },
     { href: '/area-clientes', label: t('clientArea') },
-    { href: '/legal/aviso-legal', label: t('legal') },
+    ...(isLegalPublishable('aviso-legal', locale === 'en' ? 'en' : 'es') ? [{ href: '/legal/aviso-legal' as Href, label: t('legal') }] : []),
   ];
 
   return (
