@@ -15,21 +15,28 @@ pnpm dev
 
 ## Comandos
 
-| Comando | Qué hace |
-|---|---|
-| `pnpm dev` | Servidor de desarrollo en el puerto 3000. |
-| `pnpm build` | Compilación de producción. |
-| `pnpm start` | Sirve la compilación de producción. |
+| Comando           | Qué hace                                                                                             |
+| ----------------- | ---------------------------------------------------------------------------------------------------- |
+| `pnpm dev`        | Servidor de desarrollo en el puerto 3000.                                                            |
+| `pnpm build`      | Compilación de producción.                                                                           |
+| `pnpm start`      | Sirve la compilación de producción.                                                                  |
+| `pnpm lint`       | eslint: TypeScript estricto con tipos, orden de imports y cero comentarios.                          |
+| `pnpm lint:css`   | stylelint sobre `src/**/*.css`: solo `var(--token)`, `px` solo en bordes, sombras y desplazamientos. |
+| `pnpm lint:rules` | Prueba que las reglas fallan con los ficheros de `tests/lint/fixtures/`.                             |
+| `pnpm format`     | prettier escribe el formato; `pnpm format:check` solo comprueba.                                     |
+| `pnpm typecheck`  | `tsc --noEmit`.                                                                                      |
 
 ## Estructura
 
-| Ruta | Contenido |
-|---|---|
-| `src/app/` | Rutas del App Router: `layout.tsx` y `page.tsx`. |
-| `docs/` | Brief, arquitectura, decisiones y plan de bloques. |
-| `archivo/` | Material del proyecto anterior (animación de glifos, pantallas y prototipos). Solo referencia: no compila. |
-| `prototipos/` | Prototipos HTML de estilo, servibles con `python3 -m http.server`. Solo referencia. |
-| `.claude/` | Agentes, skills y reglas de trabajo. |
+| Ruta            | Contenido                                                                                                  |
+| --------------- | ---------------------------------------------------------------------------------------------------------- |
+| `src/app/`      | Rutas del App Router: `layout.tsx` y `page.tsx`.                                                           |
+| `tools/eslint/` | Regla local `no-comments`.                                                                                 |
+| `tests/lint/`   | Ficheros de prueba que deben fallar o pasar el lint.                                                       |
+| `docs/`         | Brief, arquitectura, decisiones y plan de bloques.                                                         |
+| `archivo/`      | Material del proyecto anterior (animación de glifos, pantallas y prototipos). Solo referencia: no compila. |
+| `prototipos/`   | Prototipos HTML de estilo, servibles con `python3 -m http.server`. Solo referencia.                        |
+| `.claude/`      | Agentes, skills y reglas de trabajo.                                                                       |
 
 ## Historia
 

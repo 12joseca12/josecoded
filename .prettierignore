@@ -1,0 +1,10 @@
+.next/
+node_modules/
+archivo/
+prototipos/
+docs/
+.claude/
+pnpm-lock.yaml
+tests/lint/fixtures/
+CLAUDE.md
+ESTADO.md

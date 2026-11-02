@@ -1,0 +1,18 @@
+.card {
+  color: var(--ink);
+  background: var(--bg);
+  font-size: var(--text-md);
+  padding: var(--space-4);
+  margin: 0 auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 8px var(--shadow);
+  transform: translateY(4px);
+  max-width: 40rem;
+}
+
+@media (min-width: 40rem) {
+  .card {
+    margin: 0 auto;
+  }
+}
