@@ -44,6 +44,7 @@ describe('FormState (working-agreements §17.3)', () => {
       status: 'idle' | 'ok' | 'error';
       fieldErrors?: Partial<Record<keyof Lead, string>>;
       formError?: string;
+      values?: Partial<Record<keyof Lead, string>>;
     }>();
   });
 });
