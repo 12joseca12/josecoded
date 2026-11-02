@@ -1,0 +1,54 @@
+.page {
+  display: grid;
+  place-items: center;
+  padding: var(--space-7) var(--gutter);
+}
+
+.page[data-layout="page"] {
+  min-height: 100svh;
+}
+
+.card {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  width: min(100%, 30rem);
+  padding: var(--space-6) var(--space-5);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-l);
+  background: var(--glass-strong);
+  box-shadow: var(--shadow-float);
+  text-align: center;
+}
+
+.code {
+  color: var(--coral-text);
+  font-size: calc(var(--fs-h1) * 1.4);
+  font-weight: var(--fw-black);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-display);
+}
+
+.page[data-variant="serverError"] .code {
+  color: var(--error);
+}
+
+.page[data-variant="maintenance"] .code {
+  color: var(--ink-faint);
+}
+
+.text {
+  max-width: 34ch;
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+  line-height: var(--lh-body);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3) var(--space-5);
+  margin-top: var(--space-3);
+}
