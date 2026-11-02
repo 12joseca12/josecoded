@@ -1,15 +1,13 @@
 import { notFound } from "next/navigation";
 
-import { Button } from "@/components/ui/Button/Button";
 import { Heading } from "@/components/ui/Heading/Heading";
-import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
-import { PlayIcon } from "@/components/ui/icons/PlayIcon";
 import { Link } from "@/components/ui/Link/Link";
 import { devPagesEnabled } from "@/config/dev";
 import { isLocale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
-import { buttonVariants, linkVariants } from "@/types/ui";
+import { linkVariants } from "@/types/ui";
 
+import { ButtonsDemo } from "./buttons-demo";
 import styles from "./page.module.css";
 import { StatesDemo } from "./states-demo";
 
@@ -30,32 +28,25 @@ export default async function UiCatalogPage({ params }: { params: Promise<{ loca
         <Heading level={2} size="h4" id="ui-buttons">
           {t("dev.ui.buttons")}
         </Heading>
-        {buttonVariants.map((variant) => {
-          const icon = variant === "ghost" ? <PlayIcon /> : <ArrowIcon />;
-          return (
-            <div key={variant} className={styles.row}>
-              <code className={styles.name}>{variant}</code>
-              <div className={styles.cells}>
-                <Button variant={variant} icon={icon}>
-                  {t("dev.ui.stateDefault")}
-                </Button>
-                <Button variant={variant}>{t("dev.ui.withoutIcon")}</Button>
-                <Button variant={variant} size="sm" icon={icon}>
-                  {t("dev.ui.sizeSmall")}
-                </Button>
-                <Button variant={variant} icon={icon} disabled>
-                  {t("dev.ui.stateDisabled")}
-                </Button>
-                <Button variant={variant} icon={icon} loading loadingLabel={t("dev.ui.loading")}>
-                  {t("dev.ui.stateLoading")}
-                </Button>
-                <Button variant={variant} icon={icon} href="#ui-buttons">
-                  {t("dev.ui.asLink")}
-                </Button>
-              </div>
-            </div>
-          );
-        })}
+        <ButtonsDemo
+          labels={{
+            stateDefault: t("dev.ui.stateDefault"),
+            withoutIcon: t("dev.ui.withoutIcon"),
+            sizeSmall: t("dev.ui.sizeSmall"),
+            stateDisabled: t("dev.ui.stateDisabled"),
+            stateLoading: t("dev.ui.stateLoading"),
+            loading: t("dev.ui.loading"),
+            asLink: t("dev.ui.asLink"),
+            forceHover: t("dev.ui.forceHover"),
+            forcePressed: t("dev.ui.forcePressed"),
+            roles: {
+              primary: t("dev.ui.role_primary"),
+              accent: t("dev.ui.role_accent"),
+              light: t("dev.ui.role_light"),
+              ghost: t("dev.ui.role_ghost"),
+            },
+          }}
+        />
         <p className={styles.note}>{t("dev.ui.interactiveStates")}</p>
       </section>
 
