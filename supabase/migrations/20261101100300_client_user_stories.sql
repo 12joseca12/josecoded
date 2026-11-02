@@ -16,8 +16,8 @@ create table public.client_user_stories (
   so_that             text not null check (btrim(so_that) <> ''),
   acceptance_criteria text[] not null default '{}' check (cardinality(acceptance_criteria) <= 12),
   status              public.story_status not null default 'proposed',
-  estimate_hours      numeric(6, 1) check (estimate_hours >= 0),
-  estimate_amount     numeric(10, 2) check (estimate_amount >= 0),
+  estimate_hours      numeric(6, 1) check (estimate_hours >= 0 and estimate_hours <> 'NaN'),
+  estimate_amount     numeric(10, 2) check (estimate_amount >= 0 and estimate_amount <> 'NaN'),
   estimate_note       text,
   decided_by          uuid references auth.users (id) on delete set null,
   decided_at          timestamptz,
@@ -104,7 +104,7 @@ begin
   if not (private.is_admin() or private.owns_client(s.client_id)) then raise exception 'forbidden' using errcode = '42501'; end if;
   if s.status <> 'proposed' then raise exception 'story_not_proposed' using errcode = '22023'; end if;
   -- an acceptance is a commitment with hours: the estimate is not optional (the amount is), nor is the note an essay
-  if p_estimate_hours is null or p_estimate_hours <= 0 then raise exception 'estimate_required' using errcode = '22023'; end if;
+  if p_estimate_hours is null or p_estimate_hours <= 0 or p_estimate_hours = 'NaN' or p_estimate_amount = 'NaN' then raise exception 'estimate_required' using errcode = '22023'; end if;
   if char_length(coalesce(p_note, '')) > 1000 then raise exception 'note_too_long' using errcode = '22023'; end if;
 
   update public.client_user_stories set estimate_hours = p_estimate_hours, estimate_amount = p_estimate_amount,
@@ -117,7 +117,7 @@ begin
 
   select c.contact_id into v_contact from public.clients c where c.id = s.client_id;
   insert into public.crm_interactions (contact_id, kind, direction, actor, body, payload)
-  values (v_contact, 'story_decided', 'internal', 'jose', s.title, jsonb_build_object('story_id', s.id, 'status', s.status));
+  values (v_contact, 'story_decided', 'internal', private.staff_actor(), s.title, jsonb_build_object('story_id', s.id, 'status', s.status));
   perform private.enqueue('story.decided', jsonb_build_object('story_id', s.id, 'client_id', s.client_id, 'status', s.status));
   return v_task;
 end $$;
@@ -150,7 +150,7 @@ begin
    where id = s.id;
   select c.contact_id into v_contact from public.clients c where c.id = s.client_id;
   insert into public.crm_interactions (contact_id, kind, direction, actor, body, payload)
-  values (v_contact, 'story_decided', 'internal', 'jose', s.title, jsonb_build_object('story_id', s.id, 'status', 'rejected'));
+  values (v_contact, 'story_decided', 'internal', private.staff_actor(), s.title, jsonb_build_object('story_id', s.id, 'status', 'rejected'));
   perform private.enqueue('story.decided', jsonb_build_object('story_id', s.id, 'client_id', s.client_id, 'status', 'rejected'));
 end $$;
 revoke all on function private.reject_user_story_impl(uuid, text) from public, anon, authenticated;

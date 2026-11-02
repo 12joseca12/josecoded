@@ -734,11 +734,16 @@ select t.ok(t.n('select id from public.client_user_stories') = 1 and t.n('select
             and t.err($q$select public.accept_user_story('00000000-0000-4000-8000-000000000e01', 6, 600, null)$q$) = '42501 forbidden'
             and t.err($q$select public.reject_user_story('00000000-0000-4000-8000-000000000e01', 'no')$q$) = '42501 forbidden',
             'carla sees the story of her client, cannot update it directly nor decide the stories of Jose''s clients');
+select t.ok(t.err($q$select public.accept_user_story('00000000-0000-4000-8000-000000000e02', 'NaN', 600, null)$q$) = '22023 estimate_required'
+            and t.err($q$select public.accept_user_story('00000000-0000-4000-8000-000000000e02', 6, 'NaN', null)$q$) = '22023 estimate_required',
+            'NaN hours or amount never pass as an estimate');
 select t.ok(t.val($q$select (public.accept_user_story('00000000-0000-4000-8000-000000000e02', 6, 600, 'ok'))::text is not null$q$) = 'true'
             and t.val($q$select status::text || ':' || estimate_hours::text || ':' || (task_id is not null)::text from public.client_user_stories$q$) = 'converted:6.0:true'
             and t.n($q$select id from public.client_tasks where story_id = '00000000-0000-4000-8000-000000000e02'$q$) = 1
             and t.val($q$select description like 'Como dueño quiero reservar para no perder citas%Formulario%' from public.client_tasks where story_id is not null$q$) = 'true',
             'carla accepts with 6 h: a task «Como … quiero … para …» with the criteria and the story converted');
+select t.ok(t.val($q$select string_agg(actor::text, ',') from public.crm_interactions where kind = 'story_decided'$q$) = 'closer',
+            'a closer''s decision is logged as closer, never as Jose');
 select t.ok(t.err($q$select public.accept_user_story('00000000-0000-4000-8000-000000000e02', 1, 1, null)$q$) = '22023 story_not_proposed'
             and t.err($q$select public.convert_user_story('00000000-0000-4000-8000-000000000e02')$q$) = '22023 story_not_accepted',
             'a decided story cannot be decided or converted again');
