@@ -13,11 +13,6 @@
   justify-items: center;
   gap: var(--space-3);
   width: min(100%, 30rem);
-  padding: var(--space-6) var(--space-5);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-l);
-  background: var(--glass-strong);
-  box-shadow: var(--shadow-float);
   text-align: center;
 }
 

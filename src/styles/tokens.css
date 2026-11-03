@@ -52,10 +52,10 @@
   --dur-slow: 420ms;
   --shadow-soft: 0 12px 30px -18px rgb(23 25 28 / 0.38);
   --shadow-float: 0 24px 50px -20px rgb(23 25 28 / 0.4);
-  --shadow-lift: 0 10px 22px -14px rgb(23 25 28 / 0.45);
-  --lift: -1px;
+  --shadow-card: 0 1px 2px rgb(23 25 28 / 0.06), 0 6px 14px -8px rgb(23 25 28 / 0.16);
   --nudge: 0.22em;
   --ring: 0.25rem;
+  --ring-press: 0.375rem;
   --ring-coral: rgb(255 75 50 / 0.4);
   --ring-charcoal: rgb(23 25 28 / 0.28);
   --z-behind: -1;
@@ -86,6 +86,7 @@
   --lh-body: 1.5;
   --radius-xs: 0.375rem;
   --dur-reduced: 0.01ms;
+  --dur-bubble: 450ms;
   --z-raised: 1;
   --z-header: 40;
   --z-toast: 50;

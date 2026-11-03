@@ -37,6 +37,12 @@
   font-size: var(--fs-base);
 }
 
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: var(--space-5);
+}
+
 .grow {
   flex: 1;
   min-width: 12rem;
