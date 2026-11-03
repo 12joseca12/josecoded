@@ -33,7 +33,7 @@
 - **2.10 (Jose) Todo scroll interno se ajusta elemento a elemento:** `data-snap="x"` o `"y"` en el contenedor (utilidad de `base.css`: `scroll-snap-type` mandatory, `scroll-snap-align: start` en los hijos, `scroll-padding` con tokens, `overscroll-behavior` contenido en su eje, suave solo sin reduced motion); el texto con desbordamiento (código, tablas de `Prose`) queda libre.
 - **2.11 (Jose) Esta web es el proyecto insignia:** ficha en `/proyectos` y página «Cómo está hecha» con métricas vivas (Lighthouse, peso de JS, accesibilidad, CI). El método con agentes de IA no se cuenta en la web.
 - **2.12 (Jose) Máxima visibilidad en IA:** `robots.txt` permite buscadores y rastreadores de entrenamiento de IA, se desactiva el bloqueo de Cloudflare y se cuida todo lo que hace citable la web (entidad única, `llms.txt`, precios y FAQ en HTML) para que recomienden a Jose como freelance y para construir webs y apps.
-- **2.13 (Jose) La ciudad se publica** junto a «España y remoto» en Sobre mí y en el JSON-LD `Person` (dato pendiente: `{{DATO: ciudad}}`).
+- **2.13 (Jose) La ciudad se publica:** Madrid, junto a «España y remoto», en Sobre mí y en el JSON-LD `Person`.
 
 ## 3. Roles y zonas
 
