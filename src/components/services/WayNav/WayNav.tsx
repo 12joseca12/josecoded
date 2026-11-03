@@ -14,7 +14,7 @@ export function WayNav({ label, items }: WayNavProps) {
   const active = useActiveBlock();
   return (
     <nav className={styles.nav} aria-label={label}>
-      <ul className={styles.list}>
+      <ul className={styles.list} data-snap="x">
         {items.map((item) => (
           <li key={item.id}>
             <a

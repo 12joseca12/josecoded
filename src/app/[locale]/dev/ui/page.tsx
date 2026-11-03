@@ -1,17 +1,24 @@
 import { notFound } from "next/navigation";
 
+import { Card } from "@/components/ui/Card/Card";
 import { Heading } from "@/components/ui/Heading/Heading";
 import { Link } from "@/components/ui/Link/Link";
 import { devPagesEnabled } from "@/config/dev";
 import { isLocale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
-import { linkVariants } from "@/types/ui";
+import { cardTones, linkVariants } from "@/types/ui";
 
 import { ButtonsDemo } from "./buttons-demo";
 import styles from "./page.module.css";
 import { StatesDemo } from "./states-demo";
 
 export const dynamic = "force-dynamic";
+
+const cardToneLabels = {
+  panel: "dev.ui.cardPanel",
+  glass: "dev.ui.cardGlass",
+  error: "dev.ui.cardError",
+} as const;
 
 export default async function UiCatalogPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -48,6 +55,22 @@ export default async function UiCatalogPage({ params }: { params: Promise<{ loca
           }}
         />
         <p className={styles.note}>{t("dev.ui.interactiveStates")}</p>
+      </section>
+
+      <section className={styles.section} aria-labelledby="ui-cards">
+        <Heading level={2} size="h4" id="ui-cards">
+          {t("dev.ui.cards")}
+        </Heading>
+        <p className={styles.note}>{t("dev.ui.cardText")}</p>
+        <div className={styles.cardGrid}>
+          {cardTones.map((tone) => (
+            <Card key={tone} tone={tone}>
+              <Heading level={3} size="h4">
+                {t(cardToneLabels[tone])}
+              </Heading>
+            </Card>
+          ))}
+        </div>
       </section>
 
       <section className={styles.section} aria-labelledby="ui-links">

@@ -7,6 +7,7 @@ import { errorCodes, type ErrorCopy, type ErrorVariant } from "@/types/errors";
 import type { HeadingLevel } from "@/types/ui";
 
 import { Button } from "../Button/Button";
+import { Card } from "../Card/Card";
 import { Heading } from "../Heading/Heading";
 import { Link } from "../Link/Link";
 import styles from "./ErrorPage.module.css";
@@ -45,7 +46,7 @@ export function ErrorPage({
 
   return (
     <section ref={root} className={styles.page} data-variant={variant} data-layout={layout}>
-      <div className={styles.card}>
+      <Card tone="glass" size="lg" elevation="float" className={styles.card}>
         <p className={styles.code} aria-hidden="true">
           {errorCodes[variant]}
         </p>
@@ -74,7 +75,7 @@ export function ErrorPage({
             </>
           ) : null}
         </div>
-      </div>
+      </Card>
     </section>
   );
 }

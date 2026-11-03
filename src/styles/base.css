@@ -112,3 +112,25 @@ svg {
     transition-duration: var(--dur-reduced);
   }
 }
+
+[data-snap="x"] {
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+  overscroll-behavior-x: contain;
+}
+
+[data-snap="y"] {
+  scroll-snap-type: y mandatory;
+  scroll-padding-block: var(--space-4);
+  overscroll-behavior-y: contain;
+}
+
+[data-snap] > * {
+  scroll-snap-align: start;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-snap] {
+    scroll-behavior: smooth;
+  }
+}

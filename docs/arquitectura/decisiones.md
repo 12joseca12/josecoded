@@ -30,6 +30,7 @@
 - **2.7 Blog sin comentarios en el lanzamiento** (moderación y spam). Se revisa con el blog vivo.
 - **2.8 La vía «contratación» publica solo CV y chat;** la disponibilidad (plantilla, remoto, ciudad) la responde el asistente, no la página.
 - **2.9 Contacto por email y chat en el lanzamiento;** WhatsApp y Cal.com se añaden cuando Jose dé los datos (`{{DATO}}`), sin cambiar la pantalla.
+- **2.10 (Jose) Todo scroll interno se ajusta elemento a elemento:** `data-snap="x"` o `"y"` en el contenedor (utilidad de `base.css`: `scroll-snap-type` mandatory, `scroll-snap-align: start` en los hijos, `scroll-padding` con tokens, `overscroll-behavior` contenido en su eje, suave solo sin reduced motion); el texto con desbordamiento (código, tablas de `Prose`) queda libre.
 
 ## 3. Roles y zonas
 
