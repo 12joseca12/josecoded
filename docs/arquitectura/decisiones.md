@@ -22,7 +22,7 @@
 ## 2. Página
 
 - **2.1 Mapa público:** `/` · `/sobre-mi` (stack como sección `#stack`) · `/proyectos` y `/proyectos/[slug]` · `/servicios` · `/blog` y `/blog/[slug]` · `/contacto` · `/chat` · `/legal/*` · `/lab` reservada.
-- **2.2 Packs dentro de `/servicios#packs`** con comparador.
+- **2.2 (Jose, 2026-11-03; sustituye a «packs dentro de `/servicios#packs`») Servicios en tres páginas indexables:** `/servicios` como hub y `/servicios/freelance` y `/servicios/packs` (con comparador) como hijas, cada una con su búsqueda principal, H1, precios «desde» y FAQ (`seo.md`).
 - **2.3 Español publicado, inglés preparado:** textos solo en `messages/es.json` (y `en.json` cuando llegue), rutas con segmento de idioma.
 - **2.4 Sin redirecciones.** Comprobado el 2026-11-02: nada indexado en `josecoded.com` y el dominio responde 521 (origen caído). Se apunta al nuevo Worker en el primer despliegue.
 - **2.5 SEO básico en el lanzamiento** (metadatos, sitemap, robots, Open Graph, JSON-LD `Person`, `llms.txt`); guías y FAQ con schema según crezca el blog; Search Console y Semrush cuando haya qué medir.
@@ -31,6 +31,9 @@
 - **2.8 La vía «contratación» publica solo CV y chat;** la disponibilidad (plantilla, remoto, ciudad) la responde el asistente, no la página.
 - **2.9 Contacto por email y chat en el lanzamiento;** WhatsApp y Cal.com se añaden cuando Jose dé los datos (`{{DATO}}`), sin cambiar la pantalla.
 - **2.10 (Jose) Todo scroll interno se ajusta elemento a elemento:** `data-snap="x"` o `"y"` en el contenedor (utilidad de `base.css`: `scroll-snap-type` mandatory, `scroll-snap-align: start` en los hijos, `scroll-padding` con tokens, `overscroll-behavior` contenido en su eje, suave solo sin reduced motion); el texto con desbordamiento (código, tablas de `Prose`) queda libre.
+- **2.11 (Jose) Esta web es el proyecto insignia:** ficha en `/proyectos` y página «Cómo está hecha» con métricas vivas (Lighthouse, peso de JS, accesibilidad, CI). El método con agentes de IA no se cuenta en la web.
+- **2.12 (Jose) Máxima visibilidad en IA:** `robots.txt` permite buscadores y rastreadores de entrenamiento de IA, se desactiva el bloqueo de Cloudflare y se cuida todo lo que hace citable la web (entidad única, `llms.txt`, precios y FAQ en HTML) para que recomienden a Jose como freelance y para construir webs y apps.
+- **2.13 (Jose) La ciudad se publica** junto a «España y remoto» en Sobre mí y en el JSON-LD `Person` (dato pendiente: `{{DATO: ciudad}}`).
 
 ## 3. Roles y zonas
 
