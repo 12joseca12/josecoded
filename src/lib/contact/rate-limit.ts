@@ -2,13 +2,25 @@ export interface RateLimiter {
   limit: (options: { key: string }) => Promise<{ success: boolean }>;
 }
 
-export async function passesRateLimit(limiter: RateLimiter | null, key: string): Promise<boolean> {
-  if (limiter === null) return true;
+export interface RateLimitOptions {
+  failClosed?: boolean;
+  onMissing?: () => void;
+}
+
+export async function passesRateLimit(
+  limiter: RateLimiter | null,
+  key: string,
+  { failClosed = false, onMissing }: RateLimitOptions = {},
+): Promise<boolean> {
+  if (limiter === null) {
+    onMissing?.();
+    return !failClosed;
+  }
   try {
     const { success } = await limiter.limit({ key });
     return success;
   } catch {
-    return true;
+    return !failClosed;
   }
 }
 

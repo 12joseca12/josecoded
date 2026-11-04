@@ -2,7 +2,7 @@
 
 import { type SyntheticEvent, useEffect, useRef, useState } from "react";
 
-import { submitContact } from "@/app/[locale]/contacto/actions";
+import { submitContact } from "@/app/[locale]/(site)/contacto/actions";
 import { Button } from "@/components/ui/Button/Button";
 import { Card } from "@/components/ui/Card/Card";
 import { Checkbox } from "@/components/ui/Checkbox/Checkbox";

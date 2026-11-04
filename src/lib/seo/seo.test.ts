@@ -65,6 +65,7 @@ describe("buildRobots", () => {
           "/invitacion",
           "/cuenta",
           "/api/",
+          "/auth/",
         ]),
       );
     }

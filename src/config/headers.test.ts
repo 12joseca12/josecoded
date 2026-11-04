@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { buildCsp, buildHeaders, productionHostPattern } from "@/config/headers";
+import { buildCsp, buildHeaders, privateZoneSource, productionHostPattern } from "@/config/headers";
 import { productionOrigin, resolveSite } from "@/config/site";
 
 const production = resolveSite({ NEXT_PUBLIC_SITE_URL: productionOrigin });
@@ -41,8 +41,18 @@ describe("buildHeaders", () => {
       list.filter(
         (rule) => !rule.has && rule.headers.some((header) => header.key === "X-Robots-Tag"),
       );
-    expect(unconditional(buildHeaders(production))).toHaveLength(1);
-    expect(unconditional(rules)).toHaveLength(2);
+    expect(unconditional(buildHeaders(production))).toHaveLength(3);
+    expect(unconditional(rules)).toHaveLength(4);
+  });
+
+  it("noindexes the auth and private zones", () => {
+    const rules = buildHeaders(production);
+    const noindex = [{ key: "X-Robots-Tag", value: "noindex, nofollow" }];
+    expect(rules.find((rule) => rule.source === privateZoneSource)?.headers).toEqual(noindex);
+    expect(rules.find((rule) => rule.source === "/auth/:path*")?.headers).toEqual(noindex);
+    for (const zone of ["entrar", "admin", "crm", "area", "freelance", "invitacion", "cuenta"]) {
+      expect(privateZoneSource).toContain(zone);
+    }
   });
 
   it("sends the baseline security headers on every route", () => {

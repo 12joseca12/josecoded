@@ -13,6 +13,9 @@ export interface CspOptions {
 
 const noindex = { key: "X-Robots-Tag", value: "noindex, nofollow" };
 
+export const privateZoneSource =
+  "/:locale/(entrar|admin|crm|area|freelance|invitacion|cuenta)/:path*";
+
 export const previewHostPattern = ".*\\.workers\\.dev";
 
 const productionHost = new URL(productionOrigin).hostname;
@@ -90,6 +93,8 @@ export function buildHeaders(site: SiteConfig): HeaderRule[] {
       headers: [strictTransportSecurity],
     },
     { source: "/:locale/dev/:path*", headers: [noindex] },
+    { source: privateZoneSource, headers: [noindex] },
+    { source: "/auth/:path*", headers: [noindex] },
     { source: "/:path*", has: [{ type: "host", value: previewHostPattern }], headers: [noindex] },
     ...(site.indexable ? [] : [{ source: "/:path*", headers: [noindex] }]),
   ];

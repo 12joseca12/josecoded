@@ -1,0 +1,12 @@
+.notice {
+  display: grid;
+}
+
+.notice:focus {
+  outline: none;
+}
+
+.notice > * {
+  display: grid;
+  gap: var(--space-2);
+}
