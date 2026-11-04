@@ -236,14 +236,11 @@
     "website": {
       "name": "josecoded"
     },
-    "breadcrumb": {
-      "home": "Home"
-    },
     "llms": {
       "summary": "Jose is a full stack developer specialised in React Native, based in Madrid. He builds mobile apps and websites for companies and businesses in Spain and remotely: as a freelancer by the hour or by the task, with fixed-price packs or by joining a team.",
       "servicesTitle": "Services",
-      "hiring": "Hiring: joins a mobile or web product team and owns part of the product from start to finish. Availability and CV through the chat on the site.",
-      "freelance": "Freelance: a feature, an audit or a push for an existing project, with the scope agreed before starting. Hourly rate: {hour} €. Per-task quote from {task} €.",
+      "hiring": "Hiring: joins a mobile or web product team and owns part of the product from start to finish.",
+      "freelance": "Freelance: a feature, an audit or a push for an existing project, with the scope agreed before starting.",
       "packs": "Web and app packs: design, development and publishing with scope, price and date set in advance. Store publishing and domain included.",
       "pagesTitle": "Key pages",
       "home": "Home: who Jose is and what he works on",
@@ -254,7 +251,9 @@
       "entityJob": "Occupation: {jobTitle}",
       "entityPlace": "Location: {locality}, {country}",
       "entityArea": "Service area: {country} and remote",
-      "entityLanguage": "Site language: Spanish"
+      "entityLanguage": "Site language: Spanish",
+      "rateHour": "Hourly rate: {hour} €.",
+      "rateTask": "Per-task quote from {task} €."
     }
   }
 }

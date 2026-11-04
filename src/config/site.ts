@@ -24,3 +24,5 @@ export function resolveSite(env: Record<string, string | undefined>): SiteConfig
 }
 
 export const site = resolveSite(process.env);
+
+export const canonicalOrigin = productionOrigin;

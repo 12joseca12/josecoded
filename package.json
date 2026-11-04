@@ -12,6 +12,7 @@
     "build": "pnpm content:build && next build",
     "start": "next start",
     "cf:build": "opennextjs-cloudflare build",
+    "cf:build:production": "node scripts/assert-site-url.js && opennextjs-cloudflare build",
     "cf:preview": "opennextjs-cloudflare preview --env preview",
     "cf:deploy:preview": "opennextjs-cloudflare deploy --env preview",
     "lint": "eslint .",

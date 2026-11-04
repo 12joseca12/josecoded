@@ -11,6 +11,8 @@ const newestFirst = (a: ContentEntry<BlogMeta>, b: ContentEntry<BlogMeta>) =>
 
 export const listProjects = () => [...projects].sort(byOrder);
 export const listFeaturedProjects = () => listProjects().filter((entry) => entry.meta.featured);
+export const hasPublishedProjects = () =>
+  listProjects().some((entry) => !JSON.stringify(entry.meta).includes("{{DATO"));
 export const getProject = (slug: string) => projects.find((entry) => entry.slug === slug);
 
 export const listPosts = () =>

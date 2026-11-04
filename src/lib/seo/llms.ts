@@ -26,6 +26,11 @@ export async function buildLlmsTxt(origin: string, locale: Locale, rates: Rates)
     locality: t("seo.person.locality"),
     country: t("seo.person.country"),
   };
+  const known = (value: string) => !value.includes("{{DATO");
+  const rateLines = [
+    known(rates.hour) ? `- ${fill(t("seo.llms.rateHour"), { hour: rates.hour })}` : null,
+    known(rates.task) ? `- ${fill(t("seo.llms.rateTask"), { task: rates.task })}` : null,
+  ].filter((line) => line !== null);
   const lines = [
     `# ${t("seo.website.name")}`,
     "",
@@ -34,7 +39,8 @@ export async function buildLlmsTxt(origin: string, locale: Locale, rates: Rates)
     `## ${t("seo.llms.servicesTitle")}`,
     "",
     `- ${t("seo.llms.hiring")}`,
-    `- ${fill(t("seo.llms.freelance"), { hour: rates.hour, task: rates.task })}`,
+    `- ${t("seo.llms.freelance")}`,
+    ...rateLines,
     `- ${t("seo.llms.packs")}`,
     "",
     `## ${t("seo.llms.pagesTitle")}`,

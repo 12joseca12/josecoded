@@ -28,25 +28,7 @@ export const webSiteSchema = z.strictObject({
   publisher: z.strictObject({ "@id": z.url() }),
 });
 
-export const breadcrumbListSchema = z.strictObject({
-  "@type": z.literal("BreadcrumbList"),
-  itemListElement: z
-    .array(
-      z.strictObject({
-        "@type": z.literal("ListItem"),
-        position: z.number().int().positive(),
-        name: z.string().min(1),
-        item: z.url(),
-      }),
-    )
-    .min(1),
-});
-
-export const jsonLdNodeSchema = z.discriminatedUnion("@type", [
-  personSchema,
-  webSiteSchema,
-  breadcrumbListSchema,
-]);
+export const jsonLdNodeSchema = z.discriminatedUnion("@type", [personSchema, webSiteSchema]);
 
 export const jsonLdGraphSchema = z.strictObject({
   "@context": z.literal("https://schema.org"),
@@ -55,11 +37,5 @@ export const jsonLdGraphSchema = z.strictObject({
 
 export type PersonJsonLd = z.infer<typeof personSchema>;
 export type WebSiteJsonLd = z.infer<typeof webSiteSchema>;
-export type BreadcrumbListJsonLd = z.infer<typeof breadcrumbListSchema>;
 export type JsonLdNode = z.infer<typeof jsonLdNodeSchema>;
 export type JsonLdGraph = z.infer<typeof jsonLdGraphSchema>;
-
-export interface BreadcrumbItem {
-  name: string;
-  path: string;
-}

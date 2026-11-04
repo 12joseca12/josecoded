@@ -2,9 +2,6 @@ import { profileLinks } from "@/config/profiles";
 import type { Locale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
 import {
-  type BreadcrumbItem,
-  type BreadcrumbListJsonLd,
-  breadcrumbListSchema,
   type JsonLdGraph,
   jsonLdGraphSchema,
   type JsonLdNode,
@@ -65,21 +62,6 @@ export async function buildWebSite(origin: string, locale: Locale): Promise<WebS
     name: t("seo.website.name"),
     inLanguage: locale,
     publisher: { "@id": personId(origin) },
-  });
-}
-
-export function buildBreadcrumbList(
-  origin: string,
-  items: readonly BreadcrumbItem[],
-): BreadcrumbListJsonLd {
-  return breadcrumbListSchema.parse({
-    "@type": "BreadcrumbList",
-    itemListElement: items.map((item, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      name: item.name,
-      item: absoluteUrl(origin, item.path),
-    })),
   });
 }
 

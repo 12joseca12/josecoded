@@ -11,11 +11,12 @@ import { RouteFocus } from "@/components/site/RouteFocus/RouteFocus";
 import { SiteFooter } from "@/components/site/SiteFooter/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader/SiteHeader";
 import { contentId, SkipLink } from "@/components/site/SkipLink/SkipLink";
-import { site } from "@/config/site";
+import { canonicalOrigin, site } from "@/config/site";
 import { isLocale, isPublished, locales } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
 import { buildSiteGraph } from "@/lib/seo/jsonld";
+import { resolveRobots } from "@/lib/seo/metadata";
 import { openGraphLocales } from "@/lib/seo/routes";
 import { interTight } from "@/styles/font";
 import type { HeaderLabels } from "@/types/nav";
@@ -43,10 +44,10 @@ export async function generateMetadata({ params }: LocaleProps): Promise<Metadat
   if (!isLocale(locale) || !isPublished(locale)) return {};
   const t = await getTranslator(locale);
   return {
-    metadataBase: new URL(site.origin),
+    metadataBase: new URL(canonicalOrigin),
     title: { default: t("meta.title"), template: t("meta.titleTemplate") },
     description: t("meta.description"),
-    robots: site.indexable ? undefined : { index: false, follow: false },
+    robots: resolveRobots(site),
     openGraph: {
       type: "website",
       siteName: t("meta.siteName"),

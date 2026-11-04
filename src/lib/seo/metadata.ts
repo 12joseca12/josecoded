@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import type { SiteConfig } from "@/config/site";
 import { isPublished, type Locale } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
@@ -12,6 +13,11 @@ interface PageSeo {
   title: MessageKey;
   description: MessageKey;
   sameSegmentAsLayout?: boolean;
+  indexable?: boolean;
+}
+
+export function resolveRobots(site: SiteConfig): Metadata["robots"] {
+  return site.indexable ? undefined : { index: false, follow: false };
 }
 
 export function applyTitleTemplate(template: string, title: string): string {
@@ -24,6 +30,7 @@ export async function buildPageMetadata({
   title,
   description,
   sameSegmentAsLayout = false,
+  indexable = true,
 }: PageSeo): Promise<Metadata> {
   if (!isPublished(locale)) return {};
   const t = await getTranslator(locale);
@@ -34,6 +41,7 @@ export async function buildPageMetadata({
   return {
     title: sameSegmentAsLayout ? { absolute: socialTitle } : pageTitle,
     description: pageDescription,
+    ...(indexable ? {} : { robots: { index: false, follow: true } }),
     alternates: { canonical },
     openGraph: {
       type: "website",

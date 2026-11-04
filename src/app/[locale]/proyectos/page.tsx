@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { EmptyState } from "@/components/ui/EmptyState/EmptyState";
 import { Heading } from "@/components/ui/Heading/Heading";
+import { hasPublishedProjects } from "@/content";
 import { isLocale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
 import { buildPageMetadata } from "@/lib/seo/metadata";
@@ -21,6 +22,7 @@ export async function generateMetadata({ params }: ProjectsProps): Promise<Metad
     path: "/proyectos",
     title: "projects.metaTitle",
     description: "projects.metaDescription",
+    indexable: hasPublishedProjects(),
   });
 }
 

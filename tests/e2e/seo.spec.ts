@@ -32,7 +32,7 @@ for (const route of publicRoutes) {
     await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
       "href",
-      `http://localhost:3000${route}`,
+      `https://josecoded.com${route}`,
     );
     const title = await page.title();
     expect(title.endsWith(brandSuffix)).toBe(true);
@@ -71,13 +71,14 @@ test("robots.txt disallows everything on non-production hosts", async ({ request
   expect(body).not.toContain("Sitemap:");
 });
 
-test("sitemap.xml lists the public routes", async ({ request }) => {
+test("sitemap.xml lists the public routes that have content", async ({ request }) => {
   const response = await request.get("/sitemap.xml");
   expect(response.status()).toBe(200);
   const body = await response.text();
-  for (const route of publicRoutes) {
+  for (const route of publicRoutes.filter((path) => path !== "/es/proyectos")) {
     expect(body).toContain(`<loc>http://localhost:3000${route}</loc>`);
   }
+  expect(body).not.toContain("/es/proyectos");
   expect(body).not.toContain("/dev");
 });
 

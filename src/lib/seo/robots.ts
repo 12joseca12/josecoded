@@ -3,7 +3,7 @@ import type { MetadataRoute } from "next";
 import type { SiteConfig } from "@/config/site";
 import type { Locale } from "@/i18n/config";
 
-import { privatePrefixes } from "./routes";
+import { privatePrefixes, rootPrivatePrefixes } from "./routes";
 
 export const aiCrawlers = [
   "GPTBot",
@@ -31,6 +31,7 @@ export const aiCrawlers = [
 export function disallowedPaths(locales: readonly Locale[]): string[] {
   return [
     ...privatePrefixes,
+    ...rootPrivatePrefixes,
     ...locales.flatMap((locale) => privatePrefixes.map((prefix) => `/${locale}${prefix}`)),
   ];
 }
