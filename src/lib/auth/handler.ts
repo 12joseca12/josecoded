@@ -4,7 +4,6 @@ import { features } from "@/config/features";
 import { site } from "@/config/site";
 import { requiresAal2 } from "@/lib/auth/roles";
 import { passesRateLimit } from "@/lib/contact/rate-limit";
-import { verifyTurnstile } from "@/lib/contact/turnstile";
 import { createSupabaseServerClient, type ServerSupabase } from "@/lib/supabase/server";
 import {
   type EnrollmentResult,
@@ -15,37 +14,48 @@ import {
   type VerifyTotpResult,
 } from "@/types/auth";
 
-import { type AuthServerConfig, readAuthServerConfig } from "./env";
+import { readSupabasePublicConfig, type SupabasePublicConfig } from "./env";
 import { resolveDestination } from "./guards";
 import { type AuthOutcome, classifyCodeError, classifySendError } from "./outcome";
 import {
   type EnrollStart,
+  ipKey,
   mapEnrollment,
   processRequestCode,
   processVerifyCode,
   processVerifyTotp,
   type RequestCodeDeps,
   type TotpDeps,
+  totpUserKey,
   type VerifyCodeDeps,
 } from "./process";
-import { findAuthLimiter } from "./rate-limit";
+import { type AuthLimiterName, findAuthLimiter } from "./rate-limit";
 import { readSessionState } from "./session";
-
-export const turnstileLoginAction = "login";
+import { minimumRequestCodeMs, withMinimumDuration } from "./timing";
 
 const factorName = "josecoded";
 
 interface Context {
-  config: AuthServerConfig;
+  config: SupabasePublicConfig;
   client: ServerSupabase;
 }
 
 async function createContext(env: Record<string, string | undefined>): Promise<Context | null> {
-  const config = readAuthServerConfig(env);
+  const config = readSupabasePublicConfig(env);
   if (!config) return null;
   const client = await createSupabaseServerClient(env);
   if (!client) return null;
   return { config, client };
+}
+
+function limiterFor(config: SupabasePublicConfig, name: AuthLimiterName) {
+  return async (key: string): Promise<boolean> =>
+    passesRateLimit(await findAuthLimiter(name), key, {
+      failClosed: !config.loopback,
+      onMissing: () => {
+        if (!config.loopback) console.error("limiter_missing", name);
+      },
+    });
 }
 
 async function attempt(run: () => Promise<AuthOutcome>): Promise<AuthOutcome> {
@@ -60,7 +70,7 @@ async function destinationFor(client: ServerSupabase, locale: string, next: stri
   return resolveDestination(await readSessionState(client), locale, next);
 }
 
-export async function handleRequestCode(
+async function requestCodeOnce(
   raw: unknown,
   ip: string | null,
   env: Record<string, string | undefined>,
@@ -68,21 +78,12 @@ export async function handleRequestCode(
   const context = await createContext(env);
   const deps: RequestCodeDeps | null = context
     ? {
-        verifyTurnstile: (token, clientIp) =>
-          verifyTurnstile({
-            url: context.config.turnstileVerifyUrl,
-            secret: context.config.turnstileSecret,
-            token,
-            ip: clientIp,
-            allowedHostnames: context.config.allowedHostnames,
-            action: turnstileLoginAction,
-          }),
-        rateLimit: async (key) => passesRateLimit(await findAuthLimiter(), key),
-        sendCode: (email) =>
+        rateLimit: limiterFor(context.config, "AUTH_LIMITER"),
+        sendCode: (email, captchaToken) =>
           attempt(async () => {
             const { error } = await context.client.auth.signInWithOtp({
               email,
-              options: { shouldCreateUser: false },
+              options: { shouldCreateUser: false, captchaToken },
             });
             return error ? { ok: false, failure: classifySendError(error) } : { ok: true };
           }),
@@ -94,6 +95,14 @@ export async function handleRequestCode(
   return processRequestCode(raw, { ip, deps });
 }
 
+export function handleRequestCode(
+  raw: unknown,
+  ip: string | null,
+  env: Record<string, string | undefined>,
+): Promise<RequestCodeResult> {
+  return withMinimumDuration(minimumRequestCodeMs, () => requestCodeOnce(raw, ip, env));
+}
+
 export async function handleVerifyCode(
   raw: unknown,
   ip: string | null,
@@ -102,7 +111,8 @@ export async function handleVerifyCode(
   const context = await createContext(env);
   const deps: VerifyCodeDeps | null = context
     ? {
-        rateLimit: async (key) => passesRateLimit(await findAuthLimiter(), key),
+        rateLimit: limiterFor(context.config, "AUTH_LIMITER"),
+        rateLimitWide: limiterFor(context.config, "AUTH_EMAIL_LIMITER"),
         verifyCode: (email, code) =>
           attempt(async () => {
             const { data, error } = await context.client.auth.verifyOtp({
@@ -120,6 +130,7 @@ export async function handleVerifyCode(
 }
 
 export async function handleStartEnrollment(
+  ip: string | null,
   env: Record<string, string | undefined>,
 ): Promise<EnrollmentResult> {
   const context = await createContext(env);
@@ -129,6 +140,10 @@ export async function handleStartEnrollment(
     const state = await readSessionState(client);
     if (state.status !== "member" || !requiresAal2(state.role) || state.level === "aal2") {
       return mapEnrollment({ ok: false, failure: "unauthenticated" });
+    }
+    const limit = limiterFor(context.config, "AUTH_LIMITER");
+    if (!((await limit(ipKey("enroll-ip", ip))) && (await limit(totpUserKey(state.userId))))) {
+      return mapEnrollment({ ok: false, failure: "rate_limited" });
     }
     const factors = await client.auth.mfa.listFactors();
     if (factors.error) return mapEnrollment({ ok: false, failure: "error" });
@@ -169,24 +184,30 @@ export async function handleStartEnrollment(
 
 export async function handleVerifyTotp(
   raw: unknown,
+  ip: string | null,
   env: Record<string, string | undefined>,
 ): Promise<VerifyTotpResult> {
   const context = await createContext(env);
   const deps: TotpDeps | null = context
     ? {
+        identify: async () => {
+          try {
+            const state = await readSessionState(context.client);
+            return state.status === "member" && requiresAal2(state.role) ? state.userId : null;
+          } catch {
+            return null;
+          }
+        },
+        rateLimit: limiterFor(context.config, "AUTH_LIMITER"),
         verifyTotp: (factorId, code) =>
           attempt(async () => {
-            const state = await readSessionState(context.client);
-            if (state.status !== "member" || !requiresAal2(state.role)) {
-              return { ok: false, failure: "unauthenticated" };
-            }
             const { error } = await context.client.auth.mfa.challengeAndVerify({ factorId, code });
             return error ? { ok: false, failure: classifyCodeError(error) } : { ok: true };
           }),
         destination: (locale, next) => destinationFor(context.client, locale, next),
       }
     : null;
-  return processVerifyTotp(raw, { deps });
+  return processVerifyTotp(raw, { ip, deps });
 }
 
 export async function handleStartGoogle(

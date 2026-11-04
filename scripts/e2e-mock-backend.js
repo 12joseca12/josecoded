@@ -107,10 +107,12 @@ const seededLeads = [
   },
 ];
 
-let auth;
-function resetAuth() {
-  auth = {
+const authStates = new Map();
+
+function newAuthState() {
+  const state = {
     calls: {
+      captcha: [],
       otp: [],
       verify: [],
       enroll: [],
@@ -125,7 +127,7 @@ function resetAuth() {
     leadsMode: "data",
   };
   for (const person of Object.values(people)) {
-    auth.factors.set(
+    state.factors.set(
       person.id,
       person.factor
         ? [
@@ -139,8 +141,24 @@ function resetAuth() {
         : [],
     );
   }
+  return state;
 }
-resetAuth();
+
+function stateFor(tag) {
+  let state = authStates.get(tag);
+  if (!state) {
+    state = newAuthState();
+    authStates.set(tag, state);
+  }
+  return state;
+}
+
+function splitEmail(raw) {
+  const value = String(raw ?? "").toLowerCase();
+  const match = /^([^+@]+)\+([a-z0-9]+)(@.+)$/.exec(value);
+  if (!match) return { email: value, tag: "" };
+  return { email: `${match[1]}${match[3]}`, tag: match[2] };
+}
 
 function b64(value) {
   return Buffer.from(JSON.stringify(value)).toString("base64url");
@@ -150,7 +168,7 @@ function personById(id) {
   return Object.entries(people).find(([, person]) => person.id === id);
 }
 
-function userBody(id) {
+function userBody(auth, id) {
   const found = personById(id);
   const email = found ? found[0] : "";
   const now = new Date().toISOString();
@@ -170,7 +188,7 @@ function userBody(id) {
   };
 }
 
-function issueSession(userId, level) {
+function issueSession(auth, userId, level) {
   const sessionId = randomUUID();
   const now = Math.floor(Date.now() / 1000);
   const email = personById(userId)?.[0] ?? "";
@@ -194,22 +212,24 @@ function issueSession(userId, level) {
   };
   const accessToken = `${b64({ alg: "HS256", typ: "JWT" })}.${b64(payload)}.mock-signature`;
   const refreshToken = randomUUID().slice(0, 12);
-  auth.sessions.set(accessToken, { userId, level, sessionId, active: true });
-  auth.refresh.set(refreshToken, { userId, level, sessionId });
+  auth.sessions.set(accessToken, { userId, level, sessionId, active: true, auth });
+  auth.refresh.set(refreshToken, { userId, level, sessionId, auth });
   return {
     access_token: accessToken,
     token_type: "bearer",
     expires_in: 3600,
     expires_at: now + 3600,
     refresh_token: refreshToken,
-    user: userBody(userId),
+    user: userBody(auth, userId),
   };
 }
 
 function bearer(request) {
   const header = request.headers.authorization ?? "";
   const token = header.startsWith("Bearer ") ? header.slice(7) : "";
-  const session = auth.sessions.get(token);
+  const session = [...authStates.values()]
+    .map((state) => state.sessions.get(token))
+    .find((entry) => entry !== undefined);
   if (!session?.active) return null;
   const payload = JSON.parse(Buffer.from(token.split(".")[1], "base64url").toString("utf8"));
   if (payload.exp < Date.now() / 1000) return null;
@@ -244,18 +264,28 @@ const server = createServer(async (request, response) => {
   }
 
   if (url.pathname === "/__auth/reset") {
-    resetAuth();
+    authStates.delete(url.searchParams.get("tag") ?? "");
     return send(response, 200, { ok: true });
   }
-  if (url.pathname === "/__auth/calls") return send(response, 200, auth.calls);
+  if (url.pathname === "/__auth/calls") {
+    return send(response, 200, stateFor(url.searchParams.get("tag") ?? "").calls);
+  }
   if (url.pathname === "/__auth/leads-mode" && request.method === "POST") {
-    auth.leadsMode = JSON.parse(await readBody(request)).mode;
+    stateFor(url.searchParams.get("tag") ?? "").leadsMode = JSON.parse(
+      await readBody(request),
+    ).mode;
     return send(response, 200, { ok: true });
   }
 
   if (url.pathname === "/auth/v1/otp" && request.method === "POST") {
     const body = JSON.parse(await readBody(request));
-    const email = String(body.email ?? "").toLowerCase();
+    const { email, tag } = splitEmail(body.email);
+    const auth = stateFor(tag);
+    const captchaToken = String(body.gotrue_meta_security?.captcha_token ?? "");
+    auth.calls.captcha.push({ token: captchaToken });
+    if (captchaToken === "" || captchaToken.split(":")[0] === rejectedToken) {
+      return authError(response, 400, "captcha_failed", "captcha protection: request disallowed");
+    }
     auth.calls.otp.push({ email, create_user: body.create_user });
     if (email.startsWith("down@"))
       return authError(response, 500, "unexpected_failure", "internal");
@@ -269,7 +299,8 @@ const server = createServer(async (request, response) => {
 
   if (url.pathname === "/auth/v1/verify" && request.method === "POST") {
     const body = JSON.parse(await readBody(request));
-    const email = String(body.email ?? "").toLowerCase();
+    const { email, tag } = splitEmail(body.email);
+    const auth = stateFor(tag);
     auth.calls.verify.push({ email, token: body.token, type: body.type });
     if (email.startsWith("limited@")) {
       return authError(response, 429, "over_request_rate_limit", "rate limit");
@@ -278,25 +309,28 @@ const server = createServer(async (request, response) => {
     if (!person || body.token !== otpCode) {
       return authError(response, 403, "otp_expired", "Token has expired or is invalid");
     }
-    return send(response, 200, issueSession(person.id, "aal1"));
+    return send(response, 200, issueSession(auth, person.id, "aal1"));
   }
 
   if (url.pathname === "/auth/v1/user" && request.method === "GET") {
     const session = bearer(request);
     if (!session) return authError(response, 401, "bad_jwt", "invalid JWT");
-    return send(response, 200, userBody(session.userId));
+    return send(response, 200, userBody(session.auth, session.userId));
   }
 
   if (url.pathname === "/auth/v1/token" && request.method === "POST") {
     const body = JSON.parse(await readBody(request));
-    const record = auth.refresh.get(body.refresh_token);
+    const record = [...authStates.values()]
+      .map((state) => state.refresh.get(body.refresh_token))
+      .find((entry) => entry !== undefined);
     if (!record)
       return authError(response, 400, "refresh_token_not_found", "Invalid Refresh Token");
-    return send(response, 200, issueSession(record.userId, record.level));
+    return send(response, 200, issueSession(record.auth, record.userId, record.level));
   }
 
   if (url.pathname === "/auth/v1/logout" && request.method === "POST") {
     const session = bearer(request);
+    const auth = session?.auth ?? stateFor("");
     auth.calls.logout.push({ scope: url.searchParams.get("scope") });
     if (session) session.active = false;
     response.writeHead(204);
@@ -306,6 +340,7 @@ const server = createServer(async (request, response) => {
   if (url.pathname === "/auth/v1/factors" && request.method === "POST") {
     const session = bearer(request);
     if (!session) return authError(response, 401, "bad_jwt", "invalid JWT");
+    const auth = session.auth;
     const body = JSON.parse(await readBody(request));
     const list = auth.factors.get(session.userId) ?? [];
     auth.calls.enroll.push({ friendly_name: body.friendly_name, issuer: body.issuer });
@@ -338,6 +373,7 @@ const server = createServer(async (request, response) => {
   if (factorMatch) {
     const session = bearer(request);
     if (!session) return authError(response, 401, "bad_jwt", "invalid JWT");
+    const auth = session.auth;
     const list = auth.factors.get(session.userId) ?? [];
     const factor = list.find((entry) => entry.id === factorMatch[1]);
     if (!factor) return authError(response, 404, "mfa_factor_not_found", "factor not found");
@@ -365,13 +401,13 @@ const server = createServer(async (request, response) => {
         return authError(response, 400, "mfa_verification_failed", "Invalid TOTP code entered");
       }
       factor.status = "verified";
-      return send(response, 200, issueSession(session.userId, "aal2"));
+      return send(response, 200, issueSession(auth, session.userId, "aal2"));
     }
   }
 
   if (url.pathname === "/rest/v1/profiles" && request.method === "GET") {
     const session = bearer(request);
-    auth.calls.profiles.push({ authenticated: Boolean(session) });
+    session?.auth.calls.profiles.push({ authenticated: true });
     if (!session) return send(response, 401, { code: "PGRST301", message: "JWT invalid" });
     const id = (url.searchParams.get("id") ?? "").replace("eq.", "");
     const found = personById(id);
@@ -400,8 +436,9 @@ const server = createServer(async (request, response) => {
 
   if (url.pathname === "/rest/v1/leads" && request.method === "GET") {
     const session = bearer(request);
-    auth.calls.leads.push({ authenticated: Boolean(session), level: session?.level ?? null });
     if (!session) return send(response, 401, { code: "PGRST301", message: "JWT invalid" });
+    const auth = session.auth;
+    auth.calls.leads.push({ authenticated: true, level: session.level });
     if (auth.leadsMode === "error") {
       return send(response, 500, { code: "XX000", message: "internal", details: null, hint: null });
     }

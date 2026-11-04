@@ -57,6 +57,7 @@
 - **3.4 Solo por invitación del admin.** Nadie se registra solo.
 - **3.5 Rol en `profiles.role`** con helper `private.role()` en RLS.
 - **3.6 (Jose, 2026-11-04) Hay exactamente un admin.** Índice único parcial `profiles_single_admin_key` sobre `profiles(role) where role = 'admin'`, más el guard que impide desactivar o degradar al último admin; ascender a un segundo admin falla.
+- **3.7 (2026-11-04) Sesiones de admin sin límite de tiempo: riesgo aceptado.** Las sesiones con timebox e inactividad son del plan Pro; en el plan gratuito una sesión de admin vive mientras se refresque el token. Se mitiga con `aal2` obligatorio, JWT de una hora, cookies `httpOnly` y el cierre de sesión manual. Se revisa al pasar a Pro o al activar `josecoded-dev` (10.7).
 
 ## 4. Omen y Supabase
 

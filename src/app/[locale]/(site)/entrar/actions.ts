@@ -31,11 +31,11 @@ export async function verifyCode(raw: unknown): Promise<VerifyCodeResult> {
 }
 
 export async function startEnrollment(): Promise<EnrollmentResult> {
-  return handleStartEnrollment(process.env);
+  return handleStartEnrollment(await clientIp(), process.env);
 }
 
 export async function verifyTotp(raw: unknown): Promise<VerifyTotpResult> {
-  return handleVerifyTotp(raw, process.env);
+  return handleVerifyTotp(raw, await clientIp(), process.env);
 }
 
 export async function startGoogle(raw: unknown): Promise<GoogleStartResult> {

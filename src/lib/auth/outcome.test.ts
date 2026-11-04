@@ -37,3 +37,9 @@ describe("classifyCodeError", () => {
     expect(classifyCodeError({ status: 401, code: "session_not_found" })).toBe("unauthenticated");
   });
 });
+
+describe("captcha errors", () => {
+  it("reads a rejected captcha on send", () => {
+    expect(classifySendError({ status: 400, code: "captcha_failed" })).toBe("captcha_failed");
+  });
+});

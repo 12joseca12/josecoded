@@ -5,7 +5,7 @@ export interface AuthErrorLike {
 }
 
 export type AuthFailure =
-  "rate_limited" | "unknown_user" | "wrong_code" | "unauthenticated" | "error";
+  "captcha_failed" | "rate_limited" | "unknown_user" | "wrong_code" | "unauthenticated" | "error";
 
 export type AuthOutcome = { ok: true } | { ok: false; failure: AuthFailure };
 
@@ -26,6 +26,7 @@ function isServerFault(error: AuthErrorLike): boolean {
 }
 
 export function classifySendError(error: AuthErrorLike): AuthFailure {
+  if (error.code === "captcha_failed") return "captcha_failed";
   if (isRateLimited(error)) return "rate_limited";
   if (isServerFault(error)) return "error";
   return "unknown_user";

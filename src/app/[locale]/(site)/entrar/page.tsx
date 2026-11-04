@@ -6,7 +6,7 @@ import { LoginForm } from "@/components/auth/LoginForm/LoginForm";
 import { features } from "@/config/features";
 import { isLocale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
-import { readAuthServerConfig } from "@/lib/auth/env";
+import { readSupabasePublicConfig } from "@/lib/auth/env";
 import { resolveDestination, safeNext } from "@/lib/auth/guards";
 import { getSessionState } from "@/lib/auth/session";
 import { readContactClientConfig } from "@/lib/contact/env";
@@ -38,7 +38,7 @@ export default async function LoginPage({ params, searchParams }: LoginProps) {
 
   const t = await getTranslator(locale);
   const turnstile =
-    readAuthServerConfig(process.env) !== null ? readContactClientConfig(process.env) : null;
+    readSupabasePublicConfig(process.env) !== null ? readContactClientConfig(process.env) : null;
 
   return (
     <LoginForm

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { readAuthServerConfig, readSupabasePublicConfig } from "./env";
+import { readSupabasePublicConfig } from "./env";
 
 const production = {
   NEXT_PUBLIC_SUPABASE_URL: "https://abcdefghij0123456789.supabase.co",
@@ -55,37 +55,5 @@ describe("public Supabase config", () => {
 
   it("allows loopback urls and any key for local runs", () => {
     expect(readSupabasePublicConfig(loopback)?.loopback).toBe(true);
-  });
-});
-
-describe("auth server config", () => {
-  it("adds the Turnstile secret and Cloudflare defaults in production", () => {
-    const config = readAuthServerConfig(production);
-    expect(config?.turnstileVerifyUrl).toBe(
-      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
-    );
-    expect(config?.allowedHostnames).not.toContain("localhost");
-  });
-
-  it("needs the Turnstile secret and refuses test secrets in production", () => {
-    expect(readAuthServerConfig({ ...production, TURNSTILE_SECRET_KEY: "" })).toBeNull();
-    expect(
-      readAuthServerConfig({ ...production, TURNSTILE_SECRET_KEY: "1x0000000000000000AA" }),
-    ).toBeNull();
-  });
-
-  it("only accepts a verify override in loopback mode", () => {
-    expect(
-      readAuthServerConfig({ ...production, TURNSTILE_VERIFY_URL: "http://localhost:1/v" }),
-    ).toBeNull();
-    const local = readAuthServerConfig({
-      ...loopback,
-      TURNSTILE_VERIFY_URL: "http://127.0.0.1:3199/turnstile/siteverify",
-    });
-    expect(local?.turnstileVerifyUrl).toBe("http://127.0.0.1:3199/turnstile/siteverify");
-    expect(local?.allowedHostnames).toContain("localhost");
-    expect(
-      readAuthServerConfig({ ...loopback, TURNSTILE_VERIFY_URL: "https://evil.example/v" }),
-    ).toBeNull();
   });
 });

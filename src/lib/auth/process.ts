@@ -1,5 +1,4 @@
 import { isKnownIp, normaliseIp } from "@/lib/contact/ip";
-import type { TurnstileOutcome } from "@/lib/contact/turnstile";
 import {
   type AuthFieldError,
   type EnrollmentResult,
@@ -14,19 +13,21 @@ import {
 import type { AuthOutcome } from "./outcome";
 
 export interface RequestCodeDeps {
-  verifyTurnstile: (token: string, ip: string | null) => Promise<TurnstileOutcome>;
   rateLimit: (key: string) => Promise<boolean>;
-  sendCode: (email: string) => Promise<AuthOutcome>;
+  sendCode: (email: string, captchaToken: string) => Promise<AuthOutcome>;
   reportFailure: (code: string) => void;
 }
 
 export interface VerifyCodeDeps {
   rateLimit: (key: string) => Promise<boolean>;
+  rateLimitWide: (key: string) => Promise<boolean>;
   verifyCode: (email: string, code: string) => Promise<AuthOutcome>;
   destination: (locale: string, next: string | undefined) => Promise<string>;
 }
 
 export interface TotpDeps {
+  identify: () => Promise<string | null>;
+  rateLimit: (key: string) => Promise<boolean>;
   verifyTotp: (factorId: string, code: string) => Promise<AuthOutcome>;
   destination: (locale: string, next: string | undefined) => Promise<string>;
 }
@@ -48,6 +49,10 @@ export function emailKey(prefix: string, email: string): string {
   return `${prefix}:${email.trim().toLowerCase()}`;
 }
 
+export function totpUserKey(userId: string): string {
+  return `totp-user:${userId}`;
+}
+
 export function ipKey(prefix: string, ip: string | null): string {
   return `${prefix}:${normaliseIp(ip)}`;
 }
@@ -63,26 +68,19 @@ export async function processRequestCode(
   if (!parsed.success) return { status: "invalid", error: firstError(parsed.error) };
   const { email, turnstileToken } = parsed.data;
 
-  const clientIp = isKnownIp(ip) ? ip : null;
-  if (clientIp === null) deps.reportFailure("ip_missing");
+  if (!isKnownIp(ip)) deps.reportFailure("ip_missing");
   const allowed =
     (await deps.rateLimit(ipKey("otp-ip", ip))) &&
     (await deps.rateLimit(emailKey("otp-email", email)));
   if (!allowed) return { status: "rate_limited" };
 
-  const verification = await deps.verifyTurnstile(turnstileToken, clientIp);
-  if (verification === "rejected") return { status: "verification_failed" };
-  if (verification === "unreachable") {
-    deps.reportFailure("turnstile_unreachable");
-    return { status: "error" };
-  }
-
-  const outcome = await deps.sendCode(email);
+  const outcome = await deps.sendCode(email, turnstileToken);
   if (outcome.ok) return { status: "sent" };
   if (outcome.failure === "unknown_user") {
     deps.reportFailure("otp_unknown_user");
     return { status: "sent" };
   }
+  if (outcome.failure === "captcha_failed") return { status: "verification_failed" };
   if (outcome.failure === "rate_limited") return { status: "rate_limited" };
   deps.reportFailure("otp_send_failed");
   return { status: "error" };
@@ -102,9 +100,9 @@ export async function processVerifyCode(
   }
   const { email, code, locale, next } = parsed.data;
 
+  const pairKey = `verify:${email.trim().toLowerCase()}|${normaliseIp(ip)}`;
   const allowed =
-    (await deps.rateLimit(ipKey("verify-ip", ip))) &&
-    (await deps.rateLimit(emailKey("verify-email", email)));
+    (await deps.rateLimit(pairKey)) && (await deps.rateLimitWide(emailKey("verify-email", email)));
   if (!allowed) return { status: "rate_limited" };
 
   const outcome = await deps.verifyCode(email, code);
@@ -118,9 +116,9 @@ export async function processVerifyCode(
 
 export async function processVerifyTotp(
   raw: unknown,
-  context: { deps: TotpDeps | null },
+  context: { ip: string | null; deps: TotpDeps | null },
 ): Promise<VerifyTotpResult> {
-  const { deps } = context;
+  const { ip, deps } = context;
   if (!deps) return { status: "unavailable" };
 
   const parsed = verifyTotpSchema.safeParse(raw);
@@ -132,6 +130,12 @@ export async function processVerifyTotp(
     };
   }
   const { factorId, code, locale, next } = parsed.data;
+
+  const userId = await deps.identify();
+  if (userId === null) return { status: "unauthenticated" };
+  const allowed =
+    (await deps.rateLimit(ipKey("totp-ip", ip))) && (await deps.rateLimit(totpUserKey(userId)));
+  if (!allowed) return { status: "rate_limited" };
 
   const outcome = await deps.verifyTotp(factorId, code);
   if (outcome.ok) return { status: "ok", destination: await deps.destination(locale, next) };

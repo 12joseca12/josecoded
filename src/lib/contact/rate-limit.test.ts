@@ -19,4 +19,13 @@ describe("passesRateLimit", () => {
     const broken = { limit: vi.fn(() => Promise.reject(new Error("down"))) };
     expect(await passesRateLimit(broken, "abc")).toBe(true);
   });
+
+  it("fails closed on request when asked to, and reports a missing binding", async () => {
+    const onMissing = vi.fn();
+    expect(await passesRateLimit(null, "k", { failClosed: true, onMissing })).toBe(false);
+    expect(onMissing).toHaveBeenCalledTimes(1);
+    expect(await passesRateLimit(null, "k", { onMissing })).toBe(true);
+    const broken = { limit: vi.fn(() => Promise.reject(new Error("down"))) };
+    expect(await passesRateLimit(broken, "k", { failClosed: true })).toBe(false);
+  });
 });

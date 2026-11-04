@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { readFileSync } from "node:fs";
 
 import AxeBuilder from "@axe-core/playwright";
@@ -57,6 +58,7 @@ const { login, totp } = es.auth;
 const mock = `http://localhost:${process.env.MOCK_BACKEND_PORT ?? 3199}`;
 
 interface AuthCalls {
+  captcha: { token: string }[];
   otp: { email: string; create_user: boolean }[];
   verify: { email: string; token: string }[];
   enroll: unknown[];
@@ -68,13 +70,20 @@ interface AuthCalls {
 test.describe.configure({ mode: "serial" });
 test.use({ extraHTTPHeaders: { "cf-connecting-ip": "203.0.113.9" } });
 
+let tag = "";
+
 test.beforeEach(async ({ request }) => {
-  await request.post(`${mock}/__auth/reset`);
-  await request.post(`${mock}/__reset`);
+  tag = randomUUID().replaceAll("-", "").slice(0, 12);
+  await request.post(`${mock}/__auth/reset?tag=${tag}`);
 });
 
+function mailbox(email: string): string {
+  const [local = "", domain = ""] = email.split("@");
+  return `${local}+${tag}@${domain}`;
+}
+
 async function authCalls(page: Page): Promise<AuthCalls> {
-  const response = await page.request.get(`${mock}/__auth/calls`);
+  const response = await page.request.get(`${mock}/__auth/calls?tag=${tag}`);
   return (await response.json()) as AuthCalls;
 }
 
@@ -86,7 +95,7 @@ async function openLogin(page: Page, query = "") {
 }
 
 async function requestCode(page: Page, email: string) {
-  await page.getByLabel(login.emailLabel).fill(email);
+  await page.getByLabel(login.emailLabel).fill(mailbox(email));
   await page.getByRole("button", { name: login.send }).click();
   await expect(page.getByRole("heading", { level: 1, name: login.codeTitle })).toBeVisible();
 }
@@ -107,6 +116,7 @@ async function signInAdmin(page: Page, query = "") {
   await expect(page).toHaveURL(/\/es\/entrar\/totp/);
   await page.getByLabel(totp.codeLabel).fill("654321");
   await page.getByRole("button", { name: totp.verify }).click();
+  await expect(page).not.toHaveURL(/\/entrar/);
 }
 
 function alertWith(page: Page, text: string) {
@@ -159,10 +169,7 @@ test("an invited admin signs in with the code and the authenticator", async ({ p
 
   const calls = await authCalls(page);
   expect(calls.otp).toEqual([{ email: "enrolled@example.com", create_user: false }]);
-  const siteverify = (await (await page.request.get(`${mock}/__calls`)).json()) as {
-    siteverify: { response: string }[];
-  };
-  expect(siteverify.siteverify.at(-1)?.response).toBe("mock-token:login");
+  expect(calls.captcha).toEqual([{ token: "mock-token:login" }]);
 });
 
 test("a wrong code is reported and the field is cleared", async ({ page }) => {
@@ -180,7 +187,9 @@ test("a wrong code is reported and the field is cleared", async ({ page }) => {
 test("an unknown email gets the same neutral step and can never sign in", async ({ page }) => {
   await openLogin(page);
   await requestCode(page, "ghost@example.com");
-  await expect(page.getByText("ghost@example.com", { exact: false }).first()).toBeVisible();
+  await expect(
+    page.getByText(mailbox("ghost@example.com"), { exact: false }).first(),
+  ).toBeVisible();
   await submitCode(page, "123456");
   await expect(alertWith(page, login.wrongCode.title)).toBeVisible();
   await expect(page).toHaveURL(/\/es\/entrar$/);
@@ -192,11 +201,11 @@ test("an unknown email gets the same neutral step and can never sign in", async 
 
 test("provider rate limits and failures are explained", async ({ page }) => {
   await openLogin(page);
-  await page.getByLabel(login.emailLabel).fill("ratelimit@example.com");
+  await page.getByLabel(login.emailLabel).fill(mailbox("ratelimit@example.com"));
   await page.getByRole("button", { name: login.send }).click();
   await expect(alertWith(page, login.rateLimited.title)).toBeVisible();
 
-  await page.getByLabel(login.emailLabel).fill("down@example.com");
+  await page.getByLabel(login.emailLabel).fill(mailbox("down@example.com"));
   await page.getByRole("button", { name: login.send }).click();
   await expect(alertWith(page, login.failed.title)).toBeVisible();
   await expectClean(page);
@@ -207,7 +216,7 @@ test("a failed security check blocks the request", async ({ page }) => {
     window.localStorage.setItem("fakeTurnstileToken", "bad-token");
   });
   await openLogin(page);
-  await page.getByLabel(login.emailLabel).fill("enrolled@example.com");
+  await page.getByLabel(login.emailLabel).fill(mailbox("enrolled@example.com"));
   await page.getByRole("button", { name: login.send }).click();
   await expect(alertWith(page, login.verificationFailed.title)).toBeVisible();
   expect((await authCalls(page)).otp).toHaveLength(0);
@@ -364,17 +373,17 @@ test("the leads list shows the newest first and passes axe", async ({ page }) =>
 
 test("the leads list has empty and error states", async ({ page, request }) => {
   await signInAdmin(page, "?next=%2Fes%2Fadmin%2Finteresados");
-  await request.post(`${mock}/__auth/leads-mode`, { data: { mode: "empty" } });
+  await request.post(`${mock}/__auth/leads-mode?tag=${tag}`, { data: { mode: "empty" } });
   await page.reload();
   await expect(page.getByRole("heading", { name: es.admin.leads.empty.title })).toBeVisible();
   await expectClean(page);
 
-  await request.post(`${mock}/__auth/leads-mode`, { data: { mode: "error" } });
+  await request.post(`${mock}/__auth/leads-mode?tag=${tag}`, { data: { mode: "error" } });
   await page.reload();
   await expect(alertWith(page, es.admin.leads.error.title)).toBeVisible();
   await expectClean(page);
 
-  await request.post(`${mock}/__auth/leads-mode`, { data: { mode: "data" } });
+  await request.post(`${mock}/__auth/leads-mode?tag=${tag}`, { data: { mode: "data" } });
   await page.getByRole("button", { name: es.admin.leads.error.retry }).click();
   await expect(page.getByRole("table")).toBeVisible();
 });
