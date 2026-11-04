@@ -5,7 +5,7 @@
 ## Principios
 
 - **Esquemas:** `public` para las tablas de negocio con RLS; `private` para helpers, colas, latido, cuotas, auditoría y vectores (sin acceso desde el cliente); `storage` con políticas propias.
-- **`anon` sin grants** salvo tres vistas de solo lectura: `public_packs`, `public_extras`, `public_settings` (solo filas visibles y claves públicas). Todo lo demás del público (formulario de contacto, chat de visitantes) entra por **rutas de servidor de Next con la clave de servicio** que validan con zod, Turnstile y cuota y llaman a funciones de `private` (`private.submit_lead`, `private.visitor_send`); `anon` no ejecuta ninguna RPC (2026-11-04, sustituye a `public_submit_contact` y `public_chat_send`; coherente con 5.10).
+- **`anon` sin grants** salvo tres vistas de solo lectura: `public_packs`, `public_extras`, `public_settings` (solo filas visibles y claves públicas). Todo lo demás del público (formulario de contacto, chat de visitantes) entra por **rutas de servidor de Next con la clave de servicio** que validan con zod, Turnstile y cuota y llaman a wrappers de `public` con `EXECUTE` solo para `service_role` que envuelven funciones de `private` (`public.submit_lead` → `private.submit_lead`, `private.visitor_send`; decisión 9.6); `anon` no ejecuta ninguna RPC (2026-11-04, sustituye a `public_submit_contact` y `public_chat_send`; coherente con 5.10).
 - **Helpers en `private`:** `uid()`, `role()`, `is_admin()`, `is_staff()` (admin, closer o freelance **y** `aal2`), `owns_contact(contact_id)` (dueño o closer padre del dueño), `owns_lead(lead_id)` (asignado o closer padre del asignado), `is_project_member(project_id)` (cliente, freelance asignado o admin), `is_conversation_member(conversation_id)` y `can_write_conversation(conversation_id)` (§10).
 - **Identidad:** `auth.users` de Supabase; `profiles.id = auth.users.id`. Rol en `profiles.role`.
 - **Auditoría:** trigger a `private.audit_log` en `profiles`, `commissions`, `deals` (cambios de fase), `packs`, `site_settings`.
@@ -254,16 +254,25 @@ La cookie caduca sola a los 7 días sin actividad; si vuelve un visitante cuya f
 - **Notificaciones:** trigger `after insert` → `private.outbox` Telegram a Jose y email a la bandeja de la vía (2.23: `hola@`, `freelance@`, `proyectos@`); fila en `notifications` para cada closer activo si cae en la bandeja común, o solo para el asignado.
 
 ### `private.form_quota`
-- `ip_hash`, `day`, `count`. Límite 5 envíos/día por IP; error tipado `form_quota_exceeded` → 429 con las vías alternativas (P6). Se limpia en la misma purga que `chat_quota`.
+- `ip_hash`, `day`, `count`, clave `(ip_hash, day)`. Tres contadores diarios en la misma tabla, comprobados en este orden dentro de `submit_lead` (todo se revierte si alguno falla):
+  - Por IP: 5 envíos/día; error `form_quota_exceeded`. `ip_hash` = HMAC-SHA256(secreto del servidor, `CF-Connecting-IP`) con las IPv6 normalizadas a su /64, calculado siempre en el servidor de Next; la base nunca recibe la IP ni calcula el hash.
+  - Por correo: 3 envíos/día; clave `email:` + md5(minúsculas del email); error `form_email_quota_exceeded`.
+  - Global: 200 envíos/día; fila `ip_hash = '__global__'`; error `form_global_quota_exceeded`.
+  Todos son `P0001` con `hint = contact_alternatives` → 429 con las vías alternativas (P6). Se limpia en la misma purga que `chat_quota`.
 
-### `private.submit_lead(...)`
-- Función `security definer` con `search_path = ''` que solo ejecuta el rol de servicio (sin grant a `anon` ni `authenticated`): comprueba cuota, inserta `leads` (`source = form`) y devuelve el `id`. La Server Action de `/contacto` valida con zod, verifica Turnstile y la llama. Sustituye a `public_submit_contact`.
+### `public.submit_lead(...)` y `private.submit_lead(...)`
+- `private.submit_lead` es `security definer` con `search_path = ''` y sin `EXECUTE` para nadie salvo su dueño. `public.submit_lead` (mismos parámetros) es un wrapper `security definer` con `search_path = ''` y `EXECUTE` solo para `service_role`: es la única función de `public` que no ejecuta `authenticated`. Comprueba consentimiento, cuotas (arriba), inserta `leads` (`source = form`) y devuelve el `id`. La Server Action de `/contacto` valida con zod, verifica Turnstile, calcula `ip_hash` y la llama. Sustituye a `public_submit_contact`.
 
 ### Relación con el CRM
 
 - `leads` → `contacts` es 1 → 0..1 (`contacts.lead_id`) y `contacts` ← `leads` puede ser 1 → n (la misma persona escribe dos veces: el segundo se asigna solo al dueño y añade una `activity`).
 - K3 muestra «Interesados de este contacto» (sus `leads`) y, mientras exista, la conversación de origen.
 - El pipeline (7.2) no cambia: el `deal` nace en `new` al reclamar.
+
+
+### Baja de usuario y retención de auditoría (propuesta, sin código todavía)
+- **Baja:** primero se desactiva (`profiles.is_active = false`, `archived_at`), lo que corta el acceso sin perder historial; el borrado real (`auth.users`, que cascada a `profiles`) lo ejecuta el job `account.delete` en Omen, nunca un cliente. Antes de borrar: reasignar o archivar sus `contacts`, `deals` y `leads` (el admin decide), comprobar que no es el último admin y que no tiene subclosers (`on delete restrict`). Las FK de autoría (`activities.author_id`, `leads.assigned_to`, etc.) pasan a `null` y el hecho queda en `audit_log`.
+- **Auditoría:** `private.audit_log.actor_id` no tiene FK, así que sobrevive a la baja. Propuesta: conservar 24 meses y purgar en el job mensual; las filas de `profiles` con datos personales (`before`/`after`) se anonimizan a los 30 días de la baja (se conserva `row_id`, `action` y `at`). A confirmar con Jose antes de implementarlo.
 
 ---
 

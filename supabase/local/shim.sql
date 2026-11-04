@@ -5,7 +5,10 @@ create role service_role nologin noinherit bypassrls;
 create schema extensions;
 create schema auth;
 
+create extension pgtap with schema extensions;
+
 alter database josecoded_test set search_path to "$user", public, extensions;
+alter database josecoded_test set app.test_db to 'on';
 
 grant usage on schema public to anon, authenticated, service_role;
 grant usage on schema extensions to anon, authenticated, service_role;

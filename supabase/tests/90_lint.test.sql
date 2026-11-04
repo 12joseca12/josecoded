@@ -1,6 +1,6 @@
 begin;
 
-select plan(12);
+select plan(17);
 
 select is_empty(
   $$
@@ -156,6 +156,65 @@ select is_empty(
       and not exists (select 1 from pg_policy pol where pol.polrelid = c.oid and pol.polcmd in ('r', '*'))
   $$,
   'every table readable by authenticated has a select policy'
+);
+
+select is_empty(
+  $$
+    select p.oid::regprocedure::text
+    from pg_proc p
+    join pg_namespace n on n.oid = p.pronamespace
+    where n.nspname = 'public'
+      and has_function_privilege('authenticated', p.oid, 'execute')
+      and p.proname <> 'update_my_profile'
+  $$,
+  'update_my_profile is the only function in public callable by authenticated'
+);
+
+select is(
+  (
+    select string_agg(p.proname::text, ',' order by p.proname)
+    from pg_proc p
+    join pg_namespace n on n.oid = p.pronamespace
+    where n.nspname = 'public'
+      and p.prosecdef
+      and has_function_privilege('service_role', p.oid, 'execute')
+      and not has_function_privilege('authenticated', p.oid, 'execute')
+      and not has_function_privilege('anon', p.oid, 'execute')
+  ),
+  'submit_lead',
+  'submit_lead is the only service_role-only function in public'
+);
+
+select is_empty(
+  $$
+    select p.oid::regprocedure::text
+    from pg_proc p
+    join pg_namespace n on n.oid = p.pronamespace
+    where n.nspname = 'private'
+      and has_function_privilege('service_role', p.oid, 'execute')
+  $$,
+  'service_role cannot execute anything in private'
+);
+
+create function public.zz_default_acl_probe() returns integer language sql as 'select 1';
+create table public.zz_default_acl_probe_table (id integer);
+
+select is_empty(
+  $$
+    select r.rolname
+    from (values ('anon'), ('authenticated'), ('public')) as r (rolname)
+    where has_function_privilege(r.rolname, 'public.zz_default_acl_probe()'::regprocedure, 'execute')
+  $$,
+  'a new function in public is not executable by anon, authenticated or PUBLIC by default'
+);
+
+select is_empty(
+  $$
+    select r.rolname
+    from (values ('anon'), ('authenticated')) as r (rolname)
+    where has_table_privilege(r.rolname, 'public.zz_default_acl_probe_table'::regclass, 'select,insert,update,delete')
+  $$,
+  'a new table in public is not accessible to anon or authenticated by default'
 );
 
 select * from finish();

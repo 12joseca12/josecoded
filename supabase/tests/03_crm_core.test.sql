@@ -1,6 +1,8 @@
 begin;
 
-select plan(64);
+\ir support/helpers.sql
+
+select plan(71);
 
 select tests.clean();
 select tests.create_user('t-admin@example.com', 'admin', 'Admin');
@@ -11,9 +13,9 @@ select tests.create_user('t-freelance@example.com', 'freelance', 'Freelance');
 select tests.create_user('t-client@example.com', 'client', 'Client');
 
 insert into public.contacts (id, owner_id, full_name, email) values
-  ('00000000-0000-4000-8000-0000000000a1', tests.user_id('t-closer-a@example.com'), 'Contacto A', 'a@example.com'),
-  ('00000000-0000-4000-8000-0000000000a2', tests.user_id('t-sub-a@example.com'), 'Contacto S', 's@example.com'),
-  ('00000000-0000-4000-8000-0000000000b1', tests.user_id('t-closer-b@example.com'), 'Contacto B', 'b@example.com'),
+  ('00000000-0000-4000-8000-0000000000a1', md5('t-closer-a@example.com')::uuid, 'Contacto A', 'a@example.com'),
+  ('00000000-0000-4000-8000-0000000000a2', md5('t-sub-a@example.com')::uuid, 'Contacto S', 's@example.com'),
+  ('00000000-0000-4000-8000-0000000000b1', md5('t-closer-b@example.com')::uuid, 'Contacto B', 'b@example.com'),
   ('00000000-0000-4000-8000-0000000000c1', null, 'Contacto Sin dueno', 'n@example.com');
 
 insert into public.deals (id, contact_id, stage, via) values
@@ -22,20 +24,22 @@ insert into public.deals (id, contact_id, stage, via) values
   ('00000000-0000-4000-8000-0000000000d3', '00000000-0000-4000-8000-0000000000b1', 'new', 'freelance');
 
 insert into public.activities (contact_id, author_id, kind, body) values
-  ('00000000-0000-4000-8000-0000000000a1', tests.user_id('t-closer-a@example.com'), 'note', 'nota A'),
-  ('00000000-0000-4000-8000-0000000000b1', tests.user_id('t-closer-b@example.com'), 'note', 'nota B');
+  ('00000000-0000-4000-8000-0000000000a1', md5('t-closer-a@example.com')::uuid, 'note', 'nota A'),
+  ('00000000-0000-4000-8000-0000000000b1', md5('t-closer-b@example.com')::uuid, 'note', 'nota B');
 
 insert into public.leads (id, source, full_name, email, consent_at, status, assigned_to) values
-  ('00000000-0000-4000-8000-0000000000e1', 'form', 'Lead A', 'la@example.com', now(), 'assigned', tests.user_id('t-closer-a@example.com')),
-  ('00000000-0000-4000-8000-0000000000e2', 'form', 'Lead S', 'ls@example.com', now(), 'assigned', tests.user_id('t-sub-a@example.com')),
+  ('00000000-0000-4000-8000-0000000000e1', 'form', 'Lead A', 'la@example.com', now(), 'assigned', md5('t-closer-a@example.com')::uuid),
+  ('00000000-0000-4000-8000-0000000000e2', 'form', 'Lead S', 'ls@example.com', now(), 'assigned', md5('t-sub-a@example.com')::uuid),
   ('00000000-0000-4000-8000-0000000000e3', 'form', 'Lead libre', 'll@example.com', now(), 'new', null);
 
+reset role;
 select tests.logout();
 
 select throws_ok($$select * from public.contacts$$, '42501', null, 'anon cannot read contacts');
 select throws_ok($$select * from public.deals$$, '42501', null, 'anon cannot read deals');
 select throws_ok($$select * from public.activities$$, '42501', null, 'anon cannot read activities');
 
+reset role;
 select tests.login_as('t-closer-a@example.com');
 
 select results_eq(
@@ -55,7 +59,7 @@ select results_eq(
 );
 
 select throws_ok(
-  $$update public.contacts set owner_id = tests.user_id('t-closer-b@example.com') where full_name = 'Contacto A'$$,
+  $$update public.contacts set owner_id = md5('t-closer-b@example.com')::uuid where full_name = 'Contacto A'$$,
   '42501',
   'owner_change_admin_only',
   'closer cannot hand a contact to someone else'
@@ -74,7 +78,7 @@ select lives_ok(
 );
 
 select throws_ok(
-  $$insert into public.contacts (owner_id, full_name) values (tests.user_id('t-closer-b@example.com'), 'Para B')$$,
+  $$insert into public.contacts (owner_id, full_name) values (md5('t-closer-b@example.com')::uuid, 'Para B')$$,
   '42501',
   null,
   'closer cannot insert a contact for another owner'
@@ -96,6 +100,35 @@ select throws_ok(
 
 select throws_ok($$delete from public.contacts$$, '42501', null, 'contacts are never deleted');
 
+select throws_ok(
+  $$insert into public.contacts (owner_id, full_name, lead_id) values (private.uid(), 'Con lead', '00000000-0000-4000-8000-0000000000e1')$$,
+  '42501', null, 'client cannot set lead_id on insert'
+);
+select throws_ok(
+  $$insert into public.contacts (owner_id, full_name, source) values (private.uid(), 'Con source', 'form')$$,
+  '42501', null, 'client cannot set source on insert'
+);
+select throws_ok(
+  $$insert into public.contacts (owner_id, full_name, last_activity_at) values (private.uid(), 'Con actividad', now())$$,
+  '42501', null, 'client cannot set last_activity_at on insert'
+);
+select throws_ok(
+  $$update public.contacts set lead_id = '00000000-0000-4000-8000-0000000000e1' where full_name = 'Nuevo A'$$,
+  '42501', null, 'client cannot update lead_id'
+);
+select throws_ok(
+  $$update public.contacts set source = 'radar' where full_name = 'Nuevo A'$$,
+  '42501', null, 'client cannot update source'
+);
+select throws_ok(
+  $$update public.contacts set email = 'otro@example.com' where full_name = 'Contacto A'$$,
+  '42501', 'email_locked', 'email is locked once the contact has a deal'
+);
+select lives_ok(
+  $$update public.contacts set email = 'nuevo-a2@example.com' where full_name = 'Nuevo A'$$,
+  'email can change while the contact has no lead or deal'
+);
+
 select results_eq(
   $$select count(*)::int from public.activities$$,
   $$values (1)$$,
@@ -109,7 +142,7 @@ select lives_ok(
 );
 
 select throws_ok(
-  $$insert into public.activities (contact_id, author_id, kind) values ('00000000-0000-4000-8000-0000000000a1', tests.user_id('t-closer-b@example.com'), 'note')$$,
+  $$insert into public.activities (contact_id, author_id, kind) values ('00000000-0000-4000-8000-0000000000a1', md5('t-closer-b@example.com')::uuid, 'note')$$,
   '42501',
   null,
   'activity author must be the caller'
@@ -155,13 +188,13 @@ select results_eq(
 
 select lives_ok(
   $$insert into public.deals (id, contact_id, via, owner_id)
-    values ('00000000-0000-4000-8000-0000000000d4', '00000000-0000-4000-8000-0000000000a1', 'hiring', tests.user_id('t-closer-b@example.com'))$$,
+    values ('00000000-0000-4000-8000-0000000000d4', '00000000-0000-4000-8000-0000000000a1', 'hiring', md5('t-closer-b@example.com')::uuid)$$,
   'closer opens a deal on own contact'
 );
 
 select is(
   (select owner_id from public.deals where id = '00000000-0000-4000-8000-0000000000d4'),
-  tests.user_id('t-closer-a@example.com'),
+  md5('t-closer-a@example.com')::uuid,
   'deal owner is copied from the contact, not from the client'
 );
 
@@ -227,6 +260,7 @@ select is((select private.owns_lead('00000000-0000-4000-8000-0000000000e2')), tr
 select is((select private.owns_lead('00000000-0000-4000-8000-0000000000e3')), false, 'closer does not own an unassigned lead');
 select is((select private.is_closer()), true, 'is_closer true for closer with aal2');
 
+reset role;
 select tests.login_aal1('t-closer-a@example.com');
 
 select is((select count(*) from public.contacts), 0::bigint, 'closer with aal1 sees no contacts');
@@ -238,6 +272,7 @@ select throws_ok(
   'closer with aal1 cannot insert contacts'
 );
 
+reset role;
 select tests.login_as('t-sub-a@example.com');
 
 select results_eq(
@@ -249,6 +284,7 @@ select results_eq(
 select is((select private.owns_lead('00000000-0000-4000-8000-0000000000e1')), false, 'subcloser does not own the lead of the parent');
 select is((select private.owns_lead('00000000-0000-4000-8000-0000000000e2')), true, 'subcloser owns own lead');
 
+reset role;
 select tests.login_as('t-closer-b@example.com');
 
 select results_eq(
@@ -260,6 +296,7 @@ select results_eq(
 select is((select count(*) from public.deals), 1::bigint, 'other closer sees only own deals');
 select is((select count(*) from public.activities), 1::bigint, 'other closer sees only own activities');
 
+reset role;
 select tests.login_as('t-freelance@example.com');
 
 select is((select count(*) from public.contacts), 0::bigint, 'freelance sees no contacts');
@@ -270,10 +307,12 @@ select throws_ok(
   'freelance cannot insert contacts'
 );
 
+reset role;
 select tests.login_as('t-client@example.com');
 
 select is((select count(*) from public.contacts) + (select count(*) from public.deals) + (select count(*) from public.activities), 0::bigint, 'client sees no CRM data');
 
+reset role;
 select tests.login_as('t-admin@example.com');
 
 select is((select count(*) from public.contacts), 5::bigint, 'admin sees every contact');
@@ -299,7 +338,7 @@ select throws_ok(
 );
 
 select lives_ok(
-  $$update public.contacts set owner_id = tests.user_id('t-closer-b@example.com') where full_name = 'Contacto A'$$,
+  $$update public.contacts set owner_id = md5('t-closer-b@example.com')::uuid where full_name = 'Contacto A'$$,
   'admin reassigns a contact'
 );
 
@@ -315,7 +354,7 @@ reset role;
 select is(
   (select count(*) from private.audit_log
    where table_name = 'contacts' and action = 'update' and row_id = '00000000-0000-4000-8000-0000000000a1'
-     and actor_id = tests.user_id('t-admin@example.com')),
+     and actor_id = md5('t-admin@example.com')::uuid),
   1::bigint,
   'owner change on a contact is audited with the actor'
 );

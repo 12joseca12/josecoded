@@ -68,7 +68,7 @@ create table private.form_quota (
   day date not null,
   count integer not null default 0,
   primary key (ip_hash, day),
-  constraint form_quota_ip_hash_length check (char_length(ip_hash) between 16 and 128),
+  constraint form_quota_key_shape check (ip_hash = '__global__' or char_length(ip_hash) between 16 and 128),
   constraint form_quota_count_positive check (count >= 0)
 );
 
@@ -84,7 +84,7 @@ create trigger leads_set_updated_at
 before update on public.leads
 for each row execute function private.set_updated_at();
 
-grant select, insert, update on public.leads to authenticated;
+grant select, insert on public.leads to authenticated;
 
 create policy leads_select
 on public.leads
@@ -96,13 +96,6 @@ create policy leads_insert
 on public.leads
 for insert
 to authenticated
-with check ((select private.is_admin()));
-
-create policy leads_update
-on public.leads
-for update
-to authenticated
-using ((select private.is_admin()))
 with check ((select private.is_admin()));
 
 create function private.submit_lead(
@@ -154,6 +147,26 @@ begin
     raise exception 'form_quota_exceeded' using errcode = 'P0001', hint = 'contact_alternatives';
   end if;
 
+  if p_email is not null then
+    insert into private.form_quota as q (ip_hash, day, count)
+    values ('email:' || md5(lower(p_email::text)), (now() at time zone 'utc')::date, 1)
+    on conflict (ip_hash, day) do update set count = q.count + 1
+    returning q.count into v_count;
+
+    if v_count > 3 then
+      raise exception 'form_email_quota_exceeded' using errcode = 'P0001', hint = 'contact_alternatives';
+    end if;
+  end if;
+
+  insert into private.form_quota as q (ip_hash, day, count)
+  values ('__global__', (now() at time zone 'utc')::date, 1)
+  on conflict (ip_hash, day) do update set count = q.count + 1
+  returning q.count into v_count;
+
+  if v_count > 200 then
+    raise exception 'form_global_quota_exceeded' using errcode = 'P0001', hint = 'contact_alternatives';
+  end if;
+
   insert into public.leads (
     source, via, pack_id, full_name, email, phone, organization, message, offer_url, company,
     wanted_by, has_domain, has_store_accounts, page_path, locale, consent_at
@@ -172,9 +185,45 @@ $$;
 revoke all on function private.submit_lead(
   public.lead_source, public.contact_via, uuid, text, extensions.citext, text, text, text, text,
   text, date, boolean, boolean, text, public.app_locale, boolean, text
+) from public, anon, authenticated, service_role;
+
+create function public.submit_lead(
+  p_source public.lead_source,
+  p_via public.contact_via default null,
+  p_pack_id uuid default null,
+  p_full_name text default null,
+  p_email extensions.citext default null,
+  p_phone text default null,
+  p_organization text default null,
+  p_message text default null,
+  p_offer_url text default null,
+  p_company text default null,
+  p_wanted_by date default null,
+  p_has_domain boolean default null,
+  p_has_store_accounts boolean default null,
+  p_page_path text default null,
+  p_locale public.app_locale default null,
+  p_consent boolean default false,
+  p_ip_hash text default null
+)
+returns uuid
+language sql
+security definer
+set search_path = ''
+as $$
+  select private.submit_lead(
+    p_source, p_via, p_pack_id, p_full_name, p_email, p_phone, p_organization, p_message,
+    p_offer_url, p_company, p_wanted_by, p_has_domain, p_has_store_accounts, p_page_path,
+    p_locale, p_consent, p_ip_hash
+  )
+$$;
+
+revoke all on function public.submit_lead(
+  public.lead_source, public.contact_via, uuid, text, extensions.citext, text, text, text, text,
+  text, date, boolean, boolean, text, public.app_locale, boolean, text
 ) from public, anon, authenticated;
 
-grant execute on function private.submit_lead(
+grant execute on function public.submit_lead(
   public.lead_source, public.contact_via, uuid, text, extensions.citext, text, text, text, text,
   text, date, boolean, boolean, text, public.app_locale, boolean, text
 ) to service_role;

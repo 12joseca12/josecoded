@@ -189,18 +189,32 @@ as $$
   select current_user in ('anon', 'authenticated')
 $$;
 
+create function private.contact_has_history(p_contact_id uuid)
+returns boolean
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select exists (select 1 from public.contacts c where c.id = p_contact_id and c.lead_id is not null)
+    or exists (select 1 from public.leads l where l.contact_id = p_contact_id)
+    or exists (select 1 from public.deals d where d.contact_id = p_contact_id)
+$$;
+
 create function private.contacts_guard()
 returns trigger
 language plpgsql
 set search_path = ''
 as $$
 begin
-  if tg_op = 'UPDATE'
-    and new.owner_id is distinct from old.owner_id
-    and private.is_api_client_role()
-    and not private.is_admin()
-  then
-    raise exception 'owner_change_admin_only' using errcode = '42501';
+  if tg_op = 'UPDATE' and private.is_api_client_role() then
+    if new.owner_id is distinct from old.owner_id and not private.is_admin() then
+      raise exception 'owner_change_admin_only' using errcode = '42501';
+    end if;
+
+    if new.email::text is distinct from old.email::text and private.contact_has_history(old.id) then
+      raise exception 'email_locked' using errcode = '42501';
+    end if;
   end if;
 
   return new;
@@ -255,6 +269,7 @@ $$;
 create function private.touch_contact_last_activity()
 returns trigger
 language plpgsql
+security definer
 set search_path = ''
 as $$
 begin
@@ -302,6 +317,7 @@ revoke all on function private.is_closer() from public, anon, authenticated;
 revoke all on function private.owns_contact(uuid) from public, anon, authenticated;
 revoke all on function private.owns_lead(uuid) from public, anon, authenticated;
 revoke all on function private.is_api_client_role() from public, anon, authenticated;
+revoke all on function private.contact_has_history(uuid) from public, anon, authenticated;
 revoke all on function private.contacts_guard() from public, anon, authenticated;
 revoke all on function private.deals_guard() from public, anon, authenticated;
 revoke all on function private.touch_contact_last_activity() from public, anon, authenticated;
@@ -310,8 +326,17 @@ grant execute on function private.is_closer() to authenticated;
 grant execute on function private.owns_contact(uuid) to authenticated;
 grant execute on function private.owns_lead(uuid) to authenticated;
 grant execute on function private.is_api_client_role() to authenticated;
+grant execute on function private.contact_has_history(uuid) to authenticated;
 
-grant select, insert, update on public.contacts to authenticated;
+grant select on public.contacts to authenticated;
+grant insert (
+  owner_id, full_name, email, phone, organization, role_title, city, kind, linkedin_url, website,
+  tags, notes, next_action, next_action_at
+) on public.contacts to authenticated;
+grant update (
+  owner_id, full_name, email, phone, organization, role_title, city, kind, linkedin_url, website,
+  tags, notes, next_action, next_action_at, archived_at
+) on public.contacts to authenticated;
 grant select, insert, update on public.deals to authenticated;
 grant select, insert on public.activities to authenticated;
 

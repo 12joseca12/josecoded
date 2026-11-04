@@ -2,15 +2,16 @@ create extension if not exists citext with schema extensions;
 
 create schema if not exists private;
 
-revoke all on schema private from public;
-grant usage on schema private to authenticated, service_role;
+revoke all on schema private from public, anon;
+grant usage on schema private to authenticated;
 
-alter default privileges in schema public revoke all on tables from anon, authenticated;
-alter default privileges in schema public revoke all on sequences from anon, authenticated;
-alter default privileges in schema public revoke all on functions from anon, authenticated;
-alter default privileges in schema private revoke all on tables from anon, authenticated;
-alter default privileges in schema private revoke all on sequences from anon, authenticated;
-alter default privileges in schema private revoke all on functions from anon, authenticated;
+alter default privileges for role postgres revoke execute on functions from public;
+alter default privileges for role postgres in schema public revoke all on tables from anon, authenticated;
+alter default privileges for role postgres in schema public revoke all on sequences from anon, authenticated;
+alter default privileges for role postgres in schema public revoke all on functions from anon, authenticated;
+alter default privileges for role postgres in schema private revoke all on tables from anon, authenticated;
+alter default privileges for role postgres in schema private revoke all on sequences from anon, authenticated;
+alter default privileges for role postgres in schema private revoke all on functions from anon, authenticated;
 
 create type public.user_role as enum ('admin', 'closer', 'freelance', 'client');
 create type public.app_locale as enum ('es', 'en');
@@ -40,6 +41,7 @@ create table public.profiles (
 );
 
 create index profiles_parent_closer_id_idx on public.profiles (parent_closer_id);
+create unique index profiles_single_admin_key on public.profiles (role) where role = 'admin';
 
 create table private.audit_log (
   id bigint generated always as identity primary key,
@@ -164,13 +166,14 @@ begin
   end if;
 
   if new.parent_closer_id is not null then
-    if not exists (
-      select 1
-      from public.profiles p
-      where p.id = new.parent_closer_id
-        and p.role = 'closer'
-        and p.parent_closer_id is null
-    ) then
+    perform 1
+    from public.profiles p
+    where p.id = new.parent_closer_id
+      and p.role = 'closer'
+      and p.parent_closer_id is null
+    for update;
+
+    if not found then
       raise exception 'invalid_parent_closer' using errcode = '23514';
     end if;
 
@@ -185,6 +188,23 @@ begin
     select 1 from public.profiles c where c.parent_closer_id = new.id
   ) then
     raise exception 'closer_has_subclosers' using errcode = '23514';
+  end if;
+
+  if tg_op = 'UPDATE'
+    and old.role = 'admin' and old.is_active and old.archived_at is null
+    and (new.role <> 'admin' or not new.is_active or new.archived_at is not null)
+  then
+    perform 1
+    from public.profiles a
+    where a.role = 'admin'
+      and a.is_active
+      and a.archived_at is null
+      and a.id <> new.id
+    for update;
+
+    if not found then
+      raise exception 'last_admin_required' using errcode = '23514';
+    end if;
   end if;
 
   return new;
