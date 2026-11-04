@@ -26,6 +26,7 @@ interface TurnstileFieldProps {
   siteKey: string;
   scriptUrl: string;
   locale: string;
+  action?: string;
   label: string;
   loadingLabel: string;
   loadFailedLabel: string;
@@ -43,6 +44,7 @@ export function TurnstileField({
   siteKey,
   scriptUrl,
   locale,
+  action = "contact",
   label,
   loadingLabel,
   loadFailedLabel,
@@ -81,7 +83,7 @@ export function TurnstileField({
         if (!mount.current || widget.current !== null) return;
         widget.current = api.render(mount.current, {
           sitekey: siteKey,
-          action: "contact",
+          action,
           language: locale,
           theme: "light",
           size: "flexible",
@@ -101,7 +103,7 @@ export function TurnstileField({
         setState("failed");
       },
     );
-  }, [scriptUrl, siteKey, locale]);
+  }, [scriptUrl, siteKey, locale, action]);
 
   useEffect(() => {
     const node = frame.current;

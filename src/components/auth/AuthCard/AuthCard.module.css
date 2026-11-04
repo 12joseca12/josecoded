@@ -1,0 +1,28 @@
+.page {
+  display: grid;
+  justify-items: center;
+  padding: calc(var(--nav-h) + var(--space-7)) var(--gutter) var(--space-8);
+}
+
+.card {
+  container-type: inline-size;
+  display: grid;
+  gap: var(--space-5);
+  width: 100%;
+  max-width: 32rem;
+}
+
+.head {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.lead {
+  color: var(--ink-soft);
+  font-size: var(--fs-body);
+  line-height: var(--lh-lead);
+}
+
+.head:focus {
+  outline: none;
+}

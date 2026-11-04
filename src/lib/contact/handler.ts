@@ -47,7 +47,12 @@ function buildDeps(env: Record<string, string | undefined>): ContactDeps | null 
         return { ok: false, error: null };
       }
     },
-    rateLimit: async (key) => passesRateLimit(await findContactLimiter(), key),
+    rateLimit: async (key) =>
+      passesRateLimit(await findContactLimiter(), key, {
+        onMissing: () => {
+          if (!config.loopback) console.error("limiter_missing", "CONTACT_LIMITER");
+        },
+      }),
     reportFailure: (code) => {
       console.error("contact_submit_failed", code);
     },

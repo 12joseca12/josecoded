@@ -36,6 +36,7 @@ export default defineConfig({
       env: {
         ENABLE_DEV_PAGES: "true",
         NEXT_PUBLIC_SUPABASE_URL: mockOrigin,
+        NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "test-publishable-key",
         SUPABASE_SERVICE_ROLE_KEY: "test-service-role-key",
         TURNSTILE_SECRET_KEY: "test-turnstile-secret",
         FORM_IP_HASH_SECRET: "test-ip-hash-secret",

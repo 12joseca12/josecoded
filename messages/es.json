@@ -617,6 +617,173 @@
       }
     }
   },
+  "auth": {
+    "meta": {
+      "title": "Entrar",
+      "description": "Acceso privado con código por correo."
+    },
+    "login": {
+      "title": "Entrar",
+      "lead": "Escribe tu correo y te envío un código de 6 dígitos. Solo para cuentas invitadas.",
+      "emailLabel": "Correo",
+      "emailHint": "El de tu invitación.",
+      "send": "Enviar código",
+      "sending": "Enviando código",
+      "verificationLabel": "Verificación de seguridad",
+      "verificationLoading": "Cargando verificación",
+      "verificationLoadFailed": "No se ha podido cargar la verificación.",
+      "verificationRetry": "Reintentar",
+      "codeTitle": "Revisa tu correo",
+      "codeLead": "Si {email} tiene una cuenta, te he enviado un código de 6 dígitos. Caduca en 10 minutos.",
+      "codeLabel": "Código de 6 dígitos",
+      "codeHint": "Solo números.",
+      "verify": "Entrar",
+      "verifying": "Comprobando código",
+      "resend": "Reenviar código",
+      "resendIn": "Reenviar en {seconds} s",
+      "resent": "Código reenviado.",
+      "changeEmail": "Usar otro correo",
+      "genericError": "Revisa este campo.",
+      "errors": {
+        "email_required": "Escribe tu correo.",
+        "email_invalid": "Escribe un correo válido.",
+        "code_invalid": "El código tiene 6 números.",
+        "verification_required": "Completa la verificación de seguridad.",
+        "factor_invalid": "Recarga la página e inténtalo otra vez."
+      },
+      "wrongCode": {
+        "title": "Código incorrecto o caducado",
+        "text": "Comprueba los 6 números o pide un código nuevo."
+      },
+      "rateLimited": {
+        "title": "Demasiados intentos",
+        "text": "Espera un minuto antes de volver a intentarlo."
+      },
+      "verificationFailed": {
+        "title": "No se ha podido verificar",
+        "text": "Recarga la verificación e inténtalo otra vez."
+      },
+      "failed": {
+        "title": "No he podido enviar el código",
+        "text": "Es un fallo mío, no tuyo. Inténtalo de nuevo en un momento."
+      },
+      "unavailable": {
+        "title": "El acceso no está disponible",
+        "text": "Esta zona aún no está activa en este entorno."
+      },
+      "google": "Entrar con Google",
+      "googleDivider": "o"
+    },
+    "totp": {
+      "meta": {
+        "title": "Segundo factor",
+        "description": "Verificación en dos pasos."
+      },
+      "enrollTitle": "Configura tu autenticador",
+      "enrollLead": "Tu rol exige un segundo factor. Usa una app como 1Password, Authy o Google Authenticator.",
+      "enrollStart": "Generar código QR",
+      "enrollStarting": "Generando código QR",
+      "scanLabel": "Escanea el código con tu app",
+      "qrAlt": "Código QR para añadir josecoded a tu app de autenticación",
+      "secretLabel": "Si no puedes escanear, escribe esta clave",
+      "challengeTitle": "Segundo factor",
+      "challengeLead": "Escribe el código de 6 dígitos de tu app de autenticación.",
+      "codeLabel": "Código del autenticador",
+      "codeHint": "Solo números.",
+      "verify": "Verificar",
+      "verifying": "Verificando",
+      "lostDevice": "¿Has perdido el dispositivo?",
+      "lostDeviceLink": "Escribe a Jose",
+      "genericError": "Revisa este campo.",
+      "errors": {
+        "email_required": "Escribe tu correo.",
+        "email_invalid": "Escribe un correo válido.",
+        "code_invalid": "El código tiene 6 números.",
+        "verification_required": "Completa la verificación de seguridad.",
+        "factor_invalid": "Recarga la página e inténtalo otra vez."
+      },
+      "wrongCode": {
+        "title": "Código incorrecto",
+        "text": "El código cambia cada 30 segundos. Prueba con el siguiente."
+      },
+      "rateLimited": {
+        "title": "Demasiados intentos",
+        "text": "Espera un minuto antes de volver a intentarlo."
+      },
+      "failed": {
+        "title": "No se ha podido verificar",
+        "text": "Inténtalo de nuevo en un momento."
+      },
+      "unavailable": {
+        "title": "El acceso no está disponible",
+        "text": "Esta zona aún no está activa en este entorno."
+      }
+    }
+  },
+  "admin": {
+    "brandLabel": "josecoded admin, ir al resumen",
+    "brandWord": "josecoded admin",
+    "navLabel": "Administración",
+    "userLabel": "Sesión iniciada como {name}",
+    "signOut": "Salir",
+    "signingOut": "Saliendo",
+    "nav": {
+      "overview": "Resumen",
+      "leads": "Interesados"
+    },
+    "overview": {
+      "meta": {
+        "title": "Resumen"
+      },
+      "title": "Resumen",
+      "lead": "Panel del admin.",
+      "emptyTitle": "Aún no hay nada que resumir",
+      "emptyText": "Los contadores y el estado de Omen llegan con el siguiente bloque. Mientras, revisa los interesados.",
+      "emptyAction": "Ver interesados"
+    },
+    "leads": {
+      "meta": {
+        "title": "Interesados"
+      },
+      "title": "Interesados",
+      "lead": "Todo lo que llega con intención de contratar, lo más reciente primero.",
+      "region": "Tabla de interesados",
+      "caption": "Interesados, del más reciente al más antiguo",
+      "loading": "Cargando interesados",
+      "limit": "Mostrando los {count} más recientes.",
+      "columns": {
+        "via": "Vía",
+        "name": "Nombre",
+        "email": "Correo",
+        "status": "Estado",
+        "date": "Fecha"
+      },
+      "via": {
+        "hiring": "Contratación",
+        "freelance": "Freelance",
+        "pack": "Pack",
+        "none": "Sin vía"
+      },
+      "noEmail": "Sin correo",
+      "status": {
+        "new": "Nuevo",
+        "assigned": "Asignado",
+        "contacted": "Contactado",
+        "converted": "Convertido",
+        "discarded": "Descartado"
+      },
+      "empty": {
+        "title": "Nadie ha escrito todavía",
+        "text": "Cuando alguien rellene el formulario de contacto aparecerá aquí."
+      },
+      "error": {
+        "title": "No he podido cargar los interesados",
+        "text": "Inténtalo otra vez. Si sigue fallando, mira el estado de Supabase.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      }
+    }
+  },
   "freelancePage": {
     "meta": {
       "title": "Programador freelance por horas y por tarea",
