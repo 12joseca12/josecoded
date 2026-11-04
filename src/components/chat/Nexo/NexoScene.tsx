@@ -8,15 +8,14 @@ import {
   useAnimationFrame,
   useMotionValue,
   useSpring,
-  useTransform,
 } from "motion/react";
 import { useEffect, useId, useMemo, useState } from "react";
 
 import type { NexoSize, NexoState } from "@/types/nexo";
 
-import { orbit, orbitBack, orbitFront } from "./geometry";
+import { orbit, orbitPaths } from "./geometry";
 import styles from "./Nexo.module.css";
-import { type Part, parts, ringSpeed, variantsFor } from "./poses";
+import { type Part, parts, ringPrecession, ringSpeed, variantsFor } from "./poses";
 import { useOnScreen, useTabVisible } from "./useOnScreen";
 import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
 
@@ -28,47 +27,86 @@ export interface NexoSceneProps {
   paused: boolean;
 }
 
-const restingHighlight = 0.35;
-const circuit = 2 + orbit.highlight;
+const maxDelta = 50;
 
-function useOrbit(state: NexoState, reduced: boolean) {
-  const phase = useMotionValue(restingHighlight + orbit.highlight);
-  const speed = useSpring(0, { stiffness: 40, damping: 18 });
+function useOrbit(state: NexoState, still: boolean, reduced: boolean) {
+  const rest = useMemo(() => orbitPaths(orbit.restPrecession, orbit.restPhase), []);
+  const precession = useMotionValue<number>(orbit.restPrecession);
+  const phase = useMotionValue<number>(orbit.restPhase);
+  const spinSpeed = useSpring(0, { stiffness: 40, damping: 18 });
+  const driftSpeed = useSpring(0, { stiffness: 30, damping: 20 });
+  const front = useMotionValue(rest.front);
+  const back = useMotionValue(rest.back);
+  const sparkFront = useMotionValue(rest.sparkFront);
+  const sparkBack = useMotionValue(rest.sparkBack);
   useEffect(() => {
-    speed.set(reduced ? 0 : ringSpeed[state]);
-  }, [reduced, speed, state]);
-  const front = useTransform(phase, (value) => (value % circuit) - orbit.highlight);
-  const back = useTransform(front, (value) => value - 1);
-  return { phase, speed, front, back };
+    spinSpeed.set(still ? 0 : ringSpeed[state]);
+    driftSpeed.set(still ? 0 : ringPrecession[state]);
+  }, [driftSpeed, spinSpeed, state, still]);
+  useEffect(() => {
+    if (!reduced) return;
+    precession.set(orbit.restPrecession);
+    phase.set(orbit.restPhase);
+    front.set(rest.front);
+    back.set(rest.back);
+    sparkFront.set(rest.sparkFront);
+    sparkBack.set(rest.sparkBack);
+  }, [back, front, phase, precession, reduced, rest, sparkBack, sparkFront]);
+  return { precession, phase, spinSpeed, driftSpeed, front, back, sparkFront, sparkBack };
 }
 
-function OrbitDriver({ phase, speed }: { phase: MotionValue<number>; speed: MotionValue<number> }) {
+type Orbit = ReturnType<typeof useOrbit>;
+
+function OrbitDriver({ orbitState }: { orbitState: Orbit }) {
+  const { precession, phase, spinSpeed, driftSpeed, front, back, sparkFront, sparkBack } =
+    orbitState;
   useAnimationFrame((_, delta) => {
-    phase.set(phase.get() + delta * speed.get());
+    const step = Math.min(delta, maxDelta);
+    phase.set((phase.get() + step * spinSpeed.get()) % 1);
+    precession.set((precession.get() + step * driftSpeed.get()) % 1);
+    const paths = orbitPaths(precession.get(), phase.get());
+    front.set(paths.front);
+    back.set(paths.back);
+    sparkFront.set(paths.sparkFront);
+    sparkBack.set(paths.sparkBack);
   });
   return null;
 }
 
 function OrbitArc({
   d,
-  offset,
+  spark,
   variants,
 }: {
-  d: string;
-  offset: MotionValue<number>;
+  d: MotionValue<string>;
+  spark: MotionValue<string>;
   variants: ReturnType<typeof variantsFor>;
 }) {
   return (
     <m.g variants={variants} style={{ originX: 0.5, originY: 0.5 }}>
-      <path className={styles.ringGlow} d={d} strokeWidth={10} fill="none" strokeLinecap="round" />
-      <path className={styles.ringCore} d={d} strokeWidth={4} fill="none" strokeLinecap="round" />
+      <m.path
+        className={styles.ringGlow}
+        d={d}
+        strokeWidth={10}
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <m.path
+        className={styles.ringCore}
+        d={d}
+        strokeWidth={4}
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
       <m.path
         className={styles.ringSpark}
-        d={d}
+        d={spark}
         strokeWidth={4.6}
         fill="none"
         strokeLinecap="round"
-        style={{ pathLength: orbit.highlight, pathSpacing: 2, pathOffset: offset }}
+        strokeLinejoin="round"
       />
     </m.g>
   );
@@ -90,7 +128,7 @@ export function NexoScene({ state, size, label, reducedMotion, paused }: NexoSce
       >,
     [still],
   );
-  const { phase, speed, front, back } = useOrbit(state, still);
+  const orbitState = useOrbit(state, still, reduced);
   const fill = (name: string) => `url(#${id}${name})`;
   const { x: ox, y: oy } = orbit.centre;
 
@@ -128,58 +166,60 @@ export function NexoScene({ state, size, label, reducedMotion, paused }: NexoSce
         </defs>
         <g aria-hidden="true">
           <m.g variants={variants.float} style={{ originX: 0.5, originY: 1 }}>
-            <g transform={`translate(${ox} ${oy}) rotate(${orbit.tilt})`}>
-              <OrbitArc d={orbitBack} offset={back} variants={variants.ring} />
+            <g transform={`translate(${ox} ${oy})`}>
+              <OrbitArc d={orbitState.back} spark={orbitState.sparkBack} variants={variants.ring} />
             </g>
 
-            <m.g variants={variants.ear}>
-              <circle className={styles.pod} cx={31} cy={78} r={17} />
-              <circle className={styles.podGlow} cx={31} cy={78} r={13} strokeWidth={4} />
-              <circle className={styles.podRing} cx={31} cy={78} r={10.5} strokeWidth={2.6} />
+            <m.g variants={variants.earLeft}>
+              <circle className={styles.pod} cx={40} cy={78} r={11} />
+              <circle className={styles.podGlow} cx={40} cy={78} r={8.5} strokeWidth={3} />
+              <circle className={styles.podRing} cx={40} cy={78} r={6.5} strokeWidth={2} />
             </m.g>
-            <m.g variants={variants.ear}>
-              <circle className={styles.pod} cx={169} cy={78} r={17} />
-              <circle className={styles.podGlow} cx={169} cy={78} r={13} strokeWidth={4} />
-              <circle className={styles.podRing} cx={169} cy={78} r={10.5} strokeWidth={2.6} />
+            <m.g variants={variants.earRight}>
+              <circle className={styles.pod} cx={160} cy={78} r={11} />
+              <circle className={styles.podGlow} cx={160} cy={78} r={8.5} strokeWidth={3} />
+              <circle className={styles.podRing} cx={160} cy={78} r={6.5} strokeWidth={2} />
             </m.g>
 
-            <path
-              fill={fill("head")}
-              d="M100 128C122 128 134 144 134 164C134 184 120 196 100 196C80 196 66 184 66 164C66 144 78 128 100 128Z"
-            />
-            <path
-              className={styles.panel}
-              d="M100 146C112 146 119 156 119 168C119 182 111 190 100 190C89 190 81 182 81 168C81 156 88 146 100 146Z"
-            />
-            <path
-              className={styles.glyph}
-              d="M92.5 161.5L86.5 168L92.5 174.5M107.5 161.5L113.5 168L107.5 174.5M102.5 160L97.5 176"
-              strokeWidth={2.4}
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
+            <g transform="translate(0 -12)">
+              <path
+                fill={fill("head")}
+                d="M100 128C122 128 134 144 134 164C134 184 120 196 100 196C80 196 66 184 66 164C66 144 78 128 100 128Z"
+              />
+              <path
+                className={styles.panel}
+                d="M100 146C112 146 119 156 119 168C119 182 111 190 100 190C89 190 81 182 81 168C81 156 88 146 100 146Z"
+              />
+              <path
+                className={styles.glyph}
+                d="M92.5 161.5L86.5 168L92.5 174.5M107.5 161.5L113.5 168L107.5 174.5M102.5 160L97.5 176"
+                strokeWidth={2.4}
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
 
-            <m.ellipse
-              className={styles.arm}
-              fill={fill("head")}
-              cx={59}
-              cy={152}
-              rx={9}
-              ry={13}
-              variants={variants.armLeft}
-              style={{ originX: 0.5, originY: 0.15 }}
-            />
-            <m.ellipse
-              className={styles.arm}
-              fill={fill("head")}
-              cx={141}
-              cy={152}
-              rx={9}
-              ry={13}
-              variants={variants.armRight}
-              style={{ originX: 0.5, originY: 0.15 }}
-            />
+              <m.ellipse
+                className={styles.arm}
+                fill={fill("head")}
+                cx={59}
+                cy={152}
+                rx={9}
+                ry={13}
+                variants={variants.armLeft}
+                style={{ originX: 0.5, originY: 0.15 }}
+              />
+              <m.ellipse
+                className={styles.arm}
+                fill={fill("head")}
+                cx={141}
+                cy={152}
+                rx={9}
+                ry={13}
+                variants={variants.armRight}
+                style={{ originX: 0.5, originY: 0.15 }}
+              />
+            </g>
 
             <path
               fill={fill("head")}
@@ -234,34 +274,16 @@ export function NexoScene({ state, size, label, reducedMotion, paused }: NexoSce
               <m.circle className={styles.dot} cx={114} cy={74} r={4.5} variants={variants.dotC} />
             </m.g>
 
-            <m.g variants={variants.question} style={{ originX: 0.5, originY: 1 }}>
-              <path
-                className={styles.mark}
-                d="M148 22Q148 14 156 14Q164 14 164 21Q164 26 158 30Q155 32 155 37"
-                strokeWidth={4}
-                fill="none"
-                strokeLinecap="round"
+            <g transform={`translate(${ox} ${oy})`}>
+              <OrbitArc
+                d={orbitState.front}
+                spark={orbitState.sparkFront}
+                variants={variants.ring}
               />
-              <circle className={styles.markDot} cx={155} cy={44} r={2.6} />
-            </m.g>
-
-            <m.g variants={variants.sleep}>
-              <path
-                className={styles.mark}
-                d="M150 30H160L150 42H160"
-                strokeWidth={3.4}
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </m.g>
-
-            <g transform={`translate(${ox} ${oy}) rotate(${orbit.tilt})`}>
-              <OrbitArc d={orbitFront} offset={front} variants={variants.ring} />
             </g>
           </m.g>
         </g>
-        {still ? null : <OrbitDriver phase={phase} speed={speed} />}
+        {still ? null : <OrbitDriver orbitState={orbitState} />}
       </m.svg>
     </LazyMotion>
   );

@@ -35,12 +35,99 @@ export function mouthPath(shape: MouthShape) {
 }
 
 export const orbit = {
-  centre: { x: 100, y: 158 },
-  tilt: -12,
-  radiusX: 88,
-  radiusY: 18,
-  highlight: 0.22,
+  centre: { x: 100, y: 148 },
+  radius: 88,
+  elevation: 0.26,
+  tiltDegrees: 7,
+  biasDegrees: -5,
+  spark: 0.11,
+  restPrecession: 0.25,
+  restPhase: 0.35,
 } as const;
 
-export const orbitBack = `M${-orbit.radiusX} 0A${orbit.radiusX} ${orbit.radiusY} 0 0 1 ${orbit.radiusX} 0`;
-export const orbitFront = `M${orbit.radiusX} 0A${orbit.radiusX} ${orbit.radiusY} 0 0 1 ${-orbit.radiusX} 0`;
+export interface OrbitPaths {
+  front: string;
+  back: string;
+  sparkFront: string;
+  sparkBack: string;
+}
+
+interface Sample {
+  x: number;
+  y: number;
+  depth: number;
+}
+
+const turn = Math.PI * 2;
+const degrees = Math.PI / 180;
+const tilt = orbit.tiltDegrees * degrees;
+const bias = orbit.biasDegrees * degrees;
+const lift = Math.sqrt(1 - orbit.elevation ** 2);
+
+function sample(theta: number, azimuth: number): Sample {
+  const px = orbit.radius * Math.cos(theta);
+  const pz = orbit.radius * Math.sin(theta);
+  const ax = Math.cos(azimuth);
+  const az = Math.sin(azimuth);
+  const along = ax * px + az * pz;
+  const y = (az * px - ax * pz) * Math.sin(tilt);
+  const x = px * Math.cos(tilt) + ax * along * (1 - Math.cos(tilt));
+  const z = pz * Math.cos(tilt) + az * along * (1 - Math.cos(tilt));
+  const screenY = y * lift + z * orbit.elevation;
+  return {
+    x: x * Math.cos(bias) - screenY * Math.sin(bias),
+    y: x * Math.sin(bias) + screenY * Math.cos(bias),
+    depth: z * lift - y * orbit.elevation,
+  };
+}
+
+const point = (x: number, y: number) => `${x.toFixed(1)} ${y.toFixed(1)}`;
+
+function split(samples: Sample[]) {
+  const sides = { front: "", back: "" };
+  let side: keyof typeof sides = "front";
+  samples.forEach((current, index) => {
+    const previous = samples[index - 1];
+    const next: keyof typeof sides = current.depth >= 0 ? "front" : "back";
+    if (!previous) {
+      side = next;
+      sides[side] += `M${point(current.x, current.y)}`;
+      return;
+    }
+    if (next !== side) {
+      const share = previous.depth / (previous.depth - current.depth);
+      const cross = point(
+        previous.x + (current.x - previous.x) * share,
+        previous.y + (current.y - previous.y) * share,
+      );
+      sides[side] += `L${cross}`;
+      side = next;
+      sides[side] += `M${cross}`;
+    }
+    sides[side] += `L${point(current.x, current.y)}`;
+  });
+  return sides;
+}
+
+const ringSteps = 120;
+const sparkSteps = 18;
+
+export function orbitPaths(precession: number, phase: number): OrbitPaths {
+  const azimuth = precession * turn;
+  const ring = split(
+    Array.from({ length: ringSteps + 1 }, (_, index) =>
+      sample((index / ringSteps) * turn, azimuth),
+    ),
+  );
+  const spark = split(
+    Array.from({ length: sparkSteps + 1 }, (_, index) =>
+      sample((phase + (index / sparkSteps) * orbit.spark) * turn, azimuth),
+    ),
+  );
+  return {
+    front: ring.front,
+    back: ring.back,
+    sparkFront: spark.front,
+    sparkBack: spark.back,
+  };
+}

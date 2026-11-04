@@ -18,6 +18,9 @@ const floatTransform = (page: Page) =>
     .first()
     .evaluate((node) => getComputedStyle(node).transform);
 
+const ringPath = (page: Page) =>
+  page.getByTestId("preview").locator('svg path[class*="ringCore"]').last();
+
 test("the showcase renders every state with its accessible name", async ({ page }) => {
   await page.goto("/es/dev/nexo");
   const gallery = page.getByTestId("gallery");
@@ -57,6 +60,17 @@ test("reduced motion keeps a static pose", async ({ page }) => {
   const first = await floatTransform(page);
   await page.waitForTimeout(700);
   expect(await floatTransform(page)).toBe(first);
+  const ringShape = await ringPath(page).getAttribute("d");
+  await page.waitForTimeout(700);
+  expect(await ringPath(page).getAttribute("d")).toBe(ringShape);
+});
+
+test("the halo rotates and wobbles while idle", async ({ page }) => {
+  await page.goto("/es/dev/nexo");
+  await ringPath(page).waitFor();
+  const first = await ringPath(page).getAttribute("d");
+  await page.waitForTimeout(1500);
+  expect(await ringPath(page).getAttribute("d")).not.toBe(first);
 });
 
 test("the reduce motion toggle freezes the animation", async ({ page }) => {

@@ -109,14 +109,6 @@
   fill: var(--nexo-glow);
 }
 
-.mark {
-  stroke: var(--coral);
-}
-
-.markDot {
-  fill: var(--coral);
-}
-
 .ringGlow {
   stroke: var(--coral);
   opacity: 0.3;

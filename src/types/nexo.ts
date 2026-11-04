@@ -5,9 +5,7 @@ export const nexoStates = [
   "thinking",
   "talking",
   "happy",
-  "confused",
   "sad",
-  "sleeping",
 ] as const;
 export type NexoState = (typeof nexoStates)[number];
 
