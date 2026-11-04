@@ -61,7 +61,7 @@ Componentes base que se hacen una vez, antes de la primera pantalla que los use:
 - **Para:** salida de todas las páginas; una vía por tipo de visitante.
 - **Componentes:** `PageHead`, `ViaSelector` (segmentado), `ContactForm` (nombre, email, mensaje, vía, pack; Turnstile), `QuickContact` (email con copiar, LinkedIn, WhatsApp si Jose lo da), `CalEmbed` (si hay Cal.com).
 - **Acciones:** enviar (Server Action) → crea contacto `kind=lead` sin dueño y notifica a Jose; copiar email; reservar.
-- **Datos:** escribe `contacts` (+ `activities` «form_submitted`) vía RPC `public_submit_contact`; lee `packs` para el selector.
+- **Datos:** escribe `leads` (`source = form`, `via`, `pack_id`, campos por vía, `consent_at`) vía Server Action → `private.submit_lead` con la clave de servicio (2026-11-04, `datos.md` §11; sustituye a `public_submit_contact`); lee `packs` para el selector. El email de respuesta es el de la vía (2.23).
 - **Estados:** botón con carga; error de validación en línea; error de servidor con reintento; éxito con mensaje y siguiente paso; cuota superada (429) con vías alternativas.
 - **Roles:** todos.
 - **Decidido (2.9):** email y chat en el lanzamiento; `QuickContact` y `CalEmbed` muestran WhatsApp y Cal.com solo cuando Jose dé los datos (`{{DATO}}`).
@@ -70,9 +70,9 @@ Componentes base que se hacen una vez, antes de la primera pantalla que los use:
 - **Para:** hablar con el asistente (visitantes) o con Jose (usuarios con cuenta) desde cualquier página.
 - **Componentes:** `ChatThread`, `ChatBubble` (etiqueta «Asistente de Jose» / «Jose»), `ChatComposer` (Turnstile invisible en el primer envío), `QuotaNotice`, `TakeoverBand` («Jose ha entrado»), `OfflineNotice` («Jose te responde en cuanto pueda» si Omen duerme), `SaveThreadHint` (entrar para guardar).
 - **Acciones:** enviar mensaje; abrir a pantalla completa; entrar.
-- **Datos:** lee y escribe `chat_threads`, `chat_messages` (Realtime); escribe `private.chat_quota`; lee `private.heartbeat` vía RPC para el aviso de Omen.
+- **Datos:** `conversations`, `conversation_members`, `messages` (`datos.md` §10): visitantes por rutas de servidor con `private.visitor_send`/`visitor_thread` y SSE; con cuenta, su sala (`kind` según rol) por RLS y Realtime; `private.chat_quota`; `omen_status` para el aviso de Omen.
 - **Estados:** esqueleto del hilo; enviando; respuesta en curso (indicador); cuota; sin conexión; Omen apagado.
-- **Roles:** todos (anónimo con cookie firmada); con cuenta, el hilo es el suyo con Jose.
+- **Roles:** todos (anónimo con cookie `httpOnly`, 5.10); con cuenta, la sala es la suya con Jose (5.12).
 
 ### P8 Blog `/blog` y artículo `/blog/[slug]`
 - **Para:** contenido orgánico (SEO y GEO).
@@ -171,12 +171,20 @@ Componentes base que se hacen una vez, antes de la primera pantalla que los use:
 - **Roles:** admin.
 
 ### D6 Bandeja de chat `/admin/chat`, `/admin/chat/[id]`
-- **Para:** ver todos los hilos (anónimos y de usuarios), responder, encender o apagar la IA por hilo, convertir un hilo en contacto.
-- **Componentes:** `ThreadList` (tipo, usuario o «anónimo», último mensaje, sin leer, IA on/off), `ChatThread`, `ChatComposer`, `AiSwitch`, `CreateContactSheet`, `LinkContactSheet`.
-- **Acciones:** responder como Jose; `ai_enabled`; crear o enlazar contacto; archivar.
-- **Datos:** `chat_threads`, `chat_messages`, `contacts`.
-- **Estados:** vacío; esqueleto; hilo archivado en lectura.
+- **Para:** ver todas las conversaciones (visitantes y salas privadas), responder, encender o apagar Nexo por sala, añadir o quitar miembros, convertir un visitante en interesado.
+- **Componentes:** `ConversationList` (`kind`, otro lado o «visitante» sin datos personales, página de origen, último mensaje, sin leer por `last_read_at`, Nexo activo/consentimiento), `ChatThread`, `ChatComposer`, `AiSwitch` (`set_conversation_ai`), `MemberList` (`add_member`/`remove_member`), `CreateLeadSheet` (visitante → `leads` respetando el consentimiento), `ConsentBadge` (sala de cliente: concedido, retirado, pendiente).
+- **Acciones:** responder como Jose; Nexo on/off; añadir o quitar miembro (deja mensaje `system`); crear interesado; archivar.
+- **Datos:** vista `my_conversations`, `messages`, `conversation_members`, `leads` (`datos.md` §10 y §11; 2026-11-04).
+- **Estados:** vacío; esqueleto; sala archivada en lectura.
 - **Roles:** admin.
+
+### D8 Interesados `/admin/interesados`, `/admin/interesados/[id]`
+- **Para:** la bandeja de entrada de todo lo que llega con intención de contratar (formulario, Nexo, WhatsApp, Radar), asignar y ver quién lo reclamó (7.8, 7.9).
+- **Componentes:** `LeadTable` (origen, vía, pack, nombre, organización, estado, asignado, fecha), `FilterBar` (`?status&via&source&owner`), `LeadDetail` (mensaje, campos por vía, consentimiento, conversación de origen mientras exista, contacto enlazado), `AssignSheet`, `DiscardDialog`, `NewLeadSheet` (`source = whatsapp | manual`).
+- **Acciones:** asignar (`assign_lead`), reclamar para mí (`claim_lead`), descartar, añadir a mano, abrir el contacto.
+- **Datos:** `leads`, `profiles`, `contacts`, `conversations`.
+- **Estados:** vacío («Nadie ha escrito todavía»); esqueleto; `lead_already_claimed` al reclamar uno que otro acaba de coger.
+- **Roles:** admin (misma pantalla que K8 con todos los filtros).
 
 ---
 
@@ -201,7 +209,7 @@ Componentes base que se hacen una vez, antes de la primera pantalla que los use:
 - **Para:** todo lo de una persona: datos, oportunidad, historial, siguiente acción.
 - **Componentes:** `ContactHead` (datos, enlaces, email con copiar, dueño; admin: `ReassignSheet`), `NextActionField`, `DealCard` (fase, vía, pack, importe; «Marcar ganada» pide importe cobrado), `ActivityTimeline` (notas, llamadas, reuniones, cambios de fase, formulario, chat), `ActivityComposer`, `Tabs` (Actividad · Oportunidades · Comisión), `InviteClientSheet` (admin, cuando la oportunidad se gana: crea invitación `client` y proyecto).
 - **Acciones:** editar; nota; nueva oportunidad; cambiar fase; ganar (crea `commissions`); perder (motivo); reasignar (admin); invitar al área (admin).
-- **Datos:** `contacts`, `deals`, `activities`, `commissions`, `chat_threads` enlazados. Escribe `deals`, `activities`, `commissions` (RPC `win_deal`).
+- **Datos:** `contacts`, `deals`, `activities`, `commissions`, `leads` de este contacto y su conversación de origen mientras exista. Escribe `deals`, `activities`, `commissions` (RPC `win_deal`).
 - **Estados:** esqueleto; 404 si no es de mi cartera; conflicto si otro cambió la fase (recarga).
 - **Roles:** admin, closer.
 - **Decidido (7.7):** la comisión se crea al marcar «ganada» con el importe cobrado (estado `pending`); el admin la aprueba cuando ha cobrado.
@@ -229,11 +237,19 @@ Componentes base que se hacen una vez, antes de la primera pantalla que los use:
 - **Roles:** admin, closer.
 
 ### K7 Chat con Jose `/crm/chat`
-- **Para:** el hilo privado del closer con Jose (decisión del brief).
-- **Componentes:** los de P7 con `AiSwitch` solo visible para el admin.
-- **Datos:** `chat_threads` (`kind=user`, uno por usuario).
-- **Roles:** closer; el admin responde desde D6.
-- **Decidido (5.6):** un hilo por usuario; el área enlaza al proyecto desde el mensaje.
+- **Para:** la sala privada del closer con Jose (5.12); Nexo dentro según 5.15 (`@Nexo`).
+- **Componentes:** los de P7 con `NexoAvatar`, `MemberList` en lectura, `Attachments` (5.17) y `AiSwitch` solo visible para el admin. Las salas de cliente en las que el closer es miembro (5.13) se listan aquí también (`ConversationList` con dos grupos: «Jose» y «Mis clientes»).
+- **Datos:** `my_conversations` (`kind = closer` propia y `client` donde soy miembro), `messages`, `conversation_members`, `message_attachments` (RPC `ensure_my_conversation`, `mark_read`).
+- **Roles:** closer (`aal2`); el admin responde desde D6.
+- **Decidido (5.6 → 5.12):** una sala por relación; el área enlaza al proyecto desde el mensaje.
+
+### K8 Interesados `/crm/interesados`
+- **Para:** reclamar los interesados sin asignar y trabajar los míos (7.8 a).
+- **Componentes:** los de D8 sin `AssignSheet`; dos pestañas: «Sin asignar» (bandeja común) y «Míos» (y los de mis subclosers, en lectura y descarte).
+- **Acciones:** «Reclamar» (`claim_lead` → abre K3 del contacto recién creado), descartar los míos, añadir uno a mano (`source = whatsapp | manual`, asignado a mí).
+- **Datos:** `leads` bajo RLS.
+- **Estados:** vacío por pestaña; «Alguien lo ha reclamado antes» con recarga de la lista.
+- **Roles:** closer.
 
 ---
 
@@ -272,7 +288,7 @@ Componentes base que se hacen una vez, antes de la primera pantalla que los use:
 - **Roles:** client.
 
 ### A5 Chat `/area/chat`
-- Igual que K7 para el cliente. **Roles:** client.
+- Igual que K7 para el cliente, sobre la sala de su proyecto (`kind = client`, una por proyecto si 5.13 = a; `ProjectSwitcher` si tiene varias). Miembros visibles: Jose y el closer que le vendió (5.16). **`NexoConsentCard`**: explica qué hace Nexo y con qué datos, botón «Permitir que Nexo participe» / «Retirar permiso» (`set_ai_consent`, 5.14); sin permiso, Nexo no aparece en la sala. **Roles:** client.
 
 ### D7 Proyectos `/admin/proyectos`, `/admin/proyectos/[id]`
 - **Para:** el lado de Jose del área: crear el proyecto, fases, tareas, documentos, decidir historias, asignar freelance.
@@ -299,7 +315,7 @@ Componentes base que se hacen una vez, antes de la primera pantalla que los use:
 - **Decidido (6.7):** el freelance no ve importes, cliente ni contacto; ve brief, tareas, documentos `team` y el nombre del proyecto.
 
 ### F3 Chat `/freelance/chat`
-- Igual que K7. **Roles:** freelance.
+- Igual que K7 sobre la sala `kind = freelance` (solo Jose y el freelance; nunca entra en salas de cliente, 6.7 y 5.16). **Roles:** freelance.
 
 ---
 

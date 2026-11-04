@@ -2,6 +2,8 @@
 
 **2026-11-02 · `arquitecto`.** Primer tablón del proyecto (decisión 10.5: una issue por bloque, enlazada a su PR). Cubre el scaffold de este repo y la zona pública completa (decisión 10.6, primer tramo). Las zonas siguientes van al final solo como grupos.
 
+**2026-11-04.** Los bloques `data/*` de esta lista (W33, W37) y los de chat (W39, W39b) quedan sustituidos por el plan de migraciones `docs/plan/migraciones-chat.md` (M01–M11: `data/base`, `data/leads`, `data/crm-core`, `data/lead-claim`, `data/jobs`, `data/conversations`, `data/visitor-chat`, `data/private-rooms`, `data/chat-attachments`, W35, `data/client-rooms`). Por 10.7, `data/*` corre en el Supabase local del Mac y se aplica a `josecoded` solo con OK de Jose por migración; no hace falta `josecoded-dev` hasta el disparador. Nuevos bloques de pantalla: `admin/leads-inbox` (D8), `crm/leads-inbox` (K8) y `fix/contact-emails` (2.23).
+
 ## Reglas de los bloques
 
 - Un bloque cierra algo visible: primero la pantalla con fixtures, después la lógica que la alimenta. Nunca lógica sin pantalla donde verla.
@@ -10,7 +12,7 @@
 - Por bloque: `implementador-web` implementa con TDD en lo que tiene comportamiento, `revisor` revisa, Jose aprueba en la preview. `/puerta-calidad` una vez por pantalla antes del merge (10.3).
 - Criterio de hecho común a todo lo que tiene interfaz, además de los checks propios de cada bloque: responsive a 360, 768 y 1440; estados carga, vacío y error donde aplique; axe sin violaciones; contraste AA; textos solo en `messages/es.json`; CSS solo con `var(--token)`.
 - URL local: `http://localhost:3000`, con segmento de idioma (`/es/...`). El catálogo `/dev/ui` no existe en producción.
-- `data/*` necesita Supabase local (Docker, en el Mac) o el proyecto `josecoded-dev` (10.7). Ninguno toca producción: eso solo ocurre en W46 con OK de Jose.
+- `data/*` se desarrolla en Supabase local (Docker, en el Mac) y se aplica al proyecto `josecoded` solo con OK de Jose por migración (10.7, 2026-11-04); `josecoded-dev` se crea cuando se cumpla el disparador de 10.7 y desde entonces `josecoded` es producción (W46).
 - Lo que requiere datos de Jose (textos, enlaces, claves) entra como `{{DATO}}` y el bloque se da por hecho igualmente; `i18n:check` lista lo que falta.
 
 Tamaños: **S** ≤ 30 min · **M** ≤ 1 h.
