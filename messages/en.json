@@ -210,7 +210,16 @@
       "toastErrorTitle": "Something failed",
       "toastErrorText": "It could not be sent. Try again.",
       "toastInfoTitle": "Heads up",
-      "toastInfoText": "You have an unread update."
+      "toastInfoText": "You have an unread update.",
+      "coral": "Coral",
+      "coralText": "Coral is the brand signature: it shows up in details that guide, never as filler. The main action stays charcoal and the coral button is kept for rare cases. Small text on light backgrounds uses deep coral to reach AA.",
+      "coralNav": "Navigation: coral bar under the active capsule item and in the mobile menu.",
+      "coralMarker": "Marker: short bar above section titles, with no text above it.",
+      "coralLinks": "Links: deep coral underline; on hover, the text too.",
+      "coralFocus": "Focus and selection: deep coral focus ring and coral-tinted text selection.",
+      "coralDetails": "Details: breadcrumb separators, list bullets, field caret, phase progress and footer.",
+      "coralMarkerDemo": "Section title with marker",
+      "coralMarkerSmall": "Subtitle with marker"
     },
     "scroll": {
       "title": "Block scrolling",
@@ -425,6 +434,54 @@
     "nav": {
       "label": "Ways to work"
     },
+    "bento": {
+      "title": "Start from what you need",
+      "lead": "Three common situations and the way of working that fits each one best. Every card leads to its own page.",
+      "needs": {
+        "contratacion": {
+          "title": "Looking for someone to join your team?",
+          "a": "I work inside your process: branches, code review and continuous integration.",
+          "b": "Mobile with React Native and web with Next.js, TypeScript end to end.",
+          "c": "I document what I build so the team can maintain it.",
+          "prefix": "I reply in",
+          "value": "1–2",
+          "unit": "working days"
+        },
+        "packs": {
+          "title": "Want to launch a product or a project?",
+          "a": "Design, development and publishing in a single package.",
+          "b": "Scope, price and date agreed in writing before we start.",
+          "c": "The app on the App Store and Google Play, or the website on your domain.",
+          "unit": "€"
+        },
+        "freelance": {
+          "title": "Need extra hands on your development?",
+          "a": "I adapt to your code and your way of working, without rebuilding from scratch.",
+          "b": "Hourly or per task: you pick the model that suits you.",
+          "c": "Short deliveries you can test without waiting for the end."
+        }
+      },
+      "phases": {
+        "title": "Five phases, the same in every way",
+        "text": "In each one you know what you see and what I need from you, whether it is a hire, extra hands or a pack.",
+        "cta": "See how I work"
+      },
+      "proof": {
+        "title": "The stack you will see in your project",
+        "text": "Mobile and web with TypeScript, database and authentication with Supabase, published on Cloudflare. I use it every day and it runs in production.",
+        "projects": "See projects",
+        "stack": "See the full stack"
+      },
+      "chips": {
+        "reactNative": "React Native",
+        "react": "React",
+        "next": "Next.js",
+        "typescript": "TypeScript",
+        "supabase": "Supabase",
+        "cloudflare": "Cloudflare",
+        "ai": "AI"
+      }
+    },
     "ways": {
       "contratacion": {
         "nav": "Employment",
@@ -441,9 +498,9 @@
       },
       "packs": {
         "nav": "Packs",
-        "title": "Web and app packs",
-        "text": "A complete website or app with scope, price and date agreed up front.",
-        "cta": "Compare packs"
+        "title": "Tailored development",
+        "text": "A complete website or app, tailored to you, with scope, price and date agreed up front.",
+        "cta": "See tailored development"
       }
     },
     "how": {

@@ -18,7 +18,11 @@ export function Faq({ items }: FaqProps) {
               <ChevronIcon />
             </span>
           </summary>
-          <p className={styles.answer}>{item.answer}</p>
+          <div className={styles.panel}>
+            <div className={styles.fold}>
+              <p className={styles.answer}>{item.answer}</p>
+            </div>
+          </div>
         </details>
       ))}
     </div>

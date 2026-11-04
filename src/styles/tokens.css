@@ -126,6 +126,9 @@
   --coral-glow: rgb(255 75 50 / 0.6);
   --coral-tint: rgb(255 75 50 / 0.16);
   --coral-clear: rgb(255 75 50 / 0);
+  --selection: rgb(255 75 50 / 0.24);
+  --marker-w: 1.75rem;
+  --marker-h: 0.25rem;
   --halo-a: rgb(255 75 50 / 0.42);
   --halo-b: rgb(255 75 50 / 0.34);
   --shadow-hair: 0 1px 2px rgb(23 25 28 / 0.1);

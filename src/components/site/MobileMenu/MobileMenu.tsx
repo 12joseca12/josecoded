@@ -4,14 +4,9 @@ import NextLink from "next/link";
 import { type ReactNode, useEffect, useRef } from "react";
 
 import { IconButton } from "@/components/ui/IconButton/IconButton";
+import type { NavLink } from "@/types/nav";
 
 import styles from "./MobileMenu.module.css";
-
-export interface MenuLink {
-  href: string;
-  label: string;
-  active: boolean;
-}
 
 interface MobileMenuProps {
   id: string;
@@ -20,7 +15,7 @@ interface MobileMenuProps {
   title: string;
   closeLabel: string;
   hereLabel: string;
-  links: MenuLink[];
+  links: NavLink[];
   cta: ReactNode;
 }
 
@@ -67,11 +62,12 @@ export function MobileMenu({
         </div>
         <ul className={styles.links}>
           {links.map((link, index) => (
-            <li key={link.href}>
+            <li key={link.key}>
               <NextLink
                 href={link.href}
                 className={styles.link}
-                aria-current={link.active ? "true" : undefined}
+                aria-current={link.current}
+                data-active={link.active || undefined}
                 onClick={onClose}
               >
                 <span className={styles.num}>{String(index).padStart(2, "0")}</span>
