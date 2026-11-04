@@ -5,7 +5,7 @@
   text-decoration-color: var(--coral-deep);
   text-decoration-thickness: 0.0625rem;
   text-underline-offset: 0.3em;
-  transition-property: text-decoration-color, color;
+  transition-property: text-decoration-color, text-decoration-thickness, color;
   transition-duration: var(--dur-fast);
   transition-timing-function: var(--ease-out);
 }
@@ -40,7 +40,8 @@
 
 @media (hover: hover) and (pointer: fine) {
   .link:hover {
-    text-decoration-color: var(--ink);
+    color: var(--coral-deep);
+    text-decoration-thickness: 0.125rem;
   }
 
   .link[data-variant="arrow"]:hover {

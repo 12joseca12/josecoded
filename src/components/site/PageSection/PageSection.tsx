@@ -18,7 +18,7 @@ export function PageSection({ id, title, lead, size = "narrow", children }: Page
   return (
     <section id={id} data-block className={styles.section} aria-labelledby={headingId}>
       <div className={styles.body} data-size={size}>
-        <Heading level={2} id={headingId}>
+        <Heading level={2} id={headingId} marker>
           {title}
         </Heading>
         {lead ? <p className={styles.lead}>{lead}</p> : null}

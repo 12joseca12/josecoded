@@ -8,6 +8,7 @@ export interface HeadingProps {
   level: HeadingLevel;
   size?: HeadingSize;
   accent?: ReactNode;
+  marker?: boolean;
   id?: string;
   children: ReactNode;
 }
@@ -15,10 +16,15 @@ export interface HeadingProps {
 const tags = { 1: "h1", 2: "h2", 3: "h3", 4: "h4" } as const;
 const space = " ";
 
-export function Heading({ level, size, accent, id, children }: HeadingProps) {
+export function Heading({ level, size, accent, marker = false, id, children }: HeadingProps) {
   const Tag = tags[level];
   return (
-    <Tag id={id} className={styles.heading} data-size={size ?? tags[level]}>
+    <Tag
+      id={id}
+      className={styles.heading}
+      data-size={size ?? tags[level]}
+      data-marker={marker || undefined}
+    >
       {children}
       {accent ? (
         <>

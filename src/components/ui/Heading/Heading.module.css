@@ -27,6 +27,22 @@
   letter-spacing: var(--tracking-tight);
 }
 
+.heading[data-marker]::before {
+  content: "";
+  display: block;
+  width: var(--marker-w);
+  height: var(--marker-h);
+  margin-block-end: var(--space-5);
+  border-radius: var(--radius-xs);
+  background: var(--coral);
+}
+
+.heading[data-marker][data-size="h3"]::before,
+.heading[data-marker][data-size="h4"]::before {
+  width: calc(var(--marker-w) * 0.7);
+  margin-block-end: var(--space-3);
+}
+
 .accent {
   display: block;
   color: var(--coral-text);

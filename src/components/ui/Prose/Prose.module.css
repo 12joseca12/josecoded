@@ -108,7 +108,7 @@
 }
 
 .prose li::marker {
-  color: var(--ink-faint);
+  color: var(--coral-deep);
 }
 
 .prose strong {

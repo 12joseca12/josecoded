@@ -22,6 +22,7 @@
 
 .item:nth-last-child(2)::before {
   content: "\2039";
+  color: var(--coral-deep);
 }
 
 .link {
@@ -52,5 +53,6 @@
 
   .item + .item::before {
     content: "\203A";
+    color: var(--coral-deep);
   }
 }

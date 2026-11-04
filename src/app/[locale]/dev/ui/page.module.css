@@ -48,6 +48,29 @@
   min-width: 12rem;
 }
 
+.rules {
+  display: grid;
+  gap: var(--space-2);
+  max-width: 44rem;
+  color: var(--ink);
+  font-size: var(--fs-base);
+}
+
+.rules li {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+.rules li::before {
+  content: "";
+  flex: none;
+  width: var(--space-2);
+  height: var(--space-2);
+  border-radius: var(--radius-xs);
+  background: var(--coral);
+}
+
 .toggle {
   display: inline-flex;
   align-items: center;
