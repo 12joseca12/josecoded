@@ -159,6 +159,59 @@ Omen usa la clave de servicio y nunca abre un puerto. Lo que Omen necesita saber
 
 ---
 
+## 10. Propuesta (2026-11-04): chat de visitantes anónimos (decisión 5.10)
+
+**No aplicada.** Sustituye al modelo de §4 para el público (`anon_id` en cookie firmada, RPC `public_chat_send` y `public_chat_thread`) y afina la purga de 5.1. Los hilos de usuarios con cuenta (`kind = user`) no cambian: siguen con RLS y Realtime (5.4, 5.6). Se escribe en W37 (`data/visitor-chat`) y W39 (`chat/anon-persistence`) con tests RLS y del trabajo de purga.
+
+### Principio
+
+El visitante nunca toca Supabase. Lleva una cookie `httpOnly` con un token opaco; las rutas de servidor de Next (`/api/chat/*` o Server Actions) lo convierten en `visitor_id`, comprueban cuota y Turnstile y leen o escriben con la clave de servicio. `anon` sigue sin grants en ninguna tabla del chat. El cliente no envía nunca `conversation_id`: el servidor lo resuelve desde el visitante.
+
+### Tablas
+
+#### `chat_visitors`
+- `id` uuid, `token_hash` text único (SHA-256 del token de la cookie; el token solo vive en la cookie), `locale`, `created_at`, `last_activity_at`, `contact_id` → contacts (null hasta que haya consentimiento), `consent_at`.
+- Sin `ip`, sin `user_agent`, sin email ni teléfono: esos van a `contacts` cuando el visitante acepta en `HandoffCard`.
+- **RLS:** admin lee; nadie más. Escribe solo el servidor.
+
+#### `chat_conversations` (renombra `chat_threads`)
+- `id`, `kind` enum `visitor | user`, `visitor_id` → chat_visitors (null si `user`), `user_id` (null si `visitor`), `locale`, `ai_enabled` bool (visitor: true; user: false hasta que el admin lo active), `contact_id` (si se convirtió), `interest` bool null (lo que Nexo detecta, 5.7), `first_page_path` text, `status` enum `open | archived`, `last_activity_at` timestamptz (trigger al insertar mensaje), `admin_unread` int, `user_unread` int, `created_at`.
+- Un hilo `user` por usuario (`unique(user_id) where kind = 'user'`); varias conversaciones por visitante solo si el admin archiva la anterior (lo normal es una).
+- Índice parcial para la purga: `(last_activity_at) where kind = 'visitor' and contact_id is null`.
+- **RLS:** usuario con cuenta lee y escribe la suya (`kind = user`); admin todo; filas `visitor` sin política para `anon` ni `authenticated` (solo clave de servicio).
+
+#### `chat_messages`
+- `id`, `conversation_id`, `sender` enum `visitor | user | assistant | admin`, `kind` enum `text | handoff | reference | system`, `body` (≤ 2.000 caracteres, check), `page_path` text (desde dónde escribió el visitante), `sources` text[] (refs de `private.rag_documents` cuando `sender = assistant`), `model` (`groq:…` o `local:…`), `created_at`, `read_at`.
+- **RLS:** como `chat_conversations`. Realtime solo para `kind = user` (5.4); a los visitantes las respuestas les llegan por SSE desde la ruta de servidor (abajo).
+
+#### `private.chat_quota`
+- `scope` enum `ip | visitor`, `key_hash`, `day`, `count`. Límites propuestos: 60 mensajes/día por IP, 20/día por visitante, ráfaga de 1 mensaje cada 3 s. Error tipado `chat_quota_exceeded` → 429 y `QuotaNotice`.
+
+### Flujo
+
+1. **Primer mensaje:** Turnstile se verifica en el servidor; se crea `chat_visitors` (token aleatorio de 128 bits, se guarda el hash), se crea la conversación con `first_page_path` y se pone la cookie `jc_visitor` (`HttpOnly`, `Secure`, `SameSite=Lax`, `Path=/`, `Max-Age` = TTL, renovada en cada envío). Antes de ese mensaje no existe ni cookie ni fila: el saludo de Nexo es texto de `messages/es.json`.
+2. **Enviar:** ruta de servidor → cuota → inserta `chat_messages` (`visitor`) → encola `private.jobs` `chat.reply` con `{ conversation_id, page_path }` (contrato `contracts/jobs/chat.reply.json`, que devuelve `sources` e `interest`).
+3. **Recibir:** ruta `GET /api/chat/stream` con SSE que emite los mensajes nuevos de la conversación del visitante (el servidor escucha Realtime con la clave de servicio o sondea cada 2 s con `created_at > since`) y el estado del trabajo para los estados `thinking`/`speaking` de Nexo (5.9). Sin JS, la página `/chat` recarga y pinta el hilo completo.
+4. **Handoff:** `HandoffCard` → ruta de servidor que crea `contacts` (`source = chat`) + `deals` (`stage = new`, `via` si se infiere) + `activities` (`kind = chat`, cuerpo = resumen de la conversación) y rellena `contact_id` y `consent_at` en visitante y conversación.
+5. **Jose entra** desde D6 (`admin`): el mensaje llega por el mismo SSE y Nexo pasa a `handoff`.
+
+### Purga con `pg_cron`
+
+- Extensión `pg_cron` en el esquema `extensions` (disponible en Supabase y en el Docker local), trabajo diario a las 04:00 UTC:
+  1. `delete from chat_conversations where kind = 'visitor' and contact_id is null and last_activity_at < now() - interval '30 days'` (el TTL es Q8 de `division-pantallas.md`; las filas de `chat_messages` caen en cascada).
+  2. `delete from chat_conversations where kind = 'visitor' and contact_id is not null and last_activity_at < now() - interval '90 days'` (retención de 5.1 para las convertidas; el contacto y el resumen en `activities` se quedan).
+  3. `delete from chat_visitors where not exists (conversación) and last_activity_at < now() - interval '30 days'`.
+- La cookie caduca sola al mismo TTL; si vuelve un visitante cuya fila ya no existe, se le trata como nuevo.
+- Función `private.purge_visitor_chat()` `security definer` con `search_path = ''`; el `cron.schedule` va en la migración y el test comprueba que una conversación con `last_activity_at` antigua desaparece y una convertida no. Las cuotas de `private.chat_quota` se borran con más de 2 días.
+
+### Lo que cambia en otros sitios
+
+- `datos.md` §4: `chat_threads` → `chat_conversations`, `anon_id` → `visitor_id`, `last_message_at` → `last_activity_at`; desaparecen `public_chat_send` y `public_chat_thread`.
+- `pantallas.md` P7 y D6; `bloques.md` W37, W39 y nuevo W39b (lista en `division-pantallas.md` §6).
+- Política de privacidad (W42): cookie técnica de visitante (sin consentimiento previo, se explica), TTL, Groq como encargado, derecho de borrado por email (el servidor borra por `token_hash` o por `contact_id`).
+
+---
+
 ## Resumen de decisiones de este documento (Jose, 2026-11-02)
 
 | # | Tabla | Pregunta | Decisión | Id |

@@ -4,6 +4,8 @@
 
 **2026-11-02 (segunda ronda).** Jose cerró 4.5 y 8.3 aceptando la recomendación y respondió a las preguntas de `pantallas.md` y `datos.md` (todas con la recomendación): quedan recogidas en 2.7–2.9, 4.6, 5.6, 6.5–6.7 y 7.6–7.7. Lo único abierto son acciones suyas (10.7, 10.8) y dos decisiones de diseño en el navegador (10.9, 10.10).
 
+**2026-11-04 (tercera ronda).** Jose cerró 10.10 en el navegador (hero variante B «Móvil + web» con las cinco fases) y decidió la cápsula de contacto (2.18), el nombre y los estados del asistente (5.9) y el modelo del chat de visitantes anónimos (5.10; el avatar SVG y su motion son 5.8, en su propia rama). El reparto de contenido entre pantallas está en `division-pantallas.md`, con ocho preguntas pendientes (Q1–Q8) que se anotarán aquí como 2.19 en adelante.
+
 ## 1. Repositorios
 
 - **1.1 (Jose) Dos repos.** `josecoded` (este): la web Next y todo lo que despliega en Cloudflare, más `supabase/` (migraciones, tests RLS) y `contracts/`. `josecoded-omen` (nombre propuesto, corto y ordena junto al primero en GitHub): backend Node que corre en Omen (IA, RAG, Radar, trabajos). Sustituye a `josecoded-worker`, que se archiva.
@@ -38,6 +40,7 @@
 - **2.15 (Jose) Configurador de packs** (web, app o las dos más extras → precio «desde» en vivo), bloque propio.
 - **2.16 (Jose) Buscador tipo ⌘K** en la cápsula (páginas, proyectos, posts y servicios); en móvil, icono de lupa. Chat como icono en la cápsula y «Entrar» solo en el pie.
 - **2.17 (Jose) Fuera por ahora:** métricas vivas en «Cómo está hecha» (2.11 queda sin ellas hasta nueva decisión) y la sección «Qué haría distinto hoy» en las fichas.
+- **2.18 (Jose, 2026-11-04) Cápsula de contacto:** botón de chat visible en la cápsula (icono, abre `ChatPanel` con Nexo) y «Hablemos» abre un **chooser** con dos entradas: WhatsApp y chat con Nexo. WhatsApp solo aparece cuando Jose dé el número (2.9); mientras tanto el chooser se resuelve según Q6 de `division-pantallas.md` (recomendación: tercera entrada «Formulario» → `/contacto` y «Contacto» fuera de la cápsula). Rama `public/header-contact`.
 
 ## 3. Roles y zonas
 
@@ -65,6 +68,8 @@
 - **5.5 Panel lateral en toda la web** abierto desde la barra; `/chat` a pantalla completa y para usuarios con cuenta.
 - **5.6 Un hilo por usuario con cuenta** (`unique(user_id) where kind = 'user'`), no por proyecto; desde el área, el mensaje enlaza al proyecto.
 - **5.7 (Jose) El asistente habla primero:** al nuevo visitante le saluda «Hola, soy {{DATO: nombre del asistente}}, el asistente IA virtual de josecoded» con una pregunta proactiva; detecta si hay interés, pide email o teléfono con consentimiento y lo guarda como lead (interesado sí/no). Sustituye la firma de 5.3 cuando haya nombre.
+- **5.9 (Jose, 2026-11-04) El asistente se llama Nexo.** Cierra el `{{DATO}}` de 5.7: el saludo es «Hola, soy Nexo, el asistente IA de josecoded»; la etiqueta de burbuja «Nexo» (y «Jose» cuando interviene él). Jose aportó una referencia de imagen; el avatar es SVG con motion propio (5.8, rama `chat/nexo-avatar`) y sus **estados los mueve la conversación**, no un temporizador: `idle` (saluda y espera), `listening` (el visitante escribe), `thinking` (hay un trabajo `chat.reply` encolado o en curso), `speaking` (está llegando la respuesta), `handoff` (Jose ha entrado en el hilo), `offline` (Omen sin latido), `quota` (cuota agotada). Con `prefers-reduced-motion`, cada estado es un fotograma fijo.
+- **5.10 (Jose, 2026-11-04) Chat de visitantes anónimos.** La conversación se identifica con una **cookie propia `httpOnly`** (`Secure`, `SameSite=Lax`) que lleva un identificador aleatorio de visitante; no es una cookie firmada con datos, solo un token opaco, y en la base se guarda su hash. **Sin datos personales hasta el consentimiento**: el visitante no da email ni teléfono salvo por `HandoffCard` con botón explícito (5.7); nunca se extraen del texto. Ni cookie ni fila existen hasta el primer mensaje del visitante (el saludo de Nexo se pinta desde `messages/es.json`). `anon` no tiene grants: el visitante lee y escribe solo a través de rutas de servidor de Next que usan la clave de servicio y resuelven la conversación desde la cookie; el cliente nunca envía un identificador de conversación. **Purga:** las conversaciones sin interacción se borran a un **TTL desde el último mensaje** (`last_activity_at`) con un trabajo programado de Supabase (`pg_cron`, diario); propuesta **30 días** (Q8 de `division-pantallas.md`); las conversaciones convertidas en lead quedan exentas de ese TTL y siguen la retención de 5.1 (90 días), y el contacto se conserva aparte en el CRM con un resumen en `activities`. Límite de peticiones por IP y por visitante, Turnstile en el primer mensaje. Detalle del esquema en `datos.md` §10 (propuesta). Sustituye el «identificador en cookie firmada» de 5.1 y las RPC `public_chat_send`/`public_chat_thread` de `datos.md` §4.
 
 ## 6. Área de clientes
 
@@ -115,7 +120,7 @@
 - **10.7 Dos proyectos de Supabase. ABIERTA (acción de Jose): crear `josecoded-dev`** (gratuito, misma región) en su cuenta para previews y sesiones en la nube; producción sigue en `echlwywbucgbhwpncviy`; local con Docker en el Mac. La CI aplica las mismas migraciones a los dos.
 - **10.8 ABIERTA (acción de Jose): crear el repo `josecoded-omen`** en GitHub (privado, `main` protegida). Hasta entonces su backlog (`docs/plan/bloques.md`, lista O) no arranca.
 - **10.9 (Jose): navegación cápsula.** Barra que se condensa en cápsula al bajar; el progreso del scroll es su borde coral (0 % sin borde, 100 % completo). Sin eyebrows encima de los textos. Scroll por bloques en escritorio y nativo en móvil.
-- **10.10 ABIERTA (en el navegador): hero animado y scroll.** Jose revisa en `prototipos/estilo-b/` la transformación del hero (wireframe → app → datos → IA), los estados (Cargando, Error, 404, Deshabilitado) y la barra de scroll, y dice qué cambia antes de portarlo (`public/home-hero-*`).
+- **10.10 (en el navegador): hero animado y scroll.** Jose revisa en `prototipos/estilo-b/` la transformación del hero (wireframe → app → datos → IA), los estados (Cargando, Error, 404, Deshabilitado) y la barra de scroll, y dice qué cambia antes de portarlo (`public/home-hero-*`). **Cerrada (Jose, 2026-11-04):** aprobada la **variante B «Móvil + web»** del hero, cuya transformación recorre las cinco fases de 2.14 (Descubrir · Diseñar · Construir · Publicar · Mantener). Se porta tal cual en W14–W16 (`public/home-hero`).
 
 ## Abiertas (resumen)
 
@@ -123,4 +128,4 @@
 |---|---|---|
 | 10.7 | Crear el proyecto Supabase `josecoded-dev` y pegar URL y clave publicable en los secretos de CI | Jose (acción) |
 | 10.8 | Crear el repo GitHub `josecoded-omen` | Jose (acción) |
-| 10.10 | Feedback del hero animado y del scroll del prototipo | Jose (navegador) |
+| Q1–Q8 | Reparto de pantallas (`division-pantallas.md` §4): home, stack, «Cómo está hecha», categorías del blog, contacto, chooser, FAQ, TTL del chat | Jose (batería) |
