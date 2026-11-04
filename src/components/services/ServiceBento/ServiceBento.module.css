@@ -1,0 +1,61 @@
+.bento {
+  width: 100%;
+  container-type: inline-size;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+.grid > [data-area="hiring"] {
+  grid-area: hiring;
+}
+
+.grid > [data-area="project"] {
+  grid-area: project;
+}
+
+.grid > [data-area="support"] {
+  grid-area: support;
+}
+
+.grid > [data-area="phases"] {
+  grid-area: phases;
+}
+
+.grid > [data-area="proof"] {
+  grid-area: proof;
+}
+
+.grid {
+  grid-template-areas:
+    "hiring"
+    "project"
+    "support"
+    "phases"
+    "proof";
+}
+
+@container (min-width: 40rem) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "hiring hiring"
+      "project support"
+      "phases phases"
+      "proof proof";
+    gap: var(--space-5);
+  }
+}
+
+@container (min-width: 64rem) {
+  .grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-areas:
+      "hiring hiring hiring hiring hiring hiring hiring project project project project project"
+      "support support support support support support support project project project project project"
+      "phases phases phases phases phases phases phases proof proof proof proof proof";
+  }
+}

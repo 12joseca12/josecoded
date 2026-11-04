@@ -63,3 +63,10 @@ export function hasProvisionalPacks(list: readonly Pack[]): boolean {
 export function publicPacks(list: readonly Pack[]): Pack[] {
   return list.filter((pack) => !isPackProvisional(pack));
 }
+
+export function lowestPackFrom(list: readonly Pack[]): string {
+  const sorted = [...list].sort((a, b) => Number(a.from) - Number(b.from));
+  const first = sorted[0];
+  if (!first) throw new Error("lowestPackFrom needs at least one pack");
+  return first.from;
+}

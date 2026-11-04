@@ -59,17 +59,17 @@ export async function ServicePage({ locale, page, head, faq, children }: Service
     {
       id: "contratacion",
       label: t(wayLabels.contratacion),
-      href: onHub ? "#contratacion" : `${hubPath}#contratacion`,
+      href: `${hubPath}#contratacion`,
     },
     {
       id: "freelance",
       label: t(wayLabels.freelance),
-      href: onHub ? "#freelance" : localePath(locale, pagePaths.freelance),
+      href: localePath(locale, pagePaths.freelance),
     },
     {
       id: "packs",
       label: t(wayLabels.packs),
-      href: onHub ? "#packs" : localePath(locale, pagePaths.packs),
+      href: localePath(locale, pagePaths.packs),
     },
   ];
 
@@ -91,13 +91,10 @@ export async function ServicePage({ locale, page, head, faq, children }: Service
         lead={t(head.lead)}
         breadcrumbs={<Breadcrumbs label={t("breadcrumbs.label")} items={crumbs} />}
       />
-      <div className={styles.ways}>
-        <WayNav
-          label={t("services.nav.label")}
-          items={navItems}
-          variant={onHub ? "anchors" : "pages"}
-          current={onHub ? undefined : page}
-        />
+      <div className={styles.ways} data-layout={onHub ? "hub" : "child"}>
+        {onHub ? null : (
+          <WayNav label={t("services.nav.label")} items={navItems} variant="pages" current={page} />
+        )}
         <div className={styles.sections}>{children}</div>
       </div>
     </>

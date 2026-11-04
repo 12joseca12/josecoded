@@ -9,13 +9,13 @@
 }
 
 @media (min-width: 64rem) {
-  .ways {
+  .ways[data-layout="child"] {
     display: grid;
     grid-template-columns: 14rem minmax(0, 1fr);
     align-items: start;
   }
 
-  .sections {
+  .ways[data-layout="child"] .sections {
     padding-inline: var(--space-6) var(--gutter);
   }
 }

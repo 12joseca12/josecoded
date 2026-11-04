@@ -6,6 +6,7 @@ import { packSlugPattern } from "@/types/contact-form";
 import {
   hasProvisionalPacks,
   isPackProvisional,
+  lowestPackFrom,
   packCopyKeys,
   packs,
   packSlugs,
@@ -35,6 +36,15 @@ describe("packs", () => {
     const finals = packsSchema.parse([{ slug: "app-movil", status: "final", from: "1200" }]);
     expect(publicPacks(finals)).toHaveLength(1);
     expect(hasProvisionalPacks(finals)).toBe(false);
+  });
+
+  it("returns the lowest starting price and refuses an empty list", () => {
+    const list = packsSchema.parse([
+      { slug: "app-movil", status: "final", from: "1800" },
+      { slug: "web-negocio", status: "final", from: "900" },
+    ]);
+    expect(lowestPackFrom(list)).toBe("900");
+    expect(() => lowestPackFrom([])).toThrow();
   });
 
   it.each(["es", "en"] as const)("has copy in %s for every pack", async (locale) => {
