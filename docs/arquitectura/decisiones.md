@@ -34,6 +34,10 @@
 - **2.11 (Jose) Esta web es el proyecto insignia:** ficha en `/proyectos` y página «Cómo está hecha» con métricas vivas (Lighthouse, peso de JS, accesibilidad, CI). El método con agentes de IA no se cuenta en la web.
 - **2.12 (Jose) Máxima visibilidad en IA:** `robots.txt` permite buscadores y rastreadores de entrenamiento de IA, se desactiva el bloqueo de Cloudflare y se cuida todo lo que hace citable la web (entidad única, `llms.txt`, precios y FAQ en HTML) para que recomienden a Jose como freelance y para construir webs y apps.
 - **2.13 (Jose) La ciudad se publica:** Madrid, junto a «España y remoto», en Sobre mí y en el JSON-LD `Person`.
+- **2.14 (Jose, 2026-11-04) Cinco fases comunes:** Descubrir · Diseñar · Construir · Publicar · Mantener; las usan el hero, «Cómo trabajo» en servicios y el progreso del área (`projects.phase`).
+- **2.15 (Jose) Configurador de packs** (web, app o las dos más extras → precio «desde» en vivo), bloque propio.
+- **2.16 (Jose) Buscador tipo ⌘K** en la cápsula (páginas, proyectos, posts y servicios); en móvil, icono de lupa. Chat como icono en la cápsula y «Entrar» solo en el pie.
+- **2.17 (Jose) Fuera por ahora:** métricas vivas en «Cómo está hecha» (2.11 queda sin ellas hasta nueva decisión) y la sección «Qué haría distinto hoy» en las fichas.
 
 ## 3. Roles y zonas
 
@@ -60,6 +64,7 @@
 - **5.4 Supabase Realtime** sobre `chat_messages` filtrado por RLS.
 - **5.5 Panel lateral en toda la web** abierto desde la barra; `/chat` a pantalla completa y para usuarios con cuenta.
 - **5.6 Un hilo por usuario con cuenta** (`unique(user_id) where kind = 'user'`), no por proyecto; desde el área, el mensaje enlaza al proyecto.
+- **5.7 (Jose) El asistente habla primero:** al nuevo visitante le saluda «Hola, soy {{DATO: nombre del asistente}}, el asistente IA virtual de josecoded» con una pregunta proactiva; detecta si hay interés, pide email o teléfono con consentimiento y lo guarda como lead (interesado sí/no). Sustituye la firma de 5.3 cuando haya nombre.
 
 ## 6. Área de clientes
 
@@ -70,6 +75,8 @@
 - **6.5 Varios proyectos por cliente** (`projects.client_id`); el selector solo aparece si tiene más de uno.
 - **6.6 Documentos:** 25 MB por fichero, 1 GB por proyecto, tipos cerrados (PDF, imágenes, vídeo corto, zip, Office).
 - **6.7 El freelance ve brief, tareas, documentos `team` y el nombre del proyecto;** nunca cliente, contacto ni importes (vista `freelance_projects`).
+- **6.8 (Jose) Historias fuera de presupuesto:** una historia que cae fuera del pack o del alcance contratado (p. ej. una revisión extra) queda «en revisión» con un aviso de que está fuera del presupuesto; el cliente confirma si quiere seguir y entonces se presupuesta. Lo que está dentro pasa directo a tareas.
+- **6.9 (Jose) Los documentos que Jose pide al cliente son tareas suyas** en el área, sin sección aparte.
 
 ## 7. CRM
 
@@ -87,6 +94,7 @@
 - **8.2 Precios en Supabase,** editados en el admin, leídos en servidor con caché, con historial.
 - **8.3 (Jose) Radar detecta** ofertas de empleo, negocios sin web o app y proyectos freelance, y «opera por mí» en su versión segura: **Radar encuentra, puntúa y redacta; Jose envía con un clic** desde `/admin/radar`. Envío sin salir de ahí solo donde haya API oficial autorizada (Upwork con partner API, Freelancer.com); en el resto, «Copiar» y «Marcar enviado». **Nunca sesiones de navegador automatizadas ni envío sin revisión**: las condiciones de Upwork, Freelancer, Malt y LinkedIn prohíben la automatización de cuentas y una propuesta enviada sola compromete el nombre de Jose. Misma regla que el chat de clientes: borrador automático, acción humana.
 - **8.4 Reglas de notificación fijas en código** con pocos interruptores en el admin.
+- **8.5 (Jose) Atajos de teclado en Radar:** se deciden al construir Radar.
 
 ## 9. Seguridad, accesibilidad, rendimiento, responsive
 
