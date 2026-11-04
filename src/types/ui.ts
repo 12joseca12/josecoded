@@ -36,3 +36,6 @@ export interface ToastItem {
 }
 
 export type ToastInput = Omit<ToastItem, "id">;
+
+export const pageSectionSizes = ["narrow", "wide"] as const;
+export type PageSectionSize = (typeof pageSectionSizes)[number];

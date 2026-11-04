@@ -1,0 +1,56 @@
+.crumbs {
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.item {
+  display: none;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.item:nth-last-child(2) {
+  display: inline-flex;
+}
+
+.item:nth-last-child(2)::before {
+  content: "\2039";
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  color: var(--ink);
+  font-weight: var(--fw-medium);
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.3em;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .link:hover {
+    text-decoration-color: var(--coral-deep);
+  }
+}
+
+@media (min-width: 64rem) {
+  .item {
+    display: inline-flex;
+  }
+
+  .item:nth-last-child(2)::before {
+    content: none;
+  }
+
+  .item + .item::before {
+    content: "\203A";
+  }
+}

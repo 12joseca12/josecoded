@@ -1,0 +1,27 @@
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+  gap: var(--space-5);
+  counter-reset: step;
+}
+
+.step {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  counter-increment: step;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line-strong);
+}
+
+.step::before {
+  content: counter(step, decimal-leading-zero);
+  color: var(--coral-text);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-wide);
+}
+
+.text {
+  color: var(--ink-soft);
+}

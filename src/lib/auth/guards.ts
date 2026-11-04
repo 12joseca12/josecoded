@@ -4,6 +4,12 @@ import { canEnterZone, homeZone, requiresAal2, zoneOfPath, zonePath } from "./ro
 
 export const requestPathHeader = "x-josecoded-path";
 
+const sessionPathPattern = /^\/(es|en)\/(entrar|admin|crm|area|freelance|cuenta|invitacion)(\/|$)/;
+
+export function isSessionPath(pathname: string): boolean {
+  return sessionPathPattern.test(pathname);
+}
+
 export type SessionState =
   | { status: "anonymous" }
   | { status: "inactive" }

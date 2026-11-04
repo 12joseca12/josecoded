@@ -4,6 +4,7 @@ import type { UserRole } from "@/types/auth";
 
 import {
   decideAccess,
+  isSessionPath,
   loginPath,
   needsSecondFactor,
   resolveDestination,
@@ -130,5 +131,16 @@ describe("destinations", () => {
     expect(resolveDestination(member("admin", "aal2"), "es")).toBe("/es/admin");
     expect(resolveDestination(member("client", "aal1"), "es", "/es/admin")).toBe("/es/area");
     expect(resolveDestination(member("closer", "aal2"), "es")).toBe("/es/crm");
+  });
+});
+
+describe("isSessionPath", () => {
+  it("matches the auth and private zones only", () => {
+    for (const path of ["/es/entrar", "/es/entrar/totp", "/es/admin", "/en/crm/x", "/es/cuenta"]) {
+      expect(isSessionPath(path)).toBe(true);
+    }
+    for (const path of ["/es", "/es/contacto", "/es/administrar", "/es/dev/ui", "/auth/callback"]) {
+      expect(isSessionPath(path)).toBe(false);
+    }
   });
 });

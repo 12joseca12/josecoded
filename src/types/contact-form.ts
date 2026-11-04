@@ -1,3 +1,5 @@
+import "@/lib/security/zod-jitless";
+
 import { z } from "zod";
 
 import { locales } from "@/i18n/config";

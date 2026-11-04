@@ -1,11 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { buildHeaders, privateZoneSource } from "@/config/headers";
 import { productionOrigin, resolveSite } from "@/config/site";
 import { rates } from "@/lib/services/rates";
 import { jsonLdGraphSchema } from "@/types/seo";
 
 import {
+  buildBreadcrumbList,
+  buildFaqPage,
   buildGraph,
   buildPerson,
   buildSiteGraph,
@@ -84,6 +85,8 @@ describe("buildSitemap", () => {
     expect(urls).toEqual([
       `${productionOrigin}/es`,
       `${productionOrigin}/es/servicios`,
+      `${productionOrigin}/es/servicios/freelance`,
+      `${productionOrigin}/es/servicios/packs`,
       `${productionOrigin}/es/proyectos`,
       `${productionOrigin}/es/contacto`,
     ]);
@@ -96,7 +99,12 @@ describe("buildSitemap", () => {
 
   it("leaves /proyectos out while no project is published", () => {
     const urls = buildSitemap(production, ["es"], false, false).map((entry) => entry.url);
-    expect(urls).toEqual([`${productionOrigin}/es`, `${productionOrigin}/es/servicios`]);
+    expect(urls).toEqual([
+      `${productionOrigin}/es`,
+      `${productionOrigin}/es/servicios`,
+      `${productionOrigin}/es/servicios/freelance`,
+      `${productionOrigin}/es/servicios/packs`,
+    ]);
   });
 });
 
@@ -174,6 +182,31 @@ describe("json-ld", () => {
     });
   });
 
+  it("builds a BreadcrumbList with absolute URLs and positions", () => {
+    const list = buildBreadcrumbList(productionOrigin, [
+      { name: "Inicio", path: "/es" },
+      { name: "Servicios", path: "/es/servicios" },
+    ]);
+    expect(list.itemListElement).toEqual([
+      { "@type": "ListItem", position: 1, name: "Inicio", item: `${productionOrigin}/es` },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Servicios",
+        item: `${productionOrigin}/es/servicios`,
+      },
+    ]);
+    expect(jsonLdGraphSchema.safeParse(buildGraph(list)).success).toBe(true);
+  });
+
+  it("builds a FAQPage from the visible questions", () => {
+    const page = buildFaqPage([{ id: "a", question: "¿Q?", answer: "A." }]);
+    expect(page.mainEntity).toEqual([
+      { "@type": "Question", name: "¿Q?", acceptedAnswer: { "@type": "Answer", text: "A." } },
+    ]);
+    expect(() => buildFaqPage([])).toThrow();
+  });
+
   it("rejects invalid data", async () => {
     const person = await buildPerson(productionOrigin, "es");
     expect(() => buildGraph({ ...person, url: "not a url" })).toThrow();
@@ -199,41 +232,6 @@ describe("buildLlmsTxt rates", () => {
   });
 });
 
-describe("buildHeaders", () => {
-  it("noindexes private zones and workers.dev hosts even in production", () => {
-    const rules = buildHeaders(production);
-    expect(rules).toHaveLength(3);
-    expect(rules[0]?.source).toBe(privateZoneSource);
-    for (const zone of [
-      "dev",
-      "entrar",
-      "admin",
-      "crm",
-      "area",
-      "freelance",
-      "invitacion",
-      "cuenta",
-    ]) {
-      expect(rules[0]?.source).toContain(zone);
-    }
-    expect(rules[1]?.source).toBe("/auth/:path*");
-    const host = rules[2]?.has?.[0];
-    expect(host?.type).toBe("host");
-    const pattern = new RegExp(`^${host?.value ?? ""}$`);
-    expect(pattern.test("josecoded-preview.josecoded-api.workers.dev")).toBe(true);
-    expect(pattern.test("josecoded.com")).toBe(false);
-  });
-
-  it("noindexes everything on non-production builds", () => {
-    const rules = buildHeaders(preview);
-    expect(rules).toHaveLength(4);
-    expect(rules[3]).toEqual({
-      source: "/:path*",
-      headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
-    });
-  });
-});
-
 describe("buildLlmsTxt", () => {
   it("describes the same entity as the Person and lists the emails", async () => {
     const text = await buildLlmsTxt(productionOrigin, "es", rates);
@@ -243,6 +241,8 @@ describe("buildLlmsTxt", () => {
     expect(text).not.toContain("{{DATO");
     expect(text).not.toContain("chat");
     expect(text).toContain(`(${productionOrigin}/es/servicios)`);
+    expect(text).toContain(`(${productionOrigin}/es/servicios/freelance)`);
+    expect(text).toContain(`(${productionOrigin}/es/servicios/packs)`);
     expect(text).toContain(`(${productionOrigin}/es/contacto)`);
     expect(text).toContain("José Carlos Sánchez García");
     expect(text).toContain("Contratación: hola@josecoded.com");

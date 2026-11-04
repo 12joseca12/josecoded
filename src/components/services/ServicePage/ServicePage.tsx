@@ -1,0 +1,105 @@
+import { headers } from "next/headers";
+import type { ReactNode } from "react";
+
+import { JsonLd } from "@/components/seo/JsonLd/JsonLd";
+import { BlockScroll } from "@/components/site/BlockScroll/BlockScroll";
+import { Breadcrumbs } from "@/components/site/Breadcrumbs/Breadcrumbs";
+import { PageHead } from "@/components/site/PageHead/PageHead";
+import { site } from "@/config/site";
+import type { Locale } from "@/i18n/config";
+import type { MessageKey } from "@/i18n/keys.generated";
+import { getTranslator } from "@/i18n/messages";
+import { nonceHeader } from "@/lib/security/nonce";
+import { buildBreadcrumbList, buildFaqPage, buildGraph } from "@/lib/seo/jsonld";
+import { localePath } from "@/lib/seo/routes";
+import type { FaqItem, ServicePageId, WayId, WayNavItem } from "@/types/services";
+
+import { WayNav } from "../WayNav/WayNav";
+import styles from "./ServicePage.module.css";
+
+interface ServicePageProps {
+  locale: Locale;
+  page: ServicePageId;
+  head: { title: MessageKey; accent?: MessageKey; lead: MessageKey };
+  faq: FaqItem[];
+  children: ReactNode;
+}
+
+const pagePaths: Record<ServicePageId, string> = {
+  hub: "/servicios",
+  freelance: "/servicios/freelance",
+  packs: "/servicios/packs",
+};
+
+const pageLabels: Record<Exclude<ServicePageId, "hub">, MessageKey> = {
+  freelance: "services.ways.freelance.nav",
+  packs: "services.ways.packs.nav",
+};
+
+const wayLabels: Record<WayId, MessageKey> = {
+  contratacion: "services.ways.contratacion.nav",
+  freelance: "services.ways.freelance.nav",
+  packs: "services.ways.packs.nav",
+};
+
+export async function ServicePage({ locale, page, head, faq, children }: ServicePageProps) {
+  const [t, requestHeaders] = await Promise.all([getTranslator(locale), headers()]);
+  const nonce = requestHeaders.get(nonceHeader) ?? undefined;
+  const hubPath = localePath(locale, pagePaths.hub);
+  const childLabel = page === "hub" ? null : t(pageLabels[page]);
+
+  const crumbs = [
+    { label: t("nav.home"), href: localePath(locale, "") },
+    { label: t("nav.services"), href: hubPath },
+    ...(childLabel ? [{ label: childLabel, href: localePath(locale, pagePaths[page]) }] : []),
+  ];
+
+  const onHub = page === "hub";
+  const navItems: WayNavItem[] = [
+    {
+      id: "contratacion",
+      label: t(wayLabels.contratacion),
+      href: onHub ? "#contratacion" : `${hubPath}#contratacion`,
+    },
+    {
+      id: "freelance",
+      label: t(wayLabels.freelance),
+      href: onHub ? "#freelance" : localePath(locale, pagePaths.freelance),
+    },
+    {
+      id: "packs",
+      label: t(wayLabels.packs),
+      href: onHub ? "#packs" : localePath(locale, pagePaths.packs),
+    },
+  ];
+
+  const graph = buildGraph(
+    buildBreadcrumbList(
+      site.origin,
+      crumbs.map((crumb) => ({ name: crumb.label, path: crumb.href })),
+    ),
+    buildFaqPage(faq),
+  );
+
+  return (
+    <>
+      <JsonLd data={graph} nonce={nonce} />
+      <BlockScroll />
+      <PageHead
+        title={t(head.title)}
+        accent={head.accent ? t(head.accent) : undefined}
+        lead={t(head.lead)}
+        breadcrumbs={<Breadcrumbs label={t("breadcrumbs.label")} items={crumbs} />}
+      />
+      <div className={styles.ways}>
+        <WayNav
+          label={t("services.nav.label")}
+          items={navItems}
+          variant={onHub ? "anchors" : "pages"}
+          current={onHub ? undefined : page}
+        />
+        <div className={styles.sections}>{children}</div>
+      </div>
+    </>
+  );
+}

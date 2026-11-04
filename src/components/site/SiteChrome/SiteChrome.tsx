@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import { type ReactNode, ViewTransition } from "react";
 
 import { JsonLd } from "@/components/seo/JsonLd/JsonLd";
@@ -12,6 +13,7 @@ import type { Locale } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
 import { buildWhatsAppUrl } from "@/lib/contact/whatsapp";
+import { nonceHeader } from "@/lib/security/nonce";
 import { buildSiteGraph } from "@/lib/seo/jsonld";
 import type { HeaderLabels } from "@/types/nav";
 
@@ -29,6 +31,7 @@ interface SiteChromeProps {
 }
 
 export async function SiteChrome({ locale, children }: SiteChromeProps) {
+  const nonce = (await headers()).get(nonceHeader) ?? undefined;
   const t = await getTranslator(locale);
   const graph = await buildSiteGraph(site.origin, locale);
   const items = navSlugs.map(([slug, key]) => ({ slug, label: t(key) }));
@@ -62,7 +65,7 @@ export async function SiteChrome({ locale, children }: SiteChromeProps) {
   );
   return (
     <>
-      <JsonLd data={graph} />
+      <JsonLd data={graph} nonce={nonce} />
       <SkipLink label={t("nav.skipLink")} />
       <SiteHeader
         locale={locale}

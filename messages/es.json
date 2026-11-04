@@ -425,45 +425,71 @@
     "nav": {
       "label": "Vías de trabajo"
     },
-    "audience": "Para quién",
     "ways": {
       "contratacion": {
         "nav": "Contratación",
         "title": "Contratación",
         "text": "Me incorporo a tu equipo de producto móvil o web y me hago cargo de una parte del producto de principio a fin.",
-        "audience": "Equipos que buscan un perfil que una diseño, desarrollo y publicación.",
-        "bullets": {
-          "a": "React Native y web con TypeScript",
-          "b": "Revisión de código, pruebas e integración continua desde el primer día",
-          "c": "Producto en producción, no solo en el prototipo"
-        },
-        "cv": "Descargar CV",
-        "chat": "Hablar conmigo"
+        "cta": "Contactar para contratación",
+        "more": "Ver CV y trayectoria"
       },
       "freelance": {
         "nav": "Freelance",
         "title": "Freelance",
-        "text": "Una funcionalidad, una auditoría o un empujón a un proyecto que ya existe, con el alcance acordado antes de empezar.",
-        "audience": "Equipos y negocios con una tarea concreta que no justifica una contratación.",
-        "bullets": {
-          "a": "Tarifa por hora o presupuesto por tarea",
-          "b": "Entregas cortas que puedes probar",
-          "c": "Seguimiento del avance en tiempo real"
-        },
-        "cta": "Pedir propuesta"
+        "text": "Una funcionalidad, una auditoría o un empujón a un proyecto que ya existe, por horas o por tarea.",
+        "cta": "Ver tarifa y ejemplos"
       },
       "packs": {
         "nav": "Packs",
         "title": "Packs web y app",
-        "text": "Diseño, desarrollo y publicación con alcance, precio y fecha definidos de antemano.",
-        "audience": "Quien necesita una web o una app completa sin gestionar el proyecto por piezas.",
-        "bullets": {
-          "a": "Web, app o las dos",
-          "b": "Publicación en tiendas y dominio incluida",
-          "c": "Mantenimiento opcional después"
-        },
-        "view": "Ver packs",
-        "cta": "Hablar de un pack"
+        "text": "Una web o una app completa con alcance, precio y fecha definidos de antemano.",
+        "cta": "Comparar packs"
+      }
+    },
+    "how": {
+      "title": "Cómo trabajo",
+      "lead": "Cinco fases comunes a cualquier vía: qué ves en cada una y qué necesito de ti.",
+      "phases": {
+        "discover": "Entiendo qué problema resuelve el producto, para quién y qué entra en la primera versión.",
+        "design": "Dibujo pantallas y flujos y los pruebas contigo antes de escribir código.",
+        "build": "Desarrollo con entregas cortas que puedes probar en tu móvil o en una preview.",
+        "publish": "Subo la app a las tiendas y la web a su dominio, con analítica y copias de seguridad.",
+        "maintain": "Corrijo, actualizo y mejoro después del lanzamiento, con un plan acordado."
+      }
+    },
+    "faq": {
+      "title": "Preguntas frecuentes",
+      "hub": {
+        "q1": "¿Trabajas en remoto o tengo que estar en Madrid?",
+        "a1": "Trabajo en remoto con clientes de toda España y de fuera. Si hace falta, me desplazo a reuniones puntuales en Madrid.",
+        "q2": "¿Facturas con IVA?",
+        "a2": "Sí. Cada trabajo se factura con IVA y factura detallada, y la forma de pago se acuerda antes de empezar.",
+        "q3": "¿En qué idiomas puedo escribirte?",
+        "a3": "En español y en inglés. La documentación y los mensajes de commit del código van en inglés.",
+        "q4": "¿Cuánto tardas en responder?",
+        "a4": "Respondo cada consulta en uno o dos días laborables, normalmente antes. Si es urgente, dilo en el mensaje."
+      },
+      "freelance": {
+        "q1": "¿Hay un mínimo de horas?",
+        "a1": "No hay un mínimo fijo. Para tareas muy pequeñas acordamos un bloque de horas o un precio por tarea antes de empezar.",
+        "q2": "¿Qué me conviene más, por horas o por tarea?",
+        "a2": "Por tarea si el alcance está claro y quieres un precio cerrado. Por horas si el alcance puede cambiar o es exploratorio.",
+        "q3": "¿Cómo sigo el avance?",
+        "a3": "Trabajo en entregas cortas que puedes probar y te comparto cada avance sin esperar al final.",
+        "q4": "¿Qué pasa si el alcance crece?",
+        "a4": "Lo acordamos antes de seguir: te explico qué cambia en tiempo y coste, y decides si lo incluimos o lo dejamos para otra tarea."
+      },
+      "packs": {
+        "q1": "¿Cuánto cuesta una app móvil?",
+        "a1": "Depende del pack y de los extras. Cada pack tiene un precio «desde» y, tras hablar contigo, te doy un presupuesto cerrado con fecha de entrega.",
+        "q2": "¿Qué incluye cada pack?",
+        "a2": "Diseño, desarrollo y publicación. La lista exacta de cada pack está en el comparador y se confirma por escrito antes de empezar.",
+        "q3": "¿Incluye la publicación en las tiendas?",
+        "a3": "Sí. Los packs con app incluyen la publicación en App Store y Google Play, y los de web, el dominio y el alojamiento.",
+        "q4": "¿Y el mantenimiento después del lanzamiento?",
+        "a4": "Es opcional y se contrata aparte, con un plan mensual que se acuerda según lo que necesite tu producto.",
+        "q5": "¿Qué tengo que aportar yo?",
+        "a5": "Los textos, las imágenes y las decisiones de negocio. Te digo qué necesito en cada fase y cuándo, para no frenar la entrega."
       }
     },
     "rates": {
@@ -504,6 +530,8 @@
       "pagesTitle": "Páginas clave",
       "home": "Inicio: quién es José Carlos y en qué trabaja",
       "services": "Servicios: las tres formas de trabajar con José Carlos",
+      "freelancePage": "Freelance: programador freelance por horas o por tarea",
+      "packsPage": "Packs: web y app con precio y fecha cerrados",
       "projects": "Proyectos: apps y webs en producción",
       "entityTitle": "Entidad",
       "entityName": "Nombre: {name} (alias {alias})",
@@ -698,5 +726,111 @@
         "retrying": "Reintentando"
       }
     }
+  },
+  "freelancePage": {
+    "meta": {
+      "title": "Programador freelance por horas y por tarea",
+      "description": "Programador freelance por horas o con presupuesto por tarea. Funcionalidades, auditorías y rescates de apps React Native y webs Next.js."
+    },
+    "head": {
+      "title": "Programador freelance por horas o",
+      "accent": "por tarea.",
+      "lead": "Desarrollador React Native freelance para funcionalidades, auditorías y rescates de apps y webs, con el alcance acordado antes de empezar."
+    },
+    "rates": {
+      "title": "Tarifa por hora y presupuesto por tarea"
+    },
+    "scope": {
+      "title": "Desarrollador React Native freelance: qué incluye",
+      "feature": {
+        "title": "Funcionalidad nueva",
+        "text": "Una pantalla, un flujo o una integración dentro de tu app o web, con pruebas y lista para publicar."
+      },
+      "audit": {
+        "title": "Auditoría",
+        "text": "Reviso rendimiento, seguridad y calidad del código de una app existente y te dejo un informe con prioridades."
+      },
+      "rescue": {
+        "title": "Rescate de proyecto",
+        "text": "Retomo una app o web atascada o heredada, la estabilizo y la dejo en producción."
+      },
+      "ai": {
+        "title": "Integración de IA",
+        "text": "Añado un asistente o una función de IA a tu producto con un alcance y un coste claros."
+      }
+    },
+    "start": {
+      "title": "Cómo empezamos",
+      "tell": {
+        "title": "Me cuentas la tarea",
+        "text": "Rellenas el formulario o me escribes qué necesitas, para cuándo y qué tienes ya hecho."
+      },
+      "agree": {
+        "title": "Acordamos alcance y precio",
+        "text": "Te respondo con una propuesta: horas estimadas o precio cerrado por tarea, y qué entrego."
+      },
+      "build": {
+        "title": "Empiezo y ves el avance",
+        "text": "Trabajo en entregas cortas que puedes probar y te aviso de cada avance."
+      }
+    },
+    "closing": {
+      "title": "¿Tienes una tarea en mente?",
+      "text": "Cuéntame qué necesitas y te respondo con una propuesta.",
+      "cta": "Pedir propuesta",
+      "more": "Cómo trabajo, fase a fase"
+    }
+  },
+  "packsPage": {
+    "meta": {
+      "title": "Precio de app móvil y web: packs cerrados",
+      "description": "Packs de web y app con precio y fecha cerrados, con publicación en tiendas y dominio incluidos. Compara qué trae cada uno y pide presupuesto."
+    },
+    "head": {
+      "title": "Precio de app móvil y web:",
+      "accent": "packs con precio y fecha cerrados.",
+      "lead": "Elige un pack de web, de app o de las dos, con alcance, precio y fecha definidos antes de empezar."
+    },
+    "compare": {
+      "title": "Presupuesto de app: compara los packs",
+      "lead": "Cada pack incluye diseño, desarrollo y publicación. El precio «desde» sube si añades extras.",
+      "from": "desde",
+      "unit": "€",
+      "price": "Precio",
+      "includes": "Incluye",
+      "ctaFor": "Pedir el pack {name}"
+    },
+    "items": {
+      "app": {
+        "name": "App móvil",
+        "text": "Una app para iOS y Android con React Native, publicada en las dos tiendas.",
+        "a": "Diseño de pantallas y flujos",
+        "b": "Desarrollo con React Native",
+        "c": "Publicación en App Store y Google Play"
+      },
+      "web": {
+        "name": "Web de negocio",
+        "text": "Una web rápida y bien posicionada con Next.js, en tu dominio.",
+        "a": "Diseño a medida",
+        "b": "Desarrollo con Next.js",
+        "c": "Dominio y alojamiento configurados"
+      },
+      "both": {
+        "name": "Web y app",
+        "text": "Web y app que comparten diseño y datos, lanzadas a la vez.",
+        "a": "Diseño común para web y app",
+        "b": "Una sola base de datos y cuentas de usuario",
+        "c": "Publicación en tiendas y dominio incluidos"
+      }
+    },
+    "closing": {
+      "title": "¿Qué pack encaja con tu proyecto?",
+      "text": "Cuéntame tu idea y te digo cuál encaja y qué extras necesitaría.",
+      "cta": "Hablar de un pack",
+      "more": "Cómo trabajo, fase a fase"
+    }
+  },
+  "breadcrumbs": {
+    "label": "Migas de pan"
   }
 }
