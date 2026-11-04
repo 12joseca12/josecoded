@@ -87,6 +87,7 @@
   --radius-xs: 0.375rem;
   --dur-reduced: 0.01ms;
   --dur-bubble: 450ms;
+  --dur-pulse: 2400ms;
   --z-raised: 1;
   --z-header: 40;
   --z-toast: 50;

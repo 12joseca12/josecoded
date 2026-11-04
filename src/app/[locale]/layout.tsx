@@ -11,10 +11,13 @@ import { RouteFocus } from "@/components/site/RouteFocus/RouteFocus";
 import { SiteFooter } from "@/components/site/SiteFooter/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader/SiteHeader";
 import { contentId, SkipLink } from "@/components/site/SkipLink/SkipLink";
+import { contact } from "@/config/contact";
+import { features } from "@/config/features";
 import { canonicalOrigin, site } from "@/config/site";
 import { isLocale, isPublished, locales } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
+import { buildWhatsAppUrl } from "@/lib/contact/whatsapp";
 import { buildSiteGraph } from "@/lib/seo/jsonld";
 import { resolveRobots } from "@/lib/seo/metadata";
 import { openGraphLocales } from "@/lib/seo/routes";
@@ -79,13 +82,33 @@ export default async function LocaleLayout({
     menuClose: t("nav.menuClose"),
     menuTitle: t("nav.menuTitle"),
     here: t("nav.here"),
+    contact: {
+      title: t("contactChooser.title"),
+      close: t("contactChooser.close"),
+      whatsapp: t("contactChooser.whatsapp"),
+      whatsappHint: t("contactChooser.whatsappHint"),
+      chat: t("contactChooser.chat"),
+      chatHint: t("contactChooser.chatHint"),
+    },
+    chat: { label: t("chatButton.label"), online: t("chatButton.online") },
+    search: { label: t("search.label"), shortcut: t("search.shortcut") },
   };
+  const whatsappHref = buildWhatsAppUrl(
+    contact.whatsappNumber,
+    t("contactChooser.whatsappMessage"),
+  );
   return (
     <html lang={locale} className={interTight.variable}>
       <body>
         <JsonLd data={graph} />
         <SkipLink label={t("nav.skipLink")} />
-        <SiteHeader locale={locale} items={items} labels={labels} />
+        <SiteHeader
+          locale={locale}
+          items={items}
+          labels={labels}
+          whatsappHref={whatsappHref}
+          searchEnabled={features.search}
+        />
         <ViewTransition default="none" update="page-swap">
           <main id={contentId} tabIndex={-1}>
             {children}

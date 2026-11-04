@@ -151,6 +151,23 @@
     "blog": "Blog",
     "contact": "Contacto"
   },
+  "contactChooser": {
+    "title": "Hablemos",
+    "close": "Cerrar",
+    "whatsapp": "WhatsApp",
+    "whatsappHint": "Escríbeme y respondo en cuanto puedo",
+    "chat": "Chat con Nexo",
+    "chatHint": "Nuestro asistente te responde al momento",
+    "whatsappMessage": "Hola Jose, te escribo desde josecoded.com. Me gustaría hablar de un proyecto."
+  },
+  "chatButton": {
+    "label": "Chat",
+    "online": "en línea"
+  },
+  "search": {
+    "label": "Buscar",
+    "shortcut": "⌘K"
+  },
   "footer": {
     "navLabel": "Pie de página",
     "legalLabel": "Legal",
