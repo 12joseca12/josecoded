@@ -24,7 +24,8 @@ export const parts = [
   "eyeLeft",
   "eyeRight",
   "mouth",
-  "ear",
+  "earLeft",
+  "earRight",
   "armLeft",
   "armRight",
   "ring",
@@ -33,13 +34,12 @@ export const parts = [
   "dotA",
   "dotB",
   "dotC",
-  "question",
-  "sleep",
 ] as const;
 export type Part = (typeof parts)[number];
 
 const spring: Transition = { type: "spring", stiffness: 170, damping: 19, mass: 0.9 };
 const morph: Transition = { type: "spring", stiffness: 210, damping: 24 };
+const pop: Transition = { type: "spring", stiffness: 340, damping: 12, mass: 0.8 };
 
 const loop = (rest: Value, frames: Value[], duration: number, extra: Partial<Loop> = {}): Loop => ({
   rest,
@@ -70,13 +70,10 @@ const mouth = (
 const shapes = {
   open: eye(0, -7, 0, 0, 0, 7),
   attentive: eye(0, -8.5, 0, 0, 0, 8.5),
-  tall: eye(0, -9.5, 0, 0, 0, 9.5),
   cheer: eye(-11, 4, 0, -11, 11, 4),
   beam: eye(-12, 5, 0, -14, 12, 5),
   dot: eye(0, 0, 0, 0, 0, 0),
-  squint: eye(-8, 1, 0, 0, 8, -1),
   droop: eye(-9, 5, 0, 0, 8, -3),
-  closed: eye(-9, 2, 0, 8, 9, 2),
 };
 
 const eyes = (shape: EyeShape, width: number, opacity = 1) => ({
@@ -91,9 +88,7 @@ const mouths = {
   beam: mouthPath(mouth(85, 115, base, base + 1, base + 27)),
   attentive: mouthPath(mouth(94, 106, base + 1, base + 4, base + 8)),
   flat: mouthPath(mouth(93, 107, base + 2, base + 1, base + 4)),
-  wry: mouthPath(mouth(91, 110, base + 4, base + 1, base + 5, 2)),
   frown: mouthPath(mouth(90, 110, base + 7, base + 1, base + 6)),
-  rest: mouthPath(mouth(95, 105, base + 3, base + 3, base + 6)),
   speak: [
     mouthPath(mouth(92, 108, base, base + 3, base + 8)),
     mouthPath(mouth(90, 110, base, base, base + 22)),
@@ -104,7 +99,8 @@ const mouths = {
 };
 
 const still = { y: 0, rotate: 0, scale: 1 };
-const rested = { opacity: 1, scale: 1 };
+const tucked = { x: 0, opacity: 1 };
+const earOut = 11;
 
 type Pose = Record<Part, PartPose>;
 
@@ -125,7 +121,8 @@ function pose(partial: Overrides & { eyes: ReturnType<typeof eyes>; mouth: Spec 
     eyeLeft: pair.left,
     eyeRight: pair.right,
     mouth: { d: mouthSpec },
-    ear: rested,
+    earLeft: tucked,
+    earRight: tucked,
     armLeft: { rotate: 0 },
     armRight: { rotate: 0 },
     ring: { opacity: 0.92 },
@@ -134,8 +131,6 @@ function pose(partial: Overrides & { eyes: ReturnType<typeof eyes>; mouth: Spec 
     dotA: dotsOff,
     dotB: dotsOff,
     dotC: dotsOff,
-    question: { opacity: 0, scale: 0.5, y: 6 },
-    sleep: { opacity: 0, y: 4 },
     ...overrides,
   };
 }
@@ -164,10 +159,8 @@ export const poses: Record<NexoState, Pose> = {
     mouth: mouths.attentive,
     float: { y: loop(2, [2, 0.5, 2], 2.4), rotate: -4, scale: 1.04 },
     blink: { scaleY: idleBlink },
-    ear: {
-      opacity: loop(1, [0.85, 1, 0.85], 0.9),
-      scale: loop(1, [1, 1.14, 1], 0.9),
-    },
+    earLeft: { x: -earOut, opacity: loop(1, [0.85, 1, 0.85], 0.9) },
+    earRight: { x: earOut, opacity: loop(1, [0.85, 1, 0.85], 0.9) },
     ring: { opacity: 0.95 },
     glow: { opacity: 0.7 },
   }),
@@ -203,17 +196,6 @@ export const poses: Record<NexoState, Pose> = {
     ring: { opacity: 1 },
     glow: { opacity: 1 },
   }),
-  confused: pose({
-    eyes: {
-      left: { d: eyePath(eyeCentres.left, shapes.tall, false), strokeWidth: 9.5, opacity: 1 },
-      right: { d: eyePath(eyeCentres.right, shapes.squint, true), strokeWidth: 4.5, opacity: 1 },
-    },
-    mouth: mouths.wry,
-    float: { y: 0, rotate: loop(8, [8, 6, 8], 2.6), scale: 1 },
-    ring: { opacity: 0.8 },
-    glow: { opacity: 0.45 },
-    question: { opacity: 1, scale: 1, y: 0 },
-  }),
   sad: pose({
     eyes: eyes(shapes.droop, 6, 0.85),
     mouth: mouths.frown,
@@ -222,14 +204,6 @@ export const poses: Record<NexoState, Pose> = {
     armRight: { rotate: 6 },
     ring: { opacity: 0.3 },
     glow: { opacity: 0.2 },
-  }),
-  sleeping: pose({
-    eyes: eyes(shapes.closed, 4.5, 0.7),
-    mouth: mouths.rest,
-    float: { y: 6, rotate: 0, scale: loop(1, [1, 1.025, 1], 4.6) },
-    ring: { opacity: 0.16 },
-    glow: { opacity: 0.1 },
-    sleep: { opacity: loop(1, [0.3, 1, 0.3], 3.2), y: loop(0, [0, -6, 0], 3.2) },
   }),
 };
 
@@ -240,9 +214,17 @@ export const ringSpeed: Record<NexoState, number> = {
   thinking: 0.0016,
   talking: 0.0004,
   happy: 0.0008,
-  confused: 0.00014,
   sad: 0.00007,
-  sleeping: 0,
+};
+
+export const ringPrecession: Record<NexoState, number> = {
+  idle: 0.00009,
+  greeting: 0.00016,
+  listening: 0.00011,
+  thinking: 0.00022,
+  talking: 0.00013,
+  happy: 0.00016,
+  sad: 0.00005,
 };
 
 const isLoop = (spec: Spec): spec is Loop => typeof spec === "object";
@@ -266,7 +248,9 @@ function resolve(spec: PartPose, reduced: boolean) {
         ? { duration: 0 }
         : key === "d"
           ? morph
-          : spring;
+          : key === "x"
+            ? pop
+            : spring;
   }
   return { ...target, transition } as Variants[string];
 }

@@ -222,9 +222,7 @@
         "thinking": "Pensando",
         "talking": "Hablando",
         "happy": "Contento",
-        "confused": "Confuso",
-        "sad": "Triste",
-        "sleeping": "Dormido"
+        "sad": "Triste"
       }
     }
   },
@@ -405,9 +403,7 @@
         "thinking": "Nexo está pensando la respuesta",
         "talking": "Nexo está respondiendo",
         "happy": "Nexo está contento",
-        "confused": "Nexo no te ha entendido",
-        "sad": "Nexo lo siente",
-        "sleeping": "Nexo está dormido"
+        "sad": "Nexo lo siente"
       }
     }
   }
