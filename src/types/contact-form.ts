@@ -9,16 +9,28 @@ export type ContactFieldName = (typeof contactFieldNames)[number];
 
 export const packSlugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
+const controlCharacters = /\p{Cc}/u;
+
 export const contactFormSchema = z.strictObject({
   way: z.enum(wayIds, { error: "way_required" }),
-  name: z.string().trim().min(1, "name_required").max(200, "name_too_long"),
+  name: z
+    .string()
+    .trim()
+    .min(1, "name_required")
+    .max(200, "name_too_long")
+    .refine((value) => !controlCharacters.test(value), "name_invalid"),
   email: z
     .string()
     .trim()
     .min(1, "email_required")
     .max(320, "email_invalid")
     .pipe(z.email("email_invalid")),
-  company: z.string().trim().max(200, "company_too_long").optional(),
+  company: z
+    .string()
+    .trim()
+    .max(200, "company_too_long")
+    .refine((value) => !controlCharacters.test(value), "company_invalid")
+    .optional(),
   message: z.string().trim().min(1, "message_required").max(4000, "message_too_long"),
   consent: z.literal(true, { error: "consent_required" }),
   pack: z.string().max(80).regex(packSlugPattern).optional(),

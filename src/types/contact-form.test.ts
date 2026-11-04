@@ -44,6 +44,19 @@ describe("contactFormSchema", () => {
     expect(!long.success && collectFieldErrors(long.error).message).toBe("message_too_long");
   });
 
+  it("rejects control characters in name and company", () => {
+    for (const bad of ["Ada\u0000", "Ada\nLovelace", "Ada\u0007", "Ada\tL"]) {
+      const result = contactFormSchema.safeParse({ ...valid, name: bad, company: bad });
+      expect(result.success).toBe(false);
+      if (result.success) continue;
+      expect(collectFieldErrors(result.error)).toMatchObject({
+        name: "name_invalid",
+        company: "company_invalid",
+      });
+    }
+    expect(contactFormSchema.safeParse({ ...valid, name: "José Ñandú 山田" }).success).toBe(true);
+  });
+
   it("rejects unknown keys and bad pack slugs", () => {
     expect(contactFormSchema.safeParse({ ...valid, extra: 1 }).success).toBe(false);
     expect(contactFormSchema.safeParse({ ...valid, pack: "Bad Slug" }).success).toBe(false);

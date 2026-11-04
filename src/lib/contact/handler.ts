@@ -8,6 +8,7 @@ import type { Database } from "@/types/database";
 import { readContactServerConfig } from "./env";
 import { hashIp } from "./ip";
 import { type ContactDeps, processContact } from "./process";
+import { findContactLimiter, passesRateLimit } from "./rate-limit";
 import { verifyTurnstile } from "./turnstile";
 
 const rpcTimeoutMs = 8000;
@@ -26,6 +27,7 @@ function buildDeps(env: Record<string, string | undefined>): ContactDeps | null 
         secret: config.turnstileSecret,
         token,
         ip,
+        allowedHostnames: config.allowedHostnames,
       }),
     hashIp: (ip) => hashIp(ip, config.ipHashSecret),
     submitLead: async (args) => {
@@ -45,6 +47,7 @@ function buildDeps(env: Record<string, string | undefined>): ContactDeps | null 
         return { ok: false, error: null };
       }
     },
+    rateLimit: async (key) => passesRateLimit(await findContactLimiter(), key),
     reportFailure: (code) => {
       console.error("contact_submit_failed", code);
     },

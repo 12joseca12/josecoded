@@ -1,5 +1,6 @@
 interface TurnstileRenderOptions {
   sitekey: string;
+  action?: string;
   language?: string;
   theme?: "light" | "dark" | "auto";
   size?: "normal" | "flexible" | "compact";

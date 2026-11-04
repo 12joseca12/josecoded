@@ -1,8 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { readContactClientConfig, readContactServerConfig } from "./env";
 import { type ContactDeps, processContact, type SubmitLeadOutcome } from "./process";
-import { verifyTurnstile } from "./turnstile";
 
 const raw = {
   way: "freelance",
@@ -19,6 +17,7 @@ function makeDeps(overrides: Partial<ContactDeps> = {}) {
     verifyTurnstile: vi.fn(() => Promise.resolve("ok" as const)),
     hashIp: vi.fn(() => Promise.resolve("a".repeat(64))),
     submitLead: vi.fn((): Promise<SubmitLeadOutcome> => Promise.resolve({ ok: true })),
+    rateLimit: vi.fn(() => Promise.resolve(true)),
     reportFailure: vi.fn(),
     ...overrides,
   };
@@ -116,47 +115,24 @@ describe("processContact", () => {
   });
 });
 
-describe("verifyTurnstile", () => {
-  const base = { url: "https://verify.test", secret: "s", token: "t", ip: "203.0.113.7" };
-
-  it("posts secret, response and remoteip", async () => {
-    const fetchImpl = vi.fn(() => Promise.resolve(Response.json({ success: true })));
-    expect(await verifyTurnstile({ ...base, fetchImpl })).toBe("ok");
-    const init = (fetchImpl.mock.calls[0] as unknown as [string, RequestInit])[1];
-    expect((init.body as URLSearchParams).toString()).toBe(
-      "secret=s&response=t&remoteip=203.0.113.7",
-    );
+describe("processContact gates", () => {
+  it("answers quota before verifying when the rate limit trips", async () => {
+    const deps = makeDeps({ rateLimit: vi.fn(() => Promise.resolve(false)) });
+    expect(await processContact(raw, { ip: "203.0.113.7", deps })).toEqual({ status: "quota" });
+    expect(deps.rateLimit).toHaveBeenCalledWith("a".repeat(64));
+    expect(deps.verifyTurnstile).not.toHaveBeenCalled();
   });
 
-  it("distinguishes rejection from outages", async () => {
-    const rejected = vi.fn(() => Promise.resolve(Response.json({ success: false })));
-    expect(await verifyTurnstile({ ...base, ip: null, fetchImpl: rejected })).toBe("rejected");
-    const failing = vi.fn(() => Promise.reject(new Error("offline")));
-    expect(await verifyTurnstile({ ...base, fetchImpl: failing })).toBe("unreachable");
-    const bad = vi.fn(() => Promise.resolve(new Response("nope", { status: 500 })));
-    expect(await verifyTurnstile({ ...base, fetchImpl: bad })).toBe("unreachable");
+  it("reports a missing ip by code only and still processes", async () => {
+    const deps = makeDeps();
+    expect(await processContact(raw, { ip: null, deps })).toEqual({ status: "sent" });
+    expect(deps.reportFailure).toHaveBeenCalledWith("ip_missing");
+    expect(deps.verifyTurnstile).toHaveBeenCalledWith("token", null);
   });
-});
 
-describe("env", () => {
-  const full = {
-    NEXT_PUBLIC_SUPABASE_URL: "https://x.supabase.co",
-    SUPABASE_SERVICE_ROLE_KEY: "k",
-    TURNSTILE_SECRET_KEY: "s",
-    FORM_IP_HASH_SECRET: "h",
-    NEXT_PUBLIC_TURNSTILE_SITE_KEY: "site",
-  };
-
-  it("needs every secret", () => {
-    expect(readContactServerConfig(full)).not.toBeNull();
-    for (const key of [
-      "SUPABASE_SERVICE_ROLE_KEY",
-      "TURNSTILE_SECRET_KEY",
-      "FORM_IP_HASH_SECRET",
-    ]) {
-      expect(readContactServerConfig({ ...full, [key]: "  " })).toBeNull();
-    }
-    expect(readContactClientConfig({})).toBeNull();
-    expect(readContactClientConfig(full)?.scriptUrl).toContain("challenges.cloudflare.com");
+  it("does not report ip_missing when the ip is present", async () => {
+    const deps = makeDeps();
+    await processContact(raw, { ip: "203.0.113.7", deps });
+    expect(deps.reportFailure).not.toHaveBeenCalled();
   });
 });

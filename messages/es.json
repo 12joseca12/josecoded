@@ -369,7 +369,9 @@
         "message_required": "Escribe un mensaje.",
         "message_too_long": "El mensaje es demasiado largo (máximo 4.000 caracteres).",
         "consent_required": "Necesito que aceptes la política de privacidad.",
-        "verification_required": "Completa la verificación de seguridad."
+        "verification_required": "Completa la verificación de seguridad.",
+        "name_invalid": "El nombre contiene caracteres no válidos.",
+        "company_invalid": "El nombre de la empresa contiene caracteres no válidos."
       },
       "sent": {
         "title": "Mensaje enviado",

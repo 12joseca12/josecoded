@@ -15,6 +15,7 @@ export interface ContactDeps {
   verifyTurnstile: (token: string, ip: string | null) => Promise<TurnstileOutcome>;
   hashIp: (ip: string | null) => Promise<string>;
   submitLead: (args: SubmitLeadArgs) => Promise<SubmitLeadOutcome>;
+  rateLimit: (key: string) => Promise<boolean>;
   reportFailure: (code: string) => void;
 }
 
@@ -41,6 +42,10 @@ export async function processContact(
   const input: ContactSubmission = parsed.data;
 
   const clientIp = isKnownIp(ip) ? ip : null;
+  if (clientIp === null) deps.reportFailure("ip_missing");
+  const ipHash = await deps.hashIp(ip);
+  if (!(await deps.rateLimit(ipHash))) return { status: "quota" };
+
   const verification = await deps.verifyTurnstile(input.turnstileToken, clientIp);
   if (verification === "rejected") return { status: "verification_failed" };
   if (verification === "unreachable") {
@@ -48,7 +53,7 @@ export async function processContact(
     return { status: "error" };
   }
 
-  const outcome = await deps.submitLead(buildLeadArgs(input, await deps.hashIp(ip)));
+  const outcome = await deps.submitLead(buildLeadArgs(input, ipHash));
   if (outcome.ok) return { status: "sent" };
   if (!outcome.error) {
     deps.reportFailure("lead_unreachable");

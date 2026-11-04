@@ -36,9 +36,11 @@ export function buildContactFormLabels(t: Translate): ContactFormLabels {
     errors: {
       way_required: t(`${p}.errors.way_required`),
       name_required: t(`${p}.errors.name_required`),
+      name_invalid: t(`${p}.errors.name_invalid`),
       name_too_long: t(`${p}.errors.name_too_long`),
       email_required: t(`${p}.errors.email_required`),
       email_invalid: t(`${p}.errors.email_invalid`),
+      company_invalid: t(`${p}.errors.company_invalid`),
       company_too_long: t(`${p}.errors.company_too_long`),
       message_required: t(`${p}.errors.message_required`),
       message_too_long: t(`${p}.errors.message_too_long`),

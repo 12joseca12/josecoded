@@ -60,7 +60,11 @@ const server = createServer(async (request, response) => {
     const entry = Object.fromEntries(params.entries());
     calls.siteverify.push(entry);
     const success = entry.secret === acceptedSecret && entry.response !== rejectedToken;
-    return send(response, 200, { success });
+    return send(response, 200, {
+      success,
+      hostname: "localhost",
+      action: "contact",
+    });
   }
 
   if (url.pathname === "/rest/v1/rpc/submit_lead" && request.method === "POST") {

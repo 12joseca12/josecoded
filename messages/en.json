@@ -369,7 +369,9 @@
         "message_required": "Enter a message.",
         "message_too_long": "The message is too long (4,000 characters max).",
         "consent_required": "You need to accept the privacy policy.",
-        "verification_required": "Complete the security check."
+        "verification_required": "Complete the security check.",
+        "name_invalid": "The name contains invalid characters.",
+        "company_invalid": "The company name contains invalid characters."
       },
       "sent": {
         "title": "Message sent",

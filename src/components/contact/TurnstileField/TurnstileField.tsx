@@ -81,6 +81,7 @@ export function TurnstileField({
         if (!mount.current || widget.current !== null) return;
         widget.current = api.render(mount.current, {
           sitekey: siteKey,
+          action: "contact",
           language: locale,
           theme: "light",
           size: "flexible",

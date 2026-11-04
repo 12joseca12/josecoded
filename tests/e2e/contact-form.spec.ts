@@ -74,9 +74,13 @@ test("sends a lead with the hashed ip and verified token", async ({ page }) => {
   await expect(page.getByRole("link", { name: "freelance@josecoded.com" })).toBeVisible();
 
   const seen = await calls(page);
-  expect(seen.siteverify).toEqual([
-    { secret: "test-turnstile-secret", response: "mock-token", remoteip: clientIp },
-  ]);
+  expect(seen.siteverify).toHaveLength(1);
+  expect(seen.siteverify[0]).toMatchObject({
+    secret: "test-turnstile-secret",
+    response: "mock-token",
+    remoteip: clientIp,
+  });
+  expect(seen.siteverify[0]?.idempotency_key).toMatch(/^[0-9a-f-]{36}$/);
   expect(seen.rpc).toHaveLength(1);
   const [lead] = seen.rpc;
   expect(lead?.authorization).toBe("Bearer test-service-role-key");
