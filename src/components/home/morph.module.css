@@ -1,0 +1,182 @@
+.el {
+  position: absolute;
+}
+
+.sketch,
+.drawn,
+.tag,
+.wire,
+.shell,
+.ink {
+  transition:
+    opacity var(--morph) var(--ease-morph) calc(var(--i, 0) * var(--stagger)),
+    transform var(--morph) var(--ease-morph) calc(var(--i, 0) * var(--stagger));
+}
+
+.sketch {
+  position: absolute;
+  opacity: calc(1 - var(--p-app));
+  transform: scale(calc(1 + var(--p-app) * 0.04));
+}
+
+.drawn {
+  opacity: var(--p-app);
+  transform: scale(calc(0.94 + var(--p-app) * 0.06));
+}
+
+.wire,
+.shell,
+.ink,
+.paper {
+  position: absolute;
+  inset: 0;
+}
+
+.wire {
+  border: var(--hair) dashed var(--sketch);
+  border-radius: var(--frame-radius);
+  background: var(--wire-fill, transparent);
+  opacity: calc(1 - var(--p-app));
+  transform: scale(calc(1 + var(--p-app) * 0.02));
+}
+
+.shell {
+  border-radius: var(--frame-radius);
+  background: var(--shell-bg);
+  box-shadow: var(--shell-shadow);
+  opacity: var(--p-app);
+  transform: scale(calc(0.985 + var(--p-app) * 0.015));
+}
+
+.paper {
+  background-color: var(--paper);
+  background-image: radial-gradient(
+    circle,
+    var(--scribble) calc(var(--u) * 0.35),
+    transparent calc(var(--u) * 0.5)
+  );
+  background-size: calc(var(--u) * 6) calc(var(--u) * 6);
+}
+
+.ink {
+  background: var(--ink-bg);
+  opacity: var(--p-app);
+}
+
+.tag {
+  position: absolute;
+  inset: var(--tag-inset, calc(var(--u) * -1.3));
+  border: max(1px, calc(var(--u) * 0.4)) dashed var(--tag-line, var(--coral-soft));
+  border-radius: var(--tag-radius, calc(var(--u) * 3));
+  opacity: var(--p-2);
+  transform: scale(calc(1.03 - var(--p-2) * 0.03));
+  pointer-events: none;
+}
+
+.tag::before {
+  content: attr(data-tag);
+  position: absolute;
+  left: calc(var(--u) * 2);
+  top: 0;
+  padding: var(--tag-pad, calc(var(--u) * 0.5) calc(var(--u) * 1.4));
+  border-radius: var(--tag-chip-radius, calc(var(--u) * 1));
+  background: var(--coral);
+  color: var(--charcoal);
+  font-family: var(--font-mono);
+  font-size: var(--tag-font, calc(var(--u) * 2.9));
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-label);
+  white-space: nowrap;
+  transform: translateY(-62%);
+}
+
+.scan {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+    to bottom,
+    transparent,
+    var(--coral-tint) 78%,
+    var(--coral) 97%,
+    transparent
+  );
+  background-position: top;
+  background-repeat: no-repeat;
+  background-size: 100% var(--scan-h, 14cqi);
+  opacity: 0;
+  pointer-events: none;
+  animation: sweep-a var(--scan-dur) var(--ease-in-out) both;
+}
+
+[data-parity="1"] .scan {
+  animation-name: sweep-b;
+}
+
+@keyframes sweep-a {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+
+  12% {
+    opacity: 1;
+  }
+
+  82% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
+@keyframes sweep-b {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+
+  12% {
+    opacity: 1;
+  }
+
+  82% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
+.float {
+  animation: float var(--float-dur) var(--ease-in-out) infinite alternate;
+  animation-delay: var(--float-delay, 0s);
+}
+
+[data-paused] .float {
+  animation-play-state: paused;
+}
+
+@keyframes float {
+  from {
+    translate: 0 0;
+  }
+
+  to {
+    translate: 0 calc(var(--float-amp) * -1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scan {
+    display: none;
+  }
+
+  .float {
+    animation: none;
+  }
+}

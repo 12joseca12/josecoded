@@ -1,0 +1,221 @@
+.rail {
+  --phase-dur: 3.4s;
+  container-type: inline-size;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  max-width: 44rem;
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  flex: 1;
+  gap: var(--space-1);
+}
+
+.phase {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  width: 100%;
+  min-height: 3.25rem;
+  padding: var(--space-1);
+  border: 0;
+  border-radius: var(--radius-s);
+  background: transparent;
+  color: var(--ink-faint);
+  font-size: var(--fs-s);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-snug);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-press) var(--ease-out);
+}
+
+.phase:active {
+  transform: scale(0.96);
+}
+
+.phase[aria-current] {
+  color: var(--ink);
+  font-weight: var(--fw-semibold);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .phase:hover {
+    background: var(--sk-base);
+    color: var(--ink);
+  }
+}
+
+.ring {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex: none;
+  rotate: -90deg;
+  overflow: visible;
+}
+
+.track,
+.fill {
+  fill: none;
+  stroke-width: 2;
+}
+
+.track {
+  stroke: var(--line-strong);
+}
+
+.fill {
+  stroke: var(--coral);
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1;
+}
+
+.phase[data-status="done"] .fill {
+  stroke-dashoffset: 0;
+}
+
+.rail[data-live] .phase[aria-current] .fill {
+  animation: run var(--phase-dur) linear forwards;
+}
+
+.rail[data-paused] .phase[aria-current] .fill {
+  animation-play-state: paused;
+}
+
+@keyframes run {
+  from {
+    stroke-dashoffset: 1;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@container (width > 34rem) {
+  .list {
+    gap: var(--space-2);
+  }
+
+  .phase {
+    flex-direction: row;
+    gap: var(--space-2);
+    min-height: 2.75rem;
+    padding: 0 var(--space-3);
+    border-radius: var(--radius-xl);
+    font-size: var(--fs-m);
+  }
+}
+
+.pause {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  background: var(--glass);
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    transform var(--dur-press) var(--ease-out);
+}
+
+.pause svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pause:active {
+  transform: scale(0.95);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .pause:hover {
+    background: var(--white);
+    color: var(--ink);
+  }
+}
+
+.pauseText {
+  position: absolute;
+  width: 0.0625rem;
+  height: 0.0625rem;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@container (width > 34rem) {
+  .pause {
+    padding: 0 var(--space-4) 0 var(--space-3);
+  }
+
+  .pauseText {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+  }
+}
+
+.rail[data-reduced] .list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0;
+}
+
+.rail[data-reduced] li {
+  display: flex;
+  align-items: center;
+}
+
+.rail[data-reduced] li + li::before {
+  content: "·";
+  color: var(--ink-faint);
+}
+
+.rail[data-reduced] .phase {
+  width: auto;
+  flex-direction: row;
+  min-height: 2.75rem;
+  padding: 0 var(--space-2);
+  font-size: var(--fs-m);
+  cursor: default;
+}
+
+.rail[data-reduced] .phase[aria-current] {
+  color: var(--coral-deep);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fill {
+    animation: none;
+  }
+}

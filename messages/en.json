@@ -8,7 +8,82 @@
   "home": {
     "name": "josecoded",
     "metaTitle": "React Native and full stack developer",
-    "metaDescription": "Mobile apps and websites with React Native and Next.js: hourly freelance, fixed-price packs or inside your team. Madrid, Spain and remote."
+    "metaDescription": "Mobile apps and websites with React Native and Next.js: hourly freelance, fixed-price packs or inside your team. Madrid, Spain and remote.",
+    "hero": {
+      "title": "Full stack developer specialised in",
+      "accent": "React Native.",
+      "lead": "I design, build and maintain mobile apps and websites for companies and businesses. From Madrid and remote: by the hour, by the task or with a fixed-price pack.",
+      "ctaPrimary": "Ask for a proposal",
+      "ctaSecondary": "See projects",
+      "rail": {
+        "list": "Phases of every project",
+        "pause": "Pause animation",
+        "resume": "Resume animation",
+        "pauseText": "Pause",
+        "resumeText": "Resume"
+      },
+      "phases": {
+        "discover": "Discover",
+        "design": "Design",
+        "build": "Build",
+        "publish": "Publish",
+        "maintain": "Maintain"
+      },
+      "demo": {
+        "phone": {
+          "title": "Orders",
+          "note": "// first: today's orders",
+          "nowTitle": "9 new",
+          "nowSub": "today · +18%",
+          "weekTotal": "1,284",
+          "weekLabel": "orders this week",
+          "recent": "Recent",
+          "toastShip": "v1.0 published",
+          "toastCare": "v1.1 installed",
+          "rowNew": { "title": "Table 7 · toast", "meta": "new", "price": "€3.80" },
+          "row1": { "title": "Table 4 · 2 coffees", "meta": "2 min ago", "price": "€6.40" },
+          "row2": { "title": "Bar · set menu", "meta": "6 min ago", "price": "€12.50" },
+          "row3": { "title": "Terrace 2 · juices", "meta": "9 min ago", "price": "€7.00" },
+          "row4": { "title": "Table 1 · breakfast", "meta": "14 min ago", "price": "€9.20" }
+        },
+        "browser": {
+          "designUrl": "design · orders v3",
+          "live": "in production",
+          "title": "Orders dashboard",
+          "orders": "Orders today",
+          "ordersNow": "128",
+          "ordersLive": "142",
+          "wait": "Average wait",
+          "waitNow": "6 min",
+          "waitLive": "5 min",
+          "rating": "Rating",
+          "ratingNow": "4.8",
+          "ratingLive": "4.9"
+        },
+        "notes": {
+          "who": "Who",
+          "whoValue": "the venue's customers",
+          "what": "What",
+          "whatValue": "order without calling",
+          "where": "Where",
+          "whereValue": "iOS, Android and web",
+          "tests": "42 tests · types ok",
+          "shipHead": "v1.0 published",
+          "store": "App Store",
+          "storeNote": "review passed",
+          "play": "Google Play",
+          "playNote": "in production",
+          "webNote": "HTTPS · CDN",
+          "careHead": "This week",
+          "sessions": "Crash-free sessions",
+          "sessionsValue": "99.8%",
+          "load": "Average load",
+          "loadValue": "0.9 s",
+          "release": "v1.1 installed",
+          "releaseValue": "no downtime"
+        }
+      }
+    }
   },
   "projects": {
     "metaTitle": "Projects",

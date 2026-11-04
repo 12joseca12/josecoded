@@ -8,7 +8,82 @@
   "home": {
     "name": "josecoded",
     "metaTitle": "Desarrollador React Native y full stack",
-    "metaDescription": "Apps móviles y webs con React Native y Next.js: freelance por horas, packs con precio cerrado o en tu equipo. Madrid, España y en remoto."
+    "metaDescription": "Apps móviles y webs con React Native y Next.js: freelance por horas, packs con precio cerrado o en tu equipo. Madrid, España y en remoto.",
+    "hero": {
+      "title": "Desarrollador full stack especializado en",
+      "accent": "React Native.",
+      "lead": "Diseño, construyo y mantengo apps móviles y webs para empresas y negocios. Desde Madrid y en remoto: por horas, por tarea o con un pack de precio cerrado.",
+      "ctaPrimary": "Pide propuesta",
+      "ctaSecondary": "Ver proyectos",
+      "rail": {
+        "list": "Fases de cada proyecto",
+        "pause": "Pausar animación",
+        "resume": "Reanudar animación",
+        "pauseText": "Pausar",
+        "resumeText": "Reanudar"
+      },
+      "phases": {
+        "discover": "Descubrir",
+        "design": "Diseñar",
+        "build": "Construir",
+        "publish": "Publicar",
+        "maintain": "Mantener"
+      },
+      "demo": {
+        "phone": {
+          "title": "Pedidos",
+          "note": "// lo primero: pedidos de hoy",
+          "nowTitle": "9 nuevos",
+          "nowSub": "hoy · +18 %",
+          "weekTotal": "1.284",
+          "weekLabel": "pedidos esta semana",
+          "recent": "Recientes",
+          "toastShip": "v1.0 publicada",
+          "toastCare": "v1.1 instalada",
+          "rowNew": { "title": "Mesa 7 · tostada", "meta": "nuevo", "price": "3,80 €" },
+          "row1": { "title": "Mesa 4 · 2 cafés", "meta": "hace 2 min", "price": "6,40 €" },
+          "row2": { "title": "Barra · menú", "meta": "hace 6 min", "price": "12,50 €" },
+          "row3": { "title": "Terraza 2 · zumos", "meta": "hace 9 min", "price": "7,00 €" },
+          "row4": { "title": "Mesa 1 · desayuno", "meta": "hace 14 min", "price": "9,20 €" }
+        },
+        "browser": {
+          "designUrl": "diseño · pedidos v3",
+          "live": "en producción",
+          "title": "Panel de pedidos",
+          "orders": "Pedidos hoy",
+          "ordersNow": "128",
+          "ordersLive": "142",
+          "wait": "Espera media",
+          "waitNow": "6 min",
+          "waitLive": "5 min",
+          "rating": "Valoración",
+          "ratingNow": "4,8",
+          "ratingLive": "4,9"
+        },
+        "notes": {
+          "who": "Quién",
+          "whoValue": "clientes del local",
+          "what": "Qué",
+          "whatValue": "pedir sin llamar",
+          "where": "Dónde",
+          "whereValue": "iOS, Android y web",
+          "tests": "42 tests · tipos ok",
+          "shipHead": "v1.0 publicada",
+          "store": "App Store",
+          "storeNote": "revisión superada",
+          "play": "Google Play",
+          "playNote": "en producción",
+          "webNote": "HTTPS · CDN",
+          "careHead": "Esta semana",
+          "sessions": "Sesiones sin fallos",
+          "sessionsValue": "99,8 %",
+          "load": "Carga media",
+          "loadValue": "0,9 s",
+          "release": "v1.1 instalada",
+          "releaseValue": "sin cortes"
+        }
+      }
+    }
   },
   "projects": {
     "metaTitle": "Proyectos",

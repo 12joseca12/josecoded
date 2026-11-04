@@ -1,0 +1,79 @@
+.visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.stage {
+  --u: 1cqi;
+  --hair: max(0.0625rem, calc(var(--u) * 0.45));
+  --morph: 760ms;
+  --morph-out: 420ms;
+  --stagger: 70ms;
+  --scan-dur: 980ms;
+  --float-amp: 1.1cqi;
+  --float-dur: 7s;
+  --p-app: 0;
+  --p-0: 1;
+  --p-1: 0;
+  --p-2: 0;
+  --p-3: 0;
+  --p-4: 0;
+  --p-ship: 0;
+  position: relative;
+  container-type: inline-size;
+  width: min(100%, calc((100svh - 14rem) * 1.2));
+  min-width: min(100%, 20rem);
+  aspect-ratio: 6 / 5;
+}
+
+.stage::before {
+  content: "";
+  position: absolute;
+  inset: 8% -6% -12%;
+  z-index: var(--z-behind);
+  background-image:
+    radial-gradient(ellipse 46% 40% at 52% 66%, var(--halo-a), transparent 72%),
+    radial-gradient(ellipse 30% 22% at 70% 80%, var(--halo-b), transparent 70%);
+  pointer-events: none;
+}
+
+.stage[data-phase="1"] {
+  --p-app: 1;
+  --p-0: 0;
+  --p-1: 1;
+}
+
+.stage[data-phase="2"] {
+  --p-app: 1;
+  --p-0: 0;
+  --p-2: 1;
+}
+
+.stage[data-phase="3"] {
+  --p-app: 1;
+  --p-0: 0;
+  --p-3: 1;
+  --p-ship: 1;
+}
+
+.stage[data-phase="4"] {
+  --p-app: 1;
+  --p-0: 0;
+  --p-4: 1;
+  --p-ship: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage[data-phase] {
+    --p-app: 1;
+    --p-0: 0;
+    --p-1: 0;
+    --p-2: 0;
+    --p-3: 1;
+    --p-4: 0;
+    --p-ship: 1;
+  }
+}
