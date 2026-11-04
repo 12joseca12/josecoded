@@ -65,6 +65,7 @@
 - **5.5 Panel lateral en toda la web** abierto desde la barra; `/chat` a pantalla completa y para usuarios con cuenta.
 - **5.6 Un hilo por usuario con cuenta** (`unique(user_id) where kind = 'user'`), no por proyecto; desde el área, el mensaje enlaza al proyecto.
 - **5.7 (Jose) El asistente habla primero:** al nuevo visitante le saluda «Hola, soy {{DATO: nombre del asistente}}, el asistente IA virtual de josecoded» con una pregunta proactiva; detecta si hay interés, pide email o teléfono con consentimiento y lo guarda como lead (interesado sí/no). Sustituye la firma de 5.3 cuando haya nombre.
+- **5.8 (Jose) El asistente se llama Nexo y es un SVG animado con Motion** (paquete `motion`, versión fija; único sitio donde se permite Framer Motion), cargado en diferido solo donde aparece Nexo y nunca en el JS inicial de la home.
 
 ## 6. Área de clientes
 

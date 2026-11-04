@@ -131,6 +131,25 @@
     },
     "prose": {
       "title": "Prose: MDX content"
+    },
+    "nexo": {
+      "title": "Nexo, the assistant",
+      "switcher": "State",
+      "sizes": "Sizes",
+      "gallery": "All states",
+      "reducedMotion": "Reduce motion",
+      "preview": "Preview",
+      "state": {
+        "idle": "Idle",
+        "greeting": "Greeting",
+        "listening": "Listening",
+        "thinking": "Thinking",
+        "talking": "Talking",
+        "happy": "Happy",
+        "confused": "Confused",
+        "sad": "Sad",
+        "sleeping": "Sleeping"
+      }
     }
   },
   "nav": {
@@ -254,6 +273,22 @@
       "entityLanguage": "Site language: Spanish",
       "rateHour": "Hourly rate: {hour} €.",
       "rateTask": "Per-task quote from {task} €."
+    }
+  },
+  "chat": {
+    "nexo": {
+      "name": "Nexo",
+      "label": {
+        "idle": "Nexo, josecoded's assistant, waiting",
+        "greeting": "Nexo is greeting you",
+        "listening": "Nexo is listening to you",
+        "thinking": "Nexo is thinking of a reply",
+        "talking": "Nexo is replying",
+        "happy": "Nexo is happy",
+        "confused": "Nexo did not understand",
+        "sad": "Nexo is sorry",
+        "sleeping": "Nexo is asleep"
+      }
     }
   }
 }
