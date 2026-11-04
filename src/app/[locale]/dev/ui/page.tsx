@@ -20,6 +20,14 @@ const cardToneLabels = {
   error: "dev.ui.cardError",
 } as const;
 
+const coralRules = [
+  "dev.ui.coralNav",
+  "dev.ui.coralMarker",
+  "dev.ui.coralLinks",
+  "dev.ui.coralFocus",
+  "dev.ui.coralDetails",
+] as const;
+
 export default async function UiCatalogPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!devPagesEnabled || !isLocale(locale)) notFound();
@@ -30,6 +38,27 @@ export default async function UiCatalogPage({ params }: { params: Promise<{ loca
       <Heading level={1} size="h2">
         {t("dev.ui.title")}
       </Heading>
+
+      <section className={styles.section} aria-labelledby="ui-coral">
+        <Heading level={2} size="h4" id="ui-coral" marker>
+          {t("dev.ui.coral")}
+        </Heading>
+        <p className={styles.note}>{t("dev.ui.coralText")}</p>
+        <ul className={styles.rules}>
+          {coralRules.map((key) => (
+            <li key={key}>{t(key)}</li>
+          ))}
+        </ul>
+        <div className={styles.cells}>
+          <Heading level={3} size="h2" marker>
+            {t("dev.ui.coralMarkerDemo")}
+          </Heading>
+          <Heading level={3} size="h4" marker>
+            {t("dev.ui.coralMarkerSmall")}
+          </Heading>
+          <Link href="#ui-coral">{t("dev.ui.linkInternal")}</Link>
+        </div>
+      </section>
 
       <section className={styles.section} aria-labelledby="ui-buttons">
         <Heading level={2} size="h4" id="ui-buttons">

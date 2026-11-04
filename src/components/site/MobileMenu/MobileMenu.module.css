@@ -84,6 +84,7 @@
 }
 
 .link {
+  position: relative;
   display: flex;
   align-items: baseline;
   gap: var(--space-3);
@@ -116,6 +117,8 @@
 
 .here {
   display: none;
+  align-items: center;
+  gap: var(--space-1);
   margin-left: auto;
   align-self: center;
   padding: var(--space-1) var(--space-2);
@@ -127,12 +130,32 @@
   text-transform: uppercase;
 }
 
-.link[aria-current] .num {
+.here::before {
+  content: "";
+  width: var(--space-1);
+  height: var(--space-1);
+  border-radius: var(--radius-xl);
+  background: var(--coral);
+}
+
+.link[data-active]::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: var(--marker-h);
+  height: var(--space-5);
+  translate: 0 -50%;
+  border-radius: var(--radius-xl);
+  background: var(--coral);
+}
+
+.link[data-active] .num {
   color: var(--coral-deep);
 }
 
-.link[aria-current] .here {
-  display: inline-block;
+.link[data-active] .here {
+  display: inline-flex;
 }
 
 .cta {

@@ -4,7 +4,14 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
-  nav: { skipLink: string; menuOpen: string; menuClose: string; cta: string };
+  nav: {
+    skipLink: string;
+    menuOpen: string;
+    menuClose: string;
+    cta: string;
+    home: string;
+    contact: string;
+  };
 };
 
 for (const width of [1440, 390]) {
@@ -27,6 +34,28 @@ test("desktop shows the nav and hides the menu button", async ({ page }) => {
   await expect(page.getByRole("button", { name: es.nav.menuOpen })).toBeHidden();
 });
 
+test("the capsule nav links home and marks it as the current page", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/es");
+  const nav = page.getByRole("navigation", { name: "Principal" });
+  const home = nav.getByRole("link", { name: es.nav.home, exact: true });
+  await expect(home).toHaveAttribute("href", "/es");
+  await expect(home).toHaveAttribute("aria-current", "page");
+  await expect(nav.locator("[aria-current]")).toHaveCount(1);
+
+  await nav.getByRole("link", { name: es.nav.contact, exact: true }).click();
+  await expect(page).toHaveURL(/\/es\/contacto$/);
+  await expect(home).not.toHaveAttribute("aria-current");
+  await expect(nav.getByRole("link", { name: es.nav.contact, exact: true })).toHaveAttribute(
+    "aria-current",
+    "page",
+  );
+
+  await home.click();
+  await expect(page).toHaveURL(/\/es$/);
+  await expect(home).toHaveAttribute("aria-current", "page");
+});
+
 test.describe("mobile menu", () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
@@ -43,6 +72,16 @@ test.describe("mobile menu", () => {
     await expect(dialog).toBeHidden();
     await expect(trigger).toHaveAttribute("aria-expanded", "false");
     await expect(trigger).toBeFocused();
+  });
+
+  test("lists Inicio first and marks it current on the home", async ({ page }) => {
+    await page.goto("/es");
+    await page.getByRole("button", { name: es.nav.menuOpen }).click();
+    const dialog = page.getByRole("dialog");
+    const home = dialog.getByRole("link").first();
+    await expect(home).toContainText(es.nav.home);
+    await expect(home).toHaveAttribute("href", "/es");
+    await expect(home).toHaveAttribute("aria-current", "page");
   });
 
   test("traps focus inside the dialog", async ({ page }) => {

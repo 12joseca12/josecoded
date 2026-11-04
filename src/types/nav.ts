@@ -3,6 +3,16 @@ export interface NavItem {
   label: string;
 }
 
+export type NavCurrent = "page" | "location";
+
+export interface NavLink {
+  key: string;
+  href: string;
+  label: string;
+  active: boolean;
+  current: NavCurrent | undefined;
+}
+
 export interface ContactChooserLabels {
   title: string;
   close: string;
