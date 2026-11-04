@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { ChannelCard } from "@/components/contact/ChannelCard/ChannelCard";
 import { ChatChannel } from "@/components/contact/ChatChannel/ChatChannel";
+import { buildContactFormLabels } from "@/components/contact/ContactForm/labels";
 import { FormChannel } from "@/components/contact/FormChannel/FormChannel";
 import { WayChannel } from "@/components/contact/WayChannel/WayChannel";
 import { PageHead } from "@/components/site/PageHead/PageHead";
@@ -13,7 +14,10 @@ import { isLocale } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
 import { hasLiveChannel, resolveChannels } from "@/lib/contact/channels";
+import { isContactAvailable, readContactClientConfig } from "@/lib/contact/env";
+import { resolveInitialWay } from "@/lib/contact/ways";
 import { buildPageMetadata } from "@/lib/seo/metadata";
+import { packSlugPattern } from "@/types/contact-form";
 import type { WayId } from "@/types/services";
 
 import styles from "./page.module.css";
@@ -29,6 +33,12 @@ const wayKeys: Record<WayId, { title: MessageKey; hint: MessageKey }> = {
 
 interface ContactProps {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}
+
+function packFrom(value: string | string[] | undefined): string | null {
+  const slug = Array.isArray(value) ? value[0] : value;
+  return slug !== undefined && slug.length <= 80 && packSlugPattern.test(slug) ? slug : null;
 }
 
 export async function generateMetadata({ params }: ContactProps): Promise<Metadata> {
@@ -43,11 +53,14 @@ export async function generateMetadata({ params }: ContactProps): Promise<Metada
   });
 }
 
-export default async function ContactPage({ params }: ContactProps) {
-  const { locale } = await params;
+export default async function ContactPage({ params, searchParams }: ContactProps) {
+  const [{ locale }, query] = await Promise.all([params, searchParams]);
   if (!isLocale(locale)) notFound();
   const t = await getTranslator(locale);
   const channels = resolveChannels(contact, t("contactChooser.whatsappMessage"));
+  const emails = Object.fromEntries(
+    contact.ways.map((entry) => [entry.way, entry.email]),
+  ) as Record<WayId, string>;
 
   return (
     <>
@@ -96,7 +109,16 @@ export default async function ContactPage({ params }: ContactProps) {
           <FormChannel
             title={t("contactPage.form.title")}
             hint={t("contactPage.form.hint")}
-            soonLabel={t("contactPage.form.soon")}
+            locale={locale}
+            labels={buildContactFormLabels(t)}
+            emails={emails}
+            initialWay={resolveInitialWay(query)}
+            pack={packFrom(query.pack)}
+            privacyHref={`/${locale}/legal/privacidad`}
+            newTabLabel={t("contactPage.form.newTab")}
+            turnstile={
+              isContactAvailable(process.env) ? readContactClientConfig(process.env) : null
+            }
           />
         </ul>
       </section>

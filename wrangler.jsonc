@@ -13,6 +13,10 @@
   "observability": {
     "enabled": true,
   },
+  "vars": {
+    "NEXT_PUBLIC_SUPABASE_URL": "https://echlwywbucgbhwpncviy.supabase.co",
+    "NEXT_PUBLIC_TURNSTILE_SITE_KEY": "0x4AAAAAAFzkPPhv9hUKSaBY",
+  },
   "env": {
     "preview": {
       "name": "josecoded-preview",
@@ -25,7 +29,8 @@
       "vars": {
         "ENABLE_DEV_PAGES": "true",
         "NEXT_PUBLIC_SITE_URL": "https://josecoded-preview.josecoded-api.workers.dev",
-        "NEXT_PUBLIC_SUPABASE_URL": "https://placeholder.supabase.co",
+        "NEXT_PUBLIC_SUPABASE_URL": "https://echlwywbucgbhwpncviy.supabase.co",
+        "NEXT_PUBLIC_TURNSTILE_SITE_KEY": "0x4AAAAAAFzkPPhv9hUKSaBY",
         "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY": "placeholder",
       },
     },

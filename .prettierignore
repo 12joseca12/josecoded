@@ -10,3 +10,4 @@ pnpm-lock.yaml
 tests/lint/fixtures/
 CLAUDE.md
 ESTADO.md
+src/types/database.ts

@@ -15,3 +15,31 @@
   min-height: 2.75rem;
   margin-top: var(--space-2);
 }
+
+.card[data-wide="true"] {
+  grid-column: 1 / -1;
+}
+
+.card[data-wide="true"] .action {
+  align-items: stretch;
+  margin-top: var(--space-4);
+}
+
+@media (min-width: 64rem) {
+  .card[data-wide="true"] {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    grid-template-rows: auto auto 1fr;
+    column-gap: var(--space-8);
+  }
+
+  .card[data-wide="true"] > :first-child,
+  .card[data-wide="true"] .hint {
+    grid-column: 1;
+  }
+
+  .card[data-wide="true"] .action {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    margin-top: 0;
+  }
+}

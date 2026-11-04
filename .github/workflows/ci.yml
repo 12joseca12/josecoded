@@ -18,6 +18,7 @@ jobs:
     timeout-minutes: 10
     env:
       ENABLE_DEV_PAGES: "true"
+      NEXT_PUBLIC_TURNSTILE_SITE_KEY: "1x00000000000000000000AA"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413

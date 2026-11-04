@@ -9,12 +9,13 @@ interface ChannelCardProps {
   id?: string;
   title: string;
   hint: string;
+  wide?: boolean;
   children: ReactNode;
 }
 
-export function ChannelCard({ id, title, hint, children }: ChannelCardProps) {
+export function ChannelCard({ id, title, hint, wide = false, children }: ChannelCardProps) {
   return (
-    <Card as="li" id={id} size="lg" className={styles.card}>
+    <Card as="li" id={id} size="lg" className={styles.card} data-wide={wide ? "true" : undefined}>
       <Heading level={2} size="h4">
         {title}
       </Heading>

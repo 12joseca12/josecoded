@@ -325,7 +325,77 @@
     "form": {
       "title": "Formulario",
       "hint": "Para contarme tu proyecto con calma y por escrito.",
-      "soon": "El formulario abre muy pronto. Mientras tanto, escríbeme por correo."
+      "wayLegend": "¿Qué vía te encaja?",
+      "ways": {
+        "contratacion": {
+          "label": "Contratación",
+          "hint": "Una oferta o un proceso de selección"
+        },
+        "freelance": {
+          "label": "Freelance",
+          "hint": "Una funcionalidad, auditoría o empujón"
+        },
+        "packs": {
+          "label": "Proyecto o pack",
+          "hint": "Web o app con alcance y precio cerrados"
+        }
+      },
+      "nameLabel": "Nombre",
+      "emailLabel": "Correo electrónico",
+      "companyLabel": "Empresa",
+      "optional": "(opcional)",
+      "messageLabel": "Mensaje",
+      "messageHint": "Cuéntame el contexto, el plazo y lo que necesitas.",
+      "consentBefore": "He leído la ",
+      "consentLink": "política de privacidad",
+      "consentAfter": " y acepto que uses estos datos para responderme.",
+      "newTab": "(se abre en una pestaña nueva)",
+      "submit": "Enviar mensaje",
+      "submitting": "Enviando el mensaje",
+      "verificationLabel": "Verificación de seguridad",
+      "verificationLoading": "Cargando verificación",
+      "verificationLoadFailed": "No se ha podido cargar la verificación. Revisa la conexión.",
+      "verificationRetry": "Reintentar",
+      "summaryOne": "Hay 1 campo por revisar.",
+      "summaryMany": "Hay {count} campos por revisar.",
+      "genericError": "Revisa este campo.",
+      "errors": {
+        "way_required": "Elige una vía.",
+        "name_required": "Escribe tu nombre.",
+        "name_too_long": "El nombre es demasiado largo.",
+        "email_required": "Escribe tu correo.",
+        "email_invalid": "Escribe un correo válido.",
+        "company_too_long": "El nombre de la empresa es demasiado largo.",
+        "message_required": "Escribe un mensaje.",
+        "message_too_long": "El mensaje es demasiado largo (máximo 4.000 caracteres).",
+        "consent_required": "Necesito que aceptes la política de privacidad.",
+        "verification_required": "Completa la verificación de seguridad."
+      },
+      "sent": {
+        "title": "Mensaje enviado",
+        "text": "Gracias. Te responderé al correo que has indicado.",
+        "alternative": "Si es urgente, escribe a",
+        "again": "Enviar otro mensaje"
+      },
+      "quota": {
+        "title": "Has llegado al límite de envíos",
+        "text": "Hoy no puedo recibir más mensajes desde el formulario.",
+        "alternative": "Escríbeme directamente a"
+      },
+      "verificationFailed": {
+        "title": "No he podido verificarte",
+        "text": "Completa de nuevo la verificación de seguridad y vuelve a enviar."
+      },
+      "failed": {
+        "title": "No se ha enviado el mensaje",
+        "text": "Algo ha fallado de mi lado. Pulsa Enviar para reintentarlo.",
+        "alternative": "O escríbeme a"
+      },
+      "unavailable": {
+        "title": "Formulario no disponible",
+        "text": "Ahora mismo no puedo recibir mensajes por aquí. Escríbeme por correo, según la vía:"
+      },
+      "honeypotLabel": "No rellenes este campo"
     }
   },
   "search": {

@@ -18,6 +18,7 @@ export default tseslint.config(
       ".claude/**",
       "tests/lint/fixtures/**",
       "next-env.d.ts",
+      "src/types/database.ts",
     ],
   },
   js.configs.recommended,

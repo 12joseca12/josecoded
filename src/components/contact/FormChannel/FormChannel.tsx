@@ -1,16 +1,15 @@
 import { ChannelCard } from "../ChannelCard/ChannelCard";
-import styles from "./FormChannel.module.css";
+import { ContactForm, type ContactFormProps } from "../ContactForm/ContactForm";
 
-interface FormChannelProps {
+interface FormChannelProps extends ContactFormProps {
   title: string;
   hint: string;
-  soonLabel: string;
 }
 
-export function FormChannel({ title, hint, soonLabel }: FormChannelProps) {
+export function FormChannel({ title, hint, ...form }: FormChannelProps) {
   return (
-    <ChannelCard id="formulario" title={title} hint={hint}>
-      <p className={styles.soon}>{soonLabel}</p>
+    <ChannelCard id="formulario" title={title} hint={hint} wide>
+      <ContactForm {...form} />
     </ChannelCard>
   );
 }

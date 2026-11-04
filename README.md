@@ -48,7 +48,27 @@ Jose debe añadir en GitHub, Settings → Secrets and variables → Actions → 
 
 Además, la cuenta necesita un subdominio `workers.dev` registrado, y el primer despliegue puede requerir `pnpm cf:deploy:preview` una vez para crear el Worker.
 
-Variables públicas del entorno `preview` (`NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`): valores de relleno en `wrangler.jsonc` y en el workflow hasta que existan los proyectos reales.
+Variables públicas del entorno `preview` (`NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`): valores de relleno en `wrangler.jsonc` y en el workflow hasta que existan los proyectos reales. `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (clave pública del widget) ya son reales.
+
+## Formulario de contacto
+
+`/contacto#formulario` envía por una Server Action que valida con zod, verifica Turnstile contra `siteverify`, calcula `ip_hash` (HMAC-SHA256 de la IP de `CF-Connecting-IP`, IPv6 al /64) y llama a `public.submit_lead` con la clave de servicio.
+
+Secretos del Worker (nunca en el repo; `wrangler secret put <NOMBRE> --env preview`):
+
+| Secreto                     | Para qué                                                       |
+| --------------------------- | -------------------------------------------------------------- |
+| `SUPABASE_SERVICE_ROLE_KEY` | Llamar a `submit_lead` (solo servidor).                        |
+| `TURNSTILE_SECRET_KEY`      | Verificar el token de Turnstile.                               |
+| `FORM_IP_HASH_SECRET`       | Clave del HMAC de la IP. Cambiarla reinicia las cuotas por IP. |
+
+Si falta alguno, el formulario muestra «no disponible» con el correo de cada vía.
+
+En local copia `.dev.vars.example` a `.dev.vars` (para `pnpm cf:preview`) o a `.env.local` (para `pnpm dev`) y rellena la clave de servicio. Las claves de prueba de Cloudflare (sitekey `1x00000000000000000000AA`, secreto `1x0000000000000000000000000000000AA`) siempre pasan y se usan en local y en CI. El e2e no toca servicios reales: `scripts/e2e-mock-backend.js` simula Supabase y Turnstile y el servidor de pruebas apunta a él con `NEXT_PUBLIC_SUPABASE_URL`, `TURNSTILE_VERIFY_URL` y `TURNSTILE_SCRIPT_URL`.
+
+Tipos de base de datos: `pnpm db:types` regenera `src/types/database.ts` con la CLI de Supabase (`supabase gen types --project-id echlwywbucgbhwpncviy`, requiere sesión iniciada); el fichero es generado y no se edita.
+
+Cuando haya CSP, el formulario necesita `script-src` y `frame-src` para `https://challenges.cloudflare.com`; el script se carga solo en esta página, de forma diferida, con `render=explicit`.
 
 ## Estructura
 
