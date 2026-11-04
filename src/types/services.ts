@@ -21,7 +21,7 @@ export interface RateItem {
   prefix?: string;
 }
 
-export const bentoAreas = ["hiring", "project", "support", "phases", "proof"] as const;
+export const bentoAreas = ["hiring", "project", "support", "proof"] as const;
 export type BentoArea = (typeof bentoAreas)[number];
 
 export const bentoTones = ["need", "quiet", "dark"] as const;
@@ -30,21 +30,8 @@ export type BentoTone = (typeof bentoTones)[number];
 export const bentoLinkVariants = ["stretch", "inline"] as const;
 export type BentoLinkVariant = (typeof bentoLinkVariants)[number];
 
-export interface NeedFigure {
-  caption: string;
-  prefix?: string;
-  value: string;
-  unit: string;
-  provisionalLabel?: string;
-}
-
 export interface BentoLinkData {
   href: string;
-  label: string;
-}
-
-export interface PhaseChip {
-  id: string;
   label: string;
 }
 

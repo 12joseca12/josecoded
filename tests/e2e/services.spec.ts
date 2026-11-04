@@ -136,8 +136,8 @@ test("hub frames the ways as needs and keeps the five phases only here", async (
     es.services.how.title,
     es.services.faq.title,
   ]);
-  await expect(page.locator("#vias article")).toHaveCount(5);
-  await expect(page.locator("#vias h3")).toHaveCount(5);
+  await expect(page.locator("#vias article")).toHaveCount(4);
+  await expect(page.locator("#vias h3")).toHaveCount(4);
   const steps = page.locator("#como-trabajo ol > li");
   await expect(steps).toHaveCount(5);
   await expect(steps.locator("h3")).toHaveText([
@@ -169,7 +169,6 @@ test("hub tiles link to their destinations with unified params", async ({ page }
     "href",
     "/es/servicios/packs",
   );
-  await expect(page.locator("#vias [data-provisional]")).toHaveCount(2);
 });
 
 for (const [name, viewport] of [
@@ -183,7 +182,7 @@ for (const [name, viewport] of [
     await page.goto("/es/servicios");
     const links = page.locator("#vias a");
     const count = await links.count();
-    expect(count).toBe(7);
+    expect(count).toBe(6);
     for (const link of await links.all()) {
       await link.focus();
       await expect(link).toBeFocused();
@@ -210,16 +209,19 @@ for (const [name, viewport] of [
   });
 }
 
-test("hub bento is asymmetric on desktop and a single column at 375", async ({ page }) => {
+test("hub bento is three columns plus the stack strip on desktop and one column at 375", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/es/servicios");
-  const widths = await page
-    .locator("#vias article")
-    .evaluateAll((nodes) => nodes.map((node) => Math.round(node.getBoundingClientRect().width)));
-  expect(new Set(widths).size).toBeGreaterThan(1);
-  const project = await page.locator("#packs").boundingBox();
+  const need = await page
+    .locator("#contratacion, #packs, #freelance")
+    .evaluateAll((nodes) => nodes.map((node) => Math.round(node.getBoundingClientRect().top)));
+  expect(new Set(need).size).toBe(1);
+  const proof = await page.locator("#vias article").last().boundingBox();
   const hiring = await page.locator("#contratacion").boundingBox();
-  expect(project?.height ?? 0).toBeGreaterThan(hiring?.height ?? 0);
+  expect(proof?.y ?? 0).toBeGreaterThan((hiring?.y ?? 0) + (hiring?.height ?? 0));
+  expect(proof?.width ?? 0).toBeGreaterThan((hiring?.width ?? 0) * 2.5);
   await page.setViewportSize({ width: 375, height: 812 });
   const lefts = await page
     .locator("#vias article")
