@@ -425,6 +425,54 @@
     "nav": {
       "label": "Vías de trabajo"
     },
+    "bento": {
+      "title": "Empieza por lo que necesitas",
+      "lead": "Tres situaciones habituales y la forma de trabajo que mejor encaja con cada una. Cada tarjeta lleva a su página.",
+      "needs": {
+        "contratacion": {
+          "title": "¿Buscas a alguien que se sume a tu equipo?",
+          "a": "Trabajo dentro de tu proceso: ramas, revisión de código e integración continua.",
+          "b": "Móvil con React Native y web con Next.js, con TypeScript de punta a punta.",
+          "c": "Dejo documentado lo que construyo para que el equipo pueda mantenerlo.",
+          "prefix": "Respondo en",
+          "value": "1–2",
+          "unit": "días laborables"
+        },
+        "packs": {
+          "title": "¿Quieres lanzar un producto o un proyecto?",
+          "a": "Diseño, desarrollo y publicación en un solo paquete.",
+          "b": "Alcance, precio y fecha acordados por escrito antes de empezar.",
+          "c": "La app en App Store y Google Play, o la web en tu dominio.",
+          "unit": "€"
+        },
+        "freelance": {
+          "title": "¿Necesitas un refuerzo puntual en tu desarrollo?",
+          "a": "Me adapto a tu código y a tu forma de trabajar, sin rehacerlo desde cero.",
+          "b": "Por horas o por tarea: eliges el modelo que te encaja.",
+          "c": "Entregas cortas que pruebas sin esperar al final."
+        }
+      },
+      "phases": {
+        "title": "Cinco fases, las mismas en cualquier vía",
+        "text": "En cada una sabes qué ves y qué necesito de ti, sea una contratación, un refuerzo o un pack.",
+        "cta": "Ver cómo trabajo"
+      },
+      "proof": {
+        "title": "El stack que verás en tu proyecto",
+        "text": "Móvil y web con TypeScript, base de datos y autenticación con Supabase, publicación en Cloudflare. Lo uso a diario y está en producción.",
+        "projects": "Ver proyectos",
+        "stack": "Ver el stack completo"
+      },
+      "chips": {
+        "reactNative": "React Native",
+        "react": "React",
+        "next": "Next.js",
+        "typescript": "TypeScript",
+        "supabase": "Supabase",
+        "cloudflare": "Cloudflare",
+        "ai": "IA"
+      }
+    },
     "ways": {
       "contratacion": {
         "nav": "Contratación",
@@ -441,9 +489,9 @@
       },
       "packs": {
         "nav": "Packs",
-        "title": "Packs web y app",
-        "text": "Una web o una app completa con alcance, precio y fecha definidos de antemano.",
-        "cta": "Comparar packs"
+        "title": "Desarrollo a medida",
+        "text": "Una web o una app completa, a tu medida, con alcance, precio y fecha definidos de antemano.",
+        "cta": "Ver desarrollo a medida"
       }
     },
     "how": {

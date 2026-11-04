@@ -233,7 +233,7 @@ test("hover shows the pressed look: scaled down with a ring", async ({ page }) =
 
 test("way nav snaps item to item on mobile", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/es/servicios");
+  await page.goto("/es/servicios/freelance");
   const list = page.getByRole("navigation", { name: es.services.nav.label }).locator("ul");
   await expect(list).toHaveCSS("scroll-snap-type", "x mandatory");
   await expect(list).toHaveCSS("overscroll-behavior-x", "contain");

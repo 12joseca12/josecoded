@@ -9,6 +9,7 @@ const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
     nav: { label: string };
     how: { title: string };
     faq: { title: string };
+    bento: { title: string };
     ways: Record<"contratacion" | "freelance" | "packs", { nav: string }>;
   };
 };
@@ -128,15 +129,15 @@ for (const entry of pages) {
   });
 }
 
-test("hub has the three teasers and the five phases only here", async ({ page }) => {
+test("hub frames the ways as needs and keeps the five phases only here", async ({ page }) => {
   await page.goto("/es/servicios");
   await expect(page.getByRole("heading", { level: 2 })).toHaveText([
-    "Contratación",
-    "Freelance",
-    "Packs web y app",
+    es.services.bento.title,
     es.services.how.title,
     es.services.faq.title,
   ]);
+  await expect(page.locator("#vias article")).toHaveCount(5);
+  await expect(page.locator("#vias h3")).toHaveCount(5);
   const steps = page.locator("#como-trabajo ol > li");
   await expect(steps).toHaveCount(5);
   await expect(steps.locator("h3")).toHaveText([
@@ -152,18 +153,14 @@ test("hub has the three teasers and the five phases only here", async ({ page })
   }
 });
 
-test("hub links go to the children and to the contact form with unified params", async ({
-  page,
-}) => {
+test("hub tiles link to their destinations with unified params", async ({ page }) => {
   await page.goto("/es/servicios");
-  await expect(page.locator("#contratacion").getByRole("link").first()).toHaveAttribute(
+  const hiring = page.locator("#contratacion");
+  await expect(hiring.getByRole("link").first()).toHaveAttribute(
     "href",
     "/es/contacto?via=hiring#formulario",
   );
-  await expect(page.locator("#contratacion").getByRole("link").nth(1)).toHaveAttribute(
-    "href",
-    "/es/sobre-mi",
-  );
+  await expect(hiring.getByRole("link").nth(1)).toHaveAttribute("href", "/es/sobre-mi");
   await expect(page.locator("#freelance").getByRole("link")).toHaveAttribute(
     "href",
     "/es/servicios/freelance",
@@ -172,6 +169,122 @@ test("hub links go to the children and to the contact form with unified params",
     "href",
     "/es/servicios/packs",
   );
+  await expect(page.locator("#vias [data-provisional]")).toHaveCount(2);
+});
+
+for (const [name, viewport] of [
+  ["desktop", { width: 1440, height: 900 }],
+  ["mobile", { width: 375, height: 812 }],
+] as const) {
+  test(`hub tiles are keyboard reachable, whole-tile clickable and axe-clean on ${name}`, async ({
+    page,
+  }) => {
+    await page.setViewportSize(viewport);
+    await page.goto("/es/servicios");
+    const links = page.locator("#vias a");
+    const count = await links.count();
+    expect(count).toBe(7);
+    for (const link of await links.all()) {
+      await link.focus();
+      await expect(link).toBeFocused();
+      const box = await link.boundingBox();
+      expect(box?.height ?? 0).toBeGreaterThanOrEqual(40);
+    }
+    await page.locator("#freelance a").first().focus();
+    await page.keyboard.press("Enter");
+    await expect(page).toHaveURL(/\/es\/servicios\/freelance$/);
+    await page.goBack();
+    await page.locator("#packs").evaluate((el) => {
+      window.scrollTo({ top: window.scrollY + el.getBoundingClientRect().top - 140 });
+    });
+    await page.waitForTimeout(700);
+    const box = await page.locator("#packs").boundingBox();
+    if (!box) throw new Error("packs tile has no box");
+    await page.mouse.click(box.x + 40, box.y + 40);
+    await expect(page).toHaveURL(/\/es\/servicios\/packs$/);
+    await page.goBack();
+    const { violations } = await new AxeBuilder({ page }).analyze();
+    expect(violations).toEqual([]);
+    const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    expect(scrollWidth).toBeLessThanOrEqual(viewport.width);
+  });
+}
+
+test("hub bento is asymmetric on desktop and a single column at 375", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/es/servicios");
+  const widths = await page
+    .locator("#vias article")
+    .evaluateAll((nodes) => nodes.map((node) => Math.round(node.getBoundingClientRect().width)));
+  expect(new Set(widths).size).toBeGreaterThan(1);
+  const project = await page.locator("#packs").boundingBox();
+  const hiring = await page.locator("#contratacion").boundingBox();
+  expect(project?.height ?? 0).toBeGreaterThan(hiring?.height ?? 0);
+  await page.setViewportSize({ width: 375, height: 812 });
+  const lefts = await page
+    .locator("#vias article")
+    .evaluateAll((nodes) => nodes.map((node) => Math.round(node.getBoundingClientRect().left)));
+  expect(new Set(lefts).size).toBe(1);
+});
+
+test("a hub tile lifts and gets a coral edge on hover", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/es/servicios");
+  const tile = page.locator("#freelance");
+  await tile.scrollIntoViewIfNeeded();
+  const before = await tile.evaluate((el) => getComputedStyle(el).borderTopColor);
+  await tile.hover();
+  await expect
+    .poll(() => tile.evaluate((el) => getComputedStyle(el).borderTopColor))
+    .not.toBe(before);
+  await expect.poll(() => tile.evaluate((el) => getComputedStyle(el).transform)).not.toBe("none");
+});
+
+test("FAQ opens with a height transition and reduced motion is instant", async ({ browser }) => {
+  const motion = await browser.newContext();
+  const animated = await motion.newPage();
+  await animated.goto("/es/servicios");
+  const details = animated.locator("details").first();
+  const transition = await details.evaluate((el) => {
+    const style = getComputedStyle(el, "::details-content");
+    return { property: style.transitionProperty, duration: style.transitionDuration };
+  });
+  expect(transition.property).toContain("height");
+  expect(transition.duration).not.toBe("0s");
+  const samples = await details.evaluate(
+    (el) =>
+      new Promise<number[]>((resolve) => {
+        const heights: number[] = [];
+        const start = performance.now();
+        el.querySelector("summary")?.click();
+        const tick = () => {
+          heights.push(parseFloat(getComputedStyle(el, "::details-content").height));
+          if (performance.now() - start < 450) requestAnimationFrame(tick);
+          else resolve(heights);
+        };
+        tick();
+      }),
+  );
+  const final = samples.at(-1) ?? 0;
+  expect(samples[0]).toBeLessThan(final / 2);
+  expect(final).toBeGreaterThan(0);
+  expect(samples.some((value) => value > 0 && value < final)).toBe(true);
+  await motion.close();
+
+  const still = await browser.newContext({ reducedMotion: "reduce" });
+  const instant = await still.newPage();
+  await instant.goto("/es/servicios");
+  const item = instant.locator("details").first();
+  const duration = await item.evaluate(
+    (el) => getComputedStyle(el, "::details-content").transitionDuration,
+  );
+  expect(parseFloat(duration)).toBe(0);
+  const first = await item.evaluate((el) => {
+    el.querySelector("summary")?.click();
+    return parseFloat(getComputedStyle(el, "::details-content").height);
+  });
+  expect(first).toBeGreaterThan(0);
+  await still.close();
 });
 
 test("freelance page: h1 query, rates stay provisional, three steps and CTA", async ({ page }) => {
@@ -261,47 +374,6 @@ test("breadcrumb collapses to the parent on mobile", async ({ page }) => {
   const crumbs = page.getByRole("navigation", { name: es.breadcrumbs.label });
   await expect(crumbs.getByRole("link", { name: "Servicios" })).toBeVisible();
   await expect(crumbs.getByRole("link", { name: "Inicio" })).toBeHidden();
-});
-
-for (const [name, viewport] of [
-  ["desktop", { width: 1440, height: 900 }],
-  ["mobile", { width: 390, height: 844 }],
-] as const) {
-  test(`hub way nav anchors move to sections and update aria-current on ${name}`, async ({
-    page,
-  }) => {
-    await page.setViewportSize(viewport);
-    await page.goto("/es/servicios");
-    const nav = page.getByRole("navigation", { name: wayNav });
-    for (const id of ["freelance", "packs", "contratacion"] as const) {
-      await nav.getByRole("link", { name: ways[id].nav }).click();
-      await expect(nav.getByRole("link", { name: ways[id].nav })).toHaveAttribute(
-        "aria-current",
-        "location",
-      );
-      await expect(nav.locator("[aria-current]")).toHaveCount(1);
-      await expect(page).toHaveURL(new RegExp(`#${id}$`));
-      const top = await page.locator(`#${id}`).evaluate((el) => el.getBoundingClientRect().top);
-      expect(Math.abs(top)).toBeLessThan(viewport.height / 2);
-    }
-  });
-}
-
-test("way nav does not cover the section content at 360", async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 740 });
-  await page.goto("/es/servicios#freelance");
-  const nav = page.getByRole("navigation", { name: wayNav });
-  await expect(nav.getByRole("link", { name: ways.freelance.nav })).toHaveAttribute(
-    "aria-current",
-    "location",
-  );
-  const navBottom = await nav.evaluate((el) => el.getBoundingClientRect().bottom);
-  const headingTop = await page
-    .locator("#freelance h2")
-    .evaluate((el) => el.getBoundingClientRect().top);
-  expect(headingTop).toBeGreaterThanOrEqual(navBottom);
-  const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
-  expect(scrollWidth).toBeLessThanOrEqual(360);
 });
 
 for (const entry of pages) {

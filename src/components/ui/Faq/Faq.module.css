@@ -47,15 +47,62 @@
   transform: rotate(180deg);
 }
 
+.panel {
+  display: grid;
+  grid-template-rows: 1fr;
+}
+
+.fold {
+  min-height: 0;
+}
+
 .answer {
   max-width: 38rem;
   padding-bottom: var(--space-5);
   color: var(--ink-soft);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .item[open] .answer {
-    animation: reveal var(--dur) var(--ease-out);
+@supports selector(::details-content) {
+  .faq {
+    interpolate-size: allow-keywords;
+  }
+
+  .item::details-content {
+    height: 0;
+    overflow-y: clip;
+    opacity: 0;
+  }
+
+  .item[open]::details-content {
+    height: auto;
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .item::details-content {
+      transition:
+        height var(--dur) var(--ease-out),
+        opacity var(--dur-fast) var(--ease-out),
+        content-visibility var(--dur) allow-discrete;
+    }
+  }
+}
+
+@supports not selector(::details-content) {
+  .fold {
+    overflow: hidden;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .item[open] .panel {
+      animation: unfold var(--dur) var(--ease-out);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .icon {
+    transition-duration: var(--dur-reduced);
   }
 }
 
@@ -65,9 +112,14 @@
   }
 }
 
-@keyframes reveal {
+@keyframes unfold {
   from {
+    grid-template-rows: 0fr;
     opacity: 0;
-    transform: translateY(-0.25rem);
+  }
+
+  to {
+    grid-template-rows: 1fr;
+    opacity: 1;
   }
 }
