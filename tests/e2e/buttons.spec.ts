@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 
-import { expect, test } from "@playwright/test";
+import { expect, type Locator, type Page, test } from "@playwright/test";
 
 const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
   dev: {
@@ -14,27 +14,65 @@ const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
 const ui = es.dev.ui;
 const bubbles = '[style*="--dx"]';
 
+async function trackSpawns(page: Page) {
+  await page.addInitScript((selector) => {
+    const spawns = { total: 0, hidden: 0, inert: 0 };
+    Object.defineProperty(window, "bubbleSpawns", { value: spawns });
+    new MutationObserver((records) => {
+      for (const record of records) {
+        for (const added of record.addedNodes) {
+          if (!(added instanceof Element) || !added.matches(selector)) continue;
+          spawns.total += 1;
+          if (added.getAttribute("aria-hidden") === "true") spawns.hidden += 1;
+          if (getComputedStyle(added).pointerEvents === "none") spawns.inert += 1;
+        }
+      }
+    }).observe(document, { childList: true, subtree: true });
+  }, bubbles);
+}
+
+const readSpawns = (page: Page) =>
+  page.evaluate(
+    () =>
+      (window as unknown as { bubbleSpawns: Record<"total" | "hidden" | "inert", number> })
+        .bubbleSpawns,
+  );
+const spawned = async (page: Page) => (await readSpawns(page)).total;
+
+async function hydrated(button: Locator) {
+  await expect
+    .poll(() =>
+      button.evaluate((node) => Object.keys(node).some((key) => key.startsWith("__reactProps$"))),
+    )
+    .toBe(true);
+}
+
 test.skip(process.env.ENABLE_DEV_PAGES !== "true", "dev pages are disabled");
 
 test("pressing a button releases 5 to 7 bubbles that clean themselves up", async ({ page }) => {
+  await trackSpawns(page);
   await page.goto("/es/dev/ui");
   const button = page.getByRole("button", { name: ui.stateDefault }).first();
+  await hydrated(button);
   await button.hover();
   await page.mouse.down();
-  await expect.poll(() => page.locator(bubbles).count()).toBeGreaterThanOrEqual(5);
-  expect(await page.locator(bubbles).count()).toBeLessThanOrEqual(7);
-  await expect(page.locator(bubbles).first()).toHaveAttribute("aria-hidden", "true");
-  await expect(page.locator(bubbles).first()).toHaveCSS("pointer-events", "none");
+  await expect.poll(() => spawned(page)).toBeGreaterThanOrEqual(5);
+  const spawns = await readSpawns(page);
+  expect(spawns.total).toBeLessThanOrEqual(7);
+  expect(spawns.hidden).toBe(spawns.total);
+  expect(spawns.inert).toBe(spawns.total);
   await page.mouse.up();
   await expect.poll(() => page.locator(bubbles).count(), { timeout: 3000 }).toBe(0);
 });
 
 test("Enter on a focused button releases bubbles", async ({ page }) => {
+  await trackSpawns(page);
   await page.goto("/es/dev/ui");
   const button = page.getByRole("button", { name: ui.stateDefault }).first();
+  await hydrated(button);
   await button.focus();
   await page.keyboard.press("Enter");
-  await expect.poll(() => page.locator(bubbles).count()).toBeGreaterThanOrEqual(5);
+  await expect.poll(() => spawned(page)).toBeGreaterThanOrEqual(5);
   await expect.poll(() => page.locator(bubbles).count(), { timeout: 3000 }).toBe(0);
 });
 
@@ -58,14 +96,17 @@ test("no bubbles on a disabled button", async ({ page }) => {
 });
 
 test("holding Enter spawns bubbles once, not on every repeat", async ({ page }) => {
+  await trackSpawns(page);
   await page.goto("/es/dev/ui");
-  await page.getByRole("button", { name: ui.stateDefault }).first().focus();
+  const button = page.getByRole("button", { name: ui.stateDefault }).first();
+  await hydrated(button);
+  await button.focus();
   await page.keyboard.down("Enter");
-  await expect.poll(() => page.locator(bubbles).count()).toBeGreaterThanOrEqual(5);
-  const first = await page.locator(bubbles).count();
+  await expect.poll(() => spawned(page)).toBeGreaterThanOrEqual(5);
+  const first = await spawned(page);
   await page.keyboard.down("Enter");
   await page.keyboard.down("Enter");
-  expect(await page.locator(bubbles).count()).toBe(first);
+  expect(await spawned(page)).toBe(first);
   await page.keyboard.up("Enter");
 });
 
@@ -79,34 +120,55 @@ test("a loading button spawns no bubbles", async ({ page }) => {
 });
 
 test("Space on a link button spawns nothing, Enter does", async ({ page }) => {
+  await trackSpawns(page);
   await page.goto("/es/dev/ui");
   const link = page.getByRole("link", { name: ui.asLink }).first();
+  await hydrated(link);
   await link.focus();
   await page.keyboard.press("Space");
   await page.waitForTimeout(200);
   expect(await page.locator(bubbles).count()).toBe(0);
   await page.keyboard.press("Enter");
-  await expect.poll(() => page.locator(bubbles).count()).toBeGreaterThanOrEqual(5);
+  await expect.poll(() => spawned(page)).toBeGreaterThanOrEqual(5);
 });
 
 test("bubbles sit behind the label", async ({ page }) => {
+  await page.addInitScript((selector) => {
+    const probe = { hit: "none" };
+    Object.defineProperty(window, "labelProbe", { value: probe });
+    new MutationObserver((records) => {
+      if (probe.hit !== "none") return;
+      for (const record of records) {
+        for (const added of record.addedNodes) {
+          if (!(added instanceof HTMLElement) || !added.matches(selector)) continue;
+          added.style.pointerEvents = "auto";
+          const button = added.closest("button");
+          const label = button?.querySelector(":scope > span:not([data-burst])");
+          if (!label) {
+            probe.hit = "no-label";
+            return;
+          }
+          const rect = label.getBoundingClientRect();
+          const top = document.elementFromPoint(
+            rect.left + rect.width / 2,
+            rect.top + rect.height / 2,
+          );
+          probe.hit = top?.closest("[data-burst]") ? "bubble" : "label";
+          return;
+        }
+      }
+    }).observe(document, { childList: true, subtree: true });
+  }, bubbles);
   await page.goto("/es/dev/ui");
   const button = page.getByRole("button", { name: ui.withoutIcon }).first();
+  await hydrated(button);
   await button.focus();
   await page.keyboard.press("Enter");
-  await expect.poll(() => page.locator(bubbles).count()).toBeGreaterThanOrEqual(5);
-  await page.addStyleTag({
-    content:
-      "[data-burst] * { animation-play-state: paused !important; pointer-events: auto !important; }",
-  });
-  const hit = await button.evaluate((node) => {
-    const label = node.querySelector(":scope > span:not([data-burst])");
-    if (!label) return "no-label";
-    const rect = label.getBoundingClientRect();
-    const top = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
-    return top?.closest("[data-burst]") ? "bubble" : "label";
-  });
-  expect(hit).toBe("label");
+  await expect
+    .poll(() =>
+      page.evaluate(() => (window as unknown as { labelProbe: { hit: string } }).labelProbe.hit),
+    )
+    .toBe("label");
 });
 
 test("pressing is deeper than hovering", async ({ page }) => {
@@ -150,9 +212,12 @@ test.describe("touch", () => {
   test.use({ hasTouch: true });
 
   test("bubbles come on tap activation", async ({ page }) => {
+    await trackSpawns(page);
     await page.goto("/es/dev/ui");
-    await page.getByRole("button", { name: ui.stateDefault }).first().tap();
-    await expect.poll(() => page.locator(bubbles).count()).toBeGreaterThanOrEqual(5);
+    const button = page.getByRole("button", { name: ui.stateDefault }).first();
+    await hydrated(button);
+    await button.tap();
+    await expect.poll(() => spawned(page)).toBeGreaterThanOrEqual(5);
     await expect.poll(() => page.locator(bubbles).count(), { timeout: 3000 }).toBe(0);
   });
 });

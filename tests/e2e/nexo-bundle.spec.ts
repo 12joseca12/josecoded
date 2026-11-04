@@ -2,7 +2,11 @@ import { expect, type Page, test } from "@playwright/test";
 
 const motionMarker = "data-framer-appear-id";
 
-async function scriptsContainingMotion(page: Page, path: string) {
+async function scriptsContainingMotion(
+  page: Page,
+  path: string,
+  settled?: (page: Page) => Promise<void>,
+) {
   const pending: Promise<string | null>[] = [];
   page.on("response", (response) => {
     if (response.request().resourceType() !== "script") return;
@@ -14,6 +18,8 @@ async function scriptsContainingMotion(page: Page, path: string) {
     );
   });
   await page.goto(path);
+  await page.waitForLoadState("networkidle");
+  await settled?.(page);
   await page.waitForLoadState("networkidle");
   return (await Promise.all(pending)).filter((url) => url !== null);
 }
@@ -28,7 +34,16 @@ test("the Nexo showcase does load the motion library, so the guard is meaningful
   page,
 }) => {
   test.skip(process.env.ENABLE_DEV_PAGES !== "true", "dev pages are disabled");
-  const loaded = await scriptsContainingMotion(page, "/es/dev/nexo");
+  const loaded = await scriptsContainingMotion(page, "/es/dev/nexo", (current) =>
+    expect
+      .poll(() =>
+        current
+          .getByTestId("preview")
+          .locator("svg")
+          .evaluate((node) => Object.keys(node).some((key) => key.startsWith("__reactProps$"))),
+      )
+      .toBe(true),
+  );
   expect(loaded.length).toBeGreaterThan(0);
 });
 
