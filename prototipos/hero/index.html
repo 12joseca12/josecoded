@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="es" data-motion="full">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#eef0f2">
+  <title>josecoded · hero de la home · v1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="tokens.css?v=1">
+  <link rel="stylesheet" href="hero.css?v=1">
+  <script src="hero.js?v=1" defer></script>
+</head>
+<body data-variant="a">
+  <a class="skip" href="#main">Saltar al contenido</a>
+
+  <header class="nav">
+    <div class="capsule">
+      <svg class="capsule__ring" aria-hidden="true" focusable="false"><path class="capsule__fill" pathLength="1"/></svg>
+      <a class="brand" href="#inicio" aria-label="josecoded, ir al inicio">
+        <svg class="brand__mark" viewBox="0 0 24 24" aria-hidden="true"><rect class="brand__bg" x="1" y="1" width="22" height="22" rx="11"/><circle class="brand__dot" cx="16.5" cy="7.5" r="3"/><path class="brand__j" d="M8 9.5v5.5a2 2 0 0 1-3 1.7"/></svg>
+        <span class="brand__word">josecoded</span>
+      </a>
+      <nav class="capsule__nav" aria-label="Principal">
+        <ul class="capsule__links">
+          <li><a href="#proyectos">Proyectos</a></li>
+          <li><a href="#proyectos">Servicios</a></li>
+          <li><a href="#proyectos">Sobre mí</a></li>
+          <li><a href="#proyectos">Blog</a></li>
+        </ul>
+      </nav>
+      <div class="capsule__actions">
+        <button class="search" type="button" data-soon aria-keyshortcuts="Meta+K Control+K">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="5.5"/><path d="M13.2 13.2 17 17"/></svg>
+          <span class="search__label">Buscar</span>
+          <kbd class="search__kbd" aria-hidden="true">⌘K</kbd>
+        </button>
+        <button class="icon-btn" type="button" data-soon aria-label="Abrir chat">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h7A2.5 2.5 0 0 1 16 5.5v5a2.5 2.5 0 0 1-2.5 2.5H9l-3.5 3v-3A2.5 2.5 0 0 1 4 10.5z"/></svg>
+        </button>
+        <button class="icon-btn capsule__menu" type="button" data-soon aria-label="Abrir menú">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 7h14M3 13h14"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <section class="hero" id="inicio" aria-labelledby="hero-title">
+      <div class="hero__copy">
+        <h1 class="hero__title" id="hero-title">Desarrollador full stack especializado en <span class="accent">React Native.</span></h1>
+        <p class="hero__lead">Diseño, construyo y mantengo apps móviles y webs para empresas y negocios. Desde Madrid y en remoto: por horas, por tarea o con un pack de precio cerrado.</p>
+        <div class="hero__actions">
+          <a class="btn" data-variant="primary" href="#contacto">
+            <span>Pide propuesta</span>
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          </a>
+          <a class="btn" data-variant="light" href="#proyectos"><span>Ver proyectos</span></a>
+        </div>
+      </div>
+
+      <div class="hero__visual">
+        <div class="stage" data-phase="0" aria-hidden="true">
+          <div class="v-a slot slot--a" data-mount="phone"></div>
+
+          <div class="v-b slot slot--web">
+            <div class="web" data-live data-p="0">
+              <div class="web__wire"></div>
+              <div class="web__shell"></div>
+              <div class="web__body">
+                <div class="web__paper"></div>
+                <div class="web__ink"></div>
+                <div class="el wbar" style="--i:0">
+                  <span class="d wbar__dots"><i></i><i></i><i></i></span>
+                  <span class="url">
+                    <span class="w w-text"></span>
+                    <span class="url__t" data-for="1">diseño · pedidos v3</span>
+                    <span class="url__t" data-for="2">localhost:3000</span>
+                    <span class="url__t" data-for="3"><svg viewBox="0 0 10 12"><rect x="1" y="5" width="8" height="6" rx="1.4"/><path d="M3 5V3.6a2 2 0 0 1 4 0V5"/></svg>pedidos.app</span>
+                    <span class="url__t" data-for="4"><svg viewBox="0 0 10 12"><rect x="1" y="5" width="8" height="6" rx="1.4"/><path d="M3 5V3.6a2 2 0 0 1 4 0V5"/></svg>pedidos.app</span>
+                  </span>
+                  <span class="live-pill"><i></i>en producción</span>
+                </div>
+                <div class="el wside" style="--i:1">
+                  <span class="w w-box"></span>
+                  <span class="d wside__bg"></span>
+                  <span class="d wside__logo"></span>
+                  <span class="d wside__item" data-on style="--k:0"></span>
+                  <span class="d wside__item" style="--k:1"></span>
+                  <span class="d wside__item" style="--k:2"></span>
+                  <span class="d wside__item" style="--k:3"></span>
+                  <span class="t" data-tag="&lt;Sidebar&gt;"></span>
+                </div>
+                <div class="el wtitle" style="--i:2">
+                  <span class="w w-text"></span>
+                  <span class="d">Panel de pedidos</span>
+                </div>
+                <div class="el wkpis" style="--i:3">
+                  <span class="wkpi" style="--k:0"><span class="w w-box"></span><span class="d wkpi__bg"></span><small class="d">Pedidos hoy</small><b class="d"><em class="now">128</em><em class="live">142</em></b></span>
+                  <span class="wkpi" style="--k:1"><span class="w w-box"></span><span class="d wkpi__bg"></span><small class="d">Espera media</small><b class="d"><em class="now">6 min</em><em class="live">5 min</em></b></span>
+                  <span class="wkpi" style="--k:2"><span class="w w-box"></span><span class="d wkpi__bg"></span><small class="d">Valoración</small><b class="d"><em class="now">4,8</em><em class="live">4,9</em></b></span>
+                  <span class="t" data-tag="&lt;Kpi&gt;"></span>
+                </div>
+                <div class="el wchart" style="--i:4">
+                  <span class="w w-box"><svg class="w-x" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 0 100 100M100 0 0 100"/></svg></span>
+                  <span class="d wchart__bg"></span>
+                  <span class="d wchart__bars">
+                    <i style="--h:.34;--k:0"></i><i style="--h:.48;--k:1"></i><i style="--h:.41;--k:2"></i><i style="--h:.6;--k:3"></i><i style="--h:.52;--k:4"></i><i style="--h:.7;--k:5"></i><i style="--h:.63;--k:6"></i><i style="--h:.78;--k:7"></i><i style="--h:.72;--k:8"></i><i style="--h:.9;--k:9"></i>
+                  </span>
+                  <span class="wchart__line">
+                    <svg viewBox="0 0 100 40" preserveAspectRatio="none"><path d="M2 32 C 14 30, 22 26, 32 27 S 50 20, 60 18 S 80 10, 98 5"/></svg>
+                    <span class="cover"></span>
+                  </span>
+                  <span class="t" data-tag="&lt;OrdersChart&gt;"></span>
+                </div>
+                <span class="scan"></span>
+              </div>
+            </div>
+          </div>
+          <div class="v-b slot slot--pb" data-mount="phone"></div>
+
+          <div class="v-c stack">
+            <div class="layer" data-mount="phone" data-fixed="0" data-name="01 Descubrir"></div>
+            <div class="layer" data-mount="phone" data-fixed="1" data-name="02 Diseñar"></div>
+            <div class="layer" data-mount="phone" data-fixed="2" data-name="03 Construir"></div>
+            <div class="layer" data-mount="phone" data-fixed="3" data-name="04 Publicar"></div>
+            <div class="layer" data-mount="phone" data-fixed="4" data-name="05 Mantener"></div>
+          </div>
+
+          <div class="sats" data-live data-p="0">
+            <div class="sat sat--brief" data-for="0">
+              <p class="sat__file">brief.md</p>
+              <ul class="sat__list">
+                <li><span>Quién</span>clientes del local</li>
+                <li><span>Qué</span>pedir sin llamar</li>
+                <li><span>Dónde</span>iOS, Android y web</li>
+              </ul>
+            </div>
+            <div class="sat sat--system" data-for="1">
+              <div class="sw"><i></i><i></i><i></i></div>
+              <p class="sat__type"><b>Aa</b><span>Inter Tight · 800</span></p>
+              <div class="space"><i style="--s:1"></i><i style="--s:2"></i><i style="--s:4"></i><i style="--s:6"></i></div>
+            </div>
+            <div class="sat sat--code" data-for="2">
+              <p class="sat__file">OrderCard.tsx</p>
+              <pre class="code"><span class="ln" style="--k:0"><i class="k">export function</i> <i class="f">OrderCard</i>({ orders }) {</span>
+<span class="ln" style="--k:1">  <i class="k">return</i> (</span>
+<span class="ln" style="--k:2">    &lt;<i class="c">Card</i> <i class="a">tone</i>=<i class="s">"coral"</i>&gt;</span>
+<span class="ln" style="--k:3">      &lt;<i class="c">Count</i> <i class="a">value</i>={orders.length} /&gt;</span>
+<span class="ln" style="--k:4">    &lt;/<i class="c">Card</i>&gt;</span></pre>
+              <p class="sat__ok"><i></i>42 tests · tipos ok</p>
+            </div>
+            <div class="sat sat--ship" data-for="3">
+              <p class="sat__head">v1.0 publicada</p>
+              <ul class="sat__checks">
+                <li><i></i>App Store<span>revisión superada</span></li>
+                <li><i></i>Google Play<span>en producción</span></li>
+                <li><i></i>pedidos.app<span>HTTPS · CDN</span></li>
+              </ul>
+            </div>
+            <div class="sat sat--care" data-for="4">
+              <p class="sat__head"><i class="pulse"></i>Esta semana</p>
+              <dl class="sat__metrics">
+                <div><dt>Sesiones sin fallos</dt><dd>99,8 %</dd></div>
+                <div><dt>Carga media</dt><dd>0,9 s</dd></div>
+                <div><dt>v1.1 instalada</dt><dd>sin cortes</dd></div>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <div class="phases">
+          <ol class="phases__list" aria-label="Fases de cada proyecto">
+            <li><button class="phase" type="button" data-i="0" aria-current="step"><svg class="phase__ring" viewBox="0 0 20 20" aria-hidden="true"><circle class="phase__track" cx="10" cy="10" r="8"/><circle class="phase__fill" cx="10" cy="10" r="8" pathLength="1"/></svg><span class="phase__label">Descubrir</span></button></li>
+            <li><button class="phase" type="button" data-i="1"><svg class="phase__ring" viewBox="0 0 20 20" aria-hidden="true"><circle class="phase__track" cx="10" cy="10" r="8"/><circle class="phase__fill" cx="10" cy="10" r="8" pathLength="1"/></svg><span class="phase__label">Diseñar</span></button></li>
+            <li><button class="phase" type="button" data-i="2"><svg class="phase__ring" viewBox="0 0 20 20" aria-hidden="true"><circle class="phase__track" cx="10" cy="10" r="8"/><circle class="phase__fill" cx="10" cy="10" r="8" pathLength="1"/></svg><span class="phase__label">Construir</span></button></li>
+            <li><button class="phase" type="button" data-i="3"><svg class="phase__ring" viewBox="0 0 20 20" aria-hidden="true"><circle class="phase__track" cx="10" cy="10" r="8"/><circle class="phase__fill" cx="10" cy="10" r="8" pathLength="1"/></svg><span class="phase__label">Publicar</span></button></li>
+            <li><button class="phase" type="button" data-i="4"><svg class="phase__ring" viewBox="0 0 20 20" aria-hidden="true"><circle class="phase__track" cx="10" cy="10" r="8"/><circle class="phase__fill" cx="10" cy="10" r="8" pathLength="1"/></svg><span class="phase__label">Mantener</span></button></li>
+          </ol>
+          <button class="pause" type="button" aria-pressed="false">
+            <svg class="pause__off" viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 3.5v9M10.5 3.5v9"/></svg>
+            <svg class="pause__on" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.2v9.6L12.5 8z"/></svg>
+            <span class="pause__text" data-off>Pausar<span class="sr-only"> animación</span></span>
+            <span class="pause__text" data-on>Reanudar<span class="sr-only"> animación</span></span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="next" id="proyectos" aria-labelledby="next-title">
+      <h2 class="next__title" id="next-title">Apps y webs en <span class="accent">producción.</span></h2>
+      <p class="next__note">Siguiente bloque de la home, fuera de este prototipo: aquí solo da recorrido al borde de la cápsula.</p>
+      <div class="next__grid" id="contacto"><span></span><span></span><span></span></div>
+    </section>
+  </main>
+
+  <template id="tpl-phone">
+    <div class="dev" data-p="0">
+      <div class="dev__wire"></div>
+      <div class="dev__shell"></div>
+      <div class="scr">
+        <div class="scr__paper"></div>
+        <div class="scr__ink"></div>
+        <div class="el sb" style="--i:0">
+          <span class="d sb__time">9:41</span>
+          <span class="d sb__island"></span>
+          <span class="d sb__icons"><i></i><i></i><i></i></span>
+        </div>
+        <div class="el hd" style="--i:1">
+          <span class="w w-text"></span>
+          <span class="w w-dot"></span>
+          <span class="d hd__title">Pedidos</span>
+          <span class="d hd__avatar"></span>
+          <span class="t" data-tag="&lt;Header&gt;"></span>
+        </div>
+        <div class="el card" style="--i:2">
+          <span class="w w-box"><svg class="w-x" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 0 100 100M100 0 0 100"/></svg></span>
+          <span class="ann">// lo primero: pedidos de hoy</span>
+          <span class="d card__bg"></span>
+          <span class="d card__now"><b>9 nuevos</b><small>hoy · +18 %</small></span>
+          <span class="card__live"><b>1.284</b><small>pedidos esta semana</small>
+            <span class="spark"><svg viewBox="0 0 100 30" preserveAspectRatio="none"><path d="M0 24 C 10 22, 16 26, 26 20 S 42 12, 52 15 S 70 8, 80 9 S 94 3, 100 2"/></svg><span class="cover"></span></span>
+          </span>
+          <span class="sel"><i></i><i></i><i></i><i></i></span>
+          <span class="rl rl--h"><span>24</span></span>
+          <span class="rl rl--v"><span>16</span></span>
+          <span class="t" data-tag="&lt;OrderCard&gt;"></span>
+        </div>
+        <div class="el lbl" style="--i:3">
+          <span class="w w-text"></span>
+          <span class="d">Recientes</span>
+        </div>
+        <div class="rows">
+          <div class="el row row--new" style="--i:4;--r:-1">
+            <span class="d row__bg"></span><span class="d row__thumb"></span>
+            <span class="d row__txt"><b>Mesa 7 · tostada</b><small><i></i>nuevo</small></span>
+            <span class="d row__price">3,80 €</span>
+          </div>
+          <div class="el row" style="--i:4;--r:0">
+            <span class="w w-box"></span><span class="w w-thumb"></span><span class="w w-lines"></span>
+            <span class="d row__bg"></span><span class="d row__thumb"></span>
+            <span class="d row__txt"><b>Mesa 4 · 2 cafés</b><small>hace 2 min</small></span>
+            <span class="d row__price">6,40 €</span>
+            <span class="t" data-tag="&lt;OrderRow&gt;"></span>
+          </div>
+          <div class="el row" style="--i:5;--r:1">
+            <span class="w w-box"></span><span class="w w-thumb"></span><span class="w w-lines"></span>
+            <span class="d row__bg"></span><span class="d row__thumb"></span>
+            <span class="d row__txt"><b>Barra · menú</b><small>hace 6 min</small></span>
+            <span class="d row__price">12,50 €</span>
+          </div>
+          <div class="el row" style="--i:6;--r:2">
+            <span class="w w-box"></span><span class="w w-thumb"></span><span class="w w-lines"></span>
+            <span class="d row__bg"></span><span class="d row__thumb"></span>
+            <span class="d row__txt"><b>Terraza 2 · zumos</b><small>hace 9 min</small></span>
+            <span class="d row__price">7,00 €</span>
+          </div>
+          <div class="el row" style="--i:7;--r:3">
+            <span class="w w-box"></span><span class="w w-thumb"></span><span class="w w-lines"></span>
+            <span class="d row__bg"></span><span class="d row__thumb"></span>
+            <span class="d row__txt"><b>Mesa 1 · desayuno</b><small>hace 14 min</small></span>
+            <span class="d row__price">9,20 €</span>
+          </div>
+        </div>
+        <div class="el tab" style="--i:8">
+          <span class="w w-box"></span>
+          <span class="d tab__bg"></span>
+          <span class="d tab__icons"><i data-on></i><i></i><i></i><i></i></span>
+          <span class="t" data-tag="&lt;TabBar&gt;"></span>
+        </div>
+        <div class="island-toast">
+          <i></i>
+          <span class="island-toast__t" data-for="3">v1.0 publicada</span>
+          <span class="island-toast__t" data-for="4">v1.1 instalada</span>
+        </div>
+        <span class="scan"></span>
+      </div>
+    </div>
+  </template>
+
+  <aside class="proto" aria-label="Controles del prototipo">
+    <fieldset class="proto__seg">
+      <legend class="sr-only">Variante del hero</legend>
+      <label><input type="radio" name="variant" value="a" checked><span><b>A</b><em> Móvil</em></span></label>
+      <label><input type="radio" name="variant" value="b"><span><b>B</b><em> Móvil + web</em></span></label>
+      <label><input type="radio" name="variant" value="c"><span><b>C</b><em> Capas</em></span></label>
+    </fieldset>
+    <label class="proto__check"><input type="checkbox" data-reduce><span>Sin movimiento</span></label>
+  </aside>
+
+  <p class="toast" role="status" aria-live="polite"></p>
+</body>
+</html>
