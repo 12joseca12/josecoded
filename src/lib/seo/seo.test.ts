@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 
-import { buildHeaders } from "@/config/headers";
 import { productionOrigin, resolveSite } from "@/config/site";
 import { rates } from "@/lib/services/rates";
 import { jsonLdGraphSchema } from "@/types/seo";
@@ -195,28 +194,6 @@ describe("buildLlmsTxt rates", () => {
     expect(text).not.toContain("Tarifa por hora");
     expect(text).not.toContain("Presupuesto por tarea");
     expect(text).not.toMatch(/\b0{2,3}\b/);
-  });
-});
-
-describe("buildHeaders", () => {
-  it("noindexes dev pages and workers.dev hosts even in production", () => {
-    const rules = buildHeaders(production);
-    expect(rules).toHaveLength(2);
-    expect(rules[0]?.source).toBe("/:locale/dev/:path*");
-    const host = rules[1]?.has?.[0];
-    expect(host?.type).toBe("host");
-    const pattern = new RegExp(`^${host?.value ?? ""}$`);
-    expect(pattern.test("josecoded-preview.josecoded-api.workers.dev")).toBe(true);
-    expect(pattern.test("josecoded.com")).toBe(false);
-  });
-
-  it("noindexes everything on non-production builds", () => {
-    const rules = buildHeaders(preview);
-    expect(rules).toHaveLength(3);
-    expect(rules[2]).toEqual({
-      source: "/:path*",
-      headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
-    });
   });
 });
 

@@ -3,6 +3,7 @@ import "@/styles/base.css";
 import "@/styles/transitions.css";
 
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { type ReactNode, ViewTransition } from "react";
 
@@ -18,6 +19,7 @@ import { isLocale, isPublished, locales } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
 import { buildWhatsAppUrl } from "@/lib/contact/whatsapp";
+import { nonceHeader } from "@/lib/security/nonce";
 import { buildSiteGraph } from "@/lib/seo/jsonld";
 import { resolveRobots } from "@/lib/seo/metadata";
 import { openGraphLocales } from "@/lib/seo/routes";
@@ -68,6 +70,7 @@ export default async function LocaleLayout({
 }: LocaleProps & { children: ReactNode }) {
   const { locale } = await params;
   if (!isLocale(locale) || !isPublished(locale)) notFound();
+  const nonce = (await headers()).get(nonceHeader) ?? undefined;
   const t = await getTranslator(locale);
   const graph = await buildSiteGraph(site.origin, locale);
   const items = navSlugs.map(([slug, key]) => ({ slug, label: t(key) }));
@@ -102,7 +105,7 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} className={interTight.variable}>
       <body>
-        <JsonLd data={graph} />
+        <JsonLd data={graph} nonce={nonce} />
         <SkipLink label={t("nav.skipLink")} />
         <SiteHeader
           locale={locale}
