@@ -23,7 +23,7 @@ export function NeedVisual({ way }: NeedVisualProps) {
           ))}
         </div>
       ) : null}
-      {way === "packs" ? (
+      {way === "project" ? (
         <div className={styles.devices}>
           <div className={styles.window}>
             <span className={styles.dots} />

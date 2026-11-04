@@ -15,7 +15,7 @@ import { getTranslator } from "@/i18n/messages";
 import { buildContactHref } from "@/lib/contact/ways";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { buildFaqItems } from "@/lib/services/faq";
-import { hasProvisionalPacks, lowestPackFrom, packs } from "@/lib/services/packs";
+import { hasProvisionalOffers, lowestOfferFrom, offers } from "@/lib/services/offers";
 import { isProvisional, rates } from "@/lib/services/rates";
 import type { StepItem } from "@/types/services";
 
@@ -110,26 +110,26 @@ export default async function ServicesPage({ params }: ServicesProps) {
             }}
           />
           <NeedTile
-            way="packs"
+            way="project"
             area="project"
-            title={t("services.bento.needs.packs.title")}
-            text={t("services.ways.packs.text")}
+            title={t("services.bento.needs.project.title")}
+            text={t("services.ways.project.text")}
             points={[
-              t("services.bento.needs.packs.a"),
-              t("services.bento.needs.packs.b"),
-              t("services.bento.needs.packs.c"),
+              t("services.bento.needs.project.a"),
+              t("services.bento.needs.project.b"),
+              t("services.bento.needs.project.c"),
             ]}
             figure={{
-              caption: t("services.ways.packs.title"),
+              caption: t("services.ways.project.title"),
               prefix: t("services.rates.from"),
-              value: lowestPackFrom(packs),
-              unit: t("services.bento.needs.packs.unit"),
-              provisionalLabel: hasProvisionalPacks(packs) ? provisionalLabel : undefined,
+              value: lowestOfferFrom(offers),
+              unit: t("services.bento.needs.project.unit"),
+              provisionalLabel: hasProvisionalOffers(offers) ? provisionalLabel : undefined,
             }}
             chips={chips(["reactNative", "next", "cloudflare"])}
             cta={{
-              href: `/${locale}/servicios/packs`,
-              label: t("services.ways.packs.cta"),
+              href: `/${locale}/servicios/a-medida`,
+              label: t("services.ways.project.cta"),
             }}
           />
           <NeedTile

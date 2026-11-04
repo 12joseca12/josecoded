@@ -28,18 +28,18 @@ interface ServicePageProps {
 const pagePaths: Record<ServicePageId, string> = {
   hub: "/servicios",
   freelance: "/servicios/freelance",
-  packs: "/servicios/packs",
+  offers: "/servicios/a-medida",
 };
 
 const pageLabels: Record<Exclude<ServicePageId, "hub">, MessageKey> = {
   freelance: "services.ways.freelance.nav",
-  packs: "services.ways.packs.nav",
+  offers: "services.ways.project.nav",
 };
 
 const wayLabels: Record<WayId, MessageKey> = {
   contratacion: "services.ways.contratacion.nav",
   freelance: "services.ways.freelance.nav",
-  packs: "services.ways.packs.nav",
+  project: "services.ways.project.nav",
 };
 
 export async function ServicePage({ locale, page, head, faq, children }: ServicePageProps) {
@@ -67,9 +67,9 @@ export async function ServicePage({ locale, page, head, faq, children }: Service
       href: localePath(locale, pagePaths.freelance),
     },
     {
-      id: "packs",
-      label: t(wayLabels.packs),
-      href: localePath(locale, pagePaths.packs),
+      id: "project",
+      label: t(wayLabels.project),
+      href: localePath(locale, pagePaths.offers),
     },
   ];
 
@@ -93,7 +93,7 @@ export async function ServicePage({ locale, page, head, faq, children }: Service
       />
       <div className={styles.ways} data-layout={onHub ? "hub" : "child"}>
         {onHub ? null : (
-          <WayNav label={t("services.nav.label")} items={navItems} variant="pages" current={page} />
+          <WayNav label={t("services.nav.label")} items={navItems} variant="pages" current={page === "offers" ? "project" : page} />
         )}
         <div className={styles.sections}>{children}</div>
       </div>

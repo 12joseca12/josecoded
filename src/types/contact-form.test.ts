@@ -57,10 +57,10 @@ describe("contactFormSchema", () => {
     expect(contactFormSchema.safeParse({ ...valid, name: "José Ñandú 山田" }).success).toBe(true);
   });
 
-  it("rejects unknown keys and bad pack slugs", () => {
+  it("rejects unknown keys and bad offer slugs", () => {
     expect(contactFormSchema.safeParse({ ...valid, extra: 1 }).success).toBe(false);
-    expect(contactFormSchema.safeParse({ ...valid, pack: "Bad Slug" }).success).toBe(false);
-    expect(contactFormSchema.safeParse({ ...valid, pack: "web-basico" }).success).toBe(true);
+    expect(contactFormSchema.safeParse({ ...valid, offer: ["Bad Slug"] }).success).toBe(false);
+    expect(contactFormSchema.safeParse({ ...valid, offer: ["web-negocio"], extras: ["seo"] }).success).toBe(true);
   });
 });
 

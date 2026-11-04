@@ -28,13 +28,14 @@ describe("mapLeadError", () => {
 });
 
 const submission: ContactSubmission = {
-  way: "packs",
+  way: "project",
   name: "Ada",
   email: "ada@example.com",
   company: "  ",
   message: "Hola",
   consent: true,
-  pack: "web-basico",
+  offer: ["web-negocio"],
+  extras: ["seo", "payments"],
   locale: "es",
   turnstileToken: "t",
 };
@@ -51,12 +52,12 @@ describe("buildLeadArgs", () => {
       p_locale: "es",
       p_consent: true,
       p_ip_hash: "h".repeat(64),
-      p_page_path: "/es/contacto?pack=web-basico",
+      p_page_path: "/es/contacto?offer=web-negocio&extras=payments,seo",
     });
     expect(args.p_organization).toBeUndefined();
   });
 
-  it("drops the pack when the way is not packs", () => {
+  it("drops the selection when the way is not project", () => {
     const args = buildLeadArgs({ ...submission, way: "freelance", company: "Acme" }, "h");
     expect(args.p_via).toBe("freelance");
     expect(args.p_page_path).toBe("/es/contacto");
@@ -68,18 +69,20 @@ describe("resolveInitialWay", () => {
   it("accepts documented and legacy values", () => {
     expect(resolveInitialWay({ via: "hiring" })).toBe("contratacion");
     expect(resolveInitialWay({ via: "freelance" })).toBe("freelance");
-    expect(resolveInitialWay({ via: "pack" })).toBe("packs");
-    expect(resolveInitialWay({ via: "packs" })).toBe("packs");
+    expect(resolveInitialWay({ via: "pack" })).toBe("project");
+    expect(resolveInitialWay({ via: "project" })).toBe("project");
+    expect(resolveInitialWay({ via: "packs" })).toBe("project");
   });
 
-  it("infers packs from the pack param and ignores junk", () => {
-    expect(resolveInitialWay({ pack: "web" })).toBe("packs");
+  it("infers project from the offer and legacy pack params and ignores junk", () => {
+    expect(resolveInitialWay({ pack: "web" })).toBe("project");
+    expect(resolveInitialWay({ offer: "web-negocio" })).toBe("project");
     expect(resolveInitialWay({ via: "nope" })).toBeNull();
     expect(resolveInitialWay({})).toBeNull();
     expect(resolveInitialWay({ via: ["freelance", "pack"] })).toBe("freelance");
   });
 
   it("covers every way", () => {
-    expect(Object.keys(viaByWay).sort()).toEqual(["contratacion", "freelance", "packs"]);
+    expect(Object.keys(viaByWay).sort()).toEqual(["contratacion", "freelance", "project"]);
   });
 });

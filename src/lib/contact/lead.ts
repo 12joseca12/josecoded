@@ -1,6 +1,7 @@
 import type { ContactSubmission } from "@/types/contact-form";
 import type { Database } from "@/types/database";
 
+import { parseSelection, selectionPath } from "./selection";
 import { viaByWay } from "./ways";
 
 export type SubmitLeadArgs = Database["public"]["Functions"]["submit_lead"]["Args"];
@@ -29,7 +30,10 @@ export function mapLeadError(error: LeadRpcError): LeadFailure {
 
 export function buildLeadArgs(input: ContactSubmission, ipHash: string): SubmitLeadArgs {
   const company = input.company?.trim();
-  const pack = input.way === "packs" ? input.pack : undefined;
+  const selection =
+    input.way === "project"
+      ? parseSelection({ offer: input.offer, extras: input.extras })
+      : null;
   const basePath = `/${input.locale}/contacto`;
   return {
     p_source: "form",
@@ -38,7 +42,7 @@ export function buildLeadArgs(input: ContactSubmission, ipHash: string): SubmitL
     p_email: input.email,
     p_organization: company === "" ? undefined : company,
     p_message: input.message,
-    p_page_path: pack ? `${basePath}?pack=${pack}` : basePath,
+    p_page_path: selection ? `${basePath}${selectionPath(selection)}` : basePath,
     p_locale: input.locale,
     p_consent: input.consent,
     p_ip_hash: ipHash,

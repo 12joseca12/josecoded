@@ -9,7 +9,7 @@ import { wayIds } from "./services";
 export const contactFieldNames = ["way", "name", "email", "company", "message", "consent"] as const;
 export type ContactFieldName = (typeof contactFieldNames)[number];
 
-export const packSlugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+export const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 const controlCharacters = /\p{Cc}/u;
 
@@ -35,7 +35,8 @@ export const contactFormSchema = z.strictObject({
     .optional(),
   message: z.string().trim().min(1, "message_required").max(4000, "message_too_long"),
   consent: z.literal(true, { error: "consent_required" }),
-  pack: z.string().max(80).regex(packSlugPattern).optional(),
+  offer: z.array(z.string().max(80).regex(slugPattern)).max(2).optional(),
+  extras: z.array(z.string().max(40).regex(slugPattern)).max(12).optional(),
   homepage: z.string().max(500).optional(),
 });
 
@@ -69,6 +70,14 @@ export function collectFieldErrors(error: z.ZodError): ContactFieldErrors {
   return errors;
 }
 
+export interface ContactSelectionLabels {
+  title: string;
+  from: string;
+  provisional: string;
+  perMonth: string;
+  change: string;
+}
+
 export interface ContactFormLabels {
   wayLegend: string;
   ways: Record<(typeof wayIds)[number], { label: string; hint: string }>;
@@ -87,6 +96,7 @@ export interface ContactFormLabels {
   verificationLoading: string;
   verificationLoadFailed: string;
   verificationRetry: string;
+  selection: ContactSelectionLabels;
   summaryOne: string;
   summaryMany: string;
   errors: Record<string, string>;

@@ -39,7 +39,7 @@ export async function buildLlmsTxt(
   const wayTitles = {
     contratacion: t("contactPage.ways.contratacion.title"),
     freelance: t("contactPage.ways.freelance.title"),
-    packs: t("contactPage.ways.packs.title"),
+    project: t("contactPage.ways.project.title"),
   };
   const hasContact = ways.length > 0;
   const contactLines = hasContact
@@ -63,14 +63,14 @@ export async function buildLlmsTxt(
     `- ${t("seo.llms.hiring")}`,
     `- ${t("seo.llms.freelance")}`,
     ...rateLines,
-    `- ${t("seo.llms.packs")}`,
+    `- ${t("seo.llms.project")}`,
     "",
     `## ${t("seo.llms.pagesTitle")}`,
     "",
     link(t("seo.llms.home"), ""),
     link(t("seo.llms.services"), "/servicios"),
     link(t("seo.llms.freelancePage"), "/servicios/freelance"),
-    link(t("seo.llms.packsPage"), "/servicios/packs"),
+    link(t("seo.llms.offersPage"), "/servicios/a-medida"),
     link(t("seo.llms.projects"), "/proyectos"),
     ...(hasContact ? [link(t("seo.llms.contact"), "/contacto")] : []),
     "",
