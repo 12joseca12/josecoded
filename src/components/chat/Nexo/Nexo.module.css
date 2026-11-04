@@ -1,0 +1,132 @@
+.root,
+.placeholder {
+  display: block;
+  inline-size: var(--nexo-size, 6rem);
+  aspect-ratio: 1;
+  flex: none;
+}
+
+.root {
+  overflow: visible;
+}
+
+.root[data-size="xs"],
+.placeholder[data-size="xs"] {
+  --nexo-size: 2rem;
+}
+
+.root[data-size="sm"],
+.placeholder[data-size="sm"] {
+  --nexo-size: 4rem;
+}
+
+.root[data-size="md"],
+.placeholder[data-size="md"] {
+  --nexo-size: 6rem;
+}
+
+.root[data-size="lg"],
+.placeholder[data-size="lg"] {
+  --nexo-size: 9rem;
+}
+
+.root[data-size="xl"],
+.placeholder[data-size="xl"] {
+  --nexo-size: 12rem;
+}
+
+.stopLight {
+  stop-color: var(--on-dark);
+}
+
+.stopMist {
+  stop-color: var(--on-dark-raised);
+}
+
+.stopSteel {
+  stop-color: var(--steel);
+}
+
+.stopVisorTop {
+  stop-color: var(--charcoal-raised);
+}
+
+.stopVisorBottom {
+  stop-color: var(--charcoal);
+}
+
+.stopCoral {
+  stop-color: var(--coral);
+}
+
+.pod {
+  fill: var(--charcoal-2);
+}
+
+.podGlow {
+  fill: none;
+  stroke: var(--coral);
+  opacity: 0.3;
+}
+
+.podRing {
+  fill: none;
+  stroke: var(--coral-soft);
+}
+
+.panel {
+  fill: var(--charcoal);
+}
+
+.glyph {
+  stroke: var(--coral);
+}
+
+.arm {
+  stroke: var(--steel);
+  stroke-width: 0.5px;
+}
+
+.sheen {
+  stroke: var(--on-dark);
+  opacity: 0.7;
+}
+
+.gloss {
+  stroke: var(--on-dark);
+  opacity: 0.2;
+}
+
+.light {
+  stroke: var(--nexo-glow);
+}
+
+.mouth {
+  fill: var(--nexo-glow);
+}
+
+.dot {
+  fill: var(--nexo-glow);
+}
+
+.mark {
+  stroke: var(--coral);
+}
+
+.markDot {
+  fill: var(--coral);
+}
+
+.ringGlow {
+  stroke: var(--coral);
+  opacity: 0.3;
+}
+
+.ringCore {
+  stroke: var(--coral);
+  opacity: 1;
+}
+
+.ringSpark {
+  stroke: var(--nexo-glow);
+}

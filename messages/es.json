@@ -207,6 +207,25 @@
     },
     "prose": {
       "title": "Prosa: contenido MDX"
+    },
+    "nexo": {
+      "title": "Nexo, el asistente",
+      "switcher": "Estado",
+      "sizes": "Tamaños",
+      "gallery": "Todos los estados",
+      "reducedMotion": "Reducir movimiento",
+      "preview": "Vista previa",
+      "state": {
+        "idle": "Reposo",
+        "greeting": "Saludo",
+        "listening": "Escucha",
+        "thinking": "Pensando",
+        "talking": "Hablando",
+        "happy": "Contento",
+        "confused": "Confuso",
+        "sad": "Triste",
+        "sleeping": "Dormido"
+      }
     }
   },
   "nav": {
@@ -374,6 +393,22 @@
       "entityLanguage": "Idioma de la web: español",
       "rateHour": "Tarifa por hora: {hour} €.",
       "rateTask": "Presupuesto por tarea desde {task} €."
+    }
+  },
+  "chat": {
+    "nexo": {
+      "name": "Nexo",
+      "label": {
+        "idle": "Nexo, asistente de josecoded, esperando",
+        "greeting": "Nexo te saluda",
+        "listening": "Nexo te está escuchando",
+        "thinking": "Nexo está pensando la respuesta",
+        "talking": "Nexo está respondiendo",
+        "happy": "Nexo está contento",
+        "confused": "Nexo no te ha entendido",
+        "sad": "Nexo lo siente",
+        "sleeping": "Nexo está dormido"
+      }
     }
   }
 }
