@@ -1,15 +1,21 @@
 {
   "meta": {
-    "title": "josecoded"
+    "title": "josecoded",
+    "titleTemplate": "%s · josecoded",
+    "siteName": "josecoded",
+    "description": "Apps móviles y webs con React Native y Next.js: freelance por horas, packs con precio cerrado o en tu equipo. Madrid, España y en remoto."
   },
   "home": {
-    "name": "josecoded"
+    "name": "josecoded",
+    "metaTitle": "Desarrollador React Native y full stack",
+    "metaDescription": "Apps móviles y webs con React Native y Next.js: freelance por horas, packs con precio cerrado o en tu equipo. Madrid, España y en remoto."
   },
   "projects": {
-    "metaTitle": "Proyectos · josecoded",
+    "metaTitle": "Proyectos",
     "title": "Proyectos",
     "emptyTitle": "Pronto",
-    "emptyText": "Estoy preparando los casos. Vuelve en unos días."
+    "emptyText": "Estoy preparando los casos. Vuelve en unos días.",
+    "metaDescription": "Apps y webs en producción: el reto, lo que hice, el stack y el resultado de cada proyecto."
   },
   "errors": {
     "notFound": {
@@ -155,10 +161,11 @@
   },
   "services": {
     "meta": {
-      "title": "Servicios | josecoded"
+      "title": "Servicios de desarrollo de apps y webs",
+      "description": "Contratación, freelance por horas o por tarea y packs de web y app con precio cerrado. Elige cómo trabajar conmigo."
     },
     "head": {
-      "title": "Tres formas de",
+      "title": "Desarrollo de apps y webs, tres formas de",
       "accent": "trabajar juntos.",
       "lead": "En plantilla, como freelance o con un pack cerrado. Tú eliges cómo, yo me encargo de que llegue a producción."
     },
@@ -213,6 +220,40 @@
       "unitHour": "€ / hora",
       "unitTask": "€ / tarea",
       "note": "Orientativas: el importe final se acuerda antes de empezar."
+    }
+  },
+  "seo": {
+    "person": {
+      "name": "Jose",
+      "alternateName": "josecoded",
+      "jobTitle": "Desarrollador full stack especializado en React Native",
+      "description": "Desarrollador full stack especializado en React Native, con base en Madrid. Crea apps móviles y webs para empresas y negocios en España y en remoto.",
+      "locality": "Madrid",
+      "country": "España",
+      "countryCode": "ES",
+      "remote": "Remoto"
+    },
+    "website": {
+      "name": "josecoded"
+    },
+    "llms": {
+      "summary": "Jose es un desarrollador full stack especializado en React Native, con base en Madrid. Desarrolla apps móviles y webs para empresas y negocios en España y en remoto: como freelance por horas o por tarea, con packs de precio cerrado o incorporándose a un equipo.",
+      "servicesTitle": "Servicios",
+      "hiring": "Contratación: se incorpora a un equipo de producto móvil o web y se hace cargo de una parte del producto de principio a fin.",
+      "freelance": "Freelance: una funcionalidad, una auditoría o un empujón a un proyecto que ya existe, con el alcance acordado antes de empezar.",
+      "packs": "Packs de web y app: diseño, desarrollo y publicación con alcance, precio y fecha definidos de antemano. Publicación en tiendas y dominio incluidos.",
+      "pagesTitle": "Páginas clave",
+      "home": "Inicio: quién es Jose y en qué trabaja",
+      "services": "Servicios: las tres formas de trabajar con Jose",
+      "projects": "Proyectos: apps y webs en producción",
+      "entityTitle": "Entidad",
+      "entityName": "Nombre: {name} (alias {alias})",
+      "entityJob": "Ocupación: {jobTitle}",
+      "entityPlace": "Ubicación: {locality}, {country}",
+      "entityArea": "Zona de trabajo: {country} y en remoto",
+      "entityLanguage": "Idioma de la web: español",
+      "rateHour": "Tarifa por hora: {hour} €.",
+      "rateTask": "Presupuesto por tarea desde {task} €."
     }
   }
 }

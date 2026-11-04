@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/Button/Button";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 import { isLocale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 import { rateFixture } from "@/lib/services/rates";
 import type { WayNavItem } from "@/types/services";
 
@@ -22,8 +23,12 @@ interface ServicesProps {
 export async function generateMetadata({ params }: ServicesProps): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
-  const t = await getTranslator(locale);
-  return { title: t("services.meta.title") };
+  return buildPageMetadata({
+    locale,
+    path: "/servicios",
+    title: "services.meta.title",
+    description: "services.meta.description",
+  });
 }
 
 export default async function ServicesPage({ params }: ServicesProps) {

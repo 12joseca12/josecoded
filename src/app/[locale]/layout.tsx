@@ -6,13 +6,18 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { type ReactNode, ViewTransition } from "react";
 
+import { JsonLd } from "@/components/seo/JsonLd/JsonLd";
 import { RouteFocus } from "@/components/site/RouteFocus/RouteFocus";
 import { SiteFooter } from "@/components/site/SiteFooter/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader/SiteHeader";
 import { contentId, SkipLink } from "@/components/site/SkipLink/SkipLink";
+import { canonicalOrigin, site } from "@/config/site";
 import { isLocale, isPublished, locales } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
+import { buildSiteGraph } from "@/lib/seo/jsonld";
+import { resolveRobots } from "@/lib/seo/metadata";
+import { openGraphLocales } from "@/lib/seo/routes";
 import { interTight } from "@/styles/font";
 import type { HeaderLabels } from "@/types/nav";
 
@@ -38,7 +43,20 @@ export async function generateMetadata({ params }: LocaleProps): Promise<Metadat
   const { locale } = await params;
   if (!isLocale(locale) || !isPublished(locale)) return {};
   const t = await getTranslator(locale);
-  return { title: t("meta.title") };
+  return {
+    metadataBase: new URL(canonicalOrigin),
+    title: { default: t("meta.title"), template: t("meta.titleTemplate") },
+    description: t("meta.description"),
+    robots: resolveRobots(site),
+    openGraph: {
+      type: "website",
+      siteName: t("meta.siteName"),
+      locale: openGraphLocales[locale],
+      title: t("meta.title"),
+      description: t("meta.description"),
+    },
+    twitter: { card: "summary", title: t("meta.title"), description: t("meta.description") },
+  };
 }
 
 export default async function LocaleLayout({
@@ -48,6 +66,7 @@ export default async function LocaleLayout({
   const { locale } = await params;
   if (!isLocale(locale) || !isPublished(locale)) notFound();
   const t = await getTranslator(locale);
+  const graph = await buildSiteGraph(site.origin, locale);
   const items = navSlugs.map(([slug, key]) => ({ slug, label: t(key) }));
   const labels: HeaderLabels = {
     brandLabel: t("nav.brandLabel"),
@@ -64,6 +83,7 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} className={interTight.variable}>
       <body>
+        <JsonLd data={graph} />
         <SkipLink label={t("nav.skipLink")} />
         <SiteHeader locale={locale} items={items} labels={labels} />
         <ViewTransition default="none" update="page-swap">
