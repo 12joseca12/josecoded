@@ -29,7 +29,12 @@ if (process.argv.includes("--write")) {
   process.exit(0);
 }
 
-const pending = findPlaceholders(root, entries);
+const pendingSources = [
+  "src/lib/services/rates.ts",
+  "src/config/profiles.ts",
+  "messages/es.json",
+].map((file) => ({ file }));
+const pending = findPlaceholders(root, [...entries, ...pendingSources]);
 for (const { file, line, text } of pending) {
   console.warn(`content: pending data ${file}:${line}: ${text}`);
 }

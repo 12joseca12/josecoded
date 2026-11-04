@@ -4,6 +4,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
 
 const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
+  meta: { titleTemplate: string };
   projects: { metaTitle: string; title: string; emptyTitle: string };
 };
 
@@ -48,8 +49,9 @@ test("navigating to proyectos keeps the header, focuses main and passes axe", as
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(es.projects.title);
 
   await expect(page.locator("#content")).toBeFocused();
-  await expect(page.getByRole("status")).toHaveText(es.projects.metaTitle);
-  await expect(page).toHaveTitle(es.projects.metaTitle);
+  const projectsTitle = es.meta.titleTemplate.replace("%s", es.projects.metaTitle);
+  await expect(page.getByRole("status")).toHaveText(projectsTitle);
+  await expect(page).toHaveTitle(projectsTitle);
 
   const stable = await page.evaluate(
     () => (document.querySelector("header") as unknown as { stableMarker?: boolean }).stableMarker,
