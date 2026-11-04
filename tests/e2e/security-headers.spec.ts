@@ -1,6 +1,13 @@
 import { expect, type Page, test } from "@playwright/test";
 
-const publicRoutes = ["/es", "/es/contacto", "/es/servicios", "/es/proyectos"];
+const publicRoutes = [
+  "/es",
+  "/es/contacto",
+  "/es/servicios",
+  "/es/servicios/freelance",
+  "/es/servicios/packs",
+  "/es/proyectos",
+];
 const devRoutes = ["/es/dev/nexo", "/es/dev/ui"];
 const devPagesEnabled = process.env.ENABLE_DEV_PAGES === "true";
 

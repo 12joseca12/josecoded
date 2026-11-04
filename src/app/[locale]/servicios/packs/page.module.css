@@ -1,0 +1,11 @@
+.note {
+  color: var(--ink-faint);
+  font-size: var(--fs-base);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}

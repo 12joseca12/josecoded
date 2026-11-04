@@ -5,6 +5,10 @@ import { getTranslator } from "@/i18n/messages";
 import { primaryEmail } from "@/lib/contact/channels";
 import type { ContactWay } from "@/types/contact";
 import {
+  type BreadcrumbListJsonLd,
+  breadcrumbListSchema,
+  type FaqPageJsonLd,
+  faqPageSchema,
   type JsonLdGraph,
   jsonLdGraphSchema,
   type JsonLdNode,
@@ -13,6 +17,7 @@ import {
   type WebSiteJsonLd,
   webSiteSchema,
 } from "@/types/seo";
+import type { FaqItem } from "@/types/services";
 
 import { absoluteUrl, localePath } from "./routes";
 
@@ -70,6 +75,37 @@ export async function buildWebSite(origin: string, locale: Locale): Promise<WebS
     name: t("seo.website.name"),
     inLanguage: locale,
     publisher: { "@id": personId(origin) },
+  });
+}
+
+export interface BreadcrumbEntry {
+  name: string;
+  path: string;
+}
+
+export function buildBreadcrumbList(
+  origin: string,
+  entries: readonly BreadcrumbEntry[],
+): BreadcrumbListJsonLd {
+  return breadcrumbListSchema.parse({
+    "@type": "BreadcrumbList",
+    itemListElement: entries.map((entry, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: entry.name,
+      item: absoluteUrl(origin, entry.path),
+    })),
+  });
+}
+
+export function buildFaqPage(items: readonly FaqItem[]): FaqPageJsonLd {
+  return faqPageSchema.parse({
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer },
+    })),
   });
 }
 
