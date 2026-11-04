@@ -1,7 +1,7 @@
 import {
-  type ExtraSlug,
   extraAppliesTo,
   extraOf,
+  type ExtraSlug,
   extraSlugs,
   isExtraSlug,
   isOfferSlug,
@@ -9,7 +9,6 @@ import {
   type OfferSlug,
   offerSlugs,
   type Platform,
-  priceOf,
 } from "@/lib/services/offers";
 
 export interface OfferSelection {

@@ -1,0 +1,141 @@
+.form {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.group {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+}
+
+.legend {
+  position: absolute;
+  width: 0.0625rem;
+  height: 0.0625rem;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.list {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.entry {
+  position: relative;
+  display: grid;
+}
+
+.input {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-raised);
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.chip {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-m);
+  background: var(--paper);
+  transition-property: border-color, background-color, box-shadow;
+  transition-duration: var(--dur-fast);
+  transition-timing-function: var(--ease-out);
+}
+
+.name {
+  color: var(--ink);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-ui);
+}
+
+.text {
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+  line-height: var(--lh-body);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: auto;
+  font-size: var(--fs-m);
+}
+
+.tag {
+  padding: 0 var(--space-2);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-xl);
+  color: var(--ink);
+}
+
+.included {
+  color: var(--ink-soft);
+}
+
+.input:checked + .chip {
+  border-color: var(--charcoal);
+  background: var(--charcoal);
+  box-shadow: var(--shadow-soft);
+}
+
+.input:checked + .chip .name {
+  color: var(--on-dark);
+}
+
+.input:checked + .chip .text,
+.input:checked + .chip .included {
+  color: var(--on-dark-soft);
+}
+
+.input:checked + .chip .tag {
+  border-color: var(--on-dark-soft);
+  color: var(--on-dark);
+}
+
+.input:focus-visible + .chip {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.hint {
+  color: var(--ink-faint);
+  font-size: var(--fs-base);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .input:not(:checked):hover + .chip {
+    border-color: var(--ink);
+  }
+}
+
+@media (min-width: 40rem) {
+  .list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 64rem) {
+  .list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

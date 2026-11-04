@@ -89,7 +89,7 @@ function answeredCount(draft: Draft): number {
 
 export function parseState(
   q: string | string[] | undefined,
-  paso?: string | string[] | undefined,
+  paso?: string | string[],
 ): RecommenderState {
   const raw = firstOf(q);
   if (raw === undefined || raw.length === 0 || raw.length > maxQueryLength) return { draft: {} };
@@ -154,7 +154,7 @@ export function completeAnswers(draft: Draft): Answers | null {
   if (draft.start === "existing") return { start: "existing" };
   if (!isFinished(draft)) return null;
   const { start, kind, size, accounts, management, more } = draft;
-  if (!start || start === "existing" || !kind || !size || !accounts || !management || !more) {
+  if (!start || !kind || !size || !accounts || !management || !more) {
     return null;
   }
   const answers: ProjectAnswers = { start, kind, size, accounts, management, more };

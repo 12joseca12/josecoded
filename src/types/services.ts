@@ -74,7 +74,6 @@ export interface OfferCardItem {
   price: string;
   provisional: boolean;
   weeks: string;
-  highlight: boolean;
   ctaHref: string;
   ctaLabel: string;
 }
@@ -83,4 +82,19 @@ export interface OfferTabGroup {
   id: string;
   label: string;
   items: OfferCardItem[];
+}
+
+export interface ExtraChipItem {
+  slug: string;
+  name: string;
+  text: string;
+  tags: string[];
+  included: string;
+}
+
+export interface MaintenancePlan {
+  id: string;
+  name: string;
+  hours: string;
+  text: string;
 }

@@ -93,7 +93,12 @@ export async function ServicePage({ locale, page, head, faq, children }: Service
       />
       <div className={styles.ways} data-layout={onHub ? "hub" : "child"}>
         {onHub ? null : (
-          <WayNav label={t("services.nav.label")} items={navItems} variant="pages" current={page === "offers" ? "project" : page} />
+          <WayNav
+            label={t("services.nav.label")}
+            items={navItems}
+            variant="pages"
+            current={page === "offers" ? "project" : page}
+          />
         )}
         <div className={styles.sections}>{children}</div>
       </div>

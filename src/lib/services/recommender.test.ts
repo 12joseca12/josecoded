@@ -14,8 +14,13 @@ import {
   recommend,
   selectedExtras,
 } from "./recommender";
-import { optionHintKey, optionLabelKey, questionLegendKey, reasonMessageKey } from "./recommender-copy";
 import { questions } from "./recommender";
+import {
+  optionHintKey,
+  optionLabelKey,
+  questionLegendKey,
+  reasonMessageKey,
+} from "./recommender-copy";
 
 const base: ProjectAnswers = {
   start: "idea",
@@ -163,7 +168,7 @@ describe("recommend: extras", () => {
   it("R8: reports an extra that the tier already includes", () => {
     const result = project({ kind: "app", size: "large", more: ["push", "analytics"] });
     expect(result.extras).toEqual([]);
-    expect(result.included).toEqual(["push", "analytics"]);
+    expect(result.included).toEqual(["analytics", "push"]);
   });
 
   it("R9: maintenance is always on offer and selected by default only for web and app", () => {

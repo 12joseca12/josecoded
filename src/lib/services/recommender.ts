@@ -1,9 +1,9 @@
 import {
-  type ExtraSlug,
   extraAppliesTo,
   extraIncludedIn,
   extraOf,
   extras,
+  type ExtraSlug,
   type OfferSlug,
   type Platform,
 } from "./offers";
@@ -164,9 +164,11 @@ interface ExtraRule {
 export const extraRules: readonly ExtraRule[] = [
   { id: "R5", when: (a) => a.accounts === "basic", add: "accounts" },
   { id: "R7a", when: (a) => a.management === "me", add: "admin" },
-  ...moreValues.map(
-    (value): ExtraRule => ({ id: `R8:${value}`, when: (a) => a.more.includes(value), add: value }),
-  ),
+  ...moreValues.map((value): ExtraRule => ({
+    id: `R8:${value}`,
+    when: (a) => a.more.includes(value),
+    add: value,
+  })),
 ];
 
 function pushUnique<T>(list: T[], value: T) {

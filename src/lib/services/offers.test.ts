@@ -4,13 +4,13 @@ import { getTranslator } from "@/i18n/messages";
 import { slugPattern } from "@/types/contact-form";
 
 import {
-  type ExtraSlug,
   extraAppliesTo,
   extraCopyKeys,
   extraIncludedIn,
   extraOf,
   extras,
   extraSchema,
+  type ExtraSlug,
   extraSlugs,
   extrasSchema,
   hasProvisionalOffers,

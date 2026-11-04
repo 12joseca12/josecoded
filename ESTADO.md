@@ -6,6 +6,8 @@ Arquitectura cerrada del todo (2026-11-02, `docs/arquitectura/decisiones.md`): J
 
 **2026-11-04 (`docs/chat-rooms`):** modelo de datos unificado para el chat (visitantes y salas privadas closer/cliente/freelance con Nexo) y la bandeja «Interesados» en `docs/arquitectura/datos.md` §10 y §11; decisiones 2.23, 5.12–5.17, 7.8–7.9 y 10.7 reescrita en `decisiones.md`; primer plan de migraciones M01–M11 con tests pgTAP en `docs/plan/migraciones-chat.md`.
 
+**2026-11-04 (`public/a-medida`):** «Desarrollo a medida» en `/servicios/a-medida` (308 desde `/servicios/packs`): web en tres niveles (Presencia, Negocio, Plataforma) y app en dos (Primera versión, Producto), doce extras, garantía de 30 días y mantenimiento S/M/L, recomendador por reglas (`recommender.ts`, estado en `?q=`) con Nexo guionizado (`NexoGuide`) y resumen de la selección en el formulario de contacto. Pendiente: pasar por `redactor` los textos de `offersPage.*` y `nexoGuide.*`; `leads.via` sigue guardando `pack` hasta la migración 2.28 (con OK de Jose).
+
 ## Siguiente paso
 
 1. Jose responde 5.13 (sala de cliente por proyecto), 5.15 (Nexo solo al mencionarlo) y 7.8 (closers reclaman de la bandeja común); las tres tienen recomendación y no bloquean el esquema.

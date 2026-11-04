@@ -1,0 +1,152 @@
+.shell {
+  display: grid;
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.panel {
+  display: grid;
+  gap: var(--space-5);
+  min-width: 0;
+}
+
+.progress {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.step {
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+}
+
+.form {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.group {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: 0;
+  border: 0;
+}
+
+.legend {
+  padding: 0;
+  margin-bottom: var(--space-2);
+  color: var(--ink);
+  font-size: var(--fs-h4);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-heading);
+}
+
+.legend:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 4px;
+}
+
+.hint {
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+}
+
+.options {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.option {
+  position: relative;
+}
+
+.input {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.card {
+  display: grid;
+  gap: var(--space-1);
+  block-size: 100%;
+  min-block-size: 2.75rem;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-m);
+  background: var(--paper);
+  transition-property: border-color, background-color, box-shadow;
+  transition-duration: var(--dur-fast);
+  transition-timing-function: var(--ease-out);
+}
+
+.label {
+  color: var(--ink);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-ui);
+}
+
+.cardHint {
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+  line-height: var(--lh-ui);
+}
+
+.input:checked + .card {
+  border-color: var(--charcoal);
+  background: var(--charcoal);
+  box-shadow: var(--shadow-soft);
+}
+
+.input:checked + .card .label {
+  color: var(--on-dark);
+}
+
+.input:checked + .card .cardHint {
+  color: var(--on-dark-soft);
+}
+
+.input:focus-visible + .card {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.error {
+  color: var(--error);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .input:not(:checked, :disabled):hover + .card {
+    border-color: var(--ink);
+  }
+}
+
+@media (min-width: 40rem) {
+  .options[data-columns] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 64rem) {
+  .shell {
+    grid-template-columns: 19rem minmax(0, 1fr);
+    gap: var(--space-7);
+  }
+}

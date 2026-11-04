@@ -25,7 +25,7 @@ const publicRoutes = [
   "/es",
   "/es/servicios",
   "/es/servicios/freelance",
-  "/es/servicios/packs",
+  "/es/servicios/a-medida",
   "/es/proyectos",
 ];
 const devRoutes = [

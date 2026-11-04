@@ -15,9 +15,10 @@ import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
 import { hasLiveChannel, resolveChannels } from "@/lib/contact/channels";
 import { isContactAvailable, readContactClientConfig } from "@/lib/contact/env";
+import { parseSelection } from "@/lib/contact/selection";
 import { resolveInitialWay } from "@/lib/contact/ways";
 import { buildPageMetadata } from "@/lib/seo/metadata";
-import { packSlugPattern } from "@/types/contact-form";
+import { extraCopyKeys, offerCopyKeys, priceOf } from "@/lib/services/offers";
 import type { WayId } from "@/types/services";
 
 import styles from "./page.module.css";
@@ -28,17 +29,12 @@ const wayKeys: Record<WayId, { title: MessageKey; hint: MessageKey }> = {
     hint: "contactPage.ways.contratacion.hint",
   },
   freelance: { title: "contactPage.ways.freelance.title", hint: "contactPage.ways.freelance.hint" },
-  packs: { title: "contactPage.ways.packs.title", hint: "contactPage.ways.packs.hint" },
+  project: { title: "contactPage.ways.project.title", hint: "contactPage.ways.project.hint" },
 };
 
 interface ContactProps {
   params: Promise<{ locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
-}
-
-function packFrom(value: string | string[] | undefined): string | null {
-  const slug = Array.isArray(value) ? value[0] : value;
-  return slug !== undefined && slug.length <= 80 && packSlugPattern.test(slug) ? slug : null;
 }
 
 export async function generateMetadata({ params }: ContactProps): Promise<Metadata> {
@@ -61,6 +57,31 @@ export default async function ContactPage({ params, searchParams }: ContactProps
   const emails = Object.fromEntries(
     contact.ways.map((entry) => [entry.way, entry.email]),
   ) as Record<WayId, string>;
+
+  const parsed = parseSelection(query);
+  const price = parsed
+    ? priceOf(
+        parsed.offers,
+        parsed.extras.filter((slug) => slug !== "maintenance"),
+      )
+    : null;
+  const selection =
+    parsed && price
+      ? {
+          offers: parsed.offers,
+          extras: parsed.extras,
+          summary: [
+            ...parsed.offers.map((slug) => t(offerCopyKeys(slug).name)),
+            ...parsed.extras.map((slug) => t(extraCopyKeys(slug).name)),
+          ].join(" + "),
+          price: price.once,
+          monthly: parsed.extras.includes("maintenance")
+            ? priceOf(parsed.offers, ["maintenance"]).monthly
+            : null,
+          provisional: price.provisional,
+          changeHref: `/${locale}/servicios/a-medida#recomendador`,
+        }
+      : null;
 
   return (
     <>
@@ -113,7 +134,7 @@ export default async function ContactPage({ params, searchParams }: ContactProps
             labels={buildContactFormLabels(t)}
             emails={emails}
             initialWay={resolveInitialWay(query)}
-            pack={packFrom(query.pack)}
+            selection={selection}
             privacyHref={`/${locale}/legal/privacidad`}
             newTabLabel={t("contactPage.form.newTab")}
             turnstile={

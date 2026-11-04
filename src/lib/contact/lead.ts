@@ -31,9 +31,7 @@ export function mapLeadError(error: LeadRpcError): LeadFailure {
 export function buildLeadArgs(input: ContactSubmission, ipHash: string): SubmitLeadArgs {
   const company = input.company?.trim();
   const selection =
-    input.way === "project"
-      ? parseSelection({ offer: input.offer, extras: input.extras })
-      : null;
+    input.way === "project" ? parseSelection({ offer: input.offer, extras: input.extras }) : null;
   const basePath = `/${input.locale}/contacto`;
   return {
     p_source: "form",

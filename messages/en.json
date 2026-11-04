@@ -3,16 +3,16 @@
     "title": "josecoded",
     "titleTemplate": "%s · josecoded",
     "siteName": "josecoded",
-    "description": "Mobile apps and websites with React Native and Next.js: hourly freelance, fixed-price packs or inside your team. Madrid, Spain and remote."
+    "description": "Mobile apps and websites with React Native and Next.js: hourly freelance, tailored development at a fixed price or inside your team. Madrid, Spain and remote."
   },
   "home": {
     "name": "josecoded",
     "metaTitle": "React Native and full stack developer",
-    "metaDescription": "Mobile apps and websites with React Native and Next.js: hourly freelance, fixed-price packs or inside your team. Madrid, Spain and remote.",
+    "metaDescription": "Mobile apps and websites with React Native and Next.js: hourly freelance, tailored development at a fixed price or inside your team. Madrid, Spain and remote.",
     "hero": {
       "title": "Full stack developer specialised in",
       "accent": "React Native.",
-      "lead": "I design, build and maintain mobile apps and websites for companies and businesses. From Madrid and remote: by the hour, by the task or with a fixed-price pack.",
+      "lead": "I design, build and maintain mobile apps and websites for companies and businesses. From Madrid and remote: by the hour, by the task or with tailored development at a fixed price.",
       "ctaPrimary": "Ask for a proposal",
       "ctaSecondary": "See projects",
       "rail": {
@@ -318,8 +318,8 @@
         "title": "Freelance",
         "hint": "For a feature, an audit or a push on an existing project."
       },
-      "packs": {
-        "title": "Projects and packs",
+      "project": {
+        "title": "Tailored development",
         "hint": "For websites and apps with a defined scope, price and date."
       }
     },
@@ -344,8 +344,8 @@
           "label": "Freelance",
           "hint": "A feature, an audit or a push"
         },
-        "packs": {
-          "label": "Project or pack",
+        "project": {
+          "label": "Tailored development",
           "hint": "Web or app with fixed scope and price"
         }
       },
@@ -406,7 +406,14 @@
         "title": "Form unavailable",
         "text": "I cannot receive messages here right now. Write to me by email, depending on the way:"
       },
-      "honeypotLabel": "Leave this field empty"
+      "honeypotLabel": "Leave this field empty",
+      "selection": {
+        "title": "Your selection",
+        "from": "from",
+        "provisional": "provisional",
+        "perMonth": "€/month",
+        "change": "Change"
+      }
     }
   },
   "search": {
@@ -424,12 +431,12 @@
   "services": {
     "meta": {
       "title": "App and web development services",
-      "description": "Hiring, hourly or per-task freelance and fixed-price web and app packs. Choose how to work with me."
+      "description": "Hiring, hourly or per-task freelance and fixed-price tailored web and app development. Choose how to work with me."
     },
     "head": {
       "title": "App and web development, three ways to",
       "accent": "work together.",
-      "lead": "On your team, as a freelancer or with a fixed pack. You choose how; I make sure it reaches production."
+      "lead": "On your team, as a freelancer or with tailored development. You choose how; I make sure it reaches production."
     },
     "nav": {
       "label": "Ways to work"
@@ -447,7 +454,7 @@
           "value": "1–2",
           "unit": "working days"
         },
-        "packs": {
+        "project": {
           "title": "Want to launch a product or a project?",
           "a": "Design, development and publishing in a single package.",
           "b": "Scope, price and date agreed in writing before we start.",
@@ -463,7 +470,7 @@
       },
       "phases": {
         "title": "Five phases, the same in every way",
-        "text": "In each one you know what you see and what I need from you, whether it is a hire, extra hands or a pack.",
+        "text": "In each one you know what you see and what I need from you, whether it is a hire, extra hands or tailored development.",
         "cta": "See how I work"
       },
       "proof": {
@@ -496,8 +503,8 @@
         "text": "A feature, an audit or a push for an existing project, hourly or per task.",
         "cta": "See rates and examples"
       },
-      "packs": {
-        "nav": "Packs",
+      "project": {
+        "nav": "Tailored",
         "title": "Tailored development",
         "text": "A complete website or app, tailored to you, with scope, price and date agreed up front.",
         "cta": "See tailored development"
@@ -536,17 +543,19 @@
         "q4": "What happens if the scope grows?",
         "a4": "We agree it before going on: I explain what changes in time and cost, and you decide whether to include it or leave it for another task."
       },
-      "packs": {
+      "offers": {
         "q1": "How much does a mobile app cost?",
-        "a1": "It depends on the pack and the extras. Each pack has a \"from\" price and, after talking to you, I give you a fixed quote with a delivery date.",
-        "q2": "What does each pack include?",
-        "a2": "Design, development and release. The exact list for each pack is in the comparison and is confirmed in writing before starting.",
+        "a1": "It depends on the tier and the extras. Each tier has a \"from\" price and, after talking to you, I give you a fixed quote with a delivery date.",
+        "q2": "What does each tier include?",
+        "a2": "Design, development and release. The exact list for each tier is in the comparison and is confirmed in writing before starting.",
         "q3": "Is publishing to the stores included?",
-        "a3": "Yes. Packs with an app include publishing to the App Store and Google Play, and web packs include the domain and hosting.",
-        "q4": "What about maintenance after launch?",
-        "a4": "It is optional and contracted separately, with a monthly plan agreed according to what your product needs.",
+        "a3": "Yes. App tiers include publishing to the App Store and Google Play with your accounts, and web tiers include the domain and hosting.",
+        "q4": "Is there a warranty and maintenance after launch?",
+        "a4": "I fix bugs in the agreed scope for thirty days after delivery at no cost. After that, maintenance is an optional monthly plan in three sizes.",
         "q5": "What do I need to provide?",
-        "a5": "The texts, the images and the business decisions. I tell you what I need in each phase and when, so delivery is not held up."
+        "a5": "The texts, the images and the business decisions. I tell you what I need in each phase and when, so delivery is not held up.",
+        "q6": "What if I want something the tier does not have?",
+        "a6": "We talk before touching it: I explain what changes in time and cost, and you decide whether to add it as an extra or leave it out."
       }
     },
     "rates": {
@@ -579,16 +588,16 @@
       "name": "josecoded"
     },
     "llms": {
-      "summary": "José Carlos Sánchez García is a full stack developer specialised in React Native, based in Madrid. He builds mobile apps and websites for companies and businesses in Spain and remotely: as a freelancer by the hour or by the task, with fixed-price packs or by joining a team.",
+      "summary": "José Carlos Sánchez García is a full stack developer specialised in React Native, based in Madrid. He builds mobile apps and websites for companies and businesses in Spain and remotely: as a freelancer by the hour or by the task, with tailored development at a fixed price or by joining a team.",
       "servicesTitle": "Services",
       "hiring": "Hiring: joins a mobile or web product team and owns part of the product from start to finish.",
       "freelance": "Freelance: a feature, an audit or a push for an existing project, with the scope agreed before starting.",
-      "packs": "Web and app packs: design, development and publishing with scope, price and date set in advance. Store publishing and domain included.",
+      "project": "Tailored web and app development: design, development and publishing with scope, price and date set in advance, in tiers and with extras. 30-day warranty and optional maintenance.",
       "pagesTitle": "Key pages",
       "home": "Home: who José Carlos is and what he works on",
       "services": "Services: the three ways of working with José Carlos",
       "freelancePage": "Freelance: programmer by the hour or per task",
-      "packsPage": "Packs: web and app with a fixed price and date",
+      "offersPage": "Tailored development: web and app with a fixed price and date",
       "projects": "Projects: apps and websites in production",
       "entityTitle": "Entity",
       "entityName": "Name: {name} (alias {alias})",
@@ -761,7 +770,7 @@
       "via": {
         "hiring": "Hiring",
         "freelance": "Freelance",
-        "pack": "Pack",
+        "pack": "Tailored",
         "none": "No route"
       },
       "noEmail": "No email",
@@ -838,56 +847,426 @@
       "more": "How I work, phase by phase"
     }
   },
-  "packsPage": {
+  "offersPage": {
     "meta": {
-      "title": "Mobile app and web price: fixed packs",
-      "description": "Web and app packs with a fixed price and date, store publishing and domain included. Compare what each one offers and ask for a quote."
+      "title": "Mobile app and web price: tailored development",
+      "description": "Tailored web and app development with a fixed price and date: three web tiers, two app tiers, extras and a 30-day warranty. Compare and ask for a quote."
     },
     "head": {
       "title": "Mobile app and web price:",
-      "accent": "packs with a fixed price and date.",
-      "lead": "Choose a web pack, an app pack or both, with scope, price and date defined before starting."
+      "accent": "tailored development with a fixed price and date.",
+      "lead": "Choose the tier for your website or app, add only the extras you need and get a fixed quote before we start."
     },
     "compare": {
-      "title": "App quote: compare the packs",
-      "lead": "Every pack includes design, development and release. The \"from\" price grows if you add extras.",
+      "title": "App quote: compare the tiers",
+      "lead": "Every tier includes design, development and publishing. The \"from\" price goes up if you add extras.",
+      "tabsLabel": "What do you want to launch",
+      "tabWeb": "Web",
+      "tabApp": "Mobile app",
       "from": "from",
       "unit": "€",
       "price": "Price",
+      "audience": "Who it is for",
       "includes": "Includes",
-      "ctaFor": "Ask for the {name} pack"
+      "excludes": "Not included",
+      "delivery": "Delivery",
+      "weeks": "{min}–{max} weeks",
+      "ctaFor": "Ask for {name}",
+      "scopeNote": "Page and screen limits, delivery times and prices are indicative until pricing is settled; they are confirmed in writing before starting.",
+      "notSure": "Not sure which one to pick?",
+      "notSureLink": "Find yours in a minute"
     },
-    "items": {
-      "app": {
-        "name": "Mobile app",
-        "text": "An iOS and Android app built with React Native, published on both stores.",
-        "a": "Screen and flow design",
-        "b": "React Native development",
-        "c": "Publishing on the App Store and Google Play"
+    "tiers": {
+      "web-presencia": {
+        "name": "Presence",
+        "audience": "For businesses and professionals who need to exist properly online: who you are, what you do and how to reach you.",
+        "a": "Up to 5 pages with a tailored design",
+        "b": "Contact form with spam protection",
+        "c": "Performance, accessibility and technical SEO as standard",
+        "d": "Domain, hosting and email set up",
+        "x": "A panel to edit the content yourself",
+        "y": "User accounts or payments",
+        "z": "Copywriting"
       },
-      "web": {
-        "name": "Business website",
-        "text": "A fast, well-ranked website built with Next.js, on your domain.",
-        "a": "Custom design",
-        "b": "Next.js development",
-        "c": "Domain and hosting set up"
+      "web-negocio": {
+        "name": "Business",
+        "audience": "For businesses that update their site often (services, news, blog) and want to change content without depending on anyone.",
+        "a": "Up to 12 pages with a tailored design",
+        "b": "A panel to edit texts, images and news",
+        "c": "Performance, accessibility and technical SEO as standard",
+        "d": "Domain, hosting and email set up",
+        "x": "Private areas with user accounts",
+        "y": "Payments inside the site",
+        "z": "Several languages"
       },
-      "both": {
-        "name": "Web and app",
-        "text": "A website and an app that share design and data, launched together.",
-        "a": "Shared design for web and app",
-        "b": "One database and user accounts",
-        "c": "Store publishing and domain included"
+      "web-plataforma": {
+        "name": "Platform",
+        "audience": "For products that live on the web: users with accounts, their own data and processes that are done by hand today.",
+        "a": "User accounts with roles and permissions",
+        "b": "Database and management panel included",
+        "c": "Design of the product flows and screens",
+        "d": "Usage metrics from day one",
+        "x": "Payments with Stripe",
+        "y": "Several languages",
+        "z": "AI assistant"
+      },
+      "app-primera-version": {
+        "name": "First version",
+        "audience": "For anyone with a service used from the phone who wants to reach the stores with the essentials, measure it and grow later.",
+        "a": "Up to 10 screens designed for you",
+        "b": "iOS and Android app with React Native",
+        "c": "User accounts, database and storage",
+        "d": "Publishing on the App Store and Google Play with your accounts",
+        "x": "Management panel",
+        "y": "Push notifications",
+        "z": "Payments or offline use"
+      },
+      "app-producto": {
+        "name": "Product",
+        "audience": "For apps with different kinds of users that need management, alerts and metrics from day one.",
+        "a": "Up to 25 screens designed for you",
+        "b": "User roles with permissions and a management panel",
+        "c": "Push notifications and usage metrics",
+        "d": "Publishing on both stores with your accounts",
+        "x": "Payments with Stripe",
+        "y": "Offline use",
+        "z": "Store accounts opened in your name"
       }
     },
+    "extras": {
+      "title": "Extras à la carte",
+      "lead": "Each extra is added to the tier you choose. Tick the ones you want and ask for them together; if a tier already includes one, you will see it.",
+      "legend": "Extras you are interested in",
+      "includedIn": "Included in: {offers}",
+      "includedNowhere": "Not included in any tier",
+      "onlyWeb": "Web only",
+      "onlyApp": "App only",
+      "cta": "Ask for a quote with these extras",
+      "hint": "The extras you tick arrive pre-filled in the contact form.",
+      "monthly": "Monthly fee",
+      "perUnit": "Per unit",
+      "items": {
+        "accounts": {
+          "name": "Accounts and permissions",
+          "text": "Passwordless sign-up and sign-in (email code or Google) and user types with different permissions."
+        },
+        "admin": {
+          "name": "Management panel",
+          "text": "A private panel to view and edit data, users and content without touching code."
+        },
+        "payments": {
+          "name": "Payments with Stripe",
+          "text": "One-off payments or subscriptions, invoices and a revenue dashboard. Stripe fees are separate."
+        },
+        "languages": {
+          "name": "Several languages",
+          "text": "The interface in more than one language and the content ready to translate. Quoted per language."
+        },
+        "seo": {
+          "name": "Search visibility (SEO and GEO)",
+          "text": "Structure, copy and data so Google and AI assistants can find you."
+        },
+        "analytics": {
+          "name": "Usage metrics",
+          "text": "Key events, funnels and a dashboard, without third-party cookies where possible."
+        },
+        "ai": {
+          "name": "AI assistant",
+          "text": "An assistant like Nexo that answers with your data inside the site or the app."
+        },
+        "push": {
+          "name": "Push notifications",
+          "text": "Alerts on the phone for events in your product, with user preferences."
+        },
+        "offline": {
+          "name": "Offline use",
+          "text": "The app works without coverage and syncs when it is back."
+        },
+        "stores": {
+          "name": "Managed store setup",
+          "text": "I open the developer accounts in your name and handle review until approval. Apple and Google fees are yours."
+        },
+        "maintenance": {
+          "name": "Maintenance",
+          "text": "Updates, backups, error monitoring and a monthly bank of hours. Three sizes, below."
+        },
+        "brand": {
+          "name": "Identity and design system",
+          "text": "Logo, colours, typography and documented components so everything looks the same."
+        }
+      }
+    },
+    "warranty": {
+      "title": "Warranty and maintenance",
+      "lead": "After launch you are not on your own: 30 days of bug fixing included and, if you want ongoing cover, an optional monthly plan.",
+      "includedTitle": "30-day warranty, included",
+      "includedText": "For 30 days after delivery I fix any bug in the agreed scope at no cost. It does not cover new changes or failures in third-party services.",
+      "plansTitle": "Monthly maintenance plans",
+      "plansLead": "Optional: you decide whether to take it and which size.",
+      "from": "from",
+      "perMonth": "€/month",
+      "sizeS": {
+        "name": "Plan S",
+        "hours": "2 h a month",
+        "text": "Updates, backups and error monitoring. For sites that hardly change."
+      },
+      "sizeM": {
+        "name": "Plan M",
+        "hours": "5 h a month",
+        "text": "The above plus a bank of hours for small changes. For products used every day."
+      },
+      "sizeL": {
+        "name": "Plan L",
+        "hours": "10 h a month",
+        "text": "A large bank of hours and priority response. For products that are growing."
+      },
+      "note": "Hours and prices are indicative until pricing is settled."
+    },
     "closing": {
-      "title": "Which pack fits your project?",
-      "text": "Tell me your idea and I will say which one fits and what extras it would need.",
-      "cta": "Talk about a pack",
+      "title": "Which tier fits your project?",
+      "text": "Tell me your idea and I will tell you which one fits and which extras you would need.",
+      "cta": "Talk about my project",
       "more": "How I work, phase by phase"
+    },
+    "recommender": {
+      "title": "Find your tier in a minute",
+      "lead": "Six short questions and I will tell you which tier fits, which extras you need and from how much. Nexo walks you through it.",
+      "label": "Tier recommender",
+      "progress": "Step {current} of {total}",
+      "progressDone": "Recommendation ready",
+      "next": "Next",
+      "back": "Back",
+      "see": "See my recommendation",
+      "required": "Choose an option to continue.",
+      "multipleHint": "Optional: tick everything that applies, or nothing.",
+      "questions": {
+        "start": {
+          "legend": "Where are you starting from?",
+          "options": {
+            "idea": {
+              "label": "I have an idea and nothing built",
+              "hint": "What to build is still open"
+            },
+            "defined": {
+              "label": "I have a design, a document or clear references",
+              "hint": "You know what you want to see finished"
+            },
+            "existing": {
+              "label": "It already exists and I want to extend or fix it",
+              "hint": "I work on what you have"
+            }
+          }
+        },
+        "kind": {
+          "legend": "What do you want to launch?",
+          "options": {
+            "web": {
+              "label": "A website for my business",
+              "hint": "Works in any browser"
+            },
+            "app": {
+              "label": "A mobile app",
+              "hint": "For iOS and Android"
+            },
+            "both": {
+              "label": "Web and app",
+              "hint": "With shared design and data"
+            },
+            "unsure": {
+              "label": "I am not sure yet",
+              "hint": "I start from the most common case"
+            }
+          }
+        },
+        "size": {
+          "legend": "How big is it?",
+          "options": {
+            "small": {
+              "label": "Present my business",
+              "hint": "A few pages or screens"
+            },
+            "medium": {
+              "label": "Something complete that I update",
+              "hint": "Several sections, news or a catalogue"
+            },
+            "large": {
+              "label": "A product with users and processes",
+              "hint": "Accounts, data and its own flows"
+            },
+            "unsure": {
+              "label": "I do not know yet",
+              "hint": "I start from a medium scope"
+            }
+          }
+        },
+        "accounts": {
+          "legend": "Will your users have an account?",
+          "options": {
+            "none": {
+              "label": "No, they only browse",
+              "hint": "No sign-up"
+            },
+            "basic": {
+              "label": "Yes, they sign in",
+              "hint": "A single kind of user"
+            },
+            "roles": {
+              "label": "Yes, and there are different kinds",
+              "hint": "Each kind sees different things"
+            }
+          }
+        },
+        "management": {
+          "legend": "Who will update the content or the data?",
+          "options": {
+            "me": {
+              "label": "Me, from a panel",
+              "hint": "Without depending on anyone"
+            },
+            "rare": {
+              "label": "It hardly ever changes",
+              "hint": "I make the changes"
+            },
+            "team": {
+              "label": "Several people, with permissions",
+              "hint": "Each one manages their own part"
+            }
+          }
+        },
+        "more": {
+          "legend": "Anything else? Tick what applies",
+          "options": {
+            "payments": {
+              "label": "Take payments inside (one-off or subscriptions)",
+              "hint": "With Stripe"
+            },
+            "languages": {
+              "label": "Several languages",
+              "hint": "Translatable interface and content"
+            },
+            "seo": {
+              "label": "Be found on Google and by AI assistants",
+              "hint": "Search visibility"
+            },
+            "analytics": {
+              "label": "Measure what my users do",
+              "hint": "Events, funnels and a dashboard"
+            },
+            "ai": {
+              "label": "An AI assistant",
+              "hint": "Answers with your data"
+            },
+            "push": {
+              "label": "Alerts on the phone",
+              "hint": "Push notifications"
+            },
+            "offline": {
+              "label": "Use without coverage",
+              "hint": "The app syncs when it is back"
+            },
+            "stores": {
+              "label": "You handle the store accounts",
+              "hint": "Apple and Google in your name"
+            }
+          }
+        }
+      },
+      "result": {
+        "kicker": "My recommendation",
+        "title": "I recommend",
+        "platformWeb": "Web",
+        "platformApp": "Mobile app",
+        "from": "from",
+        "unit": "€",
+        "provisional": "provisional",
+        "monthly": "+ {amount} €/month of maintenance",
+        "weeks": "Estimated delivery: {min}–{max} weeks",
+        "whyTitle": "Why I recommend it",
+        "includedTitle": "Already in your tier",
+        "excludesTitle": "Not included",
+        "extrasTitle": "Extras",
+        "extrasHint": "Remove or add extras and the price adjusts.",
+        "update": "Update extras",
+        "cta": "Ask for this proposal",
+        "change": "Change answers",
+        "assumedTitle": "I assumed something for you",
+        "assumedText": "You left some things open, so I started from the most common case. We settle it by talking before anything is committed.",
+        "talk": "I would rather talk first",
+        "freelanceTitle": "Yours is hourly or per task",
+        "freelanceText": "Extending or fixing something that already exists is not a new project: it is done by the hour or per task, with the scope agreed before starting.",
+        "freelanceCta": "See freelance",
+        "freelanceContact": "Tell me what you need"
+      },
+      "reasons": {
+        "existing": "Yours is not a new project but extending or fixing something that already exists.",
+        "platform_web": "You want a website for your business.",
+        "platform_app": "You want an app for iOS and Android.",
+        "platform_both": "You want a web and an app with the same design and the same data.",
+        "assumed_kind": "You were not sure what to launch: I start from the most common case given what you ticked.",
+        "assumed_size": "You were not sure about the scope: I start from a medium scope and we adjust it together.",
+        "bump_roles": "There are different kinds of user and each must see their own: that calls for the top tier.",
+        "bump_team": "Several people manage with different permissions: that calls for the top tier.",
+        "management_rare": "Since the content hardly changes, I make the changes whenever you ask.",
+        "included": "Included as standard in your tier: {extra}.",
+        "maintenance_both": "With web and app together, monthly maintenance is the sensible choice.",
+        "tier": {
+          "web-presencia": "Few pages and no users: Presence covers what you need without paying for more.",
+          "web-negocio": "A full site you update yourself: Business comes with the editing panel.",
+          "web-plataforma": "Users, data and processes of their own: that is a Platform, not a showcase site.",
+          "app-primera-version": "To reach the stores with the essentials and measure before growing: the First version.",
+          "app-producto": "An app with different kinds of user and management: the Product tier brings it as standard."
+        },
+        "extra": {
+          "accounts": "Your users sign in and this tier does not include it as standard.",
+          "admin": "You want to change content and data without depending on anyone.",
+          "payments": "You will take payments inside: one-off or subscriptions with Stripe.",
+          "languages": "You need more than one language from the start.",
+          "seo": "You want Google and AI assistants to find you.",
+          "analytics": "You want to measure what your users do.",
+          "ai": "You want an AI assistant that answers with your data.",
+          "push": "You need to alert your users on their phone.",
+          "offline": "Your app has to work without coverage.",
+          "stores": "You would rather I handle the store accounts."
+        }
+      }
     }
   },
   "breadcrumbs": {
     "label": "Breadcrumb"
+  },
+  "nexoGuide": {
+    "label": "Nexo, this site's assistant",
+    "name": "Nexo",
+    "role": "Site assistant",
+    "disclosure": "I am an assistant, not a person. I guide you with the same rules as the recommender; free conversation will arrive with the chat.",
+    "greeting": "Hi! I am Nexo. I will ask a few short questions and tell you which tier fits and which extras you would need.",
+    "ask": {
+      "start": "I start here because if you already have something built you do not need a new project, and I will point you elsewhere.",
+      "kind": "This weighs the most: web and app are built differently and quoted separately.",
+      "size": "It decides the tier: presenting a business is not the same as running a product with users.",
+      "accounts": "With accounts you store people's data and decide what each one sees; that changes the work.",
+      "management": "If you will edit it yourself you need a panel; if it hardly changes, Jose changes it when you ask.",
+      "more": "These are the usual extras. Tick any that ring a bell, just in case: you can remove them later."
+    },
+    "option": {
+      "start": {
+        "existing": "Then you do not need a new project. I will tell you where to go next."
+      },
+      "kind": {
+        "unsure": "No problem: I start from the most common case based on what you tick next, and we settle it by talking."
+      },
+      "size": {
+        "unsure": "No problem: I start from a medium scope and we adjust it together."
+      }
+    },
+    "compute": "Working it out from your answers…",
+    "result": {
+      "project": "This is my recommendation. Remove or add extras and the price adjusts right away.",
+      "assumed": "I assumed what you left open. If you like, we talk it through before anything is settled.",
+      "freelance": "Yours is hourly or per task. I will point you that way."
+    },
+    "state": {
+      "greeting": "Nexo is greeting"
+    }
   }
 }

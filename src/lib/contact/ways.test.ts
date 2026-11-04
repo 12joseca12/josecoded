@@ -10,7 +10,10 @@ describe("buildContactHref", () => {
   });
 
   it("adds the offer and the extras only for the project way", () => {
-    const selection = { offers: ["app-producto" as const], extras: ["payments" as const, "push" as const] };
+    const selection = {
+      offers: ["app-producto" as const],
+      extras: ["payments" as const, "push" as const],
+    };
     expect(buildContactHref("es", "project", selection)).toBe(
       "/es/contacto?via=project&offer=app-producto&extras=payments,push#formulario",
     );
@@ -20,7 +23,10 @@ describe("buildContactHref", () => {
   });
 
   it("joins a web and an app tier in one offer parameter", () => {
-    const selection = { offers: ["web-negocio" as const, "app-primera-version" as const], extras: [] };
+    const selection = {
+      offers: ["web-negocio" as const, "app-primera-version" as const],
+      extras: [],
+    };
     expect(buildContactHref("es", "project", selection)).toBe(
       "/es/contacto?via=project&offer=web-negocio,app-primera-version#formulario",
     );

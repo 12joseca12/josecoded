@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { recommend } from "./recommender";
+import { type QuestionId, recommend } from "./recommender";
 import {
   advance,
   applyForm,
@@ -133,8 +133,13 @@ describe("advance", () => {
       if (step === "start") state = advance(state, step, ["idea"]).state;
       else if (step === "more") state = advance(state, step, ["payments", "seo"]).state;
       else {
-        const value = { kind: "both", size: "medium", accounts: "basic", management: "me" }[step];
-        state = advance(state, step, [value ?? ""]).state;
+        const values: Record<string, string> = {
+          kind: "both",
+          size: "medium",
+          accounts: "basic",
+          management: "me",
+        };
+        state = advance(state, step as QuestionId, [values[step] ?? ""]).state;
       }
     }
     expect(seen).toEqual(["start", "kind", "size", "accounts", "management", "more"]);

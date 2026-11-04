@@ -1,3 +1,5 @@
+import "@/lib/security/zod-jitless";
+
 import { z } from "zod";
 
 import type { MessageKey } from "@/i18n/keys.generated";
@@ -43,7 +45,6 @@ export const offerSchema = z
     from: priceText,
     weeksMin: z.number().int().positive(),
     weeksMax: z.number().int().positive(),
-    highlight: z.boolean().optional(),
   })
   .refine((offer) => offer.weeksMin <= offer.weeksMax, { message: "weeks range is inverted" })
   .refine((offer) => offer.slug.startsWith(`${offer.platform}-`), {
@@ -92,7 +93,6 @@ export const offers: readonly Offer[] = offersSchema.parse([
     platform: "web",
     weeksMin: 4,
     weeksMax: 6,
-    highlight: true,
     ...provisionalPrice,
   },
   { slug: "web-plataforma", platform: "web", weeksMin: 8, weeksMax: 14, ...provisionalPrice },
@@ -101,7 +101,6 @@ export const offers: readonly Offer[] = offersSchema.parse([
     platform: "app",
     weeksMin: 6,
     weeksMax: 10,
-    highlight: true,
     ...provisionalPrice,
   },
   { slug: "app-producto", platform: "app", weeksMin: 10, weeksMax: 16, ...provisionalPrice },

@@ -5,7 +5,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
 
 interface FormMessages {
-  ways: Record<"contratacion" | "freelance" | "packs", { label: string }>;
+  ways: Record<"contratacion" | "freelance" | "project", { label: string }>;
   nameLabel: string;
   emailLabel: string;
   messageLabel: string;
@@ -206,8 +206,10 @@ test.describe("preselection", () => {
   const cases: [string, string][] = [
     ["?via=freelance", "freelance"],
     ["?via=hiring", "contratacion"],
-    ["?via=pack&pack=web-basico", "packs"],
-    ["?pack=web-basico", "packs"],
+    ["?via=pack&pack=app-movil", "project"],
+    ["?pack=app-movil", "project"],
+    ["?via=project", "project"],
+    ["?offer=web-negocio&extras=seo", "project"],
   ];
   for (const [query, way] of cases) {
     test(`${query} checks ${way}`, async ({ page }) => {
@@ -218,18 +220,18 @@ test.describe("preselection", () => {
     });
   }
 
-  test("pack is kept in the page path", async ({ page }) => {
-    await open(page, "?via=pack&pack=web-basico");
+  test("the chosen offer and extras are kept in the page path", async ({ page }) => {
+    await open(page, "?via=project&offer=web-negocio&extras=seo,payments");
     const section = page.locator("#formulario");
     await section.getByLabel(form.nameLabel).fill("Ada");
     await section.getByLabel(form.emailLabel).fill("ada@example.com");
-    await section.getByLabel(form.messageLabel).fill("Quiero el pack.");
+    await section.getByLabel(form.messageLabel).fill("Quiero este nivel.");
     await section.getByLabel(new RegExp(form.consentLink)).check();
     await submit(page).click();
     await expect(page.getByRole("heading", { name: form.sent.title })).toBeVisible();
     const [lead] = (await calls(page)).rpc;
     expect(lead?.args.p_via).toBe("pack");
-    expect(lead?.args.p_page_path).toBe("/es/contacto?pack=web-basico");
+    expect(lead?.args.p_page_path).toBe("/es/contacto?offer=web-negocio&extras=payments,seo");
   });
 });
 
