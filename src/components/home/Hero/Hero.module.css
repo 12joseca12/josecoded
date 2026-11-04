@@ -1,0 +1,50 @@
+.hero {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  gap: var(--space-6);
+  width: 100%;
+  max-width: var(--max);
+  min-height: 100svh;
+  margin-inline: auto;
+  padding: calc(var(--nav-h) + var(--space-5)) var(--gutter) var(--space-6);
+}
+
+.copy {
+  --fs-h1: var(--fs-hero);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-5);
+  max-width: 38rem;
+}
+
+.lead {
+  max-width: 30rem;
+  color: var(--ink-soft);
+  font-size: var(--fs-l);
+  line-height: var(--lh-lead);
+  text-wrap: pretty;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+@media (min-width: 64rem) {
+  .hero {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: center;
+    gap: var(--space-7);
+    padding-bottom: var(--space-5);
+  }
+
+  .lead {
+    font-size: var(--fs-lead);
+  }
+}

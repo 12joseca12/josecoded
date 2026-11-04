@@ -17,6 +17,8 @@ Arquitectura cerrada del todo (2026-11-02, `docs/arquitectura/decisiones.md`): J
 - **Jose (cuando toque, cada bloque lo marca):** token de Cloudflare (W06), claves de Turnstile (W31), dominio y clave de Resend (W35), textos y datos `{{DATO}}` (hero, proyectos, sobre mí, legales), modelo local y `GROQ_API_KEY` (O05).
 - El dominio `josecoded.com` responde 521 (origen caído) hasta W46.
 - **Sincronizar desde el Mac:** nota del vault `Proyectos/josecoded.md` (decisiones cerradas de la segunda ronda, tablón, abiertas 10.7–10.10) y ADR en codebase-memory cuando haya código. Los bloques `data/*` necesitan Docker (Mac) o `josecoded-dev`.
+- **Pasar por `redactor` (Mac):** el lead del hero (`home.hero.lead` en `messages/es.json` y `messages/en.json`) y los textos de las tarjetas decorativas del visual (`home.hero.demo.*`).
+- **Hero de la home (W13–W16, parcial, `public/home-hero`):** hecho: variante B «Móvil + web» aprobada por Jose (prototipo en la rama `docs/hero-prototype`), secuenciador de las cinco fases (decisión 2.14) con tests, raíl con pausa y reduced-motion estático en «Publicar» resuelto desde CSS. Pendiente: test de presupuesto del hero en CI, póster y `content-visibility` en móvil (W16) y ver la preview con Jose. El eyebrow y los `stats` que W13 pide en `docs/plan/bloques.md` quedan descartados por la regla de Jose de no usar eyebrows.
 
 ## Decisiones recientes
 
