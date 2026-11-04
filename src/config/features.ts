@@ -1,3 +1,9 @@
-export const features = {
+interface Features {
+  search: boolean;
+  googleSignIn: boolean;
+}
+
+export const features: Features = {
   search: false,
-} as const;
+  googleSignIn: false,
+};

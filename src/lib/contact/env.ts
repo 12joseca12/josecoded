@@ -1,8 +1,8 @@
 export const turnstileVerifyUrl = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 export const turnstileScriptUrl = "https://challenges.cloudflare.com/turnstile/v0/api.js";
 
-const productionSupabaseUrl = /^https:\/\/[a-z0-9]{20}\.supabase\.co$/;
-const turnstileTestKey = /^[123]x/;
+export const productionSupabaseUrl = /^https:\/\/[a-z0-9]{20}\.supabase\.co$/;
+export const turnstileTestKey = /^[123]x/;
 const loopbackHosts = new Set(["localhost", "127.0.0.1"]);
 
 export const allowedHostnames = [
@@ -11,7 +11,7 @@ export const allowedHostnames = [
   "josecoded-preview.josecoded-api.workers.dev",
 ] as const;
 
-type Env = Record<string, string | undefined>;
+export type Env = Record<string, string | undefined>;
 
 export interface ContactServerConfig {
   supabaseUrl: string;
@@ -23,7 +23,7 @@ export interface ContactServerConfig {
   allowedHostnames: readonly string[];
 }
 
-function present(value: string | undefined): string | null {
+export function present(value: string | undefined): string | null {
   const trimmed = value?.trim();
   if (!trimmed) return null;
   return trimmed;
@@ -38,12 +38,12 @@ export function isLoopbackUrl(value: string): boolean {
   }
 }
 
-function isLoopbackMode(env: Env): boolean {
+export function isLoopbackMode(env: Env): boolean {
   const supabaseUrl = present(env.NEXT_PUBLIC_SUPABASE_URL);
   return supabaseUrl !== null && isLoopbackUrl(supabaseUrl);
 }
 
-function overrideUrl(value: string | undefined, loopback: boolean): string | false | null {
+export function overrideUrl(value: string | undefined, loopback: boolean): string | false | null {
   const url = present(value);
   if (url === null) return null;
   return loopback && isLoopbackUrl(url) ? url : false;

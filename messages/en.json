@@ -531,5 +531,172 @@
         "sad": "Nexo is sorry"
       }
     }
+  },
+  "auth": {
+    "meta": {
+      "title": "Sign in",
+      "description": "Private access with an email code."
+    },
+    "login": {
+      "title": "Sign in",
+      "lead": "Enter your email and I will send you a 6-digit code. Invited accounts only.",
+      "emailLabel": "Email",
+      "emailHint": "The one from your invitation.",
+      "send": "Send code",
+      "sending": "Sending code",
+      "verificationLabel": "Security check",
+      "verificationLoading": "Loading security check",
+      "verificationLoadFailed": "The security check could not load.",
+      "verificationRetry": "Retry",
+      "codeTitle": "Check your email",
+      "codeLead": "If {email} has an account, I sent a 6-digit code. It expires in 10 minutes.",
+      "codeLabel": "6-digit code",
+      "codeHint": "Numbers only.",
+      "verify": "Sign in",
+      "verifying": "Checking code",
+      "resend": "Resend code",
+      "resendIn": "Resend in {seconds} s",
+      "resent": "Code sent again.",
+      "changeEmail": "Use another email",
+      "genericError": "Check this field.",
+      "errors": {
+        "email_required": "Enter your email.",
+        "email_invalid": "Enter a valid email.",
+        "code_invalid": "The code is 6 digits.",
+        "verification_required": "Complete the security check.",
+        "factor_invalid": "Reload the page and try again."
+      },
+      "wrongCode": {
+        "title": "Wrong or expired code",
+        "text": "Check the 6 digits or ask for a new code."
+      },
+      "rateLimited": {
+        "title": "Too many attempts",
+        "text": "Wait a minute before trying again."
+      },
+      "verificationFailed": {
+        "title": "Could not verify",
+        "text": "Reload the security check and try again."
+      },
+      "failed": {
+        "title": "I could not send the code",
+        "text": "That is on me, not you. Try again in a moment."
+      },
+      "unavailable": {
+        "title": "Sign-in is not available",
+        "text": "This area is not active in this environment yet."
+      },
+      "google": "Sign in with Google",
+      "googleDivider": "or"
+    },
+    "totp": {
+      "meta": {
+        "title": "Second factor",
+        "description": "Two-step verification."
+      },
+      "enrollTitle": "Set up your authenticator",
+      "enrollLead": "Your role requires a second factor. Use an app such as 1Password, Authy or Google Authenticator.",
+      "enrollStart": "Generate QR code",
+      "enrollStarting": "Generating QR code",
+      "scanLabel": "Scan the code with your app",
+      "qrAlt": "QR code to add josecoded to your authenticator app",
+      "secretLabel": "If you cannot scan, enter this key",
+      "challengeTitle": "Second factor",
+      "challengeLead": "Enter the 6-digit code from your authenticator app.",
+      "codeLabel": "Authenticator code",
+      "codeHint": "Numbers only.",
+      "verify": "Verify",
+      "verifying": "Verifying",
+      "lostDevice": "Lost your device?",
+      "lostDeviceLink": "Write to Jose",
+      "genericError": "Check this field.",
+      "errors": {
+        "email_required": "Enter your email.",
+        "email_invalid": "Enter a valid email.",
+        "code_invalid": "The code is 6 digits.",
+        "verification_required": "Complete the security check.",
+        "factor_invalid": "Reload the page and try again."
+      },
+      "wrongCode": {
+        "title": "Wrong code",
+        "text": "The code changes every 30 seconds. Try the next one."
+      },
+      "rateLimited": {
+        "title": "Too many attempts",
+        "text": "Wait a minute before trying again."
+      },
+      "failed": {
+        "title": "Could not verify",
+        "text": "Try again in a moment."
+      },
+      "unavailable": {
+        "title": "Sign-in is not available",
+        "text": "This area is not active in this environment yet."
+      }
+    }
+  },
+  "admin": {
+    "brandLabel": "josecoded admin, go to overview",
+    "brandWord": "josecoded admin",
+    "navLabel": "Administration",
+    "userLabel": "Signed in as {name}",
+    "signOut": "Sign out",
+    "signingOut": "Signing out",
+    "nav": {
+      "overview": "Overview",
+      "leads": "Leads"
+    },
+    "overview": {
+      "meta": {
+        "title": "Overview"
+      },
+      "title": "Overview",
+      "lead": "Admin panel.",
+      "emptyTitle": "Nothing to summarise yet",
+      "emptyText": "Counters and Omen status arrive with the next block. Meanwhile, check the leads.",
+      "emptyAction": "View leads"
+    },
+    "leads": {
+      "meta": {
+        "title": "Leads"
+      },
+      "title": "Leads",
+      "lead": "Everything that arrives with hiring intent, newest first.",
+      "region": "Leads table",
+      "caption": "Leads, newest first",
+      "loading": "Loading leads",
+      "limit": "Showing the {count} most recent.",
+      "columns": {
+        "via": "Via",
+        "name": "Name",
+        "email": "Email",
+        "status": "Status",
+        "date": "Date"
+      },
+      "via": {
+        "hiring": "Hiring",
+        "freelance": "Freelance",
+        "pack": "Pack",
+        "none": "No route"
+      },
+      "noEmail": "No email",
+      "status": {
+        "new": "New",
+        "assigned": "Assigned",
+        "contacted": "Contacted",
+        "converted": "Converted",
+        "discarded": "Discarded"
+      },
+      "empty": {
+        "title": "Nobody has written yet",
+        "text": "When someone fills in the contact form it will show up here."
+      },
+      "error": {
+        "title": "I could not load the leads",
+        "text": "Try again. If it keeps failing, check Supabase status.",
+        "retry": "Retry",
+        "retrying": "Retrying"
+      }
+    }
   }
 }

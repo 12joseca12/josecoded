@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { buildHeaders } from "@/config/headers";
+import { buildHeaders, privateZoneSource } from "@/config/headers";
 import { productionOrigin, resolveSite } from "@/config/site";
 import { rates } from "@/lib/services/rates";
 import { jsonLdGraphSchema } from "@/types/seo";
@@ -64,6 +64,7 @@ describe("buildRobots", () => {
           "/invitacion",
           "/cuenta",
           "/api/",
+          "/auth/",
         ]),
       );
     }
@@ -199,11 +200,24 @@ describe("buildLlmsTxt rates", () => {
 });
 
 describe("buildHeaders", () => {
-  it("noindexes dev pages and workers.dev hosts even in production", () => {
+  it("noindexes private zones and workers.dev hosts even in production", () => {
     const rules = buildHeaders(production);
-    expect(rules).toHaveLength(2);
-    expect(rules[0]?.source).toBe("/:locale/dev/:path*");
-    const host = rules[1]?.has?.[0];
+    expect(rules).toHaveLength(3);
+    expect(rules[0]?.source).toBe(privateZoneSource);
+    for (const zone of [
+      "dev",
+      "entrar",
+      "admin",
+      "crm",
+      "area",
+      "freelance",
+      "invitacion",
+      "cuenta",
+    ]) {
+      expect(rules[0]?.source).toContain(zone);
+    }
+    expect(rules[1]?.source).toBe("/auth/:path*");
+    const host = rules[2]?.has?.[0];
     expect(host?.type).toBe("host");
     const pattern = new RegExp(`^${host?.value ?? ""}$`);
     expect(pattern.test("josecoded-preview.josecoded-api.workers.dev")).toBe(true);
@@ -212,8 +226,8 @@ describe("buildHeaders", () => {
 
   it("noindexes everything on non-production builds", () => {
     const rules = buildHeaders(preview);
-    expect(rules).toHaveLength(3);
-    expect(rules[2]).toEqual({
+    expect(rules).toHaveLength(4);
+    expect(rules[3]).toEqual({
       source: "/:path*",
       headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
     });

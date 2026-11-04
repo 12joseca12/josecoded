@@ -1,0 +1,395 @@
+import { readFileSync } from "node:fs";
+
+import AxeBuilder from "@axe-core/playwright";
+import { expect, type Page, test } from "@playwright/test";
+
+interface Notice {
+  title: string;
+  text: string;
+}
+
+interface Messages {
+  auth: {
+    login: {
+      title: string;
+      emailLabel: string;
+      send: string;
+      codeTitle: string;
+      codeLabel: string;
+      verify: string;
+      resend: string;
+      resent: string;
+      changeEmail: string;
+      wrongCode: Notice;
+      rateLimited: Notice;
+      verificationFailed: Notice;
+      failed: Notice;
+      errors: Record<"email_invalid" | "code_invalid", string>;
+    };
+    totp: {
+      enrollTitle: string;
+      enrollStart: string;
+      qrAlt: string;
+      challengeTitle: string;
+      codeLabel: string;
+      verify: string;
+      wrongCode: Notice;
+    };
+  };
+  admin: {
+    signOut: string;
+    nav: { overview: string; leads: string };
+    overview: { title: string };
+    leads: {
+      title: string;
+      region: string;
+      empty: { title: string };
+      error: { title: string; retry: string };
+      via: { none: string };
+      status: { new: string };
+    };
+  };
+  errors: { notFound: { title: string } };
+}
+
+const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as Messages;
+const { login, totp } = es.auth;
+const mock = `http://localhost:${process.env.MOCK_BACKEND_PORT ?? 3199}`;
+
+interface AuthCalls {
+  otp: { email: string; create_user: boolean }[];
+  verify: { email: string; token: string }[];
+  enroll: unknown[];
+  factorVerify: { code: string }[];
+  logout: { scope: string | null }[];
+  leads: { authenticated: boolean; level: string | null }[];
+}
+
+test.describe.configure({ mode: "serial" });
+test.use({ extraHTTPHeaders: { "cf-connecting-ip": "203.0.113.9" } });
+
+test.beforeEach(async ({ request }) => {
+  await request.post(`${mock}/__auth/reset`);
+  await request.post(`${mock}/__reset`);
+});
+
+async function authCalls(page: Page): Promise<AuthCalls> {
+  const response = await page.request.get(`${mock}/__auth/calls`);
+  return (await response.json()) as AuthCalls;
+}
+
+async function openLogin(page: Page, query = "") {
+  await page.goto(`/es/entrar${query}`);
+  await expect(page.getByLabel(login.emailLabel)).toBeVisible();
+  await expect(page.locator("[data-fake-turnstile]")).toBeAttached();
+  await page.waitForTimeout(150);
+}
+
+async function requestCode(page: Page, email: string) {
+  await page.getByLabel(login.emailLabel).fill(email);
+  await page.getByRole("button", { name: login.send }).click();
+  await expect(page.getByRole("heading", { level: 1, name: login.codeTitle })).toBeVisible();
+}
+
+async function submitCode(page: Page, code: string) {
+  await page.getByLabel(login.codeLabel).fill(code);
+  await page.getByRole("button", { name: login.verify }).click();
+}
+
+async function signInOtp(page: Page, email: string, query = "") {
+  await openLogin(page, query);
+  await requestCode(page, email);
+  await submitCode(page, "123456");
+}
+
+async function signInAdmin(page: Page, query = "") {
+  await signInOtp(page, "enrolled@example.com", query);
+  await expect(page).toHaveURL(/\/es\/entrar\/totp/);
+  await page.getByLabel(totp.codeLabel).fill("654321");
+  await page.getByRole("button", { name: totp.verify }).click();
+}
+
+function alertWith(page: Page, text: string) {
+  return page.getByRole("alert").filter({ hasText: text });
+}
+
+async function expectClean(page: Page) {
+  const { violations } = await new AxeBuilder({ page }).analyze();
+  expect(violations).toEqual([]);
+}
+
+test("the login page is noindex and passes axe", async ({ page }) => {
+  const response = await page.goto("/es/entrar");
+  expect(response?.headers()["x-robots-tag"]).toContain("noindex");
+  await expect(page.getByRole("heading", { level: 1, name: login.title })).toBeVisible();
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+  await expect(page.getByRole("button", { name: /Google/ })).toHaveCount(0);
+  await page.locator("[data-fake-turnstile]").waitFor({ state: "attached" });
+  await expectClean(page);
+});
+
+test("email validation shows an accessible error", async ({ page }) => {
+  await openLogin(page);
+  await page.getByLabel(login.emailLabel).fill("not-an-email");
+  await page.getByRole("button", { name: login.send }).click();
+  await expect(page.getByText(login.errors.email_invalid)).toBeVisible();
+  await expect(page.getByLabel(login.emailLabel)).toBeFocused();
+  await expect(page.getByLabel(login.emailLabel)).toHaveAttribute("aria-invalid", "true");
+  expect((await authCalls(page)).otp).toHaveLength(0);
+});
+
+test("an invited admin signs in with the code and the authenticator", async ({ page }) => {
+  await openLogin(page);
+  await requestCode(page, "enrolled@example.com");
+  await expectClean(page);
+  await submitCode(page, "123456");
+
+  await expect(page).toHaveURL(/\/es\/entrar\/totp$/);
+  await expect(page.getByRole("heading", { level: 1, name: totp.challengeTitle })).toBeVisible();
+  await expect(page).toHaveTitle(/josecoded/);
+  await expectClean(page);
+  await page.getByLabel(totp.codeLabel).fill("654321");
+  await page.getByRole("button", { name: totp.verify }).click();
+
+  await expect(page).toHaveURL(/\/es\/admin$/);
+  await expect(
+    page.getByRole("heading", { level: 1, name: es.admin.overview.title }),
+  ).toBeVisible();
+  await expect(page.getByText("Jose Enrolled")).toBeVisible();
+
+  const calls = await authCalls(page);
+  expect(calls.otp).toEqual([{ email: "enrolled@example.com", create_user: false }]);
+  const siteverify = (await (await page.request.get(`${mock}/__calls`)).json()) as {
+    siteverify: { response: string }[];
+  };
+  expect(siteverify.siteverify.at(-1)?.response).toBe("mock-token:login");
+});
+
+test("a wrong code is reported and the field is cleared", async ({ page }) => {
+  await openLogin(page);
+  await requestCode(page, "enrolled@example.com");
+  await submitCode(page, "000111");
+  await expect(alertWith(page, login.wrongCode.title)).toBeVisible();
+  await expect(page.getByLabel(login.codeLabel)).toHaveValue("");
+  await expectClean(page);
+  await page.getByLabel(login.codeLabel).fill("12");
+  await page.getByRole("button", { name: login.verify }).click();
+  await expect(page.getByText(login.errors.code_invalid)).toBeVisible();
+});
+
+test("an unknown email gets the same neutral step and can never sign in", async ({ page }) => {
+  await openLogin(page);
+  await requestCode(page, "ghost@example.com");
+  await expect(page.getByText("ghost@example.com", { exact: false }).first()).toBeVisible();
+  await submitCode(page, "123456");
+  await expect(alertWith(page, login.wrongCode.title)).toBeVisible();
+  await expect(page).toHaveURL(/\/es\/entrar$/);
+  expect((await authCalls(page)).otp[0]).toEqual({
+    email: "ghost@example.com",
+    create_user: false,
+  });
+});
+
+test("provider rate limits and failures are explained", async ({ page }) => {
+  await openLogin(page);
+  await page.getByLabel(login.emailLabel).fill("ratelimit@example.com");
+  await page.getByRole("button", { name: login.send }).click();
+  await expect(alertWith(page, login.rateLimited.title)).toBeVisible();
+
+  await page.getByLabel(login.emailLabel).fill("down@example.com");
+  await page.getByRole("button", { name: login.send }).click();
+  await expect(alertWith(page, login.failed.title)).toBeVisible();
+  await expectClean(page);
+});
+
+test("a failed security check blocks the request", async ({ page }) => {
+  await page.addInitScript(() => {
+    window.localStorage.setItem("fakeTurnstileToken", "bad-token");
+  });
+  await openLogin(page);
+  await page.getByLabel(login.emailLabel).fill("enrolled@example.com");
+  await page.getByRole("button", { name: login.send }).click();
+  await expect(alertWith(page, login.verificationFailed.title)).toBeVisible();
+  expect((await authCalls(page)).otp).toHaveLength(0);
+});
+
+test("a rate limited verification is explained", async ({ page }) => {
+  await openLogin(page);
+  await requestCode(page, "limited@example.com");
+  await submitCode(page, "123456");
+  await expect(alertWith(page, login.rateLimited.title)).toBeVisible();
+});
+
+test("resending waits for the cooldown", async ({ page }) => {
+  await page.clock.install();
+  await openLogin(page);
+  await requestCode(page, "enrolled@example.com");
+  const resend = page.getByRole("button", { name: /Reenviar en \d+ s/ });
+  await expect(resend).toBeDisabled();
+  await page.clock.fastForward(61_000);
+  const ready = page.getByRole("button", { name: login.resend });
+  await expect(ready).toBeEnabled();
+  await page.waitForTimeout(200);
+  await ready.click();
+  await expect(page.getByText(login.resent)).toBeVisible();
+  expect((await authCalls(page)).otp).toHaveLength(2);
+  await page.getByRole("button", { name: login.changeEmail }).click();
+  await expect(page.getByLabel(login.emailLabel)).toBeVisible();
+});
+
+test("an admin without a device enrolls the authenticator first", async ({ page }) => {
+  await signInOtp(page, "admin@example.com");
+  await expect(page).toHaveURL(/\/es\/entrar\/totp$/);
+  await expect(page.getByRole("heading", { level: 1, name: totp.enrollTitle })).toBeVisible();
+  await expect(page).toHaveTitle(/josecoded/);
+  await expectClean(page);
+
+  await page.getByRole("button", { name: totp.enrollStart }).click();
+  await expect(page.getByRole("img", { name: totp.qrAlt })).toBeVisible();
+  await expect(page.getByText("JBSWY3DPEHPK3PXP")).toBeVisible();
+  await expectClean(page);
+
+  await page.getByLabel(totp.codeLabel).fill("111111");
+  await page.getByRole("button", { name: totp.verify }).click();
+  await expect(alertWith(page, totp.wrongCode.title)).toBeVisible();
+
+  await page.getByLabel(totp.codeLabel).fill("654321");
+  await page.getByRole("button", { name: totp.verify }).click();
+  await expect(page).toHaveURL(/\/es\/admin$/);
+  expect((await authCalls(page)).enroll).toHaveLength(1);
+});
+
+test("a client skips the second factor and cannot enter the admin", async ({ page }) => {
+  await signInOtp(page, "client@example.com");
+  await expect(page).toHaveURL(/\/es\/area$/);
+  expect((await authCalls(page)).factorVerify).toHaveLength(0);
+
+  const response = await page.goto("/es/admin");
+  expect(response?.status()).toBe(404);
+  await expect(
+    page.getByRole("heading", { level: 1, name: es.errors.notFound.title }),
+  ).toBeVisible();
+  expect((await authCalls(page)).leads).toHaveLength(0);
+  expect(response?.headers()["x-robots-tag"]).toContain("noindex");
+  await expectClean(page);
+
+  const nested = await page.goto("/es/admin/interesados");
+  expect(nested?.status()).toBe(404);
+});
+
+test("a closer gets a 404 on the admin zone", async ({ page }) => {
+  await signInOtp(page, "closer@example.com");
+  await expect(page).toHaveURL(/\/es\/entrar\/totp$/);
+  const response = await page.goto("/es/admin");
+  expect(response?.status()).toBe(404);
+});
+
+test("anonymous visitors are sent to log in and come back to where they were going", async ({
+  page,
+}) => {
+  await page.goto("/es/admin/interesados");
+  await expect(page).toHaveURL(/\/es\/entrar\?next=%2Fes%2Fadmin%2Finteresados$/);
+  await openLogin(page, "?next=%2Fes%2Fadmin%2Finteresados");
+  await requestCode(page, "enrolled@example.com");
+  await submitCode(page, "123456");
+  await expect(page).toHaveURL(/\/es\/entrar\/totp\?next=%2Fes%2Fadmin%2Finteresados$/);
+  await page.getByLabel(totp.codeLabel).fill("654321");
+  await page.getByRole("button", { name: totp.verify }).click();
+  await expect(page).toHaveURL(/\/es\/admin\/interesados$/);
+});
+
+test("an unsafe next is ignored", async ({ page }) => {
+  await signInAdmin(page, "?next=https%3A%2F%2Fevil.example");
+  await expect(page).toHaveURL(/\/es\/admin$/);
+});
+
+test("an admin who has not passed the authenticator is held at the second factor", async ({
+  page,
+}) => {
+  await signInOtp(page, "enrolled@example.com");
+  await expect(page).toHaveURL(/\/es\/entrar\/totp/);
+  await page.goto("/es/admin");
+  await expect(page).toHaveURL(/\/es\/entrar\/totp\?next=%2Fes%2Fadmin$/);
+  await page.goto("/es/admin/interesados");
+  await expect(page).toHaveURL(/\/es\/entrar\/totp/);
+  expect((await authCalls(page)).leads).toHaveLength(0);
+});
+
+test("a signed in admin skips the login page", async ({ page }) => {
+  await signInAdmin(page);
+  await expect(page).toHaveURL(/\/es\/admin$/);
+  await page.goto("/es/entrar");
+  await expect(page).toHaveURL(/\/es\/admin$/);
+});
+
+test("the admin shell navigates and the overview passes axe", async ({ page }) => {
+  await signInAdmin(page);
+  await expect(page).toHaveURL(/\/es\/admin$/);
+  const nav = page.getByRole("navigation", { name: "Administración" });
+  await expect(nav.getByRole("link", { name: es.admin.nav.overview })).toHaveAttribute(
+    "aria-current",
+    "page",
+  );
+  await expectClean(page);
+  await nav.getByRole("link", { name: es.admin.nav.leads }).click();
+  await expect(page).toHaveURL(/\/es\/admin\/interesados$/);
+  await expect(nav.getByRole("link", { name: es.admin.nav.leads })).toHaveAttribute(
+    "aria-current",
+    "page",
+  );
+  await expect(nav.getByRole("link", { name: es.admin.nav.overview })).not.toHaveAttribute(
+    "aria-current",
+    "page",
+  );
+});
+
+test("the leads list shows the newest first and passes axe", async ({ page }) => {
+  await signInAdmin(page, "?next=%2Fes%2Fadmin%2Finteresados");
+  await expect(page).toHaveURL(/\/es\/admin\/interesados$/);
+  await expect(page.getByRole("heading", { level: 1, name: es.admin.leads.title })).toBeVisible();
+  const table = page.getByRole("table");
+  await expect(table).toBeVisible();
+  const rows = table.locator("tbody tr");
+  await expect(rows).toHaveCount(4);
+  await expect(rows.nth(0)).toContainText("Cara Pack");
+  await expect(rows.nth(0)).toContainText("cara@example.com");
+  await expect(rows.nth(0)).toContainText(es.admin.leads.status.new);
+  await expect(rows.nth(3)).toContainText("Nico Nexo");
+  await expect(rows.nth(3)).toContainText(es.admin.leads.via.none);
+  await expect(page.getByRole("region", { name: es.admin.leads.region })).toBeVisible();
+  await expectClean(page);
+  const calls = await authCalls(page);
+  expect(calls.leads.at(-1)).toEqual({ authenticated: true, level: "aal2" });
+});
+
+test("the leads list has empty and error states", async ({ page, request }) => {
+  await signInAdmin(page, "?next=%2Fes%2Fadmin%2Finteresados");
+  await request.post(`${mock}/__auth/leads-mode`, { data: { mode: "empty" } });
+  await page.reload();
+  await expect(page.getByRole("heading", { name: es.admin.leads.empty.title })).toBeVisible();
+  await expectClean(page);
+
+  await request.post(`${mock}/__auth/leads-mode`, { data: { mode: "error" } });
+  await page.reload();
+  await expect(alertWith(page, es.admin.leads.error.title)).toBeVisible();
+  await expectClean(page);
+
+  await request.post(`${mock}/__auth/leads-mode`, { data: { mode: "data" } });
+  await page.getByRole("button", { name: es.admin.leads.error.retry }).click();
+  await expect(page.getByRole("table")).toBeVisible();
+});
+
+test("signing out ends the session", async ({ page }) => {
+  await signInAdmin(page);
+  await page.getByRole("button", { name: es.admin.signOut }).click();
+  await expect(page).toHaveURL(/\/es\/entrar$/);
+  expect((await authCalls(page)).logout).toEqual([{ scope: "local" }]);
+  await page.goto("/es/admin");
+  await expect(page).toHaveURL(/\/es\/entrar\?next=%2Fes%2Fadmin$/);
+});
+
+test("the public pages stay out of the auth proxy", async ({ page }) => {
+  await page.goto("/es/contacto");
+  const cookies = await page.context().cookies();
+  expect(cookies.filter((cookie) => cookie.name.startsWith("sb-"))).toHaveLength(0);
+});

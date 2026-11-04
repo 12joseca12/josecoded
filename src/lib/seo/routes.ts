@@ -25,7 +25,7 @@ export const privatePrefixes = [
   "/cuenta",
 ] as const;
 
-export const rootPrivatePrefixes = ["/api/"] as const;
+export const rootPrivatePrefixes = ["/api/", "/auth/"] as const;
 
 export const openGraphLocales: Record<Locale, string> = { es: "es_ES", en: "en_US" };
 

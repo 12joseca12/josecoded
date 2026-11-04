@@ -18,6 +18,7 @@ interface VerifyOptions {
   token: string;
   ip: string | null;
   allowedHostnames: readonly string[];
+  action?: string;
   fetchImpl?: typeof fetch;
 }
 
@@ -27,6 +28,7 @@ export async function verifyTurnstile({
   token,
   ip,
   allowedHostnames,
+  action: expectedAction = turnstileAction,
   fetchImpl = fetch,
 }: VerifyOptions): Promise<TurnstileOutcome> {
   const body = new URLSearchParams({
@@ -47,7 +49,7 @@ export async function verifyTurnstile({
     if (!parsed.success) return "unreachable";
     const { success, hostname, action } = parsed.data;
     if (!success) return "rejected";
-    if (action !== turnstileAction) return "rejected";
+    if (action !== expectedAction) return "rejected";
     if (hostname === undefined || !allowedHostnames.includes(hostname)) return "rejected";
     return "ok";
   } catch {
