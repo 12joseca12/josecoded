@@ -425,45 +425,71 @@
     "nav": {
       "label": "Ways to work"
     },
-    "audience": "Who it is for",
     "ways": {
       "contratacion": {
         "nav": "Employment",
         "title": "Employment",
         "text": "I join your mobile or web product team and own a part of the product end to end.",
-        "audience": "Teams looking for a profile that joins design, development and release.",
-        "bullets": {
-          "a": "React Native and web with TypeScript",
-          "b": "Code review, tests and continuous integration from day one",
-          "c": "Product in production, not just in the prototype"
-        },
-        "cv": "Download CV",
-        "chat": "Talk to me"
+        "cta": "Get in touch about hiring",
+        "more": "See CV and background"
       },
       "freelance": {
         "nav": "Freelance",
         "title": "Freelance",
-        "text": "A feature, an audit or a push on an existing project, with the scope agreed before starting.",
-        "audience": "Teams and businesses with a concrete task that does not justify a hire.",
-        "bullets": {
-          "a": "Hourly rate or per-task quote",
-          "b": "Short deliveries you can try",
-          "c": "Real-time progress tracking"
-        },
-        "cta": "Ask for a proposal"
+        "text": "A feature, an audit or a push for an existing project, hourly or per task.",
+        "cta": "See rates and examples"
       },
       "packs": {
         "nav": "Packs",
         "title": "Web and app packs",
-        "text": "Design, development and release with scope, price and date defined up front.",
-        "audience": "Anyone who needs a complete website or app without managing the project piece by piece.",
-        "bullets": {
-          "a": "Web, app or both",
-          "b": "Store release and domain included",
-          "c": "Optional maintenance afterwards"
-        },
-        "view": "See packs",
-        "cta": "Talk about a pack"
+        "text": "A complete website or app with scope, price and date agreed up front.",
+        "cta": "Compare packs"
+      }
+    },
+    "how": {
+      "title": "How I work",
+      "lead": "Five phases shared by every way of working: what you see in each and what I need from you.",
+      "phases": {
+        "discover": "I learn what problem the product solves, for whom and what goes into the first version.",
+        "design": "I sketch screens and flows and test them with you before writing code.",
+        "build": "I build in short deliveries you can try on your phone or in a preview.",
+        "publish": "I ship the app to the stores and the site to its domain, with analytics and backups.",
+        "maintain": "I fix, update and improve after launch, with an agreed plan."
+      }
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "hub": {
+        "q1": "Do you work remotely or do I need to be in Madrid?",
+        "a1": "I work remotely with clients across Spain and abroad. When needed, I can travel to one-off meetings in Madrid.",
+        "q2": "Do you invoice with VAT?",
+        "a2": "Yes. Every job is invoiced with VAT and a detailed invoice, and the payment method is agreed before starting.",
+        "q3": "Which languages can I write to you in?",
+        "a3": "Spanish and English. Code documentation and commit messages are in English.",
+        "q4": "How long do you take to reply?",
+        "a4": "I answer every enquiry within one or two working days, usually sooner. If it is urgent, say so in the message."
+      },
+      "freelance": {
+        "q1": "Is there a minimum number of hours?",
+        "a1": "There is no fixed minimum. For very small tasks we agree a block of hours or a per-task price before starting.",
+        "q2": "Which suits me better, hourly or per task?",
+        "a2": "Per task if the scope is clear and you want a fixed price. Hourly if the scope may change or is exploratory.",
+        "q3": "How do I follow progress?",
+        "a3": "I work in short deliveries you can try, and I share each step without waiting for the end.",
+        "q4": "What happens if the scope grows?",
+        "a4": "We agree it before going on: I explain what changes in time and cost, and you decide whether to include it or leave it for another task."
+      },
+      "packs": {
+        "q1": "How much does a mobile app cost?",
+        "a1": "It depends on the pack and the extras. Each pack has a \"from\" price and, after talking to you, I give you a fixed quote with a delivery date.",
+        "q2": "What does each pack include?",
+        "a2": "Design, development and release. The exact list for each pack is in the comparison and is confirmed in writing before starting.",
+        "q3": "Is publishing to the stores included?",
+        "a3": "Yes. Packs with an app include publishing to the App Store and Google Play, and web packs include the domain and hosting.",
+        "q4": "What about maintenance after launch?",
+        "a4": "It is optional and contracted separately, with a monthly plan agreed according to what your product needs.",
+        "q5": "What do I need to provide?",
+        "a5": "The texts, the images and the business decisions. I tell you what I need in each phase and when, so delivery is not held up."
       }
     },
     "rates": {
@@ -504,6 +530,8 @@
       "pagesTitle": "Key pages",
       "home": "Home: who José Carlos is and what he works on",
       "services": "Services: the three ways of working with José Carlos",
+      "freelancePage": "Freelance: programmer by the hour or per task",
+      "packsPage": "Packs: web and app with a fixed price and date",
       "projects": "Projects: apps and websites in production",
       "entityTitle": "Entity",
       "entityName": "Name: {name} (alias {alias})",
@@ -531,5 +559,111 @@
         "sad": "Nexo is sorry"
       }
     }
+  },
+  "freelancePage": {
+    "meta": {
+      "title": "Freelance programmer, hourly or per task",
+      "description": "Freelance programmer by the hour or with a per-task quote. Features, audits and rescues of React Native apps and Next.js websites."
+    },
+    "head": {
+      "title": "Freelance programmer by the hour or",
+      "accent": "per task.",
+      "lead": "Freelance React Native developer for features, audits and rescues of apps and websites, with the scope agreed before starting."
+    },
+    "rates": {
+      "title": "Hourly rate and per-task quote"
+    },
+    "scope": {
+      "title": "Freelance React Native developer: what is included",
+      "feature": {
+        "title": "New feature",
+        "text": "A screen, a flow or an integration inside your app or website, tested and ready to publish."
+      },
+      "audit": {
+        "title": "Audit",
+        "text": "I review performance, security and code quality of an existing app and leave you a prioritised report."
+      },
+      "rescue": {
+        "title": "Project rescue",
+        "text": "I take over a stalled or inherited app or website, stabilise it and get it into production."
+      },
+      "ai": {
+        "title": "AI integration",
+        "text": "I add an assistant or an AI feature to your product with a clear scope and cost."
+      }
+    },
+    "start": {
+      "title": "How we start",
+      "tell": {
+        "title": "You tell me the task",
+        "text": "Fill in the form or write to me with what you need, by when and what you already have."
+      },
+      "agree": {
+        "title": "We agree scope and price",
+        "text": "I reply with a proposal: estimated hours or a fixed price per task, and what I deliver."
+      },
+      "build": {
+        "title": "I start and you see progress",
+        "text": "I work in short deliveries you can try, and I tell you about every step."
+      }
+    },
+    "closing": {
+      "title": "Have a task in mind?",
+      "text": "Tell me what you need and I will reply with a proposal.",
+      "cta": "Ask for a proposal",
+      "more": "How I work, phase by phase"
+    }
+  },
+  "packsPage": {
+    "meta": {
+      "title": "Mobile app and web price: fixed packs",
+      "description": "Web and app packs with a fixed price and date, store publishing and domain included. Compare what each one offers and ask for a quote."
+    },
+    "head": {
+      "title": "Mobile app and web price:",
+      "accent": "packs with a fixed price and date.",
+      "lead": "Choose a web pack, an app pack or both, with scope, price and date defined before starting."
+    },
+    "compare": {
+      "title": "App quote: compare the packs",
+      "lead": "Every pack includes design, development and release. The \"from\" price grows if you add extras.",
+      "from": "from",
+      "unit": "€",
+      "price": "Price",
+      "includes": "Includes",
+      "ctaFor": "Ask for the {name} pack"
+    },
+    "items": {
+      "app": {
+        "name": "Mobile app",
+        "text": "An iOS and Android app built with React Native, published on both stores.",
+        "a": "Screen and flow design",
+        "b": "React Native development",
+        "c": "Publishing on the App Store and Google Play"
+      },
+      "web": {
+        "name": "Business website",
+        "text": "A fast, well-ranked website built with Next.js, on your domain.",
+        "a": "Custom design",
+        "b": "Next.js development",
+        "c": "Domain and hosting set up"
+      },
+      "both": {
+        "name": "Web and app",
+        "text": "A website and an app that share design and data, launched together.",
+        "a": "Shared design for web and app",
+        "b": "One database and user accounts",
+        "c": "Store publishing and domain included"
+      }
+    },
+    "closing": {
+      "title": "Which pack fits your project?",
+      "text": "Tell me your idea and I will say which one fits and what extras it would need.",
+      "cta": "Talk about a pack",
+      "more": "How I work, phase by phase"
+    }
+  },
+  "breadcrumbs": {
+    "label": "Breadcrumb"
   }
 }

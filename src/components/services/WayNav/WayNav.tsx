@@ -1,31 +1,47 @@
 "use client";
 
+import NextLink from "next/link";
+
 import { useActiveBlock } from "@/lib/nav/use-active-block";
-import type { WayNavItem } from "@/types/services";
+import type { WayId, WayNavItem, WayNavVariant } from "@/types/services";
 
 import styles from "./WayNav.module.css";
 
 interface WayNavProps {
   label: string;
   items: WayNavItem[];
+  variant?: WayNavVariant;
+  current?: WayId;
 }
 
-export function WayNav({ label, items }: WayNavProps) {
+export function WayNav({ label, items, variant = "anchors", current }: WayNavProps) {
   const active = useActiveBlock();
   return (
     <nav className={styles.nav} aria-label={label}>
       <ul className={styles.list} data-snap="x">
-        {items.map((item) => (
-          <li key={item.id}>
-            <a
-              href={`#${item.id}`}
-              className={styles.link}
-              aria-current={active === item.id ? "location" : undefined}
-            >
-              {item.label}
-            </a>
-          </li>
-        ))}
+        {items.map((item) => {
+          const ariaCurrent =
+            variant === "pages"
+              ? item.id === current
+                ? "page"
+                : undefined
+              : active === item.id
+                ? "location"
+                : undefined;
+          return (
+            <li key={item.id}>
+              {variant === "pages" ? (
+                <NextLink href={item.href} className={styles.link} aria-current={ariaCurrent}>
+                  {item.label}
+                </NextLink>
+              ) : (
+                <a href={item.href} className={styles.link} aria-current={ariaCurrent}>
+                  {item.label}
+                </a>
+              )}
+            </li>
+          );
+        })}
       </ul>
     </nav>
   );

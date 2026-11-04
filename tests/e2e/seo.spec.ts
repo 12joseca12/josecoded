@@ -21,7 +21,13 @@ interface Graph {
 }
 
 const brandSuffix = es.meta.titleTemplate.replace("%s", "");
-const publicRoutes = ["/es", "/es/servicios", "/es/proyectos"];
+const publicRoutes = [
+  "/es",
+  "/es/servicios",
+  "/es/servicios/freelance",
+  "/es/servicios/packs",
+  "/es/proyectos",
+];
 const devRoutes = [
   "/es/dev/ui",
   "/es/dev/ui/tokens",
