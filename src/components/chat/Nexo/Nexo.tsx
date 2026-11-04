@@ -11,18 +11,31 @@ export interface NexoProps {
   label: string;
   size?: NexoSize;
   reducedMotion?: boolean;
+  paused?: boolean;
 }
 
 const NexoScene = lazy(() =>
   import("./NexoScene").then((module) => ({ default: module.NexoScene })),
 );
 
-export function Nexo({ state, label, size = "md", reducedMotion = false }: NexoProps) {
+export function Nexo({
+  state,
+  label,
+  size = "md",
+  reducedMotion = false,
+  paused = false,
+}: NexoProps) {
   return (
     <Suspense
       fallback={<span className={styles.placeholder} data-size={size} aria-hidden="true" />}
     >
-      <NexoScene state={state} label={label} size={size} reducedMotion={reducedMotion} />
+      <NexoScene
+        state={state}
+        label={label}
+        size={size}
+        reducedMotion={reducedMotion}
+        paused={paused}
+      />
     </Suspense>
   );
 }

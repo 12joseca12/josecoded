@@ -10,13 +10,14 @@ import {
   useSpring,
   useTransform,
 } from "motion/react";
-import { useEffect, useId, useMemo } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 
 import type { NexoSize, NexoState } from "@/types/nexo";
 
 import { orbit, orbitBack, orbitFront } from "./geometry";
 import styles from "./Nexo.module.css";
 import { type Part, parts, ringSpeed, variantsFor } from "./poses";
+import { useOnScreen, useTabVisible } from "./useOnScreen";
 import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
 
 export interface NexoSceneProps {
@@ -24,6 +25,7 @@ export interface NexoSceneProps {
   size: NexoSize;
   label: string;
   reducedMotion: boolean;
+  paused: boolean;
 }
 
 const restingHighlight = 0.35;
@@ -72,29 +74,36 @@ function OrbitArc({
   );
 }
 
-export function NexoScene({ state, size, label, reducedMotion }: NexoSceneProps) {
+export function NexoScene({ state, size, label, reducedMotion, paused }: NexoSceneProps) {
   const prefersReduced = usePrefersReducedMotion();
+  const [node, setNode] = useState<SVGSVGElement | null>(null);
+  const onScreen = useOnScreen(node);
+  const tabVisible = useTabVisible();
   const reduced = reducedMotion || prefersReduced;
+  const still = reduced || paused || !onScreen || !tabVisible;
   const id = useId().replaceAll(":", "");
   const variants = useMemo(
     () =>
-      Object.fromEntries(parts.map((part) => [part, variantsFor(part, reduced)])) as Record<
+      Object.fromEntries(parts.map((part) => [part, variantsFor(part, still)])) as Record<
         Part,
         ReturnType<typeof variantsFor>
       >,
-    [reduced],
+    [still],
   );
-  const { phase, speed, front, back } = useOrbit(state, reduced);
+  const { phase, speed, front, back } = useOrbit(state, still);
   const fill = (name: string) => `url(#${id}${name})`;
   const { x: ox, y: oy } = orbit.centre;
 
   return (
     <LazyMotion features={domAnimation} strict>
       <m.svg
+        key={still ? "still" : "live"}
+        ref={setNode}
         className={styles.root}
         data-state={state}
         data-size={size}
         data-reduced={reduced ? "true" : undefined}
+        data-paused={still && !reduced ? "true" : undefined}
         viewBox="0 0 200 200"
         role="img"
         aria-label={label}
@@ -252,7 +261,7 @@ export function NexoScene({ state, size, label, reducedMotion }: NexoSceneProps)
             </g>
           </m.g>
         </g>
-        {reduced ? null : <OrbitDriver phase={phase} speed={speed} />}
+        {still ? null : <OrbitDriver phase={phase} speed={speed} />}
       </m.svg>
     </LazyMotion>
   );

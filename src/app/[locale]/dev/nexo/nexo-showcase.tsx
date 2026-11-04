@@ -91,6 +91,7 @@ export function NexoShowcase({ states, labels }: { states: StateEntry[]; labels:
                   label={current.label}
                   size={size}
                   reducedMotion={reduced}
+                  paused
                 />
                 <span className={styles.caption}>{size}</span>
               </div>
@@ -106,7 +107,13 @@ export function NexoShowcase({ states, labels }: { states: StateEntry[]; labels:
         <ul className={styles.gallery} data-testid="gallery">
           {states.map((entry) => (
             <li key={entry.state} className={styles.cell}>
-              <Nexo state={entry.state} label={entry.label} size="md" reducedMotion={reduced} />
+              <Nexo
+                state={entry.state}
+                label={entry.label}
+                size="md"
+                reducedMotion={reduced}
+                paused
+              />
               <span className={styles.caption}>{entry.name}</span>
             </li>
           ))}

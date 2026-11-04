@@ -98,15 +98,15 @@
 }
 
 .light {
-  stroke: var(--coral-glow);
+  stroke: var(--nexo-glow);
 }
 
 .mouth {
-  fill: var(--coral-glow);
+  fill: var(--nexo-glow);
 }
 
 .dot {
-  fill: var(--coral-glow);
+  fill: var(--nexo-glow);
 }
 
 .mark {
@@ -128,5 +128,5 @@
 }
 
 .ringSpark {
-  stroke: var(--coral-glow);
+  stroke: var(--nexo-glow);
 }
