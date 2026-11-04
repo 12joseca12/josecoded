@@ -1,0 +1,31 @@
+.wrap {
+  width: 100%;
+  container-type: inline-size;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.faq {
+  min-width: 0;
+}
+
+.chat {
+  min-width: 0;
+}
+
+@container (min-width: 52rem) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr) minmax(20rem, 26rem);
+    gap: var(--space-7);
+  }
+
+  .chat {
+    position: sticky;
+    top: calc(var(--nav-h) + var(--space-5));
+  }
+}

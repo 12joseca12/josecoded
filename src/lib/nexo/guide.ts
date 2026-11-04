@@ -14,9 +14,19 @@ export interface GuideLine {
   event: NexoEvent;
 }
 
-export interface NexoGuide {
-  respond: (moment: GuideMoment) => GuideLine | Promise<GuideLine>;
+export interface NexoGuideSuggestion {
+  id: string;
+  text: string;
 }
+
+export type NexoGuideReply = { kind: "answer"; id: string; text: string } | { kind: "handoff" };
+
+export interface NexoGuide<Input = string, Output = NexoGuideReply> {
+  suggestions: readonly NexoGuideSuggestion[];
+  reply: (input: Input) => Promise<Output>;
+}
+
+export type RecommenderGuide = NexoGuide<GuideMoment, GuideLine>;
 
 export type GuideScript = Record<string, string>;
 
@@ -39,31 +49,30 @@ export const guideScriptKeys: Record<string, MessageKey> = {
   "result.freelance": k("result.freelance"),
 };
 
-export function createScriptedGuide(script: GuideScript): NexoGuide {
+export function createScriptedGuide(script: GuideScript): RecommenderGuide {
   const line = (id: string) => script[id] ?? null;
-  return {
-    respond(moment) {
-      switch (moment.kind) {
-        case "arrive":
-          return { text: line("greeting"), event: "visitor-arrived" };
-        case "ask":
-          return { text: line(`ask.${moment.step}`), event: "streaming" };
-        case "option":
-          return { text: line(`option.${moment.step}.${moment.value}`), event: "typing" };
-        case "compute":
-          return { text: line("compute"), event: "awaiting-reply" };
-        case "result":
-          return {
-            text: line(
-              moment.route === "freelance"
-                ? "result.freelance"
-                : moment.assumed
-                  ? "result.assumed"
-                  : "result.project",
-            ),
-            event: "positive-answer",
-          };
-      }
-    },
+  const respond = (moment: GuideMoment): GuideLine => {
+    switch (moment.kind) {
+      case "arrive":
+        return { text: line("greeting"), event: "visitor-arrived" };
+      case "ask":
+        return { text: line(`ask.${moment.step}`), event: "streaming" };
+      case "option":
+        return { text: line(`option.${moment.step}.${moment.value}`), event: "typing" };
+      case "compute":
+        return { text: line("compute"), event: "awaiting-reply" };
+      case "result":
+        return {
+          text: line(
+            moment.route === "freelance"
+              ? "result.freelance"
+              : moment.assumed
+                ? "result.assumed"
+                : "result.project",
+          ),
+          event: "positive-answer",
+        };
+    }
   };
+  return { suggestions: [], reply: (moment) => Promise.resolve(respond(moment)) };
 }

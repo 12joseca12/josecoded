@@ -4,7 +4,7 @@ import {
   createScriptedGuide,
   type GuideMoment,
   type GuideScript,
-  type NexoGuide,
+  type RecommenderGuide,
 } from "@/lib/nexo/guide";
 import { nexoStateFor } from "@/lib/nexo/state";
 import type { QuestionId } from "@/lib/services/recommender";
@@ -28,7 +28,11 @@ export function initialView(script: GuideScript, step: QuestionId | "result"): G
   return { text: ask, state: "talking" };
 }
 
-export function useGuide(script: GuideScript, first: QuestionId | "result", provider?: NexoGuide) {
+export function useGuide(
+  script: GuideScript,
+  first: QuestionId | "result",
+  provider?: RecommenderGuide,
+) {
   const guide = useMemo(() => provider ?? createScriptedGuide(script), [provider, script]);
   const [view, setView] = useState<GuideView>(() => initialView(script, first));
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -50,7 +54,7 @@ export function useGuide(script: GuideScript, first: QuestionId | "result", prov
     (moment: GuideMoment) => {
       token.current += 1;
       const mine = token.current;
-      void Promise.resolve(guide.respond(moment)).then((line) => {
+      void guide.reply(moment).then((line) => {
         if (mine !== token.current) return;
         const state = nexoStateFor(line.event);
         setView((current) => ({ text: line.text ?? current.text, state }));

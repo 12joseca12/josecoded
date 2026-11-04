@@ -5,7 +5,7 @@ import { type MouseEvent, type SyntheticEvent, useEffect, useRef, useState } fro
 import { NexoGuideBubble } from "@/components/services/NexoGuideBubble/NexoGuideBubble";
 import { Button } from "@/components/ui/Button/Button";
 import { ProgressRing } from "@/components/ui/ProgressRing/ProgressRing";
-import type { GuideScript, NexoGuide } from "@/lib/nexo/guide";
+import type { GuideScript, RecommenderGuide } from "@/lib/nexo/guide";
 import type { ExtraSlug } from "@/lib/services/offers";
 import { optionsFor, type QuestionId, questions, recommend } from "@/lib/services/recommender";
 import {
@@ -42,7 +42,7 @@ interface OfferRecommenderProps {
   copy: RecommenderCopy;
   guideScript: GuideScript;
   guideLabels: GuideLabels;
-  guide?: NexoGuide;
+  guide?: RecommenderGuide;
 }
 
 const computeMs = 600;

@@ -189,15 +189,17 @@ test.describe("recommender", () => {
     await page.goto(page_);
     const section = page.locator("#recomendador");
     await expect(section.getByRole("img", { name: "Paso 1 de 6" })).toBeVisible();
+    await expect(section.getByRole("img", { name: "Paso 1 de 6" })).toContainText("1/6");
     await pick(page, "start", "idea");
-    await expect(section.getByRole("img", { name: "Paso 2 de 6" })).toBeVisible();
+    await expect(section.getByRole("img", { name: "Paso 2 de 6" })).toContainText("2/6");
+    await expect(section.getByText("Paso 2 de 6", { exact: true })).toBeVisible();
     await expect(page).toHaveURL(/\?q=idea$/);
     await expect(section.locator("legend")).toBeFocused();
     await runFlow(page, webFlow.slice(1));
 
     await expect(result(page)).toBeFocused();
     await expect(page).toHaveURL(/\?q=idea\.web\.medium\.basic\.me\.payments$/);
-    await expect(section.getByRole("img", { name: rec.progressDone })).toBeVisible();
+    await expect(section.getByRole("img", { name: rec.progressDone })).toContainText("6/6");
     await expect(card(page, "web-negocio").last()).toBeVisible();
     await expect(section.getByTestId("result-price")).toContainText("000");
     await expect(section.getByTestId("result-cta")).toHaveAttribute(

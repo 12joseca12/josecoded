@@ -3,7 +3,12 @@ import { describe, expect, it } from "vitest";
 import { getTranslator } from "@/i18n/messages";
 import { questionIds } from "@/lib/services/recommender";
 
-import { createScriptedGuide, guideScriptKeys } from "./guide";
+import {
+  createScriptedGuide,
+  type GuideMoment,
+  guideScriptKeys,
+  type RecommenderGuide,
+} from "./guide";
 import { nexoStateFor } from "./state";
 
 const script = {
@@ -28,7 +33,7 @@ describe("scripted guide", () => {
         { kind: "compute" },
         { kind: "result", route: "project", assumed: false },
       ].map(async (moment) => {
-        const line = await guide.respond(moment as Parameters<typeof guide.respond>[0]);
+        const line = await guide.reply(moment as GuideMoment);
         return nexoStateFor(line.event);
       }),
     );
@@ -36,14 +41,14 @@ describe("scripted guide", () => {
   });
 
   it("explains why a question matters and reacts to the unsure answers", async () => {
-    expect(await guide.respond({ kind: "ask", step: "kind" })).toMatchObject({ text: "por qué" });
-    expect(await guide.respond({ kind: "option", step: "kind", value: "unsure" })).toMatchObject({
+    expect(await guide.reply({ kind: "ask", step: "kind" })).toMatchObject({ text: "por qué" });
+    expect(await guide.reply({ kind: "option", step: "kind", value: "unsure" })).toMatchObject({
       text: "sin problema",
     });
   });
 
   it("keeps the current text when an option has no reaction of its own", async () => {
-    expect(await guide.respond({ kind: "option", step: "size", value: "small" })).toEqual({
+    expect(await guide.reply({ kind: "option", step: "size", value: "small" })).toEqual({
       text: null,
       event: "typing",
     });
@@ -51,15 +56,18 @@ describe("scripted guide", () => {
 
   it("picks the result line from the route and the assumptions", async () => {
     const text = async (route: "project" | "freelance", assumed: boolean) =>
-      (await guide.respond({ kind: "result", route, assumed })).text;
+      (await guide.reply({ kind: "result", route, assumed })).text;
     expect(await text("project", false)).toBe("listo");
     expect(await text("project", true)).toBe("supuesto");
     expect(await text("freelance", false)).toBe("horas");
   });
 
   it("can be replaced by any provider that implements the interface", async () => {
-    const later = { respond: () => Promise.resolve({ text: "ia", event: "streaming" as const }) };
-    expect((await later.respond()).text).toBe("ia");
+    const later: RecommenderGuide = {
+      suggestions: [],
+      reply: () => Promise.resolve({ text: "ia", event: "streaming" }),
+    };
+    expect((await later.reply({ kind: "compute" })).text).toBe("ia");
   });
 });
 

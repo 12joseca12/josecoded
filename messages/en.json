@@ -443,39 +443,24 @@
     },
     "bento": {
       "title": "Start from what you need",
-      "lead": "Three common situations and the way of working that fits each one best. Every card leads to its own page.",
+      "lead": "Pick your situation: every card leads to its own page.",
       "needs": {
         "contratacion": {
-          "title": "Looking for someone to join your team?",
-          "a": "I work inside your process: branches, code review and continuous integration.",
-          "b": "Mobile with React Native and web with Next.js, TypeScript end to end.",
-          "c": "I document what I build so the team can maintain it.",
-          "prefix": "I reply in",
-          "value": "1–2",
-          "unit": "working days"
+          "title": "Looking for someone for your team?",
+          "line": "I join your mobile or web team and your way of working."
         },
         "project": {
-          "title": "Want to launch a product or a project?",
-          "a": "Design, development and publishing in a single package.",
-          "b": "Scope, price and date agreed in writing before we start.",
-          "c": "The app on the App Store and Google Play, or the website on your domain.",
-          "unit": "€"
+          "title": "Need a tailored website or app?",
+          "line": "From idea to the stores, with scope, price and date agreed."
         },
         "freelance": {
-          "title": "Need extra hands on your development?",
-          "a": "I adapt to your code and your way of working, without rebuilding from scratch.",
-          "b": "Hourly or per task: you pick the model that suits you.",
-          "c": "Short deliveries you can test without waiting for the end."
+          "title": "Need extra hands for a task?",
+          "line": "A feature or a review, hourly or per task."
         }
-      },
-      "phases": {
-        "title": "Five phases, the same in every way",
-        "text": "In each one you know what you see and what I need from you, whether it is a hire, extra hands or tailored development.",
-        "cta": "See how I work"
       },
       "proof": {
         "title": "The stack you will see in your project",
-        "text": "Mobile and web with TypeScript, database and authentication with Supabase, published on Cloudflare. I use it every day and it runs in production.",
+        "text": "Mobile and web with TypeScript, Supabase and Cloudflare.",
         "projects": "See projects",
         "stack": "See the full stack"
       },
@@ -1233,6 +1218,23 @@
   },
   "breadcrumbs": {
     "label": "Breadcrumb"
+  },
+  "nexoChat": {
+    "title": "Ask Nexo",
+    "subtitle": "Quick answers about how I work",
+    "logLabel": "Conversation with Nexo",
+    "greeting": "Hi, I am Nexo. Pick a question or type your own and I will tell you how Jose works.",
+    "suggestionsLabel": "Suggested questions",
+    "inputLabel": "Type your question for Nexo",
+    "placeholder": "Type your question",
+    "send": "Send",
+    "sending": "Nexo is replying",
+    "typing": "Nexo is typing",
+    "you": "You",
+    "nexo": "Nexo",
+    "fallback": "I do not have that at hand, but Jose does. You can pass him the question through the form or the chat.",
+    "form": "Go to the form",
+    "chat": "Open the chat"
   },
   "nexoGuide": {
     "label": "Nexo, this site's assistant",

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 
+import { FaqWithNexo } from "@/components/chat/FaqWithNexo/FaqWithNexo";
 import { ExtraList } from "@/components/services/ExtraList/ExtraList";
 import { OfferCompare } from "@/components/services/OfferCompare/OfferCompare";
 import { buildRecommenderCopy } from "@/components/services/OfferRecommender/copy";
@@ -9,7 +10,6 @@ import { ServicePage } from "@/components/services/ServicePage/ServicePage";
 import { WarrantyPlans } from "@/components/services/WarrantyPlans/WarrantyPlans";
 import { PageSection } from "@/components/site/PageSection/PageSection";
 import { Button } from "@/components/ui/Button/Button";
-import { Faq } from "@/components/ui/Faq/Faq";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 import { Link } from "@/components/ui/Link/Link";
 import { isLocale } from "@/i18n/config";
@@ -238,8 +238,8 @@ export default async function OffersPage({ params, searchParams }: OffersProps) 
           note={t(key("warranty.note"))}
         />
       </PageSection>
-      <PageSection id="preguntas" title={t("services.faq.title")}>
-        <Faq items={faq} />
+      <PageSection id="preguntas" title={t("services.faq.title")} size="wide">
+        <FaqWithNexo locale={locale} items={faq} />
       </PageSection>
       <PageSection id="contacto" title={t(key("closing.title"))} lead={t(key("closing.text"))}>
         <div className={styles.actions}>

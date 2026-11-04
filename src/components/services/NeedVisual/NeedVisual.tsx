@@ -6,49 +6,36 @@ interface NeedVisualProps {
   way: WayId;
 }
 
-const teamRows = ["a", "b", "you"] as const;
-const diffRows = ["context", "removed", "added", "added", "context", "added"] as const;
-
 export function NeedVisual({ way }: NeedVisualProps) {
   return (
-    <div className={styles.scene} data-way={way} aria-hidden="true">
-      {way === "contratacion" ? (
-        <div className={styles.team}>
-          {teamRows.map((row) => (
-            <div key={row} className={styles.member} data-row={row}>
-              <span className={styles.avatar} />
-              <span className={styles.bar} />
-              <span className={styles.badge} />
-            </div>
-          ))}
-        </div>
-      ) : null}
-      {way === "project" ? (
-        <div className={styles.devices}>
-          <div className={styles.window}>
-            <span className={styles.dots} />
-            <span className={styles.hero} />
-            <span className={styles.line} />
-            <span className={styles.line} />
-          </div>
-          <div className={styles.phone}>
-            <span className={styles.notch} />
-            <span className={styles.screen} />
-            <span className={styles.line} />
-            <span className={styles.line} />
-          </div>
-        </div>
-      ) : null}
-      {way === "freelance" ? (
-        <div className={styles.diff}>
-          {diffRows.map((kind, index) => (
-            <div key={`${kind}-${index}`} className={styles.row} data-kind={kind}>
-              <span className={styles.gutter} />
-              <span className={styles.code} />
-            </div>
-          ))}
-        </div>
-      ) : null}
-    </div>
+    <span className={styles.badge} data-way={way} aria-hidden="true">
+      <svg viewBox="0 0 48 48" className={styles.glyph} focusable="false">
+        {way === "contratacion" ? (
+          <>
+            <circle cx="14" cy="19" r="5" className={styles.line} />
+            <path d="M5 38c0-5 4-8.5 9-8.5" className={styles.line} />
+            <circle cx="34" cy="19" r="5" className={styles.line} />
+            <path d="M43 38c0-5-4-8.5-9-8.5" className={styles.line} />
+            <circle cx="24" cy="15" r="6" className={styles.fill} />
+            <path d="M13 41c0-6.5 5-10.5 11-10.5S35 34.5 35 41Z" className={styles.fill} />
+          </>
+        ) : null}
+        {way === "project" ? (
+          <>
+            <rect x="4" y="9" width="30" height="24" rx="3" className={styles.line} />
+            <path d="M4 16h30" className={styles.line} />
+            <rect x="26" y="19" width="16" height="24" rx="3.5" className={styles.fill} />
+            <path d="M31 24h6" className={styles.cut} />
+          </>
+        ) : null}
+        {way === "freelance" ? (
+          <>
+            <path d="M16 14 6 24l10 10" className={styles.line} />
+            <path d="m32 14 10 10-10 10" className={styles.line} />
+            <path d="m27 10-6 28" className={styles.accent} />
+          </>
+        ) : null}
+      </svg>
+    </span>
   );
 }
