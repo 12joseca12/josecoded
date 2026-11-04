@@ -188,3 +188,20 @@
   font-size: var(--fs-m);
   line-height: var(--lh-snug);
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .panel,
+  .panel[data-mode="sheet"] {
+    --from: none;
+  }
+
+  .panel,
+  .panel[open] {
+    transform: none;
+    transition-duration: var(--dur-reduced);
+  }
+
+  .anchor[data-open] > button svg {
+    rotate: none;
+  }
+}

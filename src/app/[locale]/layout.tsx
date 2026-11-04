@@ -90,7 +90,7 @@ export default async function LocaleLayout({
       chat: t("contactChooser.chat"),
       chatHint: t("contactChooser.chatHint"),
     },
-    chat: { label: t("chatButton.label"), online: t("chatButton.online") },
+    chat: { label: t("chatButton.label") },
     search: { label: t("search.label"), shortcut: t("search.shortcut") },
   };
   const whatsappHref = buildWhatsAppUrl(

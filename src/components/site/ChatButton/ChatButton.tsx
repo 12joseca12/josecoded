@@ -1,31 +1,29 @@
 "use client";
 
+import { Button } from "@/components/ui/Button/Button";
 import { ChatIcon } from "@/components/ui/icons/ChatIcon";
 import type { ChatButtonLabels } from "@/types/nav";
 
-import styles from "./ChatButton.module.css";
-
 interface ChatButtonProps {
   labels: ChatButtonLabels;
-  onClick: () => void;
+  onClick: (opener: HTMLElement) => void;
 }
 
 export function ChatButton({ labels, onClick }: ChatButtonProps) {
   return (
-    <button
-      type="button"
-      className={styles.button}
-      aria-label={`${labels.label}, ${labels.online}`}
+    <Button
+      variant="light"
+      size="sm"
+      icon={<ChatIcon />}
+      iconStart
+      badge
+      collapse
       data-chooser-trigger=""
-      onClick={onClick}
+      onClick={(event) => {
+        onClick(event.currentTarget);
+      }}
     >
-      <span className={styles.icon} aria-hidden="true">
-        <ChatIcon />
-        <span className={styles.dot} />
-      </span>
-      <span className={styles.label} aria-hidden="true">
-        {labels.label}
-      </span>
-    </button>
+      {labels.label}
+    </Button>
   );
 }

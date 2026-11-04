@@ -1,65 +1,8 @@
-.button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  min-width: 2.5rem;
-  min-height: 2.5rem;
-  padding: 0;
-  border: 0;
-  border-radius: var(--radius-xl);
-  background: transparent;
-  color: var(--ink-soft);
-  font-family: inherit;
-  font-size: var(--fs-m);
-  font-weight: var(--fw-medium);
-  cursor: pointer;
-  touch-action: manipulation;
-  transition-property: background-color, color, transform;
-  transition-duration: var(--dur-fast);
-  transition-timing-function: var(--ease-out);
-}
-
-.button svg {
-  width: 1.25rem;
-  height: 1.25rem;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.5px;
-  stroke-linecap: round;
-}
-
-.button:active {
-  transform: scale(0.96);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .button:hover {
-    background: var(--sk-base);
-    color: var(--ink);
-  }
-}
-
-.label,
 .kbd {
-  display: none;
-}
-
-.kbd {
+  margin-left: var(--space-2);
   padding: var(--space-1) var(--space-2);
   border: 1px solid var(--line);
   border-radius: var(--radius-xs);
   color: var(--ink-faint);
   font: var(--fw-medium) var(--fs-s) / var(--lh-tight) var(--font-mono);
-}
-
-@media (min-width: 64rem) {
-  .button {
-    padding: 0 var(--space-3);
-  }
-
-  .label,
-  .kbd {
-    display: inline;
-  }
 }

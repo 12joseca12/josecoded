@@ -6,10 +6,11 @@ import { expect, test } from "@playwright/test";
 const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
   nav: { cta: string };
   contactChooser: { title: string; close: string; whatsapp: string; chat: string };
-  chatButton: { label: string; online: string };
+  chatButton: { label: string };
+  contactPage: { head: { title: string }; chat: { soon: string } };
 };
 
-const chatButtonName = `${es.chatButton.label}, ${es.chatButton.online}`;
+const chatButtonName = es.chatButton.label;
 
 for (const [name, viewport] of [
   ["desktop", { width: 1440, height: 900 }],
@@ -61,7 +62,7 @@ for (const [name, viewport] of [
 
     test("chat button opens the chooser focused on the chat option", async ({ page }) => {
       await page.goto("/es");
-      const chat = page.getByRole("button", { name: chatButtonName });
+      const chat = page.getByRole("button", { name: chatButtonName, exact: true });
       await expect(chat).toBeVisible();
       await chat.click();
       await expect(page.getByRole("dialog", { name: es.contactChooser.title })).toBeVisible();
@@ -73,6 +74,10 @@ for (const [name, viewport] of [
       await page.getByRole("button", { name: es.nav.cta }).click();
       await page.getByRole("button", { name: es.contactChooser.chat }).click();
       await expect(page).toHaveURL(/\/es\/contacto#chat$/);
+      await expect(page.locator("#chat")).toBeVisible();
+      await expect(page.locator("#chat").getByRole("status")).toHaveText(es.contactPage.chat.soon);
+      const { violations } = await new AxeBuilder({ page }).analyze();
+      expect(violations).toEqual([]);
     });
 
     test("chooser passes axe", async ({ page }) => {
@@ -114,7 +119,7 @@ test.describe("desktop popover", () => {
 
   test("the chat button is not a ghost icon and shows its label", async ({ page }) => {
     await page.goto("/es");
-    const chat = page.getByRole("button", { name: chatButtonName });
+    const chat = page.getByRole("button", { name: chatButtonName, exact: true });
     await expect(chat).toContainText(es.chatButton.label);
   });
 
@@ -126,27 +131,115 @@ test.describe("desktop popover", () => {
   });
 });
 
+test.describe("desktop popover focus and motion", () => {
+  test.use({ viewport: { width: 1440, height: 900 } });
+
+  test("Tab out of the popover closes it", async ({ page }) => {
+    await page.goto("/es");
+    const trigger = page.getByRole("button", { name: es.nav.cta });
+    await trigger.focus();
+    await page.keyboard.press("Enter");
+    const dialog = page.getByRole("dialog", { name: es.contactChooser.title });
+    await expect(dialog).toBeVisible();
+    await page.keyboard.press("Tab");
+    await expect(dialog).toBeHidden();
+    await expect(trigger).toHaveAttribute("aria-expanded", "false");
+  });
+
+  test("the trigger advertises a dialog popup", async ({ page }) => {
+    await page.goto("/es");
+    await expect(page.getByRole("button", { name: es.nav.cta })).toHaveAttribute(
+      "aria-haspopup",
+      "dialog",
+    );
+  });
+
+  test("closes when the route changes", async ({ page }) => {
+    await page.goto("/es");
+    await page.getByRole("button", { name: es.nav.cta }).click();
+    const dialog = page.getByRole("dialog", { name: es.contactChooser.title });
+    await expect(dialog).toBeVisible();
+    await page.evaluate(() => {
+      const host = window as unknown as { next?: { router: { push: (href: string) => void } } };
+      host.next?.router.push("/es/servicios");
+    });
+    await expect(page).toHaveURL(/\/es\/servicios$/);
+    await expect(dialog).toBeHidden();
+  });
+});
+
+test.describe("reduced motion", () => {
+  test.use({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
+
+  test("the sheet does not translate", async ({ page }) => {
+    await page.goto("/es");
+    await page.getByRole("button", { name: es.nav.cta }).click();
+    const dialog = page.getByRole("dialog", { name: es.contactChooser.title });
+    await expect(dialog).toBeVisible();
+    const style = await dialog.evaluate((element) => {
+      const computed = getComputedStyle(element);
+      return { transform: computed.transform, duration: computed.transitionDuration };
+    });
+    expect(style.transform).toBe("none");
+    expect(parseFloat(style.duration)).toBeLessThan(0.001);
+  });
+});
+
 test.describe("mobile sheet", () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
   test("is modal and traps focus", async ({ page }) => {
     await page.goto("/es");
     await page.getByRole("button", { name: es.nav.cta }).click();
-    await expect(page.getByRole("dialog", { name: es.contactChooser.title })).toBeVisible();
+    const dialog = page.getByRole("dialog", { name: es.contactChooser.title });
+    await expect(dialog).toBeVisible();
+    expect(await dialog.evaluate((element) => element.matches(":modal"))).toBe(true);
+    const visited = new Set<string>();
     for (let step = 0; step < 8; step += 1) {
       await page.keyboard.press("Tab");
-      const inside = await page.evaluate(() => {
+      const where = await page.evaluate(() => {
         const active = document.activeElement;
-        return active === document.body || active?.closest("dialog") !== null;
+        if (active === null || active === document.body) return "chrome";
+        return active.closest("dialog") === null ? "outside" : active.outerHTML;
       });
-      expect(inside).toBe(true);
+      expect(where).not.toBe("outside");
+      visited.add(where);
     }
+    expect([...visited].some((label) => label.includes(es.contactChooser.close))).toBe(true);
+    expect([...visited].some((label) => label.includes(es.contactChooser.chat))).toBe(true);
   });
 
   test("the chat button is icon only", async ({ page }) => {
     await page.goto("/es");
-    const chat = page.getByRole("button", { name: chatButtonName });
+    const chat = page.getByRole("button", { name: chatButtonName, exact: true });
     await expect(chat).toBeVisible();
-    await expect(chat.locator("span", { hasText: es.chatButton.label })).toBeHidden();
+    const box = await chat.boundingBox();
+    expect(box && box.width < 56).toBe(true);
+  });
+});
+
+test.describe("contact page", () => {
+  for (const [name, viewport] of [
+    ["desktop", { width: 1440, height: 900 }],
+    ["mobile", { width: 390, height: 844 }],
+  ] as const) {
+    test(`renders with the chat card and passes axe on ${name}`, async ({ page }) => {
+      await page.setViewportSize(viewport);
+      const response = await page.goto("/es/contacto");
+      expect(response?.status()).toBe(200);
+      await expect(
+        page.getByRole("heading", { level: 1, name: new RegExp(es.contactPage.head.title) }),
+      ).toBeVisible();
+      await expect(page.locator("#chat")).toBeVisible();
+      await expect(page.locator("#chat").getByRole("status")).toHaveText(es.contactPage.chat.soon);
+      await expect(page.locator('a[href*="wa.me"], a[href^="mailto:"]')).toHaveCount(0);
+      const { violations } = await new AxeBuilder({ page }).analyze();
+      expect(violations).toEqual([]);
+    });
+  }
+
+  test("stays out of the sitemap while no channel is live", async ({ request }) => {
+    const response = await request.get("/sitemap.xml");
+    expect(await response.text()).not.toContain("/es/contacto");
   });
 });

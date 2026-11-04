@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 
+import { Button } from "@/components/ui/Button/Button";
 import { SearchIcon } from "@/components/ui/icons/SearchIcon";
 import { isSearchShortcut, openSearch } from "@/lib/search/search-events";
 import type { SearchLabels } from "@/types/nav";
@@ -24,22 +25,18 @@ export function SearchButton({ labels }: SearchButtonProps) {
   }, []);
 
   return (
-    <button
-      type="button"
-      className={styles.button}
-      aria-label={labels.label}
+    <Button
+      variant="quiet"
+      size="sm"
+      icon={<SearchIcon />}
+      iconStart
+      collapse
       aria-keyshortcuts="Meta+K Control+K"
       onClick={() => {
         openSearch();
       }}
     >
-      <SearchIcon />
-      <span className={styles.label} aria-hidden="true">
-        {labels.label}
-      </span>
-      <kbd className={styles.kbd} aria-hidden="true">
-        {labels.shortcut}
-      </kbd>
-    </button>
+      {labels.label} <kbd className={styles.kbd}>{labels.shortcut}</kbd>
+    </Button>
   );
 }

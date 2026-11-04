@@ -1,6 +1,13 @@
 "use client";
 
-import { type KeyboardEvent, useEffect, useRef } from "react";
+import {
+  type FocusEvent,
+  type KeyboardEvent,
+  type RefObject,
+  useCallback,
+  useEffect,
+  useRef,
+} from "react";
 
 import { Button } from "@/components/ui/Button/Button";
 import { IconButton } from "@/components/ui/IconButton/IconButton";
@@ -23,6 +30,7 @@ interface ContactChooserProps {
   labels: ContactChooserLabels;
   whatsappHref: string | null;
   onChat: () => void;
+  openerRef: RefObject<HTMLElement | null>;
 }
 
 const popoverQuery = "(min-width: 64rem)";
@@ -39,17 +47,17 @@ export function ContactChooser({
   labels,
   whatsappHref,
   onChat,
+  openerRef,
 }: ContactChooserProps) {
   const anchorRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const openerRef = useRef<HTMLElement | null>(null);
   const titleId = `${id}-title`;
 
-  const restoreFocus = () => {
+  const restoreFocus = useCallback(() => {
     const opener = openerRef.current;
     const fallback = anchorRef.current?.querySelector<HTMLElement>(triggerSelector);
     (opener?.isConnected ? opener : fallback)?.focus({ preventScroll: true });
-  };
+  }, [openerRef]);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -61,8 +69,6 @@ export function ContactChooser({
     if (!dialog.open) {
       const sheet = !window.matchMedia(popoverQuery).matches;
       dialog.dataset.mode = sheet ? "sheet" : "popover";
-      openerRef.current =
-        document.activeElement instanceof HTMLElement ? document.activeElement : null;
       if (sheet) dialog.showModal();
       else dialog.show();
     }
@@ -93,7 +99,7 @@ export function ContactChooser({
       document.removeEventListener("pointerdown", onPointerDown);
       document.removeEventListener("keydown", onKeyDown);
     };
-  }, [open, onClose]);
+  }, [open, onClose, restoreFocus]);
 
   const moveFocus = (event: KeyboardEvent<HTMLDialogElement>) => {
     const keys = ["ArrowDown", "ArrowUp", "Home", "End"];
@@ -116,6 +122,13 @@ export function ContactChooser({
     options[next]?.focus();
   };
 
+  const leaveByTab = (event: FocusEvent<HTMLDialogElement>) => {
+    const next = event.relatedTarget;
+    if (event.currentTarget.dataset.mode !== "popover" || !(next instanceof Element)) return;
+    if (event.currentTarget.contains(next) || next.closest(triggerSelector)) return;
+    onClose();
+  };
+
   const afterClose = () => {
     onClose();
     const active = document.activeElement;
@@ -129,10 +142,15 @@ export function ContactChooser({
         icon={<ChevronIcon />}
         aria-expanded={open}
         aria-controls={id}
+        aria-haspopup="dialog"
         data-chooser-trigger=""
-        onClick={() => {
-          if (open) onClose();
-          else onOpen("first");
+        onClick={(event) => {
+          if (open) {
+            onClose();
+            return;
+          }
+          openerRef.current = event.currentTarget;
+          onOpen("first");
         }}
       >
         {triggerLabel}
@@ -144,6 +162,7 @@ export function ContactChooser({
         aria-labelledby={titleId}
         onClose={afterClose}
         onKeyDown={moveFocus}
+        onBlur={leaveByTab}
         onClick={(event) => {
           if (event.target === event.currentTarget) onClose();
         }}

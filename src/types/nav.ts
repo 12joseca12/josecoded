@@ -14,7 +14,6 @@ export interface ContactChooserLabels {
 
 export interface ChatButtonLabels {
   label: string;
-  online: string;
 }
 
 export interface SearchLabels {

@@ -58,20 +58,29 @@ export function SiteHeader({
     triggerRef.current?.focus({ preventScroll: true });
   }, []);
 
-  const [chooser, setChooser] = useState<{ open: boolean; focus: ChooserFocus }>({
-    open: false,
+  const [chooser, setChooser] = useState<{ path: string | null; focus: ChooserFocus }>({
+    path: null,
     focus: "first",
   });
+  const chooserOpen = chooser.path === pathname;
+  const chooserOpenerRef = useRef<HTMLElement | null>(null);
   const closeChooser = useCallback(() => {
-    setChooser((current) => (current.open ? { ...current, open: false } : current));
+    setChooser((current) => (current.path === null ? current : { ...current, path: null }));
   }, []);
-  const openChooser = useCallback((focus: ChooserFocus) => {
-    setChooser({ open: true, focus });
-  }, []);
+  const openChooser = useCallback(
+    (focus: ChooserFocus) => {
+      setChooser({ path: pathname, focus });
+    },
+    [pathname],
+  );
   const openChatFallback = useOpenChat(locale);
-  const onChatButton = () => {
-    if (chatPanelMounted()) openChat();
-    else openChooser("chat");
+  const onChatButton = (opener: HTMLElement) => {
+    if (chatPanelMounted()) {
+      openChat();
+      return;
+    }
+    chooserOpenerRef.current = opener;
+    openChooser("chat");
   };
 
   const contactHref = `/${locale}/contacto`;
@@ -178,7 +187,7 @@ export function SiteHeader({
           <ChatButton labels={labels.chat} onClick={onChatButton} />
           <ContactChooser
             id={chooserId}
-            open={chooser.open}
+            open={chooserOpen}
             focus={chooser.focus}
             onOpen={openChooser}
             onClose={closeChooser}
@@ -186,6 +195,7 @@ export function SiteHeader({
             labels={labels.contact}
             whatsappHref={whatsappHref}
             onChat={openChatFallback}
+            openerRef={chooserOpenerRef}
           />
           <span className={styles.menu}>
             <IconButton
