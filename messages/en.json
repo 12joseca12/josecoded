@@ -325,7 +325,79 @@
     "form": {
       "title": "Form",
       "hint": "To tell me about your project in writing, at your own pace.",
-      "soon": "The form opens very soon. Meanwhile, write to me by email."
+      "wayLegend": "Which way fits you?",
+      "ways": {
+        "contratacion": {
+          "label": "Hiring",
+          "hint": "A job offer or hiring process"
+        },
+        "freelance": {
+          "label": "Freelance",
+          "hint": "A feature, an audit or a push"
+        },
+        "packs": {
+          "label": "Project or pack",
+          "hint": "Web or app with fixed scope and price"
+        }
+      },
+      "nameLabel": "Name",
+      "emailLabel": "Email",
+      "companyLabel": "Company",
+      "optional": "(optional)",
+      "messageLabel": "Message",
+      "messageHint": "Tell me the context, the timing and what you need.",
+      "consentBefore": "I have read the ",
+      "consentLink": "privacy policy",
+      "consentAfter": " and agree that you use this data to reply to me.",
+      "newTab": "(opens in a new tab)",
+      "submit": "Send message",
+      "submitting": "Sending the message",
+      "verificationLabel": "Security check",
+      "verificationLoading": "Loading check",
+      "verificationLoadFailed": "The check could not be loaded. Check your connection.",
+      "verificationRetry": "Retry",
+      "summaryOne": "There is 1 field to review.",
+      "summaryMany": "There are {count} fields to review.",
+      "genericError": "Check this field.",
+      "errors": {
+        "way_required": "Choose a way.",
+        "name_required": "Enter your name.",
+        "name_too_long": "The name is too long.",
+        "email_required": "Enter your email.",
+        "email_invalid": "Enter a valid email.",
+        "company_too_long": "The company name is too long.",
+        "message_required": "Enter a message.",
+        "message_too_long": "The message is too long (4,000 characters max).",
+        "consent_required": "You need to accept the privacy policy.",
+        "verification_required": "Complete the security check.",
+        "name_invalid": "The name contains invalid characters.",
+        "company_invalid": "The company name contains invalid characters."
+      },
+      "sent": {
+        "title": "Message sent",
+        "text": "Thanks. I will reply to the email you gave.",
+        "alternative": "If it is urgent, write to",
+        "again": "Send another message"
+      },
+      "quota": {
+        "title": "You have reached the sending limit",
+        "text": "I cannot take more messages from the form today.",
+        "alternative": "Write to me directly at"
+      },
+      "verificationFailed": {
+        "title": "The check did not pass",
+        "text": "Complete the security check again and resend."
+      },
+      "failed": {
+        "title": "The message was not sent",
+        "text": "Something failed on my side. Press Send to try again.",
+        "alternative": "Or write to me at"
+      },
+      "unavailable": {
+        "title": "Form unavailable",
+        "text": "I cannot receive messages here right now. Write to me by email, depending on the way:"
+      },
+      "honeypotLabel": "Leave this field empty"
     }
   },
   "search": {

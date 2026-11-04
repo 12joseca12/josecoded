@@ -13,6 +13,13 @@
   "observability": {
     "enabled": true,
   },
+  "vars": {
+    "NEXT_PUBLIC_SUPABASE_URL": "https://echlwywbucgbhwpncviy.supabase.co",
+    "NEXT_PUBLIC_TURNSTILE_SITE_KEY": "0x4AAAAAAFzkPPhv9hUKSaBY",
+  },
+  "ratelimits": [
+    { "name": "CONTACT_LIMITER", "namespace_id": "1001", "simple": { "limit": 10, "period": 60 } },
+  ],
   "env": {
     "preview": {
       "name": "josecoded-preview",
@@ -22,10 +29,18 @@
         "directory": ".open-next/assets",
         "binding": "ASSETS",
       },
+      "ratelimits": [
+        {
+          "name": "CONTACT_LIMITER",
+          "namespace_id": "1002",
+          "simple": { "limit": 10, "period": 60 },
+        },
+      ],
       "vars": {
         "ENABLE_DEV_PAGES": "true",
         "NEXT_PUBLIC_SITE_URL": "https://josecoded-preview.josecoded-api.workers.dev",
-        "NEXT_PUBLIC_SUPABASE_URL": "https://placeholder.supabase.co",
+        "NEXT_PUBLIC_SUPABASE_URL": "https://echlwywbucgbhwpncviy.supabase.co",
+        "NEXT_PUBLIC_TURNSTILE_SITE_KEY": "0x4AAAAAAFzkPPhv9hUKSaBY",
         "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY": "placeholder",
       },
     },

@@ -1,0 +1,79 @@
+.field {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2);
+  color: var(--ink);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-ui);
+}
+
+.optional {
+  color: var(--ink-soft);
+  font-weight: var(--fw-regular);
+}
+
+.hint {
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+  line-height: var(--lh-ui);
+}
+
+.control {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-m);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: var(--fs-body);
+  line-height: var(--lh-ui);
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
+}
+
+textarea.control {
+  min-height: 9rem;
+  resize: vertical;
+}
+
+.control:focus-visible {
+  border-radius: var(--radius-m);
+  border-color: var(--ink);
+  box-shadow: 0 0 0 var(--ring) var(--ring-coral);
+  outline-offset: 0;
+}
+
+.control:disabled {
+  background: var(--sk-base);
+  color: var(--ink-soft);
+  cursor: not-allowed;
+}
+
+.field[data-invalid="true"] .control {
+  border-color: var(--error);
+  box-shadow: 0 0 0 var(--ring) var(--error-ring);
+}
+
+.error {
+  color: var(--error);
+  font-size: var(--fs-m);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-ui);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .control:hover:not(:disabled, :focus-visible) {
+    border-color: var(--ink);
+  }
+}

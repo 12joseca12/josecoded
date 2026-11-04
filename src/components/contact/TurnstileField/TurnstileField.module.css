@@ -1,0 +1,53 @@
+.field {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.frame {
+  position: relative;
+  min-height: 4.0625rem;
+}
+
+.frame:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.mount {
+  min-height: 4.0625rem;
+}
+
+.field[data-state="failed"] .frame {
+  display: none;
+}
+
+.placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-items: center;
+  background: var(--panel);
+}
+
+.loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+}
+
+.failed {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-2);
+  color: var(--error);
+  font-size: var(--fs-m);
+  font-weight: var(--fw-medium);
+}
+
+.field[data-invalid="true"] .frame {
+  outline: 1px solid var(--error);
+  outline-offset: 3px;
+}

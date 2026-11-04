@@ -12,7 +12,7 @@ const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
     chat: { soon: string };
     ways: Record<"contratacion" | "freelance" | "packs", { title: string }>;
     copy: { label: string; done: string };
-    form: { title: string; soon: string };
+    form: { title: string };
   };
 };
 
@@ -283,12 +283,11 @@ test.describe("contact page", () => {
     await expect(button).toContainText(es.contactPage.copy.label, { timeout: 5000 });
   });
 
-  test("the formulario section is an honest note, not a fake form", async ({ page }) => {
+  test("the formulario section holds the contact form", async ({ page }) => {
     await page.goto("/es/contacto#formulario");
     const section = page.locator("#formulario");
     await expect(section).toBeVisible();
-    await expect(section).toContainText(es.contactPage.form.soon);
-    await expect(page.locator("form")).toHaveCount(0);
+    await expect(section.locator("form")).toHaveCount(1);
   });
 
   test("the chooser Formulario option lands on #formulario", async ({ page }) => {
