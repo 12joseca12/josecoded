@@ -40,11 +40,31 @@
           "recent": "Recent",
           "toastShip": "v1.0 published",
           "toastCare": "v1.1 installed",
-          "rowNew": { "title": "Table 7 · toast", "meta": "new", "price": "€3.80" },
-          "row1": { "title": "Table 4 · 2 coffees", "meta": "2 min ago", "price": "€6.40" },
-          "row2": { "title": "Bar · set menu", "meta": "6 min ago", "price": "€12.50" },
-          "row3": { "title": "Terrace 2 · juices", "meta": "9 min ago", "price": "€7.00" },
-          "row4": { "title": "Table 1 · breakfast", "meta": "14 min ago", "price": "€9.20" }
+          "rowNew": {
+            "title": "Table 7 · toast",
+            "meta": "new",
+            "price": "€3.80"
+          },
+          "row1": {
+            "title": "Table 4 · 2 coffees",
+            "meta": "2 min ago",
+            "price": "€6.40"
+          },
+          "row2": {
+            "title": "Bar · set menu",
+            "meta": "6 min ago",
+            "price": "€12.50"
+          },
+          "row3": {
+            "title": "Terrace 2 · juices",
+            "meta": "9 min ago",
+            "price": "€7.00"
+          },
+          "row4": {
+            "title": "Table 1 · breakfast",
+            "meta": "14 min ago",
+            "price": "€9.20"
+          }
         },
         "browser": {
           "designUrl": "design · orders v3",
@@ -222,9 +242,7 @@
         "thinking": "Thinking",
         "talking": "Talking",
         "happy": "Happy",
-        "confused": "Confused",
-        "sad": "Sad",
-        "sleeping": "Sleeping"
+        "sad": "Sad"
       }
     }
   },
@@ -253,7 +271,9 @@
     "whatsappHint": "Message me and I reply as soon as I can",
     "chat": "Chat with Nexo",
     "chatHint": "Our assistant answers right away",
-    "whatsappMessage": "Hi Jose, I'm writing from josecoded.com. I'd like to talk about a project."
+    "whatsappMessage": "Hi José Carlos, I'm writing from josecoded.com. I'd like to talk about a project.",
+    "form": "Form",
+    "formHint": "Tell me about your project at your own pace"
   },
   "chatButton": {
     "label": "Chat"
@@ -261,7 +281,7 @@
   "contactPage": {
     "meta": {
       "title": "Contact",
-      "description": "Every way to reach Jose: chat with Nexo, WhatsApp and email."
+      "description": "Every way to reach José Carlos: chat with Nexo, email by route and a contact form."
     },
     "head": {
       "title": "Let's talk about your",
@@ -280,10 +300,32 @@
       "hint": "Message me and I reply as soon as I can.",
       "open": "Open WhatsApp"
     },
-    "email": {
-      "title": "Email",
-      "hint": "For proposals and documents.",
+    "ways": {
+      "contratacion": {
+        "title": "Hiring",
+        "hint": "For job offers and selection processes."
+      },
+      "freelance": {
+        "title": "Freelance",
+        "hint": "For a feature, an audit or a push on an existing project."
+      },
+      "packs": {
+        "title": "Projects and packs",
+        "hint": "For websites and apps with a defined scope, price and date."
+      }
+    },
+    "mail": {
       "open": "Write an email"
+    },
+    "copy": {
+      "label": "Copy",
+      "aria": "Copy {email}",
+      "done": "Copied"
+    },
+    "form": {
+      "title": "Form",
+      "hint": "To tell me about your project in writing, at your own pace.",
+      "soon": "The form opens very soon. Meanwhile, write to me by email."
     }
   },
   "search": {
@@ -296,7 +338,7 @@
     "notice": "Legal notice",
     "privacy": "Privacy",
     "cookies": "Cookies",
-    "copyright": "© 2026 Jose · Full stack, React Native and AI"
+    "copyright": "© 2026 José Carlos Sánchez García · Full stack, React Native and AI"
   },
   "services": {
     "meta": {
@@ -358,12 +400,18 @@
       "task": "Per task",
       "unitHour": "€ / hour",
       "unitTask": "€ / task",
-      "note": "Indicative: the final amount is agreed before starting."
+      "note": "Indicative: the final amount is agreed before starting.",
+      "from": "from",
+      "provisional": "Provisional",
+      "provisionalNote": "Provisional figures: the real rates will come after a services evaluation round."
     }
   },
   "seo": {
     "person": {
-      "name": "Jose",
+      "name": "José Carlos Sánchez García",
+      "givenName": "José Carlos",
+      "familyName": "Sánchez García",
+      "alternateNameFull": "José Carlos Sánchez",
       "alternateName": "josecoded",
       "jobTitle": "Full stack developer specialised in React Native",
       "description": "Full stack developer specialised in React Native, based in Madrid. Builds mobile apps and websites for companies and businesses in Spain and remotely.",
@@ -376,14 +424,14 @@
       "name": "josecoded"
     },
     "llms": {
-      "summary": "Jose is a full stack developer specialised in React Native, based in Madrid. He builds mobile apps and websites for companies and businesses in Spain and remotely: as a freelancer by the hour or by the task, with fixed-price packs or by joining a team.",
+      "summary": "José Carlos Sánchez García is a full stack developer specialised in React Native, based in Madrid. He builds mobile apps and websites for companies and businesses in Spain and remotely: as a freelancer by the hour or by the task, with fixed-price packs or by joining a team.",
       "servicesTitle": "Services",
       "hiring": "Hiring: joins a mobile or web product team and owns part of the product from start to finish.",
       "freelance": "Freelance: a feature, an audit or a push for an existing project, with the scope agreed before starting.",
       "packs": "Web and app packs: design, development and publishing with scope, price and date set in advance. Store publishing and domain included.",
       "pagesTitle": "Key pages",
-      "home": "Home: who Jose is and what he works on",
-      "services": "Services: the three ways of working with Jose",
+      "home": "Home: who José Carlos is and what he works on",
+      "services": "Services: the three ways of working with José Carlos",
       "projects": "Projects: apps and websites in production",
       "entityTitle": "Entity",
       "entityName": "Name: {name} (alias {alias})",
@@ -392,7 +440,10 @@
       "entityArea": "Service area: {country} and remote",
       "entityLanguage": "Site language: Spanish",
       "rateHour": "Hourly rate: {hour} €.",
-      "rateTask": "Per-task quote from {task} €."
+      "rateTask": "Per-task quote from {task} €.",
+      "contactTitle": "Contact",
+      "contactLine": "{way}: {email}",
+      "contact": "Contact: the ways to reach José Carlos"
     }
   },
   "chat": {
@@ -405,9 +456,7 @@
         "thinking": "Nexo is thinking of a reply",
         "talking": "Nexo is replying",
         "happy": "Nexo is happy",
-        "confused": "Nexo did not understand",
-        "sad": "Nexo is sorry",
-        "sleeping": "Nexo is asleep"
+        "sad": "Nexo is sorry"
       }
     }
   }

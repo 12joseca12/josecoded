@@ -8,10 +8,10 @@ const stateByEvent: Record<NexoEvent, NexoState> = {
   "reply-finished": "idle",
   "lead-saved": "happy",
   "positive-answer": "happy",
-  "low-confidence": "confused",
+  "low-confidence": "thinking",
   error: "sad",
   "not-interested": "sad",
-  "idle-timeout": "sleeping",
+  "idle-timeout": "idle",
   wake: "idle",
 };
 

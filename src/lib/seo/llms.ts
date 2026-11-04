@@ -1,12 +1,10 @@
+import { contact } from "@/config/contact";
 import type { Locale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
+import { publicRates, type Rates } from "@/lib/services/rates";
+import type { ContactWay } from "@/types/contact";
 
 import { absoluteUrl, localePath } from "./routes";
-
-interface Rates {
-  hour: string;
-  task: string;
-}
 
 function fill(template: string, values: Record<string, string>): string {
   return Object.entries(values).reduce(
@@ -15,7 +13,12 @@ function fill(template: string, values: Record<string, string>): string {
   );
 }
 
-export async function buildLlmsTxt(origin: string, locale: Locale, rates: Rates): Promise<string> {
+export async function buildLlmsTxt(
+  origin: string,
+  locale: Locale,
+  rates: Rates,
+  ways: readonly ContactWay[] = contact.ways,
+): Promise<string> {
   const t = await getTranslator(locale);
   const link = (label: string, path: string) =>
     `- [${label}](${absoluteUrl(origin, localePath(locale, path))})`;
@@ -26,11 +29,30 @@ export async function buildLlmsTxt(origin: string, locale: Locale, rates: Rates)
     locality: t("seo.person.locality"),
     country: t("seo.person.country"),
   };
-  const known = (value: string) => !value.includes("{{DATO");
-  const rateLines = [
-    known(rates.hour) ? `- ${fill(t("seo.llms.rateHour"), { hour: rates.hour })}` : null,
-    known(rates.task) ? `- ${fill(t("seo.llms.rateTask"), { task: rates.task })}` : null,
-  ].filter((line) => line !== null);
+  const prices = publicRates(rates);
+  const rateLines = prices
+    ? [
+        `- ${fill(t("seo.llms.rateHour"), { hour: prices.hour })}`,
+        `- ${fill(t("seo.llms.rateTask"), { task: prices.task })}`,
+      ]
+    : [];
+  const wayTitles = {
+    contratacion: t("contactPage.ways.contratacion.title"),
+    freelance: t("contactPage.ways.freelance.title"),
+    packs: t("contactPage.ways.packs.title"),
+  };
+  const hasContact = ways.length > 0;
+  const contactLines = hasContact
+    ? [
+        `## ${t("seo.llms.contactTitle")}`,
+        "",
+        ...ways.map(
+          (entry) =>
+            `- ${fill(t("seo.llms.contactLine"), { way: wayTitles[entry.way], email: entry.email })}`,
+        ),
+        "",
+      ]
+    : [];
   const lines = [
     `# ${t("seo.website.name")}`,
     "",
@@ -48,6 +70,7 @@ export async function buildLlmsTxt(origin: string, locale: Locale, rates: Rates)
     link(t("seo.llms.home"), ""),
     link(t("seo.llms.services"), "/servicios"),
     link(t("seo.llms.projects"), "/proyectos"),
+    ...(hasContact ? [link(t("seo.llms.contact"), "/contacto")] : []),
     "",
     `## ${t("seo.llms.entityTitle")}`,
     "",
@@ -57,6 +80,7 @@ export async function buildLlmsTxt(origin: string, locale: Locale, rates: Rates)
     `- ${fill(t("seo.llms.entityArea"), person)}`,
     `- ${t("seo.llms.entityLanguage")}`,
     "",
+    ...contactLines,
   ];
   return lines.join("\n");
 }

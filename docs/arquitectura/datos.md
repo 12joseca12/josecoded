@@ -5,8 +5,8 @@
 ## Principios
 
 - **Esquemas:** `public` para las tablas de negocio con RLS; `private` para helpers, colas, latido, cuotas, auditoría y vectores (sin acceso desde el cliente); `storage` con políticas propias.
-- **`anon` sin grants** salvo tres vistas de solo lectura: `public_packs`, `public_extras`, `public_settings` (solo filas visibles y claves públicas). Todo lo demás del público entra por RPC `security definer` con `search_path = ''`, Turnstile y cuota (`public_submit_contact`, `public_chat_send`).
-- **Helpers en `private`:** `uid()`, `role()`, `is_admin()`, `is_staff()` (admin, closer o freelance **y** `aal2`), `owns_contact(contact_id)` (dueño o closer padre del dueño), `is_project_member(project_id)` (cliente, freelance asignado o admin).
+- **`anon` sin grants** salvo tres vistas de solo lectura: `public_packs`, `public_extras`, `public_settings` (solo filas visibles y claves públicas). Todo lo demás del público (formulario de contacto, chat de visitantes) entra por **rutas de servidor de Next con la clave de servicio** que validan con zod, Turnstile y cuota y llaman a funciones de `private` (`private.submit_lead`, `private.visitor_send`); `anon` no ejecuta ninguna RPC (2026-11-04, sustituye a `public_submit_contact` y `public_chat_send`; coherente con 5.10).
+- **Helpers en `private`:** `uid()`, `role()`, `is_admin()`, `is_staff()` (admin, closer o freelance **y** `aal2`), `owns_contact(contact_id)` (dueño o closer padre del dueño), `owns_lead(lead_id)` (asignado o closer padre del asignado), `is_project_member(project_id)` (cliente, freelance asignado o admin), `is_conversation_member(conversation_id)` y `can_write_conversation(conversation_id)` (§10).
 - **Identidad:** `auth.users` de Supabase; `profiles.id = auth.users.id`. Rol en `profiles.role`.
 - **Auditoría:** trigger a `private.audit_log` en `profiles`, `commissions`, `deals` (cambios de fase), `packs`, `site_settings`.
 - **Borrado:** lógico (`archived_at`) en lo que se cita desde otro sitio (packs, contactos, proyectos); físico solo en borradores propios (historias `proposed`, documentos propios).
@@ -53,7 +53,7 @@
 ## 3. CRM
 
 ### `contacts`
-- `id`, `owner_id` → profiles (null = sin dueño, bandeja del admin), `full_name`, `email` (citext, único por dueño), `phone`, `organization`, `role_title`, `city`, `kind` enum `lead | client | recruiter | partner | other`, `source` enum `manual | import | form | chat | radar`, `linkedin_url`, `website`, `tags` text[], `notes`, `next_action`, `next_action_at`, `last_activity_at`, `import_id`, `radar_finding_id`, `created_at`, `archived_at`.
+- `id`, `owner_id` → profiles (null = sin dueño, bandeja del admin), `full_name`, `email` (citext, único por dueño), `phone`, `organization`, `role_title`, `city`, `kind` enum `prospect | client | recruiter | partner | other` (2026-11-04: `lead` pasa a `prospect` para no chocar con la tabla `leads` de §11), `source` enum `manual | import | form | nexo | whatsapp | radar`, `lead_id` → leads (el interesado de origen, si lo hubo), `linkedin_url`, `website`, `tags` text[], `notes`, `next_action`, `next_action_at`, `last_activity_at`, `import_id`, `radar_finding_id`, `created_at`, `archived_at`.
 - **RLS:** `owns_contact(id)` lee y escribe; admin todo; `owner_id` solo lo cambia el admin (reasignar). Un contacto sin dueño solo lo ve el admin.
 
 ### `deals`
@@ -79,14 +79,7 @@
 
 ## 4. Chat
 
-### `chat_threads`
-- `id`, `kind` enum `public | user`, `user_id` (null en público), `anon_id` (hash de la cookie firmada), `locale`, `ai_enabled` bool (público: true; usuario: false hasta que el admin lo active), `contact_id` (si se convirtió), `status` enum `open | archived`, `last_message_at`, `admin_unread` int, `user_unread` int, `created_at`.
-- Un hilo `user` por usuario (`unique(user_id) where kind = 'user'`).
-### `chat_messages`
-- `id`, `thread_id`, `sender` enum `visitor | user | assistant | admin`, `body`, `model` (si `assistant`: `groq:…` o `local:…`), `created_at`, `read_at`.
-- **RLS:** usuario con cuenta lee y escribe en su hilo; admin todo; público solo por RPC `public_chat_send(anon_id, body, turnstile)` y lectura por RPC `public_chat_thread(anon_id)`; Realtime filtrado por las mismas políticas. Purga: job diario borra hilos `public` sin actividad en 90 días.
-### `private.chat_quota`
-- `ip_hash`, `day`, `count`. Límite por IP y día en la RPC pública.
+**Sustituido el 2026-11-04 por §10 (conversaciones unificadas: visitantes y salas privadas; decisión 5.12).** `chat_threads` → `conversations`, `chat_messages` → `messages`, `anon_id` → `visitors.token_hash`, `kind = user` → `closer | client | freelance` con `conversation_members`. Las RPC `public_chat_send`/`public_chat_thread` desaparecen (5.10). `private.chat_quota` sigue, con `scope` por IP y por visitante (§10).
 
 ---
 
@@ -125,11 +118,11 @@
 
 ## 7. `private` (sin acceso desde el cliente)
 
-- **`jobs`:** `id`, `kind` (`chat.reply`, `rag.index`, `radar.scan`, `radar.score`, `radar.draft`, `radar.send`, `account.delete`), `payload` jsonb (contrato por `kind` en `contracts/jobs/`), `status` `queued | running | done | failed`, `attempts`, `run_after`, `locked_by`, `result` jsonb, `error`, `created_at`, `finished_at`. Omen toma trabajos con `select … for update skip locked`.
+- **`jobs`:** `id`, `kind` (`chat.reply`, `chat.summary`, `rag.index`, `radar.scan`, `radar.score`, `radar.draft`, `radar.send`, `account.delete`), `payload` jsonb (contrato por `kind` en `contracts/jobs/`), `status` `queued | running | done | failed`, `attempts`, `run_after`, `locked_by`, `result` jsonb, `error`, `created_at`, `finished_at`. Omen toma trabajos con `select … for update skip locked`. `chat.reply` lo encola un trigger de `messages` (§10), no la ruta de servidor.
 - **`heartbeat`:** `service` (`omen`), `seen_at`, `version`, `models` jsonb. Omen escribe cada 30 s; el admin lo lee por RPC.
 - **`outbox`:** `id`, `channel` `email | telegram`, `recipient`, `template`, `payload` jsonb, `status`, `attempts`, `sent_at`. Lo escriben triggers y RPC; **lo drena el servidor de Next con un cron de Cloudflare**, no Omen, para que email y Telegram funcionen con Omen apagado.
 - **`audit_log`:** `id`, `actor_id`, `table_name`, `row_id`, `action`, `before`, `after`, `at`.
-- **`chat_quota`**, **`telegram_links`**, **`telegram_codes`**: arriba.
+- **`chat_quota`**, **`form_quota`**, **`telegram_links`**, **`telegram_codes`**: §10, §11 y §1.
 - **RAG (pgvector):** `rag_documents(id, source, ref, title, updated_at)` y `rag_chunks(id, document_id, chunk, embedding vector, position)`. Fuentes: `content/*` del repo (sobre mí, proyectos, servicios, FAQ, blog), `packs`/`rates` y los hechos que Jose quiera que el asistente sepa. Omen indexa (job `rag.index`, embeddings con el modelo local) y consulta. **Decidido (4.5, 4.6):** vectores en Supabase (Omen sin estado, copia de seguridad incluida); el chat público responde con Groq y cae al modelo local si Groq falla.
 
 ---
@@ -140,8 +133,8 @@
 |---|---|---|
 | Datos canónicos | Todo lo de arriba | Nada: solo caché local de páginas rastreadas y ficheros de modelos |
 | Auth, roles, MFA | Sí | No |
-| Ficheros | Storage `project-documents` | No |
-| Tiempo real | Realtime de `chat_messages` | Escucha, no sirve |
+| Ficheros | Storage `project-documents`, `chat-attachments` | No |
+| Tiempo real | Realtime de `messages` y `conversation_members` (salas privadas); SSE desde Next para visitantes | Escucha, no sirve |
 | IA | — | Modelo local, Groq, embeddings, RAG, borradores |
 | Radar | Tablas `radar_*` | Rastreo, puntuación, borradores, envío por API |
 | Trabajos | `private.jobs` | Ejecutor |
@@ -159,56 +152,118 @@ Omen usa la clave de servicio y nunca abre un puerto. Lo que Omen necesita saber
 
 ---
 
-## 10. Propuesta (2026-11-04): chat de visitantes anónimos (decisión 5.10)
+## 10. Propuesta (2026-11-04): conversaciones, un solo modelo (decisiones 5.10, 5.12–5.17)
 
-**No aplicada.** Sustituye al modelo de §4 para el público (`anon_id` en cookie firmada, RPC `public_chat_send` y `public_chat_thread`) y afina la purga de 5.1. Los hilos de usuarios con cuenta (`kind = user`) no cambian: siguen con RLS y Realtime (5.4, 5.6). Se escribe en W37 (`data/visitor-chat`) y W39 (`chat/anon-persistence`) con tests RLS y del trabajo de purga.
+**No aplicada; se escribe con `docs/plan/migraciones-chat.md`.** Un único juego de tablas para el chat de visitantes con Nexo y las tres salas privadas (closer ↔ Jose, cliente ↔ Jose + closer que cerró, freelance ↔ Jose). Sustituye a §4 entero y a la primera versión de este §10 (`chat_visitors`/`chat_conversations`/`chat_messages`), que solo cubría visitantes. Lo que aquí es **ABIERTA** remite a `decisiones.md` (5.13, 5.15).
 
-### Principio
+### Principios
 
-El visitante nunca toca Supabase. Lleva una cookie `httpOnly` con un token opaco; las rutas de servidor de Next (`/api/chat/*` o Server Actions) lo convierten en `visitor_id`, comprueban cuota y Turnstile y leen o escriben con la clave de servicio. `anon` sigue sin grants en ninguna tabla del chat. El cliente no envía nunca `conversation_id`: el servidor lo resuelve desde el visitante.
+- **Una conversación = una relación.** `kind` dice cuál: `visitor` (un visitante anónimo con Nexo), `closer` (un closer con Jose), `client` (un proyecto: el cliente con Jose y el closer que lo cerró; 5.13), `freelance` (un freelance con Jose). Quién está dentro lo dicen las filas de `conversation_members`; qué puede hacer Nexo lo dicen `ai_enabled` y el consentimiento (5.14).
+- **Jose es un miembro más** (`role = owner`) en todas, también en las de visitantes: así su recibo de lectura y su «sin leer» salen de la misma columna que los de los demás. Un trigger lo añade al crear cualquier conversación (y a cualquier otro `admin` activo, si algún día lo hay).
+- **El visitante nunca toca Supabase** (5.10): cookie `httpOnly` con token opaco, rutas de servidor con la clave de servicio, `anon` sin grants, el cliente no envía nunca `conversation_id`. Los usuarios con cuenta sí hablan con Supabase directamente bajo RLS (lectura, inserción de mensajes, Realtime).
+- **Los mensajes no se editan ni se borran** por nadie salvo la purga. Un error se corrige con otro mensaje. Igual que `activities`.
+- **Nexo no es un miembro**: es `author_kind = nexo`. Escribe Omen con la clave de servicio al cerrar un trabajo `chat.reply`. `system` son los avisos que genera la base (alguien entra o sale, consentimiento concedido o retirado, Nexo encendido o apagado, sala archivada).
 
 ### Tablas
 
-#### `chat_visitors`
-- `id` uuid, `token_hash` text único (SHA-256 del token de la cookie; el token solo vive en la cookie), `locale`, `created_at`, `last_activity_at`, `contact_id` → contacts (null hasta que haya consentimiento), `consent_at`.
-- Sin `ip`, sin `user_agent`, sin email ni teléfono: esos van a `contacts` cuando el visitante acepta en `HandoffCard`.
+#### `visitors`
+- `id` uuid, `token_hash` text único (SHA-256 del token de la cookie; el token solo vive en la cookie), `locale`, `created_at`, `last_activity_at`, `lead_id` → leads (null hasta el consentimiento de `HandoffCard`), `consent_at`.
+- Sin `ip`, sin `user_agent`, sin email ni teléfono: esos van a `leads` (§11) cuando el visitante acepta.
 - **RLS:** admin lee; nadie más. Escribe solo el servidor.
 
-#### `chat_conversations` (renombra `chat_threads`)
-- `id`, `kind` enum `visitor | user`, `visitor_id` → chat_visitors (null si `user`), `user_id` (null si `visitor`), `locale`, `ai_enabled` bool (visitor: true; user: false hasta que el admin lo active), `contact_id` (si se convirtió), `interest` bool null (lo que Nexo detecta, 5.7), `first_page_path` text, `status` enum `open | archived`, `last_activity_at` timestamptz (trigger al insertar mensaje), `admin_unread` int, `user_unread` int, `created_at`.
-- Un hilo `user` por usuario (`unique(user_id) where kind = 'user'`); varias conversaciones por visitante solo si el admin archiva la anterior (lo normal es una).
-- Índice parcial para la purga: `(last_activity_at) where kind = 'visitor' and contact_id is null`.
-- **RLS:** usuario con cuenta lee y escribe la suya (`kind = user`); admin todo; filas `visitor` sin política para `anon` ni `authenticated` (solo clave de servicio).
+#### `conversations`
+- `id`, `kind` enum `visitor | closer | client | freelance`, `visitor_id` → visitors (solo `visitor`), `subject_user_id` → profiles (el closer o el freelance de la sala; solo `closer | freelance`), `project_id` → projects (solo `client`), `locale`, `ai_enabled` bool (interruptor de Jose; por defecto `true` en todos los `kind`), `ai_consent_at`, `ai_consent_by` → profiles, `ai_consent_revoked_at` (solo `client`), `lead_id` → leads y `contact_id` → contacts (visitante convertido), `interest` bool null (5.7), `first_page_path`, `status` enum `open | archived`, `archived_at`, `last_activity_at` (trigger al insertar mensaje), `created_at`.
+- **Checks:** exactamente una de `visitor_id | subject_user_id | project_id` según `kind`. **Únicos parciales:** `(subject_user_id) where kind in ('closer','freelance')`, `(project_id) where kind = 'client'`, `(visitor_id) where kind = 'visitor' and status = 'open'`.
+- **Nexo activo** = `ai_enabled and (kind <> 'client' or (ai_consent_at is not null and ai_consent_revoked_at is null))`; función `private.ai_active(conversation_id)` usada por el trigger que encola y por la interfaz (`NexoAvatar` en `offline`/oculto cuando no está activo).
+- Índice parcial para la purga: `(last_activity_at) where kind = 'visitor'`.
+- **RLS:** `select` admin o miembro activo; `insert`/`update`/`delete` nadie desde el cliente: crean los triggers y las RPC (abajo); Jose cambia `ai_enabled` y `status` por RPC `set_conversation_ai` y `archive_conversation`; el cliente concede o retira el consentimiento por RPC `set_ai_consent` (solo si es miembro con `role = client` de esa sala).
 
-#### `chat_messages`
-- `id`, `conversation_id`, `sender` enum `visitor | user | assistant | admin`, `kind` enum `text | handoff | reference | system`, `body` (≤ 2.000 caracteres, check), `page_path` text (desde dónde escribió el visitante), `sources` text[] (refs de `private.rag_documents` cuando `sender = assistant`), `model` (`groq:…` o `local:…`), `created_at`, `read_at`.
-- **RLS:** como `chat_conversations`. Realtime solo para `kind = user` (5.4); a los visitantes las respuestas les llegan por SSE desde la ruta de servidor (abajo).
+#### `conversation_members`
+- `conversation_id`, `user_id` → profiles, `role` enum `owner | closer | client | freelance`, `can_write` bool default true, `joined_at`, `left_at` (null = activo; un closer reasignado se queda con `left_at` y conserva el historial sin leerlo más), `last_read_at` (recibo de lectura; **sin leer** = mensajes con `created_at > last_read_at` cuyo autor no soy yo), `added_by`. PK `(conversation_id, user_id)`.
+- Los visitantes **no** tienen fila (no son `auth.users`); su conversación los identifica por `visitor_id`.
+- **RLS:** `select` miembros activos de la misma conversación y admin (así cada uno ve quién está); `update` solo por RPC `mark_read(conversation_id)` (actualiza `last_read_at` de la fila propia); `insert`/`delete` solo por RPC de admin `add_member` / `remove_member` (que escriben el mensaje `system`).
+
+#### `messages`
+- `id`, `conversation_id`, `author_kind` enum `human | nexo | system`, `author_id` → profiles (humano con cuenta; **null + `human` = el visitante de la conversación**; null en `nexo` y `system`), `kind` enum `text | handoff | reference` (tarjetas de P7; `reference` lleva `ref_contact_id`, `ref_task_id` o `ref_story_id` nulos salvo uno), `system_event` enum `member_added | member_left | ai_on | ai_off | consent_granted | consent_revoked | archived | handoff_done` (solo `system`), `body` text (check ≤ 4.000; el servidor limita a 2.000 a los visitantes), `page_path`, `mentions_nexo` bool (lo calcula el servidor o un trigger `before insert` buscando `@nexo`), `sources` text[] (refs de `private.rag_documents` cuando `nexo`), `model` (`groq:…` o `local:…`), `created_at`.
+- Sin `read_at`: el recibo está en el miembro.
+- **Triggers:** `after insert` → `conversations.last_activity_at = now()`; si `author_kind = human` y `private.ai_active(conversation_id)` y (`kind = visitor` **o** `mentions_nexo`, según 5.15) → encola `private.jobs` `chat.reply` `{ conversation_id, message_id, page_path }`; si hay miembros humanos distintos del autor → fila en `notifications` y, para Jose, `private.outbox` Telegram (bloque posterior).
+- **RLS:** `select` admin o miembro activo; `insert` solo `authenticated` que es miembro activo con `can_write`, con `author_kind = 'human'`, `author_id = auth.uid()`, conversación `open` y, si es personal, `aal2` (`is_staff()`); visitantes, Nexo y `system` entran con la clave de servicio o desde triggers. Sin `update` ni `delete`.
+- **Realtime:** `messages` y `conversation_members` en la publicación `supabase_realtime`; el cliente se suscribe a `postgres_changes` con filtro `conversation_id=eq.{id}` y RLS decide qué le llega (5.4). «Está escribiendo» por Broadcast en el canal privado `conversation:{id}` con política en `realtime.messages` que exige `private.is_conversation_member(id)`. Los visitantes reciben por SSE (abajo).
+
+#### `message_attachments`
+- `id`, `message_id`, `conversation_id` (copia, para la política de Storage), `uploaded_by`, `name`, `mime`, `size_bytes`, `storage_path`, `created_at`.
+- Storage: bucket `chat-attachments` privado, ruta `conversations/{conversation_id}/{attachment_id}`; subida por URL firmada que crea el servidor tras validar tipo, tamaño (≤ 10 MB, ≤ 5 por mensaje) y pertenencia; descarga por URL firmada de 60 s. **Sin adjuntos en `kind = visitor`** (5.17). Política en `storage.objects`: `private.is_conversation_member(split_part(name, '/', 2)::uuid)`.
+- **RLS:** `select` como `messages`; `insert` solo el servidor (la validación vive en un sitio); sin `update`; `delete` por la purga.
 
 #### `private.chat_quota`
-- `scope` enum `ip | visitor`, `key_hash`, `day`, `count`. Límites propuestos: 60 mensajes/día por IP, 20/día por visitante, ráfaga de 1 mensaje cada 3 s. Error tipado `chat_quota_exceeded` → 429 y `QuotaNotice`.
+- `scope` enum `ip | visitor`, `key_hash`, `day`, `count`. Límites: 60 mensajes/día por IP, 20/día por visitante, ráfaga de 1 cada 3 s. Error tipado `chat_quota_exceeded` → 429 y `QuotaNotice`. Filas de más de 2 días se borran en la purga.
 
-### Flujo
+### Quién entra en cada sala
 
-1. **Primer mensaje:** Turnstile se verifica en el servidor; se crea `chat_visitors` (token aleatorio de 128 bits, se guarda el hash), se crea la conversación con `first_page_path` y se pone la cookie `jc_visitor` (`HttpOnly`, `Secure`, `SameSite=Lax`, `Path=/`, `Max-Age` = TTL, renovada en cada envío). Antes de ese mensaje no existe ni cookie ni fila: el saludo de Nexo es texto de `messages/es.json`.
-2. **Enviar:** ruta de servidor → cuota → inserta `chat_messages` (`visitor`) → encola `private.jobs` `chat.reply` con `{ conversation_id, page_path }` (contrato `contracts/jobs/chat.reply.json`, que devuelve `sources` e `interest`).
-3. **Recibir:** ruta `GET /api/chat/stream` con SSE que emite los mensajes nuevos de la conversación del visitante (el servidor escucha Realtime con la clave de servicio o sondea cada 2 s con `created_at > since`) y el estado del trabajo para los estados `thinking`/`speaking` de Nexo (5.9). Sin JS, la página `/chat` recarga y pinta el hilo completo.
-4. **Handoff:** `HandoffCard` → ruta de servidor que crea `contacts` (`source = chat`) + `deals` (`stage = new`, `via` si se infiere) + `activities` (`kind = chat`, cuerpo = resumen de la conversación) y rellena `contact_id` y `consent_at` en visitante y conversación.
-5. **Jose entra** desde D6 (`admin`): el mensaje llega por el mismo SSE y Nexo pasa a `handoff`.
+| `kind` | Miembros al crearse | Quién la crea | `ai_enabled` por defecto | Nexo habla |
+|---|---|---|---|---|
+| `visitor` | Jose (`owner`) | ruta de servidor en el primer mensaje del visitante | `true` | a todo (5.7) |
+| `closer` | Jose, el closer (`closer`) | `accept_invitation` del closer (o `ensure_my_conversation()` si falta) | `true` | 5.15 |
+| `client` | Jose, el cliente (`client`), el dueño de la oportunidad ganada del proyecto (`closer`) | trigger `after insert on projects` (o `ensure_project_conversation(project_id)` para proyectos sin oportunidad) | `true`, pero sin efecto hasta `ai_consent_at` | 5.15, solo con consentimiento |
+| `freelance` | Jose, el freelance (`freelance`) | `accept_invitation` del freelance | `true` | 5.15 |
+
+Fuera siempre, salvo que Jose los añada a mano con `add_member` (y quede un mensaje `system`): el closer padre de un subcloser (5.16), el freelance asignado al proyecto (6.7), otros clientes de la misma organización.
+
+### Flujos
+
+1. **Visitante, primer mensaje:** Turnstile en el servidor → `private.visitor_send(token_hash, body, page_path, locale, ip_hash)` crea `visitors`, `conversations` (`visitor`, con el trigger que añade a Jose) y el mensaje, comprobando la cuota en la misma transacción; cookie `jc_visitor` (`HttpOnly`, `Secure`, `SameSite=Lax`, `Path=/`, `Max-Age` = 7 días renovados en cada envío). Antes no existe ni cookie ni fila: el saludo de Nexo es texto de `messages/es.json`.
+2. **Respuesta de Nexo:** el trigger encola `chat.reply`; Omen responde con `author_kind = nexo`, `sources`, `model` y `interest` (contrato `contracts/jobs/chat.reply.json`). Para salas privadas el contrato lleva también `kind` y los `member` roles para que el prompt sepa con quién habla; para `client` incluye `project_id` y Omen solo lee lo que `is_project_member` permitiría al cliente.
+3. **Recibir (visitante):** `GET /api/chat/stream` con SSE emite los mensajes nuevos de su conversación y el estado del trabajo (`thinking`/`speaking`, 5.9); sin JS, `/chat` recarga y pinta el hilo. **Recibir (con cuenta):** Realtime bajo RLS.
+4. **Handoff (visitante):** `HandoffCard` → `private.visitor_handoff(token_hash, email, phone, name, consent)` crea `leads` (`source = nexo`, `conversation_id`, `consent_at`) y rellena `lead_id` y `consent_at` en `visitors` y `conversations`; mensaje `system` `handoff_done`. El `contact` nace cuando un closer o Jose reclama el interesado (§11).
+5. **Jose o un closer entran** en cualquier sala: insertan `messages` bajo RLS; Nexo pasa a `handoff` en la interfaz del visitante. En salas privadas Nexo solo interviene según 5.15.
+6. **Consentimiento del cliente:** `set_ai_consent(conversation_id, granted)` → columnas, mensaje `system`, `private.audit_log`. Al retirarlo se cancelan los `chat.reply` en cola de esa sala.
+7. **Reasignación de oportunidad** (admin, 7.3): trigger en `deals.owner_id` → en la sala `client` del proyecto, el closer anterior recibe `left_at` y el nuevo una fila nueva; dos mensajes `system`.
+8. **Archivar:** `archive_conversation(id)` (admin) o automático cuando el perfil del `subject_user_id` se desactiva o el proyecto se archiva (trigger). Una sala archivada se lee pero no admite mensajes.
 
 ### Purga con `pg_cron`
 
-- Extensión `pg_cron` en el esquema `extensions` (disponible en Supabase y en el Docker local), trabajo diario a las 04:00 UTC:
-  1. `delete from chat_conversations where kind = 'visitor' and contact_id is null and last_activity_at < now() - interval '30 days'` (el TTL es Q8 de `division-pantallas.md`; las filas de `chat_messages` caen en cascada).
-  2. `delete from chat_conversations where kind = 'visitor' and contact_id is not null and last_activity_at < now() - interval '90 days'` (retención de 5.1 para las convertidas; el contacto y el resumen en `activities` se quedan).
-  3. `delete from chat_visitors where not exists (conversación) and last_activity_at < now() - interval '30 days'`.
-- La cookie caduca sola al mismo TTL; si vuelve un visitante cuya fila ya no existe, se le trata como nuevo.
-- Función `private.purge_visitor_chat()` `security definer` con `search_path = ''`; el `cron.schedule` va en la migración y el test comprueba que una conversación con `last_activity_at` antigua desaparece y una convertida no. Las cuotas de `private.chat_quota` se borran con más de 2 días.
+Función `private.purge_conversations()` `security definer` con `search_path = ''`, programada a diario a las 04:00 UTC (`cron.schedule` en la migración). Plazos de 5.11:
+
+1. `visitor` **sin** `lead_id` y `last_activity_at < now() - 7 días` → se borra la conversación (mensajes en cascada).
+2. `visitor` **con** `lead_id` y `last_activity_at < now() - 60 días` → se borra; el `lead` y, si existe, el `contact` con su resumen en `activities` se quedan.
+3. `visitor` cuyo `contact_id` tiene un `deal` `won` y `last_activity_at < now() - 90 días` → se borra (tiene prioridad sobre 2).
+4. `visitors` sin conversación y `last_activity_at < now() - 7 días` → se borra.
+5. Salas privadas `archived` con `archived_at < now() - 90 días` → se borran con sus adjuntos (`storage.objects` por prefijo, desde la misma función).
+6. `private.chat_quota` con `day < hoy - 2`.
+
+La cookie caduca sola a los 7 días sin actividad; si vuelve un visitante cuya fila ya no existe, es nuevo. Derecho de borrado: el servidor borra por `token_hash`, por `lead_id` o por `user_id`.
 
 ### Lo que cambia en otros sitios
 
-- `datos.md` §4: `chat_threads` → `chat_conversations`, `anon_id` → `visitor_id`, `last_message_at` → `last_activity_at`; desaparecen `public_chat_send` y `public_chat_thread`.
-- `pantallas.md` P7 y D6; `bloques.md` W37, W39 y nuevo W39b (lista en `division-pantallas.md` §6).
-- Política de privacidad (W42): cookie técnica de visitante (sin consentimiento previo, se explica), TTL, Groq como encargado, derecho de borrado por email (el servidor borra por `token_hash` o por `contact_id`).
+- `pantallas.md`: P7 y D6 con los nombres nuevos; K7, A5 y F3 pasan a ser «mi sala» (`kind` según zona) y A5 muestra el consentimiento de Nexo; D6 lista todas las salas con «sin leer» por `last_read_at`.
+- `bloques.md`: W37 y W39 según `migraciones-chat.md`; O07 lee `kind`, `member` roles y `project_id` del contrato.
+- Política de privacidad (W42): cookie técnica de 7 días, plazos de 5.11, Groq como encargado también en salas privadas (solo con Nexo activo), consentimiento revocable del cliente.
+
+---
+
+## 11. Propuesta (2026-11-04): interesados (decisiones 7.8, 7.9)
+
+**No aplicada.** Entrada única de todo lo que llega de fuera con intención de contratar: formulario de `/contacto` (2.21), handoff de Nexo (5.7), WhatsApp (a mano), Radar convertido y altas manuales. La bandeja «Interesados» (D8 en admin, K8 en CRM) lee esta tabla; `contacts` sigue siendo la cartera.
+
+### `leads`
+- `id`, `source` enum `form | nexo | whatsapp | radar | manual`, `via` enum `hiring | freelance | pack` (null si Nexo no lo infirió), `pack_id` → packs, `full_name`, `email` citext, `phone`, `organization`, `message` text (check ≤ 4.000), **campos por vía** (tipados, nulos cuando no aplican): `offer_url` y `company` (contratación), `wanted_by` date (freelance), `has_domain` bool y `has_store_accounts` bool (packs); `page_path`, `locale`, `consent_at` (acepta la política; obligatorio en `form` y `nexo`), `conversation_id` → conversations (si vino de Nexo; se pone a null cuando la purga borra la conversación: `on delete set null`), `radar_finding_id`, `status` enum `new | assigned | contacted | converted | discarded`, `assigned_to` → profiles, `assigned_at`, `assigned_by`, `contact_id` → contacts, `deal_id` → deals, `discard_reason`, `created_at`, `handled_at`.
+- Índices: `(status, created_at)` para la bandeja; `(email)` para el emparejado.
+- **Emparejado al insertar** (trigger `before insert`): si `email` coincide con un `contacts.email` con `owner_id` no nulo → `assigned_to = owner_id`, `status = assigned`, `contact_id` = ese contacto (el interesado nunca entra en la bandeja común: no se le quita un contacto a nadie). Si coincide con un contacto sin dueño → queda `new` con `contact_id` prefijado y solo lo ve el admin.
+- **RLS (7.8 a):** `select` admin todo; closer: `status = 'new' and assigned_to is null and contact_id is null` (bandeja común) **o** `owns_lead(id)` (asignado a mí o a un subcloser mío). `insert` solo el servidor (`private.submit_lead`) y el admin/closer en `source = whatsapp | manual` (con `assigned_to = auth.uid()` si es closer). `update` solo por RPC. `delete` nadie (se descarta, no se borra).
+- **RPC:** `claim_lead(lead_id)` (closer o admin): `update … where status = 'new' and assigned_to is null` (el primero gana; si no actualiza fila, error tipado `lead_already_claimed`), crea o enlaza `contacts` (`owner_id = yo`, `kind = prospect`, `source` = el del lead, `lead_id`), crea `deals` (`stage = new`, `via`, `pack_id`) y `activities` (`kind = form | chat | whatsapp`, cuerpo = mensaje o resumen de la conversación), deja `status = converted`. `assign_lead(lead_id, user_id)` (admin): igual, a nombre de otro; también reasigna. `discard_lead(lead_id, reason)` (admin o asignado). `touch_lead(lead_id)` → `contacted`.
+- **Notificaciones:** trigger `after insert` → `private.outbox` Telegram a Jose y email a la bandeja de la vía (2.23: `hola@`, `freelance@`, `proyectos@`); fila en `notifications` para cada closer activo si cae en la bandeja común, o solo para el asignado.
+
+### `private.form_quota`
+- `ip_hash`, `day`, `count`. Límite 5 envíos/día por IP; error tipado `form_quota_exceeded` → 429 con las vías alternativas (P6). Se limpia en la misma purga que `chat_quota`.
+
+### `private.submit_lead(...)`
+- Función `security definer` con `search_path = ''` que solo ejecuta el rol de servicio (sin grant a `anon` ni `authenticated`): comprueba cuota, inserta `leads` (`source = form`) y devuelve el `id`. La Server Action de `/contacto` valida con zod, verifica Turnstile y la llama. Sustituye a `public_submit_contact`.
+
+### Relación con el CRM
+
+- `leads` → `contacts` es 1 → 0..1 (`contacts.lead_id`) y `contacts` ← `leads` puede ser 1 → n (la misma persona escribe dos veces: el segundo se asigna solo al dueño y añade una `activity`).
+- K3 muestra «Interesados de este contacto» (sus `leads`) y, mientras exista, la conversación de origen.
+- El pipeline (7.2) no cambia: el `deal` nace en `new` al reclamar.
 
 ---
 

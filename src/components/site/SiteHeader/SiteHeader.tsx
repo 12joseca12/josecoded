@@ -194,6 +194,7 @@ export function SiteHeader({
             triggerLabel={labels.cta}
             labels={labels.contact}
             whatsappHref={whatsappHref}
+            formHref={`${contactHref}#formulario`}
             onChat={openChatFallback}
             openerRef={chooserOpenerRef}
           />

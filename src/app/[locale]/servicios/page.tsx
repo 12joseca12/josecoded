@@ -11,7 +11,7 @@ import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 import { isLocale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
 import { buildPageMetadata } from "@/lib/seo/metadata";
-import { rateFixture } from "@/lib/services/rates";
+import { isProvisional, rates } from "@/lib/services/rates";
 import type { WayNavItem } from "@/types/services";
 
 import styles from "./page.module.css";
@@ -36,6 +36,7 @@ export default async function ServicesPage({ params }: ServicesProps) {
   if (!isLocale(locale)) notFound();
   const t = await getTranslator(locale);
   const contact = `/${locale}/contacto`;
+  const provisional = isProvisional(rates);
 
   const navItems: WayNavItem[] = [
     { id: "contratacion", label: t("services.ways.contratacion.nav") },
@@ -90,18 +91,20 @@ export default async function ServicesPage({ params }: ServicesProps) {
             extra={
               <RateFigure
                 label={t("services.rates.label")}
-                note={t("services.rates.note")}
+                note={t(provisional ? "services.rates.provisionalNote" : "services.rates.note")}
+                provisionalLabel={provisional ? t("services.rates.provisional") : undefined}
                 items={[
                   {
                     id: "hour",
                     label: t("services.rates.hour"),
-                    value: rateFixture.hour,
+                    value: rates.hour,
                     unit: t("services.rates.unitHour"),
                   },
                   {
                     id: "task",
                     label: t("services.rates.task"),
-                    value: rateFixture.task,
+                    value: rates.task,
+                    prefix: t("services.rates.from"),
                     unit: t("services.rates.unitTask"),
                   },
                 ]}
