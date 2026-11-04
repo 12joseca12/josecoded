@@ -15,7 +15,7 @@
   },
   "vars": {
     "NEXT_PUBLIC_SUPABASE_URL": "https://echlwywbucgbhwpncviy.supabase.co",
-    "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY": "placeholder",
+    "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY": "sb_publishable__n1YoCk8hC4R4QIhyThvMw_BY2G1p07",
     "NEXT_PUBLIC_TURNSTILE_SITE_KEY": "0x4AAAAAAFzkPPhv9hUKSaBY",
   },
   "ratelimits": [
@@ -58,7 +58,7 @@
         "NEXT_PUBLIC_SITE_URL": "https://josecoded-preview.josecoded-api.workers.dev",
         "NEXT_PUBLIC_SUPABASE_URL": "https://echlwywbucgbhwpncviy.supabase.co",
         "NEXT_PUBLIC_TURNSTILE_SITE_KEY": "0x4AAAAAAFzkPPhv9hUKSaBY",
-        "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY": "placeholder",
+        "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY": "sb_publishable__n1YoCk8hC4R4QIhyThvMw_BY2G1p07",
       },
     },
   },
