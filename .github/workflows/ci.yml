@@ -15,7 +15,7 @@ permissions:
 jobs:
   checks:
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 25
     env:
       ENABLE_DEV_PAGES: "true"
       NEXT_PUBLIC_TURNSTILE_SITE_KEY: "1x00000000000000000000AA"

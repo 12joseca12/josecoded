@@ -6,7 +6,16 @@ import { site } from "./src/config/site.ts";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  redirects: () => Promise.resolve([{ source: "/", destination: "/es", permanent: true }]),
+  redirects: () =>
+    Promise.resolve([
+      { source: "/", destination: "/es", permanent: true },
+      {
+        source: "/:locale(es|en)/servicios/packs",
+        destination: "/:locale/servicios/a-medida",
+        permanent: true,
+      },
+      { source: "/servicios/packs", destination: "/es/servicios/a-medida", permanent: true },
+    ]),
   headers: () => Promise.resolve(buildHeaders(site)),
 };
 

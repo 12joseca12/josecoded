@@ -11,7 +11,7 @@ describe("proxy matcher", () => {
       "/es",
       "/es/admin",
       "/es/entrar/totp",
-      "/es/servicios/packs",
+      "/es/servicios/a-medida",
       "/es/a.b/c",
     ]) {
       expect(pattern.test(path)).toBe(true);

@@ -20,12 +20,13 @@ export const faqKeys: Record<ServicePageId, readonly FaqKeys[]> = {
     { id: "progress", question: "services.faq.freelance.q3", answer: "services.faq.freelance.a3" },
     { id: "scope", question: "services.faq.freelance.q4", answer: "services.faq.freelance.a4" },
   ],
-  packs: [
-    { id: "cost", question: "services.faq.packs.q1", answer: "services.faq.packs.a1" },
-    { id: "included", question: "services.faq.packs.q2", answer: "services.faq.packs.a2" },
-    { id: "publishing", question: "services.faq.packs.q3", answer: "services.faq.packs.a3" },
-    { id: "maintenance", question: "services.faq.packs.q4", answer: "services.faq.packs.a4" },
-    { id: "client", question: "services.faq.packs.q5", answer: "services.faq.packs.a5" },
+  offers: [
+    { id: "cost", question: "services.faq.offers.q1", answer: "services.faq.offers.a1" },
+    { id: "included", question: "services.faq.offers.q2", answer: "services.faq.offers.a2" },
+    { id: "publishing", question: "services.faq.offers.q3", answer: "services.faq.offers.a3" },
+    { id: "warranty", question: "services.faq.offers.q4", answer: "services.faq.offers.a4" },
+    { id: "client", question: "services.faq.offers.q5", answer: "services.faq.offers.a5" },
+    { id: "outside", question: "services.faq.offers.q6", answer: "services.faq.offers.a6" },
   ],
 };
 

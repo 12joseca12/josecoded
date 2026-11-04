@@ -94,13 +94,13 @@ export default async function ServicesPage({ params }: ServicesProps) {
             }}
           />
           <NeedTile
-            way="packs"
+            way="project"
             area="project"
-            title={t("services.bento.needs.packs.title")}
-            text={t("services.bento.needs.packs.line")}
+            title={t("services.bento.needs.project.title")}
+            text={t("services.bento.needs.project.line")}
             cta={{
-              href: `/${locale}/servicios/packs`,
-              label: t("services.ways.packs.cta"),
+              href: `/${locale}/servicios/a-medida`,
+              label: t("services.ways.project.cta"),
             }}
           />
           <NeedTile

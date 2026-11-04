@@ -20,7 +20,7 @@ export function NeedVisual({ way }: NeedVisualProps) {
             <path d="M13 41c0-6.5 5-10.5 11-10.5S35 34.5 35 41Z" className={styles.fill} />
           </>
         ) : null}
-        {way === "packs" ? (
+        {way === "project" ? (
           <>
             <rect x="4" y="9" width="30" height="24" rx="3" className={styles.line} />
             <path d="M4 16h30" className={styles.line} />

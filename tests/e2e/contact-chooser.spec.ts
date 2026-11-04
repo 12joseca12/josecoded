@@ -10,7 +10,7 @@ const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
   contactPage: {
     head: { title: string };
     chat: { soon: string };
-    ways: Record<"contratacion" | "freelance" | "packs", { title: string }>;
+    ways: Record<"contratacion" | "freelance" | "project", { title: string }>;
     copy: { label: string; done: string };
     form: { title: string };
   };
@@ -253,7 +253,7 @@ test.describe("contact page", () => {
   for (const [way, email] of [
     ["contratacion", "hola@josecoded.com"],
     ["freelance", "freelance@josecoded.com"],
-    ["packs", "proyectos@josecoded.com"],
+    ["project", "proyectos@josecoded.com"],
   ] as const) {
     test(`${way} card shows its email as text, a mail link and a copy button`, async ({ page }) => {
       await page.goto("/es/contacto");

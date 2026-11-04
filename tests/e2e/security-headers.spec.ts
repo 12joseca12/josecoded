@@ -5,7 +5,7 @@ const publicRoutes = [
   "/es/contacto",
   "/es/servicios",
   "/es/servicios/freelance",
-  "/es/servicios/packs",
+  "/es/servicios/a-medida",
   "/es/proyectos",
 ];
 const devRoutes = ["/es/dev/nexo", "/es/dev/ui"];

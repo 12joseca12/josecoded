@@ -5,6 +5,6 @@ export const contact = {
   ways: contactWaysSchema.parse([
     { way: "contratacion", email: "hola@josecoded.com" },
     { way: "freelance", email: "freelance@josecoded.com" },
-    { way: "packs", email: "proyectos@josecoded.com" },
+    { way: "project", email: "proyectos@josecoded.com" },
   ]),
 } as const;

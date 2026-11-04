@@ -87,3 +87,24 @@
   color: var(--ink-soft);
   font-size: var(--fs-base);
 }
+
+.selection {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--line-strong);
+  border-left: var(--space-1) solid var(--coral);
+  border-radius: var(--radius-m);
+  background: var(--paper);
+}
+
+.selectionTitle {
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+  font-weight: var(--fw-medium);
+}
+
+.selectionText {
+  color: var(--ink);
+  font-weight: var(--fw-semibold);
+}

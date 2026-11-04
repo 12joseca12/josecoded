@@ -1,7 +1,7 @@
-export const wayIds = ["contratacion", "freelance", "packs"] as const;
+export const wayIds = ["contratacion", "freelance", "project"] as const;
 export type WayId = (typeof wayIds)[number];
 
-export const servicePageIds = ["hub", "freelance", "packs"] as const;
+export const servicePageIds = ["hub", "freelance", "offers"] as const;
 export type ServicePageId = (typeof servicePageIds)[number];
 
 export const wayNavVariants = ["anchors", "pages"] as const;
@@ -52,13 +52,36 @@ export interface BreadcrumbItem {
   href?: string;
 }
 
-export interface PackCardItem {
+export interface OfferCardItem {
+  slug: string;
+  name: string;
+  audience: string;
+  includes: string[];
+  excludes: string[];
+  price: string;
+  provisional: boolean;
+  weeks: string;
+  ctaHref: string;
+  ctaLabel: string;
+}
+
+export interface OfferTabGroup {
+  id: string;
+  label: string;
+  items: OfferCardItem[];
+}
+
+export interface ExtraChipItem {
   slug: string;
   name: string;
   text: string;
-  bullets: string[];
-  price: string;
-  provisional: boolean;
-  ctaHref: string;
-  ctaLabel: string;
+  tags: string[];
+  included: string;
+}
+
+export interface MaintenancePlan {
+  id: string;
+  name: string;
+  hours: string;
+  text: string;
 }

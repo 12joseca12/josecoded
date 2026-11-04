@@ -10,7 +10,7 @@ const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
     how: { title: string };
     faq: { title: string };
     bento: { title: string };
-    ways: Record<"contratacion" | "freelance" | "packs", { nav: string }>;
+    ways: Record<"contratacion" | "freelance" | "project", { nav: string }>;
   };
 };
 const wayNav = es.services.nav.label;
@@ -37,10 +37,10 @@ const pages = [
     faq: 4,
   },
   {
-    name: "packs",
-    path: "/es/servicios/packs",
-    crumbs: ["Inicio", "Servicios", "Packs"],
-    faq: 5,
+    name: "a-medida",
+    path: "/es/servicios/a-medida",
+    crumbs: ["Inicio", "Servicios", "A medida"],
+    faq: 6,
   },
 ] as const;
 
@@ -147,7 +147,7 @@ test("hub frames the ways as needs and keeps the five phases only here", async (
     "Publicar",
     "Mantener",
   ]);
-  for (const path of ["/es/servicios/freelance", "/es/servicios/packs"]) {
+  for (const path of ["/es/servicios/freelance", "/es/servicios/a-medida"]) {
     await page.goto(path);
     await expect(page.locator("#como-trabajo")).toHaveCount(0);
   }
@@ -165,9 +165,9 @@ test("hub tiles link to their destinations with unified params", async ({ page }
     "href",
     "/es/servicios/freelance",
   );
-  await expect(page.locator("#packs").getByRole("link")).toHaveAttribute(
+  await expect(page.locator("#project").getByRole("link")).toHaveAttribute(
     "href",
-    "/es/servicios/packs",
+    "/es/servicios/a-medida",
   );
 });
 
@@ -193,14 +193,14 @@ for (const [name, viewport] of [
     await page.keyboard.press("Enter");
     await expect(page).toHaveURL(/\/es\/servicios\/freelance$/);
     await page.goBack();
-    await page.locator("#packs").evaluate((el) => {
+    await page.locator("#project").evaluate((el) => {
       window.scrollTo({ top: window.scrollY + el.getBoundingClientRect().top - 140 });
     });
     await page.waitForTimeout(700);
-    const box = await page.locator("#packs").boundingBox();
-    if (!box) throw new Error("packs tile has no box");
+    const box = await page.locator("#project").boundingBox();
+    if (!box) throw new Error("project tile has no box");
     await page.mouse.click(box.x + 40, box.y + 40);
-    await expect(page).toHaveURL(/\/es\/servicios\/packs$/);
+    await expect(page).toHaveURL(/\/es\/servicios\/a-medida$/);
     await page.goBack();
     const { violations } = await new AxeBuilder({ page }).analyze();
     expect(violations).toEqual([]);
@@ -215,7 +215,7 @@ test("hub bento is three columns plus the stack strip on desktop and one column 
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/es/servicios");
   const need = await page
-    .locator("#contratacion, #packs, #freelance")
+    .locator("#contratacion, #project, #freelance")
     .evaluateAll((nodes) => nodes.map((node) => Math.round(node.getBoundingClientRect().top)));
   expect(new Set(need).size).toBe(1);
   const proof = await page.locator("#vias article").last().boundingBox();
@@ -314,44 +314,19 @@ test("freelance page: h1 query, rates stay provisional, three steps and CTA", as
   );
 });
 
-test("packs page: comparator, provisional prices and per-pack contact links", async ({ page }) => {
-  await page.goto("/es/servicios/packs");
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Precio de app móvil");
-  const comparator = page.locator("#comparador");
-  await expect(comparator.getByRole("heading", { level: 2 })).toContainText("Presupuesto de app");
-  const packs = comparator.locator("[data-pack]");
-  await expect(packs).toHaveCount(3);
-  await expect(packs.locator("[data-provisional]")).toHaveCount(3);
-  await expect(packs.first()).toHaveAttribute("data-status", "provisional");
-  for (const slug of ["app-movil", "web-negocio", "web-y-app"]) {
-    await expect(comparator.locator(`[data-pack='${slug}'] a`)).toHaveAttribute(
-      "href",
-      `/es/contacto?via=pack&pack=${slug}#formulario`,
-    );
-  }
-  await expect(page.locator("#contacto").getByRole("link").first()).toHaveAttribute(
-    "href",
-    "/es/contacto?via=pack#formulario",
-  );
-});
-
-test("a pack link lands on the form with the pack way preselected", async ({ page }) => {
-  await page.goto("/es/servicios/packs");
-  await page.locator("[data-pack='web-negocio'] a").click();
-  await expect(page).toHaveURL(/\/es\/contacto\?via=pack&pack=web-negocio#formulario$/);
-  await expect(page.locator("#formulario")).toBeVisible();
-});
-
 test("the contact form still accepts the old via values", async ({ page }) => {
-  for (const via of ["packs", "contratacion"]) {
+  for (const via of ["packs", "pack", "project", "contratacion"]) {
     const response = await page.goto(`/es/contacto?via=${via}`);
     expect(response?.status()).toBe(200);
   }
 });
 
 test("child pages mark their own tab as the current page", async ({ page }) => {
-  for (const id of ["freelance", "packs"] as const) {
-    await page.goto(`/es/servicios/${id}`);
+  for (const [id, path] of [
+    ["freelance", "freelance"],
+    ["project", "a-medida"],
+  ] as const) {
+    await page.goto(`/es/servicios/${path}`);
     const nav = page.getByRole("navigation", { name: wayNav });
     await expect(nav.locator("[aria-current]")).toHaveCount(1);
     await expect(nav.getByRole("link", { name: ways[id].nav })).toHaveAttribute(
@@ -364,15 +339,15 @@ test("child pages mark their own tab as the current page", async ({ page }) => {
 test("child page nav moves between pages", async ({ page }) => {
   await page.goto("/es/servicios/freelance");
   const nav = page.getByRole("navigation", { name: wayNav });
-  await nav.getByRole("link", { name: ways.packs.nav }).click();
-  await expect(page).toHaveURL(/\/es\/servicios\/packs$/);
+  await nav.getByRole("link", { name: ways.project.nav }).click();
+  await expect(page).toHaveURL(/\/es\/servicios\/a-medida$/);
   await nav.getByRole("link", { name: ways.contratacion.nav }).click();
   await expect(page).toHaveURL(/\/es\/servicios#contratacion$/);
 });
 
 test("breadcrumb collapses to the parent on mobile", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 800 });
-  await page.goto("/es/servicios/packs");
+  await page.goto("/es/servicios/a-medida");
   const crumbs = page.getByRole("navigation", { name: es.breadcrumbs.label });
   await expect(crumbs.getByRole("link", { name: "Servicios" })).toBeVisible();
   await expect(crumbs.getByRole("link", { name: "Inicio" })).toBeHidden();

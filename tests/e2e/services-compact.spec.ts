@@ -54,7 +54,7 @@ test("hub need tiles are short questions with one line of support and one icon",
   page,
 }) => {
   await page.goto("/es/servicios");
-  for (const id of ["contratacion", "packs", "freelance"]) {
+  for (const id of ["contratacion", "project", "freelance"]) {
     const tile = page.locator(`#${id}`);
     const title = (await tile.locator("h3").textContent()) ?? "";
     expect(title.trim().split(/\s+/).length).toBeLessThanOrEqual(7);

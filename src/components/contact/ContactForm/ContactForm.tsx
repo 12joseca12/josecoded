@@ -23,12 +23,22 @@ import { type WayId, wayIds } from "@/types/services";
 import { TurnstileField, type TurnstileHandle } from "../TurnstileField/TurnstileField";
 import styles from "./ContactForm.module.css";
 
+export interface ContactSelectionView {
+  offers: string[];
+  extras: string[];
+  summary: string;
+  price: string;
+  monthly: string | null;
+  provisional: boolean;
+  changeHref: string;
+}
+
 export interface ContactFormProps {
   locale: string;
   labels: ContactFormLabels;
   emails: Record<WayId, string>;
   initialWay: WayId | null;
-  pack: string | null;
+  selection: ContactSelectionView | null;
   privacyHref: string;
   newTabLabel: string;
   turnstile: { siteKey: string; scriptUrl: string } | null;
@@ -57,7 +67,7 @@ export function ContactForm({
   labels,
   emails,
   initialWay,
-  pack,
+  selection,
   privacyHref,
   newTabLabel,
   turnstile,
@@ -68,6 +78,7 @@ export function ContactForm({
   const [verificationError, setVerificationError] = useState(false);
   const [pending, setPending] = useState(false);
   const [way, setWay] = useState<WayId>(initialWay ?? "contratacion");
+  const [picked, setPicked] = useState<WayId | null>(initialWay);
   const [session, setSession] = useState(0);
   const form = useRef<HTMLFormElement>(null);
   const token = useRef<string | null>(null);
@@ -135,7 +146,14 @@ export function ContactForm({
       company: textOf(data, "company"),
       message: textOf(data, "message"),
       consent: data.get("consent") === "on",
-      pack: chosenWay === "packs" && pack ? pack : undefined,
+      offer:
+        chosenWay === "project" && selection && selection.offers.length > 0
+          ? selection.offers
+          : undefined,
+      extras:
+        chosenWay === "project" && selection && selection.extras.length > 0
+          ? selection.extras
+          : undefined,
       homepage: textOf(data, "homepage"),
     });
     const found = parsed.success ? {} : collectFieldErrors(parsed.error);
@@ -216,6 +234,13 @@ export function ContactForm({
     );
   }
 
+  const selectionLine = selection
+    ? [
+        `${selection.summary} · ${labels.selection.from} ${selection.price} €`,
+        selection.provisional ? ` (${labels.selection.provisional})` : "",
+        selection.monthly ? ` + ${selection.monthly} ${labels.selection.perMonth}` : "",
+      ].join("")
+    : "";
   const invalidCount = Object.keys(errors).length + (verificationError ? 1 : 0);
   const errorText = (code: string | undefined) =>
     code === undefined ? undefined : (labels.errors[code] ?? labels.genericError);
@@ -237,6 +262,10 @@ export function ContactForm({
       }}
       onInput={(event) => {
         const target = event.target;
+        if (target instanceof HTMLInputElement && target.name === "way") {
+          const chosen = wayIds.find((id) => id === target.value);
+          if (chosen) setPicked(chosen);
+        }
         if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {
           clearFieldError(target.name);
         }
@@ -262,6 +291,13 @@ export function ContactForm({
           hint: labels.ways[id].hint,
         }))}
       />
+      {selection && picked === "project" ? (
+        <div className={styles.selection} data-testid="selection-chip">
+          <p className={styles.selectionTitle}>{labels.selection.title}</p>
+          <p className={styles.selectionText}>{selectionLine}</p>
+          <Link href={selection.changeHref}>{labels.selection.change}</Link>
+        </div>
+      ) : null}
       <div className={styles.pair}>
         <Field
           name="name"
