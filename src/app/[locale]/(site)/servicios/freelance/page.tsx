@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { FaqWithNexo } from "@/components/chat/FaqWithNexo/FaqWithNexo";
 import { RateFigure } from "@/components/services/RateFigure/RateFigure";
 import { ServicePage } from "@/components/services/ServicePage/ServicePage";
 import { PageSection } from "@/components/site/PageSection/PageSection";
 import { Button } from "@/components/ui/Button/Button";
 import { Card } from "@/components/ui/Card/Card";
-import { Faq } from "@/components/ui/Faq/Faq";
 import { Heading } from "@/components/ui/Heading/Heading";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 import { Steps } from "@/components/ui/Steps/Steps";
@@ -135,8 +135,8 @@ export default async function FreelancePage({ params }: FreelanceProps) {
       <PageSection id="como-empezamos" title={t("freelancePage.start.title")} size="wide">
         <Steps items={steps} />
       </PageSection>
-      <PageSection id="preguntas" title={t("services.faq.title")}>
-        <Faq items={faq} />
+      <PageSection id="preguntas" title={t("services.faq.title")} size="wide">
+        <FaqWithNexo locale={locale} items={faq} />
       </PageSection>
       <PageSection
         id="contacto"

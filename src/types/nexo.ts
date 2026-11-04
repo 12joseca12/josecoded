@@ -27,3 +27,22 @@ export const nexoEvents = [
   "wake",
 ] as const;
 export type NexoEvent = (typeof nexoEvents)[number];
+
+export interface NexoChatLabels {
+  title: string;
+  subtitle: string;
+  logLabel: string;
+  greeting: string;
+  suggestionsLabel: string;
+  inputLabel: string;
+  placeholder: string;
+  send: string;
+  sending: string;
+  typing: string;
+  you: string;
+  nexo: string;
+  fallback: string;
+  form: string;
+  chat: string;
+  states: Record<NexoState, string>;
+}

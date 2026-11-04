@@ -1,0 +1,235 @@
+.card {
+  --card-focus: var(--charcoal);
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-l);
+  background: var(--coral);
+  box-shadow: var(--shadow-card);
+  color: var(--charcoal);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: 4rem;
+  block-size: 4rem;
+  border-radius: var(--radius-xl);
+  background: var(--charcoal);
+  overflow: clip;
+}
+
+.intro {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.title {
+  font-size: var(--fs-h4);
+  font-weight: var(--fw-black);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--lh-snug);
+}
+
+.subtitle {
+  font-size: var(--fs-base);
+}
+
+.log {
+  max-block-size: 17rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--space-1);
+  border-radius: var(--radius-m);
+}
+
+.log:focus-visible,
+.chip:focus-visible,
+.input:focus-visible {
+  outline: 2px solid var(--card-focus);
+  outline-offset: 2px;
+}
+
+.turns {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.turn {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: start;
+}
+
+.turn[data-from="user"] {
+  justify-items: end;
+}
+
+.bubble {
+  max-inline-size: 88%;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-m);
+  font-size: var(--fs-base);
+  line-height: var(--lh-body);
+  overflow-wrap: anywhere;
+}
+
+.turn[data-from="nexo"] .bubble {
+  border-start-start-radius: var(--radius-xs);
+  background: var(--panel);
+  color: var(--charcoal);
+}
+
+.turn[data-from="user"] .bubble {
+  border-end-end-radius: var(--radius-xs);
+  background: var(--charcoal);
+  color: var(--on-dark);
+}
+
+.handoff {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.dots {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  block-size: 1.5em;
+}
+
+.dots span {
+  inline-size: 0.375rem;
+  block-size: 0.375rem;
+  border-radius: var(--radius-xl);
+  background: var(--charcoal);
+  opacity: 0.45;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chip {
+  min-block-size: 2.25rem;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--charcoal);
+  border-radius: var(--radius-xl);
+  background: transparent;
+  color: var(--charcoal);
+  font-family: inherit;
+  font-size: var(--fs-m);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-ui);
+  text-align: start;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition-property: background-color, color, transform;
+  transition-duration: var(--dur-fast);
+  transition-timing-function: var(--ease-out);
+}
+
+.chip[aria-disabled="true"] {
+  cursor: progress;
+  opacity: 0.55;
+}
+
+.chip:active:not([aria-disabled="true"]) {
+  background: var(--charcoal);
+  color: var(--on-dark);
+}
+
+.form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.label {
+  display: contents;
+}
+
+.input {
+  min-inline-size: 0;
+  min-block-size: 2.75rem;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--charcoal);
+  border-radius: var(--radius-xl);
+  background: var(--paper);
+  color: var(--charcoal);
+  caret-color: var(--charcoal);
+  font-family: inherit;
+  font-size: var(--fs-body);
+}
+
+.input::placeholder {
+  color: var(--ink-soft);
+  opacity: 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .chip:hover:not([aria-disabled="true"]) {
+    background: var(--charcoal);
+    color: var(--on-dark);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .turn {
+    animation: arrive var(--dur) var(--ease-out);
+  }
+
+  .dots span {
+    animation: blink var(--dur-pulse) var(--ease-in-out) infinite;
+  }
+
+  .dots span:nth-child(2) {
+    animation-delay: var(--dur-stagger);
+  }
+
+  .dots span:nth-child(3) {
+    animation-delay: calc(var(--dur-stagger) * 2);
+  }
+
+  .chip:active:not([aria-disabled="true"]) {
+    transform: scale(0.97);
+  }
+}
+
+@keyframes arrive {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}

@@ -436,39 +436,24 @@
     },
     "bento": {
       "title": "Empieza por lo que necesitas",
-      "lead": "Tres situaciones habituales y la forma de trabajo que mejor encaja con cada una. Cada tarjeta lleva a su página.",
+      "lead": "Elige tu situación: cada tarjeta lleva a su página.",
       "needs": {
         "contratacion": {
-          "title": "¿Buscas a alguien que se sume a tu equipo?",
-          "a": "Trabajo dentro de tu proceso: ramas, revisión de código e integración continua.",
-          "b": "Móvil con React Native y web con Next.js, con TypeScript de punta a punta.",
-          "c": "Dejo documentado lo que construyo para que el equipo pueda mantenerlo.",
-          "prefix": "Respondo en",
-          "value": "1–2",
-          "unit": "días laborables"
+          "title": "¿Buscas a alguien para tu equipo?",
+          "line": "Me sumo a tu equipo de móvil o web y a tu forma de trabajar."
         },
         "packs": {
-          "title": "¿Quieres lanzar un producto o un proyecto?",
-          "a": "Diseño, desarrollo y publicación en un solo paquete.",
-          "b": "Alcance, precio y fecha acordados por escrito antes de empezar.",
-          "c": "La app en App Store y Google Play, o la web en tu dominio.",
-          "unit": "€"
+          "title": "¿Necesitas una web o app a medida?",
+          "line": "De la idea a las tiendas, con alcance, precio y fecha cerrados."
         },
         "freelance": {
-          "title": "¿Necesitas un refuerzo puntual en tu desarrollo?",
-          "a": "Me adapto a tu código y a tu forma de trabajar, sin rehacerlo desde cero.",
-          "b": "Por horas o por tarea: eliges el modelo que te encaja.",
-          "c": "Entregas cortas que pruebas sin esperar al final."
+          "title": "¿Necesitas un refuerzo puntual?",
+          "line": "Una funcionalidad o una revisión, por horas o por tarea."
         }
-      },
-      "phases": {
-        "title": "Cinco fases, las mismas en cualquier vía",
-        "text": "En cada una sabes qué ves y qué necesito de ti, sea una contratación, un refuerzo o un pack.",
-        "cta": "Ver cómo trabajo"
       },
       "proof": {
         "title": "El stack que verás en tu proyecto",
-        "text": "Móvil y web con TypeScript, base de datos y autenticación con Supabase, publicación en Cloudflare. Lo uso a diario y está en producción.",
+        "text": "Móvil y web con TypeScript, Supabase y Cloudflare.",
         "projects": "Ver proyectos",
         "stack": "Ver el stack completo"
       },
@@ -889,5 +874,22 @@
   },
   "breadcrumbs": {
     "label": "Migas de pan"
+  },
+  "nexoChat": {
+    "title": "Pregúntale a Nexo",
+    "subtitle": "Respuestas rápidas sobre cómo trabajo",
+    "logLabel": "Conversación con Nexo",
+    "greeting": "Hola, soy Nexo. Elige una pregunta o escribe la tuya y te cuento cómo trabaja Jose.",
+    "suggestionsLabel": "Preguntas sugeridas",
+    "inputLabel": "Escribe tu pregunta a Nexo",
+    "placeholder": "Escribe tu pregunta",
+    "send": "Enviar",
+    "sending": "Nexo está respondiendo",
+    "typing": "Nexo está escribiendo",
+    "you": "Tú",
+    "nexo": "Nexo",
+    "fallback": "Eso no lo tengo a mano, pero Jose sí. Puedes pasarle la pregunta por el formulario o por el chat.",
+    "form": "Ir al formulario",
+    "chat": "Abrir el chat"
   }
 }
