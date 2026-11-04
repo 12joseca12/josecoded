@@ -79,7 +79,7 @@
     color: var(--ink);
   }
 
-  .link:not([aria-current]):hover {
+  .link:not([data-active]):hover {
     background: var(--sk-base);
   }
 }
@@ -88,7 +88,7 @@
   transform: scale(0.96);
 }
 
-.link[aria-current] {
+.link[data-active] {
   color: var(--ink);
 }
 
@@ -112,9 +112,9 @@
   content: "";
   position: absolute;
   left: 50%;
-  bottom: 0.3rem;
-  width: 0.25rem;
-  height: 0.25rem;
+  bottom: var(--space-1);
+  width: var(--space-4);
+  height: calc(var(--marker-h) * 0.75);
   translate: -50% 0;
   border-radius: var(--radius-xl);
   background: var(--coral);
