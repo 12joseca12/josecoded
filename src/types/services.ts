@@ -11,4 +11,5 @@ export interface RateItem {
   label: string;
   value: string;
   unit: string;
+  prefix?: string;
 }

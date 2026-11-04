@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { buildHeaders } from "@/config/headers";
 import { productionOrigin, resolveSite } from "@/config/site";
+import { rates } from "@/lib/services/rates";
 import { jsonLdGraphSchema } from "@/types/seo";
 
 import {
@@ -134,20 +135,26 @@ describe("buildPageMetadata", () => {
 });
 
 describe("json-ld", () => {
-  it("builds a valid Person with Madrid and no pending profiles", async () => {
+  it("builds a valid Person with the full name, email and LinkedIn", async () => {
     const person = await buildPerson(productionOrigin, "es");
     expect(person["@id"]).toBe(`${productionOrigin}/#person`);
-    expect(person.name).toBe("Jose");
-    expect(person.alternateName).toBe("josecoded");
+    expect(person.name).toBe("José Carlos Sánchez García");
+    expect(person.givenName).toBe("José Carlos");
+    expect(person.familyName).toBe("Sánchez García");
+    expect(person.alternateName).toEqual(["José Carlos Sánchez", "josecoded"]);
+    expect(person.email).toBe("hola@josecoded.com");
     expect(person.address.addressLocality).toBe("Madrid");
     expect(person.areaServed.map((area) => area.name)).toEqual(["España", "Remoto"]);
-    expect(person.sameAs).toBeUndefined();
+    expect(person.sameAs).toEqual([
+      "https://www.linkedin.com/in/jos%C3%A9-carlos-s%C3%A1nchez-garc%C3%ADa-7019072a9/",
+    ]);
   });
 
   it("keeps real profile links and drops placeholders", async () => {
     const links = { linkedin: "https://www.linkedin.com/in/example", github: "{{DATO}}" };
     expect(resolveProfileLinks(links)).toEqual(["https://www.linkedin.com/in/example"]);
-    const person = await buildPerson(productionOrigin, "es", links);
+    const person = await buildPerson(productionOrigin, "es", links, []);
+    expect(person.email).toBeUndefined();
     expect(person.sameAs).toEqual(["https://www.linkedin.com/in/example"]);
   });
 
@@ -173,10 +180,21 @@ describe("json-ld", () => {
 });
 
 describe("buildLlmsTxt rates", () => {
-  it("prints each rate only when it is known", async () => {
-    const text = await buildLlmsTxt(productionOrigin, "es", { hour: "60", task: "{{DATO}}" });
-    expect(text).toContain("Tarifa por hora: 60 €.");
+  it("prints the rates only when they are final", async () => {
+    const final = await buildLlmsTxt(productionOrigin, "es", {
+      status: "final",
+      hour: "60",
+      task: "300",
+    });
+    expect(final).toContain("Tarifa por hora: 60 €.");
+    expect(final).toContain("Presupuesto por tarea desde 300 €.");
+  });
+
+  it("omits provisional prices entirely", async () => {
+    const text = await buildLlmsTxt(productionOrigin, "es", rates);
+    expect(text).not.toContain("Tarifa por hora");
     expect(text).not.toContain("Presupuesto por tarea");
+    expect(text).not.toMatch(/\b0{2,3}\b/);
   });
 });
 
@@ -203,13 +221,18 @@ describe("buildHeaders", () => {
 });
 
 describe("buildLlmsTxt", () => {
-  it("describes the same entity as the Person and keeps pending numbers", async () => {
-    const text = await buildLlmsTxt(productionOrigin, "es", { hour: "{{DATO}}", task: "{{DATO}}" });
+  it("describes the same entity as the Person and lists the emails", async () => {
+    const text = await buildLlmsTxt(productionOrigin, "es", rates);
     expect(text.startsWith("# josecoded\n")).toBe(true);
     expect(text).toContain("Madrid");
     expect(text).toContain("Desarrollador full stack especializado en React Native");
     expect(text).not.toContain("{{DATO");
     expect(text).not.toContain("chat");
     expect(text).toContain(`(${productionOrigin}/es/servicios)`);
+    expect(text).toContain(`(${productionOrigin}/es/contacto)`);
+    expect(text).toContain("José Carlos Sánchez García");
+    expect(text).toContain("Contratación: hola@josecoded.com");
+    expect(text).toContain("Freelance: freelance@josecoded.com");
+    expect(text).toContain("Proyectos y packs: proyectos@josecoded.com");
   });
 });

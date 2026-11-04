@@ -1,6 +1,9 @@
+import { contact } from "@/config/contact";
 import { profileLinks } from "@/config/profiles";
 import type { Locale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
+import { primaryEmail } from "@/lib/contact/channels";
+import type { ContactWay } from "@/types/contact";
 import {
   type JsonLdGraph,
   jsonLdGraphSchema,
@@ -29,14 +32,18 @@ export async function buildPerson(
   origin: string,
   locale: Locale,
   links: Record<string, string> = profileLinks,
+  ways: readonly ContactWay[] = contact.ways,
 ): Promise<PersonJsonLd> {
   const t = await getTranslator(locale);
   const sameAs = resolveProfileLinks(links);
+  const email = primaryEmail(ways);
   return personSchema.parse({
     "@type": "Person",
     "@id": personId(origin),
     name: t("seo.person.name"),
-    alternateName: t("seo.person.alternateName"),
+    givenName: t("seo.person.givenName"),
+    familyName: t("seo.person.familyName"),
+    alternateName: [t("seo.person.alternateNameFull"), t("seo.person.alternateName")],
     jobTitle: t("seo.person.jobTitle"),
     description: t("seo.person.description"),
     url: absoluteUrl(origin, localePath(locale, "")),
@@ -49,6 +56,7 @@ export async function buildPerson(
       { "@type": "Country", name: t("seo.person.country") },
       { "@type": "Place", name: t("seo.person.remote") },
     ],
+    ...(email === null ? {} : { email }),
     ...(sameAs.length > 0 ? { sameAs } : {}),
   });
 }

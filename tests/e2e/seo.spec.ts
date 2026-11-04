@@ -4,7 +4,16 @@ import { expect, type Page, test } from "@playwright/test";
 
 const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
   meta: { titleTemplate: string };
-  seo: { person: { name: string; alternateName: string; jobTitle: string } };
+  seo: {
+    person: {
+      name: string;
+      givenName: string;
+      familyName: string;
+      alternateNameFull: string;
+      alternateName: string;
+      jobTitle: string;
+    };
+  };
 };
 
 interface Graph {
@@ -75,7 +84,9 @@ test("sitemap.xml lists the public routes that have content", async ({ request }
   const response = await request.get("/sitemap.xml");
   expect(response.status()).toBe(200);
   const body = await response.text();
-  for (const route of publicRoutes.filter((path) => path !== "/es/proyectos")) {
+  for (const route of [...publicRoutes, "/es/contacto"].filter(
+    (path) => path !== "/es/proyectos",
+  )) {
     expect(body).toContain(`<loc>http://localhost:3000${route}</loc>`);
   }
   expect(body).not.toContain("/es/proyectos");
@@ -96,6 +107,17 @@ test("llms.txt describes the same entity as the JSON-LD", async ({ request }) =>
   expect(body).toContain(es.seo.person.jobTitle);
   expect(body).toContain("Madrid");
   expect(body).toContain(es.seo.person.alternateName);
+  expect(body).toContain(es.seo.person.name);
+  for (const email of ["hola@", "freelance@", "proyectos@"]) {
+    expect(body).toContain(`${email}josecoded.com`);
+  }
+});
+
+test("llms.txt omits the provisional prices", async ({ request }) => {
+  const body = await (await request.get("/llms.txt")).text();
+  expect(body).not.toMatch(/Tarifa por hora|Presupuesto por tarea/);
+  expect(body).not.toMatch(/\b0{2,3}\b/);
+  expect(body).not.toContain("€");
 });
 
 test("JSON-LD parses and carries the Person and the WebSite", async ({ page }) => {
@@ -105,7 +127,11 @@ test("JSON-LD parses and carries the Person and the WebSite", async ({ page }) =
   const website = graph["@graph"].find((node) => node["@type"] === "WebSite");
   expect(person).toMatchObject({
     name: es.seo.person.name,
-    alternateName: es.seo.person.alternateName,
+    givenName: es.seo.person.givenName,
+    familyName: es.seo.person.familyName,
+    alternateName: [es.seo.person.alternateNameFull, es.seo.person.alternateName],
+    email: "hola@josecoded.com",
+    sameAs: ["https://www.linkedin.com/in/jos%C3%A9-carlos-s%C3%A1nchez-garc%C3%ADa-7019072a9/"],
     jobTitle: es.seo.person.jobTitle,
     address: { addressLocality: "Madrid", addressCountry: "ES" },
   });
