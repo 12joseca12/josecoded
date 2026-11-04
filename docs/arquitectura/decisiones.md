@@ -56,6 +56,7 @@
 - **3.3 Sin contraseña:** OTP por email para todos, Google opcional, TOTP obligatorio para admin, closers y freelance (sin `aal2` no se entra en sus zonas).
 - **3.4 Solo por invitación del admin.** Nadie se registra solo.
 - **3.5 Rol en `profiles.role`** con helper `private.role()` en RLS.
+- **3.6 (Jose, 2026-11-04) Hay exactamente un admin.** Índice único parcial `profiles_single_admin_key` sobre `profiles(role) where role = 'admin'`, más el guard que impide desactivar o degradar al último admin; ascender a un segundo admin falla.
 
 ## 4. Omen y Supabase
 
@@ -109,6 +110,7 @@
 - **7.7 La comisión se crea al marcar la oportunidad «ganada»** (RPC `win_deal` con el importe cobrado, estado `pending`); el admin la aprueba cuando ha cobrado y registra el pago después.
 - **7.8 (Jose, 2026-11-04: a) Bandeja «Interesados» y quién la ve.** Cada envío del formulario de `/contacto` (2.21), cada handoff de Nexo (5.7) y lo que llegue por WhatsApp (a mano, hasta que haya API) es una fila de `leads` con `source` `form | nexo | whatsapp | radar | manual`, `via`, `status` `new | assigned | contacted | converted | discarded`, `assigned_to` y `consent_at`. a) **Todos los closers ven los interesados sin asignar; cada uno ve los suyos; el closer padre ve además los de sus subclosers (como 7.3); el admin todo.** Un closer **reclama** un interesado (`claim_lead`, primero que llega, atómico) y en ese momento se crea o enlaza el `contact` a su nombre con su `deal` (`stage = new`, `via`, `pack_id`) y una `activity` `form`/`chat`. b) Solo el admin ve la bandeja y asigna a mano. c) Reparto automático por turnos. Si el email del interesado ya es un contacto con dueño, el interesado se asigna solo a ese dueño (nunca entra en la bandeja común): no se le quita un contacto a nadie.
 - **7.9 (Jose, 2026-11-04) `leads` es la entrada; `contacts` la cartera.** Un interesado no es un contacto hasta que alguien lo reclama o el admin lo asigna; así la bandeja puede verla todo closer sin exponer carteras ajenas. Para no mezclar nombres, `contacts.kind` cambia el valor `lead` por `prospect`. Las purgas del chat no borran `leads` ni `contacts` (5.11). Modelo en `datos.md` §11; sustituye a la RPC `public_submit_contact` de §Principios y de W33.
+- **7.10 (Jose, 2026-11-04) El closer padre ve las tasas de sus subclosers.** Puede leer la fila completa de `profiles` de sus subclosers (`closer_rate`, `parent_rate` incluidas); no se separa en vista ni tabla. Fijado con un test pgTAP.
 
 ## 8. Admin
 
@@ -125,6 +127,7 @@
 - **9.3 Presupuestos:** LCP < 2,5 s, INP < 200 ms, CLS < 0,1, JS de la home ≤ 150 KB gz, Lighthouse ≥ 95 en CI.
 - **9.4 Hero animado en CSS + SVG/Canvas ligero,** sin librería 3D; vídeo de reserva en móvil y con `reduced-motion`.
 - **9.5 Mobile-first,** dos breakpoints en `rem` + container queries; Baseline 2024 con `@supports`.
+- **9.6 (2026-11-04) `private` nunca se expone al API.** Ninguna función de `private` es ejecutable por `anon`, `authenticated` ni `service_role`; lo que el servidor necesita se llama por un wrapper `security definer` en `public` con `EXECUTE` solo para `service_role` (el primero, `public.submit_lead`, envuelve `private.submit_lead`). `datos.md` §11.
 
 ## 10. Método
 
