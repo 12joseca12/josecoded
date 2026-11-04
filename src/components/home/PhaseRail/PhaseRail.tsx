@@ -50,7 +50,6 @@ export function PhaseRail({
       className={styles.rail}
       data-paused={paused ? "" : undefined}
       data-live={live ? "" : undefined}
-      data-reduced={reduced ? "" : undefined}
     >
       <ol className={styles.list} aria-label={labels.list} onAnimationEnd={handleEnd}>
         {phases.map((phase, index) => {
@@ -58,43 +57,36 @@ export function PhaseRail({
           const aria = status === "current" ? "step" : undefined;
           return (
             <li key={phase.id}>
-              {reduced ? (
-                <span className={styles.phase} data-status={status} aria-current={aria}>
-                  <span className={styles.label}>{phase.label}</span>
-                </span>
-              ) : (
-                <button
-                  type="button"
-                  className={styles.phase}
-                  data-status={status}
-                  aria-current={aria}
-                  onClick={() => {
-                    onSelect(index);
-                  }}
-                >
-                  <Ring />
-                  <span className={styles.label}>{phase.label}</span>
-                </button>
-              )}
+              <button
+                type="button"
+                className={styles.phase}
+                data-status={status}
+                aria-current={aria}
+                disabled={reduced}
+                onClick={() => {
+                  onSelect(index);
+                }}
+              >
+                <Ring />
+                <span className={styles.label}>{phase.label}</span>
+              </button>
             </li>
           );
         })}
       </ol>
-      {reduced ? null : (
-        <button
-          type="button"
-          className={styles.pause}
-          aria-label={userPaused ? labels.resume : labels.pause}
-          onClick={onToggle}
-        >
-          <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-            {userPaused ? <path d="M5 3.2v9.6L12.5 8z" /> : <path d="M5.5 3.5v9M10.5 3.5v9" />}
-          </svg>
-          <span className={styles.pauseText}>
-            {userPaused ? labels.resumeText : labels.pauseText}
-          </span>
-        </button>
-      )}
+      <button
+        type="button"
+        className={styles.pause}
+        aria-label={userPaused ? labels.resume : labels.pause}
+        onClick={onToggle}
+      >
+        <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+          {userPaused ? <path d="M5 3.2v9.6L12.5 8z" /> : <path d="M5.5 3.5v9M10.5 3.5v9" />}
+        </svg>
+        <span className={styles.pauseText}>
+          {userPaused ? labels.resumeText : labels.pauseText}
+        </span>
+      </button>
     </div>
   );
 }

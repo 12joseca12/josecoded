@@ -1,5 +1,5 @@
 .rail {
-  --phase-dur: 3.4s;
+  --phase-dur: var(--dur-phase);
   container-type: inline-size;
   display: flex;
   align-items: center;
@@ -184,38 +184,44 @@
   }
 }
 
-.rail[data-reduced] .list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0;
-}
-
-.rail[data-reduced] li {
-  display: flex;
-  align-items: center;
-}
-
-.rail[data-reduced] li + li::before {
-  content: "·";
-  color: var(--ink-faint);
-}
-
-.rail[data-reduced] .phase {
-  width: auto;
-  flex-direction: row;
-  min-height: 2.75rem;
-  padding: 0 var(--space-2);
-  font-size: var(--fs-m);
-  cursor: default;
-}
-
-.rail[data-reduced] .phase[aria-current] {
-  color: var(--coral-deep);
-}
-
 @media (prefers-reduced-motion: reduce) {
   .fill {
     animation: none;
+  }
+
+  .rail .ring,
+  .rail .pause {
+    display: none;
+  }
+
+  .rail .list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .rail li {
+    display: flex;
+    align-items: center;
+  }
+
+  .rail li + li::before {
+    content: "·";
+    color: var(--ink-faint);
+  }
+
+  .rail .phase {
+    width: auto;
+    flex-direction: row;
+    min-height: 2.75rem;
+    padding: 0 var(--space-2);
+    background: transparent;
+    font-size: var(--fs-m);
+    cursor: default;
+  }
+
+  .rail .phase[aria-current] {
+    color: var(--coral-deep);
   }
 }

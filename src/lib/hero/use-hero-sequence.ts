@@ -2,18 +2,10 @@
 
 import { type RefObject, useCallback, useEffect, useReducer, useSyncExternalStore } from "react";
 
+import { usePrefersReducedMotion } from "../use-prefers-reduced-motion";
 import { initialSequence, isPaused, parityOf, sequenceReducer, shownPhase } from "./sequence";
 
-const reducedQuery = "(prefers-reduced-motion: reduce)";
 const visibleRatio = 0.15;
-
-function subscribeReduced(notify: () => void) {
-  const query = matchMedia(reducedQuery);
-  query.addEventListener("change", notify);
-  return () => {
-    query.removeEventListener("change", notify);
-  };
-}
 
 function subscribeHidden(notify: () => void) {
   document.addEventListener("visibilitychange", notify);
@@ -23,7 +15,6 @@ function subscribeHidden(notify: () => void) {
 }
 
 const subscribeNothing = () => () => undefined;
-const readReduced = () => matchMedia(reducedQuery).matches;
 const readHidden = () => document.hidden;
 const readTrue = () => true;
 const readFalse = () => false;
@@ -42,7 +33,7 @@ export interface HeroSequence {
 
 export function useHeroSequence(stageRef: RefObject<HTMLDivElement | null>): HeroSequence {
   const [state, dispatch] = useReducer(sequenceReducer, initialSequence);
-  const reduced = useSyncExternalStore(subscribeReduced, readReduced, readFalse);
+  const reduced = usePrefersReducedMotion();
   const hidden = useSyncExternalStore(subscribeHidden, readHidden, readFalse);
   const hydrated = useSyncExternalStore(subscribeNothing, readTrue, readFalse);
 

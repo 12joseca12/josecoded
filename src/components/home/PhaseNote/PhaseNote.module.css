@@ -176,8 +176,10 @@
   opacity: var(--p-2);
   translate: calc((1 - var(--p-2)) * -2cqi) 0;
   transition:
-    opacity 320ms var(--ease-out) calc((var(--morph) * 0.8 + var(--k) * 330ms) * var(--p-2)),
-    translate 320ms var(--ease-out) calc((var(--morph) * 0.8 + var(--k) * 330ms) * var(--p-2));
+    opacity var(--dur-reveal) var(--ease-out)
+      calc((var(--morph) * 0.8 + var(--k) * var(--dur-step-code)) * var(--p-2)),
+    translate var(--dur-reveal) var(--ease-out)
+      calc((var(--morph) * 0.8 + var(--k) * var(--dur-step-code)) * var(--p-2));
 }
 
 .ok {
@@ -237,8 +239,10 @@
   opacity: var(--p-3);
   translate: 0 calc((1 - var(--p-3)) * 2cqi);
   transition:
-    opacity 300ms var(--ease-out) calc((var(--morph) + var(--n) * 160ms) * var(--p-3)),
-    translate 300ms var(--ease-out) calc((var(--morph) + var(--n) * 160ms) * var(--p-3));
+    opacity var(--dur-reveal) var(--ease-out)
+      calc((var(--morph) + var(--n) * var(--dur-step-check)) * var(--p-3)),
+    translate var(--dur-reveal) var(--ease-out)
+      calc((var(--morph) + var(--n) * var(--dur-step-check)) * var(--p-3));
 }
 
 .checks .check {
@@ -269,7 +273,7 @@
   border-radius: inherit;
   background: var(--coral);
   opacity: 0;
-  animation: pulse 1.6s var(--ease-out) infinite;
+  animation: pulse var(--dur-pulse) var(--ease-out) infinite;
 }
 
 [data-paused] .pulse::after {

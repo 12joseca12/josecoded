@@ -2,7 +2,6 @@ import { phaseIds } from "@/types/hero";
 
 export const phaseCount = phaseIds.length;
 export const staticPhase = phaseIds.indexOf("publish");
-export const phaseSeconds = 3.4;
 
 export interface SequenceState {
   phase: number;

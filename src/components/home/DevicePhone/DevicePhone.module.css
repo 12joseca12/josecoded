@@ -258,7 +258,7 @@
   background: var(--coral);
   transform: scaleX(calc(1 - var(--p-4)));
   transform-origin: right center;
-  transition: transform 1600ms var(--ease-out) 500ms;
+  transition: transform var(--dur-draw) var(--ease-out) var(--dur-wait-spark);
 }
 
 .selection {
@@ -368,7 +368,7 @@
 
 .fresh {
   opacity: var(--p-4);
-  transition-delay: calc(200ms * var(--p-4));
+  transition-delay: calc(var(--dur-wait-row) * var(--p-4));
 }
 
 .last {
@@ -503,8 +503,8 @@
   transform: scale(calc(0.34 + var(--p-ship) * 0.66), calc(0.68 + var(--p-ship) * 0.32));
   transform-origin: 50% 3.75cqi;
   transition:
-    transform 560ms var(--ease-spring) calc(var(--morph) * 0.5 * var(--p-ship)),
-    opacity 240ms var(--ease-out) calc(var(--morph) * 0.5 * var(--p-ship));
+    transform var(--dur-pop) var(--ease-spring) calc(var(--morph) * 0.5 * var(--p-ship)),
+    opacity var(--dur-pop-fade) var(--ease-out) calc(var(--morph) * 0.5 * var(--p-ship));
 }
 
 .toast > i {
@@ -519,7 +519,7 @@
 .toastCare {
   position: absolute;
   left: 9cqi;
-  transition: opacity 300ms var(--ease-out) 180ms;
+  transition: opacity var(--dur-reveal) var(--ease-out) var(--dur-fast);
 }
 
 .toastShip {

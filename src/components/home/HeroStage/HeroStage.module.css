@@ -9,12 +9,12 @@
 .stage {
   --u: 1cqi;
   --hair: max(0.0625rem, calc(var(--u) * 0.45));
-  --morph: 760ms;
-  --morph-out: 420ms;
-  --stagger: 70ms;
-  --scan-dur: 980ms;
+  --morph: var(--dur-morph);
+  --morph-out: var(--dur-morph-out);
+  --stagger: var(--dur-stagger);
+  --scan-dur: var(--dur-scan);
   --float-amp: 1.1cqi;
-  --float-dur: 7s;
+  --float-dur: var(--dur-float);
   --p-app: 0;
   --p-0: 1;
   --p-1: 0;

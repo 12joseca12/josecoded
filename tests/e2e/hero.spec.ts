@@ -133,7 +133,9 @@ test.describe("reduced motion", () => {
     await expect(stage).toHaveAttribute("data-phase", "3");
     await expect(rail(page).locator('[aria-current="step"]')).toHaveText(hero.phases.publish ?? "");
     await expect(page.getByRole("button", { name: hero.rail.pause })).toHaveCount(0);
-    await expect(rail(page).getByRole("button")).toHaveCount(0);
+    for (const button of await rail(page).getByRole("button").all()) {
+      await expect(button).toBeDisabled();
+    }
     await page.waitForTimeout(4500);
     await expect(stage).toHaveAttribute("data-phase", "3");
     expect(await runningHeroAnimations(page)).toBe(0);
