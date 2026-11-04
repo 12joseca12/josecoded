@@ -1,0 +1,17 @@
+.channels {
+  width: 100%;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding: 0 var(--gutter) var(--space-9);
+}
+
+.list {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (min-width: 64rem) {
+  .list {
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  }
+}

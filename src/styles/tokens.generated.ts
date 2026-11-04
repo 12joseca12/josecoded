@@ -85,6 +85,7 @@ export const tokenNames = [
   "--radius-xs",
   "--dur-reduced",
   "--dur-bubble",
+  "--dur-pulse",
   "--z-raised",
   "--z-header",
   "--z-toast",

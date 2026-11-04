@@ -4,12 +4,14 @@ export interface PublicRoute {
   path: string;
   priority: number;
   needsProjects?: boolean;
+  needsContact?: boolean;
 }
 
 export const publicRoutes: readonly PublicRoute[] = [
   { path: "", priority: 1 },
   { path: "/servicios", priority: 0.9 },
   { path: "/proyectos", priority: 0.8, needsProjects: true },
+  { path: "/contacto", priority: 0.7, needsContact: true },
 ];
 
 export const privatePrefixes = [

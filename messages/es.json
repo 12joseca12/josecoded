@@ -74,6 +74,7 @@
       "role_primary": "Acción más importante de la pantalla: carbón; al pasar el cursor se encoge un poco y se rodea de un aro coral; al pulsar suelta burbujas.",
       "role_accent": "Acento puntual: coral; al pasar el cursor se encoge un poco y se rodea de un aro; al pulsar suelta burbujas coral.",
       "role_light": "Acción secundaria sobre fondo claro.",
+      "role_quiet": "Acción secundaria sin fondo, para barras y atajos.",
       "role_ghost": "Acción discreta con círculo a la izquierda.",
       "interactiveStates": "Hover, foco, pulsado y desactivado se prueban con ratón y teclado.",
       "linkInternal": "Enlace interno",
@@ -150,6 +151,50 @@
     "about": "Sobre mí",
     "blog": "Blog",
     "contact": "Contacto"
+  },
+  "contactChooser": {
+    "title": "Hablemos",
+    "close": "Cerrar",
+    "whatsapp": "WhatsApp",
+    "whatsappHint": "Escríbeme y respondo en cuanto puedo",
+    "chat": "Chat con Nexo",
+    "chatHint": "Nuestro asistente te responde al momento",
+    "whatsappMessage": "Hola Jose, te escribo desde josecoded.com. Me gustaría hablar de un proyecto."
+  },
+  "chatButton": {
+    "label": "Chat"
+  },
+  "contactPage": {
+    "meta": {
+      "title": "Contacto",
+      "description": "Todas las formas de hablar con Jose: chat con Nexo, WhatsApp y correo."
+    },
+    "head": {
+      "title": "Hablemos de tu",
+      "accent": "proyecto.",
+      "lead": "Elige la vía que prefieras. Respondo yo, o Nexo mientras no estoy."
+    },
+    "channelsLabel": "Vías de contacto",
+    "chat": {
+      "title": "Chat con Nexo",
+      "hint": "Nuestro asistente te responde al momento.",
+      "open": "Abrir chat",
+      "soon": "El chat abre muy pronto."
+    },
+    "whatsapp": {
+      "title": "WhatsApp",
+      "hint": "Escríbeme y respondo en cuanto puedo.",
+      "open": "Abrir WhatsApp"
+    },
+    "email": {
+      "title": "Correo",
+      "hint": "Para propuestas y documentos.",
+      "open": "Escribir un correo"
+    }
+  },
+  "search": {
+    "label": "Buscar",
+    "shortcut": "⌘K"
   },
   "footer": {
     "navLabel": "Pie de página",

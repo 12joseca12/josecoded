@@ -3,6 +3,24 @@ export interface NavItem {
   label: string;
 }
 
+export interface ContactChooserLabels {
+  title: string;
+  close: string;
+  whatsapp: string;
+  whatsappHint: string;
+  chat: string;
+  chatHint: string;
+}
+
+export interface ChatButtonLabels {
+  label: string;
+}
+
+export interface SearchLabels {
+  label: string;
+  shortcut: string;
+}
+
 export interface HeaderLabels {
   brandLabel: string;
   brandWord: string;
@@ -14,4 +32,7 @@ export interface HeaderLabels {
   menuClose: string;
   menuTitle: string;
   here: string;
+  contact: ContactChooserLabels;
+  chat: ChatButtonLabels;
+  search: SearchLabels;
 }

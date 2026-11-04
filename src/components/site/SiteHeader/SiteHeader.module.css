@@ -67,6 +67,7 @@
   color: var(--ink-soft);
   font-size: var(--fs-m);
   font-weight: var(--fw-medium);
+  white-space: nowrap;
   transition:
     color var(--dur-fast) ease,
     background-color var(--dur-fast) ease,
@@ -144,6 +145,6 @@
   }
 
   .header[data-condensed] .bar {
-    max-width: 44rem;
+    max-width: 54rem;
   }
 }

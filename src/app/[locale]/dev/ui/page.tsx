@@ -50,6 +50,7 @@ export default async function UiCatalogPage({ params }: { params: Promise<{ loca
               primary: t("dev.ui.role_primary"),
               accent: t("dev.ui.role_accent"),
               light: t("dev.ui.role_light"),
+              quiet: t("dev.ui.role_quiet"),
               ghost: t("dev.ui.role_ghost"),
             },
           }}

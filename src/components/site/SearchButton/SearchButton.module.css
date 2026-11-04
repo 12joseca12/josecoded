@@ -1,0 +1,8 @@
+.kbd {
+  margin-left: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xs);
+  color: var(--ink-faint);
+  font: var(--fw-medium) var(--fs-s) / var(--lh-tight) var(--font-mono);
+}
