@@ -210,7 +210,16 @@
       "toastErrorTitle": "Algo ha fallado",
       "toastErrorText": "No se ha podido enviar. Inténtalo de nuevo.",
       "toastInfoTitle": "Dato",
-      "toastInfoText": "Tienes una novedad pendiente de leer."
+      "toastInfoText": "Tienes una novedad pendiente de leer.",
+      "coral": "Coral",
+      "coralText": "El coral es la firma de la marca: aparece en detalles que orientan, nunca como relleno. La acción principal sigue siendo carbón y el botón coral se reserva para casos contados. En texto pequeño sobre claro se usa coral oscuro para llegar a AA.",
+      "coralNav": "Navegación: barra coral bajo el elemento activo de la cápsula y en el menú móvil.",
+      "coralMarker": "Marcador: barra corta sobre los títulos de sección, sin texto encima.",
+      "coralLinks": "Enlaces: subrayado coral oscuro; al pasar el ratón, el texto también.",
+      "coralFocus": "Foco y selección: anillo de foco coral oscuro y selección de texto con tinte coral.",
+      "coralDetails": "Detalles: separadores de migas, viñetas de listas, cursor de los campos, progreso de fases y pie.",
+      "coralMarkerDemo": "Título de sección con marcador",
+      "coralMarkerSmall": "Subtítulo con marcador"
     },
     "scroll": {
       "title": "Scroll por bloques",

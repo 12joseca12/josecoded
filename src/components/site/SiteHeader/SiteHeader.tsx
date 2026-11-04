@@ -12,7 +12,7 @@ import { chatPanelMounted, openChat } from "@/lib/chat/chat-events";
 import { useOpenChat } from "@/lib/chat/use-open-chat";
 import { homeSlug, resolveActive, stripLocale } from "@/lib/nav/nav";
 import { useNavState } from "@/lib/nav/use-nav-state";
-import type { HeaderLabels, NavItem } from "@/types/nav";
+import type { HeaderLabels, NavCurrent, NavItem, NavLink } from "@/types/nav";
 
 import { Brand } from "../Brand/Brand";
 import { ChatButton } from "../ChatButton/ChatButton";
@@ -48,7 +48,7 @@ export function SiteHeader({
     pathname,
     section,
   );
-  const current = onHome ? "location" : "page";
+  const sectionCurrent: NavCurrent = onHome ? "location" : "page";
 
   const [openPath, setOpenPath] = useState<string | null>(null);
   const menuOpen = openPath === pathname;
@@ -106,7 +106,7 @@ export function SiteHeader({
   const indicatorRef = useRef<HTMLSpanElement>(null);
   const place = useCallback(() => {
     const indicator = indicatorRef.current;
-    const link = trackRef.current?.querySelector<HTMLElement>("a[aria-current]");
+    const link = trackRef.current?.querySelector<HTMLElement>("a[data-active]");
     if (!indicator) return;
     if (!link || link.offsetWidth === 0) {
       indicator.style.opacity = "0";
@@ -141,13 +141,24 @@ export function SiteHeader({
   }, [place]);
 
   const homeHref = `/${locale}`;
-  const menuLinks = [
-    { href: homeHref, label: labels.home, active: active === homeSlug },
-    ...items.map((item) => ({
-      href: `${homeHref}/${item.slug}`,
-      label: item.label,
-      active: active === item.slug,
-    })),
+  const links: NavLink[] = [
+    {
+      key: "home",
+      href: homeHref,
+      label: labels.home,
+      active: active === homeSlug,
+      current: onHome ? "page" : undefined,
+    },
+    ...items.map((item) => {
+      const isActive = active === item.slug;
+      return {
+        key: item.slug,
+        href: `${homeHref}/${item.slug}`,
+        label: item.label,
+        active: isActive,
+        current: isActive ? sectionCurrent : undefined,
+      };
+    }),
   ];
 
   return (
@@ -168,14 +179,15 @@ export function SiteHeader({
           <div className={styles.track} ref={trackRef}>
             <span className={styles.indicator} ref={indicatorRef} aria-hidden="true" />
             <ul className={styles.links}>
-              {items.map((item) => (
-                <li key={item.slug}>
+              {links.map((link) => (
+                <li key={link.key}>
                   <NextLink
-                    href={`${homeHref}/${item.slug}`}
+                    href={link.href}
                     className={styles.link}
-                    aria-current={active === item.slug ? current : undefined}
+                    aria-current={link.current}
+                    data-active={link.active || undefined}
                   >
-                    {item.label}
+                    {link.label}
                   </NextLink>
                 </li>
               ))}
@@ -223,7 +235,7 @@ export function SiteHeader({
         title={labels.menuTitle}
         closeLabel={labels.menuClose}
         hereLabel={labels.here}
-        links={menuLinks}
+        links={links}
         cta={cta}
       />
     </header>
