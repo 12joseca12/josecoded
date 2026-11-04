@@ -8,12 +8,17 @@ import { Button } from "@/components/ui/Button/Button";
 import { IconButton } from "@/components/ui/IconButton/IconButton";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 import type { Locale } from "@/i18n/config";
+import { chatPanelMounted, openChat } from "@/lib/chat/chat-events";
+import { useOpenChat } from "@/lib/chat/use-open-chat";
 import { homeSlug, resolveActive, stripLocale } from "@/lib/nav/nav";
 import { useNavState } from "@/lib/nav/use-nav-state";
 import type { HeaderLabels, NavItem } from "@/types/nav";
 
 import { Brand } from "../Brand/Brand";
+import { ChatButton } from "../ChatButton/ChatButton";
+import { type ChooserFocus, ContactChooser } from "../ContactChooser/ContactChooser";
 import { MobileMenu } from "../MobileMenu/MobileMenu";
+import { SearchButton } from "../SearchButton/SearchButton";
 import { CapsuleRing } from "./CapsuleRing";
 import styles from "./SiteHeader.module.css";
 
@@ -21,11 +26,20 @@ interface SiteHeaderProps {
   locale: Locale;
   items: NavItem[];
   labels: HeaderLabels;
+  whatsappHref: string | null;
+  searchEnabled: boolean;
 }
 
 const menuId = "site-menu";
+const chooserId = "contact-chooser";
 
-export function SiteHeader({ locale, items, labels }: SiteHeaderProps) {
+export function SiteHeader({
+  locale,
+  items,
+  labels,
+  whatsappHref,
+  searchEnabled,
+}: SiteHeaderProps) {
   const pathname = usePathname();
   const onHome = stripLocale(pathname) === "";
   const { scrolled, condensed, section } = useNavState(onHome);
@@ -43,6 +57,31 @@ export function SiteHeader({ locale, items, labels }: SiteHeaderProps) {
     setOpenPath(null);
     triggerRef.current?.focus({ preventScroll: true });
   }, []);
+
+  const [chooser, setChooser] = useState<{ path: string | null; focus: ChooserFocus }>({
+    path: null,
+    focus: "first",
+  });
+  const chooserOpen = chooser.path === pathname;
+  const chooserOpenerRef = useRef<HTMLElement | null>(null);
+  const closeChooser = useCallback(() => {
+    setChooser((current) => (current.path === null ? current : { ...current, path: null }));
+  }, []);
+  const openChooser = useCallback(
+    (focus: ChooserFocus) => {
+      setChooser({ path: pathname, focus });
+    },
+    [pathname],
+  );
+  const openChatFallback = useOpenChat(locale);
+  const onChatButton = (opener: HTMLElement) => {
+    if (chatPanelMounted()) {
+      openChat();
+      return;
+    }
+    chooserOpenerRef.current = opener;
+    openChooser("chat");
+  };
 
   const contactHref = `/${locale}/contacto`;
   const [pendingFrom, setPendingFrom] = useState<string | null>(null);
@@ -144,7 +183,20 @@ export function SiteHeader({ locale, items, labels }: SiteHeaderProps) {
           </div>
         </nav>
         <div className={styles.actions}>
-          {cta}
+          {searchEnabled ? <SearchButton labels={labels.search} /> : null}
+          <ChatButton labels={labels.chat} onClick={onChatButton} />
+          <ContactChooser
+            id={chooserId}
+            open={chooserOpen}
+            focus={chooser.focus}
+            onOpen={openChooser}
+            onClose={closeChooser}
+            triggerLabel={labels.cta}
+            labels={labels.contact}
+            whatsappHref={whatsappHref}
+            onChat={openChatFallback}
+            openerRef={chooserOpenerRef}
+          />
           <span className={styles.menu}>
             <IconButton
               ref={triggerRef}

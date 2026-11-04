@@ -9,8 +9,11 @@ export function buildSitemap(
   site: SiteConfig,
   locales: readonly Locale[],
   hasProjects: boolean,
+  hasContact: boolean,
 ): MetadataRoute.Sitemap {
-  const routes = publicRoutes.filter((route) => hasProjects || !route.needsProjects);
+  const routes = publicRoutes.filter(
+    (route) => (hasProjects || !route.needsProjects) && (hasContact || !route.needsContact),
+  );
   return locales.flatMap((locale) =>
     routes.map((route) => ({
       url: absoluteUrl(site.origin, localePath(locale, route.path)),

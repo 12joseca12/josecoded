@@ -8,7 +8,82 @@
   "home": {
     "name": "josecoded",
     "metaTitle": "React Native and full stack developer",
-    "metaDescription": "Mobile apps and websites with React Native and Next.js: hourly freelance, fixed-price packs or inside your team. Madrid, Spain and remote."
+    "metaDescription": "Mobile apps and websites with React Native and Next.js: hourly freelance, fixed-price packs or inside your team. Madrid, Spain and remote.",
+    "hero": {
+      "title": "Full stack developer specialised in",
+      "accent": "React Native.",
+      "lead": "I design, build and maintain mobile apps and websites for companies and businesses. From Madrid and remote: by the hour, by the task or with a fixed-price pack.",
+      "ctaPrimary": "Ask for a proposal",
+      "ctaSecondary": "See projects",
+      "rail": {
+        "list": "Phases of every project",
+        "pause": "Pause animation",
+        "resume": "Resume animation",
+        "pauseText": "Pause",
+        "resumeText": "Resume"
+      },
+      "phases": {
+        "discover": "Discover",
+        "design": "Design",
+        "build": "Build",
+        "publish": "Publish",
+        "maintain": "Maintain"
+      },
+      "demo": {
+        "phone": {
+          "title": "Orders",
+          "note": "// first: today's orders",
+          "nowTitle": "9 new",
+          "nowSub": "today · +18%",
+          "weekTotal": "1,284",
+          "weekLabel": "orders this week",
+          "recent": "Recent",
+          "toastShip": "v1.0 published",
+          "toastCare": "v1.1 installed",
+          "rowNew": { "title": "Table 7 · toast", "meta": "new", "price": "€3.80" },
+          "row1": { "title": "Table 4 · 2 coffees", "meta": "2 min ago", "price": "€6.40" },
+          "row2": { "title": "Bar · set menu", "meta": "6 min ago", "price": "€12.50" },
+          "row3": { "title": "Terrace 2 · juices", "meta": "9 min ago", "price": "€7.00" },
+          "row4": { "title": "Table 1 · breakfast", "meta": "14 min ago", "price": "€9.20" }
+        },
+        "browser": {
+          "designUrl": "design · orders v3",
+          "live": "in production",
+          "title": "Orders dashboard",
+          "orders": "Orders today",
+          "ordersNow": "128",
+          "ordersLive": "142",
+          "wait": "Average wait",
+          "waitNow": "6 min",
+          "waitLive": "5 min",
+          "rating": "Rating",
+          "ratingNow": "4.8",
+          "ratingLive": "4.9"
+        },
+        "notes": {
+          "who": "Who",
+          "whoValue": "the venue's customers",
+          "what": "What",
+          "whatValue": "order without calling",
+          "where": "Where",
+          "whereValue": "iOS, Android and web",
+          "tests": "42 tests · types ok",
+          "shipHead": "v1.0 published",
+          "store": "App Store",
+          "storeNote": "review passed",
+          "play": "Google Play",
+          "playNote": "in production",
+          "webNote": "HTTPS · CDN",
+          "careHead": "This week",
+          "sessions": "Crash-free sessions",
+          "sessionsValue": "99.8%",
+          "load": "Average load",
+          "loadValue": "0.9 s",
+          "release": "v1.1 installed",
+          "releaseValue": "no downtime"
+        }
+      }
+    }
   },
   "projects": {
     "metaTitle": "Projects",
@@ -74,6 +149,7 @@
       "role_primary": "Most important action on the screen: charcoal; on hover it shrinks slightly with a coral ring; on press it releases bubbles.",
       "role_accent": "Occasional accent: coral; on hover it shrinks slightly with a ring; on press it releases coral bubbles.",
       "role_light": "Secondary action on a light background.",
+      "role_quiet": "Background-free secondary action for bars and shortcuts.",
       "role_ghost": "Discreet action with a circle on the left.",
       "interactiveStates": "Hover, focus, pressed and disabled are tested with mouse and keyboard.",
       "linkInternal": "Internal link",
@@ -169,6 +245,50 @@
     "about": "About me",
     "blog": "Blog",
     "contact": "Contact"
+  },
+  "contactChooser": {
+    "title": "Let's talk",
+    "close": "Close",
+    "whatsapp": "WhatsApp",
+    "whatsappHint": "Message me and I reply as soon as I can",
+    "chat": "Chat with Nexo",
+    "chatHint": "Our assistant answers right away",
+    "whatsappMessage": "Hi Jose, I'm writing from josecoded.com. I'd like to talk about a project."
+  },
+  "chatButton": {
+    "label": "Chat"
+  },
+  "contactPage": {
+    "meta": {
+      "title": "Contact",
+      "description": "Every way to reach Jose: chat with Nexo, WhatsApp and email."
+    },
+    "head": {
+      "title": "Let's talk about your",
+      "accent": "project.",
+      "lead": "Pick the channel you prefer. I answer, or Nexo does while I'm away."
+    },
+    "channelsLabel": "Ways to get in touch",
+    "chat": {
+      "title": "Chat with Nexo",
+      "hint": "Our assistant answers right away.",
+      "open": "Open chat",
+      "soon": "The chat opens very soon."
+    },
+    "whatsapp": {
+      "title": "WhatsApp",
+      "hint": "Message me and I reply as soon as I can.",
+      "open": "Open WhatsApp"
+    },
+    "email": {
+      "title": "Email",
+      "hint": "For proposals and documents.",
+      "open": "Write an email"
+    }
+  },
+  "search": {
+    "label": "Search",
+    "shortcut": "⌘K"
   },
   "footer": {
     "navLabel": "Footer",

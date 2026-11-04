@@ -1,4 +1,4 @@
-export const buttonVariants = ["primary", "accent", "light", "ghost"] as const;
+export const buttonVariants = ["primary", "accent", "light", "quiet", "ghost"] as const;
 export type ButtonVariant = (typeof buttonVariants)[number];
 
 export const buttonSizes = ["md", "sm"] as const;

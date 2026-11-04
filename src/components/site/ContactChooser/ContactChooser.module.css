@@ -1,0 +1,207 @@
+.anchor {
+  position: relative;
+}
+
+.anchor[data-open] > button svg {
+  rotate: 180deg;
+}
+
+.panel {
+  --from: translateY(-0.5rem) scale(0.97);
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-l);
+  background: var(--panel);
+  color: var(--ink);
+  box-shadow: var(--shadow-deep);
+  opacity: 0;
+  transform: var(--from);
+  transform-origin: top right;
+  transition:
+    opacity var(--dur-fast) ease,
+    transform var(--dur-fast) var(--ease-out),
+    overlay var(--dur-fast) allow-discrete,
+    display var(--dur-fast) allow-discrete;
+}
+
+.panel[data-mode="popover"] {
+  position: absolute;
+  top: calc(100% + var(--space-3));
+  right: 0;
+  left: auto;
+  width: 20rem;
+  max-width: calc(100vw - 2rem);
+}
+
+.panel[data-mode="sheet"] {
+  --from: translateY(100%);
+  position: fixed;
+  inset: auto 0 0;
+  width: 100%;
+  max-width: none;
+  max-height: calc(100dvh - 1.5rem);
+  border-bottom: 0;
+  border-radius: var(--radius-l) var(--radius-l) 0 0;
+  transform-origin: bottom;
+}
+
+.panel[open] {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--dur) ease,
+    transform var(--dur-slow) var(--ease-drawer),
+    overlay var(--dur-slow) allow-discrete,
+    display var(--dur-slow) allow-discrete;
+}
+
+@starting-style {
+  .panel[open] {
+    opacity: 0;
+    transform: var(--from);
+  }
+}
+
+.panel::backdrop {
+  background: transparent;
+  transition:
+    background-color var(--dur) ease,
+    overlay var(--dur) allow-discrete,
+    display var(--dur) allow-discrete;
+}
+
+.panel[open]::backdrop {
+  background: var(--line-strong);
+}
+
+@starting-style {
+  .panel[open]::backdrop {
+    background: transparent;
+  }
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-2) var(--space-3);
+}
+
+.panel[data-mode="sheet"] .inner {
+  padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 2.25rem;
+  padding-left: var(--space-3);
+}
+
+.title {
+  color: var(--ink-faint);
+  font: var(--fw-medium) var(--fs-s) / var(--lh-tight) var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.close {
+  display: none;
+}
+
+.panel[data-mode="sheet"] .close {
+  display: block;
+}
+
+.options {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 3.5rem;
+  padding: var(--space-3);
+  border: 0;
+  border-radius: var(--radius-m);
+  background: transparent;
+  color: var(--ink);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition-property: background-color, transform;
+  transition-duration: var(--dur-fast);
+  transition-timing-function: var(--ease-out);
+}
+
+.option:active {
+  transform: scale(0.98);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .option:hover {
+    background: var(--sk-base);
+  }
+}
+
+.optionIcon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-xl);
+  background: var(--on-dark);
+  box-shadow: var(--shadow-soft);
+}
+
+.optionIcon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.optionText {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.optionTitle {
+  font-size: var(--fs-l);
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.01em;
+}
+
+.optionHint {
+  color: var(--ink-faint);
+  font-size: var(--fs-m);
+  line-height: var(--lh-snug);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel,
+  .panel[data-mode="sheet"] {
+    --from: none;
+  }
+
+  .panel,
+  .panel[open] {
+    transform: none;
+    transition-duration: var(--dur-reduced);
+  }
+
+  .anchor[data-open] > button svg {
+    rotate: none;
+  }
+}
