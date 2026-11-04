@@ -21,6 +21,9 @@ interface ButtonBaseProps {
   loading?: boolean;
   loadingLabel?: string;
   icon?: ReactNode;
+  iconStart?: boolean;
+  badge?: boolean;
+  collapse?: boolean;
   children: ReactNode;
 }
 
@@ -83,21 +86,25 @@ export function Button(props: ButtonProps) {
     loading = false,
     loadingLabel,
     icon,
+    iconStart = false,
+    badge = false,
+    collapse = false,
     children,
     ...rest
   } = props;
 
-  const leading = variant === "ghost";
+  const ghost = variant === "ghost";
+  const leading = ghost || iconStart;
   const slot =
     loading || icon ? (
-      <span className={styles.slot} aria-hidden="true">
+      <span className={styles.slot} data-badge={badge || undefined} aria-hidden="true">
         {loading ? <span className={styles.spinner} /> : icon}
       </span>
     ) : null;
   const content = (
     <>
       {leading ? slot : null}
-      <span>{children}</span>
+      <span className={styles.label}>{children}</span>
       {leading ? null : slot}
       <span className={styles.burst} data-burst="" aria-hidden="true" />
       {loading && loadingLabel ? <VisuallyHidden>{loadingLabel}</VisuallyHidden> : null}
@@ -107,7 +114,8 @@ export function Button(props: ButtonProps) {
     className: styles.button,
     "data-variant": variant,
     "data-size": size,
-    "data-icon": slot && !leading ? "true" : undefined,
+    "data-icon": slot && !ghost ? (iconStart ? "start" : "true") : undefined,
+    "data-collapse": collapse ? "narrow" : undefined,
     "aria-busy": loading || undefined,
   };
   const withPress =

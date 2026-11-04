@@ -78,16 +78,22 @@ describe("buildRobots", () => {
 
 describe("buildSitemap", () => {
   it("lists the public routes with absolute URLs once there are projects", () => {
-    const urls = buildSitemap(production, ["es"], true).map((entry) => entry.url);
+    const urls = buildSitemap(production, ["es"], true, true).map((entry) => entry.url);
     expect(urls).toEqual([
       `${productionOrigin}/es`,
       `${productionOrigin}/es/servicios`,
       `${productionOrigin}/es/proyectos`,
+      `${productionOrigin}/es/contacto`,
     ]);
   });
 
+  it("leaves /contacto out while no channel is live", () => {
+    const urls = buildSitemap(production, ["es"], true, false).map((entry) => entry.url);
+    expect(urls).not.toContain(`${productionOrigin}/es/contacto`);
+  });
+
   it("leaves /proyectos out while no project is published", () => {
-    const urls = buildSitemap(production, ["es"], false).map((entry) => entry.url);
+    const urls = buildSitemap(production, ["es"], false, false).map((entry) => entry.url);
     expect(urls).toEqual([`${productionOrigin}/es`, `${productionOrigin}/es/servicios`]);
   });
 });

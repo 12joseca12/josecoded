@@ -273,7 +273,7 @@
   border-radius: inherit;
   background: var(--coral);
   opacity: 0;
-  animation: pulse var(--dur-pulse) var(--ease-out) infinite;
+  animation: pulse var(--dur-hero-pulse) var(--ease-out) infinite;
 }
 
 [data-paused] .pulse::after {

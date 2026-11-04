@@ -51,11 +51,23 @@
   --ring-color: var(--ring-charcoal);
   --bubble: var(--on-dark);
   background: var(--on-dark);
+  border-color: var(--line);
   color: var(--charcoal);
+}
+
+.button[data-variant="quiet"] {
+  --ring-color: var(--ring-charcoal);
+  --bubble: var(--sk-base);
+  background: transparent;
+  color: var(--ink-soft);
 }
 
 .button[data-icon="true"] {
   padding-right: var(--space-4);
+}
+
+.button[data-icon="start"] {
+  padding-left: var(--space-4);
 }
 
 .button[data-variant="ghost"] {
@@ -80,6 +92,18 @@
   place-items: center;
   flex: none;
   position: relative;
+}
+
+.slot[data-badge]::after {
+  content: "";
+  position: absolute;
+  top: -0.2rem;
+  right: -0.25rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: var(--radius-xl);
+  background: var(--coral);
+  box-shadow: 0 0 0 1px var(--on-dark);
 }
 
 .slot svg {
@@ -125,6 +149,27 @@
   border-radius: var(--radius-xl);
 }
 
+@media (width < 64rem) {
+  .button[data-collapse="narrow"] {
+    gap: 0;
+    min-width: 2.75rem;
+    padding: 0;
+  }
+
+  .button[data-collapse="narrow"][data-size="sm"] {
+    min-width: 2.25rem;
+  }
+
+  .button[data-collapse="narrow"] .label {
+    position: absolute;
+    width: 0.0625rem;
+    height: 0.0625rem;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
 @media (hover: hover) and (pointer: fine) {
   .button:hover,
   .button[data-hover="true"] {
@@ -135,6 +180,11 @@
   .button:hover .slot svg,
   .button[data-hover="true"] .slot svg {
     transform: translateX(var(--nudge));
+  }
+
+  .button[data-icon="start"]:hover .slot svg,
+  .button[data-icon="start"][data-hover="true"] .slot svg {
+    transform: none;
   }
 
   .button[data-variant="ghost"]:hover,
