@@ -89,6 +89,8 @@ export default async function LocaleLayout({
       whatsappHint: t("contactChooser.whatsappHint"),
       chat: t("contactChooser.chat"),
       chatHint: t("contactChooser.chatHint"),
+      form: t("contactChooser.form"),
+      formHint: t("contactChooser.formHint"),
     },
     chat: { label: t("chatButton.label") },
     search: { label: t("search.label"), shortcut: t("search.shortcut") },

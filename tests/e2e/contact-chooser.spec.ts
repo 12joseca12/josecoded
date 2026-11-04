@@ -5,9 +5,15 @@ import { expect, test } from "@playwright/test";
 
 const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
   nav: { cta: string };
-  contactChooser: { title: string; close: string; whatsapp: string; chat: string };
+  contactChooser: { title: string; close: string; whatsapp: string; chat: string; form: string };
   chatButton: { label: string };
-  contactPage: { head: { title: string }; chat: { soon: string } };
+  contactPage: {
+    head: { title: string };
+    chat: { soon: string };
+    ways: Record<"contratacion" | "freelance" | "packs", { title: string }>;
+    copy: { label: string; done: string };
+    form: { title: string; soon: string };
+  };
 };
 
 const chatButtonName = es.chatButton.label;
@@ -141,6 +147,7 @@ test.describe("desktop popover focus and motion", () => {
     await page.keyboard.press("Enter");
     const dialog = page.getByRole("dialog", { name: es.contactChooser.title });
     await expect(dialog).toBeVisible();
+    await page.keyboard.press("End");
     await page.keyboard.press("Tab");
     await expect(dialog).toBeHidden();
     await expect(trigger).toHaveAttribute("aria-expanded", "false");
@@ -232,14 +239,64 @@ test.describe("contact page", () => {
       ).toBeVisible();
       await expect(page.locator("#chat")).toBeVisible();
       await expect(page.locator("#chat").getByRole("status")).toHaveText(es.contactPage.chat.soon);
-      await expect(page.locator('a[href*="wa.me"], a[href^="mailto:"]')).toHaveCount(0);
+      await expect(page.locator('a[href*="wa.me"]')).toHaveCount(0);
       const { violations } = await new AxeBuilder({ page }).analyze();
       expect(violations).toEqual([]);
     });
   }
 
-  test("stays out of the sitemap while no channel is live", async ({ request }) => {
+  test("is in the sitemap now that the email channels are live", async ({ request }) => {
     const response = await request.get("/sitemap.xml");
-    expect(await response.text()).not.toContain("/es/contacto");
+    expect(await response.text()).toContain("/es/contacto");
+  });
+
+  for (const [way, email] of [
+    ["contratacion", "hola@josecoded.com"],
+    ["freelance", "freelance@josecoded.com"],
+    ["packs", "proyectos@josecoded.com"],
+  ] as const) {
+    test(`${way} card shows its email as text, a mail link and a copy button`, async ({ page }) => {
+      await page.goto("/es/contacto");
+      const card = page.locator(`#${way}`);
+      await expect(
+        card.getByRole("heading", { name: es.contactPage.ways[way].title }),
+      ).toBeVisible();
+      await expect(card.locator("[data-email]")).toHaveText(email);
+      await expect(card.locator(`a[href="mailto:${email}"]`)).toHaveCount(1);
+      await expect(
+        card.getByRole("button", { name: new RegExp(es.contactPage.copy.label) }),
+      ).toBeVisible();
+    });
+  }
+
+  test("the copy button copies the address and confirms", async ({ page, context }) => {
+    await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+    await page.goto("/es/contacto");
+    const button = page
+      .locator("#freelance")
+      .getByRole("button", { name: /freelance@josecoded\.com/ });
+    await button.click();
+    await expect(button).toContainText(es.contactPage.copy.done);
+    expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(
+      "freelance@josecoded.com",
+    );
+    await expect(button).toContainText(es.contactPage.copy.label, { timeout: 5000 });
+  });
+
+  test("the formulario section is an honest note, not a fake form", async ({ page }) => {
+    await page.goto("/es/contacto#formulario");
+    const section = page.locator("#formulario");
+    await expect(section).toBeVisible();
+    await expect(section).toContainText(es.contactPage.form.soon);
+    await expect(page.locator("form")).toHaveCount(0);
+  });
+
+  test("the chooser Formulario option lands on #formulario", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/es");
+    await page.getByRole("button", { name: es.nav.cta }).click();
+    await page.getByRole("link", { name: new RegExp(es.contactChooser.form) }).click();
+    await expect(page).toHaveURL(/\/es\/contacto#formulario$/);
+    await expect(page.locator("#formulario")).toBeVisible();
   });
 });

@@ -3,16 +3,29 @@ import { notFound } from "next/navigation";
 
 import { ChannelCard } from "@/components/contact/ChannelCard/ChannelCard";
 import { ChatChannel } from "@/components/contact/ChatChannel/ChatChannel";
+import { FormChannel } from "@/components/contact/FormChannel/FormChannel";
+import { WayChannel } from "@/components/contact/WayChannel/WayChannel";
 import { PageHead } from "@/components/site/PageHead/PageHead";
 import { Button } from "@/components/ui/Button/Button";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 import { contact } from "@/config/contact";
 import { isLocale } from "@/i18n/config";
+import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
 import { hasLiveChannel, resolveChannels } from "@/lib/contact/channels";
 import { buildPageMetadata } from "@/lib/seo/metadata";
+import type { WayId } from "@/types/services";
 
 import styles from "./page.module.css";
+
+const wayKeys: Record<WayId, { title: MessageKey; hint: MessageKey }> = {
+  contratacion: {
+    title: "contactPage.ways.contratacion.title",
+    hint: "contactPage.ways.contratacion.hint",
+  },
+  freelance: { title: "contactPage.ways.freelance.title", hint: "contactPage.ways.freelance.hint" },
+  packs: { title: "contactPage.ways.packs.title", hint: "contactPage.ways.packs.hint" },
+};
 
 interface ContactProps {
   params: Promise<{ locale: string }>;
@@ -66,13 +79,25 @@ export default async function ContactPage({ params }: ContactProps) {
               </Button>
             </ChannelCard>
           ) : null}
-          {channels.emailHref ? (
-            <ChannelCard title={t("contactPage.email.title")} hint={t("contactPage.email.hint")}>
-              <Button href={channels.emailHref} icon={<ArrowIcon />}>
-                {t("contactPage.email.open")}
-              </Button>
-            </ChannelCard>
-          ) : null}
+          {channels.ways.map((entry) => (
+            <WayChannel
+              key={entry.way}
+              id={entry.way}
+              title={t(wayKeys[entry.way].title)}
+              hint={t(wayKeys[entry.way].hint)}
+              email={entry.email}
+              href={entry.href}
+              openLabel={t("contactPage.mail.open")}
+              copyLabel={t("contactPage.copy.label")}
+              copyAriaLabel={t("contactPage.copy.aria").replace("{email}", entry.email)}
+              copiedLabel={t("contactPage.copy.done")}
+            />
+          ))}
+          <FormChannel
+            title={t("contactPage.form.title")}
+            hint={t("contactPage.form.hint")}
+            soonLabel={t("contactPage.form.soon")}
+          />
         </ul>
       </section>
     </>

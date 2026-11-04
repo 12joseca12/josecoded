@@ -68,3 +68,13 @@ test("way nav does not cover the section content at 360", async ({ page }) => {
   const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
   expect(scrollWidth).toBeLessThanOrEqual(360);
 });
+
+test("rates render as provisional placeholders with a marker", async ({ page }) => {
+  await page.goto("/es/servicios");
+  const rates = page.locator("figure[data-status='provisional']");
+  await expect(rates).toBeVisible();
+  await expect(rates).toContainText("00");
+  await expect(rates).toContainText("desde");
+  await expect(rates).toContainText("000");
+  await expect(rates.locator("[data-provisional]")).toHaveCount(2);
+});

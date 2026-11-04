@@ -1,30 +1,33 @@
+import type { ContactWay } from "@/types/contact";
+
 import { buildWhatsAppUrl } from "./whatsapp";
 
 interface ChannelConfig {
   whatsappNumber: string;
-  email: string;
+  ways: readonly ContactWay[];
+}
+
+export interface LiveWay extends ContactWay {
+  href: string;
 }
 
 export interface LiveChannels {
   whatsappHref: string | null;
-  emailHref: string | null;
-  email: string | null;
+  ways: LiveWay[];
 }
 
-const pendingMarker = "{{DATO";
-const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 export function resolveChannels(config: ChannelConfig, whatsappMessage: string): LiveChannels {
-  const email = config.email.includes(pendingMarker) ? null : config.email.trim();
-  const validEmail = email !== null && emailPattern.test(email) ? email : null;
   return {
     whatsappHref: buildWhatsAppUrl(config.whatsappNumber, whatsappMessage),
-    emailHref: validEmail ? `mailto:${validEmail}` : null,
-    email: validEmail,
+    ways: config.ways.map((entry) => ({ ...entry, href: `mailto:${entry.email}` })),
   };
 }
 
 export function hasLiveChannel(config: ChannelConfig): boolean {
-  const { whatsappHref, email } = resolveChannels(config, "");
-  return whatsappHref !== null || email !== null;
+  const { whatsappHref, ways } = resolveChannels(config, "");
+  return whatsappHref !== null || ways.length > 0;
+}
+
+export function primaryEmail(ways: readonly ContactWay[]): string | null {
+  return ways.find((entry) => entry.way === "contratacion")?.email ?? ways[0]?.email ?? null;
 }
