@@ -86,6 +86,18 @@ Cuando haya CSP, el formulario necesita `script-src` y `frame-src` para `https:/
 | `prototipos/`   | Prototipos HTML de estilo, servibles con `python3 -m http.server`. Solo referencia.                        |
 | `.claude/`      | Agentes, skills y reglas de trabajo.                                                                       |
 
+## Acceso (`/entrar`) y zona privada
+
+Código de 6 dígitos por correo (sin enlace mágico) y TOTP obligatorio para `admin`, `closer` y `freelance`. Solo cuentas invitadas: `shouldCreateUser: false` y un correo desconocido recibe el mismo mensaje neutro que uno válido. Todo el flujo corre en Server Actions con `@supabase/ssr` (cookies `httpOnly`, sin cliente de navegador, nunca la clave de servicio). `src/proxy.ts` solo refresca la sesión en `/entrar`, `/admin`, `/crm`, `/area`, `/freelance`, `/cuenta` e `/invitacion`; la guarda por rol y `aal2` vive en el servidor (`requireZone`) y devuelve 404 si la zona no es tuya.
+
+| Variable                               | Para qué                                                                                       |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`             | Ya existente. Misma regla: forma de proyecto o loopback.                                       |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Clave `sb_publishable_…` (pública, va en `wrangler.jsonc`). Una clave `sb_secret_` se rechaza. |
+| `TURNSTILE_SECRET_KEY`                 | Ya existente; el login exige `action: "login"`.                                                |
+
+Binding `AUTH_LIMITER` (5 por minuto y clave, ids `1003` y `1004`) para pedir y verificar códigos; sin binding no se aplica. Los ajustes de Supabase Auth que hacen falta están en `docs/plan/auth-config.md`. El inicio con Google está detrás de `features.googleSignIn` (apagado).
+
 ## Historia
 
 El proyecto se reinició el 2026-11-02. La rama `archivo/v1-2026-11-02` en GitHub conserva el proyecto completo anterior (web, CRM, admin, gateway, migraciones y planes).
