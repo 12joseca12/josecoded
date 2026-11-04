@@ -1,5 +1,6 @@
 "use client";
 
+import NextLink from "next/link";
 import {
   type FocusEvent,
   type KeyboardEvent,
@@ -13,6 +14,7 @@ import { Button } from "@/components/ui/Button/Button";
 import { IconButton } from "@/components/ui/IconButton/IconButton";
 import { ChatIcon } from "@/components/ui/icons/ChatIcon";
 import { ChevronIcon } from "@/components/ui/icons/ChevronIcon";
+import { FormIcon } from "@/components/ui/icons/FormIcon";
 import { WhatsAppIcon } from "@/components/ui/icons/WhatsAppIcon";
 import type { ContactChooserLabels } from "@/types/nav";
 
@@ -29,6 +31,7 @@ interface ContactChooserProps {
   triggerLabel: string;
   labels: ContactChooserLabels;
   whatsappHref: string | null;
+  formHref: string;
   onChat: () => void;
   openerRef: RefObject<HTMLElement | null>;
 }
@@ -46,6 +49,7 @@ export function ContactChooser({
   triggerLabel,
   labels,
   whatsappHref,
+  formHref,
   onChat,
   openerRef,
 }: ContactChooserProps) {
@@ -219,6 +223,22 @@ export function ContactChooser({
                   <span className={styles.optionHint}>{labels.chatHint}</span>
                 </span>
               </button>
+            </li>
+            <li>
+              <NextLink
+                className={styles.option}
+                href={formHref}
+                data-option="form"
+                onClick={onClose}
+              >
+                <span className={styles.optionIcon}>
+                  <FormIcon />
+                </span>
+                <span className={styles.optionText}>
+                  <span className={styles.optionTitle}>{labels.form}</span>
+                  <span className={styles.optionHint}>{labels.formHint}</span>
+                </span>
+              </NextLink>
             </li>
           </ul>
         </div>

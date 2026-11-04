@@ -40,11 +40,31 @@
           "recent": "Recientes",
           "toastShip": "v1.0 publicada",
           "toastCare": "v1.1 instalada",
-          "rowNew": { "title": "Mesa 7 · tostada", "meta": "nuevo", "price": "3,80 €" },
-          "row1": { "title": "Mesa 4 · 2 cafés", "meta": "hace 2 min", "price": "6,40 €" },
-          "row2": { "title": "Barra · menú", "meta": "hace 6 min", "price": "12,50 €" },
-          "row3": { "title": "Terraza 2 · zumos", "meta": "hace 9 min", "price": "7,00 €" },
-          "row4": { "title": "Mesa 1 · desayuno", "meta": "hace 14 min", "price": "9,20 €" }
+          "rowNew": {
+            "title": "Mesa 7 · tostada",
+            "meta": "nuevo",
+            "price": "3,80 €"
+          },
+          "row1": {
+            "title": "Mesa 4 · 2 cafés",
+            "meta": "hace 2 min",
+            "price": "6,40 €"
+          },
+          "row2": {
+            "title": "Barra · menú",
+            "meta": "hace 6 min",
+            "price": "12,50 €"
+          },
+          "row3": {
+            "title": "Terraza 2 · zumos",
+            "meta": "hace 9 min",
+            "price": "7,00 €"
+          },
+          "row4": {
+            "title": "Mesa 1 · desayuno",
+            "meta": "hace 14 min",
+            "price": "9,20 €"
+          }
         },
         "browser": {
           "designUrl": "diseño · pedidos v3",
@@ -253,7 +273,9 @@
     "whatsappHint": "Escríbeme y respondo en cuanto puedo",
     "chat": "Chat con Nexo",
     "chatHint": "Nuestro asistente te responde al momento",
-    "whatsappMessage": "Hola Jose, te escribo desde josecoded.com. Me gustaría hablar de un proyecto."
+    "whatsappMessage": "Hola José Carlos, te escribo desde josecoded.com. Me gustaría hablar de un proyecto.",
+    "form": "Formulario",
+    "formHint": "Cuéntame tu proyecto con calma"
   },
   "chatButton": {
     "label": "Chat"
@@ -261,7 +283,7 @@
   "contactPage": {
     "meta": {
       "title": "Contacto",
-      "description": "Todas las formas de hablar con Jose: chat con Nexo, WhatsApp y correo."
+      "description": "Todas las formas de hablar con José Carlos: chat con Nexo, correo por vía y formulario."
     },
     "head": {
       "title": "Hablemos de tu",
@@ -280,10 +302,32 @@
       "hint": "Escríbeme y respondo en cuanto puedo.",
       "open": "Abrir WhatsApp"
     },
-    "email": {
-      "title": "Correo",
-      "hint": "Para propuestas y documentos.",
+    "ways": {
+      "contratacion": {
+        "title": "Contratación",
+        "hint": "Para ofertas y procesos de selección."
+      },
+      "freelance": {
+        "title": "Freelance",
+        "hint": "Para una funcionalidad, una auditoría o un empujón a un proyecto."
+      },
+      "packs": {
+        "title": "Proyectos y packs",
+        "hint": "Para webs y apps con alcance, precio y fecha definidos."
+      }
+    },
+    "mail": {
       "open": "Escribir un correo"
+    },
+    "copy": {
+      "label": "Copiar",
+      "aria": "Copiar {email}",
+      "done": "Copiado"
+    },
+    "form": {
+      "title": "Formulario",
+      "hint": "Para contarme tu proyecto con calma y por escrito.",
+      "soon": "El formulario abre muy pronto. Mientras tanto, escríbeme por correo."
     }
   },
   "search": {
@@ -296,7 +340,7 @@
     "notice": "Aviso legal",
     "privacy": "Privacidad",
     "cookies": "Cookies",
-    "copyright": "© 2026 Jose · Full stack, React Native e IA"
+    "copyright": "© 2026 José Carlos Sánchez García · Full stack, React Native e IA"
   },
   "services": {
     "meta": {
@@ -358,12 +402,18 @@
       "task": "Por tarea",
       "unitHour": "€ / hora",
       "unitTask": "€ / tarea",
-      "note": "Orientativas: el importe final se acuerda antes de empezar."
+      "note": "Orientativas: el importe final se acuerda antes de empezar.",
+      "from": "desde",
+      "provisional": "Provisional",
+      "provisionalNote": "Cifras provisionales: las tarifas reales llegarán tras una ronda de evaluación de servicios."
     }
   },
   "seo": {
     "person": {
-      "name": "Jose",
+      "name": "José Carlos Sánchez García",
+      "givenName": "José Carlos",
+      "familyName": "Sánchez García",
+      "alternateNameFull": "José Carlos Sánchez",
       "alternateName": "josecoded",
       "jobTitle": "Desarrollador full stack especializado en React Native",
       "description": "Desarrollador full stack especializado en React Native, con base en Madrid. Crea apps móviles y webs para empresas y negocios en España y en remoto.",
@@ -376,14 +426,14 @@
       "name": "josecoded"
     },
     "llms": {
-      "summary": "Jose es un desarrollador full stack especializado en React Native, con base en Madrid. Desarrolla apps móviles y webs para empresas y negocios en España y en remoto: como freelance por horas o por tarea, con packs de precio cerrado o incorporándose a un equipo.",
+      "summary": "José Carlos Sánchez García es un desarrollador full stack especializado en React Native, con base en Madrid. Desarrolla apps móviles y webs para empresas y negocios en España y en remoto: como freelance por horas o por tarea, con packs de precio cerrado o incorporándose a un equipo.",
       "servicesTitle": "Servicios",
       "hiring": "Contratación: se incorpora a un equipo de producto móvil o web y se hace cargo de una parte del producto de principio a fin.",
       "freelance": "Freelance: una funcionalidad, una auditoría o un empujón a un proyecto que ya existe, con el alcance acordado antes de empezar.",
       "packs": "Packs de web y app: diseño, desarrollo y publicación con alcance, precio y fecha definidos de antemano. Publicación en tiendas y dominio incluidos.",
       "pagesTitle": "Páginas clave",
-      "home": "Inicio: quién es Jose y en qué trabaja",
-      "services": "Servicios: las tres formas de trabajar con Jose",
+      "home": "Inicio: quién es José Carlos y en qué trabaja",
+      "services": "Servicios: las tres formas de trabajar con José Carlos",
       "projects": "Proyectos: apps y webs en producción",
       "entityTitle": "Entidad",
       "entityName": "Nombre: {name} (alias {alias})",
@@ -392,7 +442,10 @@
       "entityArea": "Zona de trabajo: {country} y en remoto",
       "entityLanguage": "Idioma de la web: español",
       "rateHour": "Tarifa por hora: {hour} €.",
-      "rateTask": "Presupuesto por tarea desde {task} €."
+      "rateTask": "Presupuesto por tarea desde {task} €.",
+      "contactTitle": "Contacto",
+      "contactLine": "{way}: {email}",
+      "contact": "Contacto: las vías para hablar con José Carlos"
     }
   },
   "chat": {

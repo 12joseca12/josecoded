@@ -10,6 +10,8 @@ export interface ContactChooserLabels {
   whatsappHint: string;
   chat: string;
   chatHint: string;
+  form: string;
+  formHint: string;
 }
 
 export interface ChatButtonLabels {
