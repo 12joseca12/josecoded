@@ -1029,6 +1029,166 @@
         "retry": "Retry",
         "retrying": "Retrying"
       }
+    },
+    "users": {
+      "meta": {
+        "title": "Users"
+      },
+      "title": "Users",
+      "lead": "Who works with you, at which rates, and the invitations that are still open.",
+      "loading": "Loading users",
+      "error": {
+        "title": "I could not load the users",
+        "text": "Try again. If it keeps failing, check the Supabase status.",
+        "retry": "Retry",
+        "retrying": "Retrying"
+      },
+      "empty": {
+        "title": "Invite the first closer",
+        "text": "When someone accepts their invitation they will show up here with their rates."
+      },
+      "table": {
+        "title": "Team",
+        "region": "Team users",
+        "caption": "Users with their role, rates and status",
+        "columns": {
+          "name": "Name",
+          "role": "Role",
+          "status": "Status",
+          "parent": "Parent closer",
+          "rates": "Project · recurring",
+          "cadence": "Cadence",
+          "totp": "TOTP",
+          "contacts": "Contacts",
+          "deals": "Open",
+          "pending": "Pending commission"
+        },
+        "roles": {
+          "admin": "Admin",
+          "closer": "Closer",
+          "freelance": "Freelance",
+          "client": "Client"
+        },
+        "subcloser": "Subcloser",
+        "active": "Active",
+        "inactive": "Deactivated",
+        "totpYes": "Yes",
+        "totpNo": "No",
+        "cadences": {
+          "per_payment": "Per payment",
+          "weekly": "Weekly",
+          "biweekly": "Every two weeks"
+        },
+        "none": "—"
+      },
+      "invitations": {
+        "title": "Invitations",
+        "empty": "No invitations yet.",
+        "region": "Invitations",
+        "caption": "Invitations with their status and expiry",
+        "columns": {
+          "email": "Email",
+          "role": "Role",
+          "by": "Invited by",
+          "expires": "Expires",
+          "status": "Status",
+          "actions": "Actions"
+        },
+        "status": {
+          "pending": "Pending",
+          "accepted": "Accepted",
+          "expired": "Expired",
+          "revoked": "Revoked"
+        },
+        "unknownInviter": "Unknown",
+        "actions": {
+          "renew": "Resend",
+          "renewing": "Resending",
+          "revoke": "Revoke",
+          "revokeConfirm": "Confirm revoking",
+          "revoking": "Revoking",
+          "cancel": "Cancel",
+          "linkLabel": "Invitation link",
+          "copy": "Copy",
+          "copied": "Link copied",
+          "doneRenew": "Invitation renewed: new link, 7 more days",
+          "doneRevoke": "Invitation revoked",
+          "errors": {
+            "email_already_invited": "There is already another open invitation for that email.",
+            "email_already_member": "That email already belongs to an active member.",
+            "invalid_parent_closer": "The parent closer is no longer valid.",
+            "rates_recurring_not_lower": "The recurring rate must be lower than the project rate.",
+            "rate_out_of_range": "Rates go from 0 to 100.",
+            "forbidden": "You do not have permission for this action.",
+            "unavailable": "The accounts service is not available. Try again later.",
+            "error": "It could not be completed. Try again.",
+            "invitation_used": "The invitation was already accepted.",
+            "invitation_revoked": "The invitation was already revoked."
+          }
+        }
+      },
+      "invite": {
+        "open": "Invite",
+        "title": "Invite someone",
+        "close": "Close",
+        "email": "Email",
+        "role": "Role",
+        "roles": {
+          "closer": "Closer",
+          "subcloser": "Subcloser (works under a closer)",
+          "freelance": "Freelance",
+          "client": "Client"
+        },
+        "parent": "Parent closer",
+        "parentPlaceholder": "Choose a closer",
+        "noParents": "There are no active closers without a parent.",
+        "rates": "Rates",
+        "closerRate": "Project (%)",
+        "parentRate": "Parent, project (%)",
+        "closerRecurringRate": "Recurring (%)",
+        "parentRecurringRate": "Parent, recurring (%)",
+        "rateHint": "They apply to the opportunities won from now on. The recurring rate must be lower than the project rate.",
+        "cadence": "Payout cadence",
+        "cadenceDefault": "The system default",
+        "cadences": {
+          "per_payment": "Per payment",
+          "weekly": "Weekly",
+          "biweekly": "Every two weeks"
+        },
+        "note": "Note",
+        "optional": "(optional)",
+        "preview": "Commission preview",
+        "previewProject": "Project, on {base} collected: closer {closer}{parent}",
+        "previewParent": ", parent {parent}",
+        "previewRecurring": "Recurring, on {base} a month: closer {closer}{parent}",
+        "submit": "Create invitation",
+        "submitting": "Creating invitation",
+        "doneTitle": "Invitation created",
+        "doneText": "The email is not sent automatically yet. Copy this link and pass it on yourself; it expires in 7 days and only works with the invited email.",
+        "linkLabel": "Invitation link",
+        "copy": "Copy",
+        "copied": "Link copied",
+        "another": "Invite someone else",
+        "errors": {
+          "email": "Enter a valid email.",
+          "role": "Choose a role.",
+          "parentCloserId": "Choose the parent closer.",
+          "closerRate": "Enter a percentage from 0 to 100, with up to two decimals.",
+          "parentRate": "Enter a percentage from 0 to 100, with up to two decimals.",
+          "closerRecurringRate": "Enter a percentage from 0 to 100, lower than the project rate.",
+          "parentRecurringRate": "Enter a percentage from 0 to 100, lower than the project rate.",
+          "payoutCadence": "Choose a valid cadence.",
+          "note": "The note allows up to 500 characters.",
+          "email_already_invited": "There is already an open invitation for that email. Resend or revoke it first.",
+          "email_already_member": "That email already belongs to an active member.",
+          "invalid_parent_closer": "That closer cannot be a parent: they must be active and not work under another.",
+          "rates_recurring_not_lower": "The recurring rate must be lower than the project rate.",
+          "rate_out_of_range": "Rates go from 0 to 100.",
+          "forbidden": "You do not have permission for this action.",
+          "unavailable": "The account could not be created. The invitation was not saved; try again later.",
+          "error": "It could not be completed. Try again."
+        }
+      }
     }
   },
   "crm": {

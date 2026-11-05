@@ -21,7 +21,12 @@ type TextareaFieldProps = FieldShared & { control: "textarea" } & Omit<
     keyof FieldShared | "id" | "aria-invalid" | "aria-describedby"
   >;
 
-export type FieldProps = InputFieldProps | TextareaFieldProps;
+type SelectFieldProps = FieldShared & { control: "select" } & Omit<
+    ComponentPropsWithoutRef<"select">,
+    keyof FieldShared | "id" | "aria-invalid" | "aria-describedby"
+  >;
+
+export type FieldProps = InputFieldProps | TextareaFieldProps | SelectFieldProps;
 
 export function Field(props: FieldProps) {
   const { name, label, hint, error, optionalLabel, control, ...rest } = props;
@@ -50,6 +55,8 @@ export function Field(props: FieldProps) {
       ) : null}
       {control === "textarea" ? (
         <textarea {...(rest as ComponentPropsWithoutRef<"textarea">)} {...shared} />
+      ) : control === "select" ? (
+        <select {...(rest as ComponentPropsWithoutRef<"select">)} {...shared} />
       ) : (
         <input {...(rest as ComponentPropsWithoutRef<"input">)} {...shared} />
       )}
