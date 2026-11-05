@@ -36,7 +36,7 @@ describe("staff navigation registry", () => {
   it("only marks the shipped screens as ready", () => {
     const ready = (zone: "admin" | "crm") =>
       staffNav[zone].filter((entry) => entry.ready).map((entry) => entry.key);
-    expect(ready("admin")).toEqual(["overview", "leads"]);
+    expect(ready("admin")).toEqual(["overview", "leads", "system"]);
     expect(ready("crm")).toEqual(["overview"]);
   });
 

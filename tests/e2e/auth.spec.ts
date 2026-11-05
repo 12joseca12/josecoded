@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
 
+import { staffNav } from "../../src/lib/staff/nav";
 import {
   mockOrigin as mock,
   openLogin,
@@ -105,6 +106,9 @@ interface AuthCalls {
   leads: { authenticated: boolean; level: string | null }[];
   rpc: { name: string; args: Record<string, string>; level: string | null }[];
 }
+
+const adminReady = staffNav.admin.filter((entry) => entry.ready).length;
+const adminSoon = staffNav.admin.length - adminReady;
 
 test.describe.configure({ mode: "serial" });
 test.use({ extraHTTPHeaders: { "cf-connecting-ip": "203.0.113.9" } });
@@ -386,8 +390,8 @@ test("the admin rail is keyboard navigable and passes axe at 1440", async ({ pag
   await page.goto("/es/admin");
   const { nav, admin } = es;
   const rail = page.getByRole("navigation", { name: admin.navLabel });
-  await expect(rail.getByRole("link")).toHaveCount(2);
-  await expect(rail.getByText(admin.nav.soon)).toHaveCount(6);
+  await expect(rail.getByRole("link")).toHaveCount(adminReady);
+  await expect(rail.getByText(admin.nav.soon)).toHaveCount(adminSoon);
   await expect(rail.getByRole("link", { name: admin.nav.users })).toHaveCount(0);
   await expect(page.getByRole("button", { name: admin.nav.more })).toBeHidden();
   await expectClean(page);
@@ -432,8 +436,8 @@ test("the admin bottom bar and the more sheet work at 375", async ({ page }) => 
   await more.click();
   const sheet = page.getByRole("dialog", { name: admin.nav.moreTitle });
   await expect(sheet).toBeVisible();
-  await expect(sheet.getByRole("link")).toHaveCount(3);
-  await expect(sheet.getByText(admin.nav.soon)).toHaveCount(6);
+  await expect(sheet.getByRole("link")).toHaveCount(adminReady + 1);
+  await expect(sheet.getByText(admin.nav.soon)).toHaveCount(adminSoon);
   await expect(sheet.getByRole("button", { name: admin.signOut })).toBeVisible();
   await expect(sheet.getByRole("link", { name: admin.nav.switch })).toBeVisible();
   await expectClean(page);

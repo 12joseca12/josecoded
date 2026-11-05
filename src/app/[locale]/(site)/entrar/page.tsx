@@ -3,13 +3,13 @@ import { notFound, redirect } from "next/navigation";
 
 import { buildAuthFormLabels } from "@/components/auth/labels";
 import { LoginForm } from "@/components/auth/LoginForm/LoginForm";
-import { features } from "@/config/features";
 import { isLocale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
 import { readSupabasePublicConfig } from "@/lib/auth/env";
 import { resolveDestination, safeNext } from "@/lib/auth/guards";
 import { getSessionState } from "@/lib/auth/session";
 import { readContactClientConfig } from "@/lib/contact/env";
+import { getFeatures } from "@/lib/settings/features";
 
 interface LoginProps {
   params: Promise<{ locale: string }>;
@@ -36,7 +36,7 @@ export default async function LoginPage({ params, searchParams }: LoginProps) {
   const state = await getSessionState();
   if (state?.status === "member") redirect(resolveDestination(state, locale, next));
 
-  const t = await getTranslator(locale);
+  const [t, { googleSignIn }] = await Promise.all([getTranslator(locale), getFeatures()]);
   const turnstile =
     readSupabasePublicConfig(process.env) !== null ? readContactClientConfig(process.env) : null;
 
@@ -45,7 +45,7 @@ export default async function LoginPage({ params, searchParams }: LoginProps) {
       locale={locale}
       next={next}
       labels={buildAuthFormLabels(t)}
-      googleEnabled={features.googleSignIn}
+      googleEnabled={googleSignIn}
       turnstile={turnstile}
     />
   );
