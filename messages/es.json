@@ -344,6 +344,15 @@
         "happy": "Contento",
         "sad": "Triste"
       }
+    },
+    "room": {
+      "title": "Kit de sala",
+      "intro": "Sala de prueba con mensajes de ejemplo. Nada de esto se guarda.",
+      "incoming": "Simular mensaje entrante",
+      "incomingBody": "Mensaje simulado número {n}",
+      "ownName": "Tú (prueba)",
+      "otherName": "Cleo (prueba)",
+      "switchSection": "Interruptor de Nexo y permiso"
     }
   },
   "nav": {
@@ -4476,6 +4485,99 @@
       "invalid": "Ese código no es válido o ha caducado. Genera uno nuevo desde la web.",
       "taken": "Este Telegram ya está vinculado a otra cuenta.",
       "noCode": "Para vincular tu cuenta abre el enlace que te da la web."
+    }
+  },
+  "room": {
+    "threadLabel": "Mensajes de la sala",
+    "empty": "Aún no hay mensajes. Escribe el primero.",
+    "composer": {
+      "label": "Escribe un mensaje",
+      "placeholder": "Intro envía y Mayús + Intro hace un salto de línea.",
+      "send": "Enviar",
+      "sending": "Enviando",
+      "count": "{used} de {max}",
+      "readOnly": "Esta sala es de solo lectura para ti.",
+      "archived": "Esta sala está archivada: puedes leerla, pero ya no admite mensajes."
+    },
+    "errors": {
+      "forbidden": "No tienes permiso para escribir en esta sala.",
+      "archived": "La sala está archivada y no admite mensajes.",
+      "invalid": "Escribe un mensaje de hasta 4.000 caracteres.",
+      "error": "No se ha podido enviar el mensaje. Inténtalo de nuevo.",
+      "poll": "Ahora mismo no llegan mensajes nuevos. Seguimos intentándolo."
+    },
+    "authors": {
+      "nexo": "Nexo",
+      "visitor": "Visitante",
+      "someone": "Alguien",
+      "you": "Tú"
+    },
+    "auto": "Respondo yo, Nexo, porque nadie ha contestado a tiempo.",
+    "system": {
+      "member_added": "{name} se ha unido a la sala.",
+      "member_left": "{name} ha salido de la sala.",
+      "ai_on": "Nexo se ha activado en esta sala.",
+      "ai_off": "Nexo se ha desactivado en esta sala.",
+      "ai_off_takeover": "Jose ha tomado la conversación y Nexo se ha pausado.",
+      "consent_granted": "El cliente ha dado permiso para que Nexo use los datos del proyecto.",
+      "consent_revoked": "El cliente ha retirado el permiso a Nexo.",
+      "archived": "La sala se ha archivado.",
+      "handoff_done": "El visitante ha dejado sus datos de contacto."
+    },
+    "members": {
+      "title": "Miembros",
+      "empty": "Nadie más está en esta sala.",
+      "roles": {
+        "owner": "Jose",
+        "closer": "Closer",
+        "client": "Cliente",
+        "freelance": "Freelance"
+      },
+      "remove": "Quitar",
+      "removeAria": "Quitar a {name} de la sala",
+      "confirmTitle": "Quitar de la sala",
+      "confirmText": "{name} dejará de ver los mensajes de esta sala. El historial se conserva.",
+      "confirmSubmit": "Quitar",
+      "saving": "Quitando",
+      "close": "Cancelar",
+      "removed": "Miembro quitado",
+      "add": "Añadir a la sala",
+      "addSelect": "Persona",
+      "addPlaceholder": "Elige a alguien",
+      "addButton": "Añadir",
+      "adding": "Añadiendo",
+      "added": "Miembro añadido",
+      "errors": {
+        "error": "No se ha podido completar el cambio.",
+        "forbidden": "No tienes permiso para cambiar los miembros.",
+        "already_member": "Esa persona ya está en la sala.",
+        "client_outside_project": "Un cliente solo puede estar en la sala de su proyecto.",
+        "role_mismatch": "El rol no coincide con el de esa persona.",
+        "invalid_member": "Esa persona no está activa.",
+        "owner_cannot_leave": "Jose no puede salir de la sala.",
+        "member_not_found": "Esa persona ya no está en la sala.",
+        "conversation_archived": "La sala está archivada.",
+        "visitor_room": "No se puede añadir gente a la sala de un visitante."
+      }
+    },
+    "ai": {
+      "label": "Nexo en esta sala",
+      "on": "Nexo está activo",
+      "off": "Nexo está apagado",
+      "offTakeover": "Nexo está pausado porque has respondido tú",
+      "saving": "Guardando",
+      "changed": "Ajuste de Nexo guardado",
+      "errors": {
+        "error": "No se ha podido cambiar Nexo.",
+        "forbidden": "Solo Jose puede cambiar Nexo.",
+        "conversation_archived": "La sala está archivada."
+      }
+    },
+    "consent": {
+      "label": "Permiso de Nexo",
+      "granted": "Concedido",
+      "revoked": "Retirado",
+      "pending": "Pendiente"
     }
   }
 }

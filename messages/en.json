@@ -344,6 +344,15 @@
         "happy": "Happy",
         "sad": "Sad"
       }
+    },
+    "room": {
+      "title": "Room kit",
+      "intro": "Test room with sample messages. None of this is saved.",
+      "incoming": "Simulate an incoming message",
+      "incomingBody": "Simulated message number {n}",
+      "ownName": "You (test)",
+      "otherName": "Cleo (test)",
+      "switchSection": "Nexo switch and permission"
     }
   },
   "nav": {
@@ -4476,6 +4485,99 @@
       "invalid": "That code is not valid or has expired. Generate a new one from the web.",
       "taken": "This Telegram is already linked to another account.",
       "noCode": "To link your account open the link the web gives you."
+    }
+  },
+  "room": {
+    "threadLabel": "Room messages",
+    "empty": "No messages yet. Write the first one.",
+    "composer": {
+      "label": "Write a message",
+      "placeholder": "Enter sends and Shift + Enter adds a line break.",
+      "send": "Send",
+      "sending": "Sending",
+      "count": "{used} of {max}",
+      "readOnly": "This room is read-only for you.",
+      "archived": "This room is archived: you can read it, but it no longer takes messages."
+    },
+    "errors": {
+      "forbidden": "You are not allowed to write in this room.",
+      "archived": "The room is archived and takes no messages.",
+      "invalid": "Write a message of up to 4,000 characters.",
+      "error": "The message could not be sent. Try again.",
+      "poll": "New messages are not arriving right now. We keep trying."
+    },
+    "authors": {
+      "nexo": "Nexo",
+      "visitor": "Visitor",
+      "someone": "Someone",
+      "you": "You"
+    },
+    "auto": "I'm answering, Nexo, because nobody replied in time.",
+    "system": {
+      "member_added": "{name} joined the room.",
+      "member_left": "{name} left the room.",
+      "ai_on": "Nexo was switched on in this room.",
+      "ai_off": "Nexo was switched off in this room.",
+      "ai_off_takeover": "Jose took over the conversation and Nexo paused.",
+      "consent_granted": "The client allowed Nexo to use the project data.",
+      "consent_revoked": "The client withdrew Nexo's permission.",
+      "archived": "The room was archived.",
+      "handoff_done": "The visitor left their contact details."
+    },
+    "members": {
+      "title": "Members",
+      "empty": "Nobody else is in this room.",
+      "roles": {
+        "owner": "Jose",
+        "closer": "Closer",
+        "client": "Client",
+        "freelance": "Freelance"
+      },
+      "remove": "Remove",
+      "removeAria": "Remove {name} from the room",
+      "confirmTitle": "Remove from the room",
+      "confirmText": "{name} will stop seeing the messages of this room. The history is kept.",
+      "confirmSubmit": "Remove",
+      "saving": "Removing",
+      "close": "Cancel",
+      "removed": "Member removed",
+      "add": "Add to the room",
+      "addSelect": "Person",
+      "addPlaceholder": "Pick someone",
+      "addButton": "Add",
+      "adding": "Adding",
+      "added": "Member added",
+      "errors": {
+        "error": "The change could not be completed.",
+        "forbidden": "You are not allowed to change the members.",
+        "already_member": "That person is already in the room.",
+        "client_outside_project": "A client can only be in the room of their project.",
+        "role_mismatch": "The role does not match that person's.",
+        "invalid_member": "That person is not active.",
+        "owner_cannot_leave": "Jose cannot leave the room.",
+        "member_not_found": "That person is no longer in the room.",
+        "conversation_archived": "The room is archived.",
+        "visitor_room": "People cannot be added to a visitor's room."
+      }
+    },
+    "ai": {
+      "label": "Nexo in this room",
+      "on": "Nexo is on",
+      "off": "Nexo is off",
+      "offTakeover": "Nexo is paused because you replied",
+      "saving": "Saving",
+      "changed": "Nexo setting saved",
+      "errors": {
+        "error": "Nexo could not be changed.",
+        "forbidden": "Only Jose can change Nexo.",
+        "conversation_archived": "The room is archived."
+      }
+    },
+    "consent": {
+      "label": "Nexo permission",
+      "granted": "Granted",
+      "revoked": "Withdrawn",
+      "pending": "Pending"
     }
   }
 }

@@ -45,6 +45,7 @@ export default defineConfig({
         NEXT_PUBLIC_TURNSTILE_SITE_KEY: "1x00000000000000000000AA",
         TURNSTILE_SCRIPT_URL: `${mockOrigin}/turnstile/api.js`,
         TURNSTILE_VERIFY_URL: `${mockOrigin}/turnstile/siteverify`,
+        E2E_ROOM_POLL_MS: process.env.E2E_ROOM_POLL_MS ?? "500",
         OUTBOX_DRAIN: drainLive ? "on" : "off",
         TELEGRAM_BOT_USERNAME: drainLive ? "" : "josecoded_test_bot",
         CRON_SECRET: "test-cron-secret",
