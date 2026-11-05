@@ -1,4 +1,5 @@
 import type { MessageKey } from "@/i18n/keys.generated";
+import { withResponseTime } from "@/lib/common/response-time";
 import type { DiagramLayer, PointItem, ProblemItem, TimelinePhase } from "@/types/how";
 import type { FaqItem } from "@/types/services";
 
@@ -71,6 +72,6 @@ export function buildHowFaq(t: Translate): FaqItem[] {
   return faqIds.map((id, index) => ({
     id,
     question: t(k(`faq.q${index + 1}`)),
-    answer: t(k(`faq.a${index + 1}`)),
+    answer: withResponseTime(t, t(k(`faq.a${index + 1}`))),
   }));
 }
