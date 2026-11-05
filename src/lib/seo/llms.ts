@@ -73,6 +73,7 @@ export async function buildLlmsTxt(
     link(t("seo.llms.offersPage"), "/servicios/a-medida"),
     link(t("seo.llms.howPage"), "/como-trabajo"),
     link(t("seo.llms.projects"), "/proyectos"),
+    link(t("seo.llms.about"), "/sobre-mi"),
     ...(hasContact ? [link(t("seo.llms.contact"), "/contacto")] : []),
     "",
     `## ${t("seo.llms.entityTitle")}`,

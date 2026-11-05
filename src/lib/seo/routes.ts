@@ -14,8 +14,11 @@ export const publicRoutes: readonly PublicRoute[] = [
   { path: "/servicios/a-medida", priority: 0.9 },
   { path: "/como-trabajo", priority: 0.8 },
   { path: "/proyectos", priority: 0.8, needsProjects: true },
+  { path: "/sobre-mi", priority: 0.7 },
   { path: "/contacto", priority: 0.7, needsContact: true },
 ];
+
+export const legalPriority = 0.2;
 
 export const privatePrefixes = [
   "/admin",

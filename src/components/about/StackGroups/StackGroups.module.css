@@ -1,0 +1,41 @@
+.groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: var(--space-6) var(--space-5);
+}
+
+.group {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line-strong);
+}
+
+.items {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-3);
+  padding-block: var(--space-2);
+  border-bottom: 1px solid var(--line);
+}
+
+.name {
+  color: var(--ink);
+  font-weight: var(--fw-semibold);
+}
+
+.detail {
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+  font-variant-numeric: tabular-nums;
+}
