@@ -38,6 +38,15 @@ export const faqKeys: Record<ServicePageId, readonly FaqKeys[]> = {
     { id: "phases", question: "services.faq.offers.q9", answer: "services.faq.offers.a9" },
     { id: "midway", question: "services.faq.offers.q10", answer: "services.faq.offers.a10" },
   ],
+  audit: [
+    { id: "cost", question: "services.faq.audit.q1", answer: "services.faq.audit.a1" },
+    { id: "tools", question: "services.faq.audit.q2", answer: "services.faq.audit.a2" },
+    { id: "fixing", question: "services.faq.audit.q3", answer: "services.faq.audit.a3" },
+    { id: "accessibility", question: "services.faq.audit.q4", answer: "services.faq.audit.a4" },
+    { id: "access", question: "services.faq.audit.q5", answer: "services.faq.audit.a5" },
+    { id: "ai", question: "services.faq.audit.q6", answer: "services.faq.audit.a6" },
+    { id: "app", question: "services.faq.audit.q7", answer: "services.faq.audit.a7" },
+  ],
 };
 
 export function buildFaqItems(t: (key: MessageKey) => string, page: ServicePageId): FaqItem[] {

@@ -12,6 +12,7 @@ export const publicRoutes: readonly PublicRoute[] = [
   { path: "/servicios", priority: 0.9 },
   { path: "/servicios/freelance", priority: 0.9 },
   { path: "/servicios/a-medida", priority: 0.9 },
+  { path: "/servicios/auditoria", priority: 0.9 },
   { path: "/como-trabajo", priority: 0.8 },
   { path: "/proyectos", priority: 0.8, needsProjects: true },
   { path: "/sobre-mi", priority: 0.7 },

@@ -25,6 +25,7 @@ const publicRoutes = [
   "/es/servicios",
   "/es/servicios/freelance",
   "/es/servicios/a-medida",
+  "/es/servicios/auditoria",
   "/es/como-trabajo",
   "/es/proyectos",
   "/es/sobre-mi",
@@ -244,14 +245,14 @@ for (const route of breadcrumbRoutes) {
   });
 }
 
-test("the services hub publishes a ProfessionalService with three priceless offers", async ({
+test("the services hub publishes a ProfessionalService with four priceless offers", async ({
   page,
 }) => {
   await page.goto("/es/servicios");
   const nodes = await readNodes(page);
   const service = nodes.find((node) => node["@type"] === "ProfessionalService");
   const catalog = service?.hasOfferCatalog as { itemListElement: { "@type": string }[] };
-  expect(catalog.itemListElement).toHaveLength(3);
+  expect(catalog.itemListElement).toHaveLength(4);
   expect(catalog.itemListElement.every((offer) => offer["@type"] === "Offer")).toBe(true);
   expect(service?.provider).toMatchObject({ "@id": expect.stringMatching(/\/#person$/) });
 });

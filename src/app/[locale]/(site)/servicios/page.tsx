@@ -10,6 +10,7 @@ import { ServicePage } from "@/components/services/ServicePage/ServicePage";
 import { PageSection } from "@/components/site/PageSection/PageSection";
 import { Button } from "@/components/ui/Button/Button";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
+import { Link } from "@/components/ui/Link/Link";
 import { Steps } from "@/components/ui/Steps/Steps";
 import { features } from "@/config/features";
 import { getCv } from "@/content/cv";
@@ -157,6 +158,13 @@ export default async function ServicesPage({ params }: ServicesProps) {
             more={{ href: `/${locale}/sobre-mi#stack`, label: t("services.bento.proof.stack") }}
           />
         </ServiceBento>
+      </PageSection>
+      <PageSection id="auditoria" title={t("services.audit.title")} lead={t("services.audit.lead")}>
+        <div>
+          <Link href={`/${locale}/servicios/auditoria`} variant="arrow">
+            {t("services.audit.more")}
+          </Link>
+        </div>
       </PageSection>
       <PageSection
         id="en-equipo"

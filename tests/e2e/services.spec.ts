@@ -15,7 +15,8 @@ const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
       hiring: Record<"cv" | "trajectory" | "availability", string>;
     };
     team: { title: string; pr: string; ci: string; review: string; more: string };
-    ways: Record<"contratacion" | "freelance" | "project", { nav: string }>;
+    ways: Record<"contratacion" | "freelance" | "project" | "audit", { nav: string }>;
+    audit: { title: string };
   };
 };
 const wayNav = es.services.nav.label;
@@ -46,6 +47,12 @@ const pages = [
     path: "/es/servicios/a-medida",
     crumbs: ["Inicio", "Servicios", "A medida"],
     faq: 10,
+  },
+  {
+    name: "auditoria",
+    path: "/es/servicios/auditoria",
+    crumbs: ["Inicio", "Servicios", "Auditoría"],
+    faq: 7,
   },
 ] as const;
 
@@ -138,6 +145,7 @@ test("hub frames the ways as needs and keeps the five phases only here", async (
   await page.goto("/es/servicios");
   await expect(page.getByRole("heading", { level: 2 })).toHaveText([
     es.services.bento.title,
+    es.services.audit.title,
     es.services.team.title,
     es.services.how.title,
     es.services.faq.title,
@@ -340,6 +348,7 @@ test("child pages mark their own tab as the current page", async ({ page }) => {
   for (const [id, path] of [
     ["freelance", "freelance"],
     ["project", "a-medida"],
+    ["audit", "auditoria"],
   ] as const) {
     await page.goto(`/es/servicios/${path}`);
     const nav = page.getByRole("navigation", { name: wayNav });

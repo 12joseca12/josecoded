@@ -15,6 +15,7 @@ import {
   buildFaqPage,
   buildGraph,
   buildProfessionalService,
+  buildService,
 } from "@/lib/seo/jsonld";
 import { localePath } from "@/lib/seo/routes";
 import type { FaqItem, ServicePageId, WayId, WayNavItem } from "@/types/services";
@@ -27,6 +28,7 @@ interface ServicePageProps {
   page: ServicePageId;
   head: { title: MessageKey; accent?: MessageKey; lead: MessageKey };
   faq: FaqItem[];
+  service?: { name: MessageKey; description: MessageKey; type: MessageKey };
   children: ReactNode;
 }
 
@@ -34,11 +36,13 @@ const pagePaths: Record<ServicePageId, string> = {
   hub: "/servicios",
   freelance: "/servicios/freelance",
   offers: "/servicios/a-medida",
+  audit: "/servicios/auditoria",
 };
 
 const pageLabels: Record<Exclude<ServicePageId, "hub">, MessageKey> = {
   freelance: "services.ways.freelance.nav",
   offers: "services.ways.project.nav",
+  audit: "services.ways.audit.nav",
 };
 
 const wayLabels: Record<WayId, MessageKey> = {
@@ -47,18 +51,31 @@ const wayLabels: Record<WayId, MessageKey> = {
   project: "services.ways.project.nav",
 };
 
-const wayIds = ["contratacion", "freelance", "project"] as const satisfies readonly WayId[];
+const offerIds = [
+  "contratacion",
+  "freelance",
+  "project",
+  "audit",
+] as const satisfies readonly (WayId | "audit")[];
 
-const wayCopy: Record<WayId, { title: MessageKey; text: MessageKey }> = {
+const offerCopy: Record<(typeof offerIds)[number], { title: MessageKey; text: MessageKey }> = {
   contratacion: {
     title: "services.ways.contratacion.title",
     text: "services.ways.contratacion.text",
   },
   freelance: { title: "services.ways.freelance.title", text: "services.ways.freelance.text" },
   project: { title: "services.ways.project.title", text: "services.ways.project.text" },
+  audit: { title: "services.ways.audit.title", text: "services.ways.audit.text" },
 };
 
-export async function ServicePage({ locale, page, head, faq, children }: ServicePageProps) {
+export async function ServicePage({
+  locale,
+  page,
+  head,
+  faq,
+  service,
+  children,
+}: ServicePageProps) {
   const [t, requestHeaders] = await Promise.all([getTranslator(locale), headers()]);
   const nonce = requestHeaders.get(nonceHeader) ?? undefined;
   const hubPath = localePath(locale, pagePaths.hub);
@@ -87,16 +104,21 @@ export async function ServicePage({ locale, page, head, faq, children }: Service
       label: t(wayLabels.project),
       href: localePath(locale, pagePaths.offers),
     },
+    {
+      id: "audit",
+      label: t("services.ways.audit.nav"),
+      href: localePath(locale, pagePaths.audit),
+    },
   ];
 
-  const service = onHub
+  const hubService = onHub
     ? await buildProfessionalService(
         site.origin,
         locale,
         pagePaths.hub,
-        wayIds.map((id) => ({
-          name: t(wayCopy[id].title),
-          description: t(wayCopy[id].text),
+        offerIds.map((id) => ({
+          name: t(offerCopy[id].title),
+          description: t(offerCopy[id].text),
         })),
         { catalogName: t("nav.services") },
       )
@@ -107,7 +129,16 @@ export async function ServicePage({ locale, page, head, faq, children }: Service
       crumbs.map((crumb) => ({ name: crumb.label, path: crumb.href })),
     ),
     buildFaqPage(faq),
-    ...(service ? [service] : []),
+    ...(hubService ? [hubService] : []),
+    ...(service
+      ? [
+          buildService(site.origin, locale, pagePaths[page], {
+            name: t(service.name),
+            description: t(service.description),
+            serviceType: t(service.type),
+          }),
+        ]
+      : []),
   );
 
   return (

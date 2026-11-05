@@ -82,6 +82,17 @@ export const faqPageSchema = z.strictObject({
     .min(1),
 });
 
+export const serviceSchema = z.strictObject({
+  "@type": z.literal("Service"),
+  "@id": z.url(),
+  url: z.url(),
+  name: z.string().min(1),
+  description: z.string().min(1),
+  serviceType: z.string().min(1),
+  inLanguage: z.string().min(2),
+  provider: z.strictObject({ "@id": z.url() }),
+});
+
 export const profilePageSchema = z.strictObject({
   "@type": z.literal("ProfilePage"),
   "@id": z.url(),
@@ -141,6 +152,7 @@ export const jsonLdNodeSchema = z.discriminatedUnion("@type", [
   faqPageSchema,
   professionalServiceSchema,
   contactPageSchema,
+  serviceSchema,
 ]);
 
 export const jsonLdGraphSchema = z.strictObject({
@@ -150,6 +162,7 @@ export const jsonLdGraphSchema = z.strictObject({
 
 export type PersonJsonLd = z.infer<typeof personSchema>;
 export type WebSiteJsonLd = z.infer<typeof webSiteSchema>;
+export type ServiceJsonLd = z.infer<typeof serviceSchema>;
 export type ProfilePageJsonLd = z.infer<typeof profilePageSchema>;
 export type BreadcrumbListJsonLd = z.infer<typeof breadcrumbListSchema>;
 export type FaqPageJsonLd = z.infer<typeof faqPageSchema>;
