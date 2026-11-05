@@ -196,10 +196,7 @@ for (const [name, viewport] of [
     await page.locator("#project").evaluate((el) => {
       window.scrollTo({ top: window.scrollY + el.getBoundingClientRect().top - 140 });
     });
-    await page.waitForTimeout(700);
-    const box = await page.locator("#project").boundingBox();
-    if (!box) throw new Error("project tile has no box");
-    await page.mouse.click(box.x + 40, box.y + 40);
+    await page.locator("#project").click({ position: { x: 40, y: 40 } });
     await expect(page).toHaveURL(/\/es\/servicios\/a-medida$/);
     await page.goBack();
     const { violations } = await new AxeBuilder({ page }).analyze();

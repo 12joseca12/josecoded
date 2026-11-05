@@ -228,6 +228,7 @@ test.describe("recommender", () => {
     await page.goto(page_);
     await pick(page, "start", "idea");
     await pick(page, "kind", "web");
+    await expect(page.locator("#recomendador fieldset legend")).not.toHaveText(legend("kind"));
     await page.goBack();
     await expect(page.locator("#recomendador fieldset legend")).toHaveText(legend("kind"));
     await page.goBack();
