@@ -12,7 +12,7 @@ const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
     bento: {
       title: string;
       expectationLabel: string;
-      hiring: Record<"cv" | "cvEn" | "trajectory" | "availability", string>;
+      hiring: Record<"cv" | "trajectory" | "availability", string>;
     };
     team: { title: string; pr: string; ci: string; review: string; more: string };
     ways: Record<"contratacion" | "freelance" | "project", { nav: string }>;
@@ -165,9 +165,6 @@ test("hub tiles link to their destinations with unified params", async ({ page }
   const cv = hiring.getByRole("link", { name: es.services.bento.hiring.cv });
   await expect(cv).toHaveAttribute("href", "/cv/cv-jose-carlos-sanchez-es.pdf");
   await expect(cv).toHaveAttribute("download", "");
-  const english = hiring.getByRole("link", { name: es.services.bento.hiring.cvEn });
-  await expect(english).toHaveAttribute("href", "/cv/cv-jose-carlos-sanchez-en.pdf");
-  await expect(english).toHaveAttribute("lang", "en");
   await expect(
     hiring.getByRole("link", { name: es.services.bento.hiring.trajectory }),
   ).toHaveAttribute("href", "/es/sobre-mi");
@@ -195,7 +192,7 @@ for (const [name, viewport] of [
     await page.goto("/es/servicios");
     const links = page.locator("#vias a");
     const count = await links.count();
-    expect(count).toBe(8);
+    expect(count).toBe(7);
     for (const link of await links.all()) {
       await link.focus();
       await expect(link).toBeFocused();

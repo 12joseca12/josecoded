@@ -988,7 +988,6 @@ export type MessageKey =
   | "services.bento.expectationLabel"
   | "services.bento.hiring.availability"
   | "services.bento.hiring.cv"
-  | "services.bento.hiring.cvEn"
   | "services.bento.hiring.expectation"
   | "services.bento.hiring.trajectory"
   | "services.bento.lead"

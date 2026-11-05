@@ -67,7 +67,6 @@ export default async function ServicesPage({ params }: ServicesProps) {
   }));
   const cv = getCv();
   const cvEs = resolveCvHref(cv.file, "es", features.cvDownload);
-  const cvEn = resolveCvHref(cv.file, "en", features.cvDownload);
   const trajectory: BentoLinkData = {
     href: `/${locale}/sobre-mi`,
     label: t("services.bento.hiring.trajectory"),
@@ -79,13 +78,7 @@ export default async function ServicesPage({ params }: ServicesProps) {
   const hiringCta: BentoLinkData = cvEs
     ? { href: cvEs, label: t("services.bento.hiring.cv"), download: true }
     : trajectory;
-  const hiringMore: BentoLinkData[] = [
-    ...(cvEs ? [trajectory] : []),
-    ...(cvEn
-      ? [{ href: cvEn, label: t("services.bento.hiring.cvEn"), download: true, lang: "en" }]
-      : []),
-    availability,
-  ];
+  const hiringMore: BentoLinkData[] = [...(cvEs ? [trajectory] : []), availability];
   const expectationLabel = t("services.bento.expectationLabel");
   const practices: TeamPracticeItem[] = (["pr", "ci", "review"] as const).map((id) => ({
     id,

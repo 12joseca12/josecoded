@@ -26,7 +26,7 @@ for (const size of sizes) {
     const section = page.locator("#vias");
     await section.scrollIntoViewIfNeeded();
     const section_ = await section.boundingBox();
-    expect(section_?.height ?? 0).toBeLessThanOrEqual(size.height * 1.1);
+    expect(section_?.height ?? 0).toBeLessThanOrEqual(size.height);
     const tiles = await page.locator("#vias article").evaluateAll((nodes) =>
       nodes.map((node) => {
         const box = node.getBoundingClientRect();
@@ -69,7 +69,7 @@ test("hub bento stays short at 375", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await page.goto("/es/servicios");
   const box = await page.locator("#vias").boundingBox();
-  expect(box?.height ?? 0).toBeLessThan(812 * 2.1);
+  expect(box?.height ?? 0).toBeLessThan(812 * 2);
 });
 
 const chatPages = [
