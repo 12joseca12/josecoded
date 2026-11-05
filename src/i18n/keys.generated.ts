@@ -1011,6 +1011,7 @@ export type MessageKey =
   | "chat.composer.sending"
   | "chat.delivery.failed"
   | "chat.delivery.sending"
+  | "chat.errors.burst"
   | "chat.errors.closed"
   | "chat.errors.invalid"
   | "chat.errors.quota"

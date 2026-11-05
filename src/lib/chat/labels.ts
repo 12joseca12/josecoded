@@ -58,6 +58,7 @@ export function buildChatLabels(t: Translate, locale: Locale): ChatLabels {
     },
     quotaAction: { label: t("chat.notice.quotaAction"), href: `/${locale}/contacto#formulario` },
     sendErrors: {
+      burst: t("chat.errors.burst"),
       quota: t("chat.errors.quota"),
       closed: t("chat.errors.closed"),
       verification: t("chat.errors.verification"),

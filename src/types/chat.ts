@@ -44,6 +44,7 @@ export const handoffPhases = ["hidden", "offered", "sending", "done"] as const;
 export type HandoffPhase = (typeof handoffPhases)[number];
 
 export const chatSendErrors = [
+  "burst",
   "quota",
   "closed",
   "verification",

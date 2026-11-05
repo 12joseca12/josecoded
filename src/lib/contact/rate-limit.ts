@@ -24,15 +24,36 @@ export async function passesRateLimit(
   }
 }
 
-export async function findContactLimiter(): Promise<RateLimiter | null> {
+async function findLimiter(name: string): Promise<RateLimiter | null> {
   try {
     const { getCloudflareContext } = await import("@opennextjs/cloudflare");
     const { env } = getCloudflareContext();
-    const candidate = (env as unknown as { CONTACT_LIMITER?: RateLimiter }).CONTACT_LIMITER;
+    const candidate = (env as unknown as Record<string, RateLimiter | undefined>)[name];
     return candidate ?? null;
   } catch {
     return null;
   }
+}
+
+export function findContactLimiter(): Promise<RateLimiter | null> {
+  return findLimiter("CONTACT_LIMITER");
+}
+
+export function findChatLimiter(): Promise<RateLimiter | null> {
+  return findLimiter("CHAT_LIMITER");
+}
+
+export function passesChatRateLimit(
+  limiter: RateLimiter | null,
+  key: string,
+  loopback: boolean,
+): Promise<boolean> {
+  return passesRateLimit(limiter, key, {
+    failClosed: !loopback,
+    onMissing: () => {
+      if (!loopback) console.error("limiter_missing", "CHAT_LIMITER");
+    },
+  });
 }
 
 export function passesContactRateLimit(

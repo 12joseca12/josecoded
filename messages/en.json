@@ -927,7 +927,8 @@
       "closed": "This conversation is closed. Reload to start another.",
       "verification": "I could not check that you are a person. Try again.",
       "invalid": "The message is not valid. Check that it is not empty or over 2,000 characters.",
-      "unavailable": "The chat is not available right now. Use the contact form."
+      "unavailable": "The chat is not available right now. Use the contact form.",
+      "burst": "You are typing very fast. Wait a few seconds."
     },
     "handoff": {
       "title": "Prefer Jose to write to you?",

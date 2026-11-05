@@ -1,6 +1,6 @@
 "use client";
 
-import { type KeyboardEvent, type Ref, type SyntheticEvent, useId, useState } from "react";
+import { type KeyboardEvent, type Ref, useId, useState } from "react";
 
 import { Button } from "@/components/ui/Button/Button";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
@@ -44,12 +44,9 @@ export function ChatComposer({
   const remaining = chatMaxLength - draft.length;
   const blocked = disabled || sending;
 
-  const submit = async (event?: SyntheticEvent<HTMLElement>) => {
-    event?.preventDefault();
-    const body = draft.trim();
+  const submit = async (field: HTMLTextAreaElement | null) => {
+    const body = (field?.value ?? draft).trim();
     if (body === "" || blocked) return;
-    const form = event?.currentTarget.closest("form");
-    const field = form?.querySelector("textarea");
     const sent = await onSend(body);
     if (sent) {
       setDraft("");
@@ -62,14 +59,15 @@ export function ChatComposer({
   const onKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key !== "Enter" || event.shiftKey || event.nativeEvent.isComposing) return;
     event.preventDefault();
-    void submit(event);
+    void submit(event.currentTarget);
   };
 
   return (
     <form
       className={styles.composer}
       onSubmit={(event) => {
-        void submit(event);
+        event.preventDefault();
+        void submit(event.currentTarget.querySelector("textarea"));
       }}
     >
       <label htmlFor={inputId} className={styles.label}>
