@@ -3,8 +3,26 @@
   gap: var(--space-3);
 }
 
+.headRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
 .lead {
   max-width: 38rem;
   color: var(--ink-soft);
   font-size: var(--fs-lead);
+}
+
+.note {
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+}
+
+.skeleton {
+  display: grid;
+  gap: var(--space-3);
 }

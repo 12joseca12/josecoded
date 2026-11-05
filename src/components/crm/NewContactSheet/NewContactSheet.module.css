@@ -1,0 +1,16 @@
+.wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.status {
+  color: var(--ink);
+  font-size: var(--fs-m);
+  font-weight: var(--fw-medium);
+}
+
+.status:empty {
+  display: none;
+}
