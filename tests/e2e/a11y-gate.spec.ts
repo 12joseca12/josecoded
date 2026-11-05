@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
 
-import AxeBuilder from "@axe-core/playwright";
 import { expect, type Locator, type Page, test } from "@playwright/test";
+
+import AxeBuilder from "./support/axe";
 
 const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
   nav: { menuOpen: string; cta: string };
@@ -147,7 +148,12 @@ test("Enter on an extra does not submit the form", async ({ page }) => {
   await extra.scrollIntoViewIfNeeded();
   await expect
     .poll(() =>
-      extra.evaluate((node) => Object.keys(node).some((key) => key.startsWith("__reactProps$"))),
+      extra.evaluate(
+        (node) =>
+          !node.dispatchEvent(
+            new KeyboardEvent("keydown", { key: "Enter", bubbles: true, cancelable: true }),
+          ),
+      ),
     )
     .toBe(true);
   await extra.focus();

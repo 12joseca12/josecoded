@@ -1,5 +1,6 @@
-import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
+
+import AxeBuilder from "./support/axe";
 
 test("prose page renders every MDX element and passes axe", async ({ page }) => {
   await page.goto("/es/dev/ui/prose");

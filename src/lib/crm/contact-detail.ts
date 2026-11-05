@@ -1,22 +1,22 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
 
-import { ownerRowSchema } from "@/types/crm";
 import {
   activityRowSchema,
   type ContactDetailResult,
   contactDetailSchema,
 } from "@/types/crm-detail";
 import type { Database } from "@/types/database";
+import { ownerRatesSchema } from "@/types/deal-win";
 
 export const activitiesLimit = 100;
 
 const detailSelect =
-  "id, full_name, organization, email, phone, kind, source, owner_id, next_action, next_action_at, last_activity_at, created_at, role_title, city, website, linkedin_url, tags, notes, deals(id, stage, via, amount, won_amount, won_at, lost_reason, lost_at, created_at, updated_at)";
+  "id, full_name, organization, email, phone, kind, source, owner_id, next_action, next_action_at, last_activity_at, created_at, role_title, city, website, linkedin_url, tags, notes, deals(id, stage, via, amount, won_amount, won_at, lost_reason, lost_at, recurring_monthly, recurring_started_at, recurring_cancelled_at, created_at, updated_at)";
 
 const uuidSchema = z.uuid();
 const activitiesSchema = z.array(activityRowSchema);
-const peopleSchema = z.array(ownerRowSchema);
+const peopleSchema = z.array(ownerRatesSchema);
 
 export async function fetchContactDetail(
   client: SupabaseClient<Database>,
@@ -39,7 +39,9 @@ export async function fetchContactDetail(
         .limit(activitiesLimit),
       client
         .from("profiles")
-        .select("id, full_name, role, is_active")
+        .select(
+          "id, full_name, role, is_active, parent_closer_id, closer_rate, parent_rate, closer_recurring_rate, parent_recurring_rate",
+        )
         .in("role", ["admin", "closer"])
         .order("full_name"),
     ]);
@@ -60,6 +62,7 @@ export async function fetchContactDetail(
         name: person.full_name,
         assignable: person.is_active,
       })),
+      rates: parsedPeople.data,
     };
   } catch {
     return { status: "error" };

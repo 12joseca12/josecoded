@@ -29,12 +29,15 @@ export const people = {
     id: "00000000-0000-4000-8000-0000000000c1",
     role: "closer",
     name: "Cleo Closer",
+    rates: { closer: 10, closerRecurring: 5 },
   },
   "dani@example.com": {
     id: "00000000-0000-4000-8000-0000000000c2",
     role: "closer",
     name: "Dani Closer",
     parent: "00000000-0000-4000-8000-0000000000c1",
+    rates: { closer: 10, parent: 5, closerRecurring: 4, parentRecurring: 2 },
+    cadence: "weekly",
   },
   "client@example.com": {
     id: "00000000-0000-4000-8000-0000000000d1",
