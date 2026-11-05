@@ -1029,6 +1029,107 @@
         "retry": "Retry",
         "retrying": "Retrying"
       }
+    },
+    "prices": {
+      "meta": {
+        "title": "Prices"
+      },
+      "title": "Prices",
+      "lead": "Prices, timelines, visibility and order of the catalog. Anything without a price shows on the site as “Price under review”. Names and descriptions still live in the site copy.",
+      "tabsLabel": "Price type",
+      "tabs": {
+        "offers": "Tiers",
+        "extras": "Extras",
+        "rates": "Rates",
+        "plans": "Maintenance"
+      },
+      "loading": "Loading prices",
+      "error": {
+        "title": "I could not load the prices",
+        "text": "Try again. If it keeps failing, check that the catalog migration is applied.",
+        "retry": "Try again",
+        "retrying": "Trying again"
+      },
+      "empty": {
+        "title": "Nothing here yet",
+        "text": "This tab has no rows. It fills up when the catalog migration is applied."
+      },
+      "region": "Prices table",
+      "caption": "Prices for {tab}",
+      "columns": {
+        "name": "Name",
+        "price": "Price",
+        "detail": "Detail",
+        "visible": "Visible",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "yes": "Yes",
+      "no": "No",
+      "archived": "Archived",
+      "active": "Active",
+      "edit": "Edit",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "archive": "Archive",
+      "restore": "Restore",
+      "confirmArchive": "Archive?",
+      "confirmArchiveYes": "Yes, archive",
+      "history": "History",
+      "historyEmpty": "No changes yet.",
+      "unknownAuthor": "System",
+      "noValue": "—",
+      "fields": {
+        "price": "Price",
+        "price_monthly": "Monthly price",
+        "visible": "Visible",
+        "archived_at": "Archived"
+      },
+      "billing": {
+        "once": "One-off",
+        "monthly": "Monthly",
+        "yearly": "Yearly",
+        "per_unit": "Per unit"
+      },
+      "rateDetail": {
+        "hourly": "Per hour",
+        "task_min": "Minimum per task"
+      },
+      "units": {
+        "once": "€",
+        "monthly": "€/month",
+        "yearly": "€/year",
+        "per_unit": "€/unit",
+        "hourly": "€/hour",
+        "task_min": "€/task"
+      },
+      "sheet": {
+        "title": "Edit {name}",
+        "close": "Close",
+        "priceLabel": "Price in euros",
+        "priceHint": "Leave it empty and the site shows “Price under review”.",
+        "weeksMinLabel": "Weeks, minimum",
+        "weeksMaxLabel": "Weeks, maximum",
+        "visibleLabel": "Visible on the site",
+        "save": "Save",
+        "saving": "Saving",
+        "cancel": "Cancel"
+      },
+      "actions": {
+        "done": {
+          "save": "Changes saved",
+          "archive": "Row archived",
+          "restore": "Row restored",
+          "move": "Order updated"
+        },
+        "errors": {
+          "price": "Enter a valid price, up to 2 decimals, or leave it empty.",
+          "weeks": "Enter a valid timeline: the minimum cannot exceed the maximum.",
+          "stale": "This row has changed. Reload the page.",
+          "forbidden": "You do not have permission to change prices.",
+          "error": "I could not save. Try again."
+        }
+      }
     }
   },
   "crm": {
