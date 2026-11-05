@@ -82,21 +82,33 @@ select is_empty(
         'admin_counters',
         'admin_jobs',
         'admin_users',
+        'archive_project',
         'assign_lead',
         'cancel_job',
         'claim_lead',
+        'complete_my_task',
+        'confirm_story',
+        'create_project',
+        'decide_story',
+        'delete_document',
+        'delete_task',
         'discard_lead',
         'invite_user',
         'list_lead_inbox',
         'log_totp_reset',
         'mark_notifications_read',
+        'move_task',
         'omen_status',
         'reassign_portfolio',
         'renew_invitation',
+        'reorder_project_links',
         'retry_job',
         'revoke_invitation',
         'send_test_notification',
         'set_notification_pref',
+        'set_project_client',
+        'set_project_freelance',
+        'set_project_phase',
         'set_setting',
         'set_user_active',
         'set_user_rates',
@@ -104,7 +116,8 @@ select is_empty(
         'telegram_link_status',
         'telegram_unlink',
         'touch_lead',
-        'update_my_profile'
+        'update_my_profile',
+        'upsert_task'
       )
   $$,
   'only the allowed security definer RPCs are callable from the API'
@@ -200,21 +213,33 @@ select is_empty(
         'admin_counters',
         'admin_jobs',
         'admin_users',
+        'archive_project',
         'assign_lead',
         'cancel_job',
         'claim_lead',
+        'complete_my_task',
+        'confirm_story',
+        'create_project',
+        'decide_story',
+        'delete_document',
+        'delete_task',
         'discard_lead',
         'invite_user',
         'list_lead_inbox',
         'log_totp_reset',
         'mark_notifications_read',
+        'move_task',
         'omen_status',
         'reassign_portfolio',
         'renew_invitation',
+        'reorder_project_links',
         'retry_job',
         'revoke_invitation',
         'send_test_notification',
         'set_notification_pref',
+        'set_project_client',
+        'set_project_freelance',
+        'set_project_phase',
         'set_setting',
         'set_user_active',
         'set_user_rates',
@@ -222,7 +247,8 @@ select is_empty(
         'telegram_link_status',
         'telegram_unlink',
         'touch_lead',
-        'update_my_profile'
+        'update_my_profile',
+        'upsert_task'
       )
   $$,
   'only the profile and lead RPCs are callable by authenticated in public'
@@ -239,7 +265,7 @@ select is(
       and not has_function_privilege('authenticated', p.oid, 'execute')
       and not has_function_privilege('anon', p.oid, 'execute')
   ),
-  'omen_claim_jobs,omen_finish_job,omen_heartbeat,outbox_claim,outbox_mark,read_invitation,read_public_settings,submit_lead,telegram_confirm_link',
+  'omen_claim_jobs,omen_finish_job,omen_heartbeat,outbox_claim,outbox_mark,read_invitation,read_public_settings,register_document,submit_lead,telegram_confirm_link',
   'only the lead intake, outbox, invitation read, Telegram link and Omen job functions are service_role-only in public'
 );
 
@@ -251,7 +277,7 @@ select is(
     where n.nspname = 'private'
       and has_function_privilege('authenticated', p.oid, 'execute')
   ),
-  'contact_has_history,is_aal2,is_admin,is_api_client_role,is_closer,is_staff,offer_answers_valid,owns_contact,owns_lead,role,slug_list_valid,uid',
+  'contact_has_history,freelance_project_rows,is_aal2,is_admin,is_api_client_role,is_closer,is_project_member,is_staff,offer_answers_valid,owns_contact,owns_lead,role,slug_list_valid,uid',
   'only the policy helpers and the two constraint helpers in private are executable by authenticated (decision 9.6)'
 );
 

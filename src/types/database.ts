@@ -252,6 +252,84 @@ export type Database = {
           },
         ]
       }
+      documents: {
+        Row: {
+          created_at: string
+          deleted_at: string | null
+          deleted_by: string | null
+          id: string
+          mime: string
+          name: string
+          project_id: string
+          size_bytes: number
+          storage_path: string
+          uploaded_by: string | null
+          visibility: Database["public"]["Enums"]["document_visibility"]
+        }
+        Insert: {
+          created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          id?: string
+          mime: string
+          name: string
+          project_id: string
+          size_bytes: number
+          storage_path: string
+          uploaded_by?: string | null
+          visibility?: Database["public"]["Enums"]["document_visibility"]
+        }
+        Update: {
+          created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          id?: string
+          mime?: string
+          name?: string
+          project_id?: string
+          size_bytes?: number
+          storage_path?: string
+          uploaded_by?: string | null
+          visibility?: Database["public"]["Enums"]["document_visibility"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_deleted_by_fkey"
+            columns: ["deleted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documents_deleted_by_fkey"
+            columns: ["deleted_by"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documents_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documents_uploaded_by_fkey"
+            columns: ["uploaded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documents_uploaded_by_fkey"
+            columns: ["uploaded_by"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       extras: {
         Row: {
           archived_at: string | null
@@ -379,6 +457,13 @@ export type Database = {
             columns: ["parent_closer_id"]
             isOneToOne: false
             referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invitations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
         ]
@@ -844,6 +929,185 @@ export type Database = {
           },
         ]
       }
+      project_links: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          name: string
+          project_id: string
+          sort: number
+          updated_at: string
+          url: string
+          usage: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name: string
+          project_id: string
+          sort?: number
+          updated_at?: string
+          url: string
+          usage?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name?: string
+          project_id?: string
+          sort?: number
+          updated_at?: string
+          url?: string
+          usage?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_links_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_links_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_links_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      projects: {
+        Row: {
+          archived_at: string | null
+          brief: string | null
+          client_id: string | null
+          contact_id: string | null
+          created_at: string
+          created_by: string | null
+          deal_id: string | null
+          due_at: string | null
+          freelance_id: string | null
+          id: string
+          name: string
+          offer_slug: string | null
+          phase: Database["public"]["Enums"]["project_phase"]
+          started_at: string | null
+          status: Database["public"]["Enums"]["project_status"]
+          updated_at: string
+        }
+        Insert: {
+          archived_at?: string | null
+          brief?: string | null
+          client_id?: string | null
+          contact_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          deal_id?: string | null
+          due_at?: string | null
+          freelance_id?: string | null
+          id?: string
+          name: string
+          offer_slug?: string | null
+          phase?: Database["public"]["Enums"]["project_phase"]
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["project_status"]
+          updated_at?: string
+        }
+        Update: {
+          archived_at?: string | null
+          brief?: string | null
+          client_id?: string | null
+          contact_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          deal_id?: string | null
+          due_at?: string | null
+          freelance_id?: string | null
+          id?: string
+          name?: string
+          offer_slug?: string | null
+          phase?: Database["public"]["Enums"]["project_phase"]
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["project_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "projects_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_deal_fkey"
+            columns: ["deal_id", "contact_id"]
+            isOneToOne: false
+            referencedRelation: "deals"
+            referencedColumns: ["id", "contact_id"]
+          },
+          {
+            foreignKeyName: "projects_freelance_id_fkey"
+            columns: ["freelance_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_freelance_id_fkey"
+            columns: ["freelance_id"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_offer_slug_fkey"
+            columns: ["offer_slug"]
+            isOneToOne: false
+            referencedRelation: "offers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       rates: {
         Row: {
           code: string
@@ -916,8 +1180,340 @@ export type Database = {
           },
         ]
       }
+      stories: {
+        Row: {
+          as_a: string
+          author_id: string | null
+          confirmed_at: string | null
+          created_at: string
+          criteria: string[]
+          decided_at: string | null
+          decided_by: string | null
+          decision_note: string | null
+          estimate_amount: number | null
+          estimate_hours: number | null
+          i_want: string
+          id: string
+          out_of_scope: boolean
+          project_id: string
+          so_that: string
+          status: Database["public"]["Enums"]["story_status"]
+          task_id: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          as_a: string
+          author_id?: string | null
+          confirmed_at?: string | null
+          created_at?: string
+          criteria?: string[]
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          estimate_amount?: number | null
+          estimate_hours?: number | null
+          i_want: string
+          id?: string
+          out_of_scope?: boolean
+          project_id: string
+          so_that: string
+          status?: Database["public"]["Enums"]["story_status"]
+          task_id?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          as_a?: string
+          author_id?: string | null
+          confirmed_at?: string | null
+          created_at?: string
+          criteria?: string[]
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          estimate_amount?: number | null
+          estimate_hours?: number | null
+          i_want?: string
+          id?: string
+          out_of_scope?: boolean
+          project_id?: string
+          so_that?: string
+          status?: Database["public"]["Enums"]["story_status"]
+          task_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stories_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stories_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stories_decided_by_fkey"
+            columns: ["decided_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stories_decided_by_fkey"
+            columns: ["decided_by"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stories_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stories_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tasks: {
+        Row: {
+          assignee_id: string | null
+          created_at: string
+          description: string | null
+          done_at: string | null
+          done_by: string | null
+          id: string
+          phase: Database["public"]["Enums"]["project_phase"]
+          project_id: string
+          sort: number
+          status: Database["public"]["Enums"]["task_status"]
+          story_id: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          assignee_id?: string | null
+          created_at?: string
+          description?: string | null
+          done_at?: string | null
+          done_by?: string | null
+          id?: string
+          phase: Database["public"]["Enums"]["project_phase"]
+          project_id: string
+          sort?: number
+          status?: Database["public"]["Enums"]["task_status"]
+          story_id?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          assignee_id?: string | null
+          created_at?: string
+          description?: string | null
+          done_at?: string | null
+          done_by?: string | null
+          id?: string
+          phase?: Database["public"]["Enums"]["project_phase"]
+          project_id?: string
+          sort?: number
+          status?: Database["public"]["Enums"]["task_status"]
+          story_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasks_assignee_id_fkey"
+            columns: ["assignee_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasks_assignee_id_fkey"
+            columns: ["assignee_id"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasks_done_by_fkey"
+            columns: ["done_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasks_done_by_fkey"
+            columns: ["done_by"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasks_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasks_story_id_fkey"
+            columns: ["story_id"]
+            isOneToOne: false
+            referencedRelation: "stories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
+      freelance_projects: {
+        Row: {
+          archived_at: string | null
+          brief: string | null
+          created_at: string | null
+          done: number | null
+          due_at: string | null
+          id: string | null
+          name: string | null
+          percent: number | null
+          phase: Database["public"]["Enums"]["project_phase"] | null
+          started_at: string | null
+          status: Database["public"]["Enums"]["project_status"] | null
+          total: number | null
+        }
+        Insert: {
+          archived_at?: string | null
+          brief?: string | null
+          created_at?: string | null
+          done?: number | null
+          due_at?: string | null
+          id?: string | null
+          name?: string | null
+          percent?: number | null
+          phase?: Database["public"]["Enums"]["project_phase"] | null
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["project_status"] | null
+          total?: number | null
+        }
+        Update: {
+          archived_at?: string | null
+          brief?: string | null
+          created_at?: string | null
+          done?: number | null
+          due_at?: string | null
+          id?: string | null
+          name?: string | null
+          percent?: number | null
+          phase?: Database["public"]["Enums"]["project_phase"] | null
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["project_status"] | null
+          total?: number | null
+        }
+        Relationships: []
+      }
+      project_overview: {
+        Row: {
+          archived_at: string | null
+          client_id: string | null
+          client_name: string | null
+          contact_id: string | null
+          created_at: string | null
+          deal_id: string | null
+          done: number | null
+          due_at: string | null
+          freelance_id: string | null
+          freelance_name: string | null
+          id: string | null
+          name: string | null
+          offer_slug: string | null
+          percent: number | null
+          phase: Database["public"]["Enums"]["project_phase"] | null
+          started_at: string | null
+          status: Database["public"]["Enums"]["project_status"] | null
+          stories_to_decide: number | null
+          total: number | null
+        }
+        Insert: {
+          archived_at?: string | null
+          client_id?: string | null
+          client_name?: string | null
+          contact_id?: string | null
+          created_at?: string | null
+          deal_id?: string | null
+          done?: number | null
+          due_at?: string | null
+          freelance_id?: string | null
+          freelance_name?: string | null
+          id?: string | null
+          name?: string | null
+          offer_slug?: string | null
+          percent?: number | null
+          phase?: Database["public"]["Enums"]["project_phase"] | null
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["project_status"] | null
+          stories_to_decide?: number | null
+          total?: number | null
+        }
+        Update: {
+          archived_at?: string | null
+          client_id?: string | null
+          client_name?: string | null
+          contact_id?: string | null
+          created_at?: string | null
+          deal_id?: string | null
+          done?: number | null
+          due_at?: string | null
+          freelance_id?: string | null
+          freelance_name?: string | null
+          id?: string | null
+          name?: string | null
+          offer_slug?: string | null
+          percent?: number | null
+          phase?: Database["public"]["Enums"]["project_phase"] | null
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["project_status"] | null
+          stories_to_decide?: number | null
+          total?: number | null
+        }
+        Relationships: []
+      }
+      project_progress: {
+        Row: {
+          done: number | null
+          percent: number | null
+          project_id: string | null
+          total: number | null
+        }
+        Insert: {
+          done?: number | null
+          percent?: number | null
+          project_id?: string | null
+          total?: number | null
+        }
+        Update: {
+          done?: number | null
+          percent?: number | null
+          project_id?: string | null
+          total?: number | null
+        }
+        Relationships: []
+      }
       public_extras: {
         Row: {
           billing: Database["public"]["Enums"]["extra_billing"] | null
@@ -1119,6 +1715,10 @@ export type Database = {
           role: Database["public"]["Enums"]["user_role"]
         }[]
       }
+      archive_project: {
+        Args: { p_archived?: boolean; p_id: string }
+        Returns: undefined
+      }
       assign_lead: {
         Args: { p_lead_id: string; p_user_id: string }
         Returns: string
@@ -1130,6 +1730,30 @@ export type Database = {
       claim_lead: {
         Args: { p_lead_id: string }
         Returns: string
+      }
+      complete_my_task: {
+        Args: { p_id: string }
+        Returns: undefined
+      }
+      confirm_story: {
+        Args: { p_accept?: boolean; p_id: string }
+        Returns: Database["public"]["Enums"]["story_status"]
+      }
+      create_project: {
+        Args: { p_brief?: string; p_contact_id?: string; p_deal_id?: string; p_due_at?: string; p_freelance_id?: string; p_name: string; p_offer_slug?: string; p_started_at?: string }
+        Returns: string
+      }
+      decide_story: {
+        Args: { p_amount?: number; p_create_task?: boolean; p_decision: string; p_hours?: number; p_id: string; p_note?: string }
+        Returns: Database["public"]["Enums"]["story_status"]
+      }
+      delete_document: {
+        Args: { p_id: string }
+        Returns: string
+      }
+      delete_task: {
+        Args: { p_id: string }
+        Returns: undefined
       }
       discard_lead: {
         Args: { p_lead_id: string; p_reason: string }
@@ -1162,6 +1786,10 @@ export type Database = {
       mark_notifications_read: {
         Args: { p_ids: string[] }
         Returns: number
+      }
+      move_task: {
+        Args: { p_id: string; p_phase: Database["public"]["Enums"]["project_phase"]; p_sort: number }
+        Returns: undefined
       }
       omen_claim_jobs: {
         Args: { p_limit?: number; p_worker: string }
@@ -1226,12 +1854,20 @@ export type Database = {
           leads: number
         }[]
       }
+      register_document: {
+        Args: { p_mime: string; p_name: string; p_path: string; p_project_id: string; p_size: number; p_uploaded_by: string; p_visibility?: Database["public"]["Enums"]["document_visibility"] }
+        Returns: string
+      }
       renew_invitation: {
         Args: { p_id: string }
         Returns: {
           invitation_id: string
           token: string
         }[]
+      }
+      reorder_project_links: {
+        Args: { p_ids: string[]; p_project_id: string }
+        Returns: undefined
       }
       retry_job: {
         Args: { p_id: string }
@@ -1247,6 +1883,18 @@ export type Database = {
       }
       set_notification_pref: {
         Args: { p_channel: string; p_enabled: boolean; p_event: Database["public"]["Enums"]["notification_event"] }
+        Returns: undefined
+      }
+      set_project_client: {
+        Args: { p_id: string; p_user_id: string }
+        Returns: undefined
+      }
+      set_project_freelance: {
+        Args: { p_id: string; p_user_id?: string }
+        Returns: undefined
+      }
+      set_project_phase: {
+        Args: { p_id: string; p_phase: Database["public"]["Enums"]["project_phase"] }
         Returns: undefined
       }
       set_setting: {
@@ -1317,6 +1965,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      upsert_task: {
+        Args: { p_assignee_id?: string; p_description?: string; p_id?: string; p_phase: Database["public"]["Enums"]["project_phase"]; p_project_id: string; p_status?: Database["public"]["Enums"]["task_status"]; p_story_id?: string; p_title: string }
+        Returns: string
+      }
     }
     Enums: {
       activity_kind:
@@ -1341,6 +1993,7 @@ export type Database = {
         | "radar"
       contact_via: "hiring" | "freelance" | "project"
       deal_stage: "new" | "contacted" | "meeting" | "proposal" | "won" | "lost"
+      document_visibility: "client" | "team"
       extra_billing: "once" | "monthly" | "yearly" | "per_unit"
       job_kind:
         | "chat.reply"
@@ -1355,10 +2008,14 @@ export type Database = {
       job_status: "queued" | "running" | "done" | "failed" | "cancelled"
       lead_source: "form" | "nexo" | "whatsapp" | "radar" | "manual"
       lead_status: "new" | "assigned" | "contacted" | "converted" | "discarded"
-      notification_event: "lead_new" | "lead_claimed" | "message_new" | "commission_accrued" | "payment_recorded" | "payment_overdue" | "payout_paid" | "job_failed" | "omen_down" | "invitation_accepted"
+      notification_event: "lead_new" | "lead_claimed" | "message_new" | "commission_accrued" | "payment_recorded" | "payment_overdue" | "payout_paid" | "job_failed" | "omen_down" | "invitation_accepted" | "document_added"
       outbox_channel: "email" | "telegram"
       outbox_status: "queued" | "sending" | "sent" | "failed"
       payout_cadence: "per_payment" | "weekly" | "biweekly"
+      project_phase: "discover" | "design" | "build" | "publish" | "maintain"
+      project_status: "active" | "paused" | "closed"
+      story_status: "proposed" | "in_review" | "accepted" | "rejected" | "in_tasks"
+      task_status: "todo" | "doing" | "done"
       user_role: "admin" | "closer" | "freelance" | "client"
     }
     CompositeTypes: {
@@ -1503,6 +2160,7 @@ export const Constants = {
       contact_source: ["manual", "import", "form", "nexo", "whatsapp", "radar"],
       contact_via: ["hiring", "freelance", "project"],
       deal_stage: ["new", "contacted", "meeting", "proposal", "won", "lost"],
+      document_visibility: ["client", "team"],
       extra_billing: ["once", "monthly", "yearly", "per_unit"],
       job_kind: [
         "chat.reply",
@@ -1518,10 +2176,14 @@ export const Constants = {
       job_status: ["queued", "running", "done", "failed", "cancelled"],
       lead_source: ["form", "nexo", "whatsapp", "radar", "manual"],
       lead_status: ["new", "assigned", "contacted", "converted", "discarded"],
-      notification_event: ["lead_new", "lead_claimed", "message_new", "commission_accrued", "payment_recorded", "payment_overdue", "payout_paid", "job_failed", "omen_down", "invitation_accepted"],
+      notification_event: ["lead_new", "lead_claimed", "message_new", "commission_accrued", "payment_recorded", "payment_overdue", "payout_paid", "job_failed", "omen_down", "invitation_accepted", "document_added"],
       outbox_channel: ["email", "telegram"],
       outbox_status: ["queued", "sending", "sent", "failed"],
       payout_cadence: ["per_payment", "weekly", "biweekly"],
+      project_phase: ["discover", "design", "build", "publish", "maintain"],
+      project_status: ["active", "paused", "closed"],
+      story_status: ["proposed", "in_review", "accepted", "rejected", "in_tasks"],
+      task_status: ["todo", "doing", "done"],
       user_role: ["admin", "closer", "freelance", "client"],
     },
   },
