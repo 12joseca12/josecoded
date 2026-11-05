@@ -61,6 +61,7 @@ export interface OfferCardItem {
   price: string;
   provisional: boolean;
   weeks: string;
+  drivers?: string;
   ctaHref: string;
   ctaLabel: string;
 }
@@ -75,8 +76,22 @@ export interface ExtraChipItem {
   slug: string;
   name: string;
   text: string;
+  forWho: string;
   tags: string[];
   included: string;
+  applies: string[];
+}
+
+export interface CostLine {
+  id: string;
+  label: string;
+  text: string;
+}
+
+export interface NeedFromYouItem {
+  slug: string;
+  name: string;
+  bullets: string[];
 }
 
 export interface MaintenancePlan {
@@ -84,4 +99,24 @@ export interface MaintenancePlan {
   name: string;
   hours: string;
   text: string;
+}
+
+export interface TaskExampleItem {
+  id: string;
+  title: string;
+  text: string;
+  size: string;
+  deliverable: string;
+}
+
+export interface TermItem {
+  id: string;
+  title: string;
+  text: string;
+}
+
+export interface Availability {
+  weeklyHours?: string;
+  from?: string;
+  updatedAt: string;
 }

@@ -53,6 +53,7 @@ export const legalSchema = z.strictObject({
 
 export const stackGroups = ["mobile", "web", "backend", "ai", "quality", "tools"] as const;
 export const stackLevels = ["working", "proficient", "advanced"] as const;
+export const educationKinds = ["degree", "certification", "course"] as const;
 
 const stackItemSchema = z.strictObject({
   name: text,
@@ -84,6 +85,7 @@ export const cvSchema = z
         title: orPending(text),
         period: orPending(text).optional(),
         organization: orPending(text).optional(),
+        kind: z.enum(educationKinds).optional(),
       }),
     ),
     file: z.strictObject({ es: pathOrPlaceholder, en: pathOrPlaceholder }),

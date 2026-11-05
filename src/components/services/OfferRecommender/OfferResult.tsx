@@ -1,5 +1,6 @@
 import type { MouseEvent, Ref } from "react";
 
+import { ShareLink } from "@/components/services/ShareLink/ShareLink";
 import { Button } from "@/components/ui/Button/Button";
 import { Card } from "@/components/ui/Card/Card";
 import { Heading } from "@/components/ui/Heading/Heading";
@@ -12,6 +13,7 @@ import {
   completeAnswers,
   encodeState,
   type RecommenderState,
+  toSearch,
 } from "@/lib/services/recommender-url";
 
 import type { RecommenderCopy } from "./copy";
@@ -23,6 +25,7 @@ interface OfferResultProps {
   copy: RecommenderCopy;
   state: RecommenderState;
   basePath: string;
+  origin: string;
   reviewHref: string;
   onReview: (event: MouseEvent<HTMLElement>) => void;
   onExtras: (selected: ExtraSlug[]) => void;
@@ -41,6 +44,7 @@ export function OfferResult({
   copy,
   state,
   basePath,
+  origin,
   reviewHref,
   onReview,
   onExtras,
@@ -87,6 +91,7 @@ export function OfferResult({
       recommendation={recommendation}
       state={state}
       basePath={basePath}
+      origin={origin}
       reviewHref={reviewHref}
       onReview={onReview}
       onExtras={onExtras}
@@ -106,6 +111,7 @@ function ProjectResult({
   recommendation,
   state,
   basePath,
+  origin,
   reviewHref,
   onReview,
   onExtras,
@@ -122,6 +128,18 @@ function ProjectResult({
     };
   });
   const assumed = recommendation.assumed.kind || recommendation.assumed.size;
+  const assumptions = [
+    recommendation.assumed.kind
+      ? fill(result.assumedKind, {
+          kind: [...new Set(recommendation.offers.map((slug) => copy.offers[slug].platform))].join(
+            " + ",
+          ),
+        })
+      : null,
+    recommendation.assumed.size ? result.assumedSize : null,
+  ].filter((line): line is string => line !== null);
+  const shareSearch = toSearch(state);
+  const shareHref = `${basePath}${shareSearch ? `?${shareSearch}` : ""}#recomendador`;
   const contact = buildContactHref(locale, "project", {
     offers: recommendation.offers,
     extras: selected,
@@ -189,6 +207,11 @@ function ProjectResult({
           <div className={styles.assumed} role="note">
             <strong>{result.assumedTitle}</strong>
             <span>{result.assumedText}</span>
+            <ul className={styles.assumptions}>
+              {assumptions.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
           </div>
         ) : null}
 
@@ -219,6 +242,11 @@ function ProjectResult({
                     name="e"
                     value={slug}
                     checked={selected.includes(slug)}
+                    aria-describedby={
+                      recommendation.suggested.includes(slug)
+                        ? `result-suggested-${slug}`
+                        : undefined
+                    }
                     onChange={(event) => {
                       toggle(slug, event.target.checked);
                     }}
@@ -226,6 +254,11 @@ function ProjectResult({
                   <label htmlFor={`result-extra-${slug}`} className={styles.chip}>
                     {copy.extras[slug].name}
                   </label>
+                  {recommendation.suggested.includes(slug) ? (
+                    <span id={`result-suggested-${slug}`} className={styles.suggested}>
+                      {result.suggested}
+                    </span>
+                  ) : null}
                 </li>
               ))}
             </ul>
@@ -281,6 +314,16 @@ function ProjectResult({
             {result.change}
           </Button>
         </div>
+        <ShareLink
+          origin={origin}
+          href={shareHref}
+          labels={{
+            copy: result.shareCopy,
+            copied: result.shareCopied,
+            failed: result.shareFailed,
+            link: result.shareLabel,
+          }}
+        />
       </Card>
     </div>
   );

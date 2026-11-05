@@ -364,6 +364,7 @@
       "optional": "(optional)",
       "messageLabel": "Message",
       "messageHint": "Tell me the context, the timing and what you need.",
+      "pilotMessage": "I would like to start with a pilot task.",
       "consentBefore": "I have read the ",
       "consentLink": "privacy policy",
       "consentAfter": " and agree that you use this data to reply to me.",
@@ -639,7 +640,6 @@
       "name": "José Carlos Sánchez García",
       "givenName": "José Carlos",
       "familyName": "Sánchez García",
-      "alternateNameFull": "José Carlos Sánchez",
       "alternateName": "josecoded",
       "jobTitle": "Full stack developer specialised in React Native",
       "description": "Full stack developer specialised in React Native, based in Madrid. Builds mobile apps and websites for companies and businesses in Spain and remotely.",
@@ -892,31 +892,79 @@
       "description": "Freelance programmer by the hour or with a per-task quote. Features, audits and rescues of React Native apps and Next.js websites."
     },
     "head": {
-      "title": "Freelance programmer by the hour or",
+      "title": "Freelance React Native developer, by the hour or",
       "accent": "per task.",
-      "lead": "Freelance React Native developer for features, audits and rescues of apps and websites, with the scope agreed before starting."
+      "lead": "I work in your repo, with your PRs and your CI, in React Native, React and Next.js. Scope and deliverable agreed before starting."
     },
     "rates": {
       "title": "Hourly rate and per-task quote"
     },
+    "availability": {
+      "label": "Availability:",
+      "hours": "free hours per week",
+      "from": "from",
+      "updated": "Updated on"
+    },
     "scope": {
-      "title": "Freelance React Native developer: what is included",
+      "title": "Typical tasks and their size",
+      "lead": "Five examples of what I am usually hired for, how big they are and what you receive at the end.",
+      "sizeLabel": "Indicative size",
+      "deliverableLabel": "Deliverable",
+      "note": "Sizes are indicative: the scope and the amount of each task are agreed in writing before starting.",
       "feature": {
-        "title": "New feature",
-        "text": "A screen, a flow or an integration inside your app or website, tested and ready to publish."
+        "title": "New screen with an API",
+        "text": "A screen, a flow or an integration inside your app, tested and ready to review in your CI.",
+        "size": "1–2 days",
+        "deliverable": "Pull request with tests"
       },
       "audit": {
-        "title": "Audit",
-        "text": "I review performance, security and code quality of an existing app and leave you a prioritised report."
+        "title": "Performance audit",
+        "text": "I measure startup, lists and renders of an existing app and find where time is lost.",
+        "size": "1 day",
+        "deliverable": "Prioritised report"
+      },
+      "a11y": {
+        "title": "Accessibility audit of a React Native app",
+        "text": "I review the app with a screen reader and a keyboard against WCAG 2.2 and tell you what to fix first.",
+        "size": "1–2 days",
+        "deliverable": "WCAG 2.2 report and fix plan"
       },
       "rescue": {
         "title": "Project rescue",
-        "text": "I take over a stalled or inherited app or website, stabilise it and get it into production."
+        "text": "I take over a stalled or inherited app, stabilise it and get it running.",
+        "size": "From 1 week",
+        "deliverable": "Stable app in production"
       },
       "ai": {
         "title": "AI integration",
-        "text": "I add an assistant or an AI feature to your product with a clear scope and cost."
+        "text": "I add an assistant or an AI feature to your product with a clear scope and cost.",
+        "size": "3–5 days",
+        "deliverable": "AI feature integrated and documented"
       }
+    },
+    "terms": {
+      "title": "Terms for procurement and legal",
+      "repo": {
+        "title": "I work in your repo and your tools",
+        "text": "I join your repository, your task tracker and your CI; I do not ask you to migrate anything."
+      },
+      "invoice": {
+        "title": "An invoice for every job",
+        "text": "I am not registered as self-employed yet and can invoice one-off jobs; if you need another arrangement, we put it in writing before starting."
+      },
+      "ownership": {
+        "title": "The code is yours",
+        "text": "What I write for your product stays in your repository and is yours."
+      },
+      "delivery": {
+        "title": "Deliveries by pull request",
+        "text": "Every delivery arrives as a reviewable PR, with its description and tests."
+      }
+    },
+    "pilot": {
+      "title": "Start with a pilot task",
+      "text": "We start with a small, closed task. If I am not a fit for your team, we stop and you only pay for that task.",
+      "cta": "Propose a pilot task"
     },
     "start": {
       "title": "How we start",
@@ -967,7 +1015,14 @@
       "ctaFor": "Ask for {name}",
       "scopeNote": "Page and screen limits, delivery times and prices are indicative until pricing is settled; they are confirmed in writing before starting.",
       "notSure": "Not sure which one to pick?",
-      "notSureLink": "Find yours in a minute"
+      "notSureLink": "Find yours in a minute",
+      "warrantyChip": "30 days of fixes included",
+      "driversLead": "Goes up with: {drivers}",
+      "drivers": {
+        "accounts": "accounts",
+        "payments": "payments",
+        "languages": "languages"
+      }
     },
     "tiers": {
       "web-presencia": {
@@ -1041,53 +1096,66 @@
       "items": {
         "accounts": {
           "name": "Accounts and permissions",
-          "text": "Passwordless sign-up and sign-in (email code or Google) and user types with different permissions."
+          "text": "Passwordless sign-up and sign-in (email code or Google) and user types with different permissions.",
+          "forWho": "For anyone who needs customers or staff to sign in with their own account."
         },
         "admin": {
           "name": "Management panel",
-          "text": "A private panel to view and edit data, users and content without touching code."
+          "text": "A private panel to view and edit data, users and content without touching code.",
+          "forWho": "For anyone who wants to edit content and data without asking me each time."
         },
         "payments": {
           "name": "Payments with Stripe",
-          "text": "One-off payments or subscriptions, invoices and a revenue dashboard. Stripe fees are separate."
+          "text": "One-off payments or subscriptions, invoices and a revenue dashboard. Stripe fees are separate.",
+          "forWho": "For anyone who sells or charges subscriptions inside their own web or app."
         },
         "languages": {
           "name": "Several languages",
-          "text": "The interface in more than one language and the content ready to translate. Quoted per language."
+          "text": "The interface in more than one language and the content ready to translate. Quoted per language.",
+          "forWho": "For anyone serving customers in more than one language."
         },
         "seo": {
           "name": "Search visibility (SEO and GEO)",
-          "text": "Structure, copy and data so Google and AI assistants can find you."
+          "text": "Structure, copy and data so Google and AI assistants can find you.",
+          "forWho": "For anyone who wants to be found when people search, on Google and in AI assistants."
         },
         "analytics": {
           "name": "Usage metrics",
-          "text": "Key events, funnels and a dashboard, without third-party cookies where possible."
+          "text": "Key events, funnels and a dashboard, without third-party cookies where possible.",
+          "forWho": "For anyone who wants to know what people do and decide with data."
         },
         "ai": {
           "name": "AI assistant",
-          "text": "An assistant like Nexo that answers with your data inside the site or the app."
+          "text": "An assistant like Nexo that answers with your data inside the site or the app.",
+          "forWho": "For anyone who gets many repeated questions and wants to answer them without being there."
         },
         "push": {
           "name": "Push notifications",
-          "text": "Alerts on the phone for events in your product, with user preferences."
+          "text": "Alerts on the phone for events in your product, with user preferences.",
+          "forWho": "For anyone who needs to alert users on their phone, for orders or appointments, say."
         },
         "offline": {
           "name": "Offline use",
-          "text": "The app works without coverage and syncs when it is back."
+          "text": "The app works without coverage and syncs when it is back.",
+          "forWho": "For anyone whose users lack reliable coverage, on the road or in a warehouse."
         },
         "stores": {
           "name": "Managed store setup",
-          "text": "I open the developer accounts in your name and handle review until approval. Apple and Google fees are yours."
+          "text": "I open the developer accounts in your name and handle review until approval. Apple and Google fees are yours.",
+          "forWho": "For anyone who does not want to wrestle with Apple and Google accounts or app review."
         },
         "maintenance": {
           "name": "Maintenance",
-          "text": "Updates, backups, error monitoring and a monthly bank of hours. Three sizes, below."
+          "text": "Updates, backups, error monitoring and a monthly bank of hours. Three sizes, below.",
+          "forWho": "For anyone who wants someone to watch over and update the product after launch."
         },
         "brand": {
           "name": "Identity and design system",
-          "text": "Logo, colours, typography and documented components so everything looks the same."
+          "text": "Logo, colours, typography and documented components so everything looks the same.",
+          "forWho": "For anyone starting without a logo or style who wants everything to look consistent."
         }
-      }
+      },
+      "showAll": "See all extras"
     },
     "warranty": {
       "title": "Warranty and maintenance",
@@ -1287,7 +1355,14 @@
         "freelanceTitle": "Yours is hourly or per task",
         "freelanceText": "Extending or fixing something that already exists is not a new project: it is done by the hour or per task, with the scope agreed before starting.",
         "freelanceCta": "See freelance",
-        "freelanceContact": "Tell me what you need"
+        "freelanceContact": "Tell me what you need",
+        "suggested": "Recommended for web and app",
+        "assumedKind": "What to launch: I started from {kind}, based on what you ticked.",
+        "assumedSize": "Scope: I started from a medium scope.",
+        "shareCopy": "Copy link to my proposal",
+        "shareCopied": "Link copied.",
+        "shareFailed": "I could not copy it. Select the link and copy it by hand.",
+        "shareLabel": "Link to your proposal"
       },
       "reasons": {
         "existing": "Yours is not a new project but extending or fixing something that already exists.",
@@ -1300,7 +1375,7 @@
         "bump_team": "Several people manage with different permissions: that calls for the top tier.",
         "management_rare": "Since the content hardly changes, I make the changes whenever you ask.",
         "included": "Included as standard in your tier: {extra}.",
-        "maintenance_both": "With web and app together, monthly maintenance is the sensible choice.",
+        "maintenance_both": "With web and app together I suggest monthly maintenance. I have not ticked it: that is your call.",
         "tier": {
           "web-presencia": "Few pages and no users: Presence covers what you need without paying for more.",
           "web-negocio": "A full site you update yourself: Business comes with the editing panel.",
@@ -1320,6 +1395,62 @@
           "offline": "Your app has to work without coverage.",
           "stores": "You would rather I handle the store accounts."
         }
+      },
+      "preview": "Before you see it, check what you told me: {answers}."
+    },
+    "costs": {
+      "title": "Third-party costs",
+      "taxes": {
+        "label": "Taxes",
+        "text": "Any applicable taxes are itemised on the invoice."
+      },
+      "apple": {
+        "label": "Apple account (apps only)",
+        "text": "$99 a year, paid by you to Apple."
+      },
+      "google": {
+        "label": "Google Play account (apps only)",
+        "text": "$25 once, paid by you to Google."
+      },
+      "hosting": {
+        "label": "Domain and hosting",
+        "text": "Registered in your name and paid by you directly to the provider."
+      },
+      "stripe": {
+        "label": "Stripe fee (only if you charge)",
+        "text": "If your product takes payments with Stripe, Stripe keeps its fee on each payment."
+      }
+    },
+    "ownership": {
+      "text": "The code, the domain and the store accounts are yours from day one."
+    },
+    "need": {
+      "title": "What I need from you",
+      "lead": "Three things per tier, so nothing catches you by surprise and the project doesn't stall waiting for material.",
+      "web-presencia": {
+        "a": "The copy and photos for your pages",
+        "b": "Your logo and colours, if you already have them",
+        "c": "Access to your domain, or a new one chosen in your name"
+      },
+      "web-negocio": {
+        "a": "The copy and images for your pages and the first news items",
+        "b": "Your logo and colours, if you already have them",
+        "c": "Access to your domain, or a new one chosen in your name"
+      },
+      "web-plataforma": {
+        "a": "How your service works today and which manual processes you want to replace",
+        "b": "Which types of user there will be and what each can do",
+        "c": "Copy, logo and access to your domain"
+      },
+      "app-primera-version": {
+        "a": "What the app must do in its first version",
+        "b": "Your logo, colours and the copy for the screens",
+        "c": "The Apple and Google developer accounts, in your name"
+      },
+      "app-producto": {
+        "a": "The types of user and what each can do",
+        "b": "Your logo, colours and the copy for the screens",
+        "c": "The Apple and Google developer accounts, in your name"
       }
     }
   },
@@ -1354,7 +1485,7 @@
       "size": "It decides the tier: presenting a business is not the same as running a product with users.",
       "accounts": "With accounts you store people's data and decide what each one sees; that changes the work.",
       "management": "If you will edit it yourself you need a panel; if it hardly changes, Jose changes it when you ask.",
-      "more": "These are the usual extras. Tick any that ring a bell, just in case: you can remove them later."
+      "more": "Tick only what you know you need; anything you doubt we can sort out by talking."
     },
     "option": {
       "start": {
@@ -1568,39 +1699,13 @@
   },
   "about": {
     "meta": {
-      "title": "José Carlos Sánchez, full stack developer",
-      "description": "Background, way of working and stack of José Carlos Sánchez, a full stack developer specialised in React Native. Madrid, Spain and remote."
+      "title": "José Carlos Sánchez García, developer",
+      "description": "Background, way of working and stack of José Carlos Sánchez García, React Native developer at Alten (3Cat apps) and freelancer. Madrid and remote."
     },
     "head": {
-      "title": "I'm José Carlos Sánchez, a",
+      "title": "I'm José Carlos Sánchez García, a",
       "accent": "full stack developer.",
-      "lead": "Mobile full-stack developer specialised in React Native and Expo, with web experience in Next.js and TypeScript. Madrid, Spain and remote."
-    },
-    "story": {
-      "title": "My story",
-      "p1": "I'm a full stack developer and my specialty is React Native: one codebase for iOS and Android, with the web and the server built with the same tools and the same language.",
-      "p2": "I like to own a product from start to finish: the app people see, the website that presents it and the data behind it. I would rather ship something small that works and improve it in the open than disappear for months and present a closed box.",
-      "p3": "I live in Madrid and work with teams and clients across Spain and remotely. Native Spanish and professional English."
-    },
-    "strengths": {
-      "title": "What I'm best at",
-      "lead": "Four things you can rely on from day one.",
-      "mobile": {
-        "title": "Mobile apps with React Native",
-        "text": "iOS and Android apps from a single codebase, from the first screen to the store release."
-      },
-      "web": {
-        "title": "Fast, accessible websites",
-        "text": "Next.js with performance and accessibility measured on every change, not promised at the end."
-      },
-      "backend": {
-        "title": "Server and data",
-        "text": "Databases with row-level security, authentication and APIs designed so the product can grow without a rewrite."
-      },
-      "ai": {
-        "title": "AI with judgement",
-        "text": "Assistants and search over your own data when they add something, and no AI when they don't."
-      }
+      "lead": "React Native developer at Alten, on the 3Cat apps (3CatInfo and 3Cat) since April 2024, and freelancer with NextRaket. Main stack: React Native, Expo, Next.js and TypeScript. Madrid, Spain and remote."
     },
     "values": {
       "title": "How I work",
@@ -1663,6 +1768,16 @@
         "github": "GitHub",
         "malt": "Malt"
       }
+    },
+    "actions": {
+      "label": "Résumé",
+      "cvEn": "CV in English"
+    },
+    "availability": {
+      "modality": "Work mode",
+      "remote": "Remote",
+      "hybrid": "Hybrid",
+      "remoteOrHybrid": "Remote or hybrid"
     }
   },
   "legal": {

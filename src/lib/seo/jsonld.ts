@@ -1,7 +1,10 @@
 import { contact } from "@/config/contact";
 import { profileLinks } from "@/config/profiles";
+import { getCv } from "@/content/cv";
+import type { Cv } from "@/content/schemas";
 import type { Locale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
+import { resolvePersonFacts } from "@/lib/about/cv";
 import { primaryEmail } from "@/lib/contact/channels";
 import type { ContactWay } from "@/types/contact";
 import {
@@ -27,6 +30,8 @@ export function resolveProfileLinks(links: Record<string, string>): string[] {
   return Object.values(links).filter((link) => !link.includes("{{DATO"));
 }
 
+const personLanguages = ["es", "en"] as const;
+
 export function personId(origin: string): string {
   return absoluteUrl(origin, "/#person");
 }
@@ -40,17 +45,19 @@ export async function buildPerson(
   locale: Locale,
   links: Record<string, string> = profileLinks,
   ways: readonly ContactWay[] = contact.ways,
+  cv: Cv = getCv(),
 ): Promise<PersonJsonLd> {
   const t = await getTranslator(locale);
   const sameAs = resolveProfileLinks(links);
   const email = primaryEmail(ways);
+  const facts = resolvePersonFacts(cv);
   return personSchema.parse({
     "@type": "Person",
     "@id": personId(origin),
     name: t("seo.person.name"),
     givenName: t("seo.person.givenName"),
     familyName: t("seo.person.familyName"),
-    alternateName: [t("seo.person.alternateNameFull"), t("seo.person.alternateName")],
+    alternateName: [t("seo.person.alternateName")],
     jobTitle: t("seo.person.jobTitle"),
     description: t("seo.person.description"),
     url: absoluteUrl(origin, localePath(locale, "")),
@@ -65,6 +72,27 @@ export async function buildPerson(
     ],
     ...(email === null ? {} : { email }),
     ...(sameAs.length > 0 ? { sameAs } : {}),
+    ...(facts.knowsAbout.length > 0 ? { knowsAbout: facts.knowsAbout } : {}),
+    knowsLanguage: [...personLanguages],
+    ...(facts.worksFor === null
+      ? {}
+      : { worksFor: { "@type": "Organization", name: facts.worksFor } }),
+    ...(facts.alumniOf.length > 0
+      ? {
+          alumniOf: facts.alumniOf.map((name) => ({ "@type": "EducationalOrganization", name })),
+        }
+      : {}),
+    ...(facts.credentials.length > 0
+      ? {
+          hasCredential: facts.credentials.map((credential) => ({
+            "@type": "EducationalOccupationalCredential",
+            name: credential.name,
+            ...(credential.issuer === null
+              ? {}
+              : { recognizedBy: { "@type": "Organization", name: credential.issuer } }),
+          })),
+        }
+      : {}),
   });
 }
 

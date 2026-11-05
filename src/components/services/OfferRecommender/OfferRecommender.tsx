@@ -22,6 +22,7 @@ import {
   totalSteps,
   withExtras,
 } from "@/lib/services/recommender-url";
+import { recommenderUrlEvent } from "@/lib/services/recommender-url-event";
 
 import type { RecommenderCopy } from "./copy";
 import styles from "./OfferRecommender.module.css";
@@ -38,6 +39,7 @@ export interface GuideLabels {
 interface OfferRecommenderProps {
   locale: string;
   basePath: string;
+  origin: string;
   initial: { q?: string; paso?: string };
   copy: RecommenderCopy;
   guideScript: GuideScript;
@@ -46,10 +48,12 @@ interface OfferRecommenderProps {
 }
 
 const computeMs = 600;
+const previewIds = ["start", "kind", "size", "accounts", "management"] as const;
 
 export function OfferRecommender({
   locale,
   basePath,
+  origin,
   initial,
   copy,
   guideScript,
@@ -97,6 +101,7 @@ export function OfferRecommender({
     const url = `${window.location.pathname}${search ? `?${search}` : ""}`;
     if (replace) window.history.replaceState(null, "", url);
     else window.history.pushState(null, "", url);
+    window.dispatchEvent(new Event(recommenderUrlEvent));
   };
 
   const show = (target: RecommenderState, replace = false) => {
@@ -168,6 +173,16 @@ export function OfferRecommender({
   const bubbleId = "recommender-guide";
   const question = questions.find((entry) => entry.id === step);
   const current = step === "result" || !question ? null : question;
+  const previewAnswers =
+    step === "more"
+      ? previewIds
+          .map((id) => {
+            const value = state.draft[id];
+            return typeof value === "string" ? copy.questions[id].options[value]?.label : undefined;
+          })
+          .filter((label): label is string => label !== undefined)
+          .join(" · ")
+      : "";
 
   return (
     <div className={styles.shell} data-step={step}>
@@ -187,6 +202,7 @@ export function OfferRecommender({
             state={state}
             reviewHref={hrefFor(reviewAnswers(state))}
             basePath={basePath}
+            origin={origin}
             onReview={(event) => {
               navigate(event, reviewAnswers(state));
             }}
@@ -261,6 +277,11 @@ export function OfferRecommender({
                 </p>
               ) : null}
             </fieldset>
+            {previewAnswers ? (
+              <p className={styles.preview} data-testid="recommender-preview">
+                {copy.preview.replace("{answers}", previewAnswers)}
+              </p>
+            ) : null}
             <div className={styles.actions}>
               {number > 1 ? (
                 <Button

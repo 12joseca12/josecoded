@@ -14,6 +14,7 @@ import { PageSection } from "@/components/site/PageSection/PageSection";
 import { Button } from "@/components/ui/Button/Button";
 import { Heading } from "@/components/ui/Heading/Heading";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
+import { availability } from "@/config/availability";
 import { features } from "@/config/features";
 import { site } from "@/config/site";
 import { getCv } from "@/content";
@@ -21,6 +22,7 @@ import { isLocale } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
 import {
+  resolveAvailability,
   resolveCvHref,
   resolveEducation,
   resolveExperience,
@@ -30,7 +32,7 @@ import {
 } from "@/lib/about/cv";
 import { buildContactHref } from "@/lib/contact/ways";
 import { nonceHeader } from "@/lib/security/nonce";
-import { buildBreadcrumbList, buildGraph, buildProfilePage } from "@/lib/seo/jsonld";
+import { buildBreadcrumbList, buildGraph, buildPerson, buildProfilePage } from "@/lib/seo/jsonld";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { localePath } from "@/lib/seo/routes";
 import type { FactItem, StackGroupBlock } from "@/types/about";
@@ -42,7 +44,6 @@ interface AboutProps {
 }
 
 const path = "/sobre-mi";
-const strengthIds = ["mobile", "web", "backend", "ai"] as const;
 const valueIds = ["scope", "delivery", "quality", "decisions"] as const;
 const key = (suffix: string) => `about.${suffix}` as MessageKey;
 
@@ -70,6 +71,7 @@ export default async function AboutPage({ params }: AboutProps) {
     { label: t("nav.about"), href: localePath(locale, path) },
   ];
   const graph = buildGraph(
+    await buildPerson(site.origin, locale),
     buildProfilePage(site.origin, locale, path, {
       name: t("about.meta.title"),
       description: t("about.meta.description"),
@@ -80,7 +82,7 @@ export default async function AboutPage({ params }: AboutProps) {
     ),
   );
 
-  const facts = (group: "strengths" | "values", ids: readonly string[]): FactItem[] =>
+  const facts = (group: "values", ids: readonly string[]): FactItem[] =>
     ids.map((id) => ({
       id,
       title: t(key(`${group}.${id}.title`)),
@@ -108,6 +110,12 @@ export default async function AboutPage({ params }: AboutProps) {
   const experience = resolveExperience(cv.experience);
   const education = resolveEducation(cv.education);
   const cvHref = resolveCvHref(cv.file, locale, features.cvDownload);
+  const cvEnglishHref = locale === "es" ? resolveCvHref(cv.file, "en", features.cvDownload) : null;
+  const availabilityLine = resolveAvailability(availability, {
+    remote: t("about.availability.remote"),
+    hybrid: t("about.availability.hybrid"),
+    remoteOrHybrid: t("about.availability.remoteOrHybrid"),
+  });
   const profiles = resolveProfileLinks().map((link) => ({
     ...link,
     label: t(key(`closing.links.${link.id}`)),
@@ -122,39 +130,22 @@ export default async function AboutPage({ params }: AboutProps) {
         accent={t("about.head.accent")}
         lead={t("about.head.lead")}
         breadcrumbs={<Breadcrumbs label={t("breadcrumbs.label")} items={crumbs} />}
-      />
-      <div className={styles.sections}>
-        <PageSection id="historia" title={t("about.story.title")}>
-          <div className={styles.story}>
-            <p>{t("about.story.p1")}</p>
-            <p>{t("about.story.p2")}</p>
-            <p>{t("about.story.p3")}</p>
+      >
+        {cvHref ? (
+          <div className={styles.actions} role="group" aria-label={t("about.actions.label")}>
+            <Button href={cvHref} download icon={<ArrowIcon />}>
+              {t("about.closing.cv")}
+            </Button>
+            {cvEnglishHref ? (
+              <Button href={cvEnglishHref} variant="ghost" download lang="en" icon={<ArrowIcon />}>
+                {t("about.actions.cvEn")}
+              </Button>
+            ) : null}
           </div>
-        </PageSection>
-        <PageSection
-          id="fortalezas"
-          title={t("about.strengths.title")}
-          lead={t("about.strengths.lead")}
-          size="wide"
-        >
-          <FactList items={facts("strengths", strengthIds)} />
-        </PageSection>
-        <PageSection
-          id="como-trabajo"
-          title={t("about.values.title")}
-          lead={t("about.values.lead")}
-          size="wide"
-        >
-          <FactList items={facts("values", valueIds)} variant="numbered" />
-        </PageSection>
-        <PageSection
-          id="stack"
-          title={t("about.stack.title")}
-          lead={t("about.stack.lead")}
-          size="wide"
-        >
-          <StackGroups groups={stack} />
-        </PageSection>
+        ) : null}
+        {availabilityLine ? <p className={styles.availability}>{availabilityLine}</p> : null}
+      </PageHead>
+      <div className={styles.sections}>
         {experience.length > 0 || education.length > 0 ? (
           <PageSection
             id="trayectoria"
@@ -175,16 +166,27 @@ export default async function AboutPage({ params }: AboutProps) {
             ) : null}
           </PageSection>
         ) : null}
+        <PageSection
+          id="stack"
+          title={t("about.stack.title")}
+          lead={t("about.stack.lead")}
+          size="wide"
+        >
+          <StackGroups groups={stack} />
+        </PageSection>
+        <PageSection
+          id="como-trabajo"
+          title={t("about.values.title")}
+          lead={t("about.values.lead")}
+          size="wide"
+        >
+          <FactList items={facts("values", valueIds)} variant="numbered" />
+        </PageSection>
         <PageSection id="contacto" title={t("about.closing.title")} lead={t("about.closing.lead")}>
           <div className={styles.actions}>
             <Button href={buildContactHref(locale, "contratacion")} icon={<ArrowIcon />}>
               {t("about.closing.cta")}
             </Button>
-            {cvHref ? (
-              <Button href={cvHref} variant="ghost" download icon={<ArrowIcon />}>
-                {t("about.closing.cv")}
-              </Button>
-            ) : null}
           </div>
           {profiles.length > 0 ? (
             <LinkRow

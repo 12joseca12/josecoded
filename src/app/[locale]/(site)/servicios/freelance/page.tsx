@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { FaqWithNexo } from "@/components/chat/FaqWithNexo/FaqWithNexo";
+import { AvailabilityNote } from "@/components/services/AvailabilityNote/AvailabilityNote";
+import { PilotTask } from "@/components/services/PilotTask/PilotTask";
 import { RateFigure } from "@/components/services/RateFigure/RateFigure";
 import { ServicePage } from "@/components/services/ServicePage/ServicePage";
+import { TaskExamples } from "@/components/services/TaskExamples/TaskExamples";
+import { TermsStrip } from "@/components/services/TermsStrip/TermsStrip";
 import { PageSection } from "@/components/site/PageSection/PageSection";
 import { Button } from "@/components/ui/Button/Button";
-import { Card } from "@/components/ui/Card/Card";
-import { Heading } from "@/components/ui/Heading/Heading";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 import { Steps } from "@/components/ui/Steps/Steps";
 import { isLocale } from "@/i18n/config";
@@ -15,9 +17,11 @@ import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
 import { buildContactHref } from "@/lib/contact/ways";
 import { buildPageMetadata } from "@/lib/seo/metadata";
+import { freshAvailability, loadAvailability } from "@/lib/services/availability";
 import { buildFaqItems } from "@/lib/services/faq";
+import { buildPilotHref } from "@/lib/services/pilot";
 import { isProvisional, rates } from "@/lib/services/rates";
-import type { StepItem } from "@/types/services";
+import type { StepItem, TaskExampleItem, TermItem } from "@/types/services";
 
 import styles from "./page.module.css";
 
@@ -25,24 +29,9 @@ interface FreelanceProps {
   params: Promise<{ locale: string }>;
 }
 
-const scope: { id: string; title: MessageKey; text: MessageKey }[] = [
-  {
-    id: "feature",
-    title: "freelancePage.scope.feature.title",
-    text: "freelancePage.scope.feature.text",
-  },
-  {
-    id: "audit",
-    title: "freelancePage.scope.audit.title",
-    text: "freelancePage.scope.audit.text",
-  },
-  {
-    id: "rescue",
-    title: "freelancePage.scope.rescue.title",
-    text: "freelancePage.scope.rescue.text",
-  },
-  { id: "ai", title: "freelancePage.scope.ai.title", text: "freelancePage.scope.ai.text" },
-];
+const tasks = ["feature", "audit", "a11y", "rescue", "ai"] as const;
+
+const terms = ["repo", "invoice", "ownership", "delivery"] as const;
 
 const start: { id: string; title: MessageKey; text: MessageKey }[] = [
   {
@@ -79,6 +68,31 @@ export default async function FreelancePage({ params }: FreelanceProps) {
   const t = await getTranslator(locale);
   const provisional = isProvisional(rates);
   const faq = buildFaqItems(t, "freelance");
+  const availability = freshAvailability(await loadAvailability(), new Date());
+  const format = new Intl.DateTimeFormat(locale, { dateStyle: "long" });
+  const availabilityLines = availability
+    ? [
+        availability.weeklyHours
+          ? `${availability.weeklyHours} ${t("freelancePage.availability.hours")}`
+          : null,
+        availability.from ? `${t("freelancePage.availability.from")} ${availability.from}` : null,
+      ].filter((line): line is string => line !== null)
+    : [];
+  const availabilityUpdated = availability
+    ? `${t("freelancePage.availability.updated")} ${format.format(new Date(availability.updatedAt))}`
+    : "";
+  const taskItems: TaskExampleItem[] = tasks.map((id) => ({
+    id,
+    title: t(`freelancePage.scope.${id}.title`),
+    text: t(`freelancePage.scope.${id}.text`),
+    size: t(`freelancePage.scope.${id}.size`),
+    deliverable: t(`freelancePage.scope.${id}.deliverable`),
+  }));
+  const termItems: TermItem[] = terms.map((id) => ({
+    id,
+    title: t(`freelancePage.terms.${id}.title`),
+    text: t(`freelancePage.terms.${id}.text`),
+  }));
   const steps: StepItem[] = start.map((step) => ({
     id: step.id,
     title: t(step.title),
@@ -117,20 +131,33 @@ export default async function FreelancePage({ params }: FreelanceProps) {
             },
           ]}
         />
+        <AvailabilityNote
+          label={t("freelancePage.availability.label")}
+          lines={availabilityLines}
+          updated={availabilityUpdated}
+        />
       </PageSection>
-      <PageSection id="incluye" title={t("freelancePage.scope.title")}>
-        <ul className={styles.scope}>
-          {scope.map((item) => (
-            <li key={item.id}>
-              <Card as="article" size="sm" className={styles.card}>
-                <Heading level={3} size="h4">
-                  {t(item.title)}
-                </Heading>
-                <p className={styles.text}>{t(item.text)}</p>
-              </Card>
-            </li>
-          ))}
-        </ul>
+      <PageSection
+        id="incluye"
+        title={t("freelancePage.scope.title")}
+        lead={t("freelancePage.scope.lead")}
+      >
+        <TaskExamples
+          items={taskItems}
+          sizeLabel={t("freelancePage.scope.sizeLabel")}
+          deliverableLabel={t("freelancePage.scope.deliverableLabel")}
+          note={t("freelancePage.scope.note")}
+        />
+      </PageSection>
+      <PageSection id="condiciones" title={t("freelancePage.terms.title")}>
+        <TermsStrip labelledBy="condiciones-title" items={termItems} />
+      </PageSection>
+      <PageSection id="tarea-piloto" title={t("freelancePage.pilot.title")}>
+        <PilotTask
+          text={t("freelancePage.pilot.text")}
+          cta={t("freelancePage.pilot.cta")}
+          href={buildPilotHref(locale)}
+        />
       </PageSection>
       <PageSection id="como-empezamos" title={t("freelancePage.start.title")} size="wide">
         <Steps items={steps} />

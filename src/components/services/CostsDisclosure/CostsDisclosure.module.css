@@ -1,0 +1,25 @@
+.costs {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.list {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.entry {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.text {
+  color: var(--ink-soft);
+}
+
+@media (min-width: 64rem) {
+  .list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--space-6);
+  }
+}
