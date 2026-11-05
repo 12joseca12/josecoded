@@ -44,7 +44,7 @@ describe("staff navigation registry", () => {
       "system",
       "notifications",
     ]);
-    expect(ready("crm")).toEqual(["overview", "contacts"]);
+    expect(ready("crm")).toEqual(["overview", "contacts", "settings"]);
   });
 
   it("has a label in every locale", () => {

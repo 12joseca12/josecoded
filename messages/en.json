@@ -2150,6 +2150,32 @@
           "error": "Could not log it. Try again."
         }
       }
+    },
+    "settings": {
+      "meta": {
+        "title": "Settings"
+      },
+      "title": "Settings",
+      "lead": "Your Telegram, your alerts and the rate you earn at.",
+      "loading": {
+        "telegram": "Loading Telegram",
+        "rules": "Loading alerts",
+        "rates": "Loading your rate"
+      },
+      "rates": {
+        "title": "Your rate",
+        "text": "Jose set it when he signed you up. It can only be read here.",
+        "project": "Per project",
+        "recurring": "Per recurring fee",
+        "percent": "{value} %",
+        "none": "You do not have a rate assigned yet.",
+        "error": {
+          "title": "Your rate could not be loaded",
+          "text": "We could not read your details.",
+          "retry": "Retry",
+          "retrying": "Retrying"
+        }
+      }
     }
   },
   "freelancePage": {

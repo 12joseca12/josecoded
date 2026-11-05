@@ -2150,6 +2150,32 @@
           "error": "No se ha podido registrar. Inténtalo otra vez."
         }
       }
+    },
+    "settings": {
+      "meta": {
+        "title": "Ajustes"
+      },
+      "title": "Ajustes",
+      "lead": "Tu Telegram, tus avisos y la tasa con la que cobras.",
+      "loading": {
+        "telegram": "Cargando Telegram",
+        "rules": "Cargando los avisos",
+        "rates": "Cargando tu tasa"
+      },
+      "rates": {
+        "title": "Tu tasa",
+        "text": "La fijó Jose al darte de alta. Aquí solo se puede consultar.",
+        "project": "Por proyecto",
+        "recurring": "Por cuota recurrente",
+        "percent": "{value} %",
+        "none": "Todavía no tienes una tasa asignada.",
+        "error": {
+          "title": "No se ha podido cargar tu tasa",
+          "text": "No hemos podido leer tus datos.",
+          "retry": "Reintentar",
+          "retrying": "Reintentando"
+        }
+      }
     }
   },
   "freelancePage": {

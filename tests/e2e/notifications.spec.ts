@@ -240,6 +240,7 @@ test.describe("with the bot configured and sending off", () => {
 
     await card.getByRole("button", { name: telegram.check }).click();
     await expect(card.getByText(telegram.stillPending)).toBeVisible();
+    await expect(card.getByRole("button", { name: telegram.check })).toBeEnabled();
 
     await linkFromBot(page);
     await card.getByRole("button", { name: telegram.check }).click();
