@@ -1,0 +1,39 @@
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-6);
+}
+
+.room {
+  display: grid;
+  min-block-size: 30rem;
+  block-size: calc(100dvh - 14rem);
+  max-block-size: 52rem;
+}
+
+.side {
+  display: grid;
+  gap: var(--space-6);
+  align-content: start;
+}
+
+.origin {
+  color: var(--ink-soft);
+  font-family: var(--font-mono);
+  font-size: var(--fs-m);
+}
+
+.archivedNote {
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: var(--panel);
+  font-size: var(--fs-base);
+}
+
+@media (width >= 64rem) {
+  .layout {
+    grid-template-columns: minmax(0, 2fr) minmax(16rem, 1fr);
+    align-items: start;
+  }
+}

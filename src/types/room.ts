@@ -89,6 +89,12 @@ export type RoomPollResult =
 
 export type RoomActionResult = { status: "done" } | { status: "failed"; code: string };
 
+export interface MemberCandidate {
+  userId: string;
+  name: string;
+  role: MemberRole;
+}
+
 export interface RoomTransport {
   poll: (since: string | null) => Promise<RoomPollResult>;
   send: (body: string) => Promise<SendRoomMessageResult>;

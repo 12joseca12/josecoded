@@ -959,7 +959,8 @@
       "moreTitle": "More sections",
       "close": "Close",
       "switch": "Go to CRM",
-      "audit": "Audit log"
+      "audit": "Audit log",
+      "chat": "Chat"
     },
     "overview": {
       "meta": {
@@ -2512,6 +2513,112 @@
         "footer": "Amounts in euros.",
         "range": "{start} – {end}"
       }
+    },
+    "chat": {
+      "meta": {
+        "title": "Chat",
+        "detailTitle": "Conversation"
+      },
+      "title": "Chat",
+      "lead": "Visitor conversations and rooms with your team and clients.",
+      "loading": "Loading the conversations",
+      "tabs": {
+        "label": "Conversation type",
+        "visitors": "Visitors",
+        "people": "People",
+        "clients": "Clients",
+        "archived": "Archived"
+      },
+      "empty": {
+        "visitors": {
+          "title": "No visitor has written",
+          "text": "When a visitor writes from the web chat, the conversation will show up here."
+        },
+        "people": {
+          "title": "No rooms with people",
+          "text": "Every closer and freelancer gets a room when they accept the invitation."
+        },
+        "clients": {
+          "title": "No client rooms",
+          "text": "Client rooms will show up once there are projects with a client."
+        },
+        "archived": {
+          "title": "No archived rooms",
+          "text": "The rooms you archive stay here."
+        }
+      },
+      "row": {
+        "kinds": {
+          "visitor": "Visitor",
+          "closer": "Closer",
+          "client": "Client",
+          "freelance": "Freelance"
+        },
+        "visitor": "Visitor",
+        "noMessages": "No messages yet",
+        "unread": "{count} unread",
+        "nexoOn": "Nexo on",
+        "nexoOff": "Nexo off",
+        "archived": "Archived"
+      },
+      "error": {
+        "title": "The conversations could not be loaded",
+        "text": "Try again in a few seconds.",
+        "retry": "Try again",
+        "retrying": "Trying again"
+      },
+      "detail": {
+        "back": "Back to chat",
+        "titleVisitor": "Conversation with a visitor",
+        "titleNamed": "Conversation with {name}",
+        "titleClient": "Project room",
+        "origin": "Page of origin: {path}",
+        "archivedNote": "Archived room: read-only.",
+        "error": {
+          "title": "The conversation could not be loaded",
+          "text": "Try again in a few seconds.",
+          "retry": "Try again",
+          "retrying": "Trying again"
+        },
+        "archive": {
+          "trigger": "Archive room",
+          "title": "Archive this room",
+          "text": "The room becomes read-only and stops taking messages. You can keep reading it.",
+          "submit": "Archive",
+          "saving": "Archiving",
+          "close": "Cancel",
+          "done": "Room archived",
+          "errors": {
+            "error": "The room could not be archived.",
+            "forbidden": "Only Jose can archive rooms.",
+            "conversation_not_found": "The room no longer exists."
+          }
+        },
+        "lead": {
+          "title": "Lead",
+          "none": "The visitor has not left contact details yet, so a lead cannot be created.",
+          "ready": "The visitor left their details as {name}.",
+          "button": "Create contact",
+          "confirmTitle": "Create a contact from the conversation",
+          "confirmText": "A contact in your name will be created with an extract of the conversation.",
+          "submit": "Create contact",
+          "saving": "Creating",
+          "close": "Cancel",
+          "done": "Contact created",
+          "converted": "This lead is already a contact.",
+          "openContact": "Open contact",
+          "openLead": "View lead",
+          "errors": {
+            "error": "The contact could not be created.",
+            "forbidden": "Only Jose can create contacts from chat.",
+            "lead_discarded": "The lead is discarded.",
+            "lead_not_found": "The lead no longer exists.",
+            "contact_conflict": "A contact with that email already exists under someone else.",
+            "invalid_assignee": "The contact cannot be assigned to that person."
+          }
+        }
+      },
+      "limit": "Showing the {count} most recent."
     }
   },
   "crm": {

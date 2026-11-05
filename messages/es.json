@@ -959,7 +959,8 @@
       "moreTitle": "Más secciones",
       "close": "Cerrar",
       "switch": "Ir al CRM",
-      "audit": "Auditoría"
+      "audit": "Auditoría",
+      "chat": "Chat"
     },
     "overview": {
       "meta": {
@@ -2512,6 +2513,112 @@
         "footer": "Importes en euros.",
         "range": "{start} – {end}"
       }
+    },
+    "chat": {
+      "meta": {
+        "title": "Chat",
+        "detailTitle": "Conversación"
+      },
+      "title": "Chat",
+      "lead": "Conversaciones de visitantes y salas con tu equipo y tus clientes.",
+      "loading": "Cargando las conversaciones",
+      "tabs": {
+        "label": "Tipo de conversación",
+        "visitors": "Visitantes",
+        "people": "Personas",
+        "clients": "Clientes",
+        "archived": "Archivadas"
+      },
+      "empty": {
+        "visitors": {
+          "title": "Ningún visitante ha escrito",
+          "text": "Cuando un visitante escriba desde el chat de la web, la conversación aparecerá aquí."
+        },
+        "people": {
+          "title": "Sin salas con personas",
+          "text": "Cada closer y cada freelance tiene su sala al aceptar la invitación."
+        },
+        "clients": {
+          "title": "Sin salas de clientes",
+          "text": "Las salas de clientes aparecerán cuando haya proyectos con cliente."
+        },
+        "archived": {
+          "title": "Sin salas archivadas",
+          "text": "Aquí quedan las salas que archives."
+        }
+      },
+      "row": {
+        "kinds": {
+          "visitor": "Visitante",
+          "closer": "Closer",
+          "client": "Cliente",
+          "freelance": "Freelance"
+        },
+        "visitor": "Visitante",
+        "noMessages": "Sin mensajes todavía",
+        "unread": "{count} sin leer",
+        "nexoOn": "Nexo activo",
+        "nexoOff": "Nexo apagado",
+        "archived": "Archivada"
+      },
+      "error": {
+        "title": "No se han podido cargar las conversaciones",
+        "text": "Inténtalo de nuevo en unos segundos.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "detail": {
+        "back": "Volver al chat",
+        "titleVisitor": "Conversación con un visitante",
+        "titleNamed": "Conversación con {name}",
+        "titleClient": "Sala del proyecto",
+        "origin": "Página de origen: {path}",
+        "archivedNote": "Sala archivada: solo lectura.",
+        "error": {
+          "title": "No se ha podido cargar la conversación",
+          "text": "Inténtalo de nuevo en unos segundos.",
+          "retry": "Reintentar",
+          "retrying": "Reintentando"
+        },
+        "archive": {
+          "trigger": "Archivar sala",
+          "title": "Archivar esta sala",
+          "text": "La sala pasa a solo lectura y deja de admitir mensajes. Podrás seguir leyéndola.",
+          "submit": "Archivar",
+          "saving": "Archivando",
+          "close": "Cancelar",
+          "done": "Sala archivada",
+          "errors": {
+            "error": "No se ha podido archivar la sala.",
+            "forbidden": "Solo Jose puede archivar salas.",
+            "conversation_not_found": "La sala ya no existe."
+          }
+        },
+        "lead": {
+          "title": "Interesado",
+          "none": "El visitante todavía no ha dejado sus datos de contacto, así que no se puede crear un interesado.",
+          "ready": "El visitante ha dejado sus datos como {name}.",
+          "button": "Crear contacto",
+          "confirmTitle": "Crear contacto desde la conversación",
+          "confirmText": "Se creará un contacto a tu nombre con el extracto de la conversación.",
+          "submit": "Crear contacto",
+          "saving": "Creando",
+          "close": "Cancelar",
+          "done": "Contacto creado",
+          "converted": "Este interesado ya es un contacto.",
+          "openContact": "Abrir contacto",
+          "openLead": "Ver interesado",
+          "errors": {
+            "error": "No se ha podido crear el contacto.",
+            "forbidden": "Solo Jose puede crear contactos desde el chat.",
+            "lead_discarded": "El interesado está descartado.",
+            "lead_not_found": "El interesado ya no existe.",
+            "contact_conflict": "Ya existe un contacto con ese correo a nombre de otra persona.",
+            "invalid_assignee": "No se puede asignar el contacto a esa persona."
+          }
+        }
+      },
+      "limit": "Mostrando las {count} más recientes."
     }
   },
   "crm": {

@@ -72,6 +72,8 @@ function freshRooms() {
     consent_revoked_at: null,
     project_id: null,
     subject: closerId,
+    lead_id: null,
+    contact_id: null,
     first_page_path: null,
     members: [...owners(), member(closerId, "closer")],
     messages: [
@@ -103,6 +105,8 @@ function freshRooms() {
     consent_revoked_at: null,
     project_id: null,
     subject: null,
+    lead_id: null,
+    contact_id: null,
     first_page_path: "/es/servicios",
     members: owners(),
     messages: [
@@ -119,6 +123,8 @@ function freshRooms() {
     consent_revoked_at: null,
     project_id: "d0000000-0000-4000-8000-000000000001",
     subject: null,
+    lead_id: null,
+    contact_id: null,
     first_page_path: null,
     members: [...owners(), member(clientId, "client"), member(closerId, "closer")],
     messages: [
@@ -139,6 +145,8 @@ function freshRooms() {
     consent_revoked_at: null,
     project_id: null,
     subject: daniId,
+    lead_id: null,
+    contact_id: null,
     first_page_path: null,
     members: [...owners(), member(daniId, "closer", { left_at: minutesAgo(100) })],
     messages: [
@@ -184,6 +192,15 @@ route("POST", "/__chat/push", async ({ request, response, url }) => {
   if (!target) return send(response, 404, { ok: false });
   const fields = { author_kind: kind, author_id: author, body, system_event };
   target.messages.push(message(room, fields));
+  return send(response, 200, { ok: true });
+});
+
+route("POST", "/__chat/room", async ({ request, response, url }) => {
+  const { chat } = stateFor(url.searchParams.get("tag") ?? "");
+  const { room, set } = JSON.parse(await readBody(request));
+  const target = chat.rooms.get(room);
+  if (!target) return send(response, 404, { ok: false });
+  Object.assign(target, set);
   return send(response, 200, { ok: true });
 });
 
@@ -423,9 +440,33 @@ route("GET", "/rest/v1/my_conversations", ({ request, response, url }) => {
   const { chat } = who.auth;
   who.auth.calls.chat.push({ name: "my_conversations", query: url.search });
   if (chat.mode.summaries === "error") return rejection(response, 500, "XX000", "internal");
+  if (chat.mode.summaries === "empty") return send(response, 200, []);
+  const wanted = /^eq\.(.+)$/.exec(url.searchParams.get("id") ?? "")?.[1];
   const rows = [...chat.rooms.values()]
+    .filter((room) => (wanted ? room.id === wanted : true))
     .filter((room) => canRead(who, room))
     .map((room) => summary(room, who.session.userId))
     .sort((a, b) => Date.parse(b.last_activity_at) - Date.parse(a.last_activity_at));
+  return send(response, 200, rows);
+});
+
+route("GET", "/rest/v1/conversations", ({ request, response, url }) => {
+  const who = caller(request);
+  if (who.denied) return rejection(response, 401, "PGRST301", "JWT invalid");
+  const { chat } = who.auth;
+  const wanted = /^eq\.(.+)$/.exec(url.searchParams.get("id") ?? "")?.[1];
+  const rows = [...chat.rooms.values()]
+    .filter((room) => (wanted ? room.id === wanted : true))
+    .filter((room) => canRead(who, room))
+    .map((room) => ({
+      id: room.id,
+      kind: room.kind,
+      status: room.status,
+      ai_enabled: room.ai_enabled,
+      ai_off_reason: room.ai_off_reason,
+      lead_id: room.lead_id,
+      contact_id: room.contact_id,
+      first_page_path: room.first_page_path,
+    }));
   return send(response, 200, rows);
 });
