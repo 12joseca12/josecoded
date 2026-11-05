@@ -77,11 +77,14 @@ select is_empty(
       and p.prosecdef
       and has_function_privilege('authenticated', p.oid, 'execute')
       and p.proname not in (
+        'admin_jobs',
         'assign_lead',
+        'cancel_job',
         'claim_lead',
         'discard_lead',
         'list_lead_inbox',
         'omen_status',
+        'retry_job',
         'set_setting',
         'touch_lead',
         'update_my_profile'
@@ -175,11 +178,14 @@ select is_empty(
     where n.nspname = 'public'
       and has_function_privilege('authenticated', p.oid, 'execute')
       and p.proname not in (
+        'admin_jobs',
         'assign_lead',
+        'cancel_job',
         'claim_lead',
         'discard_lead',
         'list_lead_inbox',
         'omen_status',
+        'retry_job',
         'set_setting',
         'touch_lead',
         'update_my_profile'

@@ -535,9 +535,30 @@ export type Database = {
       }
     }
     Functions: {
+      admin_jobs: {
+        Args: {
+          p_limit?: number
+          p_status?: Database["public"]["Enums"]["job_status"]
+        }
+        Returns: {
+          attempts: number
+          created_at: string
+          error: string
+          finished_at: string
+          id: string
+          kind: Database["public"]["Enums"]["job_kind"]
+          max_attempts: number
+          run_after: string
+          status: Database["public"]["Enums"]["job_status"]
+        }[]
+      }
       assign_lead: {
         Args: { p_lead_id: string; p_user_id: string }
         Returns: string
+      }
+      cancel_job: {
+        Args: { p_id: string }
+        Returns: Database["public"]["Enums"]["job_status"]
       }
       claim_lead: {
         Args: { p_lead_id: string }
@@ -589,6 +610,10 @@ export type Database = {
           updated_at: string
           value: Json
         }[]
+      }
+      retry_job: {
+        Args: { p_id: string }
+        Returns: Database["public"]["Enums"]["job_status"]
       }
       set_setting: {
         Args: { p_key: string; p_value: Json }
