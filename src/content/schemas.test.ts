@@ -53,7 +53,15 @@ describe("projectSchema", () => {
 });
 
 describe("blogSchema", () => {
-  const post = { title: "T", slug: "t", description: "D", date: "2026-11-02" };
+  const post = {
+    title: "T",
+    slug: "t",
+    description: "D",
+    date: "2026-11-02",
+    updated: "2026-11-02",
+    category: "precios",
+    relatedService: "a-medida",
+  };
 
   it("accepts a post and defaults draft to false", () => {
     expect(blogSchema.parse(post).draft).toBe(false);
@@ -61,6 +69,16 @@ describe("blogSchema", () => {
 
   it("rejects a malformed date", () => {
     expect(blogSchema.safeParse({ ...post, date: "02/11/2026" }).success).toBe(false);
+  });
+
+  it("rejects an unknown category and a missing related service", () => {
+    expect(blogSchema.safeParse({ ...post, category: "ia" }).success).toBe(false);
+    expect(blogSchema.safeParse({ ...post, relatedService: undefined }).success).toBe(false);
+  });
+
+  it("defaults the kind to article and allows two related posts at most", () => {
+    expect(blogSchema.parse(post).kind).toBe("article");
+    expect(blogSchema.safeParse({ ...post, relatedPosts: ["a", "b", "c"] }).success).toBe(false);
   });
 });
 

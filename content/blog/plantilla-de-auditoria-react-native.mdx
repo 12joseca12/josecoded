@@ -1,0 +1,108 @@
+---
+title: "Plantilla de auditoría de una app React Native"
+metaTitle: "Plantilla de auditoría de una app React Native"
+slug: plantilla-de-auditoria-react-native
+description: "Una plantilla para imprimir con las áreas que reviso al auditar una app React Native, qué comprobar en cada una y cómo priorizar lo que encuentres."
+date: "2026-11-05"
+updated: "2026-11-05"
+order: 6
+category: react-native
+kind: resource
+tags: [auditoría, React Native, plantilla]
+relatedService: freelance
+relatedPosts:
+  - accesibilidad-apps-european-accessibility-act
+  - programador-freelance-por-horas-o-por-tarea
+faq:
+  - question: "¿Puedo usar la plantilla sin contratarte?"
+    answer: "Sí, está pensada para eso. Imprímela o guárdala como PDF y repasa tu app con tu equipo. Si prefieres que lo haga otra persona con experiencia, puedes pedirme una auditoría."
+  - question: "¿Cuánto se tarda en pasarla?"
+    answer: "Depende del tamaño de la app. Una auditoría mía de una app de tamaño normal es una tarea de uno a dos días con un informe; con la plantilla, tu equipo puede hacer una primera pasada en menos tiempo y con menos detalle."
+  - question: "¿Qué hago con lo que encuentre?"
+    answer: "Priorízalo con la escala del final de la plantilla y conviértelo en tareas pequeñas con un entregable claro. Lo urgente es lo que rompe flujos o expone datos."
+---
+
+Una plantilla para repasar una app React Native de forma ordenada. Rellena la columna de estado con tu equipo y apunta una prioridad a cada hallazgo. Imprímela o guárdala como PDF con el botón de arriba.
+
+## Cómo usarla
+
+Cada área tiene una lista de comprobaciones. Para cada una anota el estado y, si falla, la prioridad:
+
+- **Estado:** correcto, mejorable, falla o no aplica.
+- **Prioridad:** P1 rompe un flujo o expone datos, P2 degrada la experiencia, P3 es una mejora.
+
+## 1. Estabilidad
+
+| Comprobación                                | Cómo                                                                       | Estado | Prioridad |
+| ------------------------------------------- | -------------------------------------------------------------------------- | ------ | --------- |
+| Hay informe automático de fallos            | Revisa que la app envía errores a un servicio y quién los mira             |        |           |
+| Los errores de JavaScript no cierran la app | Provoca un error en una pantalla y comprueba que hay una pantalla de error |        |           |
+| Las peticiones fallidas se explican         | Prueba sin red y con la red lenta                                          |        |           |
+| Hay manejo de estados vacíos y de carga     | Revisa las pantallas con listas                                            |        |           |
+
+<RelatedService />
+
+## 2. Rendimiento
+
+| Comprobación                             | Cómo                                                           | Estado | Prioridad |
+| ---------------------------------------- | -------------------------------------------------------------- | ------ | --------- |
+| El arranque es razonable                 | Mide el arranque en frío en un móvil modesto                   |        |           |
+| Las listas largas van fluidas            | Usa listas virtualizadas y comprueba el desplazamiento         |        |           |
+| No hay renders innecesarios              | Usa el Profiler de React DevTools en las pantallas principales |        |           |
+| El tamaño de las imágenes es adecuado    | Revisa resoluciones y formatos                                 |        |           |
+| El motor de JavaScript es el recomendado | Comprueba la configuración del proyecto                        |        |           |
+
+## 3. Accesibilidad
+
+| Comprobación                                      | Cómo                                              | Estado | Prioridad |
+| ------------------------------------------------- | ------------------------------------------------- | ------ | --------- |
+| Los flujos principales se completan con VoiceOver | Recórrelos sin mirar la pantalla                  |        |           |
+| Los flujos principales se completan con TalkBack  | Igual en Android                                  |        |           |
+| Los elementos interactivos tienen rol y etiqueta  | Revisa el código con el linter de accesibilidad   |        |           |
+| El texto se adapta al tamaño máximo de letra      | Pruébalo en los ajustes del sistema               |        |           |
+| Contraste suficiente                              | 4,5 a 1 en texto normal y 3 a 1 en componentes    |        |           |
+| Hay alternativa a los gestos de arrastre          | Revisa listas, carruseles y controles deslizantes |        |           |
+
+Hay más detalle en la [guía de accesibilidad en apps](/es/blog/accesibilidad-apps-european-accessibility-act).
+
+## 4. Seguridad
+
+| Comprobación                                            | Cómo                                                     | Estado | Prioridad |
+| ------------------------------------------------------- | -------------------------------------------------------- | ------ | --------- |
+| No hay claves secretas en el código de la app           | Busca claves en el repositorio y en el paquete publicado |        |           |
+| Los datos sensibles se guardan en almacenamiento seguro | Revisa qué se guarda en el dispositivo y dónde           |        |           |
+| La comunicación es siempre cifrada                      | Revisa que no haya direcciones sin HTTPS                 |        |           |
+| Los enlaces profundos validan lo que reciben            | Prueba enlaces con datos inesperados                     |        |           |
+
+## 5. Dependencias y versiones
+
+| Comprobación                                           | Cómo                                                    | Estado | Prioridad |
+| ------------------------------------------------------ | ------------------------------------------------------- | ------ | --------- |
+| La versión de React Native o de Expo sigue con soporte | Compara con la documentación oficial                    |        |           |
+| Las dependencias críticas se mantienen                 | Revisa fecha de la última versión y avisos de seguridad |        |           |
+| Hay un proceso para actualizar                         | Pregunta quién actualiza y cada cuánto                  |        |           |
+
+## 6. Pruebas e integración continua
+
+| Comprobación                                 | Cómo                                           | Estado | Prioridad |
+| -------------------------------------------- | ---------------------------------------------- | ------ | --------- |
+| Hay pruebas de la lógica importante          | Revisa qué cubren                              |        |           |
+| Cada cambio pasa por revisión                | Comprueba que existe revisión de pull requests |        |           |
+| La compilación se genera de forma automática | Revisa la integración continua                 |        |           |
+
+## 7. Publicación y tiendas
+
+| Comprobación                                       | Cómo                                      | Estado | Prioridad |
+| -------------------------------------------------- | ----------------------------------------- | ------ | --------- |
+| Las cuentas de tienda están a nombre de la empresa | Comprueba quién es el titular             |        |           |
+| Se puede publicar una corrección sin esperar días  | Revisa el proceso de entrega              |        |           |
+| Hay un plan para volver a una versión anterior     | Pregunta qué se hace si una versión falla |        |           |
+
+## Cómo priorizar lo que encuentres
+
+1. Empieza por los P1: lo que rompe un flujo o expone datos.
+2. Agrupa los P2 por área, porque suelen tener una causa común.
+3. Deja los P3 como una lista de mejoras, sin fecha.
+4. Convierte cada hallazgo en una tarea pequeña, con su entregable.
+
+Si prefieres que lo haga alguien con experiencia, la [auditoría de rendimiento o de accesibilidad](/es/servicios/freelance) es una tarea de uno a dos días con informe priorizado.

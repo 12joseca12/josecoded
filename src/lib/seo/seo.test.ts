@@ -302,6 +302,14 @@ describe("buildLlmsTxt", () => {
     expect(text).not.toContain("/blog");
   });
 
+  it("lists the guides once there are posts", async () => {
+    const text = await buildLlmsTxt(productionOrigin, "es", rates, undefined, false, [
+      { slug: "guia", title: "Una guía", description: "Qué cuenta la guía." },
+    ]);
+    expect(text).toContain(`(${productionOrigin}/es/blog)`);
+    expect(text).toContain(`[Una guía](${productionOrigin}/es/blog/guia): Qué cuenta la guía.`);
+  });
+
   it("lists projects once one is published", async () => {
     const text = await buildLlmsTxt(productionOrigin, "es", rates, undefined, true);
     expect(text).toContain(`(${productionOrigin}/es/proyectos)`);

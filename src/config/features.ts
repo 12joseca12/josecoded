@@ -11,7 +11,7 @@ export const features: Features = {
   search: false,
   googleSignIn: false,
   cvDownload: true,
-  blog: false,
+  blog: true,
   chat: false,
   projects: false,
 };

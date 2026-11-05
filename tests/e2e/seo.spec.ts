@@ -28,6 +28,7 @@ const publicRoutes = [
   "/es/como-trabajo",
   "/es/proyectos",
   "/es/sobre-mi",
+  "/es/blog",
 ];
 const devRoutes = [
   "/es/dev/ui",

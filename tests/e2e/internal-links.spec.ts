@@ -9,9 +9,12 @@ const pages = [
   "/es/sobre-mi",
   "/es/contacto",
   "/es/proyectos",
+  "/es/blog",
+  "/es/blog/tema/precios",
+  "/es/blog/cuanto-cuesta-una-app-movil-en-espana",
 ];
 
-const promisedAndAbsent = ["/es/blog", "/es/chat"];
+const promisedAndAbsent = ["/es/chat"];
 
 async function internalTargets(page: Page): Promise<string[]> {
   const hrefs = await page
@@ -38,10 +41,12 @@ for (const path of pages) {
   });
 }
 
-test("the header offers no chat button and no blog link", async ({ page }) => {
+test("the header offers no chat button and links to the blog", async ({ page }) => {
   await page.goto("/es");
   await expect(page.getByRole("button", { name: "Chat", exact: true })).toHaveCount(0);
-  await expect(page.locator('a[href="/es/blog"]')).toHaveCount(0);
+  await expect(
+    page.getByRole("navigation", { name: "Principal" }).locator('a[href="/es/blog"]'),
+  ).toHaveCount(1);
 });
 
 test("the menu leaves out the empty projects page", async ({ page }) => {
@@ -69,5 +74,5 @@ test("the projects page has crumbs, honest exits and noindex", async ({ page }) 
 test("llms.txt does not announce pages that are not there", async ({ request }) => {
   const body = await (await request.get("/llms.txt")).text();
   expect(body).not.toContain("/es/proyectos");
-  expect(body).not.toContain("/es/blog");
+  expect(body).toContain("/es/blog/cuanto-cuesta-una-app-movil-en-espana");
 });

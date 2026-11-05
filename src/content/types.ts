@@ -1,3 +1,4 @@
+import type { MDXComponents } from "mdx/types";
 import type { ComponentType } from "react";
 
 export interface ContentHeading {
@@ -9,5 +10,6 @@ export interface ContentEntry<Meta> {
   slug: string;
   meta: Meta;
   headings: ContentHeading[];
-  load: () => Promise<{ default: ComponentType }>;
+  words: number;
+  load: () => Promise<{ default: ComponentType<{ components?: MDXComponents }> }>;
 }
