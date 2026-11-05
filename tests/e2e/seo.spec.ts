@@ -27,6 +27,7 @@ const publicRoutes = [
   "/es/servicios/freelance",
   "/es/servicios/a-medida",
   "/es/proyectos",
+  "/es/sobre-mi",
 ];
 const devRoutes = [
   "/es/dev/ui",
@@ -96,6 +97,7 @@ test("sitemap.xml lists the public routes that have content", async ({ request }
     expect(body).toContain(`<loc>http://localhost:3000${route}</loc>`);
   }
   expect(body).not.toContain("/es/proyectos");
+  expect(body).not.toContain("/es/legal");
   expect(body).not.toContain("/dev");
 });
 

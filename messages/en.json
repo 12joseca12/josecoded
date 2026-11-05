@@ -594,7 +594,8 @@
       "rateTask": "Per-task quote from {task} €.",
       "contactTitle": "Contact",
       "contactLine": "{way}: {email}",
-      "contact": "Contact: the ways to reach José Carlos"
+      "contact": "Contact: the ways to reach José Carlos",
+      "about": "About: background, way of working and stack of José Carlos"
     }
   },
   "chat": {
@@ -1269,6 +1270,133 @@
     },
     "state": {
       "greeting": "Nexo is greeting"
+    }
+  },
+  "about": {
+    "meta": {
+      "title": "José Carlos Sánchez, full stack developer",
+      "description": "Background, way of working and stack of José Carlos Sánchez, a full stack developer specialised in React Native. Madrid, Spain and remote."
+    },
+    "head": {
+      "title": "I'm José Carlos Sánchez, a",
+      "accent": "full stack developer.",
+      "lead": "Mobile full-stack developer specialised in React Native and Expo, with web experience in Next.js and TypeScript. Madrid, Spain and remote."
+    },
+    "story": {
+      "title": "My story",
+      "p1": "I'm a full stack developer and my specialty is React Native: one codebase for iOS and Android, with the web and the server built with the same tools and the same language.",
+      "p2": "I like to own a product from start to finish: the app people see, the website that presents it and the data behind it. I would rather ship something small that works and improve it in the open than disappear for months and present a closed box.",
+      "p3": "I live in Madrid and work with teams and clients across Spain and remotely. Native Spanish and professional English."
+    },
+    "strengths": {
+      "title": "What I'm best at",
+      "lead": "Four things you can rely on from day one.",
+      "mobile": {
+        "title": "Mobile apps with React Native",
+        "text": "iOS and Android apps from a single codebase, from the first screen to the store release."
+      },
+      "web": {
+        "title": "Fast, accessible websites",
+        "text": "Next.js with performance and accessibility measured on every change, not promised at the end."
+      },
+      "backend": {
+        "title": "Server and data",
+        "text": "Databases with row-level security, authentication and APIs designed so the product can grow without a rewrite."
+      },
+      "ai": {
+        "title": "AI with judgement",
+        "text": "Assistants and search over your own data when they add something, and no AI when they don't."
+      }
+    },
+    "values": {
+      "title": "How I work",
+      "lead": "Four rules I apply to every engagement.",
+      "scope": {
+        "title": "Clear scope before starting",
+        "text": "What is in, what is out and by when, in writing. If something changes, we talk before it happens."
+      },
+      "delivery": {
+        "title": "Small, visible deliveries",
+        "text": "Reviewable changes deployed often, so you see progress along the way and not only at the end."
+      },
+      "quality": {
+        "title": "Quality you can check",
+        "text": "Automated tests, accessibility per component and performance budgets that fail when they are broken."
+      },
+      "decisions": {
+        "title": "Decisions in writing",
+        "text": "Every important decision is recorded with its reason, so the project does not depend on my memory."
+      }
+    },
+    "stack": {
+      "title": "Stack",
+      "lead": "What I build with, grouped by area.",
+      "listLabel": "{group} technologies",
+      "years": {
+        "one": "{n} year",
+        "many": "{n} years"
+      },
+      "groups": {
+        "mobile": "Mobile",
+        "web": "Frontend",
+        "backend": "Backend and data",
+        "ai": "Artificial intelligence",
+        "quality": "Quality and testing",
+        "tools": "Tools"
+      },
+      "levels": {
+        "working": "Intermediate",
+        "proficient": "Advanced",
+        "advanced": "Expert"
+      }
+    },
+    "timeline": {
+      "title": "Experience",
+      "lead": "Where I have worked and what I did in each place.",
+      "listLabel": "Professional experience",
+      "educationTitle": "Education and certifications",
+      "educationLabel": "Education history"
+    },
+    "closing": {
+      "title": "Let's talk",
+      "lead": "If you are looking for someone for your team, tell me what you need and I will get back to you.",
+      "cta": "Talk about joining your team",
+      "cv": "Download CV",
+      "profiles": "Profiles",
+      "newTab": "(opens in a new tab)",
+      "links": {
+        "linkedin": "LinkedIn",
+        "github": "GitHub",
+        "malt": "Malt"
+      }
+    }
+  },
+  "legal": {
+    "updated": "Updated on {date}",
+    "draft": {
+      "title": "Draft pending review",
+      "text": "This text is a draft. It is pending legal review and completion of the data marked as pending, so it has no legal value yet."
+    },
+    "summary": {
+      "title": "In a few lines"
+    },
+    "toc": {
+      "label": "Contents of this page",
+      "title": "On this page"
+    },
+    "pages": {
+      "notice": {
+        "metaTitle": "Legal notice",
+        "metaDescription": "Who owns josecoded.com, how to contact them and the terms of use of the site."
+      },
+      "privacy": {
+        "metaTitle": "Privacy policy",
+        "metaDescription": "What personal data josecoded.com processes, why, on what legal basis, for how long and how to exercise your rights."
+      },
+      "cookies": {
+        "metaTitle": "Cookie policy",
+        "metaDescription": "josecoded.com only uses strictly necessary cookies: session and anti-spam verification. Here is which ones and why."
+      }
     }
   }
 }

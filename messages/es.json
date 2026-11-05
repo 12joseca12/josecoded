@@ -594,7 +594,8 @@
       "rateTask": "Presupuesto por tarea desde {task} €.",
       "contactTitle": "Contacto",
       "contactLine": "{way}: {email}",
-      "contact": "Contacto: las vías para hablar con José Carlos"
+      "contact": "Contacto: las vías para hablar con José Carlos",
+      "about": "Sobre mí: trayectoria, forma de trabajar y stack de José Carlos"
     }
   },
   "chat": {
@@ -1269,6 +1270,133 @@
     },
     "state": {
       "greeting": "Nexo saluda"
+    }
+  },
+  "about": {
+    "meta": {
+      "title": "José Carlos Sánchez, desarrollador full stack",
+      "description": "Trayectoria, forma de trabajar y stack de José Carlos Sánchez, desarrollador full stack especializado en React Native. Madrid, España y en remoto."
+    },
+    "head": {
+      "title": "Soy José Carlos Sánchez, desarrollador",
+      "accent": "full stack.",
+      "lead": "Desarrollador full-stack móvil especializado en React Native y Expo, con experiencia web en Next.js y TypeScript. Madrid, España y en remoto."
+    },
+    "story": {
+      "title": "Mi historia",
+      "p1": "Soy desarrollador full stack y mi especialidad es React Native: una sola base de código para iOS y Android, con la web y el servidor construidos con las mismas herramientas y el mismo lenguaje.",
+      "p2": "Me gusta responsabilizarme de un producto de principio a fin: la app que se ve, la web que la presenta y los datos que la sostienen. Prefiero entregar algo pequeño que funcione y mejorarlo a la vista de todos que desaparecer meses y presentar una caja cerrada.",
+      "p3": "Vivo en Madrid y trabajo con equipos y clientes de toda España y en remoto. Hablo español nativo e inglés profesional."
+    },
+    "strengths": {
+      "title": "En qué soy mejor",
+      "lead": "Cuatro cosas en las que puedes apoyarte desde el primer día.",
+      "mobile": {
+        "title": "Apps móviles con React Native",
+        "text": "Apps para iOS y Android con una sola base de código, de la primera pantalla a la publicación en las tiendas."
+      },
+      "web": {
+        "title": "Webs rápidas y accesibles",
+        "text": "Next.js con rendimiento y accesibilidad medidos en cada cambio, no prometidos al final."
+      },
+      "backend": {
+        "title": "Servidor y datos",
+        "text": "Bases de datos con seguridad por filas, autenticación y APIs pensadas para que el producto crezca sin rehacerlo."
+      },
+      "ai": {
+        "title": "IA aplicada con criterio",
+        "text": "Asistentes y búsqueda sobre tus propios datos cuando aportan algo, y sin ellos cuando no."
+      }
+    },
+    "values": {
+      "title": "Cómo trabajo",
+      "lead": "Cuatro reglas que aplico a cada encargo.",
+      "scope": {
+        "title": "Alcance claro antes de empezar",
+        "text": "Qué entra, qué no y para cuándo, por escrito. Si algo cambia, se habla antes de hacerlo."
+      },
+      "delivery": {
+        "title": "Entregas pequeñas y visibles",
+        "text": "Cambios revisables y desplegados a menudo, para que veas el avance y no al final."
+      },
+      "quality": {
+        "title": "Calidad que se puede comprobar",
+        "text": "Pruebas automáticas, accesibilidad por componente y límites de rendimiento que fallan si se incumplen."
+      },
+      "decisions": {
+        "title": "Decisiones por escrito",
+        "text": "Cada decisión importante queda anotada con su porqué, para que el proyecto no dependa de mi memoria."
+      }
+    },
+    "stack": {
+      "title": "Stack",
+      "lead": "Con qué construyo, agrupado por área.",
+      "listLabel": "Tecnologías de {group}",
+      "years": {
+        "one": "{n} año",
+        "many": "{n} años"
+      },
+      "groups": {
+        "mobile": "Móvil",
+        "web": "Frontend",
+        "backend": "Backend y datos",
+        "ai": "Inteligencia artificial",
+        "quality": "Calidad y testing",
+        "tools": "Herramientas"
+      },
+      "levels": {
+        "working": "Nivel medio",
+        "proficient": "Nivel alto",
+        "advanced": "Nivel experto"
+      }
+    },
+    "timeline": {
+      "title": "Trayectoria",
+      "lead": "Dónde he trabajado y qué hice en cada sitio.",
+      "listLabel": "Experiencia profesional",
+      "educationTitle": "Formación y certificaciones",
+      "educationLabel": "Formación académica"
+    },
+    "closing": {
+      "title": "Hablemos",
+      "lead": "Si buscas a alguien para tu equipo, cuéntame qué necesitas y te respondo.",
+      "cta": "Hablar de una incorporación",
+      "cv": "Descargar CV",
+      "profiles": "Perfiles",
+      "newTab": "(se abre en una pestaña nueva)",
+      "links": {
+        "linkedin": "LinkedIn",
+        "github": "GitHub",
+        "malt": "Malt"
+      }
+    }
+  },
+  "legal": {
+    "updated": "Actualizado el {date}",
+    "draft": {
+      "title": "Borrador pendiente de revisión",
+      "text": "Este texto es un borrador. Está pendiente de revisión legal y de completar los datos marcados como pendientes, así que todavía no tiene valor jurídico."
+    },
+    "summary": {
+      "title": "En pocas líneas"
+    },
+    "toc": {
+      "label": "Contenido de esta página",
+      "title": "En esta página"
+    },
+    "pages": {
+      "notice": {
+        "metaTitle": "Aviso legal",
+        "metaDescription": "Quién es el titular de josecoded.com, cómo ponerte en contacto y las condiciones de uso del sitio."
+      },
+      "privacy": {
+        "metaTitle": "Política de privacidad",
+        "metaDescription": "Qué datos personales trata josecoded.com, para qué, con qué base legal, cuánto tiempo y cómo ejercer tus derechos."
+      },
+      "cookies": {
+        "metaTitle": "Política de cookies",
+        "metaDescription": "josecoded.com solo usa cookies estrictamente necesarias: sesión y verificación antispam. Aquí se explica cuáles y por qué."
+      }
     }
   }
 }

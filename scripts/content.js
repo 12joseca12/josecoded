@@ -4,7 +4,13 @@ import { fileURLToPath } from "node:url";
 
 import { format, resolveConfig } from "prettier";
 
-import { ContentError, findPlaceholders, readContent, renderIndex } from "../src/content/loader.ts";
+import {
+  ContentError,
+  findPlaceholders,
+  readContent,
+  readCv,
+  renderIndex,
+} from "../src/content/loader.ts";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const generatedFile = join(root, "src/content/index.generated.ts");
@@ -12,6 +18,7 @@ const generatedFile = join(root, "src/content/index.generated.ts");
 let entries;
 try {
   entries = readContent(root);
+  readCv(root);
 } catch (error) {
   if (error instanceof ContentError) {
     console.error(error.message);
@@ -30,6 +37,7 @@ if (process.argv.includes("--write")) {
 }
 
 const pendingSources = [
+  "content/cv.json",
   "src/lib/services/rates.ts",
   "src/config/profiles.ts",
   "messages/es.json",

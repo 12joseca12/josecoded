@@ -1,0 +1,33 @@
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: fact;
+}
+
+.item {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line-strong);
+}
+
+.list[data-variant="numbered"] .item {
+  counter-increment: fact;
+}
+
+.list[data-variant="numbered"] .item::before {
+  content: counter(fact, decimal-leading-zero);
+  color: var(--coral-text);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-wide);
+}
+
+.text {
+  color: var(--ink-soft);
+}

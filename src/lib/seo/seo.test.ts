@@ -9,6 +9,7 @@ import {
   buildFaqPage,
   buildGraph,
   buildPerson,
+  buildProfilePage,
   buildSiteGraph,
   resolveProfileLinks,
   serializeJsonLd,
@@ -88,8 +89,17 @@ describe("buildSitemap", () => {
       `${productionOrigin}/es/servicios/freelance`,
       `${productionOrigin}/es/servicios/a-medida`,
       `${productionOrigin}/es/proyectos`,
+      `${productionOrigin}/es/sobre-mi`,
       `${productionOrigin}/es/contacto`,
     ]);
+  });
+
+  it("adds the indexable legal pages with the lowest priority", () => {
+    const entries = buildSitemap(production, ["es"], true, true, ["/legal/privacidad"]);
+    expect(entries.at(-1)).toEqual({
+      url: `${productionOrigin}/es/legal/privacidad`,
+      priority: 0.2,
+    });
   });
 
   it("leaves /contacto out while no channel is live", () => {
@@ -104,6 +114,7 @@ describe("buildSitemap", () => {
       `${productionOrigin}/es/servicios`,
       `${productionOrigin}/es/servicios/freelance`,
       `${productionOrigin}/es/servicios/a-medida`,
+      `${productionOrigin}/es/sobre-mi`,
     ]);
   });
 });
@@ -199,6 +210,25 @@ describe("json-ld", () => {
     expect(jsonLdGraphSchema.safeParse(buildGraph(list)).success).toBe(true);
   });
 
+  it("builds a ProfilePage whose main entity is the site person", () => {
+    const page = buildProfilePage(
+      productionOrigin,
+      "es",
+      "/sobre-mi",
+      { name: "Sobre mí", description: "Perfil" },
+      "2026-11-05",
+    );
+    expect(page).toMatchObject({
+      "@type": "ProfilePage",
+      url: `${productionOrigin}/es/sobre-mi`,
+      inLanguage: "es",
+      dateModified: "2026-11-05",
+      isPartOf: { "@id": `${productionOrigin}/#website` },
+      mainEntity: { "@id": `${productionOrigin}/#person` },
+    });
+    expect(jsonLdGraphSchema.safeParse(buildGraph(page)).success).toBe(true);
+  });
+
   it("builds a FAQPage from the visible questions", () => {
     const page = buildFaqPage([{ id: "a", question: "¿Q?", answer: "A." }]);
     expect(page.mainEntity).toEqual([
@@ -244,6 +274,7 @@ describe("buildLlmsTxt", () => {
     expect(text).toContain(`(${productionOrigin}/es/servicios/freelance)`);
     expect(text).toContain(`(${productionOrigin}/es/servicios/a-medida)`);
     expect(text).toContain(`(${productionOrigin}/es/contacto)`);
+    expect(text).toContain(`(${productionOrigin}/es/sobre-mi)`);
     expect(text).toContain("José Carlos Sánchez García");
     expect(text).toContain("Contratación: hola@josecoded.com");
     expect(text).toContain("Freelance: freelance@josecoded.com");

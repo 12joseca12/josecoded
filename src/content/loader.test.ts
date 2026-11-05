@@ -4,7 +4,15 @@ import { join } from "node:path";
 
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import { ContentError, findPlaceholders, readContent, renderIndex } from "./loader.ts";
+import {
+  ContentError,
+  extractHeadings,
+  findPlaceholders,
+  headingId,
+  readContent,
+  readCv,
+  renderIndex,
+} from "./loader.ts";
 
 let base = "";
 
@@ -106,5 +114,50 @@ describe("renderIndex", () => {
     expect(source).toContain('import("../../content/projects/demo.mdx")');
     expect(source).toContain("export const projects: ContentEntry<ProjectMeta>[]");
     expect(source).toContain("export const blog: ContentEntry<BlogMeta>[] = []");
+  });
+});
+
+describe("extractHeadings", () => {
+  it("lists level-two headings with the slug rehype-slug will give them", () => {
+    const source =
+      "---\ntitle: T\n---\n\n# Uno\n\n## Qué hice\n\ntexto\n\n### Detalle\n\n## **Otro** `tema`\n";
+    expect(extractHeadings(source)).toEqual([
+      { id: "qué-hice", label: "Qué hice" },
+      { id: "otro-tema", label: "Otro tema" },
+    ]);
+  });
+
+  it("ignores headings inside code fences", () => {
+    expect(extractHeadings("```md\n## Falso\n```\n\n## Real\n")).toEqual([
+      { id: "real", label: "Real" },
+    ]);
+  });
+
+  it("drops punctuation and keeps accents and hyphens", () => {
+    expect(headingId("¿Cómo trabajo? Sí-o-sí")).toBe("cómo-trabajo-sí-o-sí");
+  });
+});
+
+describe("readCv", () => {
+  const cv = {
+    stack: [{ group: "web", items: [{ name: "Next.js", years: 3, level: "advanced" }] }],
+    experience: [],
+    education: [],
+    file: { es: "{{DATO: CV}}", en: "{{DATO: CV}}" },
+  };
+
+  it("returns the validated CV", () => {
+    write("content/cv.json", JSON.stringify(cv));
+    expect(readCv(base).stack).toHaveLength(1);
+  });
+
+  it("names the file and the field when the CV is invalid", () => {
+    write("content/cv.json", JSON.stringify({ ...cv, file: { en: "/x.pdf" } }));
+    expect(() => readCv(base)).toThrow('content/cv.json: field "file.es"');
+  });
+
+  it("reports malformed JSON", () => {
+    write("content/cv.json", "{");
+    expect(() => readCv(base)).toThrow("content/cv.json: not valid JSON");
   });
 });
