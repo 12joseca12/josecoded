@@ -2,7 +2,7 @@ import type { Locale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
 import { cx } from "@/lib/cx";
 
-import { chartBars, liveUrl, localUrl, tags, vars } from "../hero-content";
+import { chartBars, liveUrl, previewUrl, tags, vars } from "../hero-content";
 import morph from "../morph.module.css";
 import styles from "./DeviceBrowser.module.css";
 
@@ -63,7 +63,7 @@ export async function DeviceBrowser({ locale }: DeviceBrowserProps) {
                 {t("home.hero.demo.browser.designUrl")}
               </span>
               <span className={styles.urlText} data-for="2">
-                {localUrl}
+                {previewUrl}
               </span>
               <span className={styles.urlText} data-for="3">
                 <Lock />

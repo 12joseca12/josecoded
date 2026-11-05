@@ -26,6 +26,10 @@
   color: var(--ink-soft);
 }
 
+.price {
+  margin: 0;
+}
+
 .actions {
   grid-area: actions;
   display: flex;

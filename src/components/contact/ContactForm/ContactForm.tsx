@@ -10,6 +10,7 @@ import { ChoiceGroup } from "@/components/ui/ChoiceGroup/ChoiceGroup";
 import { Field } from "@/components/ui/Field/Field";
 import { Heading } from "@/components/ui/Heading/Heading";
 import { Link } from "@/components/ui/Link/Link";
+import { nextStepTarget } from "@/lib/contact/next-step";
 import {
   collectFieldErrors,
   type ContactFieldErrors,
@@ -20,7 +21,9 @@ import {
 } from "@/types/contact-form";
 import { type WayId, wayIds } from "@/types/services";
 
+import { MessageExample } from "../MessageExample/MessageExample";
 import { TurnstileField, type TurnstileHandle } from "../TurnstileField/TurnstileField";
+import { WhatHappensNext } from "../WhatHappensNext/WhatHappensNext";
 import styles from "./ContactForm.module.css";
 
 export interface ContactSelectionView {
@@ -206,6 +209,7 @@ export function ContactForm({
   }
 
   if (view === "sent") {
+    const target = nextStepTarget(locale, way);
     return (
       <div className={styles.sent} role="status">
         <div ref={sentHeading} tabIndex={-1} className={styles.sentHeading}>
@@ -213,7 +217,16 @@ export function ContactForm({
             {labels.sent.title}
           </Heading>
         </div>
-        <p>{labels.sent.text}</p>
+        <p>{labels.sent.byWay[way].text}</p>
+        <WhatHappensNext title={labels.sent.nextTitle} steps={labels.next.steps[way]} size="sm" />
+        <Link
+          href={target.href}
+          variant="arrow"
+          external={target.external}
+          newTabLabel={target.external ? newTabLabel : undefined}
+        >
+          {labels.sent.byWay[way].next}
+        </Link>
         <p>
           {labels.sent.alternative} {mailto(emails[way])}
         </p>
@@ -235,12 +248,14 @@ export function ContactForm({
   }
 
   const selectionLine = selection
-    ? [
-        `${selection.summary} · ${labels.selection.from} ${selection.price} €`,
-        selection.provisional ? ` (${labels.selection.provisional})` : "",
-        selection.monthly ? ` + ${selection.monthly} ${labels.selection.perMonth}` : "",
-      ].join("")
+    ? selection.provisional
+      ? `${selection.summary} · ${labels.selection.review}`
+      : [
+          `${selection.summary} · ${labels.selection.from} ${selection.price} €`,
+          selection.monthly ? ` + ${selection.monthly} ${labels.selection.perMonth}` : "",
+        ].join("")
     : "";
+  const copyKey = picked ?? "any";
   const invalidCount = Object.keys(errors).length + (verificationError ? 1 : 0);
   const errorText = (code: string | undefined) =>
     code === undefined ? undefined : (labels.errors[code] ?? labels.genericError);
@@ -271,6 +286,7 @@ export function ContactForm({
         }
       }}
     >
+      <WhatHappensNext title={labels.next.title} steps={labels.next.steps[copyKey]} />
       {invalidCount > 0 ? (
         <p className={styles.summary} role="alert">
           {(invalidCount === 1 ? labels.summaryOne : labels.summaryMany).replace(
@@ -295,6 +311,9 @@ export function ContactForm({
         <div className={styles.selection} data-testid="selection-chip">
           <p className={styles.selectionTitle}>{labels.selection.title}</p>
           <p className={styles.selectionText}>{selectionLine}</p>
+          <p className={styles.selectionNote}>
+            {[labels.selection.warranty, labels.selection.proposal].join(" · ")}
+          </p>
           <Link href={selection.changeHref}>{labels.selection.change}</Link>
         </div>
       ) : null}
@@ -333,6 +352,7 @@ export function ContactForm({
         required
         error={errorText(errors.message)}
       />
+      <MessageExample summary={labels.example.summary} example={labels.example.byWay[copyKey]} />
       <div className={styles.trap} aria-hidden="true">
         <label>
           {labels.honeypotLabel}
@@ -381,6 +401,7 @@ export function ContactForm({
         <Button type="submit" loading={pending} loadingLabel={labels.submitting}>
           {labels.submit}
         </Button>
+        <p className={styles.commitment}>{labels.next.noCommitment}</p>
       </div>
     </form>
   );

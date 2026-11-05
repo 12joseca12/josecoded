@@ -9,7 +9,6 @@ const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
       name: string;
       givenName: string;
       familyName: string;
-      alternateNameFull: string;
       alternateName: string;
       jobTitle: string;
     };
@@ -138,7 +137,7 @@ test("JSON-LD parses and carries the Person and the WebSite", async ({ page }) =
     name: es.seo.person.name,
     givenName: es.seo.person.givenName,
     familyName: es.seo.person.familyName,
-    alternateName: [es.seo.person.alternateNameFull, es.seo.person.alternateName],
+    alternateName: [es.seo.person.alternateName],
     email: "hola@josecoded.com",
     sameAs: ["https://www.linkedin.com/in/jos%C3%A9-carlos-s%C3%A1nchez-garc%C3%ADa-7019072a9/"],
     jobTitle: es.seo.person.jobTitle,

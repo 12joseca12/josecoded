@@ -29,6 +29,14 @@
   text-wrap: pretty;
 }
 
+.identity {
+  max-width: 30rem;
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+  line-height: var(--lh-lead);
+  text-wrap: pretty;
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;

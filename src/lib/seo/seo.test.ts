@@ -163,13 +163,25 @@ describe("json-ld", () => {
     expect(person.name).toBe("José Carlos Sánchez García");
     expect(person.givenName).toBe("José Carlos");
     expect(person.familyName).toBe("Sánchez García");
-    expect(person.alternateName).toEqual(["José Carlos Sánchez", "josecoded"]);
+    expect(person.alternateName).toEqual(["josecoded"]);
     expect(person.email).toBe("hola@josecoded.com");
     expect(person.address.addressLocality).toBe("Madrid");
     expect(person.areaServed.map((area) => area.name)).toEqual(["España", "Remoto"]);
     expect(person.sameAs).toEqual([
       "https://www.linkedin.com/in/jos%C3%A9-carlos-s%C3%A1nchez-garc%C3%ADa-7019072a9/",
     ]);
+  });
+
+  it("adds the topics, languages, employer, school and credentials from the CV", async () => {
+    const person = await buildPerson(productionOrigin, "es");
+    expect(person.knowsAbout).toContain("React Native");
+    expect(person.knowsLanguage).toEqual(["es", "en"]);
+    expect(person.worksFor).toEqual({ "@type": "Organization", name: "Alten" });
+    expect(person.alumniOf?.map((school) => school.name)).toEqual(["I.E.S. El Lago, Madrid"]);
+    expect(person.hasCredential?.map((credential) => credential.name)).toContain(
+      "Cambridge B2 First",
+    );
+    expect(JSON.stringify(person)).not.toContain("{{DATO");
   });
 
   it("keeps real profile links and drops placeholders", async () => {

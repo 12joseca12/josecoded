@@ -123,7 +123,8 @@ test.describe("comparator", () => {
     await expect(negocio.locator("ul").first().locator("li")).toHaveCount(4);
     await expect(negocio.locator("ul").nth(1).locator("li")).toHaveCount(3);
     await expect(negocio).toContainText("4–6 semanas");
-    await expect(negocio.locator("[data-provisional]")).toBeVisible();
+    await expect(negocio.locator("[data-variant='review']")).toHaveText("Precio en revisión");
+    await expect(negocio).not.toContainText(/\b0{2,3}\b/);
     await expect(negocio.getByRole("link")).toHaveAttribute(
       "href",
       "/es/contacto?via=project&offer=web-negocio#formulario",
@@ -170,7 +171,8 @@ test.describe("extras", () => {
       const chip = page.getByTestId("selection-chip");
       await expect(chip).toContainText("Cobros con Stripe");
       await expect(chip).toContainText("Posicionamiento");
-      await expect(chip).toContainText("000");
+      await expect(chip).toContainText("precio en revisión");
+      await expect(chip).not.toContainText("000");
       await context.close();
     });
   }
@@ -181,7 +183,60 @@ test("shows the warranty and the three maintenance plans", async ({ page }) => {
   const section = page.locator("#garantia");
   await expect(section).toContainText(offers.warranty.includedTitle);
   await expect(section.locator("[data-plan]")).toHaveCount(3);
-  await expect(section.locator("[data-plan] [data-provisional]")).toHaveCount(3);
+  await expect(section.locator("[data-plan] [data-variant='review']")).toHaveCount(3);
+  await expect(section).not.toContainText(/\b0{2,3}\b/);
+});
+
+test.describe("trust blocks", () => {
+  test("every tier shows the warranty chip and what moves the price", async ({ page }) => {
+    await page.goto(page_);
+    await expect(page.locator("#comparador [data-offer] [data-warranty-chip]")).toHaveCount(5);
+    await expect(page.locator("#comparador [data-offer] [data-warranty-chip]").first()).toHaveText(
+      "30 días de corrección incluidos",
+    );
+    await expect(card(page, "web-presencia").locator("[data-price-drivers]")).toHaveText(
+      "Sube con: cuentas, cobros, idiomas",
+    );
+    await expect(card(page, "web-plataforma").locator("[data-price-drivers]")).toHaveText(
+      "Sube con: cobros, idiomas",
+    );
+  });
+
+  test("discloses third-party costs without stating a tax rate", async ({ page }) => {
+    await page.goto(page_);
+    const costs = page.locator("#comparador [data-costs]");
+    await expect(costs.locator("[data-cost]")).toHaveCount(5);
+    await expect(costs.locator("[data-cost='apple']")).toContainText("99 $ al año");
+    await expect(costs.locator("[data-cost='google']")).toContainText("25 $ una sola vez");
+    await expect(costs.locator("[data-cost='hosting']")).toContainText("a tu nombre");
+    await expect(costs.locator("[data-cost='stripe']")).toContainText("Stripe");
+    await expect(costs).not.toContainText(/IVA/);
+    await expect(page.locator("#comparador [data-ownership]")).toContainText(
+      "son tuyos desde el primer día",
+    );
+  });
+
+  test("the warranty follows the comparator and each tier lists three needs", async ({ page }) => {
+    await page.goto(page_);
+    const order = await page
+      .locator("main section[id]")
+      .evaluateAll((nodes) => nodes.map((node) => node.id));
+    expect(order.indexOf("garantia")).toBe(order.indexOf("comparador") + 1);
+    expect(order).toContain("necesito");
+    await expect(page.locator("#necesito [data-need]")).toHaveCount(5);
+    await expect(page.locator("#necesito [data-need='app-producto'] li")).toHaveCount(3);
+    await expect(page.locator("#garantia")).not.toContainText("Sin permanencia");
+  });
+
+  test("has no accessibility violations in the new blocks", async ({ page }) => {
+    await page.goto(page_);
+    const { violations } = await new AxeBuilder({ page })
+      .include("#comparador")
+      .include("#garantia")
+      .include("#necesito")
+      .analyze();
+    expect(violations).toEqual([]);
+  });
 });
 
 test.describe("recommender", () => {
@@ -201,7 +256,8 @@ test.describe("recommender", () => {
     await expect(page).toHaveURL(/\?q=idea\.web\.medium\.basic\.me\.payments$/);
     await expect(section.getByRole("img", { name: rec.progressDone })).toContainText("6/6");
     await expect(card(page, "web-negocio").last()).toBeVisible();
-    await expect(section.getByTestId("result-price")).toContainText("000");
+    await expect(section.getByTestId("result-price")).toContainText("Precio en revisión");
+    await expect(section.getByTestId("result-price")).not.toContainText("000");
     await expect(section.getByTestId("result-cta")).toHaveAttribute(
       "href",
       "/es/contacto?via=project&offer=web-negocio&extras=accounts,payments#formulario",
@@ -268,7 +324,8 @@ test.describe("recommender", () => {
       "href",
       "/es/contacto?via=project&offer=web-negocio&extras=payments,maintenance#formulario",
     );
-    await expect(section.getByTestId("result-price")).toContainText("/mes");
+    await expect(section.getByTestId("result-price")).toContainText("Precio en revisión");
+    await expect(section.getByTestId("result-price")).not.toContainText("/mes");
     await section.getByLabel("Cobros con Stripe").uncheck();
     await expect(section.getByTestId("result-cta")).toHaveAttribute(
       "href",

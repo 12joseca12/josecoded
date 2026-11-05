@@ -9,13 +9,13 @@ const k = (path: string) => `howPage.${path}` as MessageKey;
 
 export const phaseIds = ["discover", "design", "build", "publish", "maintain"] as const;
 export const problemIds = ["csp", "motion", "recommender"] as const;
-export const stackIds = ["next", "supabase", "mobile", "typescript", "tests", "ci"] as const;
+export const stackIds = ["next", "supabase", "typescript", "tests", "ci"] as const;
 export const qualityIds = ["accessibility", "performance", "security", "code", "tokens"] as const;
 export const faqIds = ["start", "changes", "ownership", "after"] as const;
 
 export const diagramLayerIds = ["clients", "app", "data"] as const;
 export const diagramNodeIds = {
-  clients: ["browser", "mobile"],
+  clients: ["browser"],
   app: ["workers", "ci"],
   data: ["postgres", "services"],
 } as const;

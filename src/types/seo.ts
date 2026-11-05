@@ -20,6 +20,27 @@ export const personSchema = z.strictObject({
     z.strictObject({ "@type": z.enum(["Country", "Place"]), name: z.string().min(1) }),
   ),
   sameAs: z.array(z.url()).optional(),
+  knowsAbout: z.array(z.string().min(1)).min(1).optional(),
+  knowsLanguage: z.array(z.string().min(2)).min(1).optional(),
+  worksFor: z
+    .strictObject({ "@type": z.literal("Organization"), name: z.string().min(1) })
+    .optional(),
+  alumniOf: z
+    .array(
+      z.strictObject({ "@type": z.literal("EducationalOrganization"), name: z.string().min(1) }),
+    )
+    .optional(),
+  hasCredential: z
+    .array(
+      z.strictObject({
+        "@type": z.literal("EducationalOccupationalCredential"),
+        name: z.string().min(1),
+        recognizedBy: z
+          .strictObject({ "@type": z.literal("Organization"), name: z.string().min(1) })
+          .optional(),
+      }),
+    )
+    .optional(),
 });
 
 export const webSiteSchema = z.strictObject({

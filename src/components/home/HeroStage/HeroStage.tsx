@@ -11,10 +11,11 @@ import styles from "./HeroStage.module.css";
 interface HeroStageProps {
   phases: PhaseItem[];
   labels: RailLabels;
+  note?: ReactNode;
   children: ReactNode;
 }
 
-export function HeroStage({ phases, labels, children }: HeroStageProps) {
+export function HeroStage({ phases, labels, note, children }: HeroStageProps) {
   const stageRef = useRef<HTMLDivElement | null>(null);
   const sequence = useHeroSequence(stageRef);
 
@@ -30,6 +31,7 @@ export function HeroStage({ phases, labels, children }: HeroStageProps) {
       >
         {children}
       </div>
+      {note}
       <PhaseRail
         phases={phases}
         labels={labels}
