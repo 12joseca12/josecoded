@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
+import { z } from "zod";
 
 import { buildAuthFormLabels } from "@/components/auth/labels";
 import { LoginForm } from "@/components/auth/LoginForm/LoginForm";
@@ -7,7 +8,7 @@ import { features } from "@/config/features";
 import { isLocale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
 import { readSupabasePublicConfig } from "@/lib/auth/env";
-import { resolveDestination, safeNext } from "@/lib/auth/guards";
+import { isInvitationPath, resolveDestination, safeNext } from "@/lib/auth/guards";
 import { getSessionState } from "@/lib/auth/session";
 import { readContactClientConfig } from "@/lib/contact/env";
 
@@ -35,6 +36,13 @@ export default async function LoginPage({ params, searchParams }: LoginProps) {
 
   const state = await getSessionState();
   if (state?.status === "member") redirect(resolveDestination(state, locale, next));
+  const invitation = next !== null && isInvitationPath(locale, next);
+  if (state?.status === "inactive" && invitation) redirect(next);
+  const rawEmail = Array.isArray(query.email) ? query.email[0] : query.email;
+  const invitedEmail =
+    invitation && rawEmail !== undefined && z.email().max(320).safeParse(rawEmail).success
+      ? rawEmail
+      : null;
 
   const t = await getTranslator(locale);
   const turnstile =
@@ -47,6 +55,7 @@ export default async function LoginPage({ params, searchParams }: LoginProps) {
       labels={buildAuthFormLabels(t)}
       googleEnabled={features.googleSignIn}
       turnstile={turnstile}
+      invitedEmail={invitedEmail}
     />
   );
 }

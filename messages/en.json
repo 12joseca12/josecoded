@@ -2354,5 +2354,63 @@
       "text": "Tell me your case and I will reply within {responseTime}.",
       "cta": "Write to me"
     }
+  },
+  "invitation": {
+    "title": "You have been invited",
+    "lead": "{inviter} invites you as {role}.",
+    "leadAnonymous": "You are invited as {role}.",
+    "roles": {
+      "admin": "admin",
+      "closer": "closer",
+      "freelance": "freelance",
+      "client": "client"
+    },
+    "expires": "It expires on {date}.",
+    "enter": "Sign in with my email",
+    "enterHint": "You will sign in with the code sent to {email}. The invitation only works with that email.",
+    "acceptTitle": "You are signed in",
+    "nameLabel": "Your name",
+    "nameHint": "This is how the team will see you.",
+    "localeLabel": "Language",
+    "locales": {
+      "es": "Español",
+      "en": "English"
+    },
+    "accept": "Accept invitation",
+    "accepting": "Accepting",
+    "errors": {
+      "name": "Enter your name, from 1 to 200 characters.",
+      "gone": "This invitation is no longer valid. Ask Jose for a new one.",
+      "expired": "This invitation has expired. Ask Jose for a new one.",
+      "used": "This invitation was already accepted.",
+      "mismatch": "You signed in with an email other than the invited one.",
+      "exists": "This account already has a profile.",
+      "error": "It could not be accepted. Try again."
+    },
+    "gone": {
+      "unknown": {
+        "title": "This invitation is not valid",
+        "text": "The link does not match any invitation. Ask Jose for a new invitation."
+      },
+      "revoked": {
+        "title": "Invitation revoked",
+        "text": "Jose revoked it. Ask Jose for a new invitation."
+      },
+      "expired": {
+        "title": "Invitation expired",
+        "text": "Invitations last seven days. Ask Jose for a new invitation."
+      },
+      "used": {
+        "title": "Invitation already used",
+        "text": "This invitation was already accepted. If it was you, sign in with your email. If not, ask Jose for a new invitation."
+      }
+    },
+    "goneAction": "Write to Jose",
+    "mismatch": {
+      "title": "You signed in with another email",
+      "text": "This invitation is for an email other than your session's. Sign out and sign in with the invited email.",
+      "action": "Sign out",
+      "acting": "Signing out"
+    }
   }
 }

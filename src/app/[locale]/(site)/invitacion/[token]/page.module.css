@@ -1,0 +1,11 @@
+.text {
+  color: var(--ink-soft);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}

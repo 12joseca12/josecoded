@@ -155,6 +155,14 @@ describe("destinations", () => {
       "/es/entrar/totp?next=%2Fes%2Finvitacion%2Fabc",
     );
   });
+
+  it("lets a session without a profile reach an invitation and nothing else", () => {
+    const inactive: SessionState = { status: "inactive" };
+    expect(resolveDestination(inactive, "es", "/es/invitacion/abc")).toBe("/es/invitacion/abc");
+    expect(resolveDestination(inactive, "es", "/es/admin")).toBe("/es/entrar?next=%2Fes%2Fadmin");
+    expect(resolveDestination(inactive, "es")).toBe("/es/entrar");
+    expect(resolveDestination(inactive, "es", "/en/invitacion/abc")).toBe("/es/entrar");
+  });
 });
 
 describe("isSessionPath", () => {

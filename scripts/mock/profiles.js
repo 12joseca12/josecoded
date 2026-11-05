@@ -3,6 +3,7 @@ import { route, send } from "./registry.js";
 
 extendAuthState((state) => {
   state.calls.profiles = [];
+  state.profiles = new Map();
 });
 
 route("GET", "/rest/v1/profiles", ({ request, response, url }) => {
@@ -13,7 +14,9 @@ route("GET", "/rest/v1/profiles", ({ request, response, url }) => {
     const caller = personById(session.userId);
     if (caller?.[1].role !== "admin" || session.level !== "aal2") return send(response, 200, []);
     const rows = Object.values(people)
-      .filter((person) => person.role === "admin" || person.role === "closer")
+      .filter(
+        (person) => !person.noProfile && (person.role === "admin" || person.role === "closer"),
+      )
       .map((person) => ({
         id: person.id,
         full_name: person.name,
@@ -25,11 +28,13 @@ route("GET", "/rest/v1/profiles", ({ request, response, url }) => {
   }
   const id = (url.searchParams.get("id") ?? "").replace("eq.", "");
   const found = personById(id);
+  const created = session.auth.profiles.get(session.userId);
+  const hasProfile = found && (!found[1].noProfile || created !== undefined);
   const row =
-    found && found[1].id === session.userId
+    hasProfile && found[1].id === session.userId
       ? {
-          role: found[1].role,
-          full_name: found[1].name,
+          role: created?.role ?? found[1].role,
+          full_name: created?.full_name ?? found[1].name,
           is_active: !found[1].inactive,
           archived_at: null,
         }

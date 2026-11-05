@@ -1,0 +1,10 @@
+.form {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.error {
+  color: var(--error);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+}

@@ -3,6 +3,7 @@ import "./auth.js";
 import "./profiles.js";
 import "./leads.js";
 import "./users.js";
+import "./invitations.js";
 
 import { createServer } from "node:http";
 

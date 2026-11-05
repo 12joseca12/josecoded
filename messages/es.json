@@ -2354,5 +2354,63 @@
       "text": "Cuéntame tu caso y te respondo en {responseTime}.",
       "cta": "Escríbeme"
     }
+  },
+  "invitation": {
+    "title": "Te han invitado",
+    "lead": "{inviter} te invita como {role}.",
+    "leadAnonymous": "Te invitan como {role}.",
+    "roles": {
+      "admin": "admin",
+      "closer": "closer",
+      "freelance": "freelance",
+      "client": "cliente"
+    },
+    "expires": "Caduca el {date}.",
+    "enter": "Entrar con mi correo",
+    "enterHint": "Entrarás con el código que recibas en {email}. La invitación solo sirve con ese correo.",
+    "acceptTitle": "Ya has entrado",
+    "nameLabel": "Tu nombre",
+    "nameHint": "Así te verá el equipo.",
+    "localeLabel": "Idioma",
+    "locales": {
+      "es": "Español",
+      "en": "English"
+    },
+    "accept": "Aceptar invitación",
+    "accepting": "Aceptando",
+    "errors": {
+      "name": "Escribe tu nombre, de 1 a 200 caracteres.",
+      "gone": "Esta invitación ya no es válida. Pide una nueva a Jose.",
+      "expired": "Esta invitación ha caducado. Pide una nueva a Jose.",
+      "used": "Esta invitación ya se aceptó.",
+      "mismatch": "Has entrado con un correo distinto del invitado.",
+      "exists": "Esta cuenta ya tiene un perfil.",
+      "error": "No se ha podido aceptar. Inténtalo otra vez."
+    },
+    "gone": {
+      "unknown": {
+        "title": "Esta invitación no es válida",
+        "text": "El enlace no corresponde a ninguna invitación. Pide una nueva invitación a Jose."
+      },
+      "revoked": {
+        "title": "Invitación anulada",
+        "text": "Jose la ha anulado. Pide una nueva invitación a Jose."
+      },
+      "expired": {
+        "title": "Invitación caducada",
+        "text": "Las invitaciones duran siete días. Pide una nueva invitación a Jose."
+      },
+      "used": {
+        "title": "Invitación ya usada",
+        "text": "Esta invitación ya se aceptó. Si eres tú, entra con tu correo. Si no, pide una nueva invitación a Jose."
+      }
+    },
+    "goneAction": "Escribir a Jose",
+    "mismatch": {
+      "title": "Has entrado con otro correo",
+      "text": "Esta invitación es para un correo distinto del de tu sesión. Sal y entra con el correo invitado.",
+      "action": "Salir",
+      "acting": "Saliendo"
+    }
   }
 }
