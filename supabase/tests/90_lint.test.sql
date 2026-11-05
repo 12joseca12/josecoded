@@ -77,11 +77,15 @@ select is_empty(
       and p.prosecdef
       and has_function_privilege('authenticated', p.oid, 'execute')
       and p.proname not in (
+        'accept_invitation',
         'assign_lead',
         'claim_lead',
         'discard_lead',
+        'invite_user',
         'list_lead_inbox',
         'mark_notifications_read',
+        'renew_invitation',
+        'revoke_invitation',
         'send_test_notification',
         'set_notification_pref',
         'telegram_link_code',
@@ -178,11 +182,15 @@ select is_empty(
     where n.nspname = 'public'
       and has_function_privilege('authenticated', p.oid, 'execute')
       and p.proname not in (
+        'accept_invitation',
         'assign_lead',
         'claim_lead',
         'discard_lead',
+        'invite_user',
         'list_lead_inbox',
         'mark_notifications_read',
+        'renew_invitation',
+        'revoke_invitation',
         'send_test_notification',
         'set_notification_pref',
         'telegram_link_code',
@@ -205,8 +213,8 @@ select is(
       and not has_function_privilege('authenticated', p.oid, 'execute')
       and not has_function_privilege('anon', p.oid, 'execute')
   ),
-  'outbox_claim,outbox_mark,submit_lead,telegram_confirm_link',
-  'only the submit, outbox and Telegram link functions are service_role-only in public'
+  'outbox_claim,outbox_mark,read_invitation,submit_lead,telegram_confirm_link',
+  'only the submit, outbox, invitation read and Telegram link functions are service_role-only in public'
 );
 
 select is(

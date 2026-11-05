@@ -89,7 +89,8 @@ begin
   delete from public.deals;
   delete from public.contacts;
   delete from public.leads;
-  update public.profiles set parent_closer_id = null, parent_rate = null;
+  delete from public.invitations;
+  update public.profiles set parent_closer_id = null, parent_rate = null, parent_recurring_rate = null;
   delete from public.profiles;
   delete from auth.users;
   delete from private.form_quota;
