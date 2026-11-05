@@ -84,3 +84,8 @@ export async function signInCloser(page: Page, tag: Tag, query = "") {
   await page.getByRole("button", { name: totp.verify }).click();
   await expect(page).not.toHaveURL(/\/entrar/, { timeout: 20_000 });
 }
+
+export async function signInClient(page: Page, tag: Tag, query = "") {
+  await signInOtp(page, tag, "client@example.com", query);
+  await expect(page).toHaveURL(/\/es\/area/, { timeout: 20_000 });
+}

@@ -10,6 +10,7 @@ import "./prices.js";
 import "./system.js";
 import "./notifications.js";
 import "./overview.js";
+import "./area.js";
 
 import { createServer } from "node:http";
 

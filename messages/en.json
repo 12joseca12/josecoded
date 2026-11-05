@@ -2285,6 +2285,49 @@
       }
     }
   },
+  "area": {
+    "brandLabel": "josecoded, go to your area home",
+    "brandWord": "Your area",
+    "navLabel": "Your area",
+    "userLabel": "Signed in as {name}",
+    "signOut": "Sign out",
+    "signingOut": "Signing out",
+    "nav": {
+      "overview": "Home",
+      "tasks": "Tasks",
+      "documents": "Documents",
+      "stories": "Stories",
+      "chat": "Chat",
+      "soon": "Coming soon",
+      "more": "More",
+      "moreTitle": "More sections",
+      "close": "Close"
+    },
+    "home": {
+      "meta": {
+        "title": "Home"
+      },
+      "loading": "Loading your project"
+    },
+    "empty": {
+      "title": "Jose is setting up your project",
+      "text": "Once your project is created it will appear here, with its phases, your tasks and your documents. There is nothing for you to do for now."
+    }
+  },
+  "freelance": {
+    "brandLabel": "josecoded, go to your zone home",
+    "brandWord": "Freelance",
+    "navLabel": "Freelance",
+    "userLabel": "Signed in as {name}",
+    "signOut": "Sign out",
+    "signingOut": "Signing out",
+    "nav": {
+      "soon": "Coming soon",
+      "more": "More",
+      "moreTitle": "More sections",
+      "close": "Close"
+    }
+  },
   "freelancePage": {
     "meta": {
       "title": "Freelance programmer, hourly or per task",

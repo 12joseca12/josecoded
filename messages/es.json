@@ -2285,6 +2285,49 @@
       }
     }
   },
+  "area": {
+    "brandLabel": "josecoded, ir al inicio de tu área",
+    "brandWord": "Tu área",
+    "navLabel": "Tu área",
+    "userLabel": "Sesión iniciada como {name}",
+    "signOut": "Salir",
+    "signingOut": "Saliendo",
+    "nav": {
+      "overview": "Inicio",
+      "tasks": "Tareas",
+      "documents": "Documentos",
+      "stories": "Historias",
+      "chat": "Chat",
+      "soon": "Próximamente",
+      "more": "Más",
+      "moreTitle": "Más secciones",
+      "close": "Cerrar"
+    },
+    "home": {
+      "meta": {
+        "title": "Inicio"
+      },
+      "loading": "Cargando tu proyecto"
+    },
+    "empty": {
+      "title": "Jose está preparando tu proyecto",
+      "text": "Cuando tu proyecto esté creado aparecerá aquí, con sus fases, tus tareas y tus documentos. Por ahora no tienes que hacer nada."
+    }
+  },
+  "freelance": {
+    "brandLabel": "josecoded, ir al inicio de tu zona",
+    "brandWord": "Freelance",
+    "navLabel": "Freelance",
+    "userLabel": "Sesión iniciada como {name}",
+    "signOut": "Salir",
+    "signingOut": "Saliendo",
+    "nav": {
+      "soon": "Próximamente",
+      "more": "Más",
+      "moreTitle": "Más secciones",
+      "close": "Cerrar"
+    }
+  },
   "freelancePage": {
     "meta": {
       "title": "Programador freelance por horas y por tarea",

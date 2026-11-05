@@ -4,13 +4,14 @@ import { Brand } from "@/components/site/Brand/Brand";
 import { RouteFocus } from "@/components/site/RouteFocus/RouteFocus";
 import { contentId, SkipLink } from "@/components/site/SkipLink/SkipLink";
 import { Button } from "@/components/ui/Button/Button";
-import type { StaffNavItem, StaffShellLabels, StaffSwitch } from "@/types/staff";
+import type { StaffNavItem, StaffShellLabels, StaffSwitch, StaffZone } from "@/types/staff";
 
 import { StaffNav } from "../StaffNav/StaffNav";
 import { SignOutButton } from "./SignOutButton";
 import styles from "./StaffShell.module.css";
 
 interface StaffShellProps {
+  zone: StaffZone;
   homeHref: string;
   userName: string;
   items: StaffNavItem[];
@@ -21,6 +22,7 @@ interface StaffShellProps {
 }
 
 export function StaffShell({
+  zone,
   homeHref,
   userName,
   items,
@@ -46,7 +48,7 @@ export function StaffShell({
   return (
     <>
       <SkipLink label={labels.skipLink} />
-      <div className={styles.frame}>
+      <div className={styles.frame} data-zone={zone}>
         <header className={styles.rail}>
           <Brand href={homeHref} label={labels.brandLabel} word={labels.brandWord} />
           <StaffNav

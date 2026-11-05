@@ -33,6 +33,14 @@ export const staffNav: Record<StaffZone, readonly StaffNavEntry[]> = {
     { key: "chat", path: "/chat", ready: false, label: "crm.nav.chat" },
     { key: "settings", path: "/ajustes", ready: true, label: "crm.nav.settings" },
   ],
+  area: [
+    { key: "overview", path: "", ready: true, label: "area.nav.overview" },
+    { key: "tasks", path: "/tareas", ready: false, label: "area.nav.tasks" },
+    { key: "documents", path: "/documentos", ready: false, label: "area.nav.documents" },
+    { key: "stories", path: "/historias", ready: false, label: "area.nav.stories" },
+    { key: "chat", path: "/chat", ready: false, label: "area.nav.chat" },
+  ],
+  freelance: [],
 };
 
 export const barSlots = 3;
