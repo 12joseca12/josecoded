@@ -18,7 +18,8 @@ describe("chat.reply payload contract", () => {
     expect(
       chatReplyPayloadSchema.safeParse({ ...(fixture as object), kind: "other" }).success,
     ).toBe(false);
-    const { delayed: _delayed, ...rest } = fixture as Record<string, unknown>;
+    const rest: Record<string, unknown> = { ...(fixture as object) };
+    delete rest.delayed;
     expect(chatReplyPayloadSchema.safeParse(rest).success).toBe(false);
   });
 });
