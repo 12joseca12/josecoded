@@ -1,0 +1,106 @@
+.figure {
+  container-type: inline-size;
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+}
+
+.flow {
+  display: grid;
+  gap: var(--space-7);
+  padding: 0;
+  list-style: none;
+}
+
+.layer {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.title {
+  color: var(--coral-deep);
+  font-size: var(--fs-m);
+  font-weight: var(--fw-bold);
+}
+
+.nodes {
+  display: grid;
+  gap: var(--space-3);
+  padding: 0;
+  list-style: none;
+}
+
+.node {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-m);
+  background: var(--panel);
+  box-shadow: var(--shadow-hair);
+}
+
+.layer[data-layer="app"] .node[data-node="workers"] {
+  border-color: var(--charcoal);
+  background: var(--charcoal);
+}
+
+.layer[data-layer="app"] .node[data-node="workers"] .name {
+  color: var(--on-dark);
+}
+
+.layer[data-layer="app"] .node[data-node="workers"] .detail {
+  color: var(--on-dark-soft);
+}
+
+.name {
+  color: var(--ink);
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-bold);
+}
+
+.detail {
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+}
+
+.arrow {
+  position: absolute;
+  inset-inline: 0;
+  bottom: calc(var(--space-7) / -2 - 0.75rem);
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-inline: auto;
+  fill: none;
+  stroke: var(--coral);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  rotate: 90deg;
+}
+
+.caption {
+  color: var(--ink-faint);
+  font-size: var(--fs-base);
+}
+
+@container (width > 48rem) {
+  .flow {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-8);
+  }
+
+  .arrow {
+    inset-inline: auto;
+    inset-block: 0;
+    top: 50%;
+    right: calc(var(--space-8) / -2 - 0.75rem);
+    bottom: auto;
+    margin: 0;
+    translate: 0 -50%;
+    rotate: 0deg;
+  }
+}

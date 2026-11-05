@@ -26,6 +26,7 @@ const publicRoutes = [
   "/es/servicios",
   "/es/servicios/freelance",
   "/es/servicios/a-medida",
+  "/es/como-trabajo",
   "/es/proyectos",
 ];
 const devRoutes = [

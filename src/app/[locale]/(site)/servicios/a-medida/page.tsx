@@ -246,7 +246,7 @@ export default async function OffersPage({ params, searchParams }: OffersProps) 
           <Button href={buildContactHref(locale, "project")} icon={<ArrowIcon />}>
             {t(key("closing.cta"))}
           </Button>
-          <Button href={`/${locale}/servicios#como-trabajo`} variant="ghost" icon={<ArrowIcon />}>
+          <Button href={`/${locale}/como-trabajo`} variant="ghost" icon={<ArrowIcon />}>
             {t(key("closing.more"))}
           </Button>
         </div>

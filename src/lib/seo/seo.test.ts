@@ -87,6 +87,7 @@ describe("buildSitemap", () => {
       `${productionOrigin}/es/servicios`,
       `${productionOrigin}/es/servicios/freelance`,
       `${productionOrigin}/es/servicios/a-medida`,
+      `${productionOrigin}/es/como-trabajo`,
       `${productionOrigin}/es/proyectos`,
       `${productionOrigin}/es/contacto`,
     ]);
@@ -104,6 +105,7 @@ describe("buildSitemap", () => {
       `${productionOrigin}/es/servicios`,
       `${productionOrigin}/es/servicios/freelance`,
       `${productionOrigin}/es/servicios/a-medida`,
+      `${productionOrigin}/es/como-trabajo`,
     ]);
   });
 });
@@ -243,6 +245,7 @@ describe("buildLlmsTxt", () => {
     expect(text).toContain(`(${productionOrigin}/es/servicios)`);
     expect(text).toContain(`(${productionOrigin}/es/servicios/freelance)`);
     expect(text).toContain(`(${productionOrigin}/es/servicios/a-medida)`);
+    expect(text).toContain(`(${productionOrigin}/es/como-trabajo)`);
     expect(text).toContain(`(${productionOrigin}/es/contacto)`);
     expect(text).toContain("José Carlos Sánchez García");
     expect(text).toContain("Contratación: hola@josecoded.com");
