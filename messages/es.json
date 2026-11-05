@@ -1410,7 +1410,7 @@
         },
         "ci": {
           "title": "Integración continua",
-          "text": "Nunca se empuja a main: todo entra por pull request, tras lint, tipos, tests, build y las pruebas de la base de datos, con una preview para revisarlo."
+          "text": "Cada cambio de esta web ha entrado por pull request, y en cada una pasan lint, tipos, tests, build y las pruebas de la base de datos, con una preview para revisarlo."
         }
       }
     },

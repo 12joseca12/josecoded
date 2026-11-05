@@ -1410,7 +1410,7 @@
         },
         "ci": {
           "title": "Continuous integration",
-          "text": "Nothing is pushed to main: every change goes in through a pull request, after lint, types, tests, build and the database tests, with a preview to review it."
+          "text": "Every change to this site has gone in through a pull request, and each one runs lint, types, tests, build and the database tests, with a preview to review it."
         }
       }
     },
