@@ -563,6 +563,86 @@ export type Database = {
           },
         ]
       }
+      invoices: {
+        Row: {
+          amount_gross: number
+          amount_net: number
+          created_at: string
+          created_by: string | null
+          deal_id: string
+          id: string
+          issued_at: string
+          kind: Database["public"]["Enums"]["invoice_kind"]
+          number: string
+          pdf_path: string | null
+          schedule_id: string | null
+          status: Database["public"]["Enums"]["invoice_status"]
+          vat_amount: number
+          vat_rate: number
+        }
+        Insert: {
+          amount_gross: number
+          amount_net: number
+          created_at?: string
+          created_by?: string | null
+          deal_id: string
+          id?: string
+          issued_at: string
+          kind: Database["public"]["Enums"]["invoice_kind"]
+          number: string
+          pdf_path?: string | null
+          schedule_id?: string | null
+          status?: Database["public"]["Enums"]["invoice_status"]
+          vat_amount: number
+          vat_rate: number
+        }
+        Update: {
+          amount_gross?: number
+          amount_net?: number
+          created_at?: string
+          created_by?: string | null
+          deal_id?: string
+          id?: string
+          issued_at?: string
+          kind?: Database["public"]["Enums"]["invoice_kind"]
+          number?: string
+          pdf_path?: string | null
+          schedule_id?: string | null
+          status?: Database["public"]["Enums"]["invoice_status"]
+          vat_amount?: number
+          vat_rate?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "deals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_schedule_id_fkey"
+            columns: ["schedule_id"]
+            isOneToOne: false
+            referencedRelation: "payment_schedule"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leads: {
         Row: {
           assigned_at: string | null
@@ -907,6 +987,134 @@ export type Database = {
           weeks_min?: number
         }
         Relationships: []
+      }
+      payment_schedule: {
+        Row: {
+          amount: number
+          created_at: string
+          deal_id: string
+          due_at: string | null
+          id: string
+          kind: Database["public"]["Enums"]["schedule_kind"]
+          label: string
+          percent: number | null
+          sort: number
+          status: Database["public"]["Enums"]["schedule_status"]
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          deal_id: string
+          due_at?: string | null
+          id?: string
+          kind?: Database["public"]["Enums"]["schedule_kind"]
+          label: string
+          percent?: number | null
+          sort?: number
+          status?: Database["public"]["Enums"]["schedule_status"]
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          deal_id?: string
+          due_at?: string | null
+          id?: string
+          kind?: Database["public"]["Enums"]["schedule_kind"]
+          label?: string
+          percent?: number | null
+          sort?: number
+          status?: Database["public"]["Enums"]["schedule_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_schedule_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "deals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payments: {
+        Row: {
+          amount_net: number
+          created_at: string
+          deal_id: string
+          id: string
+          invoice_id: string | null
+          kind: Database["public"]["Enums"]["payment_kind"]
+          method: Database["public"]["Enums"]["payment_method"]
+          nature: Database["public"]["Enums"]["commission_nature"]
+          received_at: string
+          recorded_by: string | null
+          reference: string | null
+          schedule_id: string | null
+        }
+        Insert: {
+          amount_net: number
+          created_at?: string
+          deal_id: string
+          id?: string
+          invoice_id?: string | null
+          kind?: Database["public"]["Enums"]["payment_kind"]
+          method: Database["public"]["Enums"]["payment_method"]
+          nature: Database["public"]["Enums"]["commission_nature"]
+          received_at: string
+          recorded_by?: string | null
+          reference?: string | null
+          schedule_id?: string | null
+        }
+        Update: {
+          amount_net?: number
+          created_at?: string
+          deal_id?: string
+          id?: string
+          invoice_id?: string | null
+          kind?: Database["public"]["Enums"]["payment_kind"]
+          method?: Database["public"]["Enums"]["payment_method"]
+          nature?: Database["public"]["Enums"]["commission_nature"]
+          received_at?: string
+          recorded_by?: string | null
+          reference?: string | null
+          schedule_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "deals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_recorded_by_fkey"
+            columns: ["recorded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_recorded_by_fkey"
+            columns: ["recorded_by"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_schedule_id_fkey"
+            columns: ["schedule_id"]
+            isOneToOne: false
+            referencedRelation: "payment_schedule"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       price_changes: {
         Row: {
@@ -1315,9 +1523,26 @@ export type Database = {
         Args: { p_deal_id: string }
         Returns: undefined
       }
+      cancel_schedule_item: {
+        Args: { p_id: string }
+        Returns: undefined
+      }
       claim_lead: {
         Args: { p_lead_id: string }
         Returns: string
+      }
+      deal_payments: {
+        Args: { p_deal_id: string }
+        Returns: {
+          amount_net: number
+          id: string
+          kind: Database["public"]["Enums"]["payment_kind"]
+          method: Database["public"]["Enums"]["payment_method"] | null
+          nature: Database["public"]["Enums"]["commission_nature"]
+          received_at: string
+          reference: string | null
+          schedule_id: string | null
+        }[]
       }
       discard_lead: {
         Args: { p_lead_id: string; p_reason: string }
@@ -1329,6 +1554,10 @@ export type Database = {
           invitation_id: string
           token: string
         }[]
+      }
+      issue_proforma: {
+        Args: { p_schedule_id: string; p_vat_rate?: number }
+        Returns: string
       }
       list_lead_inbox: {
         Args: never
@@ -1414,6 +1643,14 @@ export type Database = {
           leads: number
         }[]
       }
+      record_invoice: {
+        Args: { p_deal_id: string; p_issued_at: string; p_net: number; p_number: string; p_pdf_path?: string; p_schedule_id?: string; p_vat_rate: number }
+        Returns: string
+      }
+      record_payment: {
+        Args: { p_amount_net: number; p_deal_id: string; p_invoice_id?: string; p_kind: Database["public"]["Enums"]["payment_kind"]; p_method: Database["public"]["Enums"]["payment_method"]; p_nature: Database["public"]["Enums"]["commission_nature"]; p_received_at: string; p_reference?: string; p_schedule_id?: string }
+        Returns: string
+      }
       reject_commission_line: {
         Args: { p_id: string; p_reason: string }
         Returns: undefined
@@ -1440,6 +1677,10 @@ export type Database = {
       set_notification_pref: {
         Args: { p_channel: string; p_enabled: boolean; p_event: Database["public"]["Enums"]["notification_event"] }
         Returns: undefined
+      }
+      set_payment_schedule: {
+        Args: { p_deal_id: string; p_items: Json }
+        Returns: number
       }
       set_setting: {
         Args: { p_key: string; p_value: Json }
@@ -1501,6 +1742,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      void_invoice: {
+        Args: { p_id: string }
+        Returns: undefined
+      }
       win_deal: {
         Args: { p_deal_id: string; p_recurring_monthly?: number; p_won_amount: number }
         Returns: string
@@ -1533,6 +1778,8 @@ export type Database = {
       contact_via: "hiring" | "freelance" | "project"
       deal_stage: "new" | "contacted" | "meeting" | "proposal" | "won" | "lost"
       extra_billing: "once" | "monthly" | "yearly" | "per_unit"
+      invoice_kind: "proforma" | "invoice"
+      invoice_status: "draft" | "sent" | "paid" | "void"
       job_kind:
         | "chat.reply"
         | "chat.summary"
@@ -1549,7 +1796,11 @@ export type Database = {
       notification_event: "lead_new" | "lead_claimed" | "message_new" | "commission_accrued" | "payment_recorded" | "payment_overdue" | "payout_paid" | "job_failed" | "omen_down" | "invitation_accepted"
       outbox_channel: "email" | "telegram"
       outbox_status: "queued" | "sending" | "sent" | "failed"
+      payment_kind: "payment" | "refund"
+      payment_method: "transfer" | "card" | "stripe" | "other"
       payout_cadence: "per_payment" | "weekly" | "biweekly"
+      schedule_kind: "milestone" | "recurring"
+      schedule_status: "scheduled" | "proforma_sent" | "invoiced" | "paid" | "cancelled"
       user_role: "admin" | "closer" | "freelance" | "client"
     }
     CompositeTypes: {
@@ -1698,6 +1949,8 @@ export const Constants = {
       contact_via: ["hiring", "freelance", "project"],
       deal_stage: ["new", "contacted", "meeting", "proposal", "won", "lost"],
       extra_billing: ["once", "monthly", "yearly", "per_unit"],
+      invoice_kind: ["proforma", "invoice"],
+      invoice_status: ["draft", "sent", "paid", "void"],
       job_kind: [
         "chat.reply",
         "chat.summary",
@@ -1715,7 +1968,11 @@ export const Constants = {
       notification_event: ["lead_new", "lead_claimed", "message_new", "commission_accrued", "payment_recorded", "payment_overdue", "payout_paid", "job_failed", "omen_down", "invitation_accepted"],
       outbox_channel: ["email", "telegram"],
       outbox_status: ["queued", "sending", "sent", "failed"],
+      payment_kind: ["payment", "refund"],
+      payment_method: ["transfer", "card", "stripe", "other"],
       payout_cadence: ["per_payment", "weekly", "biweekly"],
+      schedule_kind: ["milestone", "recurring"],
+      schedule_status: ["scheduled", "proforma_sent", "invoiced", "paid", "cancelled"],
       user_role: ["admin", "closer", "freelance", "client"],
     },
   },
