@@ -29,6 +29,7 @@ test("success toast is announced in a status region and closes with the keyboard
   await page.getByRole("button", { name: ui.toastSuccess }).click();
   const toast = page.getByRole("status").filter({ hasText: ui.toastSuccessText });
   await expect(toast).toBeVisible();
+  await toast.hover();
   const { violations } = await new AxeBuilder({ page }).analyze();
   expect(violations).toEqual([]);
   const close = page.getByRole("button", { name: ui.toastClose });
