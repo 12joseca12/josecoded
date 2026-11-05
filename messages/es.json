@@ -110,6 +110,27 @@
           "releaseValue": "sin cortes"
         }
       }
+    },
+    "services": {
+      "title": "Tres formas de trabajar conmigo",
+      "lead": "Empieza por tu situación: cada tarjeta lleva a su página."
+    },
+    "recommender": {
+      "lead": "Seis preguntas cortas te dicen qué nivel encaja y qué extras necesitas. Responde a la primera aquí y sigues donde lo dejes.",
+      "more": "Empezar el recomendador desde cero"
+    },
+    "stack": {
+      "title": "Con qué construyo"
+    },
+    "how": {
+      "line": "Descubrir, diseñar, construir, publicar y mantener: las mismas cinco fases en cualquier vía."
+    },
+    "closing": {
+      "title": "¿Lo llevamos",
+      "accent": "a producción?",
+      "lead": "Cuéntame qué necesitas. Te respondo yo en {responseTime}.",
+      "cta": "Escríbeme",
+      "email": "O escribe a"
     }
   },
   "projects": {
@@ -1827,5 +1848,8 @@
         "metaDescription": "josecoded.com solo usa cookies estrictamente necesarias: sesión y verificación antispam. Aquí se explica cuáles y por qué."
       }
     }
+  },
+  "suggestion": {
+    "lead": "¿Buscabas esta página?"
   }
 }

@@ -1,0 +1,30 @@
+.closing {
+  padding-block: var(--space-8) var(--space-9);
+  border-top: 1px solid var(--line);
+}
+
+.body {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-5);
+  max-width: 44rem;
+}
+
+.lead {
+  max-width: 34rem;
+  color: var(--ink-soft);
+  font-size: var(--fs-lead);
+  text-wrap: pretty;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-5);
+}
+
+.direct {
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+}

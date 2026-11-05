@@ -1,0 +1,22 @@
+.strip {
+  padding-block: var(--space-6);
+  border-top: 1px solid var(--line);
+}
+
+.body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-5);
+  width: 100%;
+}
+
+.line {
+  max-width: 44rem;
+  color: var(--ink);
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-body);
+  text-wrap: pretty;
+}

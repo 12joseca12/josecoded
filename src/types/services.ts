@@ -24,6 +24,9 @@ export interface RateItem {
 export const bentoAreas = ["hiring", "project", "support", "proof"] as const;
 export type BentoArea = (typeof bentoAreas)[number];
 
+export const bentoLayouts = ["hub", "ways"] as const;
+export type BentoLayout = (typeof bentoLayouts)[number];
+
 export const bentoTones = ["need", "quiet", "dark"] as const;
 export type BentoTone = (typeof bentoTones)[number];
 

@@ -18,3 +18,17 @@ export interface ErrorActionLabels {
 export type ErrorCopy = Record<ErrorVariant, { title: string; text: string }> & {
   actions: ErrorActionLabels;
 };
+
+export const suggestionIds = [
+  "services",
+  "freelance",
+  "offers",
+  "projects",
+  "about",
+  "how",
+  "contact",
+  "privacy",
+  "cookies",
+  "notice",
+] as const;
+export type SuggestionId = (typeof suggestionIds)[number];

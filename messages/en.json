@@ -110,6 +110,27 @@
           "releaseValue": "no downtime"
         }
       }
+    },
+    "services": {
+      "title": "Three ways to work with me",
+      "lead": "Start from your situation: each card leads to its page."
+    },
+    "recommender": {
+      "lead": "Six short questions tell you which tier fits and which extras you need. Answer the first one here and carry on where you left off.",
+      "more": "Start the recommender from scratch"
+    },
+    "stack": {
+      "title": "What I build with"
+    },
+    "how": {
+      "line": "Discover, design, build, publish and maintain: the same five phases on any route."
+    },
+    "closing": {
+      "title": "Shall we take it",
+      "accent": "to production?",
+      "lead": "Tell me what you need. I answer myself within {responseTime}.",
+      "cta": "Write to me",
+      "email": "Or write to"
     }
   },
   "projects": {
@@ -1827,5 +1848,8 @@
         "metaDescription": "josecoded.com only uses strictly necessary cookies: session and anti-spam verification. Here is which ones and why."
       }
     }
+  },
+  "suggestion": {
+    "lead": "Were you looking for this page?"
   }
 }

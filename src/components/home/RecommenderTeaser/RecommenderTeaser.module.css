@@ -1,0 +1,122 @@
+.group {
+  display: grid;
+  gap: var(--space-3);
+  container-type: inline-size;
+}
+
+.legend {
+  color: var(--ink);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+}
+
+.options {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+  list-style: none;
+}
+
+.item {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-l);
+  background: var(--panel);
+  box-shadow: var(--shadow-card);
+  transition-property: transform, border-color, box-shadow;
+  transition-duration: var(--dur);
+  transition-timing-function: var(--ease-out);
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 2.75rem;
+  color: var(--ink);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  text-decoration: none;
+  touch-action: manipulation;
+}
+
+.option::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-l);
+}
+
+.option:focus-visible {
+  outline: none;
+}
+
+.item:has(.option:focus-visible) {
+  border-color: var(--coral);
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.hint {
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+}
+
+.icon {
+  display: inline-grid;
+  flex: none;
+}
+
+.icon svg {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: var(--coral-text);
+  stroke-width: 1.6px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition-property: transform;
+  transition-duration: var(--dur);
+  transition-timing-function: var(--ease-out);
+}
+
+@container (min-width: 44rem) {
+  .options {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .item:active {
+    transform: scale(0.99);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .item:hover {
+    border-color: var(--coral);
+    box-shadow: var(--shadow-float);
+  }
+
+  .item:hover .icon svg {
+    transform: translateX(var(--nudge));
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .item:hover {
+    transform: translateY(-0.25rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item,
+  .icon svg {
+    transition-duration: var(--dur-reduced);
+  }
+}

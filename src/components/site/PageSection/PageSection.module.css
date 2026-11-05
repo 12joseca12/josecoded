@@ -22,9 +22,17 @@
   font-size: var(--fs-lead);
 }
 
+.section[data-fit="content"] {
+  padding-block: var(--space-7);
+}
+
 @media (min-width: 64rem) {
-  .section {
+  .section[data-fit="screen"] {
     min-height: 100svh;
     padding-top: calc(var(--nav-h) + var(--space-6));
+  }
+
+  .section[data-fit="content"] {
+    padding-block: var(--space-8);
   }
 }
