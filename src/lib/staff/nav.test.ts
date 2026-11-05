@@ -47,7 +47,14 @@ describe("staff navigation registry", () => {
       "receivables",
       "payouts",
     ]);
-    expect(ready("crm")).toEqual(["overview", "contacts", "commissions", "settings"]);
+    expect(ready("crm")).toEqual([
+      "overview",
+      "contacts",
+      "leads",
+      "commissions",
+      "start",
+      "settings",
+    ]);
   });
 
   it("has a label in every locale", () => {

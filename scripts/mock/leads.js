@@ -142,6 +142,22 @@ function isAdmin(session) {
   return personById(session.userId)?.[1].role === "admin" && session.level === "aal2";
 }
 
+function canRead(session, row) {
+  if (session.level !== "aal2") return false;
+  if (isAdmin(session)) return true;
+  const me = personById(session.userId)?.[1];
+  if (me?.role !== "closer" || row.assigned_to === null) return false;
+  return row.assigned_to === session.userId || personById(row.assigned_to)?.[1].parent === me.id;
+}
+
+function narrow(rows, url) {
+  const assigned = url.searchParams.get("assigned_to");
+  if (assigned === "not.is.null") return rows.filter((entry) => entry.assigned_to !== null);
+  if (assigned?.startsWith("eq."))
+    return rows.filter((entry) => entry.assigned_to === assigned.slice(3));
+  return rows;
+}
+
 function wantsObject(request) {
   return (request.headers.accept ?? "").includes("vnd.pgrst.object");
 }
@@ -154,10 +170,12 @@ route("GET", "/rest/v1/leads", ({ request, response, url }) => {
   if (auth.leadsMode === "error") {
     return send(response, 500, { code: "XX000", message: "internal", details: null, hint: null });
   }
-  if (!isAdmin(session) || auth.leadsMode === "empty") return send(response, 200, []);
+  if (auth.leadsMode === "empty") return send(response, 200, []);
+  const visible = auth.leads.filter((entry) => canRead(session, entry));
+  if (visible.length === 0) return send(response, 200, []);
   const id = (url.searchParams.get("id") ?? "").replace("eq.", "");
-  if (id === "") return send(response, 200, auth.leads);
-  const found = auth.leads.filter((entry) => entry.id === id);
+  if (id === "") return send(response, 200, narrow(visible, url));
+  const found = visible.filter((entry) => entry.id === id);
   if (wantsObject(request)) {
     if (found.length === 0) {
       return send(response, 406, {

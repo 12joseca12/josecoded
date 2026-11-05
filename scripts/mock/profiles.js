@@ -14,6 +14,20 @@ route("GET", "/rest/v1/profiles", ({ request, response, url }) => {
   const session = bearer(request);
   session?.auth.calls.profiles.push({ authenticated: true });
   if (!session) return send(response, 401, { code: "PGRST301", message: "JWT invalid" });
+  if (url.searchParams.has("parent_closer_id")) {
+    const caller = personById(session.userId)?.[1];
+    const parent = url.searchParams.get("parent_closer_id").replace("eq.", "");
+    if (!caller || session.level !== "aal2" || (caller.role !== "admin" && caller.id !== parent)) {
+      return send(response, 200, []);
+    }
+    return send(
+      response,
+      200,
+      Object.values(people)
+        .filter((person) => person.parent === parent)
+        .map((person) => ({ id: person.id, full_name: person.name })),
+    );
+  }
   if (!url.searchParams.has("id") && url.searchParams.has("role")) {
     const caller = personById(session.userId)?.[1];
     if (!caller || session.level !== "aal2") return send(response, 200, []);
