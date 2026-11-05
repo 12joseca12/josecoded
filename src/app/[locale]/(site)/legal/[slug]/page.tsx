@@ -2,10 +2,13 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { LegalDoc } from "@/components/legal/LegalDoc/LegalDoc";
+import { PageGraph } from "@/components/seo/PageGraph/PageGraph";
+import { site } from "@/config/site";
 import { getLegal } from "@/content";
 import { isLocale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
 import { isLegalIndexed, isLegalSlug, legalPages, legalPath, legalSlugs } from "@/lib/legal/pages";
+import { buildBreadcrumbList } from "@/lib/seo/jsonld";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { localePath } from "@/lib/seo/routes";
 
@@ -40,32 +43,42 @@ export default async function LegalPage({ params }: LegalProps) {
   );
 
   return (
-    <LegalDoc
-      title={entry.meta.title}
-      updated={t("legal.updated").replace("{date}", updated)}
-      breadcrumbs={{
-        label: t("breadcrumbs.label"),
-        items: [
-          { label: t("nav.home"), href: localePath(locale, "") },
-          { label: t("footer.legalLabel") },
-          { label: entry.meta.title },
-        ],
-      }}
-      draft={
-        entry.meta.draft ? { title: t("legal.draft.title"), text: t("legal.draft.text") } : null
-      }
-      summary={
-        entry.meta.summary.length > 0
-          ? { title: t("legal.summary.title"), items: entry.meta.summary }
-          : null
-      }
-      toc={{
-        label: t("legal.toc.label"),
-        title: t("legal.toc.title"),
-        items: entry.headings,
-      }}
-    >
-      <Body />
-    </LegalDoc>
+    <>
+      <PageGraph
+        nodes={[
+          buildBreadcrumbList(site.origin, [
+            { name: t("nav.home"), path: localePath(locale, "") },
+            { name: entry.meta.title, path: localePath(locale, legalPath(slug)) },
+          ]),
+        ]}
+      />
+      <LegalDoc
+        title={entry.meta.title}
+        updated={t("legal.updated").replace("{date}", updated)}
+        breadcrumbs={{
+          label: t("breadcrumbs.label"),
+          items: [
+            { label: t("nav.home"), href: localePath(locale, "") },
+            { label: t("footer.legalLabel") },
+            { label: entry.meta.title },
+          ],
+        }}
+        draft={
+          entry.meta.draft ? { title: t("legal.draft.title"), text: t("legal.draft.text") } : null
+        }
+        summary={
+          entry.meta.summary.length > 0
+            ? { title: t("legal.summary.title"), items: entry.meta.summary }
+            : null
+        }
+        toc={{
+          label: t("legal.toc.label"),
+          title: t("legal.toc.title"),
+          items: entry.headings,
+        }}
+      >
+        <Body />
+      </LegalDoc>
+    </>
   );
 }

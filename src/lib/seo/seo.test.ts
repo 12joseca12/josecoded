@@ -6,9 +6,11 @@ import { jsonLdGraphSchema } from "@/types/seo";
 
 import {
   buildBreadcrumbList,
+  buildContactPage,
   buildFaqPage,
   buildGraph,
   buildPerson,
+  buildProfessionalService,
   buildProfilePage,
   buildSiteGraph,
   resolveProfileLinks,
@@ -222,6 +224,80 @@ describe("json-ld", () => {
       },
     ]);
     expect(jsonLdGraphSchema.safeParse(buildGraph(list)).success).toBe(true);
+  });
+
+  it("builds a ProfessionalService with an offer catalog and no price", async () => {
+    const service = await buildProfessionalService(
+      productionOrigin,
+      "es",
+      "/servicios",
+      [
+        { name: "Contratación", description: "Me incorporo a tu equipo." },
+        { name: "Freelance", description: "Una funcionalidad puntual." },
+        { name: "Desarrollo a medida", description: "Una web o app completa." },
+      ],
+      { catalogName: "Servicios" },
+    );
+    expect(service).toMatchObject({
+      "@type": "ProfessionalService",
+      url: `${productionOrigin}/es/servicios`,
+      provider: { "@id": `${productionOrigin}/#person` },
+      hasOfferCatalog: { "@type": "OfferCatalog", name: "Servicios" },
+    });
+    expect(service.hasOfferCatalog.itemListElement.map((offer) => offer.name)).toEqual([
+      "Contratación",
+      "Freelance",
+      "Desarrollo a medida",
+    ]);
+    const serialized = serializeJsonLd(buildGraph(service));
+    expect(serialized).not.toMatch(/price|Price|priceCurrency|EUR|€/);
+    expect(jsonLdGraphSchema.safeParse(buildGraph(service)).success).toBe(true);
+  });
+
+  it("rejects a price on an offer", () => {
+    const graph = {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "ProfessionalService",
+          "@id": `${productionOrigin}/es/servicios#service`,
+          name: "josecoded",
+          description: "Servicios",
+          url: `${productionOrigin}/es/servicios`,
+          inLanguage: "es",
+          provider: { "@id": `${productionOrigin}/#person` },
+          areaServed: [],
+          hasOfferCatalog: {
+            "@type": "OfferCatalog",
+            name: "Servicios",
+            itemListElement: [
+              {
+                "@type": "Offer",
+                name: "Freelance",
+                description: "Por horas",
+                price: "50",
+                itemOffered: { "@type": "Service", name: "Freelance" },
+              },
+            ],
+          },
+        },
+      ],
+    };
+    expect(jsonLdGraphSchema.safeParse(graph).success).toBe(false);
+  });
+
+  it("builds a ContactPage that points to the site and the person", () => {
+    const page = buildContactPage(productionOrigin, "es", "/contacto", {
+      name: "Contacto",
+      description: "Formas de hablar",
+    });
+    expect(page).toMatchObject({
+      "@type": "ContactPage",
+      url: `${productionOrigin}/es/contacto`,
+      isPartOf: { "@id": `${productionOrigin}/#website` },
+      about: { "@id": `${productionOrigin}/#person` },
+    });
+    expect(jsonLdGraphSchema.safeParse(buildGraph(page)).success).toBe(true);
   });
 
   it("builds a ProfilePage whose main entity is the site person", () => {

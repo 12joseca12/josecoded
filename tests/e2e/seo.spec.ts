@@ -146,3 +146,71 @@ test("JSON-LD parses and carries the Person and the WebSite", async ({ page }) =
   expect(person?.["@id"]).toMatch(/\/#person$/);
   expect(website).toMatchObject({ inLanguage: "es", publisher: { "@id": person?.["@id"] } });
 });
+
+const breadcrumbRoutes = [
+  ...publicRoutes.filter((route) => route !== "/es"),
+  "/es/contacto",
+  "/es/legal/aviso-legal",
+  "/es/legal/privacidad",
+  "/es/legal/cookies",
+];
+
+interface ListItem {
+  "@type": string;
+  position: number;
+  name: string;
+  item: string;
+}
+
+async function readNodes(page: Page): Promise<{ "@type": string; [key: string]: unknown }[]> {
+  const raws = await page.locator('script[type="application/ld+json"]').allTextContents();
+  return raws.flatMap((raw) => (JSON.parse(raw) as Graph)["@graph"]);
+}
+
+for (const route of breadcrumbRoutes) {
+  test(`${route} has exactly one valid BreadcrumbList and nonced scripts without prices`, async ({
+    page,
+  }) => {
+    await page.goto(route);
+    const nodes = await readNodes(page);
+    const lists = nodes.filter((node) => node["@type"] === "BreadcrumbList");
+    expect(lists).toHaveLength(1);
+    const items = lists[0]?.itemListElement as ListItem[];
+    expect(items.length).toBeGreaterThanOrEqual(2);
+    items.forEach((entry, index) => {
+      expect(entry["@type"]).toBe("ListItem");
+      expect(entry.position).toBe(index + 1);
+      expect(entry.name.length).toBeGreaterThan(0);
+    });
+    const origin = new URL(items[0]?.item ?? "").origin;
+    expect(items[0]?.item).toBe(`${origin}/es`);
+    expect(items.at(-1)?.item).toBe(`${origin}${route}`);
+
+    const scripts = page.locator('script[type="application/ld+json"]');
+    const nonces = await scripts.evaluateAll((tags) => tags.map((tag) => tag.nonce));
+    expect(nonces.length).toBeGreaterThan(0);
+    expect(nonces.every((nonce) => nonce.length > 0)).toBe(true);
+
+    const raw = (await scripts.allTextContents()).join("");
+    expect(raw).not.toMatch(/"(price|lowPrice|highPrice|minPrice|priceCurrency|priceRange)"/);
+    expect(raw).not.toContain("€");
+  });
+}
+
+test("the services hub publishes a ProfessionalService with three priceless offers", async ({
+  page,
+}) => {
+  await page.goto("/es/servicios");
+  const nodes = await readNodes(page);
+  const service = nodes.find((node) => node["@type"] === "ProfessionalService");
+  const catalog = service?.hasOfferCatalog as { itemListElement: { "@type": string }[] };
+  expect(catalog.itemListElement).toHaveLength(3);
+  expect(catalog.itemListElement.every((offer) => offer["@type"] === "Offer")).toBe(true);
+  expect(service?.provider).toMatchObject({ "@id": expect.stringMatching(/\/#person$/) });
+});
+
+test("the contact page publishes a ContactPage", async ({ page }) => {
+  await page.goto("/es/contacto");
+  const nodes = await readNodes(page);
+  expect(nodes.filter((node) => node["@type"] === "ContactPage")).toHaveLength(1);
+});
