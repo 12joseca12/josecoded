@@ -1,9 +1,9 @@
 import "server-only";
 
-import { features } from "@/config/features";
 import { site } from "@/config/site";
 import { requiresAal2 } from "@/lib/auth/roles";
 import { passesRateLimit } from "@/lib/contact/rate-limit";
+import { getFeatures } from "@/lib/settings/features";
 import { createSupabaseServerClient, type ServerSupabase } from "@/lib/supabase/server";
 import {
   type EnrollmentResult,
@@ -214,7 +214,7 @@ export async function handleStartGoogle(
   raw: unknown,
   env: Record<string, string | undefined>,
 ): Promise<GoogleStartResult> {
-  if (!features.googleSignIn) return { status: "unavailable" };
+  if (!(await getFeatures()).googleSignIn) return { status: "unavailable" };
   const parsed = googleStartSchema.safeParse(raw);
   const context = await createContext(env);
   if (!parsed.success || !context) return { status: "unavailable" };
