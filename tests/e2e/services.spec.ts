@@ -153,6 +153,12 @@ test("hub frames the ways as needs and keeps the five phases only here", async (
   }
 });
 
+test("hub tiles stay compact and show no price while it is under review", async ({ page }) => {
+  await page.goto("/es/servicios");
+  await expect(page.locator("#vias [data-variant='review']")).toHaveCount(0);
+  await expect(page.locator("#vias")).not.toContainText(/\b0{2,3}\b/);
+});
+
 test("hub tiles link to their destinations with unified params", async ({ page }) => {
   await page.goto("/es/servicios");
   const hiring = page.locator("#contratacion");
@@ -294,11 +300,13 @@ test("freelance page: h1 query, rates stay provisional, three steps and CTA", as
   await expect(page.getByRole("heading", { level: 2 }).nth(1)).toContainText(
     "Desarrollador React Native freelance",
   );
-  const rates = page.locator("figure[data-status='provisional']");
+  const rates = page.locator("figure[data-status='review']");
   await expect(rates).toBeVisible();
-  await expect(rates).toContainText("00");
-  await expect(rates).toContainText("000");
-  await expect(rates.locator("[data-provisional]")).toHaveCount(2);
+  await expect(rates.locator("[data-variant='review']")).toHaveCount(2);
+  await expect(rates.locator("[data-variant='review']").first()).toHaveText("Precio en revisión");
+  await expect(rates).not.toContainText("24–48 h");
+  await expect(rates).not.toContainText(/\b0{2,3}\b/);
+  await expect(rates).not.toContainText("€");
   const steps = page.locator("#como-empezamos ol > li");
   await expect(steps).toHaveCount(3);
   await expect(page.locator("#contacto").getByRole("link").first()).toHaveAttribute(

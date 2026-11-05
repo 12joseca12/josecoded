@@ -413,7 +413,7 @@
       "selection": {
         "title": "Your selection",
         "from": "from",
-        "provisional": "provisional",
+        "review": "price under review",
         "perMonth": "€/month",
         "change": "Change"
       }
@@ -572,9 +572,11 @@
       "unitHour": "€ / hour",
       "unitTask": "€ / task",
       "note": "Indicative: the final amount is agreed before starting.",
-      "from": "from",
-      "provisional": "Provisional",
-      "provisionalNote": "Provisional figures: the real rates will come after a services evaluation round."
+      "from": "from"
+    },
+    "price": {
+      "review": "Price under review",
+      "reviewNote": "I send you the price in writing once you tell me about your case."
     }
   },
   "seo": {
@@ -1221,7 +1223,6 @@
         "platformApp": "Mobile app",
         "from": "from",
         "unit": "€",
-        "provisional": "provisional",
         "monthly": "+ {amount} €/month of maintenance",
         "weeks": "Estimated delivery: {min}–{max} weeks",
         "whyTitle": "Why I recommend it",
@@ -1472,7 +1473,7 @@
       "diagram": {
         "label": "Architecture of this site",
         "caption": "Simplified architecture: who uses the site, where it runs and where the data lives.",
-        "description": "Diagram that reads left to right, or top to bottom on mobile. The browser and the mobile app connect to the Next 16 application, which runs on Cloudflare Workers; continuous integration on GitHub Actions checks it before it is published. The application reads and writes data in Supabase, where Postgres enforces row-level security and authentication, storage and realtime are provided.",
+        "description": "Diagram that reads left to right, or top to bottom on mobile. The browser connects to the Next 16 application, which runs on Cloudflare Workers; continuous integration on GitHub Actions checks it before it is published. The application reads and writes data in Supabase, where Postgres enforces row-level security and authentication, storage and realtime are provided.",
         "layers": {
           "clients": "Who uses it",
           "app": "Application and delivery",
@@ -1483,17 +1484,13 @@
             "name": "Browser",
             "detail": "The public site and the private areas, each with its own role."
           },
-          "mobile": {
-            "name": "Mobile app",
-            "detail": "React Native, against the same data backend."
-          },
           "workers": {
             "name": "Next 16 on Cloudflare Workers",
             "detail": "Edge rendering with OpenNext, nonce-based CSP and rate limiting."
           },
           "ci": {
             "name": "CI on GitHub Actions",
-            "detail": "Lint, types, tests, build and e2e with axe before every merge."
+            "detail": "Lint, types, tests, build, e2e with axe and pgTAP against every migration on each pull request."
           },
           "postgres": {
             "name": "Supabase Postgres",
@@ -1514,10 +1511,6 @@
           "title": "Supabase with RLS",
           "text": "Postgres with row-level permissions on every table: the browser never has more access than it should."
         },
-        "mobile": {
-          "title": "React Native for mobile",
-          "text": "One TypeScript codebase for iOS and Android, with the same way of working as on the web."
-        },
         "typescript": {
           "title": "Strict TypeScript",
           "text": "Types inferred from zod schemas at every boundary: whatever comes in is validated before it is used."
@@ -1528,7 +1521,7 @@
         },
         "ci": {
           "title": "Continuous integration",
-          "text": "Every change passes lint, types, tests and build before reaching main, with a preview to review it."
+          "text": "Every change to this site has gone in through a pull request, and each one runs lint, types, tests, build and the database tests, with a preview to review it."
         }
       }
     },
@@ -1538,7 +1531,7 @@
       "items": {
         "accessibility": {
           "title": "WCAG 2.2 AA accessibility",
-          "text": "Keyboard, visible focus and contrast in every component. axe blocks the merge if it finds a violation."
+          "text": "Keyboard, visible focus and contrast in every component. If axe finds a violation, continuous integration fails."
         },
         "performance": {
           "title": "Performance budget",

@@ -187,13 +187,15 @@ export default async function OffersPage({ params, searchParams }: OffersProps) 
             includes: t(key("compare.includes")),
             excludes: t(key("compare.excludes")),
             delivery: t(key("compare.delivery")),
-            provisional: t("services.rates.provisional"),
+            review: t("services.price.review"),
             warrantyChip: t(key("compare.warrantyChip")),
           }}
           groups={groups}
         />
         <p className={styles.note}>
-          {hasProvisionalOffers(offers) ? `${t("services.rates.provisionalNote")} ` : ""}
+          {hasProvisionalOffers(offers)
+            ? `${t("services.price.review")}. ${t("services.price.reviewNote")} `
+            : ""}
           {t(key("compare.scopeNote"))}
         </p>
         <p>
@@ -225,9 +227,10 @@ export default async function OffersPage({ params, searchParams }: OffersProps) 
           }}
           price={{
             from: t(key("warranty.from")),
-            amount: isProvisional(maintenance) ? "000" : maintenance.from,
+            amount: maintenance.from,
             unit: t(key("warranty.perMonth")),
-            provisional: t("services.rates.provisional"),
+            review: t("services.price.review"),
+            provisional: isProvisional(maintenance),
           }}
           note={t(key("warranty.note"))}
         />

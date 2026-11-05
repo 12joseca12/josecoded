@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button/Button";
 import { Card } from "@/components/ui/Card/Card";
 import { Heading } from "@/components/ui/Heading/Heading";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
+import { PriceState } from "@/components/ui/PriceState/PriceState";
 import type { OfferTabGroup } from "@/types/services";
 
 import styles from "./OfferCompare.module.css";
@@ -21,7 +22,7 @@ interface OfferCompareLabels {
   includes: string;
   excludes: string;
   delivery: string;
-  provisional: string;
+  review: string;
   warrantyChip: string;
 }
 
@@ -101,19 +102,17 @@ export function OfferCompare({ labels, groups }: OfferCompareProps) {
                   </Heading>
                   <p className={styles.text}>{item.audience}</p>
                   <p className={styles.price}>
-                    <span className={styles.term}>
-                      {labels.price}
-                      {item.provisional ? (
-                        <span className={styles.tag} data-provisional="">
-                          {labels.provisional}
-                        </span>
-                      ) : null}
-                    </span>
-                    <span className={styles.value}>
-                      <span className={styles.unit}>{labels.from}</span>
-                      <strong>{item.price}</strong>
-                      <span className={styles.unit}>{labels.unit}</span>
-                    </span>
+                    <span className={styles.term}>{labels.price}</span>
+                    {item.provisional ? (
+                      <PriceState variant="review" label={labels.review} />
+                    ) : (
+                      <PriceState
+                        variant="final"
+                        prefix={labels.from}
+                        amount={item.price}
+                        unit={labels.unit}
+                      />
+                    )}
                   </p>
                   {item.drivers ? <PriceDrivers text={item.drivers} /> : null}
                   <WarrantyChip label={labels.warrantyChip} />
