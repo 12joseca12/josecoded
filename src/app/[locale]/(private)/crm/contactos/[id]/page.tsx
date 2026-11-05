@@ -6,7 +6,9 @@ import { Suspense } from "react";
 import { ActivityComposer } from "@/components/crm/ActivityComposer/ActivityComposer";
 import { ActivityTimeline } from "@/components/crm/ActivityTimeline/ActivityTimeline";
 import { ContactHead } from "@/components/crm/ContactHead/ContactHead";
+import { DealActions } from "@/components/crm/DealActions/DealActions";
 import { DealCard } from "@/components/crm/DealCard/DealCard";
+import { DealMoney, DealMoneyEmpty } from "@/components/crm/DealMoney/DealMoney";
 import { ReassignSheet } from "@/components/crm/ReassignSheet/ReassignSheet";
 import { RefreshError } from "@/components/crm/RefreshError/RefreshError";
 import { EmptyState } from "@/components/ui/EmptyState/EmptyState";
@@ -17,7 +19,9 @@ import { isLocale, type Locale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
 import { requireZone } from "@/lib/auth/session";
 import { fetchContactDetail } from "@/lib/crm/contact-detail";
-import { isOpenStage } from "@/lib/crm/contacts";
+import { viaLabels } from "@/lib/crm/contact-labels";
+import { formatDay, isOpenStage } from "@/lib/crm/contacts";
+import { fetchDealMoney } from "@/lib/crm/deal-money";
 import {
   activityComposerLabels,
   activityTimelineLabels,
@@ -25,12 +29,19 @@ import {
   dealCardLabels,
   reassignLabels,
 } from "@/lib/crm/detail-labels";
+import { cancelRecurringLabels, dealMoneyLabels, winSheetLabels } from "@/lib/crm/money-labels";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { UserRole } from "@/types/auth";
+import type { DealDetail } from "@/types/crm-detail";
 
 import styles from "../../crm.module.css";
 import { changeStageAction } from "../actions";
-import { addActivityAction, reassignContactAction } from "./actions";
+import {
+  addActivityAction,
+  cancelRecurringAction,
+  reassignContactAction,
+  winDealAction,
+} from "./actions";
 import detail from "./detail.module.css";
 
 interface ContactProps {
@@ -50,6 +61,51 @@ interface SectionProps {
   role: UserRole;
 }
 
+interface MoneySectionProps {
+  locale: Locale;
+  role: UserRole;
+  deals: DealDetail[];
+  names: Record<string, string>;
+}
+
+async function MoneySection({ locale, role, deals, names }: MoneySectionProps) {
+  const t = await getTranslator(locale);
+  const labels = dealMoneyLabels(t);
+  if (deals.length === 0) return <DealMoneyEmpty labels={labels} />;
+  const client = await createSupabaseServerClient();
+  if (client === null) notFound();
+  const result = await fetchDealMoney(
+    client,
+    deals.map((deal) => deal.id),
+    role === "admin",
+  );
+  if (result.status === "error") {
+    return (
+      <RefreshError
+        title={labels.error.title}
+        text={labels.error.text}
+        retryLabel={labels.error.retry}
+        loadingLabel={labels.error.retrying}
+      />
+    );
+  }
+  const vias = viaLabels(t);
+  return (
+    <DealMoney
+      deals={deals.map((deal) => ({
+        id: deal.id,
+        label: `${vias[deal.via]} · ${deal.won_at === null ? "" : formatDay(deal.won_at, locale)}`,
+      }))}
+      data={result.data}
+      names={names}
+      locale={locale}
+      isAdmin={role === "admin"}
+      today={new Date().toISOString().slice(0, 10)}
+      labels={labels}
+    />
+  );
+}
+
 async function ContactSection({ locale, id, role }: SectionProps) {
   const t = await getTranslator(locale);
   const client = await createSupabaseServerClient();
@@ -67,7 +123,7 @@ async function ContactSection({ locale, id, role }: SectionProps) {
     );
   }
 
-  const { contact, activities, people } = result;
+  const { contact, activities, people, rates } = result;
   const names = Object.fromEntries(people.map((person) => [person.id, person.name]));
   const labels = dealCardLabels(t);
   const changeStage = changeStageAction.bind(null, locale);
@@ -79,6 +135,10 @@ async function ContactSection({ locale, id, role }: SectionProps) {
     }));
   const deals = [...contact.deals].sort((a, b) => b.created_at.localeCompare(a.created_at));
   const nowIso = new Date().toISOString();
+  const winLabels = winSheetLabels(t);
+  const cancelLabels = cancelRecurringLabels(t);
+  const win = winDealAction.bind(null, locale);
+  const cancel = cancelRecurringAction.bind(null, locale);
 
   return (
     <>
@@ -120,10 +180,62 @@ async function ContactSection({ locale, id, role }: SectionProps) {
                 locale={locale}
                 labels={labels}
                 changeStage={changeStage}
+                actions={
+                  <DealActions
+                    win={
+                      isOpenStage(deal.stage)
+                        ? {
+                            dealId: deal.id,
+                            contactName: contact.full_name,
+                            context: { via: deal.via, ownerId: contact.owner_id, people: rates },
+                            locale,
+                            labels: winLabels,
+                            win,
+                          }
+                        : null
+                    }
+                    cancel={
+                      role === "admin" &&
+                      deal.stage === "won" &&
+                      deal.recurring_monthly !== null &&
+                      deal.recurring_cancelled_at === null
+                        ? {
+                            dealId: deal.id,
+                            contactName: contact.full_name,
+                            labels: cancelLabels,
+                            cancel,
+                          }
+                        : null
+                    }
+                  />
+                }
               />
             ))}
           </div>
         )}
+      </section>
+      <section className={detail.section} aria-labelledby="money-title">
+        <Heading level={2} size="h3" id="money-title">
+          {t("crm.contact.money.title")}
+        </Heading>
+        <Suspense
+          fallback={
+            <LoadingRegion
+              loading
+              label={t("crm.contact.money.loading")}
+              fallback={<Skeleton height="10rem" />}
+            >
+              {null}
+            </LoadingRegion>
+          }
+        >
+          <MoneySection
+            locale={locale}
+            role={role}
+            deals={deals.filter((deal) => deal.stage === "won")}
+            names={names}
+          />
+        </Suspense>
       </section>
       <section className={detail.section} aria-labelledby="activity-title">
         <Heading level={2} size="h3" id="activity-title">
