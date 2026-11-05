@@ -1,10 +1,9 @@
 ---
 title: Política de cookies
 updated: "2026-11-05"
-draft: true
 summary:
   - "Solo uso cookies estrictamente necesarias, así que no hay banner que aceptar."
-  - "Sirven para mantener tu sesión si entras, recordar tu conversación del chat y verificar que no eres un robot."
+  - "Sirven para mantener tu sesión si entras y para recordar tu conversación con el asistente del chat si le escribes."
   - "No uso cookies de analítica, publicidad ni seguimiento."
   - "Si algún día las añado, te pediré consentimiento antes de activarlas."
   - "Puedes borrarlas desde tu navegador cuando quieras; el sitio seguirá funcionando."
@@ -18,17 +17,19 @@ Este sitio usa únicamente cookies técnicas, estrictamente necesarias para pres
 
 ## Qué cookies se usan
 
-| Cookie                  | Quién la crea                     | Para qué sirve                                                         | Cuánto dura                                                              | Cuándo aparece                                |
-| ----------------------- | --------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------ | --------------------------------------------- |
-| Sesión de acceso        | josecoded.com (con Supabase Auth) | Mantiene tu sesión abierta y protege el acceso a las zonas privadas    | Mientras dure tu sesión \{\{DATO: duración de la sesión\}\}              | Solo si inicias sesión en la página de acceso |
-| `jc_visitor`            | josecoded.com                     | Reconoce tu conversación del chat sin guardar tu nombre ni tu correo   | 7 días, renovados al enviar un mensaje                                   | Solo cuando envías tu primer mensaje al chat  |
-| Verificación antirrobot | Cloudflare Turnstile              | Comprueba que quien envía el formulario o inicia sesión no es un robot | Temporal \{\{DATO: confirmar nombre y duración exactos en producción\}\} | Al cargar un formulario protegido             |
+| Cookie                                                     | Quién la crea                    | Para qué sirve                                                                        | Cuánto dura                                                          | Cuándo aparece                                    |
+| ---------------------------------------------------------- | -------------------------------- | ------------------------------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------- |
+| `sb-<proyecto>-auth-token` (puede dividirse en `.0`, `.1`) | josecoded.com, con Supabase Auth | Mantiene tu sesión abierta y protege el acceso a las zonas privadas                   | Hasta que cierres sesión y, como máximo, 400 días                    | Solo si inicias sesión en la página de acceso     |
+| `sb-<proyecto>-auth-token-code-verifier`                   | josecoded.com, con Supabase Auth | Completa de forma segura el acceso con Google                                         | Se borra al terminar el acceso; si no, caduca con el límite anterior | Solo si eliges entrar con Google                  |
+| `jc_visitor`                                               | josecoded.com                    | Reconoce tu conversación con el asistente del chat sin guardar tu nombre ni tu correo | 7 días, renovados al enviar un mensaje                               | Solo cuando envías tu primer mensaje al asistente |
 
-Las cookies de sesión y `jc_visitor` se marcan como `HttpOnly` y `Secure`, de modo que los scripts de la página no pueden leerlas.
+Cloudflare Turnstile, la verificación antirrobot de los formularios y del acceso, no deja cookies en tu navegador para este uso: la comprobación se hace mientras la página está abierta.
+
+Las tres cookies se marcan como `HttpOnly`, `Secure` (salvo en un entorno local) y `SameSite=Lax`, de modo que los scripts de la página no pueden leerlas y no se envían desde otros sitios. No guardo cookies de preferencias: el sitio no recuerda ajustes entre visitas.
 
 ## Cómo gestionar o borrar las cookies
 
-Puedes bloquear o borrar las cookies desde los ajustes de tu navegador. Si bloqueas las necesarias, el formulario y el acceso a las zonas privadas pueden dejar de funcionar, y el chat no recordará tu conversación entre visitas.
+Puedes bloquear o borrar las cookies desde los ajustes de tu navegador. Si bloqueas las necesarias, el acceso a las zonas privadas dejará de funcionar y el asistente no recordará tu conversación entre visitas. El formulario de contacto sigue funcionando.
 
 - Chrome: Configuración, Privacidad y seguridad, Cookies.
 - Firefox: Ajustes, Privacidad y seguridad, Cookies y datos del sitio.

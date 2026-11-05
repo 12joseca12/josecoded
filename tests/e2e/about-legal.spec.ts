@@ -11,7 +11,7 @@ const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
     actions: { cvEn: string };
   };
   services: { bento: { proof: { stack: string }; hiring: { trajectory: string } } };
-  legal: { draft: { title: string }; toc: { label: string } };
+  legal: { draft: { title: string }; summary: { title: string }; toc: { label: string } };
   footer: { legalLabel: string };
   contactPage: { form: { consentLink: string } };
 };
@@ -184,18 +184,25 @@ test("the services bento links land on Sobre mí and its stack anchor", async ({
 });
 
 for (const entry of legalPages) {
-  test(`/es/legal/${entry.slug} renders as a noindex draft with a working contents list`, async ({
+  test(`/es/legal/${entry.slug} is final: no draft notice, no placeholders, dated, with a working contents list`, async ({
     page,
   }) => {
     const response = await page.goto(`/es/legal/${entry.slug}`);
     expect(response?.status()).toBe(200);
     await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
-    await expect(page.getByRole("note")).toContainText(es.legal.draft.title);
-    await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+    await expect(page.getByRole("note")).toHaveCount(0);
+    const text = await page.locator("main").innerText();
+    expect(text).not.toContain("{{");
+    expect(text).not.toContain("DATO");
+    expect(text).not.toContain(es.legal.draft.title);
+    await expect(page.locator("main")).toContainText("Actualizado el 5 de noviembre de 2026");
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
       "href",
       `https://josecoded.com/es/legal/${entry.slug}`,
     );
+    await expect(
+      page.getByRole("region", { name: es.legal.summary.title }).locator("li"),
+    ).toHaveCount(5);
     const toc = page.getByRole("navigation", { name: es.legal.toc.label });
     const hrefs = await toc
       .getByRole("link")
@@ -206,6 +213,19 @@ for (const entry of legalPages) {
     }
   });
 }
+
+test("the legal notice and the privacy policy name the holder with the decided data", async ({
+  page,
+}) => {
+  for (const slug of ["aviso-legal", "privacidad"]) {
+    await page.goto(`/es/legal/${slug}`);
+    const main = page.locator("main");
+    await expect(main).toContainText("José Carlos Sánchez García");
+    await expect(main).toContainText("06011766A");
+    await expect(main).toContainText("Madrid (España)");
+    await expect(main).toContainText("hola@josecoded.com");
+  }
+});
 
 test("the privacy policy states the retention periods and the controller", async ({ page }) => {
   await page.goto("/es/legal/privacidad");
@@ -222,6 +242,9 @@ test("the cookies policy says only necessary cookies are used", async ({ page })
   await page.goto("/es/legal/cookies");
   await expect(page.locator("main")).toContainText("únicamente cookies técnicas");
   await expect(page.locator("main")).toContainText("Turnstile");
+  await expect(page.locator("main")).toContainText("jc_visitor");
+  await expect(page.locator("main")).toContainText("7 días");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
 });
 
 test("an unknown legal page is a 404", async ({ request }) => {

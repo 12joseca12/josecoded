@@ -142,7 +142,9 @@ test("sitemap.xml lists the public routes that have content", async ({ request }
     expect(body).toContain(`<loc>http://localhost:3000${route}</loc>`);
   }
   expect(body).not.toContain("/es/proyectos");
-  expect(body).not.toContain("/es/legal");
+  expect(body).toContain("<loc>http://localhost:3000/es/legal/aviso-legal</loc>");
+  expect(body).toContain("<loc>http://localhost:3000/es/legal/privacidad</loc>");
+  expect(body).not.toContain("/es/legal/cookies");
   expect(body).not.toContain("/dev");
 });
 
