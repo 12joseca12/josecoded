@@ -222,6 +222,7 @@ select is_empty(
         'cancel_recurring',
         'cancel_schedule_item',
         'claim_lead',
+        'crm_counters',
         'deal_payments',
         'delete_payout_draft',
         'discard_lead',

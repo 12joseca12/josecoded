@@ -88,7 +88,7 @@ interface Messages {
   crm: {
     navLabel: string;
     nav: { overview: string; contacts: string; soon: string; switch: string };
-    overview: { title: string; emptyTitle: string };
+    overview: { title: string; today: { title: string } };
   };
   errors: { notFound: { title: string } };
 }
@@ -462,7 +462,7 @@ test("a closer lands on the CRM shell and cannot enter the admin", async ({ page
   const { crm } = es;
   await expect(page.getByRole("heading", { level: 1, name: crm.overview.title })).toBeVisible();
   await expect(
-    page.getByRole("heading", { level: 2, name: crm.overview.emptyTitle }),
+    page.getByRole("heading", { level: 2, name: crm.overview.today.title }),
   ).toBeVisible();
   const rail = page.getByRole("navigation", { name: crm.navLabel });
   await expect(rail.getByRole("link", { name: crm.nav.overview })).toHaveAttribute(
