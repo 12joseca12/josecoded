@@ -1,0 +1,9 @@
+.pilot {
+  display: grid;
+  gap: var(--space-3);
+  border-left: var(--space-1) solid var(--coral);
+}
+
+.text {
+  color: var(--ink-soft);
+}

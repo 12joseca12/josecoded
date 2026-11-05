@@ -289,10 +289,10 @@ test("FAQ opens with a height transition and reduced motion is instant", async (
 test("freelance page: h1 query, rates stay provisional, three steps and CTA", async ({ page }) => {
   await page.goto("/es/servicios/freelance");
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    "Programador freelance por horas",
+    "Desarrollador React Native freelance, por horas o por tarea.",
   );
   await expect(page.getByRole("heading", { level: 2 }).nth(1)).toContainText(
-    "Desarrollador React Native freelance",
+    "Encargos típicos y su tamaño",
   );
   const rates = page.locator("figure[data-status='provisional']");
   await expect(rates).toBeVisible();

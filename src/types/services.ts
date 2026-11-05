@@ -85,3 +85,24 @@ export interface MaintenancePlan {
   hours: string;
   text: string;
 }
+
+export interface TaskExampleItem {
+  id: string;
+  title: string;
+  text: string;
+  size: string;
+  deliverable: string;
+}
+
+export interface TermItem {
+  id: string;
+  title: string;
+  text: string;
+  pending?: boolean;
+}
+
+export interface Availability {
+  weeklyHours?: string;
+  from?: string;
+  updatedAt: string;
+}
