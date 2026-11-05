@@ -76,8 +76,10 @@ export interface ExtraChipItem {
   slug: string;
   name: string;
   text: string;
+  forWho: string;
   tags: string[];
   included: string;
+  applies: string[];
 }
 
 export interface CostLine {

@@ -15,6 +15,7 @@ import { PageSection } from "@/components/site/PageSection/PageSection";
 import { Button } from "@/components/ui/Button/Button";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 import { Link } from "@/components/ui/Link/Link";
+import { site } from "@/config/site";
 import { isLocale } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
@@ -140,6 +141,8 @@ export default async function OffersPage({ params, searchParams }: OffersProps) 
       slug: extra.slug,
       name: t(copy.name),
       text: t(copy.text),
+      forWho: t(copy.forWho),
+      applies: [...extra.applies],
       tags,
       included:
         extra.includedIn.length > 0
@@ -244,6 +247,7 @@ export default async function OffersPage({ params, searchParams }: OffersProps) 
         <OfferRecommender
           locale={locale}
           basePath={basePath}
+          origin={site.origin}
           initial={{
             q: typeof query.q === "string" ? query.q : undefined,
             paso: typeof query.paso === "string" ? query.paso : undefined,
@@ -269,7 +273,9 @@ export default async function OffersPage({ params, searchParams }: OffersProps) 
           legend={t(key("extras.legend"))}
           cta={t(key("extras.cta"))}
           hint={t(key("extras.hint"))}
+          showAll={t(key("extras.showAll"))}
           items={chips}
+          initialQuery={typeof query.q === "string" ? query.q : undefined}
         />
       </PageSection>
       <PageSection

@@ -176,10 +176,15 @@ export function offerCopyKeys(slug: OfferSlug): OfferCopyKeys {
   };
 }
 
-export function extraCopyKeys(slug: ExtraSlug): { name: MessageKey; text: MessageKey } {
+export function extraCopyKeys(slug: ExtraSlug): {
+  name: MessageKey;
+  text: MessageKey;
+  forWho: MessageKey;
+} {
   return {
     name: key(`extras.items.${slug}.name`),
     text: key(`extras.items.${slug}.text`),
+    forWho: key(`extras.items.${slug}.forWho`),
   };
 }
 

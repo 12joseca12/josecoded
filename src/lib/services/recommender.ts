@@ -115,6 +115,7 @@ export interface ProjectRecommendation {
   offers: OfferSlug[];
   extras: ExtraSlug[];
   available: ExtraSlug[];
+  suggested: ExtraSlug[];
   included: ExtraSlug[];
   assumed: { kind: boolean; size: boolean };
   reasons: Reason[];
@@ -220,8 +221,9 @@ export function recommend(answers: Answers): Recommendation {
 
   if (answers.management === "rare") reasons.push({ id: "management_rare" });
 
+  const suggested: ExtraSlug[] = [];
   if (kind === "both") {
-    picked.push("maintenance");
+    suggested.push("maintenance");
     reasons.push({ id: "maintenance_both", extra: "maintenance" });
   }
 
@@ -236,6 +238,7 @@ export function recommend(answers: Answers): Recommendation {
     offers: chosen,
     extras: sorted,
     available,
+    suggested,
     included,
     assumed: { kind: assumedKind, size: assumedSize },
     reasons,

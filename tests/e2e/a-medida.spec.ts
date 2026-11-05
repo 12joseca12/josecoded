@@ -20,9 +20,12 @@ const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
         freelanceTitle: string;
         assumedTitle: string;
         update: string;
+        suggested: string;
+        shareCopy: string;
+        shareCopied: string;
       };
     };
-    extras: { legend: string; cta: string };
+    extras: { legend: string; cta: string; showAll: string };
     warranty: { includedTitle: string };
   };
 };
@@ -152,6 +155,51 @@ test.describe("extras", () => {
     await expect(page.locator("#extras [data-extra='payments']")).toContainText(
       "No va incluido en ningún nivel",
     );
+  });
+
+  test("shows every extra when no level is active and never ticks one", async ({ page }) => {
+    await page.goto(page_);
+    const extras = page.locator("#extras");
+    await expect(extras.locator("details")).toHaveCount(0);
+    await expect(extras.locator("input[type='checkbox']:checked")).toHaveCount(0);
+    await expect(extras.locator("[data-extra='admin']")).toContainText("Para quien");
+  });
+
+  test("puts the extras of the active level first and folds the rest", async ({ page }) => {
+    await page.goto(`${page_}?q=idea.app.small.none.rare.-`);
+    const extras = page.locator("#extras");
+    const folded = extras.locator("details");
+    await expect(folded).not.toHaveAttribute("open", "");
+    await expect(folded.locator("[data-extra='seo']")).toBeHidden();
+    await expect(extras.locator("[data-extra='push']")).toBeVisible();
+    await folded.getByText(offers.extras.showAll).click();
+    await expect(folded.locator("[data-extra='seo']")).toBeVisible();
+    await expect(extras.locator("input[type='checkbox']:checked")).toHaveCount(0);
+  });
+
+  test("re-folds the extras as the recommender changes the URL, with a visible marker", async ({
+    page,
+  }) => {
+    await page.goto(page_);
+    const extras = page.locator("#extras");
+    await expect(extras.locator("details")).toHaveCount(0);
+    await runFlow(page, [
+      ["start", ["idea"]],
+      ["kind", ["app"]],
+      ["size", ["small"]],
+      ["accounts", ["none"]],
+      ["management", ["me"]],
+      ["more", []],
+    ]);
+    await expect(result(page)).toBeVisible();
+    const folded = extras.locator("details");
+    await expect(folded).toHaveCount(1);
+    await expect(folded).not.toHaveAttribute("open", "");
+    await expect(folded.locator("summary svg")).toBeVisible();
+    await expect(extras.locator("[data-extra='push']")).toBeVisible();
+    await page.goBack();
+    await page.goBack();
+    await expect(extras.locator("details")).toHaveCount(0);
   });
 
   for (const scripting of [true, false]) {
@@ -333,14 +381,143 @@ test.describe("recommender", () => {
     );
   });
 
-  test("web and app together recommend two tiers and preselect maintenance", async ({ page }) => {
+  test("web and app together recommend two tiers and suggest maintenance without ticking it", async ({
+    page,
+  }) => {
     await page.goto(`${page_}?q=idea.both.small.none.rare.-`);
+    const section = page.locator("#recomendador");
     await expect(card(page, "web-presencia").last()).toBeVisible();
     await expect(card(page, "app-primera-version").last()).toBeVisible();
+    const maintenance = section.getByLabel("Mantenimiento");
+    await expect(maintenance).not.toBeChecked();
+    await expect(maintenance).toHaveAccessibleDescription(rec.result.suggested);
+    await expect(section.getByText(rec.result.suggested)).toBeVisible();
+    await expect(section.getByTestId("result-price")).not.toContainText("/mes");
+    await expect(page.getByTestId("result-cta")).toHaveAttribute(
+      "href",
+      "/es/contacto?via=project&offer=web-presencia,app-primera-version#formulario",
+    );
+    await maintenance.check();
     await expect(page.getByTestId("result-cta")).toHaveAttribute(
       "href",
       "/es/contacto?via=project&offer=web-presencia,app-primera-version&extras=maintenance#formulario",
     );
+  });
+
+  test("a web-only project does not suggest maintenance", async ({ page }) => {
+    await page.goto(`${page_}?q=idea.web.small.none.rare.-`);
+    const section = page.locator("#recomendador");
+    await expect(section.getByLabel("Mantenimiento")).not.toBeChecked();
+    await expect(section.getByText(rec.result.suggested)).toHaveCount(0);
+  });
+
+  test("the last question shows a one-line review of the earlier answers", async ({ page }) => {
+    await page.goto(`${page_}?q=idea.web.medium.basic.me`);
+    const preview = page.getByTestId("recommender-preview");
+    await expect(preview).toContainText(option("kind", "web"));
+    await expect(preview).toContainText(option("management", "me"));
+    await page.goto(`${page_}?q=idea.web`);
+    await expect(page.getByTestId("recommender-preview")).toHaveCount(0);
+  });
+
+  test("the result lists what it assumed", async ({ page }) => {
+    await page.goto(`${page_}?q=idea.unsure.unsure.none.rare.-`);
+    const note = result(page).getByRole("note");
+    await expect(note).toContainText(rec.result.assumedTitle);
+    await expect(note.getByRole("listitem")).toHaveCount(2);
+    await expect(note).toContainText("alcance medio");
+    await page.goto(`${page_}?q=idea.web.medium.none.rare.-`);
+    await expect(result(page).getByRole("note")).toHaveCount(0);
+  });
+
+  test("copies the link to the proposal and says so in a live region", async ({ browser }) => {
+    const context = await browser.newContext({
+      permissions: ["clipboard-read", "clipboard-write"],
+    });
+    const page = await context.newPage();
+    await page.goto(`${page_}?q=idea.web.medium.basic.me.payments`);
+    const share = page.getByTestId("share-link");
+    await share.getByRole("button", { name: rec.result.shareCopy }).click();
+    await expect(share.getByRole("status")).toHaveText(rec.result.shareCopied);
+    const copied = await page.evaluate(() => navigator.clipboard.readText());
+    expect(copied).toMatch(
+      /^https?:\/\/[^/]+\/es\/servicios\/a-medida\?q=idea\.web\.medium\.basic\.me\.payments#recomendador$/,
+    );
+    await context.close();
+  });
+
+  test("announces a second copy again", async ({ browser }) => {
+    const context = await browser.newContext({
+      permissions: ["clipboard-read", "clipboard-write"],
+    });
+    const page = await context.newPage();
+    await page.goto(`${page_}?q=idea.web.medium.basic.me.payments`);
+    const share = page.getByTestId("share-link");
+    const status = share.getByRole("status");
+    await page.evaluate(() => {
+      const node = document.querySelector("[data-testid='share-link'] [role='status']");
+      const log: string[] = [];
+      Object.assign(window, { statusLog: log });
+      if (node)
+        new MutationObserver(() => log.push(node.textContent)).observe(node, {
+          childList: true,
+          characterData: true,
+          subtree: true,
+        });
+    });
+    const button = share.getByRole("button", { name: rec.result.shareCopy });
+    await button.click();
+    await expect(status).toHaveText(rec.result.shareCopied);
+    await button.click();
+    await expect(status).toHaveText(rec.result.shareCopied);
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () =>
+            (window as unknown as { statusLog: string[] }).statusLog.filter((text) => text === "")
+              .length,
+        ),
+      )
+      .toBeGreaterThanOrEqual(1);
+    await context.close();
+  });
+
+  test("moves focus to the field and keeps the height when the copy is refused", async ({
+    browser,
+  }) => {
+    const context = await browser.newContext();
+    await context.addInitScript(() => {
+      Object.defineProperty(navigator, "clipboard", {
+        value: { writeText: () => Promise.reject(new Error("denied")) },
+        configurable: true,
+      });
+    });
+    const page = await context.newPage();
+    await page.goto(`${page_}?q=idea.web.medium.basic.me.payments`);
+    const share = page.getByTestId("share-link");
+    const button = share.getByRole("button", { name: rec.result.shareCopy });
+    await expect(button).toBeVisible();
+    const before = (await share.boundingBox())?.height ?? 0;
+    await button.click();
+    const field = share.getByRole("textbox");
+    await expect(field).toBeFocused();
+    await expect(field).toHaveValue(/^https?:\/\//);
+    const after = (await share.boundingBox())?.height ?? 0;
+    expect(after).toBeLessThanOrEqual(before + 1);
+    expect(after).toBeGreaterThanOrEqual(before - 1);
+    await context.close();
+  });
+
+  test("shows the link to copy by hand when JavaScript is off", async ({ browser }) => {
+    const context = await browser.newContext({ javaScriptEnabled: false });
+    const page = await context.newPage();
+    await page.goto(`${page_}?q=idea.web.medium.basic.me.payments`);
+    const share = page.getByTestId("share-link");
+    await expect(share.getByRole("button")).toHaveCount(0);
+    await expect(share.getByRole("textbox")).toHaveValue(
+      /^https?:\/\/[^/]+\/es\/servicios\/a-medida\?q=idea\.web\.medium\.basic\.me\.payments/,
+    );
+    await context.close();
   });
 
   test("an unsure answer is flagged as assumed and offers a talk", async ({ page }) => {
