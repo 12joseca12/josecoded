@@ -9,3 +9,9 @@
     grid-template-columns: minmax(0, 1fr) 22rem;
   }
 }
+
+.history {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}

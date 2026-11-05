@@ -158,3 +158,21 @@ test("an unavailable audit log says so", async ({ page }) => {
   await page.reload();
   await expect(page.getByRole("alert").filter({ hasText: audit("error.title") })).toBeVisible();
 });
+
+test("the lead record lists its own history", async ({ page }) => {
+  await signInAdmin(page, tag, `?next=${encodeURIComponent(`/es/admin/interesados/${leadId}`)}`);
+  await expect(page.getByRole("heading", { level: 2, name: audit("history.title") })).toBeVisible();
+  await expect(page.getByText(audit("history.empty"))).toBeVisible();
+  await seed(page, changes);
+  await page.reload();
+  const history = page.getByRole("list", { name: audit("list.region") });
+  await expect(history.locator(":scope > li")).toHaveCount(1);
+  await expect(history).toContainText("status: new → assigned");
+  await expectClean(page);
+  await setMode(page, { auditMode: "missing" });
+  await page.reload();
+  await expect(page.getByText(audit("history.unavailable"))).toBeVisible();
+  await setMode(page, { auditMode: "error" });
+  await page.reload();
+  await expect(page.getByText(audit("history.error"))).toBeVisible();
+});
