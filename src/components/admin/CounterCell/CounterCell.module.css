@@ -1,0 +1,77 @@
+.cell {
+  display: grid;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-l);
+  background: var(--panel);
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-press) var(--ease-out);
+}
+
+.cell[data-state="filled"] {
+  border-color: var(--line-strong);
+}
+
+.cell[data-state="unknown"] {
+  border-style: dashed;
+}
+
+.link {
+  display: grid;
+  align-content: space-between;
+  gap: var(--space-3);
+  min-height: 7.5rem;
+  padding: var(--space-4);
+  border-radius: inherit;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+a.link:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.label {
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+}
+
+.value {
+  font-size: var(--fs-h3);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--lh-tight);
+}
+
+.cell[data-state="unknown"] .value {
+  color: var(--ink-faint);
+}
+
+.amount {
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (hover: hover) {
+  .cell:has(a.link:hover) {
+    border-color: var(--ink);
+  }
+}
+
+.cell:has(a.link:active) {
+  transform: scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cell {
+    transition: none;
+  }
+
+  .cell:has(a.link:active) {
+    transform: none;
+  }
+}

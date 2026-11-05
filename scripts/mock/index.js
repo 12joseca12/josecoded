@@ -8,6 +8,7 @@ import "./invitations.js";
 import "./crm.js";
 import "./prices.js";
 import "./system.js";
+import "./overview.js";
 
 import { createServer } from "node:http";
 

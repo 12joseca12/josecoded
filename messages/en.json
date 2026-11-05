@@ -949,17 +949,49 @@
       "more": "More",
       "moreTitle": "More sections",
       "close": "Close",
-      "switch": "Go to CRM"
+      "switch": "Go to CRM",
+      "audit": "Audit log"
     },
     "overview": {
       "meta": {
         "title": "Overview"
       },
       "title": "Overview",
-      "lead": "Admin panel.",
-      "emptyTitle": "Nothing to summarise yet",
-      "emptyText": "Counters and Omen status arrive with the next block. Meanwhile, check the leads.",
-      "emptyAction": "View leads"
+      "lead": "What needs your attention now and where to go next.",
+      "cells": {
+        "title": "Waiting for you",
+        "unknown": "No data yet",
+        "labels": {
+          "leads_new": "Unassigned leads",
+          "leads_waiting_admin": "Leads waiting for the admin",
+          "invitations_pending": "Pending invitations",
+          "users_active": "Active users",
+          "accrued_pending_count": "Accrued commissions not approved",
+          "payments_overdue": "Overdue payments",
+          "proformas_unpaid": "Proformas sent and unpaid",
+          "payouts_draft": "Draft payouts",
+          "jobs_failed": "Failed jobs"
+        },
+        "loading": "Loading counters",
+        "unavailable": {
+          "title": "Counters are not available yet",
+          "text": "The database does not have the function that computes them yet. Cells show a dash until it is applied."
+        },
+        "error": {
+          "title": "The counters could not be loaded",
+          "text": "Try again. If it keeps failing, check Omen status and the audit log.",
+          "retry": "Try again",
+          "retrying": "Trying again"
+        }
+      },
+      "recent": {
+        "title": "Latest changes",
+        "all": "View the full audit log",
+        "loading": "Loading latest changes"
+      },
+      "sections": {
+        "title": "Go to"
+      }
     },
     "leads": {
       "meta": {
@@ -1769,6 +1801,78 @@
           "userId": "Invalid user. Reload the list.",
           "history": "The history could not be loaded."
         }
+      }
+    },
+    "audit": {
+      "meta": {
+        "title": "Audit log"
+      },
+      "title": "Audit log",
+      "lead": "The latest changes recorded in the database, newest first.",
+      "loading": "Loading audit log",
+      "filters": {
+        "label": "Filter the audit log",
+        "table": "Table",
+        "tableAll": "All",
+        "action": "Action",
+        "actionAll": "All",
+        "submit": "Filter",
+        "clear": "Clear filters"
+      },
+      "tables": {
+        "contacts": "Contact",
+        "deals": "Deal",
+        "invitations": "Invitation",
+        "leads": "Lead",
+        "profiles": "User"
+      },
+      "kinds": {
+        "insert": "Created",
+        "update": "Changed",
+        "delete": "Deleted",
+        "totp_reset": "Authenticator reset for",
+        "other": "Operation on"
+      },
+      "list": {
+        "region": "Audit records",
+        "system": "System",
+        "noChanges": "No visible fields to compare.",
+        "emptyValue": "empty",
+        "record": "record {id}",
+        "moreChanges": "and {count} more fields"
+      },
+      "more": "Show more records",
+      "limit": "Showing the latest {count} records.",
+      "filteredNote": "The action filter applies to the records already loaded.",
+      "empty": {
+        "title": "No records yet",
+        "text": "When someone changes data, it will show up here."
+      },
+      "emptyFiltered": {
+        "title": "No record matches",
+        "text": "Try another table or action."
+      },
+      "unavailable": {
+        "title": "The audit log is not available yet",
+        "text": "The database does not have the function that lists it yet. It will appear once applied."
+      },
+      "error": {
+        "title": "The audit log could not be loaded",
+        "text": "Try again in a few seconds.",
+        "retry": "Try again",
+        "retrying": "Trying again"
+      },
+      "history": {
+        "title": "History",
+        "empty": "No changes recorded for this lead yet.",
+        "unavailable": "History will appear once the audit log is available.",
+        "error": "The history could not be loaded.",
+        "loading": "Loading history"
+      },
+      "actions": {
+        "insert": "Creations",
+        "update": "Changes",
+        "delete": "Deletions"
       }
     }
   },
