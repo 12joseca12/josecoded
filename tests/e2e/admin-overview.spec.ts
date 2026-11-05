@@ -105,11 +105,13 @@ test("the overview shows counters, Omen and recent changes and passes axe at 144
   await expectClean(page);
 });
 
-test("a counter missing from the payload shows a dash and has no link", async ({ page }) => {
+test("a counter missing from the payload shows a dash and still links to its section", async ({
+  page,
+}) => {
   await open(page, "/es/admin", overview("title"));
   const missing = cell(page, "payments_overdue");
   await expect(missing).toContainText(overview("cells.unknown"));
-  await expect(missing.getByRole("link")).toHaveCount(0);
+  await expect(missing.getByRole("link")).toHaveAttribute("href", "/es/admin/cobros");
   await expect(cell(page, "leads_new").getByRole("link")).toHaveAttribute(
     "href",
     "/es/admin/interesados?status=new",

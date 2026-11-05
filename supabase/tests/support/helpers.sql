@@ -87,6 +87,13 @@ begin
   reset role;
   delete from public.conversations;
   delete from public.visitors;
+  delete from public.commission_lines;
+  delete from public.payouts;
+  delete from public.commissions;
+  delete from public.payments;
+  delete from public.invoices;
+  delete from public.payment_schedule;
+  delete from private.counters;
   delete from public.activities;
   delete from public.deals;
   delete from public.contacts;
