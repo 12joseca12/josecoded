@@ -5,6 +5,9 @@
     "siteName": "josecoded",
     "description": "Apps móviles y webs con React Native y Next.js: freelance por horas, desarrollo a medida con precio cerrado o en tu equipo. Madrid, España y en remoto."
   },
+  "common": {
+    "responseTime": "uno o dos días laborables"
+  },
   "home": {
     "name": "josecoded",
     "metaTitle": "Desarrollador React Native y full stack",
@@ -279,7 +282,7 @@
     "whatsapp": "WhatsApp",
     "whatsappHint": "Escríbeme y respondo en cuanto puedo",
     "chat": "Chat con Nexo",
-    "chatHint": "Nuestro asistente te responde al momento",
+    "chatHint": "Por aquí te respondo yo",
     "whatsappMessage": "Hola José Carlos, te escribo desde josecoded.com. Me gustaría hablar de un proyecto.",
     "form": "Formulario",
     "formHint": "Cuéntame tu proyecto con calma"
@@ -300,7 +303,7 @@
     "channelsLabel": "Vías de contacto",
     "chat": {
       "title": "Chat con Nexo",
-      "hint": "Nuestro asistente te responde al momento.",
+      "hint": "Por aquí te respondo yo.",
       "open": "Abrir chat",
       "soon": "El chat abre muy pronto."
     },
@@ -512,12 +515,18 @@
       "hub": {
         "q1": "¿Trabajas en remoto o tengo que estar en Madrid?",
         "a1": "Trabajo en remoto con clientes de toda España y de fuera. Si hace falta, me desplazo a reuniones puntuales en Madrid.",
-        "q2": "¿Facturas con IVA?",
-        "a2": "Sí. Cada trabajo se factura con IVA y factura detallada, y la forma de pago se acuerda antes de empezar.",
+        "q2": "¿Facturas como autónomo o puedo contratarte a través de una consultora?",
+        "a2": "Todavía no estoy dado de alta como autónomo y puedo facturar trabajos puntuales. Si necesitas contratarme a través de una consultora o empresa, lo hablamos caso a caso y lo dejamos por escrito antes de empezar.",
         "q3": "¿En qué idiomas puedo escribirte?",
         "a3": "En español y en inglés. La documentación y los mensajes de commit del código van en inglés.",
         "q4": "¿Cuánto tardas en responder?",
-        "a4": "Respondo cada consulta en uno o dos días laborables, normalmente antes. Si es urgente, dilo en el mensaje."
+        "a4": "Respondo cada consulta en {responseTime}, normalmente antes. Si es urgente, dilo en el mensaje.",
+        "q5": "¿Firmas un acuerdo de confidencialidad (NDA)?",
+        "a5": "Sí, puedo firmarlo antes de que me cuentes nada sensible, con tu modelo o con uno estándar.",
+        "q6": "¿Qué solape horario tienes con mi equipo?",
+        "a6": "Trabajo en horario de Madrid y me coordino con equipos de otras zonas. Dime cuándo necesitas hablar y te digo qué franja puedo cubrir.",
+        "q7": "¿Qué pasa si no me gusta el resultado?",
+        "a7": "Trabajo en entregas cortas que ves antes de seguir, así que el rumbo se corrige pronto y no al final. Si aun así no encaja, lo hablamos y decidimos juntos cómo cerrarlo."
       },
       "freelance": {
         "q1": "¿Hay un mínimo de horas?",
@@ -527,7 +536,11 @@
         "q3": "¿Cómo sigo el avance?",
         "a3": "Trabajo en entregas cortas que puedes probar y te comparto cada avance sin esperar al final.",
         "q4": "¿Qué pasa si el alcance crece?",
-        "a4": "Lo acordamos antes de seguir: te explico qué cambia en tiempo y coste, y decides si lo incluimos o lo dejamos para otra tarea."
+        "a4": "Lo acordamos antes de seguir: te explico qué cambia en tiempo y coste, y decides si lo incluimos o lo dejamos para otra tarea.",
+        "q5": "¿Firmas NDA antes de ver mi código?",
+        "a5": "Sí, puedo firmarlo antes de que me des acceso a nada sensible. Si ya tienes un modelo, mándamelo y lo reviso.",
+        "q6": "¿Qué solape horario ofreces si voy por horas?",
+        "a6": "Trabajo en horario de Madrid y puedo coincidir contigo en una franja fija para dudas y revisiones."
       },
       "offers": {
         "q1": "¿Cuánto cuesta una app móvil?",
@@ -541,7 +554,15 @@
         "q5": "¿Qué tengo que aportar yo?",
         "a5": "Los textos, las imágenes y las decisiones de negocio. Te digo qué necesito en cada fase y cuándo, para no frenar la entrega.",
         "q6": "¿Y si quiero algo que no está en el nivel?",
-        "a6": "Lo hablamos antes de tocarlo: te explico qué cambia en tiempo y coste, y decides si lo añadimos como extra o lo dejamos fuera."
+        "a6": "Lo hablamos antes de tocarlo: te explico qué cambia en tiempo y coste, y decides si lo añadimos como extra o lo dejamos fuera.",
+        "q7": "¿Y si te pones malo o desapareces?",
+        "a7": "El repositorio, el dominio, las tiendas y los servicios van a tu nombre desde el primer día, y dejo documentación para que otro desarrollador pueda continuar sin mí. Si me ocurriera algo te avisaría de inmediato y el plazo se reajustaría contigo.",
+        "q8": "¿La app es mía?",
+        "a8": "Sí. El código y el diseño del proyecto son tuyos y las cuentas de las tiendas y del dominio están a tu nombre. La cesión de derechos queda por escrito en la propuesta.",
+        "q9": "¿Puedo pagar por fases?",
+        "a9": "Sí. El pago se reparte en tres fases: el 40 % al empezar, el 40 % al entregar el diseño y el 20 % al publicar. Cada fase se confirma por escrito en la propuesta.",
+        "q10": "¿Qué pasa si quiero cambiar algo a mitad del proyecto?",
+        "a10": "Se puede. Antes de tocarlo te explico qué cambia en plazo y coste, y solo lo aplico si lo apruebas por escrito. Si lo apruebas, entra con su propio plazo."
       }
     },
     "rates": {
@@ -1451,7 +1472,7 @@
     "faq": {
       "title": "Preguntas sobre el proceso",
       "q1": "¿Cómo empezamos?",
-      "a1": "Me cuentas el problema por el formulario o el chat. En uno o dos días laborables te respondo con preguntas y, si encaja, con una propuesta de alcance, plazo y precio.",
+      "a1": "Me cuentas el problema por el formulario o el chat. En {responseTime} te respondo con preguntas y, si encaja, con una propuesta de alcance, plazo y precio.",
       "q2": "¿Puedo cambiar el alcance a mitad de camino?",
       "a2": "Sí. Trabajo en entregas cortas, así que cada cambio se valora con su efecto en plazo y precio antes de aplicarlo, sin sorpresas al final.",
       "q3": "¿El código y los accesos son míos?",
