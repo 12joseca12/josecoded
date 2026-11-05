@@ -2,15 +2,13 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-import { ActiveProjectCookie } from "@/components/area/ActiveProjectCookie/ActiveProjectCookie";
 import { PhaseSteps } from "@/components/area/PhaseSteps/PhaseSteps";
+import { ProjectGate } from "@/components/area/ProjectGate/ProjectGate";
 import { ProjectHeader } from "@/components/area/ProjectHeader/ProjectHeader";
 import { ProjectLinks } from "@/components/area/ProjectLinks/ProjectLinks";
-import { ProjectSwitcher } from "@/components/area/ProjectSwitcher/ProjectSwitcher";
 import { RecentUpdates } from "@/components/area/RecentUpdates/RecentUpdates";
 import { TodoForYou } from "@/components/area/TodoForYou/TodoForYou";
 import { RefreshError } from "@/components/crm/RefreshError/RefreshError";
-import { EmptyState } from "@/components/ui/EmptyState/EmptyState";
 import { LoadingRegion } from "@/components/ui/LoadingRegion/LoadingRegion";
 import { Skeleton } from "@/components/ui/Skeleton/Skeleton";
 import { isLocale, type Locale } from "@/i18n/config";
@@ -24,7 +22,6 @@ import {
   recentLabels,
   todoLabels,
 } from "@/lib/area/labels";
-import { loadActiveProject } from "@/lib/area/load-active-project";
 import { fetchLinks, fetchProgress, fetchRecentUpdates, fetchTodo } from "@/lib/area/overview";
 import { requireZone } from "@/lib/auth/session";
 import { offerSlugs } from "@/lib/services/offers";
@@ -135,44 +132,33 @@ async function AreaHome({
   userId: string;
 }) {
   const t = await getTranslator(locale);
-  const result = await loadActiveProject(params);
-  if (result.status === "error") throw new Error("area_projects_unreadable");
-  const { active, projects } = result;
-  if (active === null) {
-    return (
-      <EmptyState headingLevel={1} title={t("area.empty.title")} text={t("area.empty.text")} />
-    );
-  }
   const loading = t("area.home.loading");
   return (
-    <>
-      <ActiveProjectCookie projectId={active.id} />
-      <ProjectSwitcher
-        projects={projects}
-        activeId={active.id}
-        path={`/${locale}/area`}
-        label={t("area.home.switcher.label")}
-      />
-      <Suspense fallback={<RegionSkeleton label={loading} height="6rem" />}>
-        <HeaderRegion locale={locale} project={active} />
-      </Suspense>
-      <PhaseSteps current={active.phase} labels={phaseStepsLabels(t)} />
-      <div className={styles.columns}>
-        <div className={styles.column}>
-          <Suspense fallback={<RegionSkeleton label={loading} height="10rem" />}>
-            <TodoRegion locale={locale} project={active} userId={userId} />
+    <ProjectGate locale={locale} params={params} path="">
+      {(active) => (
+        <>
+          <Suspense fallback={<RegionSkeleton label={loading} height="6rem" />}>
+            <HeaderRegion locale={locale} project={active} />
           </Suspense>
-          <Suspense fallback={<RegionSkeleton label={loading} height="10rem" />}>
-            <RecentRegion locale={locale} project={active} />
-          </Suspense>
-        </div>
-        <div className={styles.column}>
-          <Suspense fallback={<RegionSkeleton label={loading} height="8rem" />}>
-            <LinksRegion locale={locale} project={active} />
-          </Suspense>
-        </div>
-      </div>
-    </>
+          <PhaseSteps current={active.phase} labels={phaseStepsLabels(t)} />
+          <div className={styles.columns}>
+            <div className={styles.column}>
+              <Suspense fallback={<RegionSkeleton label={loading} height="10rem" />}>
+                <TodoRegion locale={locale} project={active} userId={userId} />
+              </Suspense>
+              <Suspense fallback={<RegionSkeleton label={loading} height="10rem" />}>
+                <RecentRegion locale={locale} project={active} />
+              </Suspense>
+            </div>
+            <div className={styles.column}>
+              <Suspense fallback={<RegionSkeleton label={loading} height="8rem" />}>
+                <LinksRegion locale={locale} project={active} />
+              </Suspense>
+            </div>
+          </div>
+        </>
+      )}
+    </ProjectGate>
   );
 }
 

@@ -94,3 +94,19 @@ export type TodoActionResult =
   { status: "done" } | { status: "stale" } | { status: "forbidden" } | { status: "error" };
 
 export type TodoHandler = (id: string, accept?: boolean) => Promise<TodoActionResult>;
+
+export const boardTaskSchema = z.object({
+  id: z.uuid(),
+  title: z.string(),
+  phase: z.enum(projectPhases),
+  status: z.enum(taskStatuses),
+  assignee_id: z.uuid().nullable(),
+  story: z.object({ id: z.uuid(), title: z.string() }).nullable(),
+});
+export type BoardTask = z.infer<typeof boardTaskSchema>;
+
+export const taskDetailSchema = boardTaskSchema.extend({
+  description: z.string().nullable(),
+  done_at: z.string().nullable(),
+});
+export type TaskDetailRow = z.infer<typeof taskDetailSchema>;

@@ -1,7 +1,10 @@
+import type { CompleteTaskLabels } from "@/components/area/CompleteTask/CompleteTask";
+import type { PhaseBoardLabels } from "@/components/area/PhaseBoard/PhaseBoard";
 import type { PhaseStepsLabels } from "@/components/area/PhaseSteps/PhaseSteps";
 import type { ProjectHeaderLabels } from "@/components/area/ProjectHeader/ProjectHeader";
 import type { ProjectLinksLabels } from "@/components/area/ProjectLinks/ProjectLinks";
 import type { RecentUpdatesLabels } from "@/components/area/RecentUpdates/RecentUpdates";
+import type { TaskDetailLabels } from "@/components/area/TaskDetail/TaskDetail";
 import type { TodoLabels } from "@/components/area/TodoForYou/TodoForYou";
 import type { MessageKey } from "@/i18n/keys.generated";
 
@@ -81,6 +84,54 @@ export function recentLabels(t: T): RecentUpdatesLabels {
       accepted: t("area.home.recent.story.accepted"),
       rejected: t("area.home.recent.story.rejected"),
       in_tasks: t("area.home.recent.story.in_tasks"),
+    },
+  };
+}
+
+export function boardLabels(t: T): PhaseBoardLabels {
+  return {
+    board: t("area.tasks.board"),
+    phases: phaseNames(t),
+    emptyPhase: t("area.tasks.emptyPhase"),
+    row: {
+      status: {
+        todo: t("area.tasks.status.todo"),
+        doing: t("area.tasks.status.doing"),
+        done: t("area.tasks.status.done"),
+      },
+      mine: t("area.tasks.mine"),
+      fromStory: t("area.tasks.fromStory"),
+    },
+  };
+}
+
+export function taskDetailLabels(t: T): TaskDetailLabels {
+  return {
+    back: t("area.tasks.detail.back"),
+    phase: t("area.tasks.detail.phase"),
+    status: t("area.tasks.detail.status"),
+    statuses: {
+      todo: t("area.tasks.status.todo"),
+      doing: t("area.tasks.status.doing"),
+      done: t("area.tasks.status.done"),
+    },
+    assignedToYou: t("area.tasks.detail.assignedToYou"),
+    doneOn: t("area.tasks.detail.doneOn"),
+    description: t("area.tasks.detail.description"),
+    noDescription: t("area.tasks.detail.noDescription"),
+    fromStory: t("area.tasks.detail.fromStory"),
+  };
+}
+
+export function completeTaskLabels(t: T): CompleteTaskLabels {
+  return {
+    complete: t("area.tasks.detail.complete"),
+    completing: t("area.tasks.detail.completing"),
+    done: t("area.tasks.detail.done"),
+    errors: {
+      forbidden: t("area.tasks.detail.errors.forbidden"),
+      stale: t("area.tasks.detail.errors.stale"),
+      error: t("area.tasks.detail.errors.error"),
     },
   };
 }

@@ -46,7 +46,7 @@ describe("staff navigation registry", () => {
       "notifications",
     ]);
     expect(ready("crm")).toEqual(["overview", "contacts", "settings"]);
-    expect(ready("area")).toEqual(["overview"]);
+    expect(ready("area")).toEqual(["overview", "tasks"]);
   });
 
   it("registers the freelance zone without screens", () => {

@@ -2380,6 +2380,50 @@
       "build": "Construir",
       "publish": "Publicar",
       "maintain": "Mantener"
+    },
+    "tasks": {
+      "meta": {
+        "title": "Tareas",
+        "detail": "Detalle de la tarea"
+      },
+      "title": "Tareas",
+      "lead": "Cómo avanza tu proyecto, fase por fase.",
+      "loading": "Cargando las tareas",
+      "board": "Tareas por fase",
+      "emptyPhase": "Sin tareas en esta fase.",
+      "emptyTitle": "Todavía no hay tareas",
+      "emptyText": "Cuando Jose las cree, las verás aquí, ordenadas por fase.",
+      "status": {
+        "todo": "Pendiente",
+        "doing": "En curso",
+        "done": "Hecha"
+      },
+      "mine": "Tuya",
+      "fromStory": "De tu historia: {title}",
+      "error": {
+        "title": "No hemos podido cargar las tareas",
+        "text": "Puedes reintentarlo.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "detail": {
+        "back": "Volver a las tareas",
+        "phase": "Fase:",
+        "status": "Estado:",
+        "assignedToYou": "Es una tarea tuya.",
+        "doneOn": "Hecha el {date}.",
+        "fromStory": "De tu historia: {title}",
+        "description": "Descripción",
+        "noDescription": "Esta tarea no tiene descripción.",
+        "complete": "Marcar como hecha",
+        "completing": "Guardando",
+        "done": "Tarea marcada como hecha.",
+        "errors": {
+          "forbidden": "No tienes permiso para hacer esto.",
+          "stale": "Esto ya ha cambiado. Recarga la página para ver el estado actual.",
+          "error": "No hemos podido guardarlo. Inténtalo de nuevo."
+        }
+      }
     }
   },
   "freelance": {

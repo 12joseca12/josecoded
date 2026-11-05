@@ -2380,6 +2380,50 @@
       "build": "Build",
       "publish": "Publish",
       "maintain": "Maintain"
+    },
+    "tasks": {
+      "meta": {
+        "title": "Tasks",
+        "detail": "Task detail"
+      },
+      "title": "Tasks",
+      "lead": "How your project is moving, phase by phase.",
+      "loading": "Loading tasks",
+      "board": "Tasks by phase",
+      "emptyPhase": "No tasks in this phase.",
+      "emptyTitle": "There are no tasks yet",
+      "emptyText": "When Jose creates them you will see them here, ordered by phase.",
+      "status": {
+        "todo": "To do",
+        "doing": "In progress",
+        "done": "Done"
+      },
+      "mine": "Yours",
+      "fromStory": "From your story: {title}",
+      "error": {
+        "title": "We could not load the tasks",
+        "text": "You can try again.",
+        "retry": "Try again",
+        "retrying": "Trying again"
+      },
+      "detail": {
+        "back": "Back to tasks",
+        "phase": "Phase:",
+        "status": "Status:",
+        "assignedToYou": "This is your task.",
+        "doneOn": "Done on {date}.",
+        "fromStory": "From your story: {title}",
+        "description": "Description",
+        "noDescription": "This task has no description.",
+        "complete": "Mark as done",
+        "completing": "Saving",
+        "done": "Task marked as done.",
+        "errors": {
+          "forbidden": "You do not have permission to do this.",
+          "stale": "This has already changed. Reload the page to see the current state.",
+          "error": "We could not save it. Try again."
+        }
+      }
     }
   },
   "freelance": {

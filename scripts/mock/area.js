@@ -51,7 +51,10 @@ function seedData() {
         1,
         "2026-10-25T10:00:00+00:00",
       ),
-      task("t3", firstId, "design", "Aprobar la maqueta de la portada", "todo", clientId, 0),
+      task("t3", firstId, "design", "Aprobar la maqueta de la portada", "todo", clientId, 0, null, {
+        description: "Revisa la maqueta y dime si te encaja.\nPuedes dejar comentarios en el chat.",
+        story_id: id("s", 2),
+      }),
       task("t4", firstId, "build", "Catálogo de productos", "doing", null, 0),
       task("t5", firstId, "publish", "Conectar el dominio", "todo", clientId, 0),
     ],
@@ -114,8 +117,10 @@ function id(prefix, n) {
   return `${hex}000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
 }
 
-function task(key, projectId, phase, title, status, assignee, sort, doneAt = null) {
+function task(key, projectId, phase, title, status, assignee, sort, doneAt = null, extra = {}) {
   return {
+    description: null,
+    story_id: null,
     id: id("t", Number(key.slice(1))),
     project_id: projectId,
     phase,
@@ -124,6 +129,7 @@ function task(key, projectId, phase, title, status, assignee, sort, doneAt = nul
     assignee_id: assignee,
     sort,
     done_at: doneAt,
+    ...extra,
   };
 }
 
@@ -260,7 +266,11 @@ route("GET", "/rest/v1/project_progress", ({ request, response, url }) => {
 route("GET", "/rest/v1/tasks", ({ request, response, url }) => {
   const scoped = scope(request, response);
   if (!scoped || fail(response, scoped.area, "tasks")) return;
-  return send(response, 200, query(inProjects(scoped, scoped.area.tasks), url));
+  const rows = inProjects(scoped, scoped.area.tasks).map((row) => {
+    const linked = scoped.area.stories.find((entry) => entry.id === row.story_id);
+    return { ...row, story: linked ? { id: linked.id, title: linked.title } : null };
+  });
+  return send(response, 200, query(rows, url));
 });
 
 route("GET", "/rest/v1/stories", ({ request, response, url }) => {
