@@ -261,6 +261,7 @@ export type Database = {
           created_at: string
           deal_id: string | null
           discard_reason: string | null
+          discarded_by: string | null
           email: string | null
           extras: string[]
           full_name: string
@@ -295,6 +296,7 @@ export type Database = {
           created_at?: string
           deal_id?: string | null
           discard_reason?: string | null
+          discarded_by?: string | null
           email?: string | null
           extras?: string[]
           full_name: string
@@ -329,6 +331,7 @@ export type Database = {
           created_at?: string
           deal_id?: string | null
           discard_reason?: string | null
+          discarded_by?: string | null
           email?: string | null
           extras?: string[]
           full_name?: string
@@ -393,6 +396,20 @@ export type Database = {
             columns: ["deal_id"]
             isOneToOne: false
             referencedRelation: "deals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_discarded_by_fkey"
+            columns: ["discarded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_discarded_by_fkey"
+            columns: ["discarded_by"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -487,6 +504,19 @@ export type Database = {
       discard_lead: {
         Args: { p_lead_id: string; p_reason: string }
         Returns: undefined
+      }
+      list_lead_inbox: {
+        Args: never
+        Returns: {
+          created_at: string
+          excerpt: string
+          extras: string[]
+          first_name: string
+          id: string
+          locale: Database["public"]["Enums"]["app_locale"]
+          offer: string
+          via: Database["public"]["Enums"]["contact_via"]
+        }[]
       }
       submit_lead: {
         Args: {

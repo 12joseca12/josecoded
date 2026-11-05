@@ -43,6 +43,7 @@ export function LeadActions({ lead, assignees, labels, assign, discard }: LeadAc
   const disclosure = useRef<HTMLDetailsElement>(null);
   const options = assignees.filter((entry) => entry.assignable);
   const open = lead.status !== "discarded";
+  const canDiscard = open && lead.status !== "converted";
   const busy = assigning || discarding;
 
   const onAssign = (event: SyntheticEvent<HTMLFormElement>) => {
@@ -114,34 +115,36 @@ export function LeadActions({ lead, assignees, labels, assign, discard }: LeadAc
               </Button>
             </form>
           )}
-          <details className={styles.discard} ref={disclosure}>
-            <summary className={styles.summary}>{labels.discardOpen}</summary>
-            <form className={styles.row} onSubmit={onDiscard} noValidate>
-              <label className={styles.visually} htmlFor={`${id}-reason`}>
-                {labels.discardReasonLabel}
-              </label>
-              <input
-                id={`${id}-reason`}
-                name="reason"
-                type="text"
-                className={styles.input}
-                placeholder={labels.discardReasonLabel}
-                maxLength={discardReasonMax}
-                autoComplete="off"
-                disabled={busy}
-              />
-              <Button
-                type="submit"
-                variant="quiet"
-                size="sm"
-                loading={discarding}
-                loadingLabel={labels.discarding}
-                disabled={assigning}
-              >
-                {labels.discardSubmit}
-              </Button>
-            </form>
-          </details>
+          {canDiscard ? (
+            <details className={styles.discard} ref={disclosure}>
+              <summary className={styles.summary}>{labels.discardOpen}</summary>
+              <form className={styles.row} onSubmit={onDiscard} noValidate>
+                <label className={styles.visually} htmlFor={`${id}-reason`}>
+                  {labels.discardReasonLabel}
+                </label>
+                <input
+                  id={`${id}-reason`}
+                  name="reason"
+                  type="text"
+                  className={styles.input}
+                  placeholder={labels.discardReasonLabel}
+                  maxLength={discardReasonMax}
+                  autoComplete="off"
+                  disabled={busy}
+                />
+                <Button
+                  type="submit"
+                  variant="quiet"
+                  size="sm"
+                  loading={discarding}
+                  loadingLabel={labels.discarding}
+                  disabled={assigning}
+                >
+                  {labels.discardSubmit}
+                </Button>
+              </form>
+            </details>
+          ) : null}
         </>
       ) : lead.discard_reason ? (
         <p className={styles.muted}>

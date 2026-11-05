@@ -422,6 +422,7 @@ test("an admin assigns a lead to a closer", async ({ page }) => {
   await expect(cara).toContainText(es.admin.leads.status.converted);
   await expect(cara).toContainText("Dani Closer");
   await expect(cara.getByRole("status")).toHaveText(es.admin.leads.actions.done.assign);
+  await expect(cara.getByText(es.admin.leads.actions.discardOpen)).toHaveCount(0);
   const { rpc } = await authCalls(page);
   expect(rpc).toEqual([
     {

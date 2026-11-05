@@ -240,18 +240,9 @@ select throws_ok($$update public.leads set message = 'x'$$, '42501', null, 'lead
 select throws_ok($$delete from public.leads$$, '42501', null, 'nobody deletes leads');
 
 reset role;
-select set_config(
-  'tests.leads_inbox',
-  (select count(*)::text from public.leads where status = 'new' and assigned_to is null and contact_id is null),
-  true
-);
 select tests.login_as('t-closer@example.com');
 
-select is(
-  (select count(*) from public.leads),
-  current_setting('tests.leads_inbox')::bigint,
-  'closer sees exactly the shared inbox'
-);
+select is((select count(*) from public.leads), 0::bigint, 'closer reads no unassigned lead directly');
 
 reset role;
 select tests.login_as('t-freelance@example.com');

@@ -1,6 +1,6 @@
 begin;
 
-select plan(17);
+select plan(18);
 
 select is_empty(
   $$
@@ -76,7 +76,7 @@ select is_empty(
     where n.nspname = 'public'
       and p.prosecdef
       and has_function_privilege('authenticated', p.oid, 'execute')
-      and p.proname not in ('update_my_profile', 'claim_lead', 'assign_lead', 'discard_lead', 'touch_lead')
+      and p.proname not in ('update_my_profile', 'claim_lead', 'assign_lead', 'discard_lead', 'touch_lead', 'list_lead_inbox')
   $$,
   'only the allowed security definer RPCs are callable from the API'
 );
@@ -165,7 +165,7 @@ select is_empty(
     join pg_namespace n on n.oid = p.pronamespace
     where n.nspname = 'public'
       and has_function_privilege('authenticated', p.oid, 'execute')
-      and p.proname not in ('update_my_profile', 'claim_lead', 'assign_lead', 'discard_lead', 'touch_lead')
+      and p.proname not in ('update_my_profile', 'claim_lead', 'assign_lead', 'discard_lead', 'touch_lead', 'list_lead_inbox')
   $$,
   'only the profile and lead RPCs are callable by authenticated in public'
 );
@@ -183,6 +183,18 @@ select is(
   ),
   'submit_lead',
   'submit_lead is the only service_role-only function in public'
+);
+
+select is(
+  (
+    select string_agg(p.proname::text, ',' order by p.proname)
+    from pg_proc p
+    join pg_namespace n on n.oid = p.pronamespace
+    where n.nspname = 'private'
+      and has_function_privilege('authenticated', p.oid, 'execute')
+  ),
+  'contact_has_history,is_aal2,is_admin,is_api_client_role,is_closer,is_staff,offer_answers_valid,owns_contact,owns_lead,role,slug_list_valid,uid',
+  'only the policy helpers and the two constraint helpers in private are executable by authenticated (decision 9.6)'
 );
 
 select is_empty(

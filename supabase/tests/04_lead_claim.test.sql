@@ -2,7 +2,7 @@ begin;
 
 \ir support/helpers.sql
 
-select plan(96);
+select plan(128);
 
 select tests.clean();
 select tests.create_user('t-admin@example.com', 'admin', 'Admin');
@@ -65,7 +65,7 @@ select lives_ok(
 );
 
 select lives_ok(
-  $$select public.submit_lead(p_source => 'form', p_via => 'hiring', p_full_name => 'Libre Tres', p_email => 'tres@example.com', p_consent => true, p_ip_hash => md5('n3'))$$,
+  $$select public.submit_lead(p_source => 'form', p_via => 'hiring', p_full_name => 'Libre Tres', p_email => 'tres@example.com', p_message => repeat('x', 300), p_consent => true, p_ip_hash => md5('n3'))$$,
   'a third unmatched lead is accepted'
 );
 
@@ -79,8 +79,8 @@ select results_eq(
 
 select results_eq(
   $$select kind::text, body, author_id from public.activities where contact_id = '00000000-0000-4000-8000-0000000000a1'$$,
-  $$values ('form', 'Hola de nuevo', null::uuid)$$,
-  'the matched lead leaves an activity on the existing contact'
+  $$values ('form', '[Sin verificar] Hola de nuevo', null::uuid)$$,
+  'the matched lead leaves an unverified activity on the existing contact'
 );
 
 select results_eq(
@@ -106,52 +106,70 @@ select tests.login_as('t-closer-a@example.com');
 
 select results_eq(
   $$select full_name from public.leads order by full_name$$,
-  $$values ('Libre Dos'), ('Libre Tres'), ('Libre Uno'), ('Match Own')$$,
-  'closer A sees the shared inbox and the lead matched to them, not the prefilled-contact ones'
+  $$values ('Match Own')$$,
+  'closer A reads in full only the lead matched to them'
+);
+
+select is((select count(*) from public.list_lead_inbox()), 3::bigint, 'closer A sees three masked inbox leads, not the prefilled-contact ones');
+
+select results_eq(
+  $$select first_name, via::text, offer, extras, excerpt, locale::text from public.list_lead_inbox() where offer is not null$$,
+  $$values ('Libre', 'project', 'web-negocio', array['seo', 'payments'], 'Quiero una web', null::text)$$,
+  'the masked inbox shows first name, via, offer, extras and an excerpt'
+);
+
+select is(
+  (select max(char_length(excerpt)) from public.list_lead_inbox()),
+  140,
+  'the excerpt is cut at 140 characters'
 );
 
 reset role;
 select tests.login_as('t-closer-b@example.com');
 
-select results_eq(
-  $$select full_name from public.leads order by full_name$$,
-  $$values ('Libre Dos'), ('Libre Tres'), ('Libre Uno')$$,
-  'closer B sees the shared inbox but not the lead matched to A'
+select is((select count(*) from public.leads), 0::bigint, 'closer B reads no unassigned lead directly');
+select is((select count(*) from public.list_lead_inbox()), 3::bigint, 'closer B sees the masked inbox');
+select is(
+  (select count(*) from public.leads where email is not null or message is not null),
+  0::bigint,
+  'no email or message of an unassigned lead is readable by a closer'
 );
 
 reset role;
 select tests.login_as('t-sub-a@example.com');
 
-select results_eq(
-  $$select full_name from public.leads order by full_name$$,
-  $$values ('Libre Dos'), ('Libre Tres'), ('Libre Uno')$$,
-  'a subcloser does not see the lead of the parent'
-);
+select is((select count(*) from public.leads), 0::bigint, 'a subcloser does not read the lead of the parent');
+select is((select count(*) from public.list_lead_inbox()), 3::bigint, 'a subcloser sees the masked inbox');
 
 reset role;
 select tests.login_as('t-closer-a@example.com', 'aal1');
 
 select is((select count(*) from public.leads), 0::bigint, 'a closer at aal1 sees no leads');
+select throws_ok($$select * from public.list_lead_inbox()$$, '42501', 'forbidden', 'a closer at aal1 cannot list the inbox');
 
 reset role;
 select tests.login_as('t-closer-off@example.com');
 
 select is((select count(*) from public.leads), 0::bigint, 'an inactive closer sees no leads');
+select throws_ok($$select * from public.list_lead_inbox()$$, '42501', 'forbidden', 'an inactive closer cannot list the inbox');
 
 reset role;
 select tests.login_as('t-freelance@example.com');
 
 select is((select count(*) from public.leads), 0::bigint, 'freelance sees no leads');
+select throws_ok($$select * from public.list_lead_inbox()$$, '42501', 'forbidden', 'freelance cannot list the inbox');
 
 reset role;
 select tests.login_as('t-client@example.com');
 
 select is((select count(*) from public.leads), 0::bigint, 'client sees no leads');
+select throws_ok($$select * from public.list_lead_inbox()$$, '42501', 'forbidden', 'client cannot list the inbox');
 
 reset role;
 select tests.logout();
 
 select throws_ok($$select * from public.leads$$, '42501', null, 'anon cannot read leads');
+select throws_ok($$select * from public.list_lead_inbox()$$, '42501', null, 'anon cannot list the inbox');
 select throws_ok($$select public.claim_lead(gen_random_uuid())$$, '42501', null, 'anon cannot execute claim_lead');
 select throws_ok($$select public.assign_lead(gen_random_uuid(), gen_random_uuid())$$, '42501', null, 'anon cannot execute assign_lead');
 select throws_ok($$select public.discard_lead(gen_random_uuid(), 'x')$$, '42501', null, 'anon cannot execute discard_lead');
@@ -215,11 +233,7 @@ select throws_ok(
   'the second claim loses'
 );
 
-select results_eq(
-  $$select full_name from public.leads order by full_name$$,
-  $$values ('Libre Dos'), ('Libre Tres')$$,
-  'closer B no longer sees the claimed lead'
-);
+select is((select count(*) from public.list_lead_inbox()), 2::bigint, 'closer B no longer sees the claimed lead in the inbox');
 
 reset role;
 select tests.login_as('t-closer-a@example.com');
@@ -380,6 +394,13 @@ select throws_ok(
   'a subcloser cannot discard a lead of the parent'
 );
 
+select throws_ok(
+  format($$select public.touch_lead(%L)$$, current_setting('tests.uno')),
+  '42501',
+  'forbidden',
+  'a subcloser cannot touch a lead of the parent'
+);
+
 reset role;
 select tests.login_as('t-closer-b@example.com');
 
@@ -391,6 +412,11 @@ select throws_ok(
 );
 
 reset role;
+insert into public.leads (source, full_name, phone, assigned_to) values
+  ('manual', 'Para tocar', '600000020', md5('t-closer-a@example.com')::uuid),
+  ('manual', 'Para descartar', '600000021', md5('t-sub-a@example.com')::uuid);
+select set_config('tests.tocar', (select id::text from public.leads where full_name = 'Para tocar'), true);
+select set_config('tests.descartar', (select id::text from public.leads where full_name = 'Para descartar'), true);
 select tests.login_as('t-closer-a@example.com');
 
 select throws_ok(
@@ -416,13 +442,24 @@ select throws_ok(
 
 select lives_ok(
   format($$select public.touch_lead(%L)$$, current_setting('tests.uno')),
-  'the owner touches a lead'
+  'the owner touches a converted lead'
 );
 
 select results_eq(
   $$select status::text, (handled_at is not null) from public.leads where full_name = 'Libre Uno'$$,
+  $$values ('converted', true)$$,
+  'touching a converted lead only sets handled_at'
+);
+
+select lives_ok(
+  format($$select public.touch_lead(%L)$$, current_setting('tests.tocar')),
+  'the owner touches an assigned lead'
+);
+
+select results_eq(
+  $$select status::text, (handled_at is not null) from public.leads where full_name = 'Para tocar'$$,
   $$values ('contacted', true)$$,
-  'touch marks the lead contacted with handled_at'
+  'touching an assigned lead marks it contacted with handled_at'
 );
 
 select lives_ok(
@@ -430,29 +467,48 @@ select lives_ok(
   'the parent closer touches a subcloser lead'
 );
 
+select throws_ok(
+  format($$select public.discard_lead(%L, 'x')$$, current_setting('tests.tres')),
+  'P0001',
+  'lead_not_discardable',
+  'a lead with a deal cannot be discarded even by the parent closer'
+);
+
 select lives_ok(
-  format($$select public.discard_lead(%L, %L)$$, current_setting('tests.uno'), '  Presupuesto fuera de rango  '),
-  'the owner discards a contacted lead with a reason'
+  format($$select public.discard_lead(%L, %L)$$, current_setting('tests.tocar'), '  Presupuesto fuera de rango  '),
+  'the owner discards a contacted lead without a deal'
+);
+
+select lives_ok(
+  format($$select public.discard_lead(%L, 'no responde')$$, current_setting('tests.descartar')),
+  'the parent closer discards a subcloser lead without a deal'
 );
 
 select results_eq(
-  $$select status::text, discard_reason from public.leads where full_name = 'Libre Uno'$$,
-  $$values ('discarded', 'Presupuesto fuera de rango')$$,
-  'the trimmed reason is stored'
+  $$select status::text, discard_reason, discarded_by from public.leads where full_name = 'Para tocar'$$,
+  $$values ('discarded', 'Presupuesto fuera de rango', md5('t-closer-a@example.com')::uuid)$$,
+  'the trimmed reason and the author of the discard are stored'
 );
 
 select throws_ok(
-  format($$select public.discard_lead(%L, 'otra vez')$$, current_setting('tests.uno')),
+  format($$select public.discard_lead(%L, 'otra vez')$$, current_setting('tests.tocar')),
   'P0001',
   'lead_not_discardable',
   'a discarded lead cannot be discarded again'
 );
 
 select throws_ok(
-  format($$select public.touch_lead(%L)$$, current_setting('tests.uno')),
+  format($$select public.touch_lead(%L)$$, current_setting('tests.tocar')),
   'P0001',
   'lead_not_touchable',
   'a discarded lead cannot be touched'
+);
+
+select throws_ok(
+  format($$select public.discard_lead(%L, 'x')$$, gen_random_uuid()),
+  '42501',
+  'forbidden',
+  'a closer gets forbidden, not not-found, for a lead that does not exist'
 );
 
 reset role;
@@ -559,6 +615,120 @@ select throws_ok(
 );
 
 reset role;
+select tests.login_service();
+
+select lives_ok(
+  $$select public.submit_lead(p_source => 'form', p_full_name => 'Tarde Uno', p_email => 'tarde1@example.com', p_consent => true, p_ip_hash => md5('t1'))$$,
+  'a late lead whose email later becomes an unowned contact'
+);
+select lives_ok(
+  $$select public.submit_lead(p_source => 'form', p_full_name => 'Tarde Dos', p_email => 'tarde2@example.com', p_consent => true, p_ip_hash => md5('t2'))$$,
+  'a late lead whose email later becomes an owned contact'
+);
+select lives_ok(
+  $$select public.submit_lead(p_source => 'form', p_full_name => 'Tarde Tres', p_email => 'tarde3@example.com', p_consent => true, p_ip_hash => md5('t3'))$$,
+  'a late lead for the adoption path'
+);
+select lives_ok(
+  $$select public.submit_lead(p_source => 'form', p_full_name => 'Tarde Cuatro', p_email => 'tarde4@example.com', p_consent => true, p_ip_hash => md5('t4'))$$,
+  'a late lead whose email later becomes a contact of another closer'
+);
+
+reset role;
+insert into public.contacts (id, owner_id, full_name, email) values
+  ('00000000-0000-4000-8000-0000000000e1', null, 'Tarde Libre', 'tarde1@example.com'),
+  ('00000000-0000-4000-8000-0000000000e2', md5('t-closer-a@example.com')::uuid, 'Tarde de A', 'tarde2@example.com'),
+  ('00000000-0000-4000-8000-0000000000e3', null, 'Tarde Adoptable', 'tarde3@example.com'),
+  ('00000000-0000-4000-8000-0000000000e5', md5('t-closer-a@example.com')::uuid, 'Tarde de A Dos', 'tarde4@example.com');
+insert into public.deals (id, contact_id, stage, via) values
+  ('00000000-0000-4000-8000-0000000000e4', '00000000-0000-4000-8000-0000000000e3', 'new', 'hiring');
+select set_config('tests.t1', (select id::text from public.leads where full_name = 'Tarde Uno'), true);
+select set_config('tests.t2', (select id::text from public.leads where full_name = 'Tarde Dos'), true);
+select set_config('tests.t3', (select id::text from public.leads where full_name = 'Tarde Tres'), true);
+select set_config('tests.t4', (select id::text from public.leads where full_name = 'Tarde Cuatro'), true);
+select tests.login_as('t-closer-b@example.com');
+
+select throws_ok(
+  format($$select public.claim_lead(%L)$$, current_setting('tests.t1')),
+  'P0001',
+  'contact_conflict',
+  'a claim does not adopt an unowned contact'
+);
+
+select throws_ok(
+  format($$select public.claim_lead(%L)$$, current_setting('tests.t2')),
+  'P0001',
+  'contact_conflict',
+  'a claim does not duplicate a contact owned by someone else'
+);
+
+select is(
+  (select count(*) from public.leads where id = current_setting('tests.t2')::uuid),
+  0::bigint,
+  'the closer cannot read the unassigned lead after the failed claim'
+);
+
+reset role;
+select results_eq(
+  format($$select status::text, assigned_to, contact_id from public.leads where id = %L$$, current_setting('tests.t2')),
+  $$values ('new', null::uuid, null::uuid)$$,
+  'a failed claim leaves the lead untouched'
+);
+
+select tests.login_as('t-closer-a@example.com');
+
+select is(
+  public.claim_lead(current_setting('tests.t2')::uuid),
+  '00000000-0000-4000-8000-0000000000e2'::uuid,
+  'the owner of the contact claims the lead and links their own contact'
+);
+
+reset role;
+select tests.login_as('t-admin@example.com');
+
+select throws_ok(
+  format($$select public.assign_lead(%L, %L)$$, current_setting('tests.t4'), md5('t-closer-b@example.com')::uuid),
+  'P0001',
+  'contact_conflict',
+  'assigning does not duplicate or steal a contact owned by another closer'
+);
+
+select lives_ok(
+  format($$select public.assign_lead(%L, %L)$$, current_setting('tests.t3'), md5('t-closer-b@example.com')::uuid),
+  'admin assigns a lead whose email is an unowned contact'
+);
+
+select results_eq(
+  $$select c.owner_id, d.owner_id from public.contacts c join public.deals d on d.contact_id = c.id where c.id = '00000000-0000-4000-8000-0000000000e3' and d.id = '00000000-0000-4000-8000-0000000000e4'$$,
+  $$values (md5('t-closer-b@example.com')::uuid, md5('t-closer-b@example.com')::uuid)$$,
+  'adopting an unowned contact moves its existing deals to the new owner'
+);
+
+reset role;
+update public.leads set status = 'contacted' where id = current_setting('tests.t2')::uuid;
+select tests.login_as('t-closer-a@example.com');
+
+select throws_ok(
+  format($$select public.discard_lead(%L, 'x')$$, current_setting('tests.t2')),
+  'P0001',
+  'lead_not_discardable',
+  'a lead with a deal cannot be discarded whatever its status'
+);
+
+reset role;
+
+select is(
+  (select count(*) from private.audit_log where table_name = 'leads' and row_id = current_setting('tests.tocar')::uuid and action = 'update'),
+  2::bigint,
+  'status changes of a lead are audited'
+);
+
+select is(
+  (select count(*) from private.audit_log where table_name = 'leads' and row_id = current_setting('tests.uno')::uuid and action = 'update'),
+  1::bigint,
+  'the claim is audited and a handled_at-only touch is not'
+);
+
 select tests.login_service();
 
 select throws_ok(

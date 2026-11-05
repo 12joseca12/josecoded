@@ -62,6 +62,7 @@ alter table public.leads
   add column offer text,
   add column extras text[] not null default '{}',
   add column offer_answers jsonb,
+  add column discarded_by uuid references public.profiles (id) on delete set null,
   add constraint leads_pack_id_needs_project_via check (
     pack_id is null or via is not distinct from 'project'
   ),
@@ -87,6 +88,8 @@ alter table public.leads
       via is not distinct from 'project' or via is not distinct from 'freelance'
     ) and private.offer_answers_valid(offer_answers)
   );
+
+create index leads_discarded_by_idx on public.leads (discarded_by);
 
 create function private.lead_activity_kind(p_source public.lead_source)
 returns public.activity_kind
@@ -201,7 +204,11 @@ begin
     new.contact_id,
     null,
     private.lead_activity_kind(new.source),
-    private.lead_activity_body(new)
+    case
+      when new.source in ('form', 'nexo')
+        then btrim('[Sin verificar] ' || coalesce(private.lead_activity_body(new), ''))
+      else private.lead_activity_body(new)
+    end
   );
 
   return null;
@@ -211,6 +218,12 @@ $$;
 create trigger leads_match_contact
 before insert on public.leads
 for each row execute function private.leads_before_insert();
+
+create trigger leads_audit_changes
+after update on public.leads
+for each row
+when (old.assigned_to is distinct from new.assigned_to or old.status is distinct from new.status)
+execute function private.audit();
 
 create trigger leads_log_matched_activity
 after insert on public.leads
@@ -222,6 +235,7 @@ create function private.convert_lead(
   p_lead public.leads,
   p_owner uuid,
   p_actor uuid,
+  p_adopt boolean,
   out o_contact_id uuid,
   out o_deal_id uuid
 )
@@ -231,6 +245,8 @@ set search_path = ''
 as $$
 declare
   v_previous_owner uuid;
+  v_other uuid;
+  v_other_owner uuid;
 begin
   o_contact_id := p_lead.contact_id;
 
@@ -262,17 +278,23 @@ begin
       limit 1;
 
       if o_contact_id is null then
-        select c.id
-        into o_contact_id
+        select c.id, c.owner_id
+        into v_other, v_other_owner
         from public.contacts c
         where c.email operator(extensions.=) p_lead.email
-          and c.owner_id is null
           and c.archived_at is null
+        order by (c.owner_id is not null) desc, c.created_at, c.id
         limit 1
         for update;
 
-        if o_contact_id is not null then
-          update public.contacts set owner_id = p_owner where id = o_contact_id;
+        if found then
+          if v_other_owner is not null or not p_adopt then
+            raise exception 'contact_conflict' using errcode = 'P0001';
+          end if;
+
+          update public.contacts set owner_id = p_owner where id = v_other;
+          update public.deals set owner_id = p_owner where contact_id = v_other;
+          o_contact_id := v_other;
         end if;
       end if;
     end if;
@@ -293,17 +315,7 @@ begin
         returning id into o_contact_id;
       exception
         when unique_violation then
-          select c.id
-          into o_contact_id
-          from public.contacts c
-          where c.email operator(extensions.=) p_lead.email
-            and c.owner_id = p_owner
-            and c.archived_at is null
-          limit 1;
-
-          if o_contact_id is null then
-            raise exception 'contact_conflict' using errcode = 'P0001';
-          end if;
+          raise exception 'contact_conflict' using errcode = 'P0001';
       end;
     end if;
   end if;
@@ -324,6 +336,66 @@ begin
     private.lead_activity_kind(p_lead.source),
     private.lead_activity_body(p_lead)
   );
+end;
+$$;
+
+create function private.is_own_or_sub(p_user uuid)
+returns boolean
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select private.is_closer()
+    and p_user is not null
+    and (
+      p_user = auth.uid()
+      or exists (
+        select 1
+        from public.profiles o
+        where o.id = p_user
+          and o.parent_closer_id = auth.uid()
+      )
+    )
+$$;
+
+create function public.list_lead_inbox()
+returns table (
+  id uuid,
+  first_name text,
+  via public.contact_via,
+  offer text,
+  extras text[],
+  created_at timestamptz,
+  excerpt text,
+  locale public.app_locale
+)
+language plpgsql
+stable
+security definer
+set search_path = ''
+as $$
+begin
+  if not (private.is_closer() or private.is_admin()) then
+    raise exception 'forbidden' using errcode = '42501';
+  end if;
+
+  return query
+  select
+    l.id,
+    split_part(btrim(l.full_name), ' ', 1),
+    l.via,
+    l.offer,
+    l.extras,
+    l.created_at,
+    left(l.message, 140),
+    l.locale
+  from public.leads l
+  where l.status = 'new'
+    and l.assigned_to is null
+    and l.contact_id is null
+  order by l.created_at desc
+  limit 200;
 end;
 $$;
 
@@ -360,7 +432,7 @@ begin
 
   select cl.o_contact_id, cl.o_deal_id
   into v_contact, v_deal
-  from private.convert_lead(v_lead, v_uid, v_uid) cl;
+  from private.convert_lead(v_lead, v_uid, v_uid, false) cl;
 
   update public.leads set contact_id = v_contact, deal_id = v_deal where id = p_lead_id;
 
@@ -407,7 +479,7 @@ begin
 
   select cl.o_contact_id, cl.o_deal_id
   into v_contact, v_deal
-  from private.convert_lead(v_lead, p_user_id, v_uid) cl;
+  from private.convert_lead(v_lead, p_user_id, v_uid, true) cl;
 
   update public.leads
   set assigned_to = p_user_id,
@@ -430,9 +502,9 @@ set search_path = ''
 as $$
 declare
   v_reason text := btrim(coalesce(p_reason, ''));
-  v_status public.lead_status;
+  v_lead public.leads;
 begin
-  if not (private.is_admin() or private.owns_lead(p_lead_id)) then
+  if not (private.is_admin() or private.is_closer()) then
     raise exception 'forbidden' using errcode = '42501';
   end if;
 
@@ -444,19 +516,27 @@ begin
     raise exception 'reason_too_long' using errcode = 'P0001';
   end if;
 
-  select l.status into v_status from public.leads l where l.id = p_lead_id for update;
+  select l.* into v_lead from public.leads l where l.id = p_lead_id for update;
 
   if not found then
-    raise exception 'lead_not_found' using errcode = 'P0001';
+    if private.is_admin() then
+      raise exception 'lead_not_found' using errcode = 'P0001';
+    end if;
+    raise exception 'forbidden' using errcode = '42501';
   end if;
 
-  if v_status not in ('new', 'assigned', 'contacted') then
+  if not (private.is_admin() or private.is_own_or_sub(v_lead.assigned_to)) then
+    raise exception 'forbidden' using errcode = '42501';
+  end if;
+
+  if v_lead.status not in ('new', 'assigned', 'contacted') or v_lead.deal_id is not null then
     raise exception 'lead_not_discardable' using errcode = 'P0001';
   end if;
 
   update public.leads
   set status = 'discarded',
       discard_reason = v_reason,
+      discarded_by = auth.uid(),
       handled_at = coalesce(handled_at, now())
   where id = p_lead_id;
 end;
@@ -469,24 +549,34 @@ security definer
 set search_path = ''
 as $$
 declare
-  v_status public.lead_status;
+  v_lead public.leads;
 begin
-  if not (private.is_admin() or private.owns_lead(p_lead_id)) then
+  if not (private.is_admin() or private.is_closer()) then
     raise exception 'forbidden' using errcode = '42501';
   end if;
 
-  select l.status into v_status from public.leads l where l.id = p_lead_id for update;
+  select l.* into v_lead from public.leads l where l.id = p_lead_id for update;
 
   if not found then
-    raise exception 'lead_not_found' using errcode = 'P0001';
+    if private.is_admin() then
+      raise exception 'lead_not_found' using errcode = 'P0001';
+    end if;
+    raise exception 'forbidden' using errcode = '42501';
   end if;
 
-  if v_status not in ('assigned', 'converted', 'contacted') then
+  if not (private.is_admin() or private.is_own_or_sub(v_lead.assigned_to)) then
+    raise exception 'forbidden' using errcode = '42501';
+  end if;
+
+  if v_lead.status not in ('assigned', 'converted', 'contacted') then
     raise exception 'lead_not_touchable' using errcode = 'P0001';
   end if;
 
   update public.leads
-  set status = 'contacted',
+  set status = case
+        when v_lead.status = 'assigned' then 'contacted'::public.lead_status
+        else v_lead.status
+      end,
       handled_at = coalesce(handled_at, now())
   where id = p_lead_id;
 end;
@@ -498,12 +588,14 @@ revoke all on function private.lead_activity_kind(public.lead_source) from publi
 revoke all on function private.lead_activity_body(public.leads) from public, anon, authenticated;
 revoke all on function private.leads_before_insert() from public, anon, authenticated;
 revoke all on function private.leads_after_insert() from public, anon, authenticated;
-revoke all on function private.convert_lead(public.leads, uuid, uuid) from public, anon, authenticated;
+revoke all on function private.convert_lead(public.leads, uuid, uuid, boolean) from public, anon, authenticated;
+revoke all on function private.is_own_or_sub(uuid) from public, anon, authenticated;
 
 revoke all on function public.claim_lead(uuid) from public, anon, authenticated;
 revoke all on function public.assign_lead(uuid, uuid) from public, anon, authenticated;
 revoke all on function public.discard_lead(uuid, text) from public, anon, authenticated;
 revoke all on function public.touch_lead(uuid) from public, anon, authenticated;
+revoke all on function public.list_lead_inbox() from public, anon, authenticated;
 
 grant execute on function private.slug_list_valid(text[]) to authenticated;
 grant execute on function private.offer_answers_valid(jsonb) to authenticated;
@@ -512,6 +604,7 @@ grant execute on function public.claim_lead(uuid) to authenticated;
 grant execute on function public.assign_lead(uuid, uuid) to authenticated;
 grant execute on function public.discard_lead(uuid, text) to authenticated;
 grant execute on function public.touch_lead(uuid) to authenticated;
+grant execute on function public.list_lead_inbox() to authenticated;
 
 revoke insert on public.leads from authenticated;
 grant insert (source, via, full_name, email, phone, organization, message, locale, assigned_to)
@@ -526,13 +619,7 @@ for select
 to authenticated
 using (
   (select private.is_admin())
-  or (
-    (select private.is_closer())
-    and (
-      (status = 'new' and assigned_to is null and contact_id is null)
-      or assigned_to = (select private.uid())
-    )
-  )
+  or ((select private.is_closer()) and assigned_to = (select private.uid()))
   or private.owns_lead(id)
 );
 
