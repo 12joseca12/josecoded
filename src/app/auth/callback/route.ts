@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 
-import { features } from "@/config/features";
 import { site } from "@/config/site";
 import { defaultLocale, isLocale } from "@/i18n/config";
 import { loginPath, resolveDestination, safeNext } from "@/lib/auth/guards";
 import { readSessionState } from "@/lib/auth/session";
+import { getFeatures } from "@/lib/settings/features";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export async function GET(request: Request): Promise<Response> {
-  if (!features.googleSignIn) return new NextResponse(null, { status: 404 });
+  if (!(await getFeatures()).googleSignIn) return new NextResponse(null, { status: 404 });
   const url = new URL(request.url);
   const rawLocale = url.searchParams.get("locale") ?? defaultLocale;
   const locale = isLocale(rawLocale) ? rawLocale : defaultLocale;

@@ -672,6 +672,45 @@ export type Database = {
         }
         Relationships: []
       }
+      site_settings: {
+        Row: {
+          key: string
+          public: boolean | null
+          updated_at: string
+          updated_by: string | null
+          value: Json
+        }
+        Insert: {
+          key: string
+          public?: never
+          updated_at?: string
+          updated_by?: string | null
+          value: Json
+        }
+        Update: {
+          key?: string
+          public?: never
+          updated_at?: string
+          updated_by?: string | null
+          value?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "site_settings_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "site_settings_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       public_extras: {
@@ -814,9 +853,30 @@ export type Database = {
       }
     }
     Functions: {
+      admin_jobs: {
+        Args: {
+          p_limit?: number
+          p_status?: Database["public"]["Enums"]["job_status"]
+        }
+        Returns: {
+          attempts: number
+          created_at: string
+          error: string
+          finished_at: string
+          id: string
+          kind: Database["public"]["Enums"]["job_kind"]
+          max_attempts: number
+          run_after: string
+          status: Database["public"]["Enums"]["job_status"]
+        }[]
+      }
       assign_lead: {
         Args: { p_lead_id: string; p_user_id: string }
         Returns: string
+      }
+      cancel_job: {
+        Args: { p_id: string }
+        Returns: Database["public"]["Enums"]["job_status"]
       }
       claim_lead: {
         Args: { p_lead_id: string }
@@ -838,6 +898,44 @@ export type Database = {
           offer: string
           via: Database["public"]["Enums"]["contact_via"]
         }[]
+      }
+      omen_claim_jobs: {
+        Args: { p_limit?: number; p_worker: string }
+        Returns: {
+          attempts: number
+          id: string
+          kind: Database["public"]["Enums"]["job_kind"]
+          max_attempts: number
+          payload: Json
+        }[]
+      }
+      omen_finish_job: {
+        Args: { p_error?: string; p_id: string; p_result?: Json }
+        Returns: Database["public"]["Enums"]["job_status"]
+      }
+      omen_heartbeat: {
+        Args: { p_models?: Json; p_version?: string }
+        Returns: undefined
+      }
+      omen_status: {
+        Args: never
+        Returns: Json
+      }
+      read_public_settings: {
+        Args: never
+        Returns: {
+          key: string
+          updated_at: string
+          value: Json
+        }[]
+      }
+      retry_job: {
+        Args: { p_id: string }
+        Returns: Database["public"]["Enums"]["job_status"]
+      }
+      set_setting: {
+        Args: { p_key: string; p_value: Json }
+        Returns: string
       }
       submit_lead: {
         Args: {
@@ -900,6 +998,17 @@ export type Database = {
       contact_via: "hiring" | "freelance" | "project"
       deal_stage: "new" | "contacted" | "meeting" | "proposal" | "won" | "lost"
       extra_billing: "once" | "monthly" | "yearly" | "per_unit"
+      job_kind:
+        | "chat.reply"
+        | "chat.summary"
+        | "rag.index"
+        | "radar.scan"
+        | "radar.score"
+        | "radar.draft"
+        | "radar.send"
+        | "account.delete"
+        | "notify.send"
+      job_status: "queued" | "running" | "done" | "failed" | "cancelled"
       lead_source: "form" | "nexo" | "whatsapp" | "radar" | "manual"
       lead_status: "new" | "assigned" | "contacted" | "converted" | "discarded"
       user_role: "admin" | "closer" | "freelance" | "client"
@@ -1048,6 +1157,18 @@ export const Constants = {
       contact_via: ["hiring", "freelance", "project"],
       deal_stage: ["new", "contacted", "meeting", "proposal", "won", "lost"],
       extra_billing: ["once", "monthly", "yearly", "per_unit"],
+      job_kind: [
+        "chat.reply",
+        "chat.summary",
+        "rag.index",
+        "radar.scan",
+        "radar.score",
+        "radar.draft",
+        "radar.send",
+        "account.delete",
+        "notify.send",
+      ],
+      job_status: ["queued", "running", "done", "failed", "cancelled"],
       lead_source: ["form", "nexo", "whatsapp", "radar", "manual"],
       lead_status: ["new", "assigned", "contacted", "converted", "discarded"],
       user_role: ["admin", "closer", "freelance", "client"],

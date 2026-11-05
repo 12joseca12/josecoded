@@ -14,7 +14,7 @@ export const staffNav: Record<StaffZone, readonly StaffNavEntry[]> = {
     { key: "leads", path: "/interesados", ready: true, label: "admin.nav.leads" },
     { key: "users", path: "/usuarios", ready: false, label: "admin.nav.users" },
     { key: "prices", path: "/precios", ready: true, label: "admin.nav.prices" },
-    { key: "system", path: "/sistema", ready: false, label: "admin.nav.system" },
+    { key: "system", path: "/sistema", ready: true, label: "admin.nav.system" },
     {
       key: "notifications",
       path: "/notificaciones",
