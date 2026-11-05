@@ -81,6 +81,7 @@ export type Database = {
           archived_at: string | null
           city: string | null
           created_at: string
+          created_by_admin: boolean
           email: string | null
           full_name: string
           id: string
@@ -106,6 +107,7 @@ export type Database = {
           archived_at?: string | null
           city?: string | null
           created_at?: string
+          created_by_admin?: boolean
           email?: string | null
           full_name: string
           id?: string
@@ -131,6 +133,7 @@ export type Database = {
           archived_at?: string | null
           city?: string | null
           created_at?: string
+          created_by_admin?: boolean
           email?: string | null
           full_name?: string
           id?: string
@@ -261,7 +264,9 @@ export type Database = {
           created_at: string
           deal_id: string | null
           discard_reason: string | null
+          discarded_by: string | null
           email: string | null
+          extras: string[]
           full_name: string
           handled_at: string | null
           has_domain: boolean | null
@@ -269,6 +274,8 @@ export type Database = {
           id: string
           locale: Database["public"]["Enums"]["app_locale"] | null
           message: string | null
+          offer: string | null
+          offer_answers: Json | null
           offer_url: string | null
           organization: string | null
           pack_id: string | null
@@ -292,7 +299,9 @@ export type Database = {
           created_at?: string
           deal_id?: string | null
           discard_reason?: string | null
+          discarded_by?: string | null
           email?: string | null
+          extras?: string[]
           full_name: string
           handled_at?: string | null
           has_domain?: boolean | null
@@ -300,6 +309,8 @@ export type Database = {
           id?: string
           locale?: Database["public"]["Enums"]["app_locale"] | null
           message?: string | null
+          offer?: string | null
+          offer_answers?: Json | null
           offer_url?: string | null
           organization?: string | null
           pack_id?: string | null
@@ -323,7 +334,9 @@ export type Database = {
           created_at?: string
           deal_id?: string | null
           discard_reason?: string | null
+          discarded_by?: string | null
           email?: string | null
+          extras?: string[]
           full_name?: string
           handled_at?: string | null
           has_domain?: boolean | null
@@ -331,6 +344,8 @@ export type Database = {
           id?: string
           locale?: Database["public"]["Enums"]["app_locale"] | null
           message?: string | null
+          offer?: string | null
+          offer_answers?: Json | null
           offer_url?: string | null
           organization?: string | null
           pack_id?: string | null
@@ -384,6 +399,20 @@ export type Database = {
             columns: ["deal_id"]
             isOneToOne: false
             referencedRelation: "deals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_discarded_by_fkey"
+            columns: ["discarded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_discarded_by_fkey"
+            columns: ["discarded_by"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -467,17 +496,45 @@ export type Database = {
       }
     }
     Functions: {
+      assign_lead: {
+        Args: { p_lead_id: string; p_user_id: string }
+        Returns: string
+      }
+      claim_lead: {
+        Args: { p_lead_id: string }
+        Returns: string
+      }
+      discard_lead: {
+        Args: { p_lead_id: string; p_reason: string }
+        Returns: undefined
+      }
+      list_lead_inbox: {
+        Args: never
+        Returns: {
+          created_at: string
+          excerpt: string
+          extras: string[]
+          first_name: string
+          id: string
+          locale: Database["public"]["Enums"]["app_locale"]
+          offer: string
+          via: Database["public"]["Enums"]["contact_via"]
+        }[]
+      }
       submit_lead: {
         Args: {
           p_company?: string
           p_consent?: boolean
           p_email?: string
+          p_extras?: string[]
           p_full_name?: string
           p_has_domain?: boolean
           p_has_store_accounts?: boolean
           p_ip_hash?: string
           p_locale?: Database["public"]["Enums"]["app_locale"]
           p_message?: string
+          p_offer?: string
+          p_offer_answers?: Json
           p_offer_url?: string
           p_organization?: string
           p_pack_id?: string
@@ -488,6 +545,10 @@ export type Database = {
           p_wanted_by?: string
         }
         Returns: string
+      }
+      touch_lead: {
+        Args: { p_lead_id: string }
+        Returns: undefined
       }
       update_my_profile: {
         Args: {
@@ -517,7 +578,7 @@ export type Database = {
         | "nexo"
         | "whatsapp"
         | "radar"
-      contact_via: "hiring" | "freelance" | "pack"
+      contact_via: "hiring" | "freelance" | "project"
       deal_stage: "new" | "contacted" | "meeting" | "proposal" | "won" | "lost"
       lead_source: "form" | "nexo" | "whatsapp" | "radar" | "manual"
       lead_status: "new" | "assigned" | "contacted" | "converted" | "discarded"
@@ -663,7 +724,7 @@ export const Constants = {
       app_locale: ["es", "en"],
       contact_kind: ["prospect", "client", "recruiter", "partner", "other"],
       contact_source: ["manual", "import", "form", "nexo", "whatsapp", "radar"],
-      contact_via: ["hiring", "freelance", "pack"],
+      contact_via: ["hiring", "freelance", "project"],
       deal_stage: ["new", "contacted", "meeting", "proposal", "won", "lost"],
       lead_source: ["form", "nexo", "whatsapp", "radar", "manual"],
       lead_status: ["new", "assigned", "contacted", "converted", "discarded"],

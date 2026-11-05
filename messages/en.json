@@ -5,6 +5,9 @@
     "siteName": "josecoded",
     "description": "Mobile apps and websites with React Native and Next.js: hourly freelance, tailored development at a fixed price or inside your team. Madrid, Spain and remote."
   },
+  "common": {
+    "responseTime": "one or two working days"
+  },
   "home": {
     "name": "josecoded",
     "metaTitle": "React Native and full stack developer",
@@ -279,7 +282,7 @@
     "whatsapp": "WhatsApp",
     "whatsappHint": "Message me and I reply as soon as I can",
     "chat": "Chat with Nexo",
-    "chatHint": "Our assistant answers right away",
+    "chatHint": "Here you get an answer from me",
     "whatsappMessage": "Hi José Carlos, I'm writing from josecoded.com. I'd like to talk about a project.",
     "form": "Form",
     "formHint": "Tell me about your project at your own pace"
@@ -300,7 +303,7 @@
     "channelsLabel": "Ways to get in touch",
     "chat": {
       "title": "Chat with Nexo",
-      "hint": "Our assistant answers right away.",
+      "hint": "Here you get an answer from me.",
       "open": "Open chat",
       "soon": "The chat opens very soon."
     },
@@ -524,12 +527,18 @@
       "hub": {
         "q1": "Do you work remotely or do I need to be in Madrid?",
         "a1": "I work remotely with clients across Spain and abroad. When needed, I can travel to one-off meetings in Madrid.",
-        "q2": "Do you invoice with VAT?",
-        "a2": "Yes. Every job is invoiced with VAT and a detailed invoice, and the payment method is agreed before starting.",
+        "q2": "Do you invoice as a self-employed freelancer, or can I hire you through a consultancy?",
+        "a2": "I am not registered as self-employed yet and can invoice one-off work. If you need to hire me through a consultancy or company, we work it out case by case and put it in writing before starting.",
         "q3": "Which languages can I write to you in?",
         "a3": "Spanish and English. Code documentation and commit messages are in English.",
         "q4": "How long do you take to reply?",
-        "a4": "I answer every enquiry within one or two working days, usually sooner. If it is urgent, say so in the message."
+        "a4": "I answer every enquiry within {responseTime}, usually sooner. If it is urgent, say so in the message.",
+        "q5": "Will you sign a non-disclosure agreement (NDA)?",
+        "a5": "Yes, I can sign one before you tell me anything sensitive, with your template or a standard one.",
+        "q6": "How much working-hours overlap do you have with my team?",
+        "a6": "I work on Madrid hours and coordinate with teams in other time zones. Tell me when you need to talk and I will tell you which window I can cover.",
+        "q7": "What if I do not like the result?",
+        "a7": "I work in short deliveries you see before I go on, so the course is corrected early and not at the end. If it still does not fit, we talk it through and decide together how to close it."
       },
       "freelance": {
         "q1": "Is there a minimum number of hours?",
@@ -539,7 +548,11 @@
         "q3": "How do I follow progress?",
         "a3": "I work in short deliveries you can try, and I share each step without waiting for the end.",
         "q4": "What happens if the scope grows?",
-        "a4": "We agree it before going on: I explain what changes in time and cost, and you decide whether to include it or leave it for another task."
+        "a4": "We agree it before going on: I explain what changes in time and cost, and you decide whether to include it or leave it for another task.",
+        "q5": "Will you sign an NDA before seeing my code?",
+        "a5": "Yes, I can sign one before you give me access to anything sensitive. If you already have a template, send it over and I will review it.",
+        "q6": "How much working-hours overlap do you offer if I go by the hour?",
+        "a6": "I work on Madrid hours and can overlap with you in a fixed window for questions and reviews."
       },
       "offers": {
         "q1": "How much does a mobile app cost?",
@@ -553,7 +566,15 @@
         "q5": "What do I need to provide?",
         "a5": "The texts, the images and the business decisions. I tell you what I need in each phase and when, so delivery is not held up.",
         "q6": "What if I want something the tier does not have?",
-        "a6": "We talk before touching it: I explain what changes in time and cost, and you decide whether to add it as an extra or leave it out."
+        "a6": "We talk before touching it: I explain what changes in time and cost, and you decide whether to add it as an extra or leave it out.",
+        "q7": "What if you fall ill or disappear?",
+        "a7": "The repository, the domain, the stores and the services are in your name from day one, and I leave documentation so another developer can carry on without me. If something happened to me I would tell you right away and the timeline would be readjusted with you.",
+        "q8": "Is the app mine?",
+        "a8": "Yes. The code and the design of the project are yours, and the store and domain accounts are in your name. The transfer of rights is put in writing in the proposal.",
+        "q9": "Can I pay in phases?",
+        "a9": "Yes. Payment is split into three phases: 40% at the start, 40% when the design is delivered and 20% on launch. Each phase is confirmed in writing in the proposal.",
+        "q10": "What happens if I want to change something halfway through the project?",
+        "a10": "It can be done. Before touching it I explain what changes in timeline and cost, and I only apply it if you approve it in writing. If you approve it, it comes with its own timeline."
       }
     },
     "rates": {
@@ -774,15 +795,42 @@
         "name": "Name",
         "email": "Email",
         "status": "Status",
-        "date": "Date"
+        "assigned": "Assigned to",
+        "date": "Date",
+        "actions": "Actions"
       },
       "via": {
         "hiring": "Hiring",
         "freelance": "Freelance",
-        "pack": "Tailored",
+        "project": "Tailored",
         "none": "No route"
       },
       "noEmail": "No email",
+      "unassigned": "Unassigned",
+      "unknownAssignee": "Person no longer active",
+      "actions": {
+        "assignLabel": "Assign to",
+        "assignPlaceholder": "Choose a closer",
+        "assign": "Assign",
+        "assigning": "Assigning",
+        "noAssignees": "No active closers",
+        "discardOpen": "Discard",
+        "discardReasonLabel": "Reason for discarding",
+        "discardSubmit": "Confirm discard",
+        "discarding": "Discarding",
+        "reasonPrefix": "Reason:",
+        "done": {
+          "assign": "Lead assigned",
+          "discard": "Lead discarded"
+        },
+        "errors": {
+          "assignee": "Choose an active closer.",
+          "reason": "Write the reason, 1 to 500 characters.",
+          "stale": "The lead has changed. Reload the list.",
+          "forbidden": "You are not allowed to do this.",
+          "error": "It could not be completed. Try again."
+        }
+      },
       "status": {
         "new": "New",
         "assigned": "Assigned",
@@ -1472,7 +1520,7 @@
     "faq": {
       "title": "Questions about the process",
       "q1": "How do we start?",
-      "a1": "You tell me the problem through the form or the chat. Within one or two working days I reply with questions and, if it fits, a proposal with scope, timeline and price.",
+      "a1": "You tell me the problem through the form or the chat. Within {responseTime} I reply with questions and, if it fits, a proposal with scope, timeline and price.",
       "q2": "Can I change the scope halfway?",
       "a2": "Yes. I work in short deliveries, so every change is weighed for its effect on timeline and price before it is applied, with no surprises at the end.",
       "q3": "Are the code and the accounts mine?",

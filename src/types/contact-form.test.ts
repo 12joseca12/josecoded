@@ -80,3 +80,34 @@ describe("contactSubmissionSchema", () => {
     expect(!missing.success && missing.error.issues[0]?.message).toBe("verification_required");
   });
 });
+
+describe("offer answers", () => {
+  const full = {
+    start: "idea",
+    kind: "app",
+    size: "small",
+    accounts: "basic",
+    management: "me",
+    more: ["push"],
+  };
+
+  it("accepts the full answers and the existing-project shortcut", () => {
+    expect(contactFormSchema.safeParse({ ...valid, answers: full }).success).toBe(true);
+    expect(contactFormSchema.safeParse({ ...valid, answers: { start: "existing" } }).success).toBe(
+      true,
+    );
+  });
+
+  it("rejects unknown keys, values and shapes", () => {
+    for (const answers of [
+      { ...full, extra: 1 },
+      { ...full, kind: "nope" },
+      { ...full, more: ["nope"] },
+      { ...full, more: Array.from({ length: 9 }, () => "seo") },
+      { start: "existing", kind: "web" },
+      { start: "idea" },
+    ]) {
+      expect(contactFormSchema.safeParse({ ...valid, answers }).success).toBe(false);
+    }
+  });
+});
