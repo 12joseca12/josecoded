@@ -1,0 +1,18 @@
+.tag {
+  position: absolute;
+  top: 1cqi;
+  left: 0;
+  z-index: 1;
+  padding: 0.25rem 0.625rem;
+  border: 0.0625rem solid var(--coral-deep);
+  border-radius: var(--radius-xl);
+  background: var(--panel);
+  color: var(--coral-deep);
+  font-family: var(--font-mono);
+  font-size: var(--fs-s);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  pointer-events: none;
+}

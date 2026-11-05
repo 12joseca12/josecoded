@@ -10,6 +10,11 @@ const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
       accent: string;
       ctaPrimary: string;
       ctaSecondary: string;
+      lead: string;
+      identity: string;
+      identityLink: string;
+      demoTag: string;
+      demoNote: string;
       rail: { list: string; pause: string; resume: string };
       phases: Record<string, string>;
     };
@@ -40,6 +45,26 @@ test.describe("hero copy", () => {
     await expect(primary).toHaveAttribute("href", "/es/contacto");
     const secondary = page.getByRole("link", { name: hero.ctaSecondary });
     await expect(secondary).toHaveAttribute("href", "/es/proyectos");
+  });
+
+  test("says who Jose is and offers the hiring route without scrolling", async ({ page }) => {
+    await page.goto("/es");
+    await expect(page.getByText(hero.lead)).toBeVisible();
+    expect(hero.lead).toContain("en tu equipo");
+    const identity = page.getByText(hero.identity, { exact: false });
+    await expect(identity).toBeVisible();
+    await expect(identity).toContainText("José Carlos Sánchez García");
+    const link = page.getByRole("link", { name: hero.identityLink });
+    await expect(link).toHaveAttribute("href", "/es/sobre-mi");
+    await expect(link).toBeInViewport();
+    await expect(identity).toBeInViewport();
+  });
+
+  test("marks the hero visual as a demo and hides localhost", async ({ page }) => {
+    await page.goto("/es");
+    await expect(page.locator("[data-demo-tag]")).toHaveText(hero.demoTag);
+    await expect(page.getByText(hero.demoNote)).toHaveCount(1);
+    await expect(page.locator("#hero")).not.toContainText("localhost");
   });
 
   test("is the first block of the page", async ({ page }) => {

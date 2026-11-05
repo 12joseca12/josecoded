@@ -44,7 +44,7 @@ export const codeLines: CodeToken[][] = [
 
 export const codeFile = "OrderCard.tsx";
 export const briefFile = "brief.md";
-export const localUrl = "localhost:3000";
+export const previewUrl = "vista-previa.pedidos.app";
 export const liveUrl = "pedidos.app";
 export const clockTime = "9:41";
 export const typeSample = "Aa";
