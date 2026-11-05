@@ -1,5 +1,6 @@
 import { profileLinks } from "@/config/profiles";
 import { type Cv, isPending, type StackGroup, type StackLevel } from "@/content/schemas";
+import type { Modality } from "@/types/about";
 
 export interface StackItemView {
   name: string;
@@ -82,4 +83,47 @@ export function resolveProfileLinks(
 
 export function yearsLabel(years: number, one: string, many: string): string {
   return (years === 1 ? one : many).replace("{n}", String(years));
+}
+
+export function resolveAvailability(
+  config: { modality: Modality | null; notice: string | null },
+  modalityLabels: Record<Modality, string>,
+): string | null {
+  const parts = [
+    config.modality === null ? null : modalityLabels[config.modality],
+    config.notice === null || config.notice.includes("{{DATO") ? null : config.notice,
+  ].filter((part) => part !== null);
+  return parts.length > 0 ? parts.join(" · ") : null;
+}
+
+export interface PersonFacts {
+  knowsAbout: string[];
+  worksFor: string | null;
+  alumniOf: string[];
+  credentials: { name: string; issuer: string | null }[];
+}
+
+const knownGroups: readonly StackGroup[] = ["mobile", "web", "backend", "ai"];
+
+export function resolvePersonFacts(cv: Cv): PersonFacts {
+  const knowsAbout = [
+    ...new Set(
+      cv.stack
+        .filter((entry) => knownGroups.includes(entry.group))
+        .flatMap((entry) => entry.items.map((item) => item.name)),
+    ),
+  ];
+  const [current] = resolveExperience(cv.experience);
+  const worksFor = current?.organization?.split(" · ")[0] ?? null;
+  const education = cv.education.filter((entry) => !Object.values(entry).some(isPending));
+  return {
+    knowsAbout,
+    worksFor,
+    alumniOf: education.flatMap((entry) =>
+      entry.kind === "degree" && entry.organization !== undefined ? [entry.organization] : [],
+    ),
+    credentials: education
+      .filter((entry) => entry.kind === "certification")
+      .map((entry) => ({ name: entry.title, issuer: entry.organization ?? null })),
+  };
 }

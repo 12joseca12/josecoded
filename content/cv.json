@@ -178,32 +178,39 @@
     {
       "title": "Técnico Superior en Desarrollo de Aplicaciones Web (DAW), con proyecto final de apps móviles",
       "period": "2023",
-      "organization": "I.E.S. El Lago, Madrid"
+      "organization": "I.E.S. El Lago, Madrid",
+      "kind": "degree"
     },
     {
       "title": "ITIL 4 Foundation (vigente hasta 2029)",
       "period": "2026",
-      "organization": "PeopleCert"
+      "organization": "PeopleCert",
+      "kind": "certification"
     },
     {
       "title": "Curso de agentes de IA y automatización con n8n (18 h)",
       "period": "2026",
-      "organization": "Alten"
+      "organization": "Alten",
+      "kind": "course"
     },
     {
       "title": "Curso de DevOps y Cloud Computing (16 h)",
       "period": "2024",
-      "organization": "Alten"
+      "organization": "Alten",
+      "kind": "course"
     },
     {
       "title": "Cambridge B2 First",
-      "period": "2017"
+      "period": "2017",
+      "kind": "certification"
     },
     {
-      "title": "Scrum Master"
+      "title": "Scrum Master",
+      "kind": "certification"
     },
     {
-      "title": "CI/CD con Jenkins"
+      "title": "CI/CD con Jenkins",
+      "kind": "course"
     }
   ],
   "file": {

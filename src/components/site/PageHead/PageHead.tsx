@@ -9,9 +9,10 @@ interface PageHeadProps {
   accent?: string;
   lead?: string;
   breadcrumbs?: ReactNode;
+  children?: ReactNode;
 }
 
-export function PageHead({ title, accent, lead, breadcrumbs }: PageHeadProps) {
+export function PageHead({ title, accent, lead, breadcrumbs, children }: PageHeadProps) {
   return (
     <header className={styles.head}>
       {breadcrumbs}
@@ -19,6 +20,7 @@ export function PageHead({ title, accent, lead, breadcrumbs }: PageHeadProps) {
         {title}
       </Heading>
       {lead ? <p className={styles.lead}>{lead}</p> : null}
+      {children}
     </header>
   );
 }

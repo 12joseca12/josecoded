@@ -1,6 +1,9 @@
 export const factListVariants = ["plain", "numbered"] as const;
 export type FactListVariant = (typeof factListVariants)[number];
 
+export const modalities = ["remote", "hybrid", "remoteOrHybrid"] as const;
+export type Modality = (typeof modalities)[number];
+
 export interface FactItem {
   id: string;
   title: string;

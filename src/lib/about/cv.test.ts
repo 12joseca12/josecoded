@@ -4,9 +4,11 @@ import { getCv } from "@/content";
 import { cvSchema } from "@/content/schemas";
 
 import {
+  resolveAvailability,
   resolveCvHref,
   resolveEducation,
   resolveExperience,
+  resolvePersonFacts,
   resolveProfileLinks,
   resolveStack,
   yearsLabel,
@@ -130,5 +132,45 @@ describe("content/cv.json", () => {
       "quality",
       "tools",
     ]);
+  });
+});
+
+describe("resolveAvailability", () => {
+  const labels = { remote: "Remoto", hybrid: "Híbrido", remoteOrHybrid: "Remoto o híbrido" };
+
+  it("returns null without data so the line stays hidden", () => {
+    expect(resolveAvailability({ modality: null, notice: null }, labels)).toBeNull();
+  });
+
+  it("ignores a pending notice", () => {
+    expect(
+      resolveAvailability({ modality: null, notice: "{{DATO: preaviso}}" }, labels),
+    ).toBeNull();
+  });
+
+  it("joins the modality and the notice", () => {
+    expect(
+      resolveAvailability({ modality: "remoteOrHybrid", notice: "Preaviso de un mes" }, labels),
+    ).toBe("Remoto o híbrido · Preaviso de un mes");
+  });
+});
+
+describe("resolvePersonFacts", () => {
+  const facts = resolvePersonFacts(getCv());
+
+  it("lists the main stack topics once", () => {
+    expect(facts.knowsAbout).toContain("React Native");
+    expect(facts.knowsAbout).not.toContain("Jira");
+    expect(new Set(facts.knowsAbout).size).toBe(facts.knowsAbout.length);
+  });
+
+  it("takes the employer from the current role", () => {
+    expect(facts.worksFor).toBe("Alten");
+  });
+
+  it("separates the degree from the certifications", () => {
+    expect(facts.alumniOf).toEqual(["I.E.S. El Lago, Madrid"]);
+    expect(facts.credentials.map((credential) => credential.name)).toContain("Cambridge B2 First");
+    expect(facts.credentials.every((credential) => !credential.name.includes("DAW"))).toBe(true);
   });
 });

@@ -5,21 +5,14 @@
   padding-inline: var(--gutter);
 }
 
-.story {
-  display: grid;
-  gap: var(--space-4);
-  color: var(--ink-soft);
-  font-size: var(--fs-lead);
-  line-height: var(--lh-lead);
-}
-
-.story p:first-child {
-  color: var(--ink);
-}
-
 .actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-3);
+}
+
+.availability {
+  color: var(--ink-soft);
+  font-size: var(--fs-l);
 }

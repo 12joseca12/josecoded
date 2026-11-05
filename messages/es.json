@@ -637,7 +637,6 @@
       "name": "José Carlos Sánchez García",
       "givenName": "José Carlos",
       "familyName": "Sánchez García",
-      "alternateNameFull": "José Carlos Sánchez",
       "alternateName": "josecoded",
       "jobTitle": "Desarrollador full stack especializado en React Native",
       "description": "Desarrollador full stack especializado en React Native, con base en Madrid. Crea apps móviles y webs para empresas y negocios en España y en remoto.",
@@ -1629,39 +1628,13 @@
   },
   "about": {
     "meta": {
-      "title": "José Carlos Sánchez, desarrollador full stack",
-      "description": "Trayectoria, forma de trabajar y stack de José Carlos Sánchez, desarrollador full stack especializado en React Native. Madrid, España y en remoto."
+      "title": "José Carlos Sánchez García, desarrollador",
+      "description": "Trayectoria, forma de trabajar y stack de José Carlos Sánchez García, desarrollador React Native en Alten (apps de 3Cat) y freelance. Madrid y remoto."
     },
     "head": {
-      "title": "Soy José Carlos Sánchez, desarrollador",
+      "title": "Soy José Carlos Sánchez García, desarrollador",
       "accent": "full stack.",
-      "lead": "Desarrollador full-stack móvil especializado en React Native y Expo, con experiencia web en Next.js y TypeScript. Madrid, España y en remoto."
-    },
-    "story": {
-      "title": "Mi historia",
-      "p1": "Soy desarrollador full stack y mi especialidad es React Native: una sola base de código para iOS y Android, con la web y el servidor construidos con las mismas herramientas y el mismo lenguaje.",
-      "p2": "Me gusta responsabilizarme de un producto de principio a fin: la app que se ve, la web que la presenta y los datos que la sostienen. Prefiero entregar algo pequeño que funcione y mejorarlo a la vista de todos que desaparecer meses y presentar una caja cerrada.",
-      "p3": "Vivo en Madrid y trabajo con equipos y clientes de toda España y en remoto. Hablo español nativo e inglés profesional."
-    },
-    "strengths": {
-      "title": "En qué soy mejor",
-      "lead": "Cuatro cosas en las que puedes apoyarte desde el primer día.",
-      "mobile": {
-        "title": "Apps móviles con React Native",
-        "text": "Apps para iOS y Android con una sola base de código, de la primera pantalla a la publicación en las tiendas."
-      },
-      "web": {
-        "title": "Webs rápidas y accesibles",
-        "text": "Next.js con rendimiento y accesibilidad medidos en cada cambio, no prometidos al final."
-      },
-      "backend": {
-        "title": "Servidor y datos",
-        "text": "Bases de datos con seguridad por filas, autenticación y APIs pensadas para que el producto crezca sin rehacerlo."
-      },
-      "ai": {
-        "title": "IA aplicada con criterio",
-        "text": "Asistentes y búsqueda sobre tus propios datos cuando aportan algo, y sin ellos cuando no."
-      }
+      "lead": "Desarrollador React Native en Alten, en las apps de 3Cat (3CatInfo y 3Cat) desde abril de 2024, y freelance con NextRaket. Stack principal: React Native, Expo, Next.js y TypeScript. Madrid, España y en remoto."
     },
     "values": {
       "title": "Cómo trabajo",
@@ -1724,6 +1697,16 @@
         "github": "GitHub",
         "malt": "Malt"
       }
+    },
+    "actions": {
+      "label": "Currículum",
+      "cvEn": "CV in English"
+    },
+    "availability": {
+      "modality": "Modalidad",
+      "remote": "Remoto",
+      "hybrid": "Híbrido",
+      "remoteOrHybrid": "Remoto o híbrido"
     }
   },
   "legal": {
