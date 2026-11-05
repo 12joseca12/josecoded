@@ -1770,6 +1770,124 @@
           "history": "The history could not be loaded."
         }
       }
+    },
+    "notifications": {
+      "meta": {
+        "title": "Notifications"
+      },
+      "title": "Notifications",
+      "lead": "Choose what alerts you and where. Every change is saved at once.",
+      "drainOff": {
+        "title": "Sending is switched off",
+        "text": "Email and Telegram alerts are queued but do not go out until sending is switched on. The bell works as usual."
+      },
+      "loading": {
+        "telegram": "Loading Telegram",
+        "rules": "Loading alert rules"
+      },
+      "telegram": {
+        "title": "Telegram",
+        "text": "Link your Telegram to get alerts on your phone.",
+        "linked": "Linked on {date}",
+        "unlinked": "Not linked",
+        "noBot": {
+          "title": "The bot is not set up",
+          "text": "To link Telegram the server needs the bot name (variable TELEGRAM_BOT_USERNAME). Until it is set, no code can be generated."
+        },
+        "generate": "Generate code",
+        "generating": "Generating code",
+        "codeTitle": "Your linking code",
+        "codeHelp": "Open the bot in Telegram and press Start, or send it this code. It expires at {time}.",
+        "open": "Open in Telegram",
+        "check": "Check linking",
+        "checking": "Checking",
+        "stillPending": "We have not received the code from Telegram yet.",
+        "unlink": "Unlink",
+        "unlinking": "Unlinking",
+        "confirmUnlink": "Unlink this Telegram? You will stop getting alerts there.",
+        "confirmYes": "Yes, unlink",
+        "confirmNo": "Cancel",
+        "done": {
+          "linked": "Telegram linked.",
+          "unlinked": "Telegram unlinked."
+        },
+        "errors": {
+          "forbidden": "You do not have permission for this.",
+          "unavailable": "This feature is not active in the database yet.",
+          "error": "It could not be completed. Try again."
+        },
+        "error": {
+          "title": "Telegram could not be loaded",
+          "text": "We could not read the linking status.",
+          "retry": "Retry",
+          "retrying": "Retrying"
+        },
+        "unavailable": {
+          "title": "Telegram is not available yet",
+          "text": "The database does not have the linking function yet."
+        }
+      },
+      "rules": {
+        "title": "What alerts you",
+        "lead": "Each event can alert you on Telegram, by email and on the bell in the app.",
+        "region": "Alert rules",
+        "caption": "Events and the channels that alert you",
+        "event": "Event",
+        "channels": {
+          "telegram": "Telegram",
+          "email": "Email",
+          "bell": "Bell"
+        },
+        "events": {
+          "lead_new": "New lead",
+          "lead_claimed": "Lead assigned to you",
+          "message_new": "New message",
+          "commission_accrued": "Commission accrued",
+          "payment_recorded": "Payment recorded",
+          "payment_overdue": "Payment overdue",
+          "payout_paid": "Payout paid",
+          "job_failed": "Job failed",
+          "omen_down": "Omen down",
+          "invitation_accepted": "Invitation accepted"
+        },
+        "idle": "No effect yet",
+        "telegramNote": "Telegram only sends if you have linked it.",
+        "saved": "Saved",
+        "errors": {
+          "forbidden": "You do not have permission to change this.",
+          "unavailable": "This feature is not active in the database yet.",
+          "error": "It could not be saved. Try again."
+        },
+        "error": {
+          "title": "The rules could not be loaded",
+          "text": "We could not read your alert preferences.",
+          "retry": "Retry",
+          "retrying": "Retrying"
+        },
+        "unavailable": {
+          "title": "The rules are not available yet",
+          "text": "The database does not have the alert preferences yet."
+        }
+      },
+      "test": {
+        "title": "Send a test",
+        "text": "Queues a test alert to check a channel. If sending is switched off, it stays in the queue.",
+        "send": {
+          "email": "Send test by email",
+          "telegram": "Send test by Telegram"
+        },
+        "sending": "Queueing test",
+        "done": {
+          "email": "Email test queued.",
+          "telegram": "Telegram test queued."
+        },
+        "needsTelegram": "Link Telegram to be able to test it.",
+        "errors": {
+          "forbidden": "You do not have permission for this.",
+          "unavailable": "This feature is not active in the database yet.",
+          "error": "The test could not be queued. Try again."
+        }
+      }
     }
   },
   "crm": {

@@ -1770,6 +1770,124 @@
           "history": "No se ha podido cargar el historial."
         }
       }
+    },
+    "notifications": {
+      "meta": {
+        "title": "Notificaciones"
+      },
+      "title": "Notificaciones",
+      "lead": "Elige qué te avisa y por dónde. Cada cambio se guarda al momento.",
+      "drainOff": {
+        "title": "Los envíos están apagados",
+        "text": "Los avisos por email y Telegram se encolan, pero no salen hasta que se active el envío. La campana funciona con normalidad."
+      },
+      "loading": {
+        "telegram": "Cargando Telegram",
+        "rules": "Cargando las reglas de aviso"
+      },
+      "telegram": {
+        "title": "Telegram",
+        "text": "Vincula tu Telegram para recibir los avisos en el móvil.",
+        "linked": "Vinculado el {date}",
+        "unlinked": "Sin vincular",
+        "noBot": {
+          "title": "Falta configurar el bot",
+          "text": "Para vincular Telegram el servidor necesita el nombre del bot (variable TELEGRAM_BOT_USERNAME). Mientras no esté, no se puede generar el código."
+        },
+        "generate": "Generar código",
+        "generating": "Generando código",
+        "codeTitle": "Tu código de vinculación",
+        "codeHelp": "Abre el bot en Telegram y pulsa Iniciar, o envíale este código. Caduca a las {time}.",
+        "open": "Abrir en Telegram",
+        "check": "Comprobar vinculación",
+        "checking": "Comprobando",
+        "stillPending": "Todavía no hemos recibido el código desde Telegram.",
+        "unlink": "Desvincular",
+        "unlinking": "Desvinculando",
+        "confirmUnlink": "¿Desvincular este Telegram? Dejarás de recibir avisos por ahí.",
+        "confirmYes": "Sí, desvincular",
+        "confirmNo": "Cancelar",
+        "done": {
+          "linked": "Telegram vinculado.",
+          "unlinked": "Telegram desvinculado."
+        },
+        "errors": {
+          "forbidden": "No tienes permiso para esto.",
+          "unavailable": "Esta función aún no está activa en la base de datos.",
+          "error": "No se ha podido completar. Inténtalo de nuevo."
+        },
+        "error": {
+          "title": "No se ha podido cargar Telegram",
+          "text": "No hemos podido leer el estado de la vinculación.",
+          "retry": "Reintentar",
+          "retrying": "Reintentando"
+        },
+        "unavailable": {
+          "title": "Telegram aún no está disponible",
+          "text": "La base de datos todavía no tiene la función de vinculación."
+        }
+      },
+      "rules": {
+        "title": "Qué te avisa",
+        "lead": "Cada evento puede avisarte por Telegram, por email y en la campana de la app.",
+        "region": "Reglas de aviso",
+        "caption": "Eventos y canales por los que te avisan",
+        "event": "Evento",
+        "channels": {
+          "telegram": "Telegram",
+          "email": "Email",
+          "bell": "Campana"
+        },
+        "events": {
+          "lead_new": "Interesado nuevo",
+          "lead_claimed": "Interesado asignado a ti",
+          "message_new": "Mensaje nuevo",
+          "commission_accrued": "Comisión devengada",
+          "payment_recorded": "Cobro registrado",
+          "payment_overdue": "Cobro vencido",
+          "payout_paid": "Liquidación pagada",
+          "job_failed": "Trabajo fallido",
+          "omen_down": "Omen caído",
+          "invitation_accepted": "Invitación aceptada"
+        },
+        "idle": "Sin efecto todavía",
+        "telegramNote": "Telegram solo envía si lo has vinculado.",
+        "saved": "Guardado",
+        "errors": {
+          "forbidden": "No tienes permiso para cambiar esto.",
+          "unavailable": "Esta función aún no está activa en la base de datos.",
+          "error": "No se ha podido guardar. Inténtalo de nuevo."
+        },
+        "error": {
+          "title": "No se han podido cargar las reglas",
+          "text": "No hemos podido leer tus preferencias de aviso.",
+          "retry": "Reintentar",
+          "retrying": "Reintentando"
+        },
+        "unavailable": {
+          "title": "Las reglas aún no están disponibles",
+          "text": "La base de datos todavía no tiene las preferencias de aviso."
+        }
+      },
+      "test": {
+        "title": "Enviar prueba",
+        "text": "Encola un aviso de prueba para comprobar un canal. Si el envío está apagado, se queda en cola.",
+        "send": {
+          "email": "Enviar prueba por email",
+          "telegram": "Enviar prueba por Telegram"
+        },
+        "sending": "Encolando prueba",
+        "done": {
+          "email": "Prueba por email en cola.",
+          "telegram": "Prueba por Telegram en cola."
+        },
+        "needsTelegram": "Vincula Telegram para poder probarlo.",
+        "errors": {
+          "forbidden": "No tienes permiso para esto.",
+          "unavailable": "Esta función aún no está activa en la base de datos.",
+          "error": "No se ha podido encolar la prueba. Inténtalo de nuevo."
+        }
+      }
     }
   },
   "crm": {

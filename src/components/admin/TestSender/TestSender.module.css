@@ -1,0 +1,39 @@
+.test {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.text {
+  max-width: 38rem;
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.hint {
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+}
+
+.feedback {
+  min-height: 0;
+  font-size: var(--fs-m);
+  font-weight: var(--fw-medium);
+}
+
+.feedback:empty {
+  display: none;
+}
+
+.feedback[data-tone="error"] {
+  color: var(--error);
+}
+
+.feedback[data-tone="success"] {
+  color: var(--ink);
+}

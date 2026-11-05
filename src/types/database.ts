@@ -1294,6 +1294,14 @@ export type Database = {
         Args: never
         Returns: string
       }
+      telegram_link_status: {
+        Args: never
+        Returns: {
+          linked_at: string | null
+          pending_code: string | null
+          pending_expires_at: string | null
+        }[]
+      }
       telegram_unlink: {
         Args: never
         Returns: undefined
