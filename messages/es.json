@@ -472,6 +472,18 @@
         "supabase": "Supabase",
         "cloudflare": "Cloudflare",
         "ai": "IA"
+      },
+      "hiring": {
+        "cv": "Descargar CV (PDF)",
+        "cvEn": "CV in English",
+        "trajectory": "Ver trayectoria",
+        "availability": "Preguntar disponibilidad",
+        "expectation": "mi respuesta personal sobre el puesto y mi disponibilidad."
+      },
+      "expectationLabel": "Qué recibes:",
+      "expectation": {
+        "project": "un presupuesto cerrado por escrito, con alcance y fecha.",
+        "freelance": "una propuesta con horas o precio por tarea."
       }
     },
     "ways": {
@@ -554,6 +566,15 @@
       "from": "desde",
       "provisional": "Provisional",
       "provisionalNote": "Cifras provisionales: las tarifas reales llegarán tras una ronda de evaluación de servicios."
+    },
+    "team": {
+      "title": "Si buscas a alguien para tu equipo",
+      "lead": "Así se construye esta misma web, y así trabajaría contigo.",
+      "label": "Prácticas de equipo",
+      "pr": "Cada bloque de trabajo llega en su propia pull request; no se sube nada directo a la rama principal.",
+      "ci": "La integración continua pasa lint, tipos, tests, build y pruebas de extremo a extremo en cada cambio.",
+      "review": "Cada bloque se revisa antes de fusionarse: código, seguridad y accesibilidad.",
+      "more": "Ver cómo trabajo en detalle"
     }
   },
   "seo": {

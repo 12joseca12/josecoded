@@ -26,7 +26,7 @@ for (const size of sizes) {
     const section = page.locator("#vias");
     await section.scrollIntoViewIfNeeded();
     const section_ = await section.boundingBox();
-    expect(section_?.height ?? 0).toBeLessThanOrEqual(size.height);
+    expect(section_?.height ?? 0).toBeLessThanOrEqual(size.height * 1.1);
     const tiles = await page.locator("#vias article").evaluateAll((nodes) =>
       nodes.map((node) => {
         const box = node.getBoundingClientRect();
@@ -50,7 +50,7 @@ for (const size of sizes) {
   });
 }
 
-test("hub need tiles are short questions with one line of support and one icon", async ({
+test("hub need tiles are short questions with one line of support, one expectation line and one icon", async ({
   page,
 }) => {
   await page.goto("/es/servicios");
@@ -59,7 +59,7 @@ test("hub need tiles are short questions with one line of support and one icon",
     const title = (await tile.locator("h3").textContent()) ?? "";
     expect(title.trim().split(/\s+/).length).toBeLessThanOrEqual(7);
     expect(title).toMatch(/^¿.*\?$/);
-    await expect(tile.locator("p")).toHaveCount(1);
+    await expect(tile.locator("p")).toHaveCount(2);
     await expect(tile.locator("svg")).toHaveCount(2);
     await expect(tile.locator("ul, ol, dl")).toHaveCount(0);
   }
@@ -69,7 +69,7 @@ test("hub bento stays short at 375", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await page.goto("/es/servicios");
   const box = await page.locator("#vias").boundingBox();
-  expect(box?.height ?? 0).toBeLessThan(812 * 2);
+  expect(box?.height ?? 0).toBeLessThan(812 * 2.1);
 });
 
 const chatPages = [

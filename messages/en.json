@@ -472,6 +472,18 @@
         "supabase": "Supabase",
         "cloudflare": "Cloudflare",
         "ai": "AI"
+      },
+      "hiring": {
+        "cv": "Download CV (PDF)",
+        "cvEn": "CV in English",
+        "trajectory": "See background",
+        "availability": "Ask about availability",
+        "expectation": "my personal reply about the role and my availability."
+      },
+      "expectationLabel": "What you get:",
+      "expectation": {
+        "project": "a fixed quote in writing, with scope and date.",
+        "freelance": "a proposal with hours or a price per task."
       }
     },
     "ways": {
@@ -554,6 +566,15 @@
       "from": "from",
       "provisional": "Provisional",
       "provisionalNote": "Provisional figures: the real rates will come after a services evaluation round."
+    },
+    "team": {
+      "title": "If you are hiring for your team",
+      "lead": "This is how this very site is built, and how I would work with you.",
+      "label": "Team practices",
+      "pr": "Every block of work arrives in its own pull request; nothing is pushed straight to the main branch.",
+      "ci": "Continuous integration runs lint, types, tests, build and end-to-end checks on every change.",
+      "review": "Every block is reviewed before it is merged: code, security and accessibility.",
+      "more": "See how I work in detail"
     }
   },
   "seo": {
