@@ -410,7 +410,7 @@
       "selection": {
         "title": "Your selection",
         "from": "from",
-        "provisional": "provisional",
+        "review": "price under review",
         "perMonth": "€/month",
         "change": "Change"
       }
@@ -551,9 +551,11 @@
       "unitHour": "€ / hour",
       "unitTask": "€ / task",
       "note": "Indicative: the final amount is agreed before starting.",
-      "from": "from",
-      "provisional": "Provisional",
-      "provisionalNote": "Provisional figures: the real rates will come after a services evaluation round."
+      "from": "from"
+    },
+    "price": {
+      "review": "Price under review",
+      "reviewNote": "I will send you the fixed price in writing within 24–48 h."
     }
   },
   "seo": {
@@ -1166,7 +1168,6 @@
         "platformApp": "Mobile app",
         "from": "from",
         "unit": "€",
-        "provisional": "provisional",
         "monthly": "+ {amount} €/month of maintenance",
         "weeks": "Estimated delivery: {min}–{max} weeks",
         "whyTitle": "Why I recommend it",

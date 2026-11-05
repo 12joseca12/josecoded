@@ -410,7 +410,7 @@
       "selection": {
         "title": "Tu selección",
         "from": "desde",
-        "provisional": "provisional",
+        "review": "precio en revisión",
         "perMonth": "€/mes",
         "change": "Cambiar"
       }
@@ -551,9 +551,11 @@
       "unitHour": "€ / hora",
       "unitTask": "€ / tarea",
       "note": "Orientativas: el importe final se acuerda antes de empezar.",
-      "from": "desde",
-      "provisional": "Provisional",
-      "provisionalNote": "Cifras provisionales: las tarifas reales llegarán tras una ronda de evaluación de servicios."
+      "from": "desde"
+    },
+    "price": {
+      "review": "Precio en revisión",
+      "reviewNote": "Te paso el precio cerrado por escrito en 24–48 h."
     }
   },
   "seo": {
@@ -1166,7 +1168,6 @@
         "platformApp": "App móvil",
         "from": "desde",
         "unit": "€",
-        "provisional": "provisional",
         "monthly": "+ {amount} €/mes de mantenimiento",
         "weeks": "Plazo orientativo: {min}–{max} semanas",
         "whyTitle": "Por qué te lo recomiendo",
