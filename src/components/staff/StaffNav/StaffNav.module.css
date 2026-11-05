@@ -1,0 +1,136 @@
+.rail {
+  display: none;
+}
+
+.list {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-height: 2.75rem;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-m);
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+  transition:
+    color var(--dur-fast) ease,
+    background-color var(--dur-fast) ease,
+    transform var(--dur-press) var(--ease-out);
+}
+
+a.link:active {
+  transform: scale(0.98);
+}
+
+.link[aria-current="page"] {
+  background: var(--charcoal);
+  color: var(--on-dark);
+}
+
+.link[data-state="soon"] {
+  color: var(--ink-faint);
+}
+
+.soon {
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  color: var(--ink-faint);
+  font: var(--fw-medium) var(--fs-2xs) / var(--lh-tight) var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.bar {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: var(--z-header);
+  padding-bottom: env(safe-area-inset-bottom);
+  border-top: 1px solid var(--line);
+  background: var(--paper);
+}
+
+.barList {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+}
+
+.barItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 3.5rem;
+  padding: 0 var(--space-1);
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-ui);
+  text-align: center;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  transition:
+    color var(--dur-fast) ease,
+    background-color var(--dur-fast) ease;
+}
+
+.barItem::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: var(--marker-w);
+  height: var(--marker-h);
+  translate: -50% 0;
+  border-radius: var(--radius-xl);
+  background: var(--coral);
+  scale: 0 1;
+  transition: scale var(--dur-fast) var(--ease-out);
+}
+
+.barItem:active {
+  background: var(--sk-base);
+}
+
+.barItem[aria-current="page"],
+.barItem[data-active] {
+  color: var(--ink);
+  font-weight: var(--fw-semibold);
+}
+
+.barItem[aria-current="page"]::before,
+.barItem[data-active]::before {
+  scale: 1 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  a.link:not([aria-current]):hover {
+    background: var(--sk-base);
+    color: var(--ink);
+  }
+
+  .barItem:hover {
+    color: var(--ink);
+  }
+}
+
+@media (min-width: 64rem) {
+  .rail {
+    display: block;
+  }
+
+  .bar {
+    display: none;
+  }
+}

@@ -1,0 +1,42 @@
+import type { MessageKey } from "@/i18n/keys.generated";
+import type { StaffZone } from "@/types/staff";
+
+export interface StaffNavEntry {
+  key: string;
+  path: string;
+  ready: boolean;
+  label: MessageKey;
+}
+
+export const staffNav: Record<StaffZone, readonly StaffNavEntry[]> = {
+  admin: [
+    { key: "overview", path: "", ready: true, label: "admin.nav.overview" },
+    { key: "leads", path: "/interesados", ready: true, label: "admin.nav.leads" },
+    { key: "users", path: "/usuarios", ready: false, label: "admin.nav.users" },
+    { key: "prices", path: "/precios", ready: false, label: "admin.nav.prices" },
+    { key: "system", path: "/sistema", ready: false, label: "admin.nav.system" },
+    {
+      key: "notifications",
+      path: "/notificaciones",
+      ready: false,
+      label: "admin.nav.notifications",
+    },
+    { key: "receivables", path: "/cobros", ready: false, label: "admin.nav.receivables" },
+    { key: "payouts", path: "/liquidaciones", ready: false, label: "admin.nav.payouts" },
+  ],
+  crm: [
+    { key: "overview", path: "", ready: true, label: "crm.nav.overview" },
+    { key: "contacts", path: "/contactos", ready: false, label: "crm.nav.contacts" },
+    { key: "leads", path: "/interesados", ready: false, label: "crm.nav.leads" },
+    { key: "commissions", path: "/comisiones", ready: false, label: "crm.nav.commissions" },
+    { key: "chat", path: "/chat", ready: false, label: "crm.nav.chat" },
+    { key: "settings", path: "/ajustes", ready: false, label: "crm.nav.settings" },
+  ],
+};
+
+export const barSlots = 3;
+
+export function isCurrentPath(pathname: string, href: string, root: string): boolean {
+  if (href === root) return pathname === root;
+  return pathname === href || pathname.startsWith(`${href}/`);
+}

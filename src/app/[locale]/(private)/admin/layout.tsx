@@ -1,10 +1,10 @@
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 
-import { AdminShell } from "@/components/admin/AdminShell/AdminShell";
+import { StaffShell } from "@/components/staff/StaffShell/StaffShell";
 import { isLocale, isPublished } from "@/i18n/config";
-import { getTranslator } from "@/i18n/messages";
 import { requireZone } from "@/lib/auth/session";
+import { getStaffShell } from "@/lib/staff/shell";
 
 import { signOut } from "../actions";
 
@@ -17,28 +17,10 @@ export default async function AdminLayout({ children, params }: AdminLayoutProps
   const { locale } = await params;
   if (!isLocale(locale) || !isPublished(locale)) notFound();
   const member = await requireZone("admin", locale);
-  const t = await getTranslator(locale);
-  const home = `/${locale}/admin`;
+  const shell = await getStaffShell("admin", locale, member.role);
   return (
-    <AdminShell
-      homeHref={home}
-      userName={member.fullName}
-      items={[
-        { href: home, label: t("admin.nav.overview") },
-        { href: `${home}/interesados`, label: t("admin.nav.leads") },
-      ]}
-      labels={{
-        skipLink: t("nav.skipLink"),
-        brandLabel: t("admin.brandLabel"),
-        brandWord: t("admin.brandWord"),
-        navLabel: t("admin.navLabel"),
-        userLabel: t("admin.userLabel"),
-        signOut: t("admin.signOut"),
-        signingOut: t("admin.signingOut"),
-      }}
-      signOutAction={signOut.bind(null, locale)}
-    >
+    <StaffShell {...shell} userName={member.fullName} signOutAction={signOut.bind(null, locale)}>
       {children}
-    </AdminShell>
+    </StaffShell>
   );
 }

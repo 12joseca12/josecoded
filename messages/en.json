@@ -938,7 +938,18 @@
     "signingOut": "Signing out",
     "nav": {
       "overview": "Overview",
-      "leads": "Leads"
+      "leads": "Leads",
+      "users": "Users",
+      "prices": "Prices",
+      "system": "System",
+      "notifications": "Notifications",
+      "receivables": "Collections",
+      "payouts": "Payouts",
+      "soon": "Coming soon",
+      "more": "More",
+      "moreTitle": "More sections",
+      "close": "Close",
+      "switch": "Go to CRM"
     },
     "overview": {
       "meta": {
@@ -1018,6 +1029,36 @@
         "retry": "Retry",
         "retrying": "Retrying"
       }
+    }
+  },
+  "crm": {
+    "brandLabel": "josecoded CRM, go to overview",
+    "brandWord": "josecoded CRM",
+    "navLabel": "CRM",
+    "userLabel": "Signed in as {name}",
+    "signOut": "Sign out",
+    "signingOut": "Signing out",
+    "nav": {
+      "overview": "Overview",
+      "contacts": "Contacts",
+      "leads": "Leads",
+      "commissions": "Commissions",
+      "chat": "Chat with Jose",
+      "settings": "Settings",
+      "soon": "Coming soon",
+      "more": "More",
+      "moreTitle": "More sections",
+      "close": "Close",
+      "switch": "Go to admin"
+    },
+    "overview": {
+      "meta": {
+        "title": "Overview"
+      },
+      "title": "Overview",
+      "lead": "What you need to do today.",
+      "emptyTitle": "Nothing to show yet",
+      "emptyText": "Your portfolio overview arrives with the CRM. Until then this section is empty."
     }
   },
   "freelancePage": {
