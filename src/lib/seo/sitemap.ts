@@ -3,21 +3,26 @@ import type { MetadataRoute } from "next";
 import type { SiteConfig } from "@/config/site";
 import type { Locale } from "@/i18n/config";
 
-import { absoluteUrl, localePath, publicRoutes } from "./routes";
+import { absoluteUrl, legalPriority, localePath, publicRoutes } from "./routes";
 
 export function buildSitemap(
   site: SiteConfig,
   locales: readonly Locale[],
   hasProjects: boolean,
   hasContact: boolean,
+  legalPaths: readonly string[] = [],
 ): MetadataRoute.Sitemap {
   const routes = publicRoutes.filter(
     (route) => (hasProjects || !route.needsProjects) && (hasContact || !route.needsContact),
   );
+  const entries = [
+    ...routes.map(({ path, priority }) => ({ path, priority })),
+    ...legalPaths.map((path) => ({ path, priority: legalPriority })),
+  ];
   return locales.flatMap((locale) =>
-    routes.map((route) => ({
-      url: absoluteUrl(site.origin, localePath(locale, route.path)),
-      priority: route.priority,
+    entries.map((entry) => ({
+      url: absoluteUrl(site.origin, localePath(locale, entry.path)),
+      priority: entry.priority,
     })),
   );
 }

@@ -61,8 +61,21 @@ export const faqPageSchema = z.strictObject({
     .min(1),
 });
 
+export const profilePageSchema = z.strictObject({
+  "@type": z.literal("ProfilePage"),
+  "@id": z.url(),
+  url: z.url(),
+  name: z.string().min(1),
+  description: z.string().min(1),
+  inLanguage: z.string().min(2),
+  dateModified: z.iso.date().optional(),
+  isPartOf: z.strictObject({ "@id": z.url() }),
+  mainEntity: z.strictObject({ "@id": z.url() }),
+});
+
 export const jsonLdNodeSchema = z.discriminatedUnion("@type", [
   personSchema,
+  profilePageSchema,
   webSiteSchema,
   breadcrumbListSchema,
   faqPageSchema,
@@ -75,6 +88,7 @@ export const jsonLdGraphSchema = z.strictObject({
 
 export type PersonJsonLd = z.infer<typeof personSchema>;
 export type WebSiteJsonLd = z.infer<typeof webSiteSchema>;
+export type ProfilePageJsonLd = z.infer<typeof profilePageSchema>;
 export type BreadcrumbListJsonLd = z.infer<typeof breadcrumbListSchema>;
 export type FaqPageJsonLd = z.infer<typeof faqPageSchema>;
 export type JsonLdNode = z.infer<typeof jsonLdNodeSchema>;

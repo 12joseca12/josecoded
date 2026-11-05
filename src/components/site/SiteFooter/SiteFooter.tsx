@@ -14,7 +14,7 @@ interface SiteFooterProps {
 }
 
 const legal: { slug: string; key: MessageKey }[] = [
-  { slug: "aviso", key: "footer.notice" },
+  { slug: "aviso-legal", key: "footer.notice" },
   { slug: "privacidad", key: "footer.privacy" },
   { slug: "cookies", key: "footer.cookies" },
 ];
