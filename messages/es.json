@@ -2598,6 +2598,108 @@
           "unavailable": "Ahora mismo no puedo guardar. Inténtalo en un momento.",
           "error": "No he podido guardarlo. Inténtalo otra vez."
         }
+      },
+      "detail": {
+        "meta": {
+          "title": "Proyecto"
+        },
+        "back": "Todos los proyectos",
+        "briefTitle": "Resumen",
+        "briefEmpty": "Sin resumen todavía.",
+        "loading": "Cargando el proyecto",
+        "error": {
+          "title": "No he podido cargar el proyecto",
+          "text": "Inténtalo otra vez. Si sigue fallando, mira el estado de Supabase.",
+          "retry": "Reintentar",
+          "retrying": "Reintentando"
+        },
+        "tabsLabel": "Secciones del proyecto",
+        "tabs": {
+          "tasks": "Tareas"
+        },
+        "head": {
+          "phase": "Fase",
+          "phaseSaved": "Fase actualizada",
+          "statuses": {
+            "active": "Activo",
+            "paused": "En pausa",
+            "closed": "Cerrado"
+          },
+          "archive": "Archivar proyecto",
+          "archiveConfirm": "El proyecto pasa a cerrado y no admite cambios de fase hasta que lo restaures.",
+          "restore": "Restaurar proyecto",
+          "working": "Guardando",
+          "cancel": "Cancelar",
+          "archived": "Proyecto archivado",
+          "restored": "Proyecto restaurado",
+          "progress": "Avance del proyecto",
+          "progressText": "{done}/{total} · {percent} %",
+          "phases": {
+            "discover": "Descubrir",
+            "design": "Diseñar",
+            "build": "Construir",
+            "publish": "Publicar",
+            "maintain": "Mantener"
+          }
+        },
+        "tasks": {
+          "board": {
+            "region": "Tablero de tareas por fase",
+            "empty": "Sin tareas en esta fase.",
+            "assignedTo": "Para {name}",
+            "unassigned": "Sin asignar",
+            "moveTo": "Mover a la fase",
+            "moveToFor": "Mover «{title}» a otra fase",
+            "up": "Subir «{title}»",
+            "down": "Bajar «{title}»",
+            "moving": "Moviendo la tarea",
+            "moved": "«{title}» movida"
+          },
+          "sheet": {
+            "create": "Añadir tarea",
+            "createTitle": "Nueva tarea",
+            "editTitle": "Editar tarea",
+            "edit": "Editar",
+            "editFor": "Editar «{title}»",
+            "close": "Cerrar",
+            "title": "Título",
+            "description": "Descripción",
+            "optional": "(opcional)",
+            "phase": "Fase",
+            "status": "Estado",
+            "assignee": "Asignada a",
+            "assigneeNone": "Sin asignar",
+            "submitCreate": "Crear tarea",
+            "submitEdit": "Guardar cambios",
+            "submitting": "Guardando",
+            "done": "Tarea guardada",
+            "delete": "Eliminar tarea",
+            "deleteConfirm": "Se borra para siempre. Solo se pueden eliminar tareas por hacer y sin historia.",
+            "deleting": "Eliminando",
+            "cancel": "Cancelar",
+            "statuses": {
+              "todo": "Por hacer",
+              "doing": "En curso",
+              "done": "Hecha"
+            },
+            "errors": {
+              "title": "Escribe un título de hasta 200 caracteres.",
+              "description": "La descripción es demasiado larga.",
+              "phase": "Elige una fase.",
+              "status": "Elige un estado.",
+              "assigneeId": "Esa persona no puede tener tareas en este proyecto.",
+              "forbidden": "No tienes permiso para hacerlo. Entra de nuevo con tu código.",
+              "invalid_title": "Escribe un título de hasta 200 caracteres.",
+              "invalid_assignee": "Esa persona no puede tener tareas en este proyecto.",
+              "project_not_found": "Ese proyecto ya no existe.",
+              "task_not_found": "Esa tarea ya no existe.",
+              "task_not_deletable": "Solo se pueden eliminar tareas por hacer y sin historia.",
+              "project_archived": "El proyecto está archivado. Restáuralo para cambiarlo.",
+              "unavailable": "Ahora mismo no puedo guardar. Inténtalo en un momento.",
+              "error": "No he podido guardarlo. Inténtalo otra vez."
+            }
+          }
+        }
       }
     }
   },

@@ -1,4 +1,5 @@
 import { ProjectSheet } from "@/components/admin/ProjectSheet/ProjectSheet";
+import { Link } from "@/components/ui/Link/Link";
 import { StatusPill } from "@/components/ui/StatusPill/StatusPill";
 import { formatDay } from "@/lib/admin/users";
 import type {
@@ -57,7 +58,7 @@ export function ProjectTable({
           {rows.map((row) => (
             <tr key={row.id} data-closed={row.status === "closed" ? "true" : undefined}>
               <th scope="row" className={styles.name}>
-                {row.name}
+                <Link href={`/${locale}/admin/proyectos/${row.id}`}>{row.name}</Link>
                 <span className={styles.meta}>
                   {row.client_name ?? labels.noClient}
                   {row.offer_slug !== null

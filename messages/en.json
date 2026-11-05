@@ -2598,6 +2598,108 @@
           "unavailable": "I cannot save right now. Try again in a moment.",
           "error": "I could not save it. Try again."
         }
+      },
+      "detail": {
+        "meta": {
+          "title": "Project"
+        },
+        "back": "All projects",
+        "briefTitle": "Summary",
+        "briefEmpty": "No summary yet.",
+        "loading": "Loading the project",
+        "error": {
+          "title": "I could not load the project",
+          "text": "Try again. If it keeps failing, check the Supabase status.",
+          "retry": "Retry",
+          "retrying": "Retrying"
+        },
+        "tabsLabel": "Project sections",
+        "tabs": {
+          "tasks": "Tasks"
+        },
+        "head": {
+          "phase": "Phase",
+          "phaseSaved": "Phase updated",
+          "statuses": {
+            "active": "Active",
+            "paused": "Paused",
+            "closed": "Closed"
+          },
+          "archive": "Archive project",
+          "archiveConfirm": "The project becomes closed and its phase cannot change until you restore it.",
+          "restore": "Restore project",
+          "working": "Saving",
+          "cancel": "Cancel",
+          "archived": "Project archived",
+          "restored": "Project restored",
+          "progress": "Project progress",
+          "progressText": "{done}/{total} · {percent} %",
+          "phases": {
+            "discover": "Discover",
+            "design": "Design",
+            "build": "Build",
+            "publish": "Publish",
+            "maintain": "Maintain"
+          }
+        },
+        "tasks": {
+          "board": {
+            "region": "Task board by phase",
+            "empty": "No tasks in this phase.",
+            "assignedTo": "For {name}",
+            "unassigned": "Unassigned",
+            "moveTo": "Move to phase",
+            "moveToFor": "Move “{title}” to another phase",
+            "up": "Move “{title}” up",
+            "down": "Move “{title}” down",
+            "moving": "Moving the task",
+            "moved": "“{title}” moved"
+          },
+          "sheet": {
+            "create": "Add task",
+            "createTitle": "New task",
+            "editTitle": "Edit task",
+            "edit": "Edit",
+            "editFor": "Edit “{title}”",
+            "close": "Close",
+            "title": "Title",
+            "description": "Description",
+            "optional": "(optional)",
+            "phase": "Phase",
+            "status": "Status",
+            "assignee": "Assigned to",
+            "assigneeNone": "Unassigned",
+            "submitCreate": "Create task",
+            "submitEdit": "Save changes",
+            "submitting": "Saving",
+            "done": "Task saved",
+            "delete": "Delete task",
+            "deleteConfirm": "It is deleted for good. Only to-do tasks without a story can be deleted.",
+            "deleting": "Deleting",
+            "cancel": "Cancel",
+            "statuses": {
+              "todo": "To do",
+              "doing": "In progress",
+              "done": "Done"
+            },
+            "errors": {
+              "title": "Write a title of up to 200 characters.",
+              "description": "The description is too long.",
+              "phase": "Pick a phase.",
+              "status": "Pick a status.",
+              "assigneeId": "That person cannot have tasks in this project.",
+              "forbidden": "You are not allowed to do this. Sign in again with your code.",
+              "invalid_title": "Write a title of up to 200 characters.",
+              "invalid_assignee": "That person cannot have tasks in this project.",
+              "project_not_found": "That project no longer exists.",
+              "task_not_found": "That task no longer exists.",
+              "task_not_deletable": "Only to-do tasks without a story can be deleted.",
+              "project_archived": "The project is archived. Restore it to change it.",
+              "unavailable": "I cannot save right now. Try again in a moment.",
+              "error": "I could not save it. Try again."
+            }
+          }
+        }
       }
     }
   },

@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 
 import { extendAuthState, people, stateFor } from "./auth.js";
-import { readBody, route, send } from "./registry.js";
+import { readBody, route, send, sendEmpty } from "./registry.js";
 import { admin, deny } from "./system.js";
 
 const clientId = people["client@example.com"].id;
@@ -65,7 +65,7 @@ function seededProjects() {
       phase: index < 2 ? "discover" : index < 5 ? "design" : "build",
       title: `Tarea ${index + 1}`,
       status: index < 2 ? "done" : "todo",
-      sort: index,
+      sort: index < 2 ? index : index < 5 ? index - 2 : index - 5,
     }),
   );
   return [
@@ -160,9 +160,14 @@ function failure(response, code, message) {
   return send(response, 400, { code, message, details: null, hint: null });
 }
 
-route("GET", "/rest/v1/project_overview", ({ request, response }) => {
+function eq(url, field) {
+  return /^eq\.(.+)$/.exec(url.searchParams.get(field) ?? "")?.[1];
+}
+
+route("GET", "/rest/v1/project_overview", ({ request, response, url }) => {
   const auth = adminCall(request, response);
   if (!auth) return;
+  const only = eq(url, "id");
   if (auth.projectsMode === "error") {
     return send(response, 500, { code: "XX000", message: "internal", details: null, hint: null });
   }
@@ -170,7 +175,10 @@ route("GET", "/rest/v1/project_overview", ({ request, response }) => {
   return send(
     response,
     200,
-    [...auth.projects].sort((a, b) => b.created_at.localeCompare(a.created_at)).map(overviewRow),
+    [...auth.projects]
+      .filter((entry) => !only || entry.id === only)
+      .sort((a, b) => b.created_at.localeCompare(a.created_at))
+      .map(overviewRow),
   );
 });
 
@@ -226,4 +234,134 @@ route("PATCH", "/rest/v1/projects", async ({ request, response, url }) => {
   if (!entry) return send(response, 200, []);
   Object.assign(entry, body);
   return send(response, 200, [{ id }]);
+});
+
+route("GET", "/rest/v1/projects", ({ request, response, url }) => {
+  const auth = adminCall(request, response);
+  if (!auth) return;
+  if (auth.projectsMode === "error") {
+    return send(response, 500, { code: "XX000", message: "internal", details: null, hint: null });
+  }
+  const only = eq(url, "id");
+  return send(
+    response,
+    200,
+    auth.projects.filter((entry) => entry.id === only).map((entry) => ({ brief: entry.brief })),
+  );
+});
+
+route("GET", "/rest/v1/tasks", ({ request, response, url }) => {
+  const auth = adminCall(request, response);
+  if (!auth) return;
+  const only = eq(url, "project_id");
+  const entry = auth.projects.find((item) => item.id === only);
+  return send(
+    response,
+    200,
+    [...(entry?.tasks ?? [])].sort((a, b) => a.sort - b.sort),
+  );
+});
+
+function projectOf(auth, id) {
+  return auth.projects.find((entry) => entry.id === id);
+}
+
+function taskOf(auth, id) {
+  for (const entry of auth.projects) {
+    const task = entry.tasks.find((item) => item.id === id);
+    if (task) return { entry, task };
+  }
+  return null;
+}
+
+function rpc(name, handler) {
+  route("POST", `/rest/v1/rpc/${name}`, async ({ request, response }) => {
+    const auth = adminCall(request, response);
+    if (!auth) return;
+    const args = JSON.parse(await readBody(request));
+    auth.calls.projects.push({ name, args });
+    if (auth.projectsRpcError) {
+      return send(response, 400, { details: null, hint: null, ...auth.projectsRpcError });
+    }
+    return handler({ auth, args, response });
+  });
+}
+
+rpc("set_project_phase", ({ auth, args, response }) => {
+  const entry = projectOf(auth, args.p_id);
+  if (!entry) return failure(response, "P0001", "project_not_found");
+  if (entry.archived_at) return failure(response, "P0001", "project_archived");
+  entry.phase = args.p_phase;
+  return sendEmpty(response);
+});
+
+rpc("archive_project", ({ auth, args, response }) => {
+  const entry = projectOf(auth, args.p_id);
+  if (!entry) return failure(response, "P0001", "project_not_found");
+  entry.archived_at = args.p_archived === false ? null : new Date().toISOString();
+  entry.status = args.p_archived === false ? "active" : "closed";
+  return sendEmpty(response);
+});
+
+rpc("upsert_task", ({ auth, args, response }) => {
+  const entry = projectOf(auth, args.p_project_id);
+  if (!entry) return failure(response, "P0001", "project_not_found");
+  if (!String(args.p_title ?? "").trim()) return failure(response, "P0001", "invalid_title");
+  const assignee = args.p_assignee_id ?? null;
+  if (assignee !== null && assignee !== entry.client_id && assignee !== entry.freelance_id) {
+    return failure(response, "P0001", "invalid_assignee");
+  }
+  const status = args.p_status ?? "todo";
+  if (args.p_id) {
+    const task = entry.tasks.find((item) => item.id === args.p_id);
+    if (!task) return failure(response, "P0001", "task_not_found");
+    Object.assign(task, {
+      title: args.p_title,
+      phase: args.p_phase,
+      description: args.p_description ?? null,
+      status,
+      assignee_id: assignee,
+      done_at: status === "done" ? (task.done_at ?? new Date().toISOString()) : null,
+    });
+    return send(response, 200, JSON.stringify(task.id));
+  }
+  const sort = entry.tasks.filter((item) => item.phase === args.p_phase).length;
+  const task = taskRow({
+    id: randomUUID(),
+    project_id: entry.id,
+    phase: args.p_phase,
+    title: args.p_title,
+    description: args.p_description ?? null,
+    status,
+    assignee_id: assignee,
+    sort,
+    done_at: status === "done" ? new Date().toISOString() : null,
+  });
+  entry.tasks.push(task);
+  return send(response, 200, JSON.stringify(task.id));
+});
+
+rpc("move_task", ({ auth, args, response }) => {
+  const found = taskOf(auth, args.p_id);
+  if (!found) return failure(response, "P0001", "task_not_found");
+  const others = found.entry.tasks
+    .filter((item) => item !== found.task && item.phase === args.p_phase)
+    .sort((a, b) => a.sort - b.sort);
+  const position = Math.min(Math.max(args.p_sort, 0), others.length);
+  others.splice(position, 0, found.task);
+  found.task.phase = args.p_phase;
+  others.forEach((item, index) => {
+    item.sort = index;
+  });
+  return sendEmpty(response);
+});
+
+rpc("delete_task", ({ auth, args, response }) => {
+  const found = taskOf(auth, args.p_id);
+  if (!found) return failure(response, "P0001", "task_not_found");
+  if (found.task.status !== "todo" || found.task.story_id) {
+    return failure(response, "P0001", "task_not_deletable");
+  }
+  found.entry.tasks = found.entry.tasks.filter((item) => item !== found.task);
+  return sendEmpty(response);
 });

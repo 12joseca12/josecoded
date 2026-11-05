@@ -1,0 +1,21 @@
+.back {
+  width: fit-content;
+}
+
+.brief {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.briefText {
+  max-width: 46rem;
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+  line-height: var(--lh-body);
+  white-space: pre-line;
+}
+
+.stack {
+  display: grid;
+  gap: var(--space-5);
+}
