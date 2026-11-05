@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { FaqWithNexo } from "@/components/chat/FaqWithNexo/FaqWithNexo";
+import { HowIWorkInTeams } from "@/components/services/HowIWorkInTeams/HowIWorkInTeams";
 import { NeedTile } from "@/components/services/NeedTile/NeedTile";
 import { ProofTile } from "@/components/services/ProofTile/ProofTile";
 import { ServiceBento } from "@/components/services/ServiceBento/ServiceBento";
@@ -11,13 +12,15 @@ import { Button } from "@/components/ui/Button/Button";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 import { Steps } from "@/components/ui/Steps/Steps";
 import { features } from "@/config/features";
+import { getCv } from "@/content/cv";
 import { isLocale } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
+import { resolveCvHref } from "@/lib/about/cv";
 import { buildContactHref } from "@/lib/contact/ways";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { buildFaqItems } from "@/lib/services/faq";
-import type { StepItem } from "@/types/services";
+import type { BentoLinkData, StepItem, TeamPracticeItem } from "@/types/services";
 
 interface ServicesProps {
   params: Promise<{ locale: string }>;
@@ -62,6 +65,25 @@ export default async function ServicesPage({ params }: ServicesProps) {
     title: t(phase.title),
     text: t(phase.text),
   }));
+  const cv = getCv();
+  const cvEs = resolveCvHref(cv.file, "es", features.cvDownload);
+  const trajectory: BentoLinkData = {
+    href: `/${locale}/sobre-mi`,
+    label: t("services.bento.hiring.trajectory"),
+  };
+  const availability: BentoLinkData = {
+    href: buildContactHref(locale, "contratacion"),
+    label: t("services.bento.hiring.availability"),
+  };
+  const hiringCta: BentoLinkData = cvEs
+    ? { href: cvEs, label: t("services.bento.hiring.cv"), download: true }
+    : trajectory;
+  const hiringMore: BentoLinkData[] = [...(cvEs ? [trajectory] : []), availability];
+  const expectationLabel = t("services.bento.expectationLabel");
+  const practices: TeamPracticeItem[] = (["pr", "ci", "review"] as const).map((id) => ({
+    id,
+    text: t(`services.team.${id}`),
+  }));
   const chips = (ids: (keyof typeof chipKeys)[]) => ids.map((id) => t(chipKeys[id]));
 
   return (
@@ -87,13 +109,11 @@ export default async function ServicesPage({ params }: ServicesProps) {
             area="hiring"
             title={t("services.bento.needs.contratacion.title")}
             text={t("services.bento.needs.contratacion.line")}
-            cta={{
-              href: buildContactHref(locale, "contratacion"),
-              label: t("services.ways.contratacion.cta"),
-            }}
-            more={{
-              href: `/${locale}/sobre-mi`,
-              label: t("services.ways.contratacion.more"),
+            cta={hiringCta}
+            more={hiringMore}
+            expectation={{
+              label: expectationLabel,
+              text: t("services.bento.hiring.expectation"),
             }}
           />
           <NeedTile
@@ -105,6 +125,10 @@ export default async function ServicesPage({ params }: ServicesProps) {
               href: `/${locale}/servicios/a-medida`,
               label: t("services.ways.project.cta"),
             }}
+            expectation={{
+              label: expectationLabel,
+              text: t("services.bento.expectation.project"),
+            }}
           />
           <NeedTile
             way="freelance"
@@ -114,6 +138,10 @@ export default async function ServicesPage({ params }: ServicesProps) {
             cta={{
               href: `/${locale}/servicios/freelance`,
               label: t("services.ways.freelance.cta"),
+            }}
+            expectation={{
+              label: expectationLabel,
+              text: t("services.bento.expectation.freelance"),
             }}
           />
           <ProofTile
@@ -128,6 +156,18 @@ export default async function ServicesPage({ params }: ServicesProps) {
             more={{ href: `/${locale}/sobre-mi#stack`, label: t("services.bento.proof.stack") }}
           />
         </ServiceBento>
+      </PageSection>
+      <PageSection
+        id="en-equipo"
+        title={t("services.team.title")}
+        lead={t("services.team.lead")}
+        size="wide"
+      >
+        <HowIWorkInTeams
+          label={t("services.team.label")}
+          items={practices}
+          more={{ href: `/${locale}/como-trabajo`, label: t("services.team.more") }}
+        />
       </PageSection>
       <PageSection
         id="como-trabajo"

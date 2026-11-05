@@ -531,6 +531,17 @@
         "supabase": "Supabase",
         "cloudflare": "Cloudflare",
         "ai": "IA"
+      },
+      "hiring": {
+        "cv": "Descargar CV (PDF)",
+        "trajectory": "Ver trayectoria",
+        "availability": "Preguntar disponibilidad",
+        "expectation": "mi respuesta personal sobre el puesto y mi disponibilidad."
+      },
+      "expectationLabel": "Qué recibes:",
+      "expectation": {
+        "project": "un presupuesto cerrado por escrito, con alcance y fecha.",
+        "freelance": "una propuesta con horas o precio por tarea."
       }
     },
     "ways": {
@@ -629,6 +640,15 @@
       "unitTask": "€ / tarea",
       "note": "Orientativas: el importe final se acuerda antes de empezar.",
       "from": "desde"
+    },
+    "team": {
+      "title": "Si buscas a alguien para tu equipo",
+      "lead": "Así se construye esta misma web, y así trabajaría contigo.",
+      "label": "Prácticas de equipo",
+      "pr": "Cada cambio entra por pull request, con CI en cada uno.",
+      "ci": "La integración continua pasa lint, tipos, tests, build y pruebas de extremo a extremo en cada cambio.",
+      "review": "Cada bloque se revisa antes de fusionarse: código, seguridad y accesibilidad.",
+      "more": "Ver cómo trabajo en detalle"
     },
     "price": {
       "review": "Precio en revisión",

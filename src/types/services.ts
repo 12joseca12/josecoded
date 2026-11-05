@@ -33,6 +33,13 @@ export type BentoLinkVariant = (typeof bentoLinkVariants)[number];
 export interface BentoLinkData {
   href: string;
   label: string;
+  download?: boolean;
+  lang?: string;
+}
+
+export interface TeamPracticeItem {
+  id: string;
+  text: string;
 }
 
 export interface FaqItem {

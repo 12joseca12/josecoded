@@ -10,10 +10,19 @@ interface BentoLinkProps {
   href: string;
   variant?: BentoLinkVariant;
   describedBy?: string;
+  download?: boolean;
+  lang?: string;
   children: ReactNode;
 }
 
-export function BentoLink({ href, variant = "stretch", describedBy, children }: BentoLinkProps) {
+export function BentoLink({
+  href,
+  variant = "stretch",
+  describedBy,
+  download,
+  lang,
+  children,
+}: BentoLinkProps) {
   const content = (
     <>
       {children}
@@ -29,12 +38,12 @@ export function BentoLink({ href, variant = "stretch", describedBy, children }: 
     "data-variant": variant,
     "aria-describedby": describedBy,
   };
-  return href.startsWith("#") ? (
-    <a href={href} {...shared}>
+  return download || href.startsWith("#") ? (
+    <a href={href} download={download} lang={lang} {...shared}>
       {content}
     </a>
   ) : (
-    <NextLink href={href} {...shared}>
+    <NextLink href={href} lang={lang} {...shared}>
       {content}
     </NextLink>
   );

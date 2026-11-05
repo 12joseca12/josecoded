@@ -50,7 +50,7 @@ for (const size of sizes) {
   });
 }
 
-test("hub need tiles are short questions with one line of support and one icon", async ({
+test("hub need tiles are short questions with one line of support, one expectation line and one icon", async ({
   page,
 }) => {
   await page.goto("/es/servicios");
@@ -59,7 +59,7 @@ test("hub need tiles are short questions with one line of support and one icon",
     const title = (await tile.locator("h3").textContent()) ?? "";
     expect(title.trim().split(/\s+/).length).toBeLessThanOrEqual(7);
     expect(title).toMatch(/^¿.*\?$/);
-    await expect(tile.locator("p")).toHaveCount(1);
+    await expect(tile.locator("p")).toHaveCount(2);
     await expect(tile.locator("svg")).toHaveCount(2);
     await expect(tile.locator("ul, ol, dl")).toHaveCount(0);
   }
