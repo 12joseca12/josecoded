@@ -6,11 +6,14 @@ import { ChatChannel } from "@/components/contact/ChatChannel/ChatChannel";
 import { buildContactFormLabels } from "@/components/contact/ContactForm/labels";
 import { FormChannel } from "@/components/contact/FormChannel/FormChannel";
 import { WayChannel } from "@/components/contact/WayChannel/WayChannel";
+import { PageGraph } from "@/components/seo/PageGraph/PageGraph";
+import { Breadcrumbs } from "@/components/site/Breadcrumbs/Breadcrumbs";
 import { PageHead } from "@/components/site/PageHead/PageHead";
 import { Button } from "@/components/ui/Button/Button";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 import { contact } from "@/config/contact";
 import { features } from "@/config/features";
+import { site } from "@/config/site";
 import { isLocale } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
@@ -18,7 +21,9 @@ import { hasLiveChannel, resolveChannels } from "@/lib/contact/channels";
 import { isContactAvailable, readContactClientConfig } from "@/lib/contact/env";
 import { parseSelection } from "@/lib/contact/selection";
 import { resolveInitialWay } from "@/lib/contact/ways";
+import { buildBreadcrumbList, buildContactPage } from "@/lib/seo/jsonld";
 import { buildPageMetadata } from "@/lib/seo/metadata";
+import { localePath } from "@/lib/seo/routes";
 import { extraCopyKeys, offerCopyKeys, priceOf } from "@/lib/services/offers";
 import { isPilotRequest } from "@/lib/services/pilot";
 import type { WayId } from "@/types/services";
@@ -102,12 +107,30 @@ export default async function ContactPage({ params, searchParams }: ContactProps
     />
   );
 
+  const crumbs = [
+    { label: t("nav.home"), href: localePath(locale, "") },
+    { label: t("nav.contact"), href: localePath(locale, "/contacto") },
+  ];
+
   return (
     <>
+      <PageGraph
+        nodes={[
+          buildBreadcrumbList(
+            site.origin,
+            crumbs.map((crumb) => ({ name: crumb.label, path: crumb.href })),
+          ),
+          buildContactPage(site.origin, locale, "/contacto", {
+            name: t("contactPage.meta.title"),
+            description: t("contactPage.meta.description"),
+          }),
+        ]}
+      />
       <PageHead
         title={t("contactPage.head.title")}
         accent={t("contactPage.head.accent")}
         lead={t("contactPage.head.lead")}
+        breadcrumbs={<Breadcrumbs label={t("breadcrumbs.label")} items={crumbs} />}
       />
       <section className={styles.channels} aria-label={t("contactPage.channelsLabel")}>
         <ul className={styles.list}>

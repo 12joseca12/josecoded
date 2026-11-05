@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { PageGraph } from "@/components/seo/PageGraph/PageGraph";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs/Breadcrumbs";
 import { PageHead } from "@/components/site/PageHead/PageHead";
 import { Button } from "@/components/ui/Button/Button";
 import { EmptyState } from "@/components/ui/EmptyState/EmptyState";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
+import { site } from "@/config/site";
 import { hasPublishedProjects } from "@/content";
 import { isLocale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
+import { buildBreadcrumbList } from "@/lib/seo/jsonld";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { localePath } from "@/lib/seo/routes";
 
@@ -40,6 +43,14 @@ export default async function ProjectsPage({ params }: ProjectsProps) {
   ];
   return (
     <>
+      <PageGraph
+        nodes={[
+          buildBreadcrumbList(
+            site.origin,
+            crumbs.map((crumb) => ({ name: crumb.label, path: crumb.href })),
+          ),
+        ]}
+      />
       <PageHead
         title={t("projects.title")}
         lead={t("projects.lead")}

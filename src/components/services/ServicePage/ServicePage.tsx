@@ -10,7 +10,12 @@ import type { Locale } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
 import { nonceHeader } from "@/lib/security/nonce";
-import { buildBreadcrumbList, buildFaqPage, buildGraph } from "@/lib/seo/jsonld";
+import {
+  buildBreadcrumbList,
+  buildFaqPage,
+  buildGraph,
+  buildProfessionalService,
+} from "@/lib/seo/jsonld";
 import { localePath } from "@/lib/seo/routes";
 import type { FaqItem, ServicePageId, WayId, WayNavItem } from "@/types/services";
 
@@ -40,6 +45,17 @@ const wayLabels: Record<WayId, MessageKey> = {
   contratacion: "services.ways.contratacion.nav",
   freelance: "services.ways.freelance.nav",
   project: "services.ways.project.nav",
+};
+
+const wayIds = ["contratacion", "freelance", "project"] as const satisfies readonly WayId[];
+
+const wayCopy: Record<WayId, { title: MessageKey; text: MessageKey }> = {
+  contratacion: {
+    title: "services.ways.contratacion.title",
+    text: "services.ways.contratacion.text",
+  },
+  freelance: { title: "services.ways.freelance.title", text: "services.ways.freelance.text" },
+  project: { title: "services.ways.project.title", text: "services.ways.project.text" },
 };
 
 export async function ServicePage({ locale, page, head, faq, children }: ServicePageProps) {
@@ -73,12 +89,25 @@ export async function ServicePage({ locale, page, head, faq, children }: Service
     },
   ];
 
+  const service = onHub
+    ? await buildProfessionalService(
+        site.origin,
+        locale,
+        pagePaths.hub,
+        wayIds.map((id) => ({
+          name: t(wayCopy[id].title),
+          description: t(wayCopy[id].text),
+        })),
+        { catalogName: t("nav.services") },
+      )
+    : null;
   const graph = buildGraph(
     buildBreadcrumbList(
       site.origin,
       crumbs.map((crumb) => ({ name: crumb.label, path: crumb.href })),
     ),
     buildFaqPage(faq),
+    ...(service ? [service] : []),
   );
 
   return (

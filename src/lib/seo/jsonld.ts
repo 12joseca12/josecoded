@@ -10,6 +10,8 @@ import type { ContactWay } from "@/types/contact";
 import {
   type BreadcrumbListJsonLd,
   breadcrumbListSchema,
+  type ContactPageJsonLd,
+  contactPageSchema,
   type FaqPageJsonLd,
   faqPageSchema,
   type JsonLdGraph,
@@ -17,6 +19,8 @@ import {
   type JsonLdNode,
   type PersonJsonLd,
   personSchema,
+  type ProfessionalServiceJsonLd,
+  professionalServiceSchema,
   type ProfilePageJsonLd,
   profilePageSchema,
   type WebSiteJsonLd,
@@ -146,6 +150,64 @@ export function buildBreadcrumbList(
       name: entry.name,
       item: absoluteUrl(origin, entry.path),
     })),
+  });
+}
+
+export interface OfferCopy {
+  name: string;
+  description: string;
+}
+
+export async function buildProfessionalService(
+  origin: string,
+  locale: Locale,
+  path: string,
+  offers: readonly OfferCopy[],
+  copy: { catalogName: string },
+): Promise<ProfessionalServiceJsonLd> {
+  const t = await getTranslator(locale);
+  const url = absoluteUrl(origin, localePath(locale, path));
+  return professionalServiceSchema.parse({
+    "@type": "ProfessionalService",
+    "@id": `${url}#service`,
+    name: t("seo.website.name"),
+    description: t("seo.person.description"),
+    url,
+    inLanguage: locale,
+    provider: { "@id": personId(origin) },
+    areaServed: [
+      { "@type": "Country", name: t("seo.person.country") },
+      { "@type": "Place", name: t("seo.person.remote") },
+    ],
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: copy.catalogName,
+      itemListElement: offers.map((offer) => ({
+        "@type": "Offer",
+        name: offer.name,
+        description: offer.description,
+        itemOffered: { "@type": "Service", name: offer.name },
+      })),
+    },
+  });
+}
+
+export function buildContactPage(
+  origin: string,
+  locale: Locale,
+  path: string,
+  copy: { name: string; description: string },
+): ContactPageJsonLd {
+  const url = absoluteUrl(origin, localePath(locale, path));
+  return contactPageSchema.parse({
+    "@type": "ContactPage",
+    "@id": `${url}#contact`,
+    url,
+    name: copy.name,
+    description: copy.description,
+    inLanguage: locale,
+    isPartOf: { "@id": websiteId(origin) },
+    about: { "@id": personId(origin) },
   });
 }
 
