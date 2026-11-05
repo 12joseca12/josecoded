@@ -153,12 +153,9 @@ test("hub frames the ways as needs and keeps the five phases only here", async (
   }
 });
 
-test("hub shows the price under review on the paid ways only", async ({ page }) => {
+test("hub tiles stay compact and show no price while it is under review", async ({ page }) => {
   await page.goto("/es/servicios");
-  for (const way of ["project", "freelance"]) {
-    await expect(page.locator(`#${way} [data-variant='review']`)).toHaveText("Precio en revisión");
-  }
-  await expect(page.locator("#contratacion [data-variant='review']")).toHaveCount(0);
+  await expect(page.locator("#vias [data-variant='review']")).toHaveCount(0);
   await expect(page.locator("#vias")).not.toContainText(/\b0{2,3}\b/);
 });
 
@@ -307,7 +304,7 @@ test("freelance page: h1 query, rates stay provisional, three steps and CTA", as
   await expect(rates).toBeVisible();
   await expect(rates.locator("[data-variant='review']")).toHaveCount(2);
   await expect(rates.locator("[data-variant='review']").first()).toHaveText("Precio en revisión");
-  await expect(rates).toContainText("24–48 h");
+  await expect(rates).not.toContainText("24–48 h");
   await expect(rates).not.toContainText(/\b0{2,3}\b/);
   await expect(rates).not.toContainText("€");
   const steps = page.locator("#como-empezamos ol > li");

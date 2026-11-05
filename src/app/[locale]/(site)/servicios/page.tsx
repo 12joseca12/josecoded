@@ -9,7 +9,6 @@ import { ServicePage } from "@/components/services/ServicePage/ServicePage";
 import { PageSection } from "@/components/site/PageSection/PageSection";
 import { Button } from "@/components/ui/Button/Button";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
-import { PriceState } from "@/components/ui/PriceState/PriceState";
 import { Steps } from "@/components/ui/Steps/Steps";
 import { isLocale } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
@@ -105,7 +104,6 @@ export default async function ServicesPage({ params }: ServicesProps) {
               href: `/${locale}/servicios/a-medida`,
               label: t("services.ways.project.cta"),
             }}
-            price={<PriceState variant="review" label={t("services.price.review")} />}
           />
           <NeedTile
             way="freelance"
@@ -116,7 +114,6 @@ export default async function ServicesPage({ params }: ServicesProps) {
               href: `/${locale}/servicios/freelance`,
               label: t("services.ways.freelance.cta"),
             }}
-            price={<PriceState variant="review" label={t("services.price.review")} />}
           />
           <ProofTile
             title={t("services.bento.proof.title")}
