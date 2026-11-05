@@ -19,6 +19,11 @@ export const projects: ContentEntry<ProjectMeta>[] = [
       order: 1,
       status: "live",
     },
+    headings: [
+      { id: "el-problema", label: "El problema" },
+      { id: "qué-hice", label: "Qué hice" },
+      { id: "resultado", label: "Resultado" },
+    ],
     load: () => import("../../content/projects/app-ejemplo.mdx"),
   },
   {
@@ -35,6 +40,11 @@ export const projects: ContentEntry<ProjectMeta>[] = [
       order: 2,
       status: "wip",
     },
+    headings: [
+      { id: "el-problema", label: "El problema" },
+      { id: "qué-hice", label: "Qué hice" },
+      { id: "resultado", label: "Resultado" },
+    ],
     load: () => import("../../content/projects/web-ejemplo.mdx"),
   },
 ];
@@ -42,7 +52,82 @@ export const blog: ContentEntry<BlogMeta>[] = [];
 export const legal: ContentEntry<LegalMeta>[] = [
   {
     slug: "aviso-legal",
-    meta: { title: "Aviso legal", updated: "2026-11-02" },
+    meta: {
+      title: "Aviso legal",
+      updated: "2026-11-05",
+      draft: true,
+      summary: [
+        "Este sitio lo edita y mantiene una persona física, José Carlos Sánchez García, desde Madrid.",
+        "Puedes escribirme a hola@josecoded.com para cualquier asunto legal o de contenido.",
+        "El acceso es gratuito y la información tiene carácter orientativo, no es una oferta vinculante.",
+        "Los contenidos son propiedad del titular y no se pueden reutilizar sin permiso.",
+        "Cómo trato tus datos y qué cookies uso está explicado en sus páginas propias.",
+      ],
+    },
+    headings: [
+      { id: "titular-del-sitio", label: "Titular del sitio" },
+      { id: "objeto-del-sitio", label: "Objeto del sitio" },
+      { id: "condiciones-de-uso", label: "Condiciones de uso" },
+      {
+        id: "carácter-orientativo-de-la-información",
+        label: "Carácter orientativo de la información",
+      },
+      { id: "propiedad-intelectual-e-industrial", label: "Propiedad intelectual e industrial" },
+      { id: "enlaces", label: "Enlaces" },
+      { id: "responsabilidad", label: "Responsabilidad" },
+      { id: "protección-de-datos-y-cookies", label: "Protección de datos y cookies" },
+      { id: "legislación-aplicable-y-jurisdicción", label: "Legislación aplicable y jurisdicción" },
+    ],
     load: () => import("../../content/legal/aviso-legal.mdx"),
+  },
+  {
+    slug: "cookies",
+    meta: {
+      title: "Política de cookies",
+      updated: "2026-11-05",
+      draft: true,
+      summary: [
+        "Solo uso cookies estrictamente necesarias, así que no hay banner que aceptar.",
+        "Sirven para mantener tu sesión si entras, recordar tu conversación del chat y verificar que no eres un robot.",
+        "No uso cookies de analítica, publicidad ni seguimiento.",
+        "Si algún día las añado, te pediré consentimiento antes de activarlas.",
+        "Puedes borrarlas desde tu navegador cuando quieras; el sitio seguirá funcionando.",
+      ],
+    },
+    headings: [
+      { id: "solo-cookies-necesarias", label: "Solo cookies necesarias" },
+      { id: "qué-cookies-se-usan", label: "Qué cookies se usan" },
+      { id: "cómo-gestionar-o-borrar-las-cookies", label: "Cómo gestionar o borrar las cookies" },
+      { id: "cambios", label: "Cambios" },
+      { id: "más-información", label: "Más información" },
+    ],
+    load: () => import("../../content/legal/cookies.mdx"),
+  },
+  {
+    slug: "privacidad",
+    meta: {
+      title: "Política de privacidad",
+      updated: "2026-11-05",
+      draft: true,
+      summary: [
+        "Guardo solo lo que me das: el formulario de contacto, el chat y, si entras, tu cuenta. No hay publicidad ni analítica.",
+        "Lo uso para responderte y, si llega a haber trabajo, para gestionarlo; nada más.",
+        "Un chat sin datos de contacto se borra a los 7 días; si dejas tu contacto, a los 60 días; si eres cliente, a los 90 días desde tu última respuesta.",
+        "Intervienen proveedores con contrato de encargo de tratamiento, casi todos en la Unión Europea (lista abajo).",
+        "Para acceder, corregir o borrar tus datos escribe a hola@josecoded.com.",
+      ],
+    },
+    headings: [
+      { id: "responsable-del-tratamiento", label: "Responsable del tratamiento" },
+      { id: "qué-datos-trato-y-para-qué", label: "Qué datos trato y para qué" },
+      { id: "cómo-se-trata-el-chat", label: "Cómo se trata el chat" },
+      { id: "cuánto-tiempo-conservo-tus-datos", label: "Cuánto tiempo conservo tus datos" },
+      { id: "quién-más-accede-a-tus-datos", label: "Quién más accede a tus datos" },
+      { id: "transferencias-internacionales", label: "Transferencias internacionales" },
+      { id: "seguridad", label: "Seguridad" },
+      { id: "tus-derechos", label: "Tus derechos" },
+      { id: "cambios-en-esta-política", label: "Cambios en esta política" },
+    ],
+    load: () => import("../../content/legal/privacidad.mdx"),
   },
 ];

@@ -14,6 +14,7 @@ interface PageSeo {
   description: MessageKey;
   sameSegmentAsLayout?: boolean;
   indexable?: boolean;
+  openGraphType?: "website" | "profile";
 }
 
 export function resolveRobots(site: SiteConfig): Metadata["robots"] {
@@ -31,6 +32,7 @@ export async function buildPageMetadata({
   description,
   sameSegmentAsLayout = false,
   indexable = true,
+  openGraphType = "website",
 }: PageSeo): Promise<Metadata> {
   if (!isPublished(locale)) return {};
   const t = await getTranslator(locale);
@@ -44,7 +46,7 @@ export async function buildPageMetadata({
     ...(indexable ? {} : { robots: { index: false, follow: true } }),
     alternates: { canonical },
     openGraph: {
-      type: "website",
+      type: openGraphType,
       siteName: t("meta.siteName"),
       locale: openGraphLocales[locale],
       url: canonical,

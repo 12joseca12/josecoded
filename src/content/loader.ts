@@ -4,13 +4,19 @@ import { join } from "node:path";
 import { parse } from "yaml";
 import type { z } from "zod";
 
-import { contentSchemas, type ContentType, contentTypes } from "./schemas.ts";
+import { contentSchemas, type ContentType, contentTypes, type Cv, cvSchema } from "./schemas.ts";
+
+export interface Heading {
+  id: string;
+  label: string;
+}
 
 export interface LoadedEntry {
   type: ContentType;
   file: string;
   slug: string;
   meta: Record<string, unknown>;
+  headings: Heading[];
 }
 
 export interface Placeholder {
@@ -51,6 +57,42 @@ function parseFrontmatter(file: string, source: string): { data?: unknown; probl
   }
 }
 
+const headingLine = /^##\s+(.+?)\s*#*\s*$/;
+const codeFence = /^\s*(```|~~~)/;
+
+function plainHeading(raw: string): string {
+  return raw
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+    .replace(/[*_`]/g, "")
+    .replace(/\\(.)/g, "$1")
+    .trim();
+}
+
+export function headingId(label: string): string {
+  return label
+    .toLowerCase()
+    .replace(/[^\p{L}\p{M}\p{N}\p{Pc} -]/gu, "")
+    .replaceAll(" ", "-");
+}
+
+export function extractHeadings(source: string): Heading[] {
+  const body = source.replace(fence, "");
+  const headings: Heading[] = [];
+  let inCode = false;
+  for (const line of body.split("\n")) {
+    if (codeFence.test(line)) {
+      inCode = !inCode;
+      continue;
+    }
+    const match = inCode ? null : headingLine.exec(line);
+    if (match?.[1]) {
+      const label = plainHeading(match[1]);
+      headings.push({ id: headingId(label), label });
+    }
+  }
+  return headings;
+}
+
 function listFiles(base: string, type: ContentType): string[] {
   const dir = join(base, "content", type);
   if (!existsSync(dir)) return [];
@@ -67,10 +109,8 @@ export function readContent(base: string): LoadedEntry[] {
     const seenOrders = new Map<number, string>();
     for (const name of listFiles(base, type)) {
       const file = `content/${type}/${name}`;
-      const { data, problems: frontmatterProblems } = parseFrontmatter(
-        file,
-        readFileSync(join(base, file), "utf8"),
-      );
+      const source = readFileSync(join(base, file), "utf8");
+      const { data, problems: frontmatterProblems } = parseFrontmatter(file, source);
       problems.push(...frontmatterProblems);
       if (frontmatterProblems.length > 0) continue;
 
@@ -97,7 +137,7 @@ export function readContent(base: string): LoadedEntry[] {
         }
         seenOrders.set(meta.order, file);
       }
-      entries.push({ type, file, slug: fileSlug, meta });
+      entries.push({ type, file, slug: fileSlug, meta, headings: extractHeadings(source) });
     }
   }
 
@@ -105,7 +145,24 @@ export function readContent(base: string): LoadedEntry[] {
   return entries;
 }
 
-export function findPlaceholders(base: string, entries: LoadedEntry[]): Placeholder[] {
+export function readCv(base: string): Cv {
+  const file = "content/cv.json";
+  let data: unknown;
+  try {
+    data = JSON.parse(readFileSync(join(base, file), "utf8"));
+  } catch (error) {
+    const reason = error instanceof Error ? error.message.split("\n")[0] : "invalid JSON";
+    throw new ContentError([`${file}: not valid JSON: ${reason}`]);
+  }
+  const result = cvSchema.safeParse(data);
+  if (!result.success) throw new ContentError(describeIssues(file, result.error));
+  return result.data;
+}
+
+export function findPlaceholders(
+  base: string,
+  entries: readonly { file: string }[],
+): Placeholder[] {
   return entries.flatMap((entry) =>
     readFileSync(join(base, entry.file), "utf8")
       .split("\n")
@@ -125,7 +182,7 @@ export function renderIndex(entries: LoadedEntry[]): string {
       .filter((entry) => entry.type === type)
       .map(
         (entry) =>
-          `{ slug: "${entry.slug}", meta: ${JSON.stringify(entry.meta)}, load: () => import("../../${entry.file}") }`,
+          `{ slug: "${entry.slug}", meta: ${JSON.stringify(entry.meta)}, headings: ${JSON.stringify(entry.headings)}, load: () => import("../../${entry.file}") }`,
       );
     return `export const ${type}: ContentEntry<${metaTypes[type]}>[] = [${items.join(",")}];`;
   });
