@@ -291,6 +291,98 @@ export type Database = {
         }
         Relationships: []
       }
+      invitations: {
+        Row: {
+          accepted_at: string | null
+          auth_user_id: string | null
+          closer_rate: number | null
+          closer_recurring_rate: number | null
+          created_at: string
+          email: string
+          expires_at: string
+          id: string
+          invited_by: string | null
+          note: string | null
+          parent_closer_id: string | null
+          parent_rate: number | null
+          parent_recurring_rate: number | null
+          payout_cadence: Database["public"]["Enums"]["payout_cadence"] | null
+          project_id: string | null
+          revoked_at: string | null
+          role: Database["public"]["Enums"]["user_role"]
+          token_hash: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          auth_user_id?: string | null
+          closer_rate?: number | null
+          closer_recurring_rate?: number | null
+          created_at?: string
+          email: string
+          expires_at?: string
+          id?: string
+          invited_by?: string | null
+          note?: string | null
+          parent_closer_id?: string | null
+          parent_rate?: number | null
+          parent_recurring_rate?: number | null
+          payout_cadence?: Database["public"]["Enums"]["payout_cadence"] | null
+          project_id?: string | null
+          revoked_at?: string | null
+          role: Database["public"]["Enums"]["user_role"]
+          token_hash: string
+        }
+        Update: {
+          accepted_at?: string | null
+          auth_user_id?: string | null
+          closer_rate?: number | null
+          closer_recurring_rate?: number | null
+          created_at?: string
+          email?: string
+          expires_at?: string
+          id?: string
+          invited_by?: string | null
+          note?: string | null
+          parent_closer_id?: string | null
+          parent_rate?: number | null
+          parent_recurring_rate?: number | null
+          payout_cadence?: Database["public"]["Enums"]["payout_cadence"] | null
+          project_id?: string | null
+          revoked_at?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          token_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invitations_invited_by_fkey"
+            columns: ["invited_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invitations_invited_by_fkey"
+            columns: ["invited_by"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invitations_parent_closer_id_fkey"
+            columns: ["parent_closer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invitations_parent_closer_id_fkey"
+            columns: ["parent_closer_id"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leads: {
         Row: {
           assigned_at: string | null
@@ -498,6 +590,93 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_prefs: {
+        Row: {
+          bell: boolean
+          email: boolean
+          event: Database["public"]["Enums"]["notification_event"]
+          telegram: boolean
+          user_id: string
+        }
+        Insert: {
+          bell?: boolean
+          email?: boolean
+          event: Database["public"]["Enums"]["notification_event"]
+          telegram?: boolean
+          user_id: string
+        }
+        Update: {
+          bell?: boolean
+          email?: boolean
+          event?: Database["public"]["Enums"]["notification_event"]
+          telegram?: boolean
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_prefs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notification_prefs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          event: Database["public"]["Enums"]["notification_event"]
+          href: string | null
+          id: string
+          read_at: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          event: Database["public"]["Enums"]["notification_event"]
+          href?: string | null
+          id?: string
+          read_at?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          event?: Database["public"]["Enums"]["notification_event"]
+          href?: string | null
+          id?: string
+          read_at?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       offers: {
         Row: {
           archived_at: string | null
@@ -586,43 +765,69 @@ export type Database = {
         Row: {
           archived_at: string | null
           closer_rate: number | null
+          closer_recurring_rate: number | null
           created_at: string
           full_name: string
           id: string
+          invited_by: string | null
           is_active: boolean
           locale: Database["public"]["Enums"]["app_locale"]
           parent_closer_id: string | null
           parent_rate: number | null
+          parent_recurring_rate: number | null
+          payout_cadence: Database["public"]["Enums"]["payout_cadence"] | null
           role: Database["public"]["Enums"]["user_role"]
           updated_at: string
         }
         Insert: {
           archived_at?: string | null
           closer_rate?: number | null
+          closer_recurring_rate?: number | null
           created_at?: string
           full_name: string
           id: string
+          invited_by?: string | null
           is_active?: boolean
           locale?: Database["public"]["Enums"]["app_locale"]
           parent_closer_id?: string | null
           parent_rate?: number | null
+          parent_recurring_rate?: number | null
+          payout_cadence?: Database["public"]["Enums"]["payout_cadence"] | null
           role: Database["public"]["Enums"]["user_role"]
           updated_at?: string
         }
         Update: {
           archived_at?: string | null
           closer_rate?: number | null
+          closer_recurring_rate?: number | null
           created_at?: string
           full_name?: string
           id?: string
+          invited_by?: string | null
           is_active?: boolean
           locale?: Database["public"]["Enums"]["app_locale"]
           parent_closer_id?: string | null
           parent_rate?: number | null
+          parent_recurring_rate?: number | null
+          payout_cadence?: Database["public"]["Enums"]["payout_cadence"] | null
           role?: Database["public"]["Enums"]["user_role"]
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "profiles_invited_by_fkey"
+            columns: ["invited_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_invited_by_fkey"
+            columns: ["invited_by"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "profiles_parent_closer_id_fkey"
             columns: ["parent_closer_id"]
@@ -853,6 +1058,28 @@ export type Database = {
       }
     }
     Functions: {
+      accept_invitation: {
+        Args: { p_full_name: string; p_locale?: Database["public"]["Enums"]["app_locale"]; p_token: string }
+        Returns: Database["public"]["Enums"]["user_role"]
+      }
+      admin_audit_log: {
+        Args: { p_limit?: number; p_row_id?: string; p_table?: string }
+        Returns: {
+          action: string
+          actor_id: string | null
+          actor_name: string | null
+          after: Json | null
+          at: string
+          before: Json | null
+          id: number
+          row_id: string | null
+          table_name: string
+        }[]
+      }
+      admin_counters: {
+        Args: never
+        Returns: Json
+      }
       admin_jobs: {
         Args: {
           p_limit?: number
@@ -868,6 +1095,28 @@ export type Database = {
           max_attempts: number
           run_after: string
           status: Database["public"]["Enums"]["job_status"]
+        }[]
+      }
+      admin_users: {
+        Args: never
+        Returns: {
+          accrued_pending: number
+          archived_at: string | null
+          closer_rate: number | null
+          closer_recurring_rate: number | null
+          contacts_count: number
+          created_at: string
+          email: string | null
+          full_name: string
+          has_totp: boolean
+          id: string
+          is_active: boolean
+          open_deals: number
+          parent_closer_id: string | null
+          parent_rate: number | null
+          parent_recurring_rate: number | null
+          payout_cadence: Database["public"]["Enums"]["payout_cadence"] | null
+          role: Database["public"]["Enums"]["user_role"]
         }[]
       }
       assign_lead: {
@@ -886,6 +1135,13 @@ export type Database = {
         Args: { p_lead_id: string; p_reason: string }
         Returns: undefined
       }
+      invite_user: {
+        Args: { p_auth_user_id?: string; p_closer_rate?: number; p_closer_recurring_rate?: number; p_email: string; p_note?: string; p_parent_closer_id?: string; p_parent_rate?: number; p_parent_recurring_rate?: number; p_payout_cadence?: Database["public"]["Enums"]["payout_cadence"]; p_project_id?: string; p_role: Database["public"]["Enums"]["user_role"] }
+        Returns: {
+          invitation_id: string
+          token: string
+        }[]
+      }
       list_lead_inbox: {
         Args: never
         Returns: {
@@ -898,6 +1154,14 @@ export type Database = {
           offer: string
           via: Database["public"]["Enums"]["contact_via"]
         }[]
+      }
+      log_totp_reset: {
+        Args: { p_user_id: string }
+        Returns: undefined
+      }
+      mark_notifications_read: {
+        Args: { p_ids: string[] }
+        Returns: number
       }
       omen_claim_jobs: {
         Args: { p_limit?: number; p_worker: string }
@@ -921,6 +1185,31 @@ export type Database = {
         Args: never
         Returns: Json
       }
+      outbox_claim: {
+        Args: { p_limit?: number }
+        Returns: {
+          attempts: number
+          channel: Database["public"]["Enums"]["outbox_channel"]
+          id: number
+          payload: Json
+          recipient: string
+          template: string
+        }[]
+      }
+      outbox_mark: {
+        Args: { p_error?: string; p_id: number; p_ok: boolean }
+        Returns: undefined
+      }
+      read_invitation: {
+        Args: { p_token: string }
+        Returns: {
+          email: string
+          expires_at: string
+          invited_by_name: string
+          role: Database["public"]["Enums"]["user_role"]
+          status: string
+        }[]
+      }
       read_public_settings: {
         Args: never
         Returns: {
@@ -929,13 +1218,48 @@ export type Database = {
           value: Json
         }[]
       }
+      reassign_portfolio: {
+        Args: { p_from_user: string; p_to_user: string }
+        Returns: {
+          contacts: number
+          deals: number
+          leads: number
+        }[]
+      }
+      renew_invitation: {
+        Args: { p_id: string }
+        Returns: {
+          invitation_id: string
+          token: string
+        }[]
+      }
       retry_job: {
         Args: { p_id: string }
         Returns: Database["public"]["Enums"]["job_status"]
       }
+      revoke_invitation: {
+        Args: { p_id: string }
+        Returns: undefined
+      }
+      send_test_notification: {
+        Args: { p_channel: string }
+        Returns: undefined
+      }
+      set_notification_pref: {
+        Args: { p_channel: string; p_enabled: boolean; p_event: Database["public"]["Enums"]["notification_event"] }
+        Returns: undefined
+      }
       set_setting: {
         Args: { p_key: string; p_value: Json }
         Returns: string
+      }
+      set_user_active: {
+        Args: { p_active: boolean; p_user_id: string }
+        Returns: undefined
+      }
+      set_user_rates: {
+        Args: { p_closer_rate?: number; p_closer_recurring_rate?: number; p_parent_rate?: number; p_parent_recurring_rate?: number; p_payout_cadence?: Database["public"]["Enums"]["payout_cadence"]; p_user_id: string }
+        Returns: undefined
       }
       submit_lead: {
         Args: {
@@ -961,6 +1285,18 @@ export type Database = {
           p_wanted_by?: string
         }
         Returns: string
+      }
+      telegram_confirm_link: {
+        Args: { p_chat_id: number; p_code: string }
+        Returns: string
+      }
+      telegram_link_code: {
+        Args: never
+        Returns: string
+      }
+      telegram_unlink: {
+        Args: never
+        Returns: undefined
       }
       touch_lead: {
         Args: { p_lead_id: string }
@@ -1011,10 +1347,13 @@ export type Database = {
       job_status: "queued" | "running" | "done" | "failed" | "cancelled"
       lead_source: "form" | "nexo" | "whatsapp" | "radar" | "manual"
       lead_status: "new" | "assigned" | "contacted" | "converted" | "discarded"
+      notification_event: "lead_new" | "lead_claimed" | "message_new" | "commission_accrued" | "payment_recorded" | "payment_overdue" | "payout_paid" | "job_failed" | "omen_down" | "invitation_accepted"
+      outbox_channel: "email" | "telegram"
+      outbox_status: "queued" | "sending" | "sent" | "failed"
+      payout_cadence: "per_payment" | "weekly" | "biweekly"
       user_role: "admin" | "closer" | "freelance" | "client"
     }
     CompositeTypes: {
-      [_ in never]: never
     }
   }
 }
@@ -1171,6 +1510,10 @@ export const Constants = {
       job_status: ["queued", "running", "done", "failed", "cancelled"],
       lead_source: ["form", "nexo", "whatsapp", "radar", "manual"],
       lead_status: ["new", "assigned", "contacted", "converted", "discarded"],
+      notification_event: ["lead_new", "lead_claimed", "message_new", "commission_accrued", "payment_recorded", "payment_overdue", "payout_paid", "job_failed", "omen_down", "invitation_accepted"],
+      outbox_channel: ["email", "telegram"],
+      outbox_status: ["queued", "sending", "sent", "failed"],
+      payout_cadence: ["per_payment", "weekly", "biweekly"],
       user_role: ["admin", "closer", "freelance", "client"],
     },
   },

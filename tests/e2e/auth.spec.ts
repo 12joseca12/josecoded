@@ -393,7 +393,7 @@ test("the admin rail is keyboard navigable and passes axe at 1440", async ({ pag
   const rail = page.getByRole("navigation", { name: admin.navLabel });
   await expect(rail.getByRole("link")).toHaveCount(adminReady);
   await expect(rail.getByText(admin.nav.soon)).toHaveCount(adminSoon);
-  await expect(rail.getByRole("link", { name: admin.nav.users })).toHaveCount(0);
+  await expect(rail.getByRole("link", { name: admin.nav.users })).toHaveCount(1);
   await expect(page.getByRole("button", { name: admin.nav.more })).toBeHidden();
   await expectClean(page);
 

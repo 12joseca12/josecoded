@@ -29,6 +29,7 @@ export interface LoginFormProps {
   labels: AuthFormLabels;
   googleEnabled: boolean;
   turnstile: { siteKey: string; scriptUrl: string } | null;
+  invitedEmail?: string | null;
 }
 
 type Step = "email" | "code";
@@ -43,10 +44,17 @@ function textOf(data: FormData, name: string): string {
   return typeof value === "string" ? value.trim() : "";
 }
 
-export function LoginForm({ locale, next, labels, googleEnabled, turnstile }: LoginFormProps) {
+export function LoginForm({
+  locale,
+  next,
+  labels,
+  googleEnabled,
+  turnstile,
+  invitedEmail = null,
+}: LoginFormProps) {
   const router = useRouter();
   const [step, setStep] = useState<Step>("email");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(invitedEmail ?? "");
   const [pending, setPending] = useState(false);
   const [navigating, setNavigating] = useState(false);
   const [emailError, setEmailError] = useState<string | undefined>();
@@ -350,6 +358,7 @@ export function LoginForm({ locale, next, labels, googleEnabled, turnstile }: Lo
           inputMode="email"
           spellCheck={false}
           defaultValue={email}
+          readOnly={invitedEmail !== null}
           required
           error={emailError}
         />

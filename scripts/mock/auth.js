@@ -41,6 +41,12 @@ export const people = {
     role: "client",
     name: "Carla Client",
   },
+  "invitee@example.com": {
+    id: "00000000-0000-4000-8000-0000000000f1",
+    role: "closer",
+    name: "Ivy Invitee",
+    noProfile: true,
+  },
   "inactive@example.com": {
     id: "00000000-0000-4000-8000-0000000000e1",
     role: "admin",
@@ -69,6 +75,7 @@ function newAuthState() {
     sessions: new Map(),
     refresh: new Map(),
     factors: new Map(),
+    mailboxes: new Map(),
   };
   for (const person of Object.values(people)) {
     state.factors.set(
@@ -136,7 +143,7 @@ function userBody(auth, id) {
 function issueSession(auth, userId, level) {
   const sessionId = randomUUID();
   const now = Math.floor(Date.now() / 1000);
-  const email = personById(userId)?.[0] ?? "";
+  const email = auth.mailboxes.get(userId) ?? personById(userId)?.[0] ?? "";
   const amr =
     level === "aal2"
       ? [
@@ -225,6 +232,7 @@ route("POST", "/auth/v1/verify", async ({ request, response }) => {
   if (!person || body.token !== otpCode) {
     return authError(response, 403, "otp_expired", "Token has expired or is invalid");
   }
+  auth.mailboxes.set(person.id, String(body.email).toLowerCase());
   return send(response, 200, issueSession(auth, person.id, "aal1"));
 });
 

@@ -1519,6 +1519,257 @@
         },
         "limit": "Mostrando los {count} más recientes."
       }
+    },
+    "users": {
+      "meta": {
+        "title": "Usuarios"
+      },
+      "title": "Usuarios",
+      "lead": "Quién trabaja contigo, con qué porcentajes, y las invitaciones que siguen abiertas.",
+      "loading": "Cargando usuarios",
+      "error": {
+        "title": "No he podido cargar los usuarios",
+        "text": "Inténtalo otra vez. Si sigue fallando, mira el estado de Supabase.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "empty": {
+        "title": "Invita al primer closer",
+        "text": "Cuando alguien acepte su invitación aparecerá aquí con sus porcentajes."
+      },
+      "table": {
+        "title": "Equipo",
+        "region": "Usuarios del equipo",
+        "caption": "Usuarios con su rol, porcentajes y estado",
+        "columns": {
+          "name": "Nombre",
+          "role": "Rol",
+          "status": "Estado",
+          "parent": "Closer padre",
+          "rates": "Proyecto · recurrente",
+          "cadence": "Cadencia",
+          "totp": "TOTP",
+          "contacts": "Contactos",
+          "deals": "Abiertas",
+          "pending": "Comisión pendiente",
+          "actions": "Acciones"
+        },
+        "roles": {
+          "admin": "Admin",
+          "closer": "Closer",
+          "freelance": "Freelance",
+          "client": "Cliente"
+        },
+        "subcloser": "Subcloser",
+        "active": "Activo",
+        "inactive": "De baja",
+        "totpYes": "Sí",
+        "totpNo": "No",
+        "cadences": {
+          "per_payment": "Por cobro",
+          "weekly": "Semanal",
+          "biweekly": "Quincenal"
+        },
+        "none": "—"
+      },
+      "invitations": {
+        "title": "Invitaciones",
+        "empty": "No hay invitaciones todavía.",
+        "region": "Invitaciones",
+        "caption": "Invitaciones con su estado y caducidad",
+        "columns": {
+          "email": "Correo",
+          "role": "Rol",
+          "by": "Invitó",
+          "expires": "Caduca",
+          "status": "Estado",
+          "actions": "Acciones"
+        },
+        "status": {
+          "pending": "Pendiente",
+          "accepted": "Aceptada",
+          "expired": "Caducada",
+          "revoked": "Anulada"
+        },
+        "unknownInviter": "Desconocido",
+        "actions": {
+          "renew": "Reenviar",
+          "renewing": "Reenviando",
+          "revoke": "Anular",
+          "revokeConfirm": "Confirmar anulación",
+          "revoking": "Anulando",
+          "cancel": "Cancelar",
+          "linkLabel": "Enlace de la invitación",
+          "copy": "Copiar",
+          "copied": "Enlace copiado",
+          "doneRenew": "Invitación renovada: enlace nuevo, 7 días más",
+          "doneRevoke": "Invitación anulada",
+          "errors": {
+            "email_already_invited": "Ya hay otra invitación abierta para ese correo.",
+            "email_already_member": "Ese correo ya pertenece a un miembro activo.",
+            "invalid_parent_closer": "El closer padre ya no es válido.",
+            "rates_recurring_not_lower": "El recurrente debe ser menor que el de proyecto.",
+            "rate_out_of_range": "Los porcentajes van de 0 a 100.",
+            "forbidden": "No tienes permiso para esta acción.",
+            "unavailable": "El servicio de cuentas no está disponible. Inténtalo más tarde.",
+            "error": "No se ha podido completar. Inténtalo otra vez.",
+            "invitation_used": "La invitación ya se aceptó.",
+            "invitation_revoked": "La invitación ya estaba anulada."
+          }
+        }
+      },
+      "invite": {
+        "open": "Invitar",
+        "title": "Invitar a alguien",
+        "close": "Cerrar",
+        "email": "Correo",
+        "role": "Rol",
+        "roles": {
+          "closer": "Closer",
+          "subcloser": "Subcloser (cuelga de un closer)",
+          "freelance": "Freelance",
+          "client": "Cliente"
+        },
+        "parent": "Closer padre",
+        "parentPlaceholder": "Elige un closer",
+        "noParents": "No hay closers activos sin padre.",
+        "rates": "Porcentajes",
+        "closerRate": "Proyecto (%)",
+        "parentRate": "Padre, proyecto (%)",
+        "closerRecurringRate": "Recurrente (%)",
+        "parentRecurringRate": "Padre, recurrente (%)",
+        "rateHint": "Se aplican a las oportunidades que se ganen a partir de ahora. El recurrente debe ser menor que el de proyecto.",
+        "cadence": "Cadencia de liquidación",
+        "cadenceDefault": "La del sistema",
+        "cadences": {
+          "per_payment": "Por cobro",
+          "weekly": "Semanal",
+          "biweekly": "Quincenal"
+        },
+        "note": "Nota",
+        "optional": "(opcional)",
+        "preview": "Previsualización de la comisión",
+        "previewProject": "Proyecto, sobre {base} cobrados: closer {closer}{parent}",
+        "previewParent": ", padre {parent}",
+        "previewRecurring": "Recurrente, sobre {base} al mes: closer {closer}{parent}",
+        "submit": "Crear invitación",
+        "submitting": "Creando invitación",
+        "doneTitle": "Invitación creada",
+        "doneText": "El correo todavía no se envía solo. Copia este enlace y pásaselo tú; caduca en 7 días y solo sirve con el correo invitado.",
+        "linkLabel": "Enlace de la invitación",
+        "copy": "Copiar",
+        "copied": "Enlace copiado",
+        "another": "Invitar a otra persona",
+        "errors": {
+          "email": "Escribe un correo válido.",
+          "role": "Elige un rol.",
+          "parentCloserId": "Elige el closer padre.",
+          "closerRate": "Escribe un porcentaje de 0 a 100, con hasta dos decimales.",
+          "parentRate": "Escribe un porcentaje de 0 a 100, con hasta dos decimales.",
+          "closerRecurringRate": "Escribe un porcentaje de 0 a 100, menor que el de proyecto.",
+          "parentRecurringRate": "Escribe un porcentaje de 0 a 100, menor que el de proyecto.",
+          "payoutCadence": "Elige una cadencia válida.",
+          "note": "La nota admite hasta 500 caracteres.",
+          "email_already_invited": "Ya hay una invitación abierta para ese correo. Reenvíala o anúlala antes.",
+          "email_already_member": "Ese correo ya pertenece a un miembro activo.",
+          "invalid_parent_closer": "Ese closer no puede ser padre: debe estar activo y no colgar de otro.",
+          "rates_recurring_not_lower": "El recurrente debe ser menor que el de proyecto.",
+          "rate_out_of_range": "Los porcentajes van de 0 a 100.",
+          "forbidden": "No tienes permiso para esta acción.",
+          "unavailable": "No se ha podido crear la cuenta. La invitación no se ha guardado; inténtalo más tarde.",
+          "error": "No se ha podido completar. Inténtalo otra vez."
+        }
+      },
+      "manage": {
+        "open": "Gestionar",
+        "openFor": "Gestionar a {name}",
+        "title": "Gestionar usuario",
+        "close": "Cerrar",
+        "ratesTitle": "Porcentajes",
+        "noRates": "Solo los closers tienen porcentajes.",
+        "closerRate": "Proyecto (%)",
+        "closerRecurringRate": "Recurrente (%)",
+        "parentRate": "Padre, proyecto (%)",
+        "parentRecurringRate": "Padre, recurrente (%)",
+        "rateHint": "Se aplican a las oportunidades que se ganen a partir de ahora; las ya ganadas conservan sus porcentajes.",
+        "cadence": "Cadencia de liquidación",
+        "cadenceDefault": "La del sistema",
+        "cadences": {
+          "per_payment": "Por cobro",
+          "weekly": "Semanal",
+          "biweekly": "Quincenal"
+        },
+        "saveRates": "Guardar porcentajes",
+        "savingRates": "Guardando porcentajes",
+        "ratesSaved": "Porcentajes guardados.",
+        "statusTitle": "Estado",
+        "activeText": "Está activo.",
+        "inactiveText": "Está de baja y no puede entrar.",
+        "deactivate": "Dar de baja",
+        "deactivateConfirm": "Confirmar baja",
+        "reactivate": "Reactivar",
+        "working": "Guardando",
+        "deactivated": "Usuario dado de baja.",
+        "reactivated": "Usuario reactivado.",
+        "portfolioTitle": "Cartera",
+        "portfolioText": "Pasa sus contactos, sus oportunidades abiertas y sus interesados abiertos a otra persona. Lo ya ganado conserva su dueño.",
+        "portfolioCounts": "Contactos: {contacts} · Oportunidades abiertas: {deals} · más los interesados abiertos que tenga asignados.",
+        "reassignTo": "Pasar a",
+        "reassignPlaceholder": "Elige a quién",
+        "reassignNoTargets": "No hay nadie más activo a quien pasar la cartera.",
+        "reassign": "Reasignar cartera",
+        "reassignConfirm": "Confirmar reasignación",
+        "reassigning": "Reasignando cartera",
+        "reassigned": "Cartera reasignada. Contactos: {contacts}; oportunidades: {deals}; interesados: {leads}.",
+        "securityTitle": "Seguridad",
+        "securityText": "Quita su autenticador. En su próximo acceso tendrá que dar de alta uno nuevo.",
+        "resetTotp": "Restablecer TOTP",
+        "resetTotpConfirm": "Confirmar restablecimiento",
+        "resetting": "Restableciendo autenticador",
+        "resetDone": "Autenticador restablecido y anotado en el historial.",
+        "historyTitle": "Historial",
+        "historyLoading": "Cargando historial",
+        "historyEmpty": "Sin cambios registrados.",
+        "historyActorUnknown": "Sistema",
+        "historyInsert": "Perfil creado",
+        "historyTotpReset": "Autenticador restablecido",
+        "historyEmptyValue": "—",
+        "historyFields": {
+          "role": "Rol",
+          "parent_closer_id": "Closer padre",
+          "closer_rate": "Proyecto",
+          "parent_rate": "Padre, proyecto",
+          "closer_recurring_rate": "Recurrente",
+          "parent_recurring_rate": "Padre, recurrente",
+          "payout_cadence": "Cadencia",
+          "is_active": "Activo",
+          "archived_at": "Baja"
+        },
+        "errors": {
+          "forbidden": "No tienes permiso para esta acción.",
+          "user_not_found": "Ese usuario ya no existe. Recarga la lista.",
+          "rates_recurring_not_lower": "El recurrente debe ser menor que el de proyecto.",
+          "rate_out_of_range": "Los porcentajes van de 0 a 100.",
+          "parent_rate_needs_parent": "Solo un subcloser tiene porcentajes de padre.",
+          "rates_only_for_closers": "Solo los closers tienen porcentajes.",
+          "closer_has_subclosers": "Tiene subclosers activos. Dalos de baja o muévelos antes.",
+          "last_admin_required": "Es el último administrador activo: no se puede dar de baja.",
+          "parent_closer_inactive": "Su closer padre está de baja. Reactívalo primero.",
+          "invalid_assignee": "Elige a un closer o admin activo distinto.",
+          "contact_email_conflict": "Esa persona ya tiene un contacto con el mismo correo que otro de esta cartera.",
+          "cannot_reset_self": "No puedes restablecer tu propio autenticador desde aquí.",
+          "unavailable": "El servicio de cuentas no está disponible. No se ha cambiado nada.",
+          "unlogged": "El autenticador se ha quitado, pero no se ha podido anotar en el historial. Revísalo.",
+          "error": "No se ha podido completar. Inténtalo otra vez.",
+          "closerRate": "Escribe un porcentaje de 0 a 100, con hasta dos decimales.",
+          "parentRate": "Escribe un porcentaje de 0 a 100, con hasta dos decimales.",
+          "closerRecurringRate": "Escribe un porcentaje de 0 a 100, menor que el de proyecto.",
+          "parentRecurringRate": "Escribe un porcentaje de 0 a 100, menor que el de proyecto.",
+          "payoutCadence": "Elige una cadencia válida.",
+          "userId": "Usuario no válido. Recarga la lista.",
+          "history": "No se ha podido cargar el historial."
+        }
+      }
     }
   },
   "crm": {
@@ -2915,6 +3166,64 @@
       "title": "¿Te falta algo por aclarar?",
       "text": "Cuéntame tu caso y te respondo en {responseTime}.",
       "cta": "Escríbeme"
+    }
+  },
+  "invitation": {
+    "title": "Te han invitado",
+    "lead": "{inviter} te invita como {role}.",
+    "leadAnonymous": "Te invitan como {role}.",
+    "roles": {
+      "admin": "admin",
+      "closer": "closer",
+      "freelance": "freelance",
+      "client": "cliente"
+    },
+    "expires": "Caduca el {date}.",
+    "enter": "Entrar con mi correo",
+    "enterHint": "Entrarás con el código que recibas en {email}. La invitación solo sirve con ese correo.",
+    "acceptTitle": "Ya has entrado",
+    "nameLabel": "Tu nombre",
+    "nameHint": "Así te verá el equipo.",
+    "localeLabel": "Idioma",
+    "locales": {
+      "es": "Español",
+      "en": "English"
+    },
+    "accept": "Aceptar invitación",
+    "accepting": "Aceptando",
+    "errors": {
+      "name": "Escribe tu nombre, de 1 a 200 caracteres.",
+      "gone": "Esta invitación ya no es válida. Pide una nueva a Jose.",
+      "expired": "Esta invitación ha caducado. Pide una nueva a Jose.",
+      "used": "Esta invitación ya se aceptó.",
+      "mismatch": "Has entrado con un correo distinto del invitado.",
+      "exists": "Esta cuenta ya tiene un perfil.",
+      "error": "No se ha podido aceptar. Inténtalo otra vez."
+    },
+    "gone": {
+      "unknown": {
+        "title": "Esta invitación no es válida",
+        "text": "El enlace no corresponde a ninguna invitación. Pide una nueva invitación a Jose."
+      },
+      "revoked": {
+        "title": "Invitación anulada",
+        "text": "Jose la ha anulado. Pide una nueva invitación a Jose."
+      },
+      "expired": {
+        "title": "Invitación caducada",
+        "text": "Las invitaciones duran siete días. Pide una nueva invitación a Jose."
+      },
+      "used": {
+        "title": "Invitación ya usada",
+        "text": "Esta invitación ya se aceptó. Si eres tú, entra con tu correo. Si no, pide una nueva invitación a Jose."
+      }
+    },
+    "goneAction": "Escribir a Jose",
+    "mismatch": {
+      "title": "Has entrado con otro correo",
+      "text": "Esta invitación es para un correo distinto del de tu sesión. Sal y entra con el correo invitado.",
+      "action": "Salir",
+      "acting": "Saliendo"
     }
   }
 }

@@ -77,15 +77,31 @@ select is_empty(
       and p.prosecdef
       and has_function_privilege('authenticated', p.oid, 'execute')
       and p.proname not in (
+        'accept_invitation',
+        'admin_audit_log',
+        'admin_counters',
         'admin_jobs',
+        'admin_users',
         'assign_lead',
         'cancel_job',
         'claim_lead',
         'discard_lead',
+        'invite_user',
         'list_lead_inbox',
+        'log_totp_reset',
+        'mark_notifications_read',
         'omen_status',
+        'reassign_portfolio',
+        'renew_invitation',
         'retry_job',
+        'revoke_invitation',
+        'send_test_notification',
+        'set_notification_pref',
         'set_setting',
+        'set_user_active',
+        'set_user_rates',
+        'telegram_link_code',
+        'telegram_unlink',
         'touch_lead',
         'update_my_profile'
       )
@@ -178,15 +194,31 @@ select is_empty(
     where n.nspname = 'public'
       and has_function_privilege('authenticated', p.oid, 'execute')
       and p.proname not in (
+        'accept_invitation',
+        'admin_audit_log',
+        'admin_counters',
         'admin_jobs',
+        'admin_users',
         'assign_lead',
         'cancel_job',
         'claim_lead',
         'discard_lead',
+        'invite_user',
         'list_lead_inbox',
+        'log_totp_reset',
+        'mark_notifications_read',
         'omen_status',
+        'reassign_portfolio',
+        'renew_invitation',
         'retry_job',
+        'revoke_invitation',
+        'send_test_notification',
+        'set_notification_pref',
         'set_setting',
+        'set_user_active',
+        'set_user_rates',
+        'telegram_link_code',
+        'telegram_unlink',
         'touch_lead',
         'update_my_profile'
       )
@@ -205,8 +237,8 @@ select is(
       and not has_function_privilege('authenticated', p.oid, 'execute')
       and not has_function_privilege('anon', p.oid, 'execute')
   ),
-  'omen_claim_jobs,omen_finish_job,omen_heartbeat,read_public_settings,submit_lead',
-  'only the lead intake and the Omen job wrappers are service_role-only functions in public'
+  'omen_claim_jobs,omen_finish_job,omen_heartbeat,outbox_claim,outbox_mark,read_invitation,read_public_settings,submit_lead,telegram_confirm_link',
+  'only the lead intake, outbox, invitation read, Telegram link and Omen job functions are service_role-only in public'
 );
 
 select is(

@@ -1,0 +1,77 @@
+.form,
+.done {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.text,
+.hint {
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+  line-height: var(--lh-body);
+}
+
+.hint {
+  font-size: var(--fs-m);
+}
+
+.doneTitle {
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-semibold);
+}
+
+.doneTitle:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.rates {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+  margin: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+}
+
+.legend {
+  padding: 0 var(--space-2);
+  color: var(--ink);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.preview {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-s);
+  background: var(--charcoal);
+  color: var(--on-dark);
+  font-size: var(--fs-base);
+  font-variant-numeric: tabular-nums;
+}
+
+.problem {
+  color: var(--error);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+}
+
+@media (min-width: 40rem) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

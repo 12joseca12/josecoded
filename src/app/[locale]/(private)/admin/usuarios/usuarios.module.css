@@ -1,0 +1,9 @@
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.block {
+  display: grid;
+  gap: var(--space-4);
+}

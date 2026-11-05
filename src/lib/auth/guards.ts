@@ -75,6 +75,10 @@ export function resolveDestination(
   locale: string,
   next?: string | null,
 ): string {
+  if (state.status === "inactive") {
+    const invitation = safeNext(locale, next);
+    if (invitation && isInvitationPath(locale, invitation)) return invitation;
+  }
   if (state.status !== "member") return loginPath(locale, next);
   if (needsSecondFactor(state)) return secondFactorPath(locale, next);
   const target = safeNext(locale, next);

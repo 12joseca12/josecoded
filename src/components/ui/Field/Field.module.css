@@ -43,6 +43,14 @@
     box-shadow var(--dur-fast) var(--ease-out);
 }
 
+select.control {
+  cursor: pointer;
+}
+
+select.control:disabled {
+  cursor: not-allowed;
+}
+
 textarea.control {
   min-height: 9rem;
   resize: vertical;
