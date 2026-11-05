@@ -3343,5 +3343,61 @@
       "action": "Salir",
       "acting": "Saliendo"
     }
+  },
+  "outbox": {
+    "signature": "josecoded",
+    "roles": {
+      "admin": "administrador",
+      "closer": "closer",
+      "freelance": "freelance",
+      "client": "cliente"
+    },
+    "vias": {
+      "hiring": "contratación",
+      "freelance": "freelance",
+      "project": "proyecto"
+    },
+    "sources": {
+      "form": "formulario",
+      "nexo": "Nexo",
+      "manual": "alta manual",
+      "whatsapp": "WhatsApp",
+      "radar": "Radar"
+    },
+    "invitation": {
+      "subject": "{inviter} te invita a josecoded",
+      "unknownInviter": "Jose",
+      "intro": "{inviter} te ha invitado a josecoded como {role}.",
+      "action": "Acepta la invitación desde este enlace:",
+      "expires": "El enlace caduca el {date}.",
+      "ignore": "Si no esperabas este correo, puedes ignorarlo."
+    },
+    "leadNew": {
+      "subject": "Interesado nuevo: {name}",
+      "intro": "Ha llegado un interesado nuevo por la vía de {via}.",
+      "name": "Nombre: {name}",
+      "organization": "Organización: {organization}",
+      "source": "Origen: {source}",
+      "action": "Verlo en el panel:"
+    },
+    "test": {
+      "subject": "Prueba de aviso",
+      "body": "Este es un aviso de prueba de josecoded. Si lo estás leyendo, el canal funciona."
+    },
+    "totpReset": {
+      "subject": "Se ha restablecido tu verificación en dos pasos",
+      "intro": "Un administrador ha restablecido la verificación en dos pasos de tu cuenta de josecoded.",
+      "next": "La próxima vez que entres tendrás que configurarla de nuevo.",
+      "ignore": "Si no esperabas este cambio, escribe a hola@josecoded.com."
+    },
+    "notification": {
+      "action": "Abrir en el panel:"
+    },
+    "telegram": {
+      "linked": "Telegram vinculado. Desde ahora recibirás aquí tus avisos de josecoded.",
+      "invalid": "Ese código no es válido o ha caducado. Genera uno nuevo desde la web.",
+      "taken": "Este Telegram ya está vinculado a otra cuenta.",
+      "noCode": "Para vincular tu cuenta abre el enlace que te da la web."
+    }
   }
 }

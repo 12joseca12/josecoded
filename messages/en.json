@@ -3343,5 +3343,61 @@
       "action": "Sign out",
       "acting": "Signing out"
     }
+  },
+  "outbox": {
+    "signature": "josecoded",
+    "roles": {
+      "admin": "administrator",
+      "closer": "closer",
+      "freelance": "freelance",
+      "client": "client"
+    },
+    "vias": {
+      "hiring": "hiring",
+      "freelance": "freelance",
+      "project": "project"
+    },
+    "sources": {
+      "form": "form",
+      "nexo": "Nexo",
+      "manual": "manual entry",
+      "whatsapp": "WhatsApp",
+      "radar": "Radar"
+    },
+    "invitation": {
+      "subject": "{inviter} invites you to josecoded",
+      "unknownInviter": "Jose",
+      "intro": "{inviter} has invited you to josecoded as {role}.",
+      "action": "Accept the invitation from this link:",
+      "expires": "The link expires on {date}.",
+      "ignore": "If you were not expecting this email, you can ignore it."
+    },
+    "leadNew": {
+      "subject": "New lead: {name}",
+      "intro": "A new lead has arrived through the {via} route.",
+      "name": "Name: {name}",
+      "organization": "Organisation: {organization}",
+      "source": "Source: {source}",
+      "action": "See it in the panel:"
+    },
+    "test": {
+      "subject": "Test alert",
+      "body": "This is a josecoded test alert. If you are reading it, the channel works."
+    },
+    "totpReset": {
+      "subject": "Your two-step verification has been reset",
+      "intro": "An administrator has reset the two-step verification of your josecoded account.",
+      "next": "The next time you sign in you will have to set it up again.",
+      "ignore": "If you were not expecting this change, write to hola@josecoded.com."
+    },
+    "notification": {
+      "action": "Open in the panel:"
+    },
+    "telegram": {
+      "linked": "Telegram linked. From now on your josecoded alerts will arrive here.",
+      "invalid": "That code is not valid or has expired. Generate a new one from the web.",
+      "taken": "This Telegram is already linked to another account.",
+      "noCode": "To link your account open the link the web gives you."
+    }
   }
 }
