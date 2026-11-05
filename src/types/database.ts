@@ -1230,6 +1230,51 @@ export type Database = {
       }
     }
     Views: {
+      my_conversations: {
+        Row: {
+          ai_active: boolean | null
+          ai_enabled: boolean | null
+          consent_state: string | null
+          counterpart_name: string | null
+          first_page_path: string | null
+          id: string | null
+          kind: Database["public"]["Enums"]["conversation_kind"] | null
+          last_activity_at: string | null
+          last_message_excerpt: string | null
+          project_id: string | null
+          status: Database["public"]["Enums"]["conversation_status"] | null
+          unread_count: number | null
+        }
+        Insert: {
+          ai_active?: boolean | null
+          ai_enabled?: boolean | null
+          consent_state?: string | null
+          counterpart_name?: string | null
+          first_page_path?: string | null
+          id?: string | null
+          kind?: Database["public"]["Enums"]["conversation_kind"] | null
+          last_activity_at?: string | null
+          last_message_excerpt?: string | null
+          project_id?: string | null
+          status?: Database["public"]["Enums"]["conversation_status"] | null
+          unread_count?: number | null
+        }
+        Update: {
+          ai_active?: boolean | null
+          ai_enabled?: boolean | null
+          consent_state?: string | null
+          counterpart_name?: string | null
+          first_page_path?: string | null
+          id?: string | null
+          kind?: Database["public"]["Enums"]["conversation_kind"] | null
+          last_activity_at?: string | null
+          last_message_excerpt?: string | null
+          project_id?: string | null
+          status?: Database["public"]["Enums"]["conversation_status"] | null
+          unread_count?: number | null
+        }
+        Relationships: []
+      }
       public_extras: {
         Row: {
           billing: Database["public"]["Enums"]["extra_billing"] | null
@@ -1374,6 +1419,10 @@ export type Database = {
         Args: { p_full_name: string; p_locale?: Database["public"]["Enums"]["app_locale"]; p_token: string }
         Returns: Database["public"]["Enums"]["user_role"]
       }
+      add_member: {
+        Args: { p_can_write?: boolean; p_conversation_id: string; p_role: Database["public"]["Enums"]["member_role"]; p_user_id: string }
+        Returns: undefined
+      }
       admin_audit_log: {
         Args: { p_limit?: number; p_row_id?: string; p_table?: string }
         Returns: {
@@ -1431,6 +1480,10 @@ export type Database = {
           role: Database["public"]["Enums"]["user_role"]
         }[]
       }
+      archive_conversation: {
+        Args: { p_conversation_id: string }
+        Returns: undefined
+      }
       assign_lead: {
         Args: { p_lead_id: string; p_user_id: string }
         Returns: string
@@ -1446,6 +1499,10 @@ export type Database = {
       discard_lead: {
         Args: { p_lead_id: string; p_reason: string }
         Returns: undefined
+      }
+      ensure_my_conversation: {
+        Args: never
+        Returns: string
       }
       invite_user: {
         Args: { p_auth_user_id?: string; p_closer_rate?: number; p_closer_recurring_rate?: number; p_email: string; p_note?: string; p_parent_closer_id?: string; p_parent_rate?: number; p_parent_recurring_rate?: number; p_payout_cadence?: Database["public"]["Enums"]["payout_cadence"]; p_project_id?: string; p_role: Database["public"]["Enums"]["user_role"] }
@@ -1467,6 +1524,17 @@ export type Database = {
           via: Database["public"]["Enums"]["contact_via"]
         }[]
       }
+      list_room_members: {
+        Args: { p_conversation_id: string }
+        Returns: {
+          can_write: boolean
+          full_name: string
+          joined_at: string
+          left_at: string
+          role: Database["public"]["Enums"]["member_role"]
+          user_id: string
+        }[]
+      }
       log_totp_reset: {
         Args: { p_user_id: string }
         Returns: undefined
@@ -1474,6 +1542,10 @@ export type Database = {
       mark_notifications_read: {
         Args: { p_ids: string[] }
         Returns: number
+      }
+      mark_read: {
+        Args: { p_conversation_id: string }
+        Returns: undefined
       }
       omen_claim_jobs: {
         Args: { p_limit?: number; p_worker: string }
@@ -1538,6 +1610,10 @@ export type Database = {
           leads: number
         }[]
       }
+      remove_member: {
+        Args: { p_conversation_id: string; p_user_id: string }
+        Returns: undefined
+      }
       renew_invitation: {
         Args: { p_id: string }
         Returns: {
@@ -1555,6 +1631,14 @@ export type Database = {
       }
       send_test_notification: {
         Args: { p_channel: string }
+        Returns: undefined
+      }
+      set_ai_consent: {
+        Args: { p_conversation_id: string; p_granted: boolean }
+        Returns: undefined
+      }
+      set_conversation_ai: {
+        Args: { p_conversation_id: string; p_enabled: boolean }
         Returns: undefined
       }
       set_notification_pref: {
