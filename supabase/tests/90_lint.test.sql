@@ -239,7 +239,7 @@ select is(
       and not has_function_privilege('authenticated', p.oid, 'execute')
       and not has_function_privilege('anon', p.oid, 'execute')
   ),
-  'omen_claim_jobs,omen_finish_job,omen_heartbeat,outbox_claim,outbox_mark,read_invitation,read_public_settings,submit_lead,telegram_confirm_link',
+  'omen_claim_jobs,omen_finish_job,omen_heartbeat,outbox_claim,outbox_mark,read_invitation,read_public_settings,submit_lead,telegram_confirm_link,visitor_forget,visitor_handoff,visitor_send,visitor_thread',
   'only the lead intake, outbox, invitation read, Telegram link and Omen job functions are service_role-only in public'
 );
 

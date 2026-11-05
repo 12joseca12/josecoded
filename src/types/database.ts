@@ -1629,6 +1629,25 @@ export type Database = {
         }
         Returns: undefined
       }
+      visitor_forget: {
+        Args: { p_lead_id?: string; p_token_hash?: string }
+        Returns: number
+      }
+      visitor_handoff: {
+        Args: { p_consent: boolean; p_email: string; p_name: string; p_phone: string; p_token_hash: string }
+        Returns: string
+      }
+      visitor_send: {
+        Args: { p_body: string; p_ip_hash: string; p_locale: Database["public"]["Enums"]["app_locale"]; p_page_path: string; p_token_hash: string }
+        Returns: {
+          conversation_id: string
+          message_id: string
+        }[]
+      }
+      visitor_thread: {
+        Args: { p_since?: string; p_token_hash: string }
+        Returns: Json
+      }
     }
     Enums: {
       activity_kind:
