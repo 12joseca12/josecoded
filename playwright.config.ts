@@ -23,7 +23,7 @@ export default defineConfig({
   ],
   webServer: [
     {
-      command: "node scripts/e2e-mock-backend.js",
+      command: "node scripts/mock/index.js",
       url: `${mockOrigin}/__health`,
       reuseExistingServer: !process.env.CI,
       timeout: 15_000,

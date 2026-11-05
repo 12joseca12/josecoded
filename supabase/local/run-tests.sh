@@ -37,9 +37,12 @@ done
 echo "pgTAP without seed"
 pg_prove -h "$work" -p "$port" -U postgres -d "$database" "$root"/supabase/tests/*.sql
 
-if [ -f "$root/supabase/seed.sql" ]; then
-  echo "seed: supabase/seed.sql"
-  psql "${client[@]}" -d "$database" -f "$root/supabase/seed.sql"
+seeds=("$root"/supabase/seed/*.sql)
+if [ -e "${seeds[0]}" ]; then
+  for seed in "${seeds[@]}"; do
+    echo "seed: supabase/seed/$(basename "$seed")"
+    psql "${client[@]}" -d "$database" -f "$seed"
+  done
   echo "pgTAP with seed"
   pg_prove -h "$work" -p "$port" -U postgres -d "$database" "$root"/supabase/tests/*.sql
 fi
