@@ -417,6 +417,93 @@ export type Database = {
           },
         ]
       }
+      notification_prefs: {
+        Row: {
+          bell: boolean
+          email: boolean
+          event: Database["public"]["Enums"]["notification_event"]
+          telegram: boolean
+          user_id: string
+        }
+        Insert: {
+          bell?: boolean
+          email?: boolean
+          event: Database["public"]["Enums"]["notification_event"]
+          telegram?: boolean
+          user_id: string
+        }
+        Update: {
+          bell?: boolean
+          email?: boolean
+          event?: Database["public"]["Enums"]["notification_event"]
+          telegram?: boolean
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_prefs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notification_prefs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          event: Database["public"]["Enums"]["notification_event"]
+          href: string | null
+          id: string
+          read_at: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          event: Database["public"]["Enums"]["notification_event"]
+          href?: string | null
+          id?: string
+          read_at?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          event?: Database["public"]["Enums"]["notification_event"]
+          href?: string | null
+          id?: string
+          read_at?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           archived_at: string | null
@@ -521,6 +608,33 @@ export type Database = {
           via: Database["public"]["Enums"]["contact_via"]
         }[]
       }
+      mark_notifications_read: {
+        Args: { p_ids: string[] }
+        Returns: number
+      }
+      outbox_claim: {
+        Args: { p_limit?: number }
+        Returns: {
+          attempts: number
+          channel: Database["public"]["Enums"]["outbox_channel"]
+          id: number
+          payload: Json
+          recipient: string
+          template: string
+        }[]
+      }
+      outbox_mark: {
+        Args: { p_error?: string; p_id: number; p_ok: boolean }
+        Returns: undefined
+      }
+      send_test_notification: {
+        Args: { p_channel: string }
+        Returns: undefined
+      }
+      set_notification_pref: {
+        Args: { p_channel: string; p_enabled: boolean; p_event: Database["public"]["Enums"]["notification_event"] }
+        Returns: undefined
+      }
       submit_lead: {
         Args: {
           p_company?: string
@@ -545,6 +659,18 @@ export type Database = {
           p_wanted_by?: string
         }
         Returns: string
+      }
+      telegram_confirm_link: {
+        Args: { p_chat_id: number; p_code: string }
+        Returns: string
+      }
+      telegram_link_code: {
+        Args: never
+        Returns: string
+      }
+      telegram_unlink: {
+        Args: never
+        Returns: undefined
       }
       touch_lead: {
         Args: { p_lead_id: string }
@@ -582,6 +708,9 @@ export type Database = {
       deal_stage: "new" | "contacted" | "meeting" | "proposal" | "won" | "lost"
       lead_source: "form" | "nexo" | "whatsapp" | "radar" | "manual"
       lead_status: "new" | "assigned" | "contacted" | "converted" | "discarded"
+      notification_event: "lead_new" | "lead_claimed" | "message_new" | "commission_accrued" | "payment_recorded" | "payment_overdue" | "payout_paid" | "job_failed" | "omen_down" | "invitation_accepted"
+      outbox_channel: "email" | "telegram"
+      outbox_status: "queued" | "sending" | "sent" | "failed"
       user_role: "admin" | "closer" | "freelance" | "client"
     }
     CompositeTypes: {
@@ -728,6 +857,9 @@ export const Constants = {
       deal_stage: ["new", "contacted", "meeting", "proposal", "won", "lost"],
       lead_source: ["form", "nexo", "whatsapp", "radar", "manual"],
       lead_status: ["new", "assigned", "contacted", "converted", "discarded"],
+      notification_event: ["lead_new", "lead_claimed", "message_new", "commission_accrued", "payment_recorded", "payment_overdue", "payout_paid", "job_failed", "omen_down", "invitation_accepted"],
+      outbox_channel: ["email", "telegram"],
+      outbox_status: ["queued", "sending", "sent", "failed"],
       user_role: ["admin", "closer", "freelance", "client"],
     },
   },

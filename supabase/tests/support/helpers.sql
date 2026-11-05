@@ -93,6 +93,7 @@ begin
   delete from public.profiles;
   delete from auth.users;
   delete from private.form_quota;
+  delete from private.outbox;
   delete from private.audit_log;
 end;
 $$;

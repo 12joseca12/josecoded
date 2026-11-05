@@ -81,6 +81,11 @@ select is_empty(
         'claim_lead',
         'discard_lead',
         'list_lead_inbox',
+        'mark_notifications_read',
+        'send_test_notification',
+        'set_notification_pref',
+        'telegram_link_code',
+        'telegram_unlink',
         'touch_lead',
         'update_my_profile'
       )
@@ -177,6 +182,11 @@ select is_empty(
         'claim_lead',
         'discard_lead',
         'list_lead_inbox',
+        'mark_notifications_read',
+        'send_test_notification',
+        'set_notification_pref',
+        'telegram_link_code',
+        'telegram_unlink',
         'touch_lead',
         'update_my_profile'
       )
@@ -195,8 +205,8 @@ select is(
       and not has_function_privilege('authenticated', p.oid, 'execute')
       and not has_function_privilege('anon', p.oid, 'execute')
   ),
-  'submit_lead',
-  'submit_lead is the only service_role-only function in public'
+  'outbox_claim,outbox_mark,submit_lead,telegram_confirm_link',
+  'only the submit, outbox and Telegram link functions are service_role-only in public'
 );
 
 select is(
