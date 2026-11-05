@@ -1,11 +1,14 @@
 import { Button } from "@/components/ui/Button/Button";
 import { Heading } from "@/components/ui/Heading/Heading";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
+import { Link } from "@/components/ui/Link/Link";
+import { VisuallyHidden } from "@/components/ui/VisuallyHidden/VisuallyHidden";
 import type { Locale } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
 import { type PhaseId, phaseIds, phaseNoteKinds } from "@/types/hero";
 
+import { DemoTag } from "../DemoTag/DemoTag";
 import { DeviceBrowser } from "../DeviceBrowser/DeviceBrowser";
 import { DevicePhone } from "../DevicePhone/DevicePhone";
 import { HeroStage } from "../HeroStage/HeroStage";
@@ -45,6 +48,10 @@ export async function Hero({ locale }: HeroProps) {
             {t("home.hero.ctaSecondary")}
           </Button>
         </div>
+        <p className={styles.identity}>
+          {t("home.hero.identity")}{" "}
+          <Link href={`/${locale}/sobre-mi`}>{t("home.hero.identityLink")}</Link>
+        </p>
       </div>
       <HeroStage
         phases={phases}
@@ -55,7 +62,13 @@ export async function Hero({ locale }: HeroProps) {
           pauseText: t("home.hero.rail.pauseText"),
           resumeText: t("home.hero.rail.resumeText"),
         }}
+        note={
+          <p>
+            <VisuallyHidden>{t("home.hero.demoNote")}</VisuallyHidden>
+          </p>
+        }
       >
+        <DemoTag label={t("home.hero.demoTag")} />
         <DeviceBrowser locale={locale} />
         <DevicePhone locale={locale} />
         {phaseNoteKinds.map((kind) => (
