@@ -2,12 +2,15 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 
 import { FaqWithNexo } from "@/components/chat/FaqWithNexo/FaqWithNexo";
+import { CostsDisclosure } from "@/components/services/CostsDisclosure/CostsDisclosure";
 import { ExtraList } from "@/components/services/ExtraList/ExtraList";
 import { OfferCompare } from "@/components/services/OfferCompare/OfferCompare";
 import { buildRecommenderCopy } from "@/components/services/OfferRecommender/copy";
 import { OfferRecommender } from "@/components/services/OfferRecommender/OfferRecommender";
+import { OwnershipNote } from "@/components/services/OwnershipNote/OwnershipNote";
 import { ServicePage } from "@/components/services/ServicePage/ServicePage";
 import { WarrantyPlans } from "@/components/services/WarrantyPlans/WarrantyPlans";
+import { WhatINeedFromYou } from "@/components/services/WhatINeedFromYou/WhatINeedFromYou";
 import { PageSection } from "@/components/site/PageSection/PageSection";
 import { Button } from "@/components/ui/Button/Button";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
@@ -31,10 +34,13 @@ import {
   offersOn,
   platforms,
 } from "@/lib/services/offers";
+import { priceDriversFor } from "@/lib/services/price-drivers";
 import { applyForm, hasFormAction, toSearch } from "@/lib/services/recommender-url";
 import type {
+  CostLine,
   ExtraChipItem,
   MaintenancePlan,
+  NeedFromYouItem,
   OfferCardItem,
   OfferTabGroup,
 } from "@/types/services";
@@ -88,6 +94,12 @@ export default async function OffersPage({ params, searchParams }: OffersProps) 
       price: offer.from,
       provisional: isProvisional(offer),
       weeks: weeks(offer.weeksMin, offer.weeksMax),
+      drivers: t(key("compare.driversLead")).replace(
+        "{drivers}",
+        priceDriversFor(slug)
+          .map((driver) => t(key(`compare.drivers.${driver}`)))
+          .join(", "),
+      ),
       ctaHref: buildContactHref(locale, "project", { offers: [slug], extras: [] }),
       ctaLabel: t(key("compare.ctaFor")).replace("{name}", name),
     };
@@ -97,6 +109,20 @@ export default async function OffersPage({ params, searchParams }: OffersProps) 
     id: platform,
     label: t(key(platform === "web" ? "compare.tabWeb" : "compare.tabApp")),
     items: offersOn(platform).map((offer) => cardFor(offer.slug)),
+  }));
+
+  const costs: CostLine[] = (["taxes", "apple", "google", "hosting", "stripe"] as const).map(
+    (id) => ({
+      id,
+      label: t(key(`costs.${id}.label`)),
+      text: t(key(`costs.${id}.text`)),
+    }),
+  );
+
+  const needs: NeedFromYouItem[] = offers.map((offer) => ({
+    slug: offer.slug,
+    name: t(offerCopyKeys(offer.slug).name),
+    bullets: (["a", "b", "c"] as const).map((id) => t(key(`need.${offer.slug}.${id}`))),
   }));
 
   const nameOf = (slug: (typeof offers)[number]["slug"]) => t(offerCopyKeys(slug).name);
@@ -162,6 +188,7 @@ export default async function OffersPage({ params, searchParams }: OffersProps) 
             excludes: t(key("compare.excludes")),
             delivery: t(key("compare.delivery")),
             review: t("services.price.review"),
+            warrantyChip: t(key("compare.warrantyChip")),
           }}
           groups={groups}
         />
@@ -177,6 +204,36 @@ export default async function OffersPage({ params, searchParams }: OffersProps) 
             {t(key("compare.notSureLink"))}
           </Link>
         </p>
+        <div className={styles.trust}>
+          <CostsDisclosure title={t(key("costs.title"))} items={costs} />
+          <OwnershipNote text={t(key("ownership.text"))} />
+        </div>
+      </PageSection>
+      <PageSection
+        id="garantia"
+        title={t(key("warranty.title"))}
+        lead={t(key("warranty.lead"))}
+        size="wide"
+      >
+        <WarrantyPlans
+          warranty={{
+            title: t(key("warranty.includedTitle")),
+            text: t(key("warranty.includedText")),
+          }}
+          plans={{
+            title: t(key("warranty.plansTitle")),
+            lead: t(key("warranty.plansLead")),
+            items: plans,
+          }}
+          price={{
+            from: t(key("warranty.from")),
+            amount: maintenance.from,
+            unit: t(key("warranty.perMonth")),
+            review: t("services.price.review"),
+            provisional: isProvisional(maintenance),
+          }}
+          note={t(key("warranty.note"))}
+        />
       </PageSection>
       <PageSection
         id="recomendador"
@@ -216,30 +273,12 @@ export default async function OffersPage({ params, searchParams }: OffersProps) 
         />
       </PageSection>
       <PageSection
-        id="garantia"
-        title={t(key("warranty.title"))}
-        lead={t(key("warranty.lead"))}
+        id="necesito"
+        title={t(key("need.title"))}
+        lead={t(key("need.lead"))}
         size="wide"
       >
-        <WarrantyPlans
-          warranty={{
-            title: t(key("warranty.includedTitle")),
-            text: t(key("warranty.includedText")),
-          }}
-          plans={{
-            title: t(key("warranty.plansTitle")),
-            lead: t(key("warranty.plansLead")),
-            items: plans,
-          }}
-          price={{
-            from: t(key("warranty.from")),
-            amount: maintenance.from,
-            unit: t(key("warranty.perMonth")),
-            review: t("services.price.review"),
-            provisional: isProvisional(maintenance),
-          }}
-          note={t(key("warranty.note"))}
-        />
+        <WhatINeedFromYou items={needs} />
       </PageSection>
       <PageSection id="preguntas" title={t("services.faq.title")} size="wide">
         <FaqWithNexo locale={locale} items={faq} />

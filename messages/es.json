@@ -965,7 +965,14 @@
       "ctaFor": "Pedir {name}",
       "scopeNote": "Topes de páginas y pantallas, plazos y precios son orientativos hasta cerrar la ronda de precios; se confirman por escrito antes de empezar.",
       "notSure": "¿No sabes cuál elegir?",
-      "notSureLink": "Encuentra el tuyo en un minuto"
+      "notSureLink": "Encuentra el tuyo en un minuto",
+      "warrantyChip": "30 días de corrección incluidos",
+      "driversLead": "Sube con: {drivers}",
+      "drivers": {
+        "accounts": "cuentas",
+        "payments": "cobros",
+        "languages": "idiomas"
+      }
     },
     "tiers": {
       "web-presencia": {
@@ -1318,6 +1325,61 @@
           "offline": "Tu app debe funcionar sin cobertura.",
           "stores": "Prefieres que gestione yo las cuentas de las tiendas."
         }
+      }
+    },
+    "costs": {
+      "title": "Costes de terceros",
+      "taxes": {
+        "label": "Impuestos",
+        "text": "Los impuestos, si corresponden, se detallan en la factura."
+      },
+      "apple": {
+        "label": "Cuenta de Apple (solo apps)",
+        "text": "99 $ al año, que pagas tú a Apple."
+      },
+      "google": {
+        "label": "Cuenta de Google Play (solo apps)",
+        "text": "25 $ una sola vez, que pagas tú a Google."
+      },
+      "hosting": {
+        "label": "Dominio y alojamiento",
+        "text": "Se contratan a tu nombre y los pagas tú directamente al proveedor."
+      },
+      "stripe": {
+        "label": "Comisión de Stripe (solo si cobras)",
+        "text": "Si tu producto cobra con Stripe, Stripe retiene su comisión en cada pago."
+      }
+    },
+    "ownership": {
+      "text": "El código, el dominio y las cuentas de tienda son tuyos desde el primer día."
+    },
+    "need": {
+      "title": "Qué necesito de ti",
+      "lead": "Tres cosas por nivel, para que no te sorprenda nada y el proyecto no se pare esperando material.",
+      "web-presencia": {
+        "a": "Los textos y las fotos de tus páginas",
+        "b": "Tu logo y tus colores, si ya los tienes",
+        "c": "Acceso a tu dominio, o decidir uno nuevo a tu nombre"
+      },
+      "web-negocio": {
+        "a": "Los textos e imágenes de tus páginas y de las primeras novedades",
+        "b": "Tu logo y tus colores, si ya los tienes",
+        "c": "Acceso a tu dominio, o decidir uno nuevo a tu nombre"
+      },
+      "web-plataforma": {
+        "a": "Cómo funciona hoy tu servicio y qué procesos quieres sacar de lo manual",
+        "b": "Qué tipos de usuario habrá y qué podrá hacer cada uno",
+        "c": "Textos, logo y acceso a tu dominio"
+      },
+      "app-primera-version": {
+        "a": "Qué debe hacer la app en su primera versión",
+        "b": "Tu logo, tus colores y los textos de las pantallas",
+        "c": "Las cuentas de desarrollador de Apple y de Google, a tu nombre"
+      },
+      "app-producto": {
+        "a": "Los tipos de usuario y lo que puede hacer cada uno",
+        "b": "Tu logo, tus colores y los textos de las pantallas",
+        "c": "Las cuentas de desarrollador de Apple y de Google, a tu nombre"
       }
     }
   },
