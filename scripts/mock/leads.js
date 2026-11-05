@@ -5,8 +5,8 @@ import { readBody, route, send, sendEmpty } from "./registry.js";
 
 const closerId = "00000000-0000-4000-8000-0000000000c1";
 const adminId = "00000000-0000-4000-8000-0000000000a2";
-const dealId = "20000000-0000-4000-8000-000000000001";
-const contactId = "30000000-0000-4000-8000-000000000001";
+const dealId = "30000000-0000-4000-8000-0000000000a1";
+const contactId = "20000000-0000-4000-8000-0000000000a1";
 
 function lead(base) {
   return {
@@ -217,12 +217,6 @@ route("POST", "/rest/v1/leads", async ({ request, response }) => {
   auth.leads.unshift(row);
   const created = { id: row.id };
   return send(response, 201, wantsObject(request) ? created : [created]);
-});
-
-route("GET", "/rest/v1/deals", ({ request, response }) => {
-  const session = bearer(request);
-  if (!session) return send(response, 401, { code: "PGRST301", message: "JWT invalid" });
-  return send(response, 200, isAdmin(session) ? [{ stage: "contacted" }] : []);
 });
 
 route(

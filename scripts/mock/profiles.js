@@ -10,10 +10,15 @@ route("GET", "/rest/v1/profiles", ({ request, response, url }) => {
   session?.auth.calls.profiles.push({ authenticated: true });
   if (!session) return send(response, 401, { code: "PGRST301", message: "JWT invalid" });
   if (!url.searchParams.has("id") && url.searchParams.has("role")) {
-    const caller = personById(session.userId);
-    if (caller?.[1].role !== "admin" || session.level !== "aal2") return send(response, 200, []);
+    const caller = personById(session.userId)?.[1];
+    if (!caller || session.level !== "aal2") return send(response, 200, []);
     const rows = Object.values(people)
       .filter((person) => person.role === "admin" || person.role === "closer")
+      .filter(
+        (person) =>
+          caller.role === "admin" ||
+          (caller.role === "closer" && (person.id === caller.id || person.parent === caller.id)),
+      )
       .map((person) => ({
         id: person.id,
         full_name: person.name,

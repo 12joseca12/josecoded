@@ -26,6 +26,7 @@ const ids = {
   hilda: "10000000-0000-4000-8000-000000000001",
   wanda: "10000000-0000-4000-8000-0000000000ff",
 };
+const contactIds = { ada: "20000000-0000-4000-8000-0000000000a1" };
 const cleo = "00000000-0000-4000-8000-0000000000c1";
 const dani = "00000000-0000-4000-8000-0000000000c2";
 
@@ -195,10 +196,13 @@ test("the record shows the fields of each way, who assigned and the linked deal"
   await expect(
     record.getByText(leads("detail.owner.contact"), { exact: true }).first(),
   ).toBeVisible();
-  await expect(record.getByText(leads("detail.stage.contacted"))).toBeVisible();
+  await expect(record.getByText(leads("detail.stage.proposal"))).toBeVisible();
   await expect(record.getByRole("link", { name: leads("detail.owner.contactLink") })).toHaveCount(
-    0,
+    1,
   );
+  await expect(
+    record.getByRole("link", { name: leads("detail.owner.contactLink") }),
+  ).toHaveAttribute("href", `/es/crm/contactos/${contactIds.ada}`);
 
   await page.goto(`/es/admin/interesados/${ids.wanda}`);
   await expect(record.getByText(leads("detail.owner.waiting"))).toBeVisible();

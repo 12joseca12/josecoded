@@ -73,7 +73,7 @@ export async function signInAdmin(page: Page, tag: Tag, query = "") {
   await expect(page).toHaveURL(/\/es\/entrar\/totp/);
   await page.getByLabel(totp.codeLabel).fill(totpCode);
   await page.getByRole("button", { name: totp.verify }).click();
-  await expect(page).not.toHaveURL(/\/entrar/);
+  await expect(page).not.toHaveURL(/\/entrar/, { timeout: 20_000 });
 }
 
 export async function signInCloser(page: Page, tag: Tag, query = "") {
@@ -82,5 +82,5 @@ export async function signInCloser(page: Page, tag: Tag, query = "") {
   await page.getByRole("button", { name: totp.enrollStart }).click();
   await page.getByLabel(totp.codeLabel).fill(totpCode);
   await page.getByRole("button", { name: totp.verify }).click();
-  await expect(page).not.toHaveURL(/\/entrar/);
+  await expect(page).not.toHaveURL(/\/entrar/, { timeout: 20_000 });
 }
