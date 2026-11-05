@@ -52,7 +52,7 @@ async function open(page: Page, query = "") {
 
 async function fillValid(page: Page, email = "ada@example.com") {
   const section = page.locator("#formulario");
-  await section.getByLabel(form.ways.freelance.label).check({ force: true });
+  await section.getByLabel(form.ways.freelance.label).check();
   await section.getByLabel(form.nameLabel).fill("Ada Lovelace");
   await section.getByLabel(form.emailLabel).fill(email);
   await section.getByLabel(form.messageLabel).fill("Necesito una auditoría de mi app.");
@@ -113,7 +113,7 @@ test("shows errors, announces them and focuses the first invalid field", async (
     "true",
   );
 
-  await section.getByLabel(form.ways.freelance.label).check({ force: true });
+  await section.getByLabel(form.ways.freelance.label).check();
   await submit(page).click();
   await expect(section.getByLabel(form.nameLabel)).toBeFocused();
 

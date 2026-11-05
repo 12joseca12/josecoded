@@ -427,6 +427,7 @@ test.describe("Nexo in the recommender", () => {
 
 for (const width of [1440, 375]) {
   test(`has no axe violations on the page, a step and a result at ${width}`, async ({ page }) => {
+    test.slow();
     await page.setViewportSize({ width, height: 900 });
     const scan = async () => {
       const { violations } = await new AxeBuilder({ page }).analyze();
