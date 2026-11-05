@@ -19,6 +19,8 @@ import {
   personSchema,
   type ProfilePageJsonLd,
   profilePageSchema,
+  type ServiceJsonLd,
+  serviceSchema,
   type WebSiteJsonLd,
   webSiteSchema,
 } from "@/types/seo";
@@ -126,6 +128,25 @@ export function buildProfilePage(
     ...(dateModified === undefined ? {} : { dateModified }),
     isPartOf: { "@id": websiteId(origin) },
     mainEntity: { "@id": personId(origin) },
+  });
+}
+
+export function buildService(
+  origin: string,
+  locale: Locale,
+  path: string,
+  copy: { name: string; description: string; serviceType: string },
+): ServiceJsonLd {
+  const url = absoluteUrl(origin, localePath(locale, path));
+  return serviceSchema.parse({
+    "@type": "Service",
+    "@id": `${url}#service`,
+    url,
+    name: copy.name,
+    description: copy.description,
+    serviceType: copy.serviceType,
+    inLanguage: locale,
+    provider: { "@id": personId(origin) },
   });
 }
 

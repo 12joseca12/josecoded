@@ -19,6 +19,7 @@ import { isContactAvailable, readContactClientConfig } from "@/lib/contact/env";
 import { parseSelection } from "@/lib/contact/selection";
 import { resolveInitialWay } from "@/lib/contact/ways";
 import { buildPageMetadata } from "@/lib/seo/metadata";
+import { isAuditRequest } from "@/lib/services/audit";
 import { extraCopyKeys, offerCopyKeys, priceOf } from "@/lib/services/offers";
 import { isPilotRequest } from "@/lib/services/pilot";
 import type { WayId } from "@/types/services";
@@ -94,7 +95,13 @@ export default async function ContactPage({ params, searchParams }: ContactProps
       labels={buildContactFormLabels(t)}
       emails={emails}
       initialWay={initialWay}
-      initialMessage={isPilotRequest(query) ? t("contactPage.form.pilotMessage") : undefined}
+      initialMessage={
+        isPilotRequest(query)
+          ? t("contactPage.form.pilotMessage")
+          : isAuditRequest(query)
+            ? t("contactPage.form.auditMessage")
+            : undefined
+      }
       selection={selection}
       privacyHref={`/${locale}/legal/privacidad`}
       newTabLabel={t("contactPage.form.newTab")}

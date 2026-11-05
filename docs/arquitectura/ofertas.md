@@ -313,3 +313,15 @@ Listas para AskUserQuestion; la primera opción es la recomendada.
 - **`ESTADO.md`:** en «Ahora», esta ronda; en «Pendientes → Jose», las cinco preguntas; en «Pasar por `redactor`», los textos de §3 y los `reason` de §4.3; en «Pendientes → Jose (datos)», la lista de variables de §2.4 como entrada de la ronda de precios; bloques B2–B6 en el tablón cuando esté creado.
 - **Vault (`Proyectos/josecoded.md`, desde el Mac):** «la línea de precio cerrado se llama Lanzamientos; cuatro niveles por plataforma; doce extras; recomendador por reglas, Nexo lo replica desde el RAG; prototipo descontable (si a)».
 - **ADR en codebase-memory (cuando haya código):** «`offer`/`extra` como identificadores estables independientes del nombre público; reglas del recomendador como datos tipados en el repo con un test por regla, nunca en Supabase; estado del selector en la URL y resultado calculado por la misma función pura en servidor y cliente».
+
+## 8. Auditoría web y estudio de automatización e IA (2026-11-04)
+
+Oferta añadida por Jose (`decisiones.md` 2.29), aparte de Lanzamientos: no lleva niveles ni extras ni recomendador, porque es un servicio de alcance único.
+
+- **Qué es.** Revisión general de una web existente más un estudio de qué procesos del negocio se pueden automatizar o apoyar con IA. URL `/servicios/auditoria`; el H1, el título y la descripción llevan «auditoría web» y «automatización e IA».
+- **Qué revisa (seis áreas).** Rendimiento y Core Web Vitals · accesibilidad (WCAG 2.2 AA como criterio técnico) · SEO técnico · seguridad básica (no es un pentest) · analítica y consentimiento · procesos a automatizar o apoyar con IA.
+- **Qué entrega.** Informe priorizado por impacto y esfuerzo; una sesión para explicarlo; ningún cambio en la web (corregir se presupuesta aparte como tarea freelance o proyecto a medida).
+- **Qué no promete.** Certificación de accesibilidad, dictamen jurídico, cifras de mejora, plazos ni cobertura de ninguna norma. La IA solo se propone donde mejora algo comprobable.
+- **Precio.** «Precio en revisión» con `PriceState`; variables previstas: tamaño de la web y número de procesos revisados. Sin importe hasta la ronda de tarifas.
+- **Contacto.** `/contacto?via=freelance&task=audit` rellena un mensaje inicial editable. Se evita una vía nueva porque `contact_via` es un enum de base de datos y la server action valida contra él (migración con OK de Jose si hace falta).
+- **Dónde aparece.** Página propia con cinco secciones y FAQ de siete objeciones; bloque «¿Ya tienes una web?» en el hub bajo el bento; pestaña «Auditoría» en la `WayNav` de las páginas hijas; sitemap; `llms.txt`; JSON-LD `Service` sin precio, `FAQPage` y `BreadcrumbList`. El hub no declara `OfferCatalog` todavía; cuando exista, el `Service` de auditoría entra en él.

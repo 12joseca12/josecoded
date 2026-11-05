@@ -10,6 +10,7 @@ import {
   buildGraph,
   buildPerson,
   buildProfilePage,
+  buildService,
   buildSiteGraph,
   resolveProfileLinks,
   serializeJsonLd,
@@ -88,6 +89,7 @@ describe("buildSitemap", () => {
       `${productionOrigin}/es/servicios`,
       `${productionOrigin}/es/servicios/freelance`,
       `${productionOrigin}/es/servicios/a-medida`,
+      `${productionOrigin}/es/servicios/auditoria`,
       `${productionOrigin}/es/como-trabajo`,
       `${productionOrigin}/es/proyectos`,
       `${productionOrigin}/es/sobre-mi`,
@@ -115,6 +117,7 @@ describe("buildSitemap", () => {
       `${productionOrigin}/es/servicios`,
       `${productionOrigin}/es/servicios/freelance`,
       `${productionOrigin}/es/servicios/a-medida`,
+      `${productionOrigin}/es/servicios/auditoria`,
       `${productionOrigin}/es/como-trabajo`,
       `${productionOrigin}/es/sobre-mi`,
     ]);
@@ -251,6 +254,26 @@ describe("json-ld", () => {
     expect(() => buildFaqPage([])).toThrow();
   });
 
+  it("builds a Service without a price, provided by the Person", () => {
+    const service = buildService(productionOrigin, "es", "/servicios/auditoria", {
+      name: "Auditoría web",
+      description: "Revisión.",
+      serviceType: "Auditoría web",
+    });
+    expect(service).toEqual({
+      "@type": "Service",
+      "@id": `${productionOrigin}/es/servicios/auditoria#service`,
+      url: `${productionOrigin}/es/servicios/auditoria`,
+      name: "Auditoría web",
+      description: "Revisión.",
+      serviceType: "Auditoría web",
+      inLanguage: "es",
+      provider: { "@id": `${productionOrigin}/#person` },
+    });
+    expect(jsonLdGraphSchema.safeParse(buildGraph(service)).success).toBe(true);
+    expect(JSON.stringify(service)).not.toMatch(/offers|price/i);
+  });
+
   it("rejects invalid data", async () => {
     const person = await buildPerson(productionOrigin, "es");
     expect(() => buildGraph({ ...person, url: "not a url" })).toThrow();
@@ -287,6 +310,7 @@ describe("buildLlmsTxt", () => {
     expect(text).toContain(`(${productionOrigin}/es/servicios)`);
     expect(text).toContain(`(${productionOrigin}/es/servicios/freelance)`);
     expect(text).toContain(`(${productionOrigin}/es/servicios/a-medida)`);
+    expect(text).toContain(`(${productionOrigin}/es/servicios/auditoria)`);
     expect(text).toContain(`(${productionOrigin}/es/como-trabajo)`);
     expect(text).toContain(`(${productionOrigin}/es/contacto)`);
     expect(text).toContain(`(${productionOrigin}/es/sobre-mi)`);

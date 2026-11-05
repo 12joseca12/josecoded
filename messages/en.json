@@ -472,7 +472,8 @@
         "contratacion": "Hi José Carlos, I'm [name] from [company]. We're hiring [profile] for [product]. The setup is [remote, hybrid or on-site] and we want to close by [date]. The role: [link].",
         "freelance": "Hi, I'm [name] from [company]. We need [feature, audit or extra hands] on [stack]. We'd start around [date]. Repository or ticket: [link].",
         "project": "Hi, I'm [name]. I want [a website or app] for [business]. I need it by [date] and I have [a domain, store accounts or nothing yet]. My main worry: [question]."
-      }
+      },
+      "auditMessage": "I would like an audit of my website and a study of which processes could be automated or supported with AI. The website address is: "
     }
   },
   "search": {
@@ -563,6 +564,12 @@
         "title": "Tailored development",
         "text": "A complete website or app, tailored to you, with scope, price and date agreed up front.",
         "cta": "See tailored development"
+      },
+      "audit": {
+        "nav": "Audit",
+        "title": "Website audit and AI study",
+        "text": "I review your website from top to bottom and study which processes in your business can be automated or supported with AI.",
+        "cta": "See the audit"
       }
     },
     "how": {
@@ -630,6 +637,22 @@
         "a9": "Yes. Payment is split into three phases: 40% at the start, 40% when the design is delivered and 20% on launch. Each phase is confirmed in writing in the proposal.",
         "q10": "What happens if I want to change something halfway through the project?",
         "a10": "It can be done. Before touching it I explain what changes in timeline and cost, and I only apply it if you approve it in writing. If you approve it, it comes with its own timeline."
+      },
+      "audit": {
+        "q1": "How much does the audit cost?",
+        "a1": "I have not set the price yet. It depends on the size of the website and on how many processes we review, and I send it to you in writing before starting. I answer every enquiry within {responseTime}.",
+        "q2": "How is it different from running an automated tool?",
+        "a2": "Tools give a long list with no order and no context. I use the same ones, review by hand what they miss, discard what does not matter in your case and sort the rest by impact and effort.",
+        "q3": "Will you fix what you find?",
+        "a3": "Not as part of the audit: the report tells you what to fix and who can do it. If you want me to fix it, I quote it separately, as a freelance task or inside a tailored project. You can also take the report to whoever already looks after your website.",
+        "q4": "Does the accessibility review count as a certificate?",
+        "a4": "No. It is a technical review against WCAG, with tools and manual testing, that tells you which barriers exist and how to fix them. It is not a certification or a legal opinion; if you need one, I will tell you and it would have to come from someone who can issue it.",
+        "q5": "Do I have to give you access to my website or my data?",
+        "a5": "Almost everything is reviewed from the outside, with only the address. For analytics and processes I may need you to show me the tool or tell me how you work; I ask for only what is necessary and I can sign a confidentiality agreement first.",
+        "q6": "Are you going to sell me AI even if I do not need it?",
+        "a6": "No. Part of the study is telling you where it is not worth it: if a simple rule or a change in how you work solves the same thing, I say so. AI only appears where it improves something specific that you can check.",
+        "q7": "What if I have an app rather than a website?",
+        "a7": "For apps there are performance and accessibility audits as a freelance task. Tell me about your case and we will see which one fits."
       }
     },
     "rates": {
@@ -653,6 +676,11 @@
     "price": {
       "review": "Price under review",
       "reviewNote": "I send you the price in writing once you tell me about your case."
+    },
+    "audit": {
+      "title": "Already have a website?",
+      "lead": "I review it — performance, accessibility, technical SEO, basic security and analytics — and study which processes can be automated or supported with AI.",
+      "more": "See the website audit"
     }
   },
   "seo": {
@@ -695,7 +723,9 @@
       "contactLine": "{way}: {email}",
       "contact": "Contact: the ways to reach José Carlos",
       "howPage": "How I work: the five-phase process and the technical decisions behind this site",
-      "about": "About: background, way of working and stack of José Carlos"
+      "about": "About: background, way of working and stack of José Carlos",
+      "audit": "Website audit and automation and AI study: review of performance, accessibility, technical SEO, basic security and analytics, plus a study of processes to automate or support with AI. Prioritised report and a session to explain it.",
+      "auditPage": "Website audit: general review and automation and AI study"
     }
   },
   "chat": {
@@ -1005,6 +1035,94 @@
       "title": "Have a task in mind?",
       "text": "Tell me what you need and I will reply with a proposal.",
       "cta": "Ask for a proposal",
+      "more": "How I work, phase by phase"
+    }
+  },
+  "auditPage": {
+    "meta": {
+      "title": "Website audit and AI study",
+      "description": "Website audit: performance, accessibility, SEO, basic security and analytics, plus a study of processes to automate or support with AI."
+    },
+    "head": {
+      "title": "Website audit and",
+      "accent": "automation and AI study.",
+      "lead": "I review your website from top to bottom and analyse which processes in your business can be automated or supported with AI. You get a prioritised report and a session to explain it."
+    },
+    "schema": {
+      "name": "Website audit and automation and AI study",
+      "type": "Website audit"
+    },
+    "review": {
+      "title": "What I review",
+      "lead": "Six areas. I start from what is visible from the outside and what can be checked with tools and by hand; if I need anything else, I ask and we agree it first.",
+      "performance": {
+        "title": "Performance and Core Web Vitals",
+        "text": "I measure how long your website takes to appear and respond, on mobile and desktop, and what slows it down: images, third-party scripts, fonts or the server."
+      },
+      "a11y": {
+        "title": "Accessibility (WCAG 2.2)",
+        "text": "I go through it with a keyboard, a screen reader and automated tools against WCAG 2.2 level AA and tell you which barriers a user meets. It is a technical review, not a certification or a legal opinion."
+      },
+      "seo": {
+        "title": "Technical SEO",
+        "text": "Crawling, indexing, titles and descriptions, structured data, broken links, language versions and sitemap: what decides whether search engines and assistants understand your website."
+      },
+      "security": {
+        "title": "Basic security",
+        "text": "HTTPS, security headers, forms, dependencies with known vulnerabilities and what your website exposes by accident. It is a basic review, not a penetration test."
+      },
+      "analytics": {
+        "title": "Analytics",
+        "text": "What you measure, whether that data answers questions about your business and whether the measurement respects visitors' consent."
+      },
+      "automation": {
+        "title": "Processes to automate or support with AI",
+        "text": "We go through the tasks you do by hand and repeat: forms, notifications, quotes, enquiries, reports. For each one I tell you whether it is worth automating with simple rules, supporting with AI or leaving as it is."
+      }
+    },
+    "deliver": {
+      "title": "What I deliver",
+      "lead": "Two things, and both are yours.",
+      "report": {
+        "title": "Prioritised report",
+        "text": "Each finding with what is happening, why it matters and what to do, sorted by impact and effort so you know where to start."
+      },
+      "session": {
+        "title": "A session to explain it",
+        "text": "We go through the report together and I answer your questions. You leave knowing what you can do, what whoever looks after your website can do and what I can do."
+      },
+      "scope": {
+        "title": "No changes to your website",
+        "text": "The audit changes nothing. If you want me to apply the fixes, that is quoted separately, as a freelance task or inside a tailored project."
+      }
+    },
+    "price": {
+      "title": "Price",
+      "text": "The amount depends on the size of the website and on how many processes we review. We agree it in writing before starting."
+    },
+    "steps": {
+      "title": "How we work",
+      "tell": {
+        "title": "You tell me about your website and what worries you",
+        "text": "You send me the address, what you want to achieve with it and, if there are any, which processes take up your time."
+      },
+      "agree": {
+        "title": "We agree scope and price",
+        "text": "I reply with what I will review, what I need from you and how much it costs, all in writing."
+      },
+      "review": {
+        "title": "I review and prepare the report",
+        "text": "I do the review with tools and by hand and sort the findings by impact and effort."
+      },
+      "explain": {
+        "title": "I explain it to you",
+        "text": "We go through the report in a session and you decide what to do with it."
+      }
+    },
+    "closing": {
+      "title": "Want me to review your website?",
+      "text": "Tell me the address and what worries you, and I will reply with the scope and the price.",
+      "cta": "Ask for an audit",
       "more": "How I work, phase by phase"
     }
   },

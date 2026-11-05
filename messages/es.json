@@ -472,7 +472,8 @@
         "contratacion": "Hola José Carlos, soy [nombre] de [empresa]. Buscamos [perfil] para [producto]. La modalidad es [remoto, híbrido o presencial] y queremos cerrarlo para [fecha]. La oferta: [enlace].",
         "freelance": "Hola, soy [nombre] de [empresa]. Necesitamos [funcionalidad, auditoría o refuerzo] en [stack]. Empezaríamos hacia [fecha]. Repositorio o ticket: [enlace].",
         "project": "Hola, soy [nombre]. Quiero [web o app] para [negocio]. La necesito para [fecha] y tengo [dominio, cuentas de tienda o nada aún]. Lo que más me preocupa: [duda]."
-      }
+      },
+      "auditMessage": "Quiero una auditoría de mi web y un estudio de qué procesos se pueden automatizar o apoyar con IA. La dirección de la web es: "
     }
   },
   "search": {
@@ -563,6 +564,12 @@
         "title": "Desarrollo a medida",
         "text": "Una web o una app completa, a tu medida, con alcance, precio y fecha definidos de antemano.",
         "cta": "Ver desarrollo a medida"
+      },
+      "audit": {
+        "nav": "Auditoría",
+        "title": "Auditoría web y estudio de IA",
+        "text": "Reviso tu web de arriba abajo y estudio qué procesos de tu negocio se pueden automatizar o apoyar con IA.",
+        "cta": "Ver la auditoría"
       }
     },
     "how": {
@@ -630,6 +637,22 @@
         "a9": "Sí. El pago se reparte en tres fases: el 40 % al empezar, el 40 % al entregar el diseño y el 20 % al publicar. Cada fase se confirma por escrito en la propuesta.",
         "q10": "¿Qué pasa si quiero cambiar algo a mitad del proyecto?",
         "a10": "Se puede. Antes de tocarlo te explico qué cambia en plazo y coste, y solo lo aplico si lo apruebas por escrito. Si lo apruebas, entra con su propio plazo."
+      },
+      "audit": {
+        "q1": "¿Cuánto cuesta la auditoría?",
+        "a1": "Todavía no tengo el precio cerrado. Depende del tamaño de la web y de cuántos procesos revisemos, y te lo paso por escrito antes de empezar. Respondo cada consulta en {responseTime}.",
+        "q2": "¿En qué se diferencia de pasar una herramienta automática?",
+        "a2": "Las herramientas dan una lista larga, sin orden y sin contexto. Yo uso las mismas y además reviso a mano lo que no detectan, descarto lo que no importa en tu caso y ordeno el resto por impacto y esfuerzo.",
+        "q3": "¿Vas a arreglar lo que encuentres?",
+        "a3": "No dentro de la auditoría: el informe te dice qué corregir y quién puede hacerlo. Si quieres que lo corrija yo, lo presupuesto aparte, como tarea freelance o dentro de un proyecto a medida. También puedes llevar el informe a quien ya lleve tu web.",
+        "q4": "¿La revisión de accesibilidad vale como certificado?",
+        "a4": "No. Es una revisión técnica contra WCAG, con herramientas y pruebas manuales, que te dice qué barreras hay y cómo corregirlas. No es una certificación ni un dictamen jurídico; si necesitas uno, te lo digo y habría que pedirlo a quien pueda emitirlo.",
+        "q5": "¿Tengo que darte acceso a mi web o a mis datos?",
+        "a5": "Casi todo se revisa desde fuera, solo con la dirección. Para la analítica y los procesos puede hacer falta que me enseñes la herramienta o me cuentes cómo trabajas; te pido solo lo necesario y puedo firmar un acuerdo de confidencialidad antes.",
+        "q6": "¿Me vas a vender IA aunque no la necesite?",
+        "a6": "No. Parte del estudio es decirte dónde no compensa: si una regla simple o un cambio en la forma de trabajar resuelve lo mismo, te lo digo. La IA solo aparece donde mejora algo concreto que se puede comprobar.",
+        "q7": "¿Y si lo que tengo es una app y no una web?",
+        "a7": "Para apps hay auditorías de rendimiento y de accesibilidad como tarea freelance. Cuéntame el caso y vemos cuál encaja."
       }
     },
     "rates": {
@@ -653,6 +676,11 @@
     "price": {
       "review": "Precio en revisión",
       "reviewNote": "Te paso el precio por escrito cuando me cuentes tu caso."
+    },
+    "audit": {
+      "title": "¿Ya tienes una web?",
+      "lead": "Te la reviso —rendimiento, accesibilidad, SEO técnico, seguridad básica y analítica— y estudio qué procesos se pueden automatizar o apoyar con IA.",
+      "more": "Ver la auditoría web"
     }
   },
   "seo": {
@@ -695,7 +723,9 @@
       "contactLine": "{way}: {email}",
       "contact": "Contacto: las vías para hablar con José Carlos",
       "howPage": "Cómo trabajo: el proceso en cinco fases y las decisiones técnicas detrás de esta web",
-      "about": "Sobre mí: trayectoria, forma de trabajar y stack de José Carlos"
+      "about": "Sobre mí: trayectoria, forma de trabajar y stack de José Carlos",
+      "audit": "Auditoría web y estudio de automatización e IA: revisión de rendimiento, accesibilidad, SEO técnico, seguridad básica y analítica, más un estudio de procesos que automatizar o apoyar con IA. Informe priorizado y una sesión para explicarlo.",
+      "auditPage": "Auditoría web: revisión general y estudio de automatización e IA"
     }
   },
   "chat": {
@@ -1005,6 +1035,94 @@
       "title": "¿Tienes una tarea en mente?",
       "text": "Cuéntame qué necesitas y te respondo con una propuesta.",
       "cta": "Pedir propuesta",
+      "more": "Cómo trabajo, fase a fase"
+    }
+  },
+  "auditPage": {
+    "meta": {
+      "title": "Auditoría web y estudio de IA",
+      "description": "Auditoría de tu web: rendimiento, accesibilidad, SEO, seguridad básica y analítica, y estudio de procesos a automatizar o apoyar con IA."
+    },
+    "head": {
+      "title": "Auditoría web y estudio de",
+      "accent": "automatización e IA.",
+      "lead": "Reviso tu web de arriba abajo y analizo qué procesos de tu negocio se pueden automatizar o apoyar con IA. Recibes un informe priorizado y una sesión para explicarlo."
+    },
+    "schema": {
+      "name": "Auditoría web y estudio de automatización e IA",
+      "type": "Auditoría web"
+    },
+    "review": {
+      "title": "Qué reviso",
+      "lead": "Seis áreas. Parto de lo que se ve desde fuera y de lo que se comprueba con herramientas y a mano; si necesito algo más, te lo pido y lo acordamos antes.",
+      "performance": {
+        "title": "Rendimiento y Core Web Vitals",
+        "text": "Mido cuánto tarda tu web en mostrarse y en responder, en móvil y en escritorio, y qué la ralentiza: imágenes, scripts de terceros, fuentes o servidor."
+      },
+      "a11y": {
+        "title": "Accesibilidad (WCAG 2.2)",
+        "text": "La recorro con teclado, lector de pantalla y herramientas automáticas contra WCAG 2.2 nivel AA y te digo qué barreras encuentra una persona usuaria. Es una revisión técnica, no una certificación ni un dictamen legal."
+      },
+      "seo": {
+        "title": "SEO técnico",
+        "text": "Rastreo, indexación, títulos y descripciones, datos estructurados, enlaces rotos, versiones por idioma y mapa del sitio: lo que decide si buscadores y asistentes entienden tu web."
+      },
+      "security": {
+        "title": "Seguridad básica",
+        "text": "HTTPS, cabeceras de seguridad, formularios, dependencias con vulnerabilidades conocidas y lo que tu web expone sin querer. Es una revisión básica, no una prueba de intrusión."
+      },
+      "analytics": {
+        "title": "Analítica",
+        "text": "Qué mides, si esos datos responden a preguntas de tu negocio y si la medición respeta el consentimiento de quien visita."
+      },
+      "automation": {
+        "title": "Procesos que automatizar o apoyar con IA",
+        "text": "Repasamos juntos las tareas que haces a mano y se repiten: formularios, avisos, presupuestos, consultas, informes. De cada una te digo si compensa automatizarla con reglas simples, apoyarla con IA o dejarla como está."
+      }
+    },
+    "deliver": {
+      "title": "Qué entrego",
+      "lead": "Dos cosas, y las dos son tuyas.",
+      "report": {
+        "title": "Informe priorizado",
+        "text": "Cada hallazgo con qué pasa, por qué importa y qué hacer, ordenado por impacto y esfuerzo para que sepas por dónde empezar."
+      },
+      "session": {
+        "title": "Una sesión para explicarlo",
+        "text": "Repasamos el informe contigo y resuelvo tus dudas. Sales sabiendo qué hacer tú, qué puede hacer quien lleve tu web y qué puedo hacer yo."
+      },
+      "scope": {
+        "title": "Sin cambios en tu web",
+        "text": "La auditoría no modifica nada. Si quieres que aplique las correcciones, se presupuesta aparte, como tarea freelance o dentro de un proyecto a medida."
+      }
+    },
+    "price": {
+      "title": "Precio",
+      "text": "El importe depende del tamaño de la web y de cuántos procesos revisemos. Lo acordamos por escrito antes de empezar."
+    },
+    "steps": {
+      "title": "Cómo se trabaja",
+      "tell": {
+        "title": "Me cuentas tu web y qué te preocupa",
+        "text": "Me pasas la dirección, qué quieres conseguir con ella y, si los hay, qué procesos te quitan tiempo."
+      },
+      "agree": {
+        "title": "Acordamos alcance e importe",
+        "text": "Te respondo con qué voy a revisar, qué necesito de ti y cuánto cuesta, todo por escrito."
+      },
+      "review": {
+        "title": "Reviso y preparo el informe",
+        "text": "Hago la revisión con herramientas y a mano y ordeno los hallazgos por impacto y esfuerzo."
+      },
+      "explain": {
+        "title": "Te lo explico",
+        "text": "Repasamos el informe en una sesión y decides qué hacer con él."
+      }
+    },
+    "closing": {
+      "title": "¿Quieres que revise tu web?",
+      "text": "Cuéntame la dirección y qué te preocupa, y te respondo con el alcance y el importe.",
+      "cta": "Pedir una auditoría",
       "more": "Cómo trabajo, fase a fase"
     }
   },

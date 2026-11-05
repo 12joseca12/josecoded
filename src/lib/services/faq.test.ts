@@ -75,6 +75,15 @@ describe("faq", () => {
         ["qué solape horario hay", "overlap"],
         ["y si crece el alcance", "scope"],
       ],
+      audit: [
+        ["cuánto vale la auditoría", "cost"],
+        ["y si ya uso una herramienta automática", "tools"],
+        ["vas a arreglar lo que encuentres", "fixing"],
+        ["sirve como certificado de accesibilidad", "accessibility"],
+        ["te tengo que dar acceso a mis datos", "access"],
+        ["me vas a vender IA", "ai"],
+        ["lo mío es una app", "app"],
+      ],
       offers: [
         ["y si te pones enfermo o desapareces", "continuity"],
         ["la app es mía de verdad", "ownership"],

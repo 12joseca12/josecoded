@@ -10,7 +10,7 @@ import type { Locale } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
 import { nonceHeader } from "@/lib/security/nonce";
-import { buildBreadcrumbList, buildFaqPage, buildGraph } from "@/lib/seo/jsonld";
+import { buildBreadcrumbList, buildFaqPage, buildGraph, buildService } from "@/lib/seo/jsonld";
 import { localePath } from "@/lib/seo/routes";
 import type { FaqItem, ServicePageId, WayId, WayNavItem } from "@/types/services";
 
@@ -22,6 +22,7 @@ interface ServicePageProps {
   page: ServicePageId;
   head: { title: MessageKey; accent?: MessageKey; lead: MessageKey };
   faq: FaqItem[];
+  service?: { name: MessageKey; description: MessageKey; type: MessageKey };
   children: ReactNode;
 }
 
@@ -29,11 +30,13 @@ const pagePaths: Record<ServicePageId, string> = {
   hub: "/servicios",
   freelance: "/servicios/freelance",
   offers: "/servicios/a-medida",
+  audit: "/servicios/auditoria",
 };
 
 const pageLabels: Record<Exclude<ServicePageId, "hub">, MessageKey> = {
   freelance: "services.ways.freelance.nav",
   offers: "services.ways.project.nav",
+  audit: "services.ways.audit.nav",
 };
 
 const wayLabels: Record<WayId, MessageKey> = {
@@ -42,7 +45,14 @@ const wayLabels: Record<WayId, MessageKey> = {
   project: "services.ways.project.nav",
 };
 
-export async function ServicePage({ locale, page, head, faq, children }: ServicePageProps) {
+export async function ServicePage({
+  locale,
+  page,
+  head,
+  faq,
+  service,
+  children,
+}: ServicePageProps) {
   const [t, requestHeaders] = await Promise.all([getTranslator(locale), headers()]);
   const nonce = requestHeaders.get(nonceHeader) ?? undefined;
   const hubPath = localePath(locale, pagePaths.hub);
@@ -71,6 +81,11 @@ export async function ServicePage({ locale, page, head, faq, children }: Service
       label: t(wayLabels.project),
       href: localePath(locale, pagePaths.offers),
     },
+    {
+      id: "audit",
+      label: t("services.ways.audit.nav"),
+      href: localePath(locale, pagePaths.audit),
+    },
   ];
 
   const graph = buildGraph(
@@ -79,6 +94,15 @@ export async function ServicePage({ locale, page, head, faq, children }: Service
       crumbs.map((crumb) => ({ name: crumb.label, path: crumb.href })),
     ),
     buildFaqPage(faq),
+    ...(service
+      ? [
+          buildService(site.origin, locale, pagePaths[page], {
+            name: t(service.name),
+            description: t(service.description),
+            serviceType: t(service.type),
+          }),
+        ]
+      : []),
   );
 
   return (

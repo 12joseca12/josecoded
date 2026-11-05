@@ -5,6 +5,7 @@ const pages = [
   "/es/servicios",
   "/es/servicios/freelance",
   "/es/servicios/a-medida",
+  "/es/servicios/auditoria",
   "/es/como-trabajo",
   "/es/sobre-mi",
   "/es/contacto",

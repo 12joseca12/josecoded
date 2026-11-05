@@ -3,7 +3,7 @@
 import NextLink from "next/link";
 
 import { useActiveBlock } from "@/lib/nav/use-active-block";
-import type { WayId, WayNavItem, WayNavVariant } from "@/types/services";
+import type { WayNavId, WayNavItem, WayNavVariant } from "@/types/services";
 
 import styles from "./WayNav.module.css";
 
@@ -11,7 +11,7 @@ interface WayNavProps {
   label: string;
   items: WayNavItem[];
   variant?: WayNavVariant;
-  current?: WayId;
+  current?: WayNavId;
 }
 
 export function WayNav({ label, items, variant = "anchors", current }: WayNavProps) {
