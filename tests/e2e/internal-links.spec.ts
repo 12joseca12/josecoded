@@ -10,6 +10,8 @@ const pages = [
   "/es/sobre-mi",
   "/es/contacto",
   "/es/proyectos",
+  "/es/proyectos/3catinfo",
+  "/es/proyectos/josecoded",
 ];
 
 const promisedAndAbsent = ["/es/blog", "/es/chat"];
@@ -45,30 +47,22 @@ test("the header offers no chat button and no blog link", async ({ page }) => {
   await expect(page.locator('a[href="/es/blog"]')).toHaveCount(0);
 });
 
-test("the menu leaves out the empty projects page", async ({ page }) => {
+test("the menu lists the projects page", async ({ page }) => {
   await page.goto("/es");
   const nav = page.getByRole("navigation", { name: "Principal" });
-  await expect(nav.getByRole("link").nth(1)).toHaveAttribute("href", "/es/servicios");
-  await expect(nav.locator('a[href="/es/proyectos"]')).toHaveCount(0);
+  await expect(nav.locator('a[href="/es/proyectos"]')).toHaveCount(1);
 });
 
-test("the projects page has crumbs, honest exits and noindex", async ({ page }) => {
-  await page.goto("/es/proyectos");
-  await expect(page.getByRole("navigation", { name: "Migas de pan" })).toBeVisible();
-  const main = page.locator("main");
-  await expect(main.getByRole("link", { name: "Ver mi trayectoria" })).toHaveAttribute(
+test("the home offers the projects button", async ({ page }) => {
+  await page.goto("/es");
+  await expect(page.getByRole("link", { name: "Ver proyectos" }).first()).toHaveAttribute(
     "href",
-    "/es/sobre-mi",
+    "/es/proyectos",
   );
-  await expect(main.getByRole("link", { name: "Escribirme" })).toHaveAttribute(
-    "href",
-    "/es/contacto",
-  );
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
 });
 
-test("llms.txt does not announce pages that are not there", async ({ request }) => {
+test("llms.txt lists the projects and not the blog", async ({ request }) => {
   const body = await (await request.get("/llms.txt")).text();
-  expect(body).not.toContain("/es/proyectos");
+  expect(body).toContain("/es/proyectos/3catinfo");
   expect(body).not.toContain("/es/blog");
 });

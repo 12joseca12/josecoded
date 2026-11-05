@@ -26,12 +26,16 @@ const project = (overrides: Record<string, string> = {}) => {
   const fields = {
     title: "Demo",
     slug: "demo",
-    summary: "Resumen",
-    role: "Autor",
-    stack: "[Next]",
-    year: "2026",
-    order: "1",
+    kind: "web",
     status: "live",
+    headline: "Resumen",
+    description: "Descripción",
+    role: "Autor",
+    period: '"2026"',
+    sector: "Web",
+    stack: "[Next]",
+    relatedService: "freelance",
+    order: "1",
     ...overrides,
   };
   const lines = Object.entries(fields).map(([key, value]) => `${key}: ${value}`);
@@ -73,8 +77,8 @@ describe("readContent", () => {
   });
 
   it("names the file and the field when a type is wrong", () => {
-    write("content/projects/demo.mdx", project({ year: '"2026"' }));
-    expect(failure()).toContain('content/projects/demo.mdx: field "year"');
+    write("content/projects/demo.mdx", project({ order: '"1"' }));
+    expect(failure()).toContain('content/projects/demo.mdx: field "order"');
   });
 
   it("rejects a slug that differs from the file name", () => {
@@ -99,10 +103,10 @@ describe("readContent", () => {
 
 describe("findPlaceholders", () => {
   it("lists every DATO placeholder with file and line", () => {
-    write("content/projects/demo.mdx", project({ summary: '"{{DATO: resumen}}"' }));
+    write("content/projects/demo.mdx", project({ headline: '"{{DATO: resumen}}"' }));
     const found = findPlaceholders(base, readContent(base));
     expect(found).toEqual([
-      { file: "content/projects/demo.mdx", line: 4, text: 'summary: "{{DATO: resumen}}"' },
+      { file: "content/projects/demo.mdx", line: 6, text: 'headline: "{{DATO: resumen}}"' },
     ]);
   });
 });

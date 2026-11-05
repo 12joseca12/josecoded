@@ -13,12 +13,19 @@ function fill(template: string, values: Record<string, string>): string {
   );
 }
 
+export interface ProjectSummary {
+  slug: string;
+  title: string;
+  headline: string;
+}
+
 export async function buildLlmsTxt(
   origin: string,
   locale: Locale,
   rates: Rates,
   ways: readonly ContactWay[] = contact.ways,
   hasProjects = false,
+  projects: readonly ProjectSummary[] = [],
 ): Promise<string> {
   const t = await getTranslator(locale);
   const link = (label: string, path: string) =>
@@ -75,7 +82,14 @@ export async function buildLlmsTxt(
     link(t("seo.llms.offersPage"), "/servicios/a-medida"),
     link(t("seo.llms.auditPage"), "/servicios/auditoria"),
     link(t("seo.llms.howPage"), "/como-trabajo"),
-    ...(hasProjects ? [link(t("seo.llms.projects"), "/proyectos")] : []),
+    ...(hasProjects
+      ? [
+          link(t("seo.llms.projects"), "/proyectos"),
+          ...projects.map((project) =>
+            link(`${project.title}: ${project.headline}`, `/proyectos/${project.slug}`),
+          ),
+        ]
+      : []),
     link(t("seo.llms.about"), "/sobre-mi"),
     ...(hasContact ? [link(t("seo.llms.contact"), "/contacto")] : []),
     "",

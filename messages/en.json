@@ -139,9 +139,70 @@
     "emptyTitle": "No case studies yet",
     "emptyText": "I have not published any case with its challenge and result yet. Meanwhile you can read my background or tell me about your project.",
     "metaDescription": "Apps and websites: the challenge, what I did, the stack and the result of each project.",
-    "lead": "The cases I show here will come with the challenge, what I did and the result.",
+    "lead": "Each case tells the challenge, what I did and the result, with my exact role. What I cannot show, I do not show.",
     "about": "See my background",
-    "contact": "Write to me"
+    "contact": "Write to me",
+    "head": {
+      "title": "Apps and websites",
+      "accent": "I have built."
+    },
+    "listLabel": "Project list",
+    "filters": {
+      "label": "Filter by type",
+      "all": "All",
+      "app": "Apps",
+      "web": "Websites"
+    },
+    "kind": {
+      "app": "App",
+      "web": "Website"
+    },
+    "status": {
+      "live": "In production",
+      "wip": "Under construction",
+      "archived": "Archived"
+    },
+    "card": {
+      "role": "My role",
+      "view": "Read the case",
+      "metricSource": "Source: {source}, {date}"
+    },
+    "detail": {
+      "linksLabel": "Project links",
+      "ios": "App Store",
+      "android": "Google Play",
+      "web": "Visit the website",
+      "repo": "See the code",
+      "role": "My role",
+      "period": "Period",
+      "sector": "Sector",
+      "stack": "Stack",
+      "stackMore": "See my full stack",
+      "newTab": "(opens in a new tab)",
+      "metricTitle": "Verifiable figure"
+    },
+    "case": {
+      "challenge": "The challenge",
+      "did": "What I did",
+      "result": "The result"
+    },
+    "need": {
+      "title": "Do you need something like this?",
+      "text": {
+        "freelance": "I work as a freelancer, by the hour or by the task, inside your team or on my own.",
+        "a-medida": "I build custom websites and apps with a fixed price and date."
+      },
+      "service": {
+        "freelance": "See the freelance service",
+        "a-medida": "See custom development"
+      },
+      "contact": "Tell me about it"
+    },
+    "prevNext": {
+      "label": "More projects",
+      "prev": "Previous",
+      "next": "Next"
+    }
   },
   "errors": {
     "notFound": {

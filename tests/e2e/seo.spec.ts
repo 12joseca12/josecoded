@@ -28,6 +28,10 @@ const publicRoutes = [
   "/es/servicios/auditoria",
   "/es/como-trabajo",
   "/es/proyectos",
+  "/es/proyectos/3catinfo",
+  "/es/proyectos/3cat",
+  "/es/proyectos/nextraket",
+  "/es/proyectos/josecoded",
   "/es/sobre-mi",
 ];
 const devRoutes = [
@@ -137,12 +141,9 @@ test("sitemap.xml lists the public routes that have content", async ({ request }
   const response = await request.get("/sitemap.xml");
   expect(response.status()).toBe(200);
   const body = await response.text();
-  for (const route of [...publicRoutes, "/es/contacto"].filter(
-    (path) => path !== "/es/proyectos",
-  )) {
+  for (const route of [...publicRoutes, "/es/contacto"]) {
     expect(body).toContain(`<loc>http://localhost:3000${route}</loc>`);
   }
-  expect(body).not.toContain("/es/proyectos");
   expect(body).toContain("<loc>http://localhost:3000/es/legal/aviso-legal</loc>");
   expect(body).toContain("<loc>http://localhost:3000/es/legal/privacidad</loc>");
   expect(body).not.toContain("/es/legal/cookies");

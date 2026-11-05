@@ -12,27 +12,40 @@ const orPending = <T extends z.ZodType>(schema: T) => z.union([schema, pending])
 
 const text = z.string().trim().min(1);
 const slug = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "must be kebab-case");
-const urlOrPlaceholder = z
-  .string()
-  .refine((value) => placeholder.test(value) || URL.canParse(value), "must be a URL");
 const pathOrPlaceholder = z
   .string()
   .refine((value) => placeholder.test(value) || value.startsWith("/"), "must start with /");
 
 export const projectStatuses = ["live", "wip", "archived"] as const;
+export const projectKinds = ["app", "web"] as const;
+export const projectServices = ["freelance", "a-medida"] as const;
+
+const publicUrl = z.url({ protocol: /^https$/ });
 
 export const projectSchema = z.strictObject({
   title: text,
   slug,
-  summary: text,
+  kind: z.enum(projectKinds),
+  status: z.enum(projectStatuses),
+  headline: text,
+  description: text,
   role: text,
+  period: text,
+  sector: text,
+  team: z.boolean().default(false),
   stack: z.array(text).min(1),
-  year: z.number().int().min(2000).max(2100),
-  links: z.array(z.strictObject({ label: text, href: urlOrPlaceholder })).default([]),
-  cover: z.strictObject({ src: pathOrPlaceholder, alt: text }).optional(),
+  links: z
+    .strictObject({
+      store_ios: publicUrl.optional(),
+      store_android: publicUrl.optional(),
+      web: publicUrl.optional(),
+      repo: publicUrl.optional(),
+    })
+    .default({}),
+  metric: z.strictObject({ label: text, value: text, source: text, date: z.iso.date() }).optional(),
+  relatedService: z.enum(projectServices),
   featured: z.boolean().default(false),
   order: z.number().int().min(0),
-  status: z.enum(projectStatuses),
 });
 
 export const blogSchema = z.strictObject({

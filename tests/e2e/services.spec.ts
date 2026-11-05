@@ -206,7 +206,7 @@ for (const [name, viewport] of [
     await page.goto("/es/servicios");
     const links = page.locator("#vias a");
     const count = await links.count();
-    expect(count).toBe(6);
+    expect(count).toBe(7);
     for (const link of await links.all()) {
       await link.focus();
       await expect(link).toBeFocused();

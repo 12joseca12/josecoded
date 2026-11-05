@@ -1,7 +1,7 @@
 import { contact } from "@/config/contact";
 import { profileLinks } from "@/config/profiles";
 import { getCv } from "@/content/cv";
-import type { Cv } from "@/content/schemas";
+import type { Cv, ProjectMeta } from "@/content/schemas";
 import type { Locale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
 import { resolvePersonFacts } from "@/lib/about/cv";
@@ -23,6 +23,8 @@ import {
   professionalServiceSchema,
   type ProfilePageJsonLd,
   profilePageSchema,
+  type ProjectJsonLd,
+  projectNodeSchema,
   type ServiceJsonLd,
   serviceSchema,
   type WebSiteJsonLd,
@@ -229,6 +231,25 @@ export function buildContactPage(
     inLanguage: locale,
     isPartOf: { "@id": websiteId(origin) },
     about: { "@id": personId(origin) },
+  });
+}
+
+export function buildProject(origin: string, locale: Locale, meta: ProjectMeta): ProjectJsonLd {
+  const url = absoluteUrl(origin, localePath(locale, `/proyectos/${meta.slug}`));
+  const person = { "@id": personId(origin) };
+  const type =
+    meta.kind === "app" ? "MobileApplication" : meta.links.web ? "WebSite" : "CreativeWork";
+  return projectNodeSchema.parse({
+    "@type": type,
+    "@id": `${url}#project`,
+    url: meta.links.web ?? url,
+    name: meta.title,
+    description: meta.description,
+    inLanguage: locale,
+    keywords: meta.stack,
+    ...(meta.kind === "app" ? { operatingSystem: "iOS, Android" } : {}),
+    ...(meta.team ? { contributor: person } : { creator: person }),
+    isPartOf: { "@id": websiteId(origin) },
   });
 }
 

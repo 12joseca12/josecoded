@@ -1,0 +1,46 @@
+---
+title: josecoded
+slug: josecoded
+kind: web
+status: wip
+headline: "Esta web: mi escaparate y mi forma de trabajar, hecha de cero y con la calidad medida."
+description: "Caso josecoded: mi web personal en Next 16 sobre Cloudflare Workers, con CSP con nonce, accesibilidad WCAG 2.2 AA y presupuesto de JS medido."
+role: "Diseño y desarrollo de principio a fin"
+period: "2026 – actualidad"
+sector: "Web personal"
+team: false
+stack: [Next.js, TypeScript, Cloudflare Workers, Supabase]
+metric:
+  label: "de JavaScript comprimido en la home, con un presupuesto de 150 KB"
+  value: "145 KB"
+  source: "pnpm perf:budget sobre la build de esta web"
+  date: "2026-11-05"
+relatedService: a-medida
+featured: true
+order: 4
+---
+
+<CaseSection kind="challenge">
+
+Quería una web que enseñara cómo trabajo en vez de contarlo. Que sirviera a tres personas distintas: quien quiere contratarme, quien necesita un freelance y quien busca una web o una app a medida. Y que no se quedara en una plantilla bonita: que se pudiera comprobar.
+
+</CaseSection>
+
+<CaseSection kind="did">
+
+- La construí con Next 16 y la desplegué en Cloudflare Workers.
+- Seguridad desde el principio: CSP con nonce por petición, Turnstile en los formularios y base de datos con políticas de acceso por fila, probadas con pgTAP.
+- Accesibilidad WCAG 2.2 AA: comprobación con axe en las pruebas E2E de cada página, que bloquean la integración si fallan.
+- Rendimiento con presupuesto: un script mide el JavaScript de la home y falla si pasa de 150 KB comprimidos.
+- Un recomendador por reglas, sin IA generativa, que te dice qué oferta encaja contigo y por qué, con sus supuestos a la vista.
+- Todo el proceso está explicado en [Cómo trabajo](/es/como-trabajo).
+
+</CaseSection>
+
+<CaseSection kind="result">
+
+La web está en construcción y se publica por bloques. Lo que ya se puede comprobar es la cifra de arriba: la mide el propio repositorio, no una herramienta ajena.
+
+Aún no hay cifras de visitas ni de contactos, y no las pongo hasta que existan.
+
+</CaseSection>
