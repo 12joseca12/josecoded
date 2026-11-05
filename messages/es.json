@@ -15,9 +15,13 @@
     "hero": {
       "title": "Desarrollador full stack especializado en",
       "accent": "React Native.",
-      "lead": "Diseño, construyo y mantengo apps móviles y webs para empresas y negocios. Desde Madrid y en remoto: por horas, por tarea o con desarrollo a medida de precio cerrado.",
+      "lead": "Diseño, construyo y mantengo apps móviles y webs para empresas y negocios. Desde Madrid y en remoto: por horas, por tarea, con desarrollo a medida de precio cerrado o en tu equipo.",
       "ctaPrimary": "Pide propuesta",
       "ctaSecondary": "Ver proyectos",
+      "identity": "Soy José Carlos Sánchez García, desarrollador full stack en Madrid, especializado en React Native.",
+      "identityLink": "Trayectoria y CV",
+      "demoTag": "Ejemplo",
+      "demoNote": "Demostración con datos ficticios: no es un proyecto real.",
       "rail": {
         "list": "Fases de cada proyecto",
         "pause": "Pausar animación",
@@ -305,7 +309,7 @@
       "title": "Chat con Nexo",
       "hint": "Por aquí te respondo yo.",
       "open": "Abrir chat",
-      "soon": "El chat abre muy pronto."
+      "soon": "Todavía no está disponible. Escríbeme por el formulario o por correo."
     },
     "whatsapp": {
       "title": "WhatsApp",
@@ -388,9 +392,23 @@
       },
       "sent": {
         "title": "Mensaje enviado",
-        "text": "Gracias. Te responderé al correo que has indicado.",
         "alternative": "Si es urgente, escribe a",
-        "again": "Enviar otro mensaje"
+        "again": "Enviar otro mensaje",
+        "nextTitle": "Qué pasa ahora",
+        "byWay": {
+          "contratacion": {
+            "text": "Recibido. Mientras decides, tienes mi CV.",
+            "next": "Descargar mi CV"
+          },
+          "freelance": {
+            "text": "Recibido. Lo leo yo, con una propuesta de horas o de precio por tarea.",
+            "next": "Ver cómo trabajo"
+          },
+          "project": {
+            "text": "Recibido. Lo leo yo y te preparo una propuesta por escrito.",
+            "next": "Ver proyectos"
+          }
+        }
       },
       "quota": {
         "title": "Has llegado al límite de envíos",
@@ -414,9 +432,44 @@
       "selection": {
         "title": "Tu selección",
         "from": "desde",
-        "provisional": "provisional",
+        "review": "precio en revisión",
         "perMonth": "€/mes",
-        "change": "Cambiar"
+        "change": "Cambiar",
+        "warranty": "30 días de garantía incluidos",
+        "proposal": "Es una propuesta, sin compromiso"
+      },
+      "next": {
+        "title": "Qué pasa después de enviarlo",
+        "noCommitment": "Sin compromiso. No vendo ni cedo tus datos.",
+        "steps": {
+          "any": {
+            "s1": "Lo leo yo, no un bot.",
+            "s2": "Te respondo en {responseTime}.",
+            "s3": "Propuesta por escrito; si lo prefieres, lo hablamos por teléfono."
+          },
+          "contratacion": {
+            "s1": "Lo leo yo, no un bot.",
+            "s2": "Te respondo en {responseTime}.",
+            "s3": "Si encajo, concertamos una llamada."
+          },
+          "freelance": {
+            "s1": "Lo leo yo, no un bot.",
+            "s2": "Te respondo en {responseTime}.",
+            "s3": "Propuesta por escrito, con horas o precio por tarea."
+          },
+          "project": {
+            "s1": "Lo leo yo, no un bot.",
+            "s2": "Te respondo en {responseTime}.",
+            "s3": "Presupuesto cerrado por escrito; si lo prefieres, lo hablamos por teléfono."
+          }
+        }
+      },
+      "example": {
+        "summary": "Ver un ejemplo de mensaje",
+        "any": "Hola, soy [nombre]. Necesito [qué]. Lo quiero para [cuándo]. Esto es lo que ya tengo: [enlace o contexto].",
+        "contratacion": "Hola José Carlos, soy [nombre] de [empresa]. Buscamos [perfil] para [producto]. La modalidad es [remoto, híbrido o presencial] y queremos cerrarlo para [fecha]. La oferta: [enlace].",
+        "freelance": "Hola, soy [nombre] de [empresa]. Necesitamos [funcionalidad, auditoría o refuerzo] en [stack]. Empezaríamos hacia [fecha]. Repositorio o ticket: [enlace].",
+        "project": "Hola, soy [nombre]. Quiero [web o app] para [negocio]. La necesito para [fecha] y tengo [dominio, cuentas de tienda o nada aún]. Lo que más me preocupa: [duda]."
       }
     }
   },
@@ -573,9 +626,11 @@
       "unitHour": "€ / hora",
       "unitTask": "€ / tarea",
       "note": "Orientativas: el importe final se acuerda antes de empezar.",
-      "from": "desde",
-      "provisional": "Provisional",
-      "provisionalNote": "Cifras provisionales: las tarifas reales llegarán tras una ronda de evaluación de servicios."
+      "from": "desde"
+    },
+    "price": {
+      "review": "Precio en revisión",
+      "reviewNote": "Te paso el precio por escrito cuando me cuentes tu caso."
     }
   },
   "seo": {
@@ -1263,7 +1318,6 @@
         "platformApp": "App móvil",
         "from": "desde",
         "unit": "€",
-        "provisional": "provisional",
         "monthly": "+ {amount} €/mes de mantenimiento",
         "weeks": "Plazo orientativo: {min}–{max} semanas",
         "whyTitle": "Por qué te lo recomiendo",
@@ -1459,7 +1513,7 @@
       "diagram": {
         "label": "Arquitectura de esta web",
         "caption": "Arquitectura simplificada: quién usa la web, dónde se ejecuta y dónde viven los datos.",
-        "description": "Diagrama de izquierda a derecha, o de arriba abajo en móvil. El navegador y la app móvil se conectan con la aplicación Next 16, que se ejecuta en Cloudflare Workers; la integración continua en GitHub Actions la comprueba antes de publicarla. La aplicación guarda y lee los datos en Supabase, donde Postgres aplica seguridad por filas y se ofrecen autenticación, almacenamiento y tiempo real.",
+        "description": "Diagrama de izquierda a derecha, o de arriba abajo en móvil. El navegador se conecta con la aplicación Next 16, que se ejecuta en Cloudflare Workers; la integración continua en GitHub Actions la comprueba antes de publicarla. La aplicación guarda y lee los datos en Supabase, donde Postgres aplica seguridad por filas y se ofrecen autenticación, almacenamiento y tiempo real.",
         "layers": {
           "clients": "Quién la usa",
           "app": "Aplicación y entrega",
@@ -1470,17 +1524,13 @@
             "name": "Navegador",
             "detail": "La web pública y las zonas privadas, cada una con su rol."
           },
-          "mobile": {
-            "name": "App móvil",
-            "detail": "React Native, contra el mismo backend de datos."
-          },
           "workers": {
             "name": "Next 16 en Cloudflare Workers",
             "detail": "Render en el borde con OpenNext, CSP con nonce y límite de peticiones."
           },
           "ci": {
             "name": "CI en GitHub Actions",
-            "detail": "Lint, tipos, tests, build y e2e con axe antes de cada merge."
+            "detail": "Lint, tipos, tests, build, e2e con axe y pgTAP contra todas las migraciones en cada pull request."
           },
           "postgres": {
             "name": "Supabase Postgres",
@@ -1501,10 +1551,6 @@
           "title": "Supabase con RLS",
           "text": "Postgres con permisos por fila en cada tabla: el navegador nunca tiene más acceso del que le corresponde."
         },
-        "mobile": {
-          "title": "React Native para móvil",
-          "text": "Una sola base de TypeScript para iOS y Android, con la misma forma de trabajar que en web."
-        },
         "typescript": {
           "title": "TypeScript estricto",
           "text": "Tipos inferidos de esquemas zod en cada frontera: lo que entra se valida antes de usarse."
@@ -1515,7 +1561,7 @@
         },
         "ci": {
           "title": "Integración continua",
-          "text": "Cada cambio pasa lint, tipos, tests y build antes de llegar a main, con una preview para revisarlo."
+          "text": "Cada cambio de esta web ha entrado por pull request, y en cada una pasan lint, tipos, tests, build y las pruebas de la base de datos, con una preview para revisarlo."
         }
       }
     },
@@ -1525,7 +1571,7 @@
       "items": {
         "accessibility": {
           "title": "Accesibilidad WCAG 2.2 AA",
-          "text": "Teclado, foco visible y contraste en cada componente. axe bloquea el merge si encuentra una violación."
+          "text": "Teclado, foco visible y contraste en cada componente. Si axe encuentra una violación, la integración continua falla."
         },
         "performance": {
           "title": "Presupuesto de rendimiento",

@@ -42,7 +42,7 @@ describe("how page content", () => {
 
   it("resolves every problem, point and FAQ entry without empty copy", () => {
     expect(buildProblems(lookup)).toHaveLength(3);
-    expect(buildStackPoints(lookup)).toHaveLength(6);
+    expect(buildStackPoints(lookup)).toHaveLength(5);
     expect(buildQualityPoints(lookup)).toHaveLength(5);
     expect(buildHowFaq(lookup)).toHaveLength(4);
     for (const item of buildProblems(lookup)) {

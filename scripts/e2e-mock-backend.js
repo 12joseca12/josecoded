@@ -14,17 +14,37 @@ const fakeWidget = `
   function withAction(value, options) {
     return options.action && options.action !== "contact" ? value + ":" + options.action : value;
   }
+  function field(el) {
+    var input = el.querySelector("input[name='cf-turnstile-response']");
+    if (!input) {
+      input = document.createElement("input");
+      input.type = "hidden";
+      input.name = "cf-turnstile-response";
+      el.appendChild(input);
+    }
+    return input;
+  }
+  function deliver(el, options) {
+    setTimeout(function () {
+      var value = withAction(token(), options);
+      field(el).value = value;
+      options.callback(value);
+    }, 40);
+  }
   window.turnstile = {
     render: function (el, options) {
       var id = "fake-" + Object.keys(store).length;
-      store[id] = options;
+      store[id] = { options: options, el: el };
       el.setAttribute("data-fake-turnstile", "");
-      setTimeout(function () { options.callback(withAction(token(), options)); }, 40);
+      field(el).value = "";
+      deliver(el, options);
       return id;
     },
     reset: function (id) {
-      var options = store[id];
-      if (options) setTimeout(function () { options.callback(withAction(token(), options)); }, 40);
+      var entry = store[id];
+      if (!entry) return;
+      field(entry.el).value = "";
+      deliver(entry.el, entry.options);
     },
     remove: function (id) { delete store[id]; }
   };

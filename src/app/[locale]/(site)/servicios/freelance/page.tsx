@@ -113,8 +113,8 @@ export default async function FreelancePage({ params }: FreelanceProps) {
       <PageSection id="tarifas" title={t("freelancePage.rates.title")}>
         <RateFigure
           label={t("services.rates.label")}
-          note={t(provisional ? "services.rates.provisionalNote" : "services.rates.note")}
-          provisionalLabel={provisional ? t("services.rates.provisional") : undefined}
+          note={t(provisional ? "services.price.reviewNote" : "services.rates.note")}
+          review={provisional ? t("services.price.review") : undefined}
           items={[
             {
               id: "hour",
