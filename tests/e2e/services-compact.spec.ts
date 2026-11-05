@@ -128,7 +128,7 @@ for (const entry of chatPages) {
       );
     });
 
-    test("hands off with the form and chat when nothing matches", async ({ page }) => {
+    test("hands off with the form when nothing matches", async ({ page }) => {
       await page.goto(entry.path);
       await ask(page, "kubernetes");
       await expect(log(page)).toContainText(es.nexoChat.fallback ?? "");
@@ -136,7 +136,7 @@ for (const entry of chatPages) {
         "href",
         "/es/contacto#formulario",
       );
-      await expect(log(page).getByRole("button", { name: es.nexoChat.chat })).toBeVisible();
+      await expect(log(page).getByRole("button")).toHaveCount(0);
     });
 
     test("the log is a polite live region and the input is labelled", async ({ page }) => {

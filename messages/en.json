@@ -115,14 +115,17 @@
   "projects": {
     "metaTitle": "Projects",
     "title": "Projects",
-    "emptyTitle": "Soon",
-    "emptyText": "I am preparing the case studies. Check back in a few days.",
-    "metaDescription": "Apps and websites in production: the challenge, what I did, the stack and the result of each project."
+    "emptyTitle": "No case studies yet",
+    "emptyText": "I have not published any case with its challenge and result yet. Meanwhile you can read my background or tell me about your project.",
+    "metaDescription": "Apps and websites: the challenge, what I did, the stack and the result of each project.",
+    "lead": "The cases I show here will come with the challenge, what I did and the result.",
+    "about": "See my background",
+    "contact": "Write to me"
   },
   "errors": {
     "notFound": {
       "title": "This page does not exist",
-      "text": "The link is broken or the page has moved. You can go back home or see the projects."
+      "text": "The link is broken or the page has moved. You can go back home or write to me."
     },
     "serverError": {
       "title": "Something went wrong",
@@ -138,8 +141,7 @@
     },
     "actions": {
       "home": "Back to home",
-      "projects": "See projects",
-      "chat": "Open the chat",
+      "contact": "Write to me",
       "retry": "Try again",
       "retrying": "Retrying"
     }
@@ -297,12 +299,12 @@
   "contactPage": {
     "meta": {
       "title": "Contact",
-      "description": "Every way to reach José Carlos: chat with Nexo, email by route and a contact form."
+      "description": "Every way to reach José Carlos: email by route and a contact form."
     },
     "head": {
       "title": "Let's talk about your",
       "accent": "project.",
-      "lead": "Pick the channel you prefer. I answer, or Nexo does while I'm away."
+      "lead": "Pick the channel you prefer. I answer you myself."
     },
     "channelsLabel": "Ways to get in touch",
     "chat": {
@@ -406,7 +408,7 @@
           },
           "project": {
             "text": "Received. I read it myself and will prepare a written proposal.",
-            "next": "See projects"
+            "next": "See how I work"
           }
         }
       },
@@ -680,7 +682,7 @@
       "services": "Services: the three ways of working with José Carlos",
       "freelancePage": "Freelance: programmer by the hour or per task",
       "offersPage": "Tailored development: web and app with a fixed price and date",
-      "projects": "Projects: apps and websites in production",
+      "projects": "Projects: apps and websites case studies",
       "entityTitle": "Entity",
       "entityName": "Name: {name} (alias {alias})",
       "entityJob": "Occupation: {jobTitle}",
@@ -1488,15 +1490,14 @@
     "typing": "Nexo is typing",
     "you": "You",
     "nexo": "Nexo",
-    "fallback": "I do not have that at hand, but Jose does. You can pass him the question through the form or the chat.",
-    "form": "Go to the form",
-    "chat": "Open the chat"
+    "fallback": "I do not have that at hand, but Jose does. You can pass him the question through the form.",
+    "form": "Go to the form"
   },
   "nexoGuide": {
     "label": "Nexo, this site's assistant",
     "name": "Nexo",
     "role": "Site assistant",
-    "disclosure": "I am an assistant, not a person. I guide you with the same rules as the recommender; free conversation will arrive with the chat.",
+    "disclosure": "I am an assistant, not a person. I guide you with the same rules as the recommender.",
     "greeting": "Hi! I am Nexo. I will ask a few short questions and tell you which tier fits and which extras you would need.",
     "ask": {
       "start": "I start here because if you already have something built you do not need a new project, and I will point you elsewhere.",
@@ -1696,7 +1697,7 @@
     "faq": {
       "title": "Questions about the process",
       "q1": "How do we start?",
-      "a1": "You tell me the problem through the form or the chat. Within {responseTime} I reply with questions and, if it fits, a proposal with scope, timeline and price.",
+      "a1": "You tell me the problem through the form. Within {responseTime} I reply with questions and, if it fits, a proposal with scope, timeline and price.",
       "q2": "Can I change the scope halfway?",
       "a2": "Yes. I work in short deliveries, so every change is weighed for its effect on timeline and price before it is applied, with no surprises at the end.",
       "q3": "Are the code and the accounts mine?",

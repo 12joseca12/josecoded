@@ -29,6 +29,7 @@ interface SiteHeaderProps {
   labels: HeaderLabels;
   whatsappHref: string | null;
   searchEnabled: boolean;
+  chatEnabled: boolean;
 }
 
 const loadMobileMenu = () =>
@@ -45,6 +46,7 @@ export function SiteHeader({
   labels,
   whatsappHref,
   searchEnabled,
+  chatEnabled,
 }: SiteHeaderProps) {
   const pathname = usePathname();
   const onHome = stripLocale(pathname) === "";
@@ -203,7 +205,7 @@ export function SiteHeader({
         </nav>
         <div className={styles.actions}>
           {searchEnabled ? <SearchButton labels={labels.search} /> : null}
-          <ChatButton labels={labels.chat} onClick={onChatButton} />
+          {chatEnabled ? <ChatButton labels={labels.chat} onClick={onChatButton} /> : null}
           <ContactChooser
             id={chooserId}
             open={chooserOpen}
@@ -214,6 +216,7 @@ export function SiteHeader({
             labels={labels.contact}
             whatsappHref={whatsappHref}
             formHref={`${contactHref}#formulario`}
+            chatEnabled={chatEnabled}
             onChat={openChatFallback}
             openerRef={chooserOpenerRef}
           />

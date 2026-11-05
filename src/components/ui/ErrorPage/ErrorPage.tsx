@@ -63,10 +63,7 @@ export function ErrorPage({
             {actions.home}
           </Button>
           {variant === "notFound" ? (
-            <>
-              <Link href={`/${locale}/proyectos`}>{actions.projects}</Link>
-              <Link href={`/${locale}/chat`}>{actions.chat}</Link>
-            </>
+            <Link href={`/${locale}/contacto`}>{actions.contact}</Link>
           ) : null}
         </div>
       </Card>

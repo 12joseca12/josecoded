@@ -10,6 +10,7 @@ import { PageHead } from "@/components/site/PageHead/PageHead";
 import { Button } from "@/components/ui/Button/Button";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 import { contact } from "@/config/contact";
+import { features } from "@/config/features";
 import { isLocale } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
@@ -111,12 +112,14 @@ export default async function ContactPage({ params, searchParams }: ContactProps
       <section className={styles.channels} aria-label={t("contactPage.channelsLabel")}>
         <ul className={styles.list}>
           {initialWay ? formChannel : null}
-          <ChatChannel
-            title={t("contactPage.chat.title")}
-            hint={t("contactPage.chat.hint")}
-            openLabel={t("contactPage.chat.open")}
-            soonLabel={t("contactPage.chat.soon")}
-          />
+          {features.chat ? (
+            <ChatChannel
+              title={t("contactPage.chat.title")}
+              hint={t("contactPage.chat.hint")}
+              openLabel={t("contactPage.chat.open")}
+              soonLabel={t("contactPage.chat.soon")}
+            />
+          ) : null}
           {channels.whatsappHref ? (
             <ChannelCard
               title={t("contactPage.whatsapp.title")}
