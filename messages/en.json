@@ -978,7 +978,9 @@
         "status": "Status",
         "assigned": "Assigned to",
         "date": "Date",
-        "actions": "Actions"
+        "actions": "Actions",
+        "organization": "Organization",
+        "source": "Source"
       },
       "via": {
         "hiring": "Hiring",
@@ -1028,6 +1030,147 @@
         "text": "Try again. If it keeps failing, check Supabase status.",
         "retry": "Retry",
         "retrying": "Retrying"
+      },
+      "source": {
+        "form": "Form",
+        "nexo": "Nexo",
+        "whatsapp": "WhatsApp",
+        "radar": "Radar",
+        "manual": "Manual"
+      },
+      "noOrganization": "No organization",
+      "tabs": {
+        "label": "Lead status",
+        "all": "All",
+        "new": "New",
+        "waiting": "Waiting for admin",
+        "assigned": "Assigned",
+        "converted": "Converted",
+        "discarded": "Discarded"
+      },
+      "filters": {
+        "label": "Filter leads",
+        "q": "Search",
+        "via": "Via",
+        "source": "Source",
+        "owner": "Assigned to",
+        "anyVia": "All vias",
+        "anySource": "All sources",
+        "anyOwner": "Everyone",
+        "submit": "Filter",
+        "clear": "Clear filters"
+      },
+      "emptyFiltered": {
+        "title": "Nothing matches these filters",
+        "text": "Change the search or clear the filters to see the rest."
+      },
+      "new": {
+        "open": "Add lead",
+        "title": "Add lead",
+        "close": "Close",
+        "source": "Source",
+        "sources": {
+          "manual": "Manual",
+          "whatsapp": "WhatsApp"
+        },
+        "via": "Via",
+        "viaNone": "No via",
+        "fullName": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "organization": "Organization",
+        "message": "Message",
+        "assignedTo": "Assign to",
+        "assignedNone": "Unassigned",
+        "optional": "(optional)",
+        "submit": "Save lead",
+        "submitting": "Saving",
+        "done": "Lead added.",
+        "detail": "View record",
+        "errors": {
+          "fullName": "Enter the name, up to 200 characters.",
+          "email": "Check the email.",
+          "reachable": "Give an email or a phone number so they can be reached.",
+          "phone": "Check the phone, up to 40 characters.",
+          "organization": "Check the organization, up to 200 characters.",
+          "message": "Check the message, up to 4000 characters.",
+          "assignedTo": "Choose an active closer.",
+          "forbidden": "You are not allowed to add leads.",
+          "error": "It could not be saved. Try again."
+        }
+      },
+      "detail": {
+        "meta": {
+          "title": "Lead record"
+        },
+        "back": "Back to leads",
+        "loading": "Loading the record",
+        "error": {
+          "title": "I could not load the record",
+          "text": "Try again. If it keeps failing, check the Supabase status.",
+          "retry": "Retry",
+          "retrying": "Retrying"
+        },
+        "message": {
+          "title": "Message",
+          "empty": "They left no message."
+        },
+        "contact": {
+          "title": "Contact",
+          "email": "Email",
+          "phone": "Phone",
+          "organization": "Organization",
+          "none": "Not given"
+        },
+        "origin": {
+          "title": "Origin",
+          "source": "Source",
+          "via": "Via",
+          "created": "Received",
+          "page": "Page",
+          "locale": "Language",
+          "consent": "Consent",
+          "consentYes": "Accepted on {date}",
+          "consentNo": "Not recorded",
+          "locales": {
+            "es": "Spanish",
+            "en": "English"
+          }
+        },
+        "offer": {
+          "title": "What they ask for",
+          "offer": "Offer",
+          "extras": "Extras",
+          "answers": "Recommender answers",
+          "company": "Company",
+          "offerUrl": "Linked offer",
+          "wantedBy": "Wanted by",
+          "hasDomain": "Has a domain",
+          "hasStoreAccounts": "Has store accounts",
+          "yes": "Yes",
+          "no": "No"
+        },
+        "owner": {
+          "title": "Owner",
+          "status": "Status",
+          "assignedTo": "Assigned to",
+          "assignedBy": "Assigned by",
+          "assignedAt": "Assigned on",
+          "automatic": "Automatic, by existing contact",
+          "waiting": "Waiting for the admin",
+          "contact": "Linked contact",
+          "contactLink": "View contact",
+          "deal": "Deal",
+          "dealNone": "No deal"
+        },
+        "stage": {
+          "new": "New",
+          "contacted": "Contacted",
+          "meeting": "Meeting",
+          "proposal": "Proposal",
+          "won": "Won",
+          "lost": "Lost"
+        }
       }
     },
     "system": {

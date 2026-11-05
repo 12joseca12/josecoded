@@ -978,7 +978,9 @@
         "status": "Estado",
         "assigned": "Asignado a",
         "date": "Fecha",
-        "actions": "Acciones"
+        "actions": "Acciones",
+        "organization": "Organización",
+        "source": "Origen"
       },
       "via": {
         "hiring": "Contratación",
@@ -1028,6 +1030,147 @@
         "text": "Inténtalo otra vez. Si sigue fallando, mira el estado de Supabase.",
         "retry": "Reintentar",
         "retrying": "Reintentando"
+      },
+      "source": {
+        "form": "Formulario",
+        "nexo": "Nexo",
+        "whatsapp": "WhatsApp",
+        "radar": "Radar",
+        "manual": "Manual"
+      },
+      "noOrganization": "Sin organización",
+      "tabs": {
+        "label": "Estado de los interesados",
+        "all": "Todos",
+        "new": "Nuevos",
+        "waiting": "Esperan al admin",
+        "assigned": "Asignados",
+        "converted": "Convertidos",
+        "discarded": "Descartados"
+      },
+      "filters": {
+        "label": "Filtrar interesados",
+        "q": "Buscar",
+        "via": "Vía",
+        "source": "Origen",
+        "owner": "Asignado a",
+        "anyVia": "Todas las vías",
+        "anySource": "Todos los orígenes",
+        "anyOwner": "Todas las personas",
+        "submit": "Filtrar",
+        "clear": "Quitar filtros"
+      },
+      "emptyFiltered": {
+        "title": "Nada con estos filtros",
+        "text": "Cambia la búsqueda o quita los filtros para ver el resto."
+      },
+      "new": {
+        "open": "Añadir interesado",
+        "title": "Añadir interesado",
+        "close": "Cerrar",
+        "source": "Origen",
+        "sources": {
+          "manual": "Manual",
+          "whatsapp": "WhatsApp"
+        },
+        "via": "Vía",
+        "viaNone": "Sin vía",
+        "fullName": "Nombre",
+        "email": "Correo",
+        "phone": "Teléfono",
+        "organization": "Organización",
+        "message": "Mensaje",
+        "assignedTo": "Asignar a",
+        "assignedNone": "Sin asignar",
+        "optional": "(opcional)",
+        "submit": "Guardar interesado",
+        "submitting": "Guardando",
+        "done": "Interesado añadido.",
+        "detail": "Ver ficha",
+        "errors": {
+          "fullName": "Escribe el nombre, hasta 200 caracteres.",
+          "email": "Revisa el correo.",
+          "reachable": "Indica un correo o un teléfono para poder contactar.",
+          "phone": "Revisa el teléfono, hasta 40 caracteres.",
+          "organization": "Revisa la organización, hasta 200 caracteres.",
+          "message": "Revisa el mensaje, hasta 4000 caracteres.",
+          "assignedTo": "Elige un closer activo.",
+          "forbidden": "No tienes permiso para añadir interesados.",
+          "error": "No se ha podido guardar. Inténtalo otra vez."
+        }
+      },
+      "detail": {
+        "meta": {
+          "title": "Ficha del interesado"
+        },
+        "back": "Volver a interesados",
+        "loading": "Cargando la ficha",
+        "error": {
+          "title": "No he podido cargar la ficha",
+          "text": "Inténtalo otra vez. Si sigue fallando, mira el estado de Supabase.",
+          "retry": "Reintentar",
+          "retrying": "Reintentando"
+        },
+        "message": {
+          "title": "Mensaje",
+          "empty": "No dejó mensaje."
+        },
+        "contact": {
+          "title": "Contacto",
+          "email": "Correo",
+          "phone": "Teléfono",
+          "organization": "Organización",
+          "none": "Sin dato"
+        },
+        "origin": {
+          "title": "Origen",
+          "source": "Origen",
+          "via": "Vía",
+          "created": "Recibido",
+          "page": "Página",
+          "locale": "Idioma",
+          "consent": "Consentimiento",
+          "consentYes": "Aceptado el {date}",
+          "consentNo": "No consta",
+          "locales": {
+            "es": "Español",
+            "en": "Inglés"
+          }
+        },
+        "offer": {
+          "title": "Lo que pide",
+          "offer": "Oferta",
+          "extras": "Extras",
+          "answers": "Respuestas del recomendador",
+          "company": "Empresa",
+          "offerUrl": "Oferta enlazada",
+          "wantedBy": "Fecha deseada",
+          "hasDomain": "Tiene dominio",
+          "hasStoreAccounts": "Tiene cuentas de tienda",
+          "yes": "Sí",
+          "no": "No"
+        },
+        "owner": {
+          "title": "Responsable",
+          "status": "Estado",
+          "assignedTo": "Asignado a",
+          "assignedBy": "Asignado por",
+          "assignedAt": "Asignado el",
+          "automatic": "Automático, por contacto existente",
+          "waiting": "Espera al administrador",
+          "contact": "Contacto enlazado",
+          "contactLink": "Ver contacto",
+          "deal": "Oportunidad",
+          "dealNone": "Sin oportunidad"
+        },
+        "stage": {
+          "new": "Nueva",
+          "contacted": "Contactada",
+          "meeting": "Reunión",
+          "proposal": "Propuesta",
+          "won": "Ganada",
+          "lost": "Perdida"
+        }
       }
     },
     "system": {

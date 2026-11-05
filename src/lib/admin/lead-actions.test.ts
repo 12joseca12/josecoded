@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import type { Database } from "@/types/database";
 
-import { mapLeadActionError, runLeadAction } from "./lead-actions";
+import { mapLeadActionError, mapNewLeadError, runCreateLead, runLeadAction } from "./lead-actions";
 
 const leadId = "10000000-0000-4000-8000-000000000003";
 const userId = "00000000-0000-4000-8000-0000000000c1";
@@ -95,5 +95,94 @@ describe("runLeadAction", () => {
     expect(await runLeadAction(down.client, "discard", { leadId, reason: "x" })).toEqual({
       status: "error",
     });
+  });
+});
+
+function insertClient(result: { data?: unknown; error: unknown } | Error) {
+  const single = vi.fn(() =>
+    result instanceof Error ? Promise.reject(result) : Promise.resolve({ data: null, ...result }),
+  );
+  const select = vi.fn(() => ({ single }));
+  const insert = vi.fn(() => ({ select }));
+  const from = vi.fn(() => ({ insert }));
+  return { client: { from } as unknown as SupabaseClient<Database>, from, insert, select };
+}
+
+const newLead = {
+  source: "manual",
+  via: "hiring",
+  fullName: "  Ana Prueba ",
+  email: "ana@example.com",
+  phone: null,
+  organization: null,
+  message: null,
+  assignedTo: null,
+};
+
+describe("mapNewLeadError", () => {
+  it("maps the assignee, the contact check, permissions and everything else", () => {
+    expect(mapNewLeadError({ code: "P0001", message: "invalid_assignee" })).toEqual({
+      status: "invalid",
+      fields: ["assignedTo"],
+    });
+    expect(
+      mapNewLeadError({ code: "23514", message: 'violates check constraint "leads_reachable"' }),
+    ).toEqual({ status: "invalid", fields: ["email"] });
+    expect(mapNewLeadError({ code: "42501", message: "row-level security" })).toEqual({
+      status: "forbidden",
+    });
+    expect(mapNewLeadError({ code: "23514", message: "leads_phone_length" })).toEqual({
+      status: "error",
+    });
+  });
+});
+
+describe("runCreateLead", () => {
+  it("inserts with the user session and the allowed columns only", async () => {
+    const { client, from, insert, select } = insertClient({ data: { id: leadId }, error: null });
+    expect(await runCreateLead(client, newLead)).toEqual({ status: "done", id: leadId });
+    expect(from).toHaveBeenCalledWith("leads");
+    expect(insert).toHaveBeenCalledWith({
+      source: "manual",
+      via: "hiring",
+      full_name: "Ana Prueba",
+      email: "ana@example.com",
+      phone: null,
+      organization: null,
+      message: null,
+      assigned_to: null,
+    });
+    expect(select).toHaveBeenCalledWith("id");
+  });
+
+  it("rejects sources the form cannot create, missing contact data and unknown keys", async () => {
+    const { client, insert } = insertClient({ data: { id: leadId }, error: null });
+    expect(await runCreateLead(client, { ...newLead, source: "form" })).toEqual({
+      status: "invalid",
+      fields: [],
+    });
+    expect(await runCreateLead(client, { ...newLead, email: null })).toEqual({
+      status: "invalid",
+      fields: ["email"],
+    });
+    expect(await runCreateLead(client, { ...newLead, fullName: "  " })).toEqual({
+      status: "invalid",
+      fields: ["fullName"],
+    });
+    expect(await runCreateLead(client, { ...newLead, status: "converted" })).toEqual({
+      status: "invalid",
+      fields: [],
+    });
+    expect(insert).not.toHaveBeenCalled();
+  });
+
+  it("maps database errors and thrown requests", async () => {
+    const bad = insertClient({ error: { code: "P0001", message: "invalid_assignee" } });
+    expect(await runCreateLead(bad.client, newLead)).toEqual({
+      status: "invalid",
+      fields: ["assignedTo"],
+    });
+    const down = insertClient(new Error("network"));
+    expect(await runCreateLead(down.client, newLead)).toEqual({ status: "error" });
   });
 });
