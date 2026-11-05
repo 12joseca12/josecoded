@@ -42,7 +42,6 @@ export default defineConfig({
         SUPABASE_SERVICE_ROLE_KEY: "test-service-role-key",
         TURNSTILE_SECRET_KEY: "test-turnstile-secret",
         FORM_IP_HASH_SECRET: "test-ip-hash-secret",
-        CRON_SECRET: "test-cron-secret",
         NEXT_PUBLIC_TURNSTILE_SITE_KEY: "1x00000000000000000000AA",
         TURNSTILE_SCRIPT_URL: `${mockOrigin}/turnstile/api.js`,
         TURNSTILE_VERIFY_URL: `${mockOrigin}/turnstile/siteverify`,
