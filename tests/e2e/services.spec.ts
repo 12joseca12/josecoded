@@ -9,7 +9,12 @@ const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
     nav: { label: string };
     how: { title: string };
     faq: { title: string };
-    bento: { title: string };
+    bento: {
+      title: string;
+      expectationLabel: string;
+      hiring: Record<"cv" | "trajectory" | "availability", string>;
+    };
+    team: { title: string; pr: string; ci: string; review: string; more: string };
     ways: Record<"contratacion" | "freelance" | "project", { nav: string }>;
   };
 };
@@ -133,6 +138,7 @@ test("hub frames the ways as needs and keeps the five phases only here", async (
   await page.goto("/es/servicios");
   await expect(page.getByRole("heading", { level: 2 })).toHaveText([
     es.services.bento.title,
+    es.services.team.title,
     es.services.how.title,
     es.services.faq.title,
   ]);
@@ -162,11 +168,15 @@ test("hub tiles stay compact and show no price while it is under review", async 
 test("hub tiles link to their destinations with unified params", async ({ page }) => {
   await page.goto("/es/servicios");
   const hiring = page.locator("#contratacion");
-  await expect(hiring.getByRole("link").first()).toHaveAttribute(
-    "href",
-    "/es/contacto?via=hiring#formulario",
-  );
-  await expect(hiring.getByRole("link").nth(1)).toHaveAttribute("href", "/es/sobre-mi");
+  const cv = hiring.getByRole("link", { name: es.services.bento.hiring.cv });
+  await expect(cv).toHaveAttribute("href", "/cv/cv-jose-carlos-sanchez-es.pdf");
+  await expect(cv).toHaveAttribute("download", "");
+  await expect(
+    hiring.getByRole("link", { name: es.services.bento.hiring.trajectory }),
+  ).toHaveAttribute("href", "/es/sobre-mi");
+  await expect(
+    hiring.getByRole("link", { name: es.services.bento.hiring.availability }),
+  ).toHaveAttribute("href", "/es/contacto?via=hiring#formulario");
   await expect(page.locator("#freelance").getByRole("link")).toHaveAttribute(
     "href",
     "/es/servicios/freelance",
@@ -347,7 +357,7 @@ test("child page nav moves between pages", async ({ page }) => {
   await nav.getByRole("link", { name: ways.project.nav }).click();
   await expect(page).toHaveURL(/\/es\/servicios\/a-medida$/);
   await nav.getByRole("link", { name: ways.contratacion.nav }).click();
-  await expect(page).toHaveURL(/\/es\/servicios#contratacion$/);
+  await expect(page).toHaveURL(/\/es\/sobre-mi$/);
 });
 
 test("breadcrumb collapses to the parent on mobile", async ({ page }) => {
@@ -366,3 +376,33 @@ for (const entry of pages) {
     expect(scrollWidth).toBeLessThanOrEqual(360);
   });
 }
+
+test("hub downloads the CV from the primary hiring action", async ({ page }) => {
+  await page.goto("/es/servicios");
+  const download = page.waitForEvent("download");
+  await page.getByRole("link", { name: es.services.bento.hiring.cv }).click();
+  expect((await download).suggestedFilename()).toBe("cv-jose-carlos-sanchez-es.pdf");
+});
+
+test("every hub tile says what the visitor receives after getting in touch", async ({ page }) => {
+  await page.goto("/es/servicios");
+  for (const id of ["contratacion", "project", "freelance"]) {
+    await expect(
+      page.locator(`#${id}`).getByText(es.services.bento.expectationLabel),
+    ).toBeVisible();
+  }
+});
+
+test("hub lists the team practices the repository really follows with a link to Cómo trabajo", async ({
+  page,
+}) => {
+  await page.goto("/es/servicios");
+  const section = page.locator("#en-equipo");
+  await expect(section.getByRole("list").getByRole("listitem")).toHaveText([
+    es.services.team.pr,
+    es.services.team.ci,
+    es.services.team.review,
+  ]);
+  await section.getByRole("link", { name: es.services.team.more }).click();
+  await expect(page).toHaveURL(/\/es\/como-trabajo$/);
+});

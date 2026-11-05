@@ -10,7 +10,7 @@ const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
     closing: { cta: string; cv: string; links: { linkedin: string } };
     actions: { cvEn: string };
   };
-  services: { bento: { proof: { stack: string } }; ways: { contratacion: { more: string } } };
+  services: { bento: { proof: { stack: string }; hiring: { trajectory: string } } };
   legal: { draft: { title: string }; toc: { label: string } };
   footer: { legalLabel: string };
   contactPage: { form: { consentLink: string } };
@@ -173,7 +173,7 @@ test("/es/sobre-mi publishes ProfilePage and breadcrumbs JSON-LD with a nonce", 
 
 test("the services bento links land on Sobre mí and its stack anchor", async ({ page }) => {
   await page.goto("/es/servicios");
-  await page.getByRole("link", { name: es.services.ways.contratacion.more }).click();
+  await page.getByRole("link", { name: es.services.bento.hiring.trajectory }).click();
   await expect(page).toHaveURL(/\/es\/sobre-mi$/);
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 

@@ -3,6 +3,7 @@ import { Heading } from "@/components/ui/Heading/Heading";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 import { Link } from "@/components/ui/Link/Link";
 import { VisuallyHidden } from "@/components/ui/VisuallyHidden/VisuallyHidden";
+import { features } from "@/config/features";
 import type { Locale } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
@@ -44,9 +45,11 @@ export async function Hero({ locale }: HeroProps) {
           <Button href={`/${locale}/contacto`} icon={<ArrowIcon />}>
             {t("home.hero.ctaPrimary")}
           </Button>
-          <Button href={`/${locale}/proyectos`} variant="light">
-            {t("home.hero.ctaSecondary")}
-          </Button>
+          {features.projects ? (
+            <Button href={`/${locale}/proyectos`} variant="light">
+              {t("home.hero.ctaSecondary")}
+            </Button>
+          ) : null}
         </div>
         <p className={styles.identity}>
           {t("home.hero.identity")}{" "}

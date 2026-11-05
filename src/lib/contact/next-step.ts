@@ -10,5 +10,5 @@ export function nextStepTarget(locale: string, way: WayId): NextStepTarget {
     return { href: `/cv/cv-jose-carlos-sanchez-${locale}.pdf`, external: true };
   }
   if (way === "freelance") return { href: `/${locale}/como-trabajo`, external: false };
-  return { href: `/${locale}/proyectos`, external: false };
+  return { href: `/${locale}/como-trabajo`, external: false };
 }

@@ -17,12 +17,12 @@ import { nonceHeader } from "@/lib/security/nonce";
 import { buildSiteGraph } from "@/lib/seo/jsonld";
 import type { HeaderLabels } from "@/types/nav";
 
-const navSlugs: [string, MessageKey][] = [
-  ["proyectos", "nav.projects"],
-  ["servicios", "nav.services"],
-  ["sobre-mi", "nav.about"],
-  ["blog", "nav.blog"],
-  ["contacto", "nav.contact"],
+const navSlugs: [string, MessageKey, boolean][] = [
+  ["servicios", "nav.services", true],
+  ["sobre-mi", "nav.about", true],
+  ["proyectos", "nav.projects", features.projects],
+  ["blog", "nav.blog", features.blog],
+  ["contacto", "nav.contact", true],
 ];
 
 interface SiteChromeProps {
@@ -34,7 +34,9 @@ export async function SiteChrome({ locale, children }: SiteChromeProps) {
   const nonce = (await headers()).get(nonceHeader) ?? undefined;
   const t = await getTranslator(locale);
   const graph = await buildSiteGraph(site.origin, locale);
-  const items = navSlugs.map(([slug, key]) => ({ slug, label: t(key) }));
+  const items = navSlugs
+    .filter(([, , enabled]) => enabled)
+    .map(([slug, key]) => ({ slug, label: t(key) }));
   const labels: HeaderLabels = {
     brandLabel: t("nav.brandLabel"),
     brandWord: t("nav.brandWord"),
@@ -73,6 +75,7 @@ export async function SiteChrome({ locale, children }: SiteChromeProps) {
         labels={labels}
         whatsappHref={whatsappHref}
         searchEnabled={features.search}
+        chatEnabled={features.chat}
       />
       <ViewTransition default="none" update="page-swap">
         <main id={contentId} tabIndex={-1}>

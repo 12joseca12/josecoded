@@ -50,7 +50,7 @@ for (const size of sizes) {
   });
 }
 
-test("hub need tiles are short questions with one line of support and one icon", async ({
+test("hub need tiles are short questions with one line of support, one expectation line and one icon", async ({
   page,
 }) => {
   await page.goto("/es/servicios");
@@ -59,7 +59,7 @@ test("hub need tiles are short questions with one line of support and one icon",
     const title = (await tile.locator("h3").textContent()) ?? "";
     expect(title.trim().split(/\s+/).length).toBeLessThanOrEqual(7);
     expect(title).toMatch(/^¿.*\?$/);
-    await expect(tile.locator("p")).toHaveCount(1);
+    await expect(tile.locator("p")).toHaveCount(2);
     await expect(tile.locator("svg")).toHaveCount(2);
     await expect(tile.locator("ul, ol, dl")).toHaveCount(0);
   }
@@ -128,7 +128,7 @@ for (const entry of chatPages) {
       );
     });
 
-    test("hands off with the form and chat when nothing matches", async ({ page }) => {
+    test("hands off with the form when nothing matches", async ({ page }) => {
       await page.goto(entry.path);
       await ask(page, "kubernetes");
       await expect(log(page)).toContainText(es.nexoChat.fallback ?? "");
@@ -136,7 +136,7 @@ for (const entry of chatPages) {
         "href",
         "/es/contacto#formulario",
       );
-      await expect(log(page).getByRole("button", { name: es.nexoChat.chat })).toBeVisible();
+      await expect(log(page).getByRole("button")).toHaveCount(0);
     });
 
     test("the log is a polite live region and the input is labelled", async ({ page }) => {

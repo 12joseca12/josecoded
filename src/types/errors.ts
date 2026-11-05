@@ -10,8 +10,7 @@ export const errorCodes: Record<ErrorVariant, string> = {
 
 export interface ErrorActionLabels {
   home: string;
-  projects: string;
-  chat: string;
+  contact: string;
   retry: string;
   retrying: string;
 }

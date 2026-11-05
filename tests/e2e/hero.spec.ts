@@ -36,15 +36,14 @@ async function runningHeroAnimations(page: Page) {
 }
 
 test.describe("hero copy", () => {
-  test("shows the headline, the lead and both calls to action", async ({ page }) => {
+  test("shows the headline, the lead and the call to action", async ({ page }) => {
     await page.goto("/es");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
       `${hero.title} ${hero.accent}`,
     );
     const primary = page.getByRole("link", { name: hero.ctaPrimary });
     await expect(primary).toHaveAttribute("href", "/es/contacto");
-    const secondary = page.getByRole("link", { name: hero.ctaSecondary });
-    await expect(secondary).toHaveAttribute("href", "/es/proyectos");
+    await expect(page.getByRole("link", { name: hero.ctaSecondary })).toHaveCount(0);
   });
 
   test("says who Jose is and offers the hiring route without scrolling", async ({ page }) => {
