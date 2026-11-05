@@ -2078,6 +2078,7 @@ export type Database = {
           deals_new: number
           deals_proposal: number
           inbox_new: number
+          unread_threads: number
         }[]
       }
       deal_payments: {
