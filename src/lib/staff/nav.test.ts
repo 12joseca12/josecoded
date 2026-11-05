@@ -37,7 +37,7 @@ describe("staff navigation registry", () => {
     const ready = (zone: "admin" | "crm") =>
       staffNav[zone].filter((entry) => entry.ready).map((entry) => entry.key);
     expect(ready("admin")).toEqual(["overview", "leads", "users", "prices", "system"]);
-    expect(ready("crm")).toEqual(["overview"]);
+    expect(ready("crm")).toEqual(["overview", "contacts"]);
   });
 
   it("has a label in every locale", () => {

@@ -1800,6 +1800,238 @@
       "lead": "What you need to do today.",
       "emptyTitle": "Nothing to show yet",
       "emptyText": "Your portfolio overview arrives with the CRM. Until then this section is empty."
+    },
+    "contacts": {
+      "meta": {
+        "title": "Contacts"
+      },
+      "title": "Contacts",
+      "lead": "Your book: who to write to, what stage they are in and the next step.",
+      "loading": "Loading contacts",
+      "limit": "Showing the {count} most recent. Narrow it down with the filters.",
+      "region": "Contacts table",
+      "caption": "Contacts, most recent activity first",
+      "listLabel": "Contact list",
+      "columns": {
+        "name": "Contact",
+        "organization": "Organization",
+        "kind": "Type",
+        "stage": "Stage",
+        "nextAction": "Next step",
+        "lastContact": "Last contact",
+        "source": "Source",
+        "owner": "Owner"
+      },
+      "kinds": {
+        "prospect": "Prospect",
+        "client": "Client",
+        "recruiter": "Recruiter",
+        "partner": "Partner",
+        "other": "Other"
+      },
+      "sources": {
+        "manual": "Manual",
+        "import": "Imported",
+        "form": "Form",
+        "nexo": "Nexo",
+        "whatsapp": "WhatsApp",
+        "radar": "Radar"
+      },
+      "stages": {
+        "new": "New",
+        "contacted": "Contacted",
+        "meeting": "Meeting",
+        "proposal": "Proposal",
+        "won": "Won",
+        "lost": "Lost"
+      },
+      "vias": {
+        "hiring": "Hiring",
+        "freelance": "Freelance",
+        "project": "Custom project"
+      },
+      "noDeal": "No deal",
+      "noNextAction": "No next step",
+      "overdue": "overdue",
+      "never": "No activity",
+      "noOwner": "No owner",
+      "unknownOwner": "Deactivated person",
+      "noEmail": "No email",
+      "call": "Call",
+      "whatsapp": "WhatsApp",
+      "callAria": "Call {name}",
+      "whatsappAria": "Message {name} on WhatsApp",
+      "filters": {
+        "region": "Contact filters",
+        "search": "Search",
+        "searchPlaceholder": "Name, organization or email",
+        "kind": "Type",
+        "stage": "Stage",
+        "owner": "Owner",
+        "all": "All",
+        "noOwner": "No owner",
+        "due": "Only overdue next step",
+        "apply": "Filter",
+        "clear": "Clear filters"
+      },
+      "empty": {
+        "title": "Add your first contact",
+        "text": "Contacts are the people you sell to. Create the first one by hand; import will come later."
+      },
+      "emptyFiltered": {
+        "title": "No contact matches",
+        "text": "Try other filters or clear them to see the whole book."
+      },
+      "error": {
+        "title": "Contacts could not be loaded",
+        "text": "The query failed. Try again.",
+        "retry": "Retry",
+        "retrying": "Retrying"
+      },
+      "new": {
+        "open": "New contact",
+        "title": "New contact",
+        "close": "Close",
+        "fullName": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "organization": "Organization",
+        "kind": "Type",
+        "optional": "(optional)",
+        "submit": "Create contact",
+        "saving": "Creating contact",
+        "done": "Contact created",
+        "errors": {
+          "fullName": "Enter the name, 1 to 200 characters.",
+          "email": "Enter a valid email.",
+          "phone": "The phone allows up to 40 characters.",
+          "organization": "The organization allows up to 200 characters.",
+          "kind": "Choose a contact type.",
+          "duplicate": "You already have a contact with that email.",
+          "forbidden": "You are not allowed to create contacts.",
+          "error": "Could not create it. Try again."
+        }
+      },
+      "stageSheet": {
+        "open": "Change stage",
+        "openAria": "Change stage of {name}",
+        "title": "Change stage",
+        "close": "Close",
+        "stageLegend": "New stage",
+        "reasonLabel": "Reason for losing it",
+        "submit": "Save stage",
+        "saving": "Saving stage",
+        "done": "Stage updated",
+        "errors": {
+          "stage": "Choose a stage.",
+          "reason": "Enter the reason, 1 to 500 characters.",
+          "stale": "The deal has changed. Reload the page.",
+          "forbidden": "You are not allowed to change this stage.",
+          "error": "Could not save. Try again."
+        }
+      }
+    },
+    "contact": {
+      "meta": {
+        "title": "Contact"
+      },
+      "back": "Back to contacts",
+      "loading": "Loading contact",
+      "error": {
+        "title": "The contact could not be loaded",
+        "text": "The query failed. Try again.",
+        "retry": "Retry",
+        "retrying": "Retrying"
+      },
+      "head": {
+        "email": "Email",
+        "noEmail": "No email",
+        "copy": "Copy",
+        "copyAria": "Copy the email of {name}",
+        "copied": "Copied",
+        "phone": "Phone",
+        "city": "City",
+        "website": "Website",
+        "owner": "Owner",
+        "noOwner": "No owner",
+        "unknownOwner": "Deactivated person",
+        "nextStep": "Next step",
+        "noNextStep": "No next step",
+        "overdue": "· overdue",
+        "lastContact": "Last contact",
+        "never": "No activity",
+        "source": "Source",
+        "tags": "Tags",
+        "notes": "Notes"
+      },
+      "reassign": {
+        "open": "Reassign",
+        "title": "Reassign contact",
+        "close": "Close",
+        "owner": "New owner",
+        "placeholder": "Choose an owner",
+        "note": "Open deals move with the contact. Won and lost deals stay as they are.",
+        "submit": "Reassign contact",
+        "saving": "Reassigning",
+        "done": "Contact reassigned",
+        "errors": {
+          "owner": "Choose an active owner different from the current one.",
+          "forbidden": "Only the admin can reassign contacts.",
+          "error": "Could not reassign. Try again."
+        }
+      },
+      "deals": {
+        "title": "Deals",
+        "emptyTitle": "No deals",
+        "emptyText": "This contact has no deal yet.",
+        "amount": "Estimated amount",
+        "noAmount": "No amount",
+        "wonAmount": "Won amount",
+        "wonAt": "Won on",
+        "lostAt": "Lost on",
+        "lostReason": "Reason",
+        "created": "Created on",
+        "lose": "Mark as lost",
+        "loseAria": "Mark the deal of {name} as lost",
+        "reopen": "Reopen",
+        "reopenAria": "Reopen the deal of {name}"
+      },
+      "activity": {
+        "title": "Activity",
+        "listLabel": "Activity history",
+        "emptyTitle": "No activity yet",
+        "emptyText": "Log the first call, meeting or note with the form above.",
+        "system": "System",
+        "unknownAuthor": "Another team member",
+        "kinds": {
+          "note": "Note",
+          "call": "Call",
+          "meeting": "Meeting",
+          "email": "Email",
+          "whatsapp": "WhatsApp",
+          "stage_change": "Stage change",
+          "form": "Form",
+          "chat": "Chat",
+          "system": "System"
+        }
+      },
+      "composer": {
+        "title": "Log activity",
+        "kind": "Type",
+        "deal": "Deal",
+        "noDeal": "No specific deal",
+        "body": "What happened",
+        "submit": "Log it",
+        "saving": "Logging",
+        "done": "Activity logged",
+        "errors": {
+          "kind": "Choose an activity type.",
+          "body": "Write what happened, 1 to 10000 characters.",
+          "dealId": "Choose a deal of this contact.",
+          "forbidden": "You are not allowed to log activity here.",
+          "error": "Could not log it. Try again."
+        }
+      }
     }
   },
   "freelancePage": {

@@ -1800,6 +1800,238 @@
       "lead": "Lo que tienes que hacer hoy.",
       "emptyTitle": "Todavía no hay nada que mostrar",
       "emptyText": "El resumen de tu cartera llega con el CRM. Mientras tanto, esta sección está vacía."
+    },
+    "contacts": {
+      "meta": {
+        "title": "Contactos"
+      },
+      "title": "Contactos",
+      "lead": "Tu cartera: a quién escribir, en qué fase está y cuál es el siguiente paso.",
+      "loading": "Cargando contactos",
+      "limit": "Mostrando los {count} más recientes. Afina con los filtros.",
+      "region": "Tabla de contactos",
+      "caption": "Contactos, por actividad más reciente",
+      "listLabel": "Lista de contactos",
+      "columns": {
+        "name": "Contacto",
+        "organization": "Organización",
+        "kind": "Tipo",
+        "stage": "Fase",
+        "nextAction": "Siguiente paso",
+        "lastContact": "Último contacto",
+        "source": "Origen",
+        "owner": "Dueño"
+      },
+      "kinds": {
+        "prospect": "Prospecto",
+        "client": "Cliente",
+        "recruiter": "Reclutador",
+        "partner": "Socio",
+        "other": "Otro"
+      },
+      "sources": {
+        "manual": "Manual",
+        "import": "Importado",
+        "form": "Formulario",
+        "nexo": "Nexo",
+        "whatsapp": "WhatsApp",
+        "radar": "Radar"
+      },
+      "stages": {
+        "new": "Nueva",
+        "contacted": "Contactada",
+        "meeting": "Reunión",
+        "proposal": "Propuesta",
+        "won": "Ganada",
+        "lost": "Perdida"
+      },
+      "vias": {
+        "hiring": "Contratación",
+        "freelance": "Freelance",
+        "project": "A medida"
+      },
+      "noDeal": "Sin oportunidad",
+      "noNextAction": "Sin siguiente paso",
+      "overdue": "vencido",
+      "never": "Sin actividad",
+      "noOwner": "Sin dueño",
+      "unknownOwner": "Persona dada de baja",
+      "noEmail": "Sin correo",
+      "call": "Llamar",
+      "whatsapp": "WhatsApp",
+      "callAria": "Llamar a {name}",
+      "whatsappAria": "Escribir a {name} por WhatsApp",
+      "filters": {
+        "region": "Filtros de contactos",
+        "search": "Buscar",
+        "searchPlaceholder": "Nombre, organización o correo",
+        "kind": "Tipo",
+        "stage": "Fase",
+        "owner": "Dueño",
+        "all": "Todos",
+        "noOwner": "Sin dueño",
+        "due": "Solo con paso vencido",
+        "apply": "Filtrar",
+        "clear": "Quitar filtros"
+      },
+      "empty": {
+        "title": "Añade tu primer contacto",
+        "text": "Los contactos son las personas a las que vendes. Crea el primero a mano; la importación llegará más adelante."
+      },
+      "emptyFiltered": {
+        "title": "Ningún contacto coincide",
+        "text": "Prueba con otros filtros o quítalos para ver toda la cartera."
+      },
+      "error": {
+        "title": "No se han podido cargar los contactos",
+        "text": "Ha fallado la consulta. Inténtalo otra vez.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "new": {
+        "open": "Nuevo contacto",
+        "title": "Nuevo contacto",
+        "close": "Cerrar",
+        "fullName": "Nombre",
+        "email": "Correo",
+        "phone": "Teléfono",
+        "organization": "Organización",
+        "kind": "Tipo",
+        "optional": "(opcional)",
+        "submit": "Crear contacto",
+        "saving": "Creando contacto",
+        "done": "Contacto creado",
+        "errors": {
+          "fullName": "Escribe el nombre, de 1 a 200 caracteres.",
+          "email": "Escribe un correo válido.",
+          "phone": "El teléfono admite hasta 40 caracteres.",
+          "organization": "La organización admite hasta 200 caracteres.",
+          "kind": "Elige un tipo de contacto.",
+          "duplicate": "Ya tienes un contacto con ese correo.",
+          "forbidden": "No tienes permiso para crear contactos.",
+          "error": "No se ha podido crear. Inténtalo otra vez."
+        }
+      },
+      "stageSheet": {
+        "open": "Cambiar fase",
+        "openAria": "Cambiar fase de {name}",
+        "title": "Cambiar fase",
+        "close": "Cerrar",
+        "stageLegend": "Nueva fase",
+        "reasonLabel": "Motivo de la pérdida",
+        "submit": "Guardar fase",
+        "saving": "Guardando fase",
+        "done": "Fase actualizada",
+        "errors": {
+          "stage": "Elige una fase.",
+          "reason": "Escribe el motivo, de 1 a 500 caracteres.",
+          "stale": "La oportunidad ha cambiado. Recarga la página.",
+          "forbidden": "No tienes permiso para cambiar esta fase.",
+          "error": "No se ha podido guardar. Inténtalo otra vez."
+        }
+      }
+    },
+    "contact": {
+      "meta": {
+        "title": "Contacto"
+      },
+      "back": "Volver a contactos",
+      "loading": "Cargando contacto",
+      "error": {
+        "title": "No se ha podido cargar el contacto",
+        "text": "Ha fallado la consulta. Inténtalo otra vez.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "head": {
+        "email": "Correo",
+        "noEmail": "Sin correo",
+        "copy": "Copiar",
+        "copyAria": "Copiar el correo de {name}",
+        "copied": "Copiado",
+        "phone": "Teléfono",
+        "city": "Ciudad",
+        "website": "Web",
+        "owner": "Dueño",
+        "noOwner": "Sin dueño",
+        "unknownOwner": "Persona dada de baja",
+        "nextStep": "Siguiente paso",
+        "noNextStep": "Sin siguiente paso",
+        "overdue": "· vencido",
+        "lastContact": "Último contacto",
+        "never": "Sin actividad",
+        "source": "Origen",
+        "tags": "Etiquetas",
+        "notes": "Notas"
+      },
+      "reassign": {
+        "open": "Reasignar",
+        "title": "Reasignar contacto",
+        "close": "Cerrar",
+        "owner": "Nuevo dueño",
+        "placeholder": "Elige un dueño",
+        "note": "Las oportunidades abiertas pasan con el contacto. Las ganadas y perdidas se quedan como están.",
+        "submit": "Reasignar contacto",
+        "saving": "Reasignando",
+        "done": "Contacto reasignado",
+        "errors": {
+          "owner": "Elige un dueño activo distinto del actual.",
+          "forbidden": "Solo el administrador puede reasignar contactos.",
+          "error": "No se ha podido reasignar. Inténtalo otra vez."
+        }
+      },
+      "deals": {
+        "title": "Oportunidades",
+        "emptyTitle": "Sin oportunidades",
+        "emptyText": "Este contacto todavía no tiene ninguna oportunidad abierta.",
+        "amount": "Importe estimado",
+        "noAmount": "Sin importe",
+        "wonAmount": "Importe ganado",
+        "wonAt": "Ganada el",
+        "lostAt": "Perdida el",
+        "lostReason": "Motivo",
+        "created": "Creada el",
+        "lose": "Marcar perdida",
+        "loseAria": "Marcar perdida la oportunidad de {name}",
+        "reopen": "Reabrir",
+        "reopenAria": "Reabrir la oportunidad de {name}"
+      },
+      "activity": {
+        "title": "Actividad",
+        "listLabel": "Historial de actividad",
+        "emptyTitle": "Sin actividad todavía",
+        "emptyText": "Registra la primera llamada, reunión o nota con el formulario de arriba.",
+        "system": "Sistema",
+        "unknownAuthor": "Otra persona del equipo",
+        "kinds": {
+          "note": "Nota",
+          "call": "Llamada",
+          "meeting": "Reunión",
+          "email": "Correo",
+          "whatsapp": "WhatsApp",
+          "stage_change": "Cambio de fase",
+          "form": "Formulario",
+          "chat": "Chat",
+          "system": "Sistema"
+        }
+      },
+      "composer": {
+        "title": "Registrar actividad",
+        "kind": "Tipo",
+        "deal": "Oportunidad",
+        "noDeal": "Sin oportunidad concreta",
+        "body": "Qué ha pasado",
+        "submit": "Registrar",
+        "saving": "Registrando",
+        "done": "Actividad registrada",
+        "errors": {
+          "kind": "Elige un tipo de actividad.",
+          "body": "Escribe qué ha pasado, de 1 a 10000 caracteres.",
+          "dealId": "Elige una oportunidad de este contacto.",
+          "forbidden": "No tienes permiso para registrar actividad aquí.",
+          "error": "No se ha podido registrar. Inténtalo otra vez."
+        }
+      }
     }
   },
   "freelancePage": {

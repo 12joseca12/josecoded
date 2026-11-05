@@ -1,0 +1,235 @@
+.list {
+  container-type: inline-size;
+}
+
+.region {
+  display: none;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-l);
+  background: var(--panel);
+}
+
+.region:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.table {
+  width: 100%;
+  min-width: 56rem;
+  border-collapse: collapse;
+  font-size: var(--fs-base);
+  text-align: left;
+}
+
+.caption {
+  position: absolute;
+  width: 0.0625rem;
+  height: 0.0625rem;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.table th,
+.table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.table thead th {
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.table tbody tr:last-child > * {
+  border-bottom: 0;
+}
+
+.name {
+  display: grid;
+  gap: var(--space-1);
+  font-weight: var(--fw-semibold);
+}
+
+.link {
+  display: inline-block;
+  min-height: 1.5rem;
+  color: var(--ink);
+  font-weight: var(--fw-semibold);
+  overflow-wrap: anywhere;
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.2em;
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.muted {
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+  font-weight: var(--fw-regular);
+  overflow-wrap: anywhere;
+}
+
+.stack {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-1);
+}
+
+.date {
+  font-variant-numeric: tabular-nums;
+}
+
+.date[data-late] {
+  color: var(--coral-deep);
+  font-weight: var(--fw-semibold);
+}
+
+.stage {
+  display: inline-block;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-xl);
+  color: var(--ink);
+  font-size: var(--fs-m);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+}
+
+.stage[data-stage="proposal"],
+.stage[data-stage="meeting"] {
+  border-color: var(--charcoal);
+}
+
+.stage[data-stage="won"] {
+  border-color: var(--charcoal);
+  background: var(--charcoal);
+  color: var(--on-dark);
+}
+
+.stage[data-stage="lost"] {
+  color: var(--ink-soft);
+}
+
+.cards {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-l);
+  background: var(--panel);
+}
+
+.cardHead {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.cardStage {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.facts {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+}
+
+.facts div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.facts dt {
+  font-weight: var(--fw-semibold);
+}
+
+.facts dd {
+  margin: 0;
+}
+
+.contactActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.contactLink {
+  display: inline-grid;
+  place-items: center;
+  min-width: 5.5rem;
+  min-height: 2.75rem;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-xl);
+  background: var(--on-dark);
+  color: var(--charcoal);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+  text-decoration: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-press) var(--ease-out);
+}
+
+.contactLink:active {
+  transform: scale(0.97);
+}
+
+.contactLink:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+@container (min-width: 46rem) {
+  .region {
+    display: block;
+  }
+
+  .cards {
+    display: none;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .link:hover {
+    text-decoration-color: var(--ink);
+  }
+
+  .contactLink:hover {
+    background: var(--paper);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contactLink {
+    transition: none;
+  }
+}
