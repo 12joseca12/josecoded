@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs";
 
-import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
 
+import AxeBuilder from "./support/axe";
 import { mockOrigin as mock, signInAdmin, signInCloser, type Tag, withTag } from "./support/staff";
 
 interface Messages {
