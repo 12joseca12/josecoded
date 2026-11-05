@@ -145,7 +145,7 @@ describe("blog sitemap", () => {
       "/blog/b",
     ]);
     const site = resolveSite({ NEXT_PUBLIC_SITE_URL: productionOrigin });
-    const urls = buildSitemap(site, ["es"], false, false, [], blogSitemapEntries(posts));
+    const urls = buildSitemap(site, ["es"], false, false, [], [], blogSitemapEntries(posts));
     expect(urls).toContainEqual({
       url: `${productionOrigin}/es/blog/b`,
       priority: 0.6,

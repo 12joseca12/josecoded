@@ -51,12 +51,9 @@ const wayLabels: Record<WayId, MessageKey> = {
   project: "services.ways.project.nav",
 };
 
-const offerIds = [
-  "contratacion",
-  "freelance",
-  "project",
-  "audit",
-] as const satisfies readonly (WayId | "audit")[];
+const offerIds = ["contratacion", "freelance", "project", "audit"] as const satisfies readonly (
+  WayId | "audit"
+)[];
 
 const offerCopy: Record<(typeof offerIds)[number], { title: MessageKey; text: MessageKey }> = {
   contratacion: {
