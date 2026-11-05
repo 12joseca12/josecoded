@@ -48,13 +48,31 @@ export const projectSchema = z.strictObject({
   order: z.number().int().min(0),
 });
 
+export const blogCategories = [
+  "precios",
+  "trabajar-con-freelance",
+  "react-native",
+  "accesibilidad-ia",
+  "desarrollo-web",
+] as const;
+export const blogServices = ["hub", "freelance", "a-medida"] as const;
+export const blogKinds = ["article", "resource"] as const;
+
 export const blogSchema = z.strictObject({
   title: text,
+  metaTitle: text.optional(),
   slug,
   description: text,
   date: z.iso.date(),
+  updated: z.iso.date(),
+  order: z.number().int().min(0).optional(),
+  category: z.enum(blogCategories),
+  kind: z.enum(blogKinds).default("article"),
   tags: z.array(text).default([]),
   draft: z.boolean().default(false),
+  faq: z.array(z.strictObject({ question: text, answer: text })).default([]),
+  relatedService: z.enum(blogServices),
+  relatedPosts: z.array(slug).max(2).default([]),
 });
 
 export const legalSchema = z.strictObject({
@@ -118,6 +136,8 @@ export type ContentType = keyof typeof contentSchemas;
 export const contentTypes = Object.keys(contentSchemas) as ContentType[];
 
 export type ProjectMeta = z.infer<typeof projectSchema>;
+export type BlogCategory = (typeof blogCategories)[number];
+export type BlogService = (typeof blogServices)[number];
 export type BlogMeta = z.infer<typeof blogSchema>;
 export type LegalMeta = z.infer<typeof legalSchema>;
 export type Cv = z.infer<typeof cvSchema>;

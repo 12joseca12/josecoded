@@ -1,9 +1,11 @@
 import type { MetadataRoute } from "next";
 
 import { contact } from "@/config/contact";
+import { features } from "@/config/features";
 import { site } from "@/config/site";
-import { hasPublishedProjects, listLegal, listProjects } from "@/content";
+import { hasPublishedProjects, listLegal, listPosts, listProjects } from "@/content";
 import { publishedLocales } from "@/i18n/config";
+import { blogSitemapEntries } from "@/lib/blog/posts";
 import { hasLiveChannel } from "@/lib/contact/channels";
 import { indexedLegalPaths } from "@/lib/legal/pages";
 import { buildSitemap } from "@/lib/seo/sitemap";
@@ -16,5 +18,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     hasLiveChannel(contact),
     indexedLegalPaths(listLegal()),
     listProjects().map((entry) => entry.slug),
+    features.blog ? blogSitemapEntries(listPosts()) : [],
   );
 }

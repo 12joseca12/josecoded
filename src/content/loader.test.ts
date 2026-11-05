@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import {
   ContentError,
+  countWords,
   extractHeadings,
   findPlaceholders,
   headingId,
@@ -163,5 +164,13 @@ describe("readCv", () => {
   it("reports malformed JSON", () => {
     write("content/cv.json", "{");
     expect(() => readCv(base)).toThrow("content/cv.json: not valid JSON");
+  });
+});
+
+describe("countWords", () => {
+  it("counts prose words and ignores frontmatter, tags and bare symbols", () => {
+    const source =
+      "---\ntitle: T\n---\n\nUna **frase** de cinco.\n\n<RelatedService />\n\n| --- |\n";
+    expect(countWords(source)).toBe(4);
   });
 });

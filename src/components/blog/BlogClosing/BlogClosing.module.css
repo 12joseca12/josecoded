@@ -1,0 +1,12 @@
+.closing {
+  display: grid;
+  gap: var(--space-3);
+  max-width: 42rem;
+  padding-block-start: var(--space-6);
+  border-block-start: 1px solid var(--line-strong);
+}
+
+.text {
+  color: var(--ink-soft);
+  font-size: var(--fs-lead);
+}

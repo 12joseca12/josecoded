@@ -140,3 +140,14 @@ svg {
     scroll-behavior: smooth;
   }
 }
+
+@media print {
+  body {
+    background: none;
+  }
+
+  body > :not(main),
+  [data-print="hide"] {
+    display: none;
+  }
+}

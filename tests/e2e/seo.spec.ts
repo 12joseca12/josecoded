@@ -33,6 +33,7 @@ const publicRoutes = [
   "/es/proyectos/nextraket",
   "/es/proyectos/josecoded",
   "/es/sobre-mi",
+  "/es/blog",
 ];
 const devRoutes = [
   "/es/dev/ui",

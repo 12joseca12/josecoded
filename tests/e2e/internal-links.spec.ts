@@ -12,9 +12,12 @@ const pages = [
   "/es/proyectos",
   "/es/proyectos/3catinfo",
   "/es/proyectos/josecoded",
+  "/es/blog",
+  "/es/blog/tema/precios",
+  "/es/blog/cuanto-cuesta-una-app-movil-en-espana",
 ];
 
-const promisedAndAbsent = ["/es/blog", "/es/chat"];
+const promisedAndAbsent = ["/es/chat"];
 
 async function internalTargets(page: Page): Promise<string[]> {
   const hrefs = await page
@@ -41,10 +44,12 @@ for (const path of pages) {
   });
 }
 
-test("the header offers no chat button and no blog link", async ({ page }) => {
+test("the header offers no chat button and links to the blog", async ({ page }) => {
   await page.goto("/es");
   await expect(page.getByRole("button", { name: "Chat", exact: true })).toHaveCount(0);
-  await expect(page.locator('a[href="/es/blog"]')).toHaveCount(0);
+  await expect(
+    page.getByRole("navigation", { name: "Principal" }).locator('a[href="/es/blog"]'),
+  ).toHaveCount(1);
 });
 
 test("the menu lists the projects page", async ({ page }) => {
@@ -61,8 +66,8 @@ test("the home offers the projects button", async ({ page }) => {
   );
 });
 
-test("llms.txt lists the projects and not the blog", async ({ request }) => {
+test("llms.txt lists the projects and the blog", async ({ request }) => {
   const body = await (await request.get("/llms.txt")).text();
   expect(body).toContain("/es/proyectos/3catinfo");
-  expect(body).not.toContain("/es/blog");
+  expect(body).toContain("/es/blog/cuanto-cuesta-una-app-movil-en-espana");
 });

@@ -1,0 +1,95 @@
+---
+title: "Accesibilidad en apps: qué exige la European Accessibility Act y cómo cumplirla con React Native"
+metaTitle: "European Accessibility Act en apps React Native"
+slug: accesibilidad-apps-european-accessibility-act
+description: "Qué servicios cubre la European Accessibility Act y la Ley 11/2023, qué comprobar en una app React Native y por dónde empezar, contado por un referente de WCAG."
+date: "2026-11-05"
+updated: "2026-11-05"
+order: 2
+category: accesibilidad-ia
+tags: [accesibilidad, WCAG, React Native, ley]
+relatedService: freelance
+relatedPosts:
+  - plantilla-de-auditoria-react-native
+  - integrar-ia-en-una-app-de-noticias
+faq:
+  - question: "¿La European Accessibility Act obliga a todas las apps?"
+    answer: "No. Cubre productos y servicios concretos de consumo, como el comercio electrónico, los servicios bancarios a consumidores, los libros electrónicos o el transporte de pasajeros. Las microempresas que prestan servicios están exentas. Si tu caso entra o no lo decide un asesor legal; yo te digo qué hay que cambiar en la app."
+  - question: "¿Con qué versión de WCAG debo medirme, la 2.1 o la 2.2?"
+    answer: "La norma europea armonizada se actualiza más despacio que el W3C, así que lo exigible puede ir un paso por detrás. Yo audito contra WCAG 2.2 nivel AA, que recoge casi todo lo de 2.1, y señalo qué criterios son nuevos de la 2.2."
+  - question: "¿Basta con una herramienta automática?"
+    answer: "No. Las herramientas automáticas detectan una parte de los problemas, como etiquetas que faltan o contrastes bajos. Que el orden de lectura tenga sentido o que un flujo se pueda completar con un lector de pantalla solo lo ves probándolo."
+  - question: "¿Cuánto tarda una auditoría de accesibilidad de una app?"
+    answer: "Entre uno y dos días de trabajo para una app de tamaño normal, y entrego un informe WCAG 2.2 con un plan de corrección. El precio está en revisión; se acuerda por escrito antes de empezar."
+---
+
+Soy el referente de accesibilidad WCAG del equipo de Alten que desarrolla las apps de 3Cat, y he formado en ello a los equipos de React Native, iOS, Android y QA. Lo que sigue es la parte técnica. No es asesoría legal: si la ley te obliga o no, y desde cuándo, lo decide tu asesor con tu caso delante.
+
+## Qué es la European Accessibility Act
+
+Es la [Directiva (UE) 2019/882](https://eur-lex.europa.eu/eli/dir/2019/882/oj). Se aplica desde el 28 de junio de 2025 y en España la traspone la [Ley 11/2023, de 8 de mayo](https://www.boe.es/eli/es/l/2023/05/08/11). Su idea es que una serie de productos y servicios de consumo se puedan usar también por personas con discapacidad.
+
+Hay dos errores frecuentes. El primero es creer que afecta a toda app: no, cubre categorías concretas, entre ellas el comercio electrónico, los servicios bancarios a consumidores, los libros electrónicos, el acceso a servicios audiovisuales y el transporte de pasajeros. El segundo es creer que no afecta a nadie pequeño: las microempresas que prestan servicios tienen una exención, pero solo si cumplen sus condiciones, y vender a una empresa mayor puede acabar trasladándote sus exigencias por contrato.
+
+Mi consejo es práctico: aunque tu app no esté obligada, una app accesible la puede usar más gente.
+
+## Contra qué se mide: WCAG
+
+La ley remite a una norma técnica europea armonizada, la EN 301 549, que se apoya en las pautas WCAG del W3C. La versión vigente de esas pautas es la [WCAG 2.2](https://www.w3.org/TR/WCAG22/), recomendación desde octubre de 2023. El objetivo habitual es el nivel AA.
+
+Cuál de las versiones recoge la norma armonizada en cada momento es algo que compruebo en cada encargo. Trabajar contra 2.2 AA es seguro, porque la 2.2 incluye casi todos los criterios de la 2.1 y añade otros nuevos.
+
+<RelatedService />
+
+## Qué compruebo en una app React Native
+
+Estas son las comprobaciones que más problemas encuentran. React Native tiene propiedades de accesibilidad para todas ellas, y están descritas en su [documentación](https://reactnative.dev/docs/accessibility).
+
+**1. Roles, etiquetas y estados.** Todo elemento interactivo necesita saber decir qué es y en qué estado está. Un icono sin texto necesita etiqueta:
+
+```tsx
+<Pressable
+  accessibilityRole="button"
+  accessibilityLabel="Añadir a favoritos"
+  accessibilityState={{ selected: isFavorite }}
+  onPress={toggleFavorite}
+>
+  <HeartIcon />
+</Pressable>
+```
+
+**2. Orden de lectura y foco.** El lector recorre la pantalla en el orden del árbol, no en el orden en que se ve. Un modal debe atrapar el foco y, al cambiar de pantalla, el foco tiene que ir al título nuevo, no quedarse en el botón anterior.
+
+**3. Tamaño de los objetivos táctiles.** WCAG 2.2 añadió el criterio 2.5.8, con un mínimo de 24 por 24 píxeles CSS. Apple recomienda 44 puntos y Material 48 dp, y es mejor seguir esas guías. Cuando el icono es pequeño, se amplía el área con `hitSlop`.
+
+**4. Texto que se puede ampliar.** Por defecto, React Native respeta el tamaño de letra del sistema. Los problemas aparecen en tu maquetación: textos cortados, botones con altura fija, filas que se salen. Pruébalo con el tamaño máximo de letra.
+
+**5. Contraste.** 4,5 a 1 para el texto normal y 3 a 1 para componentes e iconos que transmiten información.
+
+**6. Cambios que el usuario no ve.** Un error de formulario o un resultado que aparece tras una carga hay que anunciarlo con `AccessibilityInfo.announceForAccessibility`, y en Android puedes usar `accessibilityLiveRegion`.
+
+**7. Movimiento.** Consulta `AccessibilityInfo.isReduceMotionEnabled()` y reduce las animaciones si el usuario lo ha pedido.
+
+**8. Gestos con alternativa.** Todo lo que se hace arrastrando necesita otra forma de hacerse con un toque. Es el criterio 2.5.7 de WCAG 2.2.
+
+## Cómo lo compruebo
+
+Lo primero es el lector de pantalla: VoiceOver en iOS y TalkBack en Android. Recorro los flujos principales, como registrarse, buscar, comprar o contactar, sin mirar la pantalla. Si no puedo terminar uno, ya sé por dónde empezar.
+
+Las herramientas automáticas ayudan, pero solo detectan una parte. Uso el linter `eslint-plugin-react-native-a11y` en el código, el Accessibility Inspector de Xcode y el Accessibility Scanner de Android. Lo que no cubren, como el sentido del orden o la claridad de un mensaje de error, se prueba a mano.
+
+## Por dónde empezar si ya tienes la app
+
+El orden que recomiendo:
+
+1. **Los flujos críticos.** Registro o acceso, compra y contacto. Si alguien no puede completarlos, el resto da igual.
+2. **Elementos sin etiqueta o sin rol.** Es lo más barato de arreglar y lo que más desbloquea.
+3. **Contraste y tamaños.** Suele ser cuestión de tokens de diseño, no de pantalla por pantalla.
+4. **Formularios y errores.** Que cada error diga qué ha pasado y cómo solucionarlo.
+5. **Meterlo en el proceso.** Un criterio de accesibilidad en la definición de «hecho» y una revisión en cada pull request evitan volver a empezar.
+
+Una auditoría mía de una app React Native es una tarea de uno a dos días con un informe WCAG 2.2 priorizado y un plan de corrección. Puedes ver cómo trabajo en la [vía freelance](/es/servicios/freelance). Para prepararla tú, tienes la [plantilla de auditoría](/es/blog/plantilla-de-auditoria-react-native).
+
+## Lo que no puedo prometerte
+
+No existe un sello de conformidad que yo pueda darte, y no certifico cumplimiento legal. Entrego un informe técnico de qué falla, por qué importa y en qué orden conviene arreglarlo.

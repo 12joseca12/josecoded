@@ -1,0 +1,30 @@
+.service {
+  display: grid;
+  gap: var(--space-2);
+  max-width: 42rem;
+  margin-block: var(--space-6);
+  border-inline-start: 0.1875rem solid var(--coral-deep);
+}
+
+.service[data-variant="closing"] {
+  gap: var(--space-3);
+}
+
+.title {
+  color: var(--charcoal);
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-snug);
+}
+
+.text {
+  color: var(--ink);
+  font-size: var(--fs-body);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding-block-start: var(--space-2);
+}

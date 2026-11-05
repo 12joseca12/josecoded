@@ -1,0 +1,30 @@
+.layout {
+  display: grid;
+  gap: var(--space-6);
+  width: 100%;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding: 0 var(--gutter) var(--space-9);
+}
+
+.content {
+  display: grid;
+  gap: var(--space-7);
+  min-width: 0;
+  align-content: start;
+}
+
+@media (min-width: 64rem) {
+  .layout {
+    grid-template-columns: 15rem minmax(0, 1fr);
+    gap: var(--space-8);
+    align-items: start;
+  }
+}
+
+@media print {
+  .layout {
+    display: block;
+    padding-block-end: 0;
+  }
+}

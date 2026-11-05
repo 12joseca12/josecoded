@@ -807,7 +807,9 @@
       "howPage": "How I work: the five-phase process and the technical decisions behind this site",
       "about": "About: background, way of working and stack of José Carlos",
       "audit": "Website audit and automation and AI study: review of performance, accessibility, technical SEO, basic security and analytics, plus a study of processes to automate or support with AI. Prioritised report and a session to explain it.",
-      "auditPage": "Website audit: general review and automation and AI study"
+      "auditPage": "Website audit: general review and automation and AI study",
+      "blog": "Blog: practical guides on apps, accessibility and AI",
+      "guidesTitle": "Guides"
     }
   },
   "chat": {
@@ -2033,5 +2035,123 @@
   },
   "suggestion": {
     "lead": "Were you looking for this page?"
+  },
+  "blog": {
+    "meta": {
+      "title": "Guides on apps, accessibility and AI",
+      "description": "Practical guides on app pricing, working with a freelancer, React Native, accessibility and AI, written from real projects."
+    },
+    "head": {
+      "title": "What I have learned building",
+      "accent": "apps and websites.",
+      "lead": "Guides on pricing, working with a freelancer, React Native, accessibility and AI. Each one says what I know first-hand and what I do not."
+    },
+    "tabs": {
+      "label": "Blog topics",
+      "all": "All"
+    },
+    "categories": {
+      "precios": {
+        "label": "Pricing and timelines",
+        "title": "Pricing and timelines:",
+        "accent": "how an app or a website is costed.",
+        "lead": "What moves a quote up or down, how to read it and what to ask before comparing.",
+        "metaTitle": "Guides on app pricing and timelines",
+        "metaDescription": "Guides to understand the price and timeline of an app or a website: what drives it, how to read a quote and what to prepare before asking."
+      },
+      "trabajar-con-freelance": {
+        "label": "Working with a freelancer",
+        "title": "Working with a freelancer:",
+        "accent": "hours, tasks and agreements.",
+        "lead": "How to choose the working model and what to put in writing before starting.",
+        "metaTitle": "Guides to working with a freelancer",
+        "metaDescription": "Guides to hiring a freelance developer: when hourly or per-task pricing fits and what to agree before starting."
+      },
+      "react-native": {
+        "label": "React Native",
+        "title": "React Native",
+        "accent": "in production.",
+        "lead": "Templates and guides to review and maintain a React Native app.",
+        "metaTitle": "React Native in production guides",
+        "metaDescription": "Templates and guides to review a React Native app: what to check, in what order and how to put the result in writing."
+      },
+      "accesibilidad-ia": {
+        "label": "Accessibility and AI",
+        "title": "Accessibility and AI",
+        "accent": "in real apps.",
+        "lead": "What the law requires, how to check it in an app and what changes when a language model enters a product.",
+        "metaTitle": "Accessibility and AI in apps guides",
+        "metaDescription": "Guides on mobile accessibility with React Native and on integrating AI into an app, told from work on published apps."
+      },
+      "desarrollo-web": {
+        "label": "Web development",
+        "title": "Web development:",
+        "accent": "decisions that show.",
+        "lead": "Next.js, Supabase and the technical decisions behind a website that stays maintainable.",
+        "metaTitle": "Web development with Next.js guides",
+        "metaDescription": "Web development guides with Next.js and Supabase: technical decisions that affect cost, performance and maintenance."
+      }
+    },
+    "teaser": {
+      "reading": "{minutes} min read",
+      "updated": "Updated on {date}",
+      "resource": "Printable"
+    },
+    "pagination": {
+      "label": "Blog pagination",
+      "previous": "Newer",
+      "next": "Older",
+      "status": "Page {page} of {total}"
+    },
+    "post": {
+      "author": {
+        "label": "About the author",
+        "published": "Published on",
+        "updated": "Updated on",
+        "credential": {
+          "precios": "Full stack developer: apps with React Native and websites with Next.js and Supabase, published and maintained in production.",
+          "trabajar-con-freelance": "Freelance full stack developer with NextRaket since 2024 and React Native developer at Alten.",
+          "react-native": "React Native developer at Alten, on the 3Cat apps since April 2024.",
+          "accesibilidad-ia": "WCAG accessibility lead and owner of the AI integration in 3CatInfo, as part of the Alten team.",
+          "desarrollo-web": "Full stack developer: websites with Next.js, Supabase and Cloudflare in production."
+        }
+      },
+      "toc": {
+        "label": "Contents of this article",
+        "title": "In this article"
+      },
+      "faq": {
+        "title": "Frequently asked questions"
+      },
+      "related": {
+        "title": "Keep reading"
+      },
+      "print": "Print or save as PDF",
+      "breadcrumbs": {
+        "theme": "Topic"
+      }
+    },
+    "service": {
+      "hub": {
+        "title": "Three ways to work with me",
+        "text": "Join your team, a freelance task or a tailored website or app: see which one fits.",
+        "cta": "See the services"
+      },
+      "freelance": {
+        "title": "Freelance developer by the hour or by the task",
+        "text": "I work in your repo, with your pull requests and your CI. Scope and deliverable are agreed before starting.",
+        "cta": "See the freelance way"
+      },
+      "a-medida": {
+        "title": "Tailored website or app with a closed quote",
+        "text": "You pick the level, add only the extras you need and get a written quote before starting.",
+        "cta": "See levels and extras"
+      }
+    },
+    "closing": {
+      "title": "Is something still unclear?",
+      "text": "Tell me your case and I will reply within {responseTime}.",
+      "cta": "Write to me"
+    }
   }
 }

@@ -160,6 +160,47 @@ export const projectNodeSchema = z.strictObject({
   isPartOf: idRef,
 });
 
+export const blogJsonLdSchema = z.strictObject({
+  "@type": z.literal("Blog"),
+  "@id": z.url(),
+  url: z.url(),
+  name: z.string().min(1),
+  description: z.string().min(1),
+  inLanguage: z.string().min(2),
+  publisher: idRef,
+  author: idRef,
+});
+
+export const itemListSchema = z.strictObject({
+  "@type": z.literal("ItemList"),
+  "@id": z.url(),
+  itemListElement: z.array(
+    z.strictObject({
+      "@type": z.literal("ListItem"),
+      position: z.number().int().positive(),
+      url: z.url(),
+      name: z.string().min(1),
+    }),
+  ),
+});
+
+export const blogPostingSchema = z.strictObject({
+  "@type": z.literal("BlogPosting"),
+  "@id": z.url(),
+  url: z.url(),
+  headline: z.string().min(1),
+  description: z.string().min(1),
+  inLanguage: z.string().min(2),
+  datePublished: z.iso.date(),
+  dateModified: z.iso.date(),
+  articleSection: z.string().min(1),
+  wordCount: z.number().int().positive(),
+  mainEntityOfPage: z.strictObject({ "@type": z.literal("WebPage"), "@id": z.url() }),
+  author: idRef,
+  publisher: idRef,
+  isPartOf: idRef,
+});
+
 export const jsonLdNodeSchema = z.union([
   projectNodeSchema,
   personSchema,
@@ -170,6 +211,9 @@ export const jsonLdNodeSchema = z.union([
   professionalServiceSchema,
   contactPageSchema,
   serviceSchema,
+  blogJsonLdSchema,
+  itemListSchema,
+  blogPostingSchema,
 ]);
 
 export const jsonLdGraphSchema = z.strictObject({
@@ -187,5 +231,8 @@ export type FaqPageJsonLd = z.infer<typeof faqPageSchema>;
 export type OfferJsonLd = z.infer<typeof offerSchema>;
 export type ProfessionalServiceJsonLd = z.infer<typeof professionalServiceSchema>;
 export type ContactPageJsonLd = z.infer<typeof contactPageSchema>;
+export type BlogJsonLd = z.infer<typeof blogJsonLdSchema>;
+export type ItemListJsonLd = z.infer<typeof itemListSchema>;
+export type BlogPostingJsonLd = z.infer<typeof blogPostingSchema>;
 export type JsonLdNode = z.infer<typeof jsonLdNodeSchema>;
 export type JsonLdGraph = z.infer<typeof jsonLdGraphSchema>;
