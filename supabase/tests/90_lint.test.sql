@@ -255,7 +255,7 @@ select is(
       and not has_function_privilege('authenticated', p.oid, 'execute')
       and not has_function_privilege('anon', p.oid, 'execute')
   ),
-  'omen_claim_jobs,omen_finish_job,omen_heartbeat,outbox_claim,outbox_mark,read_invitation,read_public_settings,submit_lead,telegram_confirm_link,visitor_forget,visitor_handoff,visitor_send,visitor_thread',
+  'omen_claim_jobs,omen_finish_job,omen_heartbeat,outbox_claim,outbox_mark,read_invitation,read_public_settings,register_attachment,submit_lead,telegram_confirm_link,visitor_forget,visitor_handoff,visitor_send,visitor_thread',
   'only the lead intake, outbox, invitation read, Telegram link and Omen job functions are service_role-only in public'
 );
 
@@ -267,7 +267,7 @@ select is(
     where n.nspname = 'private'
       and has_function_privilege('authenticated', p.oid, 'execute')
   ),
-  'ai_active,can_write_conversation,contact_has_history,conversation_topic_id,is_aal2,is_admin,is_api_client_role,is_closer,is_conversation_member,is_staff,mask_excerpt,offer_answers_valid,owns_contact,owns_lead,role,slug_list_valid,uid',
+  'ai_active,can_write_conversation,contact_has_history,conversation_topic_id,is_aal2,is_admin,is_api_client_role,is_closer,is_conversation_member,is_staff,mask_excerpt,offer_answers_valid,owns_contact,owns_lead,role,slug_list_valid,storage_conversation_id,uid',
   'only the policy helpers and the two constraint helpers in private are executable by authenticated (decision 9.6)'
 );
 

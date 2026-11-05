@@ -775,6 +775,71 @@ export type Database = {
         }
         Relationships: []
       }
+      message_attachments: {
+        Row: {
+          conversation_id: string
+          created_at: string
+          id: string
+          message_id: string
+          mime: string
+          name: string
+          size_bytes: number
+          storage_path: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          conversation_id: string
+          created_at?: string
+          id?: string
+          message_id: string
+          mime: string
+          name: string
+          size_bytes: number
+          storage_path: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          message_id?: string
+          mime?: string
+          name?: string
+          size_bytes?: number
+          storage_path?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_attachments_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "message_attachments_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "message_attachments_uploaded_by_fkey"
+            columns: ["uploaded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "message_attachments_uploaded_by_fkey"
+            columns: ["uploaded_by"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           auto: boolean
@@ -1609,6 +1674,10 @@ export type Database = {
           deals: number
           leads: number
         }[]
+      }
+      register_attachment: {
+        Args: { p_message_id: string; p_mime: string; p_name: string; p_path: string; p_size: number; p_uploaded_by: string }
+        Returns: string
       }
       remove_member: {
         Args: { p_conversation_id: string; p_user_id: string }
