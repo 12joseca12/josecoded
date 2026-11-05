@@ -51,7 +51,7 @@ async function open(page: Page, query = "") {
   await expect(section.locator("form")).toBeVisible();
   await section.getByRole("button", { name: form.submit }).scrollIntoViewIfNeeded();
   await expect(section.locator("[data-fake-turnstile]")).toBeAttached();
-  await page.waitForTimeout(150);
+  await expect(section.locator("input[name='cf-turnstile-response']")).not.toHaveValue("");
   return section;
 }
 
@@ -152,7 +152,7 @@ test("generic error keeps the data and can be retried", async ({ page }) => {
   await expect(section.getByRole("alert").filter({ hasText: form.failed.title })).toBeVisible();
 
   await section.getByLabel(form.emailLabel).fill("ada@example.com");
-  await page.waitForTimeout(150);
+  await expect(section.locator("input[name='cf-turnstile-response']")).not.toHaveValue("");
   await submit(page).click();
   await expect(page.getByRole("heading", { name: form.sent.title })).toBeVisible();
 });
@@ -227,7 +227,7 @@ test.describe("preselection", () => {
     });
   }
 
-  test("the chosen offer and extras are kept in the page path", async ({ page }) => {
+  test("the chosen offer and extras travel as lead fields", async ({ page }) => {
     await open(page, "?via=project&offer=web-negocio&extras=seo,payments");
     const section = page.locator("#formulario");
     await section.getByLabel(form.nameLabel).fill("Ada");
@@ -237,15 +237,17 @@ test.describe("preselection", () => {
     await submit(page).click();
     await expect(page.getByRole("heading", { name: form.sent.title })).toBeVisible();
     const [lead] = (await calls(page)).rpc;
-    expect(lead?.args.p_via).toBe("pack");
-    expect(lead?.args.p_page_path).toBe("/es/contacto?offer=web-negocio&extras=payments,seo");
+    expect(lead?.args.p_via).toBe("project");
+    expect(lead?.args.p_page_path).toBe("/es/contacto");
+    expect(lead?.args.p_offer).toBe("web-negocio");
+    expect(lead?.args.p_extras).toEqual(["payments", "seo"]);
   });
 });
 
 test.describe("what happens next, example and per-way success", () => {
   const stepsOf = (way: string) =>
     Object.values(es.contactPage.form.next.steps[way] ?? {}).map((step) =>
-      step.replace("{time}", es.common.responseTime),
+      step.replace("{responseTime}", es.common.responseTime),
     );
 
   test("shows the steps of the chosen way and the no-commitment line", async ({ page }) => {

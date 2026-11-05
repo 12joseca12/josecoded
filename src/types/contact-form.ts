@@ -3,6 +3,13 @@ import "@/lib/security/zod-jitless";
 import { z } from "zod";
 
 import { locales } from "@/i18n/config";
+import {
+  accountsValues,
+  kindValues,
+  managementValues,
+  moreValues,
+  sizeValues,
+} from "@/lib/services/recommender";
 
 import { type WayId, wayIds } from "./services";
 
@@ -12,6 +19,20 @@ export type ContactFieldName = (typeof contactFieldNames)[number];
 export const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 const controlCharacters = /\p{Cc}/u;
+
+export const offerAnswersSchema = z.union([
+  z.strictObject({ start: z.literal("existing") }),
+  z.strictObject({
+    start: z.enum(["idea", "defined"]),
+    kind: z.enum(kindValues),
+    size: z.enum(sizeValues),
+    accounts: z.enum(accountsValues),
+    management: z.enum(managementValues),
+    more: z.array(z.enum(moreValues)).max(8),
+  }),
+]);
+
+export type OfferAnswers = z.infer<typeof offerAnswersSchema>;
 
 export const contactFormSchema = z.strictObject({
   way: z.enum(wayIds, { error: "way_required" }),
@@ -37,6 +58,7 @@ export const contactFormSchema = z.strictObject({
   consent: z.literal(true, { error: "consent_required" }),
   offer: z.array(z.string().max(80).regex(slugPattern)).max(2).optional(),
   extras: z.array(z.string().max(40).regex(slugPattern)).max(12).optional(),
+  answers: offerAnswersSchema.optional(),
   homepage: z.string().max(500).optional(),
 });
 

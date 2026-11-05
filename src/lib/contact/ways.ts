@@ -8,7 +8,7 @@ export type LeadVia = Database["public"]["Enums"]["contact_via"];
 export const viaByWay: Record<WayId, LeadVia> = {
   contratacion: "hiring",
   freelance: "freelance",
-  project: "pack",
+  project: "project",
 };
 
 const paramByWay: Record<WayId, string> = {

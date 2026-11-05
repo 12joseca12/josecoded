@@ -1,23 +1,21 @@
 import type { MessageKey } from "@/i18n/keys.generated";
+import { withResponseTime } from "@/lib/common/response-time";
 import type { ContactCopyKey, ContactFormLabels } from "@/types/contact-form";
 import type { WayId } from "@/types/services";
 
 type Translate = (key: MessageKey) => string;
 
-const timePlaceholder = "{time}";
-
 function steps(t: Translate, key: ContactCopyKey): string[] {
-  const time = t("common.responseTime");
   const base = `contactPage.form.next.steps.${key}` as const;
   return [t(`${base}.s1`), t(`${base}.s2`), t(`${base}.s3`)].map((step) =>
-    step.replace(timePlaceholder, time),
+    withResponseTime(t, step),
   );
 }
 
 function sentCopy(t: Translate, way: WayId) {
   const base = `contactPage.form.sent.byWay.${way}` as const;
   return {
-    text: t(`${base}.text`).replace(timePlaceholder, t("common.responseTime")),
+    text: t(`${base}.text`),
     next: t(`${base}.next`),
   };
 }

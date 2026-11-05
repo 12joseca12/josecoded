@@ -12,7 +12,7 @@
 
 .table {
   width: 100%;
-  min-width: 40rem;
+  min-width: 64rem;
   border-collapse: collapse;
   font-size: var(--fs-base);
   text-align: left;
@@ -83,4 +83,11 @@
 
 .status[data-status="discarded"] {
   color: var(--ink-soft);
+}
+
+.offer {
+  display: block;
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+  overflow-wrap: anywhere;
 }
