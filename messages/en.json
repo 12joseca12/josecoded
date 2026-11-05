@@ -344,6 +344,21 @@
         "happy": "Happy",
         "sad": "Sad"
       }
+    },
+    "chat": {
+      "title": "Visitor chat",
+      "scenario": "Scenario",
+      "panel": "Open the panel",
+      "scenarios": {
+        "fresh": "Just arrived",
+        "conversation": "Conversation",
+        "thinking": "Nexo thinking",
+        "offline": "Nexo offline",
+        "takeover": "Jose joined",
+        "quota": "Quota used",
+        "handoff": "Contact saved",
+        "failed": "Send failed"
+      }
     }
   },
   "nav": {
@@ -824,7 +839,122 @@
         "happy": "Nexo is happy",
         "sad": "Nexo is sorry"
       }
-    }
+    },
+    "title": "Chat with Nexo",
+    "close": "Close the chat",
+    "fullscreen": "Open full screen",
+    "page": {
+      "metaTitle": "Chat with Nexo",
+      "metaDescription": "Talk to Nexo, the josecoded AI assistant, or leave your contact so Jose can reply.",
+      "title": "Chat with Nexo",
+      "back": "Back to home"
+    },
+    "header": {
+      "online": "josecoded AI assistant",
+      "offline": "Offline",
+      "takeover": "Jose is with you"
+    },
+    "greeting": "Hi, I'm Nexo, the josecoded AI assistant. What would you like to tell me?",
+    "log": "Conversation with Nexo",
+    "author": {
+      "you": "You",
+      "jose": "Jose"
+    },
+    "sources": "Sources",
+    "delivery": {
+      "sending": "Sending",
+      "failed": "Not sent"
+    },
+    "typing": "Nexo is typing",
+    "composer": {
+      "label": "Your message",
+      "placeholder": "Write your message",
+      "send": "Send message",
+      "sending": "Sending message",
+      "remaining": "{count} characters left"
+    },
+    "starters": {
+      "label": "Ideas to start",
+      "default": {
+        "s1": "What does josecoded do?",
+        "s2": "I want to talk about a project",
+        "s3": "How does Jose work?"
+      },
+      "services": {
+        "s1": "Which level suits me?",
+        "s2": "What does each service include?",
+        "s3": "I want to talk about a project"
+      },
+      "freelance": {
+        "s1": "How does hourly work go?",
+        "s2": "I need help with an app",
+        "s3": "When can Jose start?"
+      },
+      "about": {
+        "s1": "Which technologies does Jose use?",
+        "s2": "Where has Jose worked before?",
+        "s3": "I want to hire Jose"
+      },
+      "contact": {
+        "s1": "When will I get a reply?",
+        "s2": "I would rather Jose wrote to me",
+        "s3": "I have a question before writing"
+      }
+    },
+    "system": {
+      "ai_off": "Jose has joined the conversation.",
+      "ai_on": "Nexo is back in the conversation.",
+      "handoff_done": "Jose now has your contact.",
+      "archived": "The conversation has been closed."
+    },
+    "notice": {
+      "takeover": {
+        "title": "Jose has joined",
+        "text": "He is replying now. Nexo will stay quiet meanwhile."
+      },
+      "offline": {
+        "title": "Nexo is offline",
+        "text": "Jose replies within {responseTime}. Leave your message and, if you want, your contact."
+      },
+      "quota": {
+        "title": "You have reached today's limit",
+        "text": "I cannot take more messages for now. Write through the form and I reply within {responseTime}."
+      },
+      "quotaAction": "Go to the form"
+    },
+    "errors": {
+      "quota": "You have reached the message limit. Try later or use the form.",
+      "closed": "This conversation is closed. Reload to start another.",
+      "verification": "I could not check that you are a person. Try again.",
+      "invalid": "The message is not valid. Check that it is not empty or over 2,000 characters.",
+      "unavailable": "The chat is not available right now. Use the contact form."
+    },
+    "handoff": {
+      "title": "Prefer Jose to write to you?",
+      "lead": "Leave an email or a phone number and he replies within {responseTime}.",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "contactHint": "One of the two is enough.",
+      "optional": "optional",
+      "consentBefore": "I agree that Jose uses this data to reply to me, under the ",
+      "consentLink": "privacy policy",
+      "consentAfter": ".",
+      "newTab": "opens in a new tab",
+      "submit": "Have Jose write to me",
+      "submitting": "Saving your contact",
+      "doneTitle": "Contact saved",
+      "doneText": "Jose replies within {responseTime}.",
+      "failed": "I could not save your contact. Try again or use the form.",
+      "errors": {
+        "contact_required": "Write an email or a phone number.",
+        "email_invalid": "Write a valid email.",
+        "phone_invalid": "Write a valid phone number.",
+        "name_invalid": "Check the name.",
+        "consent_required": "I need your consent to save the contact."
+      }
+    },
+    "avatarOffline": "Nexo is offline"
   },
   "auth": {
     "meta": {

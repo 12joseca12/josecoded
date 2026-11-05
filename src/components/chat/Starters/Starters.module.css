@@ -1,0 +1,53 @@
+.starters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding-inline: var(--space-4);
+}
+
+.chip {
+  min-block-size: 2.75rem;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-xl);
+  background: transparent;
+  color: var(--ink);
+  font-family: inherit;
+  font-size: var(--fs-m);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-ui);
+  text-align: start;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition-property: background-color, color, transform;
+  transition-duration: var(--dur-fast);
+  transition-timing-function: var(--ease-out);
+}
+
+.chip:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.chip[aria-disabled="true"] {
+  cursor: progress;
+  opacity: 0.55;
+}
+
+.chip:active:not([aria-disabled="true"]) {
+  background: var(--charcoal);
+  color: var(--on-dark);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .chip:hover:not([aria-disabled="true"]) {
+    background: var(--charcoal);
+    color: var(--on-dark);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .chip:active:not([aria-disabled="true"]) {
+    transform: scale(0.97);
+  }
+}

@@ -1,0 +1,121 @@
+.item {
+  display: grid;
+  gap: var(--space-1);
+  justify-items: start;
+}
+
+.item[data-variant="visitor"] {
+  justify-items: end;
+}
+
+.item[data-variant="system"] {
+  justify-items: center;
+}
+
+.author {
+  padding-inline: var(--space-2);
+  color: var(--ink-soft);
+  font-size: var(--fs-s);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tracking-wide);
+  line-height: var(--lh-label);
+  text-transform: uppercase;
+}
+
+.bubble {
+  max-inline-size: 88%;
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-m);
+  font-size: var(--fs-base);
+  line-height: var(--lh-body);
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.item[data-variant="nexo"] .bubble {
+  border: 1px solid var(--line);
+  border-start-start-radius: var(--radius-xs);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.item[data-variant="staff"] .bubble {
+  border-start-start-radius: var(--radius-xs);
+  background: var(--charcoal-raised);
+  color: var(--on-dark);
+}
+
+.item[data-variant="visitor"] .bubble {
+  border-end-end-radius: var(--radius-xs);
+  background: var(--charcoal);
+  color: var(--on-dark);
+}
+
+.item[data-delivery="sending"] .bubble {
+  opacity: 0.7;
+}
+
+.item[data-delivery="failed"] .bubble {
+  outline: 1px solid var(--error);
+  outline-offset: 2px;
+}
+
+.system {
+  margin: 0;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-xl);
+  background: var(--sk-base);
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+  line-height: var(--lh-ui);
+  text-align: center;
+}
+
+.sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  max-inline-size: 88%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.source {
+  padding: 0 var(--space-2);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-xl);
+  color: var(--ink-soft);
+  font-size: var(--fs-s);
+  line-height: var(--lh-body);
+}
+
+.meta {
+  padding-inline: var(--space-2);
+  color: var(--ink-soft);
+  font-size: var(--fs-s);
+}
+
+.item[data-delivery="failed"] .meta {
+  color: var(--error);
+  font-weight: var(--fw-semibold);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .item {
+    animation: arrive var(--dur) var(--ease-out);
+  }
+}
+
+@keyframes arrive {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
