@@ -750,15 +750,42 @@
         "name": "Nombre",
         "email": "Correo",
         "status": "Estado",
-        "date": "Fecha"
+        "assigned": "Asignado a",
+        "date": "Fecha",
+        "actions": "Acciones"
       },
       "via": {
         "hiring": "Contratación",
         "freelance": "Freelance",
-        "pack": "A medida",
+        "project": "A medida",
         "none": "Sin vía"
       },
       "noEmail": "Sin correo",
+      "unassigned": "Sin asignar",
+      "unknownAssignee": "Persona dada de baja",
+      "actions": {
+        "assignLabel": "Asignar a",
+        "assignPlaceholder": "Elige un closer",
+        "assign": "Asignar",
+        "assigning": "Asignando",
+        "noAssignees": "No hay closers activos",
+        "discardOpen": "Descartar",
+        "discardReasonLabel": "Motivo del descarte",
+        "discardSubmit": "Confirmar descarte",
+        "discarding": "Descartando",
+        "reasonPrefix": "Motivo:",
+        "done": {
+          "assign": "Interesado asignado",
+          "discard": "Interesado descartado"
+        },
+        "errors": {
+          "assignee": "Elige un closer activo.",
+          "reason": "Escribe el motivo, de 1 a 500 caracteres.",
+          "stale": "El interesado ha cambiado. Recarga la lista.",
+          "forbidden": "No tienes permiso para esta acción.",
+          "error": "No se ha podido completar. Inténtalo otra vez."
+        }
+      },
       "status": {
         "new": "Nuevo",
         "assigned": "Asignado",
