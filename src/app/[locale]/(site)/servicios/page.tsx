@@ -50,6 +50,7 @@ export async function generateMetadata({ params }: ServicesProps): Promise<Metad
   return buildPageMetadata({
     locale,
     path: "/servicios",
+    ogImage: "services",
     title: "services.meta.title",
     description: "services.meta.description",
   });

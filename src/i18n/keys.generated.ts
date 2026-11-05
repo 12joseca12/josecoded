@@ -1037,6 +1037,7 @@ export type MessageKey =
   | "offersPage.warranty.sizeS.name"
   | "offersPage.warranty.sizeS.text"
   | "offersPage.warranty.title"
+  | "og.byline"
   | "projects.about"
   | "projects.contact"
   | "projects.emptyText"

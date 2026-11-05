@@ -5,6 +5,7 @@ import { isPublished, type Locale } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
 
+import { ogContentType, ogImagePath, type OgPage, ogSize, ogTitleKeys } from "./og";
 import { localePath, openGraphLocales } from "./routes";
 
 interface PageSeo {
@@ -15,6 +16,7 @@ interface PageSeo {
   sameSegmentAsLayout?: boolean;
   indexable?: boolean;
   openGraphType?: "website" | "profile";
+  ogImage?: OgPage;
 }
 
 export function resolveRobots(site: SiteConfig): Metadata["robots"] {
@@ -33,12 +35,15 @@ export async function buildPageMetadata({
   sameSegmentAsLayout = false,
   indexable = true,
   openGraphType = "website",
+  ogImage = "home",
 }: PageSeo): Promise<Metadata> {
   if (!isPublished(locale)) return {};
   const t = await getTranslator(locale);
   const pageTitle = t(title);
   const pageDescription = t(description);
   const canonical = localePath(locale, path);
+  const imageUrl = ogImagePath(locale, ogImage);
+  const imageAlt = `${t(ogTitleKeys[ogImage])} · ${t("og.byline")}`;
   const socialTitle = applyTitleTemplate(t("meta.titleTemplate"), pageTitle);
   return {
     title: sameSegmentAsLayout ? { absolute: socialTitle } : pageTitle,
@@ -52,7 +57,13 @@ export async function buildPageMetadata({
       url: canonical,
       title: socialTitle,
       description: pageDescription,
+      images: [{ url: imageUrl, ...ogSize, alt: imageAlt, type: ogContentType }],
     },
-    twitter: { card: "summary", title: socialTitle, description: pageDescription },
+    twitter: {
+      card: "summary_large_image",
+      title: socialTitle,
+      description: pageDescription,
+      images: [{ url: imageUrl, alt: imageAlt }],
+    },
   };
 }

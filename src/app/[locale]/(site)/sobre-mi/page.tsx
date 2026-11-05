@@ -53,6 +53,7 @@ export async function generateMetadata({ params }: AboutProps): Promise<Metadata
   return buildPageMetadata({
     locale,
     path,
+    ogImage: "about",
     title: "about.meta.title",
     description: "about.meta.description",
     openGraphType: "profile",

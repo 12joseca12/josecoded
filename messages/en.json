@@ -1827,5 +1827,8 @@
         "metaDescription": "josecoded.com only uses strictly necessary cookies: session and anti-spam verification. Here is which ones and why."
       }
     }
+  },
+  "og": {
+    "byline": "José Carlos Sánchez García · josecoded"
   }
 }

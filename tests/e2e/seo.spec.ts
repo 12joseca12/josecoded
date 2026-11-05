@@ -63,6 +63,51 @@ for (const route of publicRoutes) {
   });
 }
 
+const ogRoutes: Record<string, string> = {
+  "/es": "home",
+  "/es/servicios": "services",
+  "/es/servicios/freelance": "freelance",
+  "/es/servicios/a-medida": "custom",
+  "/es/como-trabajo": "how",
+  "/es/sobre-mi": "about",
+  "/es/contacto": "contact",
+};
+
+for (const [route, card] of Object.entries(ogRoutes)) {
+  test(`${route} declares its own Open Graph card and the image answers png`, async ({
+    page,
+    request,
+  }) => {
+    await page.goto(route);
+    const image = `https://josecoded.com/og/es-${card}.png`;
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", image);
+    await expect(page.locator('meta[property="og:image:width"]')).toHaveAttribute(
+      "content",
+      "1200",
+    );
+    await expect(page.locator('meta[property="og:image:height"]')).toHaveAttribute(
+      "content",
+      "630",
+    );
+    await expect(page.locator('meta[property="og:image:alt"]')).toHaveAttribute(
+      "content",
+      /José Carlos Sánchez García · josecoded$/,
+    );
+    await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute(
+      "content",
+      "summary_large_image",
+    );
+    await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute("content", image);
+    const response = await request.get(`/og/es-${card}.png`);
+    expect(response.status()).toBe(200);
+    expect(response.headers()["content-type"]).toBe("image/png");
+    const body = await response.body();
+    expect(body.subarray(1, 4).toString("ascii")).toBe("PNG");
+    expect(body.readUInt32BE(16)).toBe(1200);
+    expect(body.readUInt32BE(20)).toBe(630);
+  });
+}
+
 for (const route of devRoutes) {
   test(`${route} is noindex`, async ({ page }) => {
     const response = await page.goto(route);

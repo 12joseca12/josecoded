@@ -37,6 +37,7 @@ jobs:
       - run: pnpm content:check
       - run: pnpm tokens:check
       - run: pnpm tokens:test
+      - run: pnpm og:check
       - run: pnpm test
 
   e2e:
