@@ -48,11 +48,11 @@ describe("faq", () => {
     }
   });
 
-  it("never claims to be registered as self-employed", async () => {
+  it("says honestly that it is not registered as self-employed yet", async () => {
     const t = await getTranslator("es");
     const invoicing = buildFaqItems(t, "hub").find((item) => item.id === "invoicing");
-    expect(invoicing?.answer).toContain("todavía no facturo como autónomo");
-    expect(invoicing?.answer).toContain("{{DATO");
+    expect(invoicing?.answer).toContain("Todavía no estoy dado de alta como autónomo");
+    expect(invoicing?.answer).not.toMatch(/\bsoy autónomo/);
   });
 
   it("states the phased payment as forty, forty and twenty", async () => {

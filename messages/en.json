@@ -282,7 +282,7 @@
     "whatsapp": "WhatsApp",
     "whatsappHint": "Message me and I reply as soon as I can",
     "chat": "Chat with Nexo",
-    "chatHint": "My assistant answers right away",
+    "chatHint": "Here you get an answer from me",
     "whatsappMessage": "Hi José Carlos, I'm writing from josecoded.com. I'd like to talk about a project.",
     "form": "Form",
     "formHint": "Tell me about your project at your own pace"
@@ -303,7 +303,7 @@
     "channelsLabel": "Ways to get in touch",
     "chat": {
       "title": "Chat with Nexo",
-      "hint": "My assistant answers right away.",
+      "hint": "Here you get an answer from me.",
       "open": "Open chat",
       "soon": "The chat opens very soon."
     },
@@ -516,17 +516,17 @@
         "q1": "Do you work remotely or do I need to be in Madrid?",
         "a1": "I work remotely with clients across Spain and abroad. When needed, I can travel to one-off meetings in Madrid.",
         "q2": "Do you invoice as a self-employed freelancer, or can I hire you through a consultancy?",
-        "a2": "I do not invoice as a self-employed freelancer yet, so I will not promise an invoice I cannot issue. If you need to hire me through a consultancy or company, we work it out case by case and put it in writing before starting; the invoice will carry the detail and the VAT that applies. {{DATO: self-employment registration status and invoicing arrangement in the meantime}}",
+        "a2": "I am not registered as self-employed yet and can invoice one-off work. If you need to hire me through a consultancy or company, we work it out case by case and put it in writing before starting.",
         "q3": "Which languages can I write to you in?",
         "a3": "Spanish and English. Code documentation and commit messages are in English.",
         "q4": "How long do you take to reply?",
         "a4": "I answer every enquiry within {responseTime}, usually sooner. If it is urgent, say so in the message.",
         "q5": "Will you sign a non-disclosure agreement (NDA)?",
-        "a5": "Yes, I can sign one before you tell me anything sensitive, with your template or a standard one. {{DATO: NDA policy and template}}",
+        "a5": "Yes, I can sign one before you tell me anything sensitive, with your template or a standard one.",
         "q6": "How much working-hours overlap do you have with my team?",
-        "a6": "I work on Madrid hours and coordinate with teams in other time zones. Tell me when you need to talk and I will tell you which window I can cover. {{DATO: guaranteed overlap window}}",
+        "a6": "I work on Madrid hours and coordinate with teams in other time zones. Tell me when you need to talk and I will tell you which window I can cover.",
         "q7": "What if I do not like the result?",
-        "a7": "I work in short deliveries you see before I go on, so the course is corrected early and not at the end. Anything that does not meet what we agreed in writing I fix at no cost. If it still does not fit, we talk it through and decide together how to close it. {{DATO: early termination and refund terms}}"
+        "a7": "I work in short deliveries you see before I go on, so the course is corrected early and not at the end. If it still does not fit, we talk it through and decide together how to close it."
       },
       "freelance": {
         "q1": "Is there a minimum number of hours?",
@@ -538,9 +538,9 @@
         "q4": "What happens if the scope grows?",
         "a4": "We agree it before going on: I explain what changes in time and cost, and you decide whether to include it or leave it for another task.",
         "q5": "Will you sign an NDA before seeing my code?",
-        "a5": "Yes, I can sign one before you give me access to anything sensitive. If you already have a template, send it over and I will review it. {{DATO: NDA policy and template}}",
+        "a5": "Yes, I can sign one before you give me access to anything sensitive. If you already have a template, send it over and I will review it.",
         "q6": "How much working-hours overlap do you offer if I go by the hour?",
-        "a6": "I work on Madrid hours and can overlap with you in a fixed window for questions and reviews. {{DATO: overlap window and weekly availability}}"
+        "a6": "I work on Madrid hours and can overlap with you in a fixed window for questions and reviews."
       },
       "offers": {
         "q1": "How much does a mobile app cost?",
@@ -556,13 +556,13 @@
         "q6": "What if I want something the tier does not have?",
         "a6": "We talk before touching it: I explain what changes in time and cost, and you decide whether to add it as an extra or leave it out.",
         "q7": "What if you fall ill or disappear?",
-        "a7": "The repository, the domain, the stores and the services are in your name from day one, and I leave documentation so another developer can carry on without me. If something happened to me I would tell you right away and the timeline would be readjusted with you. {{DATO: backup person or continuity plan}}",
+        "a7": "The repository, the domain, the stores and the services are in your name from day one, and I leave documentation so another developer can carry on without me. If something happened to me I would tell you right away and the timeline would be readjusted with you.",
         "q8": "Is the app mine?",
-        "a8": "Yes. The code and the design of the project are yours, and the store and domain accounts are in your name. The transfer of rights is put in writing in the proposal. {{DATO: rights transfer clause and third-party licences}}",
+        "a8": "Yes. The code and the design of the project are yours, and the store and domain accounts are in your name. The transfer of rights is put in writing in the proposal.",
         "q9": "Can I pay in phases?",
-        "a9": "Yes. Payment is split into three phases: 40% at the start, 40% at the mid-point delivery and 20% on final delivery. Each phase is confirmed in writing in the proposal.",
+        "a9": "Yes. Payment is split into three phases: 40% at the start, 40% when the design is delivered and 20% on launch. Each phase is confirmed in writing in the proposal.",
         "q10": "What happens if I want to change something halfway through the project?",
-        "a10": "It can be done. Before touching it I explain what changes in timeline and cost, and I only apply it if you approve it in writing. The change goes into the next delivery."
+        "a10": "It can be done. Before touching it I explain what changes in timeline and cost, and I only apply it if you approve it in writing. If you approve it, it comes with its own timeline."
       }
     },
     "rates": {
