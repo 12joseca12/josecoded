@@ -25,7 +25,7 @@ values
 
 insert into public.deals (id, contact_id, stage, via, amount)
 values
-  ('30000000-0000-4000-8000-000000000001', '20000000-0000-4000-8000-000000000001', 'proposal', 'pack', 2400),
+  ('30000000-0000-4000-8000-000000000001', '20000000-0000-4000-8000-000000000001', 'proposal', 'project', 2400),
   ('30000000-0000-4000-8000-000000000002', '20000000-0000-4000-8000-000000000002', 'new', 'freelance', 800);
 
 insert into public.activities (contact_id, deal_id, author_id, kind, body, occurred_at)
@@ -36,5 +36,5 @@ values
 insert into public.leads (id, source, via, full_name, email, phone, organization, message, offer_url, company, page_path, locale, consent_at, status, assigned_to, assigned_at, has_domain, has_store_accounts)
 values
   ('40000000-0000-4000-8000-000000000001', 'form', 'hiring', 'Prueba Interesada Contratacion', 'interesada-hiring@example.com', null, 'Prueba SL', 'Prueba: busco un perfil para mi equipo.', 'https://example.com/oferta', 'Prueba SL', '/es/contacto', 'es', now() - interval '3 hours', 'new', null, null, null, null),
-  ('40000000-0000-4000-8000-000000000002', 'form', 'pack', 'Prueba Interesado Pack', 'interesado-pack@example.com', '600000000', null, 'Prueba: quiero una web para mi tienda.', null, null, '/es/contacto', 'es', now() - interval '1 day', 'new', null, null, true, false),
+  ('40000000-0000-4000-8000-000000000002', 'form', 'project', 'Prueba Interesado Pack', 'interesado-pack@example.com', '600000000', null, 'Prueba: quiero una web para mi tienda.', null, null, '/es/contacto', 'es', now() - interval '1 day', 'new', null, null, true, false),
   ('40000000-0000-4000-8000-000000000003', 'whatsapp', null, 'Prueba Interesado WhatsApp', null, '600000001', null, 'Prueba: escribio por WhatsApp.', null, null, null, null, null, 'assigned', '10000000-0000-4000-8000-000000000002', now() - interval '2 days', null, null);

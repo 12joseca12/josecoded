@@ -76,7 +76,7 @@ select is_empty(
     where n.nspname = 'public'
       and p.prosecdef
       and has_function_privilege('authenticated', p.oid, 'execute')
-      and p.proname not in ('update_my_profile')
+      and p.proname not in ('update_my_profile', 'claim_lead', 'assign_lead', 'discard_lead', 'touch_lead')
   $$,
   'only the allowed security definer RPCs are callable from the API'
 );
@@ -165,9 +165,9 @@ select is_empty(
     join pg_namespace n on n.oid = p.pronamespace
     where n.nspname = 'public'
       and has_function_privilege('authenticated', p.oid, 'execute')
-      and p.proname <> 'update_my_profile'
+      and p.proname not in ('update_my_profile', 'claim_lead', 'assign_lead', 'discard_lead', 'touch_lead')
   $$,
-  'update_my_profile is the only function in public callable by authenticated'
+  'only the profile and lead RPCs are callable by authenticated in public'
 );
 
 select is(

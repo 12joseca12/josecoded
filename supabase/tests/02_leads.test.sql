@@ -60,11 +60,11 @@ select lives_ok(
 
 select lives_ok(
   $$select public.submit_lead(
-    p_source => 'form', p_via => 'pack', p_pack_id => gen_random_uuid(), p_full_name => 'Prueba Pack',
+    p_source => 'form', p_via => 'project', p_pack_id => gen_random_uuid(), p_full_name => 'Prueba Pack',
     p_email => 'pack@example.com', p_has_domain => true, p_has_store_accounts => false,
     p_consent => true, p_ip_hash => md5('ip-pack')
   )$$,
-  'service_role submits a pack lead'
+  'service_role submits a project lead'
 );
 
 select lives_ok(
@@ -121,7 +121,7 @@ select throws_ok(
   $$select public.submit_lead(p_source => 'form', p_via => 'hiring', p_full_name => 'X', p_email => 'x@example.com', p_has_domain => true, p_consent => true, p_ip_hash => md5('ip-v1'))$$,
   '23514',
   null,
-  'pack fields are rejected on a hiring lead'
+  'project fields are rejected on a hiring lead'
 );
 
 select throws_ok(
@@ -240,9 +240,18 @@ select throws_ok($$update public.leads set message = 'x'$$, '42501', null, 'lead
 select throws_ok($$delete from public.leads$$, '42501', null, 'nobody deletes leads');
 
 reset role;
+select set_config(
+  'tests.leads_inbox',
+  (select count(*)::text from public.leads where status = 'new' and assigned_to is null and contact_id is null),
+  true
+);
 select tests.login_as('t-closer@example.com');
 
-select is((select count(*) from public.leads), 0::bigint, 'closer sees no leads until M04 policies');
+select is(
+  (select count(*) from public.leads),
+  current_setting('tests.leads_inbox')::bigint,
+  'closer sees exactly the shared inbox'
+);
 
 reset role;
 select tests.login_as('t-freelance@example.com');
