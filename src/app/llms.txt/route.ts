@@ -4,12 +4,14 @@ import { site } from "@/config/site";
 import { hasPublishedProjects, listPosts, listProjects } from "@/content";
 import { defaultLocale } from "@/i18n/config";
 import { sortPosts } from "@/lib/blog/posts";
+import { getCatalog } from "@/lib/catalog/load";
 import { buildLlmsTxt } from "@/lib/seo/llms";
-import { rates } from "@/lib/services/rates";
 
 export const dynamic = "force-static";
+export const revalidate = 300;
 
 export async function GET() {
+  const { rates } = await getCatalog();
   const body = await buildLlmsTxt(
     site.origin,
     defaultLocale,

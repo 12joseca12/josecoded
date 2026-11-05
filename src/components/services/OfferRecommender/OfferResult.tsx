@@ -7,7 +7,7 @@ import { Heading } from "@/components/ui/Heading/Heading";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 import { PriceState } from "@/components/ui/PriceState/PriceState";
 import { buildContactHref } from "@/lib/contact/ways";
-import { type ExtraSlug, offerOf, priceOf } from "@/lib/services/offers";
+import { type ExtraSlug, offerOf, type PriceBook, priceOf } from "@/lib/services/offers";
 import { type ProjectRecommendation, recommend, selectedExtras } from "@/lib/services/recommender";
 import {
   completeAnswers,
@@ -22,6 +22,7 @@ import styles from "./OfferResult.module.css";
 interface OfferResultProps {
   ref?: Ref<HTMLDivElement>;
   locale: string;
+  book: PriceBook;
   copy: RecommenderCopy;
   state: RecommenderState;
   basePath: string;
@@ -41,6 +42,7 @@ function fill(template: string, values: Record<string, string>): string {
 export function OfferResult({
   ref,
   locale,
+  book,
   copy,
   state,
   basePath,
@@ -87,6 +89,7 @@ export function OfferResult({
     <ProjectResult
       ref={ref}
       locale={locale}
+      book={book}
       copy={copy}
       recommendation={recommendation}
       state={state}
@@ -107,6 +110,7 @@ interface ProjectResultProps extends Omit<OfferResultProps, "state"> {
 function ProjectResult({
   ref,
   locale,
+  book,
   copy,
   recommendation,
   state,
@@ -118,7 +122,7 @@ function ProjectResult({
 }: ProjectResultProps) {
   const { result } = copy;
   const selected = selectedExtras(recommendation, state.extras);
-  const price = priceOf(recommendation.offers, selected);
+  const price = priceOf(recommendation.offers, selected, {}, book);
   const hasMonthly = selected.includes("maintenance");
   const reasons = recommendation.reasons.map((reason) => {
     const template = copy.reasons[reason.id] ?? "";
@@ -158,7 +162,7 @@ function ProjectResult({
         <p className={styles.kicker}>{result.kicker}</p>
         <ul className={styles.offers}>
           {recommendation.offers.map((slug) => {
-            const offer = offerOf(slug);
+            const offer = offerOf(slug, book);
             return (
               <li key={slug} className={styles.offer} data-offer={slug}>
                 <span className={styles.platform}>{copy.offers[slug].platform}</span>

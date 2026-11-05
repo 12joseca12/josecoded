@@ -35,7 +35,7 @@ export type ExtraSlug = (typeof extraSlugs)[number];
 export const priceStatuses = ["provisional", "final"] as const;
 export const billings = ["once", "monthly", "per_unit"] as const;
 
-const priceText = z.string().regex(/^\d+$/);
+const priceText = z.string().regex(/^\d+(\.\d{1,2})?$/);
 
 export const offerSchema = z
   .strictObject({
@@ -188,17 +188,21 @@ export function extraCopyKeys(slug: ExtraSlug): {
   };
 }
 
-const offerBySlug = new Map(offers.map((offer) => [offer.slug, offer]));
-const extraBySlug = new Map(extras.map((extra) => [extra.slug, extra]));
+export interface PriceBook {
+  offers: readonly Offer[];
+  extras: readonly Extra[];
+}
 
-export function offerOf(slug: OfferSlug): Offer {
-  const offer = offerBySlug.get(slug);
+export const codePriceBook: PriceBook = { offers, extras };
+
+export function offerOf(slug: OfferSlug, book: PriceBook = codePriceBook): Offer {
+  const offer = book.offers.find((entry) => entry.slug === slug);
   if (!offer) throw new Error(`unknown offer ${slug}`);
   return offer;
 }
 
-export function extraOf(slug: ExtraSlug): Extra {
-  const extra = extraBySlug.get(slug);
+export function extraOf(slug: ExtraSlug, book: PriceBook = codePriceBook): Extra {
+  const extra = book.extras.find((entry) => entry.slug === slug);
   if (!extra) throw new Error(`unknown extra ${slug}`);
   return extra;
 }
@@ -253,9 +257,10 @@ export function priceOf(
   chosen: readonly OfferSlug[],
   selected: readonly ExtraSlug[],
   units: Partial<Record<ExtraSlug, number>> = {},
+  book: PriceBook = codePriceBook,
 ): Price {
-  const picked = chosen.map(offerOf);
-  const addons = selected.map(extraOf);
+  const picked = chosen.map((slug) => offerOf(slug, book));
+  const addons = selected.map((slug) => extraOf(slug, book));
   const provisional = [...picked, ...addons].some(isProvisional);
   const once =
     picked.reduce((sum, offer) => sum + Number(offer.from), 0) +
