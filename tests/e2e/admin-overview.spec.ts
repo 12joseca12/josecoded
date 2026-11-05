@@ -98,6 +98,7 @@ test("the overview shows counters, Omen and recent changes and passes axe at 144
   await expect(page.getByRole("heading", { name: msg("admin.system.omen.title") })).toBeVisible();
   const recent = page.getByRole("list", { name: audit("list.region") });
   await expect(recent.locator(":scope > li")).toHaveCount(changes.length);
+  await expect(recent).toContainText(audit("tables.leads"));
   await expectClean(page);
   await page.setViewportSize({ width: 375, height: 800 });
   await expectClean(page);
@@ -123,8 +124,8 @@ test("a counter links to its filtered list", async ({ page }) => {
 test("every ready section is linked from the overview", async ({ page }) => {
   await open(page, "/es/admin", overview("title"));
   const sections = page.getByRole("region", { name: overview("sections.title") });
-  await expect(sections.getByRole("link")).toHaveCount(4);
-  await expect(sections.getByRole("link", { name: msg("admin.nav.system") })).toBeVisible();
+  await expect(sections.getByRole("link")).toHaveCount(5);
+  await expect(sections.getByRole("link", { name: msg("admin.nav.audit") })).toBeVisible();
 });
 
 test("full counters show the accrued amount and zero state", async ({ page }) => {
@@ -167,4 +168,10 @@ test("a failing counters call offers a retry that recovers", async ({ page }) =>
     .getByRole("button", { name: overview("cells.error.retry") })
     .click();
   await expect(cell(page, "leads_new")).toContainText("3");
+});
+
+test("the recent changes link opens the audit log", async ({ page }) => {
+  await open(page, "/es/admin", overview("title"));
+  await page.getByRole("link", { name: overview("recent.all") }).click();
+  await expect(page).toHaveURL(/\/es\/admin\/auditoria$/);
 });
