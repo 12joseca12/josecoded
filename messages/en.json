@@ -2283,6 +2283,82 @@
           "retrying": "Retrying"
         }
       }
+    },
+    "leads": {
+      "meta": {
+        "title": "Leads"
+      },
+      "title": "Leads",
+      "lead": "People who have written in and have nobody on the other side yet. Claim the ones you want to work and they move to your book.",
+      "loading": "Loading leads",
+      "limit": "Showing the {count} most recent.",
+      "tabs": {
+        "label": "Leads by group",
+        "inbox": "Unassigned",
+        "mine": "Mine",
+        "team": "My team"
+      },
+      "error": {
+        "title": "The leads could not be loaded",
+        "text": "The query failed. Try again.",
+        "retry": "Try again",
+        "retrying": "Trying again"
+      },
+      "inbox": {
+        "note": "Here you only see the first name and an excerpt. The rest of the details arrive when you claim it.",
+        "listLabel": "Unassigned leads",
+        "claim": "Claim",
+        "claiming": "Claiming",
+        "claimAria": "Claim {name}",
+        "extras": "Extras",
+        "noMessage": "No message",
+        "empty": {
+          "title": "Nobody is waiting",
+          "text": "When a new lead comes in you will see it here. Meanwhile, work your own."
+        },
+        "notices": {
+          "done": "It is yours. Taking you to the record.",
+          "handoff": "I could not give you this lead. Jose will review it.",
+          "stale": "Someone claimed it before you. I reloaded the list.",
+          "quota": "You have reached today's claim limit. You can carry on tomorrow.",
+          "forbidden": "You are not allowed to claim leads.",
+          "error": "It could not be claimed. Try again."
+        }
+      },
+      "own": {
+        "mineListLabel": "My leads",
+        "teamListLabel": "My team's leads",
+        "noContact": "No contact yet",
+        "openContact": "Open contact",
+        "openContactAria": "Open contact for {name}",
+        "assignedTo": "Handled by {name}",
+        "noEmail": "No email",
+        "mineEmpty": {
+          "title": "You have no leads yet",
+          "text": "Claim one from the \"Unassigned\" tab and it will show up here with its full details."
+        },
+        "teamEmpty": {
+          "title": "Your team has no leads",
+          "text": "The ones your subclosers claim will show up here."
+        }
+      },
+      "statuses": {
+        "new": "New",
+        "assigned": "Assigned",
+        "contacted": "Contacted",
+        "converted": "Converted",
+        "discarded": "Discarded"
+      },
+      "vias": {
+        "hiring": "Hiring",
+        "freelance": "Freelance",
+        "project": "Custom project",
+        "none": "No route"
+      },
+      "locales": {
+        "es": "Spanish",
+        "en": "English"
+      }
     }
   },
   "freelancePage": {

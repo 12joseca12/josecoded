@@ -2283,6 +2283,82 @@
           "retrying": "Reintentando"
         }
       }
+    },
+    "leads": {
+      "meta": {
+        "title": "Interesados"
+      },
+      "title": "Interesados",
+      "lead": "Quien ha escrito y todavía no tiene a nadie al otro lado. Reclama el que quieras trabajar y pasa a tu cartera.",
+      "loading": "Cargando interesados",
+      "limit": "Mostrando los {count} más recientes.",
+      "tabs": {
+        "label": "Interesados por grupo",
+        "inbox": "Sin asignar",
+        "mine": "Míos",
+        "team": "De mi equipo"
+      },
+      "error": {
+        "title": "No se han podido cargar los interesados",
+        "text": "Ha fallado la consulta. Inténtalo otra vez.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "inbox": {
+        "note": "Aquí solo ves el nombre de pila y un extracto. El resto de datos llega cuando lo reclamas.",
+        "listLabel": "Interesados sin asignar",
+        "claim": "Reclamar",
+        "claiming": "Reclamando",
+        "claimAria": "Reclamar a {name}",
+        "extras": "Extras",
+        "noMessage": "Sin mensaje",
+        "empty": {
+          "title": "No hay nadie esperando",
+          "text": "Cuando entre un interesado nuevo lo verás aquí. Mientras tanto, trabaja los tuyos."
+        },
+        "notices": {
+          "done": "Es tuyo. Te llevo a su ficha.",
+          "handoff": "No he podido darte este interesado. Lo revisa Jose.",
+          "stale": "Alguien lo ha reclamado antes que tú. He recargado la lista.",
+          "quota": "Has llegado al tope de reclamos de hoy. Mañana puedes seguir.",
+          "forbidden": "No tienes permiso para reclamar interesados.",
+          "error": "No se ha podido reclamar. Inténtalo otra vez."
+        }
+      },
+      "own": {
+        "mineListLabel": "Mis interesados",
+        "teamListLabel": "Interesados de mi equipo",
+        "noContact": "Aún sin contacto",
+        "openContact": "Abrir contacto",
+        "openContactAria": "Abrir contacto de {name}",
+        "assignedTo": "Lo lleva {name}",
+        "noEmail": "Sin correo",
+        "mineEmpty": {
+          "title": "Todavía no tienes interesados",
+          "text": "Reclama uno de la pestaña «Sin asignar» y aparecerá aquí con sus datos completos."
+        },
+        "teamEmpty": {
+          "title": "Tu equipo no tiene interesados",
+          "text": "Los que reclamen tus subclosers aparecerán aquí."
+        }
+      },
+      "statuses": {
+        "new": "Nuevo",
+        "assigned": "Asignado",
+        "contacted": "Contactado",
+        "converted": "Convertido",
+        "discarded": "Descartado"
+      },
+      "vias": {
+        "hiring": "Contratación",
+        "freelance": "Freelance",
+        "project": "A medida",
+        "none": "Sin vía"
+      },
+      "locales": {
+        "es": "Español",
+        "en": "Inglés"
+      }
     }
   },
   "freelancePage": {
