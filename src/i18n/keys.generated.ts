@@ -968,7 +968,6 @@ export type MessageKey =
   | "services.bento.needs.freelance.title"
   | "services.bento.needs.project.line"
   | "services.bento.needs.project.title"
-  | "services.bento.proof.how"
   | "services.bento.proof.projects"
   | "services.bento.proof.stack"
   | "services.bento.proof.text"

@@ -462,7 +462,6 @@
         "title": "The stack you will see in your project",
         "text": "Mobile and web with TypeScript, Supabase and Cloudflare.",
         "projects": "See projects",
-        "how": "See how I work",
         "stack": "See the full stack"
       },
       "chips": {

@@ -120,7 +120,7 @@ export default async function ServicesPage({ params }: ServicesProps) {
             text={t("services.bento.proof.text")}
             chips={chips(["reactNative", "next", "typescript", "supabase", "cloudflare", "ai"])}
             cta={{ href: `/${locale}/proyectos`, label: t("services.bento.proof.projects") }}
-            more={{ href: `/${locale}/como-trabajo`, label: t("services.bento.proof.how") }}
+            more={{ href: `/${locale}/sobre-mi#stack`, label: t("services.bento.proof.stack") }}
           />
         </ServiceBento>
       </PageSection>

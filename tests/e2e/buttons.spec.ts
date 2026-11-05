@@ -202,10 +202,13 @@ test("the hit area is larger than the shrunk button", async ({ page }) => {
   await page.goto("/es/dev/ui");
   const button = page.getByRole("button", { name: ui.stateDefault }).first();
   await button.hover();
+  await expect
+    .poll(() => button.evaluate((node) => node.getAnimations({ subtree: true }).length))
+    .toBe(0);
   const box = await button.boundingBox();
   if (!box) throw new Error("no box");
   await page.mouse.move(box.x - 2, box.y + box.height / 2);
-  expect(await button.evaluate((node) => node.matches(":hover"))).toBe(true);
+  await expect.poll(() => button.evaluate((node) => node.matches(":hover"))).toBe(true);
 });
 
 test.describe("touch", () => {

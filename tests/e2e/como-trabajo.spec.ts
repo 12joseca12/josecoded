@@ -22,7 +22,7 @@ interface Messages {
     faq: { title: string };
     cta: { title: string };
   };
-  services: { how: { more: string }; bento: { proof: { how: string } } };
+  services: { how: { more: string } };
 }
 
 const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as Messages;
@@ -149,13 +149,10 @@ test("the page links to contact, services and custom development", async ({ page
   await expect(closing.getByRole("link").nth(2)).toHaveAttribute("href", "/es/servicios");
 });
 
-test("the services hub and the bento link to the page", async ({ page }) => {
+test("the services hub links to the page", async ({ page }) => {
   await page.goto("/es/servicios");
   await expect(
     page.locator("#como-trabajo").getByRole("link", { name: es.services.how.more }),
-  ).toHaveAttribute("href", path);
-  await expect(
-    page.locator("#vias").getByRole("link", { name: es.services.bento.proof.how }),
   ).toHaveAttribute("href", path);
   await page.goto("/es/servicios/freelance");
   await expect(page.locator("#contacto").getByRole("link").nth(1)).toHaveAttribute("href", path);
