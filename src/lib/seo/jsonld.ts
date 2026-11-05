@@ -14,6 +14,8 @@ import {
   type JsonLdNode,
   type PersonJsonLd,
   personSchema,
+  type ProfilePageJsonLd,
+  profilePageSchema,
   type WebSiteJsonLd,
   webSiteSchema,
 } from "@/types/seo";
@@ -75,6 +77,27 @@ export async function buildWebSite(origin: string, locale: Locale): Promise<WebS
     name: t("seo.website.name"),
     inLanguage: locale,
     publisher: { "@id": personId(origin) },
+  });
+}
+
+export function buildProfilePage(
+  origin: string,
+  locale: Locale,
+  path: string,
+  copy: { name: string; description: string },
+  dateModified?: string,
+): ProfilePageJsonLd {
+  const url = absoluteUrl(origin, localePath(locale, path));
+  return profilePageSchema.parse({
+    "@type": "ProfilePage",
+    "@id": `${url}#profile`,
+    url,
+    name: copy.name,
+    description: copy.description,
+    inLanguage: locale,
+    ...(dateModified === undefined ? {} : { dateModified }),
+    isPartOf: { "@id": websiteId(origin) },
+    mainEntity: { "@id": personId(origin) },
   });
 }
 

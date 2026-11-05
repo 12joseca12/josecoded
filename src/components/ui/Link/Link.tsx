@@ -23,6 +23,7 @@ export function Link({
   newTabLabel,
   icon,
   children,
+  rel,
   ...rest
 }: LinkProps) {
   const content = (
@@ -41,7 +42,7 @@ export function Link({
         className={styles.link}
         data-variant={variant}
         target="_blank"
-        rel="noopener noreferrer"
+        rel={rel ? `${rel} noopener noreferrer` : "noopener noreferrer"}
       >
         {content}
       </a>

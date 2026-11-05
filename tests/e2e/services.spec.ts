@@ -307,7 +307,7 @@ test("freelance page: h1 query, rates stay provisional, three steps and CTA", as
   );
   await expect(page.locator("#contacto").getByRole("link").nth(1)).toHaveAttribute(
     "href",
-    "/es/servicios#como-trabajo",
+    "/es/como-trabajo",
   );
 });
 

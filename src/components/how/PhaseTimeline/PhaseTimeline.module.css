@@ -1,0 +1,226 @@
+.timeline {
+  --node: 2.5rem;
+  --progress: 0;
+  container-type: inline-size;
+  display: grid;
+  gap: var(--space-5);
+}
+
+.timeline[data-current="1"] {
+  --progress: 0.25;
+}
+
+.timeline[data-current="2"] {
+  --progress: 0.5;
+}
+
+.timeline[data-current="3"] {
+  --progress: 0.75;
+}
+
+.timeline[data-current="4"] {
+  --progress: 1;
+}
+
+.tabs {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.track {
+  position: absolute;
+  inset-inline: 10%;
+  top: calc(var(--space-2) + var(--node) / 2);
+  height: 0.125rem;
+  background: var(--line-strong);
+}
+
+.fill {
+  display: block;
+  height: 100%;
+  background: var(--coral);
+  transform: scaleX(var(--progress));
+  transform-origin: left;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.tab {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: var(--space-2);
+  min-height: 4.5rem;
+  padding: var(--space-2) var(--space-1);
+  border: 0;
+  border-radius: var(--radius-s);
+  background: transparent;
+  color: var(--ink-faint);
+  font-size: var(--fs-s);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-ui);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.node {
+  display: grid;
+  place-items: center;
+  width: var(--node);
+  height: var(--node);
+  border: 2px solid var(--line-strong);
+  border-radius: var(--radius-xl);
+  background: var(--bg);
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-bold);
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    transform var(--dur-press) var(--ease-out);
+}
+
+.tab[data-status="done"] .node {
+  border-color: var(--charcoal);
+  background: var(--charcoal);
+  color: var(--on-dark);
+}
+
+.tab[data-status="current"] {
+  color: var(--ink);
+  font-weight: var(--fw-semibold);
+}
+
+.tab[data-status="current"] .node {
+  border-color: var(--coral);
+  background: var(--coral);
+  color: var(--charcoal);
+  box-shadow: 0 0 0 var(--ring) var(--ring-coral);
+}
+
+.tab:active .node {
+  transform: scale(0.94);
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tab:hover {
+    color: var(--ink);
+  }
+
+  .tab[data-status="next"]:hover .node {
+    border-color: var(--charcoal);
+  }
+}
+
+.panel {
+  animation: panel-in var(--dur) var(--ease-out);
+}
+
+.panel:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-l);
+}
+
+.card {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.lead {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+}
+
+.summary {
+  color: var(--ink-soft);
+  font-size: var(--fs-lead);
+}
+
+.detail {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2);
+}
+
+.label {
+  margin-block-start: var(--space-3);
+  color: var(--coral-deep);
+  font-size: var(--fs-m);
+  font-weight: var(--fw-bold);
+}
+
+.label:first-child {
+  margin-block-start: 0;
+}
+
+.gets {
+  display: grid;
+  gap: var(--space-2);
+  padding: 0;
+  list-style: none;
+}
+
+.gets li {
+  position: relative;
+  padding-inline-start: var(--space-5);
+}
+
+.gets li::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0.6em;
+  width: var(--space-3);
+  height: 0.125rem;
+  background: var(--coral);
+}
+
+.needs {
+  color: var(--ink-soft);
+}
+
+@container (width > 34rem) {
+  .tab {
+    font-size: var(--fs-base);
+  }
+}
+
+@container (width > 48rem) {
+  .card {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-7);
+  }
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel {
+    animation: none;
+  }
+
+  .fill,
+  .node {
+    transition: none;
+  }
+}

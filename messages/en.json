@@ -504,7 +504,8 @@
         "build": "I build in short deliveries you can try on your phone or in a preview.",
         "publish": "I ship the app to the stores and the site to its domain, with analytics and backups.",
         "maintain": "I fix, update and improve after launch, with an agreed plan."
-      }
+      },
+      "more": "See how I work, with examples"
     },
     "faq": {
       "title": "Frequently asked questions",
@@ -594,7 +595,9 @@
       "rateTask": "Per-task quote from {task} €.",
       "contactTitle": "Contact",
       "contactLine": "{way}: {email}",
-      "contact": "Contact: the ways to reach José Carlos"
+      "contact": "Contact: the ways to reach José Carlos",
+      "howPage": "How I work: the five-phase process and the technical decisions behind this site",
+      "about": "About: background, way of working and stack of José Carlos"
     }
   },
   "chat": {
@@ -1269,6 +1272,330 @@
     },
     "state": {
       "greeting": "Nexo is greeting"
+    }
+  },
+  "howPage": {
+    "meta": {
+      "title": "How I work: from idea to production",
+      "description": "Five phases, real technical decisions and checkable standards, told through this very site as the case. How I design, build and maintain apps and websites."
+    },
+    "crumb": "How I work",
+    "head": {
+      "title": "How I work: from a problem to an app or website in",
+      "accent": "production.",
+      "lead": "The five-phase process, the technical decisions behind this very site and the standards I meet on every project."
+    },
+    "phases": {
+      "title": "Five phases, and what you get in each",
+      "lead": "Pick a phase to see what I deliver and what I need from you.",
+      "list": "Process phases",
+      "getsLabel": "What you get",
+      "needsLabel": "What I need from you",
+      "items": {
+        "discover": {
+          "summary": "I learn what problem the product solves, for whom and what goes into the first version.",
+          "gets1": "A written scope, with what is in and what is out.",
+          "gets2": "Open questions and risks, ranked by importance.",
+          "gets3": "A proposal with timeline and price before any code is written.",
+          "needs": "An honest conversation about the goal and who will use it."
+        },
+        "design": {
+          "summary": "I sketch screens and flows and test them with you before writing code.",
+          "gets1": "The key flows and screens in a prototype you can click through.",
+          "gets2": "A coherent visual system: colour, typography and components.",
+          "gets3": "Accessibility and the mobile layout planned from the first sketch.",
+          "needs": "Your take on the prototype: what is too much, what is missing, what surprises you."
+        },
+        "build": {
+          "summary": "I build in short deliveries you can try on your phone or in a preview.",
+          "gets1": "A preview with every step forward, without waiting for the end.",
+          "gets2": "Typed code, with tests and reviewed on every change.",
+          "gets3": "Security and performance measured while it is built.",
+          "needs": "Trying each delivery and telling me what to adjust while it is still cheap."
+        },
+        "publish": {
+          "summary": "I ship the app to the stores and the site to its domain, with analytics and backups.",
+          "gets1": "Publishing to the stores or your domain, with HTTPS and security headers.",
+          "gets2": "Analytics and error alerts running from day one.",
+          "gets3": "Backups and a plan to roll back if something fails.",
+          "needs": "Access to your domain, the stores and the services you already use."
+        },
+        "maintain": {
+          "summary": "I fix, update and improve after launch, with an agreed plan.",
+          "gets1": "Fixes and dependency and security updates.",
+          "gets2": "Improvements prioritised from what real users show.",
+          "gets3": "Documentation and a handover if you prefer to run it with your team.",
+          "needs": "Deciding now and then which improvement matters most."
+        }
+      }
+    },
+    "problems": {
+      "title": "How I solve problems",
+      "lead": "Three real cases from this very site: the problem, the decision I made and what came out of it.",
+      "problem": "Problem",
+      "decision": "Decision",
+      "result": "Result",
+      "items": {
+        "csp": {
+          "title": "A strict CSP on Cloudflare Workers",
+          "problem": "I wanted a content security policy without “unsafe-inline” for scripts, on a site rendered at the edge, where there is no traditional server to hand out nonces.",
+          "decision": "I generate a different nonce on every request in the Next proxy, send it in the header and pass it to every script, JSON-LD included. “strict-dynamic” lets those trusted scripts load the rest.",
+          "result": "A script without a nonce does not run. An end-to-end test watches the security headers on every change."
+        },
+        "motion": {
+          "title": "Accessible motion without the JavaScript cost",
+          "problem": "Motion makes an interface feel cared for, but it makes people who ask for less animation dizzy and is usually paid for in kilobytes of JavaScript.",
+          "decision": "Almost all motion is native CSS, with curves and durations defined as tokens. A single reduced-motion rule switches off transitions and animations across the site.",
+          "result": "The hero walks through the five phases in CSS and, with reduced motion, stays still on “Publish”. Changing a curve happens in one place."
+        },
+        "recommender": {
+          "title": "A rule-based recommender, not an AI",
+          "problem": "Choosing between web and app tiers and twelve extras is overwhelming. A generative chatbot would be slow, cost money per query and could make up a price.",
+          "decision": "Six questions and a pure function that returns the offer and the extras. The state lives in the URL and Nexo guides with a script, without generating free text.",
+          "result": "Same answers, same recommendation; no cost per query, linkable and covered by unit tests."
+        }
+      }
+    },
+    "tech": {
+      "title": "Technology and architecture",
+      "lead": "This site is my case study: it runs at the edge, stores data with row-level permissions and checks itself before every merge.",
+      "diagram": {
+        "label": "Architecture of this site",
+        "caption": "Simplified architecture: who uses the site, where it runs and where the data lives.",
+        "description": "Diagram that reads left to right, or top to bottom on mobile. The browser and the mobile app connect to the Next 16 application, which runs on Cloudflare Workers; continuous integration on GitHub Actions checks it before it is published. The application reads and writes data in Supabase, where Postgres enforces row-level security and authentication, storage and realtime are provided.",
+        "layers": {
+          "clients": "Who uses it",
+          "app": "Application and delivery",
+          "data": "Data"
+        },
+        "nodes": {
+          "browser": {
+            "name": "Browser",
+            "detail": "The public site and the private areas, each with its own role."
+          },
+          "mobile": {
+            "name": "Mobile app",
+            "detail": "React Native, against the same data backend."
+          },
+          "workers": {
+            "name": "Next 16 on Cloudflare Workers",
+            "detail": "Edge rendering with OpenNext, nonce-based CSP and rate limiting."
+          },
+          "ci": {
+            "name": "CI on GitHub Actions",
+            "detail": "Lint, types, tests, build and e2e with axe before every merge."
+          },
+          "postgres": {
+            "name": "Supabase Postgres",
+            "detail": "RLS on every table with user data and a schema changed only by migrations."
+          },
+          "services": {
+            "name": "Auth, Storage and Realtime",
+            "detail": "Email OTP, TOTP for staff and signed URLs."
+          }
+        }
+      },
+      "stack": {
+        "next": {
+          "title": "Next 16 on Cloudflare Workers",
+          "text": "Server Components by default, JavaScript only where needed and rendering close to the user."
+        },
+        "supabase": {
+          "title": "Supabase with RLS",
+          "text": "Postgres with row-level permissions on every table: the browser never has more access than it should."
+        },
+        "mobile": {
+          "title": "React Native for mobile",
+          "text": "One TypeScript codebase for iOS and Android, with the same way of working as on the web."
+        },
+        "typescript": {
+          "title": "Strict TypeScript",
+          "text": "Types inferred from zod schemas at every boundary: whatever comes in is validated before it is used."
+        },
+        "tests": {
+          "title": "Tests in four layers",
+          "text": "Unit, end-to-end with Playwright, accessibility with axe and pgTAP for the database policies."
+        },
+        "ci": {
+          "title": "Continuous integration",
+          "text": "Every change passes lint, types, tests and build before reaching main, with a preview to review it."
+        }
+      }
+    },
+    "quality": {
+      "title": "Standards I meet",
+      "lead": "The ones I demand of this site and bring to every project.",
+      "items": {
+        "accessibility": {
+          "title": "WCAG 2.2 AA accessibility",
+          "text": "Keyboard, visible focus and contrast in every component. axe blocks the merge if it finds a violation."
+        },
+        "performance": {
+          "title": "Performance budget",
+          "text": "LCP under 2.5 s, INP under 200 ms, CLS under 0.1 and less than 150 KB of JavaScript on the home page."
+        },
+        "security": {
+          "title": "Security from day one",
+          "text": "Nonce-based CSP, strict headers, RLS on every table, Turnstile and rate limiting on public forms."
+        },
+        "code": {
+          "title": "Code without comments",
+          "text": "The why lives in clear names, in the commit or in a written decision. The linter enforces it."
+        },
+        "tokens": {
+          "title": "Design tokens",
+          "text": "One source for colour, spacing and motion. Components only use variables and contrast is checked in CI."
+        }
+      }
+    },
+    "faq": {
+      "title": "Questions about the process",
+      "q1": "How do we start?",
+      "a1": "You tell me the problem through the form or the chat. Within one or two working days I reply with questions and, if it fits, a proposal with scope, timeline and price.",
+      "q2": "Can I change the scope halfway?",
+      "a2": "Yes. I work in short deliveries, so every change is weighed for its effect on timeline and price before it is applied, with no surprises at the end.",
+      "q3": "Are the code and the accounts mine?",
+      "a3": "Yes. Access to the repository, the domain, the stores and the services stays in your name, and I leave documentation so another team can carry on.",
+      "q4": "What happens after launch?",
+      "a4": "Custom development includes a 30-day warranty and there is an optional maintenance plan. I fix, update and improve based on what users report."
+    },
+    "cta": {
+      "title": "Shall we talk about your project?",
+      "lead": "Tell me the problem and I will propose a plan.",
+      "contact": "Tell me about your project",
+      "offers": "See custom development",
+      "services": "See all services"
+    },
+    "links": {
+      "how": "See how I work",
+      "howDetail": "See how I work, with examples"
+    }
+  },
+  "about": {
+    "meta": {
+      "title": "José Carlos Sánchez, full stack developer",
+      "description": "Background, way of working and stack of José Carlos Sánchez, a full stack developer specialised in React Native. Madrid, Spain and remote."
+    },
+    "head": {
+      "title": "I'm José Carlos Sánchez, a",
+      "accent": "full stack developer.",
+      "lead": "Mobile full-stack developer specialised in React Native and Expo, with web experience in Next.js and TypeScript. Madrid, Spain and remote."
+    },
+    "story": {
+      "title": "My story",
+      "p1": "I'm a full stack developer and my specialty is React Native: one codebase for iOS and Android, with the web and the server built with the same tools and the same language.",
+      "p2": "I like to own a product from start to finish: the app people see, the website that presents it and the data behind it. I would rather ship something small that works and improve it in the open than disappear for months and present a closed box.",
+      "p3": "I live in Madrid and work with teams and clients across Spain and remotely. Native Spanish and professional English."
+    },
+    "strengths": {
+      "title": "What I'm best at",
+      "lead": "Four things you can rely on from day one.",
+      "mobile": {
+        "title": "Mobile apps with React Native",
+        "text": "iOS and Android apps from a single codebase, from the first screen to the store release."
+      },
+      "web": {
+        "title": "Fast, accessible websites",
+        "text": "Next.js with performance and accessibility measured on every change, not promised at the end."
+      },
+      "backend": {
+        "title": "Server and data",
+        "text": "Databases with row-level security, authentication and APIs designed so the product can grow without a rewrite."
+      },
+      "ai": {
+        "title": "AI with judgement",
+        "text": "Assistants and search over your own data when they add something, and no AI when they don't."
+      }
+    },
+    "values": {
+      "title": "How I work",
+      "lead": "Four rules I apply to every engagement.",
+      "scope": {
+        "title": "Clear scope before starting",
+        "text": "What is in, what is out and by when, in writing. If something changes, we talk before it happens."
+      },
+      "delivery": {
+        "title": "Small, visible deliveries",
+        "text": "Reviewable changes deployed often, so you see progress along the way and not only at the end."
+      },
+      "quality": {
+        "title": "Quality you can check",
+        "text": "Automated tests, accessibility per component and performance budgets that fail when they are broken."
+      },
+      "decisions": {
+        "title": "Decisions in writing",
+        "text": "Every important decision is recorded with its reason, so the project does not depend on my memory."
+      }
+    },
+    "stack": {
+      "title": "Stack",
+      "lead": "What I build with, grouped by area.",
+      "listLabel": "{group} technologies",
+      "years": {
+        "one": "{n} year",
+        "many": "{n} years"
+      },
+      "groups": {
+        "mobile": "Mobile",
+        "web": "Frontend",
+        "backend": "Backend and data",
+        "ai": "Artificial intelligence",
+        "quality": "Quality and testing",
+        "tools": "Tools"
+      },
+      "levels": {
+        "working": "Intermediate",
+        "proficient": "Advanced",
+        "advanced": "Expert"
+      }
+    },
+    "timeline": {
+      "title": "Experience",
+      "lead": "Where I have worked and what I did in each place.",
+      "listLabel": "Professional experience",
+      "educationTitle": "Education and certifications",
+      "educationLabel": "Education history"
+    },
+    "closing": {
+      "title": "Let's talk",
+      "lead": "If you are looking for someone for your team, tell me what you need and I will get back to you.",
+      "cta": "Talk about joining your team",
+      "cv": "Download CV",
+      "profiles": "Profiles",
+      "newTab": "(opens in a new tab)",
+      "links": {
+        "linkedin": "LinkedIn",
+        "github": "GitHub",
+        "malt": "Malt"
+      }
+    }
+  },
+  "legal": {
+    "updated": "Updated on {date}",
+    "draft": {
+      "title": "Draft pending review",
+      "text": "This text is a draft. It is pending legal review and completion of the data marked as pending, so it has no legal value yet."
+    },
+    "summary": {
+      "title": "In a few lines"
+    },
+    "toc": {
+      "label": "Contents of this page",
+      "title": "On this page"
+    },
+    "pages": {
+      "notice": {
+        "metaTitle": "Legal notice",
+        "metaDescription": "Who owns josecoded.com, how to contact them and the terms of use of the site."
+      },
+      "privacy": {
+        "metaTitle": "Privacy policy",
+        "metaDescription": "What personal data josecoded.com processes, why, on what legal basis, for how long and how to exercise your rights."
+      },
+      "cookies": {
+        "metaTitle": "Cookie policy",
+        "metaDescription": "josecoded.com only uses strictly necessary cookies: session and anti-spam verification. Here is which ones and why."
+      }
     }
   }
 }

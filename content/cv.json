@@ -1,0 +1,213 @@
+{
+  "stack": [
+    {
+      "group": "mobile",
+      "items": [
+        {
+          "name": "React Native"
+        },
+        {
+          "name": "Expo"
+        },
+        {
+          "name": "iOS"
+        },
+        {
+          "name": "Android"
+        },
+        {
+          "name": "Publicación en tiendas"
+        },
+        {
+          "name": "Notificaciones push"
+        },
+        {
+          "name": "Deep linking"
+        }
+      ]
+    },
+    {
+      "group": "web",
+      "items": [
+        {
+          "name": "React"
+        },
+        {
+          "name": "Next.js"
+        },
+        {
+          "name": "TypeScript"
+        },
+        {
+          "name": "JavaScript"
+        },
+        {
+          "name": "Redux"
+        },
+        {
+          "name": "HTML"
+        },
+        {
+          "name": "CSS"
+        },
+        {
+          "name": "Tailwind"
+        }
+      ]
+    },
+    {
+      "group": "backend",
+      "items": [
+        {
+          "name": "Node.js"
+        },
+        {
+          "name": "NestJS"
+        },
+        {
+          "name": "APIs REST"
+        },
+        {
+          "name": "Cloudflare Workers"
+        },
+        {
+          "name": "PostgreSQL"
+        },
+        {
+          "name": "Supabase"
+        },
+        {
+          "name": "Firebase"
+        },
+        {
+          "name": "Redis"
+        }
+      ]
+    },
+    {
+      "group": "ai",
+      "items": [
+        {
+          "name": "Integración de LLM en apps en producción"
+        },
+        {
+          "name": "Agentes de IA"
+        },
+        {
+          "name": "Automatización con n8n"
+        }
+      ]
+    },
+    {
+      "group": "quality",
+      "items": [
+        {
+          "name": "Accesibilidad (WCAG)"
+        },
+        {
+          "name": "Jest"
+        },
+        {
+          "name": "Git"
+        },
+        {
+          "name": "GitHub"
+        },
+        {
+          "name": "CI/CD (Jenkins)"
+        }
+      ]
+    },
+    {
+      "group": "tools",
+      "items": [
+        {
+          "name": "Agile"
+        },
+        {
+          "name": "Scrum"
+        },
+        {
+          "name": "Jira"
+        },
+        {
+          "name": "Xcode"
+        },
+        {
+          "name": "Android Studio"
+        },
+        {
+          "name": "VS Code"
+        }
+      ]
+    }
+  ],
+  "experience": [
+    {
+      "period": "Abr 2024 – actualidad",
+      "role": "Desarrollador de aplicaciones móviles (React Native)",
+      "organization": "Alten · Madrid",
+      "summary": "Dos apps publicadas en App Store y Google Play para 3Cat, la radiotelevisión pública catalana: 3CatInfo, la app de noticias, y 3Cat, la app principal. Rendimiento, escalabilidad y una arquitectura que se pueda mantener.",
+      "highlights": [
+        "3CatInfo: responsable de la integración de IA en el producto.",
+        "Responsable de la implementación y de la formación: he formado al equipo de React Native, a los equipos de iOS y Android de otras apps y al equipo de QA.",
+        "Referente de accesibilidad (WCAG): investigo y resuelvo los problemas de accesibilidad y soy la fuente de conocimiento para otros desarrolladores.",
+        "3Cat: desarrollo de funcionalidades en React Native."
+      ]
+    },
+    {
+      "period": "2024 – actualidad",
+      "role": "Desarrollador full-stack freelance",
+      "organization": "NextRaket · para diversas empresas",
+      "summary": "Apps móviles con React Native y Expo y plataformas web con Next.js, Supabase y Firebase, publicadas y mantenidas en producción.",
+      "highlights": [
+        "Automatización de procesos con n8n y LLM que reduce el trabajo manual diario de los clientes.",
+        "Webs para negocios locales, cada una con su propia capa de gestión y analítica.",
+        "Ciclo completo: requisitos, diseño, desarrollo, despliegue y mantenimiento."
+      ]
+    },
+    {
+      "period": "2017 – 2023",
+      "role": "Entrenador de tenis de alto rendimiento",
+      "organization": "Varios clubes de Madrid",
+      "summary": "Liderazgo, comunicación y toma de decisiones bajo presión: habilidades que hoy aplico al trabajar en equipo y con clientes.",
+      "highlights": []
+    }
+  ],
+  "education": [
+    {
+      "title": "Técnico Superior en Desarrollo de Aplicaciones Web (DAW), con proyecto final de apps móviles",
+      "period": "2023",
+      "organization": "I.E.S. El Lago, Madrid"
+    },
+    {
+      "title": "ITIL 4 Foundation (vigente hasta 2029)",
+      "period": "2026",
+      "organization": "PeopleCert"
+    },
+    {
+      "title": "Curso de agentes de IA y automatización con n8n (18 h)",
+      "period": "2026",
+      "organization": "Alten"
+    },
+    {
+      "title": "Curso de DevOps y Cloud Computing (16 h)",
+      "period": "2024",
+      "organization": "Alten"
+    },
+    {
+      "title": "Cambridge B2 First",
+      "period": "2017"
+    },
+    {
+      "title": "Scrum Master"
+    },
+    {
+      "title": "CI/CD con Jenkins"
+    }
+  ],
+  "file": {
+    "es": "/cv/cv-jose-carlos-sanchez-es.pdf",
+    "en": "/cv/cv-jose-carlos-sanchez-en.pdf"
+  }
+}
