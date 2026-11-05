@@ -1,0 +1,139 @@
+.form {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.field {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.label {
+  color: var(--ink);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-ui);
+}
+
+.select {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-m);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: var(--fs-body);
+  line-height: var(--lh-ui);
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.select:focus-visible {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 var(--ring) var(--ring-coral);
+  outline-offset: 0;
+}
+
+.select:disabled {
+  background: var(--sk-base);
+  color: var(--ink-soft);
+  cursor: not-allowed;
+}
+
+.feedback {
+  font-size: var(--fs-m);
+  font-weight: var(--fw-medium);
+}
+
+.feedback:empty {
+  display: none;
+}
+
+.feedback[data-tone="error"] {
+  color: var(--error);
+}
+
+.feedback[data-tone="success"] {
+  color: var(--ink);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .select:hover:not(:disabled, :focus-visible) {
+    border-color: var(--ink);
+  }
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: var(--space-4);
+}
+
+.note {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+}
+
+.sum {
+  margin: 0;
+  color: var(--ink);
+  font-weight: var(--fw-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+.sum[data-state="off"] {
+  color: var(--error);
+}
+
+.items {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: var(--panel);
+}
+
+.templates {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.preview {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: var(--panel);
+}
+
+.previewTitle {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
