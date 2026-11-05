@@ -17,6 +17,8 @@ import { loadTurnstile } from "@/lib/contact/turnstile-client";
 
 import styles from "./TurnstileField.module.css";
 
+const flexibleMinWidth = 300;
+
 export interface TurnstileHandle {
   reset: () => void;
   focus: () => void;
@@ -86,7 +88,7 @@ export function TurnstileField({
           action,
           language: locale,
           theme: "light",
-          size: "flexible",
+          size: mount.current.clientWidth < flexibleMinWidth ? "compact" : "flexible",
           callback: (token) => {
             onTokenRef.current(token);
           },

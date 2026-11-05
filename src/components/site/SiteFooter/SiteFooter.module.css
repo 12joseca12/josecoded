@@ -23,6 +23,8 @@
   display: inline-flex;
   align-items: center;
   min-height: 2.75rem;
+  min-inline-size: 2.75rem;
+  justify-content: center;
   border-radius: var(--radius-xs);
   color: var(--ink-soft);
   font-size: var(--fs-m);
@@ -44,7 +46,7 @@
 }
 
 .note {
-  color: var(--ink-faint);
+  color: var(--ink-soft);
   font-size: var(--fs-m);
 }
 

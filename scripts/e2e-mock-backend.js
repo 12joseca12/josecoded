@@ -36,6 +36,10 @@ const fakeWidget = `
       var id = "fake-" + Object.keys(store).length;
       store[id] = { options: options, el: el };
       el.setAttribute("data-fake-turnstile", "");
+      var frame = document.createElement("div");
+      frame.style.minWidth = options.size === "compact" ? "150px" : "300px";
+      frame.style.height = "65px";
+      el.appendChild(frame);
       field(el).value = "";
       deliver(el, options);
       return id;
