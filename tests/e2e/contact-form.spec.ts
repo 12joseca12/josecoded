@@ -23,7 +23,7 @@ interface FormMessages {
 
 const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
   common: { responseTime: string };
-  contactPage: { form: FormMessages; chat: { hint: string; soon: string } };
+  contactPage: { form: FormMessages };
 };
 const form = es.contactPage.form;
 const mock = `http://localhost:${process.env.MOCK_BACKEND_PORT ?? 3199}`;
@@ -268,19 +268,23 @@ test.describe("what happens next, example and per-way success", () => {
     await expect(example.getByText(form.example.project)).toBeVisible();
   });
 
-  test("with a via the form comes before the chat and without it after", async ({ page }) => {
+  test("with a via the form comes first and without it after the emails", async ({ page }) => {
     await page.goto("/es/contacto?via=freelance");
-    const withVia = page.locator("#formulario, #chat");
-    await expect(withVia.first()).toHaveAttribute("id", "formulario");
+    await expect(page.locator("#formulario, #contratacion").first()).toHaveAttribute(
+      "id",
+      "formulario",
+    );
     await page.goto("/es/contacto");
-    await expect(page.locator("#formulario, #chat").first()).toHaveAttribute("id", "chat");
+    await expect(page.locator("#formulario, #contratacion").first()).toHaveAttribute(
+      "id",
+      "contratacion",
+    );
   });
 
-  test("the chat card promises no timing", async ({ page }) => {
+  test("the contact page promises no chat and no instant answer", async ({ page }) => {
     await page.goto("/es/contacto");
-    const chat = page.locator("#chat");
-    await expect(chat).toContainText(es.contactPage.chat.hint);
-    await expect(chat).not.toContainText(/muy pronto|al momento/i);
+    await expect(page.locator("#chat")).toHaveCount(0);
+    await expect(page.locator("main")).not.toContainText(/chat|nexo|muy pronto|al momento/i);
   });
 
   test("the selection chip shows the warranty and the no-commitment note", async ({ page }) => {

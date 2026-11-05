@@ -115,14 +115,17 @@
   "projects": {
     "metaTitle": "Proyectos",
     "title": "Proyectos",
-    "emptyTitle": "Pronto",
-    "emptyText": "Estoy preparando los casos. Vuelve en unos días.",
-    "metaDescription": "Apps y webs en producción: el reto, lo que hice, el stack y el resultado de cada proyecto."
+    "emptyTitle": "Aún no hay fichas",
+    "emptyText": "Todavía no he publicado casos con su reto y su resultado. Mientras llegan, puedes ver mi trayectoria o contarme tu proyecto.",
+    "metaDescription": "Casos de apps y webs: el reto, lo que hice, el stack y el resultado de cada proyecto.",
+    "lead": "Los casos que enseñe aquí irán con el reto, lo que hice y el resultado.",
+    "about": "Ver mi trayectoria",
+    "contact": "Escribirme"
   },
   "errors": {
     "notFound": {
       "title": "Esta pantalla no existe",
-      "text": "El enlace está roto o la página se ha movido. Puedes volver al inicio o ver los proyectos."
+      "text": "El enlace está roto o la página se ha movido. Puedes volver al inicio o escribirme."
     },
     "serverError": {
       "title": "Algo ha fallado",
@@ -133,13 +136,12 @@
       "text": "Has hecho muchas peticiones seguidas. Espera un momento y vuelve a intentarlo."
     },
     "maintenance": {
-      "title": "Volvemos enseguida",
+      "title": "Vuelvo enseguida",
       "text": "La web está en mantenimiento. Vuelve en unos minutos."
     },
     "actions": {
       "home": "Volver al inicio",
-      "projects": "Ver proyectos",
-      "chat": "Abrir el chat",
+      "contact": "Escribirme",
       "retry": "Reintentar",
       "retrying": "Reintentando"
     }
@@ -297,12 +299,12 @@
   "contactPage": {
     "meta": {
       "title": "Contacto",
-      "description": "Todas las formas de hablar con José Carlos: chat con Nexo, correo por vía y formulario."
+      "description": "Todas las formas de hablar con José Carlos: correo por vía y formulario."
     },
     "head": {
       "title": "Hablemos de tu",
       "accent": "proyecto.",
-      "lead": "Elige la vía que prefieras. Respondo yo, o Nexo mientras no estoy."
+      "lead": "Elige la vía que prefieras. Te respondo yo."
     },
     "channelsLabel": "Vías de contacto",
     "chat": {
@@ -405,7 +407,7 @@
           },
           "project": {
             "text": "Recibido. Lo leo yo y te preparo una propuesta por escrito.",
-            "next": "Ver proyectos"
+            "next": "Ver cómo trabajo"
           }
         }
       },
@@ -660,7 +662,7 @@
       "services": "Servicios: las tres formas de trabajar con José Carlos",
       "freelancePage": "Freelance: programador freelance por horas o por tarea",
       "offersPage": "Desarrollo a medida: web y app con precio y fecha cerrados",
-      "projects": "Proyectos: apps y webs en producción",
+      "projects": "Proyectos: casos de apps y webs",
       "entityTitle": "Entidad",
       "entityName": "Nombre: {name} (alias {alias})",
       "entityJob": "Ocupación: {jobTitle}",
@@ -1337,15 +1339,14 @@
     "typing": "Nexo está escribiendo",
     "you": "Tú",
     "nexo": "Nexo",
-    "fallback": "Eso no lo tengo a mano, pero Jose sí. Puedes pasarle la pregunta por el formulario o por el chat.",
-    "form": "Ir al formulario",
-    "chat": "Abrir el chat"
+    "fallback": "Eso no lo tengo a mano, pero Jose sí. Puedes pasarle la pregunta por el formulario.",
+    "form": "Ir al formulario"
   },
   "nexoGuide": {
     "label": "Nexo, el asistente de esta web",
     "name": "Nexo",
     "role": "Asistente de la web",
-    "disclosure": "Soy un asistente, no una persona. Te guío con las mismas reglas del recomendador; la conversación libre llegará con el chat.",
+    "disclosure": "Soy un asistente, no una persona. Te guío con las mismas reglas del recomendador.",
     "greeting": "¡Hola! Soy Nexo. Te hago unas preguntas cortas y te digo qué nivel encaja contigo y qué extras necesitarías.",
     "ask": {
       "start": "Empiezo por aquí porque, si ya tienes algo hecho, no necesitas un proyecto nuevo y te llevo por otra vía.",
@@ -1545,7 +1546,7 @@
     "faq": {
       "title": "Preguntas sobre el proceso",
       "q1": "¿Cómo empezamos?",
-      "a1": "Me cuentas el problema por el formulario o el chat. En {responseTime} te respondo con preguntas y, si encaja, con una propuesta de alcance, plazo y precio.",
+      "a1": "Me cuentas el problema por el formulario. En {responseTime} te respondo con preguntas y, si encaja, con una propuesta de alcance, plazo y precio.",
       "q2": "¿Puedo cambiar el alcance a mitad de camino?",
       "a2": "Sí. Trabajo en entregas cortas, así que cada cambio se valora con su efecto en plazo y precio antes de aplicarlo, sin sorpresas al final.",
       "q3": "¿El código y los accesos son míos?",

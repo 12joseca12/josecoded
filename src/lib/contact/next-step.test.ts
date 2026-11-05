@@ -11,11 +11,11 @@ describe("nextStepTarget", () => {
     expect(nextStepTarget("en", "contratacion").href).toBe("/cv/cv-jose-carlos-sanchez-en.pdf");
   });
 
-  it("sends the freelance client to how I work and the project client to projects", () => {
+  it("sends the freelance and project clients to how I work", () => {
     expect(nextStepTarget("es", "freelance")).toEqual({
       href: "/es/como-trabajo",
       external: false,
     });
-    expect(nextStepTarget("es", "project")).toEqual({ href: "/es/proyectos", external: false });
+    expect(nextStepTarget("es", "project")).toEqual({ href: "/es/como-trabajo", external: false });
   });
 });

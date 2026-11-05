@@ -43,6 +43,5 @@ export interface NexoChatLabels {
   nexo: string;
   fallback: string;
   form: string;
-  chat: string;
   states: Record<NexoState, string>;
 }

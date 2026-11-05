@@ -4,7 +4,7 @@ export const errorCopies: Record<"es" | "en", ErrorCopy> = {
   es: {
     notFound: {
       title: "Esta pantalla no existe",
-      text: "El enlace está roto o la página se ha movido. Puedes volver al inicio o ver los proyectos.",
+      text: "El enlace está roto o la página se ha movido. Puedes volver al inicio o escribirme.",
     },
     serverError: {
       title: "Algo ha fallado",
@@ -15,13 +15,12 @@ export const errorCopies: Record<"es" | "en", ErrorCopy> = {
       text: "Has hecho muchas peticiones seguidas. Espera un momento y vuelve a intentarlo.",
     },
     maintenance: {
-      title: "Volvemos enseguida",
+      title: "Vuelvo enseguida",
       text: "La web está en mantenimiento. Vuelve en unos minutos.",
     },
     actions: {
       home: "Volver al inicio",
-      projects: "Ver proyectos",
-      chat: "Abrir el chat",
+      contact: "Escribirme",
       retry: "Reintentar",
       retrying: "Reintentando",
     },
@@ -29,7 +28,7 @@ export const errorCopies: Record<"es" | "en", ErrorCopy> = {
   en: {
     notFound: {
       title: "This page does not exist",
-      text: "The link is broken or the page has moved. You can go back home or see the projects.",
+      text: "The link is broken or the page has moved. You can go back home or write to me.",
     },
     serverError: {
       title: "Something went wrong",
@@ -45,8 +44,7 @@ export const errorCopies: Record<"es" | "en", ErrorCopy> = {
     },
     actions: {
       home: "Back to home",
-      projects: "See projects",
-      chat: "Open the chat",
+      contact: "Write to me",
       retry: "Try again",
       retrying: "Retrying",
     },

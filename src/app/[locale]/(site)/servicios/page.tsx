@@ -10,6 +10,7 @@ import { PageSection } from "@/components/site/PageSection/PageSection";
 import { Button } from "@/components/ui/Button/Button";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 import { Steps } from "@/components/ui/Steps/Steps";
+import { features } from "@/config/features";
 import { isLocale } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
@@ -119,7 +120,11 @@ export default async function ServicesPage({ params }: ServicesProps) {
             title={t("services.bento.proof.title")}
             text={t("services.bento.proof.text")}
             chips={chips(["reactNative", "next", "typescript", "supabase", "cloudflare", "ai"])}
-            cta={{ href: `/${locale}/proyectos`, label: t("services.bento.proof.projects") }}
+            cta={
+              features.projects
+                ? { href: `/${locale}/proyectos`, label: t("services.bento.proof.projects") }
+                : undefined
+            }
             more={{ href: `/${locale}/sobre-mi#stack`, label: t("services.bento.proof.stack") }}
           />
         </ServiceBento>

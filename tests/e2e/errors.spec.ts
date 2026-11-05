@@ -5,7 +5,7 @@ import { expect, test } from "@playwright/test";
 
 const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
   errors: Record<"notFound" | "serverError", { title: string; text: string }> & {
-    actions: Record<"home" | "projects" | "chat" | "retry", string>;
+    actions: Record<"home" | "contact" | "retry", string>;
   };
   dev: { errors: { recovered: string } };
 };
@@ -23,8 +23,11 @@ test("unknown path returns 404 and the localized page with focus on the heading"
     "href",
     "/es",
   );
-  await expect(page.getByRole("link", { name: errors.actions.projects })).toBeVisible();
-  await expect(page.getByRole("link", { name: errors.actions.chat })).toBeVisible();
+  await expect(page.getByRole("link", { name: errors.actions.contact })).toHaveAttribute(
+    "href",
+    "/es/contacto",
+  );
+  await expect(page.locator('main a[href*="/chat"]')).toHaveCount(0);
   const { violations } = await new AxeBuilder({ page }).analyze();
   expect(violations).toEqual([]);
 });

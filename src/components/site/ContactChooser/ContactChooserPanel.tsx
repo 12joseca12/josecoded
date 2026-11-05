@@ -28,6 +28,7 @@ interface ContactChooserPanelProps {
   labels: ContactChooserLabels;
   whatsappHref: string | null;
   formHref: string;
+  chatEnabled: boolean;
   onChat: () => void;
   openerRef: RefObject<HTMLElement | null>;
   anchorRef: RefObject<HTMLDivElement | null>;
@@ -45,6 +46,7 @@ export function ContactChooserPanel({
   labels,
   whatsappHref,
   formHref,
+  chatEnabled,
   onChat,
   openerRef,
   anchorRef,
@@ -181,25 +183,27 @@ export function ContactChooserPanel({
               </a>
             </li>
           ) : null}
-          <li>
-            <button
-              type="button"
-              className={styles.option}
-              data-option="chat"
-              onClick={() => {
-                onClose();
-                onChat();
-              }}
-            >
-              <span className={styles.optionIcon}>
-                <ChatIcon />
-              </span>
-              <span className={styles.optionText}>
-                <span className={styles.optionTitle}>{labels.chat}</span>
-                <span className={styles.optionHint}>{labels.chatHint}</span>
-              </span>
-            </button>
-          </li>
+          {chatEnabled ? (
+            <li>
+              <button
+                type="button"
+                className={styles.option}
+                data-option="chat"
+                onClick={() => {
+                  onClose();
+                  onChat();
+                }}
+              >
+                <span className={styles.optionIcon}>
+                  <ChatIcon />
+                </span>
+                <span className={styles.optionText}>
+                  <span className={styles.optionTitle}>{labels.chat}</span>
+                  <span className={styles.optionHint}>{labels.chatHint}</span>
+                </span>
+              </button>
+            </li>
+          ) : null}
           <li>
             <NextLink
               className={styles.option}
