@@ -521,6 +521,28 @@ export type Database = {
           via: Database["public"]["Enums"]["contact_via"]
         }[]
       }
+      omen_claim_jobs: {
+        Args: { p_limit?: number; p_worker: string }
+        Returns: {
+          attempts: number
+          id: string
+          kind: Database["public"]["Enums"]["job_kind"]
+          max_attempts: number
+          payload: Json
+        }[]
+      }
+      omen_finish_job: {
+        Args: { p_error?: string; p_id: string; p_result?: Json }
+        Returns: Database["public"]["Enums"]["job_status"]
+      }
+      omen_heartbeat: {
+        Args: { p_models?: Json; p_version?: string }
+        Returns: undefined
+      }
+      omen_status: {
+        Args: never
+        Returns: Json
+      }
       submit_lead: {
         Args: {
           p_company?: string
@@ -580,6 +602,17 @@ export type Database = {
         | "radar"
       contact_via: "hiring" | "freelance" | "project"
       deal_stage: "new" | "contacted" | "meeting" | "proposal" | "won" | "lost"
+      job_kind:
+        | "chat.reply"
+        | "chat.summary"
+        | "rag.index"
+        | "radar.scan"
+        | "radar.score"
+        | "radar.draft"
+        | "radar.send"
+        | "account.delete"
+        | "notify.send"
+      job_status: "queued" | "running" | "done" | "failed" | "cancelled"
       lead_source: "form" | "nexo" | "whatsapp" | "radar" | "manual"
       lead_status: "new" | "assigned" | "contacted" | "converted" | "discarded"
       user_role: "admin" | "closer" | "freelance" | "client"
@@ -726,6 +759,18 @@ export const Constants = {
       contact_source: ["manual", "import", "form", "nexo", "whatsapp", "radar"],
       contact_via: ["hiring", "freelance", "project"],
       deal_stage: ["new", "contacted", "meeting", "proposal", "won", "lost"],
+      job_kind: [
+        "chat.reply",
+        "chat.summary",
+        "rag.index",
+        "radar.scan",
+        "radar.score",
+        "radar.draft",
+        "radar.send",
+        "account.delete",
+        "notify.send",
+      ],
+      job_status: ["queued", "running", "done", "failed", "cancelled"],
       lead_source: ["form", "nexo", "whatsapp", "radar", "manual"],
       lead_status: ["new", "assigned", "contacted", "converted", "discarded"],
       user_role: ["admin", "closer", "freelance", "client"],

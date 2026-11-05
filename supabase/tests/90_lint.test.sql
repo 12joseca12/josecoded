@@ -81,6 +81,7 @@ select is_empty(
         'claim_lead',
         'discard_lead',
         'list_lead_inbox',
+        'omen_status',
         'touch_lead',
         'update_my_profile'
       )
@@ -177,6 +178,7 @@ select is_empty(
         'claim_lead',
         'discard_lead',
         'list_lead_inbox',
+        'omen_status',
         'touch_lead',
         'update_my_profile'
       )
@@ -195,8 +197,8 @@ select is(
       and not has_function_privilege('authenticated', p.oid, 'execute')
       and not has_function_privilege('anon', p.oid, 'execute')
   ),
-  'submit_lead',
-  'submit_lead is the only service_role-only function in public'
+  'omen_claim_jobs,omen_finish_job,omen_heartbeat,submit_lead',
+  'only the lead intake and the Omen job wrappers are service_role-only functions in public'
 );
 
 select is(
