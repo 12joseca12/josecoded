@@ -1,13 +1,14 @@
 import { readFileSync } from "node:fs";
 
 import AxeBuilder from "@axe-core/playwright";
-import { expect, type Page, test } from "@playwright/test";
+import { expect, type Locator, type Page, test } from "@playwright/test";
 
 const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
   about: {
     head: { title: string; accent: string };
     stack: { title: string; groups: Record<string, string> };
     closing: { cta: string; cv: string; links: { linkedin: string } };
+    actions: { cvEn: string };
   };
   services: { bento: { proof: { stack: string } }; ways: { contratacion: { more: string } } };
   legal: { draft: { title: string }; toc: { label: string } };
@@ -23,6 +24,12 @@ interface Node {
 async function readNodes(page: Page): Promise<Node[]> {
   const raw = await page.locator('script[type="application/ld+json"]').allTextContents();
   return raw.flatMap((text) => (JSON.parse(text) as { "@graph": Node[] })["@graph"]);
+}
+
+async function top(locator: Locator): Promise<number> {
+  const box = await locator.boundingBox();
+  if (box === null) throw new Error("element has no box");
+  return box.y;
 }
 
 const legalPages = [
@@ -68,6 +75,58 @@ test("/es/sobre-mi has the person's h1, the stack groups and no raw placeholders
   await expect(timeline.getByRole("heading", { level: 3 }).first()).toContainText("React Native");
   await expect(timeline).toContainText("3CatInfo");
   await expect(timeline).toContainText("NextRaket");
+});
+
+test("/es/sobre-mi puts the CV first, then the career, then the stack, then the values", async ({
+  page,
+}) => {
+  await page.goto("/es/sobre-mi");
+  const cv = page.getByRole("link", { name: es.about.closing.cv });
+  const cvTop = await top(cv);
+  const careerTop = await top(page.locator("#trayectoria"));
+  const stackTop = await top(page.locator("#stack"));
+  const valuesTop = await top(page.locator("#como-trabajo"));
+  expect(cvTop).toBeLessThan(careerTop);
+  expect(careerTop).toBeLessThan(stackTop);
+  expect(stackTop).toBeLessThan(valuesTop);
+  await expect(page.locator("#historia, #fortalezas")).toHaveCount(0);
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("José Carlos Sánchez García");
+  await expect(page.getByRole("main")).toContainText("3CatInfo");
+  await expect(page.getByRole("main")).toContainText("Alten");
+});
+
+test("/es/sobre-mi keeps the CV above the fold on a phone", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/es/sobre-mi");
+  await expect(page.getByRole("link", { name: es.about.closing.cv })).toBeInViewport();
+});
+
+test("/es/sobre-mi offers the English CV and hides the availability line without data", async ({
+  page,
+  request,
+}) => {
+  await page.goto("/es/sobre-mi");
+  const english = page.getByRole("link", { name: es.about.actions.cvEn });
+  await expect(english).toHaveAttribute("href", "/cv/cv-jose-carlos-sanchez-en.pdf");
+  await expect(english).toHaveAttribute("download", "");
+  await expect(english).toHaveAttribute("lang", "en");
+  expect((await request.get("/cv/cv-jose-carlos-sanchez-en.pdf")).status()).toBe(200);
+  await expect(page.locator("main")).not.toContainText("Modalidad");
+});
+
+test("/es/sobre-mi publishes a complete Person with one spelling of the name", async ({ page }) => {
+  await page.goto("/es/sobre-mi");
+  const person = (await readNodes(page)).find((node) => node["@type"] === "Person");
+  expect(person).toMatchObject({
+    name: "José Carlos Sánchez García",
+    alternateName: ["josecoded"],
+    knowsLanguage: ["es", "en"],
+    worksFor: { name: "Alten" },
+  });
+  expect(person?.knowsAbout).toContain("React Native");
+  expect(JSON.stringify(person)).not.toContain("{{DATO");
+  const sameAs = person?.sameAs as string[];
+  expect(sameAs.every((link) => link.startsWith("https://www.linkedin.com/"))).toBe(true);
 });
 
 test("/es/sobre-mi offers the Spanish CV download and links the profiles", async ({
