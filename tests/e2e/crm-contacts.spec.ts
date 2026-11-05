@@ -120,6 +120,10 @@ async function names(page: Page): Promise<string[]> {
   return cells.allTextContents();
 }
 
+async function expectNames(page: Page, expected: string[]) {
+  await expect.poll(() => names(page)).toEqual(expected);
+}
+
 async function openAsAdmin(page: Page) {
   await page.setViewportSize({ width: 1440, height: 900 });
   await signInAdmin(page, tag, next);
@@ -139,7 +143,7 @@ test("the admin sees every contact with owner, stage and overdue steps and passe
 }) => {
   await openAsAdmin(page);
   await expect(page.getByRole("heading", { level: 1, name: text.title })).toBeVisible();
-  expect(await names(page)).toEqual([
+  await expectNames(page, [
     "Carmen Cuenta",
     "Ada Arquitecta",
     "Bruno Banco",
@@ -162,12 +166,7 @@ test("a closer sees her own and her subcloser's contacts but not the ownerless o
   page,
 }) => {
   await openAsCloser(page);
-  expect(await names(page)).toEqual([
-    "Carmen Cuenta",
-    "Ada Arquitecta",
-    "Bruno Banco",
-    "Eva Evento",
-  ]);
+  await expectNames(page, ["Carmen Cuenta", "Ada Arquitecta", "Bruno Banco", "Eva Evento"]);
   await expect(page.getByRole("columnheader", { name: text.columns.owner })).toBeVisible();
   await expect(tableRow(page, "Carmen Cuenta")).toContainText("Dani Closer");
   const owner = filterBar(page).getByLabel(text.filters.owner, { exact: true });
@@ -182,7 +181,7 @@ test("a closer sees her own and her subcloser's contacts but not the ownerless o
 test("a subcloser sees only her own contacts and no owner controls", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await signInSubcloser(page);
-  expect(await names(page)).toEqual(["Carmen Cuenta"]);
+  await expectNames(page, ["Carmen Cuenta"]);
   await expect(page.getByRole("columnheader", { name: text.columns.owner })).toHaveCount(0);
   await expect(filterBar(page).getByLabel(text.filters.owner, { exact: true })).toHaveCount(0);
 });
@@ -192,26 +191,26 @@ test("filters live in the URL and narrow the list", async ({ page }) => {
   await filterBar(page).getByLabel(text.filters.kind, { exact: true }).selectOption("client");
   await page.getByRole("button", { name: text.filters.apply }).click();
   await expect(page).toHaveURL(/[?&]kind=client/);
-  expect(await names(page)).toEqual(["Bruno Banco"]);
+  await expectNames(page, ["Bruno Banco"]);
 
   await page.goto(`${path}?stage=proposal`);
-  expect(await names(page)).toEqual(["Ada Arquitecta"]);
+  await expectNames(page, ["Ada Arquitecta"]);
   await expect(filterBar(page).getByLabel(text.filters.stage, { exact: true })).toHaveValue(
     "proposal",
   );
 
   await page.goto(`${path}?due=1`);
-  expect(await names(page)).toEqual(["Ada Arquitecta"]);
+  await expectNames(page, ["Ada Arquitecta"]);
   await expect(filterBar(page).getByLabel(text.filters.due, { exact: true })).toBeChecked();
 
   await page.goto(`${path}?q=cuenta`);
-  expect(await names(page)).toEqual(["Carmen Cuenta"]);
+  await expectNames(page, ["Carmen Cuenta"]);
 
   await page.goto(`${path}?owner=none`);
-  expect(await names(page)).toEqual(["Dario Directo"]);
+  await expectNames(page, ["Dario Directo"]);
 
   await page.goto(`${path}?owner=${cleoId}&kind=partner`);
-  expect(await names(page)).toEqual(["Eva Evento"]);
+  await expectNames(page, ["Eva Evento"]);
 
   const queries = (await crmCalls(page)).map((call) => call.query ?? "");
   expect(queries.some((query) => decodeURIComponent(query).includes("deals!inner"))).toBe(true);

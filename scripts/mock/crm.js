@@ -308,6 +308,18 @@ route("POST", "/rest/v1/contacts", async ({ request, response }) => {
   return send(response, 201, { id: contact.id });
 });
 
+route("GET", "/rest/v1/deals", ({ request, response, url }) => {
+  const caller = callerOf(request);
+  if (!caller) return fail(response, 401, "PGRST301", "JWT invalid");
+  const id = operand(url.searchParams.get("id") ?? "eq.")[1];
+  const rows = caller.auth.contacts
+    .filter((contact) => canSee(caller, contact))
+    .flatMap((contact) => contact.deals)
+    .filter((deal) => !id || deal.id === id)
+    .map((deal) => ({ id: deal.id, stage: deal.stage }));
+  return send(response, 200, rows);
+});
+
 route("PATCH", "/rest/v1/deals", async ({ request, response, url }) => {
   const caller = callerOf(request);
   if (!caller) return fail(response, 401, "PGRST301", "JWT invalid");
