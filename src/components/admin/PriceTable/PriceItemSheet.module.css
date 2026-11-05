@@ -1,0 +1,123 @@
+.sheet {
+  position: fixed;
+  inset: auto 0 0;
+  width: 100%;
+  max-width: none;
+  max-height: calc(100dvh - var(--space-7));
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 0;
+  border-top: 1px solid var(--glass-border);
+  border-radius: var(--radius-l) var(--radius-l) 0 0;
+  background: var(--panel);
+  color: var(--ink);
+  box-shadow: var(--shadow-deep);
+  opacity: 0;
+  transform: translateY(100%);
+  transition:
+    opacity var(--dur-fast) ease,
+    transform var(--dur-fast) var(--ease-out),
+    overlay var(--dur-fast) allow-discrete,
+    display var(--dur-fast) allow-discrete;
+}
+
+.sheet[open] {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--dur) ease,
+    transform var(--dur-slow) var(--ease-drawer),
+    overlay var(--dur-slow) allow-discrete,
+    display var(--dur-slow) allow-discrete;
+}
+
+@starting-style {
+  .sheet[open] {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
+.sheet::backdrop {
+  background: transparent;
+  transition:
+    background-color var(--dur) ease,
+    overlay var(--dur) allow-discrete,
+    display var(--dur) allow-discrete;
+}
+
+.sheet[open]::backdrop {
+  background: var(--line-strong);
+}
+
+@starting-style {
+  .sheet[open]::backdrop {
+    background: transparent;
+  }
+}
+
+.inner {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--gutter) calc(var(--space-5) + env(safe-area-inset-bottom));
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.title {
+  font-size: var(--fs-h4);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--lh-snug);
+  overflow-wrap: anywhere;
+}
+
+.pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.error {
+  min-height: 0;
+  color: var(--error);
+  font-size: var(--fs-m);
+  font-weight: var(--fw-medium);
+}
+
+.error:empty {
+  display: none;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-3);
+}
+
+@media (min-width: 40rem) {
+  .sheet {
+    inset: 0;
+    width: min(32rem, calc(100% - 2 * var(--gutter)));
+    max-height: calc(100dvh - 2 * var(--space-6));
+    margin: auto;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-l);
+    transform: translateY(var(--space-4));
+  }
+
+  @starting-style {
+    .sheet[open] {
+      opacity: 0;
+      transform: translateY(var(--space-4));
+    }
+  }
+}

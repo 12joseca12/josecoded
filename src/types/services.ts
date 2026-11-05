@@ -108,6 +108,7 @@ export interface NeedFromYouItem {
 
 export interface MaintenancePlan {
   id: string;
+  amount: string | null;
   name: string;
   hours: string;
   text: string;

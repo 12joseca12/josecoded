@@ -23,6 +23,15 @@ route("GET", "/rest/v1/profiles", ({ request, response, url }) => {
       .sort((a, b) => a.full_name.localeCompare(b.full_name));
     return send(response, 200, rows);
   }
+  if (!url.searchParams.has("id") && !url.searchParams.has("role")) {
+    const caller = personById(session.userId);
+    if (caller?.[1].role !== "admin" || session.level !== "aal2") return send(response, 200, []);
+    return send(
+      response,
+      200,
+      Object.values(people).map((person) => ({ id: person.id, full_name: person.name })),
+    );
+  }
   const id = (url.searchParams.get("id") ?? "").replace("eq.", "");
   const found = personById(id);
   const row =

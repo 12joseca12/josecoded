@@ -6,7 +6,7 @@ import { NexoGuideBubble } from "@/components/services/NexoGuideBubble/NexoGuide
 import { Button } from "@/components/ui/Button/Button";
 import { ProgressRing } from "@/components/ui/ProgressRing/ProgressRing";
 import type { GuideScript, RecommenderGuide } from "@/lib/nexo/guide";
-import type { ExtraSlug } from "@/lib/services/offers";
+import type { ExtraSlug, PriceBook } from "@/lib/services/offers";
 import { optionsFor, type QuestionId, questions, recommend } from "@/lib/services/recommender";
 import {
   advance,
@@ -38,6 +38,7 @@ export interface GuideLabels {
 
 interface OfferRecommenderProps {
   locale: string;
+  book: PriceBook;
   basePath: string;
   origin: string;
   initial: { q?: string; paso?: string };
@@ -52,6 +53,7 @@ const previewIds = ["start", "kind", "size", "accounts", "management"] as const;
 
 export function OfferRecommender({
   locale,
+  book,
   basePath,
   origin,
   initial,
@@ -198,6 +200,7 @@ export function OfferRecommender({
           <OfferResult
             ref={result}
             locale={locale}
+            book={book}
             copy={copy}
             state={state}
             reviewHref={hrefFor(reviewAnswers(state))}

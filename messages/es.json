@@ -1030,6 +1030,107 @@
         "retrying": "Reintentando"
       }
     },
+    "prices": {
+      "meta": {
+        "title": "Precios"
+      },
+      "title": "Precios",
+      "lead": "Precios, plazos, visibilidad y orden del catálogo. Lo que dejes sin precio se muestra en la web como «Precio en revisión». Los nombres y descripciones siguen en los textos de la web.",
+      "tabsLabel": "Tipo de precio",
+      "tabs": {
+        "offers": "Niveles",
+        "extras": "Extras",
+        "rates": "Tarifas",
+        "plans": "Mantenimiento"
+      },
+      "loading": "Cargando los precios",
+      "error": {
+        "title": "No he podido cargar los precios",
+        "text": "Inténtalo otra vez. Si sigue fallando, comprueba que la migración del catálogo está aplicada.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "empty": {
+        "title": "Aquí todavía no hay nada",
+        "text": "Esta pestaña no tiene filas. Se rellena al aplicar la migración del catálogo."
+      },
+      "region": "Tabla de precios",
+      "caption": "Precios de {tab}",
+      "columns": {
+        "name": "Nombre",
+        "price": "Precio",
+        "detail": "Detalle",
+        "visible": "Visible",
+        "status": "Estado",
+        "actions": "Acciones"
+      },
+      "yes": "Sí",
+      "no": "No",
+      "archived": "Archivado",
+      "active": "Activo",
+      "edit": "Editar",
+      "moveUp": "Subir",
+      "moveDown": "Bajar",
+      "archive": "Archivar",
+      "restore": "Restaurar",
+      "confirmArchive": "¿Archivar?",
+      "confirmArchiveYes": "Sí, archivar",
+      "history": "Historial",
+      "historyEmpty": "Sin cambios todavía.",
+      "unknownAuthor": "Sistema",
+      "noValue": "—",
+      "fields": {
+        "price": "Precio",
+        "price_monthly": "Precio al mes",
+        "visible": "Visible",
+        "archived_at": "Archivado"
+      },
+      "billing": {
+        "once": "Pago único",
+        "monthly": "Mensual",
+        "yearly": "Anual",
+        "per_unit": "Por unidad"
+      },
+      "rateDetail": {
+        "hourly": "Por hora",
+        "task_min": "Mínimo por tarea"
+      },
+      "units": {
+        "once": "€",
+        "monthly": "€/mes",
+        "yearly": "€/año",
+        "per_unit": "€/ud.",
+        "hourly": "€/hora",
+        "task_min": "€/tarea"
+      },
+      "sheet": {
+        "title": "Editar {name}",
+        "close": "Cerrar",
+        "priceLabel": "Precio en euros",
+        "priceHint": "Déjalo vacío para que la web muestre «Precio en revisión».",
+        "weeksMinLabel": "Semanas, mínimo",
+        "weeksMaxLabel": "Semanas, máximo",
+        "visibleLabel": "Visible en la web",
+        "save": "Guardar",
+        "saving": "Guardando",
+        "cancel": "Cancelar"
+      },
+      "actions": {
+        "done": {
+          "save": "Cambios guardados",
+          "archive": "Fila archivada",
+          "restore": "Fila restaurada",
+          "move": "Orden actualizado"
+        },
+        "errors": {
+          "price": "Escribe un precio válido, hasta 2 decimales, o déjalo vacío.",
+          "weeks": "Indica un plazo válido: el mínimo no puede superar al máximo.",
+          "stale": "Esta fila ha cambiado. Recarga la página.",
+          "forbidden": "No tienes permiso para cambiar precios.",
+          "error": "No he podido guardar. Inténtalo otra vez."
+        }
+      }
+    },
     "system": {
       "meta": {
         "title": "Sistema"

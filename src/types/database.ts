@@ -252,6 +252,45 @@ export type Database = {
           },
         ]
       }
+      extras: {
+        Row: {
+          archived_at: string | null
+          billing: Database["public"]["Enums"]["extra_billing"]
+          created_at: string
+          name_en: string
+          name_es: string
+          price: number | null
+          slug: string
+          sort: number
+          updated_at: string
+          visible: boolean
+        }
+        Insert: {
+          archived_at?: string | null
+          billing?: Database["public"]["Enums"]["extra_billing"]
+          created_at?: string
+          name_en: string
+          name_es: string
+          price?: number | null
+          slug: string
+          sort?: number
+          updated_at?: string
+          visible?: boolean
+        }
+        Update: {
+          archived_at?: string | null
+          billing?: Database["public"]["Enums"]["extra_billing"]
+          created_at?: string
+          name_en?: string
+          name_es?: string
+          price?: number | null
+          slug?: string
+          sort?: number
+          updated_at?: string
+          visible?: boolean
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
           assigned_at: string | null
@@ -417,6 +456,132 @@ export type Database = {
           },
         ]
       }
+      maintenance_plans: {
+        Row: {
+          archived_at: string | null
+          created_at: string
+          includes_en: string[]
+          includes_es: string[]
+          name_en: string
+          name_es: string
+          price_monthly: number | null
+          slug: string
+          sort: number
+          updated_at: string
+          visible: boolean
+        }
+        Insert: {
+          archived_at?: string | null
+          created_at?: string
+          includes_en?: string[]
+          includes_es?: string[]
+          name_en: string
+          name_es: string
+          price_monthly?: number | null
+          slug: string
+          sort?: number
+          updated_at?: string
+          visible?: boolean
+        }
+        Update: {
+          archived_at?: string | null
+          created_at?: string
+          includes_en?: string[]
+          includes_es?: string[]
+          name_en?: string
+          name_es?: string
+          price_monthly?: number | null
+          slug?: string
+          sort?: number
+          updated_at?: string
+          visible?: boolean
+        }
+        Relationships: []
+      }
+      offers: {
+        Row: {
+          archived_at: string | null
+          created_at: string
+          includes_en: string[]
+          includes_es: string[]
+          name_en: string
+          name_es: string
+          platform: Database["public"]["Enums"]["catalog_platform"]
+          price: number | null
+          slug: string
+          sort: number
+          updated_at: string
+          visible: boolean
+          weeks_max: number
+          weeks_min: number
+        }
+        Insert: {
+          archived_at?: string | null
+          created_at?: string
+          includes_en?: string[]
+          includes_es?: string[]
+          name_en: string
+          name_es: string
+          platform: Database["public"]["Enums"]["catalog_platform"]
+          price?: number | null
+          slug: string
+          sort?: number
+          updated_at?: string
+          visible?: boolean
+          weeks_max: number
+          weeks_min: number
+        }
+        Update: {
+          archived_at?: string | null
+          created_at?: string
+          includes_en?: string[]
+          includes_es?: string[]
+          name_en?: string
+          name_es?: string
+          platform?: Database["public"]["Enums"]["catalog_platform"]
+          price?: number | null
+          slug?: string
+          sort?: number
+          updated_at?: string
+          visible?: boolean
+          weeks_max?: number
+          weeks_min?: number
+        }
+        Relationships: []
+      }
+      price_changes: {
+        Row: {
+          after: string | null
+          before: string | null
+          changed_at: string
+          changed_by: string | null
+          field: string
+          id: number
+          row_id: string
+          table_name: string
+        }
+        Insert: {
+          after?: string | null
+          before?: string | null
+          changed_at?: string
+          changed_by?: string | null
+          field: string
+          id?: number
+          row_id: string
+          table_name: string
+        }
+        Update: {
+          after?: string | null
+          before?: string | null
+          changed_at?: string
+          changed_by?: string | null
+          field?: string
+          id?: number
+          row_id?: string
+          table_name?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           archived_at: string | null
@@ -474,6 +639,39 @@ export type Database = {
           },
         ]
       }
+      rates: {
+        Row: {
+          code: string
+          created_at: string
+          label_en: string
+          label_es: string
+          price: number | null
+          sort: number
+          updated_at: string
+          visible: boolean
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          label_en: string
+          label_es: string
+          price?: number | null
+          sort?: number
+          updated_at?: string
+          visible?: boolean
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          label_en?: string
+          label_es?: string
+          price?: number | null
+          sort?: number
+          updated_at?: string
+          visible?: boolean
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           key: string
@@ -515,6 +713,126 @@ export type Database = {
       }
     }
     Views: {
+      public_extras: {
+        Row: {
+          billing: Database["public"]["Enums"]["extra_billing"] | null
+          name_en: string | null
+          name_es: string | null
+          price: number | null
+          slug: string | null
+          sort: number | null
+        }
+        Insert: {
+          billing?: Database["public"]["Enums"]["extra_billing"] | null
+          name_en?: string | null
+          name_es?: string | null
+          price?: number | null
+          slug?: string | null
+          sort?: number | null
+        }
+        Update: {
+          billing?: Database["public"]["Enums"]["extra_billing"] | null
+          name_en?: string | null
+          name_es?: string | null
+          price?: number | null
+          slug?: string | null
+          sort?: number | null
+        }
+        Relationships: []
+      }
+      public_maintenance_plans: {
+        Row: {
+          includes_en: string[] | null
+          includes_es: string[] | null
+          name_en: string | null
+          name_es: string | null
+          price_monthly: number | null
+          slug: string | null
+          sort: number | null
+        }
+        Insert: {
+          includes_en?: string[] | null
+          includes_es?: string[] | null
+          name_en?: string | null
+          name_es?: string | null
+          price_monthly?: number | null
+          slug?: string | null
+          sort?: number | null
+        }
+        Update: {
+          includes_en?: string[] | null
+          includes_es?: string[] | null
+          name_en?: string | null
+          name_es?: string | null
+          price_monthly?: number | null
+          slug?: string | null
+          sort?: number | null
+        }
+        Relationships: []
+      }
+      public_offers: {
+        Row: {
+          includes_en: string[] | null
+          includes_es: string[] | null
+          name_en: string | null
+          name_es: string | null
+          platform: Database["public"]["Enums"]["catalog_platform"] | null
+          price: number | null
+          slug: string | null
+          sort: number | null
+          weeks_max: number | null
+          weeks_min: number | null
+        }
+        Insert: {
+          includes_en?: string[] | null
+          includes_es?: string[] | null
+          name_en?: string | null
+          name_es?: string | null
+          platform?: Database["public"]["Enums"]["catalog_platform"] | null
+          price?: number | null
+          slug?: string | null
+          sort?: number | null
+          weeks_max?: number | null
+          weeks_min?: number | null
+        }
+        Update: {
+          includes_en?: string[] | null
+          includes_es?: string[] | null
+          name_en?: string | null
+          name_es?: string | null
+          platform?: Database["public"]["Enums"]["catalog_platform"] | null
+          price?: number | null
+          slug?: string | null
+          sort?: number | null
+          weeks_max?: number | null
+          weeks_min?: number | null
+        }
+        Relationships: []
+      }
+      public_rates: {
+        Row: {
+          code: string | null
+          label_en: string | null
+          label_es: string | null
+          price: number | null
+          sort: number | null
+        }
+        Insert: {
+          code?: string | null
+          label_en?: string | null
+          label_es?: string | null
+          price?: number | null
+          sort?: number | null
+        }
+        Update: {
+          code?: string | null
+          label_en?: string | null
+          label_es?: string | null
+          price?: number | null
+          sort?: number | null
+        }
+        Relationships: []
+      }
       team_profiles: {
         Row: {
           full_name: string | null
@@ -668,6 +986,7 @@ export type Database = {
         | "chat"
         | "system"
       app_locale: "es" | "en"
+      catalog_platform: "web" | "app"
       contact_kind: "prospect" | "client" | "recruiter" | "partner" | "other"
       contact_source:
         | "manual"
@@ -678,6 +997,7 @@ export type Database = {
         | "radar"
       contact_via: "hiring" | "freelance" | "project"
       deal_stage: "new" | "contacted" | "meeting" | "proposal" | "won" | "lost"
+      extra_billing: "once" | "monthly" | "yearly" | "per_unit"
       job_kind:
         | "chat.reply"
         | "chat.summary"
@@ -831,10 +1151,12 @@ export const Constants = {
         "system",
       ],
       app_locale: ["es", "en"],
+      catalog_platform: ["web", "app"],
       contact_kind: ["prospect", "client", "recruiter", "partner", "other"],
       contact_source: ["manual", "import", "form", "nexo", "whatsapp", "radar"],
       contact_via: ["hiring", "freelance", "project"],
       deal_stage: ["new", "contacted", "meeting", "proposal", "won", "lost"],
+      extra_billing: ["once", "monthly", "yearly", "per_unit"],
       job_kind: [
         "chat.reply",
         "chat.summary",

@@ -1,7 +1,9 @@
 import "./turnstile.js";
 import "./auth.js";
+import "./catalog.js";
 import "./profiles.js";
 import "./leads.js";
+import "./prices.js";
 import "./system.js";
 
 import { createServer } from "node:http";
