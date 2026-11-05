@@ -192,6 +192,8 @@ Decididas aquí sin preguntar (Q1–Q15): shell único con zona `area`; proyecto
 
 ---
 
+**Respuestas de Jose (2026-11-05):** 1 → a (chat de visitantes encendido cuando D6 esté en `main`, Nexo `offline`, responde Jose con plazo visible) · 2 → a (Telegram filtrado) · 3 → a (`in_review` con horas e importe orientativo; el cliente confirma en el área; el cobro se registra en Cobros).
+
 ## 6. Qué anotar al cerrar
 
 - **`decisiones.md`:** Q1–Q13 como 5.18–5.22 (chat: pausa de Nexo al entrar Jose, 5.15 b en SQL, wrappers de Omen, sin streaming, `SaveThreadHint` fuera, extracto al reclamar), 6.10–6.13 (área: shell único con zona `area`, proyecto activo por URL, `client_id` nullable con alta por invitación, tareas del cliente, `in_review`, enlaces del proyecto) y 10.12 (M32–M34); las respuestas de §5 con fecha.
