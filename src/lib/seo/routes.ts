@@ -20,6 +20,8 @@ export const publicRoutes: readonly PublicRoute[] = [
 
 export const legalPriority = 0.2;
 
+export const projectPriority = 0.6;
+
 export const privatePrefixes = [
   "/admin",
   "/crm",

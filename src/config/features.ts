@@ -13,5 +13,5 @@ export const features: Features = {
   cvDownload: true,
   blog: false,
   chat: false,
-  projects: false,
+  projects: true,
 };

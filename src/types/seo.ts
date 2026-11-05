@@ -94,7 +94,24 @@ export const profilePageSchema = z.strictObject({
   mainEntity: z.strictObject({ "@id": z.url() }),
 });
 
-export const jsonLdNodeSchema = z.discriminatedUnion("@type", [
+const idRef = z.strictObject({ "@id": z.url() });
+
+export const projectNodeSchema = z.strictObject({
+  "@type": z.enum(["MobileApplication", "WebSite", "CreativeWork"]),
+  "@id": z.url(),
+  url: z.url(),
+  name: z.string().min(1),
+  description: z.string().min(1),
+  inLanguage: z.string().min(2),
+  keywords: z.array(z.string().min(1)).min(1),
+  operatingSystem: z.string().min(1).optional(),
+  creator: idRef.optional(),
+  contributor: idRef.optional(),
+  isPartOf: idRef,
+});
+
+export const jsonLdNodeSchema = z.union([
+  projectNodeSchema,
   personSchema,
   profilePageSchema,
   webSiteSchema,
@@ -111,6 +128,7 @@ export type PersonJsonLd = z.infer<typeof personSchema>;
 export type WebSiteJsonLd = z.infer<typeof webSiteSchema>;
 export type ProfilePageJsonLd = z.infer<typeof profilePageSchema>;
 export type BreadcrumbListJsonLd = z.infer<typeof breadcrumbListSchema>;
+export type ProjectJsonLd = z.infer<typeof projectNodeSchema>;
 export type FaqPageJsonLd = z.infer<typeof faqPageSchema>;
 export type JsonLdNode = z.infer<typeof jsonLdNodeSchema>;
 export type JsonLdGraph = z.infer<typeof jsonLdGraphSchema>;

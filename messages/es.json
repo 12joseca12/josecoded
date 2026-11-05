@@ -118,9 +118,70 @@
     "emptyTitle": "Aún no hay fichas",
     "emptyText": "Todavía no he publicado casos con su reto y su resultado. Mientras llegan, puedes ver mi trayectoria o contarme tu proyecto.",
     "metaDescription": "Casos de apps y webs: el reto, lo que hice, el stack y el resultado de cada proyecto.",
-    "lead": "Los casos que enseñe aquí irán con el reto, lo que hice y el resultado.",
+    "lead": "Cada caso cuenta el reto, lo que hice yo y el resultado, con mi papel exacto. Lo que no puedo enseñar, no lo enseño.",
     "about": "Ver mi trayectoria",
-    "contact": "Escribirme"
+    "contact": "Escribirme",
+    "head": {
+      "title": "Apps y webs",
+      "accent": "que he construido."
+    },
+    "listLabel": "Lista de proyectos",
+    "filters": {
+      "label": "Filtrar por tipo",
+      "all": "Todos",
+      "app": "Apps",
+      "web": "Webs"
+    },
+    "kind": {
+      "app": "App",
+      "web": "Web"
+    },
+    "status": {
+      "live": "En producción",
+      "wip": "En construcción",
+      "archived": "Archivado"
+    },
+    "card": {
+      "role": "Mi papel",
+      "view": "Ver caso",
+      "metricSource": "Fuente: {source}, {date}"
+    },
+    "detail": {
+      "linksLabel": "Enlaces del proyecto",
+      "ios": "App Store",
+      "android": "Google Play",
+      "web": "Visitar la web",
+      "repo": "Ver el código",
+      "role": "Mi papel",
+      "period": "Período",
+      "sector": "Sector",
+      "stack": "Stack",
+      "stackMore": "Ver todo mi stack",
+      "newTab": "(se abre en otra pestaña)",
+      "metricTitle": "Dato verificable"
+    },
+    "case": {
+      "challenge": "El reto",
+      "did": "Qué hice",
+      "result": "El resultado"
+    },
+    "need": {
+      "title": "¿Necesitas algo así?",
+      "text": {
+        "freelance": "Trabajo como freelance, por horas o por tarea, dentro de tu equipo o por mi cuenta.",
+        "a-medida": "Hago webs y apps a medida, con precio y fecha cerrados."
+      },
+      "service": {
+        "freelance": "Ver el servicio freelance",
+        "a-medida": "Ver desarrollo a medida"
+      },
+      "contact": "Contármelo"
+    },
+    "prevNext": {
+      "label": "Más proyectos",
+      "prev": "Anterior",
+      "next": "Siguiente"
+    }
   },
   "errors": {
     "notFound": {

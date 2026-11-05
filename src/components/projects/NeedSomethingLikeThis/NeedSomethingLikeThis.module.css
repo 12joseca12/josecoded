@@ -1,0 +1,17 @@
+.body {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.text {
+  max-width: 38rem;
+  color: var(--ink-soft);
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
