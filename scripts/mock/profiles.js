@@ -26,6 +26,11 @@ route("GET", "/rest/v1/profiles", ({ request, response, url }) => {
         full_name: person.name,
         role: person.role,
         is_active: !person.inactive,
+        parent_closer_id: person.parent ?? null,
+        closer_rate: person.rates?.closer ?? null,
+        parent_rate: person.rates?.parent ?? null,
+        closer_recurring_rate: person.rates?.closerRecurring ?? null,
+        parent_recurring_rate: person.rates?.parentRecurring ?? null,
       }))
       .sort((a, b) => a.full_name.localeCompare(b.full_name));
     return send(response, 200, rows);

@@ -57,6 +57,9 @@ const seededContacts = [
         amount: 3000,
         won_amount: 2800,
         won_at: "2026-10-20T10:00:00+00:00",
+        recurring_monthly: 60,
+        recurring_started_at: "2026-10-25",
+        recurring_cancelled_at: null,
         lost_reason: null,
         created_at: "2026-09-02T08:00:00+00:00",
         updated_at: "2026-10-20T10:00:00+00:00",
@@ -172,14 +175,14 @@ route("POST", "/__auth/crm-write-error", async ({ request, response, url }) => {
   return send(response, 200, { ok: true });
 });
 
-function callerOf(request) {
+export function callerOf(request) {
   const session = bearer(request);
   if (!session) return null;
   const person = personById(session.userId)?.[1] ?? null;
   return { session, auth: session.auth, person };
 }
 
-function canSee(caller, contact) {
+export function canSee(caller, contact) {
   if (!caller.person || caller.session.level !== "aal2") return false;
   if (caller.person.role === "admin") return true;
   if (caller.person.role !== "closer" || contact.owner_id === null) return false;
@@ -187,11 +190,11 @@ function canSee(caller, contact) {
   return contact.owner_id === caller.person.id || owner?.parent === caller.person.id;
 }
 
-function fail(response, status, code, message) {
+export function fail(response, status, code, message) {
   return send(response, status, { code, message, details: null, hint: null });
 }
 
-function operand(value) {
+export function operand(value) {
   const index = value.indexOf(".");
   return [value.slice(0, index), value.slice(index + 1)];
 }

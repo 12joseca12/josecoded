@@ -1994,7 +1994,11 @@
         "lose": "Mark as lost",
         "loseAria": "Mark the deal of {name} as lost",
         "reopen": "Reopen",
-        "reopenAria": "Reopen the deal of {name}"
+        "reopenAria": "Reopen the deal of {name}",
+        "recurringMonthly": "Recurring charge per month",
+        "recurringStarted": "Recurring since",
+        "recurringCancelled": "Recurring cancelled on",
+        "recurringNotStarted": "No first charge yet"
       },
       "activity": {
         "title": "Activity",
@@ -2030,6 +2034,165 @@
           "dealId": "Choose a deal of this contact.",
           "forbidden": "You are not allowed to log activity here.",
           "error": "Could not log it. Try again."
+        }
+      },
+      "win": {
+        "open": "Mark as won",
+        "openAria": "Mark the deal of {name} as won",
+        "title": "Mark deal as won",
+        "close": "Close",
+        "wonAmount": "Won amount (excluding VAT)",
+        "wonAmountHint": "The agreed net project amount, excluding VAT. The commission is calculated on it.",
+        "recurring": "Recurring charge per month (excluding VAT)",
+        "recurringHint": "Maintenance or monthly plan, if any. It earns commission for 12 months or until the client cancels.",
+        "optional": "(optional)",
+        "previewTitle": "Expected commission",
+        "previewEmpty": "Enter the won amount to see the expected commission.",
+        "previewLine": "{name} ({role}): {rate} = {amount}",
+        "previewParentAnonymous": "Parent closer: {rate} = {amount}",
+        "previewRecurring": "Recurring: {rate} = {amount} per month",
+        "previewTotal": "Expected total: {amount}",
+        "freezeNote": "Rates are frozen when the deal is won; commission accrues with each payment.",
+        "parentRole": "parent closer",
+        "closerRole": "closing",
+        "noCommission": {
+          "hiring": "Hiring deals earn no commission.",
+          "admin": "The admin earns no commission on their own deals.",
+          "unknown_owner": "This deal has no owner who earns commission.",
+          "no_rate": "The owner has no commission rate set."
+        },
+        "submit": "Mark as won",
+        "saving": "Saving",
+        "done": "Deal marked as won",
+        "errors": {
+          "wonAmount": "Enter an amount above zero, with at most two decimals.",
+          "recurringMonthly": "Enter an amount above zero or leave the field empty.",
+          "forbidden": "You cannot mark this deal as won.",
+          "not_found": "We cannot find this deal in your portfolio.",
+          "already_won": "This deal was already won.",
+          "lost": "A lost deal has to be reopened before it can be won.",
+          "error": "It could not be saved. Try again."
+        }
+      },
+      "cancelRecurring": {
+        "open": "Cancel recurring",
+        "openAria": "Cancel recurring for {name}",
+        "title": "Cancel recurring charge",
+        "close": "Close",
+        "text": "The client stops paying the monthly fee. Payments received after today no longer earn commission. This cannot be undone from the CRM.",
+        "submit": "Cancel recurring",
+        "saving": "Cancelling",
+        "done": "Recurring charge cancelled",
+        "errors": {
+          "forbidden": "Only the admin can cancel a recurring charge.",
+          "not_recurring": "This deal has no recurring charge.",
+          "already_cancelled": "The recurring charge was already cancelled.",
+          "error": "It could not be cancelled. Try again."
+        }
+      },
+      "money": {
+        "title": "Payments and commission",
+        "loading": "Loading payments and commission",
+        "empty": "No won deals",
+        "emptyText": "When you win a deal, its payments and commission appear here.",
+        "dealHeading": "Deal: {name}",
+        "expected": "Expected commission",
+        "expectedLine": "{name} · {rate} = {amount}",
+        "expectedNone": "This deal earns no commission.",
+        "scheduleTitle": "Payment milestones",
+        "scheduleEmpty": "There is no payment schedule yet. The admin prepares it.",
+        "scheduleColumns": {
+          "label": "Milestone",
+          "amount": "Amount",
+          "due": "Due",
+          "status": "Status"
+        },
+        "scheduleStatuses": {
+          "scheduled": "Scheduled",
+          "proforma_sent": "Proforma sent",
+          "invoiced": "Invoiced",
+          "paid": "Paid",
+          "cancelled": "Cancelled"
+        },
+        "scheduleKinds": {
+          "milestone": "Milestone",
+          "recurring": "Monthly fee"
+        },
+        "overdue": "Overdue",
+        "paymentsTitle": "Payments received",
+        "paymentsEmpty": "No payment has been recorded yet.",
+        "paymentsColumns": {
+          "date": "Date",
+          "kind": "Type",
+          "nature": "Nature",
+          "amount": "Net amount",
+          "method": "Method",
+          "reference": "Reference"
+        },
+        "paymentKinds": {
+          "payment": "Payment",
+          "refund": "Refund"
+        },
+        "paymentMethods": {
+          "transfer": "Bank transfer",
+          "card": "Card",
+          "stripe": "Stripe",
+          "other": "Other"
+        },
+        "natures": {
+          "project": "Project",
+          "recurring": "Recurring"
+        },
+        "linesTitle": "Commission lines",
+        "linesEmpty": "No lines yet: they are created with each payment.",
+        "linesColumns": {
+          "date": "Payment",
+          "beneficiary": "Beneficiary",
+          "role": "Role",
+          "nature": "Nature",
+          "base": "Net base",
+          "rate": "Rate",
+          "amount": "Commission",
+          "status": "Status"
+        },
+        "roles": {
+          "closer": "Closing",
+          "parent": "Parent closer"
+        },
+        "lineStatuses": {
+          "accrued": "Accrued",
+          "approved": "Approved",
+          "rejected": "Rejected",
+          "paid": "Paid",
+          "reversed": "Reversed"
+        },
+        "invoicesTitle": "Invoices and proformas",
+        "invoicesEmpty": "No documents yet.",
+        "invoicesColumns": {
+          "number": "Number",
+          "date": "Date",
+          "net": "Net",
+          "vat": "VAT",
+          "gross": "Total",
+          "status": "Status"
+        },
+        "invoiceKinds": {
+          "proforma": "Proforma, not an invoice",
+          "invoice": "Invoice"
+        },
+        "invoiceStatuses": {
+          "draft": "Draft",
+          "sent": "Issued",
+          "paid": "Paid",
+          "void": "Void"
+        },
+        "unknownPerson": "Another closer",
+        "tableLabel": "Amounts table, scrolls horizontally",
+        "error": {
+          "title": "The payments could not be loaded",
+          "text": "Try again in a few seconds.",
+          "retry": "Try again",
+          "retrying": "Retrying"
         }
       }
     }

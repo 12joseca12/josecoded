@@ -1994,7 +1994,11 @@
         "lose": "Marcar perdida",
         "loseAria": "Marcar perdida la oportunidad de {name}",
         "reopen": "Reabrir",
-        "reopenAria": "Reabrir la oportunidad de {name}"
+        "reopenAria": "Reabrir la oportunidad de {name}",
+        "recurringMonthly": "Cobro recurrente al mes",
+        "recurringStarted": "Recurrente desde",
+        "recurringCancelled": "Recurrente cancelado el",
+        "recurringNotStarted": "Aún sin primer cobro"
       },
       "activity": {
         "title": "Actividad",
@@ -2030,6 +2034,165 @@
           "dealId": "Elige una oportunidad de este contacto.",
           "forbidden": "No tienes permiso para registrar actividad aquí.",
           "error": "No se ha podido registrar. Inténtalo otra vez."
+        }
+      },
+      "win": {
+        "open": "Marcar ganada",
+        "openAria": "Marcar ganada la oportunidad de {name}",
+        "title": "Marcar oportunidad ganada",
+        "close": "Cerrar",
+        "wonAmount": "Importe ganado (sin IVA)",
+        "wonAmountHint": "El importe neto acordado del proyecto, sin IVA. La comisión se calcula sobre él.",
+        "recurring": "Cobro recurrente al mes (sin IVA)",
+        "recurringHint": "Mantenimiento o plan mensual, si lo hay. Comisiona 12 meses o hasta que el cliente cancele.",
+        "optional": "(opcional)",
+        "previewTitle": "Comisión prevista",
+        "previewEmpty": "Escribe el importe ganado para ver la comisión prevista.",
+        "previewLine": "{name} ({role}): {rate} = {amount}",
+        "previewParentAnonymous": "Closer padre: {rate} = {amount}",
+        "previewRecurring": "Recurrente: {rate} = {amount} al mes",
+        "previewTotal": "Total previsto: {amount}",
+        "freezeNote": "Las tasas quedan congeladas al ganar la oportunidad; la comisión se devenga con cada cobro.",
+        "parentRole": "closer padre",
+        "closerRole": "quien cierra",
+        "noCommission": {
+          "hiring": "Las contrataciones no generan comisión.",
+          "admin": "El administrador no cobra comisión por sus propias oportunidades.",
+          "unknown_owner": "Esta oportunidad no tiene un dueño comisionable.",
+          "no_rate": "El dueño no tiene una tasa de comisión fijada."
+        },
+        "submit": "Marcar como ganada",
+        "saving": "Guardando",
+        "done": "Oportunidad marcada como ganada",
+        "errors": {
+          "wonAmount": "Escribe un importe mayor que cero, con dos decimales como máximo.",
+          "recurringMonthly": "Escribe un importe mayor que cero o deja el campo vacío.",
+          "forbidden": "No puedes marcar esta oportunidad como ganada.",
+          "not_found": "No encontramos esta oportunidad en tu cartera.",
+          "already_won": "Esta oportunidad ya estaba ganada.",
+          "lost": "Una oportunidad perdida hay que reabrirla antes de ganarla.",
+          "error": "No se ha podido guardar. Inténtalo otra vez."
+        }
+      },
+      "cancelRecurring": {
+        "open": "Cancelar recurrente",
+        "openAria": "Cancelar recurrente de {name}",
+        "title": "Cancelar cobro recurrente",
+        "close": "Cerrar",
+        "text": "El cliente deja de pagar la cuota mensual. Los cobros recibidos después de hoy ya no devengan comisión. Esto no se puede deshacer desde el CRM.",
+        "submit": "Cancelar recurrente",
+        "saving": "Cancelando",
+        "done": "Cobro recurrente cancelado",
+        "errors": {
+          "forbidden": "Solo el administrador puede cancelar un cobro recurrente.",
+          "not_recurring": "Esta oportunidad no tiene cobro recurrente.",
+          "already_cancelled": "El cobro recurrente ya estaba cancelado.",
+          "error": "No se ha podido cancelar. Inténtalo otra vez."
+        }
+      },
+      "money": {
+        "title": "Cobros y comisión",
+        "loading": "Cargando cobros y comisión",
+        "empty": "Sin oportunidades ganadas",
+        "emptyText": "Cuando ganes una oportunidad verás aquí sus cobros y su comisión.",
+        "dealHeading": "Oportunidad: {name}",
+        "expected": "Comisión prevista",
+        "expectedLine": "{name} · {rate} = {amount}",
+        "expectedNone": "Esta oportunidad no genera comisión.",
+        "scheduleTitle": "Hitos de cobro",
+        "scheduleEmpty": "Aún no hay calendario de cobros. Lo prepara el administrador.",
+        "scheduleColumns": {
+          "label": "Hito",
+          "amount": "Importe",
+          "due": "Vence",
+          "status": "Estado"
+        },
+        "scheduleStatuses": {
+          "scheduled": "Programado",
+          "proforma_sent": "Proforma enviada",
+          "invoiced": "Facturado",
+          "paid": "Cobrado",
+          "cancelled": "Cancelado"
+        },
+        "scheduleKinds": {
+          "milestone": "Hito",
+          "recurring": "Mensualidad"
+        },
+        "overdue": "Vencido",
+        "paymentsTitle": "Cobros recibidos",
+        "paymentsEmpty": "Todavía no se ha registrado ningún cobro.",
+        "paymentsColumns": {
+          "date": "Fecha",
+          "kind": "Tipo",
+          "nature": "Naturaleza",
+          "amount": "Importe neto",
+          "method": "Método",
+          "reference": "Referencia"
+        },
+        "paymentKinds": {
+          "payment": "Cobro",
+          "refund": "Devolución"
+        },
+        "paymentMethods": {
+          "transfer": "Transferencia",
+          "card": "Tarjeta",
+          "stripe": "Stripe",
+          "other": "Otro"
+        },
+        "natures": {
+          "project": "Proyecto",
+          "recurring": "Recurrente"
+        },
+        "linesTitle": "Líneas de comisión",
+        "linesEmpty": "Todavía no hay líneas: se crean con cada cobro.",
+        "linesColumns": {
+          "date": "Cobro",
+          "beneficiary": "Beneficiario",
+          "role": "Papel",
+          "nature": "Naturaleza",
+          "base": "Base neta",
+          "rate": "Tasa",
+          "amount": "Comisión",
+          "status": "Estado"
+        },
+        "roles": {
+          "closer": "Quien cierra",
+          "parent": "Closer padre"
+        },
+        "lineStatuses": {
+          "accrued": "Devengada",
+          "approved": "Aprobada",
+          "rejected": "Rechazada",
+          "paid": "Pagada",
+          "reversed": "Revertida"
+        },
+        "invoicesTitle": "Facturas y proformas",
+        "invoicesEmpty": "Sin documentos todavía.",
+        "invoicesColumns": {
+          "number": "Número",
+          "date": "Fecha",
+          "net": "Base",
+          "vat": "IVA",
+          "gross": "Total",
+          "status": "Estado"
+        },
+        "invoiceKinds": {
+          "proforma": "Proforma, no es factura",
+          "invoice": "Factura"
+        },
+        "invoiceStatuses": {
+          "draft": "Borrador",
+          "sent": "Emitida",
+          "paid": "Cobrada",
+          "void": "Anulada"
+        },
+        "unknownPerson": "Otro closer",
+        "tableLabel": "Tabla de importes, se desplaza en horizontal",
+        "error": {
+          "title": "No se han podido cargar los cobros",
+          "text": "Inténtalo otra vez en unos segundos.",
+          "retry": "Reintentar",
+          "retrying": "Reintentando"
         }
       }
     }

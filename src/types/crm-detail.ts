@@ -12,6 +12,7 @@ import {
   type DealVia,
   type StageSheetLabels,
 } from "./crm";
+import type { OwnerRates } from "./deal-win";
 
 export const activityKinds = [
   "note",
@@ -36,6 +37,9 @@ export const dealDetailSchema = dealSummarySchema.extend({
   won_at: z.string().nullable(),
   lost_reason: z.string().nullable(),
   lost_at: z.string().nullable(),
+  recurring_monthly: z.number().nullable().default(null),
+  recurring_started_at: z.string().nullable().default(null),
+  recurring_cancelled_at: z.string().nullable().default(null),
 });
 
 export type DealDetail = z.infer<typeof dealDetailSchema>;
@@ -69,6 +73,7 @@ export type ContactDetailResult =
       contact: ContactDetail;
       activities: ActivityRow[];
       people: ContactOwner[];
+      rates: OwnerRates[];
     }
   | { status: "missing" }
   | { status: "error" };
@@ -142,6 +147,10 @@ export interface DealCardLabels {
   noAmount: string;
   wonAmount: string;
   wonAt: string;
+  recurringMonthly: string;
+  recurringStarted: string;
+  recurringCancelled: string;
+  recurringNotStarted: string;
   lostAt: string;
   lostReason: string;
   created: string;
