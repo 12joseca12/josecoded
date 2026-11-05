@@ -44,6 +44,7 @@ export async function generateMetadata({ params }: ContactProps): Promise<Metada
   return buildPageMetadata({
     locale,
     path: "/contacto",
+    ogImage: "contact",
     title: "contactPage.meta.title",
     description: "contactPage.meta.description",
     indexable: hasLiveChannel(contact),

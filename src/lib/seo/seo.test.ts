@@ -1,6 +1,9 @@
+import { existsSync } from "node:fs";
+
 import { describe, expect, it } from "vitest";
 
 import { productionOrigin, resolveSite } from "@/config/site";
+import { getTranslator } from "@/i18n/messages";
 import { rates } from "@/lib/services/rates";
 import { jsonLdGraphSchema } from "@/types/seo";
 
@@ -16,6 +19,7 @@ import {
 } from "./jsonld";
 import { buildLlmsTxt } from "./llms";
 import { applyTitleTemplate, buildPageMetadata, resolveRobots } from "./metadata";
+import { ogImagePath, type OgPage, ogSize, ogTitleKeys, ogTitleSize } from "./og";
 import { aiCrawlers, buildRobots } from "./robots";
 import { buildSitemap } from "./sitemap";
 
@@ -132,6 +136,46 @@ describe("buildPageMetadata", () => {
     expect(metadata.alternates?.canonical).toBe("/es/servicios");
     expect(metadata.title).toBe("Servicios de desarrollo de apps y webs");
     expect(metadata.openGraph?.title).toBe("Servicios de desarrollo de apps y webs · josecoded");
+  });
+
+  it("declares a 1200x630 png card with alt for Open Graph and Twitter", async () => {
+    const metadata = await buildPageMetadata({
+      locale: "es",
+      path: "/servicios/freelance",
+      title: "freelancePage.meta.title",
+      description: "freelancePage.meta.description",
+      ogImage: "freelance",
+    });
+    const alt = `${(await getTranslator("es"))("freelancePage.meta.title")} · José Carlos Sánchez García · josecoded`;
+    expect(metadata.openGraph?.images).toEqual([
+      { url: "/og/es-freelance.png", width: 1200, height: 630, alt, type: "image/png" },
+    ]);
+    expect(metadata.twitter).toMatchObject({
+      card: "summary_large_image",
+      images: [{ url: "/og/es-freelance.png", alt }],
+    });
+  });
+
+  it("falls back to the home card when a page names none", async () => {
+    const metadata = await buildPageMetadata({
+      locale: "es",
+      path: "/proyectos",
+      title: "projects.metaTitle",
+      description: "projects.metaDescription",
+    });
+    expect(metadata.openGraph?.images).toMatchObject([{ url: "/og/es-home.png" }]);
+  });
+
+  it("gives every Open Graph page a real title, a committed image and a size that fits", async () => {
+    const t = await getTranslator("es");
+    expect(ogSize).toEqual({ width: 1200, height: 630 });
+    for (const [page, key] of Object.entries(ogTitleKeys)) {
+      expect(existsSync(`public${ogImagePath("es", page as OgPage)}`)).toBe(true);
+      const size = ogTitleSize(t(key));
+      expect(size).toBeGreaterThanOrEqual(64);
+      expect(size).toBeLessThanOrEqual(92);
+    }
+    expect(ogTitleSize("x".repeat(60))).toBe(64);
   });
 
   it("marks a page noindex when it is not indexable", async () => {

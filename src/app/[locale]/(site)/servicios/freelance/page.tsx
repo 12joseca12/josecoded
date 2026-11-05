@@ -57,6 +57,7 @@ export async function generateMetadata({ params }: FreelanceProps): Promise<Meta
   return buildPageMetadata({
     locale,
     path: "/servicios/freelance",
+    ogImage: "freelance",
     title: "freelancePage.meta.title",
     description: "freelancePage.meta.description",
   });
