@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
 
-import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
+
+import AxeBuilder from "./support/axe";
 
 const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
   dev: {

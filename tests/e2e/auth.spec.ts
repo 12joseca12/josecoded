@@ -1,9 +1,9 @@
 import { readFileSync } from "node:fs";
 
-import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
 
 import { staffNav } from "../../src/lib/staff/nav";
+import AxeBuilder from "./support/axe";
 import {
   mockOrigin as mock,
   openLogin,

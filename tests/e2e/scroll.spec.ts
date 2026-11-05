@@ -1,5 +1,6 @@
-import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
+
+import AxeBuilder from "./support/axe";
 
 test.skip(process.env.ENABLE_DEV_PAGES !== "true", "dev pages are disabled");
 
