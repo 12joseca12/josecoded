@@ -1,6 +1,6 @@
 import { contact } from "@/config/contact";
 import { profileLinks } from "@/config/profiles";
-import { getCv } from "@/content";
+import { getCv } from "@/content/cv";
 import type { Cv } from "@/content/schemas";
 import type { Locale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";

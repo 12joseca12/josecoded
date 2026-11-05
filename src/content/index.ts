@@ -1,6 +1,6 @@
-import cvData from "../../content/cv.json";
+import { getCv } from "./cv";
 import { blog, legal, projects } from "./index.generated";
-import { type BlogMeta, type Cv, cvSchema, type LegalMeta, type ProjectMeta } from "./schemas";
+import type { BlogMeta, LegalMeta, ProjectMeta } from "./schemas";
 import type { ContentEntry } from "./types";
 
 const showDrafts = process.env.NODE_ENV !== "production";
@@ -23,6 +23,6 @@ export const getPost = (slug: string) => listPosts().find((entry) => entry.slug 
 export const listLegal = (): ContentEntry<LegalMeta>[] => legal;
 export const getLegal = (slug: string) => legal.find((entry) => entry.slug === slug);
 
-export const getCv = (): Cv => cvSchema.parse(cvData);
+export { getCv };
 
 export type { BlogMeta, ContentEntry, LegalMeta, ProjectMeta };
