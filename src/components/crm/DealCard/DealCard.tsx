@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 import { formatMoney } from "@/lib/crm/contact-detail";
 import { formatDay, isOpenStage } from "@/lib/crm/contacts";
 import type { ChangeStageHandler } from "@/types/crm";
@@ -12,13 +14,21 @@ interface DealCardProps {
   locale: string;
   labels: DealCardLabels;
   changeStage: ChangeStageHandler;
+  actions?: ReactNode;
 }
 
 function named(template: string, name: string): string {
   return template.replace("{name}", name);
 }
 
-export function DealCard({ deal, contactName, locale, labels, changeStage }: DealCardProps) {
+export function DealCard({
+  deal,
+  contactName,
+  locale,
+  labels,
+  changeStage,
+  actions,
+}: DealCardProps) {
   const open = isOpenStage(deal.stage);
   const sheet = labels.stageSheet;
   return (
@@ -50,6 +60,28 @@ export function DealCard({ deal, contactName, locale, labels, changeStage }: Dea
             <dd>{formatDay(deal.won_at, locale)}</dd>
           </div>
         ) : null}
+        {deal.stage === "won" && deal.recurring_monthly !== null ? (
+          <div>
+            <dt>{labels.recurringMonthly}</dt>
+            <dd>{formatMoney(deal.recurring_monthly, locale)}</dd>
+          </div>
+        ) : null}
+        {deal.stage === "won" && deal.recurring_monthly !== null ? (
+          <div>
+            <dt>{labels.recurringStarted}</dt>
+            <dd>
+              {deal.recurring_started_at === null
+                ? labels.recurringNotStarted
+                : formatDay(deal.recurring_started_at, locale)}
+            </dd>
+          </div>
+        ) : null}
+        {deal.stage === "won" && deal.recurring_cancelled_at !== null ? (
+          <div>
+            <dt>{labels.recurringCancelled}</dt>
+            <dd>{formatDay(deal.recurring_cancelled_at, locale)}</dd>
+          </div>
+        ) : null}
         {deal.stage === "lost" && deal.lost_at !== null ? (
           <div>
             <dt>{labels.lostAt}</dt>
@@ -63,10 +95,15 @@ export function DealCard({ deal, contactName, locale, labels, changeStage }: Dea
           </div>
         ) : null}
       </dl>
-      {deal.stage === "won" ? null : (
+      {deal.stage === "won" ? (
+        actions ? (
+          <div className={styles.actions}>{actions}</div>
+        ) : null
+      ) : (
         <div className={styles.actions}>
           {open ? (
             <>
+              {actions}
               <StageSheet
                 dealId={deal.id}
                 stage={deal.stage}

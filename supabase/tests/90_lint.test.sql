@@ -83,13 +83,20 @@ select is_empty(
         'admin_counters',
         'admin_jobs',
         'admin_users',
+        'approve_commission_lines',
         'archive_conversation',
         'assign_lead',
+        'build_payout',
         'cancel_job',
+        'cancel_recurring',
+        'cancel_schedule_item',
         'claim_lead',
+        'deal_payments',
+        'delete_payout_draft',
         'discard_lead',
         'ensure_my_conversation',
         'invite_user',
+        'issue_proforma',
         'list_lead_inbox',
         'list_room_members',
         'log_totp_reset',
@@ -97,6 +104,9 @@ select is_empty(
         'mark_read',
         'omen_status',
         'reassign_portfolio',
+        'record_invoice',
+        'record_payment',
+        'reject_commission_line',
         'remove_member',
         'renew_invitation',
         'retry_job',
@@ -105,6 +115,9 @@ select is_empty(
         'set_ai_consent',
         'set_conversation_ai',
         'set_notification_pref',
+        'set_payment_schedule',
+        'set_payout_invoice',
+        'set_payout_status',
         'set_setting',
         'set_user_active',
         'set_user_rates',
@@ -112,7 +125,9 @@ select is_empty(
         'telegram_link_status',
         'telegram_unlink',
         'touch_lead',
-        'update_my_profile'
+        'update_my_profile',
+        'void_invoice',
+        'win_deal'
       )
   $$,
   'only the allowed security definer RPCs are callable from the API'
@@ -209,13 +224,21 @@ select is_empty(
         'admin_counters',
         'admin_jobs',
         'admin_users',
+        'approve_commission_lines',
         'archive_conversation',
         'assign_lead',
+        'build_payout',
         'cancel_job',
+        'cancel_recurring',
+        'cancel_schedule_item',
         'claim_lead',
+        'crm_counters',
+        'deal_payments',
+        'delete_payout_draft',
         'discard_lead',
         'ensure_my_conversation',
         'invite_user',
+        'issue_proforma',
         'list_lead_inbox',
         'list_room_members',
         'log_totp_reset',
@@ -223,6 +246,9 @@ select is_empty(
         'mark_read',
         'omen_status',
         'reassign_portfolio',
+        'record_invoice',
+        'record_payment',
+        'reject_commission_line',
         'remove_member',
         'renew_invitation',
         'retry_job',
@@ -231,6 +257,9 @@ select is_empty(
         'set_ai_consent',
         'set_conversation_ai',
         'set_notification_pref',
+        'set_payment_schedule',
+        'set_payout_invoice',
+        'set_payout_status',
         'set_setting',
         'set_user_active',
         'set_user_rates',
@@ -238,7 +267,9 @@ select is_empty(
         'telegram_link_status',
         'telegram_unlink',
         'touch_lead',
-        'update_my_profile'
+        'update_my_profile',
+        'void_invoice',
+        'win_deal'
       )
   $$,
   'only the profile and lead RPCs are callable by authenticated in public'
@@ -255,7 +286,7 @@ select is(
       and not has_function_privilege('authenticated', p.oid, 'execute')
       and not has_function_privilege('anon', p.oid, 'execute')
   ),
-  'omen_claim_jobs,omen_finish_job,omen_heartbeat,outbox_claim,outbox_mark,read_invitation,read_public_settings,submit_lead,telegram_confirm_link,visitor_forget,visitor_handoff,visitor_send,visitor_thread',
+  'omen_claim_jobs,omen_finish_job,omen_heartbeat,outbox_claim,outbox_mark,payments_notify_overdue,read_invitation,read_public_settings,submit_lead,telegram_confirm_link,visitor_forget,visitor_handoff,visitor_send,visitor_thread',
   'only the lead intake, outbox, invitation read, Telegram link and Omen job functions are service_role-only in public'
 );
 

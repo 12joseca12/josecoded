@@ -1,0 +1,17 @@
+.head {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.lead {
+  max-width: 38rem;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: var(--fs-lead);
+}
+
+.note {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+}
