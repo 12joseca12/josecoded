@@ -362,6 +362,7 @@
       "optional": "(optional)",
       "messageLabel": "Message",
       "messageHint": "Tell me the context, the timing and what you need.",
+      "pilotMessage": "I would like to start with a pilot task.",
       "consentBefore": "I have read the ",
       "consentLink": "privacy policy",
       "consentAfter": " and agree that you use this data to reply to me.",
@@ -909,31 +910,79 @@
       "description": "Freelance programmer by the hour or with a per-task quote. Features, audits and rescues of React Native apps and Next.js websites."
     },
     "head": {
-      "title": "Freelance programmer by the hour or",
+      "title": "Freelance React Native developer, by the hour or",
       "accent": "per task.",
-      "lead": "Freelance React Native developer for features, audits and rescues of apps and websites, with the scope agreed before starting."
+      "lead": "I work in your repo, with your PRs and your CI, in React Native, React and Next.js. Scope and deliverable agreed before starting."
     },
     "rates": {
       "title": "Hourly rate and per-task quote"
     },
+    "availability": {
+      "label": "Availability:",
+      "hours": "free hours per week",
+      "from": "from",
+      "updated": "Updated on"
+    },
     "scope": {
-      "title": "Freelance React Native developer: what is included",
+      "title": "Typical tasks and their size",
+      "lead": "Five examples of what I am usually hired for, how big they are and what you receive at the end.",
+      "sizeLabel": "Indicative size",
+      "deliverableLabel": "Deliverable",
+      "note": "Sizes are indicative: the scope and the amount of each task are agreed in writing before starting.",
       "feature": {
-        "title": "New feature",
-        "text": "A screen, a flow or an integration inside your app or website, tested and ready to publish."
+        "title": "New screen with an API",
+        "text": "A screen, a flow or an integration inside your app, tested and ready to review in your CI.",
+        "size": "1–2 days",
+        "deliverable": "Pull request with tests"
       },
       "audit": {
-        "title": "Audit",
-        "text": "I review performance, security and code quality of an existing app and leave you a prioritised report."
+        "title": "Performance audit",
+        "text": "I measure startup, lists and renders of an existing app and find where time is lost.",
+        "size": "1 day",
+        "deliverable": "Prioritised report"
+      },
+      "a11y": {
+        "title": "Accessibility audit of a React Native app",
+        "text": "I review the app with a screen reader and a keyboard against WCAG 2.2 and tell you what to fix first.",
+        "size": "1–2 days",
+        "deliverable": "WCAG 2.2 report and fix plan"
       },
       "rescue": {
         "title": "Project rescue",
-        "text": "I take over a stalled or inherited app or website, stabilise it and get it into production."
+        "text": "I take over a stalled or inherited app, stabilise it and get it running.",
+        "size": "From 1 week",
+        "deliverable": "Stable app in production"
       },
       "ai": {
         "title": "AI integration",
-        "text": "I add an assistant or an AI feature to your product with a clear scope and cost."
+        "text": "I add an assistant or an AI feature to your product with a clear scope and cost.",
+        "size": "3–5 days",
+        "deliverable": "AI feature integrated and documented"
       }
+    },
+    "terms": {
+      "title": "Terms for procurement and legal",
+      "repo": {
+        "title": "I work in your repo and your tools",
+        "text": "I join your repository, your task tracker and your CI; I do not ask you to migrate anything."
+      },
+      "invoice": {
+        "title": "An invoice for every job",
+        "text": "I am not registered as self-employed yet and can invoice one-off jobs; if you need another arrangement, we put it in writing before starting."
+      },
+      "ownership": {
+        "title": "The code is yours",
+        "text": "What I write for your product stays in your repository and is yours."
+      },
+      "delivery": {
+        "title": "Deliveries by pull request",
+        "text": "Every delivery arrives as a reviewable PR, with its description and tests."
+      }
+    },
+    "pilot": {
+      "title": "Start with a pilot task",
+      "text": "We start with a small, closed task. If I am not a fit for your team, we stop and you only pay for that task.",
+      "cta": "Propose a pilot task"
     },
     "start": {
       "title": "How we start",

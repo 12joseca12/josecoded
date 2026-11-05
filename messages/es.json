@@ -362,6 +362,7 @@
       "optional": "(opcional)",
       "messageLabel": "Mensaje",
       "messageHint": "Cuéntame el contexto, el plazo y lo que necesitas.",
+      "pilotMessage": "Quiero empezar con una tarea piloto.",
       "consentBefore": "He leído la ",
       "consentLink": "política de privacidad",
       "consentAfter": " y acepto que uses estos datos para responderme.",
@@ -909,31 +910,79 @@
       "description": "Programador freelance por horas o con presupuesto por tarea. Funcionalidades, auditorías y rescates de apps React Native y webs Next.js."
     },
     "head": {
-      "title": "Programador freelance por horas o",
+      "title": "Desarrollador React Native freelance, por horas o",
       "accent": "por tarea.",
-      "lead": "Desarrollador React Native freelance para funcionalidades, auditorías y rescates de apps y webs, con el alcance acordado antes de empezar."
+      "lead": "Trabajo en tu repo, con tus PR y tu CI, en React Native, React y Next.js. Alcance y entregable acordados antes de empezar."
     },
     "rates": {
       "title": "Tarifa por hora y presupuesto por tarea"
     },
+    "availability": {
+      "label": "Disponibilidad:",
+      "hours": "horas libres por semana",
+      "from": "desde",
+      "updated": "Actualizado el"
+    },
     "scope": {
-      "title": "Desarrollador React Native freelance: qué incluye",
+      "title": "Encargos típicos y su tamaño",
+      "lead": "Cinco ejemplos de lo que me suelen encargar, con cuánto ocupan y qué recibes al terminar.",
+      "sizeLabel": "Tamaño orientativo",
+      "deliverableLabel": "Entregable",
+      "note": "Los tamaños son orientativos: el alcance y el importe de cada tarea se acuerdan por escrito antes de empezar.",
       "feature": {
-        "title": "Funcionalidad nueva",
-        "text": "Una pantalla, un flujo o una integración dentro de tu app o web, con pruebas y lista para publicar."
+        "title": "Pantalla nueva con API",
+        "text": "Una pantalla, un flujo o una integración dentro de tu app, con pruebas y lista para revisar en tu CI.",
+        "size": "1–2 días",
+        "deliverable": "Pull request con tests"
       },
       "audit": {
-        "title": "Auditoría",
-        "text": "Reviso rendimiento, seguridad y calidad del código de una app existente y te dejo un informe con prioridades."
+        "title": "Auditoría de rendimiento",
+        "text": "Mido arranque, listas y renders de una app existente y encuentro dónde se pierde el tiempo.",
+        "size": "1 día",
+        "deliverable": "Informe priorizado"
+      },
+      "a11y": {
+        "title": "Auditoría de accesibilidad de app React Native",
+        "text": "Reviso la app con lector de pantalla y teclado contra WCAG 2.2 y te digo qué corregir primero.",
+        "size": "1–2 días",
+        "deliverable": "Informe WCAG 2.2 y plan de corrección"
       },
       "rescue": {
         "title": "Rescate de proyecto",
-        "text": "Retomo una app o web atascada o heredada, la estabilizo y la dejo en producción."
+        "text": "Retomo una app atascada o heredada, la estabilizo y la dejo funcionando.",
+        "size": "Desde 1 semana",
+        "deliverable": "App estable en producción"
       },
       "ai": {
         "title": "Integración de IA",
-        "text": "Añado un asistente o una función de IA a tu producto con un alcance y un coste claros."
+        "text": "Añado un asistente o una función de IA a tu producto con un alcance y un coste claros.",
+        "size": "3–5 días",
+        "deliverable": "Función de IA integrada y documentada"
       }
+    },
+    "terms": {
+      "title": "Condiciones para compras y legal",
+      "repo": {
+        "title": "Trabajo en tu repo y tus herramientas",
+        "text": "Entro en tu repositorio, tu gestor de tareas y tu CI; no te pido migrar nada."
+      },
+      "invoice": {
+        "title": "Factura por cada trabajo",
+        "text": "Todavía no estoy dado de alta como autónomo y puedo facturar trabajos puntuales; si necesitas otra fórmula, lo dejamos por escrito antes de empezar."
+      },
+      "ownership": {
+        "title": "El código es tuyo",
+        "text": "Lo que escribo para tu producto queda en tu repositorio y es tuyo."
+      },
+      "delivery": {
+        "title": "Entregas por pull request",
+        "text": "Cada entrega llega como PR revisable, con su descripción y sus pruebas."
+      }
+    },
+    "pilot": {
+      "title": "Empieza por una tarea piloto",
+      "text": "Empezamos con una tarea pequeña y cerrada. Si no encajo con tu equipo, no seguimos y solo pagas esa tarea.",
+      "cta": "Proponer una tarea piloto"
     },
     "start": {
       "title": "Cómo empezamos",

@@ -41,6 +41,7 @@ export interface ContactFormProps {
   labels: ContactFormLabels;
   emails: Record<WayId, string>;
   initialWay: WayId | null;
+  initialMessage?: string;
   selection: ContactSelectionView | null;
   privacyHref: string;
   newTabLabel: string;
@@ -70,6 +71,7 @@ export function ContactForm({
   labels,
   emails,
   initialWay,
+  initialMessage,
   selection,
   privacyHref,
   newTabLabel,
@@ -348,6 +350,7 @@ export function ContactForm({
         name="message"
         label={labels.messageLabel}
         hint={labels.messageHint}
+        defaultValue={initialMessage}
         rows={6}
         required
         error={errorText(errors.message)}
