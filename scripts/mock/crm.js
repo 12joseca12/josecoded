@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 
 import { bearer, extendAuthState, people, personById, stateFor } from "./auth.js";
-import { readBody, route, send } from "./registry.js";
+import { readBody, route, send, sendEmpty } from "./registry.js";
 
 const cleo = "00000000-0000-4000-8000-0000000000c1";
 const dani = "00000000-0000-4000-8000-0000000000c2";
@@ -10,6 +10,10 @@ const seededContacts = [
   {
     id: "20000000-0000-4000-8000-0000000000a1",
     full_name: "Ada Arquitecta",
+    role_title: "Socia",
+    city: "Valencia",
+    tags: ["arquitectura"],
+    notes: "Prefiere que la llamen por la tarde.",
     organization: "Estudio Ada",
     email: "ada@estudioada.example",
     phone: "600 111 222",
@@ -51,6 +55,8 @@ const seededContacts = [
         stage: "won",
         via: "project",
         amount: 3000,
+        won_amount: 2800,
+        won_at: "2026-10-20T10:00:00+00:00",
         lost_reason: null,
         created_at: "2026-09-02T08:00:00+00:00",
         updated_at: "2026-10-20T10:00:00+00:00",
@@ -114,11 +120,44 @@ const seededContacts = [
   },
 ];
 
+const adminEnrolled = "00000000-0000-4000-8000-0000000000a2";
+
+const seededActivities = [
+  {
+    id: "40000000-0000-4000-8000-0000000000a1",
+    contact_id: "20000000-0000-4000-8000-0000000000a1",
+    deal_id: "30000000-0000-4000-8000-0000000000a1",
+    author_id: cleo,
+    kind: "call",
+    body: "Primera llamada: quiere web y catálogo.",
+    occurred_at: "2026-11-03T12:00:00+00:00",
+  },
+  {
+    id: "40000000-0000-4000-8000-0000000000a2",
+    contact_id: "20000000-0000-4000-8000-0000000000a1",
+    deal_id: null,
+    author_id: adminEnrolled,
+    kind: "note",
+    body: "Nota del administrador.",
+    occurred_at: "2026-11-02T09:00:00+00:00",
+  },
+  {
+    id: "40000000-0000-4000-8000-0000000000a3",
+    contact_id: "20000000-0000-4000-8000-0000000000a1",
+    deal_id: null,
+    author_id: null,
+    kind: "form",
+    body: null,
+    occurred_at: "2026-10-21T08:00:00+00:00",
+  },
+];
+
 extendAuthState((state) => {
   state.contacts = structuredClone(seededContacts);
   state.crmMode = "data";
   state.crmWriteError = null;
   state.calls.crm = [];
+  state.activities = structuredClone(seededActivities);
 });
 
 route("POST", "/__auth/crm-mode", async ({ request, response, url }) => {
@@ -179,6 +218,8 @@ function filterContacts(contacts, url) {
     deals: stage ? contact.deals.filter((deal) => deal.stage === operand(stage)[1]) : contact.deals,
   }));
   if (inner) rows = rows.filter((contact) => contact.deals.length > 0);
+  const byId = params.get("id");
+  if (byId) rows = rows.filter((contact) => contact.id === operand(byId)[1]);
   const kind = params.get("kind");
   if (kind) rows = rows.filter((contact) => contact.kind === operand(kind)[1]);
   const owner = params.get("owner_id");
@@ -203,14 +244,19 @@ function filterContacts(contacts, url) {
 
 function present(contact) {
   return {
+    role_title: null,
+    city: null,
+    website: null,
+    linkedin_url: null,
+    tags: [],
+    notes: null,
     ...contact,
-    deals: contact.deals.map(({ id, stage, via, amount, created_at, updated_at }) => ({
-      id,
-      stage,
-      via,
-      amount,
-      created_at,
-      updated_at,
+    deals: contact.deals.map((deal) => ({
+      won_amount: null,
+      won_at: null,
+      lost_reason: null,
+      lost_at: null,
+      ...deal,
     })),
   };
 }
@@ -267,6 +313,10 @@ route("PATCH", "/rest/v1/deals", async ({ request, response, url }) => {
   if (!caller) return fail(response, 401, "PGRST301", "JWT invalid");
   const { auth } = caller;
   const body = JSON.parse(await readBody(request));
+  if ("owner_id" in body) {
+    auth.calls.crm.push({ kind: "patch-deals-owner", query: url.search, body });
+    return sendEmpty(response);
+  }
   const id = operand(url.searchParams.get("id") ?? "eq.")[1];
   const stamp = operand(url.searchParams.get("updated_at") ?? "eq.")[1];
   auth.calls.crm.push({ kind: "patch-deal", id, stamp, body });
@@ -282,6 +332,71 @@ route("PATCH", "/rest/v1/deals", async ({ request, response, url }) => {
   }
   deal.stage = body.stage;
   deal.lost_reason = body.lost_reason ?? null;
+  deal.lost_at = body.stage === "lost" ? new Date().toISOString() : null;
   deal.updated_at = new Date().toISOString();
+  return send(response, 200, [{ id }]);
+});
+
+route("GET", "/rest/v1/activities", ({ request, response, url }) => {
+  const caller = callerOf(request);
+  if (!caller) return fail(response, 401, "PGRST301", "JWT invalid");
+  const { auth } = caller;
+  if (auth.crmMode === "error") return fail(response, 500, "XX000", "internal");
+  const contactId = operand(url.searchParams.get("contact_id") ?? "eq.")[1];
+  const contact = auth.contacts.find((entry) => entry.id === contactId);
+  if (!contact || !canSee(caller, contact)) return send(response, 200, []);
+  const rows = auth.activities
+    .filter((activity) => activity.contact_id === contactId)
+    .sort((a, b) => Date.parse(b.occurred_at) - Date.parse(a.occurred_at))
+    .map(({ id, kind, body, occurred_at, author_id, deal_id }) => ({
+      id,
+      kind,
+      body,
+      occurred_at,
+      author_id,
+      deal_id,
+    }));
+  return send(response, 200, rows);
+});
+
+route("POST", "/rest/v1/activities", async ({ request, response }) => {
+  const caller = callerOf(request);
+  if (!caller) return fail(response, 401, "PGRST301", "JWT invalid");
+  const { auth, person } = caller;
+  const body = JSON.parse(await readBody(request));
+  auth.calls.crm.push({ kind: "insert-activity", body });
+  const contact = auth.contacts.find((entry) => entry.id === body.contact_id);
+  if (!contact || !canSee(caller, contact) || body.author_id !== person?.id) {
+    return fail(response, 403, "42501", "new row violates row-level security policy");
+  }
+  if (auth.crmWriteError)
+    return send(response, 400, { details: null, hint: null, ...auth.crmWriteError });
+  if (body.deal_id && !contact.deals.some((deal) => deal.id === body.deal_id)) {
+    return fail(response, 409, "23503", "foreign key violation");
+  }
+  auth.activities.push({ id: randomUUID(), occurred_at: new Date().toISOString(), ...body });
+  contact.last_activity_at = new Date().toISOString();
+  return sendEmpty(response);
+});
+
+route("PATCH", "/rest/v1/contacts", async ({ request, response, url }) => {
+  const caller = callerOf(request);
+  if (!caller) return fail(response, 401, "PGRST301", "JWT invalid");
+  const { auth, person, session } = caller;
+  const body = JSON.parse(await readBody(request));
+  const id = operand(url.searchParams.get("id") ?? "eq.")[1];
+  auth.calls.crm.push({ kind: "patch-contact", id, body });
+  const contact = auth.contacts.find((entry) => entry.id === id);
+  if (!contact || !canSee(caller, contact)) return send(response, 200, []);
+  if ("owner_id" in body && !(person?.role === "admin" && session.level === "aal2")) {
+    return fail(response, 403, "42501", "owner_change_admin_only");
+  }
+  if (auth.crmWriteError)
+    return send(response, 400, { details: null, hint: null, ...auth.crmWriteError });
+  contact.owner_id = body.owner_id;
+  for (const deal of contact.deals) {
+    if (["new", "contacted", "meeting", "proposal"].includes(deal.stage))
+      deal.owner_id = body.owner_id;
+  }
   return send(response, 200, [{ id }]);
 });

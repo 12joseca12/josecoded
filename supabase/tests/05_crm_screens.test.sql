@@ -2,7 +2,7 @@ begin;
 
 \ir support/helpers.sql
 
-select plan(9);
+select plan(13);
 
 select tests.clean();
 select tests.create_user('t-admin@example.com', 'admin', 'Admin');
@@ -54,8 +54,27 @@ select results_eq(
   'a stale updated_at matches no row'
 );
 
+select lives_ok(
+  $$insert into public.activities (contact_id, author_id, kind, body) values ('00000000-0000-4000-8000-0000000000a2', private.uid(), 'note', 'del padre')$$,
+  'parent closer logs an activity on a subcloser contact'
+);
+
 reset role;
 select tests.login_as('t-sub-a@example.com');
+
+select throws_ok(
+  $$insert into public.activities (contact_id, author_id, kind, body) values ('00000000-0000-4000-8000-0000000000a1', private.uid(), 'note', 'ajena')$$,
+  '42501',
+  null,
+  'subcloser cannot log an activity on a parent contact'
+);
+
+select throws_ok(
+  $$update public.contacts set owner_id = md5('t-closer-a@example.com')::uuid where id = '00000000-0000-4000-8000-0000000000a2'$$,
+  '42501',
+  'owner_change_admin_only',
+  'subcloser cannot reassign even a contact it owns'
+);
 
 select results_eq(
   $$select full_name from public.contacts$$,
@@ -79,6 +98,11 @@ select is((select count(*)::int from public.contacts), 2, 'admin lists every con
 select lives_ok(
   $$insert into public.contacts (owner_id, full_name) values (private.uid(), 'Contacto del admin')$$,
   'admin creates a contact owned by self'
+);
+
+select lives_ok(
+  $$update public.contacts set owner_id = md5('t-sub-a@example.com')::uuid where id = '00000000-0000-4000-8000-0000000000a1'$$,
+  'admin reassigns a contact'
 );
 
 select * from finish();

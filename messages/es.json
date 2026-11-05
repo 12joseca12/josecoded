@@ -1189,6 +1189,108 @@
           "error": "No se ha podido guardar. Inténtalo otra vez."
         }
       }
+    },
+    "contact": {
+      "meta": {
+        "title": "Contacto"
+      },
+      "back": "Volver a contactos",
+      "loading": "Cargando contacto",
+      "error": {
+        "title": "No se ha podido cargar el contacto",
+        "text": "Ha fallado la consulta. Inténtalo otra vez.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "head": {
+        "email": "Correo",
+        "noEmail": "Sin correo",
+        "copy": "Copiar",
+        "copyAria": "Copiar el correo de {name}",
+        "copied": "Copiado",
+        "phone": "Teléfono",
+        "city": "Ciudad",
+        "website": "Web",
+        "owner": "Dueño",
+        "noOwner": "Sin dueño",
+        "unknownOwner": "Persona dada de baja",
+        "nextStep": "Siguiente paso",
+        "noNextStep": "Sin siguiente paso",
+        "overdue": "· vencido",
+        "lastContact": "Último contacto",
+        "never": "Sin actividad",
+        "source": "Origen",
+        "tags": "Etiquetas",
+        "notes": "Notas"
+      },
+      "reassign": {
+        "open": "Reasignar",
+        "title": "Reasignar contacto",
+        "close": "Cerrar",
+        "owner": "Nuevo dueño",
+        "placeholder": "Elige un dueño",
+        "note": "Las oportunidades abiertas pasan con el contacto. Las ganadas y perdidas se quedan como están.",
+        "submit": "Reasignar contacto",
+        "saving": "Reasignando",
+        "done": "Contacto reasignado",
+        "errors": {
+          "owner": "Elige un dueño activo distinto del actual.",
+          "forbidden": "Solo el administrador puede reasignar contactos.",
+          "error": "No se ha podido reasignar. Inténtalo otra vez."
+        }
+      },
+      "deals": {
+        "title": "Oportunidades",
+        "emptyTitle": "Sin oportunidades",
+        "emptyText": "Este contacto todavía no tiene ninguna oportunidad abierta.",
+        "amount": "Importe estimado",
+        "noAmount": "Sin importe",
+        "wonAmount": "Importe ganado",
+        "wonAt": "Ganada el",
+        "lostAt": "Perdida el",
+        "lostReason": "Motivo",
+        "created": "Creada el",
+        "lose": "Marcar perdida",
+        "loseAria": "Marcar perdida la oportunidad de {name}",
+        "reopen": "Reabrir",
+        "reopenAria": "Reabrir la oportunidad de {name}"
+      },
+      "activity": {
+        "title": "Actividad",
+        "listLabel": "Historial de actividad",
+        "emptyTitle": "Sin actividad todavía",
+        "emptyText": "Registra la primera llamada, reunión o nota con el formulario de arriba.",
+        "system": "Sistema",
+        "unknownAuthor": "Otra persona del equipo",
+        "kinds": {
+          "note": "Nota",
+          "call": "Llamada",
+          "meeting": "Reunión",
+          "email": "Correo",
+          "whatsapp": "WhatsApp",
+          "stage_change": "Cambio de fase",
+          "form": "Formulario",
+          "chat": "Chat",
+          "system": "Sistema"
+        }
+      },
+      "composer": {
+        "title": "Registrar actividad",
+        "kind": "Tipo",
+        "deal": "Oportunidad",
+        "noDeal": "Sin oportunidad concreta",
+        "body": "Qué ha pasado",
+        "submit": "Registrar",
+        "saving": "Registrando",
+        "done": "Actividad registrada",
+        "errors": {
+          "kind": "Elige un tipo de actividad.",
+          "body": "Escribe qué ha pasado, de 1 a 10000 caracteres.",
+          "dealId": "Elige una oportunidad de este contacto.",
+          "forbidden": "No tienes permiso para registrar actividad aquí.",
+          "error": "No se ha podido registrar. Inténtalo otra vez."
+        }
+      }
     }
   },
   "freelancePage": {

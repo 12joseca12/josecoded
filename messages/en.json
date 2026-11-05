@@ -1189,6 +1189,108 @@
           "error": "Could not save. Try again."
         }
       }
+    },
+    "contact": {
+      "meta": {
+        "title": "Contact"
+      },
+      "back": "Back to contacts",
+      "loading": "Loading contact",
+      "error": {
+        "title": "The contact could not be loaded",
+        "text": "The query failed. Try again.",
+        "retry": "Retry",
+        "retrying": "Retrying"
+      },
+      "head": {
+        "email": "Email",
+        "noEmail": "No email",
+        "copy": "Copy",
+        "copyAria": "Copy the email of {name}",
+        "copied": "Copied",
+        "phone": "Phone",
+        "city": "City",
+        "website": "Website",
+        "owner": "Owner",
+        "noOwner": "No owner",
+        "unknownOwner": "Deactivated person",
+        "nextStep": "Next step",
+        "noNextStep": "No next step",
+        "overdue": "· overdue",
+        "lastContact": "Last contact",
+        "never": "No activity",
+        "source": "Source",
+        "tags": "Tags",
+        "notes": "Notes"
+      },
+      "reassign": {
+        "open": "Reassign",
+        "title": "Reassign contact",
+        "close": "Close",
+        "owner": "New owner",
+        "placeholder": "Choose an owner",
+        "note": "Open deals move with the contact. Won and lost deals stay as they are.",
+        "submit": "Reassign contact",
+        "saving": "Reassigning",
+        "done": "Contact reassigned",
+        "errors": {
+          "owner": "Choose an active owner different from the current one.",
+          "forbidden": "Only the admin can reassign contacts.",
+          "error": "Could not reassign. Try again."
+        }
+      },
+      "deals": {
+        "title": "Deals",
+        "emptyTitle": "No deals",
+        "emptyText": "This contact has no deal yet.",
+        "amount": "Estimated amount",
+        "noAmount": "No amount",
+        "wonAmount": "Won amount",
+        "wonAt": "Won on",
+        "lostAt": "Lost on",
+        "lostReason": "Reason",
+        "created": "Created on",
+        "lose": "Mark as lost",
+        "loseAria": "Mark the deal of {name} as lost",
+        "reopen": "Reopen",
+        "reopenAria": "Reopen the deal of {name}"
+      },
+      "activity": {
+        "title": "Activity",
+        "listLabel": "Activity history",
+        "emptyTitle": "No activity yet",
+        "emptyText": "Log the first call, meeting or note with the form above.",
+        "system": "System",
+        "unknownAuthor": "Another team member",
+        "kinds": {
+          "note": "Note",
+          "call": "Call",
+          "meeting": "Meeting",
+          "email": "Email",
+          "whatsapp": "WhatsApp",
+          "stage_change": "Stage change",
+          "form": "Form",
+          "chat": "Chat",
+          "system": "System"
+        }
+      },
+      "composer": {
+        "title": "Log activity",
+        "kind": "Type",
+        "deal": "Deal",
+        "noDeal": "No specific deal",
+        "body": "What happened",
+        "submit": "Log it",
+        "saving": "Logging",
+        "done": "Activity logged",
+        "errors": {
+          "kind": "Choose an activity type.",
+          "body": "Write what happened, 1 to 10000 characters.",
+          "dealId": "Choose a deal of this contact.",
+          "forbidden": "You are not allowed to log activity here.",
+          "error": "Could not log it. Try again."
+        }
+      }
     }
   },
   "freelancePage": {
