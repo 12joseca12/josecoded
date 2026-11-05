@@ -50,7 +50,7 @@ export function buildContactFormLabels(t: Translate): ContactFormLabels {
     selection: {
       title: t(`${p}.selection.title`),
       from: t(`${p}.selection.from`),
-      provisional: t(`${p}.selection.provisional`),
+      review: t(`${p}.selection.review`),
       perMonth: t(`${p}.selection.perMonth`),
       change: t(`${p}.selection.change`),
       warranty: t(`${p}.selection.warranty`),

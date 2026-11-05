@@ -95,7 +95,7 @@ export function collectFieldErrors(error: z.ZodError): ContactFieldErrors {
 export interface ContactSelectionLabels {
   title: string;
   from: string;
-  provisional: string;
+  review: string;
   perMonth: string;
   change: string;
   warranty: string;

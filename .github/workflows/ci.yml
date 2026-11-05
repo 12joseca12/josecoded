@@ -78,16 +78,28 @@ jobs:
         run: pnpm exec playwright install-deps chromium
       - run: pnpm e2e --shard="$E2E_SHARD"
 
+  db:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends postgresql-16 postgresql-16-pgtap libtap-parser-sourcehandler-pgtap-perl
+      - env:
+          PGBIN: /usr/lib/postgresql/16/bin
+        run: bash supabase/local/run-tests.sh
+
   checks:
     if: always()
-    needs: [static, e2e]
+    needs: [static, e2e, db]
     runs-on: ubuntu-24.04
     timeout-minutes: 2
     steps:
       - env:
-          RESULTS: ${{ needs.static.result }} ${{ needs.e2e.result }}
+          RESULTS: ${{ needs.static.result }} ${{ needs.e2e.result }} ${{ needs.db.result }}
         run: |
-          echo "static e2e: $RESULTS"
+          echo "static e2e db: $RESULTS"
           for result in $RESULTS; do
             [ "$result" = "success" ] || exit 1
           done

@@ -248,11 +248,12 @@ export function ContactForm({
   }
 
   const selectionLine = selection
-    ? [
-        `${selection.summary} · ${labels.selection.from} ${selection.price} €`,
-        selection.provisional ? ` (${labels.selection.provisional})` : "",
-        selection.monthly ? ` + ${selection.monthly} ${labels.selection.perMonth}` : "",
-      ].join("")
+    ? selection.provisional
+      ? `${selection.summary} · ${labels.selection.review}`
+      : [
+          `${selection.summary} · ${labels.selection.from} ${selection.price} €`,
+          selection.monthly ? ` + ${selection.monthly} ${labels.selection.perMonth}` : "",
+        ].join("")
     : "";
   const copyKey = picked ?? "any";
   const invalidCount = Object.keys(errors).length + (verificationError ? 1 : 0);
