@@ -55,9 +55,9 @@ export const legal: ContentEntry<LegalMeta>[] = [
     meta: {
       title: "Aviso legal",
       updated: "2026-11-05",
-      draft: true,
+      draft: false,
       summary: [
-        "Este sitio lo edita y mantiene una persona física, José Carlos Sánchez García, desde Madrid.",
+        "Este sitio lo edita y mantiene una persona física, José Carlos Sánchez García, desde Madrid (España).",
         "Puedes escribirme a hola@josecoded.com para cualquier asunto legal o de contenido.",
         "El acceso es gratuito y la información tiene carácter orientativo, no es una oferta vinculante.",
         "Los contenidos son propiedad del titular y no se pueden reutilizar sin permiso.",
@@ -85,10 +85,10 @@ export const legal: ContentEntry<LegalMeta>[] = [
     meta: {
       title: "Política de cookies",
       updated: "2026-11-05",
-      draft: true,
+      draft: false,
       summary: [
         "Solo uso cookies estrictamente necesarias, así que no hay banner que aceptar.",
-        "Sirven para mantener tu sesión si entras, recordar tu conversación del chat y verificar que no eres un robot.",
+        "Sirven para mantener tu sesión si entras y para recordar tu conversación con el asistente del chat si le escribes.",
         "No uso cookies de analítica, publicidad ni seguimiento.",
         "Si algún día las añado, te pediré consentimiento antes de activarlas.",
         "Puedes borrarlas desde tu navegador cuando quieras; el sitio seguirá funcionando.",
@@ -108,7 +108,7 @@ export const legal: ContentEntry<LegalMeta>[] = [
     meta: {
       title: "Política de privacidad",
       updated: "2026-11-05",
-      draft: true,
+      draft: false,
       summary: [
         "Guardo solo lo que me das: el formulario de contacto, el chat y, si entras, tu cuenta. No hay publicidad ni analítica.",
         "Lo uso para responderte y, si llega a haber trabajo, para gestionarlo; nada más.",

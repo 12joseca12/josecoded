@@ -51,4 +51,15 @@ describe("legal pages", () => {
       expect(entry.headings.length).toBeGreaterThan(1);
     }
   });
+
+  it("publishes all three pages as final, updated on the same day, with a five-line summary", () => {
+    const entries = listLegal();
+    expect(entries).toHaveLength(3);
+    for (const entry of entries) {
+      expect(entry.meta.draft).toBe(false);
+      expect(entry.meta.updated).toBe("2026-11-05");
+      expect(entry.meta.summary).toHaveLength(5);
+    }
+    expect(indexedLegalPaths(entries)).toEqual(["/legal/aviso-legal", "/legal/privacidad"]);
+  });
 });
