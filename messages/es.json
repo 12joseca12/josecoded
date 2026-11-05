@@ -2022,9 +2022,58 @@
         "title": "Resumen"
       },
       "title": "Resumen",
-      "lead": "Lo que tienes que hacer hoy.",
-      "emptyTitle": "Todavía no hay nada que mostrar",
-      "emptyText": "El resumen de tu cartera llega con el CRM. Mientras tanto, esta sección está vacía."
+      "lead": "Lo que tienes que hacer hoy y cómo va tu cartera.",
+      "loading": "Cargando el resumen",
+      "today": {
+        "title": "Hoy",
+        "viewOverdue": "Ver pasos vencidos",
+        "viewLeads": "Ver interesados"
+      },
+      "cells": {
+        "unknown": "Sin datos",
+        "inbox": "Interesados nuevos",
+        "overdue": "Pasos vencidos",
+        "dueToday": "Pasos de hoy",
+        "stages": {
+          "new": "Nuevas",
+          "contacted": "Contactadas",
+          "meeting": "En reunión",
+          "proposal": "Con propuesta"
+        },
+        "unavailable": {
+          "title": "Los contadores todavía no están disponibles",
+          "text": "La base de datos aún no los ofrece. Tus próximos pasos sí funcionan."
+        },
+        "error": {
+          "title": "No se han podido cargar los contadores",
+          "text": "Ha fallado la consulta. Inténtalo otra vez.",
+          "retry": "Reintentar",
+          "retrying": "Reintentando"
+        }
+      },
+      "pipeline": {
+        "title": "Oportunidades abiertas"
+      },
+      "due": {
+        "title": "Tus próximos pasos",
+        "loading": "Cargando tus próximos pasos",
+        "listLabel": "Pasos pendientes hasta hoy",
+        "noAction": "Sin descripción",
+        "overdue": "vencido",
+        "all": "Ver todos los contactos",
+        "empty": {
+          "title": "Estás al día",
+          "text": "No tienes pasos vencidos ni para hoy.",
+          "next": "Tu siguiente paso: {action}, el {date}.",
+          "nextNoAction": "Tu siguiente paso es el {date}."
+        },
+        "error": {
+          "title": "No se han podido cargar tus pasos",
+          "text": "Ha fallado la consulta. Inténtalo otra vez.",
+          "retry": "Reintentar",
+          "retrying": "Reintentando"
+        }
+      }
     },
     "contacts": {
       "meta": {

@@ -2022,9 +2022,58 @@
         "title": "Overview"
       },
       "title": "Overview",
-      "lead": "What you need to do today.",
-      "emptyTitle": "Nothing to show yet",
-      "emptyText": "Your portfolio overview arrives with the CRM. Until then this section is empty."
+      "lead": "What you have to do today and how your book is doing.",
+      "loading": "Loading the overview",
+      "today": {
+        "title": "Today",
+        "viewOverdue": "See overdue steps",
+        "viewLeads": "See leads"
+      },
+      "cells": {
+        "unknown": "No data",
+        "inbox": "New leads",
+        "overdue": "Overdue steps",
+        "dueToday": "Steps for today",
+        "stages": {
+          "new": "New",
+          "contacted": "Contacted",
+          "meeting": "In a meeting",
+          "proposal": "With a proposal"
+        },
+        "unavailable": {
+          "title": "The counters are not available yet",
+          "text": "The database does not offer them yet. Your next steps work."
+        },
+        "error": {
+          "title": "The counters could not be loaded",
+          "text": "The query failed. Try again.",
+          "retry": "Try again",
+          "retrying": "Trying again"
+        }
+      },
+      "pipeline": {
+        "title": "Open opportunities"
+      },
+      "due": {
+        "title": "Your next steps",
+        "loading": "Loading your next steps",
+        "listLabel": "Steps pending up to today",
+        "noAction": "No description",
+        "overdue": "overdue",
+        "all": "See all contacts",
+        "empty": {
+          "title": "You are up to date",
+          "text": "You have no overdue steps and none for today.",
+          "next": "Your next step: {action}, on {date}.",
+          "nextNoAction": "Your next step is on {date}."
+        },
+        "error": {
+          "title": "Your steps could not be loaded",
+          "text": "The query failed. Try again.",
+          "retry": "Try again",
+          "retrying": "Trying again"
+        }
+      }
     },
     "contacts": {
       "meta": {

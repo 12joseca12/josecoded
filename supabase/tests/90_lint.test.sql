@@ -203,6 +203,7 @@ select is_empty(
         'assign_lead',
         'cancel_job',
         'claim_lead',
+        'crm_counters',
         'discard_lead',
         'invite_user',
         'list_lead_inbox',

@@ -76,7 +76,7 @@ export function maskExcerpt(message) {
     .slice(0, excerptLength);
 }
 
-function inboxRows(auth) {
+export function inboxRows(auth) {
   return auth.leads
     .filter(
       (lead) => lead.status === "new" && lead.assigned_to === null && lead.contact_id === null,

@@ -1131,6 +1131,18 @@ export type Database = {
         Args: { p_lead_id: string }
         Returns: string
       }
+      crm_counters: {
+        Args: never
+        Returns: {
+          actions_overdue: number
+          actions_today: number
+          deals_contacted: number
+          deals_meeting: number
+          deals_new: number
+          deals_proposal: number
+          inbox_new: number
+        }[]
+      }
       discard_lead: {
         Args: { p_lead_id: string; p_reason: string }
         Returns: undefined

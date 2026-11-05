@@ -179,7 +179,7 @@ function callerOf(request) {
   return { session, auth: session.auth, person };
 }
 
-function canSee(caller, contact) {
+export function canSee(caller, contact) {
   if (!caller.person || caller.session.level !== "aal2") return false;
   if (caller.person.role === "admin") return true;
   if (caller.person.role !== "closer" || contact.owner_id === null) return false;
@@ -231,6 +231,13 @@ function filterContacts(contacts, url) {
       const limit = Date.parse(condition.slice(4));
       rows = rows.filter((contact) => Date.parse(contact.next_action_at) <= limit);
     }
+    if (condition.startsWith("gt.")) {
+      const limit = Date.parse(condition.slice(3));
+      rows = rows.filter((contact) => Date.parse(contact.next_action_at) > limit);
+    }
+  }
+  for (const column of ["lead_id", "import_id", "archived_at"]) {
+    if (params.get(column) === "is.null") rows = rows.filter((contact) => !contact[column]);
   }
   const search = params.get("or");
   if (search) rows = rows.filter((contact) => matchesSearch(contact, search));
@@ -239,6 +246,9 @@ function filterContacts(contacts, url) {
     const right = b.last_activity_at ? Date.parse(b.last_activity_at) : -Infinity;
     return right - left || Date.parse(b.created_at) - Date.parse(a.created_at);
   });
+  if ((params.get("order") ?? "").startsWith("next_action_at.asc")) {
+    rows.sort((a, b) => Date.parse(a.next_action_at) - Date.parse(b.next_action_at));
+  }
   return rows.slice(0, Number(params.get("limit") ?? 1000));
 }
 
