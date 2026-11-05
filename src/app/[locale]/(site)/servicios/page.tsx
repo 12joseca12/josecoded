@@ -10,17 +10,16 @@ import { ServicePage } from "@/components/services/ServicePage/ServicePage";
 import { PageSection } from "@/components/site/PageSection/PageSection";
 import { Button } from "@/components/ui/Button/Button";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
+import { Link } from "@/components/ui/Link/Link";
 import { Steps } from "@/components/ui/Steps/Steps";
 import { features } from "@/config/features";
-import { getCv } from "@/content/cv";
 import { isLocale } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
-import { resolveCvHref } from "@/lib/about/cv";
-import { buildContactHref } from "@/lib/contact/ways";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { buildFaqItems } from "@/lib/services/faq";
-import type { BentoLinkData, StepItem, TeamPracticeItem } from "@/types/services";
+import { buildHiringLinks } from "@/lib/services/hiring-links";
+import type { StepItem, TeamPracticeItem } from "@/types/services";
 
 interface ServicesProps {
   params: Promise<{ locale: string }>;
@@ -50,6 +49,7 @@ export async function generateMetadata({ params }: ServicesProps): Promise<Metad
   return buildPageMetadata({
     locale,
     path: "/servicios",
+    ogImage: "services",
     title: "services.meta.title",
     description: "services.meta.description",
   });
@@ -65,20 +65,7 @@ export default async function ServicesPage({ params }: ServicesProps) {
     title: t(phase.title),
     text: t(phase.text),
   }));
-  const cv = getCv();
-  const cvEs = resolveCvHref(cv.file, "es", features.cvDownload);
-  const trajectory: BentoLinkData = {
-    href: `/${locale}/sobre-mi`,
-    label: t("services.bento.hiring.trajectory"),
-  };
-  const availability: BentoLinkData = {
-    href: buildContactHref(locale, "contratacion"),
-    label: t("services.bento.hiring.availability"),
-  };
-  const hiringCta: BentoLinkData = cvEs
-    ? { href: cvEs, label: t("services.bento.hiring.cv"), download: true }
-    : trajectory;
-  const hiringMore: BentoLinkData[] = [...(cvEs ? [trajectory] : []), availability];
+  const { cta: hiringCta, more: hiringMore } = buildHiringLinks(t, locale);
   const expectationLabel = t("services.bento.expectationLabel");
   const practices: TeamPracticeItem[] = (["pr", "ci", "review"] as const).map((id) => ({
     id,
@@ -156,6 +143,13 @@ export default async function ServicesPage({ params }: ServicesProps) {
             more={{ href: `/${locale}/sobre-mi#stack`, label: t("services.bento.proof.stack") }}
           />
         </ServiceBento>
+      </PageSection>
+      <PageSection id="auditoria" title={t("services.audit.title")} lead={t("services.audit.lead")}>
+        <div>
+          <Link href={`/${locale}/servicios/auditoria`} variant="arrow">
+            {t("services.audit.more")}
+          </Link>
+        </div>
       </PageSection>
       <PageSection
         id="en-equipo"

@@ -45,3 +45,6 @@ export type ToastInput = Omit<ToastItem, "id">;
 
 export const pageSectionSizes = ["narrow", "wide"] as const;
 export type PageSectionSize = (typeof pageSectionSizes)[number];
+
+export const pageSectionFits = ["screen", "content"] as const;
+export type PageSectionFit = (typeof pageSectionFits)[number];

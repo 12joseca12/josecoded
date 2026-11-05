@@ -82,6 +82,17 @@ export const faqPageSchema = z.strictObject({
     .min(1),
 });
 
+export const serviceSchema = z.strictObject({
+  "@type": z.literal("Service"),
+  "@id": z.url(),
+  url: z.url(),
+  name: z.string().min(1),
+  description: z.string().min(1),
+  serviceType: z.string().min(1),
+  inLanguage: z.string().min(2),
+  provider: z.strictObject({ "@id": z.url() }),
+});
+
 export const profilePageSchema = z.strictObject({
   "@type": z.literal("ProfilePage"),
   "@id": z.url(),
@@ -94,12 +105,115 @@ export const profilePageSchema = z.strictObject({
   mainEntity: z.strictObject({ "@id": z.url() }),
 });
 
-export const jsonLdNodeSchema = z.discriminatedUnion("@type", [
+export const offerSchema = z.strictObject({
+  "@type": z.literal("Offer"),
+  name: z.string().min(1),
+  description: z.string().min(1),
+  itemOffered: z.strictObject({
+    "@type": z.literal("Service"),
+    name: z.string().min(1),
+  }),
+});
+
+export const professionalServiceSchema = z.strictObject({
+  "@type": z.literal("ProfessionalService"),
+  "@id": z.url(),
+  name: z.string().min(1),
+  description: z.string().min(1),
+  url: z.url(),
+  inLanguage: z.string().min(2),
+  provider: z.strictObject({ "@id": z.url() }),
+  areaServed: z.array(
+    z.strictObject({ "@type": z.enum(["Country", "Place"]), name: z.string().min(1) }),
+  ),
+  hasOfferCatalog: z.strictObject({
+    "@type": z.literal("OfferCatalog"),
+    name: z.string().min(1),
+    itemListElement: z.array(offerSchema).min(1),
+  }),
+});
+
+export const contactPageSchema = z.strictObject({
+  "@type": z.literal("ContactPage"),
+  "@id": z.url(),
+  url: z.url(),
+  name: z.string().min(1),
+  description: z.string().min(1),
+  inLanguage: z.string().min(2),
+  isPartOf: z.strictObject({ "@id": z.url() }),
+  about: z.strictObject({ "@id": z.url() }),
+});
+
+const idRef = z.strictObject({ "@id": z.url() });
+
+export const projectNodeSchema = z.strictObject({
+  "@type": z.enum(["MobileApplication", "WebSite", "CreativeWork"]),
+  "@id": z.url(),
+  url: z.url(),
+  name: z.string().min(1),
+  description: z.string().min(1),
+  inLanguage: z.string().min(2),
+  keywords: z.array(z.string().min(1)).min(1),
+  operatingSystem: z.string().min(1).optional(),
+  creator: idRef.optional(),
+  contributor: idRef.optional(),
+  isPartOf: idRef,
+});
+
+export const blogJsonLdSchema = z.strictObject({
+  "@type": z.literal("Blog"),
+  "@id": z.url(),
+  url: z.url(),
+  name: z.string().min(1),
+  description: z.string().min(1),
+  inLanguage: z.string().min(2),
+  publisher: idRef,
+  author: idRef,
+});
+
+export const itemListSchema = z.strictObject({
+  "@type": z.literal("ItemList"),
+  "@id": z.url(),
+  itemListElement: z.array(
+    z.strictObject({
+      "@type": z.literal("ListItem"),
+      position: z.number().int().positive(),
+      url: z.url(),
+      name: z.string().min(1),
+    }),
+  ),
+});
+
+export const blogPostingSchema = z.strictObject({
+  "@type": z.literal("BlogPosting"),
+  "@id": z.url(),
+  url: z.url(),
+  headline: z.string().min(1),
+  description: z.string().min(1),
+  inLanguage: z.string().min(2),
+  datePublished: z.iso.date(),
+  dateModified: z.iso.date(),
+  articleSection: z.string().min(1),
+  wordCount: z.number().int().positive(),
+  mainEntityOfPage: z.strictObject({ "@type": z.literal("WebPage"), "@id": z.url() }),
+  author: idRef,
+  publisher: idRef,
+  isPartOf: idRef,
+});
+
+export const jsonLdNodeSchema = z.union([
+  projectNodeSchema,
   personSchema,
   profilePageSchema,
   webSiteSchema,
   breadcrumbListSchema,
   faqPageSchema,
+  professionalServiceSchema,
+  contactPageSchema,
+  serviceSchema,
+  blogJsonLdSchema,
+  itemListSchema,
+  blogPostingSchema,
 ]);
 
 export const jsonLdGraphSchema = z.strictObject({
@@ -109,8 +223,16 @@ export const jsonLdGraphSchema = z.strictObject({
 
 export type PersonJsonLd = z.infer<typeof personSchema>;
 export type WebSiteJsonLd = z.infer<typeof webSiteSchema>;
+export type ServiceJsonLd = z.infer<typeof serviceSchema>;
 export type ProfilePageJsonLd = z.infer<typeof profilePageSchema>;
 export type BreadcrumbListJsonLd = z.infer<typeof breadcrumbListSchema>;
+export type ProjectJsonLd = z.infer<typeof projectNodeSchema>;
 export type FaqPageJsonLd = z.infer<typeof faqPageSchema>;
+export type OfferJsonLd = z.infer<typeof offerSchema>;
+export type ProfessionalServiceJsonLd = z.infer<typeof professionalServiceSchema>;
+export type ContactPageJsonLd = z.infer<typeof contactPageSchema>;
+export type BlogJsonLd = z.infer<typeof blogJsonLdSchema>;
+export type ItemListJsonLd = z.infer<typeof itemListSchema>;
+export type BlogPostingJsonLd = z.infer<typeof blogPostingSchema>;
 export type JsonLdNode = z.infer<typeof jsonLdNodeSchema>;
 export type JsonLdGraph = z.infer<typeof jsonLdGraphSchema>;

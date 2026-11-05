@@ -97,7 +97,7 @@ test.describe("desktop popover", () => {
     const dialog = page.getByRole("dialog", { name: es.contactChooser.title });
     await trigger.click();
     await expect(dialog).toBeVisible();
-    await page.mouse.click(300, 600);
+    await page.mouse.click(8, 600);
     await expect(dialog).toBeHidden();
     await expect(trigger).toHaveAttribute("aria-expanded", "false");
   });

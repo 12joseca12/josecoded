@@ -1,0 +1,49 @@
+.page {
+  display: grid;
+  gap: var(--space-6);
+  width: 100%;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding: 0 var(--gutter) var(--space-9);
+}
+
+.page > * {
+  min-width: 0;
+  max-width: 44rem;
+}
+
+.stack {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: start;
+}
+
+.stackTitle {
+  color: var(--ink-faint);
+  font-size: var(--fs-m);
+  font-weight: var(--fw-semibold);
+}
+
+.metric {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: var(--space-5);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-l);
+}
+
+.metricTitle {
+  color: var(--ink-faint);
+  font-size: var(--fs-m);
+  font-weight: var(--fw-semibold);
+}
+
+.metricValue {
+  font-size: var(--fs-h4);
+}
+
+.metricSource {
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+}

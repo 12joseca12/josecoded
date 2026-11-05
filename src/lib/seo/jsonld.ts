@@ -1,7 +1,7 @@
 import { contact } from "@/config/contact";
 import { profileLinks } from "@/config/profiles";
 import { getCv } from "@/content/cv";
-import type { Cv } from "@/content/schemas";
+import type { Cv, ProjectMeta } from "@/content/schemas";
 import type { Locale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
 import { resolvePersonFacts } from "@/lib/about/cv";
@@ -10,6 +10,8 @@ import type { ContactWay } from "@/types/contact";
 import {
   type BreadcrumbListJsonLd,
   breadcrumbListSchema,
+  type ContactPageJsonLd,
+  contactPageSchema,
   type FaqPageJsonLd,
   faqPageSchema,
   type JsonLdGraph,
@@ -17,8 +19,14 @@ import {
   type JsonLdNode,
   type PersonJsonLd,
   personSchema,
+  type ProfessionalServiceJsonLd,
+  professionalServiceSchema,
   type ProfilePageJsonLd,
   profilePageSchema,
+  type ProjectJsonLd,
+  projectNodeSchema,
+  type ServiceJsonLd,
+  serviceSchema,
   type WebSiteJsonLd,
   webSiteSchema,
 } from "@/types/seo";
@@ -129,6 +137,25 @@ export function buildProfilePage(
   });
 }
 
+export function buildService(
+  origin: string,
+  locale: Locale,
+  path: string,
+  copy: { name: string; description: string; serviceType: string },
+): ServiceJsonLd {
+  const url = absoluteUrl(origin, localePath(locale, path));
+  return serviceSchema.parse({
+    "@type": "Service",
+    "@id": `${url}#service`,
+    url,
+    name: copy.name,
+    description: copy.description,
+    serviceType: copy.serviceType,
+    inLanguage: locale,
+    provider: { "@id": personId(origin) },
+  });
+}
+
 export interface BreadcrumbEntry {
   name: string;
   path: string;
@@ -146,6 +173,83 @@ export function buildBreadcrumbList(
       name: entry.name,
       item: absoluteUrl(origin, entry.path),
     })),
+  });
+}
+
+export interface OfferCopy {
+  name: string;
+  description: string;
+}
+
+export async function buildProfessionalService(
+  origin: string,
+  locale: Locale,
+  path: string,
+  offers: readonly OfferCopy[],
+  copy: { catalogName: string },
+): Promise<ProfessionalServiceJsonLd> {
+  const t = await getTranslator(locale);
+  const url = absoluteUrl(origin, localePath(locale, path));
+  return professionalServiceSchema.parse({
+    "@type": "ProfessionalService",
+    "@id": `${url}#service`,
+    name: t("seo.website.name"),
+    description: t("seo.person.description"),
+    url,
+    inLanguage: locale,
+    provider: { "@id": personId(origin) },
+    areaServed: [
+      { "@type": "Country", name: t("seo.person.country") },
+      { "@type": "Place", name: t("seo.person.remote") },
+    ],
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: copy.catalogName,
+      itemListElement: offers.map((offer) => ({
+        "@type": "Offer",
+        name: offer.name,
+        description: offer.description,
+        itemOffered: { "@type": "Service", name: offer.name },
+      })),
+    },
+  });
+}
+
+export function buildContactPage(
+  origin: string,
+  locale: Locale,
+  path: string,
+  copy: { name: string; description: string },
+): ContactPageJsonLd {
+  const url = absoluteUrl(origin, localePath(locale, path));
+  return contactPageSchema.parse({
+    "@type": "ContactPage",
+    "@id": `${url}#contact`,
+    url,
+    name: copy.name,
+    description: copy.description,
+    inLanguage: locale,
+    isPartOf: { "@id": websiteId(origin) },
+    about: { "@id": personId(origin) },
+  });
+}
+
+export function buildProject(origin: string, locale: Locale, meta: ProjectMeta): ProjectJsonLd {
+  const url = absoluteUrl(origin, localePath(locale, `/proyectos/${meta.slug}`));
+  const person = { "@id": personId(origin) };
+  const type =
+    meta.kind === "app" ? "MobileApplication" : meta.links.web ? "WebSite" : "CreativeWork";
+  return projectNodeSchema.parse({
+    "@type": type,
+    "@id": `${url}#project`,
+    url: meta.links.web ?? url,
+    name: meta.title,
+    description: meta.description,
+    inLanguage: locale,
+    keywords: meta.stack,
+    ...(meta.kind === "app" ? { operatingSystem: "iOS, Android" } : {}),
+    ...(meta.team ? { contributor: person } : { creator: person }),
+    isPartOf: { "@id": websiteId(origin) },
   });
 }
 

@@ -253,6 +253,7 @@ export function OfferRecommender({
                         defaultChecked={chosen.includes(value)}
                         required={!current.multiple}
                         aria-describedby={`${id}-hint`}
+                        aria-invalid={error ? true : undefined}
                         onFocus={() => {
                           onOption(value);
                         }}

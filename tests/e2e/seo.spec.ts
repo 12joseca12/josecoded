@@ -25,9 +25,15 @@ const publicRoutes = [
   "/es/servicios",
   "/es/servicios/freelance",
   "/es/servicios/a-medida",
+  "/es/servicios/auditoria",
   "/es/como-trabajo",
   "/es/proyectos",
+  "/es/proyectos/3catinfo",
+  "/es/proyectos/3cat",
+  "/es/proyectos/nextraket",
+  "/es/proyectos/josecoded",
   "/es/sobre-mi",
+  "/es/blog",
 ];
 const devRoutes = [
   "/es/dev/ui",
@@ -63,6 +69,51 @@ for (const route of publicRoutes) {
   });
 }
 
+const ogRoutes: Record<string, string> = {
+  "/es": "home",
+  "/es/servicios": "services",
+  "/es/servicios/freelance": "freelance",
+  "/es/servicios/a-medida": "custom",
+  "/es/como-trabajo": "how",
+  "/es/sobre-mi": "about",
+  "/es/contacto": "contact",
+};
+
+for (const [route, card] of Object.entries(ogRoutes)) {
+  test(`${route} declares its own Open Graph card and the image answers png`, async ({
+    page,
+    request,
+  }) => {
+    await page.goto(route);
+    const image = `https://josecoded.com/og/es-${card}.png`;
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", image);
+    await expect(page.locator('meta[property="og:image:width"]')).toHaveAttribute(
+      "content",
+      "1200",
+    );
+    await expect(page.locator('meta[property="og:image:height"]')).toHaveAttribute(
+      "content",
+      "630",
+    );
+    await expect(page.locator('meta[property="og:image:alt"]')).toHaveAttribute(
+      "content",
+      /José Carlos Sánchez García · josecoded$/,
+    );
+    await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute(
+      "content",
+      "summary_large_image",
+    );
+    await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute("content", image);
+    const response = await request.get(`/og/es-${card}.png`);
+    expect(response.status()).toBe(200);
+    expect(response.headers()["content-type"]).toBe("image/png");
+    const body = await response.body();
+    expect(body.subarray(1, 4).toString("ascii")).toBe("PNG");
+    expect(body.readUInt32BE(16)).toBe(1200);
+    expect(body.readUInt32BE(20)).toBe(630);
+  });
+}
+
 for (const route of devRoutes) {
   test(`${route} is noindex`, async ({ page }) => {
     const response = await page.goto(route);
@@ -91,13 +142,12 @@ test("sitemap.xml lists the public routes that have content", async ({ request }
   const response = await request.get("/sitemap.xml");
   expect(response.status()).toBe(200);
   const body = await response.text();
-  for (const route of [...publicRoutes, "/es/contacto"].filter(
-    (path) => path !== "/es/proyectos",
-  )) {
+  for (const route of [...publicRoutes, "/es/contacto"]) {
     expect(body).toContain(`<loc>http://localhost:3000${route}</loc>`);
   }
-  expect(body).not.toContain("/es/proyectos");
-  expect(body).not.toContain("/es/legal");
+  expect(body).toContain("<loc>http://localhost:3000/es/legal/aviso-legal</loc>");
+  expect(body).toContain("<loc>http://localhost:3000/es/legal/privacidad</loc>");
+  expect(body).not.toContain("/es/legal/cookies");
   expect(body).not.toContain("/dev");
 });
 
@@ -145,4 +195,72 @@ test("JSON-LD parses and carries the Person and the WebSite", async ({ page }) =
   });
   expect(person?.["@id"]).toMatch(/\/#person$/);
   expect(website).toMatchObject({ inLanguage: "es", publisher: { "@id": person?.["@id"] } });
+});
+
+const breadcrumbRoutes = [
+  ...publicRoutes.filter((route) => route !== "/es"),
+  "/es/contacto",
+  "/es/legal/aviso-legal",
+  "/es/legal/privacidad",
+  "/es/legal/cookies",
+];
+
+interface ListItem {
+  "@type": string;
+  position: number;
+  name: string;
+  item: string;
+}
+
+async function readNodes(page: Page): Promise<{ "@type": string; [key: string]: unknown }[]> {
+  const raws = await page.locator('script[type="application/ld+json"]').allTextContents();
+  return raws.flatMap((raw) => (JSON.parse(raw) as Graph)["@graph"]);
+}
+
+for (const route of breadcrumbRoutes) {
+  test(`${route} has exactly one valid BreadcrumbList and nonced scripts without prices`, async ({
+    page,
+  }) => {
+    await page.goto(route);
+    const nodes = await readNodes(page);
+    const lists = nodes.filter((node) => node["@type"] === "BreadcrumbList");
+    expect(lists).toHaveLength(1);
+    const items = lists[0]?.itemListElement as ListItem[];
+    expect(items.length).toBeGreaterThanOrEqual(2);
+    items.forEach((entry, index) => {
+      expect(entry["@type"]).toBe("ListItem");
+      expect(entry.position).toBe(index + 1);
+      expect(entry.name.length).toBeGreaterThan(0);
+    });
+    const origin = new URL(items[0]?.item ?? "").origin;
+    expect(items[0]?.item).toBe(`${origin}/es`);
+    expect(items.at(-1)?.item).toBe(`${origin}${route}`);
+
+    const scripts = page.locator('script[type="application/ld+json"]');
+    const nonces = await scripts.evaluateAll((tags) => tags.map((tag) => tag.nonce));
+    expect(nonces.length).toBeGreaterThan(0);
+    expect(nonces.every((nonce) => nonce.length > 0)).toBe(true);
+
+    const raw = (await scripts.allTextContents()).join("");
+    expect(raw).not.toMatch(/"(price|lowPrice|highPrice|minPrice|priceCurrency|priceRange)"/);
+    expect(raw).not.toContain("€");
+  });
+}
+
+test("the services hub publishes a ProfessionalService with four priceless offers", async ({
+  page,
+}) => {
+  await page.goto("/es/servicios");
+  const nodes = await readNodes(page);
+  const service = nodes.find((node) => node["@type"] === "ProfessionalService");
+  const catalog = service?.hasOfferCatalog as { itemListElement: { "@type": string }[] };
+  expect(catalog.itemListElement).toHaveLength(4);
+  expect(catalog.itemListElement.every((offer) => offer["@type"] === "Offer")).toBe(true);
+  expect(service?.provider).toMatchObject({ "@id": expect.stringMatching(/\/#person$/) });
+});
+
+test("the contact page publishes a ContactPage", async ({ page }) => {
+  await page.goto("/es/contacto");
+  const nodes = await readNodes(page);
+  expect(nodes.filter((node) => node["@type"] === "ContactPage")).toHaveLength(1);
 });

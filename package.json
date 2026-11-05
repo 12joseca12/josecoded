@@ -11,6 +11,8 @@
     "dev": "pnpm content:build && next dev",
     "build": "pnpm content:build && next build",
     "start": "next start",
+    "og:build": "node scripts/og.js",
+    "og:check": "node scripts/og.js --check",
     "cf:build": "opennextjs-cloudflare build",
     "cf:build:production": "node scripts/assert-site-url.js && opennextjs-cloudflare build",
     "cf:preview": "opennextjs-cloudflare preview --env preview",

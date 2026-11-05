@@ -1,21 +1,28 @@
+import { existsSync } from "node:fs";
+
 import { describe, expect, it } from "vitest";
 
 import { productionOrigin, resolveSite } from "@/config/site";
+import { getTranslator } from "@/i18n/messages";
 import { rates } from "@/lib/services/rates";
 import { jsonLdGraphSchema } from "@/types/seo";
 
 import {
   buildBreadcrumbList,
+  buildContactPage,
   buildFaqPage,
   buildGraph,
   buildPerson,
+  buildProfessionalService,
   buildProfilePage,
+  buildService,
   buildSiteGraph,
   resolveProfileLinks,
   serializeJsonLd,
 } from "./jsonld";
 import { buildLlmsTxt } from "./llms";
 import { applyTitleTemplate, buildPageMetadata, resolveRobots } from "./metadata";
+import { ogImagePath, type OgPage, ogSize, ogTitleKeys, ogTitleSize } from "./og";
 import { aiCrawlers, buildRobots } from "./robots";
 import { buildSitemap } from "./sitemap";
 
@@ -88,6 +95,7 @@ describe("buildSitemap", () => {
       `${productionOrigin}/es/servicios`,
       `${productionOrigin}/es/servicios/freelance`,
       `${productionOrigin}/es/servicios/a-medida`,
+      `${productionOrigin}/es/servicios/auditoria`,
       `${productionOrigin}/es/como-trabajo`,
       `${productionOrigin}/es/proyectos`,
       `${productionOrigin}/es/sobre-mi`,
@@ -115,6 +123,7 @@ describe("buildSitemap", () => {
       `${productionOrigin}/es/servicios`,
       `${productionOrigin}/es/servicios/freelance`,
       `${productionOrigin}/es/servicios/a-medida`,
+      `${productionOrigin}/es/servicios/auditoria`,
       `${productionOrigin}/es/como-trabajo`,
       `${productionOrigin}/es/sobre-mi`,
     ]);
@@ -132,6 +141,46 @@ describe("buildPageMetadata", () => {
     expect(metadata.alternates?.canonical).toBe("/es/servicios");
     expect(metadata.title).toBe("Servicios de desarrollo de apps y webs");
     expect(metadata.openGraph?.title).toBe("Servicios de desarrollo de apps y webs · josecoded");
+  });
+
+  it("declares a 1200x630 png card with alt for Open Graph and Twitter", async () => {
+    const metadata = await buildPageMetadata({
+      locale: "es",
+      path: "/servicios/freelance",
+      title: "freelancePage.meta.title",
+      description: "freelancePage.meta.description",
+      ogImage: "freelance",
+    });
+    const alt = `${(await getTranslator("es"))("freelancePage.meta.title")} · José Carlos Sánchez García · josecoded`;
+    expect(metadata.openGraph?.images).toEqual([
+      { url: "/og/es-freelance.png", width: 1200, height: 630, alt, type: "image/png" },
+    ]);
+    expect(metadata.twitter).toMatchObject({
+      card: "summary_large_image",
+      images: [{ url: "/og/es-freelance.png", alt }],
+    });
+  });
+
+  it("falls back to the home card when a page names none", async () => {
+    const metadata = await buildPageMetadata({
+      locale: "es",
+      path: "/proyectos",
+      title: "projects.metaTitle",
+      description: "projects.metaDescription",
+    });
+    expect(metadata.openGraph?.images).toMatchObject([{ url: "/og/es-home.png" }]);
+  });
+
+  it("gives every Open Graph page a real title, a committed image and a size that fits", async () => {
+    const t = await getTranslator("es");
+    expect(ogSize).toEqual({ width: 1200, height: 630 });
+    for (const [page, key] of Object.entries(ogTitleKeys)) {
+      expect(existsSync(`public${ogImagePath("es", page as OgPage)}`)).toBe(true);
+      const size = ogTitleSize(t(key));
+      expect(size).toBeGreaterThanOrEqual(64);
+      expect(size).toBeLessThanOrEqual(92);
+    }
+    expect(ogTitleSize("x".repeat(60))).toBe(64);
   });
 
   it("marks a page noindex when it is not indexable", async () => {
@@ -224,6 +273,80 @@ describe("json-ld", () => {
     expect(jsonLdGraphSchema.safeParse(buildGraph(list)).success).toBe(true);
   });
 
+  it("builds a ProfessionalService with an offer catalog and no price", async () => {
+    const service = await buildProfessionalService(
+      productionOrigin,
+      "es",
+      "/servicios",
+      [
+        { name: "Contratación", description: "Me incorporo a tu equipo." },
+        { name: "Freelance", description: "Una funcionalidad puntual." },
+        { name: "Desarrollo a medida", description: "Una web o app completa." },
+      ],
+      { catalogName: "Servicios" },
+    );
+    expect(service).toMatchObject({
+      "@type": "ProfessionalService",
+      url: `${productionOrigin}/es/servicios`,
+      provider: { "@id": `${productionOrigin}/#person` },
+      hasOfferCatalog: { "@type": "OfferCatalog", name: "Servicios" },
+    });
+    expect(service.hasOfferCatalog.itemListElement.map((offer) => offer.name)).toEqual([
+      "Contratación",
+      "Freelance",
+      "Desarrollo a medida",
+    ]);
+    const serialized = serializeJsonLd(buildGraph(service));
+    expect(serialized).not.toMatch(/price|Price|priceCurrency|EUR|€/);
+    expect(jsonLdGraphSchema.safeParse(buildGraph(service)).success).toBe(true);
+  });
+
+  it("rejects a price on an offer", () => {
+    const graph = {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "ProfessionalService",
+          "@id": `${productionOrigin}/es/servicios#service`,
+          name: "josecoded",
+          description: "Servicios",
+          url: `${productionOrigin}/es/servicios`,
+          inLanguage: "es",
+          provider: { "@id": `${productionOrigin}/#person` },
+          areaServed: [],
+          hasOfferCatalog: {
+            "@type": "OfferCatalog",
+            name: "Servicios",
+            itemListElement: [
+              {
+                "@type": "Offer",
+                name: "Freelance",
+                description: "Por horas",
+                price: "50",
+                itemOffered: { "@type": "Service", name: "Freelance" },
+              },
+            ],
+          },
+        },
+      ],
+    };
+    expect(jsonLdGraphSchema.safeParse(graph).success).toBe(false);
+  });
+
+  it("builds a ContactPage that points to the site and the person", () => {
+    const page = buildContactPage(productionOrigin, "es", "/contacto", {
+      name: "Contacto",
+      description: "Formas de hablar",
+    });
+    expect(page).toMatchObject({
+      "@type": "ContactPage",
+      url: `${productionOrigin}/es/contacto`,
+      isPartOf: { "@id": `${productionOrigin}/#website` },
+      about: { "@id": `${productionOrigin}/#person` },
+    });
+    expect(jsonLdGraphSchema.safeParse(buildGraph(page)).success).toBe(true);
+  });
+
   it("builds a ProfilePage whose main entity is the site person", () => {
     const page = buildProfilePage(
       productionOrigin,
@@ -249,6 +372,26 @@ describe("json-ld", () => {
       { "@type": "Question", name: "¿Q?", acceptedAnswer: { "@type": "Answer", text: "A." } },
     ]);
     expect(() => buildFaqPage([])).toThrow();
+  });
+
+  it("builds a Service without a price, provided by the Person", () => {
+    const service = buildService(productionOrigin, "es", "/servicios/auditoria", {
+      name: "Auditoría web",
+      description: "Revisión.",
+      serviceType: "Auditoría web",
+    });
+    expect(service).toEqual({
+      "@type": "Service",
+      "@id": `${productionOrigin}/es/servicios/auditoria#service`,
+      url: `${productionOrigin}/es/servicios/auditoria`,
+      name: "Auditoría web",
+      description: "Revisión.",
+      serviceType: "Auditoría web",
+      inLanguage: "es",
+      provider: { "@id": `${productionOrigin}/#person` },
+    });
+    expect(jsonLdGraphSchema.safeParse(buildGraph(service)).success).toBe(true);
+    expect(JSON.stringify(service)).not.toMatch(/offers|price/i);
   });
 
   it("rejects invalid data", async () => {
@@ -287,6 +430,7 @@ describe("buildLlmsTxt", () => {
     expect(text).toContain(`(${productionOrigin}/es/servicios)`);
     expect(text).toContain(`(${productionOrigin}/es/servicios/freelance)`);
     expect(text).toContain(`(${productionOrigin}/es/servicios/a-medida)`);
+    expect(text).toContain(`(${productionOrigin}/es/servicios/auditoria)`);
     expect(text).toContain(`(${productionOrigin}/es/como-trabajo)`);
     expect(text).toContain(`(${productionOrigin}/es/contacto)`);
     expect(text).toContain(`(${productionOrigin}/es/sobre-mi)`);
@@ -300,6 +444,20 @@ describe("buildLlmsTxt", () => {
     const text = await buildLlmsTxt(productionOrigin, "es", rates);
     expect(text).not.toContain("/proyectos");
     expect(text).not.toContain("/blog");
+  });
+
+  it("lists the guides once there are posts", async () => {
+    const text = await buildLlmsTxt(
+      productionOrigin,
+      "es",
+      rates,
+      undefined,
+      false,
+      [],
+      [{ slug: "guia", title: "Una guía", description: "Qué cuenta la guía." }],
+    );
+    expect(text).toContain(`(${productionOrigin}/es/blog)`);
+    expect(text).toContain(`[Una guía](${productionOrigin}/es/blog/guia): Qué cuenta la guía.`);
   });
 
   it("lists projects once one is published", async () => {

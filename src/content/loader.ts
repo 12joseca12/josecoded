@@ -17,6 +17,7 @@ export interface LoadedEntry {
   slug: string;
   meta: Record<string, unknown>;
   headings: Heading[];
+  words: number;
 }
 
 export interface Placeholder {
@@ -93,6 +94,14 @@ export function extractHeadings(source: string): Heading[] {
   return headings;
 }
 
+export function countWords(source: string): number {
+  return source
+    .replace(fence, "")
+    .replace(/<[^>]+>/g, " ")
+    .split(/\s+/)
+    .filter((token) => /[\p{L}\p{N}]/u.test(token)).length;
+}
+
 function listFiles(base: string, type: ContentType): string[] {
   const dir = join(base, "content", type);
   if (!existsSync(dir)) return [];
@@ -137,7 +146,14 @@ export function readContent(base: string): LoadedEntry[] {
         }
         seenOrders.set(meta.order, file);
       }
-      entries.push({ type, file, slug: fileSlug, meta, headings: extractHeadings(source) });
+      entries.push({
+        type,
+        file,
+        slug: fileSlug,
+        meta,
+        headings: extractHeadings(source),
+        words: countWords(source),
+      });
     }
   }
 
@@ -182,7 +198,7 @@ export function renderIndex(entries: LoadedEntry[]): string {
       .filter((entry) => entry.type === type)
       .map(
         (entry) =>
-          `{ slug: "${entry.slug}", meta: ${JSON.stringify(entry.meta)}, headings: ${JSON.stringify(entry.headings)}, load: () => import("../../${entry.file}") }`,
+          `{ slug: "${entry.slug}", meta: ${JSON.stringify(entry.meta)}, headings: ${JSON.stringify(entry.headings)}, words: ${entry.words}, load: () => import("../../${entry.file}") }`,
       );
     return `export const ${type}: ContentEntry<${metaTypes[type]}>[] = [${items.join(",")}];`;
   });

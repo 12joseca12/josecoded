@@ -12,28 +12,50 @@ import {
 const project = {
   title: "Demo",
   slug: "demo",
-  summary: "Resumen",
-  role: "Autor",
-  stack: ["Next"],
-  year: 2026,
-  order: 1,
+  kind: "web",
   status: "live",
+  headline: "Resumen",
+  description: "Descripción",
+  role: "Autor",
+  period: "2026",
+  sector: "Web",
+  stack: ["Next"],
+  relatedService: "freelance",
+  order: 1,
 };
 
 describe("projectSchema", () => {
   it("accepts a valid project and applies defaults", () => {
     const parsed = projectSchema.parse(project);
     expect(parsed.featured).toBe(false);
-    expect(parsed.links).toEqual([]);
+    expect(parsed.team).toBe(false);
+    expect(parsed.links).toEqual({});
+    expect(parsed.metric).toBeUndefined();
   });
 
-  it("accepts placeholders in links and cover", () => {
+  it("accepts https links and a sourced metric", () => {
     const parsed = projectSchema.parse({
       ...project,
-      links: [{ label: "Web", href: "{{DATO: url}}" }],
-      cover: { src: "{{DATO: portada}}", alt: "Portada" },
+      links: { web: "https://example.com", store_ios: "https://apps.apple.com/app/id1" },
+      metric: { label: "JS", value: "145 KB", source: "pnpm perf:budget", date: "2026-11-05" },
     });
-    expect(parsed.links).toHaveLength(1);
+    expect(parsed.links.web).toBe("https://example.com");
+    expect(parsed.metric?.source).toBe("pnpm perf:budget");
+  });
+
+  it("rejects placeholders and non-https links", () => {
+    expect(projectSchema.safeParse({ ...project, links: { web: "{{DATO: url}}" } }).success).toBe(
+      false,
+    );
+    expect(
+      projectSchema.safeParse({ ...project, links: { web: "http://example.com" } }).success,
+    ).toBe(false);
+  });
+
+  it("rejects a metric without source or date", () => {
+    expect(
+      projectSchema.safeParse({ ...project, metric: { label: "A", value: "1" } }).success,
+    ).toBe(false);
   });
 
   it("rejects a missing field", () => {
@@ -41,19 +63,23 @@ describe("projectSchema", () => {
     expect(result.error?.issues[0]?.path).toEqual(["role"]);
   });
 
-  it("rejects a wrong type", () => {
-    const result = projectSchema.safeParse({ ...project, year: "2026" });
-    expect(result.error?.issues[0]?.path).toEqual(["year"]);
-  });
-
-  it("rejects an unknown field and a bad status", () => {
+  it("rejects an unknown field, a bad status and a bad kind", () => {
     expect(projectSchema.safeParse({ ...project, extra: 1 }).success).toBe(false);
     expect(projectSchema.safeParse({ ...project, status: "done" }).success).toBe(false);
+    expect(projectSchema.safeParse({ ...project, kind: "game" }).success).toBe(false);
   });
 });
 
 describe("blogSchema", () => {
-  const post = { title: "T", slug: "t", description: "D", date: "2026-11-02" };
+  const post = {
+    title: "T",
+    slug: "t",
+    description: "D",
+    date: "2026-11-02",
+    updated: "2026-11-02",
+    category: "precios",
+    relatedService: "a-medida",
+  };
 
   it("accepts a post and defaults draft to false", () => {
     expect(blogSchema.parse(post).draft).toBe(false);
@@ -61,6 +87,16 @@ describe("blogSchema", () => {
 
   it("rejects a malformed date", () => {
     expect(blogSchema.safeParse({ ...post, date: "02/11/2026" }).success).toBe(false);
+  });
+
+  it("rejects an unknown category and a missing related service", () => {
+    expect(blogSchema.safeParse({ ...post, category: "ia" }).success).toBe(false);
+    expect(blogSchema.safeParse({ ...post, relatedService: undefined }).success).toBe(false);
+  });
+
+  it("defaults the kind to article and allows two related posts at most", () => {
+    expect(blogSchema.parse(post).kind).toBe("article");
+    expect(blogSchema.safeParse({ ...post, relatedPosts: ["a", "b", "c"] }).success).toBe(false);
   });
 });
 

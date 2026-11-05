@@ -56,7 +56,7 @@ export function ContactChooser({
         size="sm"
         icon={<ChevronIcon />}
         aria-expanded={open}
-        aria-controls={id}
+        aria-controls={armed ? id : undefined}
         aria-haspopup="dialog"
         data-chooser-trigger=""
         onClick={(event) => {

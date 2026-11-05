@@ -1,0 +1,102 @@
+---
+title: "Integrar IA en una app de noticias: lo que aprendí en producción"
+metaTitle: "Integrar IA en una app: lo que aprendí"
+slug: integrar-ia-en-una-app-de-noticias
+description: "Qué decidir antes de meter un modelo de lenguaje en una app de noticias: alcance, fuentes, coste, accesibilidad y qué hacer cuando la IA falla."
+date: "2026-11-05"
+updated: "2026-11-05"
+order: 4
+category: accesibilidad-ia
+tags: [IA, LLM, app de noticias, accesibilidad]
+relatedService: freelance
+relatedPosts:
+  - accesibilidad-apps-european-accessibility-act
+  - programador-freelance-por-horas-o-por-tarea
+faq:
+  - question: "¿Hace falta entrenar un modelo propio para añadir IA a una app?"
+    answer: "Casi nunca. Lo habitual es usar un modelo ya entrenado a través de una API y darle el contenido de tu producto como contexto. Un modelo propio solo tiene sentido por privacidad, por coste a gran escala o por una tarea muy específica."
+  - question: "¿Puede la IA inventarse datos en una app de noticias?"
+    answer: "Sí, y es el riesgo principal. Se reduce dándole solo el texto de la fuente, pidiéndole que no salga de él y comprobando una muestra a mano. No se elimina del todo, así que el diseño debe asumir que alguna respuesta será mala."
+  - question: "¿Cuánto cuesta añadir una función de IA a una app?"
+    answer: "Hay dos costes distintos. El de integrarla, que en mis encargos suele ser de tres a cinco días de trabajo, y el de usarla, que paga el proveedor del modelo por consumo y crece con los usuarios. Mi precio está en revisión."
+  - question: "¿Hay que avisar al usuario de que es IA?"
+    answer: "Sí. Es una cuestión de honestidad con el lector y, además, el Reglamento europeo de IA incluye obligaciones de transparencia. Consulta con tu asesor cuáles te tocan."
+---
+
+Soy el responsable de la integración de IA en 3CatInfo, la app de noticias de 3Cat, dentro del equipo de Alten. No voy a contar nada interno: ni modelos, ni cifras, ni resultados. Lo que sigue es el criterio con el que trabajo y que puedes aplicar a tu app, sea de noticias o de otra cosa.
+
+## Primero, qué problema resuelve
+
+La pregunta que más ahorra trabajo es «¿qué tarea concreta va a hacer la IA?». «Ponerle IA» no es una tarea. «Resumir un artículo largo», «responder una pregunta sobre lo que acabas de leer» o «encontrar noticias relacionadas» sí lo son.
+
+En una app de noticias esto pesa más que en otras, porque el producto es la confianza del lector. Elige una sola función, hazla bien y mídela antes de añadir otra. Cada función extra multiplica lo que puede salir mal.
+
+## Que el modelo hable solo de lo que le das
+
+Un modelo de lenguaje produce texto verosímil, no texto verdadero. En una noticia, un dato inventado es un error editorial. La defensa más sencilla es no preguntarle por lo que sabe, sino por lo que le das:
+
+- **Dale el texto de la fuente** como contexto y pídele que responda solo con él.
+- **Haz que diga cuándo no lo sabe.** Una respuesta como «esto no aparece en el artículo» es una buena respuesta.
+- **Limita el ámbito.** Si la pregunta no va de la noticia, la función no responde.
+
+Es la versión más simple de lo que se llama RAG: recuperar primero el texto relevante y generar después sobre él. No necesitas una arquitectura compleja para empezar.
+
+<RelatedService />
+
+## Qué pasa cuando falla
+
+Fallará: el servicio tendrá un corte, la respuesta tardará o vendrá vacía, o dirá algo que no debe. Diseña para eso desde el principio:
+
+1. **La app funciona sin la función.** La IA mejora una pantalla; no puede ser lo que la sostiene.
+2. **Tiempo máximo de espera.** Pasado ese tiempo, se corta y se muestra un mensaje claro.
+3. **Reintento manual.** Un botón, no un bucle automático que gaste dinero.
+4. **Una forma de avisar.** Que el lector pueda marcar una respuesta como mala.
+
+## Coste y latencia
+
+Los modelos se pagan por uso, y el consumo crece con los lectores. Tres decisiones lo controlan:
+
+- **Guardar lo que no cambia.** El resumen de un artículo ya publicado se genera una vez y se reutiliza.
+- **Poner límites por usuario.** Evitan que un abuso, o un error, se convierta en una factura.
+- **Mostrar el resultado según llega.** Con respuestas en flujo, el lector ve texto enseguida aunque la respuesta completa tarde.
+
+No pongo cifras porque dependen del proveedor y cambian a menudo. Pide siempre una estimación con el uso esperado.
+
+## Accesibilidad de lo que genera la IA
+
+Esta parte se olvida y es donde más puedo aportar. El texto de una IA aparece de forma dinámica en la pantalla, y quien usa un lector de pantalla no lo ve aparecer. Tres reglas:
+
+- **Anuncia el resultado una vez.** Si la respuesta llega en flujo, no anuncies cada fragmento: el lector se vuelve inusable. Espera a que termine y avisa.
+- **Etiqueta el contenido generado.** La indicación de que es IA debe estar en el texto, no solo en un icono o un color.
+- **Controla el foco.** Al abrir la función, el foco va a ella; al cerrarla, vuelve a donde estaba.
+
+```tsx
+useEffect(() => {
+  if (status === "done") {
+    AccessibilityInfo.announceForAccessibility("Resumen generado");
+  }
+}, [status]);
+```
+
+Cada uno de esos puntos se comprueba con VoiceOver y TalkBack, como cuento en la [guía de accesibilidad](/es/blog/accesibilidad-apps-european-accessibility-act).
+
+## Transparencia y privacidad
+
+Dos cosas que no se negocian. La primera: di que es IA. La segunda: no envíes al proveedor del modelo más datos de los necesarios, y menos aún datos personales, sin revisar sus condiciones. Antes de elegir, comprueba dónde se tratan los datos y si el proveedor los usa para entrenar.
+
+El [Reglamento europeo de IA](https://eur-lex.europa.eu/eli/reg/2024/1689/oj) incluye obligaciones de transparencia para determinados sistemas. Qué te toca a ti es una pregunta para tu asesor legal; yo te ayudo con la parte técnica.
+
+## Cómo comprobar que funciona
+
+No hay un test que pase o falle, pero sí un método:
+
+1. **Un conjunto de casos de prueba.** Preguntas normales, preguntas fuera de ámbito y casos difíciles.
+2. **Revisión humana de una muestra.** Cada vez que cambies el modelo o las instrucciones, mira respuestas reales.
+3. **Instrucciones versionadas.** Si no sabes qué cambió, no sabes qué rompió.
+4. **Registros sin datos personales.** Para entender qué falla sin guardar lo que no debes.
+
+## Lo que me llevo
+
+Una función, no cinco. Una IA que responde sobre tu contenido, no sobre lo que recuerda. Una app que sigue funcionando si la IA falla. Un coste con límites. Y un resultado que se pueda leer, escuchar y entender con las mismas garantías para todos.
+
+Si quieres incorporar algo así en tu producto, es una tarea de [integración de IA](/es/servicios/freelance) con alcance y coste claros desde el principio.

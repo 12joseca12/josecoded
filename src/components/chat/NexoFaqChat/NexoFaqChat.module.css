@@ -1,5 +1,5 @@
 .card {
-  --card-focus: var(--charcoal);
+  --focus: var(--charcoal);
   display: grid;
   gap: var(--space-3);
   padding: var(--space-4);
@@ -54,7 +54,7 @@
 .log:focus-visible,
 .chip:focus-visible,
 .input:focus-visible {
-  outline: 2px solid var(--card-focus);
+  outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
 
@@ -125,7 +125,7 @@
 }
 
 .chip {
-  min-block-size: 2.25rem;
+  min-block-size: 2.75rem;
   padding: var(--space-1) var(--space-3);
   border: 1px solid var(--charcoal);
   border-radius: var(--radius-xl);

@@ -43,6 +43,7 @@ export async function generateMetadata({ params }: HowProps): Promise<Metadata> 
   return buildPageMetadata({
     locale,
     path: "/como-trabajo",
+    ogImage: "how",
     title: "howPage.meta.title",
     description: "howPage.meta.description",
   });

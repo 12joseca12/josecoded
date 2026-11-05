@@ -111,9 +111,11 @@ svg {
   *,
   *::before,
   *::after {
-    animation-duration: var(--dur-reduced);
-    animation-iteration-count: 1;
-    transition-duration: var(--dur-reduced);
+    animation-duration: var(--dur-reduced) !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: var(--dur-reduced) !important;
+    transition-delay: 0s !important;
   }
 }
 
@@ -136,5 +138,16 @@ svg {
 @media (prefers-reduced-motion: no-preference) {
   [data-snap] {
     scroll-behavior: smooth;
+  }
+}
+
+@media print {
+  body {
+    background: none;
+  }
+
+  body > :not(main),
+  [data-print="hide"] {
+    display: none;
   }
 }

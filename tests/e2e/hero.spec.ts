@@ -36,14 +36,15 @@ async function runningHeroAnimations(page: Page) {
 }
 
 test.describe("hero copy", () => {
-  test("shows the headline, the lead and the call to action", async ({ page }) => {
+  test("shows the headline, the lead and both calls to action", async ({ page }) => {
     await page.goto("/es");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
       `${hero.title} ${hero.accent}`,
     );
     const primary = page.getByRole("link", { name: hero.ctaPrimary });
     await expect(primary).toHaveAttribute("href", "/es/contacto");
-    await expect(page.getByRole("link", { name: hero.ctaSecondary })).toHaveCount(0);
+    const secondary = page.getByRole("link", { name: hero.ctaSecondary });
+    await expect(secondary).toHaveAttribute("href", "/es/proyectos");
   });
 
   test("says who Jose is and offers the hiring route without scrolling", async ({ page }) => {
@@ -136,6 +137,7 @@ test.describe("phase rail", () => {
 
   test("pauses when the hero scrolls out of view", async ({ page }) => {
     await page.goto("/es");
+    await expect(page.getByRole("button", { name: hero.rail.pause })).toBeVisible();
     await page.evaluate(() => {
       document.body.style.paddingBottom = "4000px";
       scrollTo({ top: 2000, behavior: "instant" });
@@ -208,14 +210,20 @@ test.describe("narrow screens", () => {
 test.describe("block scrolling with the hero", () => {
   test.use({ viewport: { width: 1440, height: 900 } });
 
-  test("one wheel gesture glides past the hero and Home returns", async ({ page }) => {
+  test("one wheel gesture glides to the next block and Home returns", async ({ page }) => {
     await page.goto("/es");
     await page.waitForLoadState("networkidle");
-    const max = await page.evaluate(() => document.documentElement.scrollHeight - innerHeight);
-    expect(max).toBeGreaterThan(0);
+    const next = () =>
+      page.evaluate(() => {
+        const top = document.getElementById("vias")?.getBoundingClientRect().top ?? 0;
+        return Math.round(top + scrollY);
+      });
+    expect(await next()).toBeGreaterThan(0);
     await page.mouse.move(700, 450);
     await page.mouse.wheel(0, 400);
-    await expect.poll(() => page.evaluate(() => scrollY), { timeout: 4000 }).toBe(max);
+    await expect
+      .poll(async () => (await page.evaluate(() => scrollY)) === (await next()), { timeout: 4000 })
+      .toBe(true);
     await page.keyboard.press("Home");
     await expect.poll(() => page.evaluate(() => scrollY), { timeout: 4000 }).toBe(0);
   });

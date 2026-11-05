@@ -61,6 +61,7 @@ export async function generateMetadata({ params, searchParams }: OffersProps): P
   return buildPageMetadata({
     locale,
     path: "/servicios/a-medida",
+    ogImage: "custom",
     title: "offersPage.meta.title",
     description: "offersPage.meta.description",
     indexable: query.q === undefined && !hasFormAction(query),

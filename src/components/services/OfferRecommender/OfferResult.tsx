@@ -250,6 +250,9 @@ function ProjectResult({
                     onChange={(event) => {
                       toggle(slug, event.target.checked);
                     }}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") event.preventDefault();
+                    }}
                   />
                   <label htmlFor={`result-extra-${slug}`} className={styles.chip}>
                     {copy.extras[slug].name}

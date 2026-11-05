@@ -12,7 +12,8 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: var(--space-4);
+  gap: var(--space-2);
+  min-width: 0;
   width: 100%;
   max-width: 88rem;
   padding: var(--space-1) var(--space-1) var(--space-1) var(--space-4);
@@ -132,6 +133,10 @@
 }
 
 @media (min-width: 64rem) {
+  .bar {
+    gap: var(--space-4);
+  }
+
   .nav {
     display: flex;
   }

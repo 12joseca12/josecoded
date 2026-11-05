@@ -1,14 +1,16 @@
 export const wayIds = ["contratacion", "freelance", "project"] as const;
 export type WayId = (typeof wayIds)[number];
 
-export const servicePageIds = ["hub", "freelance", "offers"] as const;
+export const servicePageIds = ["hub", "freelance", "offers", "audit"] as const;
 export type ServicePageId = (typeof servicePageIds)[number];
 
 export const wayNavVariants = ["anchors", "pages"] as const;
 export type WayNavVariant = (typeof wayNavVariants)[number];
 
+export type WayNavId = WayId | "audit";
+
 export interface WayNavItem {
-  id: WayId;
+  id: WayNavId;
   label: string;
   href: string;
 }
@@ -23,6 +25,9 @@ export interface RateItem {
 
 export const bentoAreas = ["hiring", "project", "support", "proof"] as const;
 export type BentoArea = (typeof bentoAreas)[number];
+
+export const bentoLayouts = ["hub", "ways"] as const;
+export type BentoLayout = (typeof bentoLayouts)[number];
 
 export const bentoTones = ["need", "quiet", "dark"] as const;
 export type BentoTone = (typeof bentoTones)[number];
