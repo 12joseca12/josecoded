@@ -21,9 +21,9 @@ La emulación usa la versión de PostgreSQL instalada (16 en el entorno de prueb
 
 Los tests borran datos con `tests.clean()`. No se ejecutan nunca con `--linked`, contra una URL remota ni contra `josecoded` (`echlwywbucgbhwpncviy`); solo contra el clúster efímero de `pnpm db:test:local` o contra el Supabase local de Docker (`supabase test db` sin `--linked`), donde hay que activar `alter database postgres set app.test_db to 'on'` antes. Los ficheros usan `\ir support/helpers.sql`: con `pg_prove` y `psql` funciona, pero hay que comprobar que `supabase test db` ejecuta `psql` desde el directorio de los tests (pendiente en el Mac).
 
-## Propuesta de CI
+## CI
 
-Un job `db` con `supabase start`, `supabase db reset` y `supabase test db` valida contra la imagen real `supabase/postgres` y no necesita la emulación. Queda sin cablear hasta que Jose confirme que los runners de GitHub con Docker entran en el presupuesto de CI.
+El job `db` de `.github/workflows/ci.yml` instala PostgreSQL 16 y pgTAP con apt y ejecuta `supabase/local/run-tests.sh`, igual que `pnpm db:test:local`; el job `checks` depende de él. Una validación contra la imagen real `supabase/postgres` (`supabase start`, `db reset`, `supabase test db`) queda pendiente de que Jose confirme el presupuesto de runners con Docker.
 
 ## Tipos
 

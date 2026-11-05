@@ -1411,7 +1411,7 @@
       "diagram": {
         "label": "Arquitectura de esta web",
         "caption": "Arquitectura simplificada: quién usa la web, dónde se ejecuta y dónde viven los datos.",
-        "description": "Diagrama de izquierda a derecha, o de arriba abajo en móvil. El navegador y la app móvil se conectan con la aplicación Next 16, que se ejecuta en Cloudflare Workers; la integración continua en GitHub Actions la comprueba antes de publicarla. La aplicación guarda y lee los datos en Supabase, donde Postgres aplica seguridad por filas y se ofrecen autenticación, almacenamiento y tiempo real.",
+        "description": "Diagrama de izquierda a derecha, o de arriba abajo en móvil. El navegador se conecta con la aplicación Next 16, que se ejecuta en Cloudflare Workers; la integración continua en GitHub Actions la comprueba antes de publicarla. La aplicación guarda y lee los datos en Supabase, donde Postgres aplica seguridad por filas y se ofrecen autenticación, almacenamiento y tiempo real.",
         "layers": {
           "clients": "Quién la usa",
           "app": "Aplicación y entrega",
@@ -1422,17 +1422,13 @@
             "name": "Navegador",
             "detail": "La web pública y las zonas privadas, cada una con su rol."
           },
-          "mobile": {
-            "name": "App móvil",
-            "detail": "React Native, contra el mismo backend de datos."
-          },
           "workers": {
             "name": "Next 16 en Cloudflare Workers",
             "detail": "Render en el borde con OpenNext, CSP con nonce y límite de peticiones."
           },
           "ci": {
             "name": "CI en GitHub Actions",
-            "detail": "Lint, tipos, tests, build y e2e con axe antes de cada merge."
+            "detail": "Lint, tipos, tests, build, e2e con axe y pgTAP contra todas las migraciones en cada pull request."
           },
           "postgres": {
             "name": "Supabase Postgres",
@@ -1453,10 +1449,6 @@
           "title": "Supabase con RLS",
           "text": "Postgres con permisos por fila en cada tabla: el navegador nunca tiene más acceso del que le corresponde."
         },
-        "mobile": {
-          "title": "React Native para móvil",
-          "text": "Una sola base de TypeScript para iOS y Android, con la misma forma de trabajar que en web."
-        },
         "typescript": {
           "title": "TypeScript estricto",
           "text": "Tipos inferidos de esquemas zod en cada frontera: lo que entra se valida antes de usarse."
@@ -1467,7 +1459,7 @@
         },
         "ci": {
           "title": "Integración continua",
-          "text": "Cada cambio pasa lint, tipos, tests y build antes de llegar a main, con una preview para revisarlo."
+          "text": "Cada cambio de esta web ha entrado por pull request, y en cada una pasan lint, tipos, tests, build y las pruebas de la base de datos, con una preview para revisarlo."
         }
       }
     },
@@ -1477,7 +1469,7 @@
       "items": {
         "accessibility": {
           "title": "Accesibilidad WCAG 2.2 AA",
-          "text": "Teclado, foco visible y contraste en cada componente. axe bloquea el merge si encuentra una violación."
+          "text": "Teclado, foco visible y contraste en cada componente. Si axe encuentra una violación, la integración continua falla."
         },
         "performance": {
           "title": "Presupuesto de rendimiento",
