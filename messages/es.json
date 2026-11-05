@@ -949,17 +949,49 @@
       "more": "Más",
       "moreTitle": "Más secciones",
       "close": "Cerrar",
-      "switch": "Ir al CRM"
+      "switch": "Ir al CRM",
+      "audit": "Auditoría"
     },
     "overview": {
       "meta": {
         "title": "Resumen"
       },
       "title": "Resumen",
-      "lead": "Panel del admin.",
-      "emptyTitle": "Aún no hay nada que resumir",
-      "emptyText": "Los contadores y el estado de Omen llegan con el siguiente bloque. Mientras, revisa los interesados.",
-      "emptyAction": "Ver interesados"
+      "lead": "Lo que pide tu atención ahora y por dónde seguir.",
+      "cells": {
+        "title": "Pendiente de atender",
+        "unknown": "Sin dato todavía",
+        "labels": {
+          "leads_new": "Interesados sin asignar",
+          "leads_waiting_admin": "Interesados que esperan al admin",
+          "invitations_pending": "Invitaciones pendientes",
+          "users_active": "Usuarios activos",
+          "accrued_pending_count": "Comisiones devengadas sin aprobar",
+          "payments_overdue": "Cobros vencidos",
+          "proformas_unpaid": "Proformas enviadas sin cobrar",
+          "payouts_draft": "Liquidaciones en borrador",
+          "jobs_failed": "Trabajos fallidos"
+        },
+        "loading": "Cargando contadores",
+        "unavailable": {
+          "title": "Los contadores aún no están disponibles",
+          "text": "La base de datos todavía no tiene la función que los calcula. Las celdas aparecen con un guion hasta que se aplique."
+        },
+        "error": {
+          "title": "No se han podido cargar los contadores",
+          "text": "Vuelve a intentarlo. Si sigue fallando, mira el estado de Omen y la auditoría.",
+          "retry": "Reintentar",
+          "retrying": "Reintentando"
+        }
+      },
+      "recent": {
+        "title": "Últimos cambios",
+        "all": "Ver toda la auditoría",
+        "loading": "Cargando últimos cambios"
+      },
+      "sections": {
+        "title": "Ir a"
+      }
     },
     "leads": {
       "meta": {
@@ -1769,6 +1801,78 @@
           "userId": "Usuario no válido. Recarga la lista.",
           "history": "No se ha podido cargar el historial."
         }
+      }
+    },
+    "audit": {
+      "meta": {
+        "title": "Auditoría"
+      },
+      "title": "Auditoría",
+      "lead": "Los últimos cambios registrados en la base de datos, del más reciente al más antiguo.",
+      "loading": "Cargando auditoría",
+      "filters": {
+        "label": "Filtrar la auditoría",
+        "table": "Tabla",
+        "tableAll": "Todas",
+        "action": "Acción",
+        "actionAll": "Todas",
+        "submit": "Filtrar",
+        "clear": "Quitar filtros"
+      },
+      "tables": {
+        "contacts": "Contacto",
+        "deals": "Oportunidad",
+        "invitations": "Invitación",
+        "leads": "Interesado",
+        "profiles": "Usuario"
+      },
+      "kinds": {
+        "insert": "Alta de",
+        "update": "Cambio en",
+        "delete": "Baja de",
+        "totp_reset": "Restablecido el autenticador de",
+        "other": "Operación sobre"
+      },
+      "list": {
+        "region": "Registros de auditoría",
+        "system": "Sistema",
+        "noChanges": "Sin campos visibles que comparar.",
+        "emptyValue": "vacío",
+        "record": "registro {id}",
+        "moreChanges": "y {count} campos más"
+      },
+      "more": "Ver más registros",
+      "limit": "Mostrando los últimos {count} registros.",
+      "filteredNote": "El filtro de acción se aplica sobre los registros cargados.",
+      "empty": {
+        "title": "Aún no hay registros",
+        "text": "Cuando alguien cambie datos, aparecerá aquí."
+      },
+      "emptyFiltered": {
+        "title": "Ningún registro coincide",
+        "text": "Prueba con otra tabla o acción."
+      },
+      "unavailable": {
+        "title": "La auditoría aún no está disponible",
+        "text": "La base de datos todavía no tiene la función que la lista. Aparecerá cuando se aplique."
+      },
+      "error": {
+        "title": "No se ha podido cargar la auditoría",
+        "text": "Vuelve a intentarlo en unos segundos.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "history": {
+        "title": "Historial",
+        "empty": "Todavía no hay cambios registrados para este interesado.",
+        "unavailable": "El historial aparecerá cuando la auditoría esté disponible.",
+        "error": "No se ha podido cargar el historial.",
+        "loading": "Cargando historial"
+      },
+      "actions": {
+        "insert": "Altas",
+        "update": "Cambios",
+        "delete": "Bajas"
       }
     }
   },
