@@ -929,6 +929,64 @@ export type Database = {
           },
         ]
       }
+      project_links: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          name: string
+          project_id: string
+          sort: number
+          updated_at: string
+          url: string
+          usage: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name: string
+          project_id: string
+          sort?: number
+          updated_at?: string
+          url: string
+          usage?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name?: string
+          project_id?: string
+          sort?: number
+          updated_at?: string
+          url?: string
+          usage?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_links_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_links_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_links_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       projects: {
         Row: {
           archived_at: string | null
@@ -1806,6 +1864,10 @@ export type Database = {
           invitation_id: string
           token: string
         }[]
+      }
+      reorder_project_links: {
+        Args: { p_ids: string[]; p_project_id: string }
+        Returns: undefined
       }
       retry_job: {
         Args: { p_id: string }

@@ -22,3 +22,8 @@ values
 update public.stories
 set status = 'in_tasks', task_id = '61000000-0000-4000-8000-000000000006', decided_by = '10000000-0000-4000-8000-000000000001', decided_at = now() - interval '2 days'
 where id = '62000000-0000-4000-8000-000000000003';
+
+insert into public.project_links (project_id, name, url, usage, created_by)
+values
+  ('60000000-0000-4000-8000-000000000001', 'Prueba: version de pruebas', 'https://staging.example.com/', 'Prueba: aqui ves el avance antes de publicar.', '10000000-0000-4000-8000-000000000001'),
+  ('60000000-0000-4000-8000-000000000001', 'Prueba: diseno en Figma', 'https://www.figma.com/file/prueba', null, '10000000-0000-4000-8000-000000000001');
