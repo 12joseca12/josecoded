@@ -43,6 +43,7 @@ describe("staff navigation registry", () => {
       "prices",
       "system",
       "receivables",
+      "payouts",
     ]);
     expect(ready("crm")).toEqual(["overview", "contacts", "commissions"]);
   });

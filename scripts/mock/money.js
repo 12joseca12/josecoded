@@ -189,6 +189,30 @@ const seeded = {
   ],
   payments: [
     {
+      id: "72000000-0000-4000-8000-000000000002",
+      deal_id: "30000000-0000-4000-8000-0000000000b1",
+      schedule_id: null,
+      invoice_id: null,
+      kind: "payment",
+      nature: "project",
+      amount_net: 400,
+      received_at: "2026-10-28",
+      method: "transfer",
+      reference: "Prueba: cobro de Carmen",
+    },
+    {
+      id: "72000000-0000-4000-8000-000000000004",
+      deal_id: "30000000-0000-4000-8000-0000000000b1",
+      schedule_id: null,
+      invoice_id: null,
+      kind: "payment",
+      nature: "recurring",
+      amount_net: 50,
+      received_at: "2026-10-10",
+      method: "card",
+      reference: null,
+    },
+    {
       id: "72000000-0000-4000-8000-000000000001",
       deal_id: brunoDeal,
       schedule_id: "70000000-0000-4000-8000-000000000001",
@@ -284,11 +308,23 @@ route("GET", "/rest/v1/commission_lines", ({ request, response, url }) => {
   const caller = guard(request, response, "list-lines", url);
   if (!caller) return undefined;
   const ids = inValues(url, "commission_id");
+  const eq = (field) => /^eq\.(.+)$/.exec(url.searchParams.get(field) ?? "")?.[1];
+  const payoutNull = url.searchParams.get("payout_id") === "is.null";
   const rows = caller.auth.money.lines
     .filter((line) => (ids === null ? true : ids.includes(line.commission_id)))
+    .filter((line) =>
+      eq("beneficiary_id") === undefined ? true : line.beneficiary_id === eq("beneficiary_id"),
+    )
+    .filter((line) => (eq("status") === undefined ? true : line.status === eq("status")))
+    .filter((line) => (eq("payout_id") === undefined ? true : line.payout_id === eq("payout_id")))
+    .filter((line) => (payoutNull ? line.payout_id === null : true))
     .filter((line) => lineVisible(caller, line))
     .sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))
-    .map((line) => ({ ...line, commissions: commissionRef(caller.auth, line.commission_id) }));
+    .map((line) => ({
+      ...line,
+      commissions: commissionRef(caller.auth, line.commission_id),
+      payments: paymentRef(caller.auth, line.payment_id),
+    }));
   return send(response, 200, rows);
 });
 
@@ -863,5 +899,124 @@ route("POST", "/rest/v1/rpc/reject_commission_line", async ({ request, response 
   if (line.status !== "accrued") return failure(response, "line_not_accrued");
   line.status = "rejected";
   line.rejected_reason = reason;
+  return sendEmpty(response);
+});
+
+function paymentRef(auth, paymentId) {
+  const payment = auth.money.payments.find((entry) => entry.id === paymentId);
+  return payment ? { received_at: payment.received_at } : null;
+}
+
+function personCadence(beneficiaryId) {
+  const person = Object.values(people).find((entry) => entry.id === beneficiaryId);
+  return person?.cadence ?? "biweekly";
+}
+
+function payoutAdmin(request, response, kind, body) {
+  return adminOnly(request, response, kind, body);
+}
+
+route("POST", "/rest/v1/rpc/build_payout", async ({ request, response }) => {
+  const body = JSON.parse(await readBody(request));
+  const caller = payoutAdmin(request, response, "build-payout", body);
+  if (!caller) return undefined;
+  const { auth } = caller;
+  const person = Object.values(people).find((entry) => entry.id === body.p_beneficiary_id);
+  if (!person || person.role !== "closer") return failure(response, "invalid_beneficiary");
+  const start = body.p_period_start;
+  const end = body.p_period_end;
+  if (!start || !end || end < start) return failure(response, "invalid_period");
+  const withholding = body.p_withholding_rate ?? 0;
+  if (withholding < 0 || withholding > 100) return failure(response, "invalid_withholding");
+  const lines = auth.money.lines.filter((line) => {
+    const payment = auth.money.payments.find((entry) => entry.id === line.payment_id);
+    return (
+      line.beneficiary_id === body.p_beneficiary_id &&
+      line.status === "approved" &&
+      line.payout_id === null &&
+      payment !== undefined &&
+      payment.received_at >= start &&
+      payment.received_at <= end
+    );
+  });
+  if (lines.length === 0) return failure(response, "no_lines_in_period");
+  const total = lines.reduce((sum, line) => sum + cents(line.amount), 0) / 100;
+  if (total < 0) return failure(response, "negative_total");
+  const net = (cents(total) - Math.round((cents(total) * withholding) / 100)) / 100;
+  const payout = {
+    id: randomUUID(),
+    beneficiary_id: body.p_beneficiary_id,
+    period_start: start,
+    period_end: end,
+    cadence: personCadence(body.p_beneficiary_id),
+    total,
+    withholding_rate: withholding,
+    net_total: net,
+    status: "draft",
+    statement_note: body.p_note ?? null,
+    closer_invoice_path: null,
+    issued_at: null,
+    paid_at: null,
+    paid_reference: null,
+  };
+  auth.money.payouts.push(payout);
+  for (const line of lines) line.payout_id = payout.id;
+  return send(response, 200, JSON.stringify(payout.id));
+});
+
+route("POST", "/rest/v1/rpc/set_payout_status", async ({ request, response }) => {
+  const body = JSON.parse(await readBody(request));
+  const caller = payoutAdmin(request, response, "set-payout-status", body);
+  if (!caller) return undefined;
+  const { auth } = caller;
+  const payout = auth.money.payouts.find((entry) => entry.id === body.p_id);
+  if (!payout) return failure(response, "payout_not_found");
+  if (body.p_status === "issued" && payout.status === "draft") {
+    payout.status = "issued";
+    payout.issued_at = new Date().toISOString();
+    return sendEmpty(response);
+  }
+  if (body.p_status === "paid" && payout.status === "issued") {
+    if (!body.p_paid_at) return failure(response, "paid_at_required");
+    if (body.p_paid_at > new Date().toISOString().slice(0, 10)) {
+      return failure(response, "future_date");
+    }
+    if (!String(body.p_reference ?? "").trim()) return failure(response, "reference_required");
+    payout.status = "paid";
+    payout.paid_at = body.p_paid_at;
+    payout.paid_reference = String(body.p_reference).trim();
+    for (const line of auth.money.lines) {
+      if (line.payout_id === payout.id && line.status === "approved") line.status = "paid";
+    }
+    return sendEmpty(response);
+  }
+  return failure(response, "invalid_transition");
+});
+
+route("POST", "/rest/v1/rpc/delete_payout_draft", async ({ request, response }) => {
+  const body = JSON.parse(await readBody(request));
+  const caller = payoutAdmin(request, response, "delete-payout", body);
+  if (!caller) return undefined;
+  const { auth } = caller;
+  const payout = auth.money.payouts.find((entry) => entry.id === body.p_id);
+  if (!payout) return failure(response, "payout_not_found");
+  if (payout.status !== "draft") return failure(response, "payout_not_draft");
+  for (const line of auth.money.lines) {
+    if (line.payout_id === payout.id) line.payout_id = null;
+  }
+  auth.money.payouts = auth.money.payouts.filter((entry) => entry.id !== payout.id);
+  return sendEmpty(response);
+});
+
+route("POST", "/rest/v1/rpc/set_payout_invoice", async ({ request, response }) => {
+  const body = JSON.parse(await readBody(request));
+  const caller = payoutAdmin(request, response, "set-payout-invoice", body);
+  if (!caller) return undefined;
+  const payout = caller.auth.money.payouts.find((entry) => entry.id === body.p_id);
+  if (!payout) return failure(response, "payout_not_found");
+  if (!/^payouts\/[0-9a-f-]{36}\/[0-9a-f-]{36}\.pdf$/.test(String(body.p_path))) {
+    return failure(response, "invalid_path");
+  }
+  payout.closer_invoice_path = body.p_path;
   return sendEmpty(response);
 });

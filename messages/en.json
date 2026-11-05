@@ -2082,6 +2082,202 @@
         "retrying": "Retrying"
       },
       "loading": "Loading the proforma"
+    },
+    "payouts": {
+      "meta": {
+        "title": "Payouts"
+      },
+      "title": "Payouts",
+      "lead": "Groups approved commissions by beneficiary and period. The payment is recorded here; it is not executed from here.",
+      "loading": "Loading payouts",
+      "tabsLabel": "Filter payouts",
+      "tabs": {
+        "all": "All",
+        "draft": "Draft",
+        "issued": "Issued",
+        "paid": "Paid"
+      },
+      "error": {
+        "title": "The payouts could not be loaded",
+        "text": "Try again in a few seconds.",
+        "retry": "Try again",
+        "retrying": "Retrying"
+      },
+      "empty": {
+        "title": "No payouts",
+        "text": "When there are approved commissions you can group them in a payout.",
+        "tabTitle": "No payouts with this status",
+        "tabText": "There is nothing to show with this filter."
+      },
+      "list": {
+        "caption": "Payouts",
+        "region": "Payouts table, scrolls horizontally",
+        "columns": {
+          "beneficiary": "Beneficiary",
+          "period": "Period",
+          "cadence": "Cadence",
+          "total": "Total",
+          "withholding": "Withholding",
+          "net": "Net to pay",
+          "status": "Status",
+          "reference": "Reference",
+          "actions": "Actions"
+        },
+        "open": "Open",
+        "openAria": "Open the payout of {name} from {start} to {end}",
+        "none": "—",
+        "range": "{start} – {end}"
+      },
+      "cadences": {
+        "per_payment": "Per payment",
+        "weekly": "Weekly",
+        "biweekly": "Every two weeks"
+      },
+      "statuses": {
+        "draft": "Draft",
+        "issued": "Issued",
+        "paid": "Paid"
+      },
+      "builder": {
+        "open": "Create payout",
+        "title": "Create payout",
+        "close": "Close",
+        "beneficiary": "Beneficiary",
+        "placeholder": "Choose a closer",
+        "start": "From",
+        "end": "To",
+        "suggested": "Period suggested by their cadence ({cadence}). You can change it.",
+        "withholding": "Withholding (%)",
+        "withholdingHint": "0 if no withholding applies.",
+        "note": "Statement note",
+        "optional": "(optional)",
+        "previewTitle": "Approved lines of the period",
+        "previewCount": "{count} lines",
+        "previewTotal": "Total: {amount}",
+        "previewEmpty": "There are no approved, unpaid lines in this period.",
+        "previewLoading": "Calculating",
+        "submit": "Create draft",
+        "saving": "Creating",
+        "done": "Payout draft created",
+        "errors": {
+          "beneficiary": "Choose a closer.",
+          "period": "Choose a valid period of up to a year.",
+          "withholding": "Enter a withholding between 0 and 100.",
+          "invalid_beneficiary": "Only closers have payouts.",
+          "invalid_period": "Choose a valid period of up to a year.",
+          "invalid_withholding": "Enter a withholding between 0 and 100.",
+          "invalid_note": "The note is too long.",
+          "no_lines_in_period": "There are no approved, unpaid commissions in this period.",
+          "negative_total": "Refunds exceed the commissions of the period: widen the period.",
+          "forbidden": "Only the admin can create payouts.",
+          "error": "The payout could not be created. Try again."
+        }
+      },
+      "detail": {
+        "back": "Back to payouts",
+        "heading": "Payout of {name}",
+        "summary": "Summary",
+        "period": "Period",
+        "cadence": "Cadence",
+        "total": "Total",
+        "withholding": "Withholding",
+        "net": "Net to pay",
+        "status": "Status",
+        "issuedAt": "Issued on",
+        "paidAt": "Paid on",
+        "reference": "Reference",
+        "note": "Note",
+        "notFound": "This payout does not exist.",
+        "linesTitle": "Included lines",
+        "linesEmpty": "This payout has no lines.",
+        "linesColumns": {
+          "date": "Payment",
+          "contact": "Contact",
+          "nature": "Nature",
+          "base": "Net base",
+          "rate": "Rate",
+          "amount": "Commission"
+        },
+        "linesCaption": "Payout lines",
+        "linesRegion": "Payout lines table, scrolls horizontally",
+        "loading": "Loading the payout"
+      },
+      "actions": {
+        "title": "Actions",
+        "issue": "Issue payout",
+        "issueSaving": "Issuing",
+        "issueDone": "Payout issued",
+        "markPaid": "Mark as paid",
+        "deleteDraft": "Delete draft",
+        "errors": {
+          "invalid_transition": "The payout no longer accepts this change. Reload the page.",
+          "payout_not_draft": "Only drafts can be deleted.",
+          "payout_not_found": "We cannot find the payout.",
+          "forbidden": "Only the admin can do this.",
+          "error": "The action could not be completed. Try again."
+        }
+      },
+      "pay": {
+        "title": "Mark as paid",
+        "close": "Close",
+        "text": "You are about to record that you have paid {amount} to {name}. This only keeps a record: it does not execute any payment.",
+        "date": "Payment date",
+        "reference": "Payment reference",
+        "submit": "Record payment",
+        "saving": "Recording",
+        "done": "Payout marked as paid",
+        "errors": {
+          "date": "Choose the payment date.",
+          "reference": "Enter the payment reference.",
+          "paid_at_required": "Choose the payment date.",
+          "reference_required": "Enter the payment reference.",
+          "future_date": "The payment date cannot be in the future.",
+          "invalid_transition": "The payout no longer accepts this change. Reload the page.",
+          "payout_not_found": "We cannot find the payout.",
+          "forbidden": "Only the admin can do this.",
+          "error": "The payment could not be recorded. Try again."
+        }
+      },
+      "deleteConfirm": {
+        "title": "Delete draft",
+        "text": "The draft is deleted and its lines become available for another payout.",
+        "submit": "Delete draft",
+        "done": "Draft deleted",
+        "saving": "Deleting",
+        "close": "Close"
+      },
+      "invoice": {
+        "title": "Closer invoice",
+        "none": "There is no closer invoice yet.",
+        "open": "Open closer invoice",
+        "upload": "Upload closer invoice",
+        "file": "Invoice PDF",
+        "hint": "PDF up to 10 MB.",
+        "submit": "Upload invoice",
+        "saving": "Uploading",
+        "done": "Invoice uploaded",
+        "errors": {
+          "file": "Choose a PDF.",
+          "fileType": "The file must be a PDF.",
+          "fileSize": "The PDF is larger than 10 MB.",
+          "upload": "The PDF could not be uploaded. Try again.",
+          "invalid_path": "The invoice could not be saved.",
+          "payout_not_found": "We cannot find the payout.",
+          "forbidden": "Only the admin can do this.",
+          "error": "The invoice could not be uploaded. Try again."
+        }
+      },
+      "statement": {
+        "print": "Print statement",
+        "printHint": "In the print dialog choose \"Save as PDF\".",
+        "title": "Commission statement",
+        "issuer": "José Carlos Sánchez García · Tax ID 06011766A · Madrid (Spain)",
+        "beneficiary": "Beneficiary",
+        "period": "Period",
+        "notPayment": "This statement summarises commissions. It is not an invoice.",
+        "footer": "Amounts in euros.",
+        "range": "{start} – {end}"
+      }
     }
   },
   "crm": {

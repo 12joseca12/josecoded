@@ -37,6 +37,7 @@ export const people = {
     name: "Dani Closer",
     parent: "00000000-0000-4000-8000-0000000000c1",
     rates: { closer: 10, parent: 5, closerRecurring: 4, parentRecurring: 2 },
+    cadence: "weekly",
   },
   "client@example.com": {
     id: "00000000-0000-4000-8000-0000000000d1",

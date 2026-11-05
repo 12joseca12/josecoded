@@ -27,6 +27,7 @@ route("GET", "/rest/v1/profiles", ({ request, response, url }) => {
         role: person.role,
         is_active: !person.inactive,
         parent_closer_id: person.parent ?? null,
+        payout_cadence: person.cadence ?? null,
         closer_rate: person.rates?.closer ?? null,
         parent_rate: person.rates?.parent ?? null,
         closer_recurring_rate: person.rates?.closerRecurring ?? null,

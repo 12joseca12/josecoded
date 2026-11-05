@@ -2082,6 +2082,202 @@
         "retrying": "Reintentando"
       },
       "loading": "Cargando la proforma"
+    },
+    "payouts": {
+      "meta": {
+        "title": "Liquidaciones"
+      },
+      "title": "Liquidaciones",
+      "lead": "Agrupa las comisiones aprobadas por beneficiario y periodo. El pago se registra aquí; no se ejecuta desde aquí.",
+      "loading": "Cargando liquidaciones",
+      "tabsLabel": "Filtrar liquidaciones",
+      "tabs": {
+        "all": "Todas",
+        "draft": "Borrador",
+        "issued": "Emitidas",
+        "paid": "Pagadas"
+      },
+      "error": {
+        "title": "No se han podido cargar las liquidaciones",
+        "text": "Inténtalo otra vez en unos segundos.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "empty": {
+        "title": "Sin liquidaciones",
+        "text": "Cuando haya comisiones aprobadas podrás agruparlas en una liquidación.",
+        "tabTitle": "Sin liquidaciones con este estado",
+        "tabText": "No hay nada que mostrar con este filtro."
+      },
+      "list": {
+        "caption": "Liquidaciones",
+        "region": "Tabla de liquidaciones, se desplaza en horizontal",
+        "columns": {
+          "beneficiary": "Beneficiario",
+          "period": "Periodo",
+          "cadence": "Cadencia",
+          "total": "Total",
+          "withholding": "Retención",
+          "net": "Neto a pagar",
+          "status": "Estado",
+          "reference": "Referencia",
+          "actions": "Acciones"
+        },
+        "open": "Abrir",
+        "openAria": "Abrir la liquidación de {name} del {start} al {end}",
+        "none": "—",
+        "range": "{start} – {end}"
+      },
+      "cadences": {
+        "per_payment": "Por cobro",
+        "weekly": "Semanal",
+        "biweekly": "Quincenal"
+      },
+      "statuses": {
+        "draft": "Borrador",
+        "issued": "Emitida",
+        "paid": "Pagada"
+      },
+      "builder": {
+        "open": "Crear liquidación",
+        "title": "Crear liquidación",
+        "close": "Cerrar",
+        "beneficiary": "Beneficiario",
+        "placeholder": "Elige un closer",
+        "start": "Desde",
+        "end": "Hasta",
+        "suggested": "Periodo sugerido por su cadencia ({cadence}). Puedes cambiarlo.",
+        "withholding": "Retención (%)",
+        "withholdingHint": "0 si no se aplica retención.",
+        "note": "Nota del extracto",
+        "optional": "(opcional)",
+        "previewTitle": "Líneas aprobadas del periodo",
+        "previewCount": "{count} líneas",
+        "previewTotal": "Total: {amount}",
+        "previewEmpty": "No hay líneas aprobadas sin liquidar en este periodo.",
+        "previewLoading": "Calculando",
+        "submit": "Crear borrador",
+        "saving": "Creando",
+        "done": "Borrador de liquidación creado",
+        "errors": {
+          "beneficiary": "Elige un closer.",
+          "period": "Elige un periodo válido de hasta un año.",
+          "withholding": "Escribe una retención entre 0 y 100.",
+          "invalid_beneficiary": "Solo los closers tienen liquidaciones.",
+          "invalid_period": "Elige un periodo válido de hasta un año.",
+          "invalid_withholding": "Escribe una retención entre 0 y 100.",
+          "invalid_note": "La nota es demasiado larga.",
+          "no_lines_in_period": "No hay comisiones aprobadas sin liquidar en este periodo.",
+          "negative_total": "Las devoluciones superan las comisiones del periodo: amplía el periodo.",
+          "forbidden": "Solo el administrador puede crear liquidaciones.",
+          "error": "No se ha podido crear la liquidación. Inténtalo otra vez."
+        }
+      },
+      "detail": {
+        "back": "Volver a liquidaciones",
+        "heading": "Liquidación de {name}",
+        "summary": "Resumen",
+        "period": "Periodo",
+        "cadence": "Cadencia",
+        "total": "Total",
+        "withholding": "Retención",
+        "net": "Neto a pagar",
+        "status": "Estado",
+        "issuedAt": "Emitida el",
+        "paidAt": "Pagada el",
+        "reference": "Referencia",
+        "note": "Nota",
+        "notFound": "Esta liquidación no existe.",
+        "linesTitle": "Líneas incluidas",
+        "linesEmpty": "Esta liquidación no tiene líneas.",
+        "linesColumns": {
+          "date": "Cobro",
+          "contact": "Contacto",
+          "nature": "Naturaleza",
+          "base": "Base neta",
+          "rate": "Tasa",
+          "amount": "Comisión"
+        },
+        "linesCaption": "Líneas de la liquidación",
+        "linesRegion": "Tabla de líneas de la liquidación, se desplaza en horizontal",
+        "loading": "Cargando la liquidación"
+      },
+      "actions": {
+        "title": "Acciones",
+        "issue": "Emitir liquidación",
+        "issueSaving": "Emitiendo",
+        "issueDone": "Liquidación emitida",
+        "markPaid": "Marcar como pagada",
+        "deleteDraft": "Eliminar borrador",
+        "errors": {
+          "invalid_transition": "La liquidación ya no admite este cambio. Recarga la página.",
+          "payout_not_draft": "Solo se pueden eliminar borradores.",
+          "payout_not_found": "No encontramos la liquidación.",
+          "forbidden": "Solo el administrador puede hacerlo.",
+          "error": "No se ha podido completar la acción. Inténtalo otra vez."
+        }
+      },
+      "pay": {
+        "title": "Marcar como pagada",
+        "close": "Cerrar",
+        "text": "Vas a registrar que ya has pagado {amount} a {name}. Esto solo deja constancia: no ejecuta ningún pago.",
+        "date": "Fecha del pago",
+        "reference": "Referencia del pago",
+        "submit": "Registrar pago",
+        "saving": "Registrando",
+        "done": "Liquidación marcada como pagada",
+        "errors": {
+          "date": "Elige la fecha del pago.",
+          "reference": "Escribe la referencia del pago.",
+          "paid_at_required": "Elige la fecha del pago.",
+          "reference_required": "Escribe la referencia del pago.",
+          "future_date": "La fecha del pago no puede ser futura.",
+          "invalid_transition": "La liquidación ya no admite este cambio. Recarga la página.",
+          "payout_not_found": "No encontramos la liquidación.",
+          "forbidden": "Solo el administrador puede hacerlo.",
+          "error": "No se ha podido registrar el pago. Inténtalo otra vez."
+        }
+      },
+      "deleteConfirm": {
+        "title": "Eliminar borrador",
+        "text": "El borrador se elimina y sus líneas vuelven a estar disponibles para otra liquidación.",
+        "submit": "Eliminar borrador",
+        "done": "Borrador eliminado",
+        "saving": "Eliminando",
+        "close": "Cerrar"
+      },
+      "invoice": {
+        "title": "Factura del closer",
+        "none": "Todavía no hay factura del closer.",
+        "open": "Abrir factura del closer",
+        "upload": "Subir factura del closer",
+        "file": "PDF de la factura",
+        "hint": "PDF de hasta 10 MB.",
+        "submit": "Subir factura",
+        "saving": "Subiendo",
+        "done": "Factura subida",
+        "errors": {
+          "file": "Elige un PDF.",
+          "fileType": "El archivo tiene que ser un PDF.",
+          "fileSize": "El PDF pesa más de 10 MB.",
+          "upload": "No se ha podido subir el PDF. Inténtalo otra vez.",
+          "invalid_path": "No se ha podido guardar la factura.",
+          "payout_not_found": "No encontramos la liquidación.",
+          "forbidden": "Solo el administrador puede hacerlo.",
+          "error": "No se ha podido subir la factura. Inténtalo otra vez."
+        }
+      },
+      "statement": {
+        "print": "Imprimir extracto",
+        "printHint": "En el diálogo de impresión elige «Guardar como PDF».",
+        "title": "Extracto de comisiones",
+        "issuer": "José Carlos Sánchez García · NIF 06011766A · Madrid (España)",
+        "beneficiary": "Beneficiario",
+        "period": "Periodo",
+        "notPayment": "Este extracto resume comisiones. No es una factura.",
+        "footer": "Importes en euros.",
+        "range": "{start} – {end}"
+      }
     }
   },
   "crm": {
