@@ -164,6 +164,20 @@ export type Database = {
             referencedRelation: "commissions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "commission_lines_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commission_lines_payout_id_fkey"
+            columns: ["payout_id"]
+            isOneToOne: false
+            referencedRelation: "payouts"
+            referencedColumns: ["id"]
+          },
         ]
       }
       commissions: {
@@ -1116,6 +1130,92 @@ export type Database = {
           },
         ]
       }
+      payouts: {
+        Row: {
+          beneficiary_id: string
+          cadence: Database["public"]["Enums"]["payout_cadence"]
+          closer_invoice_path: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          issued_at: string | null
+          net_total: number
+          paid_at: string | null
+          paid_reference: string | null
+          period_end: string
+          period_start: string
+          statement_note: string | null
+          status: Database["public"]["Enums"]["payout_status"]
+          total: number
+          withholding_rate: number
+        }
+        Insert: {
+          beneficiary_id: string
+          cadence: Database["public"]["Enums"]["payout_cadence"]
+          closer_invoice_path?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          issued_at?: string | null
+          net_total: number
+          paid_at?: string | null
+          paid_reference?: string | null
+          period_end: string
+          period_start: string
+          statement_note?: string | null
+          status?: Database["public"]["Enums"]["payout_status"]
+          total: number
+          withholding_rate?: number
+        }
+        Update: {
+          beneficiary_id?: string
+          cadence?: Database["public"]["Enums"]["payout_cadence"]
+          closer_invoice_path?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          issued_at?: string | null
+          net_total?: number
+          paid_at?: string | null
+          paid_reference?: string | null
+          period_end?: string
+          period_start?: string
+          statement_note?: string | null
+          status?: Database["public"]["Enums"]["payout_status"]
+          total?: number
+          withholding_rate?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payouts_beneficiary_id_fkey"
+            columns: ["beneficiary_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payouts_beneficiary_id_fkey"
+            columns: ["beneficiary_id"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payouts_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payouts_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       price_changes: {
         Row: {
           after: string | null
@@ -1515,6 +1615,10 @@ export type Database = {
         Args: { p_lead_id: string; p_user_id: string }
         Returns: string
       }
+      build_payout: {
+        Args: { p_beneficiary_id: string; p_note?: string; p_period_end: string; p_period_start: string; p_withholding_rate?: number }
+        Returns: string
+      }
       cancel_job: {
         Args: { p_id: string }
         Returns: Database["public"]["Enums"]["job_status"]
@@ -1543,6 +1647,10 @@ export type Database = {
           reference: string | null
           schedule_id: string | null
         }[]
+      }
+      delete_payout_draft: {
+        Args: { p_id: string }
+        Returns: undefined
       }
       discard_lead: {
         Args: { p_lead_id: string; p_reason: string }
@@ -1682,6 +1790,14 @@ export type Database = {
         Args: { p_deal_id: string; p_items: Json }
         Returns: number
       }
+      set_payout_invoice: {
+        Args: { p_id: string; p_path: string }
+        Returns: undefined
+      }
+      set_payout_status: {
+        Args: { p_id: string; p_paid_at?: string; p_reference?: string; p_status: Database["public"]["Enums"]["payout_status"] }
+        Returns: undefined
+      }
       set_setting: {
         Args: { p_key: string; p_value: Json }
         Returns: string
@@ -1799,6 +1915,7 @@ export type Database = {
       payment_kind: "payment" | "refund"
       payment_method: "transfer" | "card" | "stripe" | "other"
       payout_cadence: "per_payment" | "weekly" | "biweekly"
+      payout_status: "draft" | "issued" | "paid"
       schedule_kind: "milestone" | "recurring"
       schedule_status: "scheduled" | "proforma_sent" | "invoiced" | "paid" | "cancelled"
       user_role: "admin" | "closer" | "freelance" | "client"
@@ -1971,6 +2088,7 @@ export const Constants = {
       payment_kind: ["payment", "refund"],
       payment_method: ["transfer", "card", "stripe", "other"],
       payout_cadence: ["per_payment", "weekly", "biweekly"],
+      payout_status: ["draft", "issued", "paid"],
       schedule_kind: ["milestone", "recurring"],
       schedule_status: ["scheduled", "proforma_sent", "invoiced", "paid", "cancelled"],
       user_role: ["admin", "closer", "freelance", "client"],

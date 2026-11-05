@@ -86,6 +86,7 @@ begin
   end if;
   reset role;
   delete from public.commission_lines;
+  delete from public.payouts;
   delete from public.commissions;
   delete from public.payments;
   delete from public.invoices;

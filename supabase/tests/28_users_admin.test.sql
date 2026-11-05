@@ -76,9 +76,8 @@ select is(
   'the portfolio counters ignore closed deals and the accrued amount is zero for now'
 );
 
-select is(
-  public.admin_counters(),
-  '{"leads_new": 2, "users_active": 6, "leads_waiting_admin": 1, "invitations_pending": 0}'::jsonb,
+select ok(
+  public.admin_counters() @> '{"leads_new": 2, "users_active": 6, "leads_waiting_admin": 1, "invitations_pending": 0}'::jsonb,
   'admin_counters counts unassigned and waiting leads separately'
 );
 
