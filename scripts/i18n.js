@@ -6,6 +6,7 @@ import { format, resolveConfig } from "prettier";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const generatedFile = join(root, "src/i18n/keys.generated.ts");
+const errorsFile = join(root, "src/i18n/errors.generated.ts");
 const baseLocale = "es";
 const locales = ["es", "en"];
 
@@ -31,13 +32,26 @@ async function render(keys) {
   return format(source, { ...options, filepath: generatedFile });
 }
 
+async function renderErrors() {
+  const copies = {};
+  for (const locale of locales) {
+    const tree = JSON.parse(readFileSync(join(root, "messages", `${locale}.json`), "utf8"));
+    copies[locale] = tree.errors;
+  }
+  const source = `import type { ErrorCopy } from "@/types/errors";\n\nexport const errorCopies: Record<"es" | "en", ErrorCopy> = ${JSON.stringify(copies)};\n`;
+  const options = await resolveConfig(errorsFile);
+  return format(source, { ...options, filepath: errorsFile });
+}
+
 const base = load(baseLocale);
 const keys = Object.keys(base).sort();
 const expected = await render(keys);
+const expectedErrors = await renderErrors();
 
 if (process.argv.includes("--write")) {
   writeFileSync(generatedFile, expected);
-  console.log(`i18n: wrote ${keys.length} keys to src/i18n/keys.generated.ts`);
+  writeFileSync(errorsFile, expectedErrors);
+  console.log(`i18n: wrote ${keys.length} keys and the error copy to src/i18n`);
   process.exit(0);
 }
 
@@ -65,6 +79,11 @@ for (const locale of locales) {
 const current = existsSync(generatedFile) ? readFileSync(generatedFile, "utf8") : "";
 if (current !== expected) {
   problems.push("src/i18n/keys.generated.ts is stale: run pnpm i18n:keys");
+}
+
+const currentErrors = existsSync(errorsFile) ? readFileSync(errorsFile, "utf8") : "";
+if (currentErrors !== expectedErrors) {
+  problems.push("src/i18n/errors.generated.ts is stale: run pnpm i18n:keys");
 }
 
 if (problems.length > 0) {

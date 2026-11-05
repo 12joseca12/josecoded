@@ -2,7 +2,7 @@
 
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/Button/Button";
 import { IconButton } from "@/components/ui/IconButton/IconButton";
@@ -12,12 +12,13 @@ import { chatPanelMounted, openChat } from "@/lib/chat/chat-events";
 import { useOpenChat } from "@/lib/chat/use-open-chat";
 import { homeSlug, resolveActive, stripLocale } from "@/lib/nav/nav";
 import { useNavState } from "@/lib/nav/use-nav-state";
+import { preloadLater } from "@/lib/preload-later";
+import { useMountedOnceOpen } from "@/lib/use-mounted-once-open";
 import type { HeaderLabels, NavCurrent, NavItem, NavLink } from "@/types/nav";
 
 import { Brand } from "../Brand/Brand";
 import { ChatButton } from "../ChatButton/ChatButton";
 import { type ChooserFocus, ContactChooser } from "../ContactChooser/ContactChooser";
-import { MobileMenu } from "../MobileMenu/MobileMenu";
 import { SearchButton } from "../SearchButton/SearchButton";
 import { CapsuleRing } from "./CapsuleRing";
 import styles from "./SiteHeader.module.css";
@@ -29,6 +30,11 @@ interface SiteHeaderProps {
   whatsappHref: string | null;
   searchEnabled: boolean;
 }
+
+const loadMobileMenu = () =>
+  import("../MobileMenu/MobileMenu").then((module) => ({ default: module.MobileMenu }));
+const MobileMenu = lazy(loadMobileMenu);
+preloadLater(loadMobileMenu);
 
 const menuId = "site-menu";
 const chooserId = "contact-chooser";
@@ -52,6 +58,7 @@ export function SiteHeader({
 
   const [openPath, setOpenPath] = useState<string | null>(null);
   const menuOpen = openPath === pathname;
+  const menuArmed = useMountedOnceOpen(menuOpen);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const closeMenu = useCallback(() => {
     setOpenPath(null);
@@ -228,16 +235,20 @@ export function SiteHeader({
           </span>
         </div>
       </div>
-      <MobileMenu
-        id={menuId}
-        open={menuOpen}
-        onClose={closeMenu}
-        title={labels.menuTitle}
-        closeLabel={labels.menuClose}
-        hereLabel={labels.here}
-        links={links}
-        cta={cta}
-      />
+      {menuArmed ? (
+        <Suspense fallback={null}>
+          <MobileMenu
+            id={menuId}
+            open={menuOpen}
+            onClose={closeMenu}
+            title={labels.menuTitle}
+            closeLabel={labels.menuClose}
+            hereLabel={labels.here}
+            links={links}
+            cta={cta}
+          />
+        </Suspense>
+      ) : null}
     </header>
   );
 }
