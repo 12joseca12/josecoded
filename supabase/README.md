@@ -5,7 +5,7 @@ Fuente única del esquema (decisión 9.1 y `docs/plan/migraciones-chat.md`). Nad
 ## Contenido
 
 - `migrations/`: una migración por bloque, sin `down`. `anon` no recibe ningún privilegio; todo lo público entra por rutas de servidor con la clave de servicio.
-- `seed.sql`: datos de prueba solo para el entorno local (`db reset`); `db push` no lo ejecuta.
+- `seed/NN_<dominio>.sql`: datos de prueba solo para el entorno local (`db reset`, en orden alfabético; un fichero por dominio); `db push` no lo ejecuta.
 - `tests/`: pgTAP. `00_anon_grants.test.sql` es el test genérico de `anon`; `support/helpers.sql` (esquema `tests`) se carga con `\ir` dentro de la transacción de cada fichero y se descarta con su `rollback`, sin grants para `anon` ni `authenticated`; `NN_<nombre>.test.sql` cubre cada migración; `90_lint.test.sql` reproduce los avisos del linter de Supabase que se pueden comprobar en SQL. Cada fichero empieza con `tests.clean()`, que aborta salvo que la base tenga `app.test_db = 'on'` (lo fija `local/shim.sql`), y se puede ejecutar con o sin seed.
 - `local/`: lo necesario para validar sin Docker ni Supabase.
 

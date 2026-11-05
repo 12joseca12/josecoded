@@ -1,8 +1,18 @@
-import { randomUUID } from "node:crypto";
 import { readFileSync } from "node:fs";
 
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
+
+import {
+  mockOrigin as mock,
+  openLogin,
+  requestCode as requestStaffCode,
+  signInAdmin as signInStaffAdmin,
+  signInOtp as signInStaffOtp,
+  submitCode,
+  type Tag,
+  withTag,
+} from "./support/staff";
 
 interface Notice {
   title: string;
@@ -67,7 +77,6 @@ interface Messages {
 
 const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as Messages;
 const { login, totp } = es.auth;
-const mock = `http://localhost:${process.env.MOCK_BACKEND_PORT ?? 3199}`;
 
 interface AuthCalls {
   captcha: { token: string }[];
@@ -83,53 +92,32 @@ interface AuthCalls {
 test.describe.configure({ mode: "serial" });
 test.use({ extraHTTPHeaders: { "cf-connecting-ip": "203.0.113.9" } });
 
-let tag = "";
+let tag: Tag = withTag();
 
 test.beforeEach(async ({ request }) => {
-  tag = randomUUID().replaceAll("-", "").slice(0, 12);
-  await request.post(`${mock}/__auth/reset?tag=${tag}`);
+  tag = withTag();
+  await request.post(`${mock}/__auth/reset?tag=${tag.value}`);
 });
 
 function mailbox(email: string): string {
-  const [local = "", domain = ""] = email.split("@");
-  return `${local}+${tag}@${domain}`;
+  return tag.mailbox(email);
 }
 
 async function authCalls(page: Page): Promise<AuthCalls> {
-  const response = await page.request.get(`${mock}/__auth/calls?tag=${tag}`);
+  const response = await page.request.get(`${mock}/__auth/calls?tag=${tag.value}`);
   return (await response.json()) as AuthCalls;
 }
 
-async function openLogin(page: Page, query = "") {
-  await page.goto(`/es/entrar${query}`);
-  await expect(page.getByLabel(login.emailLabel)).toBeVisible();
-  await expect(page.locator("[data-fake-turnstile]")).toBeAttached();
-  await page.waitForTimeout(150);
+function requestCode(page: Page, email: string) {
+  return requestStaffCode(page, tag, email);
 }
 
-async function requestCode(page: Page, email: string) {
-  await page.getByLabel(login.emailLabel).fill(mailbox(email));
-  await page.getByRole("button", { name: login.send }).click();
-  await expect(page.getByRole("heading", { level: 1, name: login.codeTitle })).toBeVisible();
+function signInOtp(page: Page, email: string, query = "") {
+  return signInStaffOtp(page, tag, email, query);
 }
 
-async function submitCode(page: Page, code: string) {
-  await page.getByLabel(login.codeLabel).fill(code);
-  await page.getByRole("button", { name: login.verify }).click();
-}
-
-async function signInOtp(page: Page, email: string, query = "") {
-  await openLogin(page, query);
-  await requestCode(page, email);
-  await submitCode(page, "123456");
-}
-
-async function signInAdmin(page: Page, query = "") {
-  await signInOtp(page, "enrolled@example.com", query);
-  await expect(page).toHaveURL(/\/es\/entrar\/totp/);
-  await page.getByLabel(totp.codeLabel).fill("654321");
-  await page.getByRole("button", { name: totp.verify }).click();
-  await expect(page).not.toHaveURL(/\/entrar/);
+function signInAdmin(page: Page, query = "") {
+  return signInStaffAdmin(page, tag, query);
 }
 
 function alertWith(page: Page, text: string) {
@@ -446,7 +434,7 @@ test("assigning needs a closer and reports a lead that already changed", async (
   await expect(cara.getByRole("alert")).toHaveText(es.admin.leads.actions.errors.assignee);
   expect((await authCalls(page)).rpc).toHaveLength(0);
 
-  await request.post(`${mock}/__auth/rpc-error?tag=${tag}`, {
+  await request.post(`${mock}/__auth/rpc-error?tag=${tag.value}`, {
     data: { error: { code: "P0001", message: "lead_already_claimed" } },
   });
   await cara.getByLabel(es.admin.leads.actions.assignLabel).selectOption({ label: "Cleo Closer" });
@@ -475,17 +463,17 @@ test("an admin discards a lead with a reason", async ({ page }) => {
 
 test("the leads list has empty and error states", async ({ page, request }) => {
   await signInAdmin(page, "?next=%2Fes%2Fadmin%2Finteresados");
-  await request.post(`${mock}/__auth/leads-mode?tag=${tag}`, { data: { mode: "empty" } });
+  await request.post(`${mock}/__auth/leads-mode?tag=${tag.value}`, { data: { mode: "empty" } });
   await page.reload();
   await expect(page.getByRole("heading", { name: es.admin.leads.empty.title })).toBeVisible();
   await expectClean(page);
 
-  await request.post(`${mock}/__auth/leads-mode?tag=${tag}`, { data: { mode: "error" } });
+  await request.post(`${mock}/__auth/leads-mode?tag=${tag.value}`, { data: { mode: "error" } });
   await page.reload();
   await expect(alertWith(page, es.admin.leads.error.title)).toBeVisible();
   await expectClean(page);
 
-  await request.post(`${mock}/__auth/leads-mode?tag=${tag}`, { data: { mode: "data" } });
+  await request.post(`${mock}/__auth/leads-mode?tag=${tag.value}`, { data: { mode: "data" } });
   await page.getByRole("button", { name: es.admin.leads.error.retry }).click();
   await expect(page.getByRole("table")).toBeVisible();
 });

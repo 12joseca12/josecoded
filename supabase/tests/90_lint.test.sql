@@ -76,7 +76,14 @@ select is_empty(
     where n.nspname = 'public'
       and p.prosecdef
       and has_function_privilege('authenticated', p.oid, 'execute')
-      and p.proname not in ('update_my_profile', 'claim_lead', 'assign_lead', 'discard_lead', 'touch_lead', 'list_lead_inbox')
+      and p.proname not in (
+        'assign_lead',
+        'claim_lead',
+        'discard_lead',
+        'list_lead_inbox',
+        'touch_lead',
+        'update_my_profile'
+      )
   $$,
   'only the allowed security definer RPCs are callable from the API'
 );
@@ -165,7 +172,14 @@ select is_empty(
     join pg_namespace n on n.oid = p.pronamespace
     where n.nspname = 'public'
       and has_function_privilege('authenticated', p.oid, 'execute')
-      and p.proname not in ('update_my_profile', 'claim_lead', 'assign_lead', 'discard_lead', 'touch_lead', 'list_lead_inbox')
+      and p.proname not in (
+        'assign_lead',
+        'claim_lead',
+        'discard_lead',
+        'list_lead_inbox',
+        'touch_lead',
+        'update_my_profile'
+      )
   $$,
   'only the profile and lead RPCs are callable by authenticated in public'
 );
