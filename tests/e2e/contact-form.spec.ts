@@ -5,13 +5,16 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
 
 interface FormMessages {
+  next: { title: string; noCommitment: string; steps: Record<string, Record<string, string>> };
+  example: { summary: string; project: string };
+  selection: { warranty: string; proposal: string };
+  sent: { title: string; nextTitle: string; byWay: Record<string, { next: string }> };
   ways: Record<"contratacion" | "freelance" | "project", { label: string }>;
   nameLabel: string;
   emailLabel: string;
   messageLabel: string;
   consentLink: string;
   submit: string;
-  sent: { title: string };
   quota: { title: string };
   failed: { title: string };
   verificationFailed: { title: string };
@@ -19,7 +22,8 @@ interface FormMessages {
 }
 
 const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
-  contactPage: { form: FormMessages };
+  common: { responseTime: string };
+  contactPage: { form: FormMessages; chat: { hint: string; soon: string } };
 };
 const form = es.contactPage.form;
 const mock = `http://localhost:${process.env.MOCK_BACKEND_PORT ?? 3199}`;
@@ -45,6 +49,7 @@ async function open(page: Page, query = "") {
   await page.goto(`/es/contacto${query}#formulario`);
   const section = page.locator("#formulario");
   await expect(section.locator("form")).toBeVisible();
+  await section.getByRole("button", { name: form.submit }).scrollIntoViewIfNeeded();
   await expect(section.locator("[data-fake-turnstile]")).toBeAttached();
   await page.waitForTimeout(150);
   return section;
@@ -190,6 +195,8 @@ test("can be completed with the keyboard alone", async ({ page }) => {
   await page.keyboard.press("Tab");
   await page.keyboard.type("Mensaje por teclado.");
   await page.keyboard.press("Tab");
+  await expect(page.getByText(form.example.summary)).toBeFocused();
+  await page.keyboard.press("Tab");
   await page.keyboard.press("Space");
   for (let step = 0; step < 6; step++) {
     if (await submit(page).evaluate((node) => node === document.activeElement)) break;
@@ -233,6 +240,70 @@ test.describe("preselection", () => {
     expect(lead?.args.p_via).toBe("pack");
     expect(lead?.args.p_page_path).toBe("/es/contacto?offer=web-negocio&extras=payments,seo");
   });
+});
+
+test.describe("what happens next, example and per-way success", () => {
+  const stepsOf = (way: string) =>
+    Object.values(es.contactPage.form.next.steps[way] ?? {}).map((step) =>
+      step.replace("{time}", es.common.responseTime),
+    );
+
+  test("shows the steps of the chosen way and the no-commitment line", async ({ page }) => {
+    const section = await open(page);
+    const next = section.getByTestId("what-happens-next");
+    await expect(next.getByRole("listitem")).toHaveText(stepsOf("any"));
+    await section.getByLabel(form.ways.freelance.label).check();
+    await expect(next.getByRole("listitem")).toHaveText(stepsOf("freelance"));
+    await expect(next).toContainText(es.common.responseTime);
+    await expect(section.getByText(form.next.noCommitment)).toBeVisible();
+  });
+
+  test("the example message is collapsed and follows the chosen way", async ({ page }) => {
+    const section = await open(page, "?via=project");
+    const example = section.getByTestId("message-example");
+    await expect(example.getByText(form.example.project)).toBeHidden();
+    await example.getByText(form.example.summary).click();
+    await expect(example.getByText(form.example.project)).toBeVisible();
+  });
+
+  test("with a via the form comes before the chat and without it after", async ({ page }) => {
+    await page.goto("/es/contacto?via=freelance");
+    const withVia = page.locator("#formulario, #chat");
+    await expect(withVia.first()).toHaveAttribute("id", "formulario");
+    await page.goto("/es/contacto");
+    await expect(page.locator("#formulario, #chat").first()).toHaveAttribute("id", "chat");
+  });
+
+  test("the chat card promises no timing", async ({ page }) => {
+    await page.goto("/es/contacto");
+    const chat = page.locator("#chat");
+    await expect(chat).toContainText(es.contactPage.chat.hint);
+    await expect(chat).not.toContainText(/muy pronto|al momento/i);
+  });
+
+  test("the selection chip shows the warranty and the no-commitment note", async ({ page }) => {
+    await open(page, "?via=project&offer=web-negocio&extras=seo");
+    const chip = page.getByTestId("selection-chip");
+    await expect(chip).toContainText(form.selection.warranty);
+    await expect(chip).toContainText(form.selection.proposal);
+  });
+
+  for (const way of ["contratacion", "freelance", "project"] as const) {
+    test(`success for ${way} has its own next step`, async ({ page }) => {
+      await open(page, `?via=${way}`);
+      const section = page.locator("#formulario");
+      await section.getByLabel(form.nameLabel).fill("Ada Lovelace");
+      await section.getByLabel(form.emailLabel).fill("ada@example.com");
+      await section.getByLabel(form.messageLabel).fill("Hola.");
+      await section.getByLabel(new RegExp(form.consentLink)).check();
+      await submit(page).click();
+      await expect(page.getByRole("heading", { name: form.sent.title })).toBeVisible();
+      await expect(
+        section.getByRole("link", { name: form.sent.byWay[way]?.next ?? "" }),
+      ).toBeVisible();
+      await expect(section.getByTestId("what-happens-next")).toContainText(es.common.responseTime);
+    });
+  }
 });
 
 for (const width of [1440, 375]) {

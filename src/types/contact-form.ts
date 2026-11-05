@@ -4,7 +4,7 @@ import { z } from "zod";
 
 import { locales } from "@/i18n/config";
 
-import { wayIds } from "./services";
+import { type WayId, wayIds } from "./services";
 
 export const contactFieldNames = ["way", "name", "email", "company", "message", "consent"] as const;
 export type ContactFieldName = (typeof contactFieldNames)[number];
@@ -76,7 +76,11 @@ export interface ContactSelectionLabels {
   provisional: string;
   perMonth: string;
   change: string;
+  warranty: string;
+  proposal: string;
 }
+
+export type ContactCopyKey = WayId | "any";
 
 export interface ContactFormLabels {
   wayLegend: string;
@@ -101,7 +105,15 @@ export interface ContactFormLabels {
   summaryMany: string;
   errors: Record<string, string>;
   genericError: string;
-  sent: { title: string; text: string; alternative: string; again: string };
+  next: { title: string; noCommitment: string; steps: Record<ContactCopyKey, string[]> };
+  example: { summary: string; byWay: Record<ContactCopyKey, string> };
+  sent: {
+    title: string;
+    nextTitle: string;
+    alternative: string;
+    again: string;
+    byWay: Record<WayId, { text: string; next: string }>;
+  };
   quota: { title: string; text: string; alternative: string };
   verificationFailed: { title: string; text: string };
   failed: { title: string; text: string; alternative: string };

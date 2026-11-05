@@ -1,7 +1,26 @@
 import type { MessageKey } from "@/i18n/keys.generated";
-import type { ContactFormLabels } from "@/types/contact-form";
+import type { ContactCopyKey, ContactFormLabels } from "@/types/contact-form";
+import type { WayId } from "@/types/services";
 
 type Translate = (key: MessageKey) => string;
+
+const timePlaceholder = "{time}";
+
+function steps(t: Translate, key: ContactCopyKey): string[] {
+  const time = t("common.responseTime");
+  const base = `contactPage.form.next.steps.${key}` as const;
+  return [t(`${base}.s1`), t(`${base}.s2`), t(`${base}.s3`)].map((step) =>
+    step.replace(timePlaceholder, time),
+  );
+}
+
+function sentCopy(t: Translate, way: WayId) {
+  const base = `contactPage.form.sent.byWay.${way}` as const;
+  return {
+    text: t(`${base}.text`).replace(timePlaceholder, t("common.responseTime")),
+    next: t(`${base}.next`),
+  };
+}
 
 export function buildContactFormLabels(t: Translate): ContactFormLabels {
   const p = "contactPage.form" as const;
@@ -36,6 +55,8 @@ export function buildContactFormLabels(t: Translate): ContactFormLabels {
       provisional: t(`${p}.selection.provisional`),
       perMonth: t(`${p}.selection.perMonth`),
       change: t(`${p}.selection.change`),
+      warranty: t(`${p}.selection.warranty`),
+      proposal: t(`${p}.selection.proposal`),
     },
     summaryOne: t(`${p}.summaryOne`),
     summaryMany: t(`${p}.summaryMany`),
@@ -54,11 +75,35 @@ export function buildContactFormLabels(t: Translate): ContactFormLabels {
       consent_required: t(`${p}.errors.consent_required`),
       verification_required: t(`${p}.errors.verification_required`),
     },
+    next: {
+      title: t(`${p}.next.title`),
+      noCommitment: t(`${p}.next.noCommitment`),
+      steps: {
+        any: steps(t, "any"),
+        contratacion: steps(t, "contratacion"),
+        freelance: steps(t, "freelance"),
+        project: steps(t, "project"),
+      },
+    },
+    example: {
+      summary: t(`${p}.example.summary`),
+      byWay: {
+        any: t(`${p}.example.any`),
+        contratacion: t(`${p}.example.contratacion`),
+        freelance: t(`${p}.example.freelance`),
+        project: t(`${p}.example.project`),
+      },
+    },
     sent: {
       title: t(`${p}.sent.title`),
-      text: t(`${p}.sent.text`),
+      nextTitle: t(`${p}.sent.nextTitle`),
       alternative: t(`${p}.sent.alternative`),
       again: t(`${p}.sent.again`),
+      byWay: {
+        contratacion: sentCopy(t, "contratacion"),
+        freelance: sentCopy(t, "freelance"),
+        project: sentCopy(t, "project"),
+      },
     },
     quota: {
       title: t(`${p}.quota.title`),

@@ -5,6 +5,9 @@
     "siteName": "josecoded",
     "description": "Mobile apps and websites with React Native and Next.js: hourly freelance, tailored development at a fixed price or inside your team. Madrid, Spain and remote."
   },
+  "common": {
+    "responseTime": "1–2 working days"
+  },
   "home": {
     "name": "josecoded",
     "metaTitle": "React Native and full stack developer",
@@ -279,7 +282,7 @@
     "whatsapp": "WhatsApp",
     "whatsappHint": "Message me and I reply as soon as I can",
     "chat": "Chat with Nexo",
-    "chatHint": "Our assistant answers right away",
+    "chatHint": "My assistant answers questions about services and prices. For your case, write to me.",
     "whatsappMessage": "Hi José Carlos, I'm writing from josecoded.com. I'd like to talk about a project.",
     "form": "Form",
     "formHint": "Tell me about your project at your own pace"
@@ -300,9 +303,9 @@
     "channelsLabel": "Ways to get in touch",
     "chat": {
       "title": "Chat with Nexo",
-      "hint": "Our assistant answers right away.",
+      "hint": "My assistant answers questions about services and prices. For your specific case, write to me.",
       "open": "Open chat",
-      "soon": "The chat opens very soon."
+      "soon": "Not available yet. Write to me through the form or by email."
     },
     "whatsapp": {
       "title": "WhatsApp",
@@ -384,9 +387,23 @@
       },
       "sent": {
         "title": "Message sent",
-        "text": "Thanks. I will reply to the email you gave.",
         "alternative": "If it is urgent, write to",
-        "again": "Send another message"
+        "again": "Send another message",
+        "nextTitle": "What happens now",
+        "byWay": {
+          "contratacion": {
+            "text": "Received. I read it myself and reply within {time}. While you decide, here is my CV.",
+            "next": "Download my CV"
+          },
+          "freelance": {
+            "text": "Received. I read it myself and reply within {time}, with a proposal of hours or a price per task.",
+            "next": "See how I work"
+          },
+          "project": {
+            "text": "Received. I read it myself and reply within {time} with a written proposal.",
+            "next": "See projects"
+          }
+        }
       },
       "quota": {
         "title": "You have reached the sending limit",
@@ -412,7 +429,42 @@
         "from": "from",
         "provisional": "provisional",
         "perMonth": "€/month",
-        "change": "Change"
+        "change": "Change",
+        "warranty": "30-day warranty included",
+        "proposal": "It's a proposal, no commitment"
+      },
+      "next": {
+        "title": "What happens after you send it",
+        "noCommitment": "No commitment. I don't share your data.",
+        "steps": {
+          "any": {
+            "s1": "I read it myself, not a bot.",
+            "s2": "I reply within {time}.",
+            "s3": "A written proposal or a 20-minute call."
+          },
+          "contratacion": {
+            "s1": "I read it myself, not a bot.",
+            "s2": "I reply within {time}.",
+            "s3": "If I fit, we talk for 20 minutes on a call."
+          },
+          "freelance": {
+            "s1": "I read it myself, not a bot.",
+            "s2": "I reply within {time}.",
+            "s3": "A written proposal, with hours or a price per task."
+          },
+          "project": {
+            "s1": "I read it myself, not a bot.",
+            "s2": "I reply within {time}.",
+            "s3": "A fixed written quote or a 20-minute call."
+          }
+        }
+      },
+      "example": {
+        "summary": "See an example message",
+        "any": "Hi, I'm [name]. I need [what]. I want it by [when]. This is what I already have: [link or context].",
+        "contratacion": "Hi José Carlos, I'm [name] from [company]. We're hiring [profile] for [product]. The setup is [remote, hybrid or on-site] and we want to close by [date]. The role: [link].",
+        "freelance": "Hi, I'm [name] from [company]. We need [feature, audit or extra hands] on [stack]. We'd start around [date]. Repository or ticket: [link].",
+        "project": "Hi, I'm [name]. I want [a website or app] for [business]. I need it by [date] and I have [a domain, store accounts or nothing yet]. My main worry: [question]."
       }
     }
   },
