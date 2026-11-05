@@ -745,7 +745,7 @@ export type Database = {
           changed_at?: string
           changed_by?: string | null
           field: string
-          id?: number
+          id?: never
           row_id: string
           table_name: string
         }
@@ -755,7 +755,7 @@ export type Database = {
           changed_at?: string
           changed_by?: string | null
           field?: string
-          id?: number
+          id?: never
           row_id?: string
           table_name?: string
         }
@@ -887,14 +887,14 @@ export type Database = {
         }
         Insert: {
           key: string
-          public?: never
+          public?: boolean | null
           updated_at?: string
           updated_by?: string | null
           value: Json
         }
         Update: {
           key?: string
-          public?: never
+          public?: boolean | null
           updated_at?: string
           updated_by?: string | null
           value?: Json
@@ -1059,27 +1059,28 @@ export type Database = {
     }
     Functions: {
       accept_invitation: {
-        Args: { p_full_name: string; p_locale?: Database["public"]["Enums"]["app_locale"]; p_token: string }
+        Args: {
+          p_full_name: string
+          p_locale?: Database["public"]["Enums"]["app_locale"]
+          p_token: string
+        }
         Returns: Database["public"]["Enums"]["user_role"]
       }
       admin_audit_log: {
         Args: { p_limit?: number; p_row_id?: string; p_table?: string }
         Returns: {
           action: string
-          actor_id: string | null
-          actor_name: string | null
-          after: Json | null
+          actor_id: string
+          actor_name: string
+          after: Json
           at: string
-          before: Json | null
+          before: Json
           id: number
-          row_id: string | null
+          row_id: string
           table_name: string
         }[]
       }
-      admin_counters: {
-        Args: never
-        Returns: Json
-      }
+      admin_counters: { Args: never; Returns: Json }
       admin_jobs: {
         Args: {
           p_limit?: number
@@ -1101,21 +1102,21 @@ export type Database = {
         Args: never
         Returns: {
           accrued_pending: number
-          archived_at: string | null
-          closer_rate: number | null
-          closer_recurring_rate: number | null
+          archived_at: string
+          closer_rate: number
+          closer_recurring_rate: number
           contacts_count: number
           created_at: string
-          email: string | null
+          email: string
           full_name: string
           has_totp: boolean
           id: string
           is_active: boolean
           open_deals: number
-          parent_closer_id: string | null
-          parent_rate: number | null
-          parent_recurring_rate: number | null
-          payout_cadence: Database["public"]["Enums"]["payout_cadence"] | null
+          parent_closer_id: string
+          parent_rate: number
+          parent_recurring_rate: number
+          payout_cadence: Database["public"]["Enums"]["payout_cadence"]
           role: Database["public"]["Enums"]["user_role"]
         }[]
       }
@@ -1127,16 +1128,25 @@ export type Database = {
         Args: { p_id: string }
         Returns: Database["public"]["Enums"]["job_status"]
       }
-      claim_lead: {
-        Args: { p_lead_id: string }
-        Returns: string
-      }
+      claim_lead: { Args: { p_lead_id: string }; Returns: string }
       discard_lead: {
         Args: { p_lead_id: string; p_reason: string }
         Returns: undefined
       }
       invite_user: {
-        Args: { p_auth_user_id?: string; p_closer_rate?: number; p_closer_recurring_rate?: number; p_email: string; p_note?: string; p_parent_closer_id?: string; p_parent_rate?: number; p_parent_recurring_rate?: number; p_payout_cadence?: Database["public"]["Enums"]["payout_cadence"]; p_project_id?: string; p_role: Database["public"]["Enums"]["user_role"] }
+        Args: {
+          p_auth_user_id?: string
+          p_closer_rate?: number
+          p_closer_recurring_rate?: number
+          p_email: string
+          p_note?: string
+          p_parent_closer_id?: string
+          p_parent_rate?: number
+          p_parent_recurring_rate?: number
+          p_payout_cadence?: Database["public"]["Enums"]["payout_cadence"]
+          p_project_id?: string
+          p_role: Database["public"]["Enums"]["user_role"]
+        }
         Returns: {
           invitation_id: string
           token: string
@@ -1155,14 +1165,8 @@ export type Database = {
           via: Database["public"]["Enums"]["contact_via"]
         }[]
       }
-      log_totp_reset: {
-        Args: { p_user_id: string }
-        Returns: undefined
-      }
-      mark_notifications_read: {
-        Args: { p_ids: string[] }
-        Returns: number
-      }
+      log_totp_reset: { Args: { p_user_id: string }; Returns: undefined }
+      mark_notifications_read: { Args: { p_ids: string[] }; Returns: number }
       omen_claim_jobs: {
         Args: { p_limit?: number; p_worker: string }
         Returns: {
@@ -1181,10 +1185,7 @@ export type Database = {
         Args: { p_models?: Json; p_version?: string }
         Returns: undefined
       }
-      omen_status: {
-        Args: never
-        Returns: Json
-      }
+      omen_status: { Args: never; Returns: Json }
       outbox_claim: {
         Args: { p_limit?: number }
         Returns: {
@@ -1237,28 +1238,33 @@ export type Database = {
         Args: { p_id: string }
         Returns: Database["public"]["Enums"]["job_status"]
       }
-      revoke_invitation: {
-        Args: { p_id: string }
-        Returns: undefined
-      }
+      revoke_invitation: { Args: { p_id: string }; Returns: undefined }
       send_test_notification: {
         Args: { p_channel: string }
         Returns: undefined
       }
       set_notification_pref: {
-        Args: { p_channel: string; p_enabled: boolean; p_event: Database["public"]["Enums"]["notification_event"] }
+        Args: {
+          p_channel: string
+          p_enabled: boolean
+          p_event: Database["public"]["Enums"]["notification_event"]
+        }
         Returns: undefined
       }
-      set_setting: {
-        Args: { p_key: string; p_value: Json }
-        Returns: string
-      }
+      set_setting: { Args: { p_key: string; p_value: Json }; Returns: string }
       set_user_active: {
         Args: { p_active: boolean; p_user_id: string }
         Returns: undefined
       }
       set_user_rates: {
-        Args: { p_closer_rate?: number; p_closer_recurring_rate?: number; p_parent_rate?: number; p_parent_recurring_rate?: number; p_payout_cadence?: Database["public"]["Enums"]["payout_cadence"]; p_user_id: string }
+        Args: {
+          p_closer_rate?: number
+          p_closer_recurring_rate?: number
+          p_parent_rate?: number
+          p_parent_recurring_rate?: number
+          p_payout_cadence?: Database["public"]["Enums"]["payout_cadence"]
+          p_user_id: string
+        }
         Returns: undefined
       }
       submit_lead: {
@@ -1290,26 +1296,17 @@ export type Database = {
         Args: { p_chat_id: number; p_code: string }
         Returns: string
       }
-      telegram_link_code: {
-        Args: never
-        Returns: string
-      }
+      telegram_link_code: { Args: never; Returns: string }
       telegram_link_status: {
         Args: never
         Returns: {
-          linked_at: string | null
-          pending_code: string | null
-          pending_expires_at: string | null
+          linked_at: string
+          pending_code: string
+          pending_expires_at: string
         }[]
       }
-      telegram_unlink: {
-        Args: never
-        Returns: undefined
-      }
-      touch_lead: {
-        Args: { p_lead_id: string }
-        Returns: undefined
-      }
+      telegram_unlink: { Args: never; Returns: undefined }
+      touch_lead: { Args: { p_lead_id: string }; Returns: undefined }
       update_my_profile: {
         Args: {
           p_full_name?: string
@@ -1355,13 +1352,24 @@ export type Database = {
       job_status: "queued" | "running" | "done" | "failed" | "cancelled"
       lead_source: "form" | "nexo" | "whatsapp" | "radar" | "manual"
       lead_status: "new" | "assigned" | "contacted" | "converted" | "discarded"
-      notification_event: "lead_new" | "lead_claimed" | "message_new" | "commission_accrued" | "payment_recorded" | "payment_overdue" | "payout_paid" | "job_failed" | "omen_down" | "invitation_accepted"
+      notification_event:
+        | "lead_new"
+        | "lead_claimed"
+        | "message_new"
+        | "commission_accrued"
+        | "payment_recorded"
+        | "payment_overdue"
+        | "payout_paid"
+        | "job_failed"
+        | "omen_down"
+        | "invitation_accepted"
       outbox_channel: "email" | "telegram"
       outbox_status: "queued" | "sending" | "sent" | "failed"
       payout_cadence: "per_payment" | "weekly" | "biweekly"
       user_role: "admin" | "closer" | "freelance" | "client"
     }
     CompositeTypes: {
+      [_ in never]: never
     }
   }
 }
@@ -1518,7 +1526,18 @@ export const Constants = {
       job_status: ["queued", "running", "done", "failed", "cancelled"],
       lead_source: ["form", "nexo", "whatsapp", "radar", "manual"],
       lead_status: ["new", "assigned", "contacted", "converted", "discarded"],
-      notification_event: ["lead_new", "lead_claimed", "message_new", "commission_accrued", "payment_recorded", "payment_overdue", "payout_paid", "job_failed", "omen_down", "invitation_accepted"],
+      notification_event: [
+        "lead_new",
+        "lead_claimed",
+        "message_new",
+        "commission_accrued",
+        "payment_recorded",
+        "payment_overdue",
+        "payout_paid",
+        "job_failed",
+        "omen_down",
+        "invitation_accepted",
+      ],
       outbox_channel: ["email", "telegram"],
       outbox_status: ["queued", "sending", "sent", "failed"],
       payout_cadence: ["per_payment", "weekly", "biweekly"],
