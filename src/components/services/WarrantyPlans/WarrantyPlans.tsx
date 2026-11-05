@@ -8,7 +8,7 @@ import styles from "./WarrantyPlans.module.css";
 interface WarrantyPlansProps {
   warranty: { title: string; text: string };
   plans: { title: string; lead: string; items: MaintenancePlan[] };
-  price: { from: string; amount: string; unit: string; review: string; provisional: boolean };
+  price: { unit: string; review: string };
   note: string;
 }
 
@@ -36,15 +36,10 @@ export function WarrantyPlans({ warranty, plans, price, note }: WarrantyPlansPro
                 <p className={styles.hours}>{plan.hours}</p>
                 <p className={styles.text}>{plan.text}</p>
                 <p>
-                  {price.provisional ? (
+                  {plan.amount === null ? (
                     <PriceState variant="review" label={price.review} />
                   ) : (
-                    <PriceState
-                      variant="final"
-                      prefix={price.from}
-                      amount={price.amount}
-                      unit={price.unit}
-                    />
+                    <PriceState variant="final" amount={plan.amount} unit={price.unit} />
                   )}
                 </p>
               </Card>

@@ -25,6 +25,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "e2e": "playwright test",
+    "e2e:catalog": "MOCK_CATALOG=priced playwright test catalog && MOCK_CATALOG=down playwright test catalog",
     "content:build": "node scripts/content.js --write",
     "content:check": "node scripts/content.js",
     "i18n:keys": "node scripts/i18n.js --write",

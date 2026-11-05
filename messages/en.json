@@ -978,7 +978,9 @@
         "status": "Status",
         "assigned": "Assigned to",
         "date": "Date",
-        "actions": "Actions"
+        "actions": "Actions",
+        "organization": "Organization",
+        "source": "Source"
       },
       "via": {
         "hiring": "Hiring",
@@ -1028,6 +1030,494 @@
         "text": "Try again. If it keeps failing, check Supabase status.",
         "retry": "Retry",
         "retrying": "Retrying"
+      },
+      "source": {
+        "form": "Form",
+        "nexo": "Nexo",
+        "whatsapp": "WhatsApp",
+        "radar": "Radar",
+        "manual": "Manual"
+      },
+      "noOrganization": "No organization",
+      "tabs": {
+        "label": "Lead status",
+        "all": "All",
+        "new": "New",
+        "waiting": "Waiting for admin",
+        "assigned": "Assigned",
+        "converted": "Converted",
+        "discarded": "Discarded"
+      },
+      "filters": {
+        "label": "Filter leads",
+        "q": "Search",
+        "via": "Via",
+        "source": "Source",
+        "owner": "Assigned to",
+        "anyVia": "All vias",
+        "anySource": "All sources",
+        "anyOwner": "Everyone",
+        "submit": "Filter",
+        "clear": "Clear filters"
+      },
+      "emptyFiltered": {
+        "title": "Nothing matches these filters",
+        "text": "Change the search or clear the filters to see the rest."
+      },
+      "new": {
+        "open": "Add lead",
+        "title": "Add lead",
+        "close": "Close",
+        "source": "Source",
+        "sources": {
+          "manual": "Manual",
+          "whatsapp": "WhatsApp"
+        },
+        "via": "Via",
+        "viaNone": "No via",
+        "fullName": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "organization": "Organization",
+        "message": "Message",
+        "assignedTo": "Assign to",
+        "assignedNone": "Unassigned",
+        "optional": "(optional)",
+        "submit": "Save lead",
+        "submitting": "Saving",
+        "done": "Lead added.",
+        "detail": "View record",
+        "errors": {
+          "fullName": "Enter the name, up to 200 characters.",
+          "email": "Check the email.",
+          "reachable": "Give an email or a phone number so they can be reached.",
+          "phone": "Check the phone, up to 40 characters.",
+          "organization": "Check the organization, up to 200 characters.",
+          "message": "Check the message, up to 4000 characters.",
+          "assignedTo": "Choose an active closer.",
+          "forbidden": "You are not allowed to add leads.",
+          "error": "It could not be saved. Try again."
+        }
+      },
+      "detail": {
+        "meta": {
+          "title": "Lead record"
+        },
+        "back": "Back to leads",
+        "loading": "Loading the record",
+        "error": {
+          "title": "I could not load the record",
+          "text": "Try again. If it keeps failing, check the Supabase status.",
+          "retry": "Retry",
+          "retrying": "Retrying"
+        },
+        "message": {
+          "title": "Message",
+          "empty": "They left no message."
+        },
+        "contact": {
+          "title": "Contact",
+          "email": "Email",
+          "phone": "Phone",
+          "organization": "Organization",
+          "none": "Not given"
+        },
+        "origin": {
+          "title": "Origin",
+          "source": "Source",
+          "via": "Via",
+          "created": "Received",
+          "page": "Page",
+          "locale": "Language",
+          "consent": "Consent",
+          "consentYes": "Accepted on {date}",
+          "consentNo": "Not recorded",
+          "locales": {
+            "es": "Spanish",
+            "en": "English"
+          }
+        },
+        "offer": {
+          "title": "What they ask for",
+          "offer": "Offer",
+          "extras": "Extras",
+          "answers": "Recommender answers",
+          "company": "Company",
+          "offerUrl": "Linked offer",
+          "wantedBy": "Wanted by",
+          "hasDomain": "Has a domain",
+          "hasStoreAccounts": "Has store accounts",
+          "yes": "Yes",
+          "no": "No"
+        },
+        "owner": {
+          "title": "Owner",
+          "status": "Status",
+          "assignedTo": "Assigned to",
+          "assignedBy": "Assigned by",
+          "assignedAt": "Assigned on",
+          "automatic": "Automatic, by existing contact",
+          "waiting": "Waiting for the admin",
+          "contact": "Linked contact",
+          "contactLink": "View contact",
+          "deal": "Deal",
+          "dealNone": "No deal"
+        },
+        "stage": {
+          "new": "New",
+          "contacted": "Contacted",
+          "meeting": "Meeting",
+          "proposal": "Proposal",
+          "won": "Won",
+          "lost": "Lost"
+        }
+      }
+    },
+    "prices": {
+      "meta": {
+        "title": "Prices"
+      },
+      "title": "Prices",
+      "lead": "Prices, timelines, visibility and order of the catalog. Anything without a price shows on the site as “Price under review”. Names and descriptions still live in the site copy.",
+      "tabsLabel": "Price type",
+      "tabs": {
+        "offers": "Tiers",
+        "extras": "Extras",
+        "rates": "Rates",
+        "plans": "Maintenance"
+      },
+      "loading": "Loading prices",
+      "error": {
+        "title": "I could not load the prices",
+        "text": "Try again. If it keeps failing, check that the catalog migration is applied.",
+        "retry": "Try again",
+        "retrying": "Trying again"
+      },
+      "empty": {
+        "title": "Nothing here yet",
+        "text": "This tab has no rows. It fills up when the catalog migration is applied."
+      },
+      "region": "Prices table",
+      "caption": "Prices for {tab}",
+      "columns": {
+        "name": "Name",
+        "price": "Price",
+        "detail": "Detail",
+        "visible": "Visible",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "yes": "Yes",
+      "no": "No",
+      "archived": "Archived",
+      "active": "Active",
+      "edit": "Edit",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "archive": "Archive",
+      "restore": "Restore",
+      "confirmArchive": "Archive?",
+      "confirmArchiveYes": "Yes, archive",
+      "history": "History",
+      "historyEmpty": "No changes yet.",
+      "unknownAuthor": "System",
+      "noValue": "—",
+      "fields": {
+        "price": "Price",
+        "price_monthly": "Monthly price",
+        "visible": "Visible",
+        "archived_at": "Archived"
+      },
+      "billing": {
+        "once": "One-off",
+        "monthly": "Monthly",
+        "yearly": "Yearly",
+        "per_unit": "Per unit"
+      },
+      "rateDetail": {
+        "hourly": "Per hour",
+        "task_min": "Minimum per task"
+      },
+      "units": {
+        "once": "€",
+        "monthly": "€/month",
+        "yearly": "€/year",
+        "per_unit": "€/unit",
+        "hourly": "€/hour",
+        "task_min": "€/task"
+      },
+      "sheet": {
+        "title": "Edit {name}",
+        "close": "Close",
+        "priceLabel": "Price in euros",
+        "priceHint": "Leave it empty and the site shows “Price under review”.",
+        "weeksMinLabel": "Weeks, minimum",
+        "weeksMaxLabel": "Weeks, maximum",
+        "visibleLabel": "Visible on the site",
+        "save": "Save",
+        "saving": "Saving",
+        "cancel": "Cancel"
+      },
+      "actions": {
+        "done": {
+          "save": "Changes saved",
+          "archive": "Row archived",
+          "restore": "Row restored",
+          "move": "Order updated"
+        },
+        "errors": {
+          "price": "Enter a valid price, up to 2 decimals, or leave it empty.",
+          "weeks": "Enter a valid timeline: the minimum cannot exceed the maximum.",
+          "stale": "This row has changed. Reload the page.",
+          "forbidden": "You do not have permission to change prices.",
+          "error": "I could not save. Try again."
+        }
+      }
+    },
+    "system": {
+      "meta": {
+        "title": "System"
+      },
+      "title": "System",
+      "lead": "Site switches, Omen status and the job queue.",
+      "loading": {
+        "settings": "Loading settings",
+        "omen": "Loading Omen status",
+        "jobs": "Loading jobs"
+      },
+      "settings": {
+        "region": "System settings",
+        "unavailable": {
+          "title": "The settings are not in the database yet",
+          "text": "The values from the code are shown, and they cannot be changed until the migration is applied."
+        },
+        "error": {
+          "title": "I could not load the settings",
+          "text": "Try again. If it keeps failing, check Supabase status.",
+          "retry": "Retry",
+          "retrying": "Retrying"
+        },
+        "groups": {
+          "sections": {
+            "title": "Sections",
+            "text": "Which parts of the site are shown."
+          },
+          "maintenance": {
+            "title": "Maintenance",
+            "text": "Maintenance notice for the site."
+          },
+          "availability": {
+            "title": "Availability",
+            "text": "When you can start a new project."
+          },
+          "nexo": {
+            "title": "Nexo",
+            "text": "How the assistant replies."
+          },
+          "billing": {
+            "title": "Commissions and billing",
+            "text": "Default values for payouts and invoicing."
+          }
+        },
+        "items": {
+          "blog": {
+            "name": "Blog",
+            "hint": "Shows the blog and its posts."
+          },
+          "projects": {
+            "name": "Projects",
+            "hint": "Shows the projects section."
+          },
+          "lab": {
+            "name": "Lab",
+            "hint": "Shows the lab once it exists."
+          },
+          "public_chat": {
+            "name": "Public chat",
+            "hint": "Shows the chat with Nexo to any visitor."
+          },
+          "search": {
+            "name": "Search",
+            "hint": "Shows the search in the header."
+          },
+          "show_prices": {
+            "name": "Show prices",
+            "hint": "Shows prices; when off, they are hidden."
+          },
+          "cv_download": {
+            "name": "CV download",
+            "hint": "Offers the CV as a PDF."
+          },
+          "google_sign_in": {
+            "name": "Sign in with Google",
+            "hint": "Shows Google sign-in on the login page."
+          },
+          "maintenance": {
+            "name": "Maintenance mode",
+            "hint": "Turns the notice on. With a date, it ends by itself at that moment (Madrid time)."
+          },
+          "availability_next_project_month": {
+            "name": "Next free month",
+            "hint": "Month when you can start another project. Empty: not shown."
+          },
+          "availability_weekly_hours": {
+            "name": "Hours per week",
+            "hint": "Hours you can give to new projects. Empty: not shown."
+          },
+          "availability_from": {
+            "name": "Available from",
+            "hint": "Date from which you accept work. Empty: not shown."
+          },
+          "nexo_reply_delay_min": {
+            "name": "Nexo wait before replying",
+            "hint": "Minutes before Nexo answers a message."
+          },
+          "payout_default_cadence": {
+            "name": "Payout cadence",
+            "hint": "How often a closer is paid if they have no cadence of their own."
+          },
+          "billing_vat_rate": {
+            "name": "Default VAT",
+            "hint": "Percentage on new proformas. It is 0 until the registration is done."
+          }
+        },
+        "row": {
+          "on": "On",
+          "off": "Off",
+          "save": "Save",
+          "saving": "Saving",
+          "saved": "Saved",
+          "updatedAt": "Updated on {date}",
+          "neverSaved": "Default value",
+          "wired": "Applied on the site",
+          "notWired": "Not applied on the site yet",
+          "maintenanceUntil": "Until",
+          "unit": {
+            "hours": "h/week",
+            "delay": "min",
+            "vat": "%"
+          },
+          "cadence": {
+            "per_payment": "On every payment",
+            "weekly": "Weekly",
+            "biweekly": "Every two weeks"
+          },
+          "errors": {
+            "invalid": "Invalid value.",
+            "forbidden": "You are not allowed to change this setting.",
+            "unavailable": "The settings are not available yet.",
+            "error": "It could not be saved. Try again."
+          }
+        }
+      },
+      "omen": {
+        "title": "Omen status",
+        "tone": {
+          "live": "Online",
+          "slow": "Delayed",
+          "down": "Not responding",
+          "none": "No signal"
+        },
+        "bandNone": "Omen has not given any signal yet. The home server is not connected yet.",
+        "bandDown": "Omen has not responded since {when}.",
+        "seen": "Last heartbeat",
+        "seenNever": "None yet",
+        "version": "Version",
+        "versionNone": "Unknown",
+        "models": "Models",
+        "modelsNone": "None reported",
+        "queue": {
+          "queued": "Queued",
+          "running": "Running",
+          "failed": "Failed"
+        },
+        "minutes": "{count} min ago",
+        "unavailable": "The heartbeat log is not in the database yet, so there is no signal from Omen.",
+        "error": {
+          "title": "I could not load the Omen status",
+          "text": "Try again. If it keeps failing, check Supabase status.",
+          "retry": "Retry",
+          "retrying": "Retrying"
+        }
+      },
+      "jobs": {
+        "title": "Jobs",
+        "lead": "Omen job queue. Retry the failed ones or cancel those that have not started.",
+        "region": "Jobs table",
+        "caption": "Jobs, newest first",
+        "filterLabel": "Filter jobs by status",
+        "filters": {
+          "all": "All",
+          "queued": "Queued",
+          "running": "Running",
+          "done": "Done",
+          "failed": "Failed",
+          "cancelled": "Cancelled"
+        },
+        "columns": {
+          "kind": "Type",
+          "status": "Status",
+          "attempts": "Attempts",
+          "runAfter": "Runs at",
+          "error": "Error",
+          "actions": "Actions"
+        },
+        "kinds": {
+          "chat_reply": "Chat reply",
+          "chat_summary": "Chat summary",
+          "rag_index": "Content indexing",
+          "radar_scan": "Radar scan",
+          "radar_score": "Radar scoring",
+          "radar_draft": "Radar draft",
+          "radar_send": "Radar send",
+          "account_delete": "Account deletion",
+          "notify_send": "Notification send"
+        },
+        "status": {
+          "queued": "Queued",
+          "running": "Running",
+          "done": "Done",
+          "failed": "Failed",
+          "cancelled": "Cancelled"
+        },
+        "noError": "No error",
+        "errorMore": "see all",
+        "retry": "Retry",
+        "retrying": "Requeuing",
+        "cancel": "Cancel",
+        "cancelling": "Cancelling",
+        "confirmRetry": "Queue this job again?",
+        "confirmCancel": "Cancel this job? It will never run.",
+        "confirmYes": "Yes, confirm",
+        "confirmNo": "No, go back",
+        "done": {
+          "retry": "Job requeued",
+          "cancel": "Job cancelled"
+        },
+        "errors": {
+          "stale": "The job has changed. Reload the list.",
+          "forbidden": "You are not allowed to do this.",
+          "error": "It could not be completed. Try again."
+        },
+        "empty": {
+          "title": "No jobs",
+          "text": "When Omen receives jobs they will show up here."
+        },
+        "emptyFiltered": {
+          "title": "No jobs with this status",
+          "text": "Try another filter."
+        },
+        "unavailable": {
+          "title": "The queue is not in the database yet",
+          "text": "Jobs will show up once the queue migration is applied."
+        },
+        "error": {
+          "title": "I could not load the jobs",
+          "text": "Try again. If it keeps failing, check Supabase status.",
+          "retry": "Retry",
+          "retrying": "Retrying"
+        },
+        "limit": "Showing the {count} most recent."
       }
     },
     "users": {

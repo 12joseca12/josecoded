@@ -978,7 +978,9 @@
         "status": "Estado",
         "assigned": "Asignado a",
         "date": "Fecha",
-        "actions": "Acciones"
+        "actions": "Acciones",
+        "organization": "Organización",
+        "source": "Origen"
       },
       "via": {
         "hiring": "Contratación",
@@ -1028,6 +1030,494 @@
         "text": "Inténtalo otra vez. Si sigue fallando, mira el estado de Supabase.",
         "retry": "Reintentar",
         "retrying": "Reintentando"
+      },
+      "source": {
+        "form": "Formulario",
+        "nexo": "Nexo",
+        "whatsapp": "WhatsApp",
+        "radar": "Radar",
+        "manual": "Manual"
+      },
+      "noOrganization": "Sin organización",
+      "tabs": {
+        "label": "Estado de los interesados",
+        "all": "Todos",
+        "new": "Nuevos",
+        "waiting": "Esperan al admin",
+        "assigned": "Asignados",
+        "converted": "Convertidos",
+        "discarded": "Descartados"
+      },
+      "filters": {
+        "label": "Filtrar interesados",
+        "q": "Buscar",
+        "via": "Vía",
+        "source": "Origen",
+        "owner": "Asignado a",
+        "anyVia": "Todas las vías",
+        "anySource": "Todos los orígenes",
+        "anyOwner": "Todas las personas",
+        "submit": "Filtrar",
+        "clear": "Quitar filtros"
+      },
+      "emptyFiltered": {
+        "title": "Nada con estos filtros",
+        "text": "Cambia la búsqueda o quita los filtros para ver el resto."
+      },
+      "new": {
+        "open": "Añadir interesado",
+        "title": "Añadir interesado",
+        "close": "Cerrar",
+        "source": "Origen",
+        "sources": {
+          "manual": "Manual",
+          "whatsapp": "WhatsApp"
+        },
+        "via": "Vía",
+        "viaNone": "Sin vía",
+        "fullName": "Nombre",
+        "email": "Correo",
+        "phone": "Teléfono",
+        "organization": "Organización",
+        "message": "Mensaje",
+        "assignedTo": "Asignar a",
+        "assignedNone": "Sin asignar",
+        "optional": "(opcional)",
+        "submit": "Guardar interesado",
+        "submitting": "Guardando",
+        "done": "Interesado añadido.",
+        "detail": "Ver ficha",
+        "errors": {
+          "fullName": "Escribe el nombre, hasta 200 caracteres.",
+          "email": "Revisa el correo.",
+          "reachable": "Indica un correo o un teléfono para poder contactar.",
+          "phone": "Revisa el teléfono, hasta 40 caracteres.",
+          "organization": "Revisa la organización, hasta 200 caracteres.",
+          "message": "Revisa el mensaje, hasta 4000 caracteres.",
+          "assignedTo": "Elige un closer activo.",
+          "forbidden": "No tienes permiso para añadir interesados.",
+          "error": "No se ha podido guardar. Inténtalo otra vez."
+        }
+      },
+      "detail": {
+        "meta": {
+          "title": "Ficha del interesado"
+        },
+        "back": "Volver a interesados",
+        "loading": "Cargando la ficha",
+        "error": {
+          "title": "No he podido cargar la ficha",
+          "text": "Inténtalo otra vez. Si sigue fallando, mira el estado de Supabase.",
+          "retry": "Reintentar",
+          "retrying": "Reintentando"
+        },
+        "message": {
+          "title": "Mensaje",
+          "empty": "No dejó mensaje."
+        },
+        "contact": {
+          "title": "Contacto",
+          "email": "Correo",
+          "phone": "Teléfono",
+          "organization": "Organización",
+          "none": "Sin dato"
+        },
+        "origin": {
+          "title": "Origen",
+          "source": "Origen",
+          "via": "Vía",
+          "created": "Recibido",
+          "page": "Página",
+          "locale": "Idioma",
+          "consent": "Consentimiento",
+          "consentYes": "Aceptado el {date}",
+          "consentNo": "No consta",
+          "locales": {
+            "es": "Español",
+            "en": "Inglés"
+          }
+        },
+        "offer": {
+          "title": "Lo que pide",
+          "offer": "Oferta",
+          "extras": "Extras",
+          "answers": "Respuestas del recomendador",
+          "company": "Empresa",
+          "offerUrl": "Oferta enlazada",
+          "wantedBy": "Fecha deseada",
+          "hasDomain": "Tiene dominio",
+          "hasStoreAccounts": "Tiene cuentas de tienda",
+          "yes": "Sí",
+          "no": "No"
+        },
+        "owner": {
+          "title": "Responsable",
+          "status": "Estado",
+          "assignedTo": "Asignado a",
+          "assignedBy": "Asignado por",
+          "assignedAt": "Asignado el",
+          "automatic": "Automático, por contacto existente",
+          "waiting": "Espera al administrador",
+          "contact": "Contacto enlazado",
+          "contactLink": "Ver contacto",
+          "deal": "Oportunidad",
+          "dealNone": "Sin oportunidad"
+        },
+        "stage": {
+          "new": "Nueva",
+          "contacted": "Contactada",
+          "meeting": "Reunión",
+          "proposal": "Propuesta",
+          "won": "Ganada",
+          "lost": "Perdida"
+        }
+      }
+    },
+    "prices": {
+      "meta": {
+        "title": "Precios"
+      },
+      "title": "Precios",
+      "lead": "Precios, plazos, visibilidad y orden del catálogo. Lo que dejes sin precio se muestra en la web como «Precio en revisión». Los nombres y descripciones siguen en los textos de la web.",
+      "tabsLabel": "Tipo de precio",
+      "tabs": {
+        "offers": "Niveles",
+        "extras": "Extras",
+        "rates": "Tarifas",
+        "plans": "Mantenimiento"
+      },
+      "loading": "Cargando los precios",
+      "error": {
+        "title": "No he podido cargar los precios",
+        "text": "Inténtalo otra vez. Si sigue fallando, comprueba que la migración del catálogo está aplicada.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "empty": {
+        "title": "Aquí todavía no hay nada",
+        "text": "Esta pestaña no tiene filas. Se rellena al aplicar la migración del catálogo."
+      },
+      "region": "Tabla de precios",
+      "caption": "Precios de {tab}",
+      "columns": {
+        "name": "Nombre",
+        "price": "Precio",
+        "detail": "Detalle",
+        "visible": "Visible",
+        "status": "Estado",
+        "actions": "Acciones"
+      },
+      "yes": "Sí",
+      "no": "No",
+      "archived": "Archivado",
+      "active": "Activo",
+      "edit": "Editar",
+      "moveUp": "Subir",
+      "moveDown": "Bajar",
+      "archive": "Archivar",
+      "restore": "Restaurar",
+      "confirmArchive": "¿Archivar?",
+      "confirmArchiveYes": "Sí, archivar",
+      "history": "Historial",
+      "historyEmpty": "Sin cambios todavía.",
+      "unknownAuthor": "Sistema",
+      "noValue": "—",
+      "fields": {
+        "price": "Precio",
+        "price_monthly": "Precio al mes",
+        "visible": "Visible",
+        "archived_at": "Archivado"
+      },
+      "billing": {
+        "once": "Pago único",
+        "monthly": "Mensual",
+        "yearly": "Anual",
+        "per_unit": "Por unidad"
+      },
+      "rateDetail": {
+        "hourly": "Por hora",
+        "task_min": "Mínimo por tarea"
+      },
+      "units": {
+        "once": "€",
+        "monthly": "€/mes",
+        "yearly": "€/año",
+        "per_unit": "€/ud.",
+        "hourly": "€/hora",
+        "task_min": "€/tarea"
+      },
+      "sheet": {
+        "title": "Editar {name}",
+        "close": "Cerrar",
+        "priceLabel": "Precio en euros",
+        "priceHint": "Déjalo vacío para que la web muestre «Precio en revisión».",
+        "weeksMinLabel": "Semanas, mínimo",
+        "weeksMaxLabel": "Semanas, máximo",
+        "visibleLabel": "Visible en la web",
+        "save": "Guardar",
+        "saving": "Guardando",
+        "cancel": "Cancelar"
+      },
+      "actions": {
+        "done": {
+          "save": "Cambios guardados",
+          "archive": "Fila archivada",
+          "restore": "Fila restaurada",
+          "move": "Orden actualizado"
+        },
+        "errors": {
+          "price": "Escribe un precio válido, hasta 2 decimales, o déjalo vacío.",
+          "weeks": "Indica un plazo válido: el mínimo no puede superar al máximo.",
+          "stale": "Esta fila ha cambiado. Recarga la página.",
+          "forbidden": "No tienes permiso para cambiar precios.",
+          "error": "No he podido guardar. Inténtalo otra vez."
+        }
+      }
+    },
+    "system": {
+      "meta": {
+        "title": "Sistema"
+      },
+      "title": "Sistema",
+      "lead": "Interruptores de la web, estado de Omen y cola de trabajos.",
+      "loading": {
+        "settings": "Cargando ajustes",
+        "omen": "Cargando el estado de Omen",
+        "jobs": "Cargando trabajos"
+      },
+      "settings": {
+        "region": "Ajustes del sistema",
+        "unavailable": {
+          "title": "Los ajustes aún no están en la base",
+          "text": "Se muestran los valores del código y no se pueden cambiar hasta que se aplique la migración."
+        },
+        "error": {
+          "title": "No he podido cargar los ajustes",
+          "text": "Inténtalo otra vez. Si sigue fallando, mira el estado de Supabase.",
+          "retry": "Reintentar",
+          "retrying": "Reintentando"
+        },
+        "groups": {
+          "sections": {
+            "title": "Secciones",
+            "text": "Qué partes de la web se muestran."
+          },
+          "maintenance": {
+            "title": "Mantenimiento",
+            "text": "Aviso de mantenimiento de la web."
+          },
+          "availability": {
+            "title": "Disponibilidad",
+            "text": "Cuándo puedes empezar un proyecto nuevo."
+          },
+          "nexo": {
+            "title": "Nexo",
+            "text": "Cómo contesta el asistente."
+          },
+          "billing": {
+            "title": "Comisiones y cobros",
+            "text": "Valores por defecto de liquidaciones y facturación."
+          }
+        },
+        "items": {
+          "blog": {
+            "name": "Blog",
+            "hint": "Muestra el blog y sus artículos."
+          },
+          "projects": {
+            "name": "Proyectos",
+            "hint": "Muestra la sección de proyectos."
+          },
+          "lab": {
+            "name": "Laboratorio",
+            "hint": "Muestra el laboratorio cuando exista."
+          },
+          "public_chat": {
+            "name": "Chat público",
+            "hint": "Muestra el chat con Nexo a cualquier visitante."
+          },
+          "search": {
+            "name": "Buscador",
+            "hint": "Muestra el buscador de la cabecera."
+          },
+          "show_prices": {
+            "name": "Mostrar precios",
+            "hint": "Enseña los precios; si se apaga, se ocultan."
+          },
+          "cv_download": {
+            "name": "Descarga del currículum",
+            "hint": "Ofrece el PDF del currículum."
+          },
+          "google_sign_in": {
+            "name": "Entrar con Google",
+            "hint": "Muestra el acceso con Google en la página de entrada."
+          },
+          "maintenance": {
+            "name": "Modo mantenimiento",
+            "hint": "Activa el aviso. Si pones fecha, termina solo en ese momento (hora de Madrid)."
+          },
+          "availability_next_project_month": {
+            "name": "Próximo mes libre",
+            "hint": "Mes en que puedes empezar otro proyecto. Vacío: no se muestra."
+          },
+          "availability_weekly_hours": {
+            "name": "Horas a la semana",
+            "hint": "Horas que puedes dedicar a proyectos nuevos. Vacío: no se muestra."
+          },
+          "availability_from": {
+            "name": "Disponible desde",
+            "hint": "Fecha desde la que aceptas trabajo. Vacío: no se muestra."
+          },
+          "nexo_reply_delay_min": {
+            "name": "Espera de Nexo antes de contestar",
+            "hint": "Minutos que pasan antes de que Nexo responda a un mensaje."
+          },
+          "payout_default_cadence": {
+            "name": "Cadencia de liquidación",
+            "hint": "Cada cuánto se liquida a un closer si no tiene una propia."
+          },
+          "billing_vat_rate": {
+            "name": "IVA por defecto",
+            "hint": "Porcentaje en las proformas nuevas. Es 0 mientras no haya alta."
+          }
+        },
+        "row": {
+          "on": "Activado",
+          "off": "Desactivado",
+          "save": "Guardar",
+          "saving": "Guardando",
+          "saved": "Guardado",
+          "updatedAt": "Actualizado el {date}",
+          "neverSaved": "Valor por defecto",
+          "wired": "Aplicado en la web",
+          "notWired": "Aún no aplicado en la web",
+          "maintenanceUntil": "Hasta",
+          "unit": {
+            "hours": "h/semana",
+            "delay": "min",
+            "vat": "%"
+          },
+          "cadence": {
+            "per_payment": "En cada cobro",
+            "weekly": "Semanal",
+            "biweekly": "Quincenal"
+          },
+          "errors": {
+            "invalid": "Valor no válido.",
+            "forbidden": "No tienes permiso para cambiar este ajuste.",
+            "unavailable": "Los ajustes aún no están disponibles.",
+            "error": "No se ha podido guardar. Inténtalo otra vez."
+          }
+        }
+      },
+      "omen": {
+        "title": "Estado de Omen",
+        "tone": {
+          "live": "En línea",
+          "slow": "Con retraso",
+          "down": "Sin respuesta",
+          "none": "Sin señal"
+        },
+        "bandNone": "Omen todavía no ha dado señal. El servidor casero aún no está conectado.",
+        "bandDown": "Omen no responde desde {when}.",
+        "seen": "Último latido",
+        "seenNever": "Ninguno todavía",
+        "version": "Versión",
+        "versionNone": "Desconocida",
+        "models": "Modelos",
+        "modelsNone": "Ninguno informado",
+        "queue": {
+          "queued": "En cola",
+          "running": "En marcha",
+          "failed": "Fallidos"
+        },
+        "minutes": "hace {count} min",
+        "unavailable": "El registro de latidos aún no está en la base, así que no hay señal de Omen.",
+        "error": {
+          "title": "No he podido cargar el estado de Omen",
+          "text": "Inténtalo otra vez. Si sigue fallando, mira el estado de Supabase.",
+          "retry": "Reintentar",
+          "retrying": "Reintentando"
+        }
+      },
+      "jobs": {
+        "title": "Trabajos",
+        "lead": "Cola de trabajos de Omen. Reintenta los fallidos o cancela los que aún no han empezado.",
+        "region": "Tabla de trabajos",
+        "caption": "Trabajos, del más reciente al más antiguo",
+        "filterLabel": "Filtrar trabajos por estado",
+        "filters": {
+          "all": "Todos",
+          "queued": "En cola",
+          "running": "En marcha",
+          "done": "Hechos",
+          "failed": "Fallidos",
+          "cancelled": "Cancelados"
+        },
+        "columns": {
+          "kind": "Tipo",
+          "status": "Estado",
+          "attempts": "Intentos",
+          "runAfter": "Se ejecuta",
+          "error": "Error",
+          "actions": "Acciones"
+        },
+        "kinds": {
+          "chat_reply": "Respuesta del chat",
+          "chat_summary": "Resumen del chat",
+          "rag_index": "Indexado de contenido",
+          "radar_scan": "Búsqueda del Radar",
+          "radar_score": "Puntuación del Radar",
+          "radar_draft": "Borrador del Radar",
+          "radar_send": "Envío del Radar",
+          "account_delete": "Borrado de cuenta",
+          "notify_send": "Envío de aviso"
+        },
+        "status": {
+          "queued": "En cola",
+          "running": "En marcha",
+          "done": "Hecho",
+          "failed": "Fallido",
+          "cancelled": "Cancelado"
+        },
+        "noError": "Sin error",
+        "errorMore": "ver completo",
+        "retry": "Reintentar",
+        "retrying": "Reencolando",
+        "cancel": "Cancelar",
+        "cancelling": "Cancelando",
+        "confirmRetry": "¿Volver a encolar este trabajo?",
+        "confirmCancel": "¿Cancelar este trabajo? No llegará a ejecutarse.",
+        "confirmYes": "Sí, confirmar",
+        "confirmNo": "No, volver",
+        "done": {
+          "retry": "Trabajo reencolado",
+          "cancel": "Trabajo cancelado"
+        },
+        "errors": {
+          "stale": "El trabajo ya ha cambiado. Recarga la lista.",
+          "forbidden": "No tienes permiso para esta acción.",
+          "error": "No se ha podido completar. Inténtalo otra vez."
+        },
+        "empty": {
+          "title": "Sin trabajos",
+          "text": "Cuando Omen reciba trabajos aparecerán aquí."
+        },
+        "emptyFiltered": {
+          "title": "Sin trabajos con este estado",
+          "text": "Prueba con otro filtro."
+        },
+        "unavailable": {
+          "title": "La cola aún no está en la base",
+          "text": "Los trabajos aparecerán cuando se aplique la migración de la cola."
+        },
+        "error": {
+          "title": "No he podido cargar los trabajos",
+          "text": "Inténtalo otra vez. Si sigue fallando, mira el estado de Supabase.",
+          "retry": "Reintentar",
+          "retrying": "Reintentando"
+        },
+        "limit": "Mostrando los {count} más recientes."
       }
     },
     "users": {

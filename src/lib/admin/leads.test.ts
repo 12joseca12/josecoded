@@ -3,7 +3,14 @@ import { describe, expect, it, vi } from "vitest";
 
 import type { Database } from "@/types/database";
 
-import { fetchLeads, formatLeadDate, leadColumns, leadsLimit } from "./leads";
+import {
+  fetchLeadDetail,
+  fetchLeads,
+  formatLeadDate,
+  leadColumns,
+  leadDetailColumns,
+  leadsLimit,
+} from "./leads";
 
 interface Result {
   data: unknown;
@@ -42,8 +49,11 @@ function clientReturning(leads: Result, people: Result = { data: [person], error
 const row = {
   id: "10000000-0000-4000-8000-000000000003",
   via: "project",
+  source: "form",
   full_name: "Cara Pack",
   email: "cara@example.com",
+  organization: null,
+  contact_id: null,
   status: "new",
   created_at: "2026-11-03T09:30:00+00:00",
   assigned_to: null,
@@ -132,6 +142,81 @@ describe("fetchLeads", () => {
     expect(await fetchLeads(broken as unknown as SupabaseClient<Database>)).toEqual({
       status: "error",
     });
+  });
+});
+
+const detailRow = {
+  ...row,
+  phone: null,
+  message: "Hola",
+  locale: "es",
+  page_path: "/es/contacto",
+  consent_at: "2026-11-03T09:30:00+00:00",
+  assigned_at: null,
+  assigned_by: null,
+  deal_id: "20000000-0000-4000-8000-000000000001",
+  company: null,
+  offer_url: null,
+  wanted_by: null,
+  has_domain: null,
+  has_store_accounts: null,
+  extras: ["accounts"],
+  offer_answers: { start: "idea", more: ["payments"] },
+};
+
+function detailClient(lead: Result, deal: Result = { data: { stage: "new" }, error: null }) {
+  const maybeSingle = vi.fn().mockResolvedValue(lead);
+  const eq = vi.fn().mockReturnValue({ maybeSingle });
+  const select = vi.fn().mockReturnValue({ eq });
+  const dealMaybe = vi.fn().mockResolvedValue(deal);
+  const dealEq = vi.fn().mockReturnValue({ maybeSingle: dealMaybe });
+  const dealSelect = vi.fn().mockReturnValue({ eq: dealEq });
+  const peopleOrder = vi.fn().mockResolvedValue({ data: [person], error: null });
+  const peopleSelect = vi
+    .fn()
+    .mockReturnValue({ in: vi.fn().mockReturnValue({ order: peopleOrder }) });
+  const from = vi.fn((table: string) => {
+    if (table === "profiles") return { select: peopleSelect };
+    if (table === "deals") return { select: dealSelect };
+    return { select };
+  });
+  return { client: { from } as unknown as SupabaseClient<Database>, select, eq, dealEq };
+}
+
+describe("fetchLeadDetail", () => {
+  it("reads one lead by id with its detail columns and the deal stage", async () => {
+    const { client, select, eq, dealEq } = detailClient({ data: detailRow, error: null });
+    const result = await fetchLeadDetail(client, row.id);
+    expect(select).toHaveBeenCalledWith(leadDetailColumns);
+    expect(eq).toHaveBeenCalledWith("id", row.id);
+    expect(dealEq).toHaveBeenCalledWith("id", detailRow.deal_id);
+    expect(result).toMatchObject({ status: "ok", dealStage: "new" });
+  });
+
+  it("skips the deal read when the lead has none and tolerates a failed deal read", async () => {
+    const none = detailClient({ data: { ...detailRow, deal_id: null }, error: null });
+    expect(await fetchLeadDetail(none.client, row.id)).toMatchObject({ dealStage: null });
+    expect(none.dealEq).not.toHaveBeenCalled();
+    const failed = detailClient(
+      { data: detailRow, error: null },
+      { data: null, error: { code: "XX000" } },
+    );
+    expect(await fetchLeadDetail(failed.client, row.id)).toMatchObject({ dealStage: null });
+  });
+
+  it("tells a missing lead from an error", async () => {
+    expect(await fetchLeadDetail(detailClient({ data: null, error: null }).client, row.id)).toEqual(
+      { status: "missing" },
+    );
+    expect(
+      await fetchLeadDetail(detailClient({ data: null, error: { code: "XX000" } }).client, row.id),
+    ).toEqual({ status: "error" });
+    expect(
+      await fetchLeadDetail(
+        detailClient({ data: { ...detailRow, offer_answers: { start: 3 } }, error: null }).client,
+        row.id,
+      ),
+    ).toEqual({ status: "error" });
   });
 });
 

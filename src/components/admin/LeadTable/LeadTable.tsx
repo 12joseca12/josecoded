@@ -1,6 +1,9 @@
+import Link from "next/link";
+
 import { formatLeadDate } from "@/lib/admin/leads";
 import type { LeadActionHandler, LeadAssignee, LeadRow, LeadTableLabels } from "@/types/leads";
 
+import { LeadStatus } from "../LeadStatus/LeadStatus";
 import { LeadActions } from "./LeadActions";
 import styles from "./LeadTable.module.css";
 
@@ -8,12 +11,21 @@ interface LeadTableProps {
   rows: LeadRow[];
   assignees: LeadAssignee[];
   locale: string;
+  detailBase: string;
   labels: LeadTableLabels;
   assign: LeadActionHandler;
   discard: LeadActionHandler;
 }
 
-export function LeadTable({ rows, assignees, locale, labels, assign, discard }: LeadTableProps) {
+export function LeadTable({
+  rows,
+  assignees,
+  locale,
+  detailBase,
+  labels,
+  assign,
+  discard,
+}: LeadTableProps) {
   const names = new Map(assignees.map((entry) => [entry.id, entry.name]));
   return (
     <div className={styles.region} role="region" aria-label={labels.region} tabIndex={0}>
@@ -24,6 +36,8 @@ export function LeadTable({ rows, assignees, locale, labels, assign, discard }: 
             <th scope="col">{labels.columns.via}</th>
             <th scope="col">{labels.columns.name}</th>
             <th scope="col">{labels.columns.email}</th>
+            <th scope="col">{labels.columns.organization}</th>
+            <th scope="col">{labels.columns.source}</th>
             <th scope="col">{labels.columns.status}</th>
             <th scope="col">{labels.columns.assigned}</th>
             <th scope="col">{labels.columns.date}</th>
@@ -38,15 +52,19 @@ export function LeadTable({ rows, assignees, locale, labels, assign, discard }: 
                 {row.offer ? <span className={styles.offer}>{row.offer}</span> : null}
               </td>
               <th scope="row" className={styles.name}>
-                {row.full_name}
+                <Link className={styles.link} href={`${detailBase}/${row.id}`}>
+                  {row.full_name}
+                </Link>
               </th>
               <td className={styles.email}>
                 {row.email ?? <span className={styles.muted}>{labels.noEmail}</span>}
               </td>
               <td>
-                <span className={styles.status} data-status={row.status}>
-                  {labels.status[row.status]}
-                </span>
+                {row.organization ?? <span className={styles.muted}>{labels.noOrganization}</span>}
+              </td>
+              <td>{labels.sources[row.source]}</td>
+              <td>
+                <LeadStatus status={row.status} label={labels.status[row.status]} />
               </td>
               <td>
                 {row.assigned_to ? (

@@ -1,0 +1,57 @@
+.bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: var(--space-3);
+  align-items: end;
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-l);
+  background: var(--panel);
+}
+
+.field {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.label {
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+  font-weight: var(--fw-medium);
+}
+
+.control {
+  width: 100%;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-m);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: var(--fs-base);
+  line-height: var(--lh-ui);
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.control:focus-visible {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 var(--ring) var(--ring-coral);
+  outline-offset: 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .control:hover:not(:focus-visible) {
+    border-color: var(--ink);
+  }
+}

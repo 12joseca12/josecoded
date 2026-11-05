@@ -4,13 +4,13 @@ import { z } from "zod";
 
 import { buildAuthFormLabels } from "@/components/auth/labels";
 import { LoginForm } from "@/components/auth/LoginForm/LoginForm";
-import { features } from "@/config/features";
 import { isLocale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
 import { readSupabasePublicConfig } from "@/lib/auth/env";
 import { isInvitationPath, resolveDestination, safeNext } from "@/lib/auth/guards";
 import { getSessionState } from "@/lib/auth/session";
 import { readContactClientConfig } from "@/lib/contact/env";
+import { getFeatures } from "@/lib/settings/features";
 
 interface LoginProps {
   params: Promise<{ locale: string }>;
@@ -44,7 +44,7 @@ export default async function LoginPage({ params, searchParams }: LoginProps) {
       ? rawEmail
       : null;
 
-  const t = await getTranslator(locale);
+  const [t, { googleSignIn }] = await Promise.all([getTranslator(locale), getFeatures()]);
   const turnstile =
     readSupabasePublicConfig(process.env) !== null ? readContactClientConfig(process.env) : null;
 
@@ -53,7 +53,7 @@ export default async function LoginPage({ params, searchParams }: LoginProps) {
       locale={locale}
       next={next}
       labels={buildAuthFormLabels(t)}
-      googleEnabled={features.googleSignIn}
+      googleEnabled={googleSignIn}
       turnstile={turnstile}
       invitedEmail={invitedEmail}
     />
