@@ -145,6 +145,11 @@ test("Enter on an extra does not submit the form", async ({ page }) => {
   await page.goto("/es/servicios/a-medida?q=idea.web.medium.basic.me.payments");
   const extra = page.locator('#recomendador input[name="e"]').first();
   await extra.scrollIntoViewIfNeeded();
+  await expect
+    .poll(() =>
+      extra.evaluate((node) => Object.keys(node).some((key) => key.startsWith("__reactProps$"))),
+    )
+    .toBe(true);
   await extra.focus();
   await page.evaluate(() => {
     (window as unknown as { marker: number }).marker = 1;

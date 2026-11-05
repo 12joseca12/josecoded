@@ -137,6 +137,7 @@ test.describe("phase rail", () => {
 
   test("pauses when the hero scrolls out of view", async ({ page }) => {
     await page.goto("/es");
+    await expect(page.getByRole("button", { name: hero.rail.pause })).toBeVisible();
     await page.evaluate(() => {
       document.body.style.paddingBottom = "4000px";
       scrollTo({ top: 2000, behavior: "instant" });
