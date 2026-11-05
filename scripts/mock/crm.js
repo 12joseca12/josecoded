@@ -57,6 +57,9 @@ const seededContacts = [
         amount: 3000,
         won_amount: 2800,
         won_at: "2026-10-20T10:00:00+00:00",
+        recurring_monthly: 60,
+        recurring_started_at: "2026-10-25",
+        recurring_cancelled_at: null,
         lost_reason: null,
         created_at: "2026-09-02T08:00:00+00:00",
         updated_at: "2026-10-20T10:00:00+00:00",
@@ -172,14 +175,14 @@ route("POST", "/__auth/crm-write-error", async ({ request, response, url }) => {
   return send(response, 200, { ok: true });
 });
 
-function callerOf(request) {
+export function callerOf(request) {
   const session = bearer(request);
   if (!session) return null;
   const person = personById(session.userId)?.[1] ?? null;
   return { session, auth: session.auth, person };
 }
 
-function canSee(caller, contact) {
+export function canSee(caller, contact) {
   if (!caller.person || caller.session.level !== "aal2") return false;
   if (caller.person.role === "admin") return true;
   if (caller.person.role !== "closer" || contact.owner_id === null) return false;
@@ -187,11 +190,11 @@ function canSee(caller, contact) {
   return contact.owner_id === caller.person.id || owner?.parent === caller.person.id;
 }
 
-function fail(response, status, code, message) {
+export function fail(response, status, code, message) {
   return send(response, status, { code, message, details: null, hint: null });
 }
 
-function operand(value) {
+export function operand(value) {
   const index = value.indexOf(".");
   return [value.slice(0, index), value.slice(index + 1)];
 }
@@ -231,6 +234,13 @@ function filterContacts(contacts, url) {
       const limit = Date.parse(condition.slice(4));
       rows = rows.filter((contact) => Date.parse(contact.next_action_at) <= limit);
     }
+    if (condition.startsWith("gt.")) {
+      const limit = Date.parse(condition.slice(3));
+      rows = rows.filter((contact) => Date.parse(contact.next_action_at) > limit);
+    }
+  }
+  for (const column of ["lead_id", "import_id", "archived_at"]) {
+    if (params.get(column) === "is.null") rows = rows.filter((contact) => !contact[column]);
   }
   const search = params.get("or");
   if (search) rows = rows.filter((contact) => matchesSearch(contact, search));
@@ -239,6 +249,9 @@ function filterContacts(contacts, url) {
     const right = b.last_activity_at ? Date.parse(b.last_activity_at) : -Infinity;
     return right - left || Date.parse(b.created_at) - Date.parse(a.created_at);
   });
+  if ((params.get("order") ?? "").startsWith("next_action_at.asc")) {
+    rows.sort((a, b) => Date.parse(a.next_action_at) - Date.parse(b.next_action_at));
+  }
   return rows.slice(0, Number(params.get("limit") ?? 1000));
 }
 
@@ -311,6 +324,21 @@ route("POST", "/rest/v1/contacts", async ({ request, response }) => {
 route("GET", "/rest/v1/deals", ({ request, response, url }) => {
   const caller = callerOf(request);
   if (!caller) return fail(response, 401, "PGRST301", "JWT invalid");
+  if ((url.searchParams.get("select") ?? "").includes("contacts(")) {
+    const rows = caller.auth.contacts
+      .filter((contact) => canSee(caller, contact))
+      .flatMap((contact) =>
+        contact.deals
+          .filter((deal) => deal.stage === "won")
+          .map((deal) => ({
+            id: deal.id,
+            won_amount: deal.won_amount ?? null,
+            recurring_monthly: deal.recurring_monthly ?? null,
+            contacts: { full_name: contact.full_name },
+          })),
+      );
+    return send(response, 200, rows);
+  }
   const id = operand(url.searchParams.get("id") ?? "eq.")[1];
   const rows = caller.auth.contacts
     .filter((contact) => canSee(caller, contact))

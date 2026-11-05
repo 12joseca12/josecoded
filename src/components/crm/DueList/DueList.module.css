@@ -1,0 +1,70 @@
+.list {
+  container-type: inline-size;
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-l);
+  background: var(--panel);
+}
+
+.item {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.item:last-child {
+  border-bottom: 0;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  min-height: 2.75rem;
+  color: var(--ink);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  overflow-wrap: anywhere;
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.2em;
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.action {
+  color: var(--ink);
+  font-size: var(--fs-base);
+}
+
+.date {
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+  font-variant-numeric: tabular-nums;
+}
+
+.date[data-late] {
+  color: var(--coral-deep);
+  font-weight: var(--fw-semibold);
+}
+
+@container (min-width: 40rem) {
+  .item {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto;
+    align-items: center;
+    gap: var(--space-4);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .link:hover {
+    text-decoration-color: var(--ink);
+  }
+}

@@ -8,7 +8,7 @@ import styles from "./CounterCell.module.css";
 const dash = "—";
 
 interface CounterCellProps {
-  cell: CounterCellData;
+  cell: Pick<CounterCellData, "label" | "value" | "amount" | "href">;
   unknownLabel: string;
 }
 

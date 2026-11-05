@@ -1995,6 +1995,514 @@
         "update": "Changes",
         "delete": "Deletions"
       }
+    },
+    "payments": {
+      "meta": {
+        "title": "Payments"
+      },
+      "title": "Payments",
+      "lead": "Payment milestones, proformas and invoices of won deals. Commission accrues with each payment you record.",
+      "loading": "Loading payments",
+      "tabsLabel": "Filter payments",
+      "tabs": {
+        "pending": "Pending",
+        "overdue": "Overdue",
+        "paid": "Paid",
+        "proformas": "Proformas",
+        "invoices": "Invoices"
+      },
+      "toolbar": {
+        "schedule": "Create schedule"
+      },
+      "empty": {
+        "title": "Nothing to collect yet",
+        "text": "When a won deal has its payment schedule, its milestones appear here.",
+        "tabTitle": "No results in this tab",
+        "tabText": "There is nothing to show with this filter."
+      },
+      "error": {
+        "title": "The payments could not be loaded",
+        "text": "Try again in a few seconds.",
+        "retry": "Try again",
+        "retrying": "Retrying"
+      },
+      "table": {
+        "caption": "Payment milestones",
+        "region": "Payment milestones table, scrolls horizontally",
+        "columns": {
+          "contact": "Contact",
+          "label": "Milestone",
+          "amount": "Amount",
+          "paid": "Paid",
+          "due": "Due",
+          "status": "Status",
+          "actions": "Actions"
+        },
+        "paidOf": "{paid} of {total}",
+        "noDue": "No date",
+        "overdue": "Overdue",
+        "statuses": {
+          "scheduled": "Scheduled",
+          "proforma_sent": "Proforma issued",
+          "invoiced": "Invoiced",
+          "paid": "Paid",
+          "cancelled": "Cancelled"
+        },
+        "kinds": {
+          "milestone": "Milestone",
+          "recurring": "Monthly fee"
+        }
+      },
+      "actions": {
+        "collect": "Collect",
+        "collectAria": "Collect {label} for {name}",
+        "proforma": "Proforma",
+        "proformaAria": "Issue a proforma for {label} of {name}",
+        "invoice": "Invoice",
+        "invoiceAria": "Record the invoice for {label} of {name}",
+        "cancel": "Cancel",
+        "cancelAria": "Cancel the milestone {label} of {name}"
+      },
+      "documents": {
+        "caption": "Proformas and invoices",
+        "region": "Documents table, scrolls horizontally",
+        "columns": {
+          "contact": "Contact",
+          "number": "Number",
+          "date": "Date",
+          "net": "Net",
+          "vat": "VAT",
+          "gross": "Total",
+          "status": "Status",
+          "actions": "Actions"
+        },
+        "kinds": {
+          "proforma": "Proforma, not an invoice",
+          "invoice": "Invoice"
+        },
+        "statuses": {
+          "draft": "Draft",
+          "sent": "Issued",
+          "paid": "Paid",
+          "void": "Void"
+        },
+        "pdf": "Open PDF",
+        "pdfAria": "Open PDF of invoice {number}",
+        "print": "View and print",
+        "printAria": "View and print proforma {number}",
+        "void": "Void",
+        "voidAria": "Void document {number}",
+        "empty": "There are no documents of this kind yet."
+      },
+      "record": {
+        "open": "Record payment",
+        "title": "Record payment",
+        "close": "Close",
+        "deal": "Deal",
+        "dealPlaceholder": "Choose a won deal",
+        "schedule": "Milestone",
+        "noSchedule": "No milestone",
+        "kind": "Type",
+        "nature": "Nature",
+        "amount": "Net amount (excluding VAT)",
+        "amountHint": "What you collected excluding VAT. Commission is calculated on this amount.",
+        "date": "Payment date",
+        "method": "Method",
+        "reference": "Reference",
+        "invoice": "Related invoice",
+        "noInvoice": "No invoice",
+        "optional": "(optional)",
+        "kinds": {
+          "payment": "Payment",
+          "refund": "Refund"
+        },
+        "natures": {
+          "project": "Project",
+          "recurring": "Recurring"
+        },
+        "methods": {
+          "transfer": "Bank transfer",
+          "card": "Card",
+          "stripe": "Stripe",
+          "other": "Other"
+        },
+        "submit": "Record payment",
+        "saving": "Recording",
+        "done": "Payment recorded. Commission has accrued.",
+        "errors": {
+          "deal": "Choose a won deal.",
+          "amount": "Enter an amount above zero, with at most two decimals.",
+          "date": "Choose the payment date.",
+          "future_date": "The payment date cannot be in the future.",
+          "payment_exceeds_schedule": "The amount is more than what is left to collect on this milestone.",
+          "payment_exceeds_deal": "The amount is more than the total won on the deal.",
+          "refund_exceeds_paid": "The refund is more than what had been collected.",
+          "no_recurring": "This deal has no recurring charge.",
+          "nature_mismatch": "The nature does not match the milestone.",
+          "schedule_cancelled": "The milestone is cancelled.",
+          "schedule_mismatch": "The milestone does not belong to this deal.",
+          "invoice_mismatch": "The invoice does not belong to this deal.",
+          "invoice_void": "The invoice is void.",
+          "deal_not_won": "The deal is not won yet.",
+          "invalid_payment": "Check the payment details.",
+          "forbidden": "Only the admin can record payments.",
+          "error": "The payment could not be recorded. Try again."
+        }
+      },
+      "scheduleSheet": {
+        "open": "Create schedule",
+        "title": "Payment schedule",
+        "close": "Close",
+        "deal": "Deal",
+        "dealPlaceholder": "Choose a won deal",
+        "won": "Won amount: {amount}",
+        "templates": "Templates",
+        "template442": "40 / 40 / 20",
+        "templateSingle": "Single payment",
+        "items": "Milestones",
+        "label": "Name",
+        "kind": "Type",
+        "kinds": {
+          "milestone": "Milestone",
+          "recurring": "Monthly fee"
+        },
+        "percent": "%",
+        "amount": "Amount",
+        "due": "Due",
+        "add": "Add milestone",
+        "remove": "Remove",
+        "removeAria": "Remove milestone {position}",
+        "sum": "Milestones add up to {sum} of {total}",
+        "sumOk": "The sum matches the won amount.",
+        "defaults": {
+          "first": "Advance",
+          "second": "Midpoint delivery",
+          "last": "Final delivery",
+          "single": "Single payment",
+          "next": "Milestone"
+        },
+        "replaceNote": "It replaces the milestones that have no payments or documents yet.",
+        "submit": "Save schedule",
+        "saving": "Saving",
+        "done": "Schedule saved",
+        "errors": {
+          "deal": "Choose a won deal.",
+          "items": "Check the milestones: name, amount above zero and a valid date.",
+          "schedule_total_mismatch": "Milestones must add up exactly to the won amount.",
+          "invalid_schedule": "Check the milestones: name, amount above zero and a valid date.",
+          "deal_not_won": "The deal is not won yet.",
+          "forbidden": "Only the admin can create schedules.",
+          "error": "The schedule could not be saved. Try again."
+        }
+      },
+      "proformaSheet": {
+        "title": "Issue proforma",
+        "close": "Close",
+        "text": "It is numbered PF-YYYY-NNN. A proforma is not an invoice and has no tax value.",
+        "vat": "VAT (%)",
+        "vatHint": "Filled from the billing setting. Use 0 until you are registered as self-employed.",
+        "submit": "Issue proforma",
+        "saving": "Issuing",
+        "done": "Proforma {number} issued",
+        "view": "View and print",
+        "errors": {
+          "vat": "Enter a VAT between 0 and 100.",
+          "proforma_already_issued": "This milestone already has a proforma.",
+          "schedule_not_issuable": "This milestone no longer accepts a proforma.",
+          "schedule_not_found": "We cannot find the milestone.",
+          "forbidden": "Only the admin can issue proformas.",
+          "error": "The proforma could not be issued. Try again."
+        }
+      },
+      "invoiceSheet": {
+        "title": "Record invoice",
+        "close": "Close",
+        "text": "You issue invoices outside the CRM. Here they are only recorded: enter the number you gave them.",
+        "number": "Invoice number",
+        "date": "Issue date",
+        "net": "Net amount",
+        "vat": "VAT (%)",
+        "file": "Invoice PDF",
+        "fileHint": "PDF up to 10 MB.",
+        "optional": "(optional)",
+        "submit": "Record invoice",
+        "saving": "Recording",
+        "done": "Invoice recorded",
+        "errors": {
+          "number": "Enter the invoice number.",
+          "date": "Choose the issue date.",
+          "net": "Enter a net amount above zero, with at most two decimals.",
+          "vat": "Enter a VAT between 0 and 100.",
+          "fileType": "The file must be a PDF.",
+          "fileSize": "The PDF is larger than 10 MB.",
+          "upload": "The PDF could not be uploaded. Try again.",
+          "invoice_number_reserved": "Numbers starting with PF- belong to proformas.",
+          "invoice_number_taken": "An invoice with that number already exists.",
+          "invalid_invoice": "Check the invoice details.",
+          "schedule_mismatch": "The milestone does not belong to this deal.",
+          "schedule_cancelled": "The milestone is cancelled.",
+          "forbidden": "Only the admin can record invoices.",
+          "error": "The invoice could not be recorded. Try again."
+        }
+      },
+      "confirm": {
+        "cancelTitle": "Cancel milestone",
+        "cancelText": "The milestone stops counting and its proforma, if any, is voided. A milestone with payments cannot be cancelled.",
+        "cancelSubmit": "Cancel milestone",
+        "cancelDone": "Milestone cancelled",
+        "voidTitle": "Void document",
+        "voidText": "The document is voided and the milestone goes back to pending. A document with payments cannot be voided.",
+        "voidSubmit": "Void document",
+        "voidDone": "Document voided",
+        "saving": "Saving",
+        "close": "Close",
+        "errors": {
+          "schedule_has_payments": "The milestone has recorded payments: it cannot be cancelled.",
+          "schedule_has_invoice": "The milestone has an invoice: void it first.",
+          "invoice_has_payments": "The document has payments linked: it cannot be voided.",
+          "invoice_not_voidable": "This document can no longer be voided.",
+          "forbidden": "Only the admin can do this.",
+          "error": "The action could not be completed. Try again."
+        }
+      }
+    },
+    "proformaPrint": {
+      "meta": {
+        "title": "Proforma"
+      },
+      "back": "Back to payments",
+      "print": "Print or save as PDF",
+      "printHint": "In the print dialog choose \"Save as PDF\".",
+      "heading": "Proforma",
+      "notInvoice": "This document is not an invoice and has no tax value. The invoice is issued separately, when due.",
+      "void": "Voided proforma: it has no effect.",
+      "number": "Number",
+      "issuedAt": "Issue date",
+      "dueAt": "Due date",
+      "noDue": "To be agreed",
+      "issuer": {
+        "title": "Issuer",
+        "name": "José Carlos Sánchez García",
+        "taxId": "Tax ID 06011766A",
+        "location": "Madrid (Spain)",
+        "email": "hola@josecoded.com"
+      },
+      "client": {
+        "title": "Client"
+      },
+      "concept": {
+        "title": "Item",
+        "deal": "Project"
+      },
+      "totals": {
+        "net": "Net amount",
+        "vat": "VAT ({rate})",
+        "gross": "Total"
+      },
+      "footer": "Amounts in euros. Proforma {number}.",
+      "error": {
+        "title": "The proforma could not be loaded",
+        "text": "Try again in a few seconds.",
+        "retry": "Try again",
+        "retrying": "Retrying"
+      },
+      "loading": "Loading the proforma"
+    },
+    "payouts": {
+      "meta": {
+        "title": "Payouts"
+      },
+      "title": "Payouts",
+      "lead": "Groups approved commissions by beneficiary and period. The payment is recorded here; it is not executed from here.",
+      "loading": "Loading payouts",
+      "tabsLabel": "Filter payouts",
+      "tabs": {
+        "all": "All",
+        "draft": "Draft",
+        "issued": "Issued",
+        "paid": "Paid"
+      },
+      "error": {
+        "title": "The payouts could not be loaded",
+        "text": "Try again in a few seconds.",
+        "retry": "Try again",
+        "retrying": "Retrying"
+      },
+      "empty": {
+        "title": "No payouts",
+        "text": "When there are approved commissions you can group them in a payout.",
+        "tabTitle": "No payouts with this status",
+        "tabText": "There is nothing to show with this filter."
+      },
+      "list": {
+        "caption": "Payouts",
+        "region": "Payouts table, scrolls horizontally",
+        "columns": {
+          "beneficiary": "Beneficiary",
+          "period": "Period",
+          "cadence": "Cadence",
+          "total": "Total",
+          "withholding": "Withholding",
+          "net": "Net to pay",
+          "status": "Status",
+          "reference": "Reference",
+          "actions": "Actions"
+        },
+        "open": "Open",
+        "openAria": "Open the payout of {name} from {start} to {end}",
+        "none": "—",
+        "range": "{start} – {end}"
+      },
+      "cadences": {
+        "per_payment": "Per payment",
+        "weekly": "Weekly",
+        "biweekly": "Every two weeks"
+      },
+      "statuses": {
+        "draft": "Draft",
+        "issued": "Issued",
+        "paid": "Paid"
+      },
+      "builder": {
+        "open": "Create payout",
+        "title": "Create payout",
+        "close": "Close",
+        "beneficiary": "Beneficiary",
+        "placeholder": "Choose a closer",
+        "start": "From",
+        "end": "To",
+        "suggested": "Period suggested by their cadence ({cadence}). You can change it.",
+        "withholding": "Withholding (%)",
+        "withholdingHint": "0 if no withholding applies.",
+        "note": "Statement note",
+        "optional": "(optional)",
+        "previewTitle": "Approved lines of the period",
+        "previewCount": "{count} lines",
+        "previewTotal": "Total: {amount}",
+        "previewEmpty": "There are no approved, unpaid lines in this period.",
+        "previewLoading": "Calculating",
+        "submit": "Create draft",
+        "saving": "Creating",
+        "done": "Payout draft created",
+        "errors": {
+          "beneficiary": "Choose a closer.",
+          "period": "Choose a valid period of up to a year.",
+          "withholding": "Enter a withholding between 0 and 100.",
+          "invalid_beneficiary": "Only closers have payouts.",
+          "invalid_period": "Choose a valid period of up to a year.",
+          "invalid_withholding": "Enter a withholding between 0 and 100.",
+          "invalid_note": "The note is too long.",
+          "no_lines_in_period": "There are no approved, unpaid commissions in this period.",
+          "negative_total": "Refunds exceed the commissions of the period: widen the period.",
+          "forbidden": "Only the admin can create payouts.",
+          "error": "The payout could not be created. Try again."
+        }
+      },
+      "detail": {
+        "back": "Back to payouts",
+        "heading": "Payout of {name}",
+        "summary": "Summary",
+        "period": "Period",
+        "cadence": "Cadence",
+        "total": "Total",
+        "withholding": "Withholding",
+        "net": "Net to pay",
+        "status": "Status",
+        "issuedAt": "Issued on",
+        "paidAt": "Paid on",
+        "reference": "Reference",
+        "note": "Note",
+        "notFound": "This payout does not exist.",
+        "linesTitle": "Included lines",
+        "linesEmpty": "This payout has no lines.",
+        "linesColumns": {
+          "date": "Payment",
+          "contact": "Contact",
+          "nature": "Nature",
+          "base": "Net base",
+          "rate": "Rate",
+          "amount": "Commission"
+        },
+        "linesCaption": "Payout lines",
+        "linesRegion": "Payout lines table, scrolls horizontally",
+        "loading": "Loading the payout"
+      },
+      "actions": {
+        "title": "Actions",
+        "issue": "Issue payout",
+        "issueSaving": "Issuing",
+        "issueDone": "Payout issued",
+        "markPaid": "Mark as paid",
+        "deleteDraft": "Delete draft",
+        "errors": {
+          "invalid_transition": "The payout no longer accepts this change. Reload the page.",
+          "payout_not_draft": "Only drafts can be deleted.",
+          "payout_not_found": "We cannot find the payout.",
+          "forbidden": "Only the admin can do this.",
+          "error": "The action could not be completed. Try again."
+        }
+      },
+      "pay": {
+        "title": "Mark as paid",
+        "close": "Close",
+        "text": "You are about to record that you have paid {amount} to {name}. This only keeps a record: it does not execute any payment.",
+        "date": "Payment date",
+        "reference": "Payment reference",
+        "submit": "Record payment",
+        "saving": "Recording",
+        "done": "Payout marked as paid",
+        "errors": {
+          "date": "Choose the payment date.",
+          "reference": "Enter the payment reference.",
+          "paid_at_required": "Choose the payment date.",
+          "reference_required": "Enter the payment reference.",
+          "future_date": "The payment date cannot be in the future.",
+          "invalid_transition": "The payout no longer accepts this change. Reload the page.",
+          "payout_not_found": "We cannot find the payout.",
+          "forbidden": "Only the admin can do this.",
+          "error": "The payment could not be recorded. Try again."
+        }
+      },
+      "deleteConfirm": {
+        "title": "Delete draft",
+        "text": "The draft is deleted and its lines become available for another payout.",
+        "submit": "Delete draft",
+        "done": "Draft deleted",
+        "saving": "Deleting",
+        "close": "Close"
+      },
+      "invoice": {
+        "title": "Closer invoice",
+        "none": "There is no closer invoice yet.",
+        "open": "Open closer invoice",
+        "upload": "Upload closer invoice",
+        "file": "Invoice PDF",
+        "hint": "PDF up to 10 MB.",
+        "submit": "Upload invoice",
+        "saving": "Uploading",
+        "done": "Invoice uploaded",
+        "errors": {
+          "file": "Choose a PDF.",
+          "fileType": "The file must be a PDF.",
+          "fileSize": "The PDF is larger than 10 MB.",
+          "upload": "The PDF could not be uploaded. Try again.",
+          "invalid_path": "The invoice could not be saved.",
+          "payout_not_found": "We cannot find the payout.",
+          "forbidden": "Only the admin can do this.",
+          "error": "The invoice could not be uploaded. Try again."
+        }
+      },
+      "statement": {
+        "print": "Print statement",
+        "printHint": "In the print dialog choose \"Save as PDF\".",
+        "title": "Commission statement",
+        "issuer": "José Carlos Sánchez García · Tax ID 06011766A · Madrid (Spain)",
+        "beneficiary": "Beneficiary",
+        "period": "Period",
+        "notPayment": "This statement summarises commissions. It is not an invoice.",
+        "footer": "Amounts in euros.",
+        "range": "{start} – {end}"
+      }
     }
   },
   "crm": {
@@ -2015,16 +2523,68 @@
       "more": "More",
       "moreTitle": "More sections",
       "close": "Close",
-      "switch": "Go to admin"
+      "switch": "Go to admin",
+      "start": "Get started"
     },
     "overview": {
       "meta": {
         "title": "Overview"
       },
       "title": "Overview",
-      "lead": "What you need to do today.",
+      "lead": "What you have to do today and how your book is doing.",
       "emptyTitle": "Nothing to show yet",
-      "emptyText": "Your portfolio overview arrives with the CRM. Until then this section is empty."
+      "emptyText": "Your portfolio overview arrives with the CRM. Until then this section is empty.",
+      "loading": "Loading the overview",
+      "today": {
+        "title": "Today",
+        "viewOverdue": "See overdue steps",
+        "viewLeads": "See leads"
+      },
+      "cells": {
+        "unknown": "No data",
+        "inbox": "New leads",
+        "overdue": "Overdue steps",
+        "dueToday": "Steps for today",
+        "stages": {
+          "new": "New",
+          "contacted": "Contacted",
+          "meeting": "In a meeting",
+          "proposal": "With a proposal"
+        },
+        "unavailable": {
+          "title": "The counters are not available yet",
+          "text": "The database does not offer them yet. Your next steps work."
+        },
+        "error": {
+          "title": "The counters could not be loaded",
+          "text": "The query failed. Try again.",
+          "retry": "Try again",
+          "retrying": "Trying again"
+        }
+      },
+      "pipeline": {
+        "title": "Open opportunities"
+      },
+      "due": {
+        "title": "Your next steps",
+        "loading": "Loading your next steps",
+        "listLabel": "Steps pending up to today",
+        "noAction": "No description",
+        "overdue": "overdue",
+        "all": "See all contacts",
+        "empty": {
+          "title": "You are up to date",
+          "text": "You have no overdue steps and none for today.",
+          "next": "Your next step: {action}, on {date}.",
+          "nextNoAction": "Your next step is on {date}."
+        },
+        "error": {
+          "title": "Your steps could not be loaded",
+          "text": "The query failed. Try again.",
+          "retry": "Try again",
+          "retrying": "Trying again"
+        }
+      }
     },
     "contacts": {
       "meta": {
@@ -2219,7 +2779,11 @@
         "lose": "Mark as lost",
         "loseAria": "Mark the deal of {name} as lost",
         "reopen": "Reopen",
-        "reopenAria": "Reopen the deal of {name}"
+        "reopenAria": "Reopen the deal of {name}",
+        "recurringMonthly": "Recurring charge per month",
+        "recurringStarted": "Recurring since",
+        "recurringCancelled": "Recurring cancelled on",
+        "recurringNotStarted": "No first charge yet"
       },
       "activity": {
         "title": "Activity",
@@ -2256,6 +2820,165 @@
           "forbidden": "You are not allowed to log activity here.",
           "error": "Could not log it. Try again."
         }
+      },
+      "win": {
+        "open": "Mark as won",
+        "openAria": "Mark the deal of {name} as won",
+        "title": "Mark deal as won",
+        "close": "Close",
+        "wonAmount": "Won amount (excluding VAT)",
+        "wonAmountHint": "The agreed net project amount, excluding VAT. The commission is calculated on it.",
+        "recurring": "Recurring charge per month (excluding VAT)",
+        "recurringHint": "Maintenance or monthly plan, if any. It earns commission for 12 months or until the client cancels.",
+        "optional": "(optional)",
+        "previewTitle": "Expected commission",
+        "previewEmpty": "Enter the won amount to see the expected commission.",
+        "previewLine": "{name} ({role}): {rate} = {amount}",
+        "previewParentAnonymous": "Parent closer: {rate} = {amount}",
+        "previewRecurring": "Recurring: {rate} = {amount} per month",
+        "previewTotal": "Expected total: {amount}",
+        "freezeNote": "Rates are frozen when the deal is won; commission accrues with each payment.",
+        "parentRole": "parent closer",
+        "closerRole": "closing",
+        "noCommission": {
+          "hiring": "Hiring deals earn no commission.",
+          "admin": "The admin earns no commission on their own deals.",
+          "unknown_owner": "This deal has no owner who earns commission.",
+          "no_rate": "The owner has no commission rate set."
+        },
+        "submit": "Mark as won",
+        "saving": "Saving",
+        "done": "Deal marked as won",
+        "errors": {
+          "wonAmount": "Enter an amount above zero, with at most two decimals.",
+          "recurringMonthly": "Enter an amount above zero or leave the field empty.",
+          "forbidden": "You cannot mark this deal as won.",
+          "not_found": "We cannot find this deal in your portfolio.",
+          "already_won": "This deal was already won.",
+          "lost": "A lost deal has to be reopened before it can be won.",
+          "error": "It could not be saved. Try again."
+        }
+      },
+      "cancelRecurring": {
+        "open": "Cancel recurring",
+        "openAria": "Cancel recurring for {name}",
+        "title": "Cancel recurring charge",
+        "close": "Close",
+        "text": "The client stops paying the monthly fee. Payments received after today no longer earn commission. This cannot be undone from the CRM.",
+        "submit": "Cancel recurring",
+        "saving": "Cancelling",
+        "done": "Recurring charge cancelled",
+        "errors": {
+          "forbidden": "Only the admin can cancel a recurring charge.",
+          "not_recurring": "This deal has no recurring charge.",
+          "already_cancelled": "The recurring charge was already cancelled.",
+          "error": "It could not be cancelled. Try again."
+        }
+      },
+      "money": {
+        "title": "Payments and commission",
+        "loading": "Loading payments and commission",
+        "empty": "No won deals",
+        "emptyText": "When you win a deal, its payments and commission appear here.",
+        "dealHeading": "Deal: {name}",
+        "expected": "Expected commission",
+        "expectedLine": "{name} · {rate} = {amount}",
+        "expectedNone": "This deal earns no commission.",
+        "scheduleTitle": "Payment milestones",
+        "scheduleEmpty": "There is no payment schedule yet. The admin prepares it.",
+        "scheduleColumns": {
+          "label": "Milestone",
+          "amount": "Amount",
+          "due": "Due",
+          "status": "Status"
+        },
+        "scheduleStatuses": {
+          "scheduled": "Scheduled",
+          "proforma_sent": "Proforma sent",
+          "invoiced": "Invoiced",
+          "paid": "Paid",
+          "cancelled": "Cancelled"
+        },
+        "scheduleKinds": {
+          "milestone": "Milestone",
+          "recurring": "Monthly fee"
+        },
+        "overdue": "Overdue",
+        "paymentsTitle": "Payments received",
+        "paymentsEmpty": "No payment has been recorded yet.",
+        "paymentsColumns": {
+          "date": "Date",
+          "kind": "Type",
+          "nature": "Nature",
+          "amount": "Net amount",
+          "method": "Method",
+          "reference": "Reference"
+        },
+        "paymentKinds": {
+          "payment": "Payment",
+          "refund": "Refund"
+        },
+        "paymentMethods": {
+          "transfer": "Bank transfer",
+          "card": "Card",
+          "stripe": "Stripe",
+          "other": "Other"
+        },
+        "natures": {
+          "project": "Project",
+          "recurring": "Recurring"
+        },
+        "linesTitle": "Commission lines",
+        "linesEmpty": "No lines yet: they are created with each payment.",
+        "linesColumns": {
+          "date": "Payment",
+          "beneficiary": "Beneficiary",
+          "role": "Role",
+          "nature": "Nature",
+          "base": "Net base",
+          "rate": "Rate",
+          "amount": "Commission",
+          "status": "Status"
+        },
+        "roles": {
+          "closer": "Closing",
+          "parent": "Parent closer"
+        },
+        "lineStatuses": {
+          "accrued": "Accrued",
+          "approved": "Approved",
+          "rejected": "Rejected",
+          "paid": "Paid",
+          "reversed": "Reversed"
+        },
+        "invoicesTitle": "Invoices and proformas",
+        "invoicesEmpty": "No documents yet.",
+        "invoicesColumns": {
+          "number": "Number",
+          "date": "Date",
+          "net": "Net",
+          "vat": "VAT",
+          "gross": "Total",
+          "status": "Status"
+        },
+        "invoiceKinds": {
+          "proforma": "Proforma, not an invoice",
+          "invoice": "Invoice"
+        },
+        "invoiceStatuses": {
+          "draft": "Draft",
+          "sent": "Issued",
+          "paid": "Paid",
+          "void": "Void"
+        },
+        "unknownPerson": "Another closer",
+        "tableLabel": "Amounts table, scrolls horizontally",
+        "error": {
+          "title": "The payments could not be loaded",
+          "text": "Try again in a few seconds.",
+          "retry": "Try again",
+          "retrying": "Retrying"
+        }
       }
     },
     "settings": {
@@ -2282,6 +3005,228 @@
           "retry": "Retry",
           "retrying": "Retrying"
         }
+      }
+    },
+    "commissions": {
+      "meta": {
+        "title": "Commissions"
+      },
+      "title": "Commissions",
+      "leadAdmin": "Every commission line. Approve the accrued ones once the payment is confirmed; the payout is recorded in Payouts.",
+      "leadCloser": "What you have accrued from each client payment. If you have subclosers you see their lines too.",
+      "loading": "Loading commissions",
+      "error": {
+        "title": "The commissions could not be loaded",
+        "text": "Try again in a few seconds.",
+        "retry": "Try again",
+        "retrying": "Retrying"
+      },
+      "empty": {
+        "title": "No commissions yet",
+        "text": "Commission accrues with each client payment on a won deal.",
+        "filterTitle": "No lines with this filter",
+        "filterText": "Try another status or clear the filter."
+      },
+      "totals": {
+        "label": "Totals by status",
+        "all": "All",
+        "accrued": "Accrued",
+        "approved": "Approved",
+        "paid": "Paid",
+        "reversed": "Reversed"
+      },
+      "views": {
+        "label": "View",
+        "lines": "Lines",
+        "headers": "Headers"
+      },
+      "lines": {
+        "caption": "Commission lines",
+        "region": "Commission lines table, scrolls horizontally",
+        "columns": {
+          "select": "Select",
+          "date": "Accrued",
+          "contact": "Contact",
+          "beneficiary": "Beneficiary",
+          "nature": "Nature",
+          "base": "Net base",
+          "rate": "Rate",
+          "amount": "Commission",
+          "status": "Status",
+          "payout": "Payout",
+          "actions": "Actions"
+        },
+        "selectAria": "Select the line of {name} for {amount}",
+        "noPayout": "Not paid out",
+        "inPayout": "{start} to {end}",
+        "unknownPerson": "Another closer",
+        "rejectedReason": "Reason: {reason}",
+        "selectAll": "Select all accrued lines",
+        "preparing": "Being prepared"
+      },
+      "headers": {
+        "caption": "Commission headers",
+        "region": "Commission headers table, scrolls horizontally",
+        "columns": {
+          "contact": "Contact",
+          "closer": "Closer",
+          "subcloser": "Subcloser",
+          "rates": "Rates",
+          "expected": "Expected",
+          "accrued": "Accrued to date"
+        },
+        "rates": "{project} project · {recurring} recurring",
+        "noRecurring": "no recurring",
+        "empty": "There are no headers yet."
+      },
+      "approve": {
+        "submit": "Approve selection ({count})",
+        "none": "Approve selection",
+        "saving": "Approving",
+        "done": "Lines approved",
+        "selected": "{count} selected",
+        "errors": {
+          "invalid_selection": "Choose at least one accrued line.",
+          "line_not_accrued": "A line had already changed status. Reload the page.",
+          "forbidden": "Only the admin can approve commissions.",
+          "error": "The lines could not be approved. Try again."
+        }
+      },
+      "reject": {
+        "open": "Reject",
+        "openAria": "Reject the line of {name} for {amount}",
+        "title": "Reject commission line",
+        "close": "Close",
+        "reason": "Reason for rejecting",
+        "submit": "Reject line",
+        "saving": "Rejecting",
+        "done": "Line rejected",
+        "errors": {
+          "reason_required": "Enter the reason for rejecting.",
+          "line_not_accrued": "The line had already changed status. Reload the page.",
+          "line_not_found": "We cannot find the line.",
+          "forbidden": "Only the admin can reject commissions.",
+          "error": "The line could not be rejected. Try again."
+        }
+      }
+    },
+    "leads": {
+      "meta": {
+        "title": "Leads"
+      },
+      "title": "Leads",
+      "lead": "People who have written in and have nobody on the other side yet. Claim the ones you want to work and they move to your book.",
+      "loading": "Loading leads",
+      "limit": "Showing the {count} most recent.",
+      "tabs": {
+        "label": "Leads by group",
+        "inbox": "Unassigned",
+        "mine": "Mine",
+        "team": "My team"
+      },
+      "error": {
+        "title": "The leads could not be loaded",
+        "text": "The query failed. Try again.",
+        "retry": "Try again",
+        "retrying": "Trying again"
+      },
+      "inbox": {
+        "note": "Here you only see the first name and an excerpt. The rest of the details arrive when you claim it.",
+        "listLabel": "Unassigned leads",
+        "claim": "Claim",
+        "claiming": "Claiming",
+        "claimAria": "Claim {name}",
+        "extras": "Extras",
+        "noMessage": "No message",
+        "empty": {
+          "title": "Nobody is waiting",
+          "text": "When a new lead comes in you will see it here. Meanwhile, work your own."
+        },
+        "notices": {
+          "done": "It is yours. Taking you to the record.",
+          "handoff": "I could not give you this lead. Jose will review it.",
+          "stale": "Someone claimed it before you. I reloaded the list.",
+          "quota": "You have reached today's claim limit. You can carry on tomorrow.",
+          "forbidden": "You are not allowed to claim leads.",
+          "error": "It could not be claimed. Try again."
+        }
+      },
+      "own": {
+        "mineListLabel": "My leads",
+        "teamListLabel": "My team's leads",
+        "noContact": "No contact yet",
+        "openContact": "Open contact",
+        "openContactAria": "Open contact for {name}",
+        "assignedTo": "Handled by {name}",
+        "noEmail": "No email",
+        "mineEmpty": {
+          "title": "You have no leads yet",
+          "text": "Claim one from the \"Unassigned\" tab and it will show up here with its full details."
+        },
+        "teamEmpty": {
+          "title": "Your team has no leads",
+          "text": "The ones your subclosers claim will show up here."
+        }
+      },
+      "statuses": {
+        "new": "New",
+        "assigned": "Assigned",
+        "contacted": "Contacted",
+        "converted": "Converted",
+        "discarded": "Discarded"
+      },
+      "vias": {
+        "hiring": "Hiring",
+        "freelance": "Freelance",
+        "project": "Custom project",
+        "none": "No route"
+      },
+      "locales": {
+        "es": "Spanish",
+        "en": "English"
+      }
+    },
+    "start": {
+      "meta": {
+        "title": "Get started"
+      },
+      "title": "Get started",
+      "lead": "Five steps to get your account ready and make your first move.",
+      "stepsLabel": "Steps to get started",
+      "steps": {
+        "telegram": {
+          "title": "Link Telegram",
+          "text": "Get an alert when a lead is assigned to you or a step falls due.",
+          "action": "Link Telegram"
+        },
+        "rates": {
+          "title": "Check your commissions",
+          "text": "See which percentage applies to you on projects and on recurring work.",
+          "action": "See my commissions"
+        },
+        "leads": {
+          "title": "Claim your first lead",
+          "text": "The shared inbox shows just enough to decide. The full details arrive once you claim it.",
+          "action": "Open leads"
+        },
+        "contact": {
+          "title": "Add a contact",
+          "text": "Save someone you already know so their follow-up lives in one place.",
+          "action": "Open contacts"
+        },
+        "nextStep": {
+          "title": "Set a next step",
+          "text": "Every live contact needs an action with a date. That is how the overview tells you what to do today.",
+          "action": "See pending steps"
+        }
+      },
+      "rules": {
+        "title": "What not to promise",
+        "lead": "Say only what is true today.",
+        "response": "Response time: {time}. Do not promise a shorter one.",
+        "price": "Prices: if a price is under review, give no figures. Say it is confirmed in writing before starting.",
+        "invoices": "Invoices: they are not issued from the CRM. Do not promise invoices with VAT yet.",
+        "channels": "Channels: do not offer live chat or calls that Jose has not agreed to."
       }
     }
   },
