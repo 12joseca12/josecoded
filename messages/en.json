@@ -591,7 +591,7 @@
       "title": "If you are hiring for your team",
       "lead": "This is how this very site is built, and how I would work with you.",
       "label": "Team practices",
-      "pr": "Nothing is ever pushed to main: everything comes in through a pull request, with CI on every change.",
+      "pr": "Every change goes in through a pull request, with CI on each one.",
       "ci": "Continuous integration runs lint, types, tests, build and end-to-end checks on every change.",
       "review": "Every block is reviewed before it is merged: code, security and accessibility.",
       "more": "See how I work in detail"

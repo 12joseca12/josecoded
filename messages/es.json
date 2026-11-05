@@ -591,7 +591,7 @@
       "title": "Si buscas a alguien para tu equipo",
       "lead": "Así se construye esta misma web, y así trabajaría contigo.",
       "label": "Prácticas de equipo",
-      "pr": "Nunca se empuja a main: todo entra por pull request, con CI en cada cambio.",
+      "pr": "Cada cambio entra por pull request, con CI en cada uno.",
       "ci": "La integración continua pasa lint, tipos, tests, build y pruebas de extremo a extremo en cada cambio.",
       "review": "Cada bloque se revisa antes de fusionarse: código, seguridad y accesibilidad.",
       "more": "Ver cómo trabajo en detalle"
