@@ -179,6 +179,7 @@ export function SettingRow({ setting, item, labels, locale, save, readOnly }: Se
               max={bounds?.max}
               step={bounds?.step}
               inputMode={inputType === "number" ? "decimal" : undefined}
+              autoComplete="off"
               aria-labelledby={kind === "maintenance" ? undefined : nameId}
               aria-describedby={hintId}
               onChange={(event) => {
