@@ -371,4 +371,15 @@ describe("buildLlmsTxt", () => {
     expect(text).toContain("Freelance: freelance@josecoded.com");
     expect(text).toContain("Desarrollo a medida: proyectos@josecoded.com");
   });
+
+  it("leaves projects and the blog out until there is something to read", async () => {
+    const text = await buildLlmsTxt(productionOrigin, "es", rates);
+    expect(text).not.toContain("/proyectos");
+    expect(text).not.toContain("/blog");
+  });
+
+  it("lists projects once one is published", async () => {
+    const text = await buildLlmsTxt(productionOrigin, "es", rates, undefined, true);
+    expect(text).toContain(`(${productionOrigin}/es/proyectos)`);
+  });
 });

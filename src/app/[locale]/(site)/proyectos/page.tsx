@@ -3,8 +3,10 @@ import { notFound } from "next/navigation";
 
 import { PageGraph } from "@/components/seo/PageGraph/PageGraph";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs/Breadcrumbs";
+import { PageHead } from "@/components/site/PageHead/PageHead";
+import { Button } from "@/components/ui/Button/Button";
 import { EmptyState } from "@/components/ui/EmptyState/EmptyState";
-import { Heading } from "@/components/ui/Heading/Heading";
+import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 import { site } from "@/config/site";
 import { hasPublishedProjects } from "@/content";
 import { isLocale } from "@/i18n/config";
@@ -40,7 +42,7 @@ export default async function ProjectsPage({ params }: ProjectsProps) {
     { label: t("nav.projects"), href: localePath(locale, "/proyectos") },
   ];
   return (
-    <section className={styles.page}>
+    <>
       <PageGraph
         nodes={[
           buildBreadcrumbList(
@@ -49,15 +51,28 @@ export default async function ProjectsPage({ params }: ProjectsProps) {
           ),
         ]}
       />
-      <Breadcrumbs label={t("breadcrumbs.label")} items={crumbs} />
-      <Heading level={1} size="h2">
-        {t("projects.title")}
-      </Heading>
-      <EmptyState
-        headingLevel={2}
-        title={t("projects.emptyTitle")}
-        text={t("projects.emptyText")}
+      <PageHead
+        title={t("projects.title")}
+        lead={t("projects.lead")}
+        breadcrumbs={<Breadcrumbs label={t("breadcrumbs.label")} items={crumbs} />}
       />
-    </section>
+      <section className={styles.page} aria-label={t("projects.title")}>
+        <EmptyState
+          headingLevel={2}
+          title={t("projects.emptyTitle")}
+          text={t("projects.emptyText")}
+          action={
+            <div className={styles.actions}>
+              <Button href={localePath(locale, "/sobre-mi")} icon={<ArrowIcon />}>
+                {t("projects.about")}
+              </Button>
+              <Button href={localePath(locale, "/contacto")} variant="light">
+                {t("projects.contact")}
+              </Button>
+            </div>
+          }
+        />
+      </section>
+    </>
   );
 }

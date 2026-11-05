@@ -75,7 +75,7 @@ export async function ServicePage({ locale, page, head, faq, children }: Service
     {
       id: "contratacion",
       label: t(wayLabels.contratacion),
-      href: `${hubPath}#contratacion`,
+      href: localePath(locale, "/sobre-mi"),
     },
     {
       id: "freelance",

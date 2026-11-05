@@ -5,7 +5,6 @@ import { type SyntheticEvent, useEffect, useId, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button/Button";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 import { VisuallyHidden } from "@/components/ui/VisuallyHidden/VisuallyHidden";
-import { useOpenChat } from "@/lib/chat/use-open-chat";
 import type { NexoGuide } from "@/lib/nexo/guide";
 import { nexoStateFor } from "@/lib/nexo/state";
 import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
@@ -17,7 +16,6 @@ import styles from "./NexoFaqChat.module.css";
 interface NexoChatCardProps {
   guide: NexoGuide;
   labels: NexoChatLabels;
-  locale: string;
   formHref: string;
 }
 
@@ -46,10 +44,9 @@ function wait(ms: number): Promise<void> {
   });
 }
 
-export function NexoChatCard({ guide, labels, locale, formHref }: NexoChatCardProps) {
+export function NexoChatCard({ guide, labels, formHref }: NexoChatCardProps) {
   const titleId = useId();
   const inputId = useId();
-  const openChat = useOpenChat(locale);
   const reducedMotion = usePrefersReducedMotion();
   const [turns, setTurns] = useState<Turn[]>([
     { id: 0, from: "nexo", text: labels.greeting, handoff: false },
@@ -149,9 +146,6 @@ export function NexoChatCard({ guide, labels, locale, formHref }: NexoChatCardPr
                 <div className={styles.handoff}>
                   <Button href={formHref} size="sm" icon={<ArrowIcon />}>
                     {labels.form}
-                  </Button>
-                  <Button size="sm" variant="light" onClick={openChat}>
-                    {labels.chat}
                   </Button>
                 </div>
               ) : null}

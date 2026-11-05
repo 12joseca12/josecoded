@@ -10,7 +10,7 @@ interface ProofTileProps {
   title: string;
   text: string;
   chips: string[];
-  cta: BentoLinkData;
+  cta?: BentoLinkData;
   more: BentoLinkData;
 }
 
@@ -28,9 +28,11 @@ export function ProofTile({ title, text, chips, cta, more }: ProofTileProps) {
         </div>
         <StackChips items={chips} tone="dark" />
         <div className={styles.actions}>
-          <BentoLink href={cta.href} describedBy={titleId}>
-            {cta.label}
-          </BentoLink>
+          {cta ? (
+            <BentoLink href={cta.href} describedBy={titleId}>
+              {cta.label}
+            </BentoLink>
+          ) : null}
           <BentoLink href={more.href} variant="inline">
             {more.label}
           </BentoLink>

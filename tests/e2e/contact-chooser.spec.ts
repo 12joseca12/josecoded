@@ -9,7 +9,6 @@ const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
   chatButton: { label: string };
   contactPage: {
     head: { title: string };
-    chat: { soon: string };
     ways: Record<"contratacion" | "freelance" | "project", { title: string }>;
     copy: { label: string; done: string };
     form: { title: string };
@@ -49,7 +48,9 @@ for (const [name, viewport] of [
       await trigger.focus();
       await page.keyboard.press("Enter");
       await expect(dialog).toBeVisible();
-      await expect(page.getByRole("button", { name: es.contactChooser.chat })).toBeFocused();
+      await expect(
+        page.getByRole("link", { name: new RegExp(es.contactChooser.form) }),
+      ).toBeFocused();
       await page.keyboard.press("Escape");
       await expect(dialog).toBeHidden();
       await expect(trigger).toBeFocused();
@@ -66,24 +67,14 @@ for (const [name, viewport] of [
       await expect(page.locator('a[href*="wa.me"]')).toHaveCount(0);
     });
 
-    test("chat button opens the chooser focused on the chat option", async ({ page }) => {
+    test("the chat stays out of the header and the chooser while it does not exist", async ({
+      page,
+    }) => {
       await page.goto("/es");
-      const chat = page.getByRole("button", { name: chatButtonName, exact: true });
-      await expect(chat).toBeVisible();
-      await chat.click();
-      await expect(page.getByRole("dialog", { name: es.contactChooser.title })).toBeVisible();
-      await expect(page.getByRole("button", { name: es.contactChooser.chat })).toBeFocused();
-    });
-
-    test("chat option falls back to the contact page", async ({ page }) => {
-      await page.goto("/es");
+      await expect(page.getByRole("button", { name: chatButtonName, exact: true })).toHaveCount(0);
       await page.getByRole("button", { name: es.nav.cta }).click();
-      await page.getByRole("button", { name: es.contactChooser.chat }).click();
-      await expect(page).toHaveURL(/\/es\/contacto#chat$/);
-      await expect(page.locator("#chat")).toBeVisible();
-      await expect(page.locator("#chat").getByRole("status")).toHaveText(es.contactPage.chat.soon);
-      const { violations } = await new AxeBuilder({ page }).analyze();
-      expect(violations).toEqual([]);
+      await expect(page.getByRole("dialog", { name: es.contactChooser.title })).toBeVisible();
+      await expect(page.getByRole("button", { name: es.contactChooser.chat })).toHaveCount(0);
     });
 
     test("chooser passes axe", async ({ page }) => {
@@ -121,12 +112,6 @@ test.describe("desktop popover", () => {
     const d = await dialog.boundingBox();
     expect(d && t && d.y >= t.y + t.height).toBe(true);
     expect(d && t && Math.abs(d.x + d.width - (t.x + t.width)) < 8).toBe(true);
-  });
-
-  test("the chat button is not a ghost icon and shows its label", async ({ page }) => {
-    await page.goto("/es");
-    const chat = page.getByRole("button", { name: chatButtonName, exact: true });
-    await expect(chat).toContainText(es.chatButton.label);
   });
 
   test("search stays out of the page while the flag is off", async ({ page }) => {
@@ -213,15 +198,7 @@ test.describe("mobile sheet", () => {
       visited.add(where);
     }
     expect([...visited].some((label) => label.includes(es.contactChooser.close))).toBe(true);
-    expect([...visited].some((label) => label.includes(es.contactChooser.chat))).toBe(true);
-  });
-
-  test("the chat button is icon only", async ({ page }) => {
-    await page.goto("/es");
-    const chat = page.getByRole("button", { name: chatButtonName, exact: true });
-    await expect(chat).toBeVisible();
-    const box = await chat.boundingBox();
-    expect(box && box.width < 56).toBe(true);
+    expect([...visited].some((label) => label.includes(es.contactChooser.form))).toBe(true);
   });
 });
 
@@ -230,15 +207,14 @@ test.describe("contact page", () => {
     ["desktop", { width: 1440, height: 900 }],
     ["mobile", { width: 390, height: 844 }],
   ] as const) {
-    test(`renders with the chat card and passes axe on ${name}`, async ({ page }) => {
+    test(`renders without a chat card and passes axe on ${name}`, async ({ page }) => {
       await page.setViewportSize(viewport);
       const response = await page.goto("/es/contacto");
       expect(response?.status()).toBe(200);
       await expect(
         page.getByRole("heading", { level: 1, name: new RegExp(es.contactPage.head.title) }),
       ).toBeVisible();
-      await expect(page.locator("#chat")).toBeVisible();
-      await expect(page.locator("#chat").getByRole("status")).toHaveText(es.contactPage.chat.soon);
+      await expect(page.locator("#chat")).toHaveCount(0);
       await expect(page.locator('a[href*="wa.me"]')).toHaveCount(0);
       const { violations } = await new AxeBuilder({ page }).analyze();
       expect(violations).toEqual([]);
