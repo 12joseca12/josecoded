@@ -1,5 +1,7 @@
+import { UserSheet } from "@/components/admin/UserSheet/UserSheet";
 import { formatEuro, formatRate } from "@/lib/admin/users";
 import type { UserRow, UserTableLabels } from "@/types/users";
+import type { ManageHandlers, UserSheetLabels } from "@/types/users-manage";
 
 import styles from "./UserTable.module.css";
 
@@ -7,6 +9,9 @@ interface UserTableProps {
   rows: UserRow[];
   locale: string;
   labels: UserTableLabels;
+  sheetLabels: UserSheetLabels;
+  handlers: ManageHandlers;
+  currentUserId: string;
 }
 
 function ratesOf(row: UserRow, locale: string): string | null {
@@ -16,7 +21,14 @@ function ratesOf(row: UserRow, locale: string): string | null {
   return [project ?? "—", recurring ?? "—"].join(" · ");
 }
 
-export function UserTable({ rows, locale, labels }: UserTableProps) {
+export function UserTable({
+  rows,
+  locale,
+  labels,
+  sheetLabels,
+  handlers,
+  currentUserId,
+}: UserTableProps) {
   const names = new Map(rows.map((row) => [row.id, row.full_name]));
   return (
     <div className={styles.region} role="region" aria-label={labels.region} tabIndex={0}>
@@ -40,6 +52,7 @@ export function UserTable({ rows, locale, labels }: UserTableProps) {
             <th scope="col" className={styles.number}>
               {labels.columns.pending}
             </th>
+            <th scope="col">{labels.columns.actions}</th>
           </tr>
         </thead>
         <tbody>
@@ -69,6 +82,24 @@ export function UserTable({ rows, locale, labels }: UserTableProps) {
                 <td className={styles.number}>{row.contacts_count}</td>
                 <td className={styles.number}>{row.open_deals}</td>
                 <td className={styles.number}>{formatEuro(row.accrued_pending, locale)}</td>
+                <td>
+                  <UserSheet
+                    user={row}
+                    targets={rows
+                      .filter(
+                        (other) =>
+                          other.id !== row.id &&
+                          other.is_active &&
+                          other.archived_at === null &&
+                          (other.role === "closer" || other.role === "admin"),
+                      )
+                      .map((other) => ({ id: other.id, name: other.full_name }))}
+                    isSelf={row.id === currentUserId}
+                    locale={locale}
+                    labels={sheetLabels}
+                    handlers={handlers}
+                  />
+                </td>
               </tr>
             );
           })}

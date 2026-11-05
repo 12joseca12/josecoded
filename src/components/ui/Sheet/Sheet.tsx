@@ -30,7 +30,9 @@ export function Sheet({ open, onClose, title, closeLabel, children }: SheetProps
       ref={ref}
       className={styles.sheet}
       aria-labelledby={titleId}
-      onClose={onClose}
+      onClose={() => {
+        if (!ref.current?.open) onClose();
+      }}
       onClick={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}

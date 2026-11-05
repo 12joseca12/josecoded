@@ -17,8 +17,22 @@ import { requireZone } from "@/lib/auth/session";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 import styles from "../admin.module.css";
-import { inviteUser, renewInvitation, revokeInvitation } from "./actions";
-import { invitationListLabels, inviteSheetLabels, userTableLabels } from "./labels";
+import {
+  inviteUser,
+  loadUserHistory,
+  reassignUserPortfolio,
+  renewInvitation,
+  resetUserTotp,
+  revokeInvitation,
+  updateUserActive,
+  updateUserRates,
+} from "./actions";
+import {
+  invitationListLabels,
+  inviteSheetLabels,
+  userSheetLabels,
+  userTableLabels,
+} from "./labels";
 import page from "./usuarios.module.css";
 
 interface UsersProps {
@@ -32,7 +46,7 @@ export async function generateMetadata({ params }: UsersProps): Promise<Metadata
   return { title: t("admin.users.meta.title") };
 }
 
-async function UsersSection({ locale }: { locale: Locale }) {
+async function UsersSection({ locale, currentUserId }: { locale: Locale; currentUserId: string }) {
   const t = await getTranslator(locale);
   const client = await createSupabaseServerClient();
   if (client === null) notFound();
@@ -84,7 +98,20 @@ async function UsersSection({ locale }: { locale: Locale }) {
             text={t("admin.users.empty.text")}
           />
         ) : (
-          <UserTable rows={users} locale={locale} labels={userTableLabels(t)} />
+          <UserTable
+            rows={users}
+            locale={locale}
+            labels={userTableLabels(t)}
+            sheetLabels={userSheetLabels(t)}
+            currentUserId={currentUserId}
+            handlers={{
+              rates: updateUserRates.bind(null, locale),
+              active: updateUserActive.bind(null, locale),
+              reassign: reassignUserPortfolio.bind(null, locale),
+              resetTotp: resetUserTotp.bind(null, locale),
+              history: loadUserHistory.bind(null, locale),
+            }}
+          />
         )}
         {onlyAdmin ? (
           <EmptyState
@@ -118,7 +145,7 @@ async function UsersSection({ locale }: { locale: Locale }) {
 export default async function UsersPage({ params }: UsersProps) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  await requireZone("admin", locale);
+  const member = await requireZone("admin", locale);
   const t = await getTranslator(locale);
   return (
     <>
@@ -146,7 +173,7 @@ export default async function UsersPage({ params }: UsersProps) {
           </LoadingRegion>
         }
       >
-        <UsersSection locale={locale} />
+        <UsersSection locale={locale} currentUserId={member.userId} />
       </Suspense>
     </>
   );

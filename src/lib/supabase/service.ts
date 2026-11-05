@@ -32,3 +32,28 @@ export async function createAuthUser(
     return "failed";
   }
 }
+
+export async function listFactorIds(
+  client: ServiceSupabase,
+  userId: string,
+): Promise<string[] | null> {
+  try {
+    const { data, error } = await client.auth.admin.mfa.listFactors({ userId });
+    return error ? null : data.factors.map((factor) => factor.id);
+  } catch {
+    return null;
+  }
+}
+
+export async function deleteFactor(
+  client: ServiceSupabase,
+  userId: string,
+  id: string,
+): Promise<boolean> {
+  try {
+    const { error } = await client.auth.admin.mfa.deleteFactor({ id, userId });
+    return !error;
+  } catch {
+    return false;
+  }
+}

@@ -33,7 +33,11 @@ function parseRate(value: string): number | null {
   return /^\d{1,3}(\.\d{1,2})?$/.test(text) ? Number(text) : Number.NaN;
 }
 
-const rate = z.string().max(10).transform(parseRate).pipe(z.number().min(0).max(100).nullable());
+export const rate = z
+  .string()
+  .max(10)
+  .transform(parseRate)
+  .pipe(z.number().min(0).max(100).nullable());
 
 export const inviteInputSchema = z
   .strictObject({
@@ -213,6 +217,7 @@ export interface UserTableLabels {
     contacts: string;
     deals: string;
     pending: string;
+    actions: string;
   };
   roles: Record<(typeof userRoles)[number], string>;
   subcloser: string;
