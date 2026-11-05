@@ -12,6 +12,7 @@ export const staffNav: Record<StaffZone, readonly StaffNavEntry[]> = {
   admin: [
     { key: "overview", path: "", ready: true, label: "admin.nav.overview" },
     { key: "leads", path: "/interesados", ready: true, label: "admin.nav.leads" },
+    { key: "projects", path: "/proyectos", ready: true, label: "admin.nav.projects" },
     { key: "users", path: "/usuarios", ready: true, label: "admin.nav.users" },
     { key: "prices", path: "/precios", ready: true, label: "admin.nav.prices" },
     { key: "system", path: "/sistema", ready: true, label: "admin.nav.system" },

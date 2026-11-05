@@ -950,7 +950,8 @@
       "moreTitle": "Más secciones",
       "close": "Cerrar",
       "switch": "Ir al CRM",
-      "audit": "Auditoría"
+      "audit": "Auditoría",
+      "projects": "Proyectos"
     },
     "overview": {
       "meta": {
@@ -2502,6 +2503,101 @@
         "notPayment": "Este extracto resume comisiones. No es una factura.",
         "footer": "Importes en euros.",
         "range": "{start} – {end}"
+      }
+    },
+    "projects": {
+      "meta": {
+        "title": "Proyectos"
+      },
+      "title": "Proyectos",
+      "lead": "Los proyectos en marcha, su fase y cuánto llevan hecho.",
+      "loading": "Cargando los proyectos",
+      "error": {
+        "title": "No he podido cargar los proyectos",
+        "text": "Inténtalo otra vez. Si sigue fallando, mira el estado de Supabase.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "empty": {
+        "title": "Crea el primer proyecto",
+        "text": "Un proyecto reúne las tareas, las historias, los documentos y los enlaces de una persona que te ha contratado."
+      },
+      "table": {
+        "title": "Todos los proyectos",
+        "region": "Tabla de proyectos",
+        "caption": "Proyectos con su cliente, fase, avance y fechas",
+        "columns": {
+          "name": "Proyecto",
+          "phase": "Fase",
+          "progress": "Avance",
+          "stories": "Historias",
+          "freelance": "Freelance",
+          "dates": "Fechas",
+          "actions": "Acciones"
+        },
+        "noClient": "Sin cuenta de cliente",
+        "none": "—",
+        "progress": "Avance de {name}",
+        "storiesToDecide": "{count} por decidir",
+        "progressText": "{done}/{total} · {percent} %"
+      },
+      "phases": {
+        "discover": "Descubrir",
+        "design": "Diseñar",
+        "build": "Construir",
+        "publish": "Publicar",
+        "maintain": "Mantener"
+      },
+      "statuses": {
+        "active": "Activo",
+        "paused": "En pausa",
+        "closed": "Cerrado"
+      },
+      "sheet": {
+        "create": "Nuevo proyecto",
+        "edit": "Editar",
+        "editFor": "Editar {name}",
+        "createTitle": "Nuevo proyecto",
+        "editTitle": "Editar proyecto",
+        "close": "Cerrar",
+        "name": "Nombre",
+        "deal": "Oportunidad ganada",
+        "dealHint": "Si eliges una, el contacto de origen sale de ella.",
+        "dealNone": "Sin oportunidad",
+        "offer": "Oferta",
+        "offerNone": "Sin oferta",
+        "freelance": "Freelance",
+        "freelanceNone": "Sin freelance",
+        "startedAt": "Inicio",
+        "dueAt": "Entrega prevista",
+        "brief": "Resumen del proyecto",
+        "briefHint": "Admite markdown. Lo ve quien trabaja en el proyecto.",
+        "optional": "(opcional)",
+        "submitCreate": "Crear proyecto",
+        "submitEdit": "Guardar cambios",
+        "submitting": "Guardando",
+        "doneCreate": "Proyecto creado",
+        "doneEdit": "Cambios guardados",
+        "errors": {
+          "name": "Escribe un nombre de hasta 200 caracteres.",
+          "dealId": "Elige una oportunidad válida.",
+          "offerSlug": "Elige una oferta válida.",
+          "freelanceId": "Elige un freelance válido.",
+          "startedAt": "Escribe una fecha válida.",
+          "dueAt": "La entrega no puede ser anterior al inicio.",
+          "brief": "El resumen es demasiado largo.",
+          "forbidden": "No tienes permiso para hacerlo. Entra de nuevo con tu código.",
+          "deal_not_won": "Esa oportunidad todavía no está ganada.",
+          "deal_not_found": "No encuentro esa oportunidad.",
+          "contact_deal_mismatch": "El contacto no coincide con la oportunidad.",
+          "offer_not_found": "Esa oferta ya no existe.",
+          "invalid_freelance": "Esa persona no es un freelance activo.",
+          "invalid_dates": "La entrega no puede ser anterior al inicio.",
+          "invalid_name": "Escribe un nombre de hasta 200 caracteres.",
+          "project_not_found": "Ese proyecto ya no existe.",
+          "unavailable": "Ahora mismo no puedo guardar. Inténtalo en un momento.",
+          "error": "No he podido guardarlo. Inténtalo otra vez."
+        }
       }
     }
   },

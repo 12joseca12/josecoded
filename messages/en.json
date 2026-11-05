@@ -950,7 +950,8 @@
       "moreTitle": "More sections",
       "close": "Close",
       "switch": "Go to CRM",
-      "audit": "Audit log"
+      "audit": "Audit log",
+      "projects": "Projects"
     },
     "overview": {
       "meta": {
@@ -2502,6 +2503,101 @@
         "notPayment": "This statement summarises commissions. It is not an invoice.",
         "footer": "Amounts in euros.",
         "range": "{start} – {end}"
+      }
+    },
+    "projects": {
+      "meta": {
+        "title": "Projects"
+      },
+      "title": "Projects",
+      "lead": "The projects under way, their phase and how much is done.",
+      "loading": "Loading projects",
+      "error": {
+        "title": "I could not load the projects",
+        "text": "Try again. If it keeps failing, check the Supabase status.",
+        "retry": "Retry",
+        "retrying": "Retrying"
+      },
+      "empty": {
+        "title": "Create the first project",
+        "text": "A project gathers the tasks, stories, documents and links of someone who hired you."
+      },
+      "table": {
+        "title": "All projects",
+        "region": "Projects table",
+        "caption": "Projects with their client, phase, progress and dates",
+        "columns": {
+          "name": "Project",
+          "phase": "Phase",
+          "progress": "Progress",
+          "stories": "Stories",
+          "freelance": "Freelance",
+          "dates": "Dates",
+          "actions": "Actions"
+        },
+        "noClient": "No client account",
+        "none": "—",
+        "progress": "Progress of {name}",
+        "storiesToDecide": "{count} to decide",
+        "progressText": "{done}/{total} · {percent} %"
+      },
+      "phases": {
+        "discover": "Discover",
+        "design": "Design",
+        "build": "Build",
+        "publish": "Publish",
+        "maintain": "Maintain"
+      },
+      "statuses": {
+        "active": "Active",
+        "paused": "Paused",
+        "closed": "Closed"
+      },
+      "sheet": {
+        "create": "New project",
+        "edit": "Edit",
+        "editFor": "Edit {name}",
+        "createTitle": "New project",
+        "editTitle": "Edit project",
+        "close": "Close",
+        "name": "Name",
+        "deal": "Won opportunity",
+        "dealHint": "If you pick one, the source contact comes from it.",
+        "dealNone": "No opportunity",
+        "offer": "Offer",
+        "offerNone": "No offer",
+        "freelance": "Freelance",
+        "freelanceNone": "No freelance",
+        "startedAt": "Start",
+        "dueAt": "Expected delivery",
+        "brief": "Project summary",
+        "briefHint": "Markdown is allowed. Everyone working on the project sees it.",
+        "optional": "(optional)",
+        "submitCreate": "Create project",
+        "submitEdit": "Save changes",
+        "submitting": "Saving",
+        "doneCreate": "Project created",
+        "doneEdit": "Changes saved",
+        "errors": {
+          "name": "Write a name of up to 200 characters.",
+          "dealId": "Pick a valid opportunity.",
+          "offerSlug": "Pick a valid offer.",
+          "freelanceId": "Pick a valid freelance.",
+          "startedAt": "Write a valid date.",
+          "dueAt": "Delivery cannot be before the start.",
+          "brief": "The summary is too long.",
+          "forbidden": "You are not allowed to do this. Sign in again with your code.",
+          "deal_not_won": "That opportunity is not won yet.",
+          "deal_not_found": "I cannot find that opportunity.",
+          "contact_deal_mismatch": "The contact does not match the opportunity.",
+          "offer_not_found": "That offer no longer exists.",
+          "invalid_freelance": "That person is not an active freelance.",
+          "invalid_dates": "Delivery cannot be before the start.",
+          "invalid_name": "Write a name of up to 200 characters.",
+          "project_not_found": "That project no longer exists.",
+          "unavailable": "I cannot save right now. Try again in a moment.",
+          "error": "I could not save it. Try again."
+        }
       }
     }
   },

@@ -39,6 +39,7 @@ describe("staff navigation registry", () => {
     expect(ready("admin")).toEqual([
       "overview",
       "leads",
+      "projects",
       "users",
       "prices",
       "system",
