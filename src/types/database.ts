@@ -252,6 +252,84 @@ export type Database = {
           },
         ]
       }
+      documents: {
+        Row: {
+          created_at: string
+          deleted_at: string | null
+          deleted_by: string | null
+          id: string
+          mime: string
+          name: string
+          project_id: string
+          size_bytes: number
+          storage_path: string
+          uploaded_by: string | null
+          visibility: Database["public"]["Enums"]["document_visibility"]
+        }
+        Insert: {
+          created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          id?: string
+          mime: string
+          name: string
+          project_id: string
+          size_bytes: number
+          storage_path: string
+          uploaded_by?: string | null
+          visibility?: Database["public"]["Enums"]["document_visibility"]
+        }
+        Update: {
+          created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          id?: string
+          mime?: string
+          name?: string
+          project_id?: string
+          size_bytes?: number
+          storage_path?: string
+          uploaded_by?: string | null
+          visibility?: Database["public"]["Enums"]["document_visibility"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_deleted_by_fkey"
+            columns: ["deleted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documents_deleted_by_fkey"
+            columns: ["deleted_by"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documents_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documents_uploaded_by_fkey"
+            columns: ["uploaded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documents_uploaded_by_fkey"
+            columns: ["uploaded_by"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       extras: {
         Row: {
           archived_at: string | null
@@ -1611,6 +1689,10 @@ export type Database = {
         Args: { p_amount?: number; p_create_task?: boolean; p_decision: string; p_hours?: number; p_id: string; p_note?: string }
         Returns: Database["public"]["Enums"]["story_status"]
       }
+      delete_document: {
+        Args: { p_id: string }
+        Returns: string
+      }
       delete_task: {
         Args: { p_id: string }
         Returns: undefined
@@ -1713,6 +1795,10 @@ export type Database = {
           deals: number
           leads: number
         }[]
+      }
+      register_document: {
+        Args: { p_mime: string; p_name: string; p_path: string; p_project_id: string; p_size: number; p_uploaded_by: string; p_visibility?: Database["public"]["Enums"]["document_visibility"] }
+        Returns: string
       }
       renew_invitation: {
         Args: { p_id: string }
@@ -1845,6 +1931,7 @@ export type Database = {
         | "radar"
       contact_via: "hiring" | "freelance" | "project"
       deal_stage: "new" | "contacted" | "meeting" | "proposal" | "won" | "lost"
+      document_visibility: "client" | "team"
       extra_billing: "once" | "monthly" | "yearly" | "per_unit"
       job_kind:
         | "chat.reply"
@@ -1859,7 +1946,7 @@ export type Database = {
       job_status: "queued" | "running" | "done" | "failed" | "cancelled"
       lead_source: "form" | "nexo" | "whatsapp" | "radar" | "manual"
       lead_status: "new" | "assigned" | "contacted" | "converted" | "discarded"
-      notification_event: "lead_new" | "lead_claimed" | "message_new" | "commission_accrued" | "payment_recorded" | "payment_overdue" | "payout_paid" | "job_failed" | "omen_down" | "invitation_accepted"
+      notification_event: "lead_new" | "lead_claimed" | "message_new" | "commission_accrued" | "payment_recorded" | "payment_overdue" | "payout_paid" | "job_failed" | "omen_down" | "invitation_accepted" | "document_added"
       outbox_channel: "email" | "telegram"
       outbox_status: "queued" | "sending" | "sent" | "failed"
       payout_cadence: "per_payment" | "weekly" | "biweekly"
@@ -2011,6 +2098,7 @@ export const Constants = {
       contact_source: ["manual", "import", "form", "nexo", "whatsapp", "radar"],
       contact_via: ["hiring", "freelance", "project"],
       deal_stage: ["new", "contacted", "meeting", "proposal", "won", "lost"],
+      document_visibility: ["client", "team"],
       extra_billing: ["once", "monthly", "yearly", "per_unit"],
       job_kind: [
         "chat.reply",
@@ -2026,7 +2114,7 @@ export const Constants = {
       job_status: ["queued", "running", "done", "failed", "cancelled"],
       lead_source: ["form", "nexo", "whatsapp", "radar", "manual"],
       lead_status: ["new", "assigned", "contacted", "converted", "discarded"],
-      notification_event: ["lead_new", "lead_claimed", "message_new", "commission_accrued", "payment_recorded", "payment_overdue", "payout_paid", "job_failed", "omen_down", "invitation_accepted"],
+      notification_event: ["lead_new", "lead_claimed", "message_new", "commission_accrued", "payment_recorded", "payment_overdue", "payout_paid", "job_failed", "omen_down", "invitation_accepted", "document_added"],
       outbox_channel: ["email", "telegram"],
       outbox_status: ["queued", "sending", "sent", "failed"],
       payout_cadence: ["per_payment", "weekly", "biweekly"],

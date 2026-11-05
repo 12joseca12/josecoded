@@ -90,6 +90,7 @@ select is_empty(
         'confirm_story',
         'create_project',
         'decide_story',
+        'delete_document',
         'delete_task',
         'discard_lead',
         'invite_user',
@@ -219,6 +220,7 @@ select is_empty(
         'confirm_story',
         'create_project',
         'decide_story',
+        'delete_document',
         'delete_task',
         'discard_lead',
         'invite_user',
@@ -261,7 +263,7 @@ select is(
       and not has_function_privilege('authenticated', p.oid, 'execute')
       and not has_function_privilege('anon', p.oid, 'execute')
   ),
-  'omen_claim_jobs,omen_finish_job,omen_heartbeat,outbox_claim,outbox_mark,read_invitation,read_public_settings,submit_lead,telegram_confirm_link',
+  'omen_claim_jobs,omen_finish_job,omen_heartbeat,outbox_claim,outbox_mark,read_invitation,read_public_settings,register_document,submit_lead,telegram_confirm_link',
   'only the lead intake, outbox, invitation read, Telegram link and Omen job functions are service_role-only in public'
 );
 
