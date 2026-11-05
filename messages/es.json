@@ -1114,53 +1114,66 @@
       "items": {
         "accounts": {
           "name": "Cuentas y permisos",
-          "text": "Registro e inicio de sesión sin contraseña (código por email o Google) y tipos de usuario con distintos permisos."
+          "text": "Registro e inicio de sesión sin contraseña (código por email o Google) y tipos de usuario con distintos permisos.",
+          "forWho": "Para quien necesita que sus clientes o su equipo entren con su propia cuenta."
         },
         "admin": {
           "name": "Panel de gestión",
-          "text": "Un panel privado para ver y editar datos, usuarios y contenido sin tocar código."
+          "text": "Un panel privado para ver y editar datos, usuarios y contenido sin tocar código.",
+          "forWho": "Para quien quiere editar contenido y datos sin pedírmelo cada vez."
         },
         "payments": {
           "name": "Cobros con Stripe",
-          "text": "Pagos únicos o suscripciones, facturas y panel de ingresos. Las comisiones de Stripe van aparte."
+          "text": "Pagos únicos o suscripciones, facturas y panel de ingresos. Las comisiones de Stripe van aparte.",
+          "forWho": "Para quien vende o cobra suscripciones dentro de su propia web o app."
         },
         "languages": {
           "name": "Varios idiomas",
-          "text": "La interfaz en más de un idioma y el contenido preparado para traducir. Se presupuesta por idioma."
+          "text": "La interfaz en más de un idioma y el contenido preparado para traducir. Se presupuesta por idioma.",
+          "forWho": "Para quien atiende a clientes en más de un idioma."
         },
         "seo": {
           "name": "Posicionamiento (SEO y GEO)",
-          "text": "Estructura, textos y datos para que Google y los asistentes de IA te encuentren."
+          "text": "Estructura, textos y datos para que Google y los asistentes de IA te encuentren.",
+          "forWho": "Para quien quiere que lo encuentren al buscar, en Google y en asistentes de IA."
         },
         "analytics": {
           "name": "Métricas de uso",
-          "text": "Eventos clave, embudos y un cuadro de mando, sin cookies de terceros cuando se puede."
+          "text": "Eventos clave, embudos y un cuadro de mando, sin cookies de terceros cuando se puede.",
+          "forWho": "Para quien quiere saber qué hace la gente y decidir con datos."
         },
         "ai": {
           "name": "Asistente con IA",
-          "text": "Un asistente como Nexo que responde con tus datos dentro de la web o de la app."
+          "text": "Un asistente como Nexo que responde con tus datos dentro de la web o de la app.",
+          "forWho": "Para quien recibe muchas preguntas repetidas y quiere responderlas sin estar delante."
         },
         "push": {
           "name": "Notificaciones push",
-          "text": "Avisos en el móvil por eventos de tu producto, con preferencias del usuario."
+          "text": "Avisos en el móvil por eventos de tu producto, con preferencias del usuario.",
+          "forWho": "Para quien necesita avisar a sus usuarios en el móvil, por ejemplo de pedidos o citas."
         },
         "offline": {
           "name": "Uso sin conexión",
-          "text": "La app funciona sin cobertura y sincroniza al volver."
+          "text": "La app funciona sin cobertura y sincroniza al volver.",
+          "forWho": "Para quien tiene usuarios sin cobertura fiable, como en ruta o en un almacén."
         },
         "stores": {
           "name": "Alta en tiendas gestionada",
-          "text": "Creo las cuentas de desarrollador a tu nombre y gestiono la revisión hasta la aprobación. Las cuotas de Apple y Google son tuyas."
+          "text": "Creo las cuentas de desarrollador a tu nombre y gestiono la revisión hasta la aprobación. Las cuotas de Apple y Google son tuyas.",
+          "forWho": "Para quien no quiere pelearse con las cuentas de Apple y Google ni con la revisión."
         },
         "maintenance": {
           "name": "Mantenimiento",
-          "text": "Actualizaciones, copias, vigilancia de errores y una bolsa de horas al mes. Tres tamaños, más abajo."
+          "text": "Actualizaciones, copias, vigilancia de errores y una bolsa de horas al mes. Tres tamaños, más abajo.",
+          "forWho": "Para quien quiere que alguien vigile y actualice el producto después de publicar."
         },
         "brand": {
           "name": "Identidad y sistema de diseño",
-          "text": "Logo, colores, tipografía y componentes documentados para que todo se vea igual."
+          "text": "Logo, colores, tipografía y componentes documentados para que todo se vea igual.",
+          "forWho": "Para quien parte sin logo ni estilo propio y quiere que todo se vea coherente."
         }
-      }
+      },
+      "showAll": "Ver todos los extras"
     },
     "warranty": {
       "title": "Garantía y mantenimiento",
@@ -1360,7 +1373,14 @@
         "freelanceTitle": "Lo tuyo va por horas o por tarea",
         "freelanceText": "Ampliar o arreglar algo que ya existe no es un proyecto nuevo: se trabaja por horas o por tarea, con el alcance acordado antes de empezar.",
         "freelanceCta": "Ver freelance",
-        "freelanceContact": "Contarme qué necesitas"
+        "freelanceContact": "Contarme qué necesitas",
+        "suggested": "Recomendado en Web y app",
+        "assumedKind": "Qué lanzar: parto de {kind}, según lo que has marcado.",
+        "assumedSize": "Alcance: parto de un alcance medio.",
+        "shareCopy": "Copiar enlace a mi propuesta",
+        "shareCopied": "Enlace copiado.",
+        "shareFailed": "No he podido copiarlo. Selecciona el enlace y cópialo a mano.",
+        "shareLabel": "Enlace a tu propuesta"
       },
       "reasons": {
         "existing": "Lo tuyo no es un proyecto nuevo, sino ampliar o arreglar algo que ya existe.",
@@ -1373,7 +1393,7 @@
         "bump_team": "Varias personas gestionan con distintos permisos: eso pide el nivel más alto.",
         "management_rare": "Como el contenido casi no cambia, los cambios los hago yo cuando los pidas.",
         "included": "Incluido de serie en tu nivel: {extra}.",
-        "maintenance_both": "Con web y app a la vez, el mantenimiento mensual es lo más recomendable.",
+        "maintenance_both": "Con web y app a la vez te sugiero el mantenimiento mensual. No lo he marcado: lo decides tú.",
         "tier": {
           "web-presencia": "Pocas páginas y sin usuarios: Presencia cubre lo que necesitas sin pagar de más.",
           "web-negocio": "Una web completa que actualizas tú: Negocio trae el panel para editar el contenido.",
@@ -1393,7 +1413,8 @@
           "offline": "Tu app debe funcionar sin cobertura.",
           "stores": "Prefieres que gestione yo las cuentas de las tiendas."
         }
-      }
+      },
+      "preview": "Antes de verla, repasa lo que me has contado: {answers}."
     },
     "costs": {
       "title": "Costes de terceros",
@@ -1483,7 +1504,7 @@
       "size": "Decide el nivel: no es lo mismo presentar un negocio que operar un producto con usuarios.",
       "accounts": "Con cuentas hay que guardar datos de personas y decidir qué ve cada una; eso cambia el trabajo.",
       "management": "Si vas a tocarlo tú hace falta un panel; si casi no cambia, lo cambia Jose cuando lo pidas.",
-      "more": "Son los extras habituales. Marca los que te suenen, aunque sea por si acaso: podrás quitarlos después."
+      "more": "Marca solo lo que sepas que necesitas; lo que dudes lo vemos hablando."
     },
     "option": {
       "start": {

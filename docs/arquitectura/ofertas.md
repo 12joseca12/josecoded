@@ -205,7 +205,7 @@ Tabla literal: cada fila es un objeto `{ id, when, add, reason }` de `rules` en 
 | R7b | `management = team` | Extras `admin` y `accounts` (tramo permisos), sin duplicar si R5c ya lo añadió | «Varias personas gestionan: panel y permisos» |
 | R7c | `management = rare` | Nada | Texto: «Como cambia poco, los cambios los hago yo cuando los pidas» |
 | R8 | cada valor de `more` | Extra con el mismo slug | Una línea por extra |
-| R9 | siempre | `maintenance` como opción desmarcada en el resultado; marcada por defecto solo si `kind = both` | «Recomendado en Web y app» |
+| R9 | siempre | `maintenance` como opción en el resultado, **sugerido, nunca marcado** (es un pago recurrente; premarcarlo es *sneak into basket*, ver C2 del plan maestro). Con `kind = both` el resultado lo marca como `suggested`, pero solo entra en la selección si el visitante lo marca | «Recomendado en Web y app» |
 | R10 | `kind = unsure` | «Siguiente paso probable» = nivel que saldría de R3 con `kind` inferido: `both` si `more` incluye `seo` y (`push` o `offline`); `app` si incluye `push` u `offline`; si no, `web` | Texto informativo, no cambia el nivel |
 
 **Precio del resultado:** `from = offer.from + Σ extras[once].from + Σ extras[per_unit].from × unidades` (idiomas: 1 por defecto, ajustable en la tarjeta); los `monthly` se muestran aparte («+ X €/mes»). Si `offers.to` existe, «orientativo: entre X y Y». Mientras los precios sean provisionales, la tarjeta muestra `000 €` con «provisional» y el texto de 2.23; el recomendador funciona igual (la recomendación no depende de la cifra).

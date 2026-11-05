@@ -171,11 +171,33 @@ describe("recommend: extras", () => {
     expect(result.included).toEqual(["analytics", "push"]);
   });
 
-  it("R9: maintenance is always on offer and selected by default only for web and app", () => {
+  it("R9: maintenance is always on offer, suggested for web and app, and never selected", () => {
     expect(project({ kind: "web" }).available).toContain("maintenance");
-    expect(project({ kind: "web" }).extras).not.toContain("maintenance");
-    expect(project({ kind: "both" }).extras).toContain("maintenance");
-    expect(ids(project({ kind: "both" }).reasons)).toContain("maintenance_both");
+    expect(project({ kind: "web" }).suggested).toEqual([]);
+    expect(project({ kind: "app" }).suggested).toEqual([]);
+    const both = project({ kind: "both" });
+    expect(both.available).toContain("maintenance");
+    expect(both.suggested).toEqual(["maintenance"]);
+    expect(both.extras).not.toContain("maintenance");
+    expect(ids(both.reasons)).toContain("maintenance_both");
+  });
+
+  it("R9: maintenance stays unselected for every answer combination", () => {
+    for (const kind of ["web", "app", "both", "unsure"] as const) {
+      for (const size of ["small", "medium", "large", "unsure"] as const) {
+        for (const more of [[], ["seo", "push"], [...moreValues]] as const) {
+          const result = project({ kind, size, more });
+          expect(result.extras).not.toContain("maintenance");
+          expect(selectedExtras(result)).not.toContain("maintenance");
+        }
+      }
+    }
+  });
+
+  it("R9: maintenance is selected only when the visitor asks for it", () => {
+    const result = project({ kind: "both" });
+    expect(selectedExtras(result, ["maintenance"])).toEqual(["maintenance"]);
+    expect(selectedExtras(result, [])).toEqual([]);
   });
 });
 
