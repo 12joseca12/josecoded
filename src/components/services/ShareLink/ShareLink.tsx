@@ -14,6 +14,7 @@ interface ShareLinkLabels {
 }
 
 interface ShareLinkProps {
+  origin: string;
   href: string;
   labels: ShareLinkLabels;
 }
@@ -21,32 +22,47 @@ interface ShareLinkProps {
 type CopyStatus = "idle" | "copied" | "failed";
 
 const noopSubscribe = () => () => undefined;
-const currentOrigin = () => window.location.origin;
-const serverOrigin = () => "";
+const hydrated = () => true;
+const notHydrated = () => false;
 const statusClearMs = 4000;
+const announceGapMs = 60;
 
-export function ShareLink({ href, labels }: ShareLinkProps) {
-  const origin = useSyncExternalStore(noopSubscribe, currentOrigin, serverOrigin);
+export function ShareLink({ origin, href, labels }: ShareLinkProps) {
+  const enhanced = useSyncExternalStore(noopSubscribe, hydrated, notHydrated);
   const [status, setStatus] = useState<CopyStatus>("idle");
+  const [message, setMessage] = useState("");
   const field = useRef<HTMLInputElement>(null);
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const clearTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const announceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const id = useId();
-  const enhanced = origin !== "";
   const url = `${origin}${href}`;
 
   useEffect(
     () => () => {
-      if (timer.current) clearTimeout(timer.current);
+      if (clearTimer.current) clearTimeout(clearTimer.current);
+      if (announceTimer.current) clearTimeout(announceTimer.current);
     },
     [],
   );
 
+  useEffect(() => {
+    if (status !== "failed") return;
+    field.current?.focus();
+    field.current?.select();
+  }, [status]);
+
   const report = (next: CopyStatus) => {
     setStatus(next);
-    if (timer.current) clearTimeout(timer.current);
+    setMessage("");
+    if (clearTimer.current) clearTimeout(clearTimer.current);
+    if (announceTimer.current) clearTimeout(announceTimer.current);
+    announceTimer.current = setTimeout(() => {
+      setMessage(next === "copied" ? labels.copied : labels.failed);
+    }, announceGapMs);
     if (next === "copied") {
-      timer.current = setTimeout(() => {
+      clearTimer.current = setTimeout(() => {
         setStatus("idle");
+        setMessage("");
       }, statusClearMs);
     }
   };
@@ -57,8 +73,6 @@ export function ShareLink({ href, labels }: ShareLinkProps) {
       report("copied");
     } catch {
       report("failed");
-      field.current?.focus();
-      field.current?.select();
     }
   };
 
@@ -67,37 +81,37 @@ export function ShareLink({ href, labels }: ShareLinkProps) {
   return (
     <div className={styles.share} data-testid="share-link">
       {enhanced ? (
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => {
-            void copy();
-          }}
-        >
-          {labels.copy}
-        </Button>
-      ) : null}
-      {showField ? (
-        <div className={styles.field}>
-          <label htmlFor={`${id}-url`} className={styles.label}>
-            {labels.link}
-          </label>
-          <input
-            ref={field}
-            id={`${id}-url`}
-            className={styles.input}
-            type="text"
-            readOnly
-            value={url}
-            onFocus={(event) => {
-              event.currentTarget.select();
+        <div className={styles.action}>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              void copy();
             }}
-          />
+          >
+            {labels.copy}
+          </Button>
         </div>
       ) : null}
+      <div className={styles.field} data-visible={showField}>
+        <label htmlFor={`${id}-url`} className={styles.label}>
+          {labels.link}
+        </label>
+        <input
+          ref={field}
+          id={`${id}-url`}
+          className={styles.input}
+          type="text"
+          readOnly
+          value={url}
+          onFocus={(event) => {
+            event.currentTarget.select();
+          }}
+        />
+      </div>
       <p className={styles.status} role="status" aria-live="polite" data-status={status}>
-        {status === "copied" ? labels.copied : status === "failed" ? labels.failed : ""}
+        {message}
       </p>
     </div>
   );

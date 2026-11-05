@@ -4,10 +4,23 @@
   justify-items: start;
 }
 
+.action,
+.field {
+  grid-area: 1 / 1;
+}
+
+.action {
+  align-self: start;
+}
+
 .field {
   display: grid;
   gap: var(--space-1);
   inline-size: 100%;
+}
+
+.field[data-visible="false"] {
+  visibility: hidden;
 }
 
 .label {

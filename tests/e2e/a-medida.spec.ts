@@ -176,6 +176,31 @@ test.describe("extras", () => {
     await expect(extras.locator("input[type='checkbox']:checked")).toHaveCount(0);
   });
 
+  test("re-folds the extras as the recommender changes the URL, with a visible marker", async ({
+    page,
+  }) => {
+    await page.goto(page_);
+    const extras = page.locator("#extras");
+    await expect(extras.locator("details")).toHaveCount(0);
+    await runFlow(page, [
+      ["start", ["idea"]],
+      ["kind", ["app"]],
+      ["size", ["small"]],
+      ["accounts", ["none"]],
+      ["management", ["me"]],
+      ["more", []],
+    ]);
+    await expect(result(page)).toBeVisible();
+    const folded = extras.locator("details");
+    await expect(folded).toHaveCount(1);
+    await expect(folded).not.toHaveAttribute("open", "");
+    await expect(folded.locator("summary svg")).toBeVisible();
+    await expect(extras.locator("[data-extra='push']")).toBeVisible();
+    await page.goBack();
+    await page.goBack();
+    await expect(extras.locator("details")).toHaveCount(0);
+  });
+
   for (const scripting of [true, false]) {
     test(`chosen extras reach the contact form summary ${scripting ? "with" : "without"} JavaScript`, async ({
       browser,
@@ -348,10 +373,7 @@ test.describe("recommender", () => {
     await expect(result(page).getByRole("note")).toHaveCount(0);
   });
 
-  test("copies the link to the proposal and says so in a live region", async ({
-    browser,
-    baseURL,
-  }) => {
+  test("copies the link to the proposal and says so in a live region", async ({ browser }) => {
     const context = await browser.newContext({
       permissions: ["clipboard-read", "clipboard-write"],
     });
@@ -361,7 +383,71 @@ test.describe("recommender", () => {
     await share.getByRole("button", { name: rec.result.shareCopy }).click();
     await expect(share.getByRole("status")).toHaveText(rec.result.shareCopied);
     const copied = await page.evaluate(() => navigator.clipboard.readText());
-    expect(copied).toBe(`${baseURL}${page_}?q=idea.web.medium.basic.me.payments#recomendador`);
+    expect(copied).toMatch(
+      /^https?:\/\/[^/]+\/es\/servicios\/a-medida\?q=idea\.web\.medium\.basic\.me\.payments#recomendador$/,
+    );
+    await context.close();
+  });
+
+  test("announces a second copy again", async ({ browser }) => {
+    const context = await browser.newContext({
+      permissions: ["clipboard-read", "clipboard-write"],
+    });
+    const page = await context.newPage();
+    await page.goto(`${page_}?q=idea.web.medium.basic.me.payments`);
+    const share = page.getByTestId("share-link");
+    const status = share.getByRole("status");
+    await page.evaluate(() => {
+      const node = document.querySelector("[data-testid='share-link'] [role='status']");
+      const log: string[] = [];
+      Object.assign(window, { statusLog: log });
+      if (node)
+        new MutationObserver(() => log.push(node.textContent)).observe(node, {
+          childList: true,
+          characterData: true,
+          subtree: true,
+        });
+    });
+    const button = share.getByRole("button", { name: rec.result.shareCopy });
+    await button.click();
+    await expect(status).toHaveText(rec.result.shareCopied);
+    await button.click();
+    await expect(status).toHaveText(rec.result.shareCopied);
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () =>
+            (window as unknown as { statusLog: string[] }).statusLog.filter((text) => text === "")
+              .length,
+        ),
+      )
+      .toBeGreaterThanOrEqual(1);
+    await context.close();
+  });
+
+  test("moves focus to the field and keeps the height when the copy is refused", async ({
+    browser,
+  }) => {
+    const context = await browser.newContext();
+    await context.addInitScript(() => {
+      Object.defineProperty(navigator, "clipboard", {
+        value: { writeText: () => Promise.reject(new Error("denied")) },
+        configurable: true,
+      });
+    });
+    const page = await context.newPage();
+    await page.goto(`${page_}?q=idea.web.medium.basic.me.payments`);
+    const share = page.getByTestId("share-link");
+    const button = share.getByRole("button", { name: rec.result.shareCopy });
+    await expect(button).toBeVisible();
+    const before = (await share.boundingBox())?.height ?? 0;
+    await button.click();
+    const field = share.getByRole("textbox");
+    await expect(field).toBeFocused();
+    await expect(field).toHaveValue(/^https?:\/\//);
+    const after = (await share.boundingBox())?.height ?? 0;
+    expect(after).toBeLessThanOrEqual(before + 1);
+    expect(after).toBeGreaterThanOrEqual(before - 1);
     await context.close();
   });
 
@@ -372,7 +458,7 @@ test.describe("recommender", () => {
     const share = page.getByTestId("share-link");
     await expect(share.getByRole("button")).toHaveCount(0);
     await expect(share.getByRole("textbox")).toHaveValue(
-      /\?q=idea\.web\.medium\.basic\.me\.payments/,
+      /^https?:\/\/[^/]+\/es\/servicios\/a-medida\?q=idea\.web\.medium\.basic\.me\.payments/,
     );
     await context.close();
   });

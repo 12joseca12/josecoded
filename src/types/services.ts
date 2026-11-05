@@ -78,7 +78,7 @@ export interface ExtraChipItem {
   forWho: string;
   tags: string[];
   included: string;
-  active: boolean;
+  applies: string[];
 }
 
 export interface MaintenancePlan {

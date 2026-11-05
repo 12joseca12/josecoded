@@ -24,6 +24,7 @@ interface OfferResultProps {
   copy: RecommenderCopy;
   state: RecommenderState;
   basePath: string;
+  origin: string;
   reviewHref: string;
   onReview: (event: MouseEvent<HTMLElement>) => void;
   onExtras: (selected: ExtraSlug[]) => void;
@@ -42,6 +43,7 @@ export function OfferResult({
   copy,
   state,
   basePath,
+  origin,
   reviewHref,
   onReview,
   onExtras,
@@ -88,6 +90,7 @@ export function OfferResult({
       recommendation={recommendation}
       state={state}
       basePath={basePath}
+      origin={origin}
       reviewHref={reviewHref}
       onReview={onReview}
       onExtras={onExtras}
@@ -107,6 +110,7 @@ function ProjectResult({
   recommendation,
   state,
   basePath,
+  origin,
   reviewHref,
   onReview,
   onExtras,
@@ -302,6 +306,7 @@ function ProjectResult({
           </Button>
         </div>
         <ShareLink
+          origin={origin}
           href={shareHref}
           labels={{
             copy: result.shareCopy,

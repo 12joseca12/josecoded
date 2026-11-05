@@ -12,6 +12,7 @@ import { PageSection } from "@/components/site/PageSection/PageSection";
 import { Button } from "@/components/ui/Button/Button";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 import { Link } from "@/components/ui/Link/Link";
+import { site } from "@/config/site";
 import { isLocale } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
@@ -20,7 +21,6 @@ import { guideScriptKeys } from "@/lib/nexo/guide";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { buildFaqItems } from "@/lib/services/faq";
 import {
-  extraAppliesTo,
   extraCopyKeys,
   extraOf,
   extras,
@@ -32,14 +32,7 @@ import {
   offersOn,
   platforms,
 } from "@/lib/services/offers";
-import { recommend } from "@/lib/services/recommender";
-import {
-  applyForm,
-  completeAnswers,
-  hasFormAction,
-  parseState,
-  toSearch,
-} from "@/lib/services/recommender-url";
+import { applyForm, hasFormAction, toSearch } from "@/lib/services/recommender-url";
 import type {
   ExtraChipItem,
   MaintenancePlan,
@@ -108,11 +101,6 @@ export default async function OffersPage({ params, searchParams }: OffersProps) 
   }));
 
   const nameOf = (slug: (typeof offers)[number]["slug"]) => t(offerCopyKeys(slug).name);
-  const answers = completeAnswers(
-    parseState(typeof query.q === "string" ? query.q : undefined, undefined).draft,
-  );
-  const outcome = answers ? recommend(answers) : null;
-  const activeOffers = outcome?.route === "project" ? outcome.offers : null;
   const chips: ExtraChipItem[] = extras.map((extra) => {
     const copy = extraCopyKeys(extra.slug);
     const onlyWeb = extra.applies.every((slug) => slug.startsWith("web"));
@@ -128,7 +116,7 @@ export default async function OffersPage({ params, searchParams }: OffersProps) 
       name: t(copy.name),
       text: t(copy.text),
       forWho: t(copy.forWho),
-      active: activeOffers === null || extraAppliesTo(extra, activeOffers),
+      applies: [...extra.applies],
       tags,
       included:
         extra.includedIn.length > 0
@@ -200,6 +188,7 @@ export default async function OffersPage({ params, searchParams }: OffersProps) 
         <OfferRecommender
           locale={locale}
           basePath={basePath}
+          origin={site.origin}
           initial={{
             q: typeof query.q === "string" ? query.q : undefined,
             paso: typeof query.paso === "string" ? query.paso : undefined,
@@ -227,6 +216,7 @@ export default async function OffersPage({ params, searchParams }: OffersProps) 
           hint={t(key("extras.hint"))}
           showAll={t(key("extras.showAll"))}
           items={chips}
+          initialQuery={typeof query.q === "string" ? query.q : undefined}
         />
       </PageSection>
       <PageSection

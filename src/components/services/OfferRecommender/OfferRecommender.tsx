@@ -22,6 +22,7 @@ import {
   totalSteps,
   withExtras,
 } from "@/lib/services/recommender-url";
+import { recommenderUrlEvent } from "@/lib/services/recommender-url-event";
 
 import type { RecommenderCopy } from "./copy";
 import styles from "./OfferRecommender.module.css";
@@ -38,6 +39,7 @@ export interface GuideLabels {
 interface OfferRecommenderProps {
   locale: string;
   basePath: string;
+  origin: string;
   initial: { q?: string; paso?: string };
   copy: RecommenderCopy;
   guideScript: GuideScript;
@@ -51,6 +53,7 @@ const previewIds = ["start", "kind", "size", "accounts", "management"] as const;
 export function OfferRecommender({
   locale,
   basePath,
+  origin,
   initial,
   copy,
   guideScript,
@@ -98,6 +101,7 @@ export function OfferRecommender({
     const url = `${window.location.pathname}${search ? `?${search}` : ""}`;
     if (replace) window.history.replaceState(null, "", url);
     else window.history.pushState(null, "", url);
+    window.dispatchEvent(new Event(recommenderUrlEvent));
   };
 
   const show = (target: RecommenderState, replace = false) => {
@@ -198,6 +202,7 @@ export function OfferRecommender({
             state={state}
             reviewHref={hrefFor(reviewAnswers(state))}
             basePath={basePath}
+            origin={origin}
             onReview={(event) => {
               navigate(event, reviewAnswers(state));
             }}
