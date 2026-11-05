@@ -504,7 +504,8 @@
         "build": "Desarrollo con entregas cortas que puedes probar en tu móvil o en una preview.",
         "publish": "Subo la app a las tiendas y la web a su dominio, con analítica y copias de seguridad.",
         "maintain": "Corrijo, actualizo y mejoro después del lanzamiento, con un plan acordado."
-      }
+      },
+      "more": "Ver cómo trabajo, con ejemplos"
     },
     "faq": {
       "title": "Preguntas frecuentes",
@@ -595,6 +596,7 @@
       "contactTitle": "Contacto",
       "contactLine": "{way}: {email}",
       "contact": "Contacto: las vías para hablar con José Carlos",
+      "howPage": "Cómo trabajo: el proceso en cinco fases y las decisiones técnicas detrás de esta web",
       "about": "Sobre mí: trayectoria, forma de trabajar y stack de José Carlos"
     }
   },
@@ -1270,6 +1272,203 @@
     },
     "state": {
       "greeting": "Nexo saluda"
+    }
+  },
+  "howPage": {
+    "meta": {
+      "title": "Cómo trabajo: de la idea a producción",
+      "description": "Cinco fases, decisiones técnicas reales y estándares comprobables, contados con esta misma web como caso. Así diseño, desarrollo y mantengo apps y webs."
+    },
+    "crumb": "Cómo trabajo",
+    "head": {
+      "title": "Cómo trabajo: de un problema a una app o web en",
+      "accent": "producción.",
+      "lead": "El proceso en cinco fases, las decisiones técnicas detrás de esta misma web y los estándares que cumplo en cada proyecto."
+    },
+    "phases": {
+      "title": "Cinco fases, y qué recibes en cada una",
+      "lead": "Elige una fase para ver qué entrego y qué necesito de ti.",
+      "list": "Fases del proceso",
+      "getsLabel": "Qué recibes",
+      "needsLabel": "Qué necesito de ti",
+      "items": {
+        "discover": {
+          "summary": "Entiendo qué problema resuelve el producto, para quién y qué entra en la primera versión.",
+          "gets1": "Un alcance escrito, con lo que entra y lo que queda fuera.",
+          "gets2": "Las preguntas abiertas y los riesgos, ordenados por importancia.",
+          "gets3": "Una propuesta con plazo y precio antes de escribir código.",
+          "needs": "Una conversación sincera sobre el objetivo y sobre quién lo va a usar."
+        },
+        "design": {
+          "summary": "Dibujo pantallas y flujos y los pruebas contigo antes de escribir código.",
+          "gets1": "Los flujos y las pantallas clave en un prototipo que puedes recorrer.",
+          "gets2": "Un sistema visual coherente: color, tipografía y componentes.",
+          "gets3": "Accesibilidad y versión móvil pensadas desde el primer boceto.",
+          "needs": "Tu opinión sobre el prototipo: qué sobra, qué falta y qué te sorprende."
+        },
+        "build": {
+          "summary": "Desarrollo con entregas cortas que puedes probar en tu móvil o en una preview.",
+          "gets1": "Una preview con cada avance, sin esperar al final.",
+          "gets2": "Código tipado, con tests y revisado en cada cambio.",
+          "gets3": "Seguridad y rendimiento medidos mientras se construye.",
+          "needs": "Probar las entregas y decirme qué ajustar mientras aún es barato."
+        },
+        "publish": {
+          "summary": "Subo la app a las tiendas y la web a su dominio, con analítica y copias de seguridad.",
+          "gets1": "Publicación en las tiendas o en tu dominio, con HTTPS y cabeceras de seguridad.",
+          "gets2": "Analítica y avisos de error activos desde el primer día.",
+          "gets3": "Copias de seguridad y un plan para volver atrás si algo falla.",
+          "needs": "Los accesos a tu dominio, a las tiendas y a los servicios que ya uses."
+        },
+        "maintain": {
+          "summary": "Corrijo, actualizo y mejoro después del lanzamiento, con un plan acordado.",
+          "gets1": "Correcciones y actualizaciones de dependencias y de seguridad.",
+          "gets2": "Mejoras priorizadas con lo que enseñan los usuarios reales.",
+          "gets3": "Documentación y traspaso si prefieres llevarlo con tu equipo.",
+          "needs": "Decidir cada cierto tiempo qué mejora importa más."
+        }
+      }
+    },
+    "problems": {
+      "title": "Cómo resuelvo problemas",
+      "lead": "Tres casos reales de esta misma web: el problema, la decisión que tomé y qué salió de ahí.",
+      "problem": "Problema",
+      "decision": "Decisión",
+      "result": "Resultado",
+      "items": {
+        "csp": {
+          "title": "Una CSP estricta en Cloudflare Workers",
+          "problem": "Quería una política de seguridad de contenido sin «unsafe-inline» en los scripts, en una web que se renderiza en el borde, donde no hay un servidor tradicional que reparta nonces.",
+          "decision": "Genero un nonce distinto en cada petición desde el proxy de Next, lo envío en la cabecera y lo paso a cada script, incluido el JSON-LD. «strict-dynamic» deja cargar el resto desde esos scripts de confianza.",
+          "result": "Un script sin nonce no se ejecuta. Una prueba end-to-end vigila las cabeceras de seguridad en cada cambio."
+        },
+        "motion": {
+          "title": "Movimiento accesible sin coste de JavaScript",
+          "problem": "El movimiento hace que una interfaz se sienta cuidada, pero marea a quien pide menos animación y suele pagarse en kilobytes de JavaScript.",
+          "decision": "Casi todo el movimiento va en CSS nativo, con curvas y duraciones definidas como tokens. Una única regla de movimiento reducido apaga transiciones y animaciones en toda la web.",
+          "result": "El hero recorre las cinco fases con CSS y, con movimiento reducido, se queda quieto en «Publicar». Cambiar una curva se hace en un solo sitio."
+        },
+        "recommender": {
+          "title": "Un recomendador por reglas, no una IA",
+          "problem": "Elegir entre niveles de web y app y doce extras abruma. Un chatbot generativo sería lento, tendría coste por consulta y podría inventarse un precio.",
+          "decision": "Seis preguntas y una función pura que devuelve la oferta y los extras. El estado vive en la URL y Nexo acompaña con un guion, sin generar texto libre.",
+          "result": "Mismas respuestas, misma recomendación; sin coste por consulta, enlazable y cubierta con tests unitarios."
+        }
+      }
+    },
+    "tech": {
+      "title": "Tecnología y arquitectura",
+      "lead": "Esta web es mi caso de estudio: se ejecuta en el borde, guarda los datos con permisos por fila y se verifica sola antes de cada merge.",
+      "diagram": {
+        "label": "Arquitectura de esta web",
+        "caption": "Arquitectura simplificada: quién usa la web, dónde se ejecuta y dónde viven los datos.",
+        "description": "Diagrama de izquierda a derecha, o de arriba abajo en móvil. El navegador y la app móvil se conectan con la aplicación Next 16, que se ejecuta en Cloudflare Workers; la integración continua en GitHub Actions la comprueba antes de publicarla. La aplicación guarda y lee los datos en Supabase, donde Postgres aplica seguridad por filas y se ofrecen autenticación, almacenamiento y tiempo real.",
+        "layers": {
+          "clients": "Quién la usa",
+          "app": "Aplicación y entrega",
+          "data": "Datos"
+        },
+        "nodes": {
+          "browser": {
+            "name": "Navegador",
+            "detail": "La web pública y las zonas privadas, cada una con su rol."
+          },
+          "mobile": {
+            "name": "App móvil",
+            "detail": "React Native, contra el mismo backend de datos."
+          },
+          "workers": {
+            "name": "Next 16 en Cloudflare Workers",
+            "detail": "Render en el borde con OpenNext, CSP con nonce y límite de peticiones."
+          },
+          "ci": {
+            "name": "CI en GitHub Actions",
+            "detail": "Lint, tipos, tests, build y e2e con axe antes de cada merge."
+          },
+          "postgres": {
+            "name": "Supabase Postgres",
+            "detail": "RLS en toda tabla con datos de usuario y esquema solo por migraciones."
+          },
+          "services": {
+            "name": "Auth, Storage y Realtime",
+            "detail": "OTP por correo, TOTP para el personal y URL firmadas."
+          }
+        }
+      },
+      "stack": {
+        "next": {
+          "title": "Next 16 en Cloudflare Workers",
+          "text": "Server Components por defecto, JavaScript solo donde hace falta y render cerca del usuario."
+        },
+        "supabase": {
+          "title": "Supabase con RLS",
+          "text": "Postgres con permisos por fila en cada tabla: el navegador nunca tiene más acceso del que le corresponde."
+        },
+        "mobile": {
+          "title": "React Native para móvil",
+          "text": "Una sola base de TypeScript para iOS y Android, con la misma forma de trabajar que en web."
+        },
+        "typescript": {
+          "title": "TypeScript estricto",
+          "text": "Tipos inferidos de esquemas zod en cada frontera: lo que entra se valida antes de usarse."
+        },
+        "tests": {
+          "title": "Tests en cuatro capas",
+          "text": "Unitarios, end-to-end con Playwright, accesibilidad con axe y pgTAP para las políticas de la base de datos."
+        },
+        "ci": {
+          "title": "Integración continua",
+          "text": "Cada cambio pasa lint, tipos, tests y build antes de llegar a main, con una preview para revisarlo."
+        }
+      }
+    },
+    "quality": {
+      "title": "Estándares que cumplo",
+      "lead": "Los que exijo a esta web y llevo a cada proyecto.",
+      "items": {
+        "accessibility": {
+          "title": "Accesibilidad WCAG 2.2 AA",
+          "text": "Teclado, foco visible y contraste en cada componente. axe bloquea el merge si encuentra una violación."
+        },
+        "performance": {
+          "title": "Presupuesto de rendimiento",
+          "text": "LCP por debajo de 2,5 s, INP por debajo de 200 ms, CLS por debajo de 0,1 y menos de 150 KB de JavaScript en la home."
+        },
+        "security": {
+          "title": "Seguridad desde el primer día",
+          "text": "CSP con nonce, cabeceras estrictas, RLS en cada tabla, Turnstile y límite de peticiones en los formularios públicos."
+        },
+        "code": {
+          "title": "Código sin comentarios",
+          "text": "El porqué vive en nombres claros, en el commit o en una decisión escrita. El lint lo vigila."
+        },
+        "tokens": {
+          "title": "Tokens de diseño",
+          "text": "Una sola fuente de color, espacio y movimiento. Los componentes solo usan variables y el contraste se comprueba en CI."
+        }
+      }
+    },
+    "faq": {
+      "title": "Preguntas sobre el proceso",
+      "q1": "¿Cómo empezamos?",
+      "a1": "Me cuentas el problema por el formulario o el chat. En uno o dos días laborables te respondo con preguntas y, si encaja, con una propuesta de alcance, plazo y precio.",
+      "q2": "¿Puedo cambiar el alcance a mitad de camino?",
+      "a2": "Sí. Trabajo en entregas cortas, así que cada cambio se valora con su efecto en plazo y precio antes de aplicarlo, sin sorpresas al final.",
+      "q3": "¿El código y los accesos son míos?",
+      "a3": "Sí. Los accesos al repositorio, al dominio, a las tiendas y a los servicios quedan a tu nombre, y dejo documentación para que otro equipo pueda continuar.",
+      "q4": "¿Qué pasa después del lanzamiento?",
+      "a4": "El desarrollo a medida incluye 30 días de garantía y hay un plan de mantenimiento opcional. Corrijo, actualizo y mejoro con lo que cuentan los usuarios."
+    },
+    "cta": {
+      "title": "¿Hablamos de tu proyecto?",
+      "lead": "Cuéntame el problema y te propongo un plan.",
+      "contact": "Cuéntame tu proyecto",
+      "offers": "Ver desarrollo a medida",
+      "services": "Ver todos los servicios"
+    },
+    "links": {
+      "how": "Ver cómo trabajo",
+      "howDetail": "Ver cómo trabajo, con ejemplos"
     }
   },
   "about": {

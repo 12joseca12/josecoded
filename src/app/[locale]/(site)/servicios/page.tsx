@@ -7,6 +7,8 @@ import { ProofTile } from "@/components/services/ProofTile/ProofTile";
 import { ServiceBento } from "@/components/services/ServiceBento/ServiceBento";
 import { ServicePage } from "@/components/services/ServicePage/ServicePage";
 import { PageSection } from "@/components/site/PageSection/PageSection";
+import { Button } from "@/components/ui/Button/Button";
+import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 import { Steps } from "@/components/ui/Steps/Steps";
 import { isLocale } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
@@ -129,6 +131,11 @@ export default async function ServicesPage({ params }: ServicesProps) {
         size="wide"
       >
         <Steps items={steps} />
+        <div>
+          <Button href={`/${locale}/como-trabajo`} variant="ghost" icon={<ArrowIcon />}>
+            {t("services.how.more")}
+          </Button>
+        </div>
       </PageSection>
       <PageSection id="preguntas" title={t("services.faq.title")} size="wide">
         <FaqWithNexo locale={locale} items={faq} />

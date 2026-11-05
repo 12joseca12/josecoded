@@ -1,0 +1,38 @@
+.card {
+  display: grid;
+  align-content: start;
+  gap: var(--space-5);
+  min-width: 0;
+}
+
+.steps {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+}
+
+.step {
+  display: grid;
+  gap: var(--space-1);
+  padding-inline-start: var(--space-4);
+  border-inline-start: 2px solid var(--line-strong);
+}
+
+.step[data-kind="result"] {
+  border-inline-start-color: var(--coral);
+}
+
+.label {
+  color: var(--ink);
+  font-size: var(--fs-m);
+  font-weight: var(--fw-bold);
+}
+
+.step[data-kind="result"] .label {
+  color: var(--coral-deep);
+}
+
+.text {
+  margin: 0;
+  color: var(--ink-soft);
+}

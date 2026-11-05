@@ -88,6 +88,7 @@ describe("buildSitemap", () => {
       `${productionOrigin}/es/servicios`,
       `${productionOrigin}/es/servicios/freelance`,
       `${productionOrigin}/es/servicios/a-medida`,
+      `${productionOrigin}/es/como-trabajo`,
       `${productionOrigin}/es/proyectos`,
       `${productionOrigin}/es/sobre-mi`,
       `${productionOrigin}/es/contacto`,
@@ -114,6 +115,7 @@ describe("buildSitemap", () => {
       `${productionOrigin}/es/servicios`,
       `${productionOrigin}/es/servicios/freelance`,
       `${productionOrigin}/es/servicios/a-medida`,
+      `${productionOrigin}/es/como-trabajo`,
       `${productionOrigin}/es/sobre-mi`,
     ]);
   });
@@ -273,6 +275,7 @@ describe("buildLlmsTxt", () => {
     expect(text).toContain(`(${productionOrigin}/es/servicios)`);
     expect(text).toContain(`(${productionOrigin}/es/servicios/freelance)`);
     expect(text).toContain(`(${productionOrigin}/es/servicios/a-medida)`);
+    expect(text).toContain(`(${productionOrigin}/es/como-trabajo)`);
     expect(text).toContain(`(${productionOrigin}/es/contacto)`);
     expect(text).toContain(`(${productionOrigin}/es/sobre-mi)`);
     expect(text).toContain("José Carlos Sánchez García");

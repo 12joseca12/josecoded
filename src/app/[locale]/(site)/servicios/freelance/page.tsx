@@ -147,7 +147,7 @@ export default async function FreelancePage({ params }: FreelanceProps) {
           <Button href={buildContactHref(locale, "freelance")} icon={<ArrowIcon />}>
             {t("freelancePage.closing.cta")}
           </Button>
-          <Button href={`/${locale}/servicios#como-trabajo`} variant="ghost" icon={<ArrowIcon />}>
+          <Button href={`/${locale}/como-trabajo`} variant="ghost" icon={<ArrowIcon />}>
             {t("freelancePage.closing.more")}
           </Button>
         </div>
