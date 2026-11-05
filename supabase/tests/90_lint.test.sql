@@ -101,6 +101,7 @@ select is_empty(
         'set_user_active',
         'set_user_rates',
         'telegram_link_code',
+        'telegram_link_status',
         'telegram_unlink',
         'touch_lead',
         'update_my_profile'
@@ -218,6 +219,7 @@ select is_empty(
         'set_user_active',
         'set_user_rates',
         'telegram_link_code',
+        'telegram_link_status',
         'telegram_unlink',
         'touch_lead',
         'update_my_profile'

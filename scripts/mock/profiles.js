@@ -1,6 +1,10 @@
 import { bearer, extendAuthState, people, personById } from "./auth.js";
 import { route, send } from "./registry.js";
 
+const rates = {
+  [people["closer@example.com"].id]: { closer_rate: 10, closer_recurring_rate: 7.5 },
+};
+
 extendAuthState((state) => {
   state.calls.profiles = [];
   state.profiles = new Map();
@@ -50,6 +54,7 @@ route("GET", "/rest/v1/profiles", ({ request, response, url }) => {
           full_name: created?.full_name ?? found[1].name,
           is_active: !found[1].inactive,
           archived_at: null,
+          ...(rates[found[1].id] ?? { closer_rate: null, closer_recurring_rate: null }),
         }
       : null;
   if ((request.headers.accept ?? "").includes("vnd.pgrst.object")) {

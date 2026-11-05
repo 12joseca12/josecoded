@@ -36,8 +36,16 @@ describe("staff navigation registry", () => {
   it("only marks the shipped screens as ready", () => {
     const ready = (zone: "admin" | "crm") =>
       staffNav[zone].filter((entry) => entry.ready).map((entry) => entry.key);
-    expect(ready("admin")).toEqual(["overview", "leads", "users", "prices", "system", "audit"]);
-    expect(ready("crm")).toEqual(["overview", "contacts"]);
+    expect(ready("admin")).toEqual([
+      "overview",
+      "leads",
+      "users",
+      "prices",
+      "system",
+      "audit",
+      "notifications",
+    ]);
+    expect(ready("crm")).toEqual(["overview", "contacts", "settings"]);
   });
 
   it("has a label in every locale", () => {

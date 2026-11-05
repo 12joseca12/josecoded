@@ -957,7 +957,10 @@
         "title": "Resumen"
       },
       "title": "Resumen",
-      "lead": "Lo que pide tu atención ahora y por dónde seguir.",
+      "lead": "Panel del admin.",
+      "emptyTitle": "Aún no hay nada que resumir",
+      "emptyText": "Los contadores y el estado de Omen llegan con el siguiente bloque. Mientras, revisa los interesados.",
+      "emptyAction": "Ver interesados",
       "cells": {
         "title": "Pendiente de atender",
         "unknown": "Sin dato todavía",
@@ -1803,6 +1806,124 @@
         }
       }
     },
+    "notifications": {
+      "meta": {
+        "title": "Notificaciones"
+      },
+      "title": "Notificaciones",
+      "lead": "Elige qué te avisa y por dónde. Cada cambio se guarda al momento.",
+      "drainOff": {
+        "title": "Los envíos están apagados",
+        "text": "Los avisos por email y Telegram se encolan, pero no salen hasta que se active el envío. La campana funciona con normalidad."
+      },
+      "loading": {
+        "telegram": "Cargando Telegram",
+        "rules": "Cargando las reglas de aviso"
+      },
+      "telegram": {
+        "title": "Telegram",
+        "text": "Vincula tu Telegram para recibir los avisos en el móvil.",
+        "linked": "Vinculado el {date}",
+        "unlinked": "Sin vincular",
+        "noBot": {
+          "title": "Falta configurar el bot",
+          "text": "Para vincular Telegram el servidor necesita el nombre del bot (variable TELEGRAM_BOT_USERNAME). Mientras no esté, no se puede generar el código."
+        },
+        "generate": "Generar código",
+        "generating": "Generando código",
+        "codeTitle": "Tu código de vinculación",
+        "codeHelp": "Abre el bot en Telegram y pulsa Iniciar, o envíale este código. Caduca a las {time}.",
+        "open": "Abrir en Telegram",
+        "check": "Comprobar vinculación",
+        "checking": "Comprobando",
+        "stillPending": "Todavía no hemos recibido el código desde Telegram.",
+        "unlink": "Desvincular",
+        "unlinking": "Desvinculando",
+        "confirmUnlink": "¿Desvincular este Telegram? Dejarás de recibir avisos por ahí.",
+        "confirmYes": "Sí, desvincular",
+        "confirmNo": "Cancelar",
+        "done": {
+          "linked": "Telegram vinculado.",
+          "unlinked": "Telegram desvinculado."
+        },
+        "errors": {
+          "forbidden": "No tienes permiso para esto.",
+          "unavailable": "Esta función aún no está activa en la base de datos.",
+          "error": "No se ha podido completar. Inténtalo de nuevo."
+        },
+        "error": {
+          "title": "No se ha podido cargar Telegram",
+          "text": "No hemos podido leer el estado de la vinculación.",
+          "retry": "Reintentar",
+          "retrying": "Reintentando"
+        },
+        "unavailable": {
+          "title": "Telegram aún no está disponible",
+          "text": "La base de datos todavía no tiene la función de vinculación."
+        }
+      },
+      "rules": {
+        "title": "Qué te avisa",
+        "lead": "Cada evento puede avisarte por Telegram, por email y en la campana de la app.",
+        "region": "Reglas de aviso",
+        "caption": "Eventos y canales por los que te avisan",
+        "event": "Evento",
+        "channels": {
+          "telegram": "Telegram",
+          "email": "Email",
+          "bell": "Campana"
+        },
+        "events": {
+          "lead_new": "Interesado nuevo",
+          "lead_claimed": "Interesado asignado a ti",
+          "message_new": "Mensaje nuevo",
+          "commission_accrued": "Comisión devengada",
+          "payment_recorded": "Cobro registrado",
+          "payment_overdue": "Cobro vencido",
+          "payout_paid": "Liquidación pagada",
+          "job_failed": "Trabajo fallido",
+          "omen_down": "Omen caído",
+          "invitation_accepted": "Invitación aceptada"
+        },
+        "idle": "Sin efecto todavía",
+        "telegramNote": "Telegram solo envía si lo has vinculado.",
+        "saved": "Guardado",
+        "errors": {
+          "forbidden": "No tienes permiso para cambiar esto.",
+          "unavailable": "Esta función aún no está activa en la base de datos.",
+          "error": "No se ha podido guardar. Inténtalo de nuevo."
+        },
+        "error": {
+          "title": "No se han podido cargar las reglas",
+          "text": "No hemos podido leer tus preferencias de aviso.",
+          "retry": "Reintentar",
+          "retrying": "Reintentando"
+        },
+        "unavailable": {
+          "title": "Las reglas aún no están disponibles",
+          "text": "La base de datos todavía no tiene las preferencias de aviso."
+        }
+      },
+      "test": {
+        "title": "Enviar prueba",
+        "text": "Encola un aviso de prueba para comprobar un canal. Si el envío está apagado, se queda en cola.",
+        "send": {
+          "email": "Enviar prueba por email",
+          "telegram": "Enviar prueba por Telegram"
+        },
+        "sending": "Encolando prueba",
+        "done": {
+          "email": "Prueba por email en cola.",
+          "telegram": "Prueba por Telegram en cola."
+        },
+        "needsTelegram": "Vincula Telegram para poder probarlo.",
+        "errors": {
+          "forbidden": "No tienes permiso para esto.",
+          "unavailable": "Esta función aún no está activa en la base de datos.",
+          "error": "No se ha podido encolar la prueba. Inténtalo de nuevo."
+        }
+      }
+    },
     "audit": {
       "meta": {
         "title": "Auditoría"
@@ -2134,6 +2255,32 @@
           "dealId": "Elige una oportunidad de este contacto.",
           "forbidden": "No tienes permiso para registrar actividad aquí.",
           "error": "No se ha podido registrar. Inténtalo otra vez."
+        }
+      }
+    },
+    "settings": {
+      "meta": {
+        "title": "Ajustes"
+      },
+      "title": "Ajustes",
+      "lead": "Tu Telegram, tus avisos y la tasa con la que cobras.",
+      "loading": {
+        "telegram": "Cargando Telegram",
+        "rules": "Cargando los avisos",
+        "rates": "Cargando tu tasa"
+      },
+      "rates": {
+        "title": "Tu tasa",
+        "text": "La fijó Jose al darte de alta. Aquí solo se puede consultar.",
+        "project": "Por proyecto",
+        "recurring": "Por cuota recurrente",
+        "percent": "{value} %",
+        "none": "Todavía no tienes una tasa asignada.",
+        "error": {
+          "title": "No se ha podido cargar tu tasa",
+          "text": "No hemos podido leer tus datos.",
+          "retry": "Reintentar",
+          "retrying": "Reintentando"
         }
       }
     }
@@ -3328,6 +3475,62 @@
       "text": "Esta invitación es para un correo distinto del de tu sesión. Sal y entra con el correo invitado.",
       "action": "Salir",
       "acting": "Saliendo"
+    }
+  },
+  "outbox": {
+    "signature": "josecoded",
+    "roles": {
+      "admin": "administrador",
+      "closer": "closer",
+      "freelance": "freelance",
+      "client": "cliente"
+    },
+    "vias": {
+      "hiring": "contratación",
+      "freelance": "freelance",
+      "project": "proyecto"
+    },
+    "sources": {
+      "form": "formulario",
+      "nexo": "Nexo",
+      "manual": "alta manual",
+      "whatsapp": "WhatsApp",
+      "radar": "Radar"
+    },
+    "invitation": {
+      "subject": "{inviter} te invita a josecoded",
+      "unknownInviter": "Jose",
+      "intro": "{inviter} te ha invitado a josecoded como {role}.",
+      "action": "Acepta la invitación desde este enlace:",
+      "expires": "El enlace caduca el {date}.",
+      "ignore": "Si no esperabas este correo, puedes ignorarlo."
+    },
+    "leadNew": {
+      "subject": "Interesado nuevo: {name}",
+      "intro": "Ha llegado un interesado nuevo por la vía de {via}.",
+      "name": "Nombre: {name}",
+      "organization": "Organización: {organization}",
+      "source": "Origen: {source}",
+      "action": "Verlo en el panel:"
+    },
+    "test": {
+      "subject": "Prueba de aviso",
+      "body": "Este es un aviso de prueba de josecoded. Si lo estás leyendo, el canal funciona."
+    },
+    "totpReset": {
+      "subject": "Se ha restablecido tu verificación en dos pasos",
+      "intro": "Un administrador ha restablecido la verificación en dos pasos de tu cuenta de josecoded.",
+      "next": "La próxima vez que entres tendrás que configurarla de nuevo.",
+      "ignore": "Si no esperabas este cambio, escribe a hola@josecoded.com."
+    },
+    "notification": {
+      "action": "Abrir en el panel:"
+    },
+    "telegram": {
+      "linked": "Telegram vinculado. Desde ahora recibirás aquí tus avisos de josecoded.",
+      "invalid": "Ese código no es válido o ha caducado. Genera uno nuevo desde la web.",
+      "taken": "Este Telegram ya está vinculado a otra cuenta.",
+      "noCode": "Para vincular tu cuenta abre el enlace que te da la web."
     }
   }
 }

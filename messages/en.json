@@ -957,7 +957,10 @@
         "title": "Overview"
       },
       "title": "Overview",
-      "lead": "What needs your attention now and where to go next.",
+      "lead": "Admin panel.",
+      "emptyTitle": "Nothing to summarise yet",
+      "emptyText": "Counters and Omen status arrive with the next block. Meanwhile, check the leads.",
+      "emptyAction": "View leads",
       "cells": {
         "title": "Waiting for you",
         "unknown": "No data yet",
@@ -1803,6 +1806,124 @@
         }
       }
     },
+    "notifications": {
+      "meta": {
+        "title": "Notifications"
+      },
+      "title": "Notifications",
+      "lead": "Choose what alerts you and where. Every change is saved at once.",
+      "drainOff": {
+        "title": "Sending is switched off",
+        "text": "Email and Telegram alerts are queued but do not go out until sending is switched on. The bell works as usual."
+      },
+      "loading": {
+        "telegram": "Loading Telegram",
+        "rules": "Loading alert rules"
+      },
+      "telegram": {
+        "title": "Telegram",
+        "text": "Link your Telegram to get alerts on your phone.",
+        "linked": "Linked on {date}",
+        "unlinked": "Not linked",
+        "noBot": {
+          "title": "The bot is not set up",
+          "text": "To link Telegram the server needs the bot name (variable TELEGRAM_BOT_USERNAME). Until it is set, no code can be generated."
+        },
+        "generate": "Generate code",
+        "generating": "Generating code",
+        "codeTitle": "Your linking code",
+        "codeHelp": "Open the bot in Telegram and press Start, or send it this code. It expires at {time}.",
+        "open": "Open in Telegram",
+        "check": "Check linking",
+        "checking": "Checking",
+        "stillPending": "We have not received the code from Telegram yet.",
+        "unlink": "Unlink",
+        "unlinking": "Unlinking",
+        "confirmUnlink": "Unlink this Telegram? You will stop getting alerts there.",
+        "confirmYes": "Yes, unlink",
+        "confirmNo": "Cancel",
+        "done": {
+          "linked": "Telegram linked.",
+          "unlinked": "Telegram unlinked."
+        },
+        "errors": {
+          "forbidden": "You do not have permission for this.",
+          "unavailable": "This feature is not active in the database yet.",
+          "error": "It could not be completed. Try again."
+        },
+        "error": {
+          "title": "Telegram could not be loaded",
+          "text": "We could not read the linking status.",
+          "retry": "Retry",
+          "retrying": "Retrying"
+        },
+        "unavailable": {
+          "title": "Telegram is not available yet",
+          "text": "The database does not have the linking function yet."
+        }
+      },
+      "rules": {
+        "title": "What alerts you",
+        "lead": "Each event can alert you on Telegram, by email and on the bell in the app.",
+        "region": "Alert rules",
+        "caption": "Events and the channels that alert you",
+        "event": "Event",
+        "channels": {
+          "telegram": "Telegram",
+          "email": "Email",
+          "bell": "Bell"
+        },
+        "events": {
+          "lead_new": "New lead",
+          "lead_claimed": "Lead assigned to you",
+          "message_new": "New message",
+          "commission_accrued": "Commission accrued",
+          "payment_recorded": "Payment recorded",
+          "payment_overdue": "Payment overdue",
+          "payout_paid": "Payout paid",
+          "job_failed": "Job failed",
+          "omen_down": "Omen down",
+          "invitation_accepted": "Invitation accepted"
+        },
+        "idle": "No effect yet",
+        "telegramNote": "Telegram only sends if you have linked it.",
+        "saved": "Saved",
+        "errors": {
+          "forbidden": "You do not have permission to change this.",
+          "unavailable": "This feature is not active in the database yet.",
+          "error": "It could not be saved. Try again."
+        },
+        "error": {
+          "title": "The rules could not be loaded",
+          "text": "We could not read your alert preferences.",
+          "retry": "Retry",
+          "retrying": "Retrying"
+        },
+        "unavailable": {
+          "title": "The rules are not available yet",
+          "text": "The database does not have the alert preferences yet."
+        }
+      },
+      "test": {
+        "title": "Send a test",
+        "text": "Queues a test alert to check a channel. If sending is switched off, it stays in the queue.",
+        "send": {
+          "email": "Send test by email",
+          "telegram": "Send test by Telegram"
+        },
+        "sending": "Queueing test",
+        "done": {
+          "email": "Email test queued.",
+          "telegram": "Telegram test queued."
+        },
+        "needsTelegram": "Link Telegram to be able to test it.",
+        "errors": {
+          "forbidden": "You do not have permission for this.",
+          "unavailable": "This feature is not active in the database yet.",
+          "error": "The test could not be queued. Try again."
+        }
+      }
+    },
     "audit": {
       "meta": {
         "title": "Audit log"
@@ -2134,6 +2255,32 @@
           "dealId": "Choose a deal of this contact.",
           "forbidden": "You are not allowed to log activity here.",
           "error": "Could not log it. Try again."
+        }
+      }
+    },
+    "settings": {
+      "meta": {
+        "title": "Settings"
+      },
+      "title": "Settings",
+      "lead": "Your Telegram, your alerts and the rate you earn at.",
+      "loading": {
+        "telegram": "Loading Telegram",
+        "rules": "Loading alerts",
+        "rates": "Loading your rate"
+      },
+      "rates": {
+        "title": "Your rate",
+        "text": "Jose set it when he signed you up. It can only be read here.",
+        "project": "Per project",
+        "recurring": "Per recurring fee",
+        "percent": "{value} %",
+        "none": "You do not have a rate assigned yet.",
+        "error": {
+          "title": "Your rate could not be loaded",
+          "text": "We could not read your details.",
+          "retry": "Retry",
+          "retrying": "Retrying"
         }
       }
     }
@@ -3328,6 +3475,62 @@
       "text": "This invitation is for an email other than your session's. Sign out and sign in with the invited email.",
       "action": "Sign out",
       "acting": "Signing out"
+    }
+  },
+  "outbox": {
+    "signature": "josecoded",
+    "roles": {
+      "admin": "administrator",
+      "closer": "closer",
+      "freelance": "freelance",
+      "client": "client"
+    },
+    "vias": {
+      "hiring": "hiring",
+      "freelance": "freelance",
+      "project": "project"
+    },
+    "sources": {
+      "form": "form",
+      "nexo": "Nexo",
+      "manual": "manual entry",
+      "whatsapp": "WhatsApp",
+      "radar": "Radar"
+    },
+    "invitation": {
+      "subject": "{inviter} invites you to josecoded",
+      "unknownInviter": "Jose",
+      "intro": "{inviter} has invited you to josecoded as {role}.",
+      "action": "Accept the invitation from this link:",
+      "expires": "The link expires on {date}.",
+      "ignore": "If you were not expecting this email, you can ignore it."
+    },
+    "leadNew": {
+      "subject": "New lead: {name}",
+      "intro": "A new lead has arrived through the {via} route.",
+      "name": "Name: {name}",
+      "organization": "Organisation: {organization}",
+      "source": "Source: {source}",
+      "action": "See it in the panel:"
+    },
+    "test": {
+      "subject": "Test alert",
+      "body": "This is a josecoded test alert. If you are reading it, the channel works."
+    },
+    "totpReset": {
+      "subject": "Your two-step verification has been reset",
+      "intro": "An administrator has reset the two-step verification of your josecoded account.",
+      "next": "The next time you sign in you will have to set it up again.",
+      "ignore": "If you were not expecting this change, write to hola@josecoded.com."
+    },
+    "notification": {
+      "action": "Open in the panel:"
+    },
+    "telegram": {
+      "linked": "Telegram linked. From now on your josecoded alerts will arrive here.",
+      "invalid": "That code is not valid or has expired. Generate a new one from the web.",
+      "taken": "This Telegram is already linked to another account.",
+      "noCode": "To link your account open the link the web gives you."
     }
   }
 }

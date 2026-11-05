@@ -4,6 +4,7 @@ const port = Number(process.env.E2E_PORT ?? 3100);
 const mockPort = Number(process.env.MOCK_BACKEND_PORT ?? 3199);
 const mockOrigin = `http://localhost:${mockPort}`;
 const executablePath = process.env.PLAYWRIGHT_CHROMIUM_PATH;
+const drainLive = process.env.E2E_OUTBOX_DRAIN === "on";
 
 export default defineConfig({
   testDir: "tests/e2e",
@@ -44,6 +45,14 @@ export default defineConfig({
         NEXT_PUBLIC_TURNSTILE_SITE_KEY: "1x00000000000000000000AA",
         TURNSTILE_SCRIPT_URL: `${mockOrigin}/turnstile/api.js`,
         TURNSTILE_VERIFY_URL: `${mockOrigin}/turnstile/siteverify`,
+        OUTBOX_DRAIN: drainLive ? "on" : "off",
+        TELEGRAM_BOT_USERNAME: drainLive ? "" : "josecoded_test_bot",
+        CRON_SECRET: "test-cron-secret",
+        TELEGRAM_WEBHOOK_SECRET: "test-telegram-webhook-secret",
+        TELEGRAM_BOT_TOKEN: "123456:test-bot-token",
+        RESEND_API_KEY: "re_test_key",
+        RESEND_API_URL: `${mockOrigin}/resend`,
+        TELEGRAM_API_URL: `${mockOrigin}/telegram`,
       },
     },
   ],

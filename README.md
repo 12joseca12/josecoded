@@ -30,6 +30,7 @@ pnpm dev
 | `pnpm typecheck`         | `tsc --noEmit`.                                                                                      |
 | `pnpm test`              | Vitest sobre la lógica (`src/**/*.test.ts`).                                                         |
 | `pnpm e2e`               | Playwright de humo con axe bloqueante contra `next start` (requiere `pnpm build`).                   |
+| `pnpm e2e:outbox`        | E2E de los avisos con el drenador encendido (fakes de Resend y Telegram en el mock).                 |
 | `pnpm i18n:keys`         | Regenera `src/i18n/keys.generated.ts` desde `messages/es.json`.                                      |
 | `pnpm i18n:check`        | Falla si falta o sobra una clave entre idiomas, hay marcadores `{{DATO` o los tipos están viejos.    |
 
@@ -97,6 +98,26 @@ Código de 6 dígitos por correo (sin enlace mágico) y TOTP obligatorio para `a
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY`       | Ya existente. El login manda el token a Supabase Auth (`captchaToken`); allí va la clave secreta. |
 
 Bindings `AUTH_LIMITER` (5 por minuto y clave) y `AUTH_EMAIL_LIMITER` (20 por minuto y clave), ids `1003` a `1006`: fuera de local, si faltan, el acceso se deniega y se registra `limiter_missing`. Los ajustes de Supabase Auth que hacen falta están en `docs/plan/auth-config.md`. El inicio con Google está detrás de `features.googleSignIn` (apagado).
+
+## Avisos por email y Telegram (outbox)
+
+Los avisos se encolan en `private.outbox` (migración M26) y un drenador del servidor de Next los envía: ruta `POST /api/cron/outbox`, disparada por el cron de Cloudflare (`triggers.crons` de `wrangler.jsonc`, cada 2 minutos, vía `cloudflare/worker.js`, que añade el manejador `scheduled` al Worker de OpenNext). Reclama hasta 10 filas con `outbox_claim`, envía por Resend o Telegram y marca cada una con `outbox_mark`. Un fallo transitorio (red, 429, 5xx) se reintenta una vez en la misma ejecución; un fallo que persiste cuenta como intento y la fila vuelve a la cola, hasta 5 intentos, y entonces queda en `failed` con `last_error`. Plantillas: `invitation`, `lead_new`, `notification`, `test`, `totp_reset` (textos en `messages/*.json`, espacio `outbox`).
+
+**Está apagado por defecto** (decisión de Jose, respuesta 6 del plan del admin, y 10.7): sin `OUTBOX_DRAIN=on` la ruta responde `{"status":"off"}` y no envía nada, y el manejador `scheduled` ni siquiera la llama. «Enviar prueba» en `/admin/notificaciones` solo encola. Encenderlo dispara `josecoded-dev` (decisión 10.7, punto c) y necesita el OK de Jose.
+
+| Variable (secreto del Worker) | Para qué                                                                                                         |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `OUTBOX_DRAIN`                | `on` enciende el drenador y las respuestas del bot. Cualquier otro valor, o ausente, lo deja apagado.            |
+| `CRON_SECRET`                 | Valor de la cabecera `x-cron-secret` que exige la ruta del cron. Sin él la ruta responde 401 siempre.            |
+| `RESEND_API_KEY`              | Clave de Resend para enviar email.                                                                               |
+| `RESEND_FROM`                 | Remitente verificado en Resend, p. ej. `josecoded <avisos@dominio>`. Sin él no se envía email.                   |
+| `TELEGRAM_BOT_TOKEN`          | Token del bot (BotFather) para enviar mensajes.                                                                  |
+| `TELEGRAM_BOT_USERNAME`       | Nombre del bot sin `@`. La tarjeta de `/admin/notificaciones` lo usa para el enlace `t.me/<bot>?start=<código>`. |
+| `TELEGRAM_WEBHOOK_SECRET`     | Valor de `secret_token` en `setWebhook`; la ruta compara la cabecera `x-telegram-bot-api-secret-token`.          |
+
+Webhook del bot: `POST /api/telegram/webhook` (registrar con `setWebhook` apuntando a `<origen>/api/telegram/webhook` y el mismo `secret_token`). Solo atiende `/start <código>` en chats privados y llama a `telegram_confirm_link`; lo demás responde 200 y se ignora. Vincular funciona aunque el drenador esté apagado; la respuesta del bot en el chat solo sale con `OUTBOX_DRAIN=on`.
+
+Pruebas: los tests unitarios usan fakes de `fetch`; el E2E usa los fakes de Resend (`/resend/emails`) y Telegram (`/telegram/bot<token>/sendMessage`) del mock (`scripts/mock/notifications.js`), que solo se aceptan con `NEXT_PUBLIC_SUPABASE_URL` en loopback (`RESEND_API_URL`, `TELEGRAM_API_URL`). `pnpm e2e` cubre el modo apagado; `pnpm e2e:outbox` arranca el servidor con `OUTBOX_DRAIN=on` y cubre el drenado, los reintentos, las plantillas y las respuestas del bot.
 
 ## Historia
 

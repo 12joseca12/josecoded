@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "josecoded-preview",
-  "main": ".open-next/worker.js",
+  "main": "cloudflare/worker.js",
   "compatibility_date": "2026-10-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "workers_dev": false,
@@ -12,6 +12,9 @@
   },
   "observability": {
     "enabled": true,
+  },
+  "triggers": {
+    "crons": ["*/2 * * * *"],
   },
   "vars": {
     "NEXT_PUBLIC_SUPABASE_URL": "https://echlwywbucgbhwpncviy.supabase.co",
@@ -31,6 +34,9 @@
     "preview": {
       "name": "josecoded-preview",
       "workers_dev": true,
+      "triggers": {
+        "crons": ["*/2 * * * *"],
+      },
       "preview_urls": true,
       "assets": {
         "directory": ".open-next/assets",
