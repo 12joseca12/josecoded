@@ -220,7 +220,7 @@ test.describe("preselection", () => {
     });
   }
 
-  test("the chosen offer and extras are kept in the page path", async ({ page }) => {
+  test("the chosen offer and extras travel as lead fields", async ({ page }) => {
     await open(page, "?via=project&offer=web-negocio&extras=seo,payments");
     const section = page.locator("#formulario");
     await section.getByLabel(form.nameLabel).fill("Ada");
@@ -230,8 +230,10 @@ test.describe("preselection", () => {
     await submit(page).click();
     await expect(page.getByRole("heading", { name: form.sent.title })).toBeVisible();
     const [lead] = (await calls(page)).rpc;
-    expect(lead?.args.p_via).toBe("pack");
-    expect(lead?.args.p_page_path).toBe("/es/contacto?offer=web-negocio&extras=payments,seo");
+    expect(lead?.args.p_via).toBe("project");
+    expect(lead?.args.p_page_path).toBe("/es/contacto");
+    expect(lead?.args.p_offer).toBe("web-negocio");
+    expect(lead?.args.p_extras).toEqual(["payments", "seo"]);
   });
 });
 
