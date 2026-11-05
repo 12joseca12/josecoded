@@ -1,6 +1,6 @@
-import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
+import AxeBuilder from "./support/axe";
 import { mockOrigin } from "./support/staff";
 
 const mode = process.env.MOCK_CATALOG ?? "empty";

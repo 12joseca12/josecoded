@@ -1,8 +1,9 @@
 import { createHmac } from "node:crypto";
 import { readFileSync } from "node:fs";
 
-import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
+
+import AxeBuilder from "./support/axe";
 
 interface FormMessages {
   next: { title: string; noCommitment: string; steps: Record<string, Record<string, string>> };

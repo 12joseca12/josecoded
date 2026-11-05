@@ -1,5 +1,6 @@
-import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
+
+import AxeBuilder from "./support/axe";
 
 interface Node {
   "@type": string;
