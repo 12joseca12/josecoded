@@ -2015,7 +2015,8 @@
       "more": "Más",
       "moreTitle": "Más secciones",
       "close": "Cerrar",
-      "switch": "Ir a administración"
+      "switch": "Ir a administración",
+      "start": "Empezar"
     },
     "overview": {
       "meta": {
@@ -2407,6 +2408,49 @@
       "locales": {
         "es": "Español",
         "en": "Inglés"
+      }
+    },
+    "start": {
+      "meta": {
+        "title": "Empezar"
+      },
+      "title": "Empezar",
+      "lead": "Cinco pasos para dejar tu cuenta lista y hacer tu primera gestión.",
+      "stepsLabel": "Pasos para empezar",
+      "steps": {
+        "telegram": {
+          "title": "Vincula Telegram",
+          "text": "Recibe un aviso cuando te asignen un interesado o venza un paso.",
+          "action": "Vincular Telegram"
+        },
+        "rates": {
+          "title": "Mira tus comisiones",
+          "text": "Consulta qué porcentaje te corresponde en proyectos y en recurrentes.",
+          "action": "Ver mis comisiones"
+        },
+        "leads": {
+          "title": "Reclama tu primer interesado",
+          "text": "La bandeja común enseña lo justo para decidir. Los datos completos llegan al reclamarlo.",
+          "action": "Abrir interesados"
+        },
+        "contact": {
+          "title": "Añade un contacto",
+          "text": "Guarda a quien ya conoces para llevar su seguimiento en un solo sitio.",
+          "action": "Abrir contactos"
+        },
+        "nextStep": {
+          "title": "Fija un siguiente paso",
+          "text": "Cada contacto vivo necesita una acción con fecha. Así el resumen te dice qué hacer hoy.",
+          "action": "Ver pasos pendientes"
+        }
+      },
+      "rules": {
+        "title": "Qué no prometer",
+        "lead": "Di solo lo que es cierto hoy.",
+        "response": "Plazo de respuesta: {time}. No prometas uno más corto.",
+        "price": "Precios: si un precio está en revisión, no des cifras. Di que se confirma por escrito antes de empezar.",
+        "invoices": "Facturas: no se emiten desde el CRM. No prometas facturas con IVA todavía.",
+        "channels": "Canales: no ofrezcas chat en vivo ni llamadas que no estén acordadas con Jose."
       }
     }
   },

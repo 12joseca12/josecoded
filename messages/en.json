@@ -2015,7 +2015,8 @@
       "more": "More",
       "moreTitle": "More sections",
       "close": "Close",
-      "switch": "Go to admin"
+      "switch": "Go to admin",
+      "start": "Get started"
     },
     "overview": {
       "meta": {
@@ -2407,6 +2408,49 @@
       "locales": {
         "es": "Spanish",
         "en": "English"
+      }
+    },
+    "start": {
+      "meta": {
+        "title": "Get started"
+      },
+      "title": "Get started",
+      "lead": "Five steps to get your account ready and make your first move.",
+      "stepsLabel": "Steps to get started",
+      "steps": {
+        "telegram": {
+          "title": "Link Telegram",
+          "text": "Get an alert when a lead is assigned to you or a step falls due.",
+          "action": "Link Telegram"
+        },
+        "rates": {
+          "title": "Check your commissions",
+          "text": "See which percentage applies to you on projects and on recurring work.",
+          "action": "See my commissions"
+        },
+        "leads": {
+          "title": "Claim your first lead",
+          "text": "The shared inbox shows just enough to decide. The full details arrive once you claim it.",
+          "action": "Open leads"
+        },
+        "contact": {
+          "title": "Add a contact",
+          "text": "Save someone you already know so their follow-up lives in one place.",
+          "action": "Open contacts"
+        },
+        "nextStep": {
+          "title": "Set a next step",
+          "text": "Every live contact needs an action with a date. That is how the overview tells you what to do today.",
+          "action": "See pending steps"
+        }
+      },
+      "rules": {
+        "title": "What not to promise",
+        "lead": "Say only what is true today.",
+        "response": "Response time: {time}. Do not promise a shorter one.",
+        "price": "Prices: if a price is under review, give no figures. Say it is confirmed in writing before starting.",
+        "invoices": "Invoices: they are not issued from the CRM. Do not promise invoices with VAT yet.",
+        "channels": "Channels: do not offer live chat or calls that Jose has not agreed to."
       }
     }
   },
