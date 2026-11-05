@@ -1011,6 +1011,7 @@ export type Database = {
           id: string
           kind: Database["public"]["Enums"]["schedule_kind"]
           label: string
+          overdue_notified_at: string | null
           percent: number | null
           sort: number
           status: Database["public"]["Enums"]["schedule_status"]
@@ -1023,6 +1024,7 @@ export type Database = {
           id?: string
           kind?: Database["public"]["Enums"]["schedule_kind"]
           label: string
+          overdue_notified_at?: string | null
           percent?: number | null
           sort?: number
           status?: Database["public"]["Enums"]["schedule_status"]
@@ -1035,6 +1037,7 @@ export type Database = {
           id?: string
           kind?: Database["public"]["Enums"]["schedule_kind"]
           label?: string
+          overdue_notified_at?: string | null
           percent?: number | null
           sort?: number
           status?: Database["public"]["Enums"]["schedule_status"]
@@ -1724,6 +1727,10 @@ export type Database = {
       outbox_mark: {
         Args: { p_error?: string; p_id: number; p_ok: boolean }
         Returns: undefined
+      }
+      payments_notify_overdue: {
+        Args: never
+        Returns: number
       }
       read_invitation: {
         Args: { p_token: string }

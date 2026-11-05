@@ -56,11 +56,14 @@ Variables públicas del entorno `preview` (`NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_
 
 Secretos del Worker (nunca en el repo; `wrangler secret put <NOMBRE> --env preview`):
 
-| Secreto                     | Para qué                                                       |
-| --------------------------- | -------------------------------------------------------------- |
-| `SUPABASE_SERVICE_ROLE_KEY` | Llamar a `submit_lead` (solo servidor).                        |
-| `TURNSTILE_SECRET_KEY`      | Verificar el token de Turnstile.                               |
-| `FORM_IP_HASH_SECRET`       | Clave del HMAC de la IP. Cambiarla reinicia las cuotas por IP. |
+| Secreto                     | Para qué                                                                                                  |
+| --------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `SUPABASE_SERVICE_ROLE_KEY` | Llamar a `submit_lead` (solo servidor).                                                                   |
+| `TURNSTILE_SECRET_KEY`      | Verificar el token de Turnstile.                                                                          |
+| `FORM_IP_HASH_SECRET`       | Clave del HMAC de la IP. Cambiarla reinicia las cuotas por IP.                                            |
+| `CRON_SECRET`               | Cabecera `x-cron-secret` de `/api/cron/money` (avisos de cobros vencidos). Sin ella la ruta responde 401. |
+
+`/api/cron/money` solo crea avisos (`notifications` y su fila en `private.outbox`); no envía nada. Mientras el drenador esté apagado (`OUTBOX_DRAIN=off`, decisión 10.7) los correos quedan en cola y los avisos se ven dentro del CRM.
 
 Si falta alguno, el formulario muestra «no disponible» con el correo de cada vía.
 

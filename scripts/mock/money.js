@@ -1020,3 +1020,10 @@ route("POST", "/rest/v1/rpc/set_payout_invoice", async ({ request, response }) =
   payout.closer_invoice_path = body.p_path;
   return sendEmpty(response);
 });
+
+route("POST", "/rest/v1/rpc/payments_notify_overdue", ({ request, response }) => {
+  if (request.headers.authorization !== `Bearer ${serviceKey}`) {
+    return fail(response, 401, "PGRST301", "JWT invalid");
+  }
+  return send(response, 200, JSON.stringify(1));
+});
