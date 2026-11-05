@@ -29,18 +29,18 @@ async function readNodes(page: Page): Promise<Node[]> {
 }
 
 const pages = [
-  { name: "hub", path: "/es/servicios", crumbs: ["Inicio", "Servicios"], faq: 4 },
+  { name: "hub", path: "/es/servicios", crumbs: ["Inicio", "Servicios"], faq: 7 },
   {
     name: "freelance",
     path: "/es/servicios/freelance",
     crumbs: ["Inicio", "Servicios", "Freelance"],
-    faq: 4,
+    faq: 6,
   },
   {
     name: "a-medida",
     path: "/es/servicios/a-medida",
     crumbs: ["Inicio", "Servicios", "A medida"],
-    faq: 6,
+    faq: 10,
   },
 ] as const;
 

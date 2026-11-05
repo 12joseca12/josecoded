@@ -46,8 +46,20 @@ interface Messages {
       region: string;
       empty: { title: string };
       error: { title: string; retry: string };
-      via: { none: string };
-      status: { new: string };
+      via: { none: string; project: string };
+      status: { new: string; converted: string; discarded: string };
+      unassigned: string;
+      actions: {
+        assignLabel: string;
+        assignPlaceholder: string;
+        assign: string;
+        discardOpen: string;
+        discardReasonLabel: string;
+        discardSubmit: string;
+        reasonPrefix: string;
+        done: { assign: string; discard: string };
+        errors: { assignee: string; reason: string; stale: string };
+      };
     };
   };
   errors: { notFound: { title: string } };
@@ -65,6 +77,7 @@ interface AuthCalls {
   factorVerify: { code: string }[];
   logout: { scope: string | null }[];
   leads: { authenticated: boolean; level: string | null }[];
+  rpc: { name: string; args: Record<string, string>; level: string | null }[];
 }
 
 test.describe.configure({ mode: "serial" });
@@ -369,6 +382,95 @@ test("the leads list shows the newest first and passes axe", async ({ page }) =>
   await expectClean(page);
   const calls = await authCalls(page);
   expect(calls.leads.at(-1)).toEqual({ authenticated: true, level: "aal2" });
+});
+
+async function openLeads(page: Page) {
+  await signInAdmin(page, "?next=%2Fes%2Fadmin%2Finteresados");
+  await expect(page).toHaveURL(/\/es\/admin\/interesados$/);
+  await expect(page.getByRole("table")).toBeVisible();
+}
+
+function leadRow(page: Page, name: string) {
+  return page.getByRole("row").filter({ hasText: name });
+}
+
+test("the leads list shows the offer, who holds each lead and the actions", async ({ page }) => {
+  await openLeads(page);
+  const cara = leadRow(page, "Cara Pack");
+  await expect(cara).toContainText(es.admin.leads.via.project);
+  await expect(cara).toContainText("web-negocio");
+  await expect(cara).toContainText(es.admin.leads.unassigned);
+  await expect(leadRow(page, "Hilda Hiring")).toContainText("Cleo Closer");
+  const select = cara.getByLabel(es.admin.leads.actions.assignLabel);
+  await expect(select.getByRole("option")).toHaveText([
+    es.admin.leads.actions.assignPlaceholder,
+    "Cleo Closer",
+    "Dani Closer",
+  ]);
+  await expect(leadRow(page, "Nico Nexo")).toContainText(
+    `${es.admin.leads.actions.reasonPrefix} Duplicado`,
+  );
+  await expect(leadRow(page, "Nico Nexo").getByRole("button")).toHaveCount(0);
+  await expectClean(page);
+});
+
+test("an admin assigns a lead to a closer", async ({ page }) => {
+  await openLeads(page);
+  const cara = leadRow(page, "Cara Pack");
+  await cara.getByLabel(es.admin.leads.actions.assignLabel).selectOption({ label: "Dani Closer" });
+  await cara.getByRole("button", { name: es.admin.leads.actions.assign }).click();
+  await expect(cara).toContainText(es.admin.leads.status.converted);
+  await expect(cara).toContainText("Dani Closer");
+  await expect(cara.getByRole("status")).toHaveText(es.admin.leads.actions.done.assign);
+  await expect(cara.getByText(es.admin.leads.actions.discardOpen)).toHaveCount(0);
+  const { rpc } = await authCalls(page);
+  expect(rpc).toEqual([
+    {
+      name: "assign_lead",
+      args: {
+        p_lead_id: "10000000-0000-4000-8000-000000000003",
+        p_user_id: "00000000-0000-4000-8000-0000000000c2",
+      },
+      level: "aal2",
+    },
+  ]);
+});
+
+test("assigning needs a closer and reports a lead that already changed", async ({
+  page,
+  request,
+}) => {
+  await openLeads(page);
+  const cara = leadRow(page, "Cara Pack");
+  await cara.getByRole("button", { name: es.admin.leads.actions.assign }).click();
+  await expect(cara.getByRole("alert")).toHaveText(es.admin.leads.actions.errors.assignee);
+  expect((await authCalls(page)).rpc).toHaveLength(0);
+
+  await request.post(`${mock}/__auth/rpc-error?tag=${tag}`, {
+    data: { error: { code: "P0001", message: "lead_already_claimed" } },
+  });
+  await cara.getByLabel(es.admin.leads.actions.assignLabel).selectOption({ label: "Cleo Closer" });
+  await cara.getByRole("button", { name: es.admin.leads.actions.assign }).click();
+  await expect(cara.getByRole("alert")).toHaveText(es.admin.leads.actions.errors.stale);
+  await expect(cara).toContainText(es.admin.leads.status.new);
+});
+
+test("an admin discards a lead with a reason", async ({ page }) => {
+  await openLeads(page);
+  const cara = leadRow(page, "Cara Pack");
+  await cara.getByText(es.admin.leads.actions.discardOpen).click();
+  await cara.getByRole("button", { name: es.admin.leads.actions.discardSubmit }).click();
+  await expect(cara.getByRole("alert")).toHaveText(es.admin.leads.actions.errors.reason);
+  expect((await authCalls(page)).rpc).toHaveLength(0);
+
+  await cara.getByLabel(es.admin.leads.actions.discardReasonLabel).fill("Fuera de alcance");
+  await cara.getByRole("button", { name: es.admin.leads.actions.discardSubmit }).click();
+  await expect(cara).toContainText(es.admin.leads.status.discarded);
+  await expect(cara).toContainText(`${es.admin.leads.actions.reasonPrefix} Fuera de alcance`);
+  const { rpc } = await authCalls(page);
+  expect(rpc.map((call) => [call.name, call.args.p_reason])).toEqual([
+    ["discard_lead", "Fuera de alcance"],
+  ]);
 });
 
 test("the leads list has empty and error states", async ({ page, request }) => {

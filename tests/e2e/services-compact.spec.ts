@@ -120,6 +120,14 @@ for (const entry of chatPages) {
       await expect(chat(page).getByLabel(es.nexoChat.inputLabel ?? "")).toHaveValue("");
     });
 
+    test("answers an objection added to the FAQ", async ({ page }) => {
+      await page.goto(entry.path);
+      await ask(page, "¿Necesitas que firme un NDA?");
+      await expect(log(page)).toContainText(
+        (entry.name === "hub" ? es.services.faq.hub.a5 : es.services.faq.freelance.a5) ?? "",
+      );
+    });
+
     test("hands off with the form and chat when nothing matches", async ({ page }) => {
       await page.goto(entry.path);
       await ask(page, "kubernetes");

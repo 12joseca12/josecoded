@@ -1,7 +1,7 @@
 import type { ContactSubmission } from "@/types/contact-form";
 import type { Database } from "@/types/database";
 
-import { parseSelection, selectionPath } from "./selection";
+import { parseSelection } from "./selection";
 import { viaByWay } from "./ways";
 
 export type SubmitLeadArgs = Database["public"]["Functions"]["submit_lead"]["Args"];
@@ -32,7 +32,7 @@ export function buildLeadArgs(input: ContactSubmission, ipHash: string): SubmitL
   const company = input.company?.trim();
   const selection =
     input.way === "project" ? parseSelection({ offer: input.offer, extras: input.extras }) : null;
-  const basePath = `/${input.locale}/contacto`;
+  const answers = input.way === "contratacion" ? undefined : input.answers;
   return {
     p_source: "form",
     p_via: viaByWay[input.way],
@@ -40,9 +40,12 @@ export function buildLeadArgs(input: ContactSubmission, ipHash: string): SubmitL
     p_email: input.email,
     p_organization: company === "" ? undefined : company,
     p_message: input.message,
-    p_page_path: selection ? `${basePath}${selectionPath(selection)}` : basePath,
+    p_page_path: `/${input.locale}/contacto`,
     p_locale: input.locale,
     p_consent: input.consent,
     p_ip_hash: ipHash,
+    p_offer: selection && selection.offers.length > 0 ? selection.offers.join(",") : undefined,
+    p_extras: selection && selection.extras.length > 0 ? selection.extras : undefined,
+    p_offer_answers: answers,
   };
 }
