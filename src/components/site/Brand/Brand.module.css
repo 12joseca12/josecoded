@@ -48,3 +48,9 @@
     opacity: 0;
   }
 }
+
+@media (max-width: 22.5rem) {
+  .word {
+    display: none;
+  }
+}

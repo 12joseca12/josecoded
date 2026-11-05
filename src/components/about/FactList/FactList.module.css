@@ -22,7 +22,7 @@
 
 .list[data-variant="numbered"] .item::before {
   content: counter(fact, decimal-leading-zero);
-  color: var(--coral-text);
+  color: var(--coral-deep);
   font-size: var(--fs-base);
   font-weight: var(--fw-bold);
   letter-spacing: var(--tracking-wide);

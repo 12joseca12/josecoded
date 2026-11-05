@@ -23,7 +23,7 @@
 
 .step::before {
   content: counter(step, decimal-leading-zero);
-  color: var(--coral-text);
+  color: var(--coral-deep);
   font-weight: var(--fw-bold);
   letter-spacing: var(--tracking-wide);
 }

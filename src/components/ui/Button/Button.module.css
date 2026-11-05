@@ -81,6 +81,12 @@
   font-size: var(--fs-m);
 }
 
+@media (pointer: coarse) {
+  .button[data-size="sm"] {
+    min-height: 2.75rem;
+  }
+}
+
 .button::before {
   content: "";
   position: absolute;

@@ -3,9 +3,5 @@ import { defaultLocale } from "@/i18n/config";
 import { getErrorCopy } from "@/i18n/errors";
 
 export default function NotFound() {
-  return (
-    <>
-      <ErrorPage variant="notFound" copy={getErrorCopy(defaultLocale)} />
-    </>
-  );
+  return <ErrorPage variant="notFound" copy={getErrorCopy(defaultLocale)} />;
 }
