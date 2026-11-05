@@ -9,11 +9,14 @@ import {
   type ReactNode,
 } from "react";
 
+import { preloadLater } from "@/lib/preload-later";
 import type { ButtonSize, ButtonVariant } from "@/types/ui";
 
 import { VisuallyHidden } from "../VisuallyHidden/VisuallyHidden";
-import { spawnBubbles } from "./bubbles";
 import styles from "./Button.module.css";
+
+const loadBubbles = () => import("./bubbles");
+preloadLater(loadBubbles);
 
 interface ButtonBaseProps {
   variant?: ButtonVariant;
@@ -58,7 +61,11 @@ function originOf(event: MouseEvent<HTMLElement>) {
 function emit(element: HTMLElement, origin: typeof centre) {
   if (element.matches(disabledSelector)) return;
   const burst = element.querySelector<HTMLElement>(":scope > [data-burst]");
-  if (burst) spawnBubbles(burst, bubbleClass, origin);
+  if (burst) {
+    void loadBubbles().then((module) => {
+      module.spawnBubbles(burst, bubbleClass, origin);
+    });
+  }
 }
 
 function markPressed(event: KeyboardEvent<HTMLElement>) {

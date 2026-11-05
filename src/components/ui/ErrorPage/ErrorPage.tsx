@@ -1,7 +1,3 @@
-"use client";
-
-import { useEffect, useRef } from "react";
-
 import { defaultLocale, type Locale } from "@/i18n/config";
 import { errorCodes, type ErrorCopy, type ErrorVariant } from "@/types/errors";
 import type { HeadingLevel } from "@/types/ui";
@@ -10,6 +6,7 @@ import { Button } from "../Button/Button";
 import { Card } from "../Card/Card";
 import { Heading } from "../Heading/Heading";
 import { Link } from "../Link/Link";
+import { ErrorFocusSection } from "./ErrorFocusSection";
 import styles from "./ErrorPage.module.css";
 
 export interface ErrorPageProps {
@@ -33,19 +30,16 @@ export function ErrorPage({
   headingLevel = 1,
   focusOnLoad = true,
 }: ErrorPageProps) {
-  const root = useRef<HTMLElement>(null);
   const { title, text } = copy[variant];
   const { actions } = copy;
 
-  useEffect(() => {
-    if (!focusOnLoad) return;
-    const heading = root.current?.querySelector<HTMLElement>("h1, h2");
-    heading?.setAttribute("tabindex", "-1");
-    heading?.focus({ preventScroll: true });
-  }, [focusOnLoad]);
-
   return (
-    <section ref={root} className={styles.page} data-variant={variant} data-layout={layout}>
+    <ErrorFocusSection
+      className={styles.page}
+      variant={variant}
+      layout={layout}
+      focusOnLoad={focusOnLoad}
+    >
       <Card tone="glass" size="lg" elevation="float" className={styles.card}>
         <p className={styles.code} aria-hidden="true">
           {errorCodes[variant]}
@@ -76,6 +70,6 @@ export function ErrorPage({
           ) : null}
         </div>
       </Card>
-    </section>
+    </ErrorFocusSection>
   );
 }

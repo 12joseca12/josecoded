@@ -48,9 +48,9 @@ test("the switcher changes the previewed state and the page has no axe violation
 test("idle floats by default", async ({ page }) => {
   await page.goto("/es/dev/nexo");
   await page.getByTestId("preview").locator("svg").waitFor();
+  await expect.poll(() => floatTransform(page)).not.toBe("none");
   const first = await floatTransform(page);
-  await page.waitForTimeout(700);
-  expect(await floatTransform(page)).not.toBe(first);
+  await expect.poll(() => floatTransform(page)).not.toBe(first);
 });
 
 test("reduced motion keeps a static pose", async ({ page }) => {
