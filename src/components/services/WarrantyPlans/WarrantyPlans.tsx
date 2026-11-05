@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/Card/Card";
 import { Heading } from "@/components/ui/Heading/Heading";
+import { PriceState } from "@/components/ui/PriceState/PriceState";
 import type { MaintenancePlan } from "@/types/services";
 
 import styles from "./WarrantyPlans.module.css";
@@ -7,7 +8,7 @@ import styles from "./WarrantyPlans.module.css";
 interface WarrantyPlansProps {
   warranty: { title: string; text: string };
   plans: { title: string; lead: string; items: MaintenancePlan[] };
-  price: { from: string; amount: string; unit: string; provisional: string };
+  price: { from: string; amount: string; unit: string; review: string; provisional: boolean };
   note: string;
 }
 
@@ -34,13 +35,17 @@ export function WarrantyPlans({ warranty, plans, price, note }: WarrantyPlansPro
                 </Heading>
                 <p className={styles.hours}>{plan.hours}</p>
                 <p className={styles.text}>{plan.text}</p>
-                <p className={styles.price}>
-                  <span className={styles.unit}>{price.from}</span>
-                  <strong>{price.amount}</strong>
-                  <span className={styles.unit}>{price.unit}</span>
-                  <span className={styles.tag} data-provisional="">
-                    {price.provisional}
-                  </span>
+                <p>
+                  {price.provisional ? (
+                    <PriceState variant="review" label={price.review} />
+                  ) : (
+                    <PriceState
+                      variant="final"
+                      prefix={price.from}
+                      amount={price.amount}
+                      unit={price.unit}
+                    />
+                  )}
                 </p>
               </Card>
             </li>

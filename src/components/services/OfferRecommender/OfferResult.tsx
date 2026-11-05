@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button/Button";
 import { Card } from "@/components/ui/Card/Card";
 import { Heading } from "@/components/ui/Heading/Heading";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
+import { PriceState } from "@/components/ui/PriceState/PriceState";
 import { buildContactHref } from "@/lib/contact/ways";
 import { type ExtraSlug, offerOf, priceOf } from "@/lib/services/offers";
 import { type ProjectRecommendation, recommend, selectedExtras } from "@/lib/services/recommender";
@@ -180,15 +181,23 @@ function ProjectResult({
           aria-atomic="true"
           data-testid="result-price"
         >
-          <span className={styles.unit}>{result.from}</span>
-          <strong>{price.once}</strong>
-          <span className={styles.unit}>{result.unit}</span>
           {price.provisional ? (
-            <span className={styles.tag} data-provisional="">
-              {result.provisional}
-            </span>
-          ) : null}
-          {hasMonthly ? (
+            <PriceState
+              variant="review"
+              size="lg"
+              label={copy.priceReview.label}
+              note={copy.priceReview.note}
+            />
+          ) : (
+            <PriceState
+              variant="final"
+              size="lg"
+              prefix={result.from}
+              amount={price.once}
+              unit={result.unit}
+            />
+          )}
+          {hasMonthly && !price.provisional ? (
             <span className={styles.monthly}>
               {fill(result.monthly, { amount: price.monthly })}
             </span>

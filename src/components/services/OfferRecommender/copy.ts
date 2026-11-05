@@ -27,6 +27,7 @@ export interface RecommenderCopy {
   required: string;
   multipleHint: string;
   preview: string;
+  priceReview: { label: string; note: string };
   questions: Record<
     QuestionId,
     { legend: string; options: Record<string, { label: string; hint: string }> }
@@ -39,7 +40,6 @@ export interface RecommenderCopy {
     | "title"
     | "from"
     | "unit"
-    | "provisional"
     | "monthly"
     | "weeks"
     | "whyTitle"
@@ -73,7 +73,6 @@ const resultKeys = [
   "title",
   "from",
   "unit",
-  "provisional",
   "monthly",
   "weeks",
   "whyTitle",
@@ -131,6 +130,7 @@ export function buildRecommenderCopy(t: Translate): RecommenderCopy {
     required: t(key("recommender.required")),
     multipleHint: t(key("recommender.multipleHint")),
     preview: t(key("recommender.preview")),
+    priceReview: { label: t("services.price.review"), note: t("services.price.reviewNote") },
     questions: Object.fromEntries(
       questions.map((question) => [
         question.id,
