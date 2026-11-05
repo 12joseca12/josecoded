@@ -2507,6 +2507,109 @@
           "retrying": "Reintentando"
         }
       }
+    },
+    "commissions": {
+      "meta": {
+        "title": "Comisiones"
+      },
+      "title": "Comisiones",
+      "leadAdmin": "Todas las líneas de comisión. Aprueba las devengadas cuando el cobro esté confirmado; el pago se registra en Liquidaciones.",
+      "leadCloser": "Lo que has devengado por cada cobro de tus clientes. Si tienes subclosers, ves también sus líneas.",
+      "loading": "Cargando comisiones",
+      "error": {
+        "title": "No se han podido cargar las comisiones",
+        "text": "Inténtalo otra vez en unos segundos.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "empty": {
+        "title": "Todavía no hay comisiones",
+        "text": "La comisión se devenga con cada cobro de un cliente de una oportunidad ganada.",
+        "filterTitle": "Sin líneas con este filtro",
+        "filterText": "Prueba con otro estado o quita el filtro."
+      },
+      "totals": {
+        "label": "Totales por estado",
+        "all": "Todas",
+        "accrued": "Devengado",
+        "approved": "Aprobado",
+        "paid": "Pagado",
+        "reversed": "Revertido"
+      },
+      "views": {
+        "label": "Vista",
+        "lines": "Líneas",
+        "headers": "Cabeceras"
+      },
+      "lines": {
+        "caption": "Líneas de comisión",
+        "region": "Tabla de líneas de comisión, se desplaza en horizontal",
+        "columns": {
+          "select": "Seleccionar",
+          "date": "Devengada",
+          "contact": "Contacto",
+          "beneficiary": "Beneficiario",
+          "nature": "Naturaleza",
+          "base": "Base neta",
+          "rate": "Tasa",
+          "amount": "Comisión",
+          "status": "Estado",
+          "payout": "Liquidación",
+          "actions": "Acciones"
+        },
+        "selectAria": "Seleccionar la línea de {name} por {amount}",
+        "noPayout": "Sin liquidar",
+        "inPayout": "{start} a {end}",
+        "unknownPerson": "Otro closer",
+        "rejectedReason": "Motivo: {reason}",
+        "selectAll": "Seleccionar todas las devengadas",
+        "preparing": "En preparación"
+      },
+      "headers": {
+        "caption": "Cabeceras de comisión",
+        "region": "Tabla de cabeceras de comisión, se desplaza en horizontal",
+        "columns": {
+          "contact": "Contacto",
+          "closer": "Closer",
+          "subcloser": "Subcloser",
+          "rates": "Tasas",
+          "expected": "Previsto",
+          "accrued": "Devengado hasta hoy"
+        },
+        "rates": "{project} proyecto · {recurring} recurrente",
+        "noRecurring": "sin recurrente",
+        "empty": "No hay cabeceras todavía."
+      },
+      "approve": {
+        "submit": "Aprobar selección ({count})",
+        "none": "Aprobar selección",
+        "saving": "Aprobando",
+        "done": "Líneas aprobadas",
+        "selected": "{count} seleccionadas",
+        "errors": {
+          "invalid_selection": "Elige al menos una línea devengada.",
+          "line_not_accrued": "Alguna línea ya había cambiado de estado. Recarga la página.",
+          "forbidden": "Solo el administrador puede aprobar comisiones.",
+          "error": "No se han podido aprobar las líneas. Inténtalo otra vez."
+        }
+      },
+      "reject": {
+        "open": "Rechazar",
+        "openAria": "Rechazar la línea de {name} por {amount}",
+        "title": "Rechazar línea de comisión",
+        "close": "Cerrar",
+        "reason": "Motivo del rechazo",
+        "submit": "Rechazar línea",
+        "saving": "Rechazando",
+        "done": "Línea rechazada",
+        "errors": {
+          "reason_required": "Escribe el motivo del rechazo.",
+          "line_not_accrued": "La línea ya había cambiado de estado. Recarga la página.",
+          "line_not_found": "No encontramos la línea.",
+          "forbidden": "Solo el administrador puede rechazar comisiones.",
+          "error": "No se ha podido rechazar la línea. Inténtalo otra vez."
+        }
+      }
     }
   },
   "freelancePage": {

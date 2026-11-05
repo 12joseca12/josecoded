@@ -11,6 +11,19 @@ const brunoDeal = "30000000-0000-4000-8000-0000000000a2";
 const seeded = {
   commissions: [
     {
+      id: "60000000-0000-4000-8000-000000000002",
+      deal_id: "30000000-0000-4000-8000-0000000000b1",
+      closer_id: cleo,
+      closer_rate: 5,
+      closer_recurring_rate: 2,
+      subcloser_id: "00000000-0000-4000-8000-0000000000c2",
+      subcloser_rate: 10,
+      subcloser_recurring_rate: 4,
+      expected_base: 800,
+      expected_closer_amount: 40,
+      expected_subcloser_amount: 80,
+    },
+    {
       id: "60000000-0000-4000-8000-000000000001",
       deal_id: brunoDeal,
       closer_id: cleo,
@@ -25,6 +38,81 @@ const seeded = {
     },
   ],
   lines: [
+    {
+      id: "61000000-0000-4000-8000-000000000002",
+      commission_id: "60000000-0000-4000-8000-000000000002",
+      payment_id: "72000000-0000-4000-8000-000000000002",
+      payout_id: null,
+      beneficiary_id: "00000000-0000-4000-8000-0000000000c2",
+      role: "closer",
+      nature: "project",
+      rate: 10,
+      base: 400,
+      amount: 40,
+      status: "approved",
+      rejected_reason: null,
+      created_at: "2026-11-01T12:00:00+00:00",
+    },
+    {
+      id: "61000000-0000-4000-8000-000000000003",
+      commission_id: "60000000-0000-4000-8000-000000000002",
+      payment_id: "72000000-0000-4000-8000-000000000002",
+      payout_id: null,
+      beneficiary_id: cleo,
+      role: "parent",
+      nature: "project",
+      rate: 5,
+      base: 400,
+      amount: 20,
+      status: "accrued",
+      rejected_reason: null,
+      created_at: "2026-11-01T12:00:00+00:00",
+    },
+    {
+      id: "61000000-0000-4000-8000-000000000004",
+      commission_id: "60000000-0000-4000-8000-000000000002",
+      payment_id: "72000000-0000-4000-8000-000000000003",
+      payout_id: null,
+      beneficiary_id: cleo,
+      role: "parent",
+      nature: "project",
+      rate: 5,
+      base: -200,
+      amount: -10,
+      status: "accrued",
+      rejected_reason: null,
+      created_at: "2026-11-02T12:00:00+00:00",
+    },
+    {
+      id: "61000000-0000-4000-8000-000000000005",
+      commission_id: "60000000-0000-4000-8000-000000000002",
+      payment_id: "72000000-0000-4000-8000-000000000004",
+      payout_id: "73000000-0000-4000-8000-000000000001",
+      beneficiary_id: "00000000-0000-4000-8000-0000000000c2",
+      role: "closer",
+      nature: "recurring",
+      rate: 4,
+      base: 50,
+      amount: 2,
+      status: "paid",
+      rejected_reason: null,
+      created_at: "2026-10-10T12:00:00+00:00",
+    },
+    {
+      id: "61000000-0000-4000-8000-000000000006",
+      commission_id: "60000000-0000-4000-8000-000000000002",
+      payment_id: "72000000-0000-4000-8000-000000000005",
+      payout_id: null,
+      beneficiary_id: "00000000-0000-4000-8000-0000000000c2",
+      role: "closer",
+      nature: "project",
+      rate: 10,
+      base: 100,
+      amount: 10,
+      status: "rejected",
+      rejected_reason: "Cobro devuelto",
+      created_at: "2026-10-12T12:00:00+00:00",
+    },
     {
       id: "61000000-0000-4000-8000-000000000001",
       commission_id: "60000000-0000-4000-8000-000000000001",
@@ -79,6 +167,24 @@ const seeded = {
       amount_gross: 1400,
       pdf_path: null,
       status: "sent",
+    },
+  ],
+  payouts: [
+    {
+      id: "73000000-0000-4000-8000-000000000001",
+      beneficiary_id: "00000000-0000-4000-8000-0000000000c2",
+      period_start: "2026-10-01",
+      period_end: "2026-10-15",
+      cadence: "biweekly",
+      total: 2,
+      withholding_rate: 0,
+      net_total: 2,
+      status: "paid",
+      statement_note: null,
+      closer_invoice_path: null,
+      issued_at: "2026-10-16T09:00:00+00:00",
+      paid_at: "2026-10-20",
+      paid_reference: "Prueba: transferencia",
     },
   ],
   payments: [
@@ -169,7 +275,8 @@ route("GET", "/rest/v1/commissions", ({ request, response, url }) => {
   const ids = inValues(url, "deal_id");
   const rows = caller.auth.money.commissions
     .filter((header) => (ids === null ? true : ids.includes(header.deal_id)))
-    .filter((header) => headerVisible(caller, header));
+    .filter((header) => headerVisible(caller, header))
+    .map((header) => ({ ...header, deals: dealRef(caller.auth, header.deal_id) }));
   return send(response, 200, rows);
 });
 
@@ -180,7 +287,8 @@ route("GET", "/rest/v1/commission_lines", ({ request, response, url }) => {
   const rows = caller.auth.money.lines
     .filter((line) => (ids === null ? true : ids.includes(line.commission_id)))
     .filter((line) => lineVisible(caller, line))
-    .sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at));
+    .sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))
+    .map((line) => ({ ...line, commissions: commissionRef(caller.auth, line.commission_id) }));
   return send(response, 200, rows);
 });
 
@@ -703,3 +811,57 @@ route(
 route("GET", /^\/storage\/v1\/object\/sign\/billing\/(.+)$/, ({ response }) =>
   send(response, 200, "%PDF-1.4\n%mock\n", "application/pdf"),
 );
+
+function commissionRef(auth, commissionId) {
+  const header = auth.money.commissions.find((entry) => entry.id === commissionId);
+  return header ? { deals: dealRef(auth, header.deal_id) } : null;
+}
+
+function payoutVisible(caller, payout) {
+  if (isAdmin(caller)) return true;
+  if (!caller.person || caller.session.level !== "aal2" || payout.status === "draft") return false;
+  if (payout.beneficiary_id === caller.person.id) return true;
+  const beneficiary = Object.values(people).find((entry) => entry.id === payout.beneficiary_id);
+  return beneficiary?.parent === caller.person.id;
+}
+
+route("GET", "/rest/v1/payouts", ({ request, response, url }) => {
+  const caller = guard(request, response, "list-payouts", url);
+  if (!caller) return undefined;
+  const byId = /^eq\.(.+)$/.exec(url.searchParams.get("id") ?? "")?.[1];
+  const byStatus = /^eq\.(.+)$/.exec(url.searchParams.get("status") ?? "")?.[1];
+  const rows = caller.auth.money.payouts
+    .filter((payout) => payoutVisible(caller, payout))
+    .filter((payout) => (byId === undefined ? true : payout.id === byId))
+    .filter((payout) => (byStatus === undefined ? true : payout.status === byStatus))
+    .sort((a, b) => b.period_end.localeCompare(a.period_end));
+  return send(response, 200, rows);
+});
+
+route("POST", "/rest/v1/rpc/approve_commission_lines", async ({ request, response }) => {
+  const body = JSON.parse(await readBody(request));
+  const caller = adminOnly(request, response, "approve-lines", body);
+  if (!caller) return undefined;
+  const ids = [...new Set(body.p_ids ?? [])];
+  if (ids.length === 0) return failure(response, "invalid_selection");
+  const lines = ids.map((id) => caller.auth.money.lines.find((line) => line.id === id));
+  if (lines.some((line) => !line || line.status !== "accrued")) {
+    return failure(response, "line_not_accrued");
+  }
+  for (const line of lines) line.status = "approved";
+  return send(response, 200, lines.length);
+});
+
+route("POST", "/rest/v1/rpc/reject_commission_line", async ({ request, response }) => {
+  const body = JSON.parse(await readBody(request));
+  const caller = adminOnly(request, response, "reject-line", body);
+  if (!caller) return undefined;
+  const reason = String(body.p_reason ?? "").trim();
+  if (reason === "") return failure(response, "reason_required");
+  const line = caller.auth.money.lines.find((entry) => entry.id === body.p_id);
+  if (!line) return failure(response, "line_not_found");
+  if (line.status !== "accrued") return failure(response, "line_not_accrued");
+  line.status = "rejected";
+  line.rejected_reason = reason;
+  return sendEmpty(response);
+});

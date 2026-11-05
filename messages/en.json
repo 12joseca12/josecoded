@@ -2507,6 +2507,109 @@
           "retrying": "Retrying"
         }
       }
+    },
+    "commissions": {
+      "meta": {
+        "title": "Commissions"
+      },
+      "title": "Commissions",
+      "leadAdmin": "Every commission line. Approve the accrued ones once the payment is confirmed; the payout is recorded in Payouts.",
+      "leadCloser": "What you have accrued from each client payment. If you have subclosers you see their lines too.",
+      "loading": "Loading commissions",
+      "error": {
+        "title": "The commissions could not be loaded",
+        "text": "Try again in a few seconds.",
+        "retry": "Try again",
+        "retrying": "Retrying"
+      },
+      "empty": {
+        "title": "No commissions yet",
+        "text": "Commission accrues with each client payment on a won deal.",
+        "filterTitle": "No lines with this filter",
+        "filterText": "Try another status or clear the filter."
+      },
+      "totals": {
+        "label": "Totals by status",
+        "all": "All",
+        "accrued": "Accrued",
+        "approved": "Approved",
+        "paid": "Paid",
+        "reversed": "Reversed"
+      },
+      "views": {
+        "label": "View",
+        "lines": "Lines",
+        "headers": "Headers"
+      },
+      "lines": {
+        "caption": "Commission lines",
+        "region": "Commission lines table, scrolls horizontally",
+        "columns": {
+          "select": "Select",
+          "date": "Accrued",
+          "contact": "Contact",
+          "beneficiary": "Beneficiary",
+          "nature": "Nature",
+          "base": "Net base",
+          "rate": "Rate",
+          "amount": "Commission",
+          "status": "Status",
+          "payout": "Payout",
+          "actions": "Actions"
+        },
+        "selectAria": "Select the line of {name} for {amount}",
+        "noPayout": "Not paid out",
+        "inPayout": "{start} to {end}",
+        "unknownPerson": "Another closer",
+        "rejectedReason": "Reason: {reason}",
+        "selectAll": "Select all accrued lines",
+        "preparing": "Being prepared"
+      },
+      "headers": {
+        "caption": "Commission headers",
+        "region": "Commission headers table, scrolls horizontally",
+        "columns": {
+          "contact": "Contact",
+          "closer": "Closer",
+          "subcloser": "Subcloser",
+          "rates": "Rates",
+          "expected": "Expected",
+          "accrued": "Accrued to date"
+        },
+        "rates": "{project} project · {recurring} recurring",
+        "noRecurring": "no recurring",
+        "empty": "There are no headers yet."
+      },
+      "approve": {
+        "submit": "Approve selection ({count})",
+        "none": "Approve selection",
+        "saving": "Approving",
+        "done": "Lines approved",
+        "selected": "{count} selected",
+        "errors": {
+          "invalid_selection": "Choose at least one accrued line.",
+          "line_not_accrued": "A line had already changed status. Reload the page.",
+          "forbidden": "Only the admin can approve commissions.",
+          "error": "The lines could not be approved. Try again."
+        }
+      },
+      "reject": {
+        "open": "Reject",
+        "openAria": "Reject the line of {name} for {amount}",
+        "title": "Reject commission line",
+        "close": "Close",
+        "reason": "Reason for rejecting",
+        "submit": "Reject line",
+        "saving": "Rejecting",
+        "done": "Line rejected",
+        "errors": {
+          "reason_required": "Enter the reason for rejecting.",
+          "line_not_accrued": "The line had already changed status. Reload the page.",
+          "line_not_found": "We cannot find the line.",
+          "forbidden": "Only the admin can reject commissions.",
+          "error": "The line could not be rejected. Try again."
+        }
+      }
     }
   },
   "freelancePage": {
