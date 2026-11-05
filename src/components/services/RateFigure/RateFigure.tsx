@@ -1,4 +1,5 @@
 import { Card } from "@/components/ui/Card/Card";
+import { PriceState } from "@/components/ui/PriceState/PriceState";
 import type { RateItem } from "@/types/services";
 
 import styles from "./RateFigure.module.css";
@@ -6,32 +7,28 @@ import styles from "./RateFigure.module.css";
 interface RateFigureProps {
   label: string;
   note: string;
-  provisionalLabel?: string;
+  review?: string;
   items: RateItem[];
 }
 
-export function RateFigure({ label, note, provisionalLabel, items }: RateFigureProps) {
+export function RateFigure({ label, note, review, items }: RateFigureProps) {
   return (
-    <figure
-      className={styles.rates}
-      aria-label={label}
-      data-status={provisionalLabel ? "provisional" : "final"}
-    >
+    <figure className={styles.rates} aria-label={label} data-status={review ? "review" : "final"}>
       <dl className={styles.list}>
         {items.map((item) => (
           <Card key={item.id} size="sm" className={styles.item}>
-            <dt className={styles.term}>
-              {item.label}
-              {provisionalLabel ? (
-                <span className={styles.tag} data-provisional="">
-                  {provisionalLabel}
-                </span>
-              ) : null}
-            </dt>
+            <dt className={styles.term}>{item.label}</dt>
             <dd className={styles.value}>
-              {item.prefix ? <span className={styles.unit}>{item.prefix}</span> : null}
-              <strong>{item.value}</strong>
-              <span className={styles.unit}>{item.unit}</span>
+              {review ? (
+                <PriceState variant="review" label={review} />
+              ) : (
+                <PriceState
+                  variant="final"
+                  prefix={item.prefix}
+                  amount={item.value}
+                  unit={item.unit}
+                />
+              )}
             </dd>
           </Card>
         ))}

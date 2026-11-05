@@ -25,6 +25,12 @@ export type CardElevation = (typeof cardElevations)[number];
 export const cardSizes = ["sm", "md", "lg"] as const;
 export type CardSize = (typeof cardSizes)[number];
 
+export const priceStateVariants = ["review", "range", "final"] as const;
+export type PriceStateVariant = (typeof priceStateVariants)[number];
+
+export const priceStateSizes = ["md", "lg"] as const;
+export type PriceStateSize = (typeof priceStateSizes)[number];
+
 export const toastTones = ["success", "error", "info"] as const;
 export type ToastTone = (typeof toastTones)[number];
 
