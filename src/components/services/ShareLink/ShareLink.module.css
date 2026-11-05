@@ -1,0 +1,45 @@
+.share {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: start;
+}
+
+.field {
+  display: grid;
+  gap: var(--space-1);
+  inline-size: 100%;
+}
+
+.label {
+  color: var(--ink-soft);
+  font-size: var(--fs-s);
+  font-weight: var(--fw-medium);
+}
+
+.input {
+  inline-size: 100%;
+  min-block-size: 2.75rem;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-m);
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--fs-base);
+}
+
+.input:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.status {
+  min-block-size: 1.5rem;
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+}
+
+.status[data-status="failed"] {
+  color: var(--ink);
+  font-weight: var(--fw-medium);
+}

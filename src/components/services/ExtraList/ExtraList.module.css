@@ -139,3 +139,33 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
+.who {
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+  line-height: var(--lh-ui);
+}
+
+.more {
+  display: grid;
+  gap: var(--space-3);
+  margin-block-start: var(--space-3);
+}
+
+.summary {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 2.75rem;
+  color: var(--ink);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+}
+
+.summary:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.more[open] > .summary {
+  margin-block-end: var(--space-3);
+}

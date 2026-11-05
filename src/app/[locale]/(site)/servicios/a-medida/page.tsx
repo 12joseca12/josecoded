@@ -20,6 +20,7 @@ import { guideScriptKeys } from "@/lib/nexo/guide";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { buildFaqItems } from "@/lib/services/faq";
 import {
+  extraAppliesTo,
   extraCopyKeys,
   extraOf,
   extras,
@@ -31,7 +32,14 @@ import {
   offersOn,
   platforms,
 } from "@/lib/services/offers";
-import { applyForm, hasFormAction, toSearch } from "@/lib/services/recommender-url";
+import { recommend } from "@/lib/services/recommender";
+import {
+  applyForm,
+  completeAnswers,
+  hasFormAction,
+  parseState,
+  toSearch,
+} from "@/lib/services/recommender-url";
 import type {
   ExtraChipItem,
   MaintenancePlan,
@@ -100,6 +108,11 @@ export default async function OffersPage({ params, searchParams }: OffersProps) 
   }));
 
   const nameOf = (slug: (typeof offers)[number]["slug"]) => t(offerCopyKeys(slug).name);
+  const answers = completeAnswers(
+    parseState(typeof query.q === "string" ? query.q : undefined, undefined).draft,
+  );
+  const outcome = answers ? recommend(answers) : null;
+  const activeOffers = outcome?.route === "project" ? outcome.offers : null;
   const chips: ExtraChipItem[] = extras.map((extra) => {
     const copy = extraCopyKeys(extra.slug);
     const onlyWeb = extra.applies.every((slug) => slug.startsWith("web"));
@@ -114,6 +127,8 @@ export default async function OffersPage({ params, searchParams }: OffersProps) 
       slug: extra.slug,
       name: t(copy.name),
       text: t(copy.text),
+      forWho: t(copy.forWho),
+      active: activeOffers === null || extraAppliesTo(extra, activeOffers),
       tags,
       included:
         extra.includedIn.length > 0
@@ -210,6 +225,7 @@ export default async function OffersPage({ params, searchParams }: OffersProps) 
           legend={t(key("extras.legend"))}
           cta={t(key("extras.cta"))}
           hint={t(key("extras.hint"))}
+          showAll={t(key("extras.showAll"))}
           items={chips}
         />
       </PageSection>

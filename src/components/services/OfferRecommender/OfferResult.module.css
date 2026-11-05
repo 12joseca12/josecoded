@@ -77,6 +77,22 @@
   color: var(--ink);
 }
 
+.assumptions {
+  display: grid;
+  gap: var(--space-1);
+  padding-inline-start: var(--space-4);
+  list-style: disc;
+}
+
+.suggested {
+  display: block;
+  margin-block-start: var(--space-1);
+  padding-inline: var(--space-2);
+  color: var(--ink-soft);
+  font-size: var(--fs-s);
+  font-weight: var(--fw-medium);
+}
+
 .block {
   display: grid;
   gap: var(--space-3);

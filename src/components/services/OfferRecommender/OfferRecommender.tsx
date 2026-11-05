@@ -46,6 +46,7 @@ interface OfferRecommenderProps {
 }
 
 const computeMs = 600;
+const previewIds = ["start", "kind", "size", "accounts", "management"] as const;
 
 export function OfferRecommender({
   locale,
@@ -168,6 +169,16 @@ export function OfferRecommender({
   const bubbleId = "recommender-guide";
   const question = questions.find((entry) => entry.id === step);
   const current = step === "result" || !question ? null : question;
+  const previewAnswers =
+    step === "more"
+      ? previewIds
+          .map((id) => {
+            const value = state.draft[id];
+            return typeof value === "string" ? copy.questions[id].options[value]?.label : undefined;
+          })
+          .filter((label): label is string => label !== undefined)
+          .join(" · ")
+      : "";
 
   return (
     <div className={styles.shell} data-step={step}>
@@ -261,6 +272,11 @@ export function OfferRecommender({
                 </p>
               ) : null}
             </fieldset>
+            {previewAnswers ? (
+              <p className={styles.preview} data-testid="recommender-preview">
+                {copy.preview.replace("{answers}", previewAnswers)}
+              </p>
+            ) : null}
             <div className={styles.actions}>
               {number > 1 ? (
                 <Button

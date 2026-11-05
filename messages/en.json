@@ -936,53 +936,66 @@
       "items": {
         "accounts": {
           "name": "Accounts and permissions",
-          "text": "Passwordless sign-up and sign-in (email code or Google) and user types with different permissions."
+          "text": "Passwordless sign-up and sign-in (email code or Google) and user types with different permissions.",
+          "forWho": "For anyone who needs customers or staff to sign in with their own account."
         },
         "admin": {
           "name": "Management panel",
-          "text": "A private panel to view and edit data, users and content without touching code."
+          "text": "A private panel to view and edit data, users and content without touching code.",
+          "forWho": "For anyone who wants to edit content and data without asking me each time."
         },
         "payments": {
           "name": "Payments with Stripe",
-          "text": "One-off payments or subscriptions, invoices and a revenue dashboard. Stripe fees are separate."
+          "text": "One-off payments or subscriptions, invoices and a revenue dashboard. Stripe fees are separate.",
+          "forWho": "For anyone who sells or charges subscriptions inside their own web or app."
         },
         "languages": {
           "name": "Several languages",
-          "text": "The interface in more than one language and the content ready to translate. Quoted per language."
+          "text": "The interface in more than one language and the content ready to translate. Quoted per language.",
+          "forWho": "For anyone serving customers in more than one language."
         },
         "seo": {
           "name": "Search visibility (SEO and GEO)",
-          "text": "Structure, copy and data so Google and AI assistants can find you."
+          "text": "Structure, copy and data so Google and AI assistants can find you.",
+          "forWho": "For anyone who wants to be found when people search, on Google and in AI assistants."
         },
         "analytics": {
           "name": "Usage metrics",
-          "text": "Key events, funnels and a dashboard, without third-party cookies where possible."
+          "text": "Key events, funnels and a dashboard, without third-party cookies where possible.",
+          "forWho": "For anyone who wants to know what people do and decide with data."
         },
         "ai": {
           "name": "AI assistant",
-          "text": "An assistant like Nexo that answers with your data inside the site or the app."
+          "text": "An assistant like Nexo that answers with your data inside the site or the app.",
+          "forWho": "For anyone who gets many repeated questions and wants to answer them without being there."
         },
         "push": {
           "name": "Push notifications",
-          "text": "Alerts on the phone for events in your product, with user preferences."
+          "text": "Alerts on the phone for events in your product, with user preferences.",
+          "forWho": "For anyone who needs to alert users on their phone, for orders or appointments, say."
         },
         "offline": {
           "name": "Offline use",
-          "text": "The app works without coverage and syncs when it is back."
+          "text": "The app works without coverage and syncs when it is back.",
+          "forWho": "For anyone whose users lack reliable coverage, on the road or in a warehouse."
         },
         "stores": {
           "name": "Managed store setup",
-          "text": "I open the developer accounts in your name and handle review until approval. Apple and Google fees are yours."
+          "text": "I open the developer accounts in your name and handle review until approval. Apple and Google fees are yours.",
+          "forWho": "For anyone who does not want to wrestle with Apple and Google accounts or app review."
         },
         "maintenance": {
           "name": "Maintenance",
-          "text": "Updates, backups, error monitoring and a monthly bank of hours. Three sizes, below."
+          "text": "Updates, backups, error monitoring and a monthly bank of hours. Three sizes, below.",
+          "forWho": "For anyone who wants someone to watch over and update the product after launch."
         },
         "brand": {
           "name": "Identity and design system",
-          "text": "Logo, colours, typography and documented components so everything looks the same."
+          "text": "Logo, colours, typography and documented components so everything looks the same.",
+          "forWho": "For anyone starting without a logo or style who wants everything to look consistent."
         }
-      }
+      },
+      "showAll": "See all extras"
     },
     "warranty": {
       "title": "Warranty and maintenance",
@@ -1183,7 +1196,14 @@
         "freelanceTitle": "Yours is hourly or per task",
         "freelanceText": "Extending or fixing something that already exists is not a new project: it is done by the hour or per task, with the scope agreed before starting.",
         "freelanceCta": "See freelance",
-        "freelanceContact": "Tell me what you need"
+        "freelanceContact": "Tell me what you need",
+        "suggested": "Recommended for web and app",
+        "assumedKind": "What to launch: I started from {kind}, based on what you ticked.",
+        "assumedSize": "Scope: I started from a medium scope.",
+        "shareCopy": "Copy link to my proposal",
+        "shareCopied": "Link copied.",
+        "shareFailed": "I could not copy it. Select the link and copy it by hand.",
+        "shareLabel": "Link to your proposal"
       },
       "reasons": {
         "existing": "Yours is not a new project but extending or fixing something that already exists.",
@@ -1196,7 +1216,7 @@
         "bump_team": "Several people manage with different permissions: that calls for the top tier.",
         "management_rare": "Since the content hardly changes, I make the changes whenever you ask.",
         "included": "Included as standard in your tier: {extra}.",
-        "maintenance_both": "With web and app together, monthly maintenance is the sensible choice.",
+        "maintenance_both": "With web and app together I suggest monthly maintenance. I have not ticked it: that is your call.",
         "tier": {
           "web-presencia": "Few pages and no users: Presence covers what you need without paying for more.",
           "web-negocio": "A full site you update yourself: Business comes with the editing panel.",
@@ -1216,7 +1236,8 @@
           "offline": "Your app has to work without coverage.",
           "stores": "You would rather I handle the store accounts."
         }
-      }
+      },
+      "preview": "Before you see it, check what you told me: {answers}."
     }
   },
   "breadcrumbs": {
@@ -1251,7 +1272,7 @@
       "size": "It decides the tier: presenting a business is not the same as running a product with users.",
       "accounts": "With accounts you store people's data and decide what each one sees; that changes the work.",
       "management": "If you will edit it yourself you need a panel; if it hardly changes, Jose changes it when you ask.",
-      "more": "These are the usual extras. Tick any that ring a bell, just in case: you can remove them later."
+      "more": "Tick only what you know you need; anything you doubt we can sort out by talking."
     },
     "option": {
       "start": {

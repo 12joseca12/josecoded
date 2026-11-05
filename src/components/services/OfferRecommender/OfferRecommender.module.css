@@ -54,6 +54,11 @@
   font-size: var(--fs-base);
 }
 
+.preview {
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+}
+
 .options {
   display: grid;
   gap: var(--space-2);

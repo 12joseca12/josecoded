@@ -75,8 +75,10 @@ export interface ExtraChipItem {
   slug: string;
   name: string;
   text: string;
+  forWho: string;
   tags: string[];
   included: string;
+  active: boolean;
 }
 
 export interface MaintenancePlan {
