@@ -12,13 +12,14 @@ concurrency:
 permissions:
   contents: read
 
+env:
+  ENABLE_DEV_PAGES: "true"
+  NEXT_PUBLIC_TURNSTILE_SITE_KEY: "1x00000000000000000000AA"
+
 jobs:
-  checks:
+  static:
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
-    env:
-      ENABLE_DEV_PAGES: "true"
-      NEXT_PUBLIC_TURNSTILE_SITE_KEY: "1x00000000000000000000AA"
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413
@@ -37,7 +38,33 @@ jobs:
       - run: pnpm tokens:check
       - run: pnpm tokens:test
       - run: pnpm test
+
+  e2e:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
+    env:
+      E2E_SHARD: ${{ matrix.shard }}/2
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25
+        with:
+          path: .next/cache
+          key: next-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('src/**', 'content/**', 'messages/**', 'next.config.ts') }}
+          restore-keys: |
+            next-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
       - run: pnpm build
+      - if: matrix.shard == 1
+        run: pnpm perf:budget --verbose
       - id: playwright
         run: echo "version=$(pnpm exec playwright --version | awk '{print $2}')" >> "$GITHUB_OUTPUT"
       - id: browsers
@@ -49,4 +76,18 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
       - if: steps.browsers.outputs.cache-hit == 'true'
         run: pnpm exec playwright install-deps chromium
-      - run: pnpm e2e
+      - run: pnpm e2e --shard="$E2E_SHARD"
+
+  checks:
+    if: always()
+    needs: [static, e2e]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    steps:
+      - env:
+          RESULTS: ${{ needs.static.result }} ${{ needs.e2e.result }}
+        run: |
+          echo "static e2e: $RESULTS"
+          for result in $RESULTS; do
+            [ "$result" = "success" ] || exit 1
+          done

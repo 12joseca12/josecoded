@@ -60,12 +60,12 @@ test.describe("phase rail", () => {
     await page.goto("/es");
     const names = Object.values(hero.phases);
     expect(names).toHaveLength(5);
-    for (const name of names) await expect(phaseButton(page, name)).toBeVisible();
-    await expect(rail(page).getByRole("listitem")).toHaveCount(5);
     await expect(phaseButton(page, hero.phases.discover ?? "")).toHaveAttribute(
       "aria-current",
       "step",
     );
+    for (const name of names) await expect(phaseButton(page, name)).toBeVisible();
+    await expect(rail(page).getByRole("listitem")).toHaveCount(5);
   });
 
   test("selecting a phase moves the sequence", async ({ page }) => {
