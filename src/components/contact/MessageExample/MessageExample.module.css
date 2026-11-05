@@ -1,0 +1,30 @@
+.example {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.summary {
+  justify-self: start;
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  color: var(--ink);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.summary:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.text {
+  padding: var(--space-3) var(--space-4);
+  border-left: var(--space-1) solid var(--line-strong);
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+}

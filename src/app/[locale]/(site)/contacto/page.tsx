@@ -83,6 +83,22 @@ export default async function ContactPage({ params, searchParams }: ContactProps
         }
       : null;
 
+  const initialWay = resolveInitialWay(query);
+  const formChannel = (
+    <FormChannel
+      title={t("contactPage.form.title")}
+      hint={t("contactPage.form.hint")}
+      locale={locale}
+      labels={buildContactFormLabels(t)}
+      emails={emails}
+      initialWay={initialWay}
+      selection={selection}
+      privacyHref={`/${locale}/legal/privacidad`}
+      newTabLabel={t("contactPage.form.newTab")}
+      turnstile={isContactAvailable(process.env) ? readContactClientConfig(process.env) : null}
+    />
+  );
+
   return (
     <>
       <PageHead
@@ -92,6 +108,7 @@ export default async function ContactPage({ params, searchParams }: ContactProps
       />
       <section className={styles.channels} aria-label={t("contactPage.channelsLabel")}>
         <ul className={styles.list}>
+          {initialWay ? formChannel : null}
           <ChatChannel
             title={t("contactPage.chat.title")}
             hint={t("contactPage.chat.hint")}
@@ -127,20 +144,7 @@ export default async function ContactPage({ params, searchParams }: ContactProps
               copiedLabel={t("contactPage.copy.done")}
             />
           ))}
-          <FormChannel
-            title={t("contactPage.form.title")}
-            hint={t("contactPage.form.hint")}
-            locale={locale}
-            labels={buildContactFormLabels(t)}
-            emails={emails}
-            initialWay={resolveInitialWay(query)}
-            selection={selection}
-            privacyHref={`/${locale}/legal/privacidad`}
-            newTabLabel={t("contactPage.form.newTab")}
-            turnstile={
-              isContactAvailable(process.env) ? readContactClientConfig(process.env) : null
-            }
-          />
+          {initialWay ? null : formChannel}
         </ul>
       </section>
     </>
