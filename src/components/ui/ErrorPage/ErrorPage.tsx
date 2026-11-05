@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 import { defaultLocale, type Locale } from "@/i18n/config";
 import { errorCodes, type ErrorCopy, type ErrorVariant } from "@/types/errors";
 import type { HeadingLevel } from "@/types/ui";
@@ -18,6 +20,7 @@ export interface ErrorPageProps {
   layout?: "page" | "inline";
   headingLevel?: HeadingLevel;
   focusOnLoad?: boolean;
+  children?: ReactNode;
 }
 
 export function ErrorPage({
@@ -29,6 +32,7 @@ export function ErrorPage({
   layout = "page",
   headingLevel = 1,
   focusOnLoad = true,
+  children,
 }: ErrorPageProps) {
   const { title, text } = copy[variant];
   const { actions } = copy;
@@ -48,6 +52,7 @@ export function ErrorPage({
           {title}
         </Heading>
         <p className={styles.text}>{text}</p>
+        {children}
         <div className={styles.actions}>
           {onRetry ? (
             <Button

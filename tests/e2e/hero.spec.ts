@@ -208,14 +208,20 @@ test.describe("narrow screens", () => {
 test.describe("block scrolling with the hero", () => {
   test.use({ viewport: { width: 1440, height: 900 } });
 
-  test("one wheel gesture glides past the hero and Home returns", async ({ page }) => {
+  test("one wheel gesture glides to the next block and Home returns", async ({ page }) => {
     await page.goto("/es");
     await page.waitForLoadState("networkidle");
-    const max = await page.evaluate(() => document.documentElement.scrollHeight - innerHeight);
-    expect(max).toBeGreaterThan(0);
+    const next = () =>
+      page.evaluate(() => {
+        const top = document.getElementById("vias")?.getBoundingClientRect().top ?? 0;
+        return Math.round(top + scrollY);
+      });
+    expect(await next()).toBeGreaterThan(0);
     await page.mouse.move(700, 450);
     await page.mouse.wheel(0, 400);
-    await expect.poll(() => page.evaluate(() => scrollY), { timeout: 4000 }).toBe(max);
+    await expect
+      .poll(async () => (await page.evaluate(() => scrollY)) === (await next()), { timeout: 4000 })
+      .toBe(true);
     await page.keyboard.press("Home");
     await expect.poll(() => page.evaluate(() => scrollY), { timeout: 4000 }).toBe(0);
   });

@@ -30,6 +30,13 @@
   grid-area: proof;
 }
 
+.grid[data-layout="ways"] {
+  grid-template-areas:
+    "hiring"
+    "project"
+    "support";
+}
+
 @container (min-width: 36rem) {
   .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -47,5 +54,19 @@
     grid-template-areas:
       "hiring project support"
       "proof proof proof";
+  }
+}
+
+@container (min-width: 36rem) {
+  .grid[data-layout="ways"] {
+    grid-template-areas:
+      "hiring hiring"
+      "project support";
+  }
+}
+
+@container (min-width: 56rem) {
+  .grid[data-layout="ways"] {
+    grid-template-areas: "hiring project support";
   }
 }

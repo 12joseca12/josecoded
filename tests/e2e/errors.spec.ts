@@ -8,6 +8,7 @@ const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
     actions: Record<"home" | "contact" | "retry", string>;
   };
   dev: { errors: { recovered: string } };
+  suggestion: { lead: string };
 };
 const { errors } = es;
 
@@ -30,6 +31,30 @@ test("unknown path returns 404 and the localized page with focus on the heading"
   await expect(page.locator('main a[href*="/chat"]')).toHaveCount(0);
   const { violations } = await new AxeBuilder({ page }).analyze();
   expect(violations).toEqual([]);
+});
+
+test("a 404 whose path looks like a page suggests the closest one", async ({ page }) => {
+  const cases: [string, string][] = [
+    ["/es/servicios-web", "/es/servicios"],
+    ["/es/servicios/freelances", "/es/servicios/freelance"],
+    ["/es/a-la-medida", "/es/servicios/a-medida"],
+    ["/es/contactar", "/es/contacto"],
+  ];
+  for (const [path, target] of cases) {
+    const response = await page.goto(path);
+    expect(response?.status()).toBe(404);
+    const suggestion = page.getByText(es.suggestion.lead);
+    await expect(suggestion).toBeVisible();
+    await expect(page.locator(`main a[href="${target}"]`).last()).toBeVisible();
+  }
+  const { violations } = await new AxeBuilder({ page }).analyze();
+  expect(violations).toEqual([]);
+});
+
+test("a 404 with nothing similar suggests nothing", async ({ page }) => {
+  await page.goto("/es/xyz-qwerty");
+  await expect(page.getByRole("heading", { level: 1, name: errors.notFound.title })).toBeVisible();
+  await expect(page.getByText(es.suggestion.lead)).toHaveCount(0);
 });
 
 test("nested unknown path also returns 404", async ({ page }) => {
