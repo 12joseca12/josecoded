@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { Breadcrumbs } from "@/components/site/Breadcrumbs/Breadcrumbs";
+import { PageHead } from "@/components/site/PageHead/PageHead";
+import { Button } from "@/components/ui/Button/Button";
 import { EmptyState } from "@/components/ui/EmptyState/EmptyState";
-import { Heading } from "@/components/ui/Heading/Heading";
+import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 import { hasPublishedProjects } from "@/content";
 import { isLocale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
 import { buildPageMetadata } from "@/lib/seo/metadata";
+import { localePath } from "@/lib/seo/routes";
 
 import styles from "./page.module.css";
 
@@ -30,16 +34,34 @@ export default async function ProjectsPage({ params }: ProjectsProps) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const t = await getTranslator(locale);
+  const crumbs = [
+    { label: t("nav.home"), href: localePath(locale, "") },
+    { label: t("nav.projects"), href: localePath(locale, "/proyectos") },
+  ];
   return (
-    <section className={styles.page}>
-      <Heading level={1} size="h2">
-        {t("projects.title")}
-      </Heading>
-      <EmptyState
-        headingLevel={2}
-        title={t("projects.emptyTitle")}
-        text={t("projects.emptyText")}
+    <>
+      <PageHead
+        title={t("projects.title")}
+        lead={t("projects.lead")}
+        breadcrumbs={<Breadcrumbs label={t("breadcrumbs.label")} items={crumbs} />}
       />
-    </section>
+      <section className={styles.page} aria-label={t("projects.title")}>
+        <EmptyState
+          headingLevel={2}
+          title={t("projects.emptyTitle")}
+          text={t("projects.emptyText")}
+          action={
+            <div className={styles.actions}>
+              <Button href={localePath(locale, "/sobre-mi")} icon={<ArrowIcon />}>
+                {t("projects.about")}
+              </Button>
+              <Button href={localePath(locale, "/contacto")} variant="light">
+                {t("projects.contact")}
+              </Button>
+            </div>
+          }
+        />
+      </section>
+    </>
   );
 }

@@ -28,6 +28,7 @@ interface ContactChooserProps {
   labels: ContactChooserLabels;
   whatsappHref: string | null;
   formHref: string;
+  chatEnabled: boolean;
   onChat: () => void;
   openerRef: RefObject<HTMLElement | null>;
 }
@@ -42,6 +43,7 @@ export function ContactChooser({
   labels,
   whatsappHref,
   formHref,
+  chatEnabled,
   onChat,
   openerRef,
 }: ContactChooserProps) {
@@ -78,6 +80,7 @@ export function ContactChooser({
             labels={labels}
             whatsappHref={whatsappHref}
             formHref={formHref}
+            chatEnabled={chatEnabled}
             onChat={onChat}
             openerRef={openerRef}
             anchorRef={anchorRef}

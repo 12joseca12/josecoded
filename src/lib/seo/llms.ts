@@ -18,6 +18,7 @@ export async function buildLlmsTxt(
   locale: Locale,
   rates: Rates,
   ways: readonly ContactWay[] = contact.ways,
+  hasProjects = false,
 ): Promise<string> {
   const t = await getTranslator(locale);
   const link = (label: string, path: string) =>
@@ -72,7 +73,7 @@ export async function buildLlmsTxt(
     link(t("seo.llms.freelancePage"), "/servicios/freelance"),
     link(t("seo.llms.offersPage"), "/servicios/a-medida"),
     link(t("seo.llms.howPage"), "/como-trabajo"),
-    link(t("seo.llms.projects"), "/proyectos"),
+    ...(hasProjects ? [link(t("seo.llms.projects"), "/proyectos")] : []),
     link(t("seo.llms.about"), "/sobre-mi"),
     ...(hasContact ? [link(t("seo.llms.contact"), "/contacto")] : []),
     "",

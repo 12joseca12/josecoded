@@ -11,11 +11,10 @@ import { NexoChatCard } from "./NexoChatCard";
 interface NexoFaqChatProps {
   items: FaqItem[];
   labels: NexoChatLabels;
-  locale: string;
   formHref: string;
 }
 
-export function NexoFaqChat({ items, labels, locale, formHref }: NexoFaqChatProps) {
+export function NexoFaqChat({ items, labels, formHref }: NexoFaqChatProps) {
   const guide = useMemo(() => createFaqGuide(items), [items]);
-  return <NexoChatCard guide={guide} labels={labels} locale={locale} formHref={formHref} />;
+  return <NexoChatCard guide={guide} labels={labels} formHref={formHref} />;
 }

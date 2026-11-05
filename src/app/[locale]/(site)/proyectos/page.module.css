@@ -3,8 +3,14 @@
   gap: var(--space-5);
   width: 100%;
   max-width: var(--max);
-  min-height: 70svh;
+  min-height: 40svh;
   align-content: start;
   margin-inline: auto;
-  padding: calc(var(--nav-h) + var(--space-5)) var(--gutter) var(--space-7);
+  padding: 0 var(--gutter) var(--space-9);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
 }

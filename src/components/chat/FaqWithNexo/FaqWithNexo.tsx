@@ -33,7 +33,6 @@ export async function FaqWithNexo({ locale, items }: FaqWithNexoProps) {
     nexo: t("nexoChat.nexo"),
     fallback: t("nexoChat.fallback"),
     form: t("nexoChat.form"),
-    chat: t("nexoChat.chat"),
     states,
   };
   return (
@@ -46,7 +45,6 @@ export async function FaqWithNexo({ locale, items }: FaqWithNexoProps) {
           <NexoFaqChat
             items={items}
             labels={labels}
-            locale={locale}
             formHref={`/${locale}/contacto${formAnchor}`}
           />
         </div>
