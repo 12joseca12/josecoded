@@ -965,7 +965,14 @@
       "ctaFor": "Ask for {name}",
       "scopeNote": "Page and screen limits, delivery times and prices are indicative until pricing is settled; they are confirmed in writing before starting.",
       "notSure": "Not sure which one to pick?",
-      "notSureLink": "Find yours in a minute"
+      "notSureLink": "Find yours in a minute",
+      "warrantyChip": "30 days of fixes included",
+      "driversLead": "Goes up with: {drivers}",
+      "drivers": {
+        "accounts": "accounts",
+        "payments": "payments",
+        "languages": "languages"
+      }
     },
     "tiers": {
       "web-presencia": {
@@ -1340,6 +1347,61 @@
         }
       },
       "preview": "Before you see it, check what you told me: {answers}."
+    },
+    "costs": {
+      "title": "Third-party costs",
+      "taxes": {
+        "label": "Taxes",
+        "text": "Any applicable taxes are itemised on the invoice."
+      },
+      "apple": {
+        "label": "Apple account (apps only)",
+        "text": "$99 a year, paid by you to Apple."
+      },
+      "google": {
+        "label": "Google Play account (apps only)",
+        "text": "$25 once, paid by you to Google."
+      },
+      "hosting": {
+        "label": "Domain and hosting",
+        "text": "Registered in your name and paid by you directly to the provider."
+      },
+      "stripe": {
+        "label": "Stripe fee (only if you charge)",
+        "text": "If your product takes payments with Stripe, Stripe keeps its fee on each payment."
+      }
+    },
+    "ownership": {
+      "text": "The code, the domain and the store accounts are yours from day one."
+    },
+    "need": {
+      "title": "What I need from you",
+      "lead": "Three things per tier, so nothing catches you by surprise and the project doesn't stall waiting for material.",
+      "web-presencia": {
+        "a": "The copy and photos for your pages",
+        "b": "Your logo and colours, if you already have them",
+        "c": "Access to your domain, or a new one chosen in your name"
+      },
+      "web-negocio": {
+        "a": "The copy and images for your pages and the first news items",
+        "b": "Your logo and colours, if you already have them",
+        "c": "Access to your domain, or a new one chosen in your name"
+      },
+      "web-plataforma": {
+        "a": "How your service works today and which manual processes you want to replace",
+        "b": "Which types of user there will be and what each can do",
+        "c": "Copy, logo and access to your domain"
+      },
+      "app-primera-version": {
+        "a": "What the app must do in its first version",
+        "b": "Your logo, colours and the copy for the screens",
+        "c": "The Apple and Google developer accounts, in your name"
+      },
+      "app-producto": {
+        "a": "The types of user and what each can do",
+        "b": "Your logo, colours and the copy for the screens",
+        "c": "The Apple and Google developer accounts, in your name"
+      }
     }
   },
   "breadcrumbs": {

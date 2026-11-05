@@ -1,0 +1,46 @@
+.list {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.entry {
+  display: grid;
+}
+
+.tier {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+}
+
+.bullets {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.bullets li {
+  position: relative;
+  padding-left: var(--space-5);
+}
+
+.bullets li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: var(--radius-xs);
+  background: var(--coral);
+}
+
+@media (min-width: 64rem) {
+  .list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: stretch;
+  }
+
+  .tier {
+    height: 100%;
+  }
+}
