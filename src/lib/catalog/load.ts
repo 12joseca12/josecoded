@@ -8,14 +8,14 @@ import { catalogTag } from "./tag";
 
 export const catalogRevalidateSeconds = 300;
 
-const readRows = unstable_cache(
-  async () => {
-    const config = readCatalogConfig(process.env);
-    return config ? await fetchCatalogRows(config) : null;
-  },
-  ["catalog-rows"],
-  { tags: [catalogTag], revalidate: catalogRevalidateSeconds },
-);
+async function readRows() {
+  const config = readCatalogConfig(process.env);
+  if (!config) return null;
+  return unstable_cache(() => fetchCatalogRows(config), ["catalog-rows", config.supabaseUrl], {
+    tags: [catalogTag],
+    revalidate: catalogRevalidateSeconds,
+  })();
+}
 
 export async function getCatalog(): Promise<Catalog> {
   try {
