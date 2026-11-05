@@ -774,15 +774,42 @@
         "name": "Name",
         "email": "Email",
         "status": "Status",
-        "date": "Date"
+        "assigned": "Assigned to",
+        "date": "Date",
+        "actions": "Actions"
       },
       "via": {
         "hiring": "Hiring",
         "freelance": "Freelance",
-        "pack": "Tailored",
+        "project": "Tailored",
         "none": "No route"
       },
       "noEmail": "No email",
+      "unassigned": "Unassigned",
+      "unknownAssignee": "Person no longer active",
+      "actions": {
+        "assignLabel": "Assign to",
+        "assignPlaceholder": "Choose a closer",
+        "assign": "Assign",
+        "assigning": "Assigning",
+        "noAssignees": "No active closers",
+        "discardOpen": "Discard",
+        "discardReasonLabel": "Reason for discarding",
+        "discardSubmit": "Confirm discard",
+        "discarding": "Discarding",
+        "reasonPrefix": "Reason:",
+        "done": {
+          "assign": "Lead assigned",
+          "discard": "Lead discarded"
+        },
+        "errors": {
+          "assignee": "Choose an active closer.",
+          "reason": "Write the reason, 1 to 500 characters.",
+          "stale": "The lead has changed. Reload the list.",
+          "forbidden": "You are not allowed to do this.",
+          "error": "It could not be completed. Try again."
+        }
+      },
       "status": {
         "new": "New",
         "assigned": "Assigned",

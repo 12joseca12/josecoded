@@ -2,23 +2,45 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
 
 import type { Database } from "@/types/database";
-import { leadRowSchema, type LeadsResult } from "@/types/leads";
+import {
+  assigneeRowSchema,
+  type LeadAssignee,
+  leadRowSchema,
+  type LeadsResult,
+} from "@/types/leads";
 
 export const leadsLimit = 200;
 
+export const leadColumns =
+  "id, via, full_name, email, status, created_at, assigned_to, discard_reason, offer";
+
 const rowsSchema = z.array(leadRowSchema);
+const assigneesSchema = z.array(assigneeRowSchema);
 
 export async function fetchLeads(client: SupabaseClient<Database>): Promise<LeadsResult> {
   try {
-    const { data, error } = await client
-      .from("leads")
-      .select("id, via, full_name, email, status, created_at")
-      .order("created_at", { ascending: false })
-      .limit(leadsLimit);
-    if (error) return { status: "error" };
-    const rows = rowsSchema.safeParse(data);
-    if (!rows.success) return { status: "error" };
-    return { status: "ok", rows: rows.data, limit: leadsLimit };
+    const [leads, people] = await Promise.all([
+      client
+        .from("leads")
+        .select(leadColumns)
+        .order("created_at", { ascending: false })
+        .limit(leadsLimit),
+      client
+        .from("profiles")
+        .select("id, full_name, role, is_active")
+        .in("role", ["admin", "closer"])
+        .order("full_name"),
+    ]);
+    if (leads.error || people.error) return { status: "error" };
+    const rows = rowsSchema.safeParse(leads.data);
+    const assignees = assigneesSchema.safeParse(people.data);
+    if (!rows.success || !assignees.success) return { status: "error" };
+    const list: LeadAssignee[] = assignees.data.map((person) => ({
+      id: person.id,
+      name: person.full_name,
+      assignable: person.role === "closer" && person.is_active,
+    }));
+    return { status: "ok", rows: rows.data, assignees: list, limit: leadsLimit };
   } catch {
     return { status: "error" };
   }

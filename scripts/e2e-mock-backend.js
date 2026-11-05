@@ -59,6 +59,11 @@ const people = {
     role: "closer",
     name: "Cleo Closer",
   },
+  "dani@example.com": {
+    id: "00000000-0000-4000-8000-0000000000c2",
+    role: "closer",
+    name: "Dani Closer",
+  },
   "client@example.com": {
     id: "00000000-0000-4000-8000-0000000000d1",
     role: "client",
@@ -75,11 +80,14 @@ const people = {
 const seededLeads = [
   {
     id: "10000000-0000-4000-8000-000000000003",
-    via: "pack",
+    via: "project",
     full_name: "Cara Pack",
     email: "cara@example.com",
     status: "new",
     created_at: "2026-11-03T09:30:00+00:00",
+    assigned_to: null,
+    discard_reason: null,
+    offer: "web-negocio",
   },
   {
     id: "10000000-0000-4000-8000-000000000002",
@@ -88,6 +96,9 @@ const seededLeads = [
     email: "felix@example.com",
     status: "contacted",
     created_at: "2026-11-02T18:05:00+00:00",
+    assigned_to: "00000000-0000-4000-8000-0000000000c1",
+    discard_reason: null,
+    offer: null,
   },
   {
     id: "10000000-0000-4000-8000-000000000001",
@@ -96,6 +107,9 @@ const seededLeads = [
     email: "hilda@example.com",
     status: "assigned",
     created_at: "2026-11-01T08:00:00+00:00",
+    assigned_to: "00000000-0000-4000-8000-0000000000c1",
+    discard_reason: null,
+    offer: null,
   },
   {
     id: "10000000-0000-4000-8000-000000000000",
@@ -104,6 +118,9 @@ const seededLeads = [
     email: null,
     status: "discarded",
     created_at: "2026-10-30T12:00:00+00:00",
+    assigned_to: null,
+    discard_reason: "Duplicado",
+    offer: null,
   },
 ];
 
@@ -120,7 +137,10 @@ function newAuthState() {
       logout: [],
       profiles: [],
       leads: [],
+      rpc: [],
     },
+    leads: structuredClone(seededLeads),
+    rpcError: null,
     sessions: new Map(),
     refresh: new Map(),
     factors: new Map(),
@@ -277,6 +297,13 @@ const server = createServer(async (request, response) => {
     return send(response, 200, { ok: true });
   }
 
+  if (url.pathname === "/__auth/rpc-error" && request.method === "POST") {
+    stateFor(url.searchParams.get("tag") ?? "").rpcError = JSON.parse(
+      await readBody(request),
+    ).error;
+    return send(response, 200, { ok: true });
+  }
+
   if (url.pathname === "/auth/v1/otp" && request.method === "POST") {
     const body = JSON.parse(await readBody(request));
     const { email, tag } = splitEmail(body.email);
@@ -409,6 +436,20 @@ const server = createServer(async (request, response) => {
     const session = bearer(request);
     session?.auth.calls.profiles.push({ authenticated: true });
     if (!session) return send(response, 401, { code: "PGRST301", message: "JWT invalid" });
+    if (!url.searchParams.has("id") && url.searchParams.has("role")) {
+      const caller = personById(session.userId);
+      if (caller?.[1].role !== "admin" || session.level !== "aal2") return send(response, 200, []);
+      const rows = Object.values(people)
+        .filter((person) => person.role === "admin" || person.role === "closer")
+        .map((person) => ({
+          id: person.id,
+          full_name: person.name,
+          role: person.role,
+          is_active: !person.inactive,
+        }))
+        .sort((a, b) => a.full_name.localeCompare(b.full_name));
+      return send(response, 200, rows);
+    }
     const id = (url.searchParams.get("id") ?? "").replace("eq.", "");
     const found = personById(id);
     const row =
@@ -445,7 +486,46 @@ const server = createServer(async (request, response) => {
     const found = personById(session.userId);
     const allowed = found?.[1].role === "admin" && session.level === "aal2";
     if (!allowed || auth.leadsMode === "empty") return send(response, 200, []);
-    return send(response, 200, seededLeads);
+    return send(response, 200, auth.leads);
+  }
+
+  const leadRpc = /^\/rest\/v1\/rpc\/(assign_lead|discard_lead)$/.exec(url.pathname);
+  if (leadRpc && request.method === "POST") {
+    const session = bearer(request);
+    if (!session) return send(response, 401, { code: "PGRST301", message: "JWT invalid" });
+    const auth = session.auth;
+    const args = JSON.parse(await readBody(request));
+    auth.calls.rpc.push({ name: leadRpc[1], args, level: session.level });
+    const allowed = personById(session.userId)?.[1].role === "admin" && session.level === "aal2";
+    if (!allowed) {
+      return send(response, 403, {
+        code: "42501",
+        message: "admin_only",
+        details: null,
+        hint: null,
+      });
+    }
+    if (auth.rpcError) {
+      return send(response, 400, { details: null, hint: null, ...auth.rpcError });
+    }
+    const lead = auth.leads.find((entry) => entry.id === args.p_lead_id);
+    if (!lead || lead.status === "discarded") {
+      return send(response, 400, {
+        code: "P0001",
+        message: "lead_discarded",
+        details: null,
+        hint: null,
+      });
+    }
+    if (leadRpc[1] === "assign_lead") {
+      lead.assigned_to = args.p_user_id;
+      lead.status = "converted";
+      return send(response, 200, JSON.stringify("00000000-0000-4000-8000-0000000000f1"));
+    }
+    lead.status = "discarded";
+    lead.discard_reason = args.p_reason;
+    response.writeHead(204);
+    return response.end();
   }
 
   if (url.pathname === "/turnstile/api.js") {

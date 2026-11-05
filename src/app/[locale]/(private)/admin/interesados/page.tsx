@@ -16,6 +16,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { LeadTableLabels } from "@/types/leads";
 
 import styles from "../admin.module.css";
+import { assignLead, discardLead } from "./actions";
 
 interface LeadsProps {
   params: Promise<{ locale: string }>;
@@ -62,12 +63,14 @@ async function LeadsSection({ locale }: { locale: Locale }) {
       name: t("admin.leads.columns.name"),
       email: t("admin.leads.columns.email"),
       status: t("admin.leads.columns.status"),
+      assigned: t("admin.leads.columns.assigned"),
       date: t("admin.leads.columns.date"),
+      actions: t("admin.leads.columns.actions"),
     },
     via: {
       hiring: t("admin.leads.via.hiring"),
       freelance: t("admin.leads.via.freelance"),
-      pack: t("admin.leads.via.pack"),
+      project: t("admin.leads.via.project"),
       none: t("admin.leads.via.none"),
     },
     status: {
@@ -78,10 +81,42 @@ async function LeadsSection({ locale }: { locale: Locale }) {
       discarded: t("admin.leads.status.discarded"),
     },
     noEmail: t("admin.leads.noEmail"),
+    unassigned: t("admin.leads.unassigned"),
+    unknownAssignee: t("admin.leads.unknownAssignee"),
+    actions: {
+      assignLabel: t("admin.leads.actions.assignLabel"),
+      assignPlaceholder: t("admin.leads.actions.assignPlaceholder"),
+      assign: t("admin.leads.actions.assign"),
+      assigning: t("admin.leads.actions.assigning"),
+      noAssignees: t("admin.leads.actions.noAssignees"),
+      discardOpen: t("admin.leads.actions.discardOpen"),
+      discardReasonLabel: t("admin.leads.actions.discardReasonLabel"),
+      discardSubmit: t("admin.leads.actions.discardSubmit"),
+      discarding: t("admin.leads.actions.discarding"),
+      reasonPrefix: t("admin.leads.actions.reasonPrefix"),
+      done: {
+        assign: t("admin.leads.actions.done.assign"),
+        discard: t("admin.leads.actions.done.discard"),
+      },
+      errors: {
+        assignee: t("admin.leads.actions.errors.assignee"),
+        reason: t("admin.leads.actions.errors.reason"),
+        stale: t("admin.leads.actions.errors.stale"),
+        forbidden: t("admin.leads.actions.errors.forbidden"),
+        error: t("admin.leads.actions.errors.error"),
+      },
+    },
   };
   return (
     <>
-      <LeadTable rows={result.rows} locale={locale} labels={labels} />
+      <LeadTable
+        rows={result.rows}
+        assignees={result.assignees}
+        locale={locale}
+        labels={labels}
+        assign={assignLead.bind(null, locale)}
+        discard={discardLead.bind(null, locale)}
+      />
       {result.rows.length >= result.limit ? (
         <p className={styles.note}>
           {t("admin.leads.limit").replace("{count}", String(result.limit))}
