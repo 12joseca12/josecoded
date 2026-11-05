@@ -2040,6 +2040,48 @@
           "error": "The action could not be completed. Try again."
         }
       }
+    },
+    "proformaPrint": {
+      "meta": {
+        "title": "Proforma"
+      },
+      "back": "Back to payments",
+      "print": "Print or save as PDF",
+      "printHint": "In the print dialog choose \"Save as PDF\".",
+      "heading": "Proforma",
+      "notInvoice": "This document is not an invoice and has no tax value. The invoice is issued separately, when due.",
+      "void": "Voided proforma: it has no effect.",
+      "number": "Number",
+      "issuedAt": "Issue date",
+      "dueAt": "Due date",
+      "noDue": "To be agreed",
+      "issuer": {
+        "title": "Issuer",
+        "name": "José Carlos Sánchez García",
+        "taxId": "Tax ID 06011766A",
+        "location": "Madrid (Spain)",
+        "email": "hola@josecoded.com"
+      },
+      "client": {
+        "title": "Client"
+      },
+      "concept": {
+        "title": "Item",
+        "deal": "Project"
+      },
+      "totals": {
+        "net": "Net amount",
+        "vat": "VAT ({rate})",
+        "gross": "Total"
+      },
+      "footer": "Amounts in euros. Proforma {number}.",
+      "error": {
+        "title": "The proforma could not be loaded",
+        "text": "Try again in a few seconds.",
+        "retry": "Try again",
+        "retrying": "Retrying"
+      },
+      "loading": "Loading the proforma"
     }
   },
   "crm": {

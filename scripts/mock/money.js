@@ -208,7 +208,11 @@ route("GET", "/rest/v1/invoices", ({ request, response, url }) => {
     .filter((invoice) => (byId === undefined ? true : invoice.id === byId))
     .filter((invoice) => (byKind === undefined ? true : invoice.kind === byKind))
     .sort((a, b) => b.issued_at.localeCompare(a.issued_at))
-    .map((invoice) => ({ ...invoice, deals: dealRef(caller.auth, invoice.deal_id) }));
+    .map((invoice) => ({
+      ...invoice,
+      deals: dealRef(caller.auth, invoice.deal_id),
+      payment_schedule: scheduleRef(caller.auth, invoice.schedule_id),
+    }));
   return send(response, 200, rows);
 });
 
@@ -335,9 +339,21 @@ route("POST", "/rest/v1/rpc/cancel_recurring", async ({ request, response }) => 
   return sendEmpty(response);
 });
 
+function scheduleRef(auth, scheduleId) {
+  const item = auth.money.schedule.find((entry) => entry.id === scheduleId);
+  return item ? { label: item.label, due_at: item.due_at } : null;
+}
+
 function dealRef(auth, dealId) {
   const found = findDeal(auth, dealId);
-  return found ? { contacts: { full_name: found.contact.full_name } } : null;
+  return found
+    ? {
+        contacts: {
+          full_name: found.contact.full_name,
+          organization: found.contact.organization ?? null,
+        },
+      }
+    : null;
 }
 
 route("GET", "/rest/v1/payments", ({ request, response }) => {

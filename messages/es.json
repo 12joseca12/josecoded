@@ -2040,6 +2040,48 @@
           "error": "No se ha podido completar la acción. Inténtalo otra vez."
         }
       }
+    },
+    "proformaPrint": {
+      "meta": {
+        "title": "Proforma"
+      },
+      "back": "Volver a cobros",
+      "print": "Imprimir o guardar como PDF",
+      "printHint": "En el diálogo de impresión elige «Guardar como PDF».",
+      "heading": "Proforma",
+      "notInvoice": "Este documento no es una factura y no tiene valor fiscal. La factura se emite aparte, cuando corresponda.",
+      "void": "Proforma anulada: no tiene ningún efecto.",
+      "number": "Número",
+      "issuedAt": "Fecha de emisión",
+      "dueAt": "Vencimiento",
+      "noDue": "A convenir",
+      "issuer": {
+        "title": "Emisor",
+        "name": "José Carlos Sánchez García",
+        "taxId": "NIF 06011766A",
+        "location": "Madrid (España)",
+        "email": "hola@josecoded.com"
+      },
+      "client": {
+        "title": "Cliente"
+      },
+      "concept": {
+        "title": "Concepto",
+        "deal": "Proyecto"
+      },
+      "totals": {
+        "net": "Base imponible",
+        "vat": "IVA ({rate})",
+        "gross": "Total"
+      },
+      "footer": "Importes en euros. Proforma {number}.",
+      "error": {
+        "title": "No se ha podido cargar la proforma",
+        "text": "Inténtalo otra vez en unos segundos.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "loading": "Cargando la proforma"
     }
   },
   "crm": {
