@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 import { Heading } from "@/components/ui/Heading/Heading";
 import type { BentoArea, BentoLinkData, WayId } from "@/types/services";
 
@@ -13,9 +15,10 @@ interface NeedTileProps {
   text: string;
   cta: BentoLinkData;
   more?: BentoLinkData;
+  price?: ReactNode;
 }
 
-export function NeedTile({ way, area, title, text, cta, more }: NeedTileProps) {
+export function NeedTile({ way, area, title, text, cta, more, price }: NeedTileProps) {
   const titleId = `${way}-title`;
   return (
     <BentoTile id={way} area={area} labelledBy={titleId}>
@@ -26,6 +29,7 @@ export function NeedTile({ way, area, title, text, cta, more }: NeedTileProps) {
             {title}
           </Heading>
           <p className={styles.text}>{text}</p>
+          {price ? <p className={styles.price}>{price}</p> : null}
         </div>
         <div className={styles.actions}>
           <BentoLink href={cta.href} describedBy={titleId}>
