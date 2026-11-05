@@ -127,6 +127,123 @@ as $$
   )
 $$;
 
+alter table public.contacts
+  add column created_by_admin boolean not null default false;
+
+alter table private.audit_log
+  drop constraint audit_log_action_valid,
+  add constraint audit_log_action_valid check (
+    action in ('insert', 'update', 'delete', 'contact_email_matches_lead', 'claim_quota_reached')
+  );
+
+create table private.claim_quota (
+  user_id uuid not null references public.profiles (id) on delete cascade,
+  day date not null,
+  count integer not null default 0,
+  primary key (user_id, day),
+  constraint claim_quota_count_positive check (count >= 0)
+);
+
+create index claim_quota_day_idx on private.claim_quota (day);
+
+alter table private.claim_quota enable row level security;
+revoke all on private.claim_quota from anon, authenticated;
+
+create function private.claim_daily_limit()
+returns integer
+language sql
+immutable
+set search_path = ''
+as $$
+  select 25
+$$;
+
+create function private.contacts_before_insert()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+begin
+  new.created_by_admin := private.is_admin();
+  return new;
+end;
+$$;
+
+create function private.contact_has_real_relation(p_contact_id uuid)
+returns boolean
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select exists (
+      select 1
+      from public.contacts c
+      where c.id = p_contact_id
+        and (c.lead_id is not null or c.import_id is not null or c.created_by_admin)
+    )
+    or exists (select 1 from public.deals d where d.contact_id = p_contact_id)
+    or exists (
+      select 1
+      from public.activities a
+      where a.contact_id = p_contact_id
+        and a.author_id is not null
+    )
+$$;
+
+create function private.contacts_after_insert_alert()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_lead uuid;
+begin
+  select l.id
+  into v_lead
+  from public.leads l
+  where l.email operator(extensions.=) new.email
+    and l.status in ('new', 'assigned', 'contacted')
+  order by l.created_at desc
+  limit 1;
+
+  if found then
+    insert into private.audit_log (actor_id, table_name, row_id, action, after)
+    values (
+      auth.uid(),
+      'contacts',
+      new.id,
+      'contact_email_matches_lead',
+      jsonb_build_object('lead_id', v_lead, 'owner_id', new.owner_id)
+    );
+  end if;
+
+  return null;
+end;
+$$;
+
+create trigger contacts_set_creator
+before insert on public.contacts
+for each row execute function private.contacts_before_insert();
+
+create trigger contacts_alert_open_lead_email
+after insert on public.contacts
+for each row
+when (
+  new.email is not null
+  and new.lead_id is null
+  and new.import_id is null
+  and not new.created_by_admin
+)
+execute function private.contacts_after_insert_alert();
+
+create trigger deals_audit_owner_change
+after update on public.deals
+for each row
+when (old.owner_id is distinct from new.owner_id)
+execute function private.audit();
+
 create function private.leads_before_insert()
 returns trigger
 language plpgsql
@@ -139,6 +256,17 @@ declare
   v_owner_usable boolean;
 begin
   if new.assigned_to is not null then
+    if not exists (
+      select 1
+      from public.profiles p
+      where p.id = new.assigned_to
+        and p.is_active
+        and p.archived_at is null
+        and p.role in ('closer', 'admin')
+    ) then
+      raise exception 'invalid_assignee' using errcode = 'P0001';
+    end if;
+
     if new.status = 'new' then
       new.status := 'assigned';
     end if;
@@ -155,6 +283,7 @@ begin
   from public.contacts c
   where c.email operator(extensions.=) new.email
     and c.archived_at is null
+    and private.contact_has_real_relation(c.id)
   order by (c.owner_id is not null) desc, c.created_at, c.id
   limit 1;
 
@@ -388,7 +517,20 @@ begin
     l.offer,
     l.extras,
     l.created_at,
-    left(l.message, 140),
+    left(
+      regexp_replace(
+        regexp_replace(
+          regexp_replace(l.message, '[^\s@]+@[^\s@]+\.[^\s@]+', '[…]', 'g'),
+          '(https?://|www\.)\S+',
+          '[…]',
+          'gi'
+        ),
+        '\+?\d([\s.\-]*\d){6,}',
+        '[…]',
+        'g'
+      ),
+      140
+    ),
     l.locale
   from public.leads l
   where l.status = 'new'
@@ -410,9 +552,33 @@ declare
   v_lead public.leads;
   v_contact uuid;
   v_deal uuid;
+  v_count integer;
+  v_admin uuid;
 begin
   if not (private.is_closer() or private.is_admin()) then
     raise exception 'forbidden' using errcode = '42501';
+  end if;
+
+  if not private.is_admin() then
+    insert into private.claim_quota as q (user_id, day, count)
+    values (v_uid, (now() at time zone 'utc')::date, 1)
+    on conflict (user_id, day) do update set count = q.count + 1
+    returning q.count into v_count;
+
+    if v_count > private.claim_daily_limit() then
+      raise exception 'claim_quota_exceeded' using errcode = 'P0001';
+    end if;
+
+    if v_count = private.claim_daily_limit() then
+      insert into private.audit_log (actor_id, table_name, row_id, action, after)
+      values (
+        v_uid,
+        'profiles',
+        v_uid,
+        'claim_quota_reached',
+        jsonb_build_object('day', (now() at time zone 'utc')::date, 'limit', v_count)
+      );
+    end if;
   end if;
 
   update public.leads l
@@ -430,9 +596,27 @@ begin
     raise exception 'lead_already_claimed' using errcode = 'P0001';
   end if;
 
-  select cl.o_contact_id, cl.o_deal_id
-  into v_contact, v_deal
-  from private.convert_lead(v_lead, v_uid, v_uid, false) cl;
+  begin
+    select cl.o_contact_id, cl.o_deal_id
+    into v_contact, v_deal
+    from private.convert_lead(v_lead, v_uid, v_uid, false) cl;
+  exception
+    when raise_exception then
+      if sqlerrm is distinct from 'contact_conflict' then
+        raise;
+      end if;
+
+      select p.id into v_admin from public.profiles p where p.role = 'admin' limit 1;
+
+      update public.leads
+      set assigned_to = v_admin,
+          assigned_by = v_admin,
+          assigned_at = now(),
+          status = 'assigned'
+      where id = p_lead_id;
+
+      return null;
+  end;
 
   update public.leads set contact_id = v_contact, deal_id = v_deal where id = p_lead_id;
 
@@ -590,6 +774,10 @@ revoke all on function private.leads_before_insert() from public, anon, authenti
 revoke all on function private.leads_after_insert() from public, anon, authenticated;
 revoke all on function private.convert_lead(public.leads, uuid, uuid, boolean) from public, anon, authenticated;
 revoke all on function private.is_own_or_sub(uuid) from public, anon, authenticated;
+revoke all on function private.claim_daily_limit() from public, anon, authenticated;
+revoke all on function private.contacts_before_insert() from public, anon, authenticated;
+revoke all on function private.contact_has_real_relation(uuid) from public, anon, authenticated;
+revoke all on function private.contacts_after_insert_alert() from public, anon, authenticated;
 
 revoke all on function public.claim_lead(uuid) from public, anon, authenticated;
 revoke all on function public.assign_lead(uuid, uuid) from public, anon, authenticated;

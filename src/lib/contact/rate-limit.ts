@@ -34,3 +34,16 @@ export async function findContactLimiter(): Promise<RateLimiter | null> {
     return null;
   }
 }
+
+export function passesContactRateLimit(
+  limiter: RateLimiter | null,
+  key: string,
+  loopback: boolean,
+): Promise<boolean> {
+  return passesRateLimit(limiter, key, {
+    failClosed: !loopback,
+    onMissing: () => {
+      if (!loopback) console.error("limiter_missing", "CONTACT_LIMITER");
+    },
+  });
+}

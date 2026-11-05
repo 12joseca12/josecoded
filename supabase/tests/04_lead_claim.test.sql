@@ -2,7 +2,7 @@ begin;
 
 \ir support/helpers.sql
 
-select plan(128);
+select plan(151);
 
 select tests.clean();
 select tests.create_user('t-admin@example.com', 'admin', 'Admin');
@@ -15,10 +15,10 @@ select tests.create_user('t-client@example.com', 'client', 'Client');
 
 update public.profiles set is_active = false where id = md5('t-closer-off@example.com')::uuid;
 
-insert into public.contacts (id, owner_id, full_name, email) values
-  ('00000000-0000-4000-8000-0000000000a1', md5('t-closer-a@example.com')::uuid, 'Contacto A', 'Own@Example.com'),
-  ('00000000-0000-4000-8000-0000000000c1', null, 'Contacto Libre', 'free@example.com'),
-  ('00000000-0000-4000-8000-0000000000f1', md5('t-closer-off@example.com')::uuid, 'Contacto Baja', 'off@example.com');
+insert into public.contacts (id, owner_id, full_name, email, import_id) values
+  ('00000000-0000-4000-8000-0000000000a1', md5('t-closer-a@example.com')::uuid, 'Contacto A', 'Own@Example.com', gen_random_uuid()),
+  ('00000000-0000-4000-8000-0000000000c1', null, 'Contacto Libre', 'free@example.com', gen_random_uuid()),
+  ('00000000-0000-4000-8000-0000000000f1', md5('t-closer-off@example.com')::uuid, 'Contacto Baja', 'off@example.com', gen_random_uuid());
 
 insert into public.deals (id, contact_id, stage, via) values
   ('00000000-0000-4000-8000-0000000000d1', '00000000-0000-4000-8000-0000000000a1', 'new', 'hiring');
@@ -630,6 +630,10 @@ select lives_ok(
   'a late lead for the adoption path'
 );
 select lives_ok(
+  $$select public.submit_lead(p_source => 'form', p_full_name => 'Tarde Cinco', p_email => 'tarde5@example.com', p_consent => true, p_ip_hash => md5('t5'))$$,
+  'a late lead whose email later becomes a contact of closer A'
+);
+select lives_ok(
   $$select public.submit_lead(p_source => 'form', p_full_name => 'Tarde Cuatro', p_email => 'tarde4@example.com', p_consent => true, p_ip_hash => md5('t4'))$$,
   'a late lead whose email later becomes a contact of another closer'
 );
@@ -639,40 +643,53 @@ insert into public.contacts (id, owner_id, full_name, email) values
   ('00000000-0000-4000-8000-0000000000e1', null, 'Tarde Libre', 'tarde1@example.com'),
   ('00000000-0000-4000-8000-0000000000e2', md5('t-closer-a@example.com')::uuid, 'Tarde de A', 'tarde2@example.com'),
   ('00000000-0000-4000-8000-0000000000e3', null, 'Tarde Adoptable', 'tarde3@example.com'),
-  ('00000000-0000-4000-8000-0000000000e5', md5('t-closer-a@example.com')::uuid, 'Tarde de A Dos', 'tarde4@example.com');
+  ('00000000-0000-4000-8000-0000000000e5', md5('t-closer-a@example.com')::uuid, 'Tarde de A Dos', 'tarde4@example.com'),
+  ('00000000-0000-4000-8000-0000000000e6', md5('t-closer-a@example.com')::uuid, 'Tarde de A Tres', 'tarde5@example.com');
 insert into public.deals (id, contact_id, stage, via) values
   ('00000000-0000-4000-8000-0000000000e4', '00000000-0000-4000-8000-0000000000e3', 'new', 'hiring');
 select set_config('tests.t1', (select id::text from public.leads where full_name = 'Tarde Uno'), true);
 select set_config('tests.t2', (select id::text from public.leads where full_name = 'Tarde Dos'), true);
 select set_config('tests.t3', (select id::text from public.leads where full_name = 'Tarde Tres'), true);
 select set_config('tests.t4', (select id::text from public.leads where full_name = 'Tarde Cuatro'), true);
+select set_config('tests.t5', (select id::text from public.leads where full_name = 'Tarde Cinco'), true);
 select tests.login_as('t-closer-b@example.com');
 
-select throws_ok(
-  format($$select public.claim_lead(%L)$$, current_setting('tests.t1')),
-  'P0001',
-  'contact_conflict',
-  'a claim does not adopt an unowned contact'
-);
-
-select throws_ok(
-  format($$select public.claim_lead(%L)$$, current_setting('tests.t2')),
-  'P0001',
-  'contact_conflict',
-  'a claim does not duplicate a contact owned by someone else'
+select is(
+  public.claim_lead(current_setting('tests.t1')::uuid),
+  null::uuid,
+  'a claim does not adopt an unowned contact and answers without revealing it'
 );
 
 select is(
-  (select count(*) from public.leads where id = current_setting('tests.t2')::uuid),
+  public.claim_lead(current_setting('tests.t5')::uuid),
+  null::uuid,
+  'a claim does not duplicate a contact owned by someone else and answers without revealing it'
+);
+
+select is(
+  (select count(*) from public.leads where id in (current_setting('tests.t1')::uuid, current_setting('tests.t5')::uuid)),
   0::bigint,
-  'the closer cannot read the unassigned lead after the failed claim'
+  'the closer cannot read the leads after the blocked claims'
+);
+
+select is(
+  (select count(*) from public.list_lead_inbox() where id in (current_setting('tests.t1')::uuid, current_setting('tests.t5')::uuid)),
+  0::bigint,
+  'blocked leads leave the inbox'
+);
+
+select throws_ok(
+  format($$select public.claim_lead(%L)$$, current_setting('tests.t5')),
+  'P0001',
+  'lead_already_claimed',
+  'a blocked lead cannot be claimed again'
 );
 
 reset role;
 select results_eq(
-  format($$select status::text, assigned_to, contact_id from public.leads where id = %L$$, current_setting('tests.t2')),
-  $$values ('new', null::uuid, null::uuid)$$,
-  'a failed claim leaves the lead untouched'
+  format($$select status::text, assigned_to, assigned_by, contact_id from public.leads where id = %L$$, current_setting('tests.t5')),
+  $$values ('assigned', md5('t-admin@example.com')::uuid, md5('t-admin@example.com')::uuid, null::uuid)$$,
+  'a blocked claim hands the lead to the admin to decide'
 );
 
 select tests.login_as('t-closer-a@example.com');
@@ -803,6 +820,177 @@ select is(
   (select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and p.proname = 'submit_lead'),
   1::bigint,
   'only one submit_lead signature remains'
+);
+
+reset role;
+select tests.create_user('t-closer-c@example.com', 'closer', 'Closer C');
+
+select tests.login_as('t-closer-b@example.com');
+insert into public.contacts (owner_id, full_name, email)
+values (md5('t-closer-b@example.com')::uuid, 'Captura B', 'victim@example.com');
+
+reset role;
+select tests.login_service();
+select lives_ok(
+  $$select public.submit_lead(p_source => 'form', p_full_name => 'Victima Uno', p_email => 'victim@example.com', p_consent => true, p_ip_hash => md5('v1'))$$,
+  'a lead arrives with the email of a contact a closer made up'
+);
+select lives_ok(
+  $$select public.submit_lead(p_source => 'form', p_full_name => 'Victima Dos', p_email => 'victim2@example.com', p_consent => true, p_ip_hash => md5('v2'))$$,
+  'a lead arrives before a closer creates a contact with its email'
+);
+
+reset role;
+select results_eq(
+  $$select status::text, assigned_to, contact_id from public.leads where full_name = 'Victima Uno'$$,
+  $$values ('new', null::uuid, null::uuid)$$,
+  'a contact without real relation does not capture the lead, which enters the inbox'
+);
+
+select is(
+  (select count(*) from private.audit_log where action = 'contact_email_matches_lead' and row_id = (select id from public.contacts where full_name = 'Captura B')),
+  0::bigint,
+  'no alert when no open lead had the email'
+);
+
+select tests.login_as('t-closer-b@example.com');
+insert into public.contacts (owner_id, full_name, email)
+values (md5('t-closer-b@example.com')::uuid, 'Captura B Dos', 'victim2@example.com');
+reset role;
+
+select results_eq(
+  $$select actor_id, row_id, (after ->> 'lead_id')::uuid from private.audit_log where action = 'contact_email_matches_lead' and (after ->> 'lead_id')::uuid = (select id from public.leads where full_name = 'Victima Dos')$$,
+  $$select md5('t-closer-b@example.com')::uuid, id, (select id from public.leads where full_name = 'Victima Dos') from public.contacts where full_name = 'Captura B Dos'$$,
+  'a new contact matching an open lead by email alerts the admin through the audit log'
+);
+
+insert into public.contacts (id, owner_id, full_name, email) values
+  ('00000000-0000-4000-8000-0000000000b3', md5('t-closer-b@example.com')::uuid, 'Con Deal', 'rel-deal@example.com'),
+  ('00000000-0000-4000-8000-0000000000b4', md5('t-closer-b@example.com')::uuid, 'Con Nota Auto', 'rel-auto@example.com'),
+  ('00000000-0000-4000-8000-0000000000b5', md5('t-closer-b@example.com')::uuid, 'Con Nota Humana', 'rel-human@example.com');
+insert into public.deals (contact_id, stage, via) values ('00000000-0000-4000-8000-0000000000b3', 'new', 'hiring');
+insert into public.activities (contact_id, author_id, kind, body) values
+  ('00000000-0000-4000-8000-0000000000b4', null, 'form', 'auto'),
+  ('00000000-0000-4000-8000-0000000000b5', md5('t-closer-b@example.com')::uuid, 'note', 'humana');
+
+select tests.login_as('t-admin@example.com');
+insert into public.contacts (owner_id, full_name, email)
+values (md5('t-closer-a@example.com')::uuid, 'Alta Admin', 'rel-admin@example.com');
+reset role;
+
+select is(
+  (select created_by_admin from public.contacts where full_name = 'Alta Admin'),
+  true,
+  'a contact created by the admin is marked as such'
+);
+
+select tests.login_as('t-closer-b@example.com');
+select is(
+  (select created_by_admin from public.contacts where full_name = 'Captura B Dos'),
+  false,
+  'a contact created by a closer is not marked as admin-created'
+);
+reset role;
+
+select tests.login_service();
+select public.submit_lead(p_source => 'form', p_full_name => 'Rel Deal', p_email => 'rel-deal@example.com', p_consent => true, p_ip_hash => md5('r1'));
+select public.submit_lead(p_source => 'form', p_full_name => 'Rel Auto', p_email => 'rel-auto@example.com', p_consent => true, p_ip_hash => md5('r2'));
+select public.submit_lead(p_source => 'form', p_full_name => 'Rel Human', p_email => 'rel-human@example.com', p_consent => true, p_ip_hash => md5('r3'));
+select public.submit_lead(p_source => 'form', p_full_name => 'Rel Admin', p_email => 'rel-admin@example.com', p_consent => true, p_ip_hash => md5('r4'));
+reset role;
+
+select results_eq(
+  $$select full_name, assigned_to is not null from public.leads where full_name like 'Rel %' order by full_name$$,
+  $$values ('Rel Admin', true), ('Rel Auto', false), ('Rel Deal', true), ('Rel Human', true)$$,
+  'only contacts with a deal, a human activity or admin creation capture a lead by email'
+);
+
+insert into public.leads (source, full_name, message, phone) values
+  ('manual', 'Saneo', 'Escribeme a ana.perez+x@correo.example.com o visita https://ejemplo.com/a?b=1 o www.otro.es/x o llama al +34 600 12 34 56 / 600.123.456 / 600-123-456 gracias', '600000099'),
+  ('manual', 'Corto', 'Pedido 123456 y 12 34, hola', '600000098');
+
+select tests.login_as('t-closer-c@example.com');
+
+select is(
+  (select excerpt from public.list_lead_inbox() where first_name = 'Saneo'),
+  'Escribeme a […] o visita […] o […] o llama al […] / […] / […] gracias',
+  'the inbox excerpt hides emails, links and phone numbers'
+);
+
+select is(
+  (select excerpt from public.list_lead_inbox() where first_name = 'Corto'),
+  'Pedido 123456 y 12 34, hola',
+  'short digit runs are kept'
+);
+
+reset role;
+insert into public.leads (source, full_name, phone)
+select 'manual', 'Cuota ' || g, '6100000' || lpad(g::text, 2, '0')
+from generate_series(1, 52) as g;
+
+select tests.login_as('t-closer-c@example.com');
+
+select lives_ok(
+  $t$do $do$ declare r record; begin for r in select id from public.list_lead_inbox() where first_name = 'Cuota' limit 25 loop perform public.claim_lead(r.id); end loop; end $do$$t$,
+  'a closer can claim up to the daily limit'
+);
+
+select throws_ok(
+  $$select public.claim_lead((select id from public.list_lead_inbox() where first_name = 'Cuota' limit 1))$$,
+  'P0001',
+  'claim_quota_exceeded',
+  'the claim over the daily limit is refused'
+);
+
+reset role;
+select is(
+  (select count(*) from private.audit_log where action = 'claim_quota_reached' and row_id = md5('t-closer-c@example.com')::uuid),
+  1::bigint,
+  'reaching the daily limit alerts the admin once'
+);
+
+select tests.login_as('t-admin@example.com');
+select lives_ok(
+  $t$do $do$ declare r record; begin for r in select id from public.leads where full_name like 'Cuota %' and status = 'new' loop perform public.claim_lead(r.id); end loop; end $do$$t$,
+  'the admin has no daily limit'
+);
+select is(
+  (select count(*) from public.leads where full_name like 'Cuota %' and status = 'converted'),
+  52::bigint,
+  'the admin claimed every remaining lead'
+);
+reset role;
+
+select is(
+  (select count(*) from private.audit_log where table_name = 'deals' and row_id = '00000000-0000-4000-8000-0000000000e4' and action = 'update'),
+  1::bigint,
+  'a deal owner change is audited'
+);
+
+select throws_ok(
+  $$insert into public.leads (source, full_name, phone, assigned_to) values ('manual', 'Mal Asignado', '600000097', md5('t-freelance@example.com')::uuid)$$,
+  'P0001',
+  'invalid_assignee',
+  'a lead cannot be created assigned to a freelance'
+);
+
+select throws_ok(
+  $$insert into public.leads (source, full_name, phone, assigned_to) values ('manual', 'Mal Asignado', '600000097', gen_random_uuid())$$,
+  'P0001',
+  'invalid_assignee',
+  'a lead cannot be created assigned to an unknown profile'
+);
+
+select throws_ok(
+  $$insert into public.leads (source, full_name, phone, assigned_to) values ('manual', 'Mal Asignado', '600000097', md5('t-closer-off@example.com')::uuid)$$,
+  'P0001',
+  'invalid_assignee',
+  'a lead cannot be created assigned to an inactive closer'
+);
+
+select lives_ok(
+  $$insert into public.leads (source, full_name, phone, assigned_to) values ('manual', 'Bien Asignado', '600000096', md5('t-sub-a@example.com')::uuid)$$,
+  'a lead can be created assigned to a subcloser'
 );
 
 select * from finish();

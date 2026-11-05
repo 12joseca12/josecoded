@@ -81,6 +81,7 @@ export type Database = {
           archived_at: string | null
           city: string | null
           created_at: string
+          created_by_admin: boolean
           email: string | null
           full_name: string
           id: string
@@ -106,6 +107,7 @@ export type Database = {
           archived_at?: string | null
           city?: string | null
           created_at?: string
+          created_by_admin?: boolean
           email?: string | null
           full_name: string
           id?: string
@@ -131,6 +133,7 @@ export type Database = {
           archived_at?: string | null
           city?: string | null
           created_at?: string
+          created_by_admin?: boolean
           email?: string | null
           full_name?: string
           id?: string

@@ -8,7 +8,7 @@ import type { Database } from "@/types/database";
 import { readContactServerConfig } from "./env";
 import { hashIp } from "./ip";
 import { type ContactDeps, processContact } from "./process";
-import { findContactLimiter, passesRateLimit } from "./rate-limit";
+import { findContactLimiter, passesContactRateLimit } from "./rate-limit";
 import { verifyTurnstile } from "./turnstile";
 
 const rpcTimeoutMs = 8000;
@@ -48,11 +48,7 @@ function buildDeps(env: Record<string, string | undefined>): ContactDeps | null 
       }
     },
     rateLimit: async (key) =>
-      passesRateLimit(await findContactLimiter(), key, {
-        onMissing: () => {
-          if (!config.loopback) console.error("limiter_missing", "CONTACT_LIMITER");
-        },
-      }),
+      passesContactRateLimit(await findContactLimiter(), key, config.loopback),
     reportFailure: (code) => {
       console.error("contact_submit_failed", code);
     },
