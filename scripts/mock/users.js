@@ -414,8 +414,20 @@ manage("/rest/v1/rpc/log_totp_reset", ({ auth, session, args, response }) => {
 });
 
 manage("/rest/v1/rpc/admin_audit_log", ({ auth, args, response }) => {
+  if (auth.auditMode === "error") {
+    return send(response, 500, { code: "XX000", message: "internal", details: null, hint: null });
+  }
+  if (auth.auditMode === "missing") {
+    return send(response, 404, {
+      code: "PGRST202",
+      message: "no function",
+      details: null,
+      hint: null,
+    });
+  }
   const rows = auth.audit
-    .filter((entry) => entry.row_id === args.p_row_id)
+    .filter((entry) => !args.p_row_id || entry.row_id === args.p_row_id)
+    .filter((entry) => !args.p_table || entry.table_name === args.p_table)
     .sort((a, b) => b.id - a.id);
   return send(response, 200, rows.slice(0, args.p_limit ?? 50));
 });

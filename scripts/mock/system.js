@@ -101,21 +101,21 @@ extendAuthState((state) => {
   state.system = freshSystem();
 });
 
-function admin(request) {
+export function admin(request) {
   const session = bearer(request);
   if (!session) return { denied: "unauthenticated" };
   const allowed = personById(session.userId)?.[1].role === "admin" && session.level === "aal2";
   return allowed ? { session } : { session, denied: "forbidden" };
 }
 
-function deny(response, who) {
+export function deny(response, who) {
   if (who.denied === "unauthenticated") {
     return send(response, 401, { code: "PGRST301", message: "JWT invalid" });
   }
   return send(response, 403, { code: "42501", message: "forbidden", details: null, hint: null });
 }
 
-function failure(response, code = "XX000", message = "internal") {
+export function failure(response, code = "XX000", message = "internal") {
   const status = code === "XX000" ? 500 : 404;
   return send(response, status, { code, message, details: null, hint: null });
 }

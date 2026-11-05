@@ -164,7 +164,10 @@ test("a lead opens its record from the list and the record passes axe at 1440 an
     record.getByRole("heading", { level: 2, name: leads("detail.owner.title") }),
   ).toBeVisible();
   await expect(record.getByText(leads("unassigned"))).toBeVisible();
-  await expect(record.getByText(/Historial/)).toHaveCount(0);
+  await expect(
+    record.getByRole("heading", { level: 2, name: msg("admin.audit.history.title") }),
+  ).toBeVisible();
+  await expect(record.getByText(msg("admin.audit.history.empty"))).toBeVisible();
   await expectClean(page);
 
   await page.setViewportSize({ width: 375, height: 812 });

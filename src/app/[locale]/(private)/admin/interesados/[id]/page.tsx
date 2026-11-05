@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
+import { AuditList } from "@/components/admin/AuditList/AuditList";
 import { LeadDetail } from "@/components/admin/LeadDetail/LeadDetail";
 import { LeadsError } from "@/components/admin/LeadsError/LeadsError";
 import { OwnerCard } from "@/components/admin/OwnerCard/OwnerCard";
@@ -11,6 +12,8 @@ import { LoadingRegion } from "@/components/ui/LoadingRegion/LoadingRegion";
 import { Skeleton } from "@/components/ui/Skeleton/Skeleton";
 import { isLocale, type Locale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
+import { fetchAudit, summarizeEntry } from "@/lib/admin/audit";
+import { buildAuditListLabels } from "@/lib/admin/audit-labels";
 import { leadDetailLabels } from "@/lib/admin/lead-labels";
 import { buildOfferLabels } from "@/lib/admin/lead-offer";
 import { fetchLeadDetail } from "@/lib/admin/leads";
@@ -33,6 +36,37 @@ export async function generateMetadata({ params }: LeadPageProps): Promise<Metad
   if (!isLocale(locale)) return {};
   const t = await getTranslator(locale);
   return { title: t("admin.leads.detail.meta.title") };
+}
+
+const historyLimit = 30;
+
+async function LeadHistory({ locale, id }: { locale: Locale; id: string }) {
+  const t = await getTranslator(locale);
+  const client = await createSupabaseServerClient();
+  if (client === null) notFound();
+  const result = await fetchAudit(client, { table: "leads", rowId: id, limit: historyLimit });
+  let body;
+  if (result.status === "unavailable") body = <p>{t("admin.audit.history.unavailable")}</p>;
+  else if (result.status === "error") body = <p role="alert">{t("admin.audit.history.error")}</p>;
+  else if (result.data.length === 0) body = <p>{t("admin.audit.history.empty")}</p>;
+  else {
+    body = (
+      <AuditList
+        entries={result.data.map(summarizeEntry)}
+        labels={buildAuditListLabels(t)}
+        locale={locale}
+        showTable={false}
+      />
+    );
+  }
+  return (
+    <section className={detail.history} aria-labelledby="lead-history-title">
+      <Heading level={2} size="h3" id="lead-history-title">
+        {t("admin.audit.history.title")}
+      </Heading>
+      {body}
+    </section>
+  );
 }
 
 async function LeadSection({ locale, id }: { locale: Locale; id: string }) {
@@ -79,6 +113,19 @@ async function LeadSection({ locale, id }: { locale: Locale; id: string }) {
           discard={discardLead.bind(null, locale)}
         />
       </div>
+      <Suspense
+        fallback={
+          <LoadingRegion
+            loading
+            label={t("admin.audit.history.loading")}
+            fallback={<Skeleton height="6rem" />}
+          >
+            {null}
+          </LoadingRegion>
+        }
+      >
+        <LeadHistory locale={locale} id={id} />
+      </Suspense>
     </>
   );
 }
