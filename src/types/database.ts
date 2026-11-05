@@ -705,6 +705,46 @@ export type Database = {
         Args: { p_full_name: string; p_locale?: Database["public"]["Enums"]["app_locale"]; p_token: string }
         Returns: Database["public"]["Enums"]["user_role"]
       }
+      admin_audit_log: {
+        Args: { p_limit?: number; p_row_id?: string; p_table?: string }
+        Returns: {
+          action: string
+          actor_id: string | null
+          actor_name: string | null
+          after: Json | null
+          at: string
+          before: Json | null
+          id: number
+          row_id: string | null
+          table_name: string
+        }[]
+      }
+      admin_counters: {
+        Args: never
+        Returns: Json
+      }
+      admin_users: {
+        Args: never
+        Returns: {
+          accrued_pending: number
+          archived_at: string | null
+          closer_rate: number | null
+          closer_recurring_rate: number | null
+          contacts_count: number
+          created_at: string
+          email: string | null
+          full_name: string
+          has_totp: boolean
+          id: string
+          is_active: boolean
+          open_deals: number
+          parent_closer_id: string | null
+          parent_rate: number | null
+          parent_recurring_rate: number | null
+          payout_cadence: Database["public"]["Enums"]["payout_cadence"] | null
+          role: Database["public"]["Enums"]["user_role"]
+        }[]
+      }
       assign_lead: {
         Args: { p_lead_id: string; p_user_id: string }
         Returns: string
@@ -737,6 +777,10 @@ export type Database = {
           via: Database["public"]["Enums"]["contact_via"]
         }[]
       }
+      log_totp_reset: {
+        Args: { p_user_id: string }
+        Returns: undefined
+      }
       mark_notifications_read: {
         Args: { p_ids: string[] }
         Returns: number
@@ -766,6 +810,14 @@ export type Database = {
           status: string
         }[]
       }
+      reassign_portfolio: {
+        Args: { p_from_user: string; p_to_user: string }
+        Returns: {
+          contacts: number
+          deals: number
+          leads: number
+        }[]
+      }
       renew_invitation: {
         Args: { p_id: string }
         Returns: {
@@ -783,6 +835,14 @@ export type Database = {
       }
       set_notification_pref: {
         Args: { p_channel: string; p_enabled: boolean; p_event: Database["public"]["Enums"]["notification_event"] }
+        Returns: undefined
+      }
+      set_user_active: {
+        Args: { p_active: boolean; p_user_id: string }
+        Returns: undefined
+      }
+      set_user_rates: {
+        Args: { p_closer_rate?: number; p_closer_recurring_rate?: number; p_parent_rate?: number; p_parent_recurring_rate?: number; p_payout_cadence?: Database["public"]["Enums"]["payout_cadence"]; p_user_id: string }
         Returns: undefined
       }
       submit_lead: {

@@ -29,6 +29,14 @@ create table auth.users (
   updated_at timestamptz
 );
 
+create table auth.mfa_factors (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users (id) on delete cascade,
+  factor_type text not null default 'totp',
+  status text not null default 'unverified',
+  created_at timestamptz not null default now()
+);
+
 create function auth.jwt()
 returns jsonb
 language sql
