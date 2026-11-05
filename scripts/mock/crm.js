@@ -314,6 +314,21 @@ route("POST", "/rest/v1/contacts", async ({ request, response }) => {
 route("GET", "/rest/v1/deals", ({ request, response, url }) => {
   const caller = callerOf(request);
   if (!caller) return fail(response, 401, "PGRST301", "JWT invalid");
+  if ((url.searchParams.get("select") ?? "").includes("contacts(")) {
+    const rows = caller.auth.contacts
+      .filter((contact) => canSee(caller, contact))
+      .flatMap((contact) =>
+        contact.deals
+          .filter((deal) => deal.stage === "won")
+          .map((deal) => ({
+            id: deal.id,
+            won_amount: deal.won_amount ?? null,
+            recurring_monthly: deal.recurring_monthly ?? null,
+            contacts: { full_name: contact.full_name },
+          })),
+      );
+    return send(response, 200, rows);
+  }
   const id = operand(url.searchParams.get("id") ?? "eq.")[1];
   const rows = caller.auth.contacts
     .filter((contact) => canSee(caller, contact))

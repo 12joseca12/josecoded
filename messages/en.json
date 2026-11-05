@@ -1770,6 +1770,276 @@
           "history": "The history could not be loaded."
         }
       }
+    },
+    "payments": {
+      "meta": {
+        "title": "Payments"
+      },
+      "title": "Payments",
+      "lead": "Payment milestones, proformas and invoices of won deals. Commission accrues with each payment you record.",
+      "loading": "Loading payments",
+      "tabsLabel": "Filter payments",
+      "tabs": {
+        "pending": "Pending",
+        "overdue": "Overdue",
+        "paid": "Paid",
+        "proformas": "Proformas",
+        "invoices": "Invoices"
+      },
+      "toolbar": {
+        "schedule": "Create schedule"
+      },
+      "empty": {
+        "title": "Nothing to collect yet",
+        "text": "When a won deal has its payment schedule, its milestones appear here.",
+        "tabTitle": "No results in this tab",
+        "tabText": "There is nothing to show with this filter."
+      },
+      "error": {
+        "title": "The payments could not be loaded",
+        "text": "Try again in a few seconds.",
+        "retry": "Try again",
+        "retrying": "Retrying"
+      },
+      "table": {
+        "caption": "Payment milestones",
+        "region": "Payment milestones table, scrolls horizontally",
+        "columns": {
+          "contact": "Contact",
+          "label": "Milestone",
+          "amount": "Amount",
+          "paid": "Paid",
+          "due": "Due",
+          "status": "Status",
+          "actions": "Actions"
+        },
+        "paidOf": "{paid} of {total}",
+        "noDue": "No date",
+        "overdue": "Overdue",
+        "statuses": {
+          "scheduled": "Scheduled",
+          "proforma_sent": "Proforma issued",
+          "invoiced": "Invoiced",
+          "paid": "Paid",
+          "cancelled": "Cancelled"
+        },
+        "kinds": {
+          "milestone": "Milestone",
+          "recurring": "Monthly fee"
+        }
+      },
+      "actions": {
+        "collect": "Collect",
+        "collectAria": "Collect {label} for {name}",
+        "proforma": "Proforma",
+        "proformaAria": "Issue a proforma for {label} of {name}",
+        "invoice": "Invoice",
+        "invoiceAria": "Record the invoice for {label} of {name}",
+        "cancel": "Cancel",
+        "cancelAria": "Cancel the milestone {label} of {name}"
+      },
+      "documents": {
+        "caption": "Proformas and invoices",
+        "region": "Documents table, scrolls horizontally",
+        "columns": {
+          "contact": "Contact",
+          "number": "Number",
+          "date": "Date",
+          "net": "Net",
+          "vat": "VAT",
+          "gross": "Total",
+          "status": "Status",
+          "actions": "Actions"
+        },
+        "kinds": {
+          "proforma": "Proforma, not an invoice",
+          "invoice": "Invoice"
+        },
+        "statuses": {
+          "draft": "Draft",
+          "sent": "Issued",
+          "paid": "Paid",
+          "void": "Void"
+        },
+        "pdf": "Open PDF",
+        "pdfAria": "Open PDF of invoice {number}",
+        "print": "View and print",
+        "printAria": "View and print proforma {number}",
+        "void": "Void",
+        "voidAria": "Void document {number}",
+        "empty": "There are no documents of this kind yet."
+      },
+      "record": {
+        "open": "Record payment",
+        "title": "Record payment",
+        "close": "Close",
+        "deal": "Deal",
+        "dealPlaceholder": "Choose a won deal",
+        "schedule": "Milestone",
+        "noSchedule": "No milestone",
+        "kind": "Type",
+        "nature": "Nature",
+        "amount": "Net amount (excluding VAT)",
+        "amountHint": "What you collected excluding VAT. Commission is calculated on this amount.",
+        "date": "Payment date",
+        "method": "Method",
+        "reference": "Reference",
+        "invoice": "Related invoice",
+        "noInvoice": "No invoice",
+        "optional": "(optional)",
+        "kinds": {
+          "payment": "Payment",
+          "refund": "Refund"
+        },
+        "natures": {
+          "project": "Project",
+          "recurring": "Recurring"
+        },
+        "methods": {
+          "transfer": "Bank transfer",
+          "card": "Card",
+          "stripe": "Stripe",
+          "other": "Other"
+        },
+        "submit": "Record payment",
+        "saving": "Recording",
+        "done": "Payment recorded. Commission has accrued.",
+        "errors": {
+          "deal": "Choose a won deal.",
+          "amount": "Enter an amount above zero, with at most two decimals.",
+          "date": "Choose the payment date.",
+          "future_date": "The payment date cannot be in the future.",
+          "payment_exceeds_schedule": "The amount is more than what is left to collect on this milestone.",
+          "payment_exceeds_deal": "The amount is more than the total won on the deal.",
+          "refund_exceeds_paid": "The refund is more than what had been collected.",
+          "no_recurring": "This deal has no recurring charge.",
+          "nature_mismatch": "The nature does not match the milestone.",
+          "schedule_cancelled": "The milestone is cancelled.",
+          "schedule_mismatch": "The milestone does not belong to this deal.",
+          "invoice_mismatch": "The invoice does not belong to this deal.",
+          "invoice_void": "The invoice is void.",
+          "deal_not_won": "The deal is not won yet.",
+          "invalid_payment": "Check the payment details.",
+          "forbidden": "Only the admin can record payments.",
+          "error": "The payment could not be recorded. Try again."
+        }
+      },
+      "scheduleSheet": {
+        "open": "Create schedule",
+        "title": "Payment schedule",
+        "close": "Close",
+        "deal": "Deal",
+        "dealPlaceholder": "Choose a won deal",
+        "won": "Won amount: {amount}",
+        "templates": "Templates",
+        "template442": "40 / 40 / 20",
+        "templateSingle": "Single payment",
+        "items": "Milestones",
+        "label": "Name",
+        "kind": "Type",
+        "kinds": {
+          "milestone": "Milestone",
+          "recurring": "Monthly fee"
+        },
+        "percent": "%",
+        "amount": "Amount",
+        "due": "Due",
+        "add": "Add milestone",
+        "remove": "Remove",
+        "removeAria": "Remove milestone {position}",
+        "sum": "Milestones add up to {sum} of {total}",
+        "sumOk": "The sum matches the won amount.",
+        "defaults": {
+          "first": "Advance",
+          "second": "Midpoint delivery",
+          "last": "Final delivery",
+          "single": "Single payment",
+          "next": "Milestone"
+        },
+        "replaceNote": "It replaces the milestones that have no payments or documents yet.",
+        "submit": "Save schedule",
+        "saving": "Saving",
+        "done": "Schedule saved",
+        "errors": {
+          "deal": "Choose a won deal.",
+          "items": "Check the milestones: name, amount above zero and a valid date.",
+          "schedule_total_mismatch": "Milestones must add up exactly to the won amount.",
+          "invalid_schedule": "Check the milestones: name, amount above zero and a valid date.",
+          "deal_not_won": "The deal is not won yet.",
+          "forbidden": "Only the admin can create schedules.",
+          "error": "The schedule could not be saved. Try again."
+        }
+      },
+      "proformaSheet": {
+        "title": "Issue proforma",
+        "close": "Close",
+        "text": "It is numbered PF-YYYY-NNN. A proforma is not an invoice and has no tax value.",
+        "vat": "VAT (%)",
+        "vatHint": "Filled from the billing setting. Use 0 until you are registered as self-employed.",
+        "submit": "Issue proforma",
+        "saving": "Issuing",
+        "done": "Proforma {number} issued",
+        "view": "View and print",
+        "errors": {
+          "vat": "Enter a VAT between 0 and 100.",
+          "proforma_already_issued": "This milestone already has a proforma.",
+          "schedule_not_issuable": "This milestone no longer accepts a proforma.",
+          "schedule_not_found": "We cannot find the milestone.",
+          "forbidden": "Only the admin can issue proformas.",
+          "error": "The proforma could not be issued. Try again."
+        }
+      },
+      "invoiceSheet": {
+        "title": "Record invoice",
+        "close": "Close",
+        "text": "You issue invoices outside the CRM. Here they are only recorded: enter the number you gave them.",
+        "number": "Invoice number",
+        "date": "Issue date",
+        "net": "Net amount",
+        "vat": "VAT (%)",
+        "file": "Invoice PDF",
+        "fileHint": "PDF up to 10 MB.",
+        "optional": "(optional)",
+        "submit": "Record invoice",
+        "saving": "Recording",
+        "done": "Invoice recorded",
+        "errors": {
+          "number": "Enter the invoice number.",
+          "date": "Choose the issue date.",
+          "net": "Enter a net amount above zero, with at most two decimals.",
+          "vat": "Enter a VAT between 0 and 100.",
+          "fileType": "The file must be a PDF.",
+          "fileSize": "The PDF is larger than 10 MB.",
+          "upload": "The PDF could not be uploaded. Try again.",
+          "invoice_number_reserved": "Numbers starting with PF- belong to proformas.",
+          "invoice_number_taken": "An invoice with that number already exists.",
+          "invalid_invoice": "Check the invoice details.",
+          "schedule_mismatch": "The milestone does not belong to this deal.",
+          "schedule_cancelled": "The milestone is cancelled.",
+          "forbidden": "Only the admin can record invoices.",
+          "error": "The invoice could not be recorded. Try again."
+        }
+      },
+      "confirm": {
+        "cancelTitle": "Cancel milestone",
+        "cancelText": "The milestone stops counting and its proforma, if any, is voided. A milestone with payments cannot be cancelled.",
+        "cancelSubmit": "Cancel milestone",
+        "cancelDone": "Milestone cancelled",
+        "voidTitle": "Void document",
+        "voidText": "The document is voided and the milestone goes back to pending. A document with payments cannot be voided.",
+        "voidSubmit": "Void document",
+        "voidDone": "Document voided",
+        "saving": "Saving",
+        "close": "Close",
+        "errors": {
+          "schedule_has_payments": "The milestone has recorded payments: it cannot be cancelled.",
+          "schedule_has_invoice": "The milestone has an invoice: void it first.",
+          "invoice_has_payments": "The document has payments linked: it cannot be voided.",
+          "invoice_not_voidable": "This document can no longer be voided.",
+          "forbidden": "Only the admin can do this.",
+          "error": "The action could not be completed. Try again."
+        }
+      }
     }
   },
   "crm": {

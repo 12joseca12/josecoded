@@ -21,7 +21,7 @@ export const staffNav: Record<StaffZone, readonly StaffNavEntry[]> = {
       ready: false,
       label: "admin.nav.notifications",
     },
-    { key: "receivables", path: "/cobros", ready: false, label: "admin.nav.receivables" },
+    { key: "receivables", path: "/cobros", ready: true, label: "admin.nav.receivables" },
     { key: "payouts", path: "/liquidaciones", ready: false, label: "admin.nav.payouts" },
   ],
   crm: [
