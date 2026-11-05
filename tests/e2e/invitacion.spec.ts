@@ -185,6 +185,11 @@ test("a failure while accepting is explained and can be retried", async ({ page 
 test("a session with another email is asked to sign out", async ({ page }) => {
   await signInOtp(page, tag, "invitee@example.com");
   await expect.poll(async () => (await calls(page)).verify.length).toBe(1);
+  await expect
+    .poll(async () =>
+      (await page.context().cookies()).some((cookie) => cookie.name.endsWith("-auth-token")),
+    )
+    .toBe(true);
   await page.goto(path("other"));
   await expect(page.getByRole("heading", { level: 1, name: copy.mismatch.title })).toBeVisible();
   await expectClean(page);

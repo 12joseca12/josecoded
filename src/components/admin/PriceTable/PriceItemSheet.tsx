@@ -59,6 +59,7 @@ function PriceItemForm({
 }: PriceItemFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [pending, startSave] = useTransition();
+  const [expectedUpdatedAt] = useState(item.updatedAt);
   const hasVisibility = item.table === "extras" || item.table === "plans";
 
   const onSubmit = (event: SyntheticEvent<HTMLFormElement>) => {
@@ -82,7 +83,7 @@ function PriceItemForm({
       const result = await save({
         table: item.table,
         key: item.key,
-        expectedUpdatedAt: item.updatedAt,
+        expectedUpdatedAt,
         price,
         ...weeks,
         ...(hasVisibility ? { visible: data.get("visible") === "on" } : {}),
@@ -182,12 +183,7 @@ export function PriceItemSheet({ item, onClose, ...rest }: PriceItemSheetProps) 
       }}
     >
       {item ? (
-        <PriceItemForm
-          key={`${item.table}:${item.key}:${item.updatedAt}`}
-          item={item}
-          onClose={onClose}
-          {...rest}
-        />
+        <PriceItemForm key={`${item.table}:${item.key}`} item={item} onClose={onClose} {...rest} />
       ) : null}
     </dialog>
   );
