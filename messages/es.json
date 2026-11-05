@@ -938,7 +938,18 @@
     "signingOut": "Saliendo",
     "nav": {
       "overview": "Resumen",
-      "leads": "Interesados"
+      "leads": "Interesados",
+      "users": "Usuarios",
+      "prices": "Precios",
+      "system": "Sistema",
+      "notifications": "Notificaciones",
+      "receivables": "Cobros",
+      "payouts": "Liquidaciones",
+      "soon": "Próximamente",
+      "more": "Más",
+      "moreTitle": "Más secciones",
+      "close": "Cerrar",
+      "switch": "Ir al CRM"
     },
     "overview": {
       "meta": {
@@ -1018,6 +1029,36 @@
         "retry": "Reintentar",
         "retrying": "Reintentando"
       }
+    }
+  },
+  "crm": {
+    "brandLabel": "josecoded CRM, ir al resumen",
+    "brandWord": "josecoded CRM",
+    "navLabel": "CRM",
+    "userLabel": "Sesión iniciada como {name}",
+    "signOut": "Salir",
+    "signingOut": "Saliendo",
+    "nav": {
+      "overview": "Resumen",
+      "contacts": "Contactos",
+      "leads": "Interesados",
+      "commissions": "Comisiones",
+      "chat": "Chat con Jose",
+      "settings": "Ajustes",
+      "soon": "Próximamente",
+      "more": "Más",
+      "moreTitle": "Más secciones",
+      "close": "Cerrar",
+      "switch": "Ir a administración"
+    },
+    "overview": {
+      "meta": {
+        "title": "Resumen"
+      },
+      "title": "Resumen",
+      "lead": "Lo que tienes que hacer hoy.",
+      "emptyTitle": "Todavía no hay nada que mostrar",
+      "emptyText": "El resumen de tu cartera llega con el CRM. Mientras tanto, esta sección está vacía."
     }
   },
   "freelancePage": {

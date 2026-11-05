@@ -47,9 +47,21 @@ interface Messages {
       wrongCode: Notice;
     };
   };
+  nav: { skipLink: string };
   admin: {
+    brandLabel: string;
+    navLabel: string;
     signOut: string;
-    nav: { overview: string; leads: string };
+    nav: {
+      overview: string;
+      leads: string;
+      users: string;
+      soon: string;
+      more: string;
+      moreTitle: string;
+      close: string;
+      switch: string;
+    };
     overview: { title: string };
     leads: {
       title: string;
@@ -71,6 +83,11 @@ interface Messages {
         errors: { assignee: string; reason: string; stale: string };
       };
     };
+  };
+  crm: {
+    navLabel: string;
+    nav: { overview: string; contacts: string; soon: string; switch: string };
+    overview: { title: string; emptyTitle: string };
   };
   errors: { notFound: { title: string } };
 }
@@ -166,7 +183,7 @@ test("an invited admin signs in with the code and the authenticator", async ({ p
   await expect(
     page.getByRole("heading", { level: 1, name: es.admin.overview.title }),
   ).toBeVisible();
-  await expect(page.getByText("Jose Enrolled")).toBeVisible();
+  await expect(page.getByText("Jose Enrolled").locator("visible=true")).toBeVisible();
 
   const calls = await authCalls(page);
   expect(calls.otp).toEqual([{ email: "enrolled@example.com", create_user: false }]);
@@ -351,6 +368,128 @@ test("the admin shell navigates and the overview passes axe", async ({ page }) =
     "aria-current",
     "page",
   );
+});
+
+async function signInCloser(page: Page) {
+  await signInOtp(page, "closer@example.com");
+  await expect(page).toHaveURL(/\/es\/entrar\/totp$/);
+  await page.getByRole("button", { name: totp.enrollStart }).click();
+  await expect(page.getByRole("img", { name: totp.qrAlt })).toBeVisible();
+  await page.getByLabel(totp.codeLabel).fill("654321");
+  await page.getByRole("button", { name: totp.verify }).click();
+  await expect(page).toHaveURL(/\/es\/crm$/);
+}
+
+test("the admin rail is keyboard navigable and passes axe at 1440", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await signInAdmin(page);
+  await page.goto("/es/admin");
+  const { nav, admin } = es;
+  const rail = page.getByRole("navigation", { name: admin.navLabel });
+  await expect(rail.getByRole("link")).toHaveCount(2);
+  await expect(rail.getByText(admin.nav.soon)).toHaveCount(6);
+  await expect(rail.getByRole("link", { name: admin.nav.users })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: admin.nav.more })).toBeHidden();
+  await expectClean(page);
+
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("link", { name: nav.skipLink })).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("link", { name: admin.brandLabel })).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(rail.getByRole("link", { name: admin.nav.overview })).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(rail.getByRole("link", { name: admin.nav.leads })).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/\/es\/admin\/interesados$/);
+  await expect(page.locator("#content")).toBeFocused();
+  await expect(rail.getByRole("link", { name: admin.nav.leads })).toHaveAttribute(
+    "aria-current",
+    "page",
+  );
+  await expectClean(page);
+});
+
+test("the admin bottom bar and the more sheet work at 375", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await signInAdmin(page);
+  await page.goto("/es/admin");
+  const { admin } = es;
+  const bar = page.getByRole("navigation", { name: admin.navLabel });
+  await expect(bar.getByRole("link", { name: admin.nav.overview })).toHaveAttribute(
+    "aria-current",
+    "page",
+  );
+  await expect(bar.getByRole("link", { name: admin.nav.leads })).toBeVisible();
+  const more = bar.getByRole("button", { name: admin.nav.more });
+  await expect(more).toBeVisible();
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  );
+  expect(overflow).toBeLessThanOrEqual(0);
+  await expectClean(page);
+
+  await more.click();
+  const sheet = page.getByRole("dialog", { name: admin.nav.moreTitle });
+  await expect(sheet).toBeVisible();
+  await expect(sheet.getByRole("link")).toHaveCount(3);
+  await expect(sheet.getByText(admin.nav.soon)).toHaveCount(6);
+  await expect(sheet.getByRole("button", { name: admin.signOut })).toBeVisible();
+  await expect(sheet.getByRole("link", { name: admin.nav.switch })).toBeVisible();
+  await expectClean(page);
+
+  await page.keyboard.press("Escape");
+  await expect(sheet).toBeHidden();
+  await expect(more).toBeFocused();
+
+  await more.click();
+  await sheet.getByRole("link", { name: admin.nav.leads }).click();
+  await expect(page).toHaveURL(/\/es\/admin\/interesados$/);
+  await expect(sheet).toBeHidden();
+  await expect(bar.getByRole("link", { name: admin.nav.leads })).toHaveAttribute(
+    "aria-current",
+    "page",
+  );
+});
+
+test("a closer lands on the CRM shell and cannot enter the admin", async ({ page }) => {
+  await signInCloser(page);
+  const { crm } = es;
+  await expect(page.getByRole("heading", { level: 1, name: crm.overview.title })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { level: 2, name: crm.overview.emptyTitle }),
+  ).toBeVisible();
+  const rail = page.getByRole("navigation", { name: crm.navLabel });
+  await expect(rail.getByRole("link", { name: crm.nav.overview })).toHaveAttribute(
+    "aria-current",
+    "page",
+  );
+  await expect(rail.getByRole("link")).toHaveCount(1);
+  await expect(rail.getByText(crm.nav.soon).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: es.admin.nav.switch })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: crm.nav.switch })).toHaveCount(0);
+  await expectClean(page);
+
+  for (const path of ["/es/admin", "/es/admin/interesados"]) {
+    const response = await page.goto(path);
+    expect(response?.status()).toBe(404);
+  }
+});
+
+test("an admin enters the CRM and switches zone from the shell", async ({ page }) => {
+  await signInAdmin(page);
+  await page.goto("/es/admin");
+  await page.getByRole("link", { name: es.admin.nav.switch }).click();
+  await expect(page).toHaveURL(/\/es\/crm$/);
+  await expect(page.getByRole("heading", { level: 1, name: es.crm.overview.title })).toBeVisible();
+  await expectClean(page);
+  await page.getByRole("link", { name: es.crm.nav.switch }).click();
+  await expect(page).toHaveURL(/\/es\/admin$/);
+});
+
+test("an anonymous visitor to the CRM is sent to log in and comes back", async ({ page }) => {
+  await page.goto("/es/crm");
+  await expect(page).toHaveURL(/\/es\/entrar\?next=%2Fes%2Fcrm$/);
 });
 
 test("the leads list shows the newest first and passes axe", async ({ page }) => {

@@ -44,10 +44,17 @@ function hasControlCharacter(value: string): boolean {
   });
 }
 
+const invitationPathPattern = /^\/(es|en)\/invitacion\/[A-Za-z0-9_-]{1,128}(\?[^#]*)?$/;
+
+export function isInvitationPath(locale: string, value: string): boolean {
+  return value.startsWith(`/${locale}/`) && invitationPathPattern.test(value);
+}
+
 export function safeNext(locale: string, value: string | null | undefined): string | null {
   if (!value || value.length > 300) return null;
   if (!value.startsWith(`/${locale}/`)) return null;
   if (value.includes("\\") || value.includes("//") || hasControlCharacter(value)) return null;
+  if (isInvitationPath(locale, value)) return value;
   return zoneOfPath(locale, value) === null ? null : value;
 }
 
@@ -71,6 +78,7 @@ export function resolveDestination(
   if (state.status !== "member") return loginPath(locale, next);
   if (needsSecondFactor(state)) return secondFactorPath(locale, next);
   const target = safeNext(locale, next);
+  if (target && isInvitationPath(locale, target)) return target;
   const targetZone = target ? zoneOfPath(locale, target) : null;
   if (target && targetZone && canEnterZone(state.role, targetZone)) return target;
   return zonePath(locale, homeZone(state.role));

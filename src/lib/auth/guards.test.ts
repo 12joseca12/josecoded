@@ -91,6 +91,23 @@ describe("safeNext", () => {
     expect(safeNext("es", "/es/crm?tab=1")).toBe("/es/crm?tab=1");
   });
 
+  it("keeps invitation links and nothing broader", () => {
+    expect(safeNext("es", "/es/invitacion/Ab3-_9xZ")).toBe("/es/invitacion/Ab3-_9xZ");
+    expect(safeNext("es", "/es/invitacion/Ab3?x=1")).toBe("/es/invitacion/Ab3?x=1");
+    for (const value of [
+      "/es/invitacion",
+      "/es/invitacion/",
+      "/es/invitacion/a/b",
+      "/es/invitacion/a%2Fb",
+      "/es/invitacion/a#frag",
+      "/en/invitacion/abc",
+      "/es/invitacion//abc",
+      `/es/invitacion/${"a".repeat(129)}`,
+    ]) {
+      expect(safeNext("es", value)).toBeNull();
+    }
+  });
+
   it("drops everything else", () => {
     for (const value of [
       null,
@@ -131,6 +148,12 @@ describe("destinations", () => {
     expect(resolveDestination(member("admin", "aal2"), "es")).toBe("/es/admin");
     expect(resolveDestination(member("client", "aal1"), "es", "/es/admin")).toBe("/es/area");
     expect(resolveDestination(member("closer", "aal2"), "es")).toBe("/es/crm");
+    expect(resolveDestination(member("client", "aal1"), "es", "/es/invitacion/abc")).toBe(
+      "/es/invitacion/abc",
+    );
+    expect(resolveDestination(member("closer", "aal1"), "es", "/es/invitacion/abc")).toBe(
+      "/es/entrar/totp?next=%2Fes%2Finvitacion%2Fabc",
+    );
   });
 });
 
