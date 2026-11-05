@@ -76,6 +76,177 @@ export type Database = {
           },
         ]
       }
+      commission_lines: {
+        Row: {
+          amount: number
+          approved_at: string | null
+          approved_by: string | null
+          base: number
+          beneficiary_id: string
+          commission_id: string
+          created_at: string
+          id: string
+          nature: Database["public"]["Enums"]["commission_nature"]
+          payment_id: string | null
+          payout_id: string | null
+          rate: number
+          rejected_reason: string | null
+          role: Database["public"]["Enums"]["commission_role"]
+          status: Database["public"]["Enums"]["commission_line_status"]
+        }
+        Insert: {
+          amount: number
+          approved_at?: string | null
+          approved_by?: string | null
+          base: number
+          beneficiary_id: string
+          commission_id: string
+          created_at?: string
+          id?: string
+          nature: Database["public"]["Enums"]["commission_nature"]
+          payment_id?: string | null
+          payout_id?: string | null
+          rate: number
+          rejected_reason?: string | null
+          role: Database["public"]["Enums"]["commission_role"]
+          status?: Database["public"]["Enums"]["commission_line_status"]
+        }
+        Update: {
+          amount?: number
+          approved_at?: string | null
+          approved_by?: string | null
+          base?: number
+          beneficiary_id?: string
+          commission_id?: string
+          created_at?: string
+          id?: string
+          nature?: Database["public"]["Enums"]["commission_nature"]
+          payment_id?: string | null
+          payout_id?: string | null
+          rate?: number
+          rejected_reason?: string | null
+          role?: Database["public"]["Enums"]["commission_role"]
+          status?: Database["public"]["Enums"]["commission_line_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "commission_lines_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commission_lines_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commission_lines_beneficiary_id_fkey"
+            columns: ["beneficiary_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commission_lines_beneficiary_id_fkey"
+            columns: ["beneficiary_id"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commission_lines_commission_id_fkey"
+            columns: ["commission_id"]
+            isOneToOne: false
+            referencedRelation: "commissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      commissions: {
+        Row: {
+          closer_id: string
+          closer_rate: number
+          closer_recurring_rate: number | null
+          created_at: string
+          deal_id: string
+          expected_base: number
+          expected_closer_amount: number
+          expected_subcloser_amount: number
+          id: string
+          subcloser_id: string | null
+          subcloser_rate: number | null
+          subcloser_recurring_rate: number | null
+        }
+        Insert: {
+          closer_id: string
+          closer_rate: number
+          closer_recurring_rate?: number | null
+          created_at?: string
+          deal_id: string
+          expected_base: number
+          expected_closer_amount: number
+          expected_subcloser_amount?: number
+          id?: string
+          subcloser_id?: string | null
+          subcloser_rate?: number | null
+          subcloser_recurring_rate?: number | null
+        }
+        Update: {
+          closer_id?: string
+          closer_rate?: number
+          closer_recurring_rate?: number | null
+          created_at?: string
+          deal_id?: string
+          expected_base?: number
+          expected_closer_amount?: number
+          expected_subcloser_amount?: number
+          id?: string
+          subcloser_id?: string | null
+          subcloser_rate?: number | null
+          subcloser_recurring_rate?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "commissions_closer_id_fkey"
+            columns: ["closer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commissions_closer_id_fkey"
+            columns: ["closer_id"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commissions_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: true
+            referencedRelation: "deals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commissions_subcloser_id_fkey"
+            columns: ["subcloser_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commissions_subcloser_id_fkey"
+            columns: ["subcloser_id"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contacts: {
         Row: {
           archived_at: string | null
@@ -190,6 +361,9 @@ export type Database = {
           lost_reason: string | null
           owner_id: string | null
           pack_id: string | null
+          recurring_cancelled_at: string | null
+          recurring_monthly: number | null
+          recurring_started_at: string | null
           stage: Database["public"]["Enums"]["deal_stage"]
           updated_at: string
           via: Database["public"]["Enums"]["contact_via"]
@@ -206,6 +380,9 @@ export type Database = {
           lost_reason?: string | null
           owner_id?: string | null
           pack_id?: string | null
+          recurring_cancelled_at?: string | null
+          recurring_monthly?: number | null
+          recurring_started_at?: string | null
           stage?: Database["public"]["Enums"]["deal_stage"]
           updated_at?: string
           via: Database["public"]["Enums"]["contact_via"]
@@ -222,6 +399,9 @@ export type Database = {
           lost_reason?: string | null
           owner_id?: string | null
           pack_id?: string | null
+          recurring_cancelled_at?: string | null
+          recurring_monthly?: number | null
+          recurring_started_at?: string | null
           stage?: Database["public"]["Enums"]["deal_stage"]
           updated_at?: string
           via?: Database["public"]["Enums"]["contact_via"]
@@ -1119,6 +1299,10 @@ export type Database = {
           role: Database["public"]["Enums"]["user_role"]
         }[]
       }
+      approve_commission_lines: {
+        Args: { p_ids: string[] }
+        Returns: number
+      }
       assign_lead: {
         Args: { p_lead_id: string; p_user_id: string }
         Returns: string
@@ -1126,6 +1310,10 @@ export type Database = {
       cancel_job: {
         Args: { p_id: string }
         Returns: Database["public"]["Enums"]["job_status"]
+      }
+      cancel_recurring: {
+        Args: { p_deal_id: string }
+        Returns: undefined
       }
       claim_lead: {
         Args: { p_lead_id: string }
@@ -1226,6 +1414,10 @@ export type Database = {
           leads: number
         }[]
       }
+      reject_commission_line: {
+        Args: { p_id: string; p_reason: string }
+        Returns: undefined
+      }
       renew_invitation: {
         Args: { p_id: string }
         Returns: {
@@ -1309,6 +1501,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      win_deal: {
+        Args: { p_deal_id: string; p_recurring_monthly?: number; p_won_amount: number }
+        Returns: string
+      }
     }
     Enums: {
       activity_kind:
@@ -1323,6 +1519,9 @@ export type Database = {
         | "system"
       app_locale: "es" | "en"
       catalog_platform: "web" | "app"
+      commission_line_status: "accrued" | "approved" | "rejected" | "paid" | "reversed"
+      commission_nature: "project" | "recurring"
+      commission_role: "closer" | "parent"
       contact_kind: "prospect" | "client" | "recruiter" | "partner" | "other"
       contact_source:
         | "manual"
@@ -1491,6 +1690,9 @@ export const Constants = {
       ],
       app_locale: ["es", "en"],
       catalog_platform: ["web", "app"],
+      commission_line_status: ["accrued", "approved", "rejected", "paid", "reversed"],
+      commission_nature: ["project", "recurring"],
+      commission_role: ["closer", "parent"],
       contact_kind: ["prospect", "client", "recruiter", "partner", "other"],
       contact_source: ["manual", "import", "form", "nexo", "whatsapp", "radar"],
       contact_via: ["hiring", "freelance", "project"],

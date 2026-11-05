@@ -82,8 +82,10 @@ select is_empty(
         'admin_counters',
         'admin_jobs',
         'admin_users',
+        'approve_commission_lines',
         'assign_lead',
         'cancel_job',
+        'cancel_recurring',
         'claim_lead',
         'discard_lead',
         'invite_user',
@@ -92,6 +94,7 @@ select is_empty(
         'mark_notifications_read',
         'omen_status',
         'reassign_portfolio',
+        'reject_commission_line',
         'renew_invitation',
         'retry_job',
         'revoke_invitation',
@@ -103,7 +106,8 @@ select is_empty(
         'telegram_link_code',
         'telegram_unlink',
         'touch_lead',
-        'update_my_profile'
+        'update_my_profile',
+        'win_deal'
       )
   $$,
   'only the allowed security definer RPCs are callable from the API'
@@ -199,8 +203,10 @@ select is_empty(
         'admin_counters',
         'admin_jobs',
         'admin_users',
+        'approve_commission_lines',
         'assign_lead',
         'cancel_job',
+        'cancel_recurring',
         'claim_lead',
         'discard_lead',
         'invite_user',
@@ -209,6 +215,7 @@ select is_empty(
         'mark_notifications_read',
         'omen_status',
         'reassign_portfolio',
+        'reject_commission_line',
         'renew_invitation',
         'retry_job',
         'revoke_invitation',
@@ -220,7 +227,8 @@ select is_empty(
         'telegram_link_code',
         'telegram_unlink',
         'touch_lead',
-        'update_my_profile'
+        'update_my_profile',
+        'win_deal'
       )
   $$,
   'only the profile and lead RPCs are callable by authenticated in public'
