@@ -179,6 +179,191 @@ export type Database = {
           },
         ]
       }
+      conversation_members: {
+        Row: {
+          added_by: string | null
+          can_write: boolean
+          conversation_id: string
+          joined_at: string
+          last_read_at: string | null
+          left_at: string | null
+          role: Database["public"]["Enums"]["member_role"]
+          user_id: string
+        }
+        Insert: {
+          added_by?: string | null
+          can_write?: boolean
+          conversation_id: string
+          joined_at?: string
+          last_read_at?: string | null
+          left_at?: string | null
+          role: Database["public"]["Enums"]["member_role"]
+          user_id: string
+        }
+        Update: {
+          added_by?: string | null
+          can_write?: boolean
+          conversation_id?: string
+          joined_at?: string
+          last_read_at?: string | null
+          left_at?: string | null
+          role?: Database["public"]["Enums"]["member_role"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_members_added_by_fkey"
+            columns: ["added_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversation_members_added_by_fkey"
+            columns: ["added_by"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversation_members_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversation_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversation_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conversations: {
+        Row: {
+          ai_consent_at: string | null
+          ai_consent_by: string | null
+          ai_consent_revoked_at: string | null
+          ai_enabled: boolean
+          ai_off_reason: string | null
+          archived_at: string | null
+          contact_id: string | null
+          created_at: string
+          first_page_path: string | null
+          id: string
+          interest: boolean | null
+          kind: Database["public"]["Enums"]["conversation_kind"]
+          last_activity_at: string
+          lead_id: string | null
+          locale: Database["public"]["Enums"]["app_locale"]
+          project_id: string | null
+          status: Database["public"]["Enums"]["conversation_status"]
+          subject_user_id: string | null
+          visitor_id: string | null
+        }
+        Insert: {
+          ai_consent_at?: string | null
+          ai_consent_by?: string | null
+          ai_consent_revoked_at?: string | null
+          ai_enabled?: boolean
+          ai_off_reason?: string | null
+          archived_at?: string | null
+          contact_id?: string | null
+          created_at?: string
+          first_page_path?: string | null
+          id?: string
+          interest?: boolean | null
+          kind: Database["public"]["Enums"]["conversation_kind"]
+          last_activity_at?: string
+          lead_id?: string | null
+          locale?: Database["public"]["Enums"]["app_locale"]
+          project_id?: string | null
+          status?: Database["public"]["Enums"]["conversation_status"]
+          subject_user_id?: string | null
+          visitor_id?: string | null
+        }
+        Update: {
+          ai_consent_at?: string | null
+          ai_consent_by?: string | null
+          ai_consent_revoked_at?: string | null
+          ai_enabled?: boolean
+          ai_off_reason?: string | null
+          archived_at?: string | null
+          contact_id?: string | null
+          created_at?: string
+          first_page_path?: string | null
+          id?: string
+          interest?: boolean | null
+          kind?: Database["public"]["Enums"]["conversation_kind"]
+          last_activity_at?: string
+          lead_id?: string | null
+          locale?: Database["public"]["Enums"]["app_locale"]
+          project_id?: string | null
+          status?: Database["public"]["Enums"]["conversation_status"]
+          subject_user_id?: string | null
+          visitor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversations_ai_consent_by_fkey"
+            columns: ["ai_consent_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversations_ai_consent_by_fkey"
+            columns: ["ai_consent_by"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversations_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversations_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversations_subject_user_id_fkey"
+            columns: ["subject_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversations_subject_user_id_fkey"
+            columns: ["subject_user_id"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversations_visitor_id_fkey"
+            columns: ["visitor_id"]
+            isOneToOne: false
+            referencedRelation: "visitors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       deals: {
         Row: {
           amount: number | null
@@ -590,6 +775,95 @@ export type Database = {
         }
         Relationships: []
       }
+      messages: {
+        Row: {
+          auto: boolean
+          author_id: string | null
+          author_kind: Database["public"]["Enums"]["author_kind"]
+          body: string
+          conversation_id: string
+          created_at: string
+          id: string
+          job_id: string | null
+          kind: Database["public"]["Enums"]["message_kind"]
+          mentions_nexo: boolean
+          model: string | null
+          page_path: string | null
+          ref_contact_id: string | null
+          ref_story_id: string | null
+          ref_task_id: string | null
+          sources: string[]
+          system_event: Database["public"]["Enums"]["system_event"] | null
+        }
+        Insert: {
+          auto?: boolean
+          author_id?: string | null
+          author_kind: Database["public"]["Enums"]["author_kind"]
+          body?: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          job_id?: string | null
+          kind?: Database["public"]["Enums"]["message_kind"]
+          mentions_nexo?: boolean
+          model?: string | null
+          page_path?: string | null
+          ref_contact_id?: string | null
+          ref_story_id?: string | null
+          ref_task_id?: string | null
+          sources?: string[]
+          system_event?: Database["public"]["Enums"]["system_event"] | null
+        }
+        Update: {
+          auto?: boolean
+          author_id?: string | null
+          author_kind?: Database["public"]["Enums"]["author_kind"]
+          body?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          job_id?: string | null
+          kind?: Database["public"]["Enums"]["message_kind"]
+          mentions_nexo?: boolean
+          model?: string | null
+          page_path?: string | null
+          ref_contact_id?: string | null
+          ref_story_id?: string | null
+          ref_task_id?: string | null
+          sources?: string[]
+          system_event?: Database["public"]["Enums"]["system_event"] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_ref_contact_id_fkey"
+            columns: ["ref_contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notification_prefs: {
         Row: {
           bell: boolean
@@ -912,6 +1186,44 @@ export type Database = {
             columns: ["updated_by"]
             isOneToOne: false
             referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      visitors: {
+        Row: {
+          consent_at: string | null
+          created_at: string
+          id: string
+          last_activity_at: string
+          lead_id: string | null
+          locale: Database["public"]["Enums"]["app_locale"]
+          token_hash: string
+        }
+        Insert: {
+          consent_at?: string | null
+          created_at?: string
+          id?: string
+          last_activity_at?: string
+          lead_id?: string | null
+          locale?: Database["public"]["Enums"]["app_locale"]
+          token_hash: string
+        }
+        Update: {
+          consent_at?: string | null
+          created_at?: string
+          id?: string
+          last_activity_at?: string
+          lead_id?: string | null
+          locale?: Database["public"]["Enums"]["app_locale"]
+          token_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "visitors_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
             referencedColumns: ["id"]
           },
         ]
@@ -1330,6 +1642,7 @@ export type Database = {
         | "chat"
         | "system"
       app_locale: "es" | "en"
+      author_kind: "human" | "nexo" | "system"
       catalog_platform: "web" | "app"
       contact_kind: "prospect" | "client" | "recruiter" | "partner" | "other"
       contact_source:
@@ -1340,6 +1653,8 @@ export type Database = {
         | "whatsapp"
         | "radar"
       contact_via: "hiring" | "freelance" | "project"
+      conversation_kind: "visitor" | "closer" | "client" | "freelance"
+      conversation_status: "open" | "archived"
       deal_stage: "new" | "contacted" | "meeting" | "proposal" | "won" | "lost"
       extra_billing: "once" | "monthly" | "yearly" | "per_unit"
       job_kind:
@@ -1355,10 +1670,21 @@ export type Database = {
       job_status: "queued" | "running" | "done" | "failed" | "cancelled"
       lead_source: "form" | "nexo" | "whatsapp" | "radar" | "manual"
       lead_status: "new" | "assigned" | "contacted" | "converted" | "discarded"
+      member_role: "owner" | "closer" | "client" | "freelance"
+      message_kind: "text" | "handoff" | "reference"
       notification_event: "lead_new" | "lead_claimed" | "message_new" | "commission_accrued" | "payment_recorded" | "payment_overdue" | "payout_paid" | "job_failed" | "omen_down" | "invitation_accepted"
       outbox_channel: "email" | "telegram"
       outbox_status: "queued" | "sending" | "sent" | "failed"
       payout_cadence: "per_payment" | "weekly" | "biweekly"
+      system_event:
+        | "member_added"
+        | "member_left"
+        | "ai_on"
+        | "ai_off"
+        | "consent_granted"
+        | "consent_revoked"
+        | "archived"
+        | "handoff_done"
       user_role: "admin" | "closer" | "freelance" | "client"
     }
     CompositeTypes: {
@@ -1498,10 +1824,13 @@ export const Constants = {
         "system",
       ],
       app_locale: ["es", "en"],
+      author_kind: ["human", "nexo", "system"],
       catalog_platform: ["web", "app"],
       contact_kind: ["prospect", "client", "recruiter", "partner", "other"],
       contact_source: ["manual", "import", "form", "nexo", "whatsapp", "radar"],
       contact_via: ["hiring", "freelance", "project"],
+      conversation_kind: ["visitor", "closer", "client", "freelance"],
+      conversation_status: ["open", "archived"],
       deal_stage: ["new", "contacted", "meeting", "proposal", "won", "lost"],
       extra_billing: ["once", "monthly", "yearly", "per_unit"],
       job_kind: [
@@ -1518,10 +1847,22 @@ export const Constants = {
       job_status: ["queued", "running", "done", "failed", "cancelled"],
       lead_source: ["form", "nexo", "whatsapp", "radar", "manual"],
       lead_status: ["new", "assigned", "contacted", "converted", "discarded"],
+      member_role: ["owner", "closer", "client", "freelance"],
+      message_kind: ["text", "handoff", "reference"],
       notification_event: ["lead_new", "lead_claimed", "message_new", "commission_accrued", "payment_recorded", "payment_overdue", "payout_paid", "job_failed", "omen_down", "invitation_accepted"],
       outbox_channel: ["email", "telegram"],
       outbox_status: ["queued", "sending", "sent", "failed"],
       payout_cadence: ["per_payment", "weekly", "biweekly"],
+      system_event: [
+        "member_added",
+        "member_left",
+        "ai_on",
+        "ai_off",
+        "consent_granted",
+        "consent_revoked",
+        "archived",
+        "handoff_done",
+      ],
       user_role: ["admin", "closer", "freelance", "client"],
     },
   },

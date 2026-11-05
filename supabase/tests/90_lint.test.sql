@@ -251,7 +251,7 @@ select is(
     where n.nspname = 'private'
       and has_function_privilege('authenticated', p.oid, 'execute')
   ),
-  'contact_has_history,is_aal2,is_admin,is_api_client_role,is_closer,is_staff,offer_answers_valid,owns_contact,owns_lead,role,slug_list_valid,uid',
+  'ai_active,can_write_conversation,contact_has_history,conversation_topic_id,is_aal2,is_admin,is_api_client_role,is_closer,is_conversation_member,is_staff,offer_answers_valid,owns_contact,owns_lead,role,slug_list_valid,uid',
   'only the policy helpers and the two constraint helpers in private are executable by authenticated (decision 9.6)'
 );
 
