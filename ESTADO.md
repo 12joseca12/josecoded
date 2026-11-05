@@ -2,6 +2,8 @@
 
 ## Ahora
 
+**2026-11-05, sesión nocturna autónoma (Jose dormía).** Fusionadas en `main` con CI verde: #44 cómo trabajo · #45 JS de `/es` 184→145 KB y CI partido (static, e2e ×2, db) · #46 M04 `lead_claim` endurecida tras revisión de seguridad (**sin aplicar**) · #47 decisiones de comisiones y facturación (7.12–7.15) · #48 objeciones en las FAQ y `common.responseTime` · #49 `PriceState` «Precio en revisión» · #50 contacto «qué pasa ahora» · #51 freelance (H1, encargos con tamaño, condiciones, tarea piloto) · #52 pgTAP en CI · #53 recomendador honesto (nada premarcado, supuestos, enlace para compartir) · #54 identidad en la home · #55 tarjeta de contratación con CV · #56 confianza en «a medida» (costes, propiedad, garantía) · #57 «Sobre mí» para recruiters · #58 sin enlaces rotos ni promesas (blog, chat y proyectos ocultos hasta existir). Abiertas sin fusionar porque **GitHub Actions dejó de asignar runners a las 04:36 UTC** (probables minutos agotados): #59 schema SEO, #60 imágenes Open Graph, #61 arreglos de accesibilidad; las tres pasan juntas en local. Informes de la noche: investigación (fallos, clientes, recruiters), seguridad (PASA), accesibilidad (NO PASA → #61) y usuarios de ejemplo, resumidos abajo en «Pendientes».
+
 Arquitectura cerrada del todo (2026-11-02, `docs/arquitectura/decisiones.md`): Jose respondió a las preguntas de `pantallas.md` y `datos.md` aceptando las recomendaciones y cerró 4.5 (Groq en el chat público con reserva local; local para Radar, RAG y borradores; pgvector en Supabase) y 8.3 (Radar encuentra, puntúa y redacta; Jose envía con un clic; API oficial donde exista; nunca navegador automatizado). Primer tablón escrito en `docs/plan/bloques.md`: scaffold (W01–W06), kit de interfaz y estados (W07–W12), home con hero (W13–W22), proyectos, servicios, sobre mí, contacto, chat, blog, legales, SEO, seguridad y lanzamiento (W23–W46); lista O para `josecoded-omen` y las zonas siguientes como grupos.
 
 **2026-11-04 (`docs/chat-rooms`):** modelo de datos unificado para el chat (visitantes y salas privadas closer/cliente/freelance con Nexo) y la bandeja «Interesados» en `docs/arquitectura/datos.md` §10 y §11; decisiones 2.23, 5.12–5.17, 7.8–7.9 y 10.7 reescrita en `decisiones.md`; primer plan de migraciones M01–M11 con tests pgTAP en `docs/plan/migraciones-chat.md`.
@@ -19,6 +21,17 @@ Arquitectura cerrada del todo (2026-11-02, `docs/arquitectura/decisiones.md`): J
 
 ## Pendientes
 
+- **Jose, de la noche del 2026-11-05:**
+  - **GitHub Actions** no arranca ningún job desde las 04:36 UTC (sin runner, 1–3 s). Revisar Settings → Billing → Actions (repo privado en plan Free). Hasta entonces no se fusiona nada.
+  - **M04** fusionada y endurecida pero no aplicada: el token de gestión de Supabase de la nube es inválido. Aplicarla desde el Mac (`supabase db push`, advisors antes y después) o poner una credencial nueva en el entorno; justo después, desplegar la web y `pnpm db:types`.
+  - **Seguridad (M4, M5):** comprobar en el panel de Supabase Auth captcha Turnstile, OTP de 600 s y límite de verificación (`config.toml` local aún dice 3600); comprobar que el entorno *preview* de Cloudflare no tiene la service role.
+  - **`main` no está protegida** (plan Free en repo privado): GitHub Pro, repo público o asumirlo como regla de trabajo; `CLAUDE.md` dice lo contrario. «Cómo trabajo» ya lo describe como hecho verificable.
+  - **CV PDF:** nombre sin tildes, LinkedIn distinto del de la web, teléfono y «Leganés» publicados, sin enlace a la web (decide Jose).
+  - **3Cat/Alten:** «Sobre mí» y el CV nombran 3CatInfo y 3Cat; confirmar qué permite el NDA.
+  - **Datos que faltan** (los textos ya no los prometen): política de NDA, franja de solape horario, continuidad si Jose no está, cesión de derechos, condiciones de cierre anticipado, «sin permanencia» del mantenimiento, cifras de dominio/alojamiento, modalidad y disponibilidad, retrato, GitHub y Malt.
+  - **Decisiones:** ¿la auditoría de accesibilidad de apps RN es oferta (Q6)? · tercer breakpoint de la cabecera en #61 (oculta «josecoded» bajo 360 px) · ¿se ofrece llamada por teléfono en el contacto? · el CI de pgTAP usa PostgreSQL 16 y producción 17.
+  - **Textos para `redactor` (Mac):** todos los nuevos de la noche; cada PR lista sus claves.
+  - Informes completos en la sesión: investigación, seguridad, accesibilidad, usuarios de ejemplo.
 - **Jose (decisiones, con recomendación):** 5.13, 5.15, 7.8 (`decisiones.md`, tabla «Abiertas»).
 - **Jose (acciones):** crear el repo GitHub `josecoded-omen` (10.8); proteger `main` en los dos repos; borrar `develop` y las ramas `chore/*`, `design/*`, `docs/*`, `claude/*` del remoto (se quedan las `archivo/*`).
 - **Disparador de `josecoded-dev` (10.7):** crear el proyecto de desarrollo **antes** de lo primero que ocurra: invitar a un cliente, closer o freelance real · guardar el primer interesado o contacto real · activar Resend o Turnstile en modo real sobre `josecoded` · W46. Hasta entonces `josecoded` (`echlwywbucgbhwpncviy`) es la base compartida de desarrollo y cada migración se aplica con OK de Jose por migración.
@@ -36,6 +49,10 @@ Arquitectura cerrada del todo (2026-11-02, `docs/arquitectura/decisiones.md`): J
 - **Hero de la home (W13–W16, parcial, `public/home-hero`):** hecho: variante B «Móvil + web» aprobada por Jose (prototipo en la rama `docs/hero-prototype`), secuenciador de las cinco fases (decisión 2.14) con tests, raíl con pausa y reduced-motion estático en «Publicar» resuelto desde CSS. Pendiente: test de presupuesto del hero en CI, póster y `content-visibility` en móvil (W16) y ver la preview con Jose. El eyebrow y los `stats` que W13 pide en `docs/plan/bloques.md` quedan descartados por la regla de Jose de no usar eyebrows.
 
 ## Decisiones recientes
+
+- **2026-11-05 — Comisiones y facturación (Jose).** 7.12 la comisión se devenga por cobro · 7.13 liquidación por cobro, semanal o quincenal (configurable) · 7.14 recurrentes 12 meses o hasta baja con tasa menor que la de proyecto · 7.15 facturas fuera del CRM (ahora sin alta, después Holded o similar con VeriFactu), proformas dentro · 7.16 reglas de seguridad de la bandeja (revisión nocturna).
+- **2026-11-05 — Lección de rendimiento.** Ningún módulo compartido (SEO, layout) importa `@/content`: arrastra todo el MDX y `next/image` al JS de todas las rutas (+4,8 KB en `/es`). Los datos ligeros salen de su módulo (`@/content/cv`).
+- **2026-11-05 — Nada de `{{DATO}}` en `messages`.** `i18n:check` lo bloquea: se redacta sin el dato o se oculta el elemento.
 
 - **2026-11-05 — M04 `lead_claim` (`data/lead-claim`, sin aplicar).** Migración `20261105100000_lead_claim.sql`: emparejado de interesados por email con contactos con dueño (sin bandeja común), RPC `claim_lead`, `assign_lead`, `discard_lead` y `touch_lead` (solo `authenticated`, comprueban rol y `aal2` dentro), RLS de closers en `leads` (bandeja común + propios + subclosers, sin `UPDATE`), `contact_via` `pack` → `project` y columnas `offer`, `extras`, `offer_answers` con checks (2.28). `/admin/interesados` asigna a un closer y descarta con motivo. Bandeja enmascarada para closers (7.11, `list_lead_inbox()`), auditoría de `leads` y `discarded_by`. Pendiente más adelante: alerta al admin por envíos repetidos del mismo email. Pendiente tras aplicarla con OK de Jose: `pnpm db:types` (`database.ts` está sincronizado a mano y debe quedar sin diff).
 
