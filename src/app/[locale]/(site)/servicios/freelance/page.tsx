@@ -31,9 +31,7 @@ interface FreelanceProps {
 
 const tasks = ["feature", "audit", "a11y", "rescue", "ai"] as const;
 
-const terms = ["repo", "nda", "invoice", "ownership", "delivery"] as const;
-
-const pendingTerms = new Set<(typeof terms)[number]>(["nda"]);
+const terms = ["repo", "invoice", "ownership", "delivery"] as const;
 
 const start: { id: string; title: MessageKey; text: MessageKey }[] = [
   {
@@ -94,7 +92,6 @@ export default async function FreelancePage({ params }: FreelanceProps) {
     id,
     title: t(`freelancePage.terms.${id}.title`),
     text: t(`freelancePage.terms.${id}.text`),
-    pending: pendingTerms.has(id),
   }));
   const steps: StepItem[] = start.map((step) => ({
     id: step.id,
@@ -153,7 +150,7 @@ export default async function FreelancePage({ params }: FreelanceProps) {
         />
       </PageSection>
       <PageSection id="condiciones" title={t("freelancePage.terms.title")}>
-        <TermsStrip label={t("freelancePage.terms.label")} items={termItems} />
+        <TermsStrip labelledBy="condiciones-title" items={termItems} />
       </PageSection>
       <PageSection id="tarea-piloto" title={t("freelancePage.pilot.title")}>
         <PilotTask

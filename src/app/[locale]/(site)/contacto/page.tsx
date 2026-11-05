@@ -19,6 +19,7 @@ import { parseSelection } from "@/lib/contact/selection";
 import { resolveInitialWay } from "@/lib/contact/ways";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { extraCopyKeys, offerCopyKeys, priceOf } from "@/lib/services/offers";
+import { isPilotRequest } from "@/lib/services/pilot";
 import type { WayId } from "@/types/services";
 
 import styles from "./page.module.css";
@@ -134,6 +135,7 @@ export default async function ContactPage({ params, searchParams }: ContactProps
             labels={buildContactFormLabels(t)}
             emails={emails}
             initialWay={resolveInitialWay(query)}
+            initialMessage={isPilotRequest(query) ? t("contactPage.form.pilotMessage") : undefined}
             selection={selection}
             privacyHref={`/${locale}/legal/privacidad`}
             newTabLabel={t("contactPage.form.newTab")}

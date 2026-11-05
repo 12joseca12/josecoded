@@ -358,6 +358,7 @@
       "optional": "(opcional)",
       "messageLabel": "Mensaje",
       "messageHint": "Cuéntame el contexto, el plazo y lo que necesitas.",
+      "pilotMessage": "Quiero empezar con una tarea piloto.",
       "consentBefore": "He leído la ",
       "consentLink": "política de privacidad",
       "consentAfter": " y acepto que uses estos datos para responderme.",
@@ -887,18 +888,13 @@
     },
     "terms": {
       "title": "Condiciones para compras y legal",
-      "label": "Cinco condiciones del trabajo freelance",
       "repo": {
         "title": "Trabajo en tu repo y tus herramientas",
         "text": "Entro en tu repositorio, tu gestor de tareas y tu CI; no te pido migrar nada."
       },
-      "nda": {
-        "title": "NDA si lo necesitas",
-        "text": "En revisión: publicaré cómo trabajo con NDA cuando esté confirmado."
-      },
       "invoice": {
-        "title": "Factura con IVA",
-        "text": "Cada trabajo se factura con IVA y factura detallada."
+        "title": "Factura por cada trabajo",
+        "text": "Todavía no estoy dado de alta como autónomo y puedo facturar trabajos puntuales; si necesitas otra fórmula, lo dejamos por escrito antes de empezar."
       },
       "ownership": {
         "title": "El código es tuyo",

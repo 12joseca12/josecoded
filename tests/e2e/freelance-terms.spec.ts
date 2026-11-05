@@ -12,7 +12,9 @@ interface Messages {
     };
     pilot: { text: string; cta: string };
     availability: { label: string };
+    terms: { title: string; invoice: { title: string; text: string } };
   };
+  contactPage: { form: { messageLabel: string; pilotMessage: string } };
 }
 
 const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as Messages;
@@ -37,12 +39,16 @@ test("task examples list five tasks with an indicative size and a deliverable", 
   await expect(page.locator("#incluye")).not.toContainText("€");
 });
 
-test("terms strip has five facts and marks the unconfirmed one", async ({ page }) => {
+test("terms strip has four confirmed facts and no pending marker", async ({ page }) => {
   await page.goto(path);
-  await expect(page.locator("#condiciones dt")).toHaveCount(5);
-  const pending = page.locator("#condiciones dd[data-pending]");
-  await expect(pending).toHaveCount(1);
-  await expect(pending).toContainText("En revisión");
+  await expect(page.locator("#condiciones dt")).toHaveCount(4);
+  await expect(page.locator("#condiciones dd[data-pending]")).toHaveCount(0);
+  await expect(page.locator("#condiciones")).not.toContainText("IVA");
+  const invoice = page.locator("#condiciones [data-term='invoice']");
+  await expect(invoice).toContainText(copy.terms.invoice.title);
+  await expect(invoice).toContainText(copy.terms.invoice.text);
+  const list = page.locator("#condiciones dl");
+  await expect(list).toHaveAccessibleName(copy.terms.title);
 });
 
 test("pilot task offers a small closed task and links to the freelance form", async ({ page }) => {
@@ -54,6 +60,20 @@ test("pilot task offers a small closed task and links to the freelance form", as
   await cta.click();
   await expect(page).toHaveURL(/\/es\/contacto\?via=freelance&task=pilot/);
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+});
+
+test("the pilot link prefills a visible, editable line in the contact message", async ({
+  page,
+}) => {
+  await page.goto("/es/contacto?via=freelance&task=pilot#formulario");
+  const message = page.locator("#formulario").getByLabel(es.contactPage.form.messageLabel);
+  await expect(message).toHaveValue(es.contactPage.form.pilotMessage);
+  await message.fill(`${es.contactPage.form.pilotMessage} Necesito revisar el login.`);
+  await expect(message).toHaveValue(/Necesito revisar el login\.$/);
+  await page.goto("/es/contacto?via=freelance#formulario");
+  await expect(
+    page.locator("#formulario").getByLabel(es.contactPage.form.messageLabel),
+  ).toHaveValue("");
 });
 
 test("availability stays hidden while there is no data", async ({ page }) => {

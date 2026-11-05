@@ -358,6 +358,7 @@
       "optional": "(optional)",
       "messageLabel": "Message",
       "messageHint": "Tell me the context, the timing and what you need.",
+      "pilotMessage": "I would like to start with a pilot task.",
       "consentBefore": "I have read the ",
       "consentLink": "privacy policy",
       "consentAfter": " and agree that you use this data to reply to me.",
@@ -887,18 +888,13 @@
     },
     "terms": {
       "title": "Terms for procurement and legal",
-      "label": "Five terms of freelance work",
       "repo": {
         "title": "I work in your repo and your tools",
         "text": "I join your repository, your task tracker and your CI; I do not ask you to migrate anything."
       },
-      "nda": {
-        "title": "NDA if you need one",
-        "text": "Under review: I will publish how I work with NDAs once it is confirmed."
-      },
       "invoice": {
-        "title": "Invoice with VAT",
-        "text": "Every job is invoiced with VAT and a detailed invoice."
+        "title": "An invoice for every job",
+        "text": "I am not registered as self-employed yet and can invoice one-off jobs; if you need another arrangement, we put it in writing before starting."
       },
       "ownership": {
         "title": "The code is yours",

@@ -98,7 +98,6 @@ export interface TermItem {
   id: string;
   title: string;
   text: string;
-  pending?: boolean;
 }
 
 export interface Availability {
