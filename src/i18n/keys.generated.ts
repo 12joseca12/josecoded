@@ -1994,6 +1994,8 @@ export type MessageKey =
   | "crm.overview.due.noAction"
   | "crm.overview.due.overdue"
   | "crm.overview.due.title"
+  | "crm.overview.emptyText"
+  | "crm.overview.emptyTitle"
   | "crm.overview.lead"
   | "crm.overview.loading"
   | "crm.overview.meta.title"
