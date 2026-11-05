@@ -2,6 +2,8 @@
 
 import { type KeyboardEvent, useId, useRef, useState } from "react";
 
+import { PriceDrivers } from "@/components/services/PriceDrivers/PriceDrivers";
+import { WarrantyChip } from "@/components/services/WarrantyChip/WarrantyChip";
 import { Button } from "@/components/ui/Button/Button";
 import { Card } from "@/components/ui/Card/Card";
 import { Heading } from "@/components/ui/Heading/Heading";
@@ -20,6 +22,7 @@ interface OfferCompareLabels {
   excludes: string;
   delivery: string;
   provisional: string;
+  warrantyChip: string;
 }
 
 interface OfferCompareProps {
@@ -112,6 +115,8 @@ export function OfferCompare({ labels, groups }: OfferCompareProps) {
                       <span className={styles.unit}>{labels.unit}</span>
                     </span>
                   </p>
+                  {item.drivers ? <PriceDrivers text={item.drivers} /> : null}
+                  <WarrantyChip label={labels.warrantyChip} />
                   <p className={styles.delivery}>
                     <span className={styles.term}>{labels.delivery}</span>
                     <span>{item.weeks}</span>

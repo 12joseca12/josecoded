@@ -61,6 +61,7 @@ export interface OfferCardItem {
   price: string;
   provisional: boolean;
   weeks: string;
+  drivers?: string;
   ctaHref: string;
   ctaLabel: string;
 }
@@ -77,6 +78,18 @@ export interface ExtraChipItem {
   text: string;
   tags: string[];
   included: string;
+}
+
+export interface CostLine {
+  id: string;
+  label: string;
+  text: string;
+}
+
+export interface NeedFromYouItem {
+  slug: string;
+  name: string;
+  bullets: string[];
 }
 
 export interface MaintenancePlan {

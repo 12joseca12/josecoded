@@ -9,3 +9,8 @@
   align-items: center;
   gap: var(--space-3);
 }
+
+.trust {
+  display: grid;
+  gap: var(--space-5);
+}
