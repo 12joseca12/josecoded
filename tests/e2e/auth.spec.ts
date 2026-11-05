@@ -503,7 +503,7 @@ test("the leads list shows the newest first and passes axe", async ({ page }) =>
   const table = page.getByRole("table");
   await expect(table).toBeVisible();
   const rows = table.locator("tbody tr");
-  await expect(rows).toHaveCount(4);
+  await expect(rows).toHaveCount(5);
   await expect(rows.nth(0)).toContainText("Cara Pack");
   await expect(rows.nth(0)).toContainText("cara@example.com");
   await expect(rows.nth(0)).toContainText(es.admin.leads.status.new);
