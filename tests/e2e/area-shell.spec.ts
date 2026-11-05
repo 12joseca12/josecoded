@@ -74,7 +74,7 @@ test("the active project comes from the URL, then the cookie, then the most rece
 
 test("a failing project query shows the error page with a retry", async ({ page }) => {
   await signInClient(page, tag);
-  await setMode(page, { error: true });
+  await setMode(page, { error: "projects" });
   await page.goto("/es/area");
   await expect(
     page.getByRole("heading", { level: 1, name: es.errors.serverError.title }),

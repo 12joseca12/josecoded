@@ -2307,11 +2307,79 @@
       "meta": {
         "title": "Home"
       },
-      "loading": "Loading your project"
+      "loading": "Loading your project",
+      "switcher": {
+        "label": "Your projects"
+      },
+      "header": {
+        "phase": "Current phase:",
+        "progress": "Project progress",
+        "noTasks": "No tasks yet"
+      },
+      "steps": {
+        "list": "Project phases",
+        "done": "phase completed",
+        "current": "current phase",
+        "next": "upcoming phase"
+      },
+      "todo": {
+        "title": "What is on you",
+        "empty": "You have nothing pending right now.",
+        "tasksTitle": "Your tasks",
+        "storiesTitle": "Stories to confirm",
+        "complete": "Mark as done",
+        "completing": "Saving",
+        "confirm": "Confirm",
+        "confirming": "Confirming",
+        "decline": "Withdraw",
+        "declining": "Withdrawing",
+        "estimate": "Indicative estimate: {hours} h · €{amount}",
+        "note": "Note from Jose:",
+        "errors": {
+          "forbidden": "You do not have permission to do this.",
+          "stale": "This has already changed. Reload the page to see the current state.",
+          "error": "We could not save it. Try again."
+        },
+        "done": {
+          "task": "Task marked as done.",
+          "confirm": "Story confirmed.",
+          "decline": "Story withdrawn."
+        }
+      },
+      "links": {
+        "title": "Links for your project",
+        "newTab": "(opens in a new tab)"
+      },
+      "recent": {
+        "title": "Latest updates",
+        "empty": "No updates yet.",
+        "task": "Task done",
+        "document": "New document",
+        "story": {
+          "proposed": "Story proposed",
+          "in_review": "Story waiting for your confirmation",
+          "accepted": "Story accepted",
+          "rejected": "Story rejected",
+          "in_tasks": "Story accepted and turned into a task"
+        }
+      },
+      "error": {
+        "title": "We could not load this part",
+        "text": "You can try again. The rest of the page is still available.",
+        "retry": "Try again",
+        "retrying": "Trying again"
+      }
     },
     "empty": {
       "title": "Jose is setting up your project",
       "text": "Once your project is created it will appear here, with its phases, your tasks and your documents. There is nothing for you to do for now."
+    },
+    "phases": {
+      "discover": "Discover",
+      "design": "Design",
+      "build": "Build",
+      "publish": "Publish",
+      "maintain": "Maintain"
     }
   },
   "freelance": {

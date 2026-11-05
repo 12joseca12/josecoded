@@ -2307,11 +2307,79 @@
       "meta": {
         "title": "Inicio"
       },
-      "loading": "Cargando tu proyecto"
+      "loading": "Cargando tu proyecto",
+      "switcher": {
+        "label": "Tus proyectos"
+      },
+      "header": {
+        "phase": "Fase actual:",
+        "progress": "Avance del proyecto",
+        "noTasks": "Todavía no hay tareas"
+      },
+      "steps": {
+        "list": "Fases del proyecto",
+        "done": "fase completada",
+        "current": "fase actual",
+        "next": "fase pendiente"
+      },
+      "todo": {
+        "title": "Lo que te toca",
+        "empty": "No tienes nada pendiente ahora mismo.",
+        "tasksTitle": "Tareas tuyas",
+        "storiesTitle": "Historias por confirmar",
+        "complete": "Marcar como hecha",
+        "completing": "Guardando",
+        "confirm": "Confirmar",
+        "confirming": "Confirmando",
+        "decline": "Retirar",
+        "declining": "Retirando",
+        "estimate": "Estimación orientativa: {hours} h · {amount} €",
+        "note": "Nota de Jose:",
+        "errors": {
+          "forbidden": "No tienes permiso para hacer esto.",
+          "stale": "Esto ya ha cambiado. Recarga la página para ver el estado actual.",
+          "error": "No hemos podido guardarlo. Inténtalo de nuevo."
+        },
+        "done": {
+          "task": "Tarea marcada como hecha.",
+          "confirm": "Historia confirmada.",
+          "decline": "Historia retirada."
+        }
+      },
+      "links": {
+        "title": "Enlaces de tu proyecto",
+        "newTab": "(se abre en una pestaña nueva)"
+      },
+      "recent": {
+        "title": "Últimas novedades",
+        "empty": "Todavía no hay novedades.",
+        "task": "Tarea hecha",
+        "document": "Documento nuevo",
+        "story": {
+          "proposed": "Historia propuesta",
+          "in_review": "Historia pendiente de tu confirmación",
+          "accepted": "Historia aceptada",
+          "rejected": "Historia rechazada",
+          "in_tasks": "Historia aceptada y convertida en tarea"
+        }
+      },
+      "error": {
+        "title": "No hemos podido cargar esta parte",
+        "text": "Puedes reintentarlo. El resto de la página sigue disponible.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      }
     },
     "empty": {
       "title": "Jose está preparando tu proyecto",
       "text": "Cuando tu proyecto esté creado aparecerá aquí, con sus fases, tus tareas y tus documentos. Por ahora no tienes que hacer nada."
+    },
+    "phases": {
+      "discover": "Descubrir",
+      "design": "Diseñar",
+      "build": "Construir",
+      "publish": "Publicar",
+      "maintain": "Mantener"
     }
   },
   "freelance": {

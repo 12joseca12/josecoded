@@ -13,3 +13,21 @@
   display: grid;
   gap: var(--space-3);
 }
+
+.columns {
+  display: grid;
+  gap: var(--space-7);
+}
+
+.column {
+  display: grid;
+  align-content: start;
+  gap: var(--space-7);
+  min-width: 0;
+}
+
+@media (min-width: 64rem) {
+  .columns {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  }
+}

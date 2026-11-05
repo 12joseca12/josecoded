@@ -5,7 +5,15 @@ import type { AreaProject } from "@/types/area";
 import { readParam, resolveActiveProject } from "./active-project";
 
 function project(id: string, status: AreaProject["status"] = "active"): AreaProject {
-  return { id, name: id, phase: "build", status, created_at: "2026-11-01T00:00:00Z" };
+  return {
+    id,
+    name: id,
+    phase: "build",
+    status,
+    offer_slug: null,
+    due_at: null,
+    created_at: "2026-11-01T00:00:00Z",
+  };
 }
 
 const a = project("a");
