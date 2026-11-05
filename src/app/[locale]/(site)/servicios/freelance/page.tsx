@@ -15,12 +15,13 @@ import { Steps } from "@/components/ui/Steps/Steps";
 import { isLocale } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
+import { getCatalog } from "@/lib/catalog/load";
 import { buildContactHref } from "@/lib/contact/ways";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { freshAvailability, loadAvailability } from "@/lib/services/availability";
 import { buildFaqItems } from "@/lib/services/faq";
 import { buildPilotHref } from "@/lib/services/pilot";
-import { isProvisional, rates } from "@/lib/services/rates";
+import { isProvisional } from "@/lib/services/rates";
 import type { StepItem, TaskExampleItem, TermItem } from "@/types/services";
 
 import styles from "./page.module.css";
@@ -66,7 +67,7 @@ export async function generateMetadata({ params }: FreelanceProps): Promise<Meta
 export default async function FreelancePage({ params }: FreelanceProps) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const t = await getTranslator(locale);
+  const [t, { rates }] = await Promise.all([getTranslator(locale), getCatalog()]);
   const provisional = isProvisional(rates);
   const faq = buildFaqItems(t, "freelance");
   const availability = freshAvailability(await loadAvailability(), new Date());

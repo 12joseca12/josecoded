@@ -19,19 +19,17 @@ import { site } from "@/config/site";
 import { isLocale } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
+import { getCatalog } from "@/lib/catalog/load";
 import { buildContactHref } from "@/lib/contact/ways";
 import { guideScriptKeys } from "@/lib/nexo/guide";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { buildFaqItems } from "@/lib/services/faq";
 import {
   extraCopyKeys,
-  extraOf,
-  extras,
   hasProvisionalOffers,
   isProvisional,
   offerCopyKeys,
   offerOf,
-  offers,
   offersOn,
   platforms,
 } from "@/lib/services/offers";
@@ -78,13 +76,15 @@ export default async function OffersPage({ params, searchParams }: OffersProps) 
     redirect(`${basePath}${search ? `?${search}` : ""}#recomendador`);
   }
 
-  const t = await getTranslator(locale);
+  const [t, catalog] = await Promise.all([getTranslator(locale), getCatalog()]);
+  const { offers, extras } = catalog;
+  const book = { offers, extras };
   const faq = buildFaqItems(t, "offers");
   const weeks = (min: number, max: number) =>
     t(key("compare.weeks")).replace("{min}", String(min)).replace("{max}", String(max));
 
   const cardFor = (slug: (typeof offers)[number]["slug"]): OfferCardItem => {
-    const offer = offerOf(slug);
+    const offer = offerOf(slug, book);
     const copy = offerCopyKeys(slug);
     const name = t(copy.name);
     return {
@@ -110,7 +110,7 @@ export default async function OffersPage({ params, searchParams }: OffersProps) 
   const groups: OfferTabGroup[] = platforms.map((platform) => ({
     id: platform,
     label: t(key(platform === "web" ? "compare.tabWeb" : "compare.tabApp")),
-    items: offersOn(platform).map((offer) => cardFor(offer.slug)),
+    items: offersOn(platform, offers).map((offer) => cardFor(offer.slug)),
   }));
 
   const costs: CostLine[] = (["taxes", "apple", "google", "hosting", "stripe"] as const).map(
@@ -128,33 +128,38 @@ export default async function OffersPage({ params, searchParams }: OffersProps) 
   }));
 
   const nameOf = (slug: (typeof offers)[number]["slug"]) => t(offerCopyKeys(slug).name);
-  const chips: ExtraChipItem[] = extras.map((extra) => {
-    const copy = extraCopyKeys(extra.slug);
-    const onlyWeb = extra.applies.every((slug) => slug.startsWith("web"));
-    const onlyApp = extra.applies.every((slug) => slug.startsWith("app"));
-    const tags = [
-      ...(onlyWeb ? [t(key("extras.onlyWeb"))] : []),
-      ...(onlyApp ? [t(key("extras.onlyApp"))] : []),
-      ...(extra.billing === "monthly" ? [t(key("extras.monthly"))] : []),
-      ...(extra.billing === "per_unit" ? [t(key("extras.perUnit"))] : []),
-    ];
-    return {
-      slug: extra.slug,
-      name: t(copy.name),
-      text: t(copy.text),
-      forWho: t(copy.forWho),
-      applies: [...extra.applies],
-      tags,
-      included:
-        extra.includedIn.length > 0
-          ? t(key("extras.includedIn")).replace("{offers}", extra.includedIn.map(nameOf).join(", "))
-          : t(key("extras.includedNowhere")),
-    };
-  });
+  const chips: ExtraChipItem[] = extras
+    .filter((extra) => !catalog.hiddenExtras.includes(extra.slug))
+    .map((extra) => {
+      const copy = extraCopyKeys(extra.slug);
+      const onlyWeb = extra.applies.every((slug) => slug.startsWith("web"));
+      const onlyApp = extra.applies.every((slug) => slug.startsWith("app"));
+      const tags = [
+        ...(onlyWeb ? [t(key("extras.onlyWeb"))] : []),
+        ...(onlyApp ? [t(key("extras.onlyApp"))] : []),
+        ...(extra.billing === "monthly" ? [t(key("extras.monthly"))] : []),
+        ...(extra.billing === "per_unit" ? [t(key("extras.perUnit"))] : []),
+      ];
+      return {
+        slug: extra.slug,
+        name: t(copy.name),
+        text: t(copy.text),
+        forWho: t(copy.forWho),
+        applies: [...extra.applies],
+        tags,
+        included:
+          extra.includedIn.length > 0
+            ? t(key("extras.includedIn")).replace(
+                "{offers}",
+                extra.includedIn.map(nameOf).join(", "),
+              )
+            : t(key("extras.includedNowhere")),
+      };
+    });
 
-  const maintenance = extraOf("maintenance");
   const plans: MaintenancePlan[] = (["S", "M", "L"] as const).map((size) => ({
     id: size,
+    amount: catalog.plans[size],
     name: t(key(`warranty.size${size}.name`)),
     hours: t(key(`warranty.size${size}.hours`)),
     text: t(key(`warranty.size${size}.text`)),
@@ -230,11 +235,8 @@ export default async function OffersPage({ params, searchParams }: OffersProps) 
             items: plans,
           }}
           price={{
-            from: t(key("warranty.from")),
-            amount: maintenance.from,
             unit: t(key("warranty.perMonth")),
             review: t("services.price.review"),
-            provisional: isProvisional(maintenance),
           }}
           note={t(key("warranty.note"))}
         />
@@ -247,6 +249,7 @@ export default async function OffersPage({ params, searchParams }: OffersProps) 
       >
         <OfferRecommender
           locale={locale}
+          book={book}
           basePath={basePath}
           origin={site.origin}
           initial={{

@@ -17,6 +17,7 @@ import { site } from "@/config/site";
 import { isLocale } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
+import { getCatalog } from "@/lib/catalog/load";
 import { hasLiveChannel, resolveChannels } from "@/lib/contact/channels";
 import { isContactAvailable, readContactClientConfig } from "@/lib/contact/env";
 import { parseSelection } from "@/lib/contact/selection";
@@ -61,7 +62,8 @@ export async function generateMetadata({ params }: ContactProps): Promise<Metada
 export default async function ContactPage({ params, searchParams }: ContactProps) {
   const [{ locale }, query] = await Promise.all([params, searchParams]);
   if (!isLocale(locale)) notFound();
-  const t = await getTranslator(locale);
+  const [t, catalog] = await Promise.all([getTranslator(locale), getCatalog()]);
+  const book = { offers: catalog.offers, extras: catalog.extras };
   const channels = resolveChannels(contact, t("contactChooser.whatsappMessage"));
   const emails = Object.fromEntries(
     contact.ways.map((entry) => [entry.way, entry.email]),
@@ -72,6 +74,8 @@ export default async function ContactPage({ params, searchParams }: ContactProps
     ? priceOf(
         parsed.offers,
         parsed.extras.filter((slug) => slug !== "maintenance"),
+        {},
+        book,
       )
     : null;
   const selection =
@@ -85,7 +89,7 @@ export default async function ContactPage({ params, searchParams }: ContactProps
           ].join(" + "),
           price: price.once,
           monthly: parsed.extras.includes("maintenance")
-            ? priceOf(parsed.offers, ["maintenance"]).monthly
+            ? priceOf(parsed.offers, ["maintenance"], {}, book).monthly
             : null,
           provisional: price.provisional,
           changeHref: `/${locale}/servicios/a-medida#recomendador`,
