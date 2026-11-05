@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
 
+import { staffNav } from "../../src/lib/staff/nav";
 import { mockOrigin as mock, signInAdmin, type Tag, withTag } from "./support/staff";
 
 interface Tree {
@@ -124,7 +125,9 @@ test("a counter links to its filtered list", async ({ page }) => {
 test("every ready section is linked from the overview", async ({ page }) => {
   await open(page, "/es/admin", overview("title"));
   const sections = page.getByRole("region", { name: overview("sections.title") });
-  await expect(sections.getByRole("link")).toHaveCount(5);
+  await expect(sections.getByRole("link")).toHaveCount(
+    staffNav.admin.filter((entry) => entry.ready && entry.key !== "overview").length,
+  );
   await expect(sections.getByRole("link", { name: msg("admin.nav.audit") })).toBeVisible();
 });
 
