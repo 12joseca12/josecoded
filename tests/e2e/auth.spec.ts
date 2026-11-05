@@ -88,7 +88,7 @@ interface Messages {
   crm: {
     navLabel: string;
     nav: { overview: string; contacts: string; soon: string; switch: string };
-    overview: { title: string; emptyTitle: string };
+    overview: { title: string; today: { title: string } };
   };
   errors: { notFound: { title: string } };
 }
