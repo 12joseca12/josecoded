@@ -474,6 +474,45 @@ export type Database = {
           },
         ]
       }
+      site_settings: {
+        Row: {
+          key: string
+          public: boolean | null
+          updated_at: string
+          updated_by: string | null
+          value: Json
+        }
+        Insert: {
+          key: string
+          public?: never
+          updated_at?: string
+          updated_by?: string | null
+          value: Json
+        }
+        Update: {
+          key?: string
+          public?: never
+          updated_at?: string
+          updated_by?: string | null
+          value?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "site_settings_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "site_settings_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       team_profiles: {
@@ -542,6 +581,18 @@ export type Database = {
       omen_status: {
         Args: never
         Returns: Json
+      }
+      read_public_settings: {
+        Args: never
+        Returns: {
+          key: string
+          updated_at: string
+          value: Json
+        }[]
+      }
+      set_setting: {
+        Args: { p_key: string; p_value: Json }
+        Returns: string
       }
       submit_lead: {
         Args: {
