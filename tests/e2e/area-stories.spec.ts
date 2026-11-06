@@ -191,7 +191,13 @@ test("an out-of-budget story shows the verdict and is confirmed by the client", 
   await expect(page.getByText("Queda fuera del alcance acordado.")).toBeVisible();
   await expect(page.getByRole("link", { name: detail("edit") })).toHaveCount(0);
   await expectClean(page);
-  await page.getByRole("button", { name: detail("confirm") }).click();
+  const confirm = page.getByRole("button", { name: detail("confirm") });
+  await expect
+    .poll(() =>
+      confirm.evaluate((node) => Object.keys(node).some((key) => key.startsWith("__reactProps$"))),
+    )
+    .toBe(true);
+  await confirm.click();
   await expect(page.getByRole("status").filter({ hasText: detail("doneConfirm") })).toBeVisible();
   expect((await calls(page)).map((call) => call.name)).toEqual(["confirm_story"]);
 });

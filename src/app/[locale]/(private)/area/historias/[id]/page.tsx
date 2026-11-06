@@ -93,13 +93,8 @@ async function StoryContent({
   const taskHref = story.task_id
     ? `/${locale}/area/tareas/${story.task_id}?proyecto=${project.id}`
     : null;
-  const mode = !mine
-    ? null
-    : story.status === "proposed"
-      ? "manage"
-      : story.status === "in_review"
-        ? "review"
-        : null;
+  const mode =
+    story.status === "proposed" ? "manage" : story.status === "in_review" ? "review" : "none";
   return (
     <StoryCard
       story={story}
@@ -108,7 +103,7 @@ async function StoryContent({
       taskHref={taskHref}
       labels={storyCardLabels(t)}
       actions={
-        mode ? (
+        mine ? (
           <StoryActions
             storyId={story.id}
             mode={mode}

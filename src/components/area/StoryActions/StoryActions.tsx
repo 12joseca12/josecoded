@@ -26,7 +26,7 @@ export interface StoryActionsLabels {
 
 interface StoryActionsProps {
   storyId: string;
-  mode: "manage" | "review";
+  mode: "manage" | "review" | "none";
   editHref: string;
   listHref: string;
   labels: StoryActionsLabels;
