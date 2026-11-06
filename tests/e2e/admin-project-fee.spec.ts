@@ -67,7 +67,9 @@ test("an hourly fee lists its entries and approves a selection, and passes axe",
   page,
 }) => {
   await openTeam(page, shop);
-  await expect(page.getByText("Fran Freelance")).toBeVisible();
+  await expect(
+    page.getByLabel(msg("admin.projects.detail.team.freelance.field")).locator("option:checked"),
+  ).toHaveText("Fran Freelance");
   await expect(page.getByText(/Por horas: 35,00\s€ la hora\. Tope de 60 h\./)).toBeVisible();
   await expect(row(page, "Catálogo de productos")).toContainText(table("statuses.approved"));
   await expect(row(page, "Ajustes de la portada")).toContainText(table("statuses.pending"));

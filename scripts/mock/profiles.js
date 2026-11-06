@@ -55,6 +55,8 @@ route("GET", "/rest/v1/profiles", async ({ request, response, url }) => {
   if (!url.searchParams.has("id") && url.searchParams.has("role")) {
     const caller = personById(session.userId)?.[1];
     if (!caller || session.level !== "aal2") return send(response, 200, []);
+    const roleFilter = /^in\.\((.*)\)$/.exec(url.searchParams.get("role") ?? "");
+    const roles = roleFilter ? roleFilter[1].split(",") : null;
     const rows = Object.values(people)
       .filter((person) => !person.noProfile)
       .filter((person) => person.role === "admin" || person.role === "closer")
@@ -77,6 +79,7 @@ route("GET", "/rest/v1/profiles", async ({ request, response, url }) => {
         parent_recurring_rate: person.rates?.parentRecurring ?? null,
       }))
       .concat(caller.role === "admin" ? [freelanceBeneficiary] : [])
+      .filter((row) => roles === null || roles.includes(row.role))
       .sort((a, b) => a.full_name.localeCompare(b.full_name));
     return send(response, 200, rows);
   }

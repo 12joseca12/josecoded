@@ -200,7 +200,15 @@ test("an existing client and a freelance can be assigned", async ({ page }) => {
   await expect(page.getByText("Dario Cliente").first()).toBeVisible();
   await expect(page.getByText(m("client.none"))).toHaveCount(0);
 
-  await page.getByLabel(m("freelance.field")).selectOption({ label: "Fran Freelance" });
+  const field = page.getByLabel(m("freelance.field"));
+  const saved = page.getByRole("status").filter({ hasText: m("freelance.saved") });
+  await expect(field).toHaveValue("00000000-0000-4000-8000-0000000000f2");
+  await field.selectOption({ label: m("freelance.none") });
   await page.getByRole("button", { name: m("freelance.submit") }).click();
-  await expect(page.getByRole("status").filter({ hasText: m("freelance.saved") })).toHaveCount(1);
+  await expect(saved).toHaveCount(1);
+  await expect(field).toHaveValue("");
+  await field.selectOption({ label: "Fran Freelance" });
+  await page.getByRole("button", { name: m("freelance.submit") }).click();
+  await expect(field).toHaveValue("00000000-0000-4000-8000-0000000000f2");
+  await expect(saved).toHaveCount(1);
 });

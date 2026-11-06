@@ -395,7 +395,7 @@ test("the profile shows a skeleton while it loads and an error with a retry when
   await setMode(page, { profile: "slow" });
   await page.goto("/es/cuenta", { waitUntil: "commit" });
   await expect(
-    page.getByRole("status").filter({ hasText: account.loading.profile }),
+    page.getByRole("status").filter({ hasText: new RegExp(`^${account.loading.profile}$`) }),
   ).toBeAttached();
   await expect(section(page, account.profile.title)).toBeVisible();
 
