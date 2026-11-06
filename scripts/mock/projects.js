@@ -726,6 +726,31 @@ route("GET", "/rest/v1/freelance_fee_summary", ({ request, response, url }) => {
 route("GET", "/rest/v1/freelance_fee_items", ({ request, response, url }) => {
   const auth = adminCall(request, response);
   if (!auth) return;
+  const payoutId = eq(url, "payout_id");
+  if (payoutId) {
+    return send(
+      response,
+      200,
+      auth.money.feeItems.filter((item) => item.payout_id === payoutId),
+    );
+  }
+  const owner = eq(url, "freelance_fees.freelance_id");
+  if (owner) {
+    const from = /^gte\.(.+)$/.exec(url.searchParams.get("worked_on") ?? "")?.[1] ?? "";
+    const to = /^lte\.(.+)$/.exec(url.searchParams.getAll("worked_on").at(-1) ?? "")?.[1] ?? "~";
+    return send(
+      response,
+      200,
+      auth.money.feeItems.filter(
+        (item) =>
+          item.freelance_id === owner &&
+          item.status === "approved" &&
+          item.payout_id === null &&
+          item.worked_on >= from &&
+          item.worked_on <= to,
+      ),
+    );
+  }
   const only = eq(url, "fee_id");
   const entry = feeEntry(auth, only);
   return send(

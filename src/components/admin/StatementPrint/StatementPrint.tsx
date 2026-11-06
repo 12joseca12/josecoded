@@ -4,13 +4,14 @@ import { StatusPill } from "@/components/ui/StatusPill/StatusPill";
 import { formatDay } from "@/lib/crm/contacts";
 import { formatCents, formatRate } from "@/lib/money";
 import type { PayoutRow } from "@/types/money";
-import type { PayoutLine, StatementLabels } from "@/types/payouts";
+import type { PayoutItem, PayoutLine, StatementLabels } from "@/types/payouts";
 
 import styles from "./StatementPrint.module.css";
 
 interface StatementPrintProps {
   payout: PayoutRow;
   lines: PayoutLine[];
+  items: PayoutItem[];
   beneficiary: string;
   locale: string;
   labels: StatementLabels;
@@ -19,10 +20,12 @@ interface StatementPrintProps {
 export function StatementPrint({
   payout,
   lines,
+  items,
   beneficiary,
   locale,
   labels,
 }: StatementPrintProps) {
+  const freelance = payout.kind === "freelance";
   const start = formatDay(payout.period_start, locale);
   const end = formatDay(payout.period_end, locale);
   const withholding = payout.total - payout.net_total;
@@ -31,11 +34,11 @@ export function StatementPrint({
     <article className={styles.sheet}>
       <header className={styles.head}>
         <Heading level={2} size="h3">
-          {labels.title}
+          {freelance ? labels.items.statementTitle : labels.title}
         </Heading>
         <p className={styles.issuer}>{labels.issuer}</p>
         <p className={styles.notice} role="note">
-          {labels.notPayment}
+          {freelance ? labels.items.notInvoice : labels.notPayment}
         </p>
       </header>
 
@@ -86,47 +89,87 @@ export function StatementPrint({
         ) : null}
       </dl>
 
-      <section aria-labelledby={`lines-${payout.id}`} className={styles.lines}>
-        <h3 id={`lines-${payout.id}`} className={styles.blockTitle}>
-          {labels.linesTitle}
-        </h3>
-        {lines.length === 0 ? (
-          <p className={styles.muted}>{labels.linesEmpty}</p>
-        ) : (
-          <DataTable caption={labels.linesCaption} region={labels.linesRegion} size="md">
-            <thead>
-              <tr>
-                <th scope="col">{labels.linesColumns.date}</th>
-                <th scope="col">{labels.linesColumns.contact}</th>
-                <th scope="col">{labels.linesColumns.nature}</th>
-                <th scope="col" data-align="end">
-                  {labels.linesColumns.base}
-                </th>
-                <th scope="col" data-align="end">
-                  {labels.linesColumns.rate}
-                </th>
-                <th scope="col" data-align="end">
-                  {labels.linesColumns.amount}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {lines.map((line) => (
-                <tr key={line.id} data-tone={line.amount < 0 ? "error" : undefined}>
-                  <th scope="row" data-nowrap>
-                    {line.payments ? formatDay(line.payments.received_at, locale) : "—"}
+      {freelance ? (
+        <section aria-labelledby={`lines-${payout.id}`} className={styles.lines}>
+          <h3 id={`lines-${payout.id}`} className={styles.blockTitle}>
+            {labels.items.title}
+          </h3>
+          {items.length === 0 ? (
+            <p className={styles.muted}>{labels.items.empty}</p>
+          ) : (
+            <DataTable caption={labels.items.caption} region={labels.items.region} size="md">
+              <thead>
+                <tr>
+                  <th scope="col">{labels.items.columns.date}</th>
+                  <th scope="col">{labels.items.columns.label}</th>
+                  <th scope="col" data-align="end">
+                    {labels.items.columns.hours}
                   </th>
-                  <td>{line.commissions?.deals?.contacts?.full_name ?? "—"}</td>
-                  <td>{labels.natures[line.nature]}</td>
-                  <td data-align="end">{formatCents(line.base, locale)}</td>
-                  <td data-align="end">{formatRate(line.rate, locale)}</td>
-                  <td data-align="end">{formatCents(line.amount, locale)}</td>
+                  <th scope="col" data-align="end">
+                    {labels.items.columns.amount}
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </DataTable>
-        )}
-      </section>
+              </thead>
+              <tbody>
+                {items.map((item) => (
+                  <tr key={item.id}>
+                    <th scope="row" data-nowrap>
+                      {formatDay(item.worked_on, locale)}
+                    </th>
+                    <td>{item.label}</td>
+                    <td data-align="end">
+                      {item.hours === null ? "—" : `${String(item.hours)} h`}
+                    </td>
+                    <td data-align="end">{formatCents(item.amount, locale)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </DataTable>
+          )}
+        </section>
+      ) : (
+        <section aria-labelledby={`lines-${payout.id}`} className={styles.lines}>
+          <h3 id={`lines-${payout.id}`} className={styles.blockTitle}>
+            {labels.linesTitle}
+          </h3>
+          {lines.length === 0 ? (
+            <p className={styles.muted}>{labels.linesEmpty}</p>
+          ) : (
+            <DataTable caption={labels.linesCaption} region={labels.linesRegion} size="md">
+              <thead>
+                <tr>
+                  <th scope="col">{labels.linesColumns.date}</th>
+                  <th scope="col">{labels.linesColumns.contact}</th>
+                  <th scope="col">{labels.linesColumns.nature}</th>
+                  <th scope="col" data-align="end">
+                    {labels.linesColumns.base}
+                  </th>
+                  <th scope="col" data-align="end">
+                    {labels.linesColumns.rate}
+                  </th>
+                  <th scope="col" data-align="end">
+                    {labels.linesColumns.amount}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {lines.map((line) => (
+                  <tr key={line.id} data-tone={line.amount < 0 ? "error" : undefined}>
+                    <th scope="row" data-nowrap>
+                      {line.payments ? formatDay(line.payments.received_at, locale) : "—"}
+                    </th>
+                    <td>{line.commissions?.deals?.contacts?.full_name ?? "—"}</td>
+                    <td>{labels.natures[line.nature]}</td>
+                    <td data-align="end">{formatCents(line.base, locale)}</td>
+                    <td data-align="end">{formatRate(line.rate, locale)}</td>
+                    <td data-align="end">{formatCents(line.amount, locale)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </DataTable>
+          )}
+        </section>
+      )}
 
       <table className={styles.totals}>
         <caption className={styles.caption}>{labels.summary}</caption>

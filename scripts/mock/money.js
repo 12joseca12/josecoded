@@ -185,6 +185,39 @@ const seeded = {
       issued_at: "2026-10-16T09:00:00+00:00",
       paid_at: "2026-10-20",
       paid_reference: "Prueba: transferencia",
+      kind: "commission",
+    },
+  ],
+  feeItems: [
+    {
+      id: "75000000-0000-4000-8000-000000000011",
+      freelance_id: "00000000-0000-4000-8000-0000000000f2",
+      label: "Catálogo de productos",
+      hours: 8,
+      amount: 280,
+      worked_on: "2026-10-10",
+      status: "approved",
+      payout_id: null,
+    },
+    {
+      id: "75000000-0000-4000-8000-000000000012",
+      freelance_id: "00000000-0000-4000-8000-0000000000f2",
+      label: "Maquetación de la portada",
+      hours: 6,
+      amount: 210,
+      worked_on: "2026-10-20",
+      status: "approved",
+      payout_id: null,
+    },
+    {
+      id: "75000000-0000-4000-8000-000000000013",
+      freelance_id: "00000000-0000-4000-8000-0000000000f2",
+      label: "Horas sin aprobar",
+      hours: 3,
+      amount: 105,
+      worked_on: "2026-10-22",
+      status: "pending",
+      payout_id: null,
     },
   ],
   payments: [
@@ -907,6 +940,8 @@ function paymentRef(auth, paymentId) {
   return payment ? { received_at: payment.received_at } : null;
 }
 
+const freelanceBeneficiaryId = "00000000-0000-4000-8000-0000000000f2";
+
 function personCadence(beneficiaryId) {
   const person = Object.values(people).find((entry) => entry.id === beneficiaryId);
   return person?.cadence ?? "biweekly";
@@ -922,25 +957,40 @@ route("POST", "/rest/v1/rpc/build_payout", async ({ request, response }) => {
   if (!caller) return undefined;
   const { auth } = caller;
   const person = Object.values(people).find((entry) => entry.id === body.p_beneficiary_id);
-  if (!person || person.role !== "closer") return failure(response, "invalid_beneficiary");
+  const freelance = body.p_beneficiary_id === freelanceBeneficiaryId;
+  if (!freelance && (!person || person.role !== "closer")) {
+    return failure(response, "invalid_beneficiary");
+  }
   const start = body.p_period_start;
   const end = body.p_period_end;
   if (!start || !end || end < start) return failure(response, "invalid_period");
   const withholding = body.p_withholding_rate ?? 0;
   if (withholding < 0 || withholding > 100) return failure(response, "invalid_withholding");
-  const lines = auth.money.lines.filter((line) => {
-    const payment = auth.money.payments.find((entry) => entry.id === line.payment_id);
-    return (
-      line.beneficiary_id === body.p_beneficiary_id &&
-      line.status === "approved" &&
-      line.payout_id === null &&
-      payment !== undefined &&
-      payment.received_at >= start &&
-      payment.received_at <= end
-    );
-  });
-  if (lines.length === 0) return failure(response, "no_lines_in_period");
-  const total = lines.reduce((sum, line) => sum + cents(line.amount), 0) / 100;
+  const items = freelance
+    ? auth.money.feeItems.filter(
+        (item) =>
+          item.freelance_id === body.p_beneficiary_id &&
+          item.status === "approved" &&
+          item.payout_id === null &&
+          item.worked_on >= start &&
+          item.worked_on <= end,
+      )
+    : [];
+  const lines = freelance
+    ? []
+    : auth.money.lines.filter((line) => {
+        const payment = auth.money.payments.find((entry) => entry.id === line.payment_id);
+        return (
+          line.beneficiary_id === body.p_beneficiary_id &&
+          line.status === "approved" &&
+          line.payout_id === null &&
+          payment !== undefined &&
+          payment.received_at >= start &&
+          payment.received_at <= end
+        );
+      });
+  if (lines.length + items.length === 0) return failure(response, "no_lines_in_period");
+  const total = [...lines, ...items].reduce((sum, line) => sum + cents(line.amount), 0) / 100;
   if (total < 0) return failure(response, "negative_total");
   const net = (cents(total) - Math.round((cents(total) * withholding) / 100)) / 100;
   const payout = {
@@ -948,6 +998,7 @@ route("POST", "/rest/v1/rpc/build_payout", async ({ request, response }) => {
     beneficiary_id: body.p_beneficiary_id,
     period_start: start,
     period_end: end,
+    kind: freelance ? "freelance" : "commission",
     cadence: personCadence(body.p_beneficiary_id),
     total,
     withholding_rate: withholding,
@@ -960,7 +1011,7 @@ route("POST", "/rest/v1/rpc/build_payout", async ({ request, response }) => {
     paid_reference: null,
   };
   auth.money.payouts.push(payout);
-  for (const line of lines) line.payout_id = payout.id;
+  for (const line of [...lines, ...items]) line.payout_id = payout.id;
   return send(response, 200, JSON.stringify(payout.id));
 });
 
@@ -988,6 +1039,9 @@ route("POST", "/rest/v1/rpc/set_payout_status", async ({ request, response }) =>
     for (const line of auth.money.lines) {
       if (line.payout_id === payout.id && line.status === "approved") line.status = "paid";
     }
+    for (const item of auth.money.feeItems) {
+      if (item.payout_id === payout.id && item.status === "approved") item.status = "paid";
+    }
     return sendEmpty(response);
   }
   return failure(response, "invalid_transition");
@@ -1003,6 +1057,9 @@ route("POST", "/rest/v1/rpc/delete_payout_draft", async ({ request, response }) 
   if (payout.status !== "draft") return failure(response, "payout_not_draft");
   for (const line of auth.money.lines) {
     if (line.payout_id === payout.id) line.payout_id = null;
+  }
+  for (const item of auth.money.feeItems) {
+    if (item.payout_id === payout.id) item.payout_id = null;
   }
   auth.money.payouts = auth.money.payouts.filter((entry) => entry.id !== payout.id);
   return sendEmpty(response);

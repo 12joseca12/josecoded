@@ -1,6 +1,19 @@
 import { bearer, extendAuthState, people, personById } from "./auth.js";
 import { route, send } from "./registry.js";
 
+const freelanceBeneficiary = {
+  id: "00000000-0000-4000-8000-0000000000f2",
+  full_name: "Fran Freelance",
+  role: "freelance",
+  is_active: true,
+  parent_closer_id: null,
+  payout_cadence: null,
+  closer_rate: null,
+  parent_rate: null,
+  closer_recurring_rate: null,
+  parent_recurring_rate: null,
+};
+
 const rates = {
   [people["closer@example.com"].id]: { closer_rate: 10, closer_recurring_rate: 7.5 },
 };
@@ -51,6 +64,7 @@ route("GET", "/rest/v1/profiles", ({ request, response, url }) => {
         closer_recurring_rate: person.rates?.closerRecurring ?? null,
         parent_recurring_rate: person.rates?.parentRecurring ?? null,
       }))
+      .concat(caller.role === "admin" ? [freelanceBeneficiary] : [])
       .sort((a, b) => a.full_name.localeCompare(b.full_name));
     return send(response, 200, rows);
   }

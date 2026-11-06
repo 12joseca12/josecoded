@@ -49,7 +49,13 @@ export async function previewPayoutAction(
   const client = await adminClient(locale);
   const parsed = previewPayoutSchema.safeParse(raw);
   if (client === null || !parsed.success) return { status: "error" };
-  return previewPayoutLines(client, parsed.data.beneficiaryId, parsed.data.start, parsed.data.end);
+  return previewPayoutLines(
+    client,
+    parsed.data.beneficiaryId,
+    parsed.data.role,
+    parsed.data.start,
+    parsed.data.end,
+  );
 }
 
 export async function issuePayoutAction(locale: string, raw: unknown): Promise<PayoutActionResult> {

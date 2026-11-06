@@ -1124,7 +1124,8 @@
           "proformas_unpaid": "Proformas sent and unpaid",
           "payouts_draft": "Draft payouts",
           "jobs_failed": "Failed jobs",
-          "stories_to_decide": "Stories to decide"
+          "stories_to_decide": "Stories to decide",
+          "fee_items_pending": "Freelancer entries to approve"
         },
         "loading": "Loading counters",
         "unavailable": {
@@ -2497,12 +2498,17 @@
           "net": "Net to pay",
           "status": "Status",
           "reference": "Reference",
-          "actions": "Actions"
+          "actions": "Actions",
+          "kind": "Type"
         },
         "open": "Open",
         "openAria": "Open the payout of {name} from {start} to {end}",
         "none": "—",
-        "range": "{start} – {end}"
+        "range": "{start} – {end}",
+        "kinds": {
+          "commission": "Commissions",
+          "freelance": "Freelance"
+        }
       },
       "cadences": {
         "per_payment": "Per payment",
@@ -2547,6 +2553,10 @@
           "negative_total": "Refunds exceed the commissions of the period: widen the period.",
           "forbidden": "Only the admin can create payouts.",
           "error": "The payout could not be created. Try again."
+        },
+        "roles": {
+          "closer": "Closer",
+          "freelance": "Freelance"
         }
       },
       "detail": {
@@ -2576,7 +2586,21 @@
         },
         "linesCaption": "Payout lines",
         "linesRegion": "Payout lines table, scrolls horizontally",
-        "loading": "Loading the payout"
+        "loading": "Loading the payout",
+        "items": {
+          "statementTitle": "Work statement",
+          "title": "Included entries",
+          "empty": "This payout has no entries.",
+          "caption": "Payout entries",
+          "region": "Payout entries",
+          "columns": {
+            "date": "Date",
+            "label": "Item",
+            "hours": "Hours",
+            "amount": "Amount"
+          },
+          "notInvoice": "This statement summarises work. It is not an invoice."
+        }
       },
       "actions": {
         "title": "Actions",

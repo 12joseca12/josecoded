@@ -1124,7 +1124,8 @@
           "proformas_unpaid": "Proformas enviadas sin cobrar",
           "payouts_draft": "Liquidaciones en borrador",
           "jobs_failed": "Trabajos fallidos",
-          "stories_to_decide": "Historias por decidir"
+          "stories_to_decide": "Historias por decidir",
+          "fee_items_pending": "Partidas de freelance por aprobar"
         },
         "loading": "Cargando contadores",
         "unavailable": {
@@ -2497,12 +2498,17 @@
           "net": "Neto a pagar",
           "status": "Estado",
           "reference": "Referencia",
-          "actions": "Acciones"
+          "actions": "Acciones",
+          "kind": "Tipo"
         },
         "open": "Abrir",
         "openAria": "Abrir la liquidación de {name} del {start} al {end}",
         "none": "—",
-        "range": "{start} – {end}"
+        "range": "{start} – {end}",
+        "kinds": {
+          "commission": "Comisiones",
+          "freelance": "Freelance"
+        }
       },
       "cadences": {
         "per_payment": "Por cobro",
@@ -2547,6 +2553,10 @@
           "negative_total": "Las devoluciones superan las comisiones del periodo: amplía el periodo.",
           "forbidden": "Solo el administrador puede crear liquidaciones.",
           "error": "No se ha podido crear la liquidación. Inténtalo otra vez."
+        },
+        "roles": {
+          "closer": "Closer",
+          "freelance": "Freelance"
         }
       },
       "detail": {
@@ -2576,7 +2586,21 @@
         },
         "linesCaption": "Líneas de la liquidación",
         "linesRegion": "Tabla de líneas de la liquidación, se desplaza en horizontal",
-        "loading": "Cargando la liquidación"
+        "loading": "Cargando la liquidación",
+        "items": {
+          "statementTitle": "Extracto de trabajos",
+          "title": "Partidas incluidas",
+          "empty": "Esta liquidación no tiene partidas.",
+          "caption": "Partidas de la liquidación",
+          "region": "Partidas de la liquidación",
+          "columns": {
+            "date": "Fecha",
+            "label": "Concepto",
+            "hours": "Horas",
+            "amount": "Importe"
+          },
+          "notInvoice": "Este extracto resume trabajos. No es una factura."
+        }
       },
       "actions": {
         "title": "Acciones",

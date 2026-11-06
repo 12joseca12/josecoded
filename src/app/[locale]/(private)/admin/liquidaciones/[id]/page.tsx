@@ -61,7 +61,7 @@ async function DetailSection({ locale, id }: { locale: Locale; id: string }) {
     );
   }
 
-  const { payout, lines, beneficiary } = result;
+  const { payout, lines, items, beneficiary } = result;
   const backHref = `/${locale}/admin/liquidaciones`;
   const labels = statementLabels(t);
   return (
@@ -78,6 +78,7 @@ async function DetailSection({ locale, id }: { locale: Locale; id: string }) {
       <StatementPrint
         payout={payout}
         lines={lines}
+        items={items}
         beneficiary={beneficiary}
         locale={locale}
         labels={labels}

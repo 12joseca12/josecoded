@@ -32,6 +32,7 @@ export const invoiceStatuses = ["draft", "sent", "paid", "void"] as const;
 export const paymentKinds = ["payment", "refund"] as const;
 export const paymentMethods = ["transfer", "card", "stripe", "other"] as const;
 export const payoutStatuses = ["draft", "issued", "paid"] as const;
+export const payoutKinds = ["commission", "freelance"] as const;
 export const payoutCadences = ["per_payment", "weekly", "biweekly"] as const;
 
 export type CommissionRole = (typeof commissionRoles)[number];
@@ -44,6 +45,7 @@ export type InvoiceStatus = (typeof invoiceStatuses)[number];
 export type PaymentKind = (typeof paymentKinds)[number];
 export type PaymentMethod = (typeof paymentMethods)[number];
 export type PayoutStatus = (typeof payoutStatuses)[number];
+export type PayoutKind = (typeof payoutKinds)[number];
 export type PayoutCadence = (typeof payoutCadences)[number];
 
 export const commissionHeaderSchema = z.object({
@@ -139,6 +141,7 @@ export const payoutRowSchema = z.object({
   issued_at: z.string().nullable(),
   paid_at: z.string().nullable(),
   paid_reference: z.string().nullable(),
+  kind: z.enum(payoutKinds).default("commission"),
 });
 
 export type PayoutRow = z.infer<typeof payoutRowSchema>;

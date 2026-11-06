@@ -19,6 +19,7 @@ export function PayoutList({ rows, names, locale, labels }: PayoutListProps) {
       <thead>
         <tr>
           <th scope="col">{labels.columns.beneficiary}</th>
+          <th scope="col">{labels.columns.kind}</th>
           <th scope="col">{labels.columns.period}</th>
           <th scope="col">{labels.columns.cadence}</th>
           <th scope="col" data-align="end">
@@ -43,6 +44,7 @@ export function PayoutList({ rows, names, locale, labels }: PayoutListProps) {
           return (
             <tr key={row.id}>
               <th scope="row">{name}</th>
+              <td>{labels.kinds[row.kind]}</td>
               <td data-nowrap>{labels.range.replace("{start}", start).replace("{end}", end)}</td>
               <td>{labels.cadences[row.cadence]}</td>
               <td data-align="end">{formatCents(row.total, locale)}</td>

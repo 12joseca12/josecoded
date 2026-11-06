@@ -37,11 +37,16 @@ export function payoutListLabels(t: Translate): PayoutListLabels {
       status: t("admin.payouts.list.columns.status"),
       reference: t("admin.payouts.list.columns.reference"),
       actions: t("admin.payouts.list.columns.actions"),
+      kind: t("admin.payouts.list.columns.kind"),
     },
     open: t("admin.payouts.list.open"),
     openAria: t("admin.payouts.list.openAria"),
     range: t("admin.payouts.list.range"),
     none: t("admin.payouts.list.none"),
+    kinds: {
+      commission: t("admin.payouts.list.kinds.commission"),
+      freelance: t("admin.payouts.list.kinds.freelance"),
+    },
     cadences: cadences(t),
     statuses: statuses(t),
   };
@@ -49,6 +54,10 @@ export function payoutListLabels(t: Translate): PayoutListLabels {
 
 export function payoutBuilderLabels(t: Translate): PayoutBuilderLabels {
   return {
+    roles: {
+      closer: t("admin.payouts.builder.roles.closer"),
+      freelance: t("admin.payouts.builder.roles.freelance"),
+    },
     open: t("admin.payouts.builder.open"),
     title: t("admin.payouts.builder.title"),
     close: t("admin.payouts.builder.close"),
@@ -193,6 +202,20 @@ export function statementLabels(t: Translate): StatementLabels {
       base: t("admin.payouts.detail.linesColumns.base"),
       rate: t("admin.payouts.detail.linesColumns.rate"),
       amount: t("admin.payouts.detail.linesColumns.amount"),
+    },
+    items: {
+      statementTitle: t("admin.payouts.detail.items.statementTitle"),
+      title: t("admin.payouts.detail.items.title"),
+      empty: t("admin.payouts.detail.items.empty"),
+      caption: t("admin.payouts.detail.items.caption"),
+      region: t("admin.payouts.detail.items.region"),
+      columns: {
+        date: t("admin.payouts.detail.items.columns.date"),
+        label: t("admin.payouts.detail.items.columns.label"),
+        hours: t("admin.payouts.detail.items.columns.hours"),
+        amount: t("admin.payouts.detail.items.columns.amount"),
+      },
+      notInvoice: t("admin.payouts.detail.items.notInvoice"),
     },
     cadences: cadences(t),
     statuses: statuses(t),
