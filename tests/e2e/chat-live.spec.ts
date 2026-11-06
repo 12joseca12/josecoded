@@ -46,11 +46,12 @@ async function openPanel(page: Page) {
   await headerChat(page).click();
   await expect(panel(page)).toBeVisible();
   await expect(composer(page)).toBeFocused();
+  await expect(panel(page).getByRole("button", { name: chat.composer.send })).toBeDisabled();
 }
 
 async function say(page: Page, text: string) {
   await composer(page).fill(text);
-  await page.keyboard.press("Enter");
+  await composer(page).press("Enter");
   await expect(log(page).getByText(text)).toBeVisible();
 }
 
@@ -152,7 +153,7 @@ test("when Jose takes over the band appears and his message is labelled", async 
 test("the daily quota shows its notice and locks the composer", async ({ page }) => {
   await openPanel(page);
   await composer(page).fill("[quota] muchos mensajes");
-  await page.keyboard.press("Enter");
+  await composer(page).press("Enter");
   await expect(page.getByRole("status").filter({ hasText: chat.notice.quota.title })).toBeVisible();
   await expect(composer(page)).toBeDisabled();
   await expect(panel(page).locator("svg[data-state]")).toHaveAttribute("data-state", "sad");
@@ -161,7 +162,7 @@ test("the daily quota shows its notice and locks the composer", async ({ page })
 test("a burst keeps the text so it can be sent again", async ({ page }) => {
   await openPanel(page);
   await composer(page).fill("[burst] rápido");
-  await page.keyboard.press("Enter");
+  await composer(page).press("Enter");
   await expect(panel(page).getByRole("alert")).toHaveText(chat.errors.burst);
   await expect(composer(page)).toHaveValue("[burst] rápido");
   await expect(composer(page)).toBeEnabled();
@@ -173,7 +174,7 @@ test("a rejected check explains itself and keeps the text", async ({ page }) => 
   });
   await openPanel(page);
   await composer(page).fill("hola");
-  await page.keyboard.press("Enter");
+  await composer(page).press("Enter");
   await expect(panel(page).getByRole("alert")).toHaveText(chat.errors.verification);
   await expect(composer(page)).toHaveValue("hola");
 });
