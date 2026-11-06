@@ -41,3 +41,44 @@ export async function signBillingUrl(
     return null;
   }
 }
+
+export const chatBucket = "chat-attachments";
+
+export async function uploadChatFile(
+  client: ServiceSupabase,
+  path: string,
+  file: File,
+): Promise<boolean> {
+  try {
+    const { error } = await client.storage
+      .from(chatBucket)
+      .upload(path, file, { contentType: file.type, upsert: false });
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
+export async function removeChatFiles(client: ServiceSupabase, paths: string[]): Promise<void> {
+  if (paths.length === 0) return;
+  try {
+    await client.storage.from(chatBucket).remove(paths);
+  } catch {
+    return;
+  }
+}
+
+export async function signChatUrl(
+  client: ServiceSupabase,
+  path: string,
+  downloadName: string,
+): Promise<string | null> {
+  try {
+    const { data, error } = await client.storage
+      .from(chatBucket)
+      .createSignedUrl(path, signedUrlSeconds, { download: downloadName });
+    return error ? null : data.signedUrl;
+  } catch {
+    return null;
+  }
+}

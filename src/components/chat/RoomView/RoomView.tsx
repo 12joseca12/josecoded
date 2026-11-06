@@ -2,9 +2,11 @@
 
 import { type ReactNode, useEffect, useMemo, useSyncExternalStore } from "react";
 
+import { formatSize } from "@/lib/chat/attachments";
 import { useRoomMessages } from "@/lib/chat/use-room-messages";
 import type { RoomLabels, RoomMember, RoomMessage, RoomTransport, RoomZone } from "@/types/room";
 
+import { AttachmentChip } from "../AttachmentChip/AttachmentChip";
 import { type BubbleVariant, ChatBubble } from "../ChatBubble/ChatBubble";
 import { ChatThread } from "../ChatThread/ChatThread";
 import { type ComposerMode, RoomComposer } from "../RoomComposer/RoomComposer";
@@ -18,6 +20,7 @@ interface RoomViewProps {
   members: RoomMember[];
   archived: boolean;
   canWrite: boolean;
+  allowFiles?: boolean;
   labels: RoomLabels;
   transport: RoomTransport;
   pollMs: number;
@@ -40,6 +43,7 @@ export function RoomView({
   members,
   archived,
   canWrite,
+  allowFiles = false,
   labels,
   transport,
   pollMs,
@@ -77,10 +81,31 @@ export function RoomView({
     };
   }, [lastForeign, transport]);
 
+  const chips = (message: RoomMessage) =>
+    message.attachments.length === 0 ? undefined : (
+      <ul className={styles.chips}>
+        {message.attachments.map((attachment) => {
+          const size = formatSize(attachment.size_bytes, labels.attachments);
+          return (
+            <li key={attachment.id}>
+              <AttachmentChip
+                href={`/api/chat/attachments/${attachment.id}`}
+                name={attachment.name}
+                size={size}
+                title={labels.attachments.download
+                  .replace("{name}", attachment.name)
+                  .replace("{size}", size)}
+              />
+            </li>
+          );
+        })}
+      </ul>
+    );
+
   const mode: ComposerMode = archived ? "archived" : canWrite ? "open" : "readOnly";
 
   return (
-    <div className={styles.room} data-zone={zone}>
+    <div className={styles.room} data-zone={zone} data-ready={zoned ? "true" : "false"}>
       {header ? <div className={styles.header}>{header}</div> : null}
       <div className={styles.body}>
         <ChatThread label={labels.threadLabel} empty={labels.empty} count={messages.length}>
@@ -116,6 +141,7 @@ export function RoomView({
                   time={time}
                   note={message.auto ? labels.auto : undefined}
                   sources={message.sources}
+                  attachments={chips(message)}
                 >
                   {variant === "system" ? systemText : message.body}
                 </ChatBubble>
@@ -127,7 +153,7 @@ export function RoomView({
       <p className={styles.poll} role="status">
         {pollFailed ? labels.errors.poll : ""}
       </p>
-      <RoomComposer mode={mode} labels={labels} onSend={send} />
+      <RoomComposer mode={mode} labels={labels} allowFiles={allowFiles} onSend={send} />
     </div>
   );
 }

@@ -94,6 +94,7 @@ async function RoomSection({ locale, id, userId }: { locale: Locale; id: string;
             members={members}
             archived={archived}
             canWrite
+            allowFiles={conversation.kind !== "visitor"}
             labels={panel.room}
             pollMs={roomPollMs()}
           />

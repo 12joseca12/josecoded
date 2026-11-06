@@ -86,6 +86,7 @@ async function ChatSection({
           members={selected.members}
           archived={archived}
           canWrite
+          allowFiles
           labels={labels.room}
           pollMs={roomPollMs()}
         />

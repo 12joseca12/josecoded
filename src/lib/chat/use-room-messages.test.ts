@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { RoomMessage } from "@/types/room";
 
-import { mergeMessages } from "./use-room-messages";
+import { mergeMessages, pollCursor } from "./use-room-messages";
 
 function message(id: string, createdAt: string): RoomMessage {
   return {
@@ -15,6 +15,7 @@ function message(id: string, createdAt: string): RoomMessage {
     body: id,
     sources: [],
     auto: false,
+    attachments: [],
     created_at: createdAt,
   };
 }
@@ -47,5 +48,27 @@ describe("mergeMessages", () => {
       ],
     );
     expect(merged.map((m) => m.id)).toEqual(["a", "b", "c"]);
+  });
+});
+
+describe("mergeMessages with attachments", () => {
+  it("replaces a known message that now has attachments", () => {
+    const plain = message("a", "2026-11-05T10:00:00+00:00");
+    const attachment = {
+      id: "a1111111-1111-4111-8111-111111111111",
+      name: "x.pdf",
+      mime: "application/pdf",
+      size_bytes: 10,
+    };
+    const merged = mergeMessages([plain], [{ ...plain, attachments: [attachment] }]);
+    expect(merged).toHaveLength(1);
+    expect(merged[0]?.attachments).toEqual([attachment]);
+  });
+});
+
+describe("pollCursor", () => {
+  it("has no cursor without messages and rewinds thirty seconds otherwise", () => {
+    expect(pollCursor(undefined)).toBeNull();
+    expect(pollCursor(message("a", "2026-11-05T10:00:30+00:00"))).toBe("2026-11-05T10:00:00.000Z");
   });
 });

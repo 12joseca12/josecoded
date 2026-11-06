@@ -114,7 +114,7 @@ describe("sendRoomMessage", () => {
       conversationId: room,
       body: " Hola ",
     });
-    expect(result).toEqual({ status: "done", message: row });
+    expect(result).toEqual({ status: "done", message: { ...row, attachments: [] } });
     expect(calls.some((call) => call.startsWith("insert:"))).toBe(true);
   });
 

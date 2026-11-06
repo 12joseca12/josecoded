@@ -4638,7 +4638,11 @@
       "archived": "La sala está archivada y no admite mensajes.",
       "invalid": "Escribe un mensaje de hasta 4.000 caracteres.",
       "error": "No se ha podido enviar el mensaje. Inténtalo de nuevo.",
-      "poll": "Ahora mismo no llegan mensajes nuevos. Seguimos intentándolo."
+      "poll": "Ahora mismo no llegan mensajes nuevos. Seguimos intentándolo.",
+      "type": "Ese tipo de archivo no se admite. Usa imágenes, PDF, ZIP o documentos de Office.",
+      "too_many": "Puedes adjuntar hasta 5 archivos por mensaje.",
+      "too_large": "Cada archivo puede pesar hasta 10 MB.",
+      "attachments_failed": "El mensaje se ha enviado, pero no se han podido adjuntar los archivos."
     },
     "authors": {
       "nexo": "Nexo",
@@ -4712,6 +4716,17 @@
       "granted": "Concedido",
       "revoked": "Retirado",
       "pending": "Pendiente"
+    },
+    "attachments": {
+      "attach": "Adjuntar archivos",
+      "hint": "Hasta 5 archivos de 10 MB: imágenes, PDF, ZIP o documentos de Office.",
+      "selected": "Archivos para adjuntar",
+      "remove": "Quitar",
+      "removeAria": "Quitar {name} de los adjuntos",
+      "progress": "Subiendo archivos",
+      "download": "Descargar {name} ({size})",
+      "sizeKb": "{n} KB",
+      "sizeMb": "{n} MB"
     }
   }
 }

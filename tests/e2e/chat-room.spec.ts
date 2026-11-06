@@ -41,6 +41,7 @@ async function expectClean(page: Page) {
 test.describe("room kit on the dev page", () => {
   test("renders the thread, sends, reports failures and receives by polling", async ({ page }) => {
     await page.goto("/es/dev/ui/room");
+    await expect(page.locator('[data-ready="true"]')).toBeVisible();
     const log = page.getByRole("log", { name: text.threadLabel });
     await expect(log).toContainText("Hola, ¿puedes mirar el presupuesto?");
     await expect(log).toContainText("Respondo yo, Nexo");
@@ -68,6 +69,7 @@ test.describe("room kit on the dev page", () => {
 
   test("keeps Shift+Enter as a line break and disables an empty send", async ({ page }) => {
     await page.goto("/es/dev/ui/room");
+    await expect(page.locator('[data-ready="true"]')).toBeVisible();
     const composer = page.getByLabel(text.composer.label);
     const send = page.getByRole("button", { name: text.composer.send });
     await expect(send).toBeDisabled();
@@ -80,6 +82,7 @@ test.describe("room kit on the dev page", () => {
 
   test("switch, consent badges and member list work from the keyboard", async ({ page }) => {
     await page.goto("/es/dev/ui/room");
+    await expect(page.locator('[data-ready="true"]')).toBeVisible();
     const first = page.getByRole("switch", { name: text.ai.label }).first();
     await expect(first).toHaveAttribute("aria-checked", "true");
     await first.focus();

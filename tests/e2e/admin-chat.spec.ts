@@ -60,6 +60,7 @@ async function patchRoom(page: Page, id: string, set: object) {
 async function openRoom(page: Page, id: string) {
   await page.goto(`/es/admin/chat/${id}`);
   await expect(page.getByRole("log", { name: room("threadLabel") })).toBeVisible();
+  await expect(page.locator('[data-ready="true"]')).toBeVisible();
 }
 
 test("a closer cannot open the chat inbox", async ({ page }) => {

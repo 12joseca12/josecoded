@@ -12,6 +12,7 @@ interface ChatBubbleProps {
   time?: ReactNode;
   note?: string;
   sources?: readonly string[];
+  attachments?: ReactNode;
   children: ReactNode;
 }
 
@@ -22,6 +23,7 @@ export function ChatBubble({
   time,
   note,
   sources = [],
+  attachments,
   children,
 }: ChatBubbleProps) {
   return (
@@ -38,6 +40,7 @@ export function ChatBubble({
           ) : null}
           {note ? <p className={styles.note}>{note}</p> : null}
           <p className={styles.body}>{children}</p>
+          {attachments}
           {sources.length > 0 ? (
             <ul className={styles.sources}>
               {sources.map((source) => (

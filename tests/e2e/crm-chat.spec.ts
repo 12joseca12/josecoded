@@ -51,6 +51,7 @@ test("a closer lands in their room with Jose, writes and receives by polling", a
   await expect(page.getByRole("heading", { level: 1, name: chat("title") })).toBeVisible();
   const log = page.getByRole("log", { name: room("threadLabel") });
   await expect(log).toContainText("Hola Jose, tengo una duda.");
+  await expect(page.locator('[data-ready="true"]')).toBeVisible();
   await expect(page.getByRole("link", { name: new RegExp(chat("room.jose")) })).toHaveAttribute(
     "aria-current",
     "page",
