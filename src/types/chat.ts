@@ -17,6 +17,14 @@ export type ChatStarterTopic = (typeof chatStarterTopics)[number];
 export const chatMaxLength = 2000;
 export const chatMaxLines = 6;
 
+export interface ChatAttachment {
+  id: string;
+  href: string;
+  name: string;
+  size: string;
+  title: string;
+}
+
 export interface ChatMessage {
   id: string;
   variant: ChatBubbleVariant;
@@ -26,6 +34,10 @@ export interface ChatMessage {
   createdAt: string;
   systemEvent: ChatSystemEvent | null;
   delivery: "sent" | "sending" | "failed";
+  own?: boolean;
+  time?: string | null;
+  note?: string | null;
+  attachments?: readonly ChatAttachment[];
 }
 
 export const chatConnections = ["online", "reconnecting", "offline"] as const;

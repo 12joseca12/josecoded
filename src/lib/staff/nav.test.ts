@@ -39,6 +39,7 @@ describe("staff navigation registry", () => {
     expect(ready("admin")).toEqual([
       "overview",
       "leads",
+      "chat",
       "users",
       "prices",
       "system",
@@ -52,6 +53,7 @@ describe("staff navigation registry", () => {
       "contacts",
       "leads",
       "commissions",
+      "chat",
       "start",
       "settings",
     ]);

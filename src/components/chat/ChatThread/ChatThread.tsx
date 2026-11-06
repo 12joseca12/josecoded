@@ -6,13 +6,15 @@ import { VisuallyHidden } from "@/components/ui/VisuallyHidden/VisuallyHidden";
 import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
 import type { ChatLabels, ChatMessage } from "@/types/chat";
 
-import { ChatBubble } from "../ChatBubble/ChatBubble";
+import { ChatBubble, type ChatBubbleLabels } from "../ChatBubble/ChatBubble";
 import styles from "./ChatThread.module.css";
+
+export type ChatThreadLabels = ChatBubbleLabels & Pick<ChatLabels, "logLabel" | "typing">;
 
 interface ChatThreadProps {
   messages: readonly ChatMessage[];
   greeting: ChatMessage | null;
-  labels: ChatLabels;
+  labels: ChatThreadLabels;
   typing: boolean;
   children?: ReactNode;
 }

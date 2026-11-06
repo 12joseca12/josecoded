@@ -349,6 +349,15 @@
         "sad": "Triste"
       }
     },
+    "room": {
+      "title": "Kit de sala",
+      "intro": "Sala de prueba con mensajes de ejemplo. Nada de esto se guarda.",
+      "incoming": "Simular mensaje entrante",
+      "incomingBody": "Mensaje simulado número {n}",
+      "ownName": "Tú (prueba)",
+      "otherName": "Cleo (prueba)",
+      "switchSection": "Interruptor de Nexo y permiso"
+    },
     "chat": {
       "title": "Chat de visitantes",
       "scenario": "Escenario",
@@ -1089,7 +1098,8 @@
       "moreTitle": "Más secciones",
       "close": "Cerrar",
       "switch": "Ir al CRM",
-      "audit": "Auditoría"
+      "audit": "Auditoría",
+      "chat": "Chat"
     },
     "overview": {
       "meta": {
@@ -2642,6 +2652,112 @@
         "footer": "Importes en euros.",
         "range": "{start} – {end}"
       }
+    },
+    "chat": {
+      "meta": {
+        "title": "Chat",
+        "detailTitle": "Conversación"
+      },
+      "title": "Chat",
+      "lead": "Conversaciones de visitantes y salas con tu equipo y tus clientes.",
+      "loading": "Cargando las conversaciones",
+      "tabs": {
+        "label": "Tipo de conversación",
+        "visitors": "Visitantes",
+        "people": "Personas",
+        "clients": "Clientes",
+        "archived": "Archivadas"
+      },
+      "empty": {
+        "visitors": {
+          "title": "Ningún visitante ha escrito",
+          "text": "Cuando un visitante escriba desde el chat de la web, la conversación aparecerá aquí."
+        },
+        "people": {
+          "title": "Sin salas con personas",
+          "text": "Cada closer y cada freelance tiene su sala al aceptar la invitación."
+        },
+        "clients": {
+          "title": "Sin salas de clientes",
+          "text": "Las salas de clientes aparecerán cuando haya proyectos con cliente."
+        },
+        "archived": {
+          "title": "Sin salas archivadas",
+          "text": "Aquí quedan las salas que archives."
+        }
+      },
+      "row": {
+        "kinds": {
+          "visitor": "Visitante",
+          "closer": "Closer",
+          "client": "Cliente",
+          "freelance": "Freelance"
+        },
+        "visitor": "Visitante",
+        "noMessages": "Sin mensajes todavía",
+        "unread": "{count} sin leer",
+        "nexoOn": "Nexo activo",
+        "nexoOff": "Nexo apagado",
+        "archived": "Archivada"
+      },
+      "error": {
+        "title": "No se han podido cargar las conversaciones",
+        "text": "Inténtalo de nuevo en unos segundos.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "detail": {
+        "back": "Volver al chat",
+        "titleVisitor": "Conversación con un visitante",
+        "titleNamed": "Conversación con {name}",
+        "titleClient": "Sala del proyecto",
+        "origin": "Página de origen: {path}",
+        "archivedNote": "Sala archivada: solo lectura.",
+        "error": {
+          "title": "No se ha podido cargar la conversación",
+          "text": "Inténtalo de nuevo en unos segundos.",
+          "retry": "Reintentar",
+          "retrying": "Reintentando"
+        },
+        "archive": {
+          "trigger": "Archivar sala",
+          "title": "Archivar esta sala",
+          "text": "La sala pasa a solo lectura y deja de admitir mensajes. Podrás seguir leyéndola.",
+          "submit": "Archivar",
+          "saving": "Archivando",
+          "close": "Cancelar",
+          "done": "Sala archivada",
+          "errors": {
+            "error": "No se ha podido archivar la sala.",
+            "forbidden": "Solo Jose puede archivar salas.",
+            "conversation_not_found": "La sala ya no existe."
+          }
+        },
+        "lead": {
+          "title": "Interesado",
+          "none": "El visitante todavía no ha dejado sus datos de contacto, así que no se puede crear un interesado.",
+          "ready": "El visitante ha dejado sus datos como {name}.",
+          "button": "Crear contacto",
+          "confirmTitle": "Crear contacto desde la conversación",
+          "confirmText": "Se creará un contacto a tu nombre con el extracto de la conversación.",
+          "submit": "Crear contacto",
+          "saving": "Creando",
+          "close": "Cancelar",
+          "done": "Contacto creado",
+          "converted": "Este interesado ya es un contacto.",
+          "openContact": "Abrir contacto",
+          "openLead": "Ver interesado",
+          "errors": {
+            "error": "No se ha podido crear el contacto.",
+            "forbidden": "Solo Jose puede crear contactos desde el chat.",
+            "lead_discarded": "El interesado está descartado.",
+            "lead_not_found": "El interesado ya no existe.",
+            "contact_conflict": "Ya existe un contacto con ese correo a nombre de otra persona.",
+            "invalid_assignee": "No se puede asignar el contacto a esa persona."
+          }
+        }
+      },
+      "limit": "Mostrando las {count} más recientes."
     }
   },
   "crm": {
@@ -3366,6 +3482,33 @@
         "price": "Precios: si un precio está en revisión, no des cifras. Di que se confirma por escrito antes de empezar.",
         "invoices": "Facturas: no se emiten desde el CRM. No prometas facturas con IVA todavía.",
         "channels": "Canales: no ofrezcas chat en vivo ni llamadas que no estén acordadas con Jose."
+      }
+    },
+    "chat": {
+      "meta": {
+        "title": "Chat"
+      },
+      "title": "Chat",
+      "lead": "Tu sala con Jose y las salas de tus clientes.",
+      "loading": "Cargando el chat",
+      "groups": {
+        "label": "Salas",
+        "jose": "Jose",
+        "clients": "Mis clientes",
+        "emptyClients": "Todavía no tienes salas de clientes."
+      },
+      "room": {
+        "jose": "Sala con Jose",
+        "client": "Sala de cliente",
+        "current": "Abierta",
+        "unread": "{count} sin leer",
+        "noMessages": "Sin mensajes todavía"
+      },
+      "error": {
+        "title": "No se ha podido cargar el chat",
+        "text": "Inténtalo de nuevo en unos segundos.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
       }
     }
   },
@@ -4616,5 +4759,114 @@
       "taken": "Este Telegram ya está vinculado a otra cuenta.",
       "noCode": "Para vincular tu cuenta abre el enlace que te da la web."
     }
+  },
+  "room": {
+    "threadLabel": "Mensajes de la sala",
+    "empty": "Aún no hay mensajes. Escribe el primero.",
+    "composer": {
+      "label": "Escribe un mensaje",
+      "placeholder": "Intro envía y Mayús + Intro hace un salto de línea.",
+      "send": "Enviar",
+      "sending": "Enviando",
+      "count": "{used} de {max}",
+      "readOnly": "Esta sala es de solo lectura para ti.",
+      "archived": "Esta sala está archivada: puedes leerla, pero ya no admite mensajes."
+    },
+    "errors": {
+      "forbidden": "No tienes permiso para escribir en esta sala.",
+      "archived": "La sala está archivada y no admite mensajes.",
+      "invalid": "Escribe un mensaje de hasta 4.000 caracteres.",
+      "error": "No se ha podido enviar el mensaje. Inténtalo de nuevo.",
+      "poll": "Ahora mismo no llegan mensajes nuevos. Seguimos intentándolo.",
+      "type": "Ese tipo de archivo no se admite. Usa imágenes, PDF, ZIP o documentos de Office.",
+      "too_many": "Puedes adjuntar hasta 5 archivos por mensaje.",
+      "too_large": "Cada archivo puede pesar hasta 10 MB.",
+      "attachments_failed": "El mensaje se ha enviado, pero no se han podido adjuntar los archivos."
+    },
+    "authors": {
+      "nexo": "Nexo",
+      "visitor": "Visitante",
+      "someone": "Alguien",
+      "you": "Tú"
+    },
+    "auto": "Respondo yo, Nexo, porque nadie ha contestado a tiempo.",
+    "system": {
+      "member_added": "{name} se ha unido a la sala.",
+      "member_left": "{name} ha salido de la sala.",
+      "ai_on": "Nexo se ha activado en esta sala.",
+      "ai_off": "Nexo se ha desactivado en esta sala.",
+      "ai_off_takeover": "Jose ha tomado la conversación y Nexo se ha pausado.",
+      "consent_granted": "El cliente ha dado permiso para que Nexo use los datos del proyecto.",
+      "consent_revoked": "El cliente ha retirado el permiso a Nexo.",
+      "archived": "La sala se ha archivado.",
+      "handoff_done": "El visitante ha dejado sus datos de contacto."
+    },
+    "members": {
+      "title": "Miembros",
+      "empty": "Nadie más está en esta sala.",
+      "roles": {
+        "owner": "Jose",
+        "closer": "Closer",
+        "client": "Cliente",
+        "freelance": "Freelance"
+      },
+      "remove": "Quitar",
+      "removeAria": "Quitar a {name} de la sala",
+      "confirmTitle": "Quitar de la sala",
+      "confirmText": "{name} dejará de ver los mensajes de esta sala. El historial se conserva.",
+      "confirmSubmit": "Quitar",
+      "saving": "Quitando",
+      "close": "Cancelar",
+      "removed": "Miembro quitado",
+      "add": "Añadir a la sala",
+      "addSelect": "Persona",
+      "addPlaceholder": "Elige a alguien",
+      "addButton": "Añadir",
+      "adding": "Añadiendo",
+      "added": "Miembro añadido",
+      "errors": {
+        "error": "No se ha podido completar el cambio.",
+        "forbidden": "No tienes permiso para cambiar los miembros.",
+        "already_member": "Esa persona ya está en la sala.",
+        "client_outside_project": "Un cliente solo puede estar en la sala de su proyecto.",
+        "role_mismatch": "El rol no coincide con el de esa persona.",
+        "invalid_member": "Esa persona no está activa.",
+        "owner_cannot_leave": "Jose no puede salir de la sala.",
+        "member_not_found": "Esa persona ya no está en la sala.",
+        "conversation_archived": "La sala está archivada.",
+        "visitor_room": "No se puede añadir gente a la sala de un visitante."
+      }
+    },
+    "ai": {
+      "label": "Nexo en esta sala",
+      "on": "Nexo está activo",
+      "off": "Nexo está apagado",
+      "offTakeover": "Nexo está pausado porque has respondido tú",
+      "saving": "Guardando",
+      "changed": "Ajuste de Nexo guardado",
+      "errors": {
+        "error": "No se ha podido cambiar Nexo.",
+        "forbidden": "Solo Jose puede cambiar Nexo.",
+        "conversation_archived": "La sala está archivada."
+      }
+    },
+    "consent": {
+      "label": "Permiso de Nexo",
+      "granted": "Concedido",
+      "revoked": "Retirado",
+      "pending": "Pendiente"
+    },
+    "attachments": {
+      "attach": "Adjuntar archivos",
+      "hint": "Hasta 5 archivos de 10 MB: imágenes, PDF, ZIP o documentos de Office.",
+      "selected": "Archivos para adjuntar",
+      "remove": "Quitar",
+      "removeAria": "Quitar {name} de los adjuntos",
+      "progress": "Subiendo archivos",
+      "download": "Descargar {name} ({size})",
+      "sizeKb": "{n} KB",
+      "sizeMb": "{n} MB"
+    },
+    "sourcesLabel": "Fuentes"
   }
 }

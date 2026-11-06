@@ -78,11 +78,13 @@ select is_empty(
       and has_function_privilege('authenticated', p.oid, 'execute')
       and p.proname not in (
         'accept_invitation',
+        'add_member',
         'admin_audit_log',
         'admin_counters',
         'admin_jobs',
         'admin_users',
         'approve_commission_lines',
+        'archive_conversation',
         'assign_lead',
         'build_payout',
         'cancel_job',
@@ -92,20 +94,26 @@ select is_empty(
         'deal_payments',
         'delete_payout_draft',
         'discard_lead',
+        'ensure_my_conversation',
         'invite_user',
         'issue_proforma',
         'list_lead_inbox',
+        'list_room_members',
         'log_totp_reset',
         'mark_notifications_read',
+        'mark_read',
         'omen_status',
         'reassign_portfolio',
         'record_invoice',
         'record_payment',
         'reject_commission_line',
+        'remove_member',
         'renew_invitation',
         'retry_job',
         'revoke_invitation',
         'send_test_notification',
+        'set_ai_consent',
+        'set_conversation_ai',
         'set_notification_pref',
         'set_payment_schedule',
         'set_payout_invoice',
@@ -211,11 +219,13 @@ select is_empty(
       and has_function_privilege('authenticated', p.oid, 'execute')
       and p.proname not in (
         'accept_invitation',
+        'add_member',
         'admin_audit_log',
         'admin_counters',
         'admin_jobs',
         'admin_users',
         'approve_commission_lines',
+        'archive_conversation',
         'assign_lead',
         'build_payout',
         'cancel_job',
@@ -226,20 +236,26 @@ select is_empty(
         'deal_payments',
         'delete_payout_draft',
         'discard_lead',
+        'ensure_my_conversation',
         'invite_user',
         'issue_proforma',
         'list_lead_inbox',
+        'list_room_members',
         'log_totp_reset',
         'mark_notifications_read',
+        'mark_read',
         'omen_status',
         'reassign_portfolio',
         'record_invoice',
         'record_payment',
         'reject_commission_line',
+        'remove_member',
         'renew_invitation',
         'retry_job',
         'revoke_invitation',
         'send_test_notification',
+        'set_ai_consent',
+        'set_conversation_ai',
         'set_notification_pref',
         'set_payment_schedule',
         'set_payout_invoice',
@@ -270,7 +286,7 @@ select is(
       and not has_function_privilege('authenticated', p.oid, 'execute')
       and not has_function_privilege('anon', p.oid, 'execute')
   ),
-  'omen_claim_jobs,omen_finish_job,omen_heartbeat,outbox_claim,outbox_mark,payments_notify_overdue,read_invitation,read_public_settings,submit_lead,telegram_confirm_link',
+  'omen_claim_jobs,omen_finish_job,omen_heartbeat,outbox_claim,outbox_mark,payments_notify_overdue,read_invitation,read_public_settings,register_attachment,submit_lead,telegram_confirm_link,visitor_forget,visitor_handoff,visitor_send,visitor_thread',
   'only the lead intake, outbox, invitation read, Telegram link and Omen job functions are service_role-only in public'
 );
 
@@ -282,7 +298,7 @@ select is(
     where n.nspname = 'private'
       and has_function_privilege('authenticated', p.oid, 'execute')
   ),
-  'contact_has_history,is_aal2,is_admin,is_api_client_role,is_closer,is_staff,offer_answers_valid,owns_contact,owns_lead,role,slug_list_valid,uid',
+  'ai_active,can_write_conversation,contact_has_history,conversation_topic_id,is_aal2,is_admin,is_api_client_role,is_closer,is_conversation_member,is_staff,mask_excerpt,offer_answers_valid,owns_contact,owns_lead,role,slug_list_valid,storage_conversation_id,uid',
   'only the policy helpers and the two constraint helpers in private are executable by authenticated (decision 9.6)'
 );
 
