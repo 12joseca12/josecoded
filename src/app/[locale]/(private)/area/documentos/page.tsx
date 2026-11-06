@@ -34,15 +34,7 @@ export async function generateMetadata({ params }: DocumentsProps): Promise<Meta
   return { title: t("area.docs.meta.title") };
 }
 
-async function FilesRegion({
-  locale,
-  project,
-  userId,
-}: {
-  locale: Locale;
-  project: AreaProject;
-  userId: string;
-}) {
+async function FilesRegion({ locale, project }: { locale: Locale; project: AreaProject }) {
   const t = await getTranslator(locale);
   const client = await createSupabaseServerClient();
   const documents = client ? await fetchProjectDocuments(client, project.id) : null;
@@ -60,22 +52,13 @@ async function FilesRegion({
     <FileList
       files={documents.documents}
       variant="client"
-      currentUserId={userId}
       locale={locale}
       labels={fileListLabels(t)}
     />
   );
 }
 
-async function DocumentsContent({
-  locale,
-  params,
-  userId,
-}: {
-  locale: Locale;
-  params: SearchParams;
-  userId: string;
-}) {
+async function DocumentsContent({ locale, params }: { locale: Locale; params: SearchParams }) {
   const t = await getTranslator(locale);
   return (
     <ProjectGate locale={locale} params={params} path="/documentos">
@@ -104,7 +87,7 @@ async function DocumentsContent({
               </LoadingRegion>
             }
           >
-            <FilesRegion locale={locale} project={project} userId={userId} />
+            <FilesRegion locale={locale} project={project} />
           </Suspense>
         </AnnouncerProvider>
       )}
@@ -115,7 +98,7 @@ async function DocumentsContent({
 export default async function AreaDocumentsPage({ params, searchParams }: DocumentsProps) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const member = await requireZone("area", locale);
+  await requireZone("area", locale);
   const t = await getTranslator(locale);
   const query = await searchParams;
   return (
@@ -135,7 +118,7 @@ export default async function AreaDocumentsPage({ params, searchParams }: Docume
         </LoadingRegion>
       }
     >
-      <DocumentsContent locale={locale} params={query} userId={member.userId} />
+      <DocumentsContent locale={locale} params={query} />
     </Suspense>
   );
 }

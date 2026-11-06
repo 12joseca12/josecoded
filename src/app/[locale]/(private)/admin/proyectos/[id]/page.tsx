@@ -44,12 +44,10 @@ async function ProjectSection({
   locale,
   id,
   tab,
-  userId,
 }: {
   locale: Locale;
   id: string;
   tab: string | undefined;
-  userId: string;
 }) {
   const t = await getTranslator(locale);
   const client = await createSupabaseServerClient();
@@ -134,7 +132,6 @@ async function ProjectSection({
         row={row}
         tasks={tasks.tasks}
         assignees={assignees}
-        userId={userId}
         inviteLabels={inviteSheetLabels(t)}
         inviteHandler={inviteUser.bind(null, locale)}
       />
@@ -145,7 +142,7 @@ async function ProjectSection({
 export default async function ProjectPage({ params, searchParams }: ProjectPageProps) {
   const { locale, id } = await params;
   if (!isLocale(locale) || !uuidPattern.test(id)) notFound();
-  const member = await requireZone("admin", locale);
+  await requireZone("admin", locale);
   const { tab } = await searchParams;
   const t = await getTranslator(locale);
   return (
@@ -166,7 +163,7 @@ export default async function ProjectPage({ params, searchParams }: ProjectPageP
         </LoadingRegion>
       }
     >
-      <ProjectSection locale={locale} id={id} tab={tab} userId={member.userId} />
+      <ProjectSection locale={locale} id={id} tab={tab} />
     </Suspense>
   );
 }

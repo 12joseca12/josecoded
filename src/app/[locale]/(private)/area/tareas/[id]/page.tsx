@@ -36,12 +36,10 @@ async function TaskContent({
   locale,
   project,
   id,
-  userId,
 }: {
   locale: Locale;
   project: AreaProject;
   id: string;
-  userId: string;
 }) {
   const t = await getTranslator(locale);
   const client = await createSupabaseServerClient();
@@ -50,7 +48,7 @@ async function TaskContent({
   if (result.status === "missing") notFound();
   if (result.status === "error") throw new Error("area_task_unreadable");
   const { task } = result;
-  const mine = task.assignee_id === userId;
+  const mine = task.assigned_to_me;
   const doneDate = task.done_at
     ? new Intl.DateTimeFormat(locale, { dateStyle: "long", timeZone: "Europe/Madrid" }).format(
         new Date(task.done_at),
@@ -84,7 +82,7 @@ async function TaskContent({
 export default async function AreaTaskPage({ params, searchParams }: TaskProps) {
   const { locale, id } = await params;
   if (!isLocale(locale)) notFound();
-  const member = await requireZone("area", locale);
+  await requireZone("area", locale);
   const t = await getTranslator(locale);
   const query = await searchParams;
   return (
@@ -105,9 +103,7 @@ export default async function AreaTaskPage({ params, searchParams }: TaskProps) 
       }
     >
       <ProjectGate locale={locale} params={query} path="/tareas">
-        {(project) => (
-          <TaskContent locale={locale} project={project} id={id} userId={member.userId} />
-        )}
+        {(project) => <TaskContent locale={locale} project={project} id={id} />}
       </ProjectGate>
     </Suspense>
   );

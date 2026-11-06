@@ -85,6 +85,15 @@ export async function signInCloser(page: Page, tag: Tag, query = "") {
   await expect(page).not.toHaveURL(/\/entrar/, { timeout: 20_000 });
 }
 
+export async function signInFreelance(page: Page, tag: Tag, query = "") {
+  await signInOtp(page, tag, "freelance@example.com", query);
+  await expect(page).toHaveURL(/\/es\/entrar\/totp/);
+  await page.getByRole("button", { name: totp.enrollStart }).click();
+  await page.getByLabel(totp.codeLabel).fill(totpCode);
+  await page.getByRole("button", { name: totp.verify }).click();
+  await expect(page).toHaveURL(/\/es\/freelance/, { timeout: 20_000 });
+}
+
 export async function signInClient(page: Page, tag: Tag, query = "") {
   await signInOtp(page, tag, "client@example.com", query);
   await expect(page).toHaveURL(/\/es\/area/, { timeout: 20_000 });

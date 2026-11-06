@@ -140,11 +140,11 @@ select public.upsert_task('00000000-0000-4000-8000-0000000000c1', 'Theirs', 'bui
 
 reset role;
 select tests.login_as('f-free@example.com');
-select lives_ok($$select public.set_my_task_status((select id from public.tasks where title = 'Mine'), 'doing')$$, 'the assignee moves a task');
-select is((select status::text from public.tasks where title = 'Mine'), 'doing', 'the task is doing');
-select throws_ok($$select public.set_my_task_status((select id from public.tasks where title = 'Theirs'), 'done')$$, '42501', 'forbidden', 'a task that is not mine cannot move');
-select lives_ok($$select public.complete_my_task((select id from public.tasks where title = 'Mine'))$$, 'complete_my_task delegates');
-select is((select status::text from public.tasks where title = 'Mine'), 'done', 'the task is done');
+select lives_ok($$select public.set_my_task_status((select id from public.project_tasks where title = 'Mine'), 'doing')$$, 'the assignee moves a task');
+select is((select status::text from public.project_tasks where title = 'Mine'), 'doing', 'the task is doing');
+select throws_ok($$select public.set_my_task_status((select id from public.project_tasks where title = 'Theirs'), 'done')$$, '42501', 'forbidden', 'a task that is not mine cannot move');
+select lives_ok($$select public.complete_my_task((select id from public.project_tasks where title = 'Mine'))$$, 'complete_my_task delegates');
+select is((select status::text from public.project_tasks where title = 'Mine'), 'done', 'the task is done');
 
 select * from finish();
 

@@ -62,7 +62,6 @@ interface TabContentProps {
   row: ProjectRow;
   tasks: TaskRow[];
   assignees: Assignee[];
-  userId: string;
   inviteLabels: Parameters<typeof InviteSheet>[0]["labels"];
   inviteHandler: Parameters<typeof InviteSheet>[0]["invite"];
 }
@@ -73,7 +72,6 @@ export async function ProjectTabContent({
   row,
   tasks,
   assignees,
-  userId,
   inviteLabels,
   inviteHandler,
 }: TabContentProps) {
@@ -138,7 +136,6 @@ export async function ProjectTabContent({
           <FileList
             files={documents.documents}
             variant="admin"
-            currentUserId={userId}
             locale={locale}
             labels={fileListLabels(t)}
           />

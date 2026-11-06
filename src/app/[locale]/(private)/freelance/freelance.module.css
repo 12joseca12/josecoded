@@ -1,0 +1,41 @@
+.head {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.lead {
+  max-width: 38rem;
+  color: var(--ink-soft);
+  font-size: var(--fs-lead);
+}
+
+.stack {
+  display: grid;
+  gap: var(--space-7);
+}
+
+.section {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.skeleton {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.brief {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.muted {
+  color: var(--ink-soft);
+}
+
+.print {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}

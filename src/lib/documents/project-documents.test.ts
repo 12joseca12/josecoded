@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { describe, expect, it, vi } from "vitest";
 
+import type { UserRole } from "@/types/auth";
 import type { Database } from "@/types/database";
 
 import {
@@ -18,6 +19,7 @@ const documentId = "63000000-0000-4000-8000-000000000001";
 const userId = "00000000-0000-4000-8000-0000000000a2";
 
 interface Setup {
+  role?: UserRole;
   visible?: unknown[];
   uploadError?: boolean;
   registerError?: { code?: string; message?: string } | null;
@@ -47,21 +49,33 @@ function deps(setup: Setup = {}) {
   const clientRpc = vi.fn(() =>
     Promise.resolve({ data: setup.deleted ?? null, error: setup.deleteError ?? null }),
   );
+  const tables: string[] = [];
   const client = {
     from: (table: string) => ({
-      select: () => ({
-        eq: () =>
-          Promise.resolve({
-            data:
-              table === "documents" ? (setup.found ?? []) : (setup.visible ?? [{ id: projectId }]),
-            error: null,
-          }),
-      }),
+      select: () => {
+        tables.push(table);
+        return {
+          eq: () =>
+            Promise.resolve({
+              data:
+                table === "project_documents"
+                  ? (setup.found ?? [])
+                  : (setup.visible ?? [{ id: projectId }]),
+              error: null,
+            }),
+        };
+      },
     }),
     rpc: clientRpc,
   } as unknown as SupabaseClient<Database>;
-  const value: DocumentDeps = { client, service, userId, newId: () => documentId };
-  return { value, upload, remove, serviceRpc, clientRpc, createSignedUrl };
+  const value: DocumentDeps = {
+    client,
+    service,
+    userId,
+    role: setup.role ?? "client",
+    newId: () => documentId,
+  };
+  return { value, upload, remove, serviceRpc, clientRpc, createSignedUrl, tables };
 }
 
 function form(overrides: Record<string, string | File | undefined> = {}) {
@@ -156,6 +170,24 @@ describe("uploadProjectDocument", () => {
       code: "project_quota_exceeded",
     });
     expect(refused.remove).toHaveBeenCalledWith([pathFor(projectId, documentId)]);
+  });
+
+  it("checks membership on projects for a client and on freelance_projects for a freelance", async () => {
+    const client = deps({ role: "client" });
+    await uploadProjectDocument(client.value, form());
+    expect(client.tables).toEqual(["projects"]);
+    const freelance = deps({ role: "freelance" });
+    await uploadProjectDocument(freelance.value, form());
+    expect(freelance.tables).toEqual(["freelance_projects"]);
+  });
+
+  it("forces client visibility for a freelance", async () => {
+    const setup = deps({ role: "freelance" });
+    await uploadProjectDocument(setup.value, form({ visibility: "team" }));
+    expect(setup.serviceRpc).toHaveBeenCalledWith(
+      "register_document",
+      expect.objectContaining({ p_visibility: "client" }),
+    );
   });
 
   it("defaults the visibility to client", async () => {

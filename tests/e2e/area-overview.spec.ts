@@ -78,7 +78,11 @@ test("the overview shows the project, its phase, progress and what is on the cli
   await expect(todo.getByText(/12 h/)).toBeVisible();
 
   const recent = page.getByRole("region", { name: home("recent.title") });
-  await expect(recent.getByText("Presupuesto.pdf")).toBeVisible();
+  await expect(recent.getByText("Maqueta de la portada.pdf")).toBeVisible();
+  await expect(recent.getByText("Hemos terminado el catálogo de productos.")).toBeVisible();
+  await expect(recent.getByText(home("recent.update.team"), { exact: true })).toBeVisible();
+  await expect(recent.getByText("Esta semana cerramos el diseño de la portada.")).toBeVisible();
+  await expect(recent.getByText("Fran")).toHaveCount(0);
   await expect(recent.getByText("Notas internas.txt")).toHaveCount(0);
   await expect(recent.getByText(home("recent.story.in_review"))).toBeVisible();
 });

@@ -19,8 +19,7 @@ import styles from "./FileList.module.css";
 
 interface FileListProps {
   files: DocumentRow[];
-  variant: "admin" | "client";
-  currentUserId: string;
+  variant: "admin" | "client" | "freelance";
   locale: string;
   labels: FileListLabels;
 }
@@ -37,7 +36,7 @@ export function formatSize(bytes: number, locale: string): string {
   }).format(large ? bytes / megabyte : Math.max(bytes / 1024, 0.1));
 }
 
-export function FileList({ files, variant, currentUserId, locale, labels }: FileListProps) {
+export function FileList({ files, variant, locale, labels }: FileListProps) {
   const router = useRouter();
   const announce = useAnnounce();
   const [pending, startTransition] = useTransition();
@@ -82,7 +81,7 @@ export function FileList({ files, variant, currentUserId, locale, labels }: File
     <div className={styles.wrap} role="region" aria-label={labels.region}>
       <ul className={styles.list}>
         {files.map((file) => {
-          const deletable = variant === "admin" || file.uploaded_by === currentUserId;
+          const deletable = variant === "admin" || file.uploaded_by_me;
           const meta = [
             formatSize(file.size_bytes, locale),
             formatDay(file.created_at, locale),
@@ -102,6 +101,11 @@ export function FileList({ files, variant, currentUserId, locale, labels }: File
               {variant === "admin" ? (
                 <StatusPill tone={file.visibility === "team" ? "alert" : "neutral"}>
                   {labels.visibility[file.visibility]}
+                </StatusPill>
+              ) : null}
+              {variant !== "admin" && labels.uploader ? (
+                <StatusPill tone={file.uploader === "me" ? "done" : "neutral"}>
+                  {labels.uploader[file.uploader]}
                 </StatusPill>
               ) : null}
               {deletable ? (

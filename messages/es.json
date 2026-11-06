@@ -2980,6 +2980,7 @@
               "project_not_found": "Ese proyecto ya no existe.",
               "not_member": "No tienes acceso a este proyecto.",
               "visibility_forbidden": "No puedes subir documentos solo para el equipo.",
+              "visibility_not_allowed": "Solo puedes subir entregas para el cliente.",
               "project_quota_exceeded": "El proyecto ha llegado a 1 GB de documentos. Borra alguno para subir más.",
               "document_exists": "Ese documento ya estaba subido.",
               "document_not_found": "Ese documento ya no existe.",
@@ -3011,6 +3012,7 @@
               "project_not_found": "Ese proyecto ya no existe.",
               "not_member": "No tienes acceso a este proyecto.",
               "visibility_forbidden": "No puedes subir documentos solo para el equipo.",
+              "visibility_not_allowed": "Solo puedes subir entregas para el cliente.",
               "project_quota_exceeded": "El proyecto ha llegado a 1 GB de documentos. Borra alguno para subir más.",
               "document_exists": "Ese documento ya estaba subido.",
               "document_not_found": "Ese documento ya no existe.",
@@ -4349,6 +4351,10 @@
           "accepted": "Historia aceptada",
           "rejected": "Historia rechazada",
           "in_tasks": "Historia aceptada y convertida en tarea"
+        },
+        "update": {
+          "jose": "Jose",
+          "team": "Equipo"
         }
       },
       "error": {
@@ -4410,8 +4416,10 @@
           "forbidden": "No tienes permiso para hacer esto.",
           "stale": "Esto ya ha cambiado. Recarga la página para ver el estado actual.",
           "error": "No hemos podido guardarlo. Inténtalo de nuevo."
-        }
-      }
+        },
+        "assignedToTeam": "La lleva el equipo."
+      },
+      "team": "Equipo"
     },
     "stories": {
       "meta": {
@@ -4595,6 +4603,7 @@
           "project_not_found": "Ese proyecto ya no existe.",
           "not_member": "No tienes acceso a este proyecto.",
           "visibility_forbidden": "No puedes subir documentos solo para el equipo.",
+          "visibility_not_allowed": "Solo puedes subir entregas para el cliente.",
           "project_quota_exceeded": "Este proyecto ha llegado a 1 GB de documentos. Borra alguno tuyo para subir más.",
           "document_exists": "Ese documento ya estaba subido.",
           "document_not_found": "Ese documento ya no existe.",
@@ -4602,6 +4611,11 @@
           "storage_failed": "No hemos podido guardar el archivo. Inténtalo otra vez.",
           "unavailable": "Ahora mismo no podemos guardar. Inténtalo en un momento.",
           "error": "Algo ha fallado. Inténtalo otra vez."
+        },
+        "uploader": {
+          "me": "Tú",
+          "jose": "Jose",
+          "team": "Equipo"
         }
       },
       "uploader": {
@@ -4626,6 +4640,7 @@
           "project_not_found": "Ese proyecto ya no existe.",
           "not_member": "No tienes acceso a este proyecto.",
           "visibility_forbidden": "No puedes subir documentos solo para el equipo.",
+          "visibility_not_allowed": "Solo puedes subir entregas para el cliente.",
           "project_quota_exceeded": "Este proyecto ha llegado a 1 GB de documentos. Borra alguno tuyo para subir más.",
           "document_exists": "Ese documento ya estaba subido.",
           "document_not_found": "Ese documento ya no existe.",
@@ -4639,7 +4654,7 @@
   },
   "freelance": {
     "brandLabel": "josecoded, ir al inicio de tu zona",
-    "brandWord": "Freelance",
+    "brandWord": "Tu zona",
     "navLabel": "Freelance",
     "userLabel": "Sesión iniciada como {name}",
     "signOut": "Salir",
@@ -4648,7 +4663,372 @@
       "soon": "Próximamente",
       "more": "Más",
       "moreTitle": "Más secciones",
-      "close": "Cerrar"
+      "close": "Cerrar",
+      "overview": "Inicio",
+      "projects": "Proyectos",
+      "payments": "Pagos",
+      "chat": "Chat"
+    },
+    "empty": {
+      "title": "Jose aún no te ha asignado ningún proyecto",
+      "text": "Cuando te asigne uno aparecerá aquí, con su brief, tus tareas y lo que te corresponde. Por ahora no tienes que hacer nada.",
+      "noneOpenTitle": "No tienes proyectos en curso",
+      "noneOpenText": "Tus proyectos cerrados siguen en la sección Proyectos, con su historial."
+    },
+    "home": {
+      "meta": {
+        "title": "Inicio"
+      },
+      "title": "Tu zona",
+      "lead": "Tus proyectos en curso y lo que toca hacer en cada uno.",
+      "open": "En curso",
+      "loading": "Cargando tus proyectos",
+      "error": {
+        "title": "No hemos podido cargar tus proyectos",
+        "text": "Inténtalo de nuevo en unos segundos.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "recent": {
+        "title": "Últimos avances",
+        "empty": "Todavía no hay avances.",
+        "update": {
+          "jose": "Jose",
+          "team": "Yo"
+        },
+        "error": {
+          "title": "No hemos podido cargar los avances",
+          "text": "Puedes reintentarlo.",
+          "retry": "Reintentar",
+          "retrying": "Reintentando"
+        },
+        "fee": "Partida decidida"
+      },
+      "counters": {
+        "label": "Resumen",
+        "projects": "Proyectos en curso",
+        "tasks": "Tareas pendientes",
+        "owed": "Te deben",
+        "toDeliver": "Hitos por entregar",
+        "unknown": "No disponible"
+      },
+      "todo": {
+        "title": "Para ti",
+        "empty": "No tienes nada pendiente ahora mismo.",
+        "tasksTitle": "Tus tareas",
+        "milestonesTitle": "Hitos por entregar",
+        "deliver": "Marcar entregado",
+        "delivering": "Marcando",
+        "delivered": "Hito marcado como entregado"
+      }
+    },
+    "projects": {
+      "meta": {
+        "title": "Proyectos"
+      },
+      "title": "Proyectos",
+      "lead": "Los proyectos en los que trabajas, en curso y cerrados.",
+      "open": "En curso",
+      "closedTitle": "Cerrados",
+      "loading": "Cargando tus proyectos",
+      "error": {
+        "title": "No hemos podido cargar tus proyectos",
+        "text": "Inténtalo de nuevo en unos segundos.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "phase": "Fase",
+      "status": {
+        "active": "En curso",
+        "paused": "En pausa",
+        "closed": "Cerrado"
+      },
+      "closedPill": "Cerrado",
+      "progress": "Avance de {name}",
+      "noTasks": "Sin tareas todavía",
+      "tasksDone": "{done} de {total} tareas hechas",
+      "due": "Entrega prevista: {date}"
+    },
+    "project": {
+      "meta": {
+        "title": "Proyecto"
+      },
+      "back": "Volver a proyectos",
+      "loading": "Cargando el proyecto",
+      "error": {
+        "title": "No hemos podido cargar esta parte",
+        "text": "Puedes reintentarlo.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "brief": {
+        "title": "Brief",
+        "empty": "Jose aún no ha escrito el brief."
+      },
+      "tasks": {
+        "title": "Tareas",
+        "board": "Tareas por fase",
+        "emptyPhase": "Sin tareas en esta fase.",
+        "emptyTitle": "Todavía no hay tareas",
+        "emptyText": "Cuando Jose las cree, las verás aquí, ordenadas por fase.",
+        "status": {
+          "todo": "Pendiente",
+          "doing": "En curso",
+          "done": "Hecha"
+        },
+        "mine": "Tuya",
+        "client": "Cliente",
+        "menu": {
+          "group": "Estado de «{title}»",
+          "saving": "Guardando",
+          "changed": "«{title}» está ahora: {status}",
+          "errors": {
+            "forbidden": "Esta tarea ya no es tuya. Hemos recargado la lista.",
+            "stale": "Esta tarea ya ha cambiado. Hemos recargado la lista.",
+            "error": "No hemos podido guardarlo. Inténtalo de nuevo."
+          }
+        }
+      },
+      "files": {
+        "title": "Documentos",
+        "region": "Documentos del proyecto",
+        "empty": {
+          "title": "Todavía no hay documentos",
+          "text": "Aquí verás lo que Jose prepare para ti y las entregas que subas."
+        },
+        "uploader": {
+          "title": "Entrega para el cliente",
+          "submit": "Subir entrega"
+        }
+      }
+    },
+    "chat": {
+      "meta": {
+        "title": "Chat"
+      },
+      "title": "Chat con Jose",
+      "lead": "Tu sala privada con Jose. El cliente no la ve.",
+      "loading": "Cargando el chat",
+      "error": {
+        "title": "No hemos podido cargar el chat",
+        "text": "Puedes reintentarlo.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "taskDraft": "Sobre la tarea «{title}»: ",
+      "openFromProject": "Hablar con Jose de este proyecto",
+      "askAboutTask": "Preguntar a Jose sobre esta tarea"
+    },
+    "updates": {
+      "title": "Avances",
+      "list": "Avances del proyecto",
+      "empty": "Todavía no hay avances. Escribe el primero para que Jose vea cómo va.",
+      "authors": {
+        "me": "Yo",
+        "jose": "Jose"
+      },
+      "task": "Tarea: {title}",
+      "visibility": {
+        "internal": "Solo Jose",
+        "client": "Visible para el cliente"
+      },
+      "toggle": "Visibilidad: {state}. Cambiar",
+      "toggling": "Guardando",
+      "delete": "Borrar",
+      "deleteFor": "Borrar el avance del {date}",
+      "deleteConfirm": "Se borra para siempre.",
+      "deleting": "Borrando",
+      "cancel": "Cancelar",
+      "deleted": "Avance borrado",
+      "errors": {
+        "not_project_team": "Ya no formas parte de este proyecto.",
+        "project_archived": "Este proyecto está cerrado.",
+        "task_project_mismatch": "Esa tarea no es de este proyecto.",
+        "update_not_found": "Ese avance ya no existe.",
+        "forbidden": "No tienes permiso para hacerlo. Entra de nuevo con tu código.",
+        "error": "No hemos podido guardarlo. Inténtalo de nuevo."
+      },
+      "form": {
+        "open": "Nuevo avance",
+        "title": "Nuevo avance",
+        "close": "Cerrar",
+        "body": "¿Qué has hecho?",
+        "bodyHint": "Hasta 2.000 caracteres.",
+        "task": "Tarea relacionada",
+        "noTask": "Ninguna",
+        "visible": "Visible para el cliente",
+        "visibleHint": "Si lo marcas, el cliente lo verá firmado como Equipo. Sin marcar, solo lo ve Jose.",
+        "submit": "Publicar avance",
+        "submitting": "Publicando",
+        "errors": {
+          "body": "Escribe el avance (hasta 2.000 caracteres).",
+          "taskId": "Elige una tarea de la lista.",
+          "not_project_team": "Ya no formas parte de este proyecto.",
+          "project_archived": "Este proyecto está cerrado.",
+          "task_project_mismatch": "Esa tarea no es de este proyecto.",
+          "update_not_found": "Ese avance ya no existe.",
+          "forbidden": "No tienes permiso para hacerlo. Entra de nuevo con tu código.",
+          "error": "No hemos podido guardarlo. Inténtalo de nuevo."
+        }
+      }
+    },
+    "fees": {
+      "title": "Tarifa y partidas",
+      "modes": {
+        "hourly": "Por horas",
+        "milestones": "Por hitos",
+        "fixed": "Precio fijo"
+      },
+      "hourly": "{rate} la hora",
+      "hourlyCap": "hasta {hours} h",
+      "fixed": "{amount} por el proyecto",
+      "milestones": "Jose define los hitos y los aprueba al entregarlos",
+      "owed": "Te deben {amount} de este proyecto.",
+      "none": "Jose aún no ha acordado tu tarifa en este proyecto.",
+      "itemsTitle": "Partidas",
+      "noItems": "Todavía no hay partidas.",
+      "statuses": {
+        "pending": "Pendiente",
+        "delivered": "Entregado",
+        "approved": "Aprobado",
+        "rejected": "Rechazado",
+        "paid": "Pagado"
+      },
+      "hoursOf": "{hours} h",
+      "rejectedReason": "Motivo: {reason}",
+      "deliver": "Marcar entregado",
+      "delivering": "Marcando",
+      "delivered": "Hito marcado como entregado",
+      "deleteItem": "Borrar",
+      "deleteFor": "Borrar el parte «{name}»",
+      "deleting": "Borrando",
+      "deletedItem": "Parte borrado",
+      "closedNote": "Esta tarifa está cerrada: ya no admite partidas nuevas.",
+      "errors": {
+        "hours": "Escribe las horas, de 0,1 a 24, con un decimal como mucho.",
+        "label": "Cuenta qué has hecho (hasta 120 caracteres).",
+        "workedOn": "Elige un día que no sea futuro.",
+        "hours_cap_exceeded": "Con estas horas superas el tope acordado para el proyecto.",
+        "future_date": "Elige un día que no sea futuro.",
+        "invalid_hours": "Las horas no son válidas: de 0,1 a 24, con un decimal como mucho.",
+        "fee_not_found": "Este proyecto no tiene una tarifa abierta.",
+        "fee_mode_mismatch": "Esta acción no corresponde al tipo de tarifa del proyecto.",
+        "fee_closed": "La tarifa de este proyecto está cerrada.",
+        "item_not_pending": "Esa partida ya ha cambiado. Hemos recargado la lista.",
+        "forbidden": "No tienes permiso para hacerlo. Entra de nuevo con tu código.",
+        "error": "No hemos podido guardarlo. Inténtalo de nuevo."
+      },
+      "form": {
+        "title": "Registrar horas",
+        "hours": "Horas",
+        "hoursHint": "De 0,1 a 24.",
+        "label": "Qué has hecho",
+        "labelHint": "Hasta 120 caracteres.",
+        "date": "Día",
+        "submit": "Registrar horas",
+        "submitting": "Registrando",
+        "done": "Horas registradas"
+      }
+    },
+    "pay": {
+      "meta": {
+        "title": "Pagos",
+        "statement": "Extracto"
+      },
+      "title": "Pagos",
+      "lead": "Lo que te deben, lo que ya se te ha pagado y el precio de cada proyecto.",
+      "loading": "Cargando tus pagos",
+      "error": {
+        "title": "No hemos podido cargar tus pagos",
+        "text": "Puedes reintentarlo.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "balances": {
+        "label": "Resumen de pagos",
+        "pending": "Pendiente de aprobar",
+        "owed": "Te deben",
+        "paidYear": "Pagado este año",
+        "lastPaid": "Último pago",
+        "unknown": "No disponible"
+      },
+      "empty": {
+        "title": "Todavía no hay partidas",
+        "text": "Cuando Jose acuerde una tarifa y registres horas o entregues hitos, lo verás aquí."
+      },
+      "history": {
+        "title": "Precio de cada proyecto",
+        "caption": "Tarifa acordada, aprobado y pagado por proyecto",
+        "region": "Tarifas por proyecto",
+        "columns": {
+          "project": "Proyecto",
+          "mode": "Modo",
+          "agreed": "Acordado",
+          "approved": "Aprobado",
+          "paid": "Pagado",
+          "state": "Estado"
+        },
+        "open": "En curso",
+        "closed": "Cerrado",
+        "variable": "Según partidas"
+      },
+      "payouts": {
+        "title": "Liquidaciones",
+        "empty": "Todavía no tienes liquidaciones.",
+        "caption": "Liquidaciones emitidas y pagadas",
+        "region": "Liquidaciones",
+        "columns": {
+          "period": "Periodo",
+          "total": "Total",
+          "withholding": "Retención",
+          "net": "Neto",
+          "state": "Estado",
+          "reference": "Referencia",
+          "statement": "Extracto"
+        },
+        "range": "{start} – {end}",
+        "statuses": {
+          "issued": "Emitida",
+          "paid": "Pagada"
+        },
+        "open": "Ver extracto",
+        "openFor": "Ver extracto de {range}"
+      },
+      "items": {
+        "title": "Partidas",
+        "caption": "Partidas de tus proyectos",
+        "region": "Partidas",
+        "filters": "Filtrar partidas por estado",
+        "all": "Todas",
+        "columns": {
+          "date": "Día",
+          "project": "Proyecto",
+          "label": "Partida",
+          "hours": "Horas",
+          "amount": "Importe",
+          "state": "Estado"
+        },
+        "rejected": "Motivo: {reason}",
+        "empty": "No hay partidas con este estado."
+      },
+      "statement": {
+        "title": "Extracto de liquidación",
+        "notInvoice": "Este extracto no es una factura.",
+        "beneficiary": "Beneficiario",
+        "period": "Periodo",
+        "status": "Estado",
+        "issuedAt": "Emitida el",
+        "paidAt": "Pagada el",
+        "reference": "Referencia",
+        "note": "Nota",
+        "itemsTitle": "Partidas incluidas",
+        "total": "Total",
+        "withholding": "Retención",
+        "net": "Neto a pagar",
+        "print": "Imprimir extracto",
+        "printHint": "Se imprime solo el extracto.",
+        "back": "Volver a pagos"
+      }
     }
   },
   "freelancePage": {

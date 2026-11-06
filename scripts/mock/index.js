@@ -1,5 +1,6 @@
 import "./turnstile.js";
 import "./auth.js";
+import "./freelance.js";
 import "./catalog.js";
 import "./profiles.js";
 import "./account.js";

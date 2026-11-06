@@ -45,6 +45,10 @@
   font-weight: var(--fw-semibold);
 }
 
+.team {
+  color: var(--ink-soft);
+}
+
 .story {
   color: var(--ink-soft);
   font-size: var(--fs-m);

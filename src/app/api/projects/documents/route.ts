@@ -32,9 +32,9 @@ async function dependencies(): Promise<DocumentDeps | DocumentErrorCode> {
     return "unavailable";
   }
   if (state.status !== "member") return "forbidden";
-  const staff = state.role === "admin" && state.level === "aal2";
+  const staff = (state.role === "admin" || state.role === "freelance") && state.level === "aal2";
   if (!staff && state.role !== "client") return "forbidden";
-  return { client, service, userId: state.userId };
+  return { client, service, userId: state.userId, role: state.role };
 }
 
 export async function POST(request: Request) {

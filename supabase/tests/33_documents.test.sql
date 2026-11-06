@@ -115,30 +115,30 @@ select throws_ok(
 );
 
 select is(
-  (select array_agg(name order by name) from public.documents),
+  (select array_agg(name order by name) from public.project_documents),
   array['brief.pdf', 'invoice.pdf'],
   'the client reads client documents and no team documents or other projects'
 );
 
 reset role;
 select tests.login_as('d-client2@example.com');
-select is((select array_agg(name) from public.documents), array['other.pdf'], 'another client only reads their own project');
+select is((select array_agg(name) from public.project_documents), array['other.pdf'], 'another client only reads their own project');
 
 reset role;
 select tests.login_as('d-free@example.com');
 select is(
-  (select array_agg(name order by name) from public.documents),
-  array['brief.pdf', 'internal.pdf', 'invoice.pdf'],
-  'the freelance reads the client and team documents of their project'
+  (select array_agg(name order by name) from public.project_documents),
+  array['internal.pdf'],
+  'the freelance reads the team documents of their project and none of the client ones'
 );
 
 reset role;
 select tests.login_aal1('d-free@example.com');
-select is((select count(*) from public.documents), 0::bigint, 'the freelance without aal2 reads nothing');
+select is((select count(*) from public.project_documents), 0::bigint, 'the freelance without aal2 reads nothing');
 
 reset role;
 select tests.login_as('d-closer@example.com');
-select is((select count(*) from public.documents), 0::bigint, 'the closer reads no documents');
+select is((select count(*) from public.project_documents), 0::bigint, 'the closer reads no documents');
 
 reset role;
 
@@ -153,7 +153,7 @@ select is((select count(*) from storage.objects), 1::bigint, 'the client only se
 
 reset role;
 select tests.login_as('d-free@example.com');
-select is((select count(*) from storage.objects), 2::bigint, 'the freelance sees the objects of the documents of their project');
+select is((select count(*) from storage.objects), 1::bigint, 'the freelance only sees the object of the team document of their project');
 
 reset role;
 select tests.login_as('d-admin@example.com');
@@ -173,7 +173,7 @@ select is(
   'projects/00000000-0000-4000-8000-0000000000b1/' || (select v from ids where k = 'doc1'),
   'the client deletes their own document and gets the path to remove'
 );
-select is((select count(*) from public.documents), 1::bigint, 'the deleted document disappears for the client');
+select is((select count(*) from public.project_documents), 1::bigint, 'the deleted document disappears for the client');
 select throws_ok($$select public.delete_document((select v from ids where k = 'doc1'))$$, 'P0001', 'document_not_found', 'a document cannot be deleted twice');
 
 reset role;
@@ -183,7 +183,7 @@ select throws_ok($$select public.delete_document((select v from ids where k = 'd
 reset role;
 select tests.login_as('d-admin@example.com');
 select lives_ok($$select public.delete_document((select v from ids where k = 'doc3'))$$, 'the admin deletes any document');
-select is((select count(*) from public.documents where project_id = '00000000-0000-4000-8000-0000000000b1'), 1::bigint, 'only the team document remains');
+select is((select count(*) from public.project_documents where project_id = '00000000-0000-4000-8000-0000000000b1'), 1::bigint, 'only the team document remains');
 
 reset role;
 
@@ -199,9 +199,9 @@ select is(
   'the admin is notified of each client upload'
 );
 select is(
-  (select title from public.notifications where event::text = 'document_added' and user_id = md5('d-client@example.com')::uuid),
-  'invoice.pdf',
-  'the client is notified when Jose uploads a client document'
+  (select title || ': ' || body from public.notifications where event::text = 'document_added' and user_id = md5('d-client@example.com')::uuid),
+  'Jose: invoice.pdf',
+  'the client is notified when Jose uploads a client document, signed Jose'
 );
 select is(
   (select count(*) from public.notifications where event::text = 'document_added' and user_id = md5('d-client@example.com')::uuid),

@@ -44,7 +44,12 @@ export const staffNav: Record<StaffZone, readonly StaffNavEntry[]> = {
     { key: "stories", path: "/historias", ready: true, label: "area.nav.stories" },
     { key: "chat", path: "/chat", ready: true, label: "area.nav.chat" },
   ],
-  freelance: [],
+  freelance: [
+    { key: "overview", path: "", ready: true, label: "freelance.nav.overview" },
+    { key: "projects", path: "/proyectos", ready: true, label: "freelance.nav.projects" },
+    { key: "payments", path: "/pagos", ready: true, label: "freelance.nav.payments" },
+    { key: "chat", path: "/chat", ready: true, label: "freelance.nav.chat" },
+  ],
 };
 
 export const barSlots = 3;

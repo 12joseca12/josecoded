@@ -108,8 +108,8 @@ select is_empty(
         'discard_lead',
         'ensure_my_conversation',
         'ensure_project_conversation',
-        'import_contacts',
         'freelance_counters',
+        'import_contacts',
         'invite_user',
         'issue_proforma',
         'list_lead_inbox',
@@ -125,8 +125,8 @@ select is_empty(
         'record_invoice',
         'record_payment',
         'reject_commission_line',
-        'request_account_deletion',
         'reject_fee_item',
+        'request_account_deletion',
         'remove_member',
         'renew_invitation',
         'reorder_project_links',
@@ -279,8 +279,8 @@ select is_empty(
         'discard_lead',
         'ensure_my_conversation',
         'ensure_project_conversation',
-        'import_contacts',
         'freelance_counters',
+        'import_contacts',
         'invite_user',
         'issue_proforma',
         'list_lead_inbox',
@@ -296,8 +296,8 @@ select is_empty(
         'record_invoice',
         'record_payment',
         'reject_commission_line',
-        'request_account_deletion',
         'reject_fee_item',
+        'request_account_deletion',
         'remove_member',
         'renew_invitation',
         'reorder_project_links',
@@ -356,7 +356,7 @@ select is(
     where n.nspname = 'private'
       and has_function_privilege('authenticated', p.oid, 'execute')
   ),
-  'ai_active,can_write_conversation,client_project_update_rows,contact_has_history,conversation_topic_id,freelance_fee_rows,freelance_project_rows,is_aal2,is_admin,is_api_client_role,is_closer,is_conversation_member,is_project_member,is_staff,mask_excerpt,offer_answers_valid,owns_contact,owns_lead,role,slug_list_valid,storage_conversation_id,uid',
+  'ai_active,can_read_document_object,can_write_conversation,client_project_update_rows,contact_has_history,conversation_topic_id,freelance_fee_rows,freelance_project_rows,is_aal2,is_admin,is_api_client_role,is_closer,is_conversation_member,is_project_member,is_staff,mask_excerpt,offer_answers_valid,owns_contact,owns_lead,project_document_rows,project_overview_rows,project_progress_rows,project_task_rows,role,slug_list_valid,storage_conversation_id,uid',
   'only the policy helpers and the two constraint helpers in private are executable by authenticated (decision 9.6)'
 );
 

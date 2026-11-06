@@ -1,0 +1,29 @@
+.form {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-m);
+}
+
+.title {
+  font-size: var(--fs-l);
+  font-weight: var(--fw-semibold);
+}
+
+.row {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.feedback {
+  min-height: 1.25rem;
+  color: var(--error);
+  font-size: var(--fs-m);
+}
+
+@media (min-width: 48rem) {
+  .row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

@@ -64,7 +64,7 @@ export async function fetchProjectTasks(
     const [brief, tasks] = await Promise.all([
       client.from("projects").select("brief").eq("id", id),
       client
-        .from("tasks")
+        .from("project_tasks")
         .select(
           "id, project_id, phase, title, description, status, assignee_id, story_id, sort, done_at",
         )

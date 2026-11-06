@@ -1,5 +1,5 @@
 import { Heading } from "@/components/ui/Heading/Heading";
-import type { RecentUpdate, StoryStatus } from "@/types/area";
+import type { RecentUpdate, StoryStatus, UpdateAuthor } from "@/types/area";
 
 import styles from "./RecentUpdates.module.css";
 
@@ -8,6 +8,8 @@ export interface RecentUpdatesLabels {
   empty: string;
   task: string;
   document: string;
+  update: Record<UpdateAuthor, string>;
+  fee?: string;
   story: Record<StoryStatus, string>;
 }
 
@@ -20,6 +22,8 @@ interface RecentUpdatesProps {
 function describe(update: RecentUpdate, labels: RecentUpdatesLabels): string {
   if (update.kind === "task") return labels.task;
   if (update.kind === "document") return labels.document;
+  if (update.kind === "fee") return labels.fee ?? "";
+  if (update.kind === "update" && update.author) return labels.update[update.author];
   return update.status ? labels.story[update.status] : "";
 }
 
