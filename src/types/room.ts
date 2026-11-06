@@ -97,6 +97,7 @@ export interface RoomTransport {
 
 export interface RoomLabels {
   threadLabel: string;
+  sourcesLabel: string;
   empty: string;
   composerLabel: string;
   placeholder: string;

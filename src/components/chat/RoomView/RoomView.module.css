@@ -33,3 +33,10 @@
 .poll:empty {
   min-block-size: 0;
 }
+
+.empty {
+  padding: var(--space-5);
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+  text-align: center;
+}

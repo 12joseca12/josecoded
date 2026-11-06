@@ -1,0 +1,98 @@
+.panel {
+  position: fixed;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100dvh;
+  max-inline-size: none;
+  max-block-size: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  background: var(--panel);
+  color: var(--ink);
+  box-shadow: var(--shadow-deep);
+  z-index: var(--z-toast);
+  opacity: 0;
+  transform: translateY(1rem);
+  transform-origin: bottom right;
+  transition:
+    opacity var(--dur-fast) ease,
+    transform var(--dur-fast) var(--ease-out),
+    display var(--dur-fast) allow-discrete;
+}
+
+.panel[open] {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--dur) ease,
+    transform var(--dur-slow) var(--ease-drawer),
+    display var(--dur-slow) allow-discrete;
+}
+
+@starting-style {
+  .panel[open] {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+}
+
+.fullscreen {
+  display: none;
+  place-items: center;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  border-radius: var(--radius-xl);
+  color: inherit;
+  transition-property: background-color, transform;
+  transition-duration: var(--dur-fast);
+  transition-timing-function: var(--ease-out);
+}
+
+.fullscreen:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.fullscreen:active {
+  transform: scale(0.94);
+}
+
+.fullscreen svg {
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .fullscreen:hover {
+    background: var(--sk-base);
+  }
+}
+
+@media (min-width: 40rem) {
+  .fullscreen {
+    display: inline-grid;
+  }
+
+  .panel {
+    inset: auto var(--space-5) var(--space-5) auto;
+    inline-size: 26rem;
+    block-size: min(40rem, calc(100dvh - var(--space-7)));
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-l);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel,
+  .panel[open] {
+    transform: none;
+    transition-duration: var(--dur-reduced);
+  }
+}

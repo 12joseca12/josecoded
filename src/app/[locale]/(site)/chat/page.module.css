@@ -1,0 +1,15 @@
+.page {
+  display: grid;
+  justify-items: center;
+  padding: var(--nav-h) var(--gutter) var(--space-5);
+}
+
+.frame {
+  inline-size: min(100%, 44rem);
+  block-size: calc(100dvh - var(--nav-h) - var(--space-5) - var(--space-5));
+  min-block-size: 28rem;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-l);
+  box-shadow: var(--shadow-card);
+}
