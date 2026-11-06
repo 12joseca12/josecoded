@@ -326,7 +326,7 @@ route("GET", "/rest/v1/projects", ({ request, response, url }) => {
   );
 });
 
-route("GET", "/rest/v1/tasks", ({ request, response, url }) => {
+route("GET", "/rest/v1/project_tasks", ({ request, response, url }) => {
   const auth = adminCall(request, response);
   if (!auth) return;
   const only = eq(url, "project_id");
@@ -334,7 +334,18 @@ route("GET", "/rest/v1/tasks", ({ request, response, url }) => {
   return send(
     response,
     200,
-    [...(entry?.tasks ?? [])].sort((a, b) => a.sort - b.sort),
+    [...(entry?.tasks ?? [])]
+      .sort((a, b) => a.sort - b.sort)
+      .map((task) => ({
+        ...task,
+        assigned_to_me: false,
+        assignee_kind:
+          task.assignee_id === null
+            ? "none"
+            : task.assignee_id === entry?.client_id
+              ? "client"
+              : "team",
+      })),
   );
 });
 
@@ -532,7 +543,7 @@ function serviceOnly(request, response) {
   return false;
 }
 
-route("GET", "/rest/v1/documents", ({ request, response, url }) => {
+route("GET", "/rest/v1/project_documents", ({ request, response, url }) => {
   const auth = adminCall(request, response);
   if (!auth) return;
   const byProject = eq(url, "project_id");
@@ -541,7 +552,8 @@ route("GET", "/rest/v1/documents", ({ request, response, url }) => {
     .filter((doc) => doc.deleted_at === null)
     .filter((doc) => (byProject ? doc.project_id === byProject : true))
     .filter((doc) => (byId ? doc.id === byId : true))
-    .sort((a, b) => b.created_at.localeCompare(a.created_at));
+    .sort((a, b) => b.created_at.localeCompare(a.created_at))
+    .map((doc) => ({ ...doc, uploaded_by_me: false, uploader: "jose" }));
   return send(response, 200, rows);
 });
 

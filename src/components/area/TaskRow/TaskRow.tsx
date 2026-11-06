@@ -7,6 +7,7 @@ import styles from "./TaskRow.module.css";
 export interface TaskRowLabels {
   status: Record<BoardTask["status"], string>;
   mine: string;
+  team: string;
   fromStory: string;
 }
 
@@ -27,6 +28,7 @@ export function TaskRow({ task, href, storyHref, mine, labels }: TaskRowProps) {
       <p className={styles.meta}>
         <span className={styles.status}>{labels.status[task.status]}</span>
         {mine ? <span className={styles.mine}>{labels.mine}</span> : null}
+        {task.assignee_kind === "team" ? <span className={styles.team}>{labels.team}</span> : null}
       </p>
       {task.story ? (
         <p className={styles.story}>

@@ -62,9 +62,13 @@ const pdf = (name = "logo.pdf") => ({
 test("the client sees the shared documents and not the team-only ones", async ({ page }) => {
   await open(page);
   const rows = list(page).getByRole("listitem");
-  await expect(rows).toHaveCount(2);
-  await expect(rows.filter({ hasText: "Presupuesto.pdf" })).toBeVisible();
-  await expect(rows.filter({ hasText: "Logotipo.png" })).toBeVisible();
+  await expect(rows).toHaveCount(3);
+  await expect(rows.filter({ hasText: "Presupuesto.pdf" })).toContainText(files("uploader.jose"));
+  await expect(rows.filter({ hasText: "Logotipo.png" })).toContainText(files("uploader.me"));
+  await expect(rows.filter({ hasText: "Maqueta de la portada.pdf" })).toContainText(
+    files("uploader.team"),
+  );
+  await expect(list(page).getByText("Fran")).toHaveCount(0);
   await expect(list(page).getByText("Notas internas.txt")).toHaveCount(0);
   await expect(rows.filter({ hasText: "Presupuesto.pdf" })).toContainText(/2\s?kB/);
   await expect(page.getByLabel(up("visibility"))).toHaveCount(0);

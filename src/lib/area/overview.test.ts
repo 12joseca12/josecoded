@@ -10,19 +10,35 @@ describe("buildRecentUpdates", () => {
   ];
   const documents = [{ id: "d1", name: "Doc", created_at: "2026-11-02T10:00:00Z" }];
 
-  it("mixes the three sources newest first", () => {
-    const updates = buildRecentUpdates(tasks, stories, documents);
-    expect(updates.map((update) => update.key)).toEqual(["story-s1", "task-t1", "document-d1"]);
-    expect(updates[0]?.status).toBe("accepted");
-    expect(updates[1]?.status).toBeNull();
+  const posts = [
+    {
+      id: "u1",
+      body: "Catalog done",
+      created_at: "2026-11-05T10:00:00Z",
+      author_label: "team" as const,
+    },
+  ];
+
+  it("mixes the sources newest first", () => {
+    const updates = buildRecentUpdates(tasks, stories, documents, posts);
+    expect(updates.map((update) => update.key)).toEqual([
+      "update-u1",
+      "story-s1",
+      "task-t1",
+      "document-d1",
+    ]);
+    expect(updates[0]).toMatchObject({ kind: "update", title: "Catalog done", author: "team" });
+    expect(updates[1]?.status).toBe("accepted");
+    expect(updates[2]?.status).toBeNull();
+    expect(updates[2]?.author).toBeNull();
   });
 
   it("caps the list", () => {
-    expect(buildRecentUpdates(tasks, stories, documents, 2)).toHaveLength(2);
+    expect(buildRecentUpdates(tasks, stories, documents, posts, 2)).toHaveLength(2);
   });
 
   it("returns nothing without sources", () => {
-    expect(buildRecentUpdates([], [], [])).toEqual([]);
+    expect(buildRecentUpdates([], [], [], [])).toEqual([]);
   });
 });
 

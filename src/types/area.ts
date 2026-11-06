@@ -80,13 +80,24 @@ export const newDocumentSchema = z.object({
   created_at: z.string(),
 });
 
-export type UpdateKind = "task" | "story" | "document";
+export type UpdateKind = "task" | "story" | "document" | "update";
+
+export const updateAuthors = ["jose", "team"] as const;
+export type UpdateAuthor = (typeof updateAuthors)[number];
+
+export const clientUpdateSchema = z.object({
+  id: z.uuid(),
+  body: z.string(),
+  created_at: z.string(),
+  author_label: z.enum(updateAuthors),
+});
 
 export interface RecentUpdate {
   key: string;
   kind: UpdateKind;
   title: string;
   status: StoryStatus | null;
+  author: UpdateAuthor | null;
   at: string;
 }
 
@@ -95,12 +106,20 @@ export type TodoActionResult =
 
 export type TodoHandler = (id: string, accept?: boolean) => Promise<TodoActionResult>;
 
-export const boardTaskSchema = z.object({
+export const assigneeKinds = ["none", "me", "client", "team"] as const;
+export type AssigneeKind = (typeof assigneeKinds)[number];
+
+export const taskViewSchema = z.object({
   id: z.uuid(),
   title: z.string(),
   phase: z.enum(projectPhases),
   status: z.enum(taskStatuses),
-  assignee_id: z.uuid().nullable(),
+  assigned_to_me: z.boolean(),
+  assignee_kind: z.enum(assigneeKinds),
+  story_id: z.uuid().nullable(),
+});
+
+export const boardTaskSchema = taskViewSchema.omit({ story_id: true }).extend({
   story: z.object({ id: z.uuid(), title: z.string() }).nullable(),
 });
 export type BoardTask = z.infer<typeof boardTaskSchema>;

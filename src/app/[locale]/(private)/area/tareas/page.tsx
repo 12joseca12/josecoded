@@ -33,15 +33,7 @@ export async function generateMetadata({ params }: TasksProps): Promise<Metadata
   return { title: t("area.tasks.meta.title") };
 }
 
-async function BoardRegion({
-  locale,
-  project,
-  userId,
-}: {
-  locale: Locale;
-  project: AreaProject;
-  userId: string;
-}) {
+async function BoardRegion({ locale, project }: { locale: Locale; project: AreaProject }) {
   const t = await getTranslator(locale);
   const client = await createSupabaseServerClient();
   const board = client ? await fetchBoard(client, project.id) : null;
@@ -68,7 +60,6 @@ async function BoardRegion({
     <PhaseBoard
       groups={groupByPhase(board.data)}
       current={project.phase}
-      userId={userId}
       taskHref={(id) => `/${locale}/area/tareas/${id}?proyecto=${project.id}`}
       storyHref={(id) => `/${locale}/area/historias/${id}?proyecto=${project.id}`}
       labels={boardLabels(t)}
@@ -76,15 +67,7 @@ async function BoardRegion({
   );
 }
 
-async function TasksContent({
-  locale,
-  params,
-  userId,
-}: {
-  locale: Locale;
-  params: SearchParams;
-  userId: string;
-}) {
+async function TasksContent({ locale, params }: { locale: Locale; params: SearchParams }) {
   const t = await getTranslator(locale);
   return (
     <ProjectGate locale={locale} params={params} path="/tareas">
@@ -107,7 +90,7 @@ async function TasksContent({
               </LoadingRegion>
             }
           >
-            <BoardRegion locale={locale} project={project} userId={userId} />
+            <BoardRegion locale={locale} project={project} />
           </Suspense>
         </>
       )}
@@ -118,7 +101,7 @@ async function TasksContent({
 export default async function AreaTasksPage({ params, searchParams }: TasksProps) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const member = await requireZone("area", locale);
+  await requireZone("area", locale);
   const t = await getTranslator(locale);
   const query = await searchParams;
   return (
@@ -138,7 +121,7 @@ export default async function AreaTasksPage({ params, searchParams }: TasksProps
         </LoadingRegion>
       }
     >
-      <TasksContent locale={locale} params={query} userId={member.userId} />
+      <TasksContent locale={locale} params={query} />
     </Suspense>
   );
 }

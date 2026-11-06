@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import type { ServerSupabase } from "@/lib/supabase/server";
 import {
+  clientUpdateSchema,
   decidedStorySchema,
   doneTaskSchema,
   type MyTask,
@@ -14,6 +15,7 @@ import {
   type RecentUpdate,
   type ReviewStory,
   reviewStorySchema,
+  type UpdateAuthor,
 } from "@/types/area";
 
 export const recentLimit = 6;
@@ -58,10 +60,10 @@ export async function fetchTodo(
 ): Promise<Fetched<Todo>> {
   const [tasks, stories] = await Promise.all([
     client
-      .from("tasks")
+      .from("project_tasks")
       .select("id, title, phase, status")
       .eq("project_id", projectId)
-      .eq("assignee_id", userId)
+      .eq("assigned_to_me", true)
       .neq("status", "done")
       .order("phase")
       .order("sort"),
@@ -113,21 +115,37 @@ export function buildRecentUpdates(
     decided_at: string;
   }[],
   documents: readonly { id: string; name: string; created_at: string }[],
+  updates: readonly {
+    id: string;
+    body: string;
+    created_at: string;
+    author_label: UpdateAuthor;
+  }[] = [],
   limit = recentLimit,
 ): RecentUpdate[] {
-  const updates: RecentUpdate[] = [
+  const entries: RecentUpdate[] = [
     ...tasks.map((task) => ({
       key: `task-${task.id}`,
       kind: "task" as const,
       title: task.title,
       status: null,
+      author: null,
       at: task.done_at,
+    })),
+    ...updates.map((update) => ({
+      key: `update-${update.id}`,
+      kind: "update" as const,
+      title: update.body,
+      status: null,
+      author: update.author_label,
+      at: update.created_at,
     })),
     ...stories.map((story) => ({
       key: `story-${story.id}`,
       kind: "story" as const,
       title: story.title,
       status: story.status,
+      author: null,
       at: story.decided_at,
     })),
     ...documents.map((document) => ({
@@ -135,19 +153,20 @@ export function buildRecentUpdates(
       kind: "document" as const,
       title: document.name,
       status: null,
+      author: null,
       at: document.created_at,
     })),
   ];
-  return updates.sort((a, b) => b.at.localeCompare(a.at)).slice(0, limit);
+  return entries.sort((a, b) => b.at.localeCompare(a.at)).slice(0, limit);
 }
 
 export async function fetchRecentUpdates(
   client: ServerSupabase,
   projectId: string,
 ): Promise<Fetched<RecentUpdate[]>> {
-  const [tasks, stories, documents] = await Promise.all([
+  const [tasks, stories, documents, updates] = await Promise.all([
     client
-      .from("tasks")
+      .from("project_tasks")
       .select("id, title, done_at")
       .eq("project_id", projectId)
       .eq("status", "done")
@@ -162,26 +181,38 @@ export async function fetchRecentUpdates(
       .order("decided_at", { ascending: false })
       .limit(recentLimit),
     client
-      .from("documents")
+      .from("project_documents")
       .select("id, name, created_at")
       .eq("project_id", projectId)
-      .is("deleted_at", null)
       .eq("visibility", "client")
+      .order("created_at", { ascending: false })
+      .limit(recentLimit),
+    client
+      .from("client_project_updates")
+      .select("id, body, created_at, author_label")
+      .eq("project_id", projectId)
       .order("created_at", { ascending: false })
       .limit(recentLimit),
   ]);
   const parsedTasks = parseRows(doneTaskSchema, tasks);
   const parsedStories = parseRows(decidedStorySchema, stories);
   const parsedDocuments = parseRows(newDocumentSchema, documents);
+  const parsedUpdates = parseRows(clientUpdateSchema, updates);
   if (
     parsedTasks.status === "error" ||
     parsedStories.status === "error" ||
-    parsedDocuments.status === "error"
+    parsedDocuments.status === "error" ||
+    parsedUpdates.status === "error"
   ) {
     return { status: "error" };
   }
   return {
     status: "ok",
-    data: buildRecentUpdates(parsedTasks.data, parsedStories.data, parsedDocuments.data),
+    data: buildRecentUpdates(
+      parsedTasks.data,
+      parsedStories.data,
+      parsedDocuments.data,
+      parsedUpdates.data,
+    ),
   };
 }

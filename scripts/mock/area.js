@@ -3,6 +3,7 @@ import { pass, readBody, route, send } from "./registry.js";
 
 const clientId = "00000000-0000-4000-8000-0000000000d1";
 const joseId = "00000000-0000-4000-8000-0000000000a1";
+const freelanceId = "00000000-0000-4000-8000-0000000000f2";
 const firstId = "d0000000-0000-4000-8000-000000000001";
 const secondId = "10000000-0000-4000-8000-000000000002";
 
@@ -56,7 +57,7 @@ function seedData() {
         description: "Revisa la maqueta y dime si te encaja.\nPuedes dejar comentarios en el chat.",
         story_id: id("s", 2),
       }),
-      task("t4", firstId, "build", "Catálogo de productos", "doing", null, 0),
+      task("t4", firstId, "build", "Catálogo de productos", "doing", freelanceId, 0),
       task("t5", firstId, "publish", "Conectar el dominio", "todo", clientId, 0),
     ],
     stories: [
@@ -100,6 +101,25 @@ function seedData() {
       document(1, "Presupuesto.pdf", "client", joseId, "2026-10-30T10:00:00+00:00"),
       document(2, "Notas internas.txt", "team", joseId, "2026-11-02T10:00:00+00:00"),
       document(3, "Logotipo.png", "client", clientId, "2026-11-01T10:00:00+00:00"),
+      document(4, "Maqueta de la portada.pdf", "client", freelanceId, "2026-11-04T10:00:00+00:00"),
+    ],
+    updates: [
+      {
+        id: id("u", 1),
+        project_id: firstId,
+        task_id: null,
+        body: "Hemos terminado el catálogo de productos.",
+        created_at: "2026-11-05T10:00:00+00:00",
+        author_label: "team",
+      },
+      {
+        id: id("u", 2),
+        project_id: firstId,
+        task_id: null,
+        body: "Esta semana cerramos el diseño de la portada.",
+        created_at: "2026-11-03T10:00:00+00:00",
+        author_label: "jose",
+      },
     ],
   };
 }
@@ -124,7 +144,7 @@ function document(n, name, visibility, uploadedBy, createdAt) {
 }
 
 function id(prefix, n) {
-  const hex = { t: "21", s: "22", l: "23", d: "24" }[prefix];
+  const hex = { t: "21", s: "22", l: "23", d: "24", u: "25" }[prefix];
   return `${hex}000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
 }
 
@@ -294,11 +314,15 @@ areaRoute("GET", "/rest/v1/project_progress", ({ response, url, scoped }) => {
   return send(response, 200, query(rows, url));
 });
 
-areaRoute("GET", "/rest/v1/tasks", ({ response, url, scoped }) => {
+areaRoute("GET", "/rest/v1/project_tasks", ({ response, url, scoped }) => {
   if (fail(response, scoped.area, "tasks")) return undefined;
+  const me = scoped.session.userId;
   const rows = inProjects(scoped, scoped.area.tasks).map((row) => {
-    const linked = scoped.area.stories.find((entry) => entry.id === row.story_id);
-    return { ...row, story: linked ? { id: linked.id, title: linked.title } : null };
+    const assignee = row.assignee_id;
+    const visible = { ...row, assigned_to_me: assignee === me };
+    delete visible.assignee_id;
+    visible.assignee_kind = assignee === null ? "none" : assignee === me ? "me" : "team";
+    return visible;
   });
   return send(response, 200, query(rows, url));
 });
@@ -329,17 +353,24 @@ function visibleDocuments(scoped) {
   );
 }
 
-areaRoute("GET", "/rest/v1/documents", ({ url, response, scoped }) => {
+areaRoute("GET", "/rest/v1/project_documents", ({ url, response, scoped }) => {
   if (fail(response, scoped.area, "documents")) return undefined;
-  return send(response, 200, query(visibleDocuments(scoped), url));
+  const me = scoped.session.userId;
+  const rows = visibleDocuments(scoped).map((row) => {
+    const uploader = row.uploaded_by;
+    return {
+      ...row,
+      uploaded_by: null,
+      uploaded_by_me: uploader === me,
+      uploader: uploader === me ? "me" : uploader === joseId ? "jose" : "team",
+    };
+  });
+  return send(response, 200, query(rows, url));
 });
 
-areaRoute("GET", "/rest/v1/project_overview", ({ url, response, scoped }) => {
-  const rows = scoped.visible.map((projectId) => ({
-    id: projectId,
-    name: projects[projectId].name,
-  }));
-  return send(response, 200, query(rows, url));
+areaRoute("GET", "/rest/v1/client_project_updates", ({ url, response, scoped }) => {
+  if (fail(response, scoped.area, "updates")) return undefined;
+  return send(response, 200, query(inProjects(scoped, scoped.area.updates), url));
 });
 
 route("POST", "/rest/v1/rpc/register_document", async ({ request, response }) => {

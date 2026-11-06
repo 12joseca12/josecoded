@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
 
+import type { UserRole } from "@/types/auth";
 import type { Database } from "@/types/database";
 import {
   type DocumentErrorCode,
@@ -21,6 +22,7 @@ export interface DocumentDeps {
   client: SupabaseClient<Database>;
   service: SupabaseClient<Database>;
   userId: string;
+  role: UserRole;
   newId?: () => string;
 }
 
@@ -47,6 +49,7 @@ export function statusOf(code: DocumentErrorCode): number {
     case "invalid_mime":
     case "invalid_name":
     case "visibility_forbidden":
+    case "visibility_not_allowed":
       return 400;
     case "forbidden":
     case "not_member":
@@ -70,7 +73,8 @@ export function pathFor(projectId: string, documentId: string): string {
   return `projects/${projectId}/${documentId}`;
 }
 
-const columns = "id, project_id, uploaded_by, name, mime, size_bytes, visibility, created_at";
+const columns =
+  "id, project_id, uploaded_by, uploaded_by_me, uploader, name, mime, size_bytes, visibility, created_at";
 const documentsSchema = z.array(documentRowSchema);
 
 export async function fetchProjectDocuments(
@@ -79,7 +83,7 @@ export async function fetchProjectDocuments(
 ): Promise<DocumentsResult> {
   try {
     const { data, error } = await client
-      .from("documents")
+      .from("project_documents")
       .select(columns)
       .eq("project_id", projectId)
       .order("created_at", { ascending: false });
@@ -93,6 +97,18 @@ export async function fetchProjectDocuments(
 
 function failure(code: DocumentErrorCode): { status: "error"; code: DocumentErrorCode } {
   return { status: "error", code };
+}
+
+async function readableProject(
+  deps: DocumentDeps,
+  projectId: string,
+): Promise<"found" | "missing" | "error"> {
+  const found =
+    deps.role === "freelance"
+      ? await deps.client.from("freelance_projects").select("id").eq("id", projectId)
+      : await deps.client.from("projects").select("id").eq("id", projectId);
+  if (found.error) return "error";
+  return found.data.length === 0 ? "missing" : "found";
 }
 
 export async function uploadProjectDocument(
@@ -111,11 +127,12 @@ export async function uploadProjectDocument(
   const name = file.name.trim();
   if (name === "" || name.length > 255) return failure("invalid_name");
 
-  const { projectId, visibility } = fields.data;
+  const { projectId } = fields.data;
+  const visibility = deps.role === "freelance" ? "client" : fields.data.visibility;
   try {
-    const visible = await deps.client.from("project_overview").select("id").eq("id", projectId);
-    if (visible.error) return failure("error");
-    if (visible.data.length === 0) return failure("project_not_found");
+    const visible = await readableProject(deps, projectId);
+    if (visible === "error") return failure("error");
+    if (visible === "missing") return failure("project_not_found");
 
     const id = (deps.newId ?? (() => crypto.randomUUID()))();
     const path = pathFor(projectId, id);
@@ -169,12 +186,12 @@ export async function signProjectDocument(
   if (!id.success) return failure("invalid_request");
   try {
     const found = await deps.client
-      .from("documents")
+      .from("project_documents")
       .select("storage_path, name")
       .eq("id", id.data);
     if (found.error) return failure("error");
     const [row] = found.data;
-    if (row === undefined) return failure("document_not_found");
+    if (row?.storage_path == null || row.name == null) return failure("document_not_found");
     const signed = await deps.service.storage
       .from(documentsBucket)
       .createSignedUrl(row.storage_path, signedUrlSeconds, { download: row.name });

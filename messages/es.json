@@ -2952,6 +2952,7 @@
               "project_not_found": "Ese proyecto ya no existe.",
               "not_member": "No tienes acceso a este proyecto.",
               "visibility_forbidden": "No puedes subir documentos solo para el equipo.",
+              "visibility_not_allowed": "Solo puedes subir entregas para el cliente.",
               "project_quota_exceeded": "El proyecto ha llegado a 1 GB de documentos. Borra alguno para subir más.",
               "document_exists": "Ese documento ya estaba subido.",
               "document_not_found": "Ese documento ya no existe.",
@@ -2983,6 +2984,7 @@
               "project_not_found": "Ese proyecto ya no existe.",
               "not_member": "No tienes acceso a este proyecto.",
               "visibility_forbidden": "No puedes subir documentos solo para el equipo.",
+              "visibility_not_allowed": "Solo puedes subir entregas para el cliente.",
               "project_quota_exceeded": "El proyecto ha llegado a 1 GB de documentos. Borra alguno para subir más.",
               "document_exists": "Ese documento ya estaba subido.",
               "document_not_found": "Ese documento ya no existe.",
@@ -3930,6 +3932,10 @@
           "accepted": "Historia aceptada",
           "rejected": "Historia rechazada",
           "in_tasks": "Historia aceptada y convertida en tarea"
+        },
+        "update": {
+          "jose": "Jose",
+          "team": "Equipo"
         }
       },
       "error": {
@@ -3991,8 +3997,10 @@
           "forbidden": "No tienes permiso para hacer esto.",
           "stale": "Esto ya ha cambiado. Recarga la página para ver el estado actual.",
           "error": "No hemos podido guardarlo. Inténtalo de nuevo."
-        }
-      }
+        },
+        "assignedToTeam": "La lleva el equipo."
+      },
+      "team": "Equipo"
     },
     "stories": {
       "meta": {
@@ -4176,6 +4184,7 @@
           "project_not_found": "Ese proyecto ya no existe.",
           "not_member": "No tienes acceso a este proyecto.",
           "visibility_forbidden": "No puedes subir documentos solo para el equipo.",
+          "visibility_not_allowed": "Solo puedes subir entregas para el cliente.",
           "project_quota_exceeded": "Este proyecto ha llegado a 1 GB de documentos. Borra alguno tuyo para subir más.",
           "document_exists": "Ese documento ya estaba subido.",
           "document_not_found": "Ese documento ya no existe.",
@@ -4183,6 +4192,11 @@
           "storage_failed": "No hemos podido guardar el archivo. Inténtalo otra vez.",
           "unavailable": "Ahora mismo no podemos guardar. Inténtalo en un momento.",
           "error": "Algo ha fallado. Inténtalo otra vez."
+        },
+        "uploader": {
+          "me": "Tú",
+          "jose": "Jose",
+          "team": "Equipo"
         }
       },
       "uploader": {
@@ -4207,6 +4221,7 @@
           "project_not_found": "Ese proyecto ya no existe.",
           "not_member": "No tienes acceso a este proyecto.",
           "visibility_forbidden": "No puedes subir documentos solo para el equipo.",
+          "visibility_not_allowed": "Solo puedes subir entregas para el cliente.",
           "project_quota_exceeded": "Este proyecto ha llegado a 1 GB de documentos. Borra alguno tuyo para subir más.",
           "document_exists": "Ese documento ya estaba subido.",
           "document_not_found": "Ese documento ya no existe.",
