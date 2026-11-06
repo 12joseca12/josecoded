@@ -1,6 +1,7 @@
 import { headers } from "next/headers";
 import { type ReactNode, ViewTransition } from "react";
 
+import { ChatPanelHost } from "@/components/chat/ChatPanel/ChatPanelHost";
 import { JsonLd } from "@/components/seo/JsonLd/JsonLd";
 import { RouteFocus } from "@/components/site/RouteFocus/RouteFocus";
 import { SiteFooter } from "@/components/site/SiteFooter/SiteFooter";
@@ -12,9 +13,12 @@ import { site } from "@/config/site";
 import type { Locale } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
+import { buildChatLabels } from "@/lib/chat/labels";
+import { readChatClientConfig } from "@/lib/chat/server/client-config";
 import { buildWhatsAppUrl } from "@/lib/contact/whatsapp";
 import { nonceHeader } from "@/lib/security/nonce";
 import { buildSiteGraph } from "@/lib/seo/jsonld";
+import { getFeatures } from "@/lib/settings/features";
 import type { HeaderLabels } from "@/types/nav";
 
 const navSlugs: [string, MessageKey, boolean][] = [
@@ -32,7 +36,7 @@ interface SiteChromeProps {
 
 export async function SiteChrome({ locale, children }: SiteChromeProps) {
   const nonce = (await headers()).get(nonceHeader) ?? undefined;
-  const t = await getTranslator(locale);
+  const [t, { chat }] = await Promise.all([getTranslator(locale), getFeatures()]);
   const graph = await buildSiteGraph(site.origin, locale);
   const items = navSlugs
     .filter(([, , enabled]) => enabled)
@@ -75,13 +79,20 @@ export async function SiteChrome({ locale, children }: SiteChromeProps) {
         labels={labels}
         whatsappHref={whatsappHref}
         searchEnabled={features.search}
-        chatEnabled={features.chat}
+        chatEnabled={chat}
       />
       <ViewTransition default="none" update="page-swap">
         <main id={contentId} tabIndex={-1}>
           {children}
         </main>
       </ViewTransition>
+      {chat ? (
+        <ChatPanelHost
+          locale={locale}
+          labels={buildChatLabels(t, locale)}
+          config={readChatClientConfig(process.env)}
+        />
+      ) : null}
       <RouteFocus />
       <SiteFooter locale={locale} items={items} />
     </>

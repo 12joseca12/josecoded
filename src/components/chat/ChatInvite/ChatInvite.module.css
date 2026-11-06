@@ -1,0 +1,13 @@
+.invite {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: start;
+}
+
+.hint {
+  max-inline-size: 36rem;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+  line-height: var(--lh-body);
+}
