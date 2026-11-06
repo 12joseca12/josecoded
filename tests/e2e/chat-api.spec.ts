@@ -48,7 +48,7 @@ test("the first send needs Turnstile, sets the cookie and the next send does not
   const second = await send(request, { body: uniqueText("segunda"), locale: "es" });
   expect(second.status()).toBe(200);
 
-  const calls = (await (await request.get(`${mockOrigin}/__chat/calls`)).json()) as {
+  const calls = (await (await request.get(`${mockOrigin}/__chat/visitor-calls`)).json()) as {
     send: { p_body: string; p_page_path: string | null; p_locale: string; p_ip_hash: string }[];
   };
   const recorded = calls.send.find((entry) => entry.p_body === body);

@@ -175,6 +175,6 @@ route("POST", "/__chat/omen", async ({ request, response }) => {
   return send(response, 200, { ok: true });
 });
 
-route("GET", "/__chat/calls", ({ response }) => send(response, 200, calls));
+route("GET", "/__chat/visitor-calls", ({ response }) => send(response, 200, calls));
 
 route("GET", "/__chat/leads", ({ response }) => send(response, 200, leads));
