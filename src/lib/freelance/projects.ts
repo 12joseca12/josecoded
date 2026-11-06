@@ -1,5 +1,12 @@
+import { z } from "zod";
+
 import type { ServerSupabase } from "@/lib/supabase/server";
-import { type FreelanceProject, freelanceProjectsSchema, isOpenProject } from "@/types/freelance";
+import {
+  type FreelanceProject,
+  freelanceProjectSchema,
+  freelanceProjectsSchema,
+  isOpenProject,
+} from "@/types/freelance";
 
 const projectColumns =
   "id, name, brief, phase, status, started_at, due_at, archived_at, created_at, done, total, percent";
@@ -28,4 +35,24 @@ export async function fetchFreelanceProjects(
   const parsed = freelanceProjectsSchema.safeParse(data);
   if (!parsed.success) return { status: "error" };
   return { status: "ok", ...splitProjects(parsed.data) };
+}
+
+export type FreelanceProjectResult =
+  { status: "ok"; project: FreelanceProject } | { status: "missing" } | { status: "error" };
+
+export async function fetchFreelanceProject(
+  client: ServerSupabase,
+  id: string,
+): Promise<FreelanceProjectResult> {
+  if (!z.uuid().safeParse(id).success) return { status: "missing" };
+  const { data, error } = await client
+    .from("freelance_projects")
+    .select(projectColumns)
+    .eq("id", id)
+    .limit(1);
+  if (error) return { status: "error" };
+  if (data.length === 0) return { status: "missing" };
+  const parsed = freelanceProjectSchema.safeParse(data[0]);
+  if (!parsed.success) return { status: "error" };
+  return { status: "ok", project: parsed.data };
 }

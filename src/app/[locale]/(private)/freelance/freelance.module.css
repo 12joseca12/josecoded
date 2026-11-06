@@ -23,3 +23,12 @@
   display: grid;
   gap: var(--space-3);
 }
+
+.brief {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.muted {
+  color: var(--ink-soft);
+}

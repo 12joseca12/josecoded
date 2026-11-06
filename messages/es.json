@@ -4297,6 +4297,59 @@
       "noTasks": "Sin tareas todavía",
       "tasksDone": "{done} de {total} tareas hechas",
       "due": "Entrega prevista: {date}"
+    },
+    "project": {
+      "meta": {
+        "title": "Proyecto"
+      },
+      "back": "Volver a proyectos",
+      "loading": "Cargando el proyecto",
+      "error": {
+        "title": "No hemos podido cargar esta parte",
+        "text": "Puedes reintentarlo.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "brief": {
+        "title": "Brief",
+        "empty": "Jose aún no ha escrito el brief."
+      },
+      "tasks": {
+        "title": "Tareas",
+        "board": "Tareas por fase",
+        "emptyPhase": "Sin tareas en esta fase.",
+        "emptyTitle": "Todavía no hay tareas",
+        "emptyText": "Cuando Jose las cree, las verás aquí, ordenadas por fase.",
+        "status": {
+          "todo": "Pendiente",
+          "doing": "En curso",
+          "done": "Hecha"
+        },
+        "mine": "Tuya",
+        "client": "Cliente",
+        "menu": {
+          "group": "Estado de «{title}»",
+          "saving": "Guardando",
+          "changed": "«{title}» está ahora: {status}",
+          "errors": {
+            "forbidden": "Esta tarea ya no es tuya. Hemos recargado la lista.",
+            "stale": "Esta tarea ya ha cambiado. Hemos recargado la lista.",
+            "error": "No hemos podido guardarlo. Inténtalo de nuevo."
+          }
+        }
+      },
+      "files": {
+        "title": "Documentos",
+        "region": "Documentos del proyecto",
+        "empty": {
+          "title": "Todavía no hay documentos",
+          "text": "Aquí verás lo que Jose prepare para ti y las entregas que subas."
+        },
+        "uploader": {
+          "title": "Entrega para el cliente",
+          "submit": "Subir entrega"
+        }
+      }
     }
   },
   "freelancePage": {

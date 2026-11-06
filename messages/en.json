@@ -4297,6 +4297,59 @@
       "noTasks": "No tasks yet",
       "tasksDone": "{done} of {total} tasks done",
       "due": "Due: {date}"
+    },
+    "project": {
+      "meta": {
+        "title": "Project"
+      },
+      "back": "Back to projects",
+      "loading": "Loading the project",
+      "error": {
+        "title": "We could not load this part",
+        "text": "You can try again.",
+        "retry": "Try again",
+        "retrying": "Trying again"
+      },
+      "brief": {
+        "title": "Brief",
+        "empty": "Jose has not written the brief yet."
+      },
+      "tasks": {
+        "title": "Tasks",
+        "board": "Tasks by phase",
+        "emptyPhase": "No tasks in this phase.",
+        "emptyTitle": "No tasks yet",
+        "emptyText": "When Jose creates them you will see them here, ordered by phase.",
+        "status": {
+          "todo": "To do",
+          "doing": "In progress",
+          "done": "Done"
+        },
+        "mine": "Yours",
+        "client": "Client",
+        "menu": {
+          "group": "Status of “{title}”",
+          "saving": "Saving",
+          "changed": "“{title}” is now: {status}",
+          "errors": {
+            "forbidden": "This task is no longer yours. We reloaded the list.",
+            "stale": "This task has already changed. We reloaded the list.",
+            "error": "We could not save it. Try again."
+          }
+        }
+      },
+      "files": {
+        "title": "Documents",
+        "region": "Project documents",
+        "empty": {
+          "title": "No documents yet",
+          "text": "Here you will see what Jose prepares for you and the deliveries you upload."
+        },
+        "uploader": {
+          "title": "Delivery for the client",
+          "submit": "Upload delivery"
+        }
+      }
     }
   },
   "freelancePage": {
