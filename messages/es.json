@@ -4220,7 +4220,7 @@
   },
   "freelance": {
     "brandLabel": "josecoded, ir al inicio de tu zona",
-    "brandWord": "Freelance",
+    "brandWord": "Tu zona",
     "navLabel": "Freelance",
     "userLabel": "Sesión iniciada como {name}",
     "signOut": "Salir",
@@ -4229,7 +4229,59 @@
       "soon": "Próximamente",
       "more": "Más",
       "moreTitle": "Más secciones",
-      "close": "Cerrar"
+      "close": "Cerrar",
+      "overview": "Inicio",
+      "projects": "Proyectos",
+      "payments": "Pagos",
+      "chat": "Chat"
+    },
+    "empty": {
+      "title": "Jose aún no te ha asignado ningún proyecto",
+      "text": "Cuando te asigne uno aparecerá aquí, con su brief, tus tareas y lo que te corresponde. Por ahora no tienes que hacer nada.",
+      "noneOpenTitle": "No tienes proyectos en curso",
+      "noneOpenText": "Tus proyectos cerrados siguen en la sección Proyectos, con su historial."
+    },
+    "home": {
+      "meta": {
+        "title": "Inicio"
+      },
+      "title": "Tu zona",
+      "lead": "Tus proyectos en curso y lo que toca hacer en cada uno.",
+      "open": "En curso",
+      "loading": "Cargando tus proyectos",
+      "error": {
+        "title": "No hemos podido cargar tus proyectos",
+        "text": "Inténtalo de nuevo en unos segundos.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      }
+    },
+    "projects": {
+      "meta": {
+        "title": "Proyectos"
+      },
+      "title": "Proyectos",
+      "lead": "Los proyectos en los que trabajas, en curso y cerrados.",
+      "open": "En curso",
+      "closedTitle": "Cerrados",
+      "loading": "Cargando tus proyectos",
+      "error": {
+        "title": "No hemos podido cargar tus proyectos",
+        "text": "Inténtalo de nuevo en unos segundos.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "phase": "Fase",
+      "status": {
+        "active": "En curso",
+        "paused": "En pausa",
+        "closed": "Cerrado"
+      },
+      "closedPill": "Cerrado",
+      "progress": "Avance de {name}",
+      "noTasks": "Sin tareas todavía",
+      "tasksDone": "{done} de {total} tareas hechas",
+      "due": "Entrega prevista: {date}"
     }
   },
   "freelancePage": {

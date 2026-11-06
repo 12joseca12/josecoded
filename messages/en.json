@@ -4220,7 +4220,7 @@
   },
   "freelance": {
     "brandLabel": "josecoded, go to your zone home",
-    "brandWord": "Freelance",
+    "brandWord": "Your zone",
     "navLabel": "Freelance",
     "userLabel": "Signed in as {name}",
     "signOut": "Sign out",
@@ -4229,7 +4229,59 @@
       "soon": "Coming soon",
       "more": "More",
       "moreTitle": "More sections",
-      "close": "Close"
+      "close": "Close",
+      "overview": "Home",
+      "projects": "Projects",
+      "payments": "Payments",
+      "chat": "Chat"
+    },
+    "empty": {
+      "title": "Jose hasn't assigned you a project yet",
+      "text": "When he assigns one it will show up here, with its brief, your tasks and what you are owed. There is nothing to do for now.",
+      "noneOpenTitle": "You have no projects in progress",
+      "noneOpenText": "Your closed projects stay in the Projects section, with their history."
+    },
+    "home": {
+      "meta": {
+        "title": "Home"
+      },
+      "title": "Your workspace",
+      "lead": "Your projects in progress and what is next on each one.",
+      "open": "In progress",
+      "loading": "Loading your projects",
+      "error": {
+        "title": "We could not load your projects",
+        "text": "Try again in a few seconds.",
+        "retry": "Try again",
+        "retrying": "Trying again"
+      }
+    },
+    "projects": {
+      "meta": {
+        "title": "Projects"
+      },
+      "title": "Projects",
+      "lead": "The projects you work on, in progress and closed.",
+      "open": "In progress",
+      "closedTitle": "Closed",
+      "loading": "Loading your projects",
+      "error": {
+        "title": "We could not load your projects",
+        "text": "Try again in a few seconds.",
+        "retry": "Try again",
+        "retrying": "Trying again"
+      },
+      "phase": "Phase",
+      "status": {
+        "active": "In progress",
+        "paused": "Paused",
+        "closed": "Closed"
+      },
+      "closedPill": "Closed",
+      "progress": "Progress of {name}",
+      "noTasks": "No tasks yet",
+      "tasksDone": "{done} of {total} tasks done",
+      "due": "Due: {date}"
     }
   },
   "freelancePage": {

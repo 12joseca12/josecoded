@@ -34,7 +34,7 @@ describe("staff navigation registry", () => {
   });
 
   it("only marks the shipped screens as ready", () => {
-    const ready = (zone: "admin" | "crm" | "area") =>
+    const ready = (zone: "admin" | "crm" | "area" | "freelance") =>
       staffNav[zone].filter((entry) => entry.ready).map((entry) => entry.key);
     expect(ready("admin")).toEqual([
       "overview",
@@ -59,10 +59,7 @@ describe("staff navigation registry", () => {
       "settings",
     ]);
     expect(ready("area")).toEqual(["overview", "tasks", "documents", "stories", "chat"]);
-  });
-
-  it("registers the freelance zone without screens", () => {
-    expect(staffNav.freelance).toEqual([]);
+    expect(ready("freelance")).toEqual(["overview", "projects"]);
   });
 
   it("has a label in every locale", () => {

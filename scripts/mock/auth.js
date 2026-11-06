@@ -39,6 +39,11 @@ export const people = {
     rates: { closer: 10, parent: 5, closerRecurring: 4, parentRecurring: 2 },
     cadence: "weekly",
   },
+  "freelance@example.com": {
+    id: "00000000-0000-4000-8000-0000000000f2",
+    role: "freelance",
+    name: "Fran Freelance",
+  },
   "client@example.com": {
     id: "00000000-0000-4000-8000-0000000000d1",
     role: "client",
