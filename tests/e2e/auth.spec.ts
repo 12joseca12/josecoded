@@ -470,7 +470,9 @@ test("a closer lands on the CRM shell and cannot enter the admin", async ({ page
     "page",
   );
   await expect(rail.getByRole("link")).toHaveCount(crmReady);
-  await expect(rail.getByText(crm.nav.soon).first()).toBeVisible();
+  if (staffNav.crm.some((entry) => !entry.ready)) {
+    await expect(rail.getByText(crm.nav.soon).first()).toBeVisible();
+  }
   await expect(page.getByRole("link", { name: es.admin.nav.switch })).toHaveCount(0);
   await expect(page.getByRole("link", { name: crm.nav.switch })).toHaveCount(0);
   await expectClean(page);

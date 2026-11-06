@@ -92,6 +92,20 @@ test("the client writes and receives Jose's answer", async ({ page }) => {
   await expect(log(page)).toContainText("Te la enseño mañana.");
 });
 
+test("the client attaches a file and it shows as a download chip", async ({ page }) => {
+  await open(page);
+  await page.locator('input[type="file"]').setInputFiles({
+    name: "logo.pdf",
+    mimeType: "application/pdf",
+    buffer: Buffer.from("%PDF-1.4 logo"),
+  });
+  const composer = page.getByLabel(msg("room.composer.label"));
+  await composer.fill("Te paso el logo");
+  await composer.press("Enter");
+  await expect(log(page)).toContainText("Te paso el logo");
+  await expect(log(page).getByRole("link", { name: /logo\.pdf/ })).toBeVisible();
+});
+
 test("granting and withdrawing the consent for Nexo leaves a system message", async ({ page }) => {
   await open(page);
   const consent = page.getByRole("region", { name: chat("consent.title") });

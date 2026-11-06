@@ -6,7 +6,14 @@ export function route(method, pattern, handler) {
   routes.push({ method, pattern, handler });
 }
 
+const bodies = new WeakMap();
+
 export function readBody(request) {
+  if (!bodies.has(request)) bodies.set(request, readStream(request));
+  return bodies.get(request);
+}
+
+function readStream(request) {
   return new Promise((resolve) => {
     const chunks = [];
     request.on("data", (chunk) => chunks.push(chunk));
