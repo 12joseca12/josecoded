@@ -174,6 +174,7 @@ test("a rejected check explains itself and keeps the text", async ({ page }) => 
   });
   await openPanel(page);
   await composer(page).fill("hola");
+  await expect(panel(page).getByRole("button", { name: chat.composer.send })).toBeEnabled();
   await composer(page).press("Enter");
   await expect(panel(page).getByRole("alert")).toHaveText(chat.errors.verification);
   await expect(composer(page)).toHaveValue("hola");
