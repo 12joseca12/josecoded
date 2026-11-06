@@ -5,6 +5,7 @@ import { type KeyboardEvent, type Ref, useId, useState } from "react";
 import { Button } from "@/components/ui/Button/Button";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 import { VisuallyHidden } from "@/components/ui/VisuallyHidden/VisuallyHidden";
+import { useHydrated } from "@/lib/use-hydrated";
 import { type ChatLabels, chatMaxLength } from "@/types/chat";
 
 import styles from "./ChatComposer.module.css";
@@ -14,6 +15,11 @@ type ComposerLabels = Pick<
   "composerLabel" | "composerPlaceholder" | "send" | "sendingMessage" | "remaining"
 >;
 
+export interface PlainSend {
+  action: (formData: FormData) => Promise<void>;
+  locale: string;
+}
+
 interface ChatComposerProps {
   labels: ComposerLabels;
   sending: boolean;
@@ -21,6 +27,7 @@ interface ChatComposerProps {
   onSend: (body: string) => Promise<boolean>;
   onDraftingChange: (drafting: boolean) => void;
   inputRef?: Ref<HTMLTextAreaElement>;
+  plainAction?: PlainSend;
 }
 
 const warnAt = 200;
@@ -37,11 +44,13 @@ export function ChatComposer({
   onSend,
   onDraftingChange,
   inputRef,
+  plainAction,
 }: ChatComposerProps) {
   const inputId = useId();
   const counterId = useId();
   const [draft, setDraft] = useState("");
   const remaining = chatMaxLength - draft.length;
+  const hydrated = useHydrated();
   const blocked = disabled || sending;
 
   const submit = async (field: HTMLTextAreaElement | null) => {
@@ -65,16 +74,19 @@ export function ChatComposer({
   return (
     <form
       className={styles.composer}
+      action={plainAction?.action}
       onSubmit={(event) => {
         event.preventDefault();
         void submit(event.currentTarget.querySelector("textarea"));
       }}
     >
+      {plainAction ? <input type="hidden" name="locale" value={plainAction.locale} /> : null}
       <label htmlFor={inputId} className={styles.label}>
         <VisuallyHidden>{labels.composerLabel}</VisuallyHidden>
       </label>
       <textarea
         id={inputId}
+        name="body"
         ref={inputRef}
         className={styles.input}
         rows={1}
@@ -101,7 +113,7 @@ export function ChatComposer({
         icon={<ArrowIcon />}
         loading={sending}
         loadingLabel={labels.sendingMessage}
-        disabled={disabled || draft.trim() === ""}
+        disabled={disabled || (hydrated && draft.trim() === "")}
       >
         {labels.send}
       </Button>

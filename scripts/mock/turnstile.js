@@ -39,8 +39,13 @@ const fakeWidget = `
       frame.style.height = "65px";
       el.appendChild(frame);
       field(el).value = "";
-      deliver(el, options);
+      if (options.execution !== "execute") deliver(el, options);
       return id;
+    },
+    execute: function (id) {
+      var entry = store[id];
+      if (!entry) return;
+      deliver(entry.el, entry.options);
     },
     reset: function (id) {
       var entry = store[id];

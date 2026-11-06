@@ -131,6 +131,10 @@
       "lead": "Cuéntame qué necesitas. Te respondo yo en {responseTime}.",
       "cta": "Escríbeme",
       "email": "O escribe a"
+    },
+    "chatInvite": {
+      "label": "Preguntar a Nexo",
+      "hint": "Mi asistente IA responde dudas sobre servicios. Si está desconectado, te contesto yo en {responseTime}."
     }
   },
   "projects": {
@@ -847,7 +851,10 @@
       "metaTitle": "Chat con Nexo",
       "metaDescription": "Habla con Nexo, el asistente IA de josecoded, o deja tu contacto para que te responda Jose.",
       "title": "Chat con Nexo",
-      "back": "Volver al inicio"
+      "back": "Volver al inicio",
+      "noscriptFailed": "No he podido enviar el mensaje. Usa el formulario de contacto.",
+      "alternative": "Si el chat no te funciona, también puedes escribirme por el formulario de contacto.",
+      "alternativeLink": "Ir al formulario de contacto"
     },
     "header": {
       "online": "Asistente IA de josecoded",
@@ -955,7 +962,8 @@
         "consent_required": "Necesito tu consentimiento para guardar el contacto."
       }
     },
-    "avatarOffline": "Nexo está desconectado"
+    "avatarOffline": "Nexo está desconectado",
+    "openChat": "Abrir el chat"
   },
   "auth": {
     "meta": {

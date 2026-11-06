@@ -5,7 +5,7 @@ import { type ReactNode, type Ref, useEffect, useState } from "react";
 import { visitorNexoState } from "@/lib/chat/visitor-state";
 import type { ChatController, ChatLabels, ChatMessage, ChatStarterTopic } from "@/types/chat";
 
-import { ChatComposer } from "../ChatComposer/ChatComposer";
+import { ChatComposer, type PlainSend } from "../ChatComposer/ChatComposer";
 import { ChatNotice } from "../ChatNotice/ChatNotice";
 import { ChatThread } from "../ChatThread/ChatThread";
 import { HandoffCard } from "../HandoffCard/HandoffCard";
@@ -21,6 +21,7 @@ interface ChatViewProps {
   titleId: string;
   titleLevel?: 1 | 2;
   inputRef?: Ref<HTMLTextAreaElement>;
+  plainAction?: PlainSend;
 }
 
 const minSpeakingMs = 1200;
@@ -62,6 +63,7 @@ export function ChatView({
   titleId,
   titleLevel = 2,
   inputRef,
+  plainAction,
 }: ChatViewProps) {
   const { messages, status, handoff, sending, sendError } = controller;
   const [drafting, setDrafting] = useState(false);
@@ -123,6 +125,7 @@ export function ChatView({
       >
         {handoff.phase === "hidden" ? null : (
           <HandoffCard
+            headingLevel={titleLevel === 1 ? 2 : 3}
             labels={labels.handoff}
             state={handoff}
             onSubmit={controller.submitHandoff}
@@ -151,6 +154,7 @@ export function ChatView({
         onSend={controller.send}
         onDraftingChange={setDrafting}
         inputRef={inputRef}
+        plainAction={plainAction}
       />
     </div>
   );

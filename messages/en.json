@@ -131,6 +131,10 @@
       "lead": "Tell me what you need. I answer myself within {responseTime}.",
       "cta": "Write to me",
       "email": "Or write to"
+    },
+    "chatInvite": {
+      "label": "Ask Nexo",
+      "hint": "My AI assistant answers questions about services. If it is offline, I reply within {responseTime}."
     }
   },
   "projects": {
@@ -847,7 +851,10 @@
       "metaTitle": "Chat with Nexo",
       "metaDescription": "Talk to Nexo, the josecoded AI assistant, or leave your contact so Jose can reply.",
       "title": "Chat with Nexo",
-      "back": "Back to home"
+      "back": "Back to home",
+      "noscriptFailed": "I could not send the message. Use the contact form.",
+      "alternative": "If the chat does not work for you, you can also write to me through the contact form.",
+      "alternativeLink": "Go to the contact form"
     },
     "header": {
       "online": "josecoded AI assistant",
@@ -955,7 +962,8 @@
         "consent_required": "I need your consent to save the contact."
       }
     },
-    "avatarOffline": "Nexo is offline"
+    "avatarOffline": "Nexo is offline",
+    "openChat": "Open the chat"
   },
   "auth": {
     "meta": {

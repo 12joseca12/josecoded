@@ -1,21 +1,25 @@
 "use client";
 
 import NextLink from "next/link";
-import { type RefObject, useCallback, useEffect, useRef } from "react";
+import { type RefObject, useCallback, useEffect, useRef, useState } from "react";
 
 import { IconButton } from "@/components/ui/IconButton/IconButton";
+import type { Locale } from "@/i18n/config";
 import type { ChatLabels } from "@/types/chat";
 
 import styles from "./ChatPanel.module.css";
-import { ChatSession } from "./ChatSession";
+import { type ChatRuntimeConfig, ChatSession } from "./ChatSession";
 
 interface ChatPanelProps {
+  locale: Locale;
   labels: ChatLabels;
+  config: ChatRuntimeConfig;
   openRequest: number;
   openerRef: RefObject<HTMLElement | null>;
 }
 
-export function ChatPanel({ labels, openRequest, openerRef }: ChatPanelProps) {
+export function ChatPanel({ locale, labels, config, openRequest, openerRef }: ChatPanelProps) {
+  const [closedAt, setClosedAt] = useState(0);
   const dialog = useRef<HTMLDialogElement>(null);
   const input = useRef<HTMLTextAreaElement>(null);
 
@@ -37,6 +41,7 @@ export function ChatPanel({ labels, openRequest, openerRef }: ChatPanelProps) {
       className={styles.panel}
       aria-label={labels.title}
       onClose={() => {
+        setClosedAt(openRequest);
         const target = openerRef.current;
         openerRef.current = null;
         if (target?.isConnected) target.focus({ preventScroll: true });
@@ -49,7 +54,10 @@ export function ChatPanel({ labels, openRequest, openerRef }: ChatPanelProps) {
       }}
     >
       <ChatSession
+        locale={locale}
         labels={labels}
+        config={config}
+        active={openRequest > closedAt}
         inputRef={input}
         actions={
           <>

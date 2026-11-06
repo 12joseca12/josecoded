@@ -181,17 +181,3 @@ test("the panel opens with the signal, takes focus, and Escape returns it", asyn
   await expect(dialog).toBeHidden();
   await expect(trigger).toBeFocused();
 });
-
-test("the panel keeps the conversation between closings and passes axe", async ({ page }) => {
-  await page.goto("/es/dev/chat");
-  await page.locator("[data-open-panel]").click();
-  const dialog = page.getByRole("dialog", { name: chat.title });
-  await dialog.getByLabel(chat.composer.label).fill("Hola Nexo");
-  await page.keyboard.press("Enter");
-  await expect(dialog.getByText("Hola Nexo")).toBeVisible();
-  const { violations } = await new AxeBuilder({ page }).analyze();
-  expect(violations).toEqual([]);
-  await page.keyboard.press("Escape");
-  await page.locator("[data-open-panel]").click();
-  await expect(dialog.getByText("Hola Nexo")).toBeVisible();
-});

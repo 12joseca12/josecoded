@@ -13,3 +13,11 @@
   border-radius: var(--radius-l);
   box-shadow: var(--shadow-card);
 }
+
+.note {
+  inline-size: min(100%, 44rem);
+  margin: var(--space-4) 0 0;
+  color: var(--ink);
+  font-size: var(--fs-base);
+  line-height: var(--lh-body);
+}

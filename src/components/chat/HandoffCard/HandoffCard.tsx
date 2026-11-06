@@ -22,6 +22,7 @@ interface HandoffCardProps {
   labels: ChatLabels["handoff"];
   state: HandoffState;
   onSubmit: (input: HandoffInput) => Promise<void>;
+  headingLevel: 2 | 3;
 }
 
 function textOf(data: FormData, name: string): string {
@@ -29,7 +30,7 @@ function textOf(data: FormData, name: string): string {
   return typeof value === "string" ? value : "";
 }
 
-export function HandoffCard({ labels, state, onSubmit }: HandoffCardProps) {
+export function HandoffCard({ labels, state, onSubmit, headingLevel }: HandoffCardProps) {
   const titleId = useId();
   const [localErrors, setLocalErrors] = useState<HandoffFieldErrors>({});
   const errors = { ...state.errors, ...localErrors };
@@ -38,7 +39,7 @@ export function HandoffCard({ labels, state, onSubmit }: HandoffCardProps) {
   if (state.phase === "done") {
     return (
       <section className={styles.card} data-state="done" role="status">
-        <Heading level={3} size="h4">
+        <Heading level={headingLevel} size="h4">
           {labels.doneTitle}
         </Heading>
         <p className={styles.text}>{labels.doneText}</p>
@@ -68,7 +69,7 @@ export function HandoffCard({ labels, state, onSubmit }: HandoffCardProps) {
 
   return (
     <section className={styles.card} aria-labelledby={titleId}>
-      <Heading level={3} size="h4" id={titleId}>
+      <Heading level={headingLevel} size="h4" id={titleId}>
         {labels.title}
       </Heading>
       <p className={styles.text}>{labels.lead}</p>

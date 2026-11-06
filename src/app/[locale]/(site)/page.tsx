@@ -10,6 +10,7 @@ import { StackRow } from "@/components/home/StackRow/StackRow";
 import { BlockScroll } from "@/components/site/BlockScroll/BlockScroll";
 import { isLocale } from "@/i18n/config";
 import { buildPageMetadata } from "@/lib/seo/metadata";
+import { getFeatures } from "@/lib/settings/features";
 
 import styles from "./page.module.css";
 
@@ -41,7 +42,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <RecommenderTeaser locale={locale} />
         <StackRow locale={locale} />
         <HowStrip locale={locale} />
-        <Closing locale={locale} />
+        <Closing locale={locale} chat={(await getFeatures()).chat} />
       </div>
     </>
   );

@@ -1,0 +1,15 @@
+.turnstile {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-start: 0;
+  inline-size: 0;
+  block-size: 0;
+  overflow: hidden;
+}
+
+.turnstile[data-interactive] {
+  inline-size: 100%;
+  block-size: auto;
+  padding: var(--space-3);
+  background: var(--panel);
+}
