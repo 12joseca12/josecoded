@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import type { RoomMessage, RoomTransport, SendRoomMessageResult } from "@/types/room";
+import type { RoomMessage, RoomTransport, SendProgress, SendRoomMessageResult } from "@/types/room";
 
 const hiddenFactor = 6;
 
@@ -15,10 +15,22 @@ function compare(a: RoomMessage, b: RoomMessage): number {
 
 export function mergeMessages(current: RoomMessage[], incoming: RoomMessage[]): RoomMessage[] {
   if (incoming.length === 0) return current;
-  const known = new Set(current.map((message) => message.id));
+  const known = new Map(current.map((message) => [message.id, message]));
   const fresh = incoming.filter((message) => !known.has(message.id));
-  if (fresh.length === 0) return current;
-  return [...current, ...fresh].sort(compare);
+  const richer = incoming.filter(
+    (message) => (known.get(message.id)?.attachments.length ?? 0) < message.attachments.length,
+  );
+  if (fresh.length === 0 && richer.length === 0) return current;
+  const replaced = new Map(richer.map((message) => [message.id, message]));
+  return [...current.map((message) => replaced.get(message.id) ?? message), ...fresh].sort(compare);
+}
+
+const overlapMs = 30_000;
+
+export function pollCursor(last: RoomMessage | undefined): string | null {
+  if (!last) return null;
+  const time = Date.parse(last.created_at);
+  return Number.isNaN(time) ? last.created_at : new Date(time - overlapMs).toISOString();
 }
 
 interface UseRoomMessagesOptions {
@@ -49,7 +61,7 @@ export function useRoomMessages({ transport, initial, pollMs }: UseRoomMessagesO
     const tick = async () => {
       clearTimeout(timer);
       const last = messagesRef.current.at(-1);
-      const result = await transport.poll(last ? last.created_at : null);
+      const result = await transport.poll(pollCursor(last));
       if (stopped) return;
       if (result.status === "done") {
         setPollFailed(false);
@@ -78,8 +90,12 @@ export function useRoomMessages({ transport, initial, pollMs }: UseRoomMessagesO
   }, [transport, pollMs]);
 
   const send = useCallback(
-    async (body: string): Promise<SendRoomMessageResult> => {
-      const result = await transport.send(body);
+    async (
+      body: string,
+      files?: File[],
+      onProgress?: SendProgress,
+    ): Promise<SendRoomMessageResult> => {
+      const result = await transport.send(body, files, onProgress);
       if (result.status === "done") {
         setMessages((current) => mergeMessages(current, [result.message]));
       }

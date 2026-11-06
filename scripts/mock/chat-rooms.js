@@ -51,6 +51,7 @@ function message(room, fields) {
     body: "",
     sources: [],
     auto: false,
+    message_attachments: [],
     created_at: new Date().toISOString(),
     ...fields,
   };
@@ -58,6 +59,16 @@ function message(room, fields) {
 
 function owners() {
   return adminIds.map((id) => member(id, "owner"));
+}
+
+const allRooms = new Set();
+
+function findMessage(id) {
+  for (const room of allRooms) {
+    const entry = room.messages.find((candidate) => candidate.id === id);
+    if (entry) return { room, entry };
+  }
+  return null;
 }
 
 function freshRooms() {
@@ -72,6 +83,8 @@ function freshRooms() {
     consent_revoked_at: null,
     project_id: null,
     subject: closerId,
+    lead_id: null,
+    contact_id: null,
     first_page_path: null,
     members: [...owners(), member(closerId, "closer")],
     messages: [
@@ -103,6 +116,8 @@ function freshRooms() {
     consent_revoked_at: null,
     project_id: null,
     subject: null,
+    lead_id: null,
+    contact_id: null,
     first_page_path: "/es/servicios",
     members: owners(),
     messages: [
@@ -119,6 +134,8 @@ function freshRooms() {
     consent_revoked_at: null,
     project_id: "d0000000-0000-4000-8000-000000000001",
     subject: null,
+    lead_id: null,
+    contact_id: null,
     first_page_path: null,
     members: [...owners(), member(clientId, "client"), member(closerId, "closer")],
     messages: [
@@ -139,6 +156,8 @@ function freshRooms() {
     consent_revoked_at: null,
     project_id: null,
     subject: daniId,
+    lead_id: null,
+    contact_id: null,
     first_page_path: null,
     members: [...owners(), member(daniId, "closer", { left_at: minutesAgo(100) })],
     messages: [
@@ -155,12 +174,17 @@ function freshRooms() {
       }),
     ],
   });
+  for (const room of rooms.values()) allRooms.add(room);
   return rooms;
 }
 
 extendAuthState((state) => {
   state.calls.chat = [];
-  state.chat = { mode: { messages: "data", send: "ok", summaries: "data" }, rooms: freshRooms() };
+  state.chat = {
+    mode: { messages: "data", send: "ok", summaries: "data", storage: "ok" },
+    rooms: freshRooms(),
+    storage: [],
+  };
 });
 
 route("POST", "/__chat/mode", async ({ request, response, url }) => {
@@ -184,6 +208,15 @@ route("POST", "/__chat/push", async ({ request, response, url }) => {
   if (!target) return send(response, 404, { ok: false });
   const fields = { author_kind: kind, author_id: author, body, system_event };
   target.messages.push(message(room, fields));
+  return send(response, 200, { ok: true });
+});
+
+route("POST", "/__chat/room", async ({ request, response, url }) => {
+  const { chat } = stateFor(url.searchParams.get("tag") ?? "");
+  const { room, set } = JSON.parse(await readBody(request));
+  const target = chat.rooms.get(room);
+  if (!target) return send(response, 404, { ok: false });
+  Object.assign(target, set);
   return send(response, 200, { ok: true });
 });
 
@@ -423,9 +456,165 @@ route("GET", "/rest/v1/my_conversations", ({ request, response, url }) => {
   const { chat } = who.auth;
   who.auth.calls.chat.push({ name: "my_conversations", query: url.search });
   if (chat.mode.summaries === "error") return rejection(response, 500, "XX000", "internal");
+  if (chat.mode.summaries === "empty") return send(response, 200, []);
+  const wanted = /^eq\.(.+)$/.exec(url.searchParams.get("id") ?? "")?.[1];
+  const kinds = /^in\.\((.*)\)$/.exec(url.searchParams.get("kind") ?? "")?.[1]?.split(",");
   const rows = [...chat.rooms.values()]
+    .filter((room) => (wanted ? room.id === wanted : true))
+    .filter((room) => (kinds ? kinds.includes(room.kind) : true))
     .filter((room) => canRead(who, room))
     .map((room) => summary(room, who.session.userId))
     .sort((a, b) => Date.parse(b.last_activity_at) - Date.parse(a.last_activity_at));
+  return send(response, 200, rows);
+});
+
+route("GET", "/rest/v1/conversations", ({ request, response, url }) => {
+  const who = caller(request);
+  if (who.denied) return rejection(response, 401, "PGRST301", "JWT invalid");
+  const { chat } = who.auth;
+  const wanted = /^eq\.(.+)$/.exec(url.searchParams.get("id") ?? "")?.[1];
+  const rows = [...chat.rooms.values()]
+    .filter((room) => (wanted ? room.id === wanted : true))
+    .filter((room) => canRead(who, room))
+    .map((room) => ({
+      id: room.id,
+      kind: room.kind,
+      status: room.status,
+      ai_enabled: room.ai_enabled,
+      ai_off_reason: room.ai_off_reason,
+      lead_id: room.lead_id,
+      contact_id: room.contact_id,
+      first_page_path: room.first_page_path,
+    }));
+  return send(response, 200, rows);
+});
+
+route("POST", "/rest/v1/rpc/ensure_my_conversation", ({ request, response }) => {
+  const who = caller(request);
+  if (who.denied) return rejection(response, 401, "PGRST301", "JWT invalid");
+  const { chat } = who.auth;
+  who.auth.calls.chat.push({ name: "ensure_my_conversation" });
+  const staff = who.person.role === "closer" || who.person.role === "freelance";
+  if (!staff || who.level !== "aal2") return rejection(response, 403, "42501");
+  let room = [...chat.rooms.values()].find(
+    (entry) => entry.subject === who.session.userId && entry.kind === who.person.role,
+  );
+  if (!room) {
+    const id = randomUUID();
+    room = {
+      id,
+      kind: who.person.role,
+      status: "open",
+      ai_enabled: true,
+      ai_off_reason: null,
+      consent_at: null,
+      consent_revoked_at: null,
+      project_id: null,
+      subject: who.session.userId,
+      lead_id: null,
+      contact_id: null,
+      first_page_path: null,
+      members: [...owners(), member(who.session.userId, who.person.role)],
+      messages: [],
+    };
+    chat.rooms.set(id, room);
+    allRooms.add(room);
+  }
+  return send(response, 200, JSON.stringify(room.id));
+});
+
+const serviceKey = "test-service-role-key";
+
+function serviceOnly(request, response) {
+  if (request.headers.authorization === `Bearer ${serviceKey}`) return true;
+  rejection(response, 401, "PGRST301", "JWT invalid");
+  return false;
+}
+
+const storageLog = [];
+let storageMode = "ok";
+
+route("POST", "/__chat/storage-mode", async ({ request, response }) => {
+  storageMode = JSON.parse(await readBody(request)).mode;
+  return send(response, 200, { ok: true });
+});
+
+route("GET", "/__chat/storage", ({ response }) => send(response, 200, storageLog));
+
+route("POST", "/__chat/storage-reset", ({ response }) => {
+  storageLog.length = 0;
+  storageMode = "ok";
+  return send(response, 200, { ok: true });
+});
+
+route(
+  "POST",
+  /^\/storage\/v1\/object\/chat-attachments\/(.+)$/,
+  async ({ request, response, match }) => {
+    if (!serviceOnly(request, response)) return undefined;
+    const raw = await readBody(request);
+    storageLog.push({ kind: "upload", path: decodeURIComponent(match[1]), size: raw.length });
+    if (storageMode === "upload-error") return rejection(response, 500, "XX000", "storage");
+    return send(response, 200, { Key: `chat-attachments/${match[1]}`, Id: randomUUID() });
+  },
+);
+
+route("DELETE", /^\/storage\/v1\/object\/chat-attachments$/, async ({ request, response }) => {
+  if (!serviceOnly(request, response)) return undefined;
+  const body = JSON.parse(await readBody(request));
+  storageLog.push({ kind: "remove", paths: body.prefixes });
+  return send(response, 200, []);
+});
+
+route(
+  "POST",
+  /^\/storage\/v1\/object\/sign\/chat-attachments\/(.+)$/,
+  async ({ request, response, match }) => {
+    if (!serviceOnly(request, response)) return undefined;
+    storageLog.push({ kind: "sign", path: decodeURIComponent(match[1]) });
+    return send(response, 200, {
+      signedURL: `/object/sign/chat-attachments/${match[1]}?token=mock-token`,
+    });
+  },
+);
+
+route("GET", /^\/storage\/v1\/object\/sign\/chat-attachments\/(.+)$/, ({ response }) =>
+  send(response, 200, "%PDF-1.4\n%mock\n", "application/pdf"),
+);
+
+route("POST", "/rest/v1/rpc/register_attachment", async ({ request, response }) => {
+  if (!serviceOnly(request, response)) return undefined;
+  const args = JSON.parse(await readBody(request));
+  const found = findMessage(args.p_message_id);
+  if (!found) return typed(response, "message_not_found");
+  const { room, entry } = found;
+  if (room.kind === "visitor") return typed(response, "attachments_not_allowed");
+  if (entry.author_id !== args.p_uploaded_by) return typed(response, "not_message_author");
+  if (entry.message_attachments.length >= 5) return typed(response, "too_many_attachments");
+  const id = String(args.p_path).split("/").at(-1);
+  entry.message_attachments.push({
+    id,
+    name: args.p_name,
+    mime: args.p_mime,
+    size_bytes: args.p_size,
+    storage_path: args.p_path,
+  });
+  storageLog.push({ kind: "register", name: args.p_name, mime: args.p_mime, size: args.p_size });
+  return send(response, 200, JSON.stringify(id));
+});
+
+route("GET", "/rest/v1/message_attachments", ({ request, response, url }) => {
+  const who = caller(request);
+  if (who.denied) return rejection(response, 401, "PGRST301", "JWT invalid");
+  const wanted = /^eq\.(.+)$/.exec(url.searchParams.get("id") ?? "")?.[1];
+  const rows = [];
+  for (const room of who.auth.chat.rooms.values()) {
+    if (!canRead(who, room)) continue;
+    for (const entry of room.messages) {
+      for (const attachment of entry.message_attachments ?? []) {
+        if (!wanted || attachment.id === wanted) rows.push(attachment);
+      }
+    }
+  }
   return send(response, 200, rows);
 });

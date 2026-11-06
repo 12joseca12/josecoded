@@ -6,7 +6,7 @@ import {
   type RoomMember,
   roomMemberSchema,
   type RoomMessage,
-  roomMessageSchema,
+  roomMessageRowSchema,
   type RoomPollResult,
   type SendRoomMessageResult,
   sendRoomMessageSchema,
@@ -17,11 +17,13 @@ type Client = SupabaseClient<Database>;
 const insufficientPrivilege = "42501";
 const pageSize = 100;
 
+export const messageColumns = "*, message_attachments(id, name, mime, size_bytes)";
+
 function parseMessages(rows: unknown): RoomMessage[] | null {
   if (!Array.isArray(rows)) return null;
   const messages: RoomMessage[] = [];
   for (const row of rows) {
-    const parsed = roomMessageSchema.safeParse(row);
+    const parsed = roomMessageRowSchema.safeParse(row);
     if (!parsed.success) return null;
     messages.push(parsed.data);
   }
@@ -36,7 +38,7 @@ export async function listRoomMessages(
   try {
     const query = client
       .from("messages")
-      .select("*")
+      .select(messageColumns)
       .eq("conversation_id", conversationId)
       .order("created_at", { ascending: since !== null })
       .order("id", { ascending: since !== null })
@@ -80,7 +82,7 @@ export async function sendRoomMessage(
         problem: error.code === insufficientPrivilege ? "forbidden" : "error",
       };
     }
-    const message = roomMessageSchema.safeParse(data);
+    const message = roomMessageRowSchema.safeParse(data);
     if (!message.success) return { status: "failed", problem: "error" };
     return { status: "done", message: message.data };
   } catch {

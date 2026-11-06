@@ -1,6 +1,7 @@
 import { headers } from "next/headers";
 import { type ReactNode, ViewTransition } from "react";
 
+import { ChatPanelHost } from "@/components/chat/ChatPanel/ChatPanelHost";
 import { JsonLd } from "@/components/seo/JsonLd/JsonLd";
 import { RouteFocus } from "@/components/site/RouteFocus/RouteFocus";
 import { SiteFooter } from "@/components/site/SiteFooter/SiteFooter";
@@ -12,6 +13,7 @@ import { site } from "@/config/site";
 import type { Locale } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
+import { buildChatLabels } from "@/lib/chat/labels";
 import { buildWhatsAppUrl } from "@/lib/contact/whatsapp";
 import { nonceHeader } from "@/lib/security/nonce";
 import { buildSiteGraph } from "@/lib/seo/jsonld";
@@ -82,6 +84,7 @@ export async function SiteChrome({ locale, children }: SiteChromeProps) {
           {children}
         </main>
       </ViewTransition>
+      {features.chat ? <ChatPanelHost labels={buildChatLabels(t, locale)} /> : null}
       <RouteFocus />
       <SiteFooter locale={locale} items={items} />
     </>

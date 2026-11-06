@@ -11,6 +11,7 @@ type Translate = (key: MessageKey) => string;
 export function roomLabels(t: Translate): RoomLabels {
   return {
     threadLabel: t("room.threadLabel"),
+    sourcesLabel: t("room.sourcesLabel"),
     empty: t("room.empty"),
     composerLabel: t("room.composer.label"),
     placeholder: t("room.composer.placeholder"),
@@ -25,6 +26,21 @@ export function roomLabels(t: Translate): RoomLabels {
       invalid: t("room.errors.invalid"),
       error: t("room.errors.error"),
       poll: t("room.errors.poll"),
+      type: t("room.errors.type"),
+      too_many: t("room.errors.too_many"),
+      too_large: t("room.errors.too_large"),
+      attachments_failed: t("room.errors.attachments_failed"),
+    },
+    attachments: {
+      attach: t("room.attachments.attach"),
+      hint: t("room.attachments.hint"),
+      selected: t("room.attachments.selected"),
+      remove: t("room.attachments.remove"),
+      removeAria: t("room.attachments.removeAria"),
+      progress: t("room.attachments.progress"),
+      download: t("room.attachments.download"),
+      sizeKb: t("room.attachments.sizeKb"),
+      sizeMb: t("room.attachments.sizeMb"),
     },
     authors: {
       nexo: t("room.authors.nexo"),

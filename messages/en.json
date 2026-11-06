@@ -353,6 +353,21 @@
       "ownName": "You (test)",
       "otherName": "Cleo (test)",
       "switchSection": "Nexo switch and permission"
+    },
+    "chat": {
+      "title": "Visitor chat",
+      "scenario": "Scenario",
+      "panel": "Open the panel",
+      "scenarios": {
+        "fresh": "Just arrived",
+        "conversation": "Conversation",
+        "thinking": "Nexo thinking",
+        "offline": "Nexo offline",
+        "takeover": "Jose joined",
+        "quota": "Quota used",
+        "handoff": "Contact saved",
+        "failed": "Send failed"
+      }
     }
   },
   "nav": {
@@ -833,7 +848,122 @@
         "happy": "Nexo is happy",
         "sad": "Nexo is sorry"
       }
-    }
+    },
+    "title": "Chat with Nexo",
+    "close": "Close the chat",
+    "fullscreen": "Open full screen",
+    "page": {
+      "metaTitle": "Chat with Nexo",
+      "metaDescription": "Talk to Nexo, the josecoded AI assistant, or leave your contact so Jose can reply.",
+      "title": "Chat with Nexo",
+      "back": "Back to home"
+    },
+    "header": {
+      "online": "josecoded AI assistant",
+      "offline": "Offline",
+      "takeover": "Jose is with you"
+    },
+    "greeting": "Hi, I'm Nexo, the josecoded AI assistant. What would you like to tell me?",
+    "log": "Conversation with Nexo",
+    "author": {
+      "you": "You",
+      "jose": "Jose"
+    },
+    "sources": "Sources",
+    "delivery": {
+      "sending": "Sending",
+      "failed": "Not sent"
+    },
+    "typing": "Nexo is typing",
+    "composer": {
+      "label": "Your message",
+      "placeholder": "Write your message",
+      "send": "Send message",
+      "sending": "Sending message",
+      "remaining": "{count} characters left"
+    },
+    "starters": {
+      "label": "Ideas to start",
+      "default": {
+        "s1": "What does josecoded do?",
+        "s2": "I want to talk about a project",
+        "s3": "How does Jose work?"
+      },
+      "services": {
+        "s1": "Which level suits me?",
+        "s2": "What does each service include?",
+        "s3": "I want to talk about a project"
+      },
+      "freelance": {
+        "s1": "How does hourly work go?",
+        "s2": "I need help with an app",
+        "s3": "When can Jose start?"
+      },
+      "about": {
+        "s1": "Which technologies does Jose use?",
+        "s2": "Where has Jose worked before?",
+        "s3": "I want to hire Jose"
+      },
+      "contact": {
+        "s1": "When will I get a reply?",
+        "s2": "I would rather Jose wrote to me",
+        "s3": "I have a question before writing"
+      }
+    },
+    "system": {
+      "ai_off": "Jose has joined the conversation.",
+      "ai_on": "Nexo is back in the conversation.",
+      "handoff_done": "Jose now has your contact.",
+      "archived": "The conversation has been closed."
+    },
+    "notice": {
+      "takeover": {
+        "title": "Jose has joined",
+        "text": "He is replying now. Nexo will stay quiet meanwhile."
+      },
+      "offline": {
+        "title": "Nexo is offline",
+        "text": "Jose replies within {responseTime}. Leave your message and, if you want, your contact."
+      },
+      "quota": {
+        "title": "You have reached today's limit",
+        "text": "I cannot take more messages for now. Write through the form and I reply within {responseTime}."
+      },
+      "quotaAction": "Go to the form"
+    },
+    "errors": {
+      "quota": "You have reached the message limit. Try later or use the form.",
+      "closed": "This conversation is closed. Reload to start another.",
+      "verification": "I could not check that you are a person. Try again.",
+      "invalid": "The message is not valid. Check that it is not empty or over 2,000 characters.",
+      "unavailable": "The chat is not available right now. Use the contact form."
+    },
+    "handoff": {
+      "title": "Prefer Jose to write to you?",
+      "lead": "Leave an email or a phone number and he replies within {responseTime}.",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "contactHint": "One of the two is enough.",
+      "optional": "optional",
+      "consentBefore": "I agree that Jose uses this data to reply to me, under the ",
+      "consentLink": "privacy policy",
+      "consentAfter": ".",
+      "newTab": "opens in a new tab",
+      "submit": "Have Jose write to me",
+      "submitting": "Saving your contact",
+      "doneTitle": "Contact saved",
+      "doneText": "Jose replies within {responseTime}.",
+      "failed": "I could not save your contact. Try again or use the form.",
+      "errors": {
+        "contact_required": "Write an email or a phone number.",
+        "email_invalid": "Write a valid email.",
+        "phone_invalid": "Write a valid phone number.",
+        "name_invalid": "Check the name.",
+        "consent_required": "I need your consent to save the contact."
+      }
+    },
+    "avatarOffline": "Nexo is offline"
   },
   "auth": {
     "meta": {
@@ -960,7 +1090,8 @@
       "close": "Close",
       "switch": "Go to CRM",
       "audit": "Audit log",
-      "projects": "Projects"
+      "projects": "Projects",
+      "chat": "Chat"
     },
     "overview": {
       "meta": {
@@ -2853,6 +2984,112 @@
           }
         }
       }
+    },
+    "chat": {
+      "meta": {
+        "title": "Chat",
+        "detailTitle": "Conversation"
+      },
+      "title": "Chat",
+      "lead": "Visitor conversations and rooms with your team and clients.",
+      "loading": "Loading the conversations",
+      "tabs": {
+        "label": "Conversation type",
+        "visitors": "Visitors",
+        "people": "People",
+        "clients": "Clients",
+        "archived": "Archived"
+      },
+      "empty": {
+        "visitors": {
+          "title": "No visitor has written",
+          "text": "When a visitor writes from the web chat, the conversation will show up here."
+        },
+        "people": {
+          "title": "No rooms with people",
+          "text": "Every closer and freelancer gets a room when they accept the invitation."
+        },
+        "clients": {
+          "title": "No client rooms",
+          "text": "Client rooms will show up once there are projects with a client."
+        },
+        "archived": {
+          "title": "No archived rooms",
+          "text": "The rooms you archive stay here."
+        }
+      },
+      "row": {
+        "kinds": {
+          "visitor": "Visitor",
+          "closer": "Closer",
+          "client": "Client",
+          "freelance": "Freelance"
+        },
+        "visitor": "Visitor",
+        "noMessages": "No messages yet",
+        "unread": "{count} unread",
+        "nexoOn": "Nexo on",
+        "nexoOff": "Nexo off",
+        "archived": "Archived"
+      },
+      "error": {
+        "title": "The conversations could not be loaded",
+        "text": "Try again in a few seconds.",
+        "retry": "Try again",
+        "retrying": "Trying again"
+      },
+      "detail": {
+        "back": "Back to chat",
+        "titleVisitor": "Conversation with a visitor",
+        "titleNamed": "Conversation with {name}",
+        "titleClient": "Project room",
+        "origin": "Page of origin: {path}",
+        "archivedNote": "Archived room: read-only.",
+        "error": {
+          "title": "The conversation could not be loaded",
+          "text": "Try again in a few seconds.",
+          "retry": "Try again",
+          "retrying": "Trying again"
+        },
+        "archive": {
+          "trigger": "Archive room",
+          "title": "Archive this room",
+          "text": "The room becomes read-only and stops taking messages. You can keep reading it.",
+          "submit": "Archive",
+          "saving": "Archiving",
+          "close": "Cancel",
+          "done": "Room archived",
+          "errors": {
+            "error": "The room could not be archived.",
+            "forbidden": "Only Jose can archive rooms.",
+            "conversation_not_found": "The room no longer exists."
+          }
+        },
+        "lead": {
+          "title": "Lead",
+          "none": "The visitor has not left contact details yet, so a lead cannot be created.",
+          "ready": "The visitor left their details as {name}.",
+          "button": "Create contact",
+          "confirmTitle": "Create a contact from the conversation",
+          "confirmText": "A contact in your name will be created with an extract of the conversation.",
+          "submit": "Create contact",
+          "saving": "Creating",
+          "close": "Cancel",
+          "done": "Contact created",
+          "converted": "This lead is already a contact.",
+          "openContact": "Open contact",
+          "openLead": "View lead",
+          "errors": {
+            "error": "The contact could not be created.",
+            "forbidden": "Only Jose can create contacts from chat.",
+            "lead_discarded": "The lead is discarded.",
+            "lead_not_found": "The lead no longer exists.",
+            "contact_conflict": "A contact with that email already exists under someone else.",
+            "invalid_assignee": "The contact cannot be assigned to that person."
+          }
+        }
+      },
+      "limit": "Showing the {count} most recent."
     }
   },
   "crm": {
@@ -3577,6 +3814,33 @@
         "price": "Prices: if a price is under review, give no figures. Say it is confirmed in writing before starting.",
         "invoices": "Invoices: they are not issued from the CRM. Do not promise invoices with VAT yet.",
         "channels": "Channels: do not offer live chat or calls that Jose has not agreed to."
+      }
+    },
+    "chat": {
+      "meta": {
+        "title": "Chat"
+      },
+      "title": "Chat",
+      "lead": "Your room with Jose and your clients' rooms.",
+      "loading": "Loading the chat",
+      "groups": {
+        "label": "Rooms",
+        "jose": "Jose",
+        "clients": "My clients",
+        "emptyClients": "You have no client rooms yet."
+      },
+      "room": {
+        "jose": "Room with Jose",
+        "client": "Client room",
+        "current": "Open",
+        "unread": "{count} unread",
+        "noMessages": "No messages yet"
+      },
+      "error": {
+        "title": "The chat could not be loaded",
+        "text": "Try again in a few seconds.",
+        "retry": "Try again",
+        "retrying": "Trying again"
       }
     }
   },
@@ -5223,7 +5487,11 @@
       "archived": "The room is archived and takes no messages.",
       "invalid": "Write a message of up to 4,000 characters.",
       "error": "The message could not be sent. Try again.",
-      "poll": "New messages are not arriving right now. We keep trying."
+      "poll": "New messages are not arriving right now. We keep trying.",
+      "type": "That file type is not accepted. Use images, PDF, ZIP or Office documents.",
+      "too_many": "You can attach up to 5 files per message.",
+      "too_large": "Each file can weigh up to 10 MB.",
+      "attachments_failed": "The message was sent, but the files could not be attached."
     },
     "authors": {
       "nexo": "Nexo",
@@ -5297,6 +5565,18 @@
       "granted": "Granted",
       "revoked": "Withdrawn",
       "pending": "Pending"
-    }
+    },
+    "attachments": {
+      "attach": "Attach files",
+      "hint": "Up to 5 files of 10 MB: images, PDF, ZIP or Office documents.",
+      "selected": "Files to attach",
+      "remove": "Remove",
+      "removeAria": "Remove {name} from the attachments",
+      "progress": "Uploading files",
+      "download": "Download {name} ({size})",
+      "sizeKb": "{n} KB",
+      "sizeMb": "{n} MB"
+    },
+    "sourcesLabel": "Sources"
   }
 }

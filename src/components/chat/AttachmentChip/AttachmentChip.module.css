@@ -1,0 +1,37 @@
+.chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  max-inline-size: 100%;
+  min-block-size: 2.75rem;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid currentcolor;
+  border-radius: var(--radius-xl);
+  color: inherit;
+  font-size: var(--fs-m);
+  text-decoration: none;
+  align-items: center;
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.chip:hover {
+  background: var(--sk-base);
+}
+
+.chip:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.name {
+  min-inline-size: 0;
+  font-weight: var(--fw-semibold);
+  overflow-wrap: anywhere;
+}
+
+.size {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: var(--fs-s);
+  opacity: 0.8;
+}

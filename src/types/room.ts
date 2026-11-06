@@ -25,6 +25,32 @@ export type ConsentState = (typeof consentStates)[number];
 
 export const roomBodyMax = 4000;
 
+export const attachmentMimes = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+  "application/pdf",
+  "application/zip",
+  "application/msword",
+  "application/vnd.ms-excel",
+  "application/vnd.ms-powerpoint",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+] as const;
+
+export const attachmentLimits = { maxFiles: 5, maxBytes: 10 * 1024 * 1024 } as const;
+
+export const roomAttachmentSchema = z.object({
+  id: z.uuid(),
+  name: z.string(),
+  mime: z.string(),
+  size_bytes: z.number(),
+});
+
+export type RoomAttachment = z.infer<typeof roomAttachmentSchema>;
+
 export const roomMessageSchema = z.object({
   id: z.uuid(),
   conversation_id: z.uuid(),
@@ -35,10 +61,16 @@ export const roomMessageSchema = z.object({
   body: z.string(),
   sources: z.array(z.string()).default([]),
   auto: z.boolean().default(false),
+  attachments: z.array(roomAttachmentSchema).default([]),
   created_at: z.string(),
 });
 
 export type RoomMessage = z.infer<typeof roomMessageSchema>;
+
+export const roomMessageRowSchema = roomMessageSchema
+  .omit({ attachments: true })
+  .extend({ message_attachments: z.array(roomAttachmentSchema).default([]) })
+  .transform(({ message_attachments: attachments, ...rest }) => ({ ...rest, attachments }));
 
 export const roomMemberSchema = z.object({
   user_id: z.uuid(),
@@ -78,7 +110,15 @@ export const sinceSchema = z
   .max(64)
   .regex(/^\d{4}-\d{2}-\d{2}T[\d:.]+(Z|[+-]\d{2}:\d{2})$/);
 
-export type RoomProblem = "forbidden" | "archived" | "invalid" | "error";
+export type RoomProblem =
+  | "forbidden"
+  | "archived"
+  | "invalid"
+  | "error"
+  | "too_many"
+  | "too_large"
+  | "type"
+  | "attachments_failed";
 
 export type SendRoomMessageResult =
   { status: "done"; message: RoomMessage } | { status: "failed"; problem: RoomProblem };
@@ -89,14 +129,23 @@ export type RoomPollResult =
 
 export type RoomActionResult = { status: "done" } | { status: "failed"; code: string };
 
+export interface MemberCandidate {
+  userId: string;
+  name: string;
+  role: MemberRole;
+}
+
+export type SendProgress = (fraction: number) => void;
+
 export interface RoomTransport {
   poll: (since: string | null) => Promise<RoomPollResult>;
-  send: (body: string) => Promise<SendRoomMessageResult>;
+  send: (body: string, files?: File[], onProgress?: SendProgress) => Promise<SendRoomMessageResult>;
   markRead: () => Promise<void>;
 }
 
 export interface RoomLabels {
   threadLabel: string;
+  sourcesLabel: string;
   empty: string;
   composerLabel: string;
   placeholder: string;
@@ -106,6 +155,7 @@ export interface RoomLabels {
   archived: string;
   count: string;
   errors: Record<RoomProblem | "poll", string>;
+  attachments: AttachmentLabels;
   authors: { nexo: string; visitor: string; someone: string; you: string };
   auto: string;
   system: Record<SystemEvent, string> & { ai_off_takeover: string };
@@ -145,4 +195,16 @@ export interface AiSwitchLabels {
 export interface ConsentBadgeLabels {
   label: string;
   states: Record<"granted" | "revoked" | "pending", string>;
+}
+
+export interface AttachmentLabels {
+  attach: string;
+  hint: string;
+  selected: string;
+  remove: string;
+  removeAria: string;
+  progress: string;
+  download: string;
+  sizeKb: string;
+  sizeMb: string;
 }

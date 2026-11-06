@@ -57,6 +57,7 @@ function sample(fields: Partial<RoomMessage> & { body: string }): RoomMessage {
     system_event: null,
     sources: [],
     auto: false,
+    attachments: [],
     created_at: new Date().toISOString(),
     ...fields,
   };
@@ -109,7 +110,7 @@ export function RoomDemo({ locale, room, members, ai, consent, dev }: RoomDemoPr
         for (const entry of fresh) delivered.add(entry.id);
         return Promise.resolve({ status: "done", messages: fresh });
       },
-      send(body) {
+      send(body, files) {
         if (body.includes("[forbidden]")) {
           return Promise.resolve({ status: "failed", problem: "forbidden" });
         }
@@ -118,7 +119,16 @@ export function RoomDemo({ locale, room, members, ai, consent, dev }: RoomDemoPr
         }
         return Promise.resolve({
           status: "done",
-          message: sample({ author_id: ownId, body }),
+          message: sample({
+            author_id: ownId,
+            body: body === "" ? (files ?? []).map((file) => file.name).join(", ") : body,
+            attachments: (files ?? []).map((file) => ({
+              id: crypto.randomUUID(),
+              name: file.name,
+              mime: file.type,
+              size_bytes: file.size,
+            })),
+          }),
         });
       },
       markRead: () => Promise.resolve(),
@@ -148,6 +158,7 @@ export function RoomDemo({ locale, room, members, ai, consent, dev }: RoomDemoPr
             members={people}
             archived={false}
             canWrite
+            allowFiles
             labels={room}
             transport={transport}
             pollMs={400}

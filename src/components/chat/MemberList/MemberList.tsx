@@ -5,15 +5,15 @@ import { type SyntheticEvent, useId, useState, useTransition } from "react";
 import { ConfirmAction } from "@/components/admin/ConfirmAction/ConfirmAction";
 import { useAnnounce } from "@/components/ui/Announcer/Announcer";
 import { Button } from "@/components/ui/Button/Button";
-import type { MemberListLabels, MemberRole, RoomActionResult, RoomMember } from "@/types/room";
+import type {
+  MemberCandidate,
+  MemberListLabels,
+  MemberRole,
+  RoomActionResult,
+  RoomMember,
+} from "@/types/room";
 
 import styles from "./MemberList.module.css";
-
-export interface MemberCandidate {
-  userId: string;
-  name: string;
-  role: MemberRole;
-}
 
 interface MemberListProps {
   members: RoomMember[];

@@ -353,6 +353,21 @@
       "ownName": "Tú (prueba)",
       "otherName": "Cleo (prueba)",
       "switchSection": "Interruptor de Nexo y permiso"
+    },
+    "chat": {
+      "title": "Chat de visitantes",
+      "scenario": "Escenario",
+      "panel": "Abrir el panel",
+      "scenarios": {
+        "fresh": "Recién llegado",
+        "conversation": "Conversación",
+        "thinking": "Nexo pensando",
+        "offline": "Nexo desconectado",
+        "takeover": "Jose ha entrado",
+        "quota": "Cuota agotada",
+        "handoff": "Contacto guardado",
+        "failed": "Envío fallido"
+      }
     }
   },
   "nav": {
@@ -833,7 +848,122 @@
         "happy": "Nexo está contento",
         "sad": "Nexo lo siente"
       }
-    }
+    },
+    "title": "Chat con Nexo",
+    "close": "Cerrar el chat",
+    "fullscreen": "Abrir a pantalla completa",
+    "page": {
+      "metaTitle": "Chat con Nexo",
+      "metaDescription": "Habla con Nexo, el asistente IA de josecoded, o deja tu contacto para que te responda Jose.",
+      "title": "Chat con Nexo",
+      "back": "Volver al inicio"
+    },
+    "header": {
+      "online": "Asistente IA de josecoded",
+      "offline": "Desconectado",
+      "takeover": "Te atiende Jose"
+    },
+    "greeting": "Hola, soy Nexo, el asistente IA de josecoded. ¿Qué te gustaría contarme?",
+    "log": "Conversación con Nexo",
+    "author": {
+      "you": "Tú",
+      "jose": "Jose"
+    },
+    "sources": "Fuentes",
+    "delivery": {
+      "sending": "Enviando",
+      "failed": "No se ha enviado"
+    },
+    "typing": "Nexo está escribiendo",
+    "composer": {
+      "label": "Tu mensaje",
+      "placeholder": "Escribe tu mensaje",
+      "send": "Enviar mensaje",
+      "sending": "Enviando mensaje",
+      "remaining": "Quedan {count} caracteres"
+    },
+    "starters": {
+      "label": "Ideas para empezar",
+      "default": {
+        "s1": "¿Qué hace josecoded?",
+        "s2": "Quiero hablar de un proyecto",
+        "s3": "¿Cómo trabaja Jose?"
+      },
+      "services": {
+        "s1": "¿Qué nivel me conviene?",
+        "s2": "¿Qué incluye cada servicio?",
+        "s3": "Quiero hablar de un proyecto"
+      },
+      "freelance": {
+        "s1": "¿Cómo funciona por horas?",
+        "s2": "Necesito ayuda con una app",
+        "s3": "¿Cuándo puede empezar Jose?"
+      },
+      "about": {
+        "s1": "¿Con qué tecnologías trabaja Jose?",
+        "s2": "¿Dónde ha trabajado antes?",
+        "s3": "Quiero contratar a Jose"
+      },
+      "contact": {
+        "s1": "¿Cuándo me respondéis?",
+        "s2": "Prefiero que me escriba Jose",
+        "s3": "Tengo una duda antes de escribir"
+      }
+    },
+    "system": {
+      "ai_off": "Jose ha entrado en la conversación.",
+      "ai_on": "Nexo vuelve a la conversación.",
+      "handoff_done": "Jose ya tiene tu contacto.",
+      "archived": "La conversación se ha cerrado."
+    },
+    "notice": {
+      "takeover": {
+        "title": "Jose ha entrado",
+        "text": "Ahora te responde él. Nexo no contestará mientras tanto."
+      },
+      "offline": {
+        "title": "Nexo está desconectado",
+        "text": "Jose te responde en {responseTime}. Deja tu mensaje y, si quieres, tu contacto."
+      },
+      "quota": {
+        "title": "Has llegado al límite de hoy",
+        "text": "No puedo recibir más mensajes por ahora. Escríbeme por el formulario y te respondo en {responseTime}."
+      },
+      "quotaAction": "Ir al formulario"
+    },
+    "errors": {
+      "quota": "Has llegado al límite de mensajes. Prueba más tarde o usa el formulario.",
+      "closed": "Esta conversación está cerrada. Recarga para empezar otra.",
+      "verification": "No he podido comprobar que eres una persona. Inténtalo de nuevo.",
+      "invalid": "El mensaje no es válido. Revisa que no esté vacío ni pase de 2.000 caracteres.",
+      "unavailable": "El chat no está disponible ahora mismo. Usa el formulario de contacto."
+    },
+    "handoff": {
+      "title": "¿Prefieres que te escriba Jose?",
+      "lead": "Déjame un correo o un teléfono y te responde él en {responseTime}.",
+      "name": "Nombre",
+      "email": "Correo",
+      "phone": "Teléfono",
+      "contactHint": "Basta con uno de los dos.",
+      "optional": "opcional",
+      "consentBefore": "Acepto que Jose use estos datos para responderme, según la ",
+      "consentLink": "política de privacidad",
+      "consentAfter": ".",
+      "newTab": "se abre en una pestaña nueva",
+      "submit": "Que me escriba Jose",
+      "submitting": "Guardando tu contacto",
+      "doneTitle": "Contacto guardado",
+      "doneText": "Jose te responde en {responseTime}.",
+      "failed": "No he podido guardar tu contacto. Inténtalo de nuevo o usa el formulario.",
+      "errors": {
+        "contact_required": "Escribe un correo o un teléfono.",
+        "email_invalid": "Escribe un correo válido.",
+        "phone_invalid": "Escribe un teléfono válido.",
+        "name_invalid": "Revisa el nombre.",
+        "consent_required": "Necesito tu consentimiento para guardar el contacto."
+      }
+    },
+    "avatarOffline": "Nexo está desconectado"
   },
   "auth": {
     "meta": {
@@ -960,7 +1090,8 @@
       "close": "Cerrar",
       "switch": "Ir al CRM",
       "audit": "Auditoría",
-      "projects": "Proyectos"
+      "projects": "Proyectos",
+      "chat": "Chat"
     },
     "overview": {
       "meta": {
@@ -2853,6 +2984,112 @@
           }
         }
       }
+    },
+    "chat": {
+      "meta": {
+        "title": "Chat",
+        "detailTitle": "Conversación"
+      },
+      "title": "Chat",
+      "lead": "Conversaciones de visitantes y salas con tu equipo y tus clientes.",
+      "loading": "Cargando las conversaciones",
+      "tabs": {
+        "label": "Tipo de conversación",
+        "visitors": "Visitantes",
+        "people": "Personas",
+        "clients": "Clientes",
+        "archived": "Archivadas"
+      },
+      "empty": {
+        "visitors": {
+          "title": "Ningún visitante ha escrito",
+          "text": "Cuando un visitante escriba desde el chat de la web, la conversación aparecerá aquí."
+        },
+        "people": {
+          "title": "Sin salas con personas",
+          "text": "Cada closer y cada freelance tiene su sala al aceptar la invitación."
+        },
+        "clients": {
+          "title": "Sin salas de clientes",
+          "text": "Las salas de clientes aparecerán cuando haya proyectos con cliente."
+        },
+        "archived": {
+          "title": "Sin salas archivadas",
+          "text": "Aquí quedan las salas que archives."
+        }
+      },
+      "row": {
+        "kinds": {
+          "visitor": "Visitante",
+          "closer": "Closer",
+          "client": "Cliente",
+          "freelance": "Freelance"
+        },
+        "visitor": "Visitante",
+        "noMessages": "Sin mensajes todavía",
+        "unread": "{count} sin leer",
+        "nexoOn": "Nexo activo",
+        "nexoOff": "Nexo apagado",
+        "archived": "Archivada"
+      },
+      "error": {
+        "title": "No se han podido cargar las conversaciones",
+        "text": "Inténtalo de nuevo en unos segundos.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "detail": {
+        "back": "Volver al chat",
+        "titleVisitor": "Conversación con un visitante",
+        "titleNamed": "Conversación con {name}",
+        "titleClient": "Sala del proyecto",
+        "origin": "Página de origen: {path}",
+        "archivedNote": "Sala archivada: solo lectura.",
+        "error": {
+          "title": "No se ha podido cargar la conversación",
+          "text": "Inténtalo de nuevo en unos segundos.",
+          "retry": "Reintentar",
+          "retrying": "Reintentando"
+        },
+        "archive": {
+          "trigger": "Archivar sala",
+          "title": "Archivar esta sala",
+          "text": "La sala pasa a solo lectura y deja de admitir mensajes. Podrás seguir leyéndola.",
+          "submit": "Archivar",
+          "saving": "Archivando",
+          "close": "Cancelar",
+          "done": "Sala archivada",
+          "errors": {
+            "error": "No se ha podido archivar la sala.",
+            "forbidden": "Solo Jose puede archivar salas.",
+            "conversation_not_found": "La sala ya no existe."
+          }
+        },
+        "lead": {
+          "title": "Interesado",
+          "none": "El visitante todavía no ha dejado sus datos de contacto, así que no se puede crear un interesado.",
+          "ready": "El visitante ha dejado sus datos como {name}.",
+          "button": "Crear contacto",
+          "confirmTitle": "Crear contacto desde la conversación",
+          "confirmText": "Se creará un contacto a tu nombre con el extracto de la conversación.",
+          "submit": "Crear contacto",
+          "saving": "Creando",
+          "close": "Cancelar",
+          "done": "Contacto creado",
+          "converted": "Este interesado ya es un contacto.",
+          "openContact": "Abrir contacto",
+          "openLead": "Ver interesado",
+          "errors": {
+            "error": "No se ha podido crear el contacto.",
+            "forbidden": "Solo Jose puede crear contactos desde el chat.",
+            "lead_discarded": "El interesado está descartado.",
+            "lead_not_found": "El interesado ya no existe.",
+            "contact_conflict": "Ya existe un contacto con ese correo a nombre de otra persona.",
+            "invalid_assignee": "No se puede asignar el contacto a esa persona."
+          }
+        }
+      },
+      "limit": "Mostrando las {count} más recientes."
     }
   },
   "crm": {
@@ -3577,6 +3814,33 @@
         "price": "Precios: si un precio está en revisión, no des cifras. Di que se confirma por escrito antes de empezar.",
         "invoices": "Facturas: no se emiten desde el CRM. No prometas facturas con IVA todavía.",
         "channels": "Canales: no ofrezcas chat en vivo ni llamadas que no estén acordadas con Jose."
+      }
+    },
+    "chat": {
+      "meta": {
+        "title": "Chat"
+      },
+      "title": "Chat",
+      "lead": "Tu sala con Jose y las salas de tus clientes.",
+      "loading": "Cargando el chat",
+      "groups": {
+        "label": "Salas",
+        "jose": "Jose",
+        "clients": "Mis clientes",
+        "emptyClients": "Todavía no tienes salas de clientes."
+      },
+      "room": {
+        "jose": "Sala con Jose",
+        "client": "Sala de cliente",
+        "current": "Abierta",
+        "unread": "{count} sin leer",
+        "noMessages": "Sin mensajes todavía"
+      },
+      "error": {
+        "title": "No se ha podido cargar el chat",
+        "text": "Inténtalo de nuevo en unos segundos.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
       }
     }
   },
@@ -5223,7 +5487,11 @@
       "archived": "La sala está archivada y no admite mensajes.",
       "invalid": "Escribe un mensaje de hasta 4.000 caracteres.",
       "error": "No se ha podido enviar el mensaje. Inténtalo de nuevo.",
-      "poll": "Ahora mismo no llegan mensajes nuevos. Seguimos intentándolo."
+      "poll": "Ahora mismo no llegan mensajes nuevos. Seguimos intentándolo.",
+      "type": "Ese tipo de archivo no se admite. Usa imágenes, PDF, ZIP o documentos de Office.",
+      "too_many": "Puedes adjuntar hasta 5 archivos por mensaje.",
+      "too_large": "Cada archivo puede pesar hasta 10 MB.",
+      "attachments_failed": "El mensaje se ha enviado, pero no se han podido adjuntar los archivos."
     },
     "authors": {
       "nexo": "Nexo",
@@ -5297,6 +5565,18 @@
       "granted": "Concedido",
       "revoked": "Retirado",
       "pending": "Pendiente"
-    }
+    },
+    "attachments": {
+      "attach": "Adjuntar archivos",
+      "hint": "Hasta 5 archivos de 10 MB: imágenes, PDF, ZIP o documentos de Office.",
+      "selected": "Archivos para adjuntar",
+      "remove": "Quitar",
+      "removeAria": "Quitar {name} de los adjuntos",
+      "progress": "Subiendo archivos",
+      "download": "Descargar {name} ({size})",
+      "sizeKb": "{n} KB",
+      "sizeMb": "{n} MB"
+    },
+    "sourcesLabel": "Fuentes"
   }
 }
