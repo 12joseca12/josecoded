@@ -6,6 +6,7 @@ import { site } from "./src/config/site.ts";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  experimental: { serverActions: { bodySizeLimit: "2mb" } },
   redirects: () =>
     Promise.resolve([
       { source: "/", destination: "/es", permanent: true },

@@ -3121,7 +3121,8 @@
       "moreTitle": "More sections",
       "close": "Close",
       "switch": "Go to admin",
-      "start": "Get started"
+      "start": "Get started",
+      "import": "Import"
     },
     "overview": {
       "meta": {
@@ -3257,8 +3258,8 @@
         "clear": "Clear filters"
       },
       "empty": {
-        "title": "Add your first contact",
-        "text": "Contacts are the people you sell to. Create the first one by hand; import will come later."
+        "title": "Add or import your first contact",
+        "text": "Contacts are the people you sell to. Create the first one by hand or import them from a CSV in Import."
       },
       "emptyFiltered": {
         "title": "No contact matches",
@@ -3851,6 +3852,127 @@
         "text": "Try again in a few seconds.",
         "retry": "Try again",
         "retrying": "Trying again"
+      }
+    },
+    "import": {
+      "meta": {
+        "title": "Import contacts"
+      },
+      "title": "Import contacts",
+      "lead": "Upload a CSV that follows the template, review what will be created and confirm. The file is not stored: only valid rows are imported.",
+      "loading": "Loading the import",
+      "region": "Import a CSV",
+      "pick": "Choose CSV file",
+      "pickAgain": "Choose another file",
+      "hint": "Only .csv, up to 1 MB and 500 rows, in UTF-8. You can also drop the file here.",
+      "selected": "File: {name}",
+      "checking": "Checking the file",
+      "templateDownload": "Download template",
+      "rejections": {
+        "empty": "The file is empty.",
+        "tooLarge": "The file is larger than 1 MB.",
+        "extension": "Only files with the .csv extension are accepted.",
+        "mime": "The file type is not CSV.",
+        "binary": "The content is not text: it looks like a binary file.",
+        "executable": "The file is not a CSV: it starts like an executable, an archive or a document.",
+        "encoding": "The file is not UTF-8. Save it as “CSV UTF-8” and upload it again.",
+        "tooManyRows": "The file has more than 500 rows. Split it into several.",
+        "tooManyColumns": "The file has too many columns.",
+        "malformed": "The CSV is malformed: check the quotes.",
+        "noHeader": "The file has no header row.",
+        "noFile": "Choose a file.",
+        "error": "The file could not be checked. Try again.",
+        "forbidden": "You do not have permission to import contacts."
+      },
+      "mapping": {
+        "legend": "Columns",
+        "hint": "Choose which column of the file holds each field.",
+        "none": "Do not import",
+        "required": "(required)",
+        "missingName": "Choose the name column to import.",
+        "fields": {
+          "fullName": "Name",
+          "email": "Email",
+          "phone": "Phone",
+          "organization": "Company",
+          "kind": "Type",
+          "notes": "Notes"
+        }
+      },
+      "preview": {
+        "title": "Preview",
+        "caption": "First rows of the file and rows with issues",
+        "region": "Import preview",
+        "line": "Line",
+        "verdict": "Status",
+        "summary": "{rows} rows: {valid} new, {duplicates} duplicated, {invalid} with errors.",
+        "truncated": "Showing the first rows and the rows with issues.",
+        "alreadyImported": "This file was already imported. Change its content to import it again.",
+        "neutralized": "A value that started like a formula was protected.",
+        "verdicts": {
+          "ok": "New",
+          "duplicate": "Duplicated",
+          "invalid": "Error"
+        },
+        "problems": {
+          "columns": "Column count differs from the header",
+          "fullName": "Name empty or too long",
+          "email": "Invalid email",
+          "phone": "Invalid phone",
+          "organization": "Company too long",
+          "kind": "Unknown type",
+          "notes": "Notes too long",
+          "duplicateInFile": "Email repeated in the file"
+        }
+      },
+      "options": {
+        "legend": "If the email already exists",
+        "skip": "Skip",
+        "skipHint": "The contact you already have is left untouched.",
+        "update": "Fill in",
+        "updateHint": "Fills empty phone, company and notes; overwrites nothing.",
+        "owner": "Destination portfolio"
+      },
+      "confirm": "Import contacts",
+      "importing": "Importing contacts",
+      "cancel": "Discard file",
+      "result": {
+        "title": "Import finished",
+        "created": "{count} created",
+        "updated": "{count} filled in",
+        "skipped": "{count} skipped",
+        "invalid": "{count} with errors",
+        "report": "Download error report",
+        "again": "Import another file",
+        "contacts": "View contacts"
+      },
+      "report": {
+        "line": "line",
+        "problem": "problem",
+        "status": {
+          "duplicate": "duplicated",
+          "invalid": "error"
+        }
+      },
+      "errors": {
+        "missingName": "Choose the name column.",
+        "alreadyImported": "This file was already imported. Change its content to import it again.",
+        "failed": "The contacts could not be imported. Try again."
+      },
+      "history": {
+        "title": "Previous imports",
+        "caption": "Imports made",
+        "region": "Import history",
+        "empty": "You have not imported any file yet.",
+        "error": "The history could not be loaded.",
+        "columns": {
+          "file": "File",
+          "date": "Date",
+          "created": "Created",
+          "updated": "Filled in",
+          "skipped": "Skipped",
+          "invalid": "Errors"
+        }
       }
     }
   },

@@ -46,6 +46,7 @@ route("GET", "/rest/v1/profiles", async ({ request, response, url }) => {
     const rows = Object.values(people)
       .filter((person) => !person.noProfile)
       .filter((person) => person.role === "admin" || person.role === "closer")
+      .filter((person) => url.searchParams.get("is_active") !== "eq.true" || !person.inactive)
       .filter(
         (person) =>
           caller.role === "admin" ||

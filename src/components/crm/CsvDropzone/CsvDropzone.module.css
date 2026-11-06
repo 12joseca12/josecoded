@@ -1,0 +1,29 @@
+.zone {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-l);
+  background: var(--panel);
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out);
+}
+
+.zone[data-dragging] {
+  border-color: var(--ink);
+  background: var(--sk-base);
+}
+
+.hint {
+  max-width: 38rem;
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zone {
+    transition: none;
+  }
+}

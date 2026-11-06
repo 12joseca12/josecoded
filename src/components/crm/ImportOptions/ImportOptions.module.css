@@ -1,0 +1,93 @@
+.options {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.modes {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+  margin: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-l);
+  background: var(--panel);
+}
+
+.legend {
+  padding: 0 var(--space-2);
+  font-weight: var(--fw-semibold);
+}
+
+.mode {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  min-height: 2.75rem;
+  cursor: pointer;
+}
+
+.mode input {
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: var(--space-1);
+  accent-color: var(--charcoal);
+}
+
+.mode input:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.modeText {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.modeLabel {
+  font-weight: var(--fw-semibold);
+}
+
+.modeHint {
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+}
+
+.owner {
+  display: grid;
+  gap: var(--space-2);
+  max-width: 24rem;
+  font-weight: var(--fw-semibold);
+}
+
+.owner select {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-m);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-regular);
+}
+
+.owner select:focus-visible {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 var(--ring) var(--ring-coral);
+  outline-offset: 0;
+}
+
+.problem {
+  color: var(--error);
+  font-size: var(--fs-m);
+  font-weight: var(--fw-medium);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}

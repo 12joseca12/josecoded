@@ -3121,7 +3121,8 @@
       "moreTitle": "Más secciones",
       "close": "Cerrar",
       "switch": "Ir a administración",
-      "start": "Empezar"
+      "start": "Empezar",
+      "import": "Importar"
     },
     "overview": {
       "meta": {
@@ -3257,8 +3258,8 @@
         "clear": "Quitar filtros"
       },
       "empty": {
-        "title": "Añade tu primer contacto",
-        "text": "Los contactos son las personas a las que vendes. Crea el primero a mano; la importación llegará más adelante."
+        "title": "Añade o importa tu primer contacto",
+        "text": "Los contactos son las personas a las que vendes. Crea el primero a mano o impórtalos desde un CSV en Importar."
       },
       "emptyFiltered": {
         "title": "Ningún contacto coincide",
@@ -3851,6 +3852,127 @@
         "text": "Inténtalo de nuevo en unos segundos.",
         "retry": "Reintentar",
         "retrying": "Reintentando"
+      }
+    },
+    "import": {
+      "meta": {
+        "title": "Importar contactos"
+      },
+      "title": "Importar contactos",
+      "lead": "Sube un CSV con la plantilla, revisa lo que se va a crear y confirma. El fichero no se guarda: solo se importan las filas válidas.",
+      "loading": "Cargando la importación",
+      "region": "Importar un CSV",
+      "pick": "Elegir fichero CSV",
+      "pickAgain": "Elegir otro fichero",
+      "hint": "Solo .csv, hasta 1 MB y 500 filas, en UTF-8. También puedes soltar el fichero aquí.",
+      "selected": "Fichero: {name}",
+      "checking": "Revisando el fichero",
+      "templateDownload": "Descargar plantilla",
+      "rejections": {
+        "empty": "El fichero está vacío.",
+        "tooLarge": "El fichero pesa más de 1 MB.",
+        "extension": "Solo se admiten ficheros con extensión .csv.",
+        "mime": "El tipo del fichero no es CSV.",
+        "binary": "El contenido no es texto: parece un fichero binario.",
+        "executable": "El fichero no es un CSV: empieza como un ejecutable, un comprimido o un documento.",
+        "encoding": "El fichero no está en UTF-8. Guárdalo como «CSV UTF-8» y vuelve a subirlo.",
+        "tooManyRows": "El fichero tiene más de 500 filas. Divídelo en varios.",
+        "tooManyColumns": "El fichero tiene demasiadas columnas.",
+        "malformed": "El CSV está mal formado: revisa las comillas.",
+        "noHeader": "El fichero no tiene fila de cabecera.",
+        "noFile": "Elige un fichero.",
+        "error": "No se ha podido revisar el fichero. Inténtalo otra vez.",
+        "forbidden": "No tienes permiso para importar contactos."
+      },
+      "mapping": {
+        "legend": "Columnas",
+        "hint": "Indica qué columna del fichero corresponde a cada dato.",
+        "none": "No importar",
+        "required": "(obligatorio)",
+        "missingName": "Elige la columna del nombre para poder importar.",
+        "fields": {
+          "fullName": "Nombre",
+          "email": "Correo",
+          "phone": "Teléfono",
+          "organization": "Empresa",
+          "kind": "Tipo",
+          "notes": "Notas"
+        }
+      },
+      "preview": {
+        "title": "Vista previa",
+        "caption": "Primeras filas del fichero y filas con problemas",
+        "region": "Vista previa de la importación",
+        "line": "Línea",
+        "verdict": "Estado",
+        "summary": "{rows} filas: {valid} nuevas, {duplicates} duplicadas, {invalid} con error.",
+        "truncated": "Se muestran las primeras filas y las que tienen problemas.",
+        "alreadyImported": "Este fichero ya se importó antes. Cambia su contenido para importarlo otra vez.",
+        "neutralized": "Se ha protegido un valor que empezaba como una fórmula.",
+        "verdicts": {
+          "ok": "Nueva",
+          "duplicate": "Duplicada",
+          "invalid": "Error"
+        },
+        "problems": {
+          "columns": "Número de columnas distinto al de la cabecera",
+          "fullName": "Nombre vacío o demasiado largo",
+          "email": "Correo no válido",
+          "phone": "Teléfono no válido",
+          "organization": "Empresa demasiado larga",
+          "kind": "Tipo desconocido",
+          "notes": "Notas demasiado largas",
+          "duplicateInFile": "Correo repetido en el fichero"
+        }
+      },
+      "options": {
+        "legend": "Si el correo ya existe",
+        "skip": "Omitir",
+        "skipHint": "No se toca el contacto que ya tienes.",
+        "update": "Completar",
+        "updateHint": "Rellena teléfono, empresa y notas que estén vacíos; no pisa nada.",
+        "owner": "Cartera de destino"
+      },
+      "confirm": "Importar contactos",
+      "importing": "Importando contactos",
+      "cancel": "Descartar fichero",
+      "result": {
+        "title": "Importación terminada",
+        "created": "{count} creados",
+        "updated": "{count} completados",
+        "skipped": "{count} omitidos",
+        "invalid": "{count} con error",
+        "report": "Descargar informe de errores",
+        "again": "Importar otro fichero",
+        "contacts": "Ver contactos"
+      },
+      "report": {
+        "line": "linea",
+        "problem": "problema",
+        "status": {
+          "duplicate": "duplicada",
+          "invalid": "error"
+        }
+      },
+      "errors": {
+        "missingName": "Elige la columna del nombre.",
+        "alreadyImported": "Este fichero ya se importó. Cambia su contenido para importarlo otra vez.",
+        "failed": "No se han podido importar los contactos. Inténtalo otra vez."
+      },
+      "history": {
+        "title": "Importaciones anteriores",
+        "caption": "Importaciones realizadas",
+        "region": "Historial de importaciones",
+        "empty": "Todavía no has importado ningún fichero.",
+        "error": "No se ha podido cargar el historial.",
+        "columns": {
+          "file": "Fichero",
+          "date": "Fecha",
+          "created": "Creados",
+          "updated": "Completados",
+          "skipped": "Omitidos",
+          "invalid": "Con error"
+        }
       }
     }
   },

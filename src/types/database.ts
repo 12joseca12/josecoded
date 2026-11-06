@@ -748,6 +748,77 @@ export type Database = {
         }
         Relationships: []
       }
+      imports: {
+        Row: {
+          assigned_to: string | null
+          created_at: string
+          file_hash: string
+          file_name: string
+          id: string
+          owner_id: string
+          rows_created: number
+          rows_invalid: number
+          rows_skipped: number
+          rows_total: number
+          rows_updated: number
+        }
+        Insert: {
+          assigned_to?: string | null
+          created_at?: string
+          file_hash: string
+          file_name: string
+          id?: string
+          owner_id: string
+          rows_created?: number
+          rows_invalid?: number
+          rows_skipped?: number
+          rows_total: number
+          rows_updated?: number
+        }
+        Update: {
+          assigned_to?: string | null
+          created_at?: string
+          file_hash?: string
+          file_name?: string
+          id?: string
+          owner_id?: string
+          rows_created?: number
+          rows_invalid?: number
+          rows_skipped?: number
+          rows_total?: number
+          rows_updated?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "imports_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "imports_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "imports_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "imports_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       invitations: {
         Row: {
           accepted_at: string | null
@@ -2737,6 +2808,10 @@ export type Database = {
       ensure_project_conversation: {
         Args: { p_project_id: string }
         Returns: string
+      }
+      import_contacts: {
+        Args: { p_file_hash: string; p_file_name: string; p_on_duplicate?: string; p_owner_id?: string; p_rows: Json }
+        Returns: Json
       }
       invite_user: {
         Args: { p_auth_user_id?: string; p_closer_rate?: number; p_closer_recurring_rate?: number; p_email: string; p_note?: string; p_parent_closer_id?: string; p_parent_rate?: number; p_parent_recurring_rate?: number; p_payout_cadence?: Database["public"]["Enums"]["payout_cadence"]; p_project_id?: string; p_role: Database["public"]["Enums"]["user_role"] }

@@ -30,6 +30,7 @@ export const staffNav: Record<StaffZone, readonly StaffNavEntry[]> = {
   crm: [
     { key: "overview", path: "", ready: true, label: "crm.nav.overview" },
     { key: "contacts", path: "/contactos", ready: true, label: "crm.nav.contacts" },
+    { key: "import", path: "/importar", ready: true, label: "crm.nav.import" },
     { key: "leads", path: "/interesados", ready: true, label: "crm.nav.leads" },
     { key: "commissions", path: "/comisiones", ready: true, label: "crm.nav.commissions" },
     { key: "chat", path: "/chat", ready: true, label: "crm.nav.chat" },
