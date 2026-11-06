@@ -39,6 +39,9 @@ function project(overrides) {
     stories: [],
     documents: [],
     links: [],
+    fee: null,
+    feeItems: [],
+    updates: [],
     ...overrides,
   };
 }
@@ -88,6 +91,30 @@ function linkRow(overrides) {
   return { ...overrides };
 }
 
+const feeIds = {
+  shop: "74000000-0000-4000-8000-000000000001",
+  landing: "74000000-0000-4000-8000-000000000002",
+};
+
+const feeItemIds = [1, 2, 3].map((n) => `75000000-0000-4000-8000-00000000000${n}`);
+
+function feeItem(overrides) {
+  return {
+    hours: null,
+    status: "pending",
+    rejected_reason: null,
+    submitted_by: freelanceId,
+    created_at: new Date().toISOString(),
+    ...overrides,
+  };
+}
+
+const updateIds = [1, 2, 3].map((n) => `76000000-0000-4000-8000-00000000000${n}`);
+
+function updateRow(overrides) {
+  return { task_id: null, visibility: "internal", ...overrides };
+}
+
 function seededProjects() {
   const tasks = Array.from({ length: 8 }, (_, index) =>
     taskRow({
@@ -116,6 +143,66 @@ function seededProjects() {
       due_at: "2026-12-15",
       created_at: "2026-10-01T09:00:00+00:00",
       tasks,
+      fee: {
+        fee_id: feeIds.shop,
+        freelance_id: freelanceId,
+        mode: "hourly",
+        amount: null,
+        hourly_rate: 35,
+        hours_cap: 60,
+        closed_at: null,
+      },
+      feeItems: [
+        feeItem({
+          id: feeItemIds[0],
+          label: "Catálogo de productos",
+          hours: 8,
+          amount: 280,
+          status: "approved",
+          worked_on: "2026-11-02",
+        }),
+        feeItem({
+          id: feeItemIds[1],
+          label: "Ajustes de la portada",
+          hours: 6,
+          amount: 210,
+          worked_on: "2026-11-04",
+        }),
+        feeItem({
+          id: feeItemIds[2],
+          label: "Formulario de contacto",
+          hours: 2,
+          amount: 70,
+          worked_on: "2026-11-05",
+        }),
+      ],
+      updates: [
+        updateRow({
+          id: updateIds[0],
+          project_id: projectIds.shop,
+          author_id: freelanceId,
+          task_id: "61000000-0000-4000-8000-000000000005",
+          body: "El catálogo ya carga desde la base de datos.",
+          visibility: "client",
+          created_at: "2026-11-04T10:00:00+00:00",
+        }),
+        updateRow({
+          id: updateIds[1],
+          project_id: projectIds.shop,
+          author_id: freelanceId,
+          body: "Pendiente confirmar el formato de las imágenes.",
+          visibility: "internal",
+          created_at: "2026-11-05T10:00:00+00:00",
+        }),
+        updateRow({
+          id: updateIds[2],
+          project_id: projectIds.shop,
+          author_id: people["admin@example.com"].id,
+          body: "Esta semana cerramos el catálogo.",
+          visibility: "client",
+          created_at: "2026-11-05T16:00:00+00:00",
+        }),
+      ],
       documents: [
         documentRow({
           id: "63000000-0000-4000-8000-000000000001",
@@ -195,6 +282,8 @@ function seededProjects() {
       id: projectIds.landing,
       name: "Landing sin cuenta",
       offer_slug: "web-presencia",
+      freelance_id: freelanceId,
+      freelance_name: "Fran Freelance",
       created_at: "2026-10-10T09:00:00+00:00",
     }),
     project({
@@ -211,6 +300,12 @@ function seededProjects() {
 }
 
 extendAuthState((state) => {
+  state.projectNotifications = updateIds.slice(0, 2).map((id) => ({
+    id: `77${id.slice(2)}`,
+    event: "project_update",
+    read_at: null,
+    href: `/admin/proyectos/${projectIds.shop}?tab=avances`,
+  }));
   state.projects = seededProjects();
   state.projectsMode = "data";
   state.projectsRpcError = null;
@@ -234,8 +329,8 @@ route("POST", "/__auth/projects-rpc-error", async ({ request, response, url }) =
 export function overviewRow(entry) {
   const done = entry.tasks.filter((task) => task.status === "done").length;
   const total = entry.tasks.length;
-  const { tasks, stories, documents, links, brief, ...visible } = entry;
-  void [tasks, stories, documents, links, brief];
+  const { tasks, stories, documents, links, brief, fee, feeItems, updates, ...visible } = entry;
+  void [tasks, stories, documents, links, brief, fee, feeItems, updates];
   return {
     ...visible,
     done,
@@ -771,4 +866,281 @@ rpc("set_project_freelance", ({ auth, args, response }) => {
   entry.freelance_id = person ? person.id : null;
   entry.freelance_name = person ? person.full_name : null;
   return sendEmpty(response);
+});
+
+function feeSummary(entry) {
+  const fee = entry.fee;
+  const sum = (status) =>
+    entry.feeItems.filter((item) => item.status === status).reduce((n, item) => n + item.amount, 0);
+  const live = entry.feeItems.filter((item) => item.status !== "rejected");
+  return {
+    ...fee,
+    project_id: entry.id,
+    project_name: entry.name,
+    project_phase: entry.phase,
+    project_archived_at: entry.archived_at,
+    agreed_total:
+      fee.mode === "fixed"
+        ? fee.amount
+        : fee.mode === "hourly"
+          ? fee.hours_cap === null
+            ? null
+            : fee.hours_cap * fee.hourly_rate
+          : live.reduce((n, item) => n + item.amount, 0),
+    hours_approved: entry.feeItems
+      .filter((item) => item.status === "approved" || item.status === "paid")
+      .reduce((n, item) => n + (item.hours ?? 0), 0),
+    pending_amount: sum("pending"),
+    delivered_amount: sum("delivered"),
+    approved_unpaid_amount: sum("approved"),
+    paid_amount: sum("paid"),
+  };
+}
+
+function feeEntry(auth, feeId) {
+  return auth.projects.find((entry) => entry.fee?.fee_id === feeId);
+}
+
+route("GET", "/rest/v1/freelance_fee_summary", ({ request, response, url }) => {
+  const auth = adminCall(request, response);
+  if (!auth) return;
+  if (auth.projectsMode === "error") {
+    return send(response, 500, { code: "XX000", message: "internal", details: null, hint: null });
+  }
+  const only = eq(url, "project_id");
+  return send(
+    response,
+    200,
+    auth.projects.filter((entry) => entry.fee && (!only || entry.id === only)).map(feeSummary),
+  );
+});
+
+route("GET", "/rest/v1/freelance_fee_items", ({ request, response, url }) => {
+  const auth = adminCall(request, response);
+  if (!auth) return;
+  const payoutId = eq(url, "payout_id");
+  if (payoutId) {
+    return send(
+      response,
+      200,
+      auth.money.feeItems.filter((item) => item.payout_id === payoutId),
+    );
+  }
+  const owner = eq(url, "freelance_fees.freelance_id");
+  if (owner) {
+    const from = /^gte\.(.+)$/.exec(url.searchParams.get("worked_on") ?? "")?.[1] ?? "";
+    const to = /^lte\.(.+)$/.exec(url.searchParams.getAll("worked_on").at(-1) ?? "")?.[1] ?? "~";
+    return send(
+      response,
+      200,
+      auth.money.feeItems.filter(
+        (item) =>
+          item.freelance_id === owner &&
+          item.status === "approved" &&
+          item.payout_id === null &&
+          item.worked_on >= from &&
+          item.worked_on <= to,
+      ),
+    );
+  }
+  const only = eq(url, "fee_id");
+  const entry = feeEntry(auth, only);
+  return send(
+    response,
+    200,
+    (entry?.feeItems ?? []).map((item) => ({ ...item, fee_id: only })),
+  );
+});
+
+rpc("set_freelance_fee", ({ auth, args, response }) => {
+  const entry = projectOf(auth, args.p_project_id);
+  if (!entry) return failure(response, "P0001", "project_not_found");
+  if (entry.archived_at) return failure(response, "P0001", "project_archived");
+  if (!entry.freelance_id) return failure(response, "P0001", "project_has_no_freelance");
+  const mode = args.p_mode;
+  const invalid =
+    (mode === "hourly" && (!args.p_hourly_rate || args.p_amount != null)) ||
+    (mode === "fixed" && (!args.p_amount || args.p_hourly_rate != null)) ||
+    (mode === "milestones" && (args.p_amount != null || args.p_hourly_rate != null));
+  if (invalid) return failure(response, "P0001", "invalid_fee");
+  if (
+    entry.fee &&
+    entry.fee.mode !== mode &&
+    entry.feeItems.some((item) => item.status !== "rejected")
+  ) {
+    return failure(response, "P0001", "fee_has_items");
+  }
+  const feeId = entry.fee?.fee_id ?? randomUUID();
+  entry.fee = {
+    fee_id: feeId,
+    freelance_id: entry.freelance_id,
+    mode,
+    amount: args.p_amount ?? null,
+    hourly_rate: args.p_hourly_rate ?? null,
+    hours_cap: args.p_hours_cap ?? null,
+    closed_at: null,
+  };
+  return send(response, 200, JSON.stringify(feeId));
+});
+
+rpc("add_fee_item", ({ auth, args, response }) => {
+  const entry = feeEntry(auth, args.p_fee_id);
+  if (!entry) return failure(response, "P0001", "fee_not_found");
+  if (entry.fee.mode === "hourly") return failure(response, "P0001", "fee_mode_mismatch");
+  const used = entry.feeItems
+    .filter((item) => item.status !== "rejected")
+    .reduce((n, item) => n + item.amount, 0);
+  if (entry.fee.mode === "fixed" && used + args.p_amount > entry.fee.amount) {
+    return failure(response, "P0001", "fee_amount_exceeded");
+  }
+  const item = feeItem({
+    id: randomUUID(),
+    label: args.p_label,
+    amount: args.p_amount,
+    worked_on: args.p_worked_on ?? new Date().toISOString().slice(0, 10),
+    submitted_by: people["admin@example.com"].id,
+  });
+  entry.feeItems.push(item);
+  return send(response, 200, JSON.stringify(item.id));
+});
+
+function findItems(auth, ids) {
+  return ids.map((id) => {
+    for (const entry of auth.projects) {
+      const item = entry.feeItems.find((candidate) => candidate.id === id);
+      if (item) return item;
+    }
+    return null;
+  });
+}
+
+rpc("approve_fee_items", ({ auth, args, response }) => {
+  const items = findItems(auth, args.p_ids);
+  if (items.some((item) => item === null || !["pending", "delivered"].includes(item.status))) {
+    return failure(response, "P0001", "item_not_approvable");
+  }
+  for (const item of items) item.status = "approved";
+  return send(response, 200, JSON.stringify(items.length));
+});
+
+rpc("reject_fee_item", ({ auth, args, response }) => {
+  if (!String(args.p_reason ?? "").trim()) return failure(response, "P0001", "reason_required");
+  const [item] = findItems(auth, [args.p_id]);
+  if (!item) return failure(response, "P0001", "item_not_found");
+  if (!["pending", "delivered"].includes(item.status)) {
+    return failure(response, "P0001", "item_not_approvable");
+  }
+  item.status = "rejected";
+  item.rejected_reason = args.p_reason.trim();
+  return sendEmpty(response);
+});
+
+rpc("delete_fee_item", ({ auth, args, response }) => {
+  for (const entry of auth.projects) {
+    const index = entry.feeItems.findIndex((item) => item.id === args.p_id);
+    if (index < 0) continue;
+    if (entry.feeItems[index].status !== "pending") {
+      return failure(response, "P0001", "item_not_pending");
+    }
+    entry.feeItems.splice(index, 1);
+    return sendEmpty(response);
+  }
+  return failure(response, "P0001", "item_not_found");
+});
+
+route("POST", "/__auth/projects-deliver", async ({ request, response, url }) => {
+  const auth = stateFor(url.searchParams.get("tag") ?? "");
+  const { label } = JSON.parse(await readBody(request));
+  for (const entry of auth.projects) {
+    const item = entry.feeItems.find((candidate) => candidate.label === label);
+    if (item) item.status = "delivered";
+  }
+  return send(response, 200, { ok: true });
+});
+
+route("GET", "/rest/v1/project_updates", ({ request, response, url }) => {
+  const auth = adminCall(request, response);
+  if (!auth) return;
+  if (auth.projectsMode === "error") {
+    return send(response, 500, { code: "XX000", message: "internal", details: null, hint: null });
+  }
+  const only = eq(url, "project_id");
+  return send(
+    response,
+    200,
+    auth.projects
+      .filter((entry) => !only || entry.id === only)
+      .flatMap((entry) => entry.updates)
+      .sort((a, b) => b.created_at.localeCompare(a.created_at)),
+  );
+});
+
+route("POST", "/rest/v1/project_updates", async ({ request, response }) => {
+  const auth = adminCall(request, response);
+  if (!auth) return;
+  const body = JSON.parse(await readBody(request));
+  auth.calls.projects.push({ name: "create-update", body });
+  if (auth.projectsRpcError) {
+    return send(response, 400, { details: null, hint: null, ...auth.projectsRpcError });
+  }
+  const entry = projectOf(auth, body.project_id);
+  if (!entry) return failure(response, "P0001", "project_not_found");
+  if (entry.archived_at) return failure(response, "P0001", "project_archived");
+  if (body.task_id && !entry.tasks.some((task) => task.id === body.task_id)) {
+    return failure(response, "P0001", "task_project_mismatch");
+  }
+  entry.updates.push(
+    updateRow({
+      id: randomUUID(),
+      project_id: entry.id,
+      author_id: people["admin@example.com"].id,
+      task_id: body.task_id ?? null,
+      body: body.body,
+      visibility: body.visibility ?? "internal",
+      created_at: new Date().toISOString(),
+    }),
+  );
+  return sendEmpty(response);
+});
+
+route("DELETE", "/rest/v1/project_updates", ({ request, response, url }) => {
+  const auth = adminCall(request, response);
+  if (!auth) return;
+  const only = eq(url, "id");
+  for (const entry of auth.projects) {
+    const index = entry.updates.findIndex((item) => item.id === only);
+    if (index < 0) continue;
+    entry.updates.splice(index, 1);
+    return send(response, 200, [{ id: only }]);
+  }
+  return send(response, 200, []);
+});
+
+rpc("set_update_visibility", ({ auth, args, response }) => {
+  for (const entry of auth.projects) {
+    const update = entry.updates.find((item) => item.id === args.p_id);
+    if (!update) continue;
+    update.visibility = args.p_visibility;
+    return sendEmpty(response);
+  }
+  return failure(response, "P0001", "update_not_found");
+});
+
+route("GET", "/rest/v1/notifications", ({ request, response, url }) => {
+  const auth = adminCall(request, response);
+  if (!auth) return;
+  const like = url.searchParams.get("href") ?? "";
+  const suffix = like.replace(/^like\.%/, "");
+  return send(
+    response,
+    200,
+    auth.projectNotifications.filter((item) => item.read_at === null && item.href.endsWith(suffix)),
+  );
+});
+
+rpc("mark_notifications_read", ({ auth, args, response }) => {
+  for (const item of auth.projectNotifications) {
+    if (args.p_ids.includes(item.id)) item.read_at = new Date().toISOString();
+  }
+  return send(response, 200, JSON.stringify(args.p_ids.length));
 });

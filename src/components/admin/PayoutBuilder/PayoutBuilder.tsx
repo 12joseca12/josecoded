@@ -22,6 +22,7 @@ import form from "../admin-form.module.css";
 export interface BuilderBeneficiary {
   id: string;
   name: string;
+  role: "closer" | "freelance";
   cadence: PayoutCadence;
 }
 
@@ -29,6 +30,7 @@ interface PayoutBuilderProps {
   beneficiaries: BuilderBeneficiary[];
   today: string;
   locale: string;
+  preselectId?: string;
   labels: PayoutBuilderLabels;
   build: BuildPayoutHandler;
   preview: PreviewPayoutHandler;
@@ -56,16 +58,19 @@ export function PayoutBuilder({
   beneficiaries,
   today,
   locale,
+  preselectId,
   labels,
   build,
   preview,
 }: PayoutBuilderProps) {
   const announce = useAnnounce();
-  const [open, setOpen] = useState(false);
+  const preselected = beneficiaries.find((entry) => entry.id === preselectId);
+  const initialPeriod = preselected ? suggestPeriod(preselected.cadence, today) : null;
+  const [open, setOpen] = useState(preselected !== undefined);
   const [session, setSession] = useState(0);
-  const [beneficiaryId, setBeneficiaryId] = useState("");
-  const [start, setStart] = useState("");
-  const [end, setEnd] = useState("");
+  const [beneficiaryId, setBeneficiaryId] = useState(preselected?.id ?? "");
+  const [start, setStart] = useState(initialPeriod?.start ?? "");
+  const [end, setEnd] = useState(initialPeriod?.end ?? "");
   const [withholding, setWithholding] = useState("0");
   const [note, setNote] = useState("");
   const [problem, setProblem] = useState<Problem>(null);
@@ -79,7 +84,7 @@ export function PayoutBuilder({
       return;
     }
     let cancelled = false;
-    void preview({ beneficiaryId: chosen.id, start, end }).then((result) => {
+    void preview({ beneficiaryId: chosen.id, role: chosen.role, start, end }).then((result) => {
       if (!cancelled) setOutcome(result);
     });
     return () => {
@@ -157,11 +162,18 @@ export function PayoutBuilder({
             error={problem?.field === "beneficiary" ? problem.text : undefined}
           >
             <option value="">{labels.placeholder}</option>
-            {beneficiaries.map((entry) => (
-              <option key={entry.id} value={entry.id}>
-                {entry.name}
-              </option>
-            ))}
+            {(["closer", "freelance"] as const).map((role) => {
+              const group = beneficiaries.filter((entry) => entry.role === role);
+              return group.length === 0 ? null : (
+                <optgroup key={role} label={labels.roles[role]}>
+                  {group.map((entry) => (
+                    <option key={entry.id} value={entry.id}>
+                      {entry.name}
+                    </option>
+                  ))}
+                </optgroup>
+              );
+            })}
           </Field>
           {chosen ? (
             <p className={form.note}>

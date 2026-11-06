@@ -1,0 +1,39 @@
+.wrap {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.feedback {
+  color: var(--error);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+}
+
+.feedback:empty {
+  display: none;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.reason {
+  display: block;
+  margin-top: var(--space-1);
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+}
+
+.empty {
+  margin: 0;
+  color: var(--ink-soft);
+}

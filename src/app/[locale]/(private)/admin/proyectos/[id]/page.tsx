@@ -13,6 +13,7 @@ import { isLocale, type Locale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
 import { fetchProject, fetchProjectTasks } from "@/lib/admin/project-detail";
 import { projectTabs, tabFromParam } from "@/lib/admin/project-tabs";
+import { fetchUnreadUpdateIds } from "@/lib/admin/project-updates";
 import { requireZone } from "@/lib/auth/session";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { Assignee } from "@/types/admin-project-detail";
@@ -72,6 +73,7 @@ async function ProjectSection({
 
   const row = project.project;
   const current = tabFromParam(tab);
+  const unread = current === "updates" ? [] : await fetchUnreadUpdateIds(client, id);
   const assignees: Assignee[] = [
     ...(row.client_id !== null && row.client_name !== null
       ? [{ id: row.client_id, name: row.client_name }]
@@ -116,7 +118,12 @@ async function ProjectSection({
                     "{count}",
                     String(row.stories_to_decide),
                   )
-                : t(`admin.projects.detail.tabs.${entry.id}`),
+                : entry.id === "updates" && unread.length > 0
+                  ? t("admin.projects.detail.tabs.updatesPending").replace(
+                      "{count}",
+                      String(unread.length),
+                    )
+                  : t(`admin.projects.detail.tabs.${entry.id}`),
             href: `${base}?tab=${entry.param}`,
           }))}
         />

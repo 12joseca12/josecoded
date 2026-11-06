@@ -1,0 +1,17 @@
+.panel {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.list {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.empty {
+  margin: 0;
+  color: var(--ink-soft);
+}

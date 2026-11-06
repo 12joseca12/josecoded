@@ -11,7 +11,8 @@ const beneficiary = "00000000-0000-4000-8000-0000000000c2";
 function table(rows: unknown, error: unknown = null) {
   const result = { data: rows, error };
   const builder: Record<string, unknown> = {};
-  for (const name of ["select", "order", "limit", "in", "eq", "is"]) builder[name] = () => builder;
+  for (const name of ["select", "order", "limit", "in", "eq", "is", "gte", "lte"])
+    builder[name] = () => builder;
   builder.maybeSingle = () => Promise.resolve(result);
   builder.then = (resolve: (value: typeof result) => void) => {
     resolve(result);
@@ -133,6 +134,7 @@ describe("fetchPayoutDetail", () => {
       client({
         payouts: table(payout),
         commission_lines: table([line]),
+        freelance_fee_items: table([]),
         profiles: table([{ id: beneficiary, full_name: "Dani" }]),
       }),
       id,
@@ -146,7 +148,12 @@ describe("fetchPayoutDetail", () => {
   it("reports a missing payout", async () => {
     expect(
       await fetchPayoutDetail(
-        client({ payouts: table(null), commission_lines: table([]), profiles: table([]) }),
+        client({
+          payouts: table(null),
+          commission_lines: table([]),
+          freelance_fee_items: table([]),
+          profiles: table([]),
+        }),
         id,
       ),
     ).toEqual({ status: "missing" });
@@ -165,6 +172,7 @@ describe("previewPayoutLines", () => {
         ]),
       }),
       beneficiary,
+      "closer",
       "2026-10-01",
       "2026-10-31",
     );
@@ -176,9 +184,54 @@ describe("previewPayoutLines", () => {
       await previewPayoutLines(
         client({ commission_lines: table([], { code: "X" }) }),
         beneficiary,
+        "closer",
         "2026-10-01",
         "2026-10-31",
       ),
     ).toEqual({ status: "error" });
+  });
+
+  it("sums the approved fee items of a freelance in the period", async () => {
+    const result = await previewPayoutLines(
+      client({
+        freelance_fee_items: table([
+          { amount: 280, worked_on: "2026-10-10" },
+          { amount: 70.5, worked_on: "2026-10-20" },
+        ]),
+      }),
+      beneficiary,
+      "freelance",
+      "2026-10-01",
+      "2026-10-31",
+    );
+    expect(result).toEqual({ status: "ok", count: 2, totalCents: 35050 });
+  });
+});
+
+describe("fetchPayoutDetail for a freelance", () => {
+  it("returns the fee items of the payout", async () => {
+    const result = await fetchPayoutDetail(
+      client({
+        payouts: table({ ...payout, kind: "freelance" }),
+        commission_lines: table([]),
+        freelance_fee_items: table([
+          {
+            id: "75000000-0000-4000-8000-000000000001",
+            label: "Catálogo",
+            hours: 8,
+            amount: 280,
+            worked_on: "2026-10-10",
+          },
+        ]),
+        profiles: table([{ id: beneficiary, full_name: "Fran" }]),
+      }),
+      id,
+    );
+    expect(result.status).toBe("ok");
+    if (result.status !== "ok") return;
+    expect(result.payout.kind).toBe("freelance");
+    expect(result.items).toEqual([
+      expect.objectContaining({ label: "Catálogo", hours: 8, amount: 28000 }),
+    ]);
   });
 });

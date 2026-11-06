@@ -748,6 +748,184 @@ export type Database = {
         }
         Relationships: []
       }
+      freelance_fee_items: {
+        Row: {
+          amount: number
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          delivered_at: string | null
+          fee_id: string
+          hours: number | null
+          id: string
+          label: string
+          payout_id: string | null
+          rejected_reason: string | null
+          status: Database["public"]["Enums"]["fee_item_status"]
+          submitted_by: string | null
+          worked_on: string
+        }
+        Insert: {
+          amount: number
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          delivered_at?: string | null
+          fee_id: string
+          hours?: number | null
+          id?: string
+          label: string
+          payout_id?: string | null
+          rejected_reason?: string | null
+          status?: Database["public"]["Enums"]["fee_item_status"]
+          submitted_by?: string | null
+          worked_on?: string
+        }
+        Update: {
+          amount?: number
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          delivered_at?: string | null
+          fee_id?: string
+          hours?: number | null
+          id?: string
+          label?: string
+          payout_id?: string | null
+          rejected_reason?: string | null
+          status?: Database["public"]["Enums"]["fee_item_status"]
+          submitted_by?: string | null
+          worked_on?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "freelance_fee_items_payout_id_fkey"
+            columns: ["payout_id"]
+            isOneToOne: false
+            referencedRelation: "payouts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "freelance_fee_items_fee_id_fkey"
+            columns: ["fee_id"]
+            isOneToOne: false
+            referencedRelation: "freelance_fees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "freelance_fee_items_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "freelance_fee_items_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "freelance_fee_items_submitted_by_fkey"
+            columns: ["submitted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "freelance_fee_items_submitted_by_fkey"
+            columns: ["submitted_by"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      freelance_fees: {
+        Row: {
+          agreed_at: string
+          agreed_by: string | null
+          amount: number | null
+          closed_at: string | null
+          created_at: string
+          freelance_id: string
+          hourly_rate: number | null
+          hours_cap: number | null
+          id: string
+          mode: Database["public"]["Enums"]["fee_mode"]
+          note: string | null
+          project_id: string
+          updated_at: string
+        }
+        Insert: {
+          agreed_at?: string
+          agreed_by?: string | null
+          amount?: number | null
+          closed_at?: string | null
+          created_at?: string
+          freelance_id: string
+          hourly_rate?: number | null
+          hours_cap?: number | null
+          id?: string
+          mode: Database["public"]["Enums"]["fee_mode"]
+          note?: string | null
+          project_id: string
+          updated_at?: string
+        }
+        Update: {
+          agreed_at?: string
+          agreed_by?: string | null
+          amount?: number | null
+          closed_at?: string | null
+          created_at?: string
+          freelance_id?: string
+          hourly_rate?: number | null
+          hours_cap?: number | null
+          id?: string
+          mode?: Database["public"]["Enums"]["fee_mode"]
+          note?: string | null
+          project_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "freelance_fees_agreed_by_fkey"
+            columns: ["agreed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "freelance_fees_agreed_by_fkey"
+            columns: ["agreed_by"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "freelance_fees_freelance_id_fkey"
+            columns: ["freelance_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "freelance_fees_freelance_id_fkey"
+            columns: ["freelance_id"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "freelance_fees_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       imports: {
         Row: {
           assigned_to: string | null
@@ -1637,6 +1815,7 @@ export type Database = {
           created_by: string | null
           id: string
           issued_at: string | null
+          kind: Database["public"]["Enums"]["payout_kind"]
           net_total: number
           paid_at: string | null
           paid_reference: string | null
@@ -1655,6 +1834,7 @@ export type Database = {
           created_by?: string | null
           id?: string
           issued_at?: string | null
+          kind?: Database["public"]["Enums"]["payout_kind"]
           net_total: number
           paid_at?: string | null
           paid_reference?: string | null
@@ -1673,6 +1853,7 @@ export type Database = {
           created_by?: string | null
           id?: string
           issued_at?: string | null
+          kind?: Database["public"]["Enums"]["payout_kind"]
           net_total?: number
           paid_at?: string | null
           paid_reference?: string | null
@@ -1884,6 +2065,65 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_updates: {
+        Row: {
+          author_id: string | null
+          body: string
+          created_at: string
+          id: string
+          project_id: string
+          task_id: string | null
+          visibility: Database["public"]["Enums"]["update_visibility"]
+        }
+        Insert: {
+          author_id?: string | null
+          body: string
+          created_at?: string
+          id?: string
+          project_id: string
+          task_id?: string | null
+          visibility?: Database["public"]["Enums"]["update_visibility"]
+        }
+        Update: {
+          author_id?: string | null
+          body?: string
+          created_at?: string
+          id?: string
+          project_id?: string
+          task_id?: string | null
+          visibility?: Database["public"]["Enums"]["update_visibility"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_updates_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_updates_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_updates_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_updates_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
             referencedColumns: ["id"]
           },
         ]
@@ -2321,6 +2561,93 @@ export type Database = {
       }
     }
     Views: {
+      client_project_updates: {
+        Row: {
+          author_label: string | null
+          body: string | null
+          created_at: string | null
+          id: string | null
+          project_id: string | null
+          task_id: string | null
+        }
+        Insert: {
+          author_label?: string | null
+          body?: string | null
+          created_at?: string | null
+          id?: string | null
+          project_id?: string | null
+          task_id?: string | null
+        }
+        Update: {
+          author_label?: string | null
+          body?: string | null
+          created_at?: string | null
+          id?: string | null
+          project_id?: string | null
+          task_id?: string | null
+        }
+        Relationships: []
+      }
+      freelance_fee_summary: {
+        Row: {
+          agreed_total: number | null
+          amount: number | null
+          approved_unpaid_amount: number | null
+          closed_at: string | null
+          delivered_amount: number | null
+          fee_id: string | null
+          freelance_id: string | null
+          hourly_rate: number | null
+          hours_approved: number | null
+          hours_cap: number | null
+          mode: Database["public"]["Enums"]["fee_mode"] | null
+          paid_amount: number | null
+          pending_amount: number | null
+          project_archived_at: string | null
+          project_id: string | null
+          project_name: string | null
+          project_phase: Database["public"]["Enums"]["project_phase"] | null
+        }
+        Insert: {
+          agreed_total?: number | null
+          amount?: number | null
+          approved_unpaid_amount?: number | null
+          closed_at?: string | null
+          delivered_amount?: number | null
+          fee_id?: string | null
+          freelance_id?: string | null
+          hourly_rate?: number | null
+          hours_approved?: number | null
+          hours_cap?: number | null
+          mode?: Database["public"]["Enums"]["fee_mode"] | null
+          paid_amount?: number | null
+          pending_amount?: number | null
+          project_archived_at?: string | null
+          project_id?: string | null
+          project_name?: string | null
+          project_phase?: Database["public"]["Enums"]["project_phase"] | null
+        }
+        Update: {
+          agreed_total?: number | null
+          amount?: number | null
+          approved_unpaid_amount?: number | null
+          closed_at?: string | null
+          delivered_amount?: number | null
+          fee_id?: string | null
+          freelance_id?: string | null
+          hourly_rate?: number | null
+          hours_approved?: number | null
+          hours_cap?: number | null
+          mode?: Database["public"]["Enums"]["fee_mode"] | null
+          paid_amount?: number | null
+          pending_amount?: number | null
+          project_archived_at?: string | null
+          project_id?: string | null
+          project_name?: string | null
+          project_phase?: Database["public"]["Enums"]["project_phase"] | null
+        }
+        Relationships: []
+      }
       freelance_projects: {
         Row: {
           archived_at: string | null
@@ -2642,6 +2969,10 @@ export type Database = {
         Args: { p_full_name: string; p_locale?: Database["public"]["Enums"]["app_locale"]; p_token: string }
         Returns: Database["public"]["Enums"]["user_role"]
       }
+      add_fee_item: {
+        Args: { p_amount: number; p_fee_id: string; p_label: string; p_worked_on?: string }
+        Returns: string
+      }
       add_member: {
         Args: { p_can_write?: boolean; p_conversation_id: string; p_role: Database["public"]["Enums"]["member_role"]; p_user_id: string }
         Returns: undefined
@@ -2704,6 +3035,10 @@ export type Database = {
         }[]
       }
       approve_commission_lines: {
+        Args: { p_ids: string[] }
+        Returns: number
+      }
+      approve_fee_items: {
         Args: { p_ids: string[] }
         Returns: number
       }
@@ -2789,6 +3124,10 @@ export type Database = {
         Args: { p_id: string }
         Returns: string
       }
+      delete_fee_item: {
+        Args: { p_id: string }
+        Returns: undefined
+      }
       delete_payout_draft: {
         Args: { p_id: string }
         Returns: undefined
@@ -2808,6 +3147,10 @@ export type Database = {
       ensure_project_conversation: {
         Args: { p_project_id: string }
         Returns: string
+      }
+      freelance_counters: {
+        Args: never
+        Returns: Json
       }
       import_contacts: {
         Args: { p_file_hash: string; p_file_name: string; p_on_duplicate?: string; p_owner_id?: string; p_rows: Json }
@@ -2850,6 +3193,10 @@ export type Database = {
       }
       log_totp_reset: {
         Args: { p_user_id: string }
+        Returns: undefined
+      }
+      mark_item_delivered: {
+        Args: { p_id: string }
         Returns: undefined
       }
       mark_notifications_read: {
@@ -2963,9 +3310,9 @@ export type Database = {
         Args: { p_id: string; p_reason: string }
         Returns: undefined
       }
-      request_account_deletion: {
-        Args: never
-        Returns: string
+      reject_fee_item: {
+        Args: { p_id: string; p_reason: string }
+        Returns: undefined
       }
       remove_member: {
         Args: { p_conversation_id: string; p_user_id: string }
@@ -2981,6 +3328,10 @@ export type Database = {
       reorder_project_links: {
         Args: { p_ids: string[]; p_project_id: string }
         Returns: undefined
+      }
+      request_account_deletion: {
+        Args: never
+        Returns: string
       }
       retry_job: {
         Args: { p_id: string }
@@ -3000,6 +3351,14 @@ export type Database = {
       }
       set_conversation_ai: {
         Args: { p_conversation_id: string; p_enabled: boolean }
+        Returns: undefined
+      }
+      set_freelance_fee: {
+        Args: { p_amount?: number; p_hourly_rate?: number; p_hours_cap?: number; p_mode: Database["public"]["Enums"]["fee_mode"]; p_note?: string; p_project_id: string }
+        Returns: string
+      }
+      set_my_task_status: {
+        Args: { p_id: string; p_status: Database["public"]["Enums"]["task_status"] }
         Returns: undefined
       }
       set_notification_pref: {
@@ -3034,6 +3393,10 @@ export type Database = {
         Args: { p_key: string; p_value: Json }
         Returns: string
       }
+      set_update_visibility: {
+        Args: { p_id: string; p_visibility: Database["public"]["Enums"]["update_visibility"] }
+        Returns: undefined
+      }
       set_user_active: {
         Args: { p_active: boolean; p_user_id: string }
         Returns: undefined
@@ -3041,6 +3404,10 @@ export type Database = {
       set_user_rates: {
         Args: { p_closer_rate?: number; p_closer_recurring_rate?: number; p_parent_rate?: number; p_parent_recurring_rate?: number; p_payout_cadence?: Database["public"]["Enums"]["payout_cadence"]; p_user_id: string }
         Returns: undefined
+      }
+      submit_fee_hours: {
+        Args: { p_hours: number; p_label: string; p_project_id: string; p_worked_on?: string }
+        Returns: string
       }
       submit_lead: {
         Args: {
@@ -3161,6 +3528,8 @@ export type Database = {
       deal_stage: "new" | "contacted" | "meeting" | "proposal" | "won" | "lost"
       document_visibility: "client" | "team"
       extra_billing: "once" | "monthly" | "yearly" | "per_unit"
+      fee_item_status: "pending" | "delivered" | "approved" | "rejected" | "paid"
+      fee_mode: "hourly" | "milestones" | "fixed"
       invoice_kind: "proforma" | "invoice"
       invoice_status: "draft" | "sent" | "paid" | "void"
       job_kind:
@@ -3178,12 +3547,13 @@ export type Database = {
       lead_status: "new" | "assigned" | "contacted" | "converted" | "discarded"
       member_role: "owner" | "closer" | "client" | "freelance"
       message_kind: "text" | "handoff" | "reference"
-      notification_event: "lead_new" | "lead_claimed" | "message_new" | "commission_accrued" | "payment_recorded" | "payment_overdue" | "payout_paid" | "job_failed" | "omen_down" | "invitation_accepted" | "document_added"
+      notification_event: "lead_new" | "lead_claimed" | "message_new" | "commission_accrued" | "payment_recorded" | "payment_overdue" | "payout_paid" | "job_failed" | "omen_down" | "invitation_accepted" | "document_added" | "fee_submitted" | "fee_decided" | "project_update"
       outbox_channel: "email" | "telegram"
       outbox_status: "queued" | "sending" | "sent" | "failed"
       payment_kind: "payment" | "refund"
       payment_method: "transfer" | "card" | "stripe" | "other"
       payout_cadence: "per_payment" | "weekly" | "biweekly"
+      payout_kind: "commission" | "freelance"
       payout_status: "draft" | "issued" | "paid"
       project_phase: "discover" | "design" | "build" | "publish" | "maintain"
       project_status: "active" | "paused" | "closed"
@@ -3200,6 +3570,7 @@ export type Database = {
         | "archived"
         | "handoff_done"
       task_status: "todo" | "doing" | "done"
+      update_visibility: "internal" | "client"
       user_role: "admin" | "closer" | "freelance" | "client"
     }
     CompositeTypes: {
@@ -3352,6 +3723,8 @@ export const Constants = {
       deal_stage: ["new", "contacted", "meeting", "proposal", "won", "lost"],
       document_visibility: ["client", "team"],
       extra_billing: ["once", "monthly", "yearly", "per_unit"],
+      fee_item_status: ["pending", "delivered", "approved", "rejected", "paid"],
+      fee_mode: ["hourly", "milestones", "fixed"],
       invoice_kind: ["proforma", "invoice"],
       invoice_status: ["draft", "sent", "paid", "void"],
       job_kind: [
@@ -3370,12 +3743,13 @@ export const Constants = {
       lead_status: ["new", "assigned", "contacted", "converted", "discarded"],
       member_role: ["owner", "closer", "client", "freelance"],
       message_kind: ["text", "handoff", "reference"],
-      notification_event: ["lead_new", "lead_claimed", "message_new", "commission_accrued", "payment_recorded", "payment_overdue", "payout_paid", "job_failed", "omen_down", "invitation_accepted", "document_added"],
+      notification_event: ["lead_new", "lead_claimed", "message_new", "commission_accrued", "payment_recorded", "payment_overdue", "payout_paid", "job_failed", "omen_down", "invitation_accepted", "document_added", "fee_submitted", "fee_decided", "project_update"],
       outbox_channel: ["email", "telegram"],
       outbox_status: ["queued", "sending", "sent", "failed"],
       payment_kind: ["payment", "refund"],
       payment_method: ["transfer", "card", "stripe", "other"],
       payout_cadence: ["per_payment", "weekly", "biweekly"],
+      payout_kind: ["commission", "freelance"],
       payout_status: ["draft", "issued", "paid"],
       project_phase: ["discover", "design", "build", "publish", "maintain"],
       project_status: ["active", "paused", "closed"],
@@ -3393,6 +3767,7 @@ export const Constants = {
         "handoff_done",
       ],
       task_status: ["todo", "doing", "done"],
+      update_visibility: ["internal", "client"],
       user_role: ["admin", "closer", "freelance", "client"],
     },
   },

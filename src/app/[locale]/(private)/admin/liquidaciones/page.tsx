@@ -37,11 +37,21 @@ export async function generateMetadata({
   return { title: t("admin.payouts.meta.title") };
 }
 
+const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 function madridToday(): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Madrid" }).format(new Date());
 }
 
-async function PayoutsSection({ locale, tab }: { locale: Locale; tab: PayoutTab }) {
+async function PayoutsSection({
+  locale,
+  tab,
+  preselectId,
+}: {
+  locale: Locale;
+  tab: PayoutTab;
+  preselectId: string | undefined;
+}) {
   const t = await getTranslator(locale);
   const client = await createSupabaseServerClient();
   if (client === null) notFound();
@@ -76,10 +86,12 @@ async function PayoutsSection({ locale, tab }: { locale: Locale; tab: PayoutTab 
             .map((entry) => ({
               id: entry.id,
               name: entry.full_name,
+              role: entry.role === "freelance" ? ("freelance" as const) : ("closer" as const),
               cadence: entry.payout_cadence ?? defaultCadence,
             }))}
           today={madridToday()}
           locale={locale}
+          preselectId={preselectId}
           labels={payoutBuilderLabels(t)}
           build={buildPayoutAction.bind(null, locale)}
           preview={previewPayoutAction.bind(null, locale)}
@@ -124,6 +136,8 @@ export default async function PayoutsPage({ params, searchParams }: PayoutsProps
   await requireZone("admin", locale);
   const query = await searchParams;
   const tab = parsePayoutTab(query.tab);
+  const wanted = Array.isArray(query.beneficiario) ? query.beneficiario[0] : query.beneficiario;
+  const preselectId = wanted !== undefined && uuidPattern.test(wanted) ? wanted : undefined;
   const t = await getTranslator(locale);
   return (
     <>
@@ -150,7 +164,7 @@ export default async function PayoutsPage({ params, searchParams }: PayoutsProps
           </LoadingRegion>
         }
       >
-        <PayoutsSection locale={locale} tab={tab} />
+        <PayoutsSection locale={locale} tab={tab} preselectId={preselectId} />
       </Suspense>
     </>
   );
