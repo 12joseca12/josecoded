@@ -3051,7 +3051,8 @@
             "assignSubmit": "Asignar cliente",
             "assigning": "Asignando",
             "assigned": "Cliente asignado",
-            "noCandidates": "No hay otros clientes con cuenta."
+            "noCandidates": "No hay otros clientes con cuenta.",
+            "room": "Abrir la sala del proyecto en el chat"
           },
           "freelance": {
             "title": "Freelance",

@@ -364,6 +364,7 @@ export function teamPanelLabels(t: Translate): TeamPanelLabels {
       assigning: t(`${m}.client.assigning`),
       assigned: t(`${m}.client.assigned`),
       noCandidates: t(`${m}.client.noCandidates`),
+      room: t(`${m}.client.room`),
     },
     freelance: {
       title: t(`${m}.freelance.title`),

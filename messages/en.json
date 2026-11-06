@@ -3051,7 +3051,8 @@
             "assignSubmit": "Assign client",
             "assigning": "Assigning",
             "assigned": "Client assigned",
-            "noCandidates": "There are no other clients with an account."
+            "noCandidates": "There are no other clients with an account.",
+            "room": "Open the project room in chat"
           },
           "freelance": {
             "title": "Freelance",

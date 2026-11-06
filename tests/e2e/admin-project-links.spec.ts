@@ -166,6 +166,14 @@ test("the team tab shows the client and freelance and passes axe", async ({ page
   await expectNoViolations(page);
 });
 
+test("the team tab links to the client room of the project in the chat", async ({ page }) => {
+  await open(page, teamPath(shop), "Tienda de Carla");
+  const link = page.getByRole("link", { name: m("client.room") });
+  await expect(link).toHaveAttribute("href", "/es/admin/chat/c0000000-0000-4000-8000-000000000005");
+  await link.click();
+  await expect(page).toHaveURL(/\/es\/admin\/chat\/c0000000-0000-4000-8000-000000000005$/);
+});
+
 test("a project without an account invites the client with the project attached", async ({
   page,
 }) => {

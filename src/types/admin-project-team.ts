@@ -152,6 +152,7 @@ export interface TeamPanelLabels {
     assigning: string;
     assigned: string;
     noCandidates: string;
+    room: string;
   };
   freelance: {
     title: string;

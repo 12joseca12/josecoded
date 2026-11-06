@@ -5,6 +5,7 @@ import { type ReactNode, useState, useTransition } from "react";
 import { useAnnounce } from "@/components/ui/Announcer/Announcer";
 import { Button } from "@/components/ui/Button/Button";
 import { Field } from "@/components/ui/Field/Field";
+import { Link } from "@/components/ui/Link/Link";
 import type { TeamHandler, TeamPanelLabels, TeamResult } from "@/types/admin-project-team";
 
 import styles from "./TeamPanel.module.css";
@@ -25,6 +26,8 @@ interface TeamPanelProps {
   labels: TeamPanelLabels;
   handlers: { setClient: TeamHandler; setFreelance: TeamHandler };
   invite: ReactNode;
+  roomHref?: string | null;
+  children?: ReactNode;
 }
 
 export function TeamPanel({
@@ -38,6 +41,8 @@ export function TeamPanel({
   labels,
   handlers,
   invite,
+  roomHref = null,
+  children,
 }: TeamPanelProps) {
   const announce = useAnnounce();
   const [pending, startTransition] = useTransition();
@@ -69,6 +74,11 @@ export function TeamPanel({
         <p className={styles.value}>{clientName ?? labels.client.none}</p>
         {clientId === null ? <p className={styles.help}>{labels.client.noneHelp}</p> : null}
         {clientId === null && !archived ? <div className={styles.row}>{invite}</div> : null}
+        {roomHref !== null ? (
+          <p className={styles.help}>
+            <Link href={roomHref}>{labels.client.room}</Link>
+          </p>
+        ) : null}
         {archived ? null : candidates.length > 0 ? (
           <form
             className={styles.form}
@@ -161,6 +171,7 @@ export function TeamPanel({
           </div>
         </form>
       </section>
+      {children}
       <p className={styles.feedback} role="alert">
         {error}
       </p>

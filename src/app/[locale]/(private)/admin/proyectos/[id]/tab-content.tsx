@@ -12,7 +12,7 @@ import { getTranslator } from "@/i18n/messages";
 import { fetchProjectLinks } from "@/lib/admin/project-links";
 import { fetchProjectStories } from "@/lib/admin/project-stories";
 import type { ProjectTabId } from "@/lib/admin/project-tabs";
-import { fetchTeamPeople } from "@/lib/admin/project-team";
+import { fetchProjectRoomId, fetchTeamPeople } from "@/lib/admin/project-team";
 import { fetchProjectDocuments } from "@/lib/documents/project-documents";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { Assignee, TaskRow } from "@/types/admin-project-detail";
@@ -153,7 +153,10 @@ export async function ProjectTabContent({
     );
   }
 
-  const people = await fetchTeamPeople(client);
+  const [people, roomId] = await Promise.all([
+    fetchTeamPeople(client),
+    fetchProjectRoomId(client, row.id),
+  ]);
   if (people.status === "error") return failure;
   return (
     <AnnouncerProvider>
@@ -166,6 +169,7 @@ export async function ProjectTabContent({
           clients={people.clients}
           freelances={people.freelances}
           archived={row.archived_at !== null}
+          roomHref={roomId === null ? null : `/${locale}/admin/chat/${roomId}`}
           labels={teamPanelLabels(t)}
           handlers={{
             setClient: setProjectClient.bind(null, locale),

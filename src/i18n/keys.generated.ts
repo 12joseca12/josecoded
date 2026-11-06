@@ -1259,6 +1259,7 @@ export type MessageKey =
   | "admin.projects.detail.team.client.noCandidates"
   | "admin.projects.detail.team.client.none"
   | "admin.projects.detail.team.client.noneHelp"
+  | "admin.projects.detail.team.client.room"
   | "admin.projects.detail.team.client.title"
   | "admin.projects.detail.team.errors.error"
   | "admin.projects.detail.team.errors.forbidden"

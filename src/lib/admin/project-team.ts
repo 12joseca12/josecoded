@@ -81,3 +81,24 @@ export async function runSetFreelance(
     return { status: "error", code: "error" };
   }
 }
+
+const roomIdSchema = z.array(z.object({ id: z.uuid() }));
+
+export async function fetchProjectRoomId(
+  client: SupabaseClient<Database>,
+  projectId: string,
+): Promise<string | null> {
+  try {
+    const { data, error } = await client
+      .from("conversations")
+      .select("id")
+      .eq("project_id", projectId)
+      .eq("kind", "client")
+      .limit(1);
+    if (error) return null;
+    const parsed = roomIdSchema.safeParse(data);
+    return parsed.success ? (parsed.data[0]?.id ?? null) : null;
+  } catch {
+    return null;
+  }
+}
