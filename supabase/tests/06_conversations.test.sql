@@ -25,6 +25,10 @@ values
 insert into public.conversations (id, kind, visitor_id, first_page_path)
 values ('f0000000-0000-4000-8000-0000000000e1', 'visitor', 'f2000000-0000-4000-8000-000000000001', '/es');
 
+alter table public.projects disable trigger projects_room_after_insert;
+insert into public.projects (id, name) values ('f3000000-0000-4000-8000-000000000001', 'Room project');
+alter table public.projects enable trigger projects_room_after_insert;
+
 insert into public.conversations (id, kind, project_id)
 values ('f0000000-0000-4000-8000-0000000000c1', 'client', 'f3000000-0000-4000-8000-000000000001');
 

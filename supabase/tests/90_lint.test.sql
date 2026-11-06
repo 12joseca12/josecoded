@@ -102,6 +102,7 @@ select is_empty(
         'delete_task',
         'discard_lead',
         'ensure_my_conversation',
+        'ensure_project_conversation',
         'invite_user',
         'issue_proforma',
         'list_lead_inbox',
@@ -257,6 +258,7 @@ select is_empty(
         'delete_task',
         'discard_lead',
         'ensure_my_conversation',
+        'ensure_project_conversation',
         'invite_user',
         'issue_proforma',
         'list_lead_inbox',
@@ -312,7 +314,7 @@ select is(
       and not has_function_privilege('authenticated', p.oid, 'execute')
       and not has_function_privilege('anon', p.oid, 'execute')
   ),
-  'omen_claim_jobs,omen_finish_job,omen_heartbeat,outbox_claim,outbox_mark,payments_notify_overdue,read_invitation,read_public_settings,register_document,submit_lead,telegram_confirm_link,visitor_forget,visitor_handoff,visitor_send,visitor_thread',
+  'omen_claim_jobs,omen_conversation_context,omen_finish_job,omen_heartbeat,omen_post_reply,outbox_claim,outbox_mark,payments_notify_overdue,read_invitation,read_public_settings,register_document,submit_lead,telegram_confirm_link,visitor_forget,visitor_handoff,visitor_send,visitor_thread',
   'only the lead intake, outbox, invitation read, Telegram link and Omen job functions are service_role-only in public'
 );
 
