@@ -20,6 +20,7 @@ interface RoomViewProps {
   archived: boolean;
   canWrite: boolean;
   allowFiles?: boolean;
+  draft?: string;
   labels: RoomLabels;
   transport: RoomTransport;
   pollMs: number;
@@ -43,6 +44,7 @@ export function RoomView({
   archived,
   canWrite,
   allowFiles = false,
+  draft,
   labels,
   transport,
   pollMs,
@@ -154,7 +156,13 @@ export function RoomView({
       <p className={styles.poll} role="status">
         {pollFailed ? labels.errors.poll : ""}
       </p>
-      <RoomComposer mode={mode} labels={labels} allowFiles={allowFiles} onSend={send} />
+      <RoomComposer
+        mode={mode}
+        labels={labels}
+        allowFiles={allowFiles}
+        initialValue={draft}
+        onSend={send}
+      />
     </div>
   );
 }

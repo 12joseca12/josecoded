@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 
 import { extendAuthState, people, stateFor } from "./auth.js";
 import { callerOf, canSee, fail } from "./crm.js";
+import { currentInstant, todayInMadrid } from "./dates.js";
 import { readBody, route, send, sendEmpty } from "./registry.js";
 
 const cleo = "00000000-0000-4000-8000-0000000000c1";
@@ -185,6 +186,39 @@ const seeded = {
       issued_at: "2026-10-16T09:00:00+00:00",
       paid_at: "2026-10-20",
       paid_reference: "Prueba: transferencia",
+      kind: "commission",
+    },
+  ],
+  feeItems: [
+    {
+      id: "75000000-0000-4000-8000-000000000011",
+      freelance_id: "00000000-0000-4000-8000-0000000000f2",
+      label: "Catálogo de productos",
+      hours: 8,
+      amount: 280,
+      worked_on: "2026-10-10",
+      status: "approved",
+      payout_id: null,
+    },
+    {
+      id: "75000000-0000-4000-8000-000000000012",
+      freelance_id: "00000000-0000-4000-8000-0000000000f2",
+      label: "Maquetación de la portada",
+      hours: 6,
+      amount: 210,
+      worked_on: "2026-10-20",
+      status: "approved",
+      payout_id: null,
+    },
+    {
+      id: "75000000-0000-4000-8000-000000000013",
+      freelance_id: "00000000-0000-4000-8000-0000000000f2",
+      label: "Horas sin aprobar",
+      hours: 3,
+      amount: 105,
+      worked_on: "2026-10-22",
+      status: "pending",
+      payout_id: null,
     },
   ],
   payments: [
@@ -443,11 +477,11 @@ route("POST", "/rest/v1/rpc/win_deal", async ({ request, response }) => {
   }
   deal.stage = "won";
   deal.won_amount = won;
-  deal.won_at = new Date().toISOString();
+  deal.won_at = currentInstant().toISOString();
   deal.recurring_monthly = monthly;
   deal.recurring_started_at = null;
   deal.recurring_cancelled_at = null;
-  deal.updated_at = new Date().toISOString();
+  deal.updated_at = currentInstant().toISOString();
   const rates = deal.via === "hiring" ? null : ratesFor(contact.owner_id);
   if (!rates) return send(response, 200, null);
   const id = randomUUID();
@@ -479,7 +513,7 @@ route("POST", "/rest/v1/rpc/cancel_recurring", async ({ request, response }) => 
   if (deal.recurring_cancelled_at) {
     return fail(response, 400, "P0001", "recurring_already_cancelled");
   }
-  deal.recurring_cancelled_at = new Date().toISOString().slice(0, 10);
+  deal.recurring_cancelled_at = todayInMadrid();
   return sendEmpty(response);
 });
 
@@ -569,7 +603,7 @@ function accrue(auth, payment) {
       amount: sign * share(payment.amount_net, entry.rate),
       status: "accrued",
       rejected_reason: null,
-      created_at: new Date().toISOString(),
+      created_at: currentInstant().toISOString(),
     });
   }
 }
@@ -591,7 +625,7 @@ route("POST", "/rest/v1/rpc/record_payment", async ({ request, response }) => {
   if (typeof body.p_amount_net !== "number" || body.p_amount_net <= 0) {
     return failure(response, "invalid_amount");
   }
-  if (body.p_received_at > new Date().toISOString().slice(0, 10)) {
+  if (body.p_received_at > todayInMadrid()) {
     return failure(response, "future_date");
   }
   if (body.p_nature === "recurring" && found.deal.recurring_monthly == null) {
@@ -696,7 +730,7 @@ route("POST", "/rest/v1/rpc/issue_proforma", async ({ request, response }) => {
   if (item.status === "proforma_sent") return failure(response, "proforma_already_issued");
   if (item.status !== "scheduled") return failure(response, "schedule_not_issuable");
   const vat = body.p_vat_rate ?? 0;
-  const year = new Date().getFullYear();
+  const year = Number(todayInMadrid().slice(0, 4));
   const count = auth.money.invoices.filter((entry) => entry.kind === "proforma").length + 1;
   const net = item.amount;
   const vatAmount = share(net, vat);
@@ -706,7 +740,7 @@ route("POST", "/rest/v1/rpc/issue_proforma", async ({ request, response }) => {
     schedule_id: item.id,
     kind: "proforma",
     number: `PF-${String(year)}-${String(count).padStart(3, "0")}`,
-    issued_at: new Date().toISOString().slice(0, 10),
+    issued_at: todayInMadrid(),
     amount_net: net,
     vat_rate: vat,
     vat_amount: vatAmount,
@@ -907,6 +941,8 @@ function paymentRef(auth, paymentId) {
   return payment ? { received_at: payment.received_at } : null;
 }
 
+const freelanceBeneficiaryId = "00000000-0000-4000-8000-0000000000f2";
+
 function personCadence(beneficiaryId) {
   const person = Object.values(people).find((entry) => entry.id === beneficiaryId);
   return person?.cadence ?? "biweekly";
@@ -922,25 +958,40 @@ route("POST", "/rest/v1/rpc/build_payout", async ({ request, response }) => {
   if (!caller) return undefined;
   const { auth } = caller;
   const person = Object.values(people).find((entry) => entry.id === body.p_beneficiary_id);
-  if (!person || person.role !== "closer") return failure(response, "invalid_beneficiary");
+  const freelance = body.p_beneficiary_id === freelanceBeneficiaryId;
+  if (!freelance && (!person || person.role !== "closer")) {
+    return failure(response, "invalid_beneficiary");
+  }
   const start = body.p_period_start;
   const end = body.p_period_end;
   if (!start || !end || end < start) return failure(response, "invalid_period");
   const withholding = body.p_withholding_rate ?? 0;
   if (withholding < 0 || withholding > 100) return failure(response, "invalid_withholding");
-  const lines = auth.money.lines.filter((line) => {
-    const payment = auth.money.payments.find((entry) => entry.id === line.payment_id);
-    return (
-      line.beneficiary_id === body.p_beneficiary_id &&
-      line.status === "approved" &&
-      line.payout_id === null &&
-      payment !== undefined &&
-      payment.received_at >= start &&
-      payment.received_at <= end
-    );
-  });
-  if (lines.length === 0) return failure(response, "no_lines_in_period");
-  const total = lines.reduce((sum, line) => sum + cents(line.amount), 0) / 100;
+  const items = freelance
+    ? auth.money.feeItems.filter(
+        (item) =>
+          item.freelance_id === body.p_beneficiary_id &&
+          item.status === "approved" &&
+          item.payout_id === null &&
+          item.worked_on >= start &&
+          item.worked_on <= end,
+      )
+    : [];
+  const lines = freelance
+    ? []
+    : auth.money.lines.filter((line) => {
+        const payment = auth.money.payments.find((entry) => entry.id === line.payment_id);
+        return (
+          line.beneficiary_id === body.p_beneficiary_id &&
+          line.status === "approved" &&
+          line.payout_id === null &&
+          payment !== undefined &&
+          payment.received_at >= start &&
+          payment.received_at <= end
+        );
+      });
+  if (lines.length + items.length === 0) return failure(response, "no_lines_in_period");
+  const total = [...lines, ...items].reduce((sum, line) => sum + cents(line.amount), 0) / 100;
   if (total < 0) return failure(response, "negative_total");
   const net = (cents(total) - Math.round((cents(total) * withholding) / 100)) / 100;
   const payout = {
@@ -948,6 +999,7 @@ route("POST", "/rest/v1/rpc/build_payout", async ({ request, response }) => {
     beneficiary_id: body.p_beneficiary_id,
     period_start: start,
     period_end: end,
+    kind: freelance ? "freelance" : "commission",
     cadence: personCadence(body.p_beneficiary_id),
     total,
     withholding_rate: withholding,
@@ -960,7 +1012,7 @@ route("POST", "/rest/v1/rpc/build_payout", async ({ request, response }) => {
     paid_reference: null,
   };
   auth.money.payouts.push(payout);
-  for (const line of lines) line.payout_id = payout.id;
+  for (const line of [...lines, ...items]) line.payout_id = payout.id;
   return send(response, 200, JSON.stringify(payout.id));
 });
 
@@ -973,12 +1025,12 @@ route("POST", "/rest/v1/rpc/set_payout_status", async ({ request, response }) =>
   if (!payout) return failure(response, "payout_not_found");
   if (body.p_status === "issued" && payout.status === "draft") {
     payout.status = "issued";
-    payout.issued_at = new Date().toISOString();
+    payout.issued_at = currentInstant().toISOString();
     return sendEmpty(response);
   }
   if (body.p_status === "paid" && payout.status === "issued") {
     if (!body.p_paid_at) return failure(response, "paid_at_required");
-    if (body.p_paid_at > new Date().toISOString().slice(0, 10)) {
+    if (body.p_paid_at > todayInMadrid()) {
       return failure(response, "future_date");
     }
     if (!String(body.p_reference ?? "").trim()) return failure(response, "reference_required");
@@ -987,6 +1039,9 @@ route("POST", "/rest/v1/rpc/set_payout_status", async ({ request, response }) =>
     payout.paid_reference = String(body.p_reference).trim();
     for (const line of auth.money.lines) {
       if (line.payout_id === payout.id && line.status === "approved") line.status = "paid";
+    }
+    for (const item of auth.money.feeItems) {
+      if (item.payout_id === payout.id && item.status === "approved") item.status = "paid";
     }
     return sendEmpty(response);
   }
@@ -1003,6 +1058,9 @@ route("POST", "/rest/v1/rpc/delete_payout_draft", async ({ request, response }) 
   if (payout.status !== "draft") return failure(response, "payout_not_draft");
   for (const line of auth.money.lines) {
     if (line.payout_id === payout.id) line.payout_id = null;
+  }
+  for (const item of auth.money.feeItems) {
+    if (item.payout_id === payout.id) item.payout_id = null;
   }
   auth.money.payouts = auth.money.payouts.filter((entry) => entry.id !== payout.id);
   return sendEmpty(response);

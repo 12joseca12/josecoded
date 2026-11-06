@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { expect, type Page, test } from "@playwright/test";
 
 import AxeBuilder from "./support/axe";
+import { hydrated } from "./support/hydrated";
 
 interface ChatMessages {
   chat: {
@@ -87,12 +88,10 @@ for (const [name, viewport] of [
 
 test("typing and sending adds the visitor bubble and drops the starters", async ({ page }) => {
   await open(page, "fresh");
+  const send = preview(page).getByRole("button", { name: chat.composer.send });
+  await expect(send).toBeDisabled();
   await composer(page).fill("Quiero una web");
-  await expect(
-    preview(page)
-      .locator('svg[data-state="listening"]')
-      .or(preview(page).locator("svg[data-state]")),
-  ).toBeVisible();
+  await expect(send).toBeEnabled();
   await page.keyboard.press("Enter");
   const log = preview(page).getByRole("log");
   await expect(log.getByText("Quiero una web")).toBeVisible();
@@ -103,6 +102,7 @@ test("typing and sending adds the visitor bubble and drops the starters", async 
 
 test("Shift+Enter adds a line and the composer stops growing at six lines", async ({ page }) => {
   await open(page, "fresh");
+  await hydrated(composer(page));
   await composer(page).fill(
     Array.from({ length: 12 }, (_, index) => `línea ${String(index)}`).join("\n"),
   );

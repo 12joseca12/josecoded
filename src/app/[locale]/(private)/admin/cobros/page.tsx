@@ -22,6 +22,7 @@ import {
   tabCounts,
 } from "@/lib/admin/payments";
 import { requireZone } from "@/lib/auth/session";
+import { todayInMadrid } from "@/lib/dates";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { type PaymentTab, paymentTabs } from "@/types/payments";
 
@@ -60,10 +61,6 @@ export async function generateMetadata({
   return { title: t("admin.payments.meta.title") };
 }
 
-function madridToday(): string {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Madrid" }).format(new Date());
-}
-
 async function PaymentsSection({ locale, tab }: { locale: Locale; tab: PaymentTab }) {
   const t = await getTranslator(locale);
   const client = await createSupabaseServerClient();
@@ -82,7 +79,7 @@ async function PaymentsSection({ locale, tab }: { locale: Locale; tab: PaymentTa
   }
 
   const { deals, schedule, documents, paidBySchedule, vatRate } = result;
-  const today = madridToday();
+  const today = todayInMadrid();
   const counts = tabCounts(schedule, documents, today);
   const vat = String(vatRate);
   const handlers = {

@@ -6,6 +6,7 @@ import {
   cents,
   commissionLineSchema,
   payoutCadences,
+  type PayoutKind,
   type payoutRowSchema,
   type payoutStatuses,
 } from "./money";
@@ -34,6 +35,16 @@ export const payoutLineSchema = commissionLineSchema.extend({
 
 export type PayoutLine = z.infer<typeof payoutLineSchema>;
 
+export const payoutItemSchema = z.object({
+  id: z.uuid(),
+  label: z.string(),
+  hours: z.number().nullable(),
+  amount: cents,
+  worked_on: z.string(),
+});
+
+export type PayoutItem = z.infer<typeof payoutItemSchema>;
+
 export const previewLineSchema = z.object({
   amount: cents,
   payments: z.object({ received_at: z.string() }).nullable(),
@@ -53,6 +64,7 @@ export type PayoutDetailResult =
       status: "ok";
       payout: z.infer<typeof payoutRowSchema>;
       lines: PayoutLine[];
+      items: PayoutItem[];
       beneficiary: string;
     }
   | { status: "missing" }
@@ -68,6 +80,7 @@ export const buildPayoutSchema = z.strictObject({
 
 export const previewPayoutSchema = z.strictObject({
   beneficiaryId: z.uuid(),
+  role: z.enum(["closer", "freelance"]).default("closer"),
   start: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   end: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
 });
@@ -137,16 +150,19 @@ export interface PayoutListLabels {
     status: string;
     reference: string;
     actions: string;
+    kind: string;
   };
   open: string;
   openAria: string;
   range: string;
   none: string;
+  kinds: Record<PayoutKind, string>;
   cadences: Record<(typeof payoutCadences)[number], string>;
   statuses: Record<(typeof payoutStatuses)[number], string>;
 }
 
 export interface PayoutBuilderLabels {
+  roles: Record<"closer" | "freelance", string>;
   open: string;
   title: string;
   close: string;
@@ -244,6 +260,15 @@ export interface StatementLabels {
     base: string;
     rate: string;
     amount: string;
+  };
+  items: {
+    statementTitle: string;
+    title: string;
+    empty: string;
+    caption: string;
+    region: string;
+    columns: { date: string; label: string; hours: string; amount: string };
+    notInvoice: string;
   };
   cadences: Record<(typeof payoutCadences)[number], string>;
   statuses: Record<(typeof payoutStatuses)[number], string>;

@@ -90,6 +90,10 @@ export function recentLabels(t: T): RecentUpdatesLabels {
     empty: t("area.home.recent.empty"),
     task: t("area.home.recent.task"),
     document: t("area.home.recent.document"),
+    update: {
+      jose: t("area.home.recent.update.jose"),
+      team: t("area.home.recent.update.team"),
+    },
     story: {
       proposed: t("area.home.recent.story.proposed"),
       in_review: t("area.home.recent.story.in_review"),
@@ -112,6 +116,7 @@ export function boardLabels(t: T): PhaseBoardLabels {
         done: t("area.tasks.status.done"),
       },
       mine: t("area.tasks.mine"),
+      team: t("area.tasks.team"),
       fromStory: t("area.tasks.fromStory"),
     },
   };
@@ -128,6 +133,7 @@ export function taskDetailLabels(t: T): TaskDetailLabels {
       done: t("area.tasks.status.done"),
     },
     assignedToYou: t("area.tasks.detail.assignedToYou"),
+    assignedToTeam: t("area.tasks.detail.assignedToTeam"),
     doneOn: t("area.tasks.detail.doneOn"),
     description: t("area.tasks.detail.description"),
     noDescription: t("area.tasks.detail.noDescription"),
@@ -285,6 +291,11 @@ export function fileListLabels(t: T): FileListLabels {
     visibility: {
       client: t("area.docs.files.visibility.client"),
       team: t("area.docs.files.visibility.team"),
+    },
+    uploader: {
+      me: t("area.docs.files.uploader.me"),
+      jose: t("area.docs.files.uploader.jose"),
+      team: t("area.docs.files.uploader.team"),
     },
     errors: documentErrors(t, "files"),
   };

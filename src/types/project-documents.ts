@@ -36,6 +36,7 @@ export const documentErrorCodes = [
   "project_not_found",
   "not_member",
   "visibility_forbidden",
+  "visibility_not_allowed",
   "project_quota_exceeded",
   "document_exists",
   "document_not_found",
@@ -46,10 +47,15 @@ export const documentErrorCodes = [
 ] as const;
 export type DocumentErrorCode = (typeof documentErrorCodes)[number];
 
+export const documentUploaders = ["me", "jose", "team"] as const;
+export type DocumentUploader = (typeof documentUploaders)[number];
+
 export const documentRowSchema = z.object({
   id: z.uuid(),
   project_id: z.uuid(),
   uploaded_by: z.uuid().nullable(),
+  uploaded_by_me: z.boolean(),
+  uploader: z.enum(documentUploaders),
   name: z.string(),
   mime: z.string(),
   size_bytes: z.number(),
@@ -82,6 +88,7 @@ export interface FileListLabels {
   cancel: string;
   deleted: string;
   visibility: Record<DocumentVisibility, string>;
+  uploader?: Record<DocumentUploader, string>;
   errors: Record<DocumentErrorCode, string>;
 }
 

@@ -5,7 +5,15 @@ import type { BoardTask } from "@/types/area";
 import { groupByPhase } from "./tasks";
 
 function task(id: string, phase: BoardTask["phase"]): BoardTask {
-  return { id, title: id, phase, status: "todo", assignee_id: null, story: null };
+  return {
+    id,
+    title: id,
+    phase,
+    status: "todo",
+    assigned_to_me: false,
+    assignee_kind: "none",
+    story: null,
+  };
 }
 
 describe("groupByPhase", () => {

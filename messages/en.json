@@ -1124,7 +1124,8 @@
           "proformas_unpaid": "Proformas sent and unpaid",
           "payouts_draft": "Draft payouts",
           "jobs_failed": "Failed jobs",
-          "stories_to_decide": "Stories to decide"
+          "stories_to_decide": "Stories to decide",
+          "fee_items_pending": "Freelancer entries to approve"
         },
         "loading": "Loading counters",
         "unavailable": {
@@ -2497,12 +2498,17 @@
           "net": "Net to pay",
           "status": "Status",
           "reference": "Reference",
-          "actions": "Actions"
+          "actions": "Actions",
+          "kind": "Type"
         },
         "open": "Open",
         "openAria": "Open the payout of {name} from {start} to {end}",
         "none": "—",
-        "range": "{start} – {end}"
+        "range": "{start} – {end}",
+        "kinds": {
+          "commission": "Commissions",
+          "freelance": "Freelance"
+        }
       },
       "cadences": {
         "per_payment": "Per payment",
@@ -2547,6 +2553,10 @@
           "negative_total": "Refunds exceed the commissions of the period: widen the period.",
           "forbidden": "Only the admin can create payouts.",
           "error": "The payout could not be created. Try again."
+        },
+        "roles": {
+          "closer": "Closer",
+          "freelance": "Freelance"
         }
       },
       "detail": {
@@ -2576,7 +2586,21 @@
         },
         "linesCaption": "Payout lines",
         "linesRegion": "Payout lines table, scrolls horizontally",
-        "loading": "Loading the payout"
+        "loading": "Loading the payout",
+        "items": {
+          "statementTitle": "Work statement",
+          "title": "Included entries",
+          "empty": "This payout has no entries.",
+          "caption": "Payout entries",
+          "region": "Payout entries",
+          "columns": {
+            "date": "Date",
+            "label": "Item",
+            "hours": "Hours",
+            "amount": "Amount"
+          },
+          "notInvoice": "This statement summarises work. It is not an invoice."
+        }
       },
       "actions": {
         "title": "Actions",
@@ -2770,7 +2794,9 @@
           "storiesPending": "Stories ({count})",
           "documents": "Documents",
           "links": "Links",
-          "team": "Team"
+          "team": "Team",
+          "updates": "Updates",
+          "updatesPending": "Updates ({count})"
         },
         "head": {
           "phase": "Phase",
@@ -2954,6 +2980,7 @@
               "project_not_found": "That project no longer exists.",
               "not_member": "You do not have access to this project.",
               "visibility_forbidden": "You cannot upload team-only documents.",
+              "visibility_not_allowed": "You can only upload deliveries for the client.",
               "project_quota_exceeded": "The project reached 1 GB of documents. Delete some to upload more.",
               "document_exists": "That document was already uploaded.",
               "document_not_found": "That document no longer exists.",
@@ -2985,6 +3012,7 @@
               "project_not_found": "That project no longer exists.",
               "not_member": "You do not have access to this project.",
               "visibility_forbidden": "You cannot upload team-only documents.",
+              "visibility_not_allowed": "You can only upload deliveries for the client.",
               "project_quota_exceeded": "The project reached 1 GB of documents. Delete some to upload more.",
               "document_exists": "That document was already uploaded.",
               "document_not_found": "That document no longer exists.",
@@ -3075,6 +3103,194 @@
             "unavailable": "I cannot save right now. Try again in a moment.",
             "error": "I could not save it. Try again."
           }
+        }
+      },
+      "team": {
+        "fee": {
+          "title": "Freelancer fee",
+          "noFreelance": "Assign a freelancer to the project to agree a fee.",
+          "noFee": "No fee agreed yet.",
+          "error": {
+            "title": "The fee could not be loaded",
+            "text": "Try again in a few seconds."
+          },
+          "summary": {
+            "hourly": "Hourly: {rate} per hour.",
+            "milestones": "Milestones, defined by you.",
+            "fixed": "Fixed price: {amount}."
+          },
+          "summaryCap": "Cap of {hours} h.",
+          "settle": "Settle",
+          "sheet": {
+            "open": "Agree a fee",
+            "openEdit": "Change fee",
+            "title": "Freelancer fee",
+            "close": "Close",
+            "mode": "Mode",
+            "modes": {
+              "hourly": "Hourly",
+              "milestones": "Milestones",
+              "fixed": "Fixed price"
+            },
+            "amount": "Project amount (EUR)",
+            "amountHint": "One entry is created for the total; you can split it into several.",
+            "hourlyRate": "Hourly rate (EUR)",
+            "hoursCap": "Hours cap",
+            "hoursCapHint": "The freelancer cannot log more hours than the cap.",
+            "note": "Note",
+            "optional": "(optional)",
+            "modeLocked": "The mode cannot change while there are entries that are not rejected.",
+            "fixedItemLabel": "Project amount",
+            "submit": "Save fee",
+            "submitting": "Saving…",
+            "done": "Fee saved"
+          },
+          "add": {
+            "open": "Add milestone",
+            "title": "New milestone",
+            "close": "Close",
+            "label": "What is delivered",
+            "amount": "Amount (EUR)",
+            "remaining": "{amount} left to allocate.",
+            "workedOn": "Planned date",
+            "optional": "(optional)",
+            "submit": "Add milestone",
+            "submitting": "Adding…",
+            "done": "Milestone added"
+          },
+          "table": {
+            "caption": "Fee entries",
+            "region": "Fee entries",
+            "empty": "No entries yet.",
+            "select": "Select {label}",
+            "columns": {
+              "select": "Select",
+              "label": "Item",
+              "hours": "Hours",
+              "amount": "Amount",
+              "date": "Date",
+              "by": "Entered by",
+              "status": "Status",
+              "actions": "Actions"
+            },
+            "statuses": {
+              "pending": "Pending",
+              "delivered": "Delivered",
+              "approved": "Approved",
+              "rejected": "Rejected",
+              "paid": "Paid"
+            },
+            "by": {
+              "freelance": "Freelancer",
+              "jose": "Jose"
+            },
+            "approve": "Approve ({count})",
+            "approving": "Approving…",
+            "approved": "{count} entries approved",
+            "rejectOpen": "Reject",
+            "rejectOpenFor": "Reject {label}",
+            "rejectTitle": "Reject “{label}”",
+            "rejectReason": "Reason for the rejection",
+            "rejectSubmit": "Reject entry",
+            "rejecting": "Rejecting…",
+            "rejected": "Entry rejected",
+            "rejectedReason": "Reason: {reason}",
+            "delete": "Delete",
+            "deleteFor": "Delete {label}",
+            "deleted": "Entry deleted",
+            "close": "Close"
+          },
+          "totals": {
+            "region": "Fee totals",
+            "agreed": "Agreed",
+            "pending": "Pending",
+            "delivered": "Delivered",
+            "approved": "Approved, unsettled",
+            "paid": "Paid",
+            "none": "No cap"
+          },
+          "errors": {
+            "mode": "Choose a mode.",
+            "amount": "Enter a valid amount above zero.",
+            "hourlyRate": "Enter a valid hourly rate.",
+            "hoursCap": "Enter valid hours with at most one decimal.",
+            "note": "The note is too long.",
+            "label": "Write what is delivered, up to 120 characters.",
+            "workedOn": "Pick a valid date.",
+            "reason": "Write the reason.",
+            "ids": "Select at least one entry.",
+            "forbidden": "You are not allowed to do this.",
+            "project_not_found": "The project no longer exists.",
+            "project_archived": "The project is archived.",
+            "project_has_no_freelance": "Assign a freelancer to the project first.",
+            "invalid_fee": "The fee is not valid for that mode.",
+            "fee_has_items": "The mode cannot change while there are entries that are not rejected. Reject or delete the pending ones first.",
+            "fee_not_found": "The fee no longer exists.",
+            "fee_mode_mismatch": "That action does not apply to the fee mode.",
+            "fee_amount_exceeded": "Entries cannot exceed the agreed amount.",
+            "hours_cap_exceeded": "The logged hours exceed the cap.",
+            "fee_closed": "The fee is closed.",
+            "invalid_label": "Write what is delivered, up to 120 characters.",
+            "invalid_amount": "Enter a valid amount above zero.",
+            "reason_required": "Write the reason for the rejection.",
+            "item_not_found": "The entry no longer exists.",
+            "item_not_approvable": "Some entry can no longer be approved or rejected. Reload the page.",
+            "item_not_pending": "Only pending entries can be deleted.",
+            "invalid_selection": "Select between 1 and 200 entries.",
+            "unavailable": "The service is not available right now.",
+            "error": "It could not be completed. Try again."
+          }
+        }
+      },
+      "updates": {
+        "title": "Project updates",
+        "empty": "No updates yet.",
+        "authorJose": "Jose",
+        "authorFreelance": "Freelance",
+        "task": "Task: {title}",
+        "visibility": {
+          "internal": "Internal",
+          "client": "Visible to the client"
+        },
+        "publish": "Publish to the client",
+        "publishing": "Publishing…",
+        "hide": "Make internal",
+        "hiding": "Hiding…",
+        "published": "Update published to the client",
+        "hidden": "Update made internal",
+        "delete": "Delete",
+        "deleteFor": "Delete the update by {author}",
+        "deleteTitle": "Delete update",
+        "deleteText": "The update disappears from the project and from the client area if it was published.",
+        "deleteSubmit": "Delete update",
+        "deleting": "Deleting…",
+        "deleted": "Update deleted",
+        "close": "Close",
+        "form": {
+          "title": "New update",
+          "body": "What has progressed",
+          "task": "Task",
+          "taskNone": "No task",
+          "visible": "Visible to the client",
+          "visibleHint": "If checked, the client sees it signed as Jose.",
+          "optional": "(optional)",
+          "submit": "Post update",
+          "submitting": "Posting…",
+          "done": "Update posted",
+          "errors": {
+            "body": "Write the update, up to 2,000 characters.",
+            "taskId": "Pick a valid task."
+          }
+        },
+        "errors": {
+          "forbidden": "You are not allowed to do this.",
+          "not_project_team": "Only the project team can write updates.",
+          "project_archived": "The project is archived.",
+          "project_not_found": "The project no longer exists.",
+          "task_project_mismatch": "That task does not belong to this project.",
+          "update_not_found": "The update no longer exists. Reload the page.",
+          "unavailable": "The service is not available right now.",
+          "error": "It could not be completed. Try again."
         }
       }
     },
@@ -4135,6 +4351,10 @@
           "accepted": "Story accepted",
           "rejected": "Story rejected",
           "in_tasks": "Story accepted and turned into a task"
+        },
+        "update": {
+          "jose": "Jose",
+          "team": "Team"
         }
       },
       "error": {
@@ -4196,8 +4416,10 @@
           "forbidden": "You do not have permission to do this.",
           "stale": "This has already changed. Reload the page to see the current state.",
           "error": "We could not save it. Try again."
-        }
-      }
+        },
+        "assignedToTeam": "The team is handling it."
+      },
+      "team": "Team"
     },
     "stories": {
       "meta": {
@@ -4381,6 +4603,7 @@
           "project_not_found": "That project no longer exists.",
           "not_member": "You do not have access to this project.",
           "visibility_forbidden": "You cannot upload documents for the team only.",
+          "visibility_not_allowed": "You can only upload deliveries for the client.",
           "project_quota_exceeded": "This project has reached 1 GB of documents. Delete some of yours to upload more.",
           "document_exists": "That document was already uploaded.",
           "document_not_found": "That document no longer exists.",
@@ -4388,6 +4611,11 @@
           "storage_failed": "We could not save the file. Try again.",
           "unavailable": "We cannot save right now. Try again in a moment.",
           "error": "Something went wrong. Try again."
+        },
+        "uploader": {
+          "me": "You",
+          "jose": "Jose",
+          "team": "Team"
         }
       },
       "uploader": {
@@ -4412,6 +4640,7 @@
           "project_not_found": "That project no longer exists.",
           "not_member": "You do not have access to this project.",
           "visibility_forbidden": "You cannot upload documents for the team only.",
+          "visibility_not_allowed": "You can only upload deliveries for the client.",
           "project_quota_exceeded": "This project has reached 1 GB of documents. Delete some of yours to upload more.",
           "document_exists": "That document was already uploaded.",
           "document_not_found": "That document no longer exists.",
@@ -4425,7 +4654,7 @@
   },
   "freelance": {
     "brandLabel": "josecoded, go to your zone home",
-    "brandWord": "Freelance",
+    "brandWord": "Your zone",
     "navLabel": "Freelance",
     "userLabel": "Signed in as {name}",
     "signOut": "Sign out",
@@ -4434,7 +4663,372 @@
       "soon": "Coming soon",
       "more": "More",
       "moreTitle": "More sections",
-      "close": "Close"
+      "close": "Close",
+      "overview": "Home",
+      "projects": "Projects",
+      "payments": "Payments",
+      "chat": "Chat"
+    },
+    "empty": {
+      "title": "Jose hasn't assigned you a project yet",
+      "text": "When he assigns one it will show up here, with its brief, your tasks and what you are owed. There is nothing to do for now.",
+      "noneOpenTitle": "You have no projects in progress",
+      "noneOpenText": "Your closed projects stay in the Projects section, with their history."
+    },
+    "home": {
+      "meta": {
+        "title": "Home"
+      },
+      "title": "Your workspace",
+      "lead": "Your projects in progress and what is next on each one.",
+      "open": "In progress",
+      "loading": "Loading your projects",
+      "error": {
+        "title": "We could not load your projects",
+        "text": "Try again in a few seconds.",
+        "retry": "Try again",
+        "retrying": "Trying again"
+      },
+      "recent": {
+        "title": "Latest progress",
+        "empty": "No progress yet.",
+        "update": {
+          "jose": "Jose",
+          "team": "Me"
+        },
+        "error": {
+          "title": "We could not load the progress",
+          "text": "You can try again.",
+          "retry": "Try again",
+          "retrying": "Trying again"
+        },
+        "fee": "Decided item"
+      },
+      "counters": {
+        "label": "Summary",
+        "projects": "Projects in progress",
+        "tasks": "Pending tasks",
+        "owed": "You are owed",
+        "toDeliver": "Milestones to deliver",
+        "unknown": "Not available"
+      },
+      "todo": {
+        "title": "For you",
+        "empty": "You have nothing pending right now.",
+        "tasksTitle": "Your tasks",
+        "milestonesTitle": "Milestones to deliver",
+        "deliver": "Mark as delivered",
+        "delivering": "Marking",
+        "delivered": "Milestone marked as delivered"
+      }
+    },
+    "projects": {
+      "meta": {
+        "title": "Projects"
+      },
+      "title": "Projects",
+      "lead": "The projects you work on, in progress and closed.",
+      "open": "In progress",
+      "closedTitle": "Closed",
+      "loading": "Loading your projects",
+      "error": {
+        "title": "We could not load your projects",
+        "text": "Try again in a few seconds.",
+        "retry": "Try again",
+        "retrying": "Trying again"
+      },
+      "phase": "Phase",
+      "status": {
+        "active": "In progress",
+        "paused": "Paused",
+        "closed": "Closed"
+      },
+      "closedPill": "Closed",
+      "progress": "Progress of {name}",
+      "noTasks": "No tasks yet",
+      "tasksDone": "{done} of {total} tasks done",
+      "due": "Due: {date}"
+    },
+    "project": {
+      "meta": {
+        "title": "Project"
+      },
+      "back": "Back to projects",
+      "loading": "Loading the project",
+      "error": {
+        "title": "We could not load this part",
+        "text": "You can try again.",
+        "retry": "Try again",
+        "retrying": "Trying again"
+      },
+      "brief": {
+        "title": "Brief",
+        "empty": "Jose has not written the brief yet."
+      },
+      "tasks": {
+        "title": "Tasks",
+        "board": "Tasks by phase",
+        "emptyPhase": "No tasks in this phase.",
+        "emptyTitle": "No tasks yet",
+        "emptyText": "When Jose creates them you will see them here, ordered by phase.",
+        "status": {
+          "todo": "To do",
+          "doing": "In progress",
+          "done": "Done"
+        },
+        "mine": "Yours",
+        "client": "Client",
+        "menu": {
+          "group": "Status of “{title}”",
+          "saving": "Saving",
+          "changed": "“{title}” is now: {status}",
+          "errors": {
+            "forbidden": "This task is no longer yours. We reloaded the list.",
+            "stale": "This task has already changed. We reloaded the list.",
+            "error": "We could not save it. Try again."
+          }
+        }
+      },
+      "files": {
+        "title": "Documents",
+        "region": "Project documents",
+        "empty": {
+          "title": "No documents yet",
+          "text": "Here you will see what Jose prepares for you and the deliveries you upload."
+        },
+        "uploader": {
+          "title": "Delivery for the client",
+          "submit": "Upload delivery"
+        }
+      }
+    },
+    "chat": {
+      "meta": {
+        "title": "Chat"
+      },
+      "title": "Chat with Jose",
+      "lead": "Your private room with Jose. The client cannot see it.",
+      "loading": "Loading the chat",
+      "error": {
+        "title": "We could not load the chat",
+        "text": "You can try again.",
+        "retry": "Try again",
+        "retrying": "Trying again"
+      },
+      "taskDraft": "About the task “{title}”: ",
+      "openFromProject": "Talk to Jose about this project",
+      "askAboutTask": "Ask Jose about this task"
+    },
+    "updates": {
+      "title": "Progress",
+      "list": "Project progress",
+      "empty": "No progress yet. Write the first one so Jose can see how it is going.",
+      "authors": {
+        "me": "Me",
+        "jose": "Jose"
+      },
+      "task": "Task: {title}",
+      "visibility": {
+        "internal": "Jose only",
+        "client": "Visible to the client"
+      },
+      "toggle": "Visibility: {state}. Change",
+      "toggling": "Saving",
+      "delete": "Delete",
+      "deleteFor": "Delete the update of {date}",
+      "deleteConfirm": "This deletes it for good.",
+      "deleting": "Deleting",
+      "cancel": "Cancel",
+      "deleted": "Update deleted",
+      "errors": {
+        "not_project_team": "You are no longer part of this project.",
+        "project_archived": "This project is closed.",
+        "task_project_mismatch": "That task is not in this project.",
+        "update_not_found": "That update no longer exists.",
+        "forbidden": "You are not allowed to do this. Sign in again with your code.",
+        "error": "We could not save it. Try again."
+      },
+      "form": {
+        "open": "New update",
+        "title": "New update",
+        "close": "Close",
+        "body": "What did you do?",
+        "bodyHint": "Up to 2,000 characters.",
+        "task": "Related task",
+        "noTask": "None",
+        "visible": "Visible to the client",
+        "visibleHint": "If checked, the client sees it signed as Team. Unchecked, only Jose sees it.",
+        "submit": "Publish update",
+        "submitting": "Publishing",
+        "errors": {
+          "body": "Write the update (up to 2,000 characters).",
+          "taskId": "Pick a task from the list.",
+          "not_project_team": "You are no longer part of this project.",
+          "project_archived": "This project is closed.",
+          "task_project_mismatch": "That task is not in this project.",
+          "update_not_found": "That update no longer exists.",
+          "forbidden": "You are not allowed to do this. Sign in again with your code.",
+          "error": "We could not save it. Try again."
+        }
+      }
+    },
+    "fees": {
+      "title": "Fee and items",
+      "modes": {
+        "hourly": "Hourly",
+        "milestones": "Milestones",
+        "fixed": "Fixed price"
+      },
+      "hourly": "{rate} per hour",
+      "hourlyCap": "up to {hours} h",
+      "fixed": "{amount} for the project",
+      "milestones": "Jose defines the milestones and approves them on delivery",
+      "owed": "You are owed {amount} for this project.",
+      "none": "Jose has not agreed your fee on this project yet.",
+      "itemsTitle": "Items",
+      "noItems": "No items yet.",
+      "statuses": {
+        "pending": "Pending",
+        "delivered": "Delivered",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "paid": "Paid"
+      },
+      "hoursOf": "{hours} h",
+      "rejectedReason": "Reason: {reason}",
+      "deliver": "Mark as delivered",
+      "delivering": "Marking",
+      "delivered": "Milestone marked as delivered",
+      "deleteItem": "Delete",
+      "deleteFor": "Delete the entry “{name}”",
+      "deleting": "Deleting",
+      "deletedItem": "Entry deleted",
+      "closedNote": "This fee is closed: it no longer takes new items.",
+      "errors": {
+        "hours": "Enter the hours, from 0.1 to 24, with one decimal at most.",
+        "label": "Say what you did (up to 120 characters).",
+        "workedOn": "Pick a day that is not in the future.",
+        "hours_cap_exceeded": "These hours go over the cap agreed for the project.",
+        "future_date": "Pick a day that is not in the future.",
+        "invalid_hours": "The hours are not valid: 0.1 to 24, with one decimal at most.",
+        "fee_not_found": "This project has no open fee.",
+        "fee_mode_mismatch": "This action does not fit the fee type of the project.",
+        "fee_closed": "The fee of this project is closed.",
+        "item_not_pending": "That item has already changed. We reloaded the list.",
+        "forbidden": "You are not allowed to do this. Sign in again with your code.",
+        "error": "We could not save it. Try again."
+      },
+      "form": {
+        "title": "Log hours",
+        "hours": "Hours",
+        "hoursHint": "From 0.1 to 24.",
+        "label": "What you did",
+        "labelHint": "Up to 120 characters.",
+        "date": "Day",
+        "submit": "Log hours",
+        "submitting": "Logging",
+        "done": "Hours logged"
+      }
+    },
+    "pay": {
+      "meta": {
+        "title": "Payments",
+        "statement": "Statement"
+      },
+      "title": "Payments",
+      "lead": "What you are owed, what has been paid and the price of each project.",
+      "loading": "Loading your payments",
+      "error": {
+        "title": "We could not load your payments",
+        "text": "You can try again.",
+        "retry": "Try again",
+        "retrying": "Trying again"
+      },
+      "balances": {
+        "label": "Payments summary",
+        "pending": "Waiting for approval",
+        "owed": "You are owed",
+        "paidYear": "Paid this year",
+        "lastPaid": "Last payment",
+        "unknown": "Not available"
+      },
+      "empty": {
+        "title": "No items yet",
+        "text": "When Jose agrees a fee and you log hours or deliver milestones, you will see them here."
+      },
+      "history": {
+        "title": "Price of each project",
+        "caption": "Agreed fee, approved and paid per project",
+        "region": "Fees by project",
+        "columns": {
+          "project": "Project",
+          "mode": "Mode",
+          "agreed": "Agreed",
+          "approved": "Approved",
+          "paid": "Paid",
+          "state": "Status"
+        },
+        "open": "In progress",
+        "closed": "Closed",
+        "variable": "By items"
+      },
+      "payouts": {
+        "title": "Payouts",
+        "empty": "You have no payouts yet.",
+        "caption": "Issued and paid payouts",
+        "region": "Payouts",
+        "columns": {
+          "period": "Period",
+          "total": "Total",
+          "withholding": "Withholding",
+          "net": "Net",
+          "state": "Status",
+          "reference": "Reference",
+          "statement": "Statement"
+        },
+        "range": "{start} – {end}",
+        "statuses": {
+          "issued": "Issued",
+          "paid": "Paid"
+        },
+        "open": "View statement",
+        "openFor": "View statement of {range}"
+      },
+      "items": {
+        "title": "Items",
+        "caption": "Items of your projects",
+        "region": "Items",
+        "filters": "Filter items by status",
+        "all": "All",
+        "columns": {
+          "date": "Day",
+          "project": "Project",
+          "label": "Item",
+          "hours": "Hours",
+          "amount": "Amount",
+          "state": "Status"
+        },
+        "rejected": "Reason: {reason}",
+        "empty": "No items with this status."
+      },
+      "statement": {
+        "title": "Payout statement",
+        "notInvoice": "This statement is not an invoice.",
+        "beneficiary": "Beneficiary",
+        "period": "Period",
+        "status": "Status",
+        "issuedAt": "Issued on",
+        "paidAt": "Paid on",
+        "reference": "Reference",
+        "note": "Note",
+        "itemsTitle": "Items included",
+        "total": "Total",
+        "withholding": "Withholding",
+        "net": "Net to pay",
+        "print": "Print statement",
+        "printHint": "Only the statement is printed.",
+        "back": "Back to payments"
+      }
     }
   },
   "freelancePage": {

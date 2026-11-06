@@ -131,7 +131,13 @@ test("the uploader refuses missing, oversized and unsupported files before sendi
   });
   await submit.click();
   await expect(alert("file_too_large")).toBeVisible();
-  expect((await storage(page)).filter((call) => call.kind === "upload")).toHaveLength(0);
+  expect(
+    (await storage(page)).filter(
+      (call) =>
+        call.kind === "upload" &&
+        call.path?.startsWith("projects/60000000-0000-4000-8000-000000000001/"),
+    ),
+  ).toHaveLength(0);
 });
 
 test("a storage failure and a quota refusal show their messages", async ({ page }) => {

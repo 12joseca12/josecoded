@@ -30,6 +30,7 @@ const targets: Record<CounterKey, CellTarget> = {
   payouts_draft: { zone: "admin", nav: "payouts", query: "" },
   jobs_failed: { zone: "admin", nav: "system", query: "?estado=failed" },
   stories_to_decide: { zone: "admin", nav: "projects", query: "" },
+  fee_items_pending: { zone: "admin", nav: "projects", query: "" },
 };
 
 export async function fetchCounters(

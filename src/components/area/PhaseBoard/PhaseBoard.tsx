@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 import { Heading } from "@/components/ui/Heading/Heading";
 import { type BoardTask, type ProjectPhase, projectPhases } from "@/types/area";
 
@@ -14,19 +16,21 @@ export interface PhaseBoardLabels {
 interface PhaseBoardProps {
   groups: Record<ProjectPhase, BoardTask[]>;
   current: ProjectPhase;
-  userId: string;
-  taskHref: (id: string) => string;
-  storyHref: (id: string) => string;
+  taskHref?: (id: string) => string;
+  storyHref?: (id: string) => string;
   labels: PhaseBoardLabels;
+  renderStatus?: (task: BoardTask) => ReactNode;
+  headingLevel?: 2 | 3;
 }
 
 export function PhaseBoard({
   groups,
   current,
-  userId,
   taskHref,
   storyHref,
   labels,
+  renderStatus,
+  headingLevel = 2,
 }: PhaseBoardProps) {
   return (
     <div className={styles.board} role="group" aria-label={labels.board}>
@@ -37,7 +41,7 @@ export function PhaseBoard({
           data-current={phase === current || undefined}
           aria-labelledby={`phase-${phase}`}
         >
-          <Heading level={2} size="h4" id={`phase-${phase}`}>
+          <Heading level={headingLevel} size="h4" id={`phase-${phase}`}>
             {labels.phases[phase]}
           </Heading>
           {groups[phase].length === 0 ? (
@@ -48,9 +52,10 @@ export function PhaseBoard({
                 <TaskRow
                   key={task.id}
                   task={task}
-                  href={taskHref(task.id)}
-                  storyHref={task.story ? storyHref(task.story.id) : ""}
-                  mine={task.assignee_id === userId}
+                  href={taskHref ? taskHref(task.id) : null}
+                  storyHref={task.story && storyHref ? storyHref(task.story.id) : ""}
+                  statusControl={renderStatus?.(task)}
+                  mine={task.assigned_to_me}
                   labels={labels.row}
                 />
               ))}

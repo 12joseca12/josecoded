@@ -12,6 +12,7 @@ export interface TaskDetailLabels {
   status: string;
   statuses: Record<TaskDetailRow["status"], string>;
   assignedToYou: string;
+  assignedToTeam: string;
   doneOn: string;
   description: string;
   noDescription: string;
@@ -56,6 +57,7 @@ export function TaskDetail({
           <strong>{labels.statuses[task.status]}</strong>
         </li>
         {mine ? <li>{labels.assignedToYou}</li> : null}
+        {task.assignee_kind === "team" ? <li>{labels.assignedToTeam}</li> : null}
         {doneDate ? <li>{labels.doneOn.replace("{date}", doneDate)}</li> : null}
         {task.story && storyHref ? (
           <li>

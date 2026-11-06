@@ -20,7 +20,7 @@ import styles from "./Uploader.module.css";
 
 interface UploaderProps {
   projectId: string;
-  variant: "admin" | "client";
+  variant: "admin" | "client" | "freelance";
   headingLevel?: 2 | 3;
   labels: UploaderLabels;
 }

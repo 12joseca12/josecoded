@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { expect, type Page, test } from "@playwright/test";
 
 import AxeBuilder from "./support/axe";
+import { hydrated } from "./support/hydrated";
 
 interface Messages {
   services: { faq: { hub: Record<string, string>; freelance: Record<string, string> } };
@@ -157,16 +158,7 @@ for (const entry of chatPages) {
     test("works with the keyboard", async ({ page }) => {
       await page.goto(entry.path);
       const input = chat(page).getByLabel(es.nexoChat.inputLabel ?? "");
-      await expect
-        .poll(() =>
-          input.evaluate(
-            (node) =>
-              !node
-                .closest("form")
-                ?.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true })),
-          ),
-        )
-        .toBe(true);
+      await hydrated(input);
       await input.focus();
       await page.keyboard.type("remoto madrid horas");
       await page.keyboard.press("Enter");

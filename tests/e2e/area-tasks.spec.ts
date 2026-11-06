@@ -68,6 +68,8 @@ test("the board groups the tasks by phase and marks the current one", async ({ p
   const build = board.getByRole("region", { name: msg("area.phases.build") });
   await expect(build.getByRole("link", { name: "Catálogo de productos" })).toBeVisible();
   await expect(build.getByText(tasks("status.doing"))).toBeVisible();
+  await expect(build.getByText(tasks("team"), { exact: true })).toBeVisible();
+  await expect(board.getByText("Fran")).toHaveCount(0);
   const design = board.getByRole("region", { name: msg("area.phases.design") });
   await expect(design.getByText(tasks("mine"))).toBeVisible();
   await expect(design.getByText("De tu historia: Página de contacto")).toBeVisible();
@@ -113,6 +115,7 @@ test("a task that is not mine has no complete button", async ({ page }) => {
     page.getByRole("heading", { level: 1, name: "Catálogo de productos" }),
   ).toBeVisible();
   await expect(page.getByText(tasks("detail.noDescription"))).toBeVisible();
+  await expect(page.getByText(tasks("detail.assignedToTeam"))).toBeVisible();
   await expect(page.getByRole("button", { name: tasks("detail.complete") })).toHaveCount(0);
 });
 

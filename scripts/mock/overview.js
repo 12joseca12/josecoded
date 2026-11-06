@@ -14,6 +14,7 @@ const fullCounters = {
   payouts_draft: 0,
   jobs_failed: 2,
   stories_to_decide: 3,
+  fee_items_pending: 2,
 };
 
 const partialCounters = {

@@ -16,6 +16,10 @@
   border-style: dashed;
 }
 
+.cell[data-highlight] {
+  border-color: var(--charcoal);
+}
+
 .link {
   display: grid;
   align-content: space-between;
@@ -74,4 +78,9 @@ a.link:focus-visible {
   .cell:has(a.link:active) {
     transform: none;
   }
+}
+
+.cell[data-kind="text"] .value {
+  font-size: var(--fs-h4);
+  overflow-wrap: anywhere;
 }

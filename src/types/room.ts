@@ -2,7 +2,7 @@ import "@/lib/security/zod-jitless";
 
 import { z } from "zod";
 
-export const roomZones = ["admin", "crm", "area"] as const;
+export const roomZones = ["admin", "crm", "area", "freelance"] as const;
 export type RoomZone = (typeof roomZones)[number];
 
 export const systemEvents = [

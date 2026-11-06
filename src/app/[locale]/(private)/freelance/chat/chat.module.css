@@ -1,0 +1,25 @@
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-6);
+}
+
+.room {
+  display: grid;
+  min-block-size: 28rem;
+  block-size: calc(100dvh - 14rem);
+  max-block-size: 52rem;
+}
+
+.side {
+  display: grid;
+  gap: var(--space-5);
+  align-content: start;
+}
+
+@media (width >= 64rem) {
+  .layout {
+    grid-template-columns: minmax(0, 3fr) minmax(12rem, 1fr);
+    align-items: start;
+  }
+}

@@ -6,6 +6,7 @@ const chatPort = Number(process.env.E2E_CHAT_PORT ?? port + 50);
 const mockOrigin = `http://localhost:${mockPort}`;
 const executablePath = process.env.PLAYWRIGHT_CHROMIUM_PATH;
 const drainLive = process.env.E2E_OUTBOX_DRAIN === "on";
+const fakeNow = process.env.E2E_FAKE_NOW ?? "";
 
 export default defineConfig({
   testDir: "tests/e2e",
@@ -39,7 +40,7 @@ export default defineConfig({
       url: `${mockOrigin}/__health`,
       reuseExistingServer: !process.env.CI,
       timeout: 15_000,
-      env: { MOCK_BACKEND_PORT: String(mockPort) },
+      env: { MOCK_BACKEND_PORT: String(mockPort), ENABLE_DEV_PAGES: "true", E2E_FAKE_NOW: fakeNow },
     },
     {
       command: `pnpm start --port ${port}`,
@@ -48,6 +49,7 @@ export default defineConfig({
       timeout: 60_000,
       env: {
         ENABLE_DEV_PAGES: "true",
+        E2E_FAKE_NOW: fakeNow,
         NEXT_PUBLIC_SUPABASE_URL: mockOrigin,
         NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "test-publishable-key",
         SUPABASE_SERVICE_ROLE_KEY: "test-service-role-key",
@@ -74,6 +76,7 @@ export default defineConfig({
       timeout: 60_000,
       env: {
         ENABLE_DEV_PAGES: "true",
+        E2E_FAKE_NOW: fakeNow,
         NEXT_PUBLIC_SUPABASE_URL: `http://127.0.0.1:${mockPort}`,
         NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "test-publishable-key",
         SUPABASE_SERVICE_ROLE_KEY: "test-service-role-key-chat",
