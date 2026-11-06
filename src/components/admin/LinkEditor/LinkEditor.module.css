@@ -1,0 +1,129 @@
+.editor {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.intro {
+  max-width: 46rem;
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+  line-height: var(--lh-body);
+}
+
+.list {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-l);
+  background: var(--panel);
+}
+
+.main {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+  flex: 1 1 16rem;
+}
+
+.name {
+  font-weight: var(--fw-semibold);
+  overflow-wrap: anywhere;
+}
+
+.url {
+  font-family: var(--font-mono);
+  font-size: var(--fs-m);
+  overflow-wrap: anywhere;
+}
+
+.usage {
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+  overflow-wrap: anywhere;
+}
+
+.controls,
+.confirm,
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.form {
+  display: grid;
+  gap: var(--space-4);
+  inline-size: 100%;
+}
+
+.step {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-m);
+  background: var(--panel);
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-press) var(--ease-out);
+}
+
+.step svg {
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.step:hover:not(:disabled) {
+  background: var(--line);
+}
+
+.step:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.step:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.step:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.feedback {
+  color: var(--error);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+}
+
+.feedback:empty {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .step {
+    transition: none;
+  }
+}

@@ -2768,7 +2768,9 @@
           "tasks": "Tasks",
           "stories": "Stories",
           "storiesPending": "Stories ({count})",
-          "documents": "Documents"
+          "documents": "Documents",
+          "links": "Links",
+          "team": "Team"
         },
         "head": {
           "phase": "Phase",
@@ -2991,6 +2993,87 @@
               "unavailable": "I cannot save right now. Try again in a moment.",
               "error": "Something failed. Try again."
             }
+          }
+        },
+        "links": {
+          "region": "Project links",
+          "title": "Links",
+          "intro": "The links the client sees in their area: the test version, the design, the repository… Up to 12. Only https:// addresses are accepted.",
+          "empty": "No links yet.",
+          "add": "Add link",
+          "edit": "Edit",
+          "editFor": "Edit {name}",
+          "cancel": "Cancel",
+          "delete": "Delete",
+          "deleteFor": "Delete {name}",
+          "deleteConfirm": "The client will stop seeing it.",
+          "deleting": "Deleting",
+          "up": "Move {name} up",
+          "down": "Move {name} down",
+          "moved": "{name} moved",
+          "deleted": "{name} deleted",
+          "saved": "Link saved",
+          "limit": "You reached the limit of 12 links. Delete one to add another.",
+          "openNewTab": "(opens in a new tab)",
+          "form": {
+            "name": "Name",
+            "url": "Address",
+            "urlHint": "Starts with https://",
+            "usage": "What it is for",
+            "usageHint": "One sentence for the client: what they will find there.",
+            "optional": "(optional)",
+            "submitAdd": "Save link",
+            "submitEdit": "Save changes",
+            "submitting": "Saving"
+          },
+          "errors": {
+            "name": "Write a name of up to 80 characters.",
+            "url": "Write an address that starts with https://",
+            "usage": "The text is too long (280 characters at most).",
+            "forbidden": "You are not allowed to do this. Sign in again with your code.",
+            "duplicate_url": "That link is already in the project.",
+            "invalid_url": "Write an address that starts with https://",
+            "link_not_found": "That link no longer exists.",
+            "project_not_found": "That project no longer exists.",
+            "ids_mismatch": "The list changed. Reload the page and try again.",
+            "unavailable": "I cannot save right now. Try again in a moment.",
+            "error": "I could not save it. Try again."
+          }
+        },
+        "team": {
+          "title": "Team",
+          "client": {
+            "title": "Client",
+            "none": "No client account",
+            "noneHelp": "Invite them by email: once they accept, the project shows in their area.",
+            "assign": "Assign a client who already has an account",
+            "assignPlaceholder": "Pick a client",
+            "assignSubmit": "Assign client",
+            "assigning": "Assigning",
+            "assigned": "Client assigned",
+            "noCandidates": "There are no other clients with an account.",
+            "room": "Open the project room in chat"
+          },
+          "freelance": {
+            "title": "Freelance",
+            "none": "No freelance",
+            "field": "Assigned freelance",
+            "submit": "Save freelance",
+            "submitting": "Saving",
+            "saved": "Freelance updated"
+          },
+          "invite": {
+            "open": "Invite the client",
+            "title": "Invite the project client"
+          },
+          "errors": {
+            "forbidden": "You are not allowed to do this. Sign in again with your code.",
+            "invalid_client": "That person is not an active client.",
+            "invalid_freelance": "That person is not an active freelance.",
+            "project_not_found": "That project no longer exists.",
+            "project_archived": "The project is archived. Restore it to change it.",
+            "unavailable": "I cannot save right now. Try again in a moment.",
+            "error": "I could not save it. Try again."
           }
         }
       }

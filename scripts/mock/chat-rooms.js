@@ -13,6 +13,7 @@ export const roomIds = {
   visitor: "c0000000-0000-4000-8000-000000000002",
   client: "c0000000-0000-4000-8000-000000000003",
   archived: "c0000000-0000-4000-8000-000000000004",
+  shop: "c0000000-0000-4000-8000-000000000005",
 };
 
 const names = {
@@ -143,6 +144,28 @@ function freshRooms() {
         author_id: clientId,
         body: "Buenos dias, ya tengo el logo.",
         created_at: minutesAgo(20),
+      }),
+    ],
+  });
+  rooms.set(roomIds.shop, {
+    id: roomIds.shop,
+    kind: "client",
+    status: "open",
+    ai_enabled: true,
+    ai_off_reason: null,
+    consent_at: null,
+    consent_revoked_at: null,
+    project_id: "60000000-0000-4000-8000-000000000001",
+    subject: null,
+    lead_id: null,
+    contact_id: null,
+    first_page_path: null,
+    members: [...owners(), member(clientId, "client")],
+    messages: [
+      message(roomIds.shop, {
+        author_id: clientId,
+        body: "Sala de la tienda.",
+        created_at: minutesAgo(900),
       }),
     ],
   });
@@ -473,11 +496,16 @@ route("GET", "/rest/v1/conversations", ({ request, response, url }) => {
   if (who.denied) return rejection(response, 401, "PGRST301", "JWT invalid");
   const { chat } = who.auth;
   const wanted = /^eq\.(.+)$/.exec(url.searchParams.get("id") ?? "")?.[1];
+  const wantedProject = /^eq\.(.+)$/.exec(url.searchParams.get("project_id") ?? "")?.[1];
+  const wantedKind = /^eq\.(.+)$/.exec(url.searchParams.get("kind") ?? "")?.[1];
   const rows = [...chat.rooms.values()]
     .filter((room) => (wanted ? room.id === wanted : true))
+    .filter((room) => (wantedProject ? room.project_id === wantedProject : true))
+    .filter((room) => (wantedKind ? room.kind === wantedKind : true))
     .filter((room) => canRead(who, room))
     .map((room) => ({
       id: room.id,
+      project_id: room.project_id,
       kind: room.kind,
       status: room.status,
       ai_enabled: room.ai_enabled,
