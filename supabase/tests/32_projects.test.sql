@@ -2,7 +2,7 @@ begin;
 
 \ir support/helpers.sql
 
-select plan(91);
+select plan(96);
 
 create function pg_temp.affected(p_sql text)
 returns bigint
@@ -124,6 +124,19 @@ select is(
 select lives_ok($$select public.move_task((select v from ids where k = 't3'), 'build', 0)$$, 'the admin moves a task');
 select is((select sort from public.tasks where id = (select v from ids where k = 't3')), 0, 'the moved task takes the position');
 select is((select sort from public.tasks where id = (select v from ids where k = 't1')), 1, 'the others shift down');
+select lives_ok($$select public.move_task((select v from ids where k = 't3'), 'build', 2)$$, 'the admin moves a task further down');
+select is(
+  (select array_agg(title order by sort) from public.tasks where project_id = (select v from ids where k = 'p1') and phase = 'build'),
+  array['Task one', 'Task two', 'Task three'],
+  'moving down renumbers the whole phase'
+);
+select lives_ok($$select public.move_task((select v from ids where k = 't3'), 'design', 0)$$, 'the admin moves a task to another phase');
+select is(
+  (select row(phase::text, sort)::text from public.tasks where id = (select v from ids where k = 't3')),
+  '(design,0)',
+  'the moved task leads the target phase'
+);
+select lives_ok($$select public.move_task((select v from ids where k = 't3'), 'build', 0)$$, 'the admin moves it back');
 
 select throws_ok($$select public.delete_task((select v from ids where k = 't4'))$$, 'P0001', 'task_not_deletable', 'a done task cannot be deleted');
 select lives_ok($$select public.delete_task((select v from ids where k = 't3'))$$, 'a todo task without story can be deleted');

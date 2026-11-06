@@ -731,7 +731,8 @@ set search_path = ''
 as $$
 declare
   v_task public.tasks;
-  v_sort integer := greatest(coalesce(p_sort, 0), 0);
+  v_ids uuid[];
+  v_position integer := greatest(coalesce(p_sort, 0), 0);
 begin
   if not private.is_admin() then
     raise exception 'forbidden' using errcode = '42501';
@@ -743,14 +744,20 @@ begin
     raise exception 'task_not_found' using errcode = 'P0001';
   end if;
 
-  update public.tasks
-  set sort = sort + 1
-  where project_id = v_task.project_id
-    and phase = p_phase
-    and id <> p_id
-    and sort >= v_sort;
+  select coalesce(array_agg(t.id order by t.sort, t.created_at, t.id), '{}')
+  into v_ids
+  from public.tasks t
+  where t.project_id = v_task.project_id and t.phase = p_phase and t.id <> p_id;
 
-  update public.tasks set phase = p_phase, sort = v_sort where id = p_id;
+  v_position := least(v_position, cardinality(v_ids));
+  v_ids := v_ids[1:v_position] || p_id || v_ids[v_position + 1:];
+
+  update public.tasks set phase = p_phase where id = p_id and phase <> p_phase;
+
+  update public.tasks t
+  set sort = o.position - 1
+  from unnest(v_ids) with ordinality as o (id, position)
+  where t.id = o.id and t.sort is distinct from o.position - 1;
 end;
 $$;
 

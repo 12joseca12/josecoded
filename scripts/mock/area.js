@@ -1,7 +1,8 @@
 import { bearer, extendAuthState, personById, stateFor } from "./auth.js";
-import { readBody, route, send } from "./registry.js";
+import { pass, readBody, route, send } from "./registry.js";
 
 const clientId = "00000000-0000-4000-8000-0000000000d1";
+const joseId = "00000000-0000-4000-8000-0000000000a1";
 const firstId = "d0000000-0000-4000-8000-000000000001";
 const secondId = "10000000-0000-4000-8000-000000000002";
 
@@ -96,23 +97,29 @@ function seedData() {
       link("l2", firstId, "Diseño en Figma", "https://www.figma.com/file/abc", null, 1),
     ],
     documents: [
-      {
-        id: id("d", 1),
-        project_id: firstId,
-        name: "Presupuesto.pdf",
-        visibility: "client",
-        deleted_at: null,
-        created_at: "2026-10-30T10:00:00+00:00",
-      },
-      {
-        id: id("d", 2),
-        project_id: firstId,
-        name: "Notas internas.txt",
-        visibility: "team",
-        deleted_at: null,
-        created_at: "2026-11-02T10:00:00+00:00",
-      },
+      document(1, "Presupuesto.pdf", "client", joseId, "2026-10-30T10:00:00+00:00"),
+      document(2, "Notas internas.txt", "team", joseId, "2026-11-02T10:00:00+00:00"),
+      document(3, "Logotipo.png", "client", clientId, "2026-11-01T10:00:00+00:00"),
     ],
+  };
+}
+
+function document(n, name, visibility, uploadedBy, createdAt) {
+  return {
+    id: id("d", n),
+    project_id: firstId,
+    uploaded_by: uploadedBy,
+    name,
+    mime: name.endsWith(".png")
+      ? "image/png"
+      : name.endsWith(".pdf")
+        ? "application/pdf"
+        : "text/plain",
+    size_bytes: 2048 * n,
+    storage_path: `projects/${firstId}/${id("d", n)}`,
+    visibility,
+    created_at: createdAt,
+    deleted_at: null,
   };
 }
 
@@ -199,8 +206,17 @@ function scope(request, response) {
   }
   const area = session.auth.area;
   const person = personById(session.userId)?.[1];
-  const visible = person?.role === "client" ? modes[area.mode] : [];
-  return { session, area, visible };
+  if (person?.role !== "client") return pass;
+  return { session, area, visible: modes[area.mode] };
+}
+
+function areaRoute(method, path, handler) {
+  route(method, path, (context) => {
+    const scoped = scope(context.request, context.response);
+    if (scoped === null) return undefined;
+    if (scoped === pass) return pass;
+    return handler({ ...context, scoped });
+  });
 }
 
 function fail(response, area, table) {
@@ -246,9 +262,7 @@ function query(rows, url) {
   return limit > 0 ? result.slice(0, limit) : result;
 }
 
-route("GET", "/rest/v1/projects", ({ request, response, url }) => {
-  const scoped = scope(request, response);
-  if (!scoped) return;
+areaRoute("GET", "/rest/v1/projects", ({ response, url, scoped }) => {
   scoped.session.auth.calls.projects += 1;
   if (fail(response, scoped.area, "projects")) return;
   return send(
@@ -265,9 +279,8 @@ function inProjects(scoped, rows) {
   return rows.filter((row) => scoped.visible.includes(row.project_id));
 }
 
-route("GET", "/rest/v1/project_progress", ({ request, response, url }) => {
-  const scoped = scope(request, response);
-  if (!scoped || fail(response, scoped.area, "progress")) return;
+areaRoute("GET", "/rest/v1/project_progress", ({ response, url, scoped }) => {
+  if (fail(response, scoped.area, "progress")) return undefined;
   const rows = scoped.visible.map((projectId) => {
     const tasks = scoped.area.tasks.filter((entry) => entry.project_id === projectId);
     const done = tasks.filter((entry) => entry.status === "done").length;
@@ -281,9 +294,8 @@ route("GET", "/rest/v1/project_progress", ({ request, response, url }) => {
   return send(response, 200, query(rows, url));
 });
 
-route("GET", "/rest/v1/tasks", ({ request, response, url }) => {
-  const scoped = scope(request, response);
-  if (!scoped || fail(response, scoped.area, "tasks")) return;
+areaRoute("GET", "/rest/v1/tasks", ({ response, url, scoped }) => {
+  if (fail(response, scoped.area, "tasks")) return undefined;
   const rows = inProjects(scoped, scoped.area.tasks).map((row) => {
     const linked = scoped.area.stories.find((entry) => entry.id === row.story_id);
     return { ...row, story: linked ? { id: linked.id, title: linked.title } : null };
@@ -291,28 +303,93 @@ route("GET", "/rest/v1/tasks", ({ request, response, url }) => {
   return send(response, 200, query(rows, url));
 });
 
-route("GET", "/rest/v1/stories", ({ request, response, url }) => {
-  const scoped = scope(request, response);
-  if (!scoped || fail(response, scoped.area, "stories")) return;
+areaRoute("GET", "/rest/v1/stories", ({ response, url, scoped }) => {
+  if (fail(response, scoped.area, "stories")) return undefined;
   return send(response, 200, query(inProjects(scoped, scoped.area.stories), url));
 });
 
-route("GET", "/rest/v1/project_links", ({ request, response, url }) => {
-  const scoped = scope(request, response);
-  if (!scoped || fail(response, scoped.area, "links")) return;
+areaRoute("GET", "/rest/v1/project_links", ({ response, url, scoped }) => {
+  if (fail(response, scoped.area, "links")) return undefined;
   const rows = scoped.area.links ? inProjects(scoped, scoped.area.linkRows) : [];
   return send(response, 200, query(rows, url));
 });
 
-route("GET", "/rest/v1/documents", ({ request, response, url }) => {
-  const scoped = scope(request, response);
-  if (!scoped || fail(response, scoped.area, "documents")) return;
-  return send(response, 200, query(inProjects(scoped, scoped.area.documents), url));
+const uploads = [];
+let uploadMode = "ok";
+
+route("POST", "/__area/uploads", async ({ request, response }) => {
+  uploadMode = JSON.parse(await readBody(request)).mode;
+  uploads.length = 0;
+  return send(response, 200, { ok: true });
 });
 
-route("POST", "/rest/v1/rpc/complete_my_task", async ({ request, response }) => {
-  const scoped = scope(request, response);
-  if (!scoped) return;
+function visibleDocuments(scoped) {
+  return inProjects(scoped, [...scoped.area.documents, ...uploads]).filter(
+    (row) => row.visibility === "client" && row.deleted_at === null,
+  );
+}
+
+areaRoute("GET", "/rest/v1/documents", ({ url, response, scoped }) => {
+  if (fail(response, scoped.area, "documents")) return undefined;
+  return send(response, 200, query(visibleDocuments(scoped), url));
+});
+
+areaRoute("GET", "/rest/v1/project_overview", ({ url, response, scoped }) => {
+  const rows = scoped.visible.map((projectId) => ({
+    id: projectId,
+    name: projects[projectId].name,
+  }));
+  return send(response, 200, query(rows, url));
+});
+
+route("POST", "/rest/v1/rpc/register_document", async ({ request, response }) => {
+  if (request.headers.authorization !== "Bearer test-service-role-key") return pass;
+  const args = JSON.parse(await readBody(request));
+  if (!Object.keys(projects).includes(args.p_project_id)) return pass;
+  if (uploadMode === "quota") {
+    return send(response, 400, {
+      code: "P0001",
+      message: "project_quota_exceeded",
+      details: null,
+      hint: null,
+    });
+  }
+  const stored = {
+    id: args.p_path.split("/")[2],
+    project_id: args.p_project_id,
+    uploaded_by: args.p_uploaded_by,
+    name: args.p_name,
+    mime: args.p_mime,
+    size_bytes: args.p_size,
+    storage_path: args.p_path,
+    visibility: args.p_visibility,
+    created_at: new Date().toISOString(),
+    deleted_at: null,
+  };
+  uploads.push(stored);
+  return send(response, 200, JSON.stringify(stored.id));
+});
+
+areaRoute("POST", "/rest/v1/rpc/delete_document", async ({ request, response, scoped }) => {
+  const body = JSON.parse(await readBody(request));
+  const found = [...scoped.area.documents, ...uploads].find((row) => row.id === body.p_id);
+  if (!found || found.deleted_at !== null) {
+    return send(response, 400, {
+      code: "P0001",
+      message: "document_not_found",
+      details: null,
+      hint: null,
+    });
+  }
+  if (found.uploaded_by !== scoped.session.userId) {
+    return send(response, 403, { code: "42501", message: "forbidden", details: null, hint: null });
+  }
+  found.deleted_at = new Date().toISOString();
+  scoped.session.auth.calls.areaRpc.push({ name: "delete_document", args: body });
+  return send(response, 200, JSON.stringify(found.storage_path));
+});
+
+areaRoute("POST", "/rest/v1/rpc/complete_my_task", async ({ request, response, scoped }) => {
   const body = JSON.parse(await readBody(request));
   scoped.session.auth.calls.areaRpc.push({ name: "complete_my_task", args: body });
   if (scoped.area.rpcError === "forbidden") {
@@ -343,9 +420,7 @@ route("POST", "/rest/v1/rpc/complete_my_task", async ({ request, response }) => 
   return send(response, 204, "");
 });
 
-route("POST", "/rest/v1/rpc/confirm_story", async ({ request, response }) => {
-  const scoped = scope(request, response);
-  if (!scoped) return;
+areaRoute("POST", "/rest/v1/rpc/confirm_story", async ({ request, response, scoped }) => {
   const body = JSON.parse(await readBody(request));
   scoped.session.auth.calls.areaRpc.push({ name: "confirm_story", args: body });
   if (scoped.area.rpcError === "forbidden") {
@@ -392,9 +467,8 @@ function applyFilter(rows, url) {
   );
 }
 
-route("POST", "/rest/v1/stories", async ({ request, response }) => {
-  const scoped = scope(request, response);
-  if (!scoped || storyFailure(response, scoped.area)) return;
+areaRoute("POST", "/rest/v1/stories", async ({ request, response, scoped }) => {
+  if (storyFailure(response, scoped.area)) return undefined;
   const body = JSON.parse(await readBody(request));
   scoped.session.auth.calls.areaRpc.push({ name: "stories.insert", args: body });
   if (!scoped.visible.includes(body.project_id)) {
@@ -422,9 +496,8 @@ route("POST", "/rest/v1/stories", async ({ request, response }) => {
   return send(response, 201, { id: created.id });
 });
 
-route("PATCH", "/rest/v1/stories", async ({ request, response, url }) => {
-  const scoped = scope(request, response);
-  if (!scoped || storyFailure(response, scoped.area)) return;
+areaRoute("PATCH", "/rest/v1/stories", async ({ request, response, url, scoped }) => {
+  if (storyFailure(response, scoped.area)) return undefined;
   const body = JSON.parse(await readBody(request));
   scoped.session.auth.calls.areaRpc.push({ name: "stories.update", args: body });
   const rows = applyFilter(inProjects(scoped, scoped.area.stories), url);
@@ -436,9 +509,8 @@ route("PATCH", "/rest/v1/stories", async ({ request, response, url }) => {
   );
 });
 
-route("DELETE", "/rest/v1/stories", ({ request, response, url }) => {
-  const scoped = scope(request, response);
-  if (!scoped || storyFailure(response, scoped.area)) return;
+areaRoute("DELETE", "/rest/v1/stories", ({ response, url, scoped }) => {
+  if (storyFailure(response, scoped.area)) return undefined;
   const rows = applyFilter(inProjects(scoped, scoped.area.stories), url);
   scoped.session.auth.calls.areaRpc.push({ name: "stories.delete", args: {} });
   scoped.area.stories = scoped.area.stories.filter((row) => !rows.includes(row));

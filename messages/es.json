@@ -959,7 +959,8 @@
       "moreTitle": "Más secciones",
       "close": "Cerrar",
       "switch": "Ir al CRM",
-      "audit": "Auditoría"
+      "audit": "Auditoría",
+      "projects": "Proyectos"
     },
     "overview": {
       "meta": {
@@ -2512,6 +2513,346 @@
         "footer": "Importes en euros.",
         "range": "{start} – {end}"
       }
+    },
+    "projects": {
+      "meta": {
+        "title": "Proyectos"
+      },
+      "title": "Proyectos",
+      "lead": "Los proyectos en marcha, su fase y cuánto llevan hecho.",
+      "loading": "Cargando los proyectos",
+      "error": {
+        "title": "No he podido cargar los proyectos",
+        "text": "Inténtalo otra vez. Si sigue fallando, mira el estado de Supabase.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "empty": {
+        "title": "Crea el primer proyecto",
+        "text": "Un proyecto reúne las tareas, las historias, los documentos y los enlaces de una persona que te ha contratado."
+      },
+      "table": {
+        "title": "Todos los proyectos",
+        "region": "Tabla de proyectos",
+        "caption": "Proyectos con su cliente, fase, avance y fechas",
+        "columns": {
+          "name": "Proyecto",
+          "phase": "Fase",
+          "progress": "Avance",
+          "stories": "Historias",
+          "freelance": "Freelance",
+          "dates": "Fechas",
+          "actions": "Acciones"
+        },
+        "noClient": "Sin cuenta de cliente",
+        "none": "—",
+        "progress": "Avance de {name}",
+        "storiesToDecide": "{count} por decidir",
+        "progressText": "{done}/{total} · {percent} %"
+      },
+      "phases": {
+        "discover": "Descubrir",
+        "design": "Diseñar",
+        "build": "Construir",
+        "publish": "Publicar",
+        "maintain": "Mantener"
+      },
+      "statuses": {
+        "active": "Activo",
+        "paused": "En pausa",
+        "closed": "Cerrado"
+      },
+      "sheet": {
+        "create": "Nuevo proyecto",
+        "edit": "Editar",
+        "editFor": "Editar {name}",
+        "createTitle": "Nuevo proyecto",
+        "editTitle": "Editar proyecto",
+        "close": "Cerrar",
+        "name": "Nombre",
+        "deal": "Oportunidad ganada",
+        "dealHint": "Si eliges una, el contacto de origen sale de ella.",
+        "dealNone": "Sin oportunidad",
+        "offer": "Oferta",
+        "offerNone": "Sin oferta",
+        "freelance": "Freelance",
+        "freelanceNone": "Sin freelance",
+        "startedAt": "Inicio",
+        "dueAt": "Entrega prevista",
+        "brief": "Resumen del proyecto",
+        "briefHint": "Admite markdown. Lo ve quien trabaja en el proyecto.",
+        "optional": "(opcional)",
+        "submitCreate": "Crear proyecto",
+        "submitEdit": "Guardar cambios",
+        "submitting": "Guardando",
+        "doneCreate": "Proyecto creado",
+        "doneEdit": "Cambios guardados",
+        "errors": {
+          "name": "Escribe un nombre de hasta 200 caracteres.",
+          "dealId": "Elige una oportunidad válida.",
+          "offerSlug": "Elige una oferta válida.",
+          "freelanceId": "Elige un freelance válido.",
+          "startedAt": "Escribe una fecha válida.",
+          "dueAt": "La entrega no puede ser anterior al inicio.",
+          "brief": "El resumen es demasiado largo.",
+          "forbidden": "No tienes permiso para hacerlo. Entra de nuevo con tu código.",
+          "deal_not_won": "Esa oportunidad todavía no está ganada.",
+          "deal_not_found": "No encuentro esa oportunidad.",
+          "contact_deal_mismatch": "El contacto no coincide con la oportunidad.",
+          "offer_not_found": "Esa oferta ya no existe.",
+          "invalid_freelance": "Esa persona no es un freelance activo.",
+          "invalid_dates": "La entrega no puede ser anterior al inicio.",
+          "invalid_name": "Escribe un nombre de hasta 200 caracteres.",
+          "project_not_found": "Ese proyecto ya no existe.",
+          "unavailable": "Ahora mismo no puedo guardar. Inténtalo en un momento.",
+          "error": "No he podido guardarlo. Inténtalo otra vez."
+        }
+      },
+      "detail": {
+        "meta": {
+          "title": "Proyecto"
+        },
+        "back": "Todos los proyectos",
+        "briefTitle": "Resumen",
+        "briefEmpty": "Sin resumen todavía.",
+        "loading": "Cargando el proyecto",
+        "error": {
+          "title": "No he podido cargar el proyecto",
+          "text": "Inténtalo otra vez. Si sigue fallando, mira el estado de Supabase.",
+          "retry": "Reintentar",
+          "retrying": "Reintentando"
+        },
+        "tabsLabel": "Secciones del proyecto",
+        "tabs": {
+          "tasks": "Tareas",
+          "stories": "Historias",
+          "storiesPending": "Historias ({count})",
+          "documents": "Documentos"
+        },
+        "head": {
+          "phase": "Fase",
+          "phaseSaved": "Fase actualizada",
+          "statuses": {
+            "active": "Activo",
+            "paused": "En pausa",
+            "closed": "Cerrado"
+          },
+          "archive": "Archivar proyecto",
+          "archiveConfirm": "El proyecto pasa a cerrado y no admite cambios de fase hasta que lo restaures.",
+          "restore": "Restaurar proyecto",
+          "working": "Guardando",
+          "cancel": "Cancelar",
+          "archived": "Proyecto archivado",
+          "restored": "Proyecto restaurado",
+          "progress": "Avance del proyecto",
+          "progressText": "{done}/{total} · {percent} %",
+          "phases": {
+            "discover": "Descubrir",
+            "design": "Diseñar",
+            "build": "Construir",
+            "publish": "Publicar",
+            "maintain": "Mantener"
+          }
+        },
+        "tasks": {
+          "board": {
+            "region": "Tablero de tareas por fase",
+            "empty": "Sin tareas en esta fase.",
+            "assignedTo": "Para {name}",
+            "unassigned": "Sin asignar",
+            "moveTo": "Mover a la fase",
+            "moveToFor": "Mover «{title}» a otra fase",
+            "up": "Subir «{title}»",
+            "down": "Bajar «{title}»",
+            "moving": "Moviendo la tarea",
+            "moved": "«{title}» movida"
+          },
+          "sheet": {
+            "create": "Añadir tarea",
+            "createTitle": "Nueva tarea",
+            "editTitle": "Editar tarea",
+            "edit": "Editar",
+            "editFor": "Editar «{title}»",
+            "close": "Cerrar",
+            "title": "Título",
+            "description": "Descripción",
+            "optional": "(opcional)",
+            "phase": "Fase",
+            "status": "Estado",
+            "assignee": "Asignada a",
+            "assigneeNone": "Sin asignar",
+            "submitCreate": "Crear tarea",
+            "submitEdit": "Guardar cambios",
+            "submitting": "Guardando",
+            "done": "Tarea guardada",
+            "delete": "Eliminar tarea",
+            "deleteConfirm": "Se borra para siempre. Solo se pueden eliminar tareas por hacer y sin historia.",
+            "deleting": "Eliminando",
+            "cancel": "Cancelar",
+            "statuses": {
+              "todo": "Por hacer",
+              "doing": "En curso",
+              "done": "Hecha"
+            },
+            "errors": {
+              "title": "Escribe un título de hasta 200 caracteres.",
+              "description": "La descripción es demasiado larga.",
+              "phase": "Elige una fase.",
+              "status": "Elige un estado.",
+              "assigneeId": "Esa persona no puede tener tareas en este proyecto.",
+              "forbidden": "No tienes permiso para hacerlo. Entra de nuevo con tu código.",
+              "invalid_title": "Escribe un título de hasta 200 caracteres.",
+              "invalid_assignee": "Esa persona no puede tener tareas en este proyecto.",
+              "project_not_found": "Ese proyecto ya no existe.",
+              "task_not_found": "Esa tarea ya no existe.",
+              "task_not_deletable": "Solo se pueden eliminar tareas por hacer y sin historia.",
+              "project_archived": "El proyecto está archivado. Restáuralo para cambiarlo.",
+              "unavailable": "Ahora mismo no puedo guardar. Inténtalo en un momento.",
+              "error": "No he podido guardarlo. Inténtalo otra vez."
+            }
+          }
+        },
+        "stories": {
+          "empty": {
+            "title": "Todavía no hay historias",
+            "text": "Cuando el cliente proponga una historia desde su área aparecerá aquí para que la decidas."
+          },
+          "groups": {
+            "proposed": "Por decidir",
+            "in_review": "Esperando al cliente",
+            "decided": "Decididas"
+          },
+          "asA": "Como",
+          "iWant": "Quiero",
+          "soThat": "Para",
+          "criteria": "Criterios de aceptación",
+          "statuses": {
+            "proposed": "Por decidir",
+            "in_review": "Presupuesto enviado",
+            "accepted": "Aceptada",
+            "rejected": "Rechazada",
+            "in_tasks": "En tareas"
+          },
+          "outOfScope": "Fuera de presupuesto",
+          "estimate": "Estimación: {hours} h · {amount}",
+          "note": "Nota: {note}",
+          "decidedOn": "Decidida el {date}",
+          "confirmedOn": "Confirmada por el cliente el {date}",
+          "awaiting": "El cliente tiene que confirmar el presupuesto desde su área.",
+          "hasTask": "Tiene una tarea en el tablero.",
+          "decide": {
+            "open": "Decidir",
+            "openFor": "Decidir «{title}»",
+            "title": "Decidir: {title}",
+            "close": "Cerrar",
+            "decision": "Decisión",
+            "decisions": {
+              "accept": "Aceptar",
+              "reject": "Rechazar",
+              "out_of_scope": "Fuera de presupuesto"
+            },
+            "hours": "Horas",
+            "amount": "Importe orientativo (€)",
+            "amountHint": "El cliente lo verá y tendrá que confirmarlo. El cobro lo registras tú en Cobros.",
+            "note": "Nota",
+            "noteHint": "El cliente verá el motivo.",
+            "optional": "(opcional)",
+            "createTask": "Crear una tarea con esta historia",
+            "submit": "Guardar decisión",
+            "submitting": "Guardando",
+            "done": {
+              "proposed": "Decisión guardada",
+              "in_review": "Presupuesto enviado al cliente",
+              "accepted": "Historia aceptada",
+              "rejected": "Historia rechazada",
+              "in_tasks": "Historia aceptada y tarea creada"
+            },
+            "errors": {
+              "decision": "Elige una decisión.",
+              "hours": "Escribe las horas del trabajo extra.",
+              "amount": "Escribe el importe orientativo.",
+              "note": "Escribe el motivo del rechazo.",
+              "forbidden": "No tienes permiso para hacerlo. Entra de nuevo con tu código.",
+              "invalid_decision": "Elige una decisión.",
+              "story_not_found": "Esa historia ya no existe.",
+              "story_not_proposed": "Esa historia ya está decidida.",
+              "note_required": "Escribe el motivo del rechazo.",
+              "estimate_required": "Escribe las horas y el importe orientativo.",
+              "unavailable": "Ahora mismo no puedo guardar. Inténtalo en un momento.",
+              "error": "No he podido guardarlo. Inténtalo otra vez."
+            }
+          }
+        },
+        "docs": {
+          "files": {
+            "region": "Lista de documentos",
+            "empty": {
+              "title": "Todavía no hay documentos",
+              "text": "Sube un archivo y quedará aquí. Los que marques para el cliente los verá en su área."
+            },
+            "download": "Descargar",
+            "downloadFor": "Descargar {name}",
+            "delete": "Borrar",
+            "deleteFor": "Borrar {name}",
+            "deleteConfirm": "Se borra para siempre.",
+            "deleting": "Borrando",
+            "cancel": "Cancelar",
+            "deleted": "{name} borrado",
+            "visibility": {
+              "client": "Para el cliente",
+              "team": "Solo el equipo"
+            },
+            "errors": {
+              "invalid_request": "No he entendido la subida. Recarga la página e inténtalo otra vez.",
+              "file_missing": "Elige un archivo.",
+              "file_too_large": "El archivo pesa más de 25 MB.",
+              "invalid_mime": "Ese tipo de archivo no se admite.",
+              "invalid_name": "El nombre del archivo no es válido.",
+              "project_not_found": "Ese proyecto ya no existe.",
+              "not_member": "No tienes acceso a este proyecto.",
+              "visibility_forbidden": "No puedes subir documentos solo para el equipo.",
+              "project_quota_exceeded": "El proyecto ha llegado a 1 GB de documentos. Borra alguno para subir más.",
+              "document_exists": "Ese documento ya estaba subido.",
+              "document_not_found": "Ese documento ya no existe.",
+              "forbidden": "No tienes permiso para hacerlo. Entra de nuevo con tu código.",
+              "storage_failed": "No he podido guardar el archivo. Inténtalo otra vez.",
+              "unavailable": "Ahora mismo no puedo guardar. Inténtalo en un momento.",
+              "error": "Algo ha fallado. Inténtalo otra vez."
+            }
+          },
+          "uploader": {
+            "title": "Subir un documento",
+            "file": "Archivo",
+            "fileHint": "PDF, imágenes, vídeo corto, zip, Office, texto o CSV. Hasta 25 MB.",
+            "visibility": "Quién lo ve",
+            "visibilityOptions": {
+              "client": "El cliente y el equipo",
+              "team": "Solo el equipo"
+            },
+            "submit": "Subir",
+            "submitting": "Subiendo",
+            "progress": "Progreso de la subida",
+            "done": "Documento subido",
+            "errors": {
+              "invalid_request": "No he entendido la subida. Recarga la página e inténtalo otra vez.",
+              "file_missing": "Elige un archivo.",
+              "file_too_large": "El archivo pesa más de 25 MB.",
+              "invalid_mime": "Ese tipo de archivo no se admite.",
+              "invalid_name": "El nombre del archivo no es válido.",
+              "project_not_found": "Ese proyecto ya no existe.",
+              "not_member": "No tienes acceso a este proyecto.",
+              "visibility_forbidden": "No puedes subir documentos solo para el equipo.",
+              "project_quota_exceeded": "El proyecto ha llegado a 1 GB de documentos. Borra alguno para subir más.",
+              "document_exists": "Ese documento ya estaba subido.",
+              "document_not_found": "Ese documento ya no existe.",
+              "forbidden": "No tienes permiso para hacerlo. Entra de nuevo con tu código.",
+              "storage_failed": "No he podido guardar el archivo. Inténtalo otra vez.",
+              "unavailable": "Ahora mismo no puedo guardar. Inténtalo en un momento.",
+              "error": "Algo ha fallado. Inténtalo otra vez."
+            }
+          }
+        }
+      }
     }
   },
   "crm": {
@@ -3518,6 +3859,87 @@
         "errors": {
           "forbidden": "No tienes permiso para cambiar esto.",
           "error": "No hemos podido guardarlo. Inténtalo de nuevo."
+        }
+      }
+    },
+    "docs": {
+      "meta": {
+        "title": "Documentos"
+      },
+      "title": "Documentos",
+      "lead": "Los archivos que compartís Jose y tú sobre este proyecto: entregables, material y lo que quieras enviar.",
+      "loading": "Cargando los documentos",
+      "error": {
+        "title": "No hemos podido cargar los documentos",
+        "text": "Puedes reintentarlo.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "files": {
+        "region": "Lista de documentos",
+        "empty": {
+          "title": "Todavía no hay documentos",
+          "text": "Sube un archivo y quedará aquí. Verás también los que Jose comparta contigo."
+        },
+        "download": "Descargar",
+        "downloadFor": "Descargar {name}",
+        "delete": "Borrar",
+        "deleteFor": "Borrar {name}",
+        "deleteConfirm": "Se borra para siempre.",
+        "deleting": "Borrando",
+        "cancel": "Cancelar",
+        "deleted": "{name} borrado",
+        "visibility": {
+          "client": "Compartido contigo",
+          "team": "Solo el equipo"
+        },
+        "errors": {
+          "invalid_request": "No hemos entendido la subida. Recarga la página e inténtalo otra vez.",
+          "file_missing": "Elige un archivo.",
+          "file_too_large": "El archivo pesa más de 25 MB.",
+          "invalid_mime": "Ese tipo de archivo no se admite.",
+          "invalid_name": "El nombre del archivo no es válido.",
+          "project_not_found": "Ese proyecto ya no existe.",
+          "not_member": "No tienes acceso a este proyecto.",
+          "visibility_forbidden": "No puedes subir documentos solo para el equipo.",
+          "project_quota_exceeded": "Este proyecto ha llegado a 1 GB de documentos. Borra alguno tuyo para subir más.",
+          "document_exists": "Ese documento ya estaba subido.",
+          "document_not_found": "Ese documento ya no existe.",
+          "forbidden": "No tienes permiso para hacerlo. Entra de nuevo con tu código.",
+          "storage_failed": "No hemos podido guardar el archivo. Inténtalo otra vez.",
+          "unavailable": "Ahora mismo no podemos guardar. Inténtalo en un momento.",
+          "error": "Algo ha fallado. Inténtalo otra vez."
+        }
+      },
+      "uploader": {
+        "title": "Subir un documento",
+        "file": "Archivo",
+        "fileHint": "PDF, imágenes, vídeo corto, zip, Office, texto o CSV. Hasta 25 MB.",
+        "visibility": "Quién lo ve",
+        "visibilityOptions": {
+          "client": "Tú y el equipo",
+          "team": "Solo el equipo"
+        },
+        "submit": "Subir",
+        "submitting": "Subiendo",
+        "progress": "Progreso de la subida",
+        "done": "Documento subido",
+        "errors": {
+          "invalid_request": "No hemos entendido la subida. Recarga la página e inténtalo otra vez.",
+          "file_missing": "Elige un archivo.",
+          "file_too_large": "El archivo pesa más de 25 MB.",
+          "invalid_mime": "Ese tipo de archivo no se admite.",
+          "invalid_name": "El nombre del archivo no es válido.",
+          "project_not_found": "Ese proyecto ya no existe.",
+          "not_member": "No tienes acceso a este proyecto.",
+          "visibility_forbidden": "No puedes subir documentos solo para el equipo.",
+          "project_quota_exceeded": "Este proyecto ha llegado a 1 GB de documentos. Borra alguno tuyo para subir más.",
+          "document_exists": "Ese documento ya estaba subido.",
+          "document_not_found": "Ese documento ya no existe.",
+          "forbidden": "No tienes permiso para hacerlo. Entra de nuevo con tu código.",
+          "storage_failed": "No hemos podido guardar el archivo. Inténtalo otra vez.",
+          "unavailable": "Ahora mismo no podemos guardar. Inténtalo en un momento.",
+          "error": "Algo ha fallado. Inténtalo otra vez."
         }
       }
     }

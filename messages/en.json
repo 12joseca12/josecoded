@@ -959,7 +959,8 @@
       "moreTitle": "More sections",
       "close": "Close",
       "switch": "Go to CRM",
-      "audit": "Audit log"
+      "audit": "Audit log",
+      "projects": "Projects"
     },
     "overview": {
       "meta": {
@@ -2512,6 +2513,346 @@
         "footer": "Amounts in euros.",
         "range": "{start} – {end}"
       }
+    },
+    "projects": {
+      "meta": {
+        "title": "Projects"
+      },
+      "title": "Projects",
+      "lead": "The projects under way, their phase and how much is done.",
+      "loading": "Loading projects",
+      "error": {
+        "title": "I could not load the projects",
+        "text": "Try again. If it keeps failing, check the Supabase status.",
+        "retry": "Retry",
+        "retrying": "Retrying"
+      },
+      "empty": {
+        "title": "Create the first project",
+        "text": "A project gathers the tasks, stories, documents and links of someone who hired you."
+      },
+      "table": {
+        "title": "All projects",
+        "region": "Projects table",
+        "caption": "Projects with their client, phase, progress and dates",
+        "columns": {
+          "name": "Project",
+          "phase": "Phase",
+          "progress": "Progress",
+          "stories": "Stories",
+          "freelance": "Freelance",
+          "dates": "Dates",
+          "actions": "Actions"
+        },
+        "noClient": "No client account",
+        "none": "—",
+        "progress": "Progress of {name}",
+        "storiesToDecide": "{count} to decide",
+        "progressText": "{done}/{total} · {percent} %"
+      },
+      "phases": {
+        "discover": "Discover",
+        "design": "Design",
+        "build": "Build",
+        "publish": "Publish",
+        "maintain": "Maintain"
+      },
+      "statuses": {
+        "active": "Active",
+        "paused": "Paused",
+        "closed": "Closed"
+      },
+      "sheet": {
+        "create": "New project",
+        "edit": "Edit",
+        "editFor": "Edit {name}",
+        "createTitle": "New project",
+        "editTitle": "Edit project",
+        "close": "Close",
+        "name": "Name",
+        "deal": "Won opportunity",
+        "dealHint": "If you pick one, the source contact comes from it.",
+        "dealNone": "No opportunity",
+        "offer": "Offer",
+        "offerNone": "No offer",
+        "freelance": "Freelance",
+        "freelanceNone": "No freelance",
+        "startedAt": "Start",
+        "dueAt": "Expected delivery",
+        "brief": "Project summary",
+        "briefHint": "Markdown is allowed. Everyone working on the project sees it.",
+        "optional": "(optional)",
+        "submitCreate": "Create project",
+        "submitEdit": "Save changes",
+        "submitting": "Saving",
+        "doneCreate": "Project created",
+        "doneEdit": "Changes saved",
+        "errors": {
+          "name": "Write a name of up to 200 characters.",
+          "dealId": "Pick a valid opportunity.",
+          "offerSlug": "Pick a valid offer.",
+          "freelanceId": "Pick a valid freelance.",
+          "startedAt": "Write a valid date.",
+          "dueAt": "Delivery cannot be before the start.",
+          "brief": "The summary is too long.",
+          "forbidden": "You are not allowed to do this. Sign in again with your code.",
+          "deal_not_won": "That opportunity is not won yet.",
+          "deal_not_found": "I cannot find that opportunity.",
+          "contact_deal_mismatch": "The contact does not match the opportunity.",
+          "offer_not_found": "That offer no longer exists.",
+          "invalid_freelance": "That person is not an active freelance.",
+          "invalid_dates": "Delivery cannot be before the start.",
+          "invalid_name": "Write a name of up to 200 characters.",
+          "project_not_found": "That project no longer exists.",
+          "unavailable": "I cannot save right now. Try again in a moment.",
+          "error": "I could not save it. Try again."
+        }
+      },
+      "detail": {
+        "meta": {
+          "title": "Project"
+        },
+        "back": "All projects",
+        "briefTitle": "Summary",
+        "briefEmpty": "No summary yet.",
+        "loading": "Loading the project",
+        "error": {
+          "title": "I could not load the project",
+          "text": "Try again. If it keeps failing, check the Supabase status.",
+          "retry": "Retry",
+          "retrying": "Retrying"
+        },
+        "tabsLabel": "Project sections",
+        "tabs": {
+          "tasks": "Tasks",
+          "stories": "Stories",
+          "storiesPending": "Stories ({count})",
+          "documents": "Documents"
+        },
+        "head": {
+          "phase": "Phase",
+          "phaseSaved": "Phase updated",
+          "statuses": {
+            "active": "Active",
+            "paused": "Paused",
+            "closed": "Closed"
+          },
+          "archive": "Archive project",
+          "archiveConfirm": "The project becomes closed and its phase cannot change until you restore it.",
+          "restore": "Restore project",
+          "working": "Saving",
+          "cancel": "Cancel",
+          "archived": "Project archived",
+          "restored": "Project restored",
+          "progress": "Project progress",
+          "progressText": "{done}/{total} · {percent} %",
+          "phases": {
+            "discover": "Discover",
+            "design": "Design",
+            "build": "Build",
+            "publish": "Publish",
+            "maintain": "Maintain"
+          }
+        },
+        "tasks": {
+          "board": {
+            "region": "Task board by phase",
+            "empty": "No tasks in this phase.",
+            "assignedTo": "For {name}",
+            "unassigned": "Unassigned",
+            "moveTo": "Move to phase",
+            "moveToFor": "Move “{title}” to another phase",
+            "up": "Move “{title}” up",
+            "down": "Move “{title}” down",
+            "moving": "Moving the task",
+            "moved": "“{title}” moved"
+          },
+          "sheet": {
+            "create": "Add task",
+            "createTitle": "New task",
+            "editTitle": "Edit task",
+            "edit": "Edit",
+            "editFor": "Edit “{title}”",
+            "close": "Close",
+            "title": "Title",
+            "description": "Description",
+            "optional": "(optional)",
+            "phase": "Phase",
+            "status": "Status",
+            "assignee": "Assigned to",
+            "assigneeNone": "Unassigned",
+            "submitCreate": "Create task",
+            "submitEdit": "Save changes",
+            "submitting": "Saving",
+            "done": "Task saved",
+            "delete": "Delete task",
+            "deleteConfirm": "It is deleted for good. Only to-do tasks without a story can be deleted.",
+            "deleting": "Deleting",
+            "cancel": "Cancel",
+            "statuses": {
+              "todo": "To do",
+              "doing": "In progress",
+              "done": "Done"
+            },
+            "errors": {
+              "title": "Write a title of up to 200 characters.",
+              "description": "The description is too long.",
+              "phase": "Pick a phase.",
+              "status": "Pick a status.",
+              "assigneeId": "That person cannot have tasks in this project.",
+              "forbidden": "You are not allowed to do this. Sign in again with your code.",
+              "invalid_title": "Write a title of up to 200 characters.",
+              "invalid_assignee": "That person cannot have tasks in this project.",
+              "project_not_found": "That project no longer exists.",
+              "task_not_found": "That task no longer exists.",
+              "task_not_deletable": "Only to-do tasks without a story can be deleted.",
+              "project_archived": "The project is archived. Restore it to change it.",
+              "unavailable": "I cannot save right now. Try again in a moment.",
+              "error": "I could not save it. Try again."
+            }
+          }
+        },
+        "stories": {
+          "empty": {
+            "title": "No stories yet",
+            "text": "When the client proposes a story from their area it will show here for you to decide."
+          },
+          "groups": {
+            "proposed": "To decide",
+            "in_review": "Waiting for the client",
+            "decided": "Decided"
+          },
+          "asA": "As a",
+          "iWant": "I want",
+          "soThat": "So that",
+          "criteria": "Acceptance criteria",
+          "statuses": {
+            "proposed": "To decide",
+            "in_review": "Quote sent",
+            "accepted": "Accepted",
+            "rejected": "Rejected",
+            "in_tasks": "In tasks"
+          },
+          "outOfScope": "Out of budget",
+          "estimate": "Estimate: {hours} h · {amount}",
+          "note": "Note: {note}",
+          "decidedOn": "Decided on {date}",
+          "confirmedOn": "Confirmed by the client on {date}",
+          "awaiting": "The client has to confirm the quote from their area.",
+          "hasTask": "It has a task on the board.",
+          "decide": {
+            "open": "Decide",
+            "openFor": "Decide “{title}”",
+            "title": "Decide: {title}",
+            "close": "Close",
+            "decision": "Decision",
+            "decisions": {
+              "accept": "Accept",
+              "reject": "Reject",
+              "out_of_scope": "Out of budget"
+            },
+            "hours": "Hours",
+            "amount": "Indicative amount (€)",
+            "amountHint": "The client will see it and has to confirm it. You record the payment in Receivables.",
+            "note": "Note",
+            "noteHint": "The client will see the reason.",
+            "optional": "(optional)",
+            "createTask": "Create a task from this story",
+            "submit": "Save decision",
+            "submitting": "Saving",
+            "done": {
+              "proposed": "Decision saved",
+              "in_review": "Quote sent to the client",
+              "accepted": "Story accepted",
+              "rejected": "Story rejected",
+              "in_tasks": "Story accepted and task created"
+            },
+            "errors": {
+              "decision": "Pick a decision.",
+              "hours": "Write the hours of the extra work.",
+              "amount": "Write the indicative amount.",
+              "note": "Write the reason for the rejection.",
+              "forbidden": "You are not allowed to do this. Sign in again with your code.",
+              "invalid_decision": "Pick a decision.",
+              "story_not_found": "That story no longer exists.",
+              "story_not_proposed": "That story is already decided.",
+              "note_required": "Write the reason for the rejection.",
+              "estimate_required": "Write the hours and the indicative amount.",
+              "unavailable": "I cannot save right now. Try again in a moment.",
+              "error": "I could not save it. Try again."
+            }
+          }
+        },
+        "docs": {
+          "files": {
+            "region": "Document list",
+            "empty": {
+              "title": "No documents yet",
+              "text": "Upload a file and it will show here. The ones you mark for the client appear in their area."
+            },
+            "download": "Download",
+            "downloadFor": "Download {name}",
+            "delete": "Delete",
+            "deleteFor": "Delete {name}",
+            "deleteConfirm": "It is deleted for good.",
+            "deleting": "Deleting",
+            "cancel": "Cancel",
+            "deleted": "{name} deleted",
+            "visibility": {
+              "client": "For the client",
+              "team": "Team only"
+            },
+            "errors": {
+              "invalid_request": "I did not understand the upload. Reload the page and try again.",
+              "file_missing": "Pick a file.",
+              "file_too_large": "The file is larger than 25 MB.",
+              "invalid_mime": "That file type is not accepted.",
+              "invalid_name": "The file name is not valid.",
+              "project_not_found": "That project no longer exists.",
+              "not_member": "You do not have access to this project.",
+              "visibility_forbidden": "You cannot upload team-only documents.",
+              "project_quota_exceeded": "The project reached 1 GB of documents. Delete some to upload more.",
+              "document_exists": "That document was already uploaded.",
+              "document_not_found": "That document no longer exists.",
+              "forbidden": "You are not allowed to do this. Sign in again with your code.",
+              "storage_failed": "I could not store the file. Try again.",
+              "unavailable": "I cannot save right now. Try again in a moment.",
+              "error": "Something failed. Try again."
+            }
+          },
+          "uploader": {
+            "title": "Upload a document",
+            "file": "File",
+            "fileHint": "PDF, images, short video, zip, Office, text or CSV. Up to 25 MB.",
+            "visibility": "Who sees it",
+            "visibilityOptions": {
+              "client": "The client and the team",
+              "team": "Team only"
+            },
+            "submit": "Upload",
+            "submitting": "Uploading",
+            "progress": "Upload progress",
+            "done": "Document uploaded",
+            "errors": {
+              "invalid_request": "I did not understand the upload. Reload the page and try again.",
+              "file_missing": "Pick a file.",
+              "file_too_large": "The file is larger than 25 MB.",
+              "invalid_mime": "That file type is not accepted.",
+              "invalid_name": "The file name is not valid.",
+              "project_not_found": "That project no longer exists.",
+              "not_member": "You do not have access to this project.",
+              "visibility_forbidden": "You cannot upload team-only documents.",
+              "project_quota_exceeded": "The project reached 1 GB of documents. Delete some to upload more.",
+              "document_exists": "That document was already uploaded.",
+              "document_not_found": "That document no longer exists.",
+              "forbidden": "You are not allowed to do this. Sign in again with your code.",
+              "storage_failed": "I could not store the file. Try again.",
+              "unavailable": "I cannot save right now. Try again in a moment.",
+              "error": "Something failed. Try again."
+            }
+          }
+        }
+      }
     }
   },
   "crm": {
@@ -3518,6 +3859,87 @@
         "errors": {
           "forbidden": "You do not have permission to change this.",
           "error": "We could not save it. Try again."
+        }
+      }
+    },
+    "docs": {
+      "meta": {
+        "title": "Documents"
+      },
+      "title": "Documents",
+      "lead": "The files you and Jose share about this project: deliverables, material and anything you want to send.",
+      "loading": "Loading documents",
+      "error": {
+        "title": "We could not load the documents",
+        "text": "You can try again.",
+        "retry": "Try again",
+        "retrying": "Trying again"
+      },
+      "files": {
+        "region": "Document list",
+        "empty": {
+          "title": "There are no documents yet",
+          "text": "Upload a file and it will stay here. You will also see the ones Jose shares with you."
+        },
+        "download": "Download",
+        "downloadFor": "Download {name}",
+        "delete": "Delete",
+        "deleteFor": "Delete {name}",
+        "deleteConfirm": "It is deleted for good.",
+        "deleting": "Deleting",
+        "cancel": "Cancel",
+        "deleted": "{name} deleted",
+        "visibility": {
+          "client": "Shared with you",
+          "team": "Team only"
+        },
+        "errors": {
+          "invalid_request": "We did not understand the upload. Reload the page and try again.",
+          "file_missing": "Choose a file.",
+          "file_too_large": "The file is larger than 25 MB.",
+          "invalid_mime": "That file type is not accepted.",
+          "invalid_name": "The file name is not valid.",
+          "project_not_found": "That project no longer exists.",
+          "not_member": "You do not have access to this project.",
+          "visibility_forbidden": "You cannot upload documents for the team only.",
+          "project_quota_exceeded": "This project has reached 1 GB of documents. Delete some of yours to upload more.",
+          "document_exists": "That document was already uploaded.",
+          "document_not_found": "That document no longer exists.",
+          "forbidden": "You do not have permission to do this. Sign in again with your code.",
+          "storage_failed": "We could not save the file. Try again.",
+          "unavailable": "We cannot save right now. Try again in a moment.",
+          "error": "Something went wrong. Try again."
+        }
+      },
+      "uploader": {
+        "title": "Upload a document",
+        "file": "File",
+        "fileHint": "PDF, images, short video, zip, Office, text or CSV. Up to 25 MB.",
+        "visibility": "Who can see it",
+        "visibilityOptions": {
+          "client": "You and the team",
+          "team": "Team only"
+        },
+        "submit": "Upload",
+        "submitting": "Uploading",
+        "progress": "Upload progress",
+        "done": "Document uploaded",
+        "errors": {
+          "invalid_request": "We did not understand the upload. Reload the page and try again.",
+          "file_missing": "Choose a file.",
+          "file_too_large": "The file is larger than 25 MB.",
+          "invalid_mime": "That file type is not accepted.",
+          "invalid_name": "The file name is not valid.",
+          "project_not_found": "That project no longer exists.",
+          "not_member": "You do not have access to this project.",
+          "visibility_forbidden": "You cannot upload documents for the team only.",
+          "project_quota_exceeded": "This project has reached 1 GB of documents. Delete some of yours to upload more.",
+          "document_exists": "That document was already uploaded.",
+          "document_not_found": "That document no longer exists.",
+          "forbidden": "You do not have permission to do this. Sign in again with your code.",
+          "storage_failed": "We could not save the file. Try again.",
+          "unavailable": "We cannot save right now. Try again in a moment.",
+          "error": "Something went wrong. Try again."
         }
       }
     }

@@ -13,6 +13,12 @@ import type { TaskDetailLabels } from "@/components/area/TaskDetail/TaskDetail";
 import type { TodoLabels } from "@/components/area/TodoForYou/TodoForYou";
 import type { MessageKey } from "@/i18n/keys.generated";
 import type { StoryStatus } from "@/types/area";
+import {
+  type DocumentErrorCode,
+  documentErrorCodes,
+  type FileListLabels,
+  type UploaderLabels,
+} from "@/types/project-documents";
 
 type T = (key: MessageKey) => string;
 
@@ -253,5 +259,51 @@ export function consentLabels(t: T): NexoConsentLabels {
       forbidden: t("area.chat.consent.errors.forbidden"),
       error: t("area.chat.consent.errors.error"),
     },
+  };
+}
+
+function documentErrors(t: T, group: "files" | "uploader"): Record<DocumentErrorCode, string> {
+  const errors = {} as Record<DocumentErrorCode, string>;
+  for (const code of documentErrorCodes) {
+    errors[code] = t(`area.docs.${group}.errors.${code}` as MessageKey);
+  }
+  return errors;
+}
+
+export function fileListLabels(t: T): FileListLabels {
+  return {
+    region: t("area.docs.files.region"),
+    empty: { title: t("area.docs.files.empty.title"), text: t("area.docs.files.empty.text") },
+    download: t("area.docs.files.download"),
+    downloadFor: t("area.docs.files.downloadFor"),
+    delete: t("area.docs.files.delete"),
+    deleteFor: t("area.docs.files.deleteFor"),
+    deleteConfirm: t("area.docs.files.deleteConfirm"),
+    deleting: t("area.docs.files.deleting"),
+    cancel: t("area.docs.files.cancel"),
+    deleted: t("area.docs.files.deleted"),
+    visibility: {
+      client: t("area.docs.files.visibility.client"),
+      team: t("area.docs.files.visibility.team"),
+    },
+    errors: documentErrors(t, "files"),
+  };
+}
+
+export function uploaderLabels(t: T): UploaderLabels {
+  return {
+    title: t("area.docs.uploader.title"),
+    file: t("area.docs.uploader.file"),
+    fileHint: t("area.docs.uploader.fileHint"),
+    visibility: t("area.docs.uploader.visibility"),
+    visibilityOptions: {
+      client: t("area.docs.uploader.visibilityOptions.client"),
+      team: t("area.docs.uploader.visibilityOptions.team"),
+    },
+    submit: t("area.docs.uploader.submit"),
+    submitting: t("area.docs.uploader.submitting"),
+    progress: t("area.docs.uploader.progress"),
+    done: t("area.docs.uploader.done"),
+    errors: documentErrors(t, "uploader"),
   };
 }
