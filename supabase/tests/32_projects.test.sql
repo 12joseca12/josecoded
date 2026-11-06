@@ -2,7 +2,7 @@ begin;
 
 \ir support/helpers.sql
 
-select plan(96);
+select plan(97);
 
 create function pg_temp.affected(p_sql text)
 returns bigint
@@ -103,7 +103,7 @@ insert into ids values ('t2', public.upsert_task((select v from ids where k = 'p
 insert into ids values ('t3', public.upsert_task((select v from ids where k = 'p1'), 'Task three', 'build'));
 insert into ids values ('t4', public.upsert_task((select v from ids where k = 'p1'), 'Task four', 'design', null, null, 'done'));
 
-select is((select sort from public.tasks where id = (select v from ids where k = 't3')), 2, 'new tasks go to the end of their phase');
+select is((select sort from public.project_tasks where id = (select v from ids where k = 't3')), 2, 'new tasks go to the end of their phase');
 select throws_ok(
   $$select public.upsert_task((select v from ids where k = 'p1'), 'Bad', 'build', null, null, 'todo', md5('p-free2@example.com')::uuid)$$,
   'P0001', 'invalid_assignee', 'only the client or the freelance of the project can be assigned'
@@ -112,8 +112,8 @@ select throws_ok(
   $$select public.upsert_task((select v from ids where k = 'p2'), 'Bad', 'build', (select v from ids where k = 't1'))$$,
   'P0001', 'task_project_mismatch', 'a task cannot move to another project through upsert'
 );
-select is((select status::text from public.tasks where id = (select v from ids where k = 't4')), 'done', 'a task can be created done');
-select isnt((select done_at from public.tasks where id = (select v from ids where k = 't4')), null::timestamptz, 'a done task has done_at');
+select is((select status::text from public.project_tasks where id = (select v from ids where k = 't4')), 'done', 'a task can be created done');
+select isnt((select done_at from public.project_tasks where id = (select v from ids where k = 't4')), null::timestamptz, 'a done task has done_at');
 
 select is(
   (select row(done, total, percent)::text from public.project_progress where project_id = (select v from ids where k = 'p1')),
@@ -122,17 +122,17 @@ select is(
 );
 
 select lives_ok($$select public.move_task((select v from ids where k = 't3'), 'build', 0)$$, 'the admin moves a task');
-select is((select sort from public.tasks where id = (select v from ids where k = 't3')), 0, 'the moved task takes the position');
-select is((select sort from public.tasks where id = (select v from ids where k = 't1')), 1, 'the others shift down');
+select is((select sort from public.project_tasks where id = (select v from ids where k = 't3')), 0, 'the moved task takes the position');
+select is((select sort from public.project_tasks where id = (select v from ids where k = 't1')), 1, 'the others shift down');
 select lives_ok($$select public.move_task((select v from ids where k = 't3'), 'build', 2)$$, 'the admin moves a task further down');
 select is(
-  (select array_agg(title order by sort) from public.tasks where project_id = (select v from ids where k = 'p1') and phase = 'build'),
+  (select array_agg(title order by sort) from public.project_tasks where project_id = (select v from ids where k = 'p1') and phase = 'build'),
   array['Task one', 'Task two', 'Task three'],
   'moving down renumbers the whole phase'
 );
 select lives_ok($$select public.move_task((select v from ids where k = 't3'), 'design', 0)$$, 'the admin moves a task to another phase');
 select is(
-  (select row(phase::text, sort)::text from public.tasks where id = (select v from ids where k = 't3')),
+  (select row(phase::text, sort)::text from public.project_tasks where id = (select v from ids where k = 't3')),
   '(design,0)',
   'the moved task leads the target phase'
 );
@@ -145,8 +145,8 @@ reset role;
 select tests.login_as('p-client@example.com');
 
 select is((select count(*) from public.projects), 1::bigint, 'the client reads only their project');
-select is((select count(*) from public.tasks), 3::bigint, 'the client reads the tasks of their project');
-select is((select count(*) from public.project_overview), 1::bigint, 'the client sees their overview row');
+select is((select count(*) from public.project_tasks), 3::bigint, 'the client reads the tasks of their project');
+select throws_ok($$select count(*) from public.project_overview$$, '42501', 'forbidden', 'the client cannot read the admin overview');
 select is(
   pg_temp.affected($q$update public.projects set name = 'Hacked'$q$),
   0::bigint,
@@ -154,8 +154,11 @@ select is(
 );
 select throws_ok($$select public.complete_my_task((select v from ids where k = 't2'))$$, '42501', 'forbidden', 'the client cannot complete a task assigned to someone else');
 select lives_ok($$select public.complete_my_task((select v from ids where k = 't1'))$$, 'the client completes their own task');
-select is((select status::text from public.tasks where id = (select v from ids where k = 't1')), 'done', 'the task is done');
+select is((select status::text from public.project_tasks where id = (select v from ids where k = 't1')), 'done', 'the task is done');
+select is((select done_by from public.project_tasks where id = (select v from ids where k = 't1')), null::uuid, 'the client does not read who completed a task');
+reset role;
 select is((select done_by from public.tasks where id = (select v from ids where k = 't1')), md5('p-client@example.com')::uuid, 'done_by is the client');
+select tests.login_as('p-client@example.com');
 
 with i as (
   insert into public.stories (project_id, author_id, title, as_a, i_want, so_that, criteria)
@@ -179,7 +182,7 @@ reset role;
 select tests.login_as('p-client2@example.com');
 
 select is((select count(*) from public.projects where id = (select v from ids where k = 'p1')), 0::bigint, 'another client does not read the project');
-select is((select count(*) from public.tasks where project_id = (select v from ids where k = 'p1')), 0::bigint, 'another client does not read the tasks');
+select is((select count(*) from public.project_tasks where project_id = (select v from ids where k = 'p1')), 0::bigint, 'another client does not read the tasks');
 select is((select count(*) from public.stories), 0::bigint, 'another client does not read the stories');
 
 reset role;
@@ -230,7 +233,7 @@ select tests.login_as('p-admin@example.com');
 
 select is(public.decide_story((select v from ids where k = 's2'), 'accept', 5, 200, 'Ok', true)::text, 'in_tasks', 'accepting with create_task leaves the story in_tasks');
 select is(
-  (select count(*) from public.tasks t join public.stories s on s.task_id = t.id and t.story_id = s.id where s.id = (select v from ids where k = 's2')),
+  (select count(*) from public.project_tasks t join public.stories s on s.task_id = t.id and t.story_id = s.id where s.id = (select v from ids where k = 's2')),
   1::bigint,
   'the story and the task point at each other'
 );
@@ -252,7 +255,7 @@ reset role;
 select tests.login_as('p-free@example.com');
 
 select is((select count(*) from public.projects), 0::bigint, 'the freelance reads nothing directly from projects');
-select is((select count(*) from public.project_overview), 0::bigint, 'the freelance has no overview rows');
+select throws_ok($$select count(*) from public.project_overview$$, '42501', 'forbidden', 'the freelance cannot read the admin overview');
 select is((select count(*) from public.stories), 0::bigint, 'the freelance reads no stories');
 select is((select count(*) from public.freelance_projects), 1::bigint, 'the freelance reads the freelance_projects view');
 select is(
@@ -265,30 +268,30 @@ select is(
   0::bigint,
   'the freelance view exposes no client, contact, deal or amount columns'
 );
-select cmp_ok((select count(*) from public.tasks), '>', 0::bigint, 'the freelance reads the tasks of their project');
+select cmp_ok((select count(*) from public.project_tasks), '>', 0::bigint, 'the freelance reads the tasks of their project');
 select lives_ok($$select public.complete_my_task((select v from ids where k = 't2'))$$, 'the freelance completes their own task');
 
 reset role;
 select tests.login_aal1('p-free@example.com');
 select is((select count(*) from public.freelance_projects), 0::bigint, 'the freelance without aal2 sees nothing');
-select is((select count(*) from public.tasks), 0::bigint, 'the freelance without aal2 reads no tasks');
+select is((select count(*) from public.project_tasks), 0::bigint, 'the freelance without aal2 reads no tasks');
 
 reset role;
 select tests.login_as('p-free2@example.com');
 select is((select count(*) from public.freelance_projects), 0::bigint, 'another freelance does not see the project');
-select is((select count(*) from public.tasks), 0::bigint, 'another freelance reads no tasks');
+select is((select count(*) from public.project_tasks), 0::bigint, 'another freelance reads no tasks');
 
 reset role;
 select tests.login_as('p-closer@example.com');
 select is((select count(*) from public.projects), 0::bigint, 'the closer reads no projects');
-select is((select count(*) from public.tasks), 0::bigint, 'the closer reads no tasks');
+select is((select count(*) from public.project_tasks), 0::bigint, 'the closer reads no tasks');
 select is((select count(*) from public.stories), 0::bigint, 'the closer reads no stories');
 
 reset role;
 select tests.login_as('p-admin@example.com');
 
 select lives_ok($$select public.set_project_freelance((select v from ids where k = 'p1'), md5('p-free2@example.com')::uuid)$$, 'the admin replaces the freelance');
-select is((select assignee_id from public.tasks where id = (select v from ids where k = 't2')), null::uuid, 'the tasks of the previous freelance are unassigned');
+select is((select assignee_id from public.project_tasks where id = (select v from ids where k = 't2')), null::uuid, 'the tasks of the previous freelance are unassigned');
 select throws_ok($$select public.set_project_freelance((select v from ids where k = 'p1'), md5('p-client@example.com')::uuid)$$, 'P0001', 'invalid_freelance', 'a client cannot be the freelance');
 
 select lives_ok($$select public.archive_project((select v from ids where k = 'p2'))$$, 'the admin archives a project');

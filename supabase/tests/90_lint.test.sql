@@ -344,7 +344,7 @@ select is(
     where n.nspname = 'private'
       and has_function_privilege('authenticated', p.oid, 'execute')
   ),
-  'ai_active,can_write_conversation,client_project_update_rows,contact_has_history,conversation_topic_id,freelance_fee_rows,freelance_project_rows,is_aal2,is_admin,is_api_client_role,is_closer,is_conversation_member,is_project_member,is_staff,mask_excerpt,offer_answers_valid,owns_contact,owns_lead,role,slug_list_valid,storage_conversation_id,uid',
+  'ai_active,can_read_document_object,can_write_conversation,client_project_update_rows,contact_has_history,conversation_topic_id,freelance_fee_rows,freelance_project_rows,is_aal2,is_admin,is_api_client_role,is_closer,is_conversation_member,is_project_member,is_staff,mask_excerpt,offer_answers_valid,owns_contact,owns_lead,project_document_rows,project_overview_rows,project_progress_rows,project_task_rows,role,slug_list_valid,storage_conversation_id,uid',
   'only the policy helpers and the two constraint helpers in private are executable by authenticated (decision 9.6)'
 );
 

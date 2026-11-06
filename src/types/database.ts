@@ -2657,6 +2657,48 @@ export type Database = {
         }
         Relationships: []
       }
+      project_documents: {
+        Row: {
+          created_at: string | null
+          id: string | null
+          mime: string | null
+          name: string | null
+          project_id: string | null
+          size_bytes: number | null
+          storage_path: string | null
+          uploaded_by: string | null
+          uploaded_by_me: boolean | null
+          uploader: string | null
+          visibility: Database["public"]["Enums"]["document_visibility"] | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string | null
+          mime?: string | null
+          name?: string | null
+          project_id?: string | null
+          size_bytes?: number | null
+          storage_path?: string | null
+          uploaded_by?: string | null
+          uploaded_by_me?: boolean | null
+          uploader?: string | null
+          visibility?: Database["public"]["Enums"]["document_visibility"] | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string | null
+          mime?: string | null
+          name?: string | null
+          project_id?: string | null
+          size_bytes?: number | null
+          storage_path?: string | null
+          uploaded_by?: string | null
+          uploaded_by_me?: boolean | null
+          uploader?: string | null
+          visibility?: Database["public"]["Enums"]["document_visibility"] | null
+        }
+        Relationships: []
+      }
       project_overview: {
         Row: {
           archived_at: string | null
@@ -2741,6 +2783,60 @@ export type Database = {
           percent?: number | null
           project_id?: string | null
           total?: number | null
+        }
+        Relationships: []
+      }
+      project_tasks: {
+        Row: {
+          assigned_to_me: boolean | null
+          assignee_id: string | null
+          assignee_kind: string | null
+          created_at: string | null
+          description: string | null
+          done_at: string | null
+          done_by: string | null
+          id: string | null
+          phase: Database["public"]["Enums"]["project_phase"] | null
+          project_id: string | null
+          sort: number | null
+          status: Database["public"]["Enums"]["task_status"] | null
+          story_id: string | null
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          assigned_to_me?: boolean | null
+          assignee_id?: string | null
+          assignee_kind?: string | null
+          created_at?: string | null
+          description?: string | null
+          done_at?: string | null
+          done_by?: string | null
+          id?: string | null
+          phase?: Database["public"]["Enums"]["project_phase"] | null
+          project_id?: string | null
+          sort?: number | null
+          status?: Database["public"]["Enums"]["task_status"] | null
+          story_id?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          assigned_to_me?: boolean | null
+          assignee_id?: string | null
+          assignee_kind?: string | null
+          created_at?: string | null
+          description?: string | null
+          done_at?: string | null
+          done_by?: string | null
+          id?: string | null
+          phase?: Database["public"]["Enums"]["project_phase"] | null
+          project_id?: string | null
+          sort?: number | null
+          status?: Database["public"]["Enums"]["task_status"] | null
+          story_id?: string | null
+          title?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
