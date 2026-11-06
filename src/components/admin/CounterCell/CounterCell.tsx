@@ -1,14 +1,21 @@
 import Link from "next/link";
 
 import { VisuallyHidden } from "@/components/ui/VisuallyHidden/VisuallyHidden";
-import type { CounterCellData } from "@/types/overview";
 
 import styles from "./CounterCell.module.css";
 
 const dash = "—";
 
+export interface CounterCellView {
+  label: string;
+  value: number | string | null;
+  amount?: string | null;
+  href?: string | null;
+  highlight?: boolean;
+}
+
 interface CounterCellProps {
-  cell: Pick<CounterCellData, "label" | "value" | "amount" | "href">;
+  cell: CounterCellView;
   unknownLabel: string;
 }
 
@@ -32,7 +39,12 @@ export function CounterCell({ cell, unknownLabel }: CounterCellProps) {
     </>
   );
   return (
-    <li className={styles.cell} data-state={state}>
+    <li
+      className={styles.cell}
+      data-state={state}
+      data-kind={typeof cell.value === "string" ? "text" : "count"}
+      data-highlight={cell.highlight === true ? "true" : undefined}
+    >
       {cell.href ? (
         <Link href={cell.href} className={styles.link}>
           {body}

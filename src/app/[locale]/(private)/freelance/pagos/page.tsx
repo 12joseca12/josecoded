@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
+import { CounterCell } from "@/components/admin/CounterCell/CounterCell";
 import { RefreshError } from "@/components/crm/RefreshError/RefreshError";
-import { BalanceCells } from "@/components/freelance/BalanceCells/BalanceCells";
 import { FeeHistoryTable } from "@/components/freelance/FeeHistoryTable/FeeHistoryTable";
 import { FeeItemTable } from "@/components/freelance/FeeItemTable/FeeItemTable";
 import { PayoutTable } from "@/components/freelance/PayoutTable/PayoutTable";
@@ -69,34 +69,36 @@ async function BalancesRegion({ locale }: { locale: Locale }) {
   const data = counters?.status === "ok" ? counters.data : {};
   const money = (value: number | undefined) =>
     value === undefined ? null : formatCents(value, locale);
+  const unknown = t("freelance.pay.balances.unknown");
+  const cells = [
+    {
+      key: "pending",
+      label: t("freelance.pay.balances.pending"),
+      value: money(data.fees_pending_amount),
+    },
+    {
+      key: "owed",
+      label: t("freelance.pay.balances.owed"),
+      value: money(data.fees_owed_amount),
+      highlight: true,
+    },
+    {
+      key: "paidYear",
+      label: t("freelance.pay.balances.paidYear"),
+      value: money(data.fees_paid_year_amount),
+    },
+    {
+      key: "lastPaid",
+      label: t("freelance.pay.balances.lastPaid"),
+      value: data.last_paid_at ? formatDay(data.last_paid_at, locale) : null,
+    },
+  ];
   return (
-    <BalanceCells
-      label={t("freelance.pay.balances.label")}
-      unknownLabel={t("freelance.pay.balances.unknown")}
-      cells={[
-        {
-          key: "pending",
-          label: t("freelance.pay.balances.pending"),
-          value: money(data.fees_pending_amount),
-        },
-        {
-          key: "owed",
-          label: t("freelance.pay.balances.owed"),
-          value: money(data.fees_owed_amount),
-          highlight: true,
-        },
-        {
-          key: "paidYear",
-          label: t("freelance.pay.balances.paidYear"),
-          value: money(data.fees_paid_year_amount),
-        },
-        {
-          key: "lastPaid",
-          label: t("freelance.pay.balances.lastPaid"),
-          value: data.last_paid_at ? formatDay(data.last_paid_at, locale) : null,
-        },
-      ]}
-    />
+    <ul className={styles.counters} aria-label={t("freelance.pay.balances.label")}>
+      {cells.map(({ key, ...cell }) => (
+        <CounterCell key={key} cell={cell} unknownLabel={unknown} />
+      ))}
+    </ul>
   );
 }
 

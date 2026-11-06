@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
+import { CounterCell } from "@/components/admin/CounterCell/CounterCell";
 import { RecentUpdates } from "@/components/area/RecentUpdates/RecentUpdates";
 import { RefreshError } from "@/components/crm/RefreshError/RefreshError";
-import { BalanceCells } from "@/components/freelance/BalanceCells/BalanceCells";
 import { FreelanceTodo } from "@/components/freelance/FreelanceTodo/FreelanceTodo";
 import { ProjectList } from "@/components/freelance/ProjectList/ProjectList";
 import { EmptyState } from "@/components/ui/EmptyState/EmptyState";
@@ -68,36 +68,38 @@ async function CountersRegion({ locale }: { locale: Locale }) {
   const client = await createSupabaseServerClient();
   const counters = client ? await fetchCounters(client) : null;
   const data = counters?.status === "ok" ? counters.data : {};
-  const count = (value: number | undefined) => (value === undefined ? null : String(value));
+  const count = (value: number | undefined) => value ?? null;
+  const unknown = t("freelance.home.counters.unknown");
+  const cells = [
+    {
+      key: "projects",
+      label: t("freelance.home.counters.projects"),
+      value: count(data.projects_active),
+    },
+    {
+      key: "tasks",
+      label: t("freelance.home.counters.tasks"),
+      value: count(data.tasks_pending),
+    },
+    {
+      key: "owed",
+      label: t("freelance.home.counters.owed"),
+      value:
+        data.fees_owed_amount === undefined ? null : formatCents(data.fees_owed_amount, locale),
+      highlight: true,
+    },
+    {
+      key: "toDeliver",
+      label: t("freelance.home.counters.toDeliver"),
+      value: count(data.items_to_deliver),
+    },
+  ];
   return (
-    <BalanceCells
-      label={t("freelance.home.counters.label")}
-      unknownLabel={t("freelance.home.counters.unknown")}
-      cells={[
-        {
-          key: "projects",
-          label: t("freelance.home.counters.projects"),
-          value: count(data.projects_active),
-        },
-        {
-          key: "tasks",
-          label: t("freelance.home.counters.tasks"),
-          value: count(data.tasks_pending),
-        },
-        {
-          key: "owed",
-          label: t("freelance.home.counters.owed"),
-          value:
-            data.fees_owed_amount === undefined ? null : formatCents(data.fees_owed_amount, locale),
-          highlight: true,
-        },
-        {
-          key: "toDeliver",
-          label: t("freelance.home.counters.toDeliver"),
-          value: count(data.items_to_deliver),
-        },
-      ]}
-    />
+    <ul className={styles.counters} aria-label={t("freelance.home.counters.label")}>
+      {cells.map(({ key, ...cell }) => (
+        <CounterCell key={key} cell={cell} unknownLabel={unknown} />
+      ))}
+    </ul>
   );
 }
 

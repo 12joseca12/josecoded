@@ -1,9 +1,9 @@
+import type { FreelanceStatementLabels } from "@/components/admin/StatementPrint/StatementPrint";
 import type { PhaseBoardLabels } from "@/components/area/PhaseBoard/PhaseBoard";
 import type { RecentUpdatesLabels } from "@/components/area/RecentUpdates/RecentUpdates";
 import type { FeeHistoryLabels } from "@/components/freelance/FeeHistoryTable/FeeHistoryTable";
 import type { FeeItemTableLabels } from "@/components/freelance/FeeItemTable/FeeItemTable";
 import type { FreelanceTodoLabels } from "@/components/freelance/FreelanceTodo/FreelanceTodo";
-import type { PayoutStatementLabels } from "@/components/freelance/PayoutStatement/PayoutStatement";
 import type { PayoutTableLabels } from "@/components/freelance/PayoutTable/PayoutTable";
 import type { ProjectListLabels } from "@/components/freelance/ProjectList/ProjectList";
 import type { TaskStatusMenuLabels } from "@/components/freelance/TaskStatusMenu/TaskStatusMenu";
@@ -290,7 +290,7 @@ export function payoutTableLabels(t: T): PayoutTableLabels {
 
 export function statementLabels(
   t: T,
-): PayoutStatementLabels & { print: string; printHint: string } {
+): FreelanceStatementLabels & { print: string; printHint: string } {
   return {
     title: t("freelance.pay.statement.title"),
     notInvoice: t("freelance.pay.statement.notInvoice"),

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
+import { StatementPrint } from "@/components/admin/StatementPrint/StatementPrint";
 import { RefreshError } from "@/components/crm/RefreshError/RefreshError";
-import { PayoutStatement } from "@/components/freelance/PayoutStatement/PayoutStatement";
 import { Heading } from "@/components/ui/Heading/Heading";
 import { Link } from "@/components/ui/Link/Link";
 import { LoadingRegion } from "@/components/ui/LoadingRegion/LoadingRegion";
@@ -63,7 +63,8 @@ async function StatementSection({
         <PrintButton label={labels.print} />
         <p className={styles.muted}>{labels.printHint}</p>
       </div>
-      <PayoutStatement
+      <StatementPrint
+        variant="freelance"
         payout={detail.payout}
         items={detail.items}
         projectNames={Object.fromEntries(

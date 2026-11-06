@@ -76,6 +76,7 @@ async function DetailSection({ locale, id }: { locale: Locale; id: string }) {
         <p className={page.hint}>{labels.printHint}</p>
       </div>
       <StatementPrint
+        variant="admin"
         payout={payout}
         lines={lines}
         items={items}

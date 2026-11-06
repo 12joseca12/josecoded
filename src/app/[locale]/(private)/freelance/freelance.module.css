@@ -39,3 +39,18 @@
   align-items: center;
   gap: var(--space-3);
 }
+
+.counters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 64rem) {
+  .counters {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
