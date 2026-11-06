@@ -2,6 +2,7 @@ import "./turnstile.js";
 import "./auth.js";
 import "./catalog.js";
 import "./profiles.js";
+import "./account.js";
 import "./leads.js";
 import "./inbox.js";
 import "./users.js";

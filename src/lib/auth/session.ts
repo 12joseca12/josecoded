@@ -9,7 +9,9 @@ import { createSupabaseServerClient, type ServerSupabase } from "@/lib/supabase/
 import { assuranceLevels, userRoles, type Zone } from "@/types/auth";
 
 import {
+  accountPath,
   decideAccess,
+  decideAccountAccess,
   loginPath,
   requestPathHeader,
   safeNext,
@@ -73,6 +75,20 @@ export async function requireZone(
   if (access.kind === "login" || access.kind === "second-factor") {
     const requested = (await headers()).get(requestPathHeader);
     const next = safeNext(locale, requested) ?? zonePath(locale, zone);
+    redirect(access.kind === "login" ? loginPath(locale, next) : secondFactorPath(locale, next));
+  }
+  if (access.kind === "not-found" || state.status !== "member") notFound();
+  return state;
+}
+
+export async function requireAccount(
+  locale: string,
+): Promise<Extract<SessionState, { status: "member" }>> {
+  const state = await getSessionState();
+  if (state === null) notFound();
+  const access = decideAccountAccess(state);
+  if (access.kind === "login" || access.kind === "second-factor") {
+    const next = accountPath(locale);
     redirect(access.kind === "login" ? loginPath(locale, next) : secondFactorPath(locale, next));
   }
   if (access.kind === "not-found" || state.status !== "member") notFound();

@@ -6,6 +6,12 @@ import { passesRateLimit } from "@/lib/contact/rate-limit";
 import { getFeatures } from "@/lib/settings/features";
 import { createSupabaseServerClient, type ServerSupabase } from "@/lib/supabase/server";
 import {
+  type SessionScopeResult,
+  sessionScopeSchema,
+  type TotpChangeResult,
+  totpChangeSchema,
+} from "@/types/account";
+import {
   type EnrollmentResult,
   type GoogleStartResult,
   googleStartSchema,
@@ -242,5 +248,127 @@ export async function handleSignOut(env: Record<string, string | undefined>): Pr
     await client.auth.signOut({ scope: "local" });
   } catch {
     return;
+  }
+}
+
+export async function handleSignOutScope(
+  raw: unknown,
+  env: Record<string, string | undefined>,
+): Promise<SessionScopeResult> {
+  const scope = sessionScopeSchema.safeParse(raw);
+  const client = await createSupabaseServerClient(env);
+  if (!scope.success || !client) return { status: "error" };
+  try {
+    const state = await readSessionState(client);
+    if (state.status !== "member") return { status: "error" };
+    const { error } = await client.auth.signOut({ scope: scope.data });
+    return error ? { status: "error" } : { status: "done" };
+  } catch {
+    return { status: "error" };
+  }
+}
+
+export async function handleStartTotpChange(
+  ip: string | null,
+  env: Record<string, string | undefined>,
+): Promise<EnrollmentResult> {
+  const context = await createContext(env);
+  if (!context) return mapEnrollment(null);
+  const { client } = context;
+  try {
+    const state = await readSessionState(client);
+    if (state.status !== "member" || !requiresAal2(state.role) || state.level !== "aal2") {
+      return mapEnrollment({ ok: false, failure: "unauthenticated" });
+    }
+    const limit = limiterFor(context.config, "AUTH_LIMITER");
+    if (!((await limit(ipKey("totp-change-ip", ip))) && (await limit(totpUserKey(state.userId))))) {
+      return mapEnrollment({ ok: false, failure: "rate_limited" });
+    }
+    const factors = await client.auth.mfa.listFactors();
+    if (factors.error) return mapEnrollment({ ok: false, failure: "error" });
+    for (const factor of factors.data.all) {
+      if (factor.factor_type === "totp" && factor.status === "unverified") {
+        await client.auth.mfa.unenroll({ factorId: factor.id });
+      }
+    }
+    const { data, error } = await client.auth.mfa.enroll({
+      factorType: "totp",
+      friendlyName: `${factorName}-${Date.now().toString(36)}`,
+      issuer: factorName,
+    });
+    if (error) {
+      const failure = classifyCodeError(error);
+      return mapEnrollment({
+        ok: false,
+        failure: failure === "rate_limited" ? "rate_limited" : "error",
+      });
+    }
+    if (!data.totp.qr_code.startsWith("data:image/")) {
+      return mapEnrollment({ ok: false, failure: "error" });
+    }
+    return mapEnrollment({
+      ok: true,
+      factorId: data.id,
+      qrCode: data.totp.qr_code,
+      secret: data.totp.secret,
+    });
+  } catch {
+    return mapEnrollment({ ok: false, failure: "error" });
+  }
+}
+
+export async function handleFinishTotpChange(
+  raw: unknown,
+  ip: string | null,
+  env: Record<string, string | undefined>,
+): Promise<TotpChangeResult> {
+  const parsed = totpChangeSchema.safeParse(raw);
+  if (!parsed.success) {
+    const message = parsed.error.issues[0]?.message;
+    return {
+      status: "invalid",
+      error: message === "factor_invalid" ? "factor_invalid" : "code_invalid",
+    };
+  }
+  const context = await createContext(env);
+  if (!context) return { status: "error" };
+  const { client } = context;
+  try {
+    const state = await readSessionState(client);
+    if (state.status !== "member" || !requiresAal2(state.role) || state.level !== "aal2") {
+      return { status: "unauthenticated" };
+    }
+    const limit = limiterFor(context.config, "AUTH_LIMITER");
+    if (!((await limit(ipKey("totp-change-ip", ip))) && (await limit(totpUserKey(state.userId))))) {
+      return { status: "rate_limited" };
+    }
+    const before = await client.auth.mfa.listFactors();
+    if (before.error) return { status: "error" };
+    const target = before.data.all.find(
+      (factor) =>
+        factor.id === parsed.data.factorId &&
+        factor.factor_type === "totp" &&
+        factor.status === "unverified",
+    );
+    if (!target) return { status: "invalid", error: "factor_invalid" };
+    const { error } = await client.auth.mfa.challengeAndVerify({
+      factorId: target.id,
+      code: parsed.data.code,
+    });
+    if (error) {
+      const failure = classifyCodeError(error);
+      if (failure === "rate_limited") return { status: "rate_limited" };
+      return failure === "wrong_code" ? { status: "wrong_code" } : { status: "error" };
+    }
+    const after = await client.auth.mfa.listFactors();
+    if (after.error) return { status: "error" };
+    const outcomes = await Promise.all(
+      after.data.all
+        .filter((factor) => factor.factor_type === "totp" && factor.id !== target.id)
+        .map((factor) => client.auth.mfa.unenroll({ factorId: factor.id })),
+    );
+    return outcomes.some((outcome) => outcome.error) ? { status: "error" } : { status: "done" };
+  } catch {
+    return { status: "error" };
   }
 }

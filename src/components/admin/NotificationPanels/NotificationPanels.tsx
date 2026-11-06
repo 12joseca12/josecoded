@@ -36,7 +36,7 @@ export async function TelegramPanel({
   locale,
   zone,
   withTest,
-}: PanelProps & { withTest: boolean }) {
+}: Omit<PanelProps, "zone"> & { zone: StaffZone | "account"; withTest: boolean }) {
   const t = await getTranslator(locale);
   const client = await createSupabaseServerClient();
   if (client === null) notFound();

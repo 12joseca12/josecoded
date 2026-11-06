@@ -5710,5 +5710,143 @@
       "sizeMb": "{n} MB"
     },
     "sourcesLabel": "Sources"
+  },
+  "account": {
+    "meta": {
+      "title": "My account"
+    },
+    "title": "My account",
+    "lead": "Your details, how you sign in and what you can ask me about them.",
+    "menuLink": "My account",
+    "brandLabel": "josecoded, My account: go to the start",
+    "brandWord": "My account",
+    "navLabel": "My account",
+    "userLabel": "Signed in as {name}",
+    "signOut": "Sign out",
+    "signingOut": "Signing out",
+    "nav": {
+      "account": "My account",
+      "back": "Back to my area",
+      "soon": "Coming soon",
+      "more": "More",
+      "moreTitle": "More sections",
+      "close": "Close"
+    },
+    "loading": {
+      "profile": "Loading your details",
+      "access": "Loading your sessions",
+      "security": "Loading the second factor",
+      "telegram": "Loading Telegram",
+      "privacy": "Loading your personal data"
+    },
+    "error": {
+      "title": "This part could not be loaded",
+      "text": "We could not read your data. Try again.",
+      "retry": "Try again",
+      "retrying": "Trying again"
+    },
+    "profile": {
+      "title": "Your details",
+      "lead": "What you see here, you can change yourself.",
+      "emailLabel": "Email",
+      "emailHint": "It is the email you sign in with. To change it, write to me.",
+      "nameLabel": "Name",
+      "localeLabel": "Language of emails and alerts",
+      "localeHint": "It is the language I write to you in. It does not change the language of the site you are viewing.",
+      "locales": {
+        "es": "Español",
+        "en": "English"
+      },
+      "save": "Save changes",
+      "saving": "Saving",
+      "saved": "Changes saved.",
+      "errors": {
+        "name_required": "Enter your name.",
+        "name_too_long": "The name is too long. 200 characters at most.",
+        "locale_invalid": "Choose a language from the list.",
+        "forbidden": "You are not allowed to do this.",
+        "unavailable": "This is not available right now. Try again in a while.",
+        "error": "We could not save it. Try again."
+      }
+    },
+    "access": {
+      "title": "How you sign in and your sessions",
+      "lead": "You sign in with a code sent to your email, no password. I cannot show you a list of devices, but I can close open sessions.",
+      "methodsTitle": "Ways to sign in",
+      "email": "Code by email",
+      "google": "Google",
+      "googleLinked": "Linked to your account",
+      "googleNotLinked": "Not linked",
+      "others": "Close the other sessions",
+      "othersLoading": "Closing",
+      "othersDone": "Done. The session on this device is still open.",
+      "everywhere": "Sign out on every device",
+      "everywhereLoading": "Closing",
+      "everywhereConfirm": {
+        "question": "The session on this device will be closed too and you will need to sign in again. Continue?",
+        "yes": "Yes, close all",
+        "no": "No"
+      },
+      "error": "We could not close the sessions. Try again."
+    },
+    "security": {
+      "title": "Second factor",
+      "lead": "Your area asks for a code from an authenticator app as well as your email.",
+      "status": "Status",
+      "statusOn": "On. You have an authenticator app linked.",
+      "statusOff": "No app linked. You will link one the next time you enter your area.",
+      "change": "Change device",
+      "starting": "Preparing",
+      "scanLabel": "Scan this code with the app on the new device",
+      "qrAlt": "QR code to link the authenticator app",
+      "secretLabel": "If you cannot scan it, enter this key",
+      "codeLabel": "6-digit code",
+      "codeHint": "The one shown by the app on the new device.",
+      "confirm": "Confirm the change",
+      "confirming": "Confirming",
+      "cancel": "Cancel",
+      "done": "Device changed. The previous app no longer works to sign in.",
+      "errors": {
+        "code_invalid": "Enter the 6 digits.",
+        "factor_invalid": "The change has expired. Start again."
+      },
+      "failed": "We could not make the change. Try again.",
+      "wrongCode": "That code is not valid. Check that it comes from the new app.",
+      "rateLimited": "Too many attempts. Wait a moment and try again."
+    },
+    "notifications": {
+      "link": "Choose which alerts I get"
+    },
+    "privacy": {
+      "title": "Your personal data",
+      "lead": "What I keep and how I handle it is in the privacy policy.",
+      "policy": "Read the privacy policy",
+      "exportTitle": "A copy of your data",
+      "exportText": "There is no automatic download. If you want a copy, ask me by email.",
+      "contact": "Write to {email}",
+      "deletion": {
+        "title": "Delete my account",
+        "lead": "Asking creates a request that I will review myself. Nothing is deleted automatically.",
+        "request": "Request the deletion of my account",
+        "requestLoading": "Sending",
+        "confirm": {
+          "question": "The request to delete your account will be sent. You can withdraw it until it has been handled. Continue?",
+          "yes": "Yes, request the deletion",
+          "no": "No"
+        },
+        "pendingTitle": "Request sent",
+        "pendingText": "You asked for your account to be deleted on {date}. It is waiting for review.",
+        "withdraw": "Withdraw the request",
+        "withdrawLoading": "Withdrawing",
+        "done": "Request sent.",
+        "withdrawn": "Request withdrawn.",
+        "unavailable": "It cannot be requested from here yet. To ask for the deletion, write to me by email.",
+        "errors": {
+          "forbidden": "You are not allowed to do this.",
+          "unavailable": "This is not available right now. Try again in a while.",
+          "error": "We could not send the request. Try again."
+        }
+      }
+    }
   }
 }

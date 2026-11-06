@@ -1,6 +1,12 @@
 import { bearer, extendAuthState, people, personById } from "./auth.js";
 import { route, send } from "./registry.js";
 
+const slowMs = 1500;
+
+function pause(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 const rates = {
   [people["closer@example.com"].id]: { closer_rate: 10, closer_recurring_rate: 7.5 },
 };
@@ -8,12 +14,18 @@ const rates = {
 extendAuthState((state) => {
   state.calls.profiles = [];
   state.profiles = new Map();
+  state.profileEdits = new Map();
 });
 
-route("GET", "/rest/v1/profiles", ({ request, response, url }) => {
+route("GET", "/rest/v1/profiles", async ({ request, response, url }) => {
   const session = bearer(request);
   session?.auth.calls.profiles.push({ authenticated: true });
   if (!session) return send(response, 401, { code: "PGRST301", message: "JWT invalid" });
+  const accountView = (url.searchParams.get("select") ?? "").includes("locale");
+  if (accountView && session.auth.account?.mode.profile === "error") {
+    return send(response, 500, { code: "XX000", message: "internal", details: null, hint: null });
+  }
+  if (accountView && session.auth.account?.mode.profile === "slow") await pause(slowMs);
   if (url.searchParams.has("parent_closer_id")) {
     const caller = personById(session.userId)?.[1];
     const parent = url.searchParams.get("parent_closer_id").replace("eq.", "");
@@ -72,7 +84,12 @@ route("GET", "/rest/v1/profiles", ({ request, response, url }) => {
     hasProfile && found[1].id === session.userId
       ? {
           role: created?.role ?? found[1].role,
-          full_name: created?.full_name ?? found[1].name,
+          full_name:
+            session.auth.profileEdits.get(found[1].id)?.full_name ??
+            created?.full_name ??
+            found[1].name,
+          locale: session.auth.profileEdits.get(found[1].id)?.locale ?? "es",
+          created_at: "2026-10-01T09:00:00+00:00",
           is_active: !found[1].inactive,
           archived_at: null,
           ...(rates[found[1].id] ?? { closer_rate: null, closer_recurring_rate: null }),

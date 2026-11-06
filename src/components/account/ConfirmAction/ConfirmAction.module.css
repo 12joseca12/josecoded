@@ -1,0 +1,17 @@
+.confirm {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.question {
+  max-width: 38rem;
+  color: var(--ink);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+}
+
+.answers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
