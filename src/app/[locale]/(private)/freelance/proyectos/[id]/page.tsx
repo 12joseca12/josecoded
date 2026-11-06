@@ -9,6 +9,7 @@ import { ProjectHeader } from "@/components/area/ProjectHeader/ProjectHeader";
 import { ProjectLinks } from "@/components/area/ProjectLinks/ProjectLinks";
 import { Uploader } from "@/components/area/Uploader/Uploader";
 import { RefreshError } from "@/components/crm/RefreshError/RefreshError";
+import { FeeCard } from "@/components/freelance/FeeCard/FeeCard";
 import { ProgressLog } from "@/components/freelance/ProgressLog/ProgressLog";
 import { TaskStatusMenu } from "@/components/freelance/TaskStatusMenu/TaskStatusMenu";
 import { UpdateForm } from "@/components/freelance/UpdateForm/UpdateForm";
@@ -27,8 +28,10 @@ import { fetchLinks } from "@/lib/area/overview";
 import { fetchBoard, groupByPhase } from "@/lib/area/tasks";
 import { requireZone } from "@/lib/auth/session";
 import { fetchProjectDocuments } from "@/lib/documents/project-documents";
+import { activeFee, fetchFeeItems, fetchFeeSummaries } from "@/lib/freelance/fees";
 import {
   boardLabels,
+  feeCardLabels,
   fileLabels,
   progressLogLabels,
   statusMenuLabels,
@@ -42,9 +45,12 @@ import type { FreelanceProject } from "@/types/freelance";
 
 import {
   createUpdateAction,
+  deleteItemAction,
   deleteUpdateAction,
+  markDeliveredAction,
   setTaskStatusAction,
   setUpdateVisibilityAction,
+  submitHoursAction,
 } from "../../actions";
 import styles from "../../freelance.module.css";
 
@@ -171,6 +177,30 @@ async function UpdatesRegion({
   );
 }
 
+async function FeeRegion({ locale, project }: { locale: Locale; project: FreelanceProject }) {
+  const client = await createSupabaseServerClient();
+  const summaries = client ? await fetchFeeSummaries(client, project.id) : null;
+  if (summaries?.status !== "ok") return regionError(locale);
+  const summary = activeFee(summaries.data) ?? null;
+  const items =
+    summary === null || client === null ? null : await fetchFeeItems(client, [summary.fee_id]);
+  if (items?.status === "error") return regionError(locale);
+  const t = await getTranslator(locale);
+  return (
+    <FeeCard
+      projectId={project.id}
+      summary={summary}
+      items={items?.data ?? []}
+      locale={locale}
+      today={new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Madrid" }).format(new Date())}
+      labels={feeCardLabels(t)}
+      submitHours={submitHoursAction.bind(null, locale)}
+      deliver={markDeliveredAction.bind(null, locale)}
+      remove={deleteItemAction.bind(null, locale)}
+    />
+  );
+}
+
 async function LinksRegion({ locale, project }: { locale: Locale; project: FreelanceProject }) {
   const client = await createSupabaseServerClient();
   const links = client ? await fetchLinks(client, project.id) : null;
@@ -235,6 +265,9 @@ async function ProjectContent({
             <BoardRegion locale={locale} project={project} />
           </Suspense>
         </section>
+        <Suspense fallback={<RegionSkeleton label={loading} height="10rem" />}>
+          <FeeRegion locale={locale} project={project} />
+        </Suspense>
         <Suspense fallback={<RegionSkeleton label={loading} height="8rem" />}>
           <UpdatesRegion locale={locale} project={project} userId={userId} />
         </Suspense>

@@ -4434,6 +4434,164 @@
           "error": "No hemos podido guardarlo. Inténtalo de nuevo."
         }
       }
+    },
+    "fees": {
+      "title": "Tarifa y partidas",
+      "modes": {
+        "hourly": "Por horas",
+        "milestones": "Por hitos",
+        "fixed": "Precio fijo"
+      },
+      "hourly": "{rate} la hora",
+      "hourlyCap": "hasta {hours} h",
+      "fixed": "{amount} por el proyecto",
+      "milestones": "Jose define los hitos y los aprueba al entregarlos",
+      "owed": "Te deben {amount} de este proyecto.",
+      "none": "Jose aún no ha acordado tu tarifa en este proyecto.",
+      "itemsTitle": "Partidas",
+      "noItems": "Todavía no hay partidas.",
+      "statuses": {
+        "pending": "Pendiente",
+        "delivered": "Entregado",
+        "approved": "Aprobado",
+        "rejected": "Rechazado",
+        "paid": "Pagado"
+      },
+      "hoursOf": "{hours} h",
+      "rejectedReason": "Motivo: {reason}",
+      "deliver": "Marcar entregado",
+      "delivering": "Marcando",
+      "delivered": "Hito marcado como entregado",
+      "deleteItem": "Borrar",
+      "deleteFor": "Borrar el parte «{name}»",
+      "deleting": "Borrando",
+      "deletedItem": "Parte borrado",
+      "closedNote": "Esta tarifa está cerrada: ya no admite partidas nuevas.",
+      "errors": {
+        "hours": "Escribe las horas, de 0,1 a 24, con un decimal como mucho.",
+        "label": "Cuenta qué has hecho (hasta 120 caracteres).",
+        "workedOn": "Elige un día que no sea futuro.",
+        "hours_cap_exceeded": "Con estas horas superas el tope acordado para el proyecto.",
+        "future_date": "Elige un día que no sea futuro.",
+        "invalid_hours": "Las horas no son válidas: de 0,1 a 24, con un decimal como mucho.",
+        "fee_not_found": "Este proyecto no tiene una tarifa abierta.",
+        "fee_mode_mismatch": "Esta acción no corresponde al tipo de tarifa del proyecto.",
+        "fee_closed": "La tarifa de este proyecto está cerrada.",
+        "item_not_pending": "Esa partida ya ha cambiado. Hemos recargado la lista.",
+        "forbidden": "No tienes permiso para hacerlo. Entra de nuevo con tu código.",
+        "error": "No hemos podido guardarlo. Inténtalo de nuevo."
+      },
+      "form": {
+        "title": "Registrar horas",
+        "hours": "Horas",
+        "hoursHint": "De 0,1 a 24.",
+        "label": "Qué has hecho",
+        "labelHint": "Hasta 120 caracteres.",
+        "date": "Día",
+        "submit": "Registrar horas",
+        "submitting": "Registrando",
+        "done": "Horas registradas"
+      }
+    },
+    "pay": {
+      "meta": {
+        "title": "Pagos",
+        "statement": "Extracto"
+      },
+      "title": "Pagos",
+      "lead": "Lo que te deben, lo que ya se te ha pagado y el precio de cada proyecto.",
+      "loading": "Cargando tus pagos",
+      "error": {
+        "title": "No hemos podido cargar tus pagos",
+        "text": "Puedes reintentarlo.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "balances": {
+        "label": "Resumen de pagos",
+        "pending": "Pendiente de aprobar",
+        "owed": "Te deben",
+        "paidYear": "Pagado este año",
+        "lastPaid": "Último pago",
+        "unknown": "No disponible"
+      },
+      "empty": {
+        "title": "Todavía no hay partidas",
+        "text": "Cuando Jose acuerde una tarifa y registres horas o entregues hitos, lo verás aquí."
+      },
+      "history": {
+        "title": "Precio de cada proyecto",
+        "caption": "Tarifa acordada, aprobado y pagado por proyecto",
+        "region": "Tarifas por proyecto",
+        "columns": {
+          "project": "Proyecto",
+          "mode": "Modo",
+          "agreed": "Acordado",
+          "approved": "Aprobado",
+          "paid": "Pagado",
+          "state": "Estado"
+        },
+        "open": "En curso",
+        "closed": "Cerrado",
+        "variable": "Según partidas"
+      },
+      "payouts": {
+        "title": "Liquidaciones",
+        "empty": "Todavía no tienes liquidaciones.",
+        "caption": "Liquidaciones emitidas y pagadas",
+        "region": "Liquidaciones",
+        "columns": {
+          "period": "Periodo",
+          "total": "Total",
+          "withholding": "Retención",
+          "net": "Neto",
+          "state": "Estado",
+          "reference": "Referencia",
+          "statement": "Extracto"
+        },
+        "range": "{start} – {end}",
+        "statuses": {
+          "issued": "Emitida",
+          "paid": "Pagada"
+        },
+        "open": "Ver extracto",
+        "openFor": "Ver el extracto de {range}"
+      },
+      "items": {
+        "title": "Partidas",
+        "caption": "Partidas de tus proyectos",
+        "region": "Partidas",
+        "filters": "Filtrar partidas por estado",
+        "all": "Todas",
+        "columns": {
+          "date": "Día",
+          "project": "Proyecto",
+          "label": "Partida",
+          "hours": "Horas",
+          "amount": "Importe",
+          "state": "Estado"
+        },
+        "rejected": "Motivo: {reason}",
+        "empty": "No hay partidas con este estado."
+      },
+      "statement": {
+        "title": "Extracto de liquidación",
+        "notInvoice": "Este extracto no es una factura.",
+        "beneficiary": "Beneficiario",
+        "period": "Periodo",
+        "status": "Estado",
+        "issuedAt": "Emitida el",
+        "paidAt": "Pagada el",
+        "reference": "Referencia",
+        "note": "Nota",
+        "itemsTitle": "Partidas incluidas",
+        "total": "Total",
+        "withholding": "Retención",
+        "net": "Neto a pagar",
+        "print": "Imprimir extracto",
+        "printHint": "Se imprime solo el extracto.",
+        "back": "Volver a pagos"
+      }
     }
   },
   "freelancePage": {

@@ -110,8 +110,88 @@ function documentRow(n, name, visibility, uploader, uploadedBy) {
   };
 }
 
+const feeIds = {
+  shop: "76000000-0000-4000-8000-000000000001",
+  landing: "76000000-0000-4000-8000-000000000002",
+  closed: "76000000-0000-4000-8000-000000000003",
+};
+
+export const payoutId = "75000000-0000-4000-8000-000000000001";
+
+function feeRow(key, mode, extra) {
+  return {
+    fee_id: feeIds[key],
+    project_id: freelanceProjectIds[key],
+    mode,
+    amount: null,
+    hourly_rate: null,
+    hours_cap: null,
+    closed_at: null,
+    ...extra,
+  };
+}
+
+function itemRow(n, key, label, status, amount, extra = {}) {
+  return {
+    id: `77000000-0000-4000-8000-0000000000${String(n).padStart(2, "0")}`,
+    fee_id: feeIds[key],
+    label,
+    hours: null,
+    amount,
+    worked_on: "2026-10-20",
+    status,
+    rejected_reason: null,
+    payout_id: null,
+    created_at: "2026-10-20T09:00:00+00:00",
+    ...extra,
+  };
+}
+
+function seedFees() {
+  return {
+    fees: [
+      feeRow("shop", "hourly", { hourly_rate: 35, hours_cap: 60 }),
+      feeRow("landing", "milestones"),
+      feeRow("closed", "fixed", { amount: 900, closed_at: "2026-09-30T09:00:00+00:00" }),
+    ],
+    feeItems: [
+      itemRow(1, "shop", "Maquetación de la portada", "approved", 280, { hours: 8 }),
+      itemRow(2, "shop", "Catálogo, primera parte", "pending", 210, { hours: 6 }),
+      itemRow(3, "shop", "Horas duplicadas", "rejected", 140, {
+        hours: 4,
+        rejected_reason: "Prueba: horas duplicadas",
+      }),
+      itemRow(4, "landing", "Diseño de la portada", "pending", 600),
+      itemRow(5, "closed", "Primera entrega", "approved", 600, { worked_on: "2026-09-10" }),
+      itemRow(6, "closed", "Entrega final", "delivered", 300, { worked_on: "2026-09-28" }),
+      itemRow(7, "shop", "Puesta a punto", "paid", 350, {
+        hours: 10,
+        worked_on: "2026-09-15",
+        payout_id: payoutId,
+      }),
+    ],
+    payouts: [
+      {
+        id: payoutId,
+        kind: "freelance",
+        period_start: "2026-09-01",
+        period_end: "2026-09-30",
+        total: 350,
+        withholding_rate: 15,
+        net_total: 297.5,
+        status: "paid",
+        issued_at: "2026-10-01T09:00:00+00:00",
+        paid_at: "2026-10-05T09:00:00+00:00",
+        paid_reference: "TRF-2026-10",
+        statement_note: null,
+      },
+    ],
+  };
+}
+
 function seedData() {
   return {
+    ...seedFees(),
     tasks: [
       taskRow(1, "Maquetar la portada", "design", "doing", "me"),
       taskRow(2, "Preparar el catálogo", "build", "todo", "me"),
@@ -167,6 +247,7 @@ extendAuthState((state) => {
     taskError: null,
     updateError: null,
     updatesEmpty: false,
+    counterError: false,
     ...seedData(),
   };
   state.calls.freelanceRpc = [];
@@ -440,3 +521,150 @@ freelanceRoute(
     return send(response, 204, "");
   },
 );
+
+function summarize(state, fee) {
+  const items = state.feeItems.filter((item) => item.fee_id === fee.fee_id);
+  const sum = (statuses) =>
+    items.filter((item) => statuses.includes(item.status)).reduce((t, item) => t + item.amount, 0);
+  const agreed =
+    fee.mode === "fixed"
+      ? fee.amount
+      : fee.mode === "hourly"
+        ? fee.hours_cap * fee.hourly_rate
+        : items.reduce((t, item) => t + item.amount, 0);
+  return {
+    ...fee,
+    project_name: [...visibleProjects(state), ...allProjects].find(
+      (entry) => entry.id === fee.project_id,
+    )?.name,
+    project_archived_at:
+      fee.project_id === freelanceProjectIds.closed ? "2026-09-30T09:00:00+00:00" : null,
+    agreed_total: agreed,
+    hours_approved: items
+      .filter((item) => item.status === "approved" || item.status === "paid")
+      .reduce((t, item) => t + (item.hours ?? 0), 0),
+    pending_amount: sum(["pending"]),
+    delivered_amount: sum(["delivered"]),
+    approved_unpaid_amount: sum(["approved"]),
+    paid_amount: sum(["paid"]),
+  };
+}
+
+const allProjects = [shop, landing, closed];
+
+function visibleFees(state) {
+  const ids = new Set(visibleProjects(state).map((entry) => entry.id));
+  return state.fees.filter((fee) => ids.has(fee.project_id));
+}
+
+freelanceRoute("GET", "/rest/v1/freelance_fee_summary", ({ response, url, scoped }) => {
+  if (failing(response, scoped.state, "fees")) return undefined;
+  return send(
+    response,
+    200,
+    query(
+      visibleFees(scoped.state).map((fee) => summarize(scoped.state, fee)),
+      url,
+    ),
+  );
+});
+
+freelanceRoute("GET", "/rest/v1/freelance_fee_items", ({ response, url, scoped }) => {
+  if (failing(response, scoped.state, "fees")) return undefined;
+  const ids = new Set(visibleFees(scoped.state).map((fee) => fee.fee_id));
+  return send(
+    response,
+    200,
+    query(
+      scoped.state.feeItems.filter((item) => ids.has(item.fee_id)),
+      url,
+    ),
+  );
+});
+
+freelanceRoute("GET", "/rest/v1/payouts", ({ response, url, scoped }) => {
+  if (failing(response, scoped.state, "payouts")) return undefined;
+  return send(response, 200, query(scoped.state.payouts, url));
+});
+
+freelanceRoute("POST", "/rest/v1/rpc/freelance_counters", ({ response, scoped }) => {
+  if (scoped.state.counterError) {
+    return send(response, 500, { code: "XX000", message: "boom", details: null, hint: null });
+  }
+  const items = visibleFees(scoped.state).flatMap((fee) =>
+    scoped.state.feeItems.filter((item) => item.fee_id === fee.fee_id),
+  );
+  const sum = (statuses) =>
+    items.filter((item) => statuses.includes(item.status)).reduce((t, item) => t + item.amount, 0);
+  return send(response, 200, {
+    projects_active: visibleProjects(scoped.state).filter((entry) => entry.status === "active")
+      .length,
+    tasks_pending: scoped.state.tasks.filter(
+      (task) => task.assignee_kind === "me" && task.status !== "done",
+    ).length,
+    fees_pending_amount: sum(["pending", "delivered"]),
+    fees_owed_amount: sum(["approved"]),
+    fees_paid_amount: sum(["paid"]),
+    fees_paid_year_amount: sum(["paid"]),
+    last_paid_at: sum(["paid"]) > 0 ? "2026-10-05T09:00:00+00:00" : null,
+    items_to_deliver: items.filter(
+      (item) =>
+        item.status === "pending" &&
+        scoped.state.fees.find((fee) => fee.fee_id === item.fee_id)?.mode !== "hourly",
+    ).length,
+    unread_threads: 0,
+  });
+});
+
+function feeFailure(response, code) {
+  return send(response, 400, { code: "P0001", message: code, details: null, hint: null });
+}
+
+freelanceRoute("POST", "/rest/v1/rpc/submit_fee_hours", async ({ request, response, scoped }) => {
+  const args = JSON.parse(await readBody(request));
+  scoped.session.auth.calls.freelanceRpc.push({ name: "submit_fee_hours", args });
+  const fee = visibleFees(scoped.state).find(
+    (entry) => entry.project_id === args.p_project_id && entry.closed_at === null,
+  );
+  if (!fee) return feeFailure(response, "fee_not_found");
+  if (fee.mode !== "hourly") return feeFailure(response, "fee_mode_mismatch");
+  const today = new Date().toISOString().slice(0, 10);
+  const day = args.p_worked_on ?? today;
+  if (day > today) return feeFailure(response, "future_date");
+  if (!(args.p_hours > 0 && args.p_hours <= 24)) return feeFailure(response, "invalid_hours");
+  const used = scoped.state.feeItems
+    .filter((item) => item.fee_id === fee.fee_id && item.status !== "rejected")
+    .reduce((t, item) => t + (item.hours ?? 0), 0);
+  if (fee.hours_cap !== null && used + args.p_hours > fee.hours_cap) {
+    return feeFailure(response, "hours_cap_exceeded");
+  }
+  scoped.state.feeItems.push(
+    itemRow(50 + scoped.state.feeItems.length, "shop", args.p_label, "pending", args.p_hours * 35, {
+      hours: args.p_hours,
+      worked_on: day,
+    }),
+  );
+  return send(response, 200, JSON.stringify(randomUUID()));
+});
+
+freelanceRoute(
+  "POST",
+  "/rest/v1/rpc/mark_item_delivered",
+  async ({ request, response, scoped }) => {
+    const args = JSON.parse(await readBody(request));
+    scoped.session.auth.calls.freelanceRpc.push({ name: "mark_item_delivered", args });
+    const item = scoped.state.feeItems.find((entry) => entry.id === args.p_id);
+    if (!item || item.status !== "pending") return feeFailure(response, "item_not_pending");
+    item.status = "delivered";
+    return send(response, 204, "");
+  },
+);
+
+freelanceRoute("POST", "/rest/v1/rpc/delete_fee_item", async ({ request, response, scoped }) => {
+  const args = JSON.parse(await readBody(request));
+  scoped.session.auth.calls.freelanceRpc.push({ name: "delete_fee_item", args });
+  const item = scoped.state.feeItems.find((entry) => entry.id === args.p_id);
+  if (!item || item.status !== "pending") return feeFailure(response, "item_not_pending");
+  scoped.state.feeItems = scoped.state.feeItems.filter((entry) => entry !== item);
+  return send(response, 204, "");
+});

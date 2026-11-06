@@ -4434,6 +4434,164 @@
           "error": "We could not save it. Try again."
         }
       }
+    },
+    "fees": {
+      "title": "Fee and items",
+      "modes": {
+        "hourly": "Hourly",
+        "milestones": "Milestones",
+        "fixed": "Fixed price"
+      },
+      "hourly": "{rate} per hour",
+      "hourlyCap": "up to {hours} h",
+      "fixed": "{amount} for the project",
+      "milestones": "Jose defines the milestones and approves them on delivery",
+      "owed": "You are owed {amount} for this project.",
+      "none": "Jose has not agreed your fee on this project yet.",
+      "itemsTitle": "Items",
+      "noItems": "No items yet.",
+      "statuses": {
+        "pending": "Pending",
+        "delivered": "Delivered",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "paid": "Paid"
+      },
+      "hoursOf": "{hours} h",
+      "rejectedReason": "Reason: {reason}",
+      "deliver": "Mark as delivered",
+      "delivering": "Marking",
+      "delivered": "Milestone marked as delivered",
+      "deleteItem": "Delete",
+      "deleteFor": "Delete the entry “{name}”",
+      "deleting": "Deleting",
+      "deletedItem": "Entry deleted",
+      "closedNote": "This fee is closed: it no longer takes new items.",
+      "errors": {
+        "hours": "Enter the hours, from 0.1 to 24, with one decimal at most.",
+        "label": "Say what you did (up to 120 characters).",
+        "workedOn": "Pick a day that is not in the future.",
+        "hours_cap_exceeded": "These hours go over the cap agreed for the project.",
+        "future_date": "Pick a day that is not in the future.",
+        "invalid_hours": "The hours are not valid: 0.1 to 24, with one decimal at most.",
+        "fee_not_found": "This project has no open fee.",
+        "fee_mode_mismatch": "This action does not fit the fee type of the project.",
+        "fee_closed": "The fee of this project is closed.",
+        "item_not_pending": "That item has already changed. We reloaded the list.",
+        "forbidden": "You are not allowed to do this. Sign in again with your code.",
+        "error": "We could not save it. Try again."
+      },
+      "form": {
+        "title": "Log hours",
+        "hours": "Hours",
+        "hoursHint": "From 0.1 to 24.",
+        "label": "What you did",
+        "labelHint": "Up to 120 characters.",
+        "date": "Day",
+        "submit": "Log hours",
+        "submitting": "Logging",
+        "done": "Hours logged"
+      }
+    },
+    "pay": {
+      "meta": {
+        "title": "Payments",
+        "statement": "Statement"
+      },
+      "title": "Payments",
+      "lead": "What you are owed, what has been paid and the price of each project.",
+      "loading": "Loading your payments",
+      "error": {
+        "title": "We could not load your payments",
+        "text": "You can try again.",
+        "retry": "Try again",
+        "retrying": "Trying again"
+      },
+      "balances": {
+        "label": "Payments summary",
+        "pending": "Waiting for approval",
+        "owed": "You are owed",
+        "paidYear": "Paid this year",
+        "lastPaid": "Last payment",
+        "unknown": "Not available"
+      },
+      "empty": {
+        "title": "No items yet",
+        "text": "When Jose agrees a fee and you log hours or deliver milestones, you will see them here."
+      },
+      "history": {
+        "title": "Price of each project",
+        "caption": "Agreed fee, approved and paid per project",
+        "region": "Fees by project",
+        "columns": {
+          "project": "Project",
+          "mode": "Mode",
+          "agreed": "Agreed",
+          "approved": "Approved",
+          "paid": "Paid",
+          "state": "Status"
+        },
+        "open": "In progress",
+        "closed": "Closed",
+        "variable": "By items"
+      },
+      "payouts": {
+        "title": "Payouts",
+        "empty": "You have no payouts yet.",
+        "caption": "Issued and paid payouts",
+        "region": "Payouts",
+        "columns": {
+          "period": "Period",
+          "total": "Total",
+          "withholding": "Withholding",
+          "net": "Net",
+          "state": "Status",
+          "reference": "Reference",
+          "statement": "Statement"
+        },
+        "range": "{start} – {end}",
+        "statuses": {
+          "issued": "Issued",
+          "paid": "Paid"
+        },
+        "open": "View statement",
+        "openFor": "View the statement of {range}"
+      },
+      "items": {
+        "title": "Items",
+        "caption": "Items of your projects",
+        "region": "Items",
+        "filters": "Filter items by status",
+        "all": "All",
+        "columns": {
+          "date": "Day",
+          "project": "Project",
+          "label": "Item",
+          "hours": "Hours",
+          "amount": "Amount",
+          "state": "Status"
+        },
+        "rejected": "Reason: {reason}",
+        "empty": "No items with this status."
+      },
+      "statement": {
+        "title": "Payout statement",
+        "notInvoice": "This statement is not an invoice.",
+        "beneficiary": "Beneficiary",
+        "period": "Period",
+        "status": "Status",
+        "issuedAt": "Issued on",
+        "paidAt": "Paid on",
+        "reference": "Reference",
+        "note": "Note",
+        "itemsTitle": "Items included",
+        "total": "Total",
+        "withholding": "Withholding",
+        "net": "Net to pay",
+        "print": "Print statement",
+        "printHint": "Only the statement is printed.",
+        "back": "Back to payments"
+      }
     }
   },
   "freelancePage": {
