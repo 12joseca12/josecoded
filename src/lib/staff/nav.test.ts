@@ -59,7 +59,7 @@ describe("staff navigation registry", () => {
       "settings",
     ]);
     expect(ready("area")).toEqual(["overview", "tasks", "documents", "stories", "chat"]);
-    expect(ready("freelance")).toEqual(["overview", "projects"]);
+    expect(ready("freelance")).toEqual(["overview", "projects", "chat"]);
   });
 
   it("has a label in every locale", () => {

@@ -11,6 +11,7 @@ import { Uploader } from "@/components/area/Uploader/Uploader";
 import { RefreshError } from "@/components/crm/RefreshError/RefreshError";
 import { TaskStatusMenu } from "@/components/freelance/TaskStatusMenu/TaskStatusMenu";
 import { AnnouncerProvider } from "@/components/ui/Announcer/Announcer";
+import { Button } from "@/components/ui/Button/Button";
 import { EmptyState } from "@/components/ui/EmptyState/EmptyState";
 import { Heading } from "@/components/ui/Heading/Heading";
 import { Link } from "@/components/ui/Link/Link";
@@ -91,13 +92,18 @@ async function BoardRegion({ locale, project }: { locale: Locale; project: Freel
       headingLevel={3}
       renderStatus={(task) =>
         task.assigned_to_me ? (
-          <TaskStatusMenu
-            taskId={task.id}
-            title={task.title}
-            status={task.status}
-            change={setTaskStatusAction.bind(null, locale)}
-            labels={menu}
-          />
+          <>
+            <TaskStatusMenu
+              taskId={task.id}
+              title={task.title}
+              status={task.status}
+              change={setTaskStatusAction.bind(null, locale)}
+              labels={menu}
+            />
+            <Link href={`/${locale}/freelance/chat?tarea=${task.id}`} variant="inline">
+              {t("freelance.chat.askAboutTask")}
+            </Link>
+          </>
         ) : null
       }
     />
@@ -149,6 +155,11 @@ async function ProjectContent({ locale, id }: { locale: Locale; id: string }) {
           progress={{ done: project.done, total: project.total, percent: project.percent }}
           labels={headerLabels(t)}
         />
+        <div>
+          <Button href={`/${locale}/freelance/chat`} variant="light" size="sm">
+            {t("freelance.chat.openFromProject")}
+          </Button>
+        </div>
         <PhaseSteps current={project.phase} labels={phaseStepsLabels(t)} />
         <section className={styles.section} aria-labelledby="freelance-brief">
           <Heading level={2} size="h4" id="freelance-brief">

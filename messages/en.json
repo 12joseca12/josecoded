@@ -4350,6 +4350,23 @@
           "submit": "Upload delivery"
         }
       }
+    },
+    "chat": {
+      "meta": {
+        "title": "Chat"
+      },
+      "title": "Chat with Jose",
+      "lead": "Your private room with Jose. The client cannot see it.",
+      "loading": "Loading the chat",
+      "error": {
+        "title": "We could not load the chat",
+        "text": "You can try again.",
+        "retry": "Try again",
+        "retrying": "Trying again"
+      },
+      "taskDraft": "About the task “{title}”: ",
+      "openFromProject": "Talk to Jose about this project",
+      "askAboutTask": "Ask Jose about this task"
     }
   },
   "freelancePage": {

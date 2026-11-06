@@ -4350,6 +4350,23 @@
           "submit": "Subir entrega"
         }
       }
+    },
+    "chat": {
+      "meta": {
+        "title": "Chat"
+      },
+      "title": "Chat con Jose",
+      "lead": "Tu sala privada con Jose. El cliente no la ve.",
+      "loading": "Cargando el chat",
+      "error": {
+        "title": "No hemos podido cargar el chat",
+        "text": "Puedes reintentarlo.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "taskDraft": "Sobre la tarea «{title}»: ",
+      "openFromProject": "Hablar con Jose de este proyecto",
+      "askAboutTask": "Preguntar a Jose sobre esta tarea"
     }
   },
   "freelancePage": {

@@ -29,6 +29,7 @@ interface RoomComposerProps {
   mode: ComposerMode;
   labels: RoomLabels;
   allowFiles?: boolean;
+  initialValue?: string;
   onSend: (
     body: string,
     files?: File[],
@@ -38,11 +39,17 @@ interface RoomComposerProps {
 
 const fileProblems: readonly RoomProblem[] = ["too_many", "too_large", "type", "invalid"];
 
-export function RoomComposer({ mode, labels, allowFiles = false, onSend }: RoomComposerProps) {
+export function RoomComposer({
+  mode,
+  labels,
+  allowFiles = false,
+  initialValue = "",
+  onSend,
+}: RoomComposerProps) {
   const id = useId();
   const area = useRef<HTMLTextAreaElement>(null);
   const picker = useRef<HTMLInputElement>(null);
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState(initialValue);
   const [files, setFiles] = useState<File[]>([]);
   const [progress, setProgress] = useState<number | null>(null);
   const [problem, setProblem] = useState("");

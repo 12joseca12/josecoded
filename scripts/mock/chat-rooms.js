@@ -7,12 +7,14 @@ const adminIds = [people["admin@example.com"].id, people["enrolled@example.com"]
 const closerId = people["closer@example.com"].id;
 const daniId = people["dani@example.com"].id;
 const clientId = people["client@example.com"].id;
+const freelanceId = people["freelance@example.com"].id;
 
 export const roomIds = {
   closer: "c0000000-0000-4000-8000-000000000001",
   visitor: "c0000000-0000-4000-8000-000000000002",
   client: "c0000000-0000-4000-8000-000000000003",
   archived: "c0000000-0000-4000-8000-000000000004",
+  freelance: "c0000000-0000-4000-8000-000000000005",
 };
 
 const names = {
@@ -21,6 +23,7 @@ const names = {
   [closerId]: "Cleo Closer",
   [daniId]: "Dani Closer",
   [clientId]: "Carla Client",
+  [freelanceId]: "Fran Freelance",
 };
 
 function minutesAgo(minutes) {
@@ -500,7 +503,7 @@ route("POST", "/rest/v1/rpc/ensure_my_conversation", ({ request, response }) => 
     (entry) => entry.subject === who.session.userId && entry.kind === who.person.role,
   );
   if (!room) {
-    const id = randomUUID();
+    const id = who.person.role === "freelance" ? roomIds.freelance : randomUUID();
     room = {
       id,
       kind: who.person.role,

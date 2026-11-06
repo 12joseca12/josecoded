@@ -12,7 +12,8 @@
   min-block-size: 16rem;
 }
 
-.room[data-zone="area"] {
+.room[data-zone="area"],
+.room[data-zone="freelance"] {
   gap: var(--space-4);
 }
 
