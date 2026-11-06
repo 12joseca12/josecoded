@@ -94,11 +94,15 @@ test("the client writes and receives Jose's answer", async ({ page }) => {
 
 test("the client attaches a file and it shows as a download chip", async ({ page }) => {
   await open(page);
-  await page.locator('input[type="file"]').setInputFiles({
-    name: "logo.pdf",
-    mimeType: "application/pdf",
-    buffer: Buffer.from("%PDF-1.4 logo"),
-  });
+  const chosen = page.getByRole("list", { name: msg("room.attachments.selected") });
+  await expect(async () => {
+    await page.locator('input[type="file"]').setInputFiles({
+      name: "logo.pdf",
+      mimeType: "application/pdf",
+      buffer: Buffer.from("%PDF-1.4 logo"),
+    });
+    await expect(chosen).toContainText("logo.pdf", { timeout: 1000 });
+  }).toPass();
   const composer = page.getByLabel(msg("room.composer.label"));
   await composer.fill("Te paso el logo");
   await composer.press("Enter");
