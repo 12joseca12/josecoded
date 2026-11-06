@@ -17,6 +17,7 @@ export interface StaffShellLabels {
   brandWord: string;
   navLabel: string;
   userLabel: string;
+  account: string;
   signOut: string;
   signingOut: string;
   soon: string;

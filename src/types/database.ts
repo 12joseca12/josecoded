@@ -2652,6 +2652,10 @@ export type Database = {
         Args: { p_beneficiary_id: string; p_note?: string; p_period_end: string; p_period_start: string; p_withholding_rate?: number }
         Returns: string
       }
+      cancel_account_deletion: {
+        Args: never
+        Returns: undefined
+      }
       cancel_job: {
         Args: { p_id: string }
         Returns: Database["public"]["Enums"]["job_status"]
@@ -2785,6 +2789,10 @@ export type Database = {
         Args: { p_id: string; p_phase: Database["public"]["Enums"]["project_phase"]; p_sort: number }
         Returns: undefined
       }
+      my_account_deletion: {
+        Args: never
+        Returns: string
+      }
       omen_claim_jobs: {
         Args: { p_limit?: number; p_worker: string }
         Returns: {
@@ -2879,6 +2887,10 @@ export type Database = {
       reject_commission_line: {
         Args: { p_id: string; p_reason: string }
         Returns: undefined
+      }
+      request_account_deletion: {
+        Args: never
+        Returns: string
       }
       remove_member: {
         Args: { p_conversation_id: string; p_user_id: string }

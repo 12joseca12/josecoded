@@ -5588,5 +5588,143 @@
       "sizeMb": "{n} MB"
     },
     "sourcesLabel": "Fuentes"
+  },
+  "account": {
+    "meta": {
+      "title": "Mi cuenta"
+    },
+    "title": "Mi cuenta",
+    "lead": "Tus datos, cómo entras y lo que puedes pedirme sobre ellos.",
+    "menuLink": "Mi cuenta",
+    "brandLabel": "josecoded, Mi cuenta: ir al inicio",
+    "brandWord": "Mi cuenta",
+    "navLabel": "Mi cuenta",
+    "userLabel": "Sesión iniciada como {name}",
+    "signOut": "Salir",
+    "signingOut": "Saliendo",
+    "nav": {
+      "account": "Mi cuenta",
+      "back": "Volver a mi zona",
+      "soon": "Próximamente",
+      "more": "Más",
+      "moreTitle": "Más secciones",
+      "close": "Cerrar"
+    },
+    "loading": {
+      "profile": "Cargando tus datos",
+      "access": "Cargando tus sesiones",
+      "security": "Cargando el segundo factor",
+      "telegram": "Cargando Telegram",
+      "privacy": "Cargando tus datos personales"
+    },
+    "error": {
+      "title": "No se ha podido cargar esta parte",
+      "text": "No hemos podido leer tus datos. Inténtalo de nuevo.",
+      "retry": "Reintentar",
+      "retrying": "Reintentando"
+    },
+    "profile": {
+      "title": "Tus datos",
+      "lead": "Lo que ves aquí lo puedes cambiar tú.",
+      "emailLabel": "Correo",
+      "emailHint": "Es el correo con el que entras. Para cambiarlo, escríbeme.",
+      "nameLabel": "Nombre",
+      "localeLabel": "Idioma de los correos y avisos",
+      "localeHint": "Es el idioma en el que te escribo. No cambia el idioma de la web que ves ahora.",
+      "locales": {
+        "es": "Español",
+        "en": "English"
+      },
+      "save": "Guardar cambios",
+      "saving": "Guardando",
+      "saved": "Cambios guardados.",
+      "errors": {
+        "name_required": "Escribe tu nombre.",
+        "name_too_long": "El nombre es demasiado largo. Máximo 200 caracteres.",
+        "locale_invalid": "Elige un idioma de la lista.",
+        "forbidden": "No tienes permiso para hacer esto.",
+        "unavailable": "Esto no está disponible ahora mismo. Inténtalo en un rato.",
+        "error": "No hemos podido guardarlo. Inténtalo de nuevo."
+      }
+    },
+    "access": {
+      "title": "Cómo entras y tus sesiones",
+      "lead": "Entras con un código que te llega por correo, sin contraseña. No puedo enseñarte la lista de dispositivos, pero sí cerrar las sesiones abiertas.",
+      "methodsTitle": "Formas de entrar",
+      "email": "Código por correo",
+      "google": "Google",
+      "googleLinked": "Vinculado a tu cuenta",
+      "googleNotLinked": "No vinculado",
+      "others": "Cerrar las demás sesiones",
+      "othersLoading": "Cerrando",
+      "othersDone": "Hecho. La sesión de este dispositivo sigue abierta.",
+      "everywhere": "Cerrar sesión en todos los dispositivos",
+      "everywhereLoading": "Cerrando",
+      "everywhereConfirm": {
+        "question": "Se cerrará también la sesión de este dispositivo y tendrás que volver a entrar. ¿Seguimos?",
+        "yes": "Sí, cerrar todas",
+        "no": "No"
+      },
+      "error": "No hemos podido cerrar las sesiones. Inténtalo de nuevo."
+    },
+    "security": {
+      "title": "Segundo factor",
+      "lead": "Tu zona pide un código de una app de autenticación además del correo.",
+      "status": "Estado",
+      "statusOn": "Activado. Tienes una app de autenticación vinculada.",
+      "statusOff": "Sin app vinculada. La vincularás la próxima vez que entres a tu zona.",
+      "change": "Cambiar de dispositivo",
+      "starting": "Preparando",
+      "scanLabel": "Escanea este código con la app del dispositivo nuevo",
+      "qrAlt": "Código QR para vincular la app de autenticación",
+      "secretLabel": "Si no puedes escanearlo, introduce esta clave",
+      "codeLabel": "Código de 6 cifras",
+      "codeHint": "El que muestra la app del dispositivo nuevo.",
+      "confirm": "Confirmar el cambio",
+      "confirming": "Confirmando",
+      "cancel": "Cancelar",
+      "done": "Dispositivo cambiado. La app anterior ya no sirve para entrar.",
+      "errors": {
+        "code_invalid": "Introduce los 6 dígitos.",
+        "factor_invalid": "El cambio ha caducado. Empieza de nuevo."
+      },
+      "failed": "No hemos podido hacer el cambio. Inténtalo de nuevo.",
+      "wrongCode": "Ese código no es válido. Comprueba que sea el de la app nueva.",
+      "rateLimited": "Demasiados intentos. Espera un momento y vuelve a probar."
+    },
+    "notifications": {
+      "link": "Elegir qué avisos recibo"
+    },
+    "privacy": {
+      "title": "Tus datos personales",
+      "lead": "Qué guardo y cómo lo trato está en la política de privacidad.",
+      "policy": "Leer la política de privacidad",
+      "exportTitle": "Una copia de tus datos",
+      "exportText": "No hay descarga automática. Si quieres una copia, pídemela por correo.",
+      "contact": "Escribir a {email}",
+      "deletion": {
+        "title": "Borrar mi cuenta",
+        "lead": "Al pedirlo se crea una solicitud que revisaré yo. No se borra nada de forma automática.",
+        "request": "Solicitar el borrado de mi cuenta",
+        "requestLoading": "Enviando",
+        "confirm": {
+          "question": "Se enviará la solicitud de borrado de tu cuenta. Podrás retirarla mientras no se haya atendido. ¿Seguimos?",
+          "yes": "Sí, solicitar el borrado",
+          "no": "No"
+        },
+        "pendingTitle": "Solicitud enviada",
+        "pendingText": "Pediste el borrado de tu cuenta el {date}. Está pendiente de revisión.",
+        "withdraw": "Retirar la solicitud",
+        "withdrawLoading": "Retirando",
+        "done": "Solicitud enviada.",
+        "withdrawn": "Solicitud retirada.",
+        "unavailable": "Todavía no se puede pedir desde aquí. Para solicitar el borrado, escríbeme por correo.",
+        "errors": {
+          "forbidden": "No tienes permiso para hacer esto.",
+          "unavailable": "Esto no está disponible ahora mismo. Inténtalo en un rato.",
+          "error": "No hemos podido enviar la solicitud. Inténtalo de nuevo."
+        }
+      }
+    }
   }
 }

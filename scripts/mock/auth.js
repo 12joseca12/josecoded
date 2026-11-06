@@ -24,6 +24,7 @@ export const people = {
     role: "admin",
     name: "Jose Enrolled",
     factor: true,
+    google: true,
   },
   "closer@example.com": {
     id: "00000000-0000-4000-8000-0000000000c1",
@@ -136,7 +137,9 @@ function userBody(auth, id) {
     phone: "",
     app_metadata: { provider: "email", providers: ["email"] },
     user_metadata: {},
-    identities: [],
+    identities: personById(id)?.[1].google
+      ? [{ id, user_id: id, provider: "google", identity_data: {}, created_at: now }]
+      : [],
     factors: auth.factors.get(id) ?? [],
     created_at: now,
     updated_at: now,
@@ -257,8 +260,24 @@ route("POST", "/auth/v1/token", async ({ request, response }) => {
 route("POST", "/auth/v1/logout", ({ request, response, url }) => {
   const session = bearer(request);
   const auth = session?.auth ?? stateFor("");
-  auth.calls.logout.push({ scope: url.searchParams.get("scope") });
-  if (session) session.active = false;
+  const scope = url.searchParams.get("scope");
+  auth.calls.logout.push({ scope });
+  if (session) {
+    for (const entry of auth.sessions.values()) {
+      const sameUser = entry.userId === session.userId;
+      const other = entry.sessionId !== session.sessionId;
+      if (sameUser && ((scope === "others" && other) || scope === "global")) entry.active = false;
+    }
+    if (scope !== "others") session.active = false;
+    if (scope === "others" || scope === "global") {
+      for (const [token, entry] of auth.refresh) {
+        const sameUser = entry.userId === session.userId;
+        if (sameUser && (scope === "global" || entry.sessionId !== session.sessionId)) {
+          auth.refresh.delete(token);
+        }
+      }
+    }
+  }
   return sendEmpty(response);
 });
 
