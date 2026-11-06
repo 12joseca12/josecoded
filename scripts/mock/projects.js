@@ -39,6 +39,8 @@ function project(overrides) {
     stories: [],
     documents: [],
     links: [],
+    fee: null,
+    feeItems: [],
     ...overrides,
   };
 }
@@ -84,6 +86,24 @@ function documentRow(overrides) {
   };
 }
 
+const feeIds = {
+  shop: "74000000-0000-4000-8000-000000000001",
+  landing: "74000000-0000-4000-8000-000000000002",
+};
+
+const feeItemIds = [1, 2, 3].map((n) => `75000000-0000-4000-8000-00000000000${n}`);
+
+function feeItem(overrides) {
+  return {
+    hours: null,
+    status: "pending",
+    rejected_reason: null,
+    submitted_by: freelanceId,
+    created_at: new Date().toISOString(),
+    ...overrides,
+  };
+}
+
 function seededProjects() {
   const tasks = Array.from({ length: 8 }, (_, index) =>
     taskRow({
@@ -112,6 +132,39 @@ function seededProjects() {
       due_at: "2026-12-15",
       created_at: "2026-10-01T09:00:00+00:00",
       tasks,
+      fee: {
+        fee_id: feeIds.shop,
+        freelance_id: freelanceId,
+        mode: "hourly",
+        amount: null,
+        hourly_rate: 35,
+        hours_cap: 60,
+        closed_at: null,
+      },
+      feeItems: [
+        feeItem({
+          id: feeItemIds[0],
+          label: "Catálogo de productos",
+          hours: 8,
+          amount: 280,
+          status: "approved",
+          worked_on: "2026-11-02",
+        }),
+        feeItem({
+          id: feeItemIds[1],
+          label: "Ajustes de la portada",
+          hours: 6,
+          amount: 210,
+          worked_on: "2026-11-04",
+        }),
+        feeItem({
+          id: feeItemIds[2],
+          label: "Formulario de contacto",
+          hours: 2,
+          amount: 70,
+          worked_on: "2026-11-05",
+        }),
+      ],
       documents: [
         documentRow({
           id: "63000000-0000-4000-8000-000000000001",
@@ -173,6 +226,8 @@ function seededProjects() {
       id: projectIds.landing,
       name: "Landing sin cuenta",
       offer_slug: "web-presencia",
+      freelance_id: freelanceId,
+      freelance_name: "Fran Freelance",
       created_at: "2026-10-10T09:00:00+00:00",
     }),
     project({
@@ -212,8 +267,8 @@ route("POST", "/__auth/projects-rpc-error", async ({ request, response, url }) =
 export function overviewRow(entry) {
   const done = entry.tasks.filter((task) => task.status === "done").length;
   const total = entry.tasks.length;
-  const { tasks, stories, documents, links, brief, ...visible } = entry;
-  void [tasks, stories, documents, links, brief];
+  const { tasks, stories, documents, links, brief, fee, feeItems, ...visible } = entry;
+  void [tasks, stories, documents, links, brief, fee, feeItems];
   return {
     ...visible,
     done,
@@ -620,3 +675,168 @@ route(
 route("GET", /^\/storage\/v1\/object\/sign\/project-documents\/(.+)$/, ({ response }) =>
   send(response, 200, "%PDF-1.4\n%mock\n", "application/pdf"),
 );
+
+function feeSummary(entry) {
+  const fee = entry.fee;
+  const sum = (status) =>
+    entry.feeItems.filter((item) => item.status === status).reduce((n, item) => n + item.amount, 0);
+  const live = entry.feeItems.filter((item) => item.status !== "rejected");
+  return {
+    ...fee,
+    project_id: entry.id,
+    project_name: entry.name,
+    project_phase: entry.phase,
+    project_archived_at: entry.archived_at,
+    agreed_total:
+      fee.mode === "fixed"
+        ? fee.amount
+        : fee.mode === "hourly"
+          ? fee.hours_cap === null
+            ? null
+            : fee.hours_cap * fee.hourly_rate
+          : live.reduce((n, item) => n + item.amount, 0),
+    hours_approved: entry.feeItems
+      .filter((item) => item.status === "approved" || item.status === "paid")
+      .reduce((n, item) => n + (item.hours ?? 0), 0),
+    pending_amount: sum("pending"),
+    delivered_amount: sum("delivered"),
+    approved_unpaid_amount: sum("approved"),
+    paid_amount: sum("paid"),
+  };
+}
+
+function feeEntry(auth, feeId) {
+  return auth.projects.find((entry) => entry.fee?.fee_id === feeId);
+}
+
+route("GET", "/rest/v1/freelance_fee_summary", ({ request, response, url }) => {
+  const auth = adminCall(request, response);
+  if (!auth) return;
+  if (auth.projectsMode === "error") {
+    return send(response, 500, { code: "XX000", message: "internal", details: null, hint: null });
+  }
+  const only = eq(url, "project_id");
+  return send(
+    response,
+    200,
+    auth.projects.filter((entry) => entry.fee && (!only || entry.id === only)).map(feeSummary),
+  );
+});
+
+route("GET", "/rest/v1/freelance_fee_items", ({ request, response, url }) => {
+  const auth = adminCall(request, response);
+  if (!auth) return;
+  const only = eq(url, "fee_id");
+  const entry = feeEntry(auth, only);
+  return send(
+    response,
+    200,
+    (entry?.feeItems ?? []).map((item) => ({ ...item, fee_id: only })),
+  );
+});
+
+rpc("set_freelance_fee", ({ auth, args, response }) => {
+  const entry = projectOf(auth, args.p_project_id);
+  if (!entry) return failure(response, "P0001", "project_not_found");
+  if (entry.archived_at) return failure(response, "P0001", "project_archived");
+  if (!entry.freelance_id) return failure(response, "P0001", "project_has_no_freelance");
+  const mode = args.p_mode;
+  const invalid =
+    (mode === "hourly" && (!args.p_hourly_rate || args.p_amount != null)) ||
+    (mode === "fixed" && (!args.p_amount || args.p_hourly_rate != null)) ||
+    (mode === "milestones" && (args.p_amount != null || args.p_hourly_rate != null));
+  if (invalid) return failure(response, "P0001", "invalid_fee");
+  if (
+    entry.fee &&
+    entry.fee.mode !== mode &&
+    entry.feeItems.some((item) => item.status !== "rejected")
+  ) {
+    return failure(response, "P0001", "fee_has_items");
+  }
+  const feeId = entry.fee?.fee_id ?? randomUUID();
+  entry.fee = {
+    fee_id: feeId,
+    freelance_id: entry.freelance_id,
+    mode,
+    amount: args.p_amount ?? null,
+    hourly_rate: args.p_hourly_rate ?? null,
+    hours_cap: args.p_hours_cap ?? null,
+    closed_at: null,
+  };
+  return send(response, 200, JSON.stringify(feeId));
+});
+
+rpc("add_fee_item", ({ auth, args, response }) => {
+  const entry = feeEntry(auth, args.p_fee_id);
+  if (!entry) return failure(response, "P0001", "fee_not_found");
+  if (entry.fee.mode === "hourly") return failure(response, "P0001", "fee_mode_mismatch");
+  const used = entry.feeItems
+    .filter((item) => item.status !== "rejected")
+    .reduce((n, item) => n + item.amount, 0);
+  if (entry.fee.mode === "fixed" && used + args.p_amount > entry.fee.amount) {
+    return failure(response, "P0001", "fee_amount_exceeded");
+  }
+  const item = feeItem({
+    id: randomUUID(),
+    label: args.p_label,
+    amount: args.p_amount,
+    worked_on: args.p_worked_on ?? new Date().toISOString().slice(0, 10),
+    submitted_by: people["admin@example.com"].id,
+  });
+  entry.feeItems.push(item);
+  return send(response, 200, JSON.stringify(item.id));
+});
+
+function findItems(auth, ids) {
+  return ids.map((id) => {
+    for (const entry of auth.projects) {
+      const item = entry.feeItems.find((candidate) => candidate.id === id);
+      if (item) return item;
+    }
+    return null;
+  });
+}
+
+rpc("approve_fee_items", ({ auth, args, response }) => {
+  const items = findItems(auth, args.p_ids);
+  if (items.some((item) => item === null || !["pending", "delivered"].includes(item.status))) {
+    return failure(response, "P0001", "item_not_approvable");
+  }
+  for (const item of items) item.status = "approved";
+  return send(response, 200, JSON.stringify(items.length));
+});
+
+rpc("reject_fee_item", ({ auth, args, response }) => {
+  if (!String(args.p_reason ?? "").trim()) return failure(response, "P0001", "reason_required");
+  const [item] = findItems(auth, [args.p_id]);
+  if (!item) return failure(response, "P0001", "item_not_found");
+  if (!["pending", "delivered"].includes(item.status)) {
+    return failure(response, "P0001", "item_not_approvable");
+  }
+  item.status = "rejected";
+  item.rejected_reason = args.p_reason.trim();
+  return sendEmpty(response);
+});
+
+rpc("delete_fee_item", ({ auth, args, response }) => {
+  for (const entry of auth.projects) {
+    const index = entry.feeItems.findIndex((item) => item.id === args.p_id);
+    if (index < 0) continue;
+    if (entry.feeItems[index].status !== "pending") {
+      return failure(response, "P0001", "item_not_pending");
+    }
+    entry.feeItems.splice(index, 1);
+    return sendEmpty(response);
+  }
+  return failure(response, "P0001", "item_not_found");
+});
+
+route("POST", "/__auth/projects-deliver", async ({ request, response, url }) => {
+  const auth = stateFor(url.searchParams.get("tag") ?? "");
+  const { label } = JSON.parse(await readBody(request));
+  for (const entry of auth.projects) {
+    const item = entry.feeItems.find((candidate) => candidate.label === label);
+    if (item) item.status = "delivered";
+  }
+  return send(response, 200, { ok: true });
+});

@@ -10,6 +10,20 @@ import {
   taskStatuses,
 } from "@/types/admin-project-detail";
 import {
+  type AddItemSheetLabels,
+  type FeeErrorCode,
+  feeErrorCodes,
+  type FeeField,
+  feeFields,
+  feeItemStatuses,
+  type FeeItemTableLabels,
+  feeModes,
+  type FeePanelLabels,
+  type FeeSheetLabels,
+  type FeeTotalsLabels,
+  type TeamPanelLabels,
+} from "@/types/admin-project-fee";
+import {
   decisionErrorCodes,
   decisionFields,
   type StoryDecisionLabels,
@@ -299,5 +313,127 @@ export function uploaderLabels(t: Translate): UploaderLabels {
     progress: t(`${u}.progress`),
     done: t(`${u}.done`),
     errors: documentErrors(t, "uploader"),
+  };
+}
+
+const team = "admin.projects.team" as const;
+const fee = `${team}.fee` as const;
+
+function feeErrors(t: Translate): Record<FeeField | FeeErrorCode, string> {
+  const errors = {} as Record<FeeField | FeeErrorCode, string>;
+  for (const key of [...feeFields, ...feeErrorCodes]) errors[key] = t(`${fee}.errors.${key}`);
+  return errors;
+}
+
+export function teamPanelLabels(t: Translate): TeamPanelLabels {
+  return {
+    title: t(`${team}.title`),
+    client: t(`${team}.client`),
+    clientNone: t(`${team}.clientNone`),
+    freelance: t(`${team}.freelance`),
+    freelanceNone: t(`${team}.freelanceNone`),
+  };
+}
+
+export function feePanelLabels(t: Translate): FeePanelLabels {
+  const errors = feeErrors(t);
+  const modes = {} as FeeSheetLabels["modes"];
+  const summary = {} as FeePanelLabels["summary"];
+  for (const mode of feeModes) {
+    modes[mode] = t(`${fee}.sheet.modes.${mode}`);
+    summary[mode] = t(`${fee}.summary.${mode}`);
+  }
+  const statuses = {} as FeeItemTableLabels["statuses"];
+  for (const status of feeItemStatuses) statuses[status] = t(`${fee}.table.statuses.${status}`);
+  const sheet: FeeSheetLabels = {
+    open: t(`${fee}.sheet.open`),
+    openEdit: t(`${fee}.sheet.openEdit`),
+    title: t(`${fee}.sheet.title`),
+    close: t(`${fee}.sheet.close`),
+    mode: t(`${fee}.sheet.mode`),
+    modes,
+    amount: t(`${fee}.sheet.amount`),
+    amountHint: t(`${fee}.sheet.amountHint`),
+    hourlyRate: t(`${fee}.sheet.hourlyRate`),
+    hoursCap: t(`${fee}.sheet.hoursCap`),
+    hoursCapHint: t(`${fee}.sheet.hoursCapHint`),
+    note: t(`${fee}.sheet.note`),
+    optional: t(`${fee}.sheet.optional`),
+    modeLocked: t(`${fee}.sheet.modeLocked`),
+    fixedItemLabel: t(`${fee}.sheet.fixedItemLabel`),
+    submit: t(`${fee}.sheet.submit`),
+    submitting: t(`${fee}.sheet.submitting`),
+    done: t(`${fee}.sheet.done`),
+    errors,
+  };
+  const add: AddItemSheetLabels = {
+    open: t(`${fee}.add.open`),
+    title: t(`${fee}.add.title`),
+    close: t(`${fee}.add.close`),
+    label: t(`${fee}.add.label`),
+    amount: t(`${fee}.add.amount`),
+    remaining: t(`${fee}.add.remaining`),
+    workedOn: t(`${fee}.add.workedOn`),
+    optional: t(`${fee}.add.optional`),
+    submit: t(`${fee}.add.submit`),
+    submitting: t(`${fee}.add.submitting`),
+    done: t(`${fee}.add.done`),
+    errors,
+  };
+  const table: FeeItemTableLabels = {
+    caption: t(`${fee}.table.caption`),
+    region: t(`${fee}.table.region`),
+    empty: t(`${fee}.table.empty`),
+    select: t(`${fee}.table.select`),
+    columns: {
+      select: t(`${fee}.table.columns.select`),
+      label: t(`${fee}.table.columns.label`),
+      hours: t(`${fee}.table.columns.hours`),
+      amount: t(`${fee}.table.columns.amount`),
+      date: t(`${fee}.table.columns.date`),
+      by: t(`${fee}.table.columns.by`),
+      status: t(`${fee}.table.columns.status`),
+      actions: t(`${fee}.table.columns.actions`),
+    },
+    statuses,
+    by: { freelance: t(`${fee}.table.by.freelance`), jose: t(`${fee}.table.by.jose`) },
+    approve: t(`${fee}.table.approve`),
+    approving: t(`${fee}.table.approving`),
+    approved: t(`${fee}.table.approved`),
+    rejectOpen: t(`${fee}.table.rejectOpen`),
+    rejectOpenFor: t(`${fee}.table.rejectOpenFor`),
+    rejectTitle: t(`${fee}.table.rejectTitle`),
+    rejectReason: t(`${fee}.table.rejectReason`),
+    rejectSubmit: t(`${fee}.table.rejectSubmit`),
+    rejecting: t(`${fee}.table.rejecting`),
+    rejected: t(`${fee}.table.rejected`),
+    rejectedReason: t(`${fee}.table.rejectedReason`),
+    delete: t(`${fee}.table.delete`),
+    deleteFor: t(`${fee}.table.deleteFor`),
+    deleted: t(`${fee}.table.deleted`),
+    close: t(`${fee}.table.close`),
+    errors,
+  };
+  const totals: FeeTotalsLabels = {
+    region: t(`${fee}.totals.region`),
+    agreed: t(`${fee}.totals.agreed`),
+    pending: t(`${fee}.totals.pending`),
+    delivered: t(`${fee}.totals.delivered`),
+    approved: t(`${fee}.totals.approved`),
+    paid: t(`${fee}.totals.paid`),
+    none: t(`${fee}.totals.none`),
+  };
+  return {
+    title: t(`${fee}.title`),
+    noFreelance: t(`${fee}.noFreelance`),
+    noFee: t(`${fee}.noFee`),
+    error: { title: t(`${fee}.error.title`), text: t(`${fee}.error.text`) },
+    summary,
+    summaryCap: t(`${fee}.summaryCap`),
+    settle: t(`${fee}.settle`),
+    sheet,
+    add,
+    table,
+    totals,
   };
 }

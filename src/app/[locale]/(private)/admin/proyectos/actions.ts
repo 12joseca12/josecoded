@@ -10,11 +10,19 @@ import {
   runSetPhase,
   runUpsertTask,
 } from "@/lib/admin/project-detail";
+import {
+  runAddItem,
+  runApproveItems,
+  runDeleteItem,
+  runRejectItem,
+  runSetFee,
+} from "@/lib/admin/project-fee";
 import { runDecideStory } from "@/lib/admin/project-stories";
 import { runCreateProject, runUpdateProject } from "@/lib/admin/projects";
 import { requireZone } from "@/lib/auth/session";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { TaskResult } from "@/types/admin-project-detail";
+import type { FeeActionResult } from "@/types/admin-project-fee";
 import type { DecideResult } from "@/types/admin-project-stories";
 import type { ProjectActionResult } from "@/types/admin-projects";
 
@@ -86,4 +94,39 @@ export async function decideStory(locale: string, raw: unknown): Promise<DecideR
   const result = await runDecideStory(client, raw);
   if (result.status === "done") revalidatePath(`/${locale}/admin/proyectos`, "layout");
   return result;
+}
+
+async function writeFee(
+  locale: string,
+  run: (
+    client: NonNullable<Awaited<ReturnType<typeof createSupabaseServerClient>>>,
+  ) => Promise<FeeActionResult>,
+): Promise<FeeActionResult> {
+  if (!isLocale(locale)) return failed;
+  await requireZone("admin", locale);
+  const client = await createSupabaseServerClient();
+  if (client === null) return { status: "error", code: "unavailable" };
+  const result = await run(client);
+  if (result.status === "done") revalidatePath(`/${locale}/admin/proyectos`, "layout");
+  return result;
+}
+
+export async function setFee(locale: string, raw: unknown): Promise<FeeActionResult> {
+  return writeFee(locale, (client) => runSetFee(client, raw));
+}
+
+export async function addFeeItem(locale: string, raw: unknown): Promise<FeeActionResult> {
+  return writeFee(locale, (client) => runAddItem(client, raw));
+}
+
+export async function approveFeeItems(locale: string, raw: unknown): Promise<FeeActionResult> {
+  return writeFee(locale, (client) => runApproveItems(client, raw));
+}
+
+export async function rejectFeeItem(locale: string, raw: unknown): Promise<FeeActionResult> {
+  return writeFee(locale, (client) => runRejectItem(client, raw));
+}
+
+export async function deleteFeeItem(locale: string, raw: unknown): Promise<FeeActionResult> {
+  return writeFee(locale, (client) => runDeleteItem(client, raw));
 }

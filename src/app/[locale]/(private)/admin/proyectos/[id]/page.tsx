@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
+import { FeePanel } from "@/components/admin/FeePanel/FeePanel";
 import { LeadsError } from "@/components/admin/LeadsError/LeadsError";
 import { PhaseBoard } from "@/components/admin/PhaseBoard/PhaseBoard";
 import { PriceTabs } from "@/components/admin/PriceTabs/PriceTabs";
 import { ProjectHead } from "@/components/admin/ProjectHead/ProjectHead";
 import { StoryList } from "@/components/admin/StoryList/StoryList";
+import { TeamPanel } from "@/components/admin/TeamPanel/TeamPanel";
 import { FileList } from "@/components/area/FileList/FileList";
 import { Uploader } from "@/components/area/Uploader/Uploader";
 import { AnnouncerProvider } from "@/components/ui/Announcer/Announcer";
@@ -17,6 +19,7 @@ import { Skeleton } from "@/components/ui/Skeleton/Skeleton";
 import { isLocale, type Locale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
 import { fetchProject, fetchProjectTasks } from "@/lib/admin/project-detail";
+import { fetchProjectFee } from "@/lib/admin/project-fee";
 import { fetchProjectStories } from "@/lib/admin/project-stories";
 import { projectTabs, tabFromParam } from "@/lib/admin/project-tabs";
 import { requireZone } from "@/lib/auth/session";
@@ -26,20 +29,27 @@ import type { Assignee } from "@/types/admin-project-detail";
 
 import styles from "../../admin.module.css";
 import {
+  addFeeItem,
+  approveFeeItems,
   archiveProject,
   decideStory,
+  deleteFeeItem,
   deleteTask,
   moveTask,
+  rejectFeeItem,
+  setFee,
   setProjectPhase,
   upsertTask,
 } from "../actions";
 import {
+  feePanelLabels,
   fileListLabels,
   phaseBoardLabels,
   projectHeadLabels,
   storyDecisionLabels,
   storyListLabels,
   taskSheetLabels,
+  teamPanelLabels,
   uploaderLabels,
 } from "../labels";
 import detail from "./detail.module.css";
@@ -93,6 +103,7 @@ async function ProjectSection({
   const current = tabFromParam(tab);
   const stories = current === "stories" ? await fetchProjectStories(client, id) : null;
   const documents = current === "documents" ? await fetchProjectDocuments(client, id) : null;
+  const fee = current === "team" ? await fetchProjectFee(client, id, row.freelance_id) : null;
   const assignees: Assignee[] = [
     ...(row.client_id !== null && row.client_name !== null
       ? [{ id: row.client_id, name: row.client_name }]
@@ -142,7 +153,40 @@ async function ProjectSection({
           }))}
         />
       ) : null}
-      {current === "documents" ? (
+      {current === "team" ? (
+        <AnnouncerProvider>
+          <TeamPanel
+            clientName={row.client_name}
+            freelanceName={row.freelance_name}
+            labels={teamPanelLabels(t)}
+          >
+            {fee?.status === "ok" ? (
+              <FeePanel
+                projectId={id}
+                freelanceId={row.freelance_id}
+                fee={fee.fee}
+                items={fee.items}
+                locale={locale}
+                labels={feePanelLabels(t)}
+                handlers={{
+                  save: setFee.bind(null, locale),
+                  add: addFeeItem.bind(null, locale),
+                  approve: approveFeeItems.bind(null, locale),
+                  reject: rejectFeeItem.bind(null, locale),
+                  remove: deleteFeeItem.bind(null, locale),
+                }}
+              />
+            ) : (
+              <LeadsError
+                title={t("admin.projects.team.fee.error.title")}
+                text={t("admin.projects.team.fee.error.text")}
+                retryLabel={t("admin.projects.detail.error.retry")}
+                loadingLabel={t("admin.projects.detail.error.retrying")}
+              />
+            )}
+          </TeamPanel>
+        </AnnouncerProvider>
+      ) : current === "documents" ? (
         documents?.status === "ok" ? (
           <AnnouncerProvider>
             <section

@@ -1,4 +1,4 @@
-export type ProjectTabId = "tasks" | "stories" | "documents";
+export type ProjectTabId = "tasks" | "stories" | "documents" | "team";
 
 export interface ProjectTab {
   id: ProjectTabId;
@@ -9,6 +9,7 @@ export const projectTabs: readonly ProjectTab[] = [
   { id: "tasks", param: "tareas" },
   { id: "stories", param: "historias" },
   { id: "documents", param: "documentos" },
+  { id: "team", param: "equipo" },
 ];
 
 export function tabFromParam(value: string | undefined): ProjectTabId {

@@ -2768,7 +2768,8 @@
           "tasks": "Tareas",
           "stories": "Historias",
           "storiesPending": "Historias ({count})",
-          "documents": "Documentos"
+          "documents": "Documentos",
+          "team": "Equipo"
         },
         "head": {
           "phase": "Fase",
@@ -2991,6 +2992,148 @@
               "unavailable": "Ahora mismo no puedo guardar. Inténtalo en un momento.",
               "error": "Algo ha fallado. Inténtalo otra vez."
             }
+          }
+        }
+      },
+      "team": {
+        "title": "Equipo del proyecto",
+        "client": "Cliente",
+        "clientNone": "Sin cuenta de cliente",
+        "freelance": "Freelance",
+        "freelanceNone": "Sin freelance asignado",
+        "fee": {
+          "title": "Tarifa del freelance",
+          "noFreelance": "Asigna un freelance al proyecto para acordar su tarifa.",
+          "noFee": "Todavía no hay tarifa acordada.",
+          "error": {
+            "title": "No se ha podido cargar la tarifa",
+            "text": "Vuelve a intentarlo en unos segundos."
+          },
+          "summary": {
+            "hourly": "Por horas: {rate} la hora.",
+            "milestones": "Por hitos, los defines tú.",
+            "fixed": "Precio fijo: {amount}."
+          },
+          "summaryCap": "Tope de {hours} h.",
+          "settle": "Liquidar",
+          "sheet": {
+            "open": "Acordar tarifa",
+            "openEdit": "Cambiar tarifa",
+            "title": "Tarifa del freelance",
+            "close": "Cerrar",
+            "mode": "Modalidad",
+            "modes": {
+              "hourly": "Por horas",
+              "milestones": "Por hitos",
+              "fixed": "Precio fijo"
+            },
+            "amount": "Importe del proyecto (EUR)",
+            "amountHint": "Se crea una partida por el total; puedes partirla en varias.",
+            "hourlyRate": "Precio por hora (EUR)",
+            "hoursCap": "Tope de horas",
+            "hoursCapHint": "El freelance no podrá registrar más horas que el tope.",
+            "note": "Nota",
+            "optional": "(opcional)",
+            "modeLocked": "La modalidad no se puede cambiar mientras haya partidas sin rechazar.",
+            "fixedItemLabel": "Importe del proyecto",
+            "submit": "Guardar tarifa",
+            "submitting": "Guardando…",
+            "done": "Tarifa guardada"
+          },
+          "add": {
+            "open": "Añadir hito",
+            "title": "Nuevo hito",
+            "close": "Cerrar",
+            "label": "Qué se entrega",
+            "amount": "Importe (EUR)",
+            "remaining": "Quedan {amount} por repartir.",
+            "workedOn": "Fecha prevista",
+            "optional": "(opcional)",
+            "submit": "Añadir hito",
+            "submitting": "Añadiendo…",
+            "done": "Hito añadido"
+          },
+          "table": {
+            "caption": "Partidas de la tarifa",
+            "region": "Partidas de la tarifa",
+            "empty": "Todavía no hay partidas.",
+            "select": "Seleccionar {label}",
+            "columns": {
+              "select": "Seleccionar",
+              "label": "Concepto",
+              "hours": "Horas",
+              "amount": "Importe",
+              "date": "Fecha",
+              "by": "Registrada por",
+              "status": "Estado",
+              "actions": "Acciones"
+            },
+            "statuses": {
+              "pending": "Pendiente",
+              "delivered": "Entregada",
+              "approved": "Aprobada",
+              "rejected": "Rechazada",
+              "paid": "Pagada"
+            },
+            "by": {
+              "freelance": "Freelance",
+              "jose": "Jose"
+            },
+            "approve": "Aprobar ({count})",
+            "approving": "Aprobando…",
+            "approved": "{count} partidas aprobadas",
+            "rejectOpen": "Rechazar",
+            "rejectOpenFor": "Rechazar {label}",
+            "rejectTitle": "Rechazar «{label}»",
+            "rejectReason": "Motivo del rechazo",
+            "rejectSubmit": "Rechazar partida",
+            "rejecting": "Rechazando…",
+            "rejected": "Partida rechazada",
+            "rejectedReason": "Motivo: {reason}",
+            "delete": "Borrar",
+            "deleteFor": "Borrar {label}",
+            "deleted": "Partida borrada",
+            "close": "Cerrar"
+          },
+          "totals": {
+            "region": "Totales de la tarifa",
+            "agreed": "Acordado",
+            "pending": "Pendiente",
+            "delivered": "Entregado",
+            "approved": "Aprobado sin liquidar",
+            "paid": "Pagado",
+            "none": "Sin tope"
+          },
+          "errors": {
+            "mode": "Elige una modalidad.",
+            "amount": "Escribe un importe válido, mayor que cero.",
+            "hourlyRate": "Escribe un precio por hora válido.",
+            "hoursCap": "Escribe horas válidas, con un decimal como máximo.",
+            "note": "La nota es demasiado larga.",
+            "label": "Escribe qué se entrega, hasta 120 caracteres.",
+            "workedOn": "Elige una fecha válida.",
+            "reason": "Escribe el motivo.",
+            "ids": "Selecciona al menos una partida.",
+            "forbidden": "No tienes permiso para hacer esto.",
+            "project_not_found": "El proyecto ya no existe.",
+            "project_archived": "El proyecto está archivado.",
+            "project_has_no_freelance": "Asigna primero un freelance al proyecto.",
+            "invalid_fee": "La tarifa no es válida para esa modalidad.",
+            "fee_has_items": "No se puede cambiar la modalidad mientras haya partidas sin rechazar. Rechaza o borra las pendientes primero.",
+            "fee_not_found": "La tarifa ya no existe.",
+            "fee_mode_mismatch": "Esa acción no vale para la modalidad de la tarifa.",
+            "fee_amount_exceeded": "Las partidas no pueden superar el importe acordado.",
+            "hours_cap_exceeded": "Las horas registradas superan el tope.",
+            "fee_closed": "La tarifa está cerrada.",
+            "invalid_label": "Escribe qué se entrega, hasta 120 caracteres.",
+            "invalid_amount": "Escribe un importe válido, mayor que cero.",
+            "reason_required": "Escribe el motivo del rechazo.",
+            "item_not_found": "La partida ya no existe.",
+            "item_not_approvable": "Alguna partida ya no se puede aprobar ni rechazar. Recarga la página.",
+            "item_not_pending": "Solo se pueden borrar partidas pendientes.",
+            "invalid_selection": "Selecciona entre 1 y 200 partidas.",
+            "unavailable": "El servicio no está disponible ahora mismo.",
+            "error": "No se ha podido completar. Inténtalo de nuevo."
           }
         }
       }
