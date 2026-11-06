@@ -1,57 +1,82 @@
-import type { ReactNode } from "react";
+import { VisuallyHidden } from "@/components/ui/VisuallyHidden/VisuallyHidden";
+import type { ChatLabels, ChatMessage } from "@/types/chat";
 
+import { AttachmentChip } from "../AttachmentChip/AttachmentChip";
 import styles from "./ChatBubble.module.css";
 
-export const bubbleVariants = ["visitor", "nexo", "staff", "system"] as const;
-export type BubbleVariant = (typeof bubbleVariants)[number];
+export type ChatBubbleLabels = Pick<
+  ChatLabels,
+  "nexoName" | "you" | "jose" | "sourcesLabel" | "sending" | "failed" | "systemEvents"
+>;
 
 interface ChatBubbleProps {
-  variant: BubbleVariant;
-  own?: boolean;
-  author?: string;
-  time?: ReactNode;
-  note?: string;
-  sources?: readonly string[];
-  attachments?: ReactNode;
-  children: ReactNode;
+  message: ChatMessage;
+  labels: ChatBubbleLabels;
 }
 
-export function ChatBubble({
-  variant,
-  own = false,
-  author,
-  time,
-  note,
-  sources = [],
-  attachments,
-  children,
-}: ChatBubbleProps) {
+function authorOf(message: ChatMessage, labels: ChatBubbleLabels): string {
+  if (message.authorName) return message.authorName;
+  if (message.variant === "visitor") return labels.you;
+  if (message.variant === "nexo") return labels.nexoName;
+  return message.authorName ?? labels.jose;
+}
+
+export function ChatBubble({ message, labels }: ChatBubbleProps) {
+  if (message.variant === "system") {
+    const text = message.systemEvent ? labels.systemEvents[message.systemEvent] : message.body;
+    return (
+      <li className={styles.item} data-variant="system">
+        <p className={styles.system}>{text}</p>
+      </li>
+    );
+  }
+  const author = authorOf(message, labels);
+  const own = message.own ?? message.variant === "visitor";
+  const attachments = message.attachments ?? [];
   return (
-    <div className={styles.row} data-variant={variant} data-own={own ? "true" : undefined}>
-      {variant === "system" ? (
-        <p className={styles.system}>{children}</p>
+    <li
+      className={styles.item}
+      data-variant={message.variant}
+      data-own={own ? "true" : undefined}
+      data-delivery={message.delivery}
+    >
+      {message.variant === "visitor" && own ? (
+        <VisuallyHidden>{author}</VisuallyHidden>
       ) : (
-        <div className={styles.bubble}>
-          {author || time ? (
-            <p className={styles.meta}>
-              {author ? <span className={styles.author}>{author}</span> : null}
-              {time ? <span className={styles.time}>{time}</span> : null}
-            </p>
-          ) : null}
-          {note ? <p className={styles.note}>{note}</p> : null}
-          <p className={styles.body}>{children}</p>
-          {attachments}
-          {sources.length > 0 ? (
-            <ul className={styles.sources}>
-              {sources.map((source) => (
-                <li key={source} className={styles.source}>
-                  {source}
-                </li>
-              ))}
-            </ul>
-          ) : null}
-        </div>
+        <span className={styles.author}>
+          {author}
+          {message.time ? <span className={styles.time}>{message.time}</span> : null}
+        </span>
       )}
-    </div>
+      {message.note ? <span className={styles.meta}>{message.note}</span> : null}
+      <p className={styles.bubble}>{message.body}</p>
+      {attachments.length > 0 ? (
+        <ul className={styles.attachments}>
+          {attachments.map((attachment) => (
+            <li key={attachment.id}>
+              <AttachmentChip
+                href={attachment.href}
+                name={attachment.name}
+                size={attachment.size}
+                title={attachment.title}
+              />
+            </li>
+          ))}
+        </ul>
+      ) : null}
+      {message.sources.length > 0 ? (
+        <ul className={styles.sources} aria-label={labels.sourcesLabel}>
+          {message.sources.map((source) => (
+            <li key={source} className={styles.source}>
+              {source}
+            </li>
+          ))}
+        </ul>
+      ) : null}
+      {message.delivery === "sending" ? (
+        <span className={styles.meta}>{labels.sending}</span>
+      ) : null}
+      {message.delivery === "failed" ? <span className={styles.meta}>{labels.failed}</span> : null}
+    </li>
   );
 }

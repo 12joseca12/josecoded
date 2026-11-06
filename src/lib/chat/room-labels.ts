@@ -11,6 +11,7 @@ type Translate = (key: MessageKey) => string;
 export function roomLabels(t: Translate): RoomLabels {
   return {
     threadLabel: t("room.threadLabel"),
+    sourcesLabel: t("room.sourcesLabel"),
     empty: t("room.empty"),
     composerLabel: t("room.composer.label"),
     placeholder: t("room.composer.placeholder"),
