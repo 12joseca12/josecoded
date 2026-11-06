@@ -32,6 +32,14 @@ import {
   storyStatuses,
 } from "@/types/admin-project-stories";
 import {
+  type UpdateErrorCode,
+  updateErrorCodes,
+  type UpdateField,
+  updateFields,
+  type UpdatesPanelLabels,
+  updateVisibilities,
+} from "@/types/admin-project-updates";
+import {
   projectErrorCodes,
   projectFields,
   type ProjectPhase,
@@ -435,5 +443,53 @@ export function feePanelLabels(t: Translate): FeePanelLabels {
     add,
     table,
     totals,
+  };
+}
+
+const updates = "admin.projects.updates" as const;
+
+export function updatesPanelLabels(t: Translate): UpdatesPanelLabels {
+  const codeErrors = {} as Record<UpdateErrorCode, string>;
+  for (const code of updateErrorCodes) codeErrors[code] = t(`${updates}.errors.${code}`);
+  const formErrors = {} as Record<UpdateField | UpdateErrorCode, string>;
+  for (const field of updateFields) formErrors[field] = t(`${updates}.form.errors.${field}`);
+  Object.assign(formErrors, codeErrors);
+  const visibility = {} as UpdatesPanelLabels["visibility"];
+  for (const value of updateVisibilities) visibility[value] = t(`${updates}.visibility.${value}`);
+  return {
+    title: t(`${updates}.title`),
+    empty: t(`${updates}.empty`),
+    authorJose: t(`${updates}.authorJose`),
+    authorFreelance: t(`${updates}.authorFreelance`),
+    task: t(`${updates}.task`),
+    visibility,
+    publish: t(`${updates}.publish`),
+    publishing: t(`${updates}.publishing`),
+    hide: t(`${updates}.hide`),
+    hiding: t(`${updates}.hiding`),
+    published: t(`${updates}.published`),
+    hidden: t(`${updates}.hidden`),
+    delete: t(`${updates}.delete`),
+    deleteFor: t(`${updates}.deleteFor`),
+    deleteTitle: t(`${updates}.deleteTitle`),
+    deleteText: t(`${updates}.deleteText`),
+    deleteSubmit: t(`${updates}.deleteSubmit`),
+    deleting: t(`${updates}.deleting`),
+    deleted: t(`${updates}.deleted`),
+    close: t(`${updates}.close`),
+    form: {
+      title: t(`${updates}.form.title`),
+      body: t(`${updates}.form.body`),
+      task: t(`${updates}.form.task`),
+      taskNone: t(`${updates}.form.taskNone`),
+      visible: t(`${updates}.form.visible`),
+      visibleHint: t(`${updates}.form.visibleHint`),
+      optional: t(`${updates}.form.optional`),
+      submit: t(`${updates}.form.submit`),
+      submitting: t(`${updates}.form.submitting`),
+      done: t(`${updates}.form.done`),
+      errors: formErrors,
+    },
+    errors: codeErrors,
   };
 }

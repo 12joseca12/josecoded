@@ -41,6 +41,7 @@ function project(overrides) {
     links: [],
     fee: null,
     feeItems: [],
+    updates: [],
     ...overrides,
   };
 }
@@ -104,6 +105,12 @@ function feeItem(overrides) {
   };
 }
 
+const updateIds = [1, 2, 3].map((n) => `76000000-0000-4000-8000-00000000000${n}`);
+
+function updateRow(overrides) {
+  return { task_id: null, visibility: "internal", ...overrides };
+}
+
 function seededProjects() {
   const tasks = Array.from({ length: 8 }, (_, index) =>
     taskRow({
@@ -163,6 +170,33 @@ function seededProjects() {
           hours: 2,
           amount: 70,
           worked_on: "2026-11-05",
+        }),
+      ],
+      updates: [
+        updateRow({
+          id: updateIds[0],
+          project_id: projectIds.shop,
+          author_id: freelanceId,
+          task_id: "61000000-0000-4000-8000-000000000005",
+          body: "El catálogo ya carga desde la base de datos.",
+          visibility: "client",
+          created_at: "2026-11-04T10:00:00+00:00",
+        }),
+        updateRow({
+          id: updateIds[1],
+          project_id: projectIds.shop,
+          author_id: freelanceId,
+          body: "Pendiente confirmar el formato de las imágenes.",
+          visibility: "internal",
+          created_at: "2026-11-05T10:00:00+00:00",
+        }),
+        updateRow({
+          id: updateIds[2],
+          project_id: projectIds.shop,
+          author_id: people["admin@example.com"].id,
+          body: "Esta semana cerramos el catálogo.",
+          visibility: "client",
+          created_at: "2026-11-05T16:00:00+00:00",
         }),
       ],
       documents: [
@@ -244,6 +278,12 @@ function seededProjects() {
 }
 
 extendAuthState((state) => {
+  state.projectNotifications = updateIds.slice(0, 2).map((id) => ({
+    id: `77${id.slice(2)}`,
+    event: "project_update",
+    read_at: null,
+    href: `/admin/proyectos/${projectIds.shop}?tab=avances`,
+  }));
   state.projects = seededProjects();
   state.projectsMode = "data";
   state.projectsRpcError = null;
@@ -267,8 +307,8 @@ route("POST", "/__auth/projects-rpc-error", async ({ request, response, url }) =
 export function overviewRow(entry) {
   const done = entry.tasks.filter((task) => task.status === "done").length;
   const total = entry.tasks.length;
-  const { tasks, stories, documents, links, brief, fee, feeItems, ...visible } = entry;
-  void [tasks, stories, documents, links, brief, fee, feeItems];
+  const { tasks, stories, documents, links, brief, fee, feeItems, updates, ...visible } = entry;
+  void [tasks, stories, documents, links, brief, fee, feeItems, updates];
   return {
     ...visible,
     done,
@@ -864,4 +904,91 @@ route("POST", "/__auth/projects-deliver", async ({ request, response, url }) => 
     if (item) item.status = "delivered";
   }
   return send(response, 200, { ok: true });
+});
+
+route("GET", "/rest/v1/project_updates", ({ request, response, url }) => {
+  const auth = adminCall(request, response);
+  if (!auth) return;
+  if (auth.projectsMode === "error") {
+    return send(response, 500, { code: "XX000", message: "internal", details: null, hint: null });
+  }
+  const only = eq(url, "project_id");
+  return send(
+    response,
+    200,
+    auth.projects
+      .filter((entry) => !only || entry.id === only)
+      .flatMap((entry) => entry.updates)
+      .sort((a, b) => b.created_at.localeCompare(a.created_at)),
+  );
+});
+
+route("POST", "/rest/v1/project_updates", async ({ request, response }) => {
+  const auth = adminCall(request, response);
+  if (!auth) return;
+  const body = JSON.parse(await readBody(request));
+  auth.calls.projects.push({ name: "create-update", body });
+  if (auth.projectsRpcError) {
+    return send(response, 400, { details: null, hint: null, ...auth.projectsRpcError });
+  }
+  const entry = projectOf(auth, body.project_id);
+  if (!entry) return failure(response, "P0001", "project_not_found");
+  if (entry.archived_at) return failure(response, "P0001", "project_archived");
+  if (body.task_id && !entry.tasks.some((task) => task.id === body.task_id)) {
+    return failure(response, "P0001", "task_project_mismatch");
+  }
+  entry.updates.push(
+    updateRow({
+      id: randomUUID(),
+      project_id: entry.id,
+      author_id: people["admin@example.com"].id,
+      task_id: body.task_id ?? null,
+      body: body.body,
+      visibility: body.visibility ?? "internal",
+      created_at: new Date().toISOString(),
+    }),
+  );
+  return sendEmpty(response);
+});
+
+route("DELETE", "/rest/v1/project_updates", ({ request, response, url }) => {
+  const auth = adminCall(request, response);
+  if (!auth) return;
+  const only = eq(url, "id");
+  for (const entry of auth.projects) {
+    const index = entry.updates.findIndex((item) => item.id === only);
+    if (index < 0) continue;
+    entry.updates.splice(index, 1);
+    return send(response, 200, [{ id: only }]);
+  }
+  return send(response, 200, []);
+});
+
+rpc("set_update_visibility", ({ auth, args, response }) => {
+  for (const entry of auth.projects) {
+    const update = entry.updates.find((item) => item.id === args.p_id);
+    if (!update) continue;
+    update.visibility = args.p_visibility;
+    return sendEmpty(response);
+  }
+  return failure(response, "P0001", "update_not_found");
+});
+
+route("GET", "/rest/v1/notifications", ({ request, response, url }) => {
+  const auth = adminCall(request, response);
+  if (!auth) return;
+  const like = url.searchParams.get("href") ?? "";
+  const suffix = like.replace(/^like\.%/, "");
+  return send(
+    response,
+    200,
+    auth.projectNotifications.filter((item) => item.read_at === null && item.href.endsWith(suffix)),
+  );
+});
+
+rpc("mark_notifications_read", ({ auth, args, response }) => {
+  for (const item of auth.projectNotifications) {
+    if (args.p_ids.includes(item.id)) item.read_at = new Date().toISOString();
+  }
+  return send(response, 200, JSON.stringify(args.p_ids.length));
 });

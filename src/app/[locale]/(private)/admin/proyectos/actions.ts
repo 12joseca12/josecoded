@@ -18,12 +18,14 @@ import {
   runSetFee,
 } from "@/lib/admin/project-fee";
 import { runDecideStory } from "@/lib/admin/project-stories";
+import { runCreateUpdate, runDeleteUpdate, runSetVisibility } from "@/lib/admin/project-updates";
 import { runCreateProject, runUpdateProject } from "@/lib/admin/projects";
 import { requireZone } from "@/lib/auth/session";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { TaskResult } from "@/types/admin-project-detail";
 import type { FeeActionResult } from "@/types/admin-project-fee";
 import type { DecideResult } from "@/types/admin-project-stories";
+import type { UpdateActionResult } from "@/types/admin-project-updates";
 import type { ProjectActionResult } from "@/types/admin-projects";
 
 const failed = { status: "error", code: "error" } as const;
@@ -129,4 +131,34 @@ export async function rejectFeeItem(locale: string, raw: unknown): Promise<FeeAc
 
 export async function deleteFeeItem(locale: string, raw: unknown): Promise<FeeActionResult> {
   return writeFee(locale, (client) => runDeleteItem(client, raw));
+}
+
+async function writeUpdate(
+  locale: string,
+  run: (
+    client: NonNullable<Awaited<ReturnType<typeof createSupabaseServerClient>>>,
+  ) => Promise<UpdateActionResult>,
+): Promise<UpdateActionResult> {
+  if (!isLocale(locale)) return failed;
+  await requireZone("admin", locale);
+  const client = await createSupabaseServerClient();
+  if (client === null) return { status: "error", code: "unavailable" };
+  const result = await run(client);
+  if (result.status === "done") revalidatePath(`/${locale}/admin/proyectos`, "layout");
+  return result;
+}
+
+export async function createUpdate(locale: string, raw: unknown): Promise<UpdateActionResult> {
+  return writeUpdate(locale, (client) => runCreateUpdate(client, raw));
+}
+
+export async function setUpdateVisibility(
+  locale: string,
+  raw: unknown,
+): Promise<UpdateActionResult> {
+  return writeUpdate(locale, (client) => runSetVisibility(client, raw));
+}
+
+export async function deleteUpdate(locale: string, raw: unknown): Promise<UpdateActionResult> {
+  return writeUpdate(locale, (client) => runDeleteUpdate(client, raw));
 }

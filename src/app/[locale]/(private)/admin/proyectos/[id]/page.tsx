@@ -9,6 +9,7 @@ import { PriceTabs } from "@/components/admin/PriceTabs/PriceTabs";
 import { ProjectHead } from "@/components/admin/ProjectHead/ProjectHead";
 import { StoryList } from "@/components/admin/StoryList/StoryList";
 import { TeamPanel } from "@/components/admin/TeamPanel/TeamPanel";
+import { UpdatesPanel } from "@/components/admin/UpdatesPanel/UpdatesPanel";
 import { FileList } from "@/components/area/FileList/FileList";
 import { Uploader } from "@/components/area/Uploader/Uploader";
 import { AnnouncerProvider } from "@/components/ui/Announcer/Announcer";
@@ -22,6 +23,7 @@ import { fetchProject, fetchProjectTasks } from "@/lib/admin/project-detail";
 import { fetchProjectFee } from "@/lib/admin/project-fee";
 import { fetchProjectStories } from "@/lib/admin/project-stories";
 import { projectTabs, tabFromParam } from "@/lib/admin/project-tabs";
+import { fetchProjectUpdates, fetchUnreadUpdateIds } from "@/lib/admin/project-updates";
 import { requireZone } from "@/lib/auth/session";
 import { fetchProjectDocuments } from "@/lib/documents/project-documents";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -32,13 +34,16 @@ import {
   addFeeItem,
   approveFeeItems,
   archiveProject,
+  createUpdate,
   decideStory,
   deleteFeeItem,
   deleteTask,
+  deleteUpdate,
   moveTask,
   rejectFeeItem,
   setFee,
   setProjectPhase,
+  setUpdateVisibility,
   upsertTask,
 } from "../actions";
 import {
@@ -50,6 +55,7 @@ import {
   storyListLabels,
   taskSheetLabels,
   teamPanelLabels,
+  updatesPanelLabels,
   uploaderLabels,
 } from "../labels";
 import detail from "./detail.module.css";
@@ -104,6 +110,8 @@ async function ProjectSection({
   const stories = current === "stories" ? await fetchProjectStories(client, id) : null;
   const documents = current === "documents" ? await fetchProjectDocuments(client, id) : null;
   const fee = current === "team" ? await fetchProjectFee(client, id, row.freelance_id) : null;
+  const updates = current === "updates" ? await fetchProjectUpdates(client, id, true) : null;
+  const unread = current === "updates" ? [] : await fetchUnreadUpdateIds(client, id);
   const assignees: Assignee[] = [
     ...(row.client_id !== null && row.client_name !== null
       ? [{ id: row.client_id, name: row.client_name }]
@@ -148,12 +156,43 @@ async function ProjectSection({
                     "{count}",
                     String(row.stories_to_decide),
                   )
-                : t(`admin.projects.detail.tabs.${entry.id}`),
+                : entry.id === "updates" && unread.length > 0
+                  ? t("admin.projects.detail.tabs.updatesPending").replace(
+                      "{count}",
+                      String(unread.length),
+                    )
+                  : t(`admin.projects.detail.tabs.${entry.id}`),
             href: `${base}?tab=${entry.param}`,
           }))}
         />
       ) : null}
-      {current === "team" ? (
+      {current === "updates" ? (
+        updates?.status === "ok" ? (
+          <AnnouncerProvider>
+            <UpdatesPanel
+              projectId={id}
+              updates={updates.updates}
+              freelanceId={row.freelance_id}
+              freelanceName={row.freelance_name}
+              tasks={tasks.tasks.map((task) => ({ id: task.id, title: task.title }))}
+              locale={locale}
+              labels={updatesPanelLabels(t)}
+              handlers={{
+                create: createUpdate.bind(null, locale),
+                setVisibility: setUpdateVisibility.bind(null, locale),
+                remove: deleteUpdate.bind(null, locale),
+              }}
+            />
+          </AnnouncerProvider>
+        ) : (
+          <LeadsError
+            title={t("admin.projects.detail.error.title")}
+            text={t("admin.projects.detail.error.text")}
+            retryLabel={t("admin.projects.detail.error.retry")}
+            loadingLabel={t("admin.projects.detail.error.retrying")}
+          />
+        )
+      ) : current === "team" ? (
         <AnnouncerProvider>
           <TeamPanel
             clientName={row.client_name}

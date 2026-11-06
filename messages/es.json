@@ -2793,7 +2793,9 @@
           "stories": "Historias",
           "storiesPending": "Historias ({count})",
           "documents": "Documentos",
-          "team": "Equipo"
+          "team": "Equipo",
+          "updates": "Avances",
+          "updatesPending": "Avances ({count})"
         },
         "head": {
           "phase": "Fase",
@@ -3159,6 +3161,57 @@
             "unavailable": "El servicio no está disponible ahora mismo.",
             "error": "No se ha podido completar. Inténtalo de nuevo."
           }
+        }
+      },
+      "updates": {
+        "title": "Avances del proyecto",
+        "empty": "Todavía no hay avances.",
+        "authorJose": "Jose",
+        "authorFreelance": "Freelance",
+        "task": "Tarea: {title}",
+        "visibility": {
+          "internal": "Interno",
+          "client": "Visible para el cliente"
+        },
+        "publish": "Publicar al cliente",
+        "publishing": "Publicando…",
+        "hide": "Hacer interno",
+        "hiding": "Ocultando…",
+        "published": "Avance publicado al cliente",
+        "hidden": "Avance interno",
+        "delete": "Borrar",
+        "deleteFor": "Borrar el avance de {author}",
+        "deleteTitle": "Borrar avance",
+        "deleteText": "El avance desaparece del proyecto y del área del cliente si estaba publicado.",
+        "deleteSubmit": "Borrar avance",
+        "deleting": "Borrando…",
+        "deleted": "Avance borrado",
+        "close": "Cerrar",
+        "form": {
+          "title": "Nuevo avance",
+          "body": "Qué ha avanzado",
+          "task": "Tarea",
+          "taskNone": "Sin tarea",
+          "visible": "Visible para el cliente",
+          "visibleHint": "Si lo marcas, el cliente lo verá firmado como Jose.",
+          "optional": "(opcional)",
+          "submit": "Publicar avance",
+          "submitting": "Publicando…",
+          "done": "Avance publicado",
+          "errors": {
+            "body": "Escribe el avance, hasta 2.000 caracteres.",
+            "taskId": "Elige una tarea válida."
+          }
+        },
+        "errors": {
+          "forbidden": "No tienes permiso para hacer esto.",
+          "not_project_team": "Solo el equipo del proyecto puede escribir avances.",
+          "project_archived": "El proyecto está archivado.",
+          "project_not_found": "El proyecto ya no existe.",
+          "task_project_mismatch": "Esa tarea no es de este proyecto.",
+          "update_not_found": "El avance ya no existe. Recarga la página.",
+          "unavailable": "El servicio no está disponible ahora mismo.",
+          "error": "No se ha podido completar. Inténtalo de nuevo."
         }
       }
     },

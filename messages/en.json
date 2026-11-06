@@ -2793,7 +2793,9 @@
           "stories": "Stories",
           "storiesPending": "Stories ({count})",
           "documents": "Documents",
-          "team": "Team"
+          "team": "Team",
+          "updates": "Updates",
+          "updatesPending": "Updates ({count})"
         },
         "head": {
           "phase": "Phase",
@@ -3159,6 +3161,57 @@
             "unavailable": "The service is not available right now.",
             "error": "It could not be completed. Try again."
           }
+        }
+      },
+      "updates": {
+        "title": "Project updates",
+        "empty": "No updates yet.",
+        "authorJose": "Jose",
+        "authorFreelance": "Freelance",
+        "task": "Task: {title}",
+        "visibility": {
+          "internal": "Internal",
+          "client": "Visible to the client"
+        },
+        "publish": "Publish to the client",
+        "publishing": "Publishing…",
+        "hide": "Make internal",
+        "hiding": "Hiding…",
+        "published": "Update published to the client",
+        "hidden": "Update made internal",
+        "delete": "Delete",
+        "deleteFor": "Delete the update by {author}",
+        "deleteTitle": "Delete update",
+        "deleteText": "The update disappears from the project and from the client area if it was published.",
+        "deleteSubmit": "Delete update",
+        "deleting": "Deleting…",
+        "deleted": "Update deleted",
+        "close": "Close",
+        "form": {
+          "title": "New update",
+          "body": "What has progressed",
+          "task": "Task",
+          "taskNone": "No task",
+          "visible": "Visible to the client",
+          "visibleHint": "If checked, the client sees it signed as Jose.",
+          "optional": "(optional)",
+          "submit": "Post update",
+          "submitting": "Posting…",
+          "done": "Update posted",
+          "errors": {
+            "body": "Write the update, up to 2,000 characters.",
+            "taskId": "Pick a valid task."
+          }
+        },
+        "errors": {
+          "forbidden": "You are not allowed to do this.",
+          "not_project_team": "Only the project team can write updates.",
+          "project_archived": "The project is archived.",
+          "project_not_found": "The project no longer exists.",
+          "task_project_mismatch": "That task does not belong to this project.",
+          "update_not_found": "The update no longer exists. Reload the page.",
+          "unavailable": "The service is not available right now.",
+          "error": "It could not be completed. Try again."
         }
       }
     },
