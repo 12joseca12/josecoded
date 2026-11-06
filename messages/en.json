@@ -2615,7 +2615,9 @@
         },
         "tabsLabel": "Project sections",
         "tabs": {
-          "tasks": "Tasks"
+          "tasks": "Tasks",
+          "stories": "Stories",
+          "storiesPending": "Stories ({count})"
         },
         "head": {
           "phase": "Phase",
@@ -2695,6 +2697,77 @@
               "task_not_found": "That task no longer exists.",
               "task_not_deletable": "Only to-do tasks without a story can be deleted.",
               "project_archived": "The project is archived. Restore it to change it.",
+              "unavailable": "I cannot save right now. Try again in a moment.",
+              "error": "I could not save it. Try again."
+            }
+          }
+        },
+        "stories": {
+          "empty": {
+            "title": "No stories yet",
+            "text": "When the client proposes a story from their area it will show here for you to decide."
+          },
+          "groups": {
+            "proposed": "To decide",
+            "in_review": "Waiting for the client",
+            "decided": "Decided"
+          },
+          "asA": "As a",
+          "iWant": "I want",
+          "soThat": "So that",
+          "criteria": "Acceptance criteria",
+          "statuses": {
+            "proposed": "To decide",
+            "in_review": "Quote sent",
+            "accepted": "Accepted",
+            "rejected": "Rejected",
+            "in_tasks": "In tasks"
+          },
+          "outOfScope": "Out of budget",
+          "estimate": "Estimate: {hours} h · {amount}",
+          "note": "Note: {note}",
+          "decidedOn": "Decided on {date}",
+          "confirmedOn": "Confirmed by the client on {date}",
+          "awaiting": "The client has to confirm the quote from their area.",
+          "hasTask": "It has a task on the board.",
+          "decide": {
+            "open": "Decide",
+            "openFor": "Decide “{title}”",
+            "title": "Decide: {title}",
+            "close": "Close",
+            "decision": "Decision",
+            "decisions": {
+              "accept": "Accept",
+              "reject": "Reject",
+              "out_of_scope": "Out of budget"
+            },
+            "hours": "Hours",
+            "amount": "Indicative amount (€)",
+            "amountHint": "The client will see it and has to confirm it. You record the payment in Receivables.",
+            "note": "Note",
+            "noteHint": "The client will see the reason.",
+            "optional": "(optional)",
+            "createTask": "Create a task from this story",
+            "submit": "Save decision",
+            "submitting": "Saving",
+            "done": {
+              "proposed": "Decision saved",
+              "in_review": "Quote sent to the client",
+              "accepted": "Story accepted",
+              "rejected": "Story rejected",
+              "in_tasks": "Story accepted and task created"
+            },
+            "errors": {
+              "decision": "Pick a decision.",
+              "hours": "Write the hours of the extra work.",
+              "amount": "Write the indicative amount.",
+              "note": "Write the reason for the rejection.",
+              "forbidden": "You are not allowed to do this. Sign in again with your code.",
+              "invalid_decision": "Pick a decision.",
+              "story_not_found": "That story no longer exists.",
+              "story_not_proposed": "That story is already decided.",
+              "note_required": "Write the reason for the rejection.",
+              "estimate_required": "Write the hours and the indicative amount.",
               "unavailable": "I cannot save right now. Try again in a moment.",
               "error": "I could not save it. Try again."
             }

@@ -10,6 +10,14 @@ import {
   taskStatuses,
 } from "@/types/admin-project-detail";
 import {
+  decisionErrorCodes,
+  decisionFields,
+  type StoryDecisionLabels,
+  storyDecisions,
+  type StoryListLabels,
+  storyStatuses,
+} from "@/types/admin-project-stories";
+import {
   projectErrorCodes,
   projectFields,
   type ProjectPhase,
@@ -178,6 +186,62 @@ export function taskSheetLabels(t: Translate): TaskSheetLabels {
     cancel: t(`${s}.cancel`),
     statuses: taskStatusLabels(t),
     phases: phaseLabels(t),
+    errors,
+  };
+}
+
+export function storyListLabels(t: Translate): StoryListLabels {
+  const s = `${detail}.stories` as const;
+  const statuses = {} as StoryListLabels["statuses"];
+  for (const status of storyStatuses) statuses[status] = t(`${s}.statuses.${status}`);
+  return {
+    empty: { title: t(`${s}.empty.title`), text: t(`${s}.empty.text`) },
+    groups: {
+      proposed: t(`${s}.groups.proposed`),
+      in_review: t(`${s}.groups.in_review`),
+      decided: t(`${s}.groups.decided`),
+    },
+    asA: t(`${s}.asA`),
+    iWant: t(`${s}.iWant`),
+    soThat: t(`${s}.soThat`),
+    criteria: t(`${s}.criteria`),
+    statuses,
+    outOfScope: t(`${s}.outOfScope`),
+    estimate: t(`${s}.estimate`),
+    note: t(`${s}.note`),
+    decidedOn: t(`${s}.decidedOn`),
+    confirmedOn: t(`${s}.confirmedOn`),
+    awaiting: t(`${s}.awaiting`),
+    hasTask: t(`${s}.hasTask`),
+  };
+}
+
+export function storyDecisionLabels(t: Translate): StoryDecisionLabels {
+  const s = `${detail}.stories.decide` as const;
+  const decisions = {} as StoryDecisionLabels["decisions"];
+  for (const decision of storyDecisions) decisions[decision] = t(`${s}.decisions.${decision}`);
+  const done = {} as StoryDecisionLabels["done"];
+  for (const status of storyStatuses) done[status] = t(`${s}.done.${status}`);
+  const errors = {} as StoryDecisionLabels["errors"];
+  for (const key of [...decisionFields, ...decisionErrorCodes])
+    errors[key] = t(`${s}.errors.${key}`);
+  return {
+    open: t(`${s}.open`),
+    openFor: t(`${s}.openFor`),
+    title: t(`${s}.title`),
+    close: t(`${s}.close`),
+    decision: t(`${s}.decision`),
+    decisions,
+    hours: t(`${s}.hours`),
+    amount: t(`${s}.amount`),
+    amountHint: t(`${s}.amountHint`),
+    note: t(`${s}.note`),
+    noteHint: t(`${s}.noteHint`),
+    optional: t(`${s}.optional`),
+    createTask: t(`${s}.createTask`),
+    submit: t(`${s}.submit`),
+    submitting: t(`${s}.submitting`),
+    done,
     errors,
   };
 }

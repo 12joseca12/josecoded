@@ -10,10 +10,12 @@ import {
   runSetPhase,
   runUpsertTask,
 } from "@/lib/admin/project-detail";
+import { runDecideStory } from "@/lib/admin/project-stories";
 import { runCreateProject, runUpdateProject } from "@/lib/admin/projects";
 import { requireZone } from "@/lib/auth/session";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { TaskResult } from "@/types/admin-project-detail";
+import type { DecideResult } from "@/types/admin-project-stories";
 import type { ProjectActionResult } from "@/types/admin-projects";
 
 const failed = { status: "error", code: "error" } as const;
@@ -74,4 +76,14 @@ export async function setProjectPhase(locale: string, raw: unknown): Promise<Tas
 
 export async function archiveProject(locale: string, raw: unknown): Promise<TaskResult> {
   return writeTask(locale, (client) => runArchive(client, raw));
+}
+
+export async function decideStory(locale: string, raw: unknown): Promise<DecideResult> {
+  if (!isLocale(locale)) return failed;
+  await requireZone("admin", locale);
+  const client = await createSupabaseServerClient();
+  if (client === null) return { status: "error", code: "unavailable" };
+  const result = await runDecideStory(client, raw);
+  if (result.status === "done") revalidatePath(`/${locale}/admin/proyectos`, "layout");
+  return result;
 }

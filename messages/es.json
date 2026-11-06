@@ -2615,7 +2615,9 @@
         },
         "tabsLabel": "Secciones del proyecto",
         "tabs": {
-          "tasks": "Tareas"
+          "tasks": "Tareas",
+          "stories": "Historias",
+          "storiesPending": "Historias ({count})"
         },
         "head": {
           "phase": "Fase",
@@ -2695,6 +2697,77 @@
               "task_not_found": "Esa tarea ya no existe.",
               "task_not_deletable": "Solo se pueden eliminar tareas por hacer y sin historia.",
               "project_archived": "El proyecto está archivado. Restáuralo para cambiarlo.",
+              "unavailable": "Ahora mismo no puedo guardar. Inténtalo en un momento.",
+              "error": "No he podido guardarlo. Inténtalo otra vez."
+            }
+          }
+        },
+        "stories": {
+          "empty": {
+            "title": "Todavía no hay historias",
+            "text": "Cuando el cliente proponga una historia desde su área aparecerá aquí para que la decidas."
+          },
+          "groups": {
+            "proposed": "Por decidir",
+            "in_review": "Esperando al cliente",
+            "decided": "Decididas"
+          },
+          "asA": "Como",
+          "iWant": "Quiero",
+          "soThat": "Para",
+          "criteria": "Criterios de aceptación",
+          "statuses": {
+            "proposed": "Por decidir",
+            "in_review": "Presupuesto enviado",
+            "accepted": "Aceptada",
+            "rejected": "Rechazada",
+            "in_tasks": "En tareas"
+          },
+          "outOfScope": "Fuera de presupuesto",
+          "estimate": "Estimación: {hours} h · {amount}",
+          "note": "Nota: {note}",
+          "decidedOn": "Decidida el {date}",
+          "confirmedOn": "Confirmada por el cliente el {date}",
+          "awaiting": "El cliente tiene que confirmar el presupuesto desde su área.",
+          "hasTask": "Tiene una tarea en el tablero.",
+          "decide": {
+            "open": "Decidir",
+            "openFor": "Decidir «{title}»",
+            "title": "Decidir: {title}",
+            "close": "Cerrar",
+            "decision": "Decisión",
+            "decisions": {
+              "accept": "Aceptar",
+              "reject": "Rechazar",
+              "out_of_scope": "Fuera de presupuesto"
+            },
+            "hours": "Horas",
+            "amount": "Importe orientativo (€)",
+            "amountHint": "El cliente lo verá y tendrá que confirmarlo. El cobro lo registras tú en Cobros.",
+            "note": "Nota",
+            "noteHint": "El cliente verá el motivo.",
+            "optional": "(opcional)",
+            "createTask": "Crear una tarea con esta historia",
+            "submit": "Guardar decisión",
+            "submitting": "Guardando",
+            "done": {
+              "proposed": "Decisión guardada",
+              "in_review": "Presupuesto enviado al cliente",
+              "accepted": "Historia aceptada",
+              "rejected": "Historia rechazada",
+              "in_tasks": "Historia aceptada y tarea creada"
+            },
+            "errors": {
+              "decision": "Elige una decisión.",
+              "hours": "Escribe las horas del trabajo extra.",
+              "amount": "Escribe el importe orientativo.",
+              "note": "Escribe el motivo del rechazo.",
+              "forbidden": "No tienes permiso para hacerlo. Entra de nuevo con tu código.",
+              "invalid_decision": "Elige una decisión.",
+              "story_not_found": "Esa historia ya no existe.",
+              "story_not_proposed": "Esa historia ya está decidida.",
+              "note_required": "Escribe el motivo del rechazo.",
+              "estimate_required": "Escribe las horas y el importe orientativo.",
               "unavailable": "Ahora mismo no puedo guardar. Inténtalo en un momento.",
               "error": "No he podido guardarlo. Inténtalo otra vez."
             }

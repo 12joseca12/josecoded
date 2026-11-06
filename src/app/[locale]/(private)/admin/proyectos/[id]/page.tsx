@@ -6,6 +6,8 @@ import { LeadsError } from "@/components/admin/LeadsError/LeadsError";
 import { PhaseBoard } from "@/components/admin/PhaseBoard/PhaseBoard";
 import { PriceTabs } from "@/components/admin/PriceTabs/PriceTabs";
 import { ProjectHead } from "@/components/admin/ProjectHead/ProjectHead";
+import { StoryList } from "@/components/admin/StoryList/StoryList";
+import { AnnouncerProvider } from "@/components/ui/Announcer/Announcer";
 import { Heading } from "@/components/ui/Heading/Heading";
 import { Link } from "@/components/ui/Link/Link";
 import { LoadingRegion } from "@/components/ui/LoadingRegion/LoadingRegion";
@@ -13,14 +15,28 @@ import { Skeleton } from "@/components/ui/Skeleton/Skeleton";
 import { isLocale, type Locale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
 import { fetchProject, fetchProjectTasks } from "@/lib/admin/project-detail";
+import { fetchProjectStories } from "@/lib/admin/project-stories";
 import { projectTabs, tabFromParam } from "@/lib/admin/project-tabs";
 import { requireZone } from "@/lib/auth/session";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { Assignee } from "@/types/admin-project-detail";
 
 import styles from "../../admin.module.css";
-import { archiveProject, deleteTask, moveTask, setProjectPhase, upsertTask } from "../actions";
-import { phaseBoardLabels, projectHeadLabels, taskSheetLabels } from "../labels";
+import {
+  archiveProject,
+  decideStory,
+  deleteTask,
+  moveTask,
+  setProjectPhase,
+  upsertTask,
+} from "../actions";
+import {
+  phaseBoardLabels,
+  projectHeadLabels,
+  storyDecisionLabels,
+  storyListLabels,
+  taskSheetLabels,
+} from "../labels";
 import detail from "./detail.module.css";
 
 interface ProjectPageProps {
@@ -68,6 +84,7 @@ async function ProjectSection({
 
   const row = project.project;
   const current = tabFromParam(tab);
+  const stories = current === "stories" ? await fetchProjectStories(client, id) : null;
   const assignees: Assignee[] = [
     ...(row.client_id !== null && row.client_name !== null
       ? [{ id: row.client_id, name: row.client_name }]
@@ -106,26 +123,55 @@ async function ProjectSection({
           currentId={current}
           items={projectTabs.map((entry) => ({
             id: entry.id,
-            label: t(`admin.projects.detail.tabs.${entry.id}`),
+            label:
+              entry.id === "stories" && row.stories_to_decide > 0
+                ? t("admin.projects.detail.tabs.storiesPending").replace(
+                    "{count}",
+                    String(row.stories_to_decide),
+                  )
+                : t(`admin.projects.detail.tabs.${entry.id}`),
             href: `${base}?tab=${entry.param}`,
           }))}
         />
       ) : null}
-      <section aria-label={t("admin.projects.detail.tasks.board.region")}>
-        <PhaseBoard
-          projectId={id}
-          tasks={tasks.tasks}
-          assignees={assignees}
-          currentPhase={row.phase}
-          labels={phaseBoardLabels(t)}
-          sheetLabels={taskSheetLabels(t)}
-          handlers={{
-            save: upsertTask.bind(null, locale),
-            remove: deleteTask.bind(null, locale),
-            move: moveTask.bind(null, locale),
-          }}
-        />
-      </section>
+      {current === "stories" ? (
+        stories?.status === "ok" ? (
+          <AnnouncerProvider>
+            <section aria-label={t("admin.projects.detail.tabs.stories")}>
+              <StoryList
+                stories={stories.stories}
+                locale={locale}
+                labels={storyListLabels(t)}
+                decisionLabels={storyDecisionLabels(t)}
+                decide={decideStory.bind(null, locale)}
+              />
+            </section>
+          </AnnouncerProvider>
+        ) : (
+          <LeadsError
+            title={t("admin.projects.detail.error.title")}
+            text={t("admin.projects.detail.error.text")}
+            retryLabel={t("admin.projects.detail.error.retry")}
+            loadingLabel={t("admin.projects.detail.error.retrying")}
+          />
+        )
+      ) : (
+        <section aria-label={t("admin.projects.detail.tasks.board.region")}>
+          <PhaseBoard
+            projectId={id}
+            tasks={tasks.tasks}
+            assignees={assignees}
+            currentPhase={row.phase}
+            labels={phaseBoardLabels(t)}
+            sheetLabels={taskSheetLabels(t)}
+            handlers={{
+              save: upsertTask.bind(null, locale),
+              remove: deleteTask.bind(null, locale),
+              move: moveTask.bind(null, locale),
+            }}
+          />
+        </section>
+      )}
     </div>
   );
 }

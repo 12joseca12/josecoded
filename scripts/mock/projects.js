@@ -57,6 +57,22 @@ export function taskRow(overrides) {
   };
 }
 
+export function storyRow(overrides) {
+  return {
+    author_id: clientId,
+    status: "proposed",
+    out_of_scope: false,
+    estimate_hours: null,
+    estimate_amount: null,
+    decision_note: null,
+    decided_at: null,
+    confirmed_at: null,
+    task_id: null,
+    created_at: "2026-10-15T09:00:00+00:00",
+    ...overrides,
+  };
+}
+
 function seededProjects() {
   const tasks = Array.from({ length: 8 }, (_, index) =>
     taskRow({
@@ -86,11 +102,42 @@ function seededProjects() {
       created_at: "2026-10-01T09:00:00+00:00",
       tasks,
       stories: [
-        {
+        storyRow({
           id: "62000000-0000-4000-8000-000000000001",
           project_id: projectIds.shop,
-          status: "proposed",
-        },
+          title: "Buscador de productos",
+          as_a: "clienta de la tienda",
+          i_want: "buscar productos por nombre",
+          so_that: "encontrar lo que quiero rápido",
+          criteria: ["Busca por nombre", "Avisa si no hay resultados"],
+        }),
+        storyRow({
+          id: "62000000-0000-4000-8000-000000000002",
+          project_id: projectIds.shop,
+          title: "Área de pedidos",
+          as_a: "clienta de la tienda",
+          i_want: "ver mis pedidos anteriores",
+          so_that: "repetir una compra",
+          criteria: ["Lista de pedidos"],
+          status: "in_review",
+          out_of_scope: true,
+          estimate_hours: 12,
+          estimate_amount: 480,
+          decision_note: "Queda fuera del alcance acordado.",
+          decided_at: "2026-11-02T10:00:00+00:00",
+        }),
+        storyRow({
+          id: "62000000-0000-4000-8000-000000000003",
+          project_id: projectIds.shop,
+          title: "Página de contacto",
+          as_a: "visitante",
+          i_want: "enviar un mensaje desde la web",
+          so_that: "preguntar antes de comprar",
+          criteria: [],
+          status: "in_tasks",
+          decided_at: "2026-10-20T10:00:00+00:00",
+          task_id: "61000000-0000-4000-8000-000000000008",
+        }),
       ],
     }),
     project({
@@ -364,4 +411,61 @@ rpc("delete_task", ({ auth, args, response }) => {
   }
   found.entry.tasks = found.entry.tasks.filter((item) => item !== found.task);
   return sendEmpty(response);
+});
+
+route("GET", "/rest/v1/stories", ({ request, response, url }) => {
+  const auth = adminCall(request, response);
+  if (!auth) return;
+  if (auth.projectsMode === "storiesError") {
+    return send(response, 500, { code: "XX000", message: "internal", details: null, hint: null });
+  }
+  const only = eq(url, "project_id");
+  const entry = auth.projects.find((item) => item.id === only);
+  return send(response, 200, entry?.stories ?? []);
+});
+
+rpc("decide_story", ({ auth, args, response }) => {
+  const story = auth.projects
+    .flatMap((entry) => entry.stories)
+    .find((item) => item.id === args.p_id);
+  if (!story) return failure(response, "P0001", "story_not_found");
+  if (!["accept", "reject", "out_of_scope"].includes(args.p_decision)) {
+    return failure(response, "P0001", "invalid_decision");
+  }
+  if (story.status !== "proposed") return failure(response, "P0001", "story_not_proposed");
+  if (args.p_decision === "reject" && !String(args.p_note ?? "").trim()) {
+    return failure(response, "P0001", "note_required");
+  }
+  if (args.p_decision === "out_of_scope" && !(args.p_hours > 0 && args.p_amount > 0)) {
+    return failure(response, "P0001", "estimate_required");
+  }
+  const entry = auth.projects.find((item) => item.id === story.project_id);
+  let status = "in_review";
+  if (args.p_decision === "reject") status = "rejected";
+  if (args.p_decision === "accept") {
+    status = "accepted";
+    if (args.p_create_task) {
+      const task = taskRow({
+        id: randomUUID(),
+        project_id: entry.id,
+        phase: entry.phase,
+        title: story.title,
+        description: story.i_want,
+        story_id: story.id,
+        sort: entry.tasks.filter((item) => item.phase === entry.phase).length,
+      });
+      entry.tasks.push(task);
+      story.task_id = task.id;
+      status = "in_tasks";
+    }
+  }
+  Object.assign(story, {
+    status,
+    out_of_scope: args.p_decision === "out_of_scope",
+    estimate_hours: args.p_hours ?? null,
+    estimate_amount: args.p_amount ?? null,
+    decision_note: args.p_note ?? null,
+    decided_at: new Date().toISOString(),
+  });
+  return send(response, 200, JSON.stringify(status));
 });
