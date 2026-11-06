@@ -73,23 +73,23 @@ async function LeadsSection({ locale, userId, role, params }: SectionProps) {
 
   const body = () => {
     if (tab === "inbox") {
-      if (result.inbox.length === 0) {
-        return (
-          <EmptyState
-            headingLevel={2}
-            title={t("crm.leads.inbox.empty.title")}
-            text={t("crm.leads.inbox.empty.text")}
-          />
-        );
-      }
       return (
         <>
-          <p className={styles.note}>{t("crm.leads.inbox.note")}</p>
+          {result.inbox.length > 0 ? (
+            <p className={styles.note}>{t("crm.leads.inbox.note")}</p>
+          ) : null}
           <LeadInbox
             cards={toInboxCards(result.inbox, locale, offers, viaLabels(t), localeLabels(t))}
             labels={inboxLabels(t)}
             claim={claimLeadAction.bind(null, locale)}
             contactBase={`/${locale}/crm/contactos`}
+            empty={
+              <EmptyState
+                headingLevel={2}
+                title={t("crm.leads.inbox.empty.title")}
+                text={t("crm.leads.inbox.empty.text")}
+              />
+            }
           />
           {result.inbox.length >= result.limit ? (
             <p className={styles.note}>

@@ -1123,7 +1123,8 @@
           "payments_overdue": "Cobros vencidos",
           "proformas_unpaid": "Proformas enviadas sin cobrar",
           "payouts_draft": "Liquidaciones en borrador",
-          "jobs_failed": "Trabajos fallidos"
+          "jobs_failed": "Trabajos fallidos",
+          "stories_to_decide": "Historias por decidir"
         },
         "loading": "Cargando contadores",
         "unavailable": {

@@ -435,6 +435,7 @@ export type MessageKey =
   | "admin.overview.cells.labels.payments_overdue"
   | "admin.overview.cells.labels.payouts_draft"
   | "admin.overview.cells.labels.proformas_unpaid"
+  | "admin.overview.cells.labels.stories_to_decide"
   | "admin.overview.cells.labels.users_active"
   | "admin.overview.cells.loading"
   | "admin.overview.cells.title"

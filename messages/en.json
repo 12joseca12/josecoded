@@ -1123,7 +1123,8 @@
           "payments_overdue": "Overdue payments",
           "proformas_unpaid": "Proformas sent and unpaid",
           "payouts_draft": "Draft payouts",
-          "jobs_failed": "Failed jobs"
+          "jobs_failed": "Failed jobs",
+          "stories_to_decide": "Stories to decide"
         },
         "loading": "Loading counters",
         "unavailable": {

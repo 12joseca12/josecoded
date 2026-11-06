@@ -212,7 +212,7 @@ select is(
 select is(
   (public.admin_counters() ->> 'stories_to_decide')::int,
   0,
-  'admin_counters carries stories_to_decide at zero until projects exist'
+  'admin_counters reports no stories to decide without projects'
 );
 
 select ok(
