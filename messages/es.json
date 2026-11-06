@@ -4760,7 +4760,7 @@
           "paid": "Pagada"
         },
         "open": "Ver extracto",
-        "openFor": "Ver el extracto de {range}"
+        "openFor": "Ver extracto de {range}"
       },
       "items": {
         "title": "Partidas",

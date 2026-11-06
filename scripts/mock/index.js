@@ -1,5 +1,6 @@
 import "./turnstile.js";
 import "./auth.js";
+import "./freelance.js";
 import "./catalog.js";
 import "./profiles.js";
 import "./account.js";
@@ -18,7 +19,6 @@ import "./overview.js";
 import "./chat-visitor.js";
 import "./area.js";
 import "./chat-rooms.js";
-import "./freelance.js";
 import "./projects.js";
 
 import { createServer } from "node:http";

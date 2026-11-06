@@ -171,7 +171,7 @@ test("a failing task query shows the retry state and keeps the rest", async ({ p
   await signInFreelance(page, tag);
   await page.goto(`/es/freelance/proyectos/${shopId}`);
   await expect(page.getByRole("heading", { level: 1, name: shopName })).toBeVisible();
-  await expect(page.getByRole("button", { name: project("error.retry") })).toBeVisible();
+  await expect(page.getByRole("button", { name: project("error.retry") }).first()).toBeVisible();
   await expect(page.getByText("Notas del equipo.txt")).toBeVisible();
 });
 

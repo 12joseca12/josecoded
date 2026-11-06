@@ -4760,7 +4760,7 @@
           "paid": "Paid"
         },
         "open": "View statement",
-        "openFor": "View the statement of {range}"
+        "openFor": "View statement of {range}"
       },
       "items": {
         "title": "Items",

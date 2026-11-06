@@ -87,7 +87,7 @@ test("logging hours adds a pending item, the cap and a future day fail in line",
   await expect(added).toContainText(fees("statuses.pending"));
   await expect(added).toContainText(/105,00\s?€/);
 
-  const form = await logHours(page, "40", "Demasiadas horas");
+  const form = await logHours(page, "20", "Demasiadas horas");
   await expect(form.getByText(fees("errors.hours_cap_exceeded"))).toBeVisible();
   const future = new Date(Date.now() + 3 * 86_400_000).toISOString().slice(0, 10);
   await form.getByLabel(fees("form.date")).evaluate((input: HTMLInputElement) => {
@@ -157,7 +157,7 @@ test("the items filter by status and show the rejection reason", async ({ page }
 
 test("a payout opens its statement with the paid items and the withholding", async ({ page }) => {
   await open(page, "/es/freelance/pagos", { mode: "history" });
-  await page.getByRole("link", { name: /Ver el extracto de/ }).click();
+  await page.getByRole("link", { name: /Ver extracto de/ }).click();
   await expect(page.getByRole("heading", { level: 1, name: pay("statement.title") })).toBeVisible();
   await expect(page.getByText(pay("statement.notInvoice"))).toBeVisible();
   await expect(page.getByText("Puesta a punto")).toBeVisible();
@@ -177,7 +177,9 @@ test("a failing counters call leaves the cells empty and the tables in place", a
   await open(page, "/es/freelance/pagos", { mode: "history", counterError: true });
   const balances = page.getByRole("list", { name: pay("balances.label") });
   await expect(balances.getByText(pay("balances.unknown")).first()).toBeAttached();
-  await expect(page.getByRole("row").filter({ hasText: "Prueba: landing cerrada" })).toBeVisible();
+  await expect(
+    page.getByRole("row").filter({ hasText: "Prueba: landing cerrada" }).first(),
+  ).toBeVisible();
 });
 
 test("without fees the payments page explains it and a failing query shows retry", async ({

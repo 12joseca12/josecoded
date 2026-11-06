@@ -150,7 +150,7 @@ function itemRow(n, key, label, status, amount, extra = {}) {
 function seedFees() {
   return {
     fees: [
-      feeRow("shop", "hourly", { hourly_rate: 35, hours_cap: 60 }),
+      feeRow("shop", "hourly", { hourly_rate: 35, hours_cap: 40 }),
       feeRow("landing", "milestones"),
       feeRow("closed", "fixed", { amount: 900, closed_at: "2026-09-30T09:00:00+00:00" }),
     ],
