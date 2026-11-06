@@ -14,7 +14,9 @@ import "./system.js";
 import "./notifications.js";
 import "./overview.js";
 import "./chat-visitor.js";
+import "./area.js";
 import "./chat-rooms.js";
+import "./projects.js";
 
 import { createServer } from "node:http";
 

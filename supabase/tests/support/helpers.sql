@@ -85,6 +85,7 @@ begin
     raise exception 'tests.clean refuses to run outside a database flagged app.test_db = on';
   end if;
   reset role;
+  delete from public.projects;
   delete from public.conversations;
   delete from public.visitors;
   delete from public.commission_lines;
@@ -95,6 +96,7 @@ begin
   delete from public.payment_schedule;
   delete from private.counters;
   delete from public.activities;
+  delete from public.projects;
   delete from public.deals;
   delete from public.contacts;
   delete from public.leads;

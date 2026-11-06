@@ -1,0 +1,7 @@
+{
+  "body": "Hola, soy Nexo. Puedo ayudarte con las dudas del proyecto.",
+  "sources": ["faq:plazos"],
+  "model": "groq:llama-3.3-70b",
+  "interest": null,
+  "confidence": 0.82
+}

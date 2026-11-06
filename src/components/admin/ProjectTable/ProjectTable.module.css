@@ -1,0 +1,101 @@
+.region {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-l);
+  background: var(--panel);
+}
+
+.region:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.table {
+  width: 100%;
+  min-width: 56rem;
+  border-collapse: collapse;
+  font-size: var(--fs-base);
+  text-align: left;
+}
+
+.caption {
+  position: absolute;
+  width: 0.0625rem;
+  height: 0.0625rem;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.table th,
+.table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--line);
+  vertical-align: baseline;
+}
+
+.table thead th {
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.table tbody tr:last-child > * {
+  border-bottom: 0;
+}
+
+.table tr[data-closed="true"] > * {
+  color: var(--ink-soft);
+}
+
+.name {
+  overflow-wrap: anywhere;
+  min-width: 14rem;
+  color: var(--ink);
+  font-weight: var(--fw-semibold);
+}
+
+.meta {
+  display: block;
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+  font-weight: var(--fw-regular);
+}
+
+.number {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.nowrap {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.progress {
+  display: block;
+  inline-size: 8rem;
+  max-inline-size: 100%;
+  block-size: 0.5rem;
+  margin-block-end: var(--space-1);
+  border: 0;
+  border-radius: var(--radius-xl);
+  background: var(--line);
+  overflow: hidden;
+  appearance: none;
+}
+
+.progress::-webkit-progress-bar {
+  background: var(--line);
+}
+
+.progress::-webkit-progress-value {
+  background: var(--charcoal);
+}
+
+.progress::-moz-progress-bar {
+  background: var(--charcoal);
+}

@@ -19,7 +19,12 @@ export default async function AdminLayout({ children, params }: AdminLayoutProps
   const member = await requireZone("admin", locale);
   const shell = await getStaffShell("admin", locale, member.role);
   return (
-    <StaffShell {...shell} userName={member.fullName} signOutAction={signOut.bind(null, locale)}>
+    <StaffShell
+      {...shell}
+      zone="admin"
+      userName={member.fullName}
+      signOutAction={signOut.bind(null, locale)}
+    >
       {children}
     </StaffShell>
   );

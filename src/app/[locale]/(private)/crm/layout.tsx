@@ -19,7 +19,12 @@ export default async function CrmLayout({ children, params }: CrmLayoutProps) {
   const member = await requireZone("crm", locale);
   const shell = await getStaffShell("crm", locale, member.role);
   return (
-    <StaffShell {...shell} userName={member.fullName} signOutAction={signOut.bind(null, locale)}>
+    <StaffShell
+      {...shell}
+      zone="crm"
+      userName={member.fullName}
+      signOutAction={signOut.bind(null, locale)}
+    >
       {children}
     </StaffShell>
   );

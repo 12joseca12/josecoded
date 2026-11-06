@@ -17,7 +17,7 @@ function resolve(tree: Tree, key: string): string | undefined {
 }
 
 describe("staff navigation registry", () => {
-  const zones = Object.entries(staffNav);
+  const zones = Object.entries(staffNav).filter(([, entries]) => entries.length > 0);
 
   it("starts every zone with its overview at the root", () => {
     for (const [, entries] of zones) {
@@ -34,11 +34,12 @@ describe("staff navigation registry", () => {
   });
 
   it("only marks the shipped screens as ready", () => {
-    const ready = (zone: "admin" | "crm") =>
+    const ready = (zone: "admin" | "crm" | "area") =>
       staffNav[zone].filter((entry) => entry.ready).map((entry) => entry.key);
     expect(ready("admin")).toEqual([
       "overview",
       "leads",
+      "projects",
       "chat",
       "users",
       "prices",
@@ -57,6 +58,11 @@ describe("staff navigation registry", () => {
       "start",
       "settings",
     ]);
+    expect(ready("area")).toEqual(["overview", "tasks", "documents", "stories", "chat"]);
+  });
+
+  it("registers the freelance zone without screens", () => {
+    expect(staffNav.freelance).toEqual([]);
   });
 
   it("has a label in every locale", () => {

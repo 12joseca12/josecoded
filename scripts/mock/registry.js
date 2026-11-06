@@ -1,10 +1,19 @@
 const routes = [];
 
+export const pass = Symbol("pass");
+
 export function route(method, pattern, handler) {
   routes.push({ method, pattern, handler });
 }
 
+const bodies = new WeakMap();
+
 export function readBody(request) {
+  if (!bodies.has(request)) bodies.set(request, readStream(request));
+  return bodies.get(request);
+}
+
+function readStream(request) {
   return new Promise((resolve) => {
     const chunks = [];
     request.on("data", (chunk) => chunks.push(chunk));
@@ -33,7 +42,9 @@ export async function dispatch(request, response, port) {
           : null
         : entry.pattern.exec(url.pathname);
     if (!match) continue;
-    return entry.handler({ request, response, url, match });
+    const result = await entry.handler({ request, response, url, match });
+    if (result === pass) continue;
+    return result;
   }
   return send(response, 404, { message: "not found" });
 }

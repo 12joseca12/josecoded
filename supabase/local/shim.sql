@@ -109,7 +109,8 @@ create table storage.buckets (
   public boolean not null default false,
   file_size_limit bigint,
   allowed_mime_types text[],
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
 );
 
 create table storage.objects (
@@ -119,12 +120,14 @@ create table storage.objects (
   owner uuid,
   metadata jsonb,
   created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
   unique (bucket_id, name)
 );
 
-alter table storage.objects enable row level security;
 alter table storage.buckets enable row level security;
+alter table storage.objects enable row level security;
 
 grant usage on schema storage to anon, authenticated, service_role;
-grant select, insert, update, delete on storage.objects to authenticated, service_role;
 grant select on storage.buckets to authenticated, service_role;
+grant all on storage.objects to authenticated, service_role;
+grant all on storage.buckets to service_role;
