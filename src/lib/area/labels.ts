@@ -4,9 +4,14 @@ import type { PhaseStepsLabels } from "@/components/area/PhaseSteps/PhaseSteps";
 import type { ProjectHeaderLabels } from "@/components/area/ProjectHeader/ProjectHeader";
 import type { ProjectLinksLabels } from "@/components/area/ProjectLinks/ProjectLinks";
 import type { RecentUpdatesLabels } from "@/components/area/RecentUpdates/RecentUpdates";
+import type { StoryActionsLabels } from "@/components/area/StoryActions/StoryActions";
+import type { StoryCardLabels } from "@/components/area/StoryCard/StoryCard";
+import type { StoryFormLabels } from "@/components/area/StoryForm/StoryForm";
+import type { StoryListLabels } from "@/components/area/StoryList/StoryList";
 import type { TaskDetailLabels } from "@/components/area/TaskDetail/TaskDetail";
 import type { TodoLabels } from "@/components/area/TodoForYou/TodoForYou";
 import type { MessageKey } from "@/i18n/keys.generated";
+import type { StoryStatus } from "@/types/area";
 
 type T = (key: MessageKey) => string;
 
@@ -132,6 +137,97 @@ export function completeTaskLabels(t: T): CompleteTaskLabels {
       forbidden: t("area.tasks.detail.errors.forbidden"),
       stale: t("area.tasks.detail.errors.stale"),
       error: t("area.tasks.detail.errors.error"),
+    },
+  };
+}
+
+function storyStatusLabels(t: T): Record<StoryStatus, string> {
+  return {
+    proposed: t("area.stories.status.proposed"),
+    in_review: t("area.stories.status.in_review"),
+    accepted: t("area.stories.status.accepted"),
+    rejected: t("area.stories.status.rejected"),
+    in_tasks: t("area.stories.status.in_tasks"),
+  };
+}
+
+export function storyListLabels(t: T): StoryListLabels {
+  return {
+    list: t("area.stories.list"),
+    status: storyStatusLabels(t),
+    created: t("area.stories.created"),
+    estimate: t("area.stories.estimate"),
+  };
+}
+
+export function storyCardLabels(t: T): StoryCardLabels {
+  return {
+    back: t("area.stories.detail.back"),
+    status: storyStatusLabels(t),
+    asA: t("area.stories.detail.asA"),
+    iWant: t("area.stories.detail.iWant"),
+    soThat: t("area.stories.detail.soThat"),
+    criteria: t("area.stories.detail.criteria"),
+    noCriteria: t("area.stories.detail.noCriteria"),
+    verdict: t("area.stories.detail.verdict"),
+    hours: t("area.stories.detail.hours"),
+    amount: t("area.stories.detail.amount"),
+    note: t("area.stories.detail.note"),
+    decidedOn: t("area.stories.detail.decidedOn"),
+    task: t("area.stories.detail.task"),
+    reviewHint: t("area.stories.detail.reviewHint"),
+    rejectedHint: t("area.stories.detail.rejectedHint"),
+    pendingHint: t("area.stories.detail.pendingHint"),
+  };
+}
+
+export function storyActionsLabels(t: T): StoryActionsLabels {
+  return {
+    edit: t("area.stories.detail.edit"),
+    remove: t("area.stories.detail.remove"),
+    removeAsk: t("area.stories.detail.removeAsk"),
+    removeYes: t("area.stories.detail.removeYes"),
+    removeNo: t("area.stories.detail.removeNo"),
+    removing: t("area.stories.detail.removing"),
+    confirm: t("area.stories.detail.confirm"),
+    confirming: t("area.stories.detail.confirming"),
+    decline: t("area.stories.detail.decline"),
+    declining: t("area.stories.detail.declining"),
+    doneConfirm: t("area.stories.detail.doneConfirm"),
+    doneDecline: t("area.stories.detail.doneDecline"),
+    errors: {
+      forbidden: t("area.stories.detail.errors.forbidden"),
+      stale: t("area.stories.detail.errors.stale"),
+      error: t("area.stories.detail.errors.error"),
+    },
+  };
+}
+
+export function storyFormLabels(t: T, mode: "create" | "edit"): StoryFormLabels {
+  return {
+    title: t("area.stories.form.title"),
+    titleHint: t("area.stories.form.titleHint"),
+    asA: t("area.stories.form.asA"),
+    asAHint: t("area.stories.form.asAHint"),
+    iWant: t("area.stories.form.iWant"),
+    soThat: t("area.stories.form.soThat"),
+    criteria: t("area.stories.form.criteria"),
+    criteriaHint: t("area.stories.form.criteriaHint"),
+    criterion: t("area.stories.form.criterion"),
+    addCriterion: t("area.stories.form.addCriterion"),
+    removeCriterion: t("area.stories.form.removeCriterion"),
+    submit: t(mode === "create" ? "area.stories.form.submit" : "area.stories.form.save"),
+    submitting: t(mode === "create" ? "area.stories.form.submitting" : "area.stories.form.saving"),
+    cancel: t("area.stories.form.cancel"),
+    errors: {
+      title: t("area.stories.form.errors.title"),
+      asA: t("area.stories.form.errors.asA"),
+      iWant: t("area.stories.form.errors.iWant"),
+      soThat: t("area.stories.form.errors.soThat"),
+      criteria: t("area.stories.form.errors.criteria"),
+      forbidden: t("area.stories.form.errors.forbidden"),
+      stale: t("area.stories.form.errors.stale"),
+      error: t("area.stories.form.errors.error"),
     },
   };
 }

@@ -78,7 +78,11 @@ function seedData() {
         null,
         null,
         "2026-11-01T10:00:00+00:00",
+        { task_id: id("t", 3) },
       ),
+      story("s3", firstId, "Buscador de productos", "proposed", null, null, null, null, {
+        created_at: "2026-11-04T09:00:00+00:00",
+      }),
     ],
     linkRows: [
       link(
@@ -133,17 +137,24 @@ function task(key, projectId, phase, title, status, assignee, sort, doneAt = nul
   };
 }
 
-function story(key, projectId, title, status, hours, amount, note, decidedAt) {
+function story(key, projectId, title, status, hours, amount, note, decidedAt, extra = {}) {
   return {
     id: id("s", Number(key.slice(1))),
     project_id: projectId,
     author_id: clientId,
     title,
     status,
+    as_a: "dueña de la panadería",
+    i_want: `poder usar ${title.toLowerCase()}`,
+    so_that: "ahorrar tiempo cada día",
+    criteria: ["Funciona en móvil", "Es fácil de entender"],
     estimate_hours: hours,
     estimate_amount: amount,
     decision_note: note,
     decided_at: decidedAt,
+    task_id: null,
+    created_at: "2026-10-28T09:00:00+00:00",
+    ...extra,
   };
 }
 
@@ -160,7 +171,14 @@ function link(key, projectId, name, url, usage, sort) {
 }
 
 extendAuthState((state) => {
-  state.area = { mode: "none", error: null, rpcError: null, links: true, ...seedData() };
+  state.area = {
+    mode: "none",
+    error: null,
+    rpcError: null,
+    storyError: null,
+    links: true,
+    ...seedData(),
+  };
   state.calls.projects = 0;
   state.calls.areaRpc = [];
 });
@@ -352,4 +370,81 @@ route("POST", "/rest/v1/rpc/confirm_story", async ({ request, response }) => {
   }
   found.status = body.p_accept === false ? "rejected" : "accepted";
   return send(response, 200, JSON.stringify(found.status));
+});
+
+function storyFailure(response, area) {
+  if (area.storyError === "forbidden") {
+    send(response, 403, { code: "42501", message: "forbidden", details: null, hint: null });
+    return true;
+  }
+  if (area.storyError === "error") {
+    send(response, 500, { code: "XX000", message: "boom", details: null, hint: null });
+    return true;
+  }
+  return false;
+}
+
+function applyFilter(rows, url) {
+  return rows.filter((row) =>
+    [...url.searchParams.entries()].every(
+      ([key, raw]) => ["select", "order", "limit"].includes(key) || matches(row, key, raw),
+    ),
+  );
+}
+
+route("POST", "/rest/v1/stories", async ({ request, response }) => {
+  const scoped = scope(request, response);
+  if (!scoped || storyFailure(response, scoped.area)) return;
+  const body = JSON.parse(await readBody(request));
+  scoped.session.auth.calls.areaRpc.push({ name: "stories.insert", args: body });
+  if (!scoped.visible.includes(body.project_id)) {
+    return send(response, 403, { code: "42501", message: "forbidden", details: null, hint: null });
+  }
+  const number = scoped.area.stories.length + 1;
+  const created = story(
+    `s${number}`,
+    body.project_id,
+    body.title,
+    "proposed",
+    null,
+    null,
+    null,
+    null,
+    {
+      as_a: body.as_a,
+      i_want: body.i_want,
+      so_that: body.so_that,
+      criteria: body.criteria,
+      created_at: new Date().toISOString(),
+    },
+  );
+  scoped.area.stories.push(created);
+  return send(response, 201, { id: created.id });
+});
+
+route("PATCH", "/rest/v1/stories", async ({ request, response, url }) => {
+  const scoped = scope(request, response);
+  if (!scoped || storyFailure(response, scoped.area)) return;
+  const body = JSON.parse(await readBody(request));
+  scoped.session.auth.calls.areaRpc.push({ name: "stories.update", args: body });
+  const rows = applyFilter(inProjects(scoped, scoped.area.stories), url);
+  for (const row of rows) Object.assign(row, body);
+  return send(
+    response,
+    200,
+    rows.map((row) => ({ id: row.id })),
+  );
+});
+
+route("DELETE", "/rest/v1/stories", ({ request, response, url }) => {
+  const scoped = scope(request, response);
+  if (!scoped || storyFailure(response, scoped.area)) return;
+  const rows = applyFilter(inProjects(scoped, scoped.area.stories), url);
+  scoped.session.auth.calls.areaRpc.push({ name: "stories.delete", args: {} });
+  scoped.area.stories = scoped.area.stories.filter((row) => !rows.includes(row));
+  return send(
+    response,
+    200,
+    rows.map((row) => ({ id: row.id })),
+  );
 });

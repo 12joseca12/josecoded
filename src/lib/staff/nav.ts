@@ -37,7 +37,7 @@ export const staffNav: Record<StaffZone, readonly StaffNavEntry[]> = {
     { key: "overview", path: "", ready: true, label: "area.nav.overview" },
     { key: "tasks", path: "/tareas", ready: true, label: "area.nav.tasks" },
     { key: "documents", path: "/documentos", ready: false, label: "area.nav.documents" },
-    { key: "stories", path: "/historias", ready: false, label: "area.nav.stories" },
+    { key: "stories", path: "/historias", ready: true, label: "area.nav.stories" },
     { key: "chat", path: "/chat", ready: false, label: "area.nav.chat" },
   ],
   freelance: [],

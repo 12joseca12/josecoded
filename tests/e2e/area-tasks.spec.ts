@@ -96,6 +96,16 @@ test("a task opens its detail and a task of mine can be completed", async ({ pag
   await expect(row.getByText(tasks("status.done"))).toBeVisible();
 });
 
+test("the story of a task links back to the story", async ({ page }) => {
+  await open(page);
+  await page
+    .getByRole("region", { name: msg("area.phases.design") })
+    .getByRole("link", { name: "Página de contacto" })
+    .click();
+  await expect(page.getByRole("heading", { level: 1, name: "Página de contacto" })).toBeVisible();
+  await expect(page).toHaveURL(/\/es\/area\/historias\//);
+});
+
 test("a task that is not mine has no complete button", async ({ page }) => {
   await open(page);
   await page.getByRole("link", { name: "Catálogo de productos" }).click();

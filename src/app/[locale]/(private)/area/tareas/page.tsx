@@ -70,6 +70,7 @@ async function BoardRegion({
       current={project.phase}
       userId={userId}
       taskHref={(id) => `/${locale}/area/tareas/${id}?proyecto=${project.id}`}
+      storyHref={(id) => `/${locale}/area/historias/${id}?proyecto=${project.id}`}
       labels={boardLabels(t)}
     />
   );

@@ -13,11 +13,12 @@ export interface TaskRowLabels {
 interface TaskRowProps {
   task: BoardTask;
   href: string;
+  storyHref: string;
   mine: boolean;
   labels: TaskRowLabels;
 }
 
-export function TaskRow({ task, href, mine, labels }: TaskRowProps) {
+export function TaskRow({ task, href, storyHref, mine, labels }: TaskRowProps) {
   return (
     <li className={styles.row} data-status={task.status}>
       <NextLink href={href} className={styles.title}>
@@ -28,7 +29,13 @@ export function TaskRow({ task, href, mine, labels }: TaskRowProps) {
         {mine ? <span className={styles.mine}>{labels.mine}</span> : null}
       </p>
       {task.story ? (
-        <p className={styles.story}>{labels.fromStory.replace("{title}", task.story.title)}</p>
+        <p className={styles.story}>
+          {labels.fromStory.split("{title}")[0]}
+          <NextLink href={storyHref} className={styles.storyLink}>
+            {task.story.title}
+          </NextLink>
+          {labels.fromStory.split("{title}")[1]}
+        </p>
       ) : null}
     </li>
   );

@@ -61,6 +61,9 @@ async function TaskContent({
       task={task}
       phaseName={phaseNames(t)[task.phase]}
       backHref={`/${locale}/area/tareas?proyecto=${project.id}`}
+      storyHref={
+        task.story ? `/${locale}/area/historias/${task.story.id}?proyecto=${project.id}` : null
+      }
       doneDate={doneDate}
       mine={mine}
       labels={taskDetailLabels(t)}

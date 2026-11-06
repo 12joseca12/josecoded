@@ -16,10 +16,18 @@ interface PhaseBoardProps {
   current: ProjectPhase;
   userId: string;
   taskHref: (id: string) => string;
+  storyHref: (id: string) => string;
   labels: PhaseBoardLabels;
 }
 
-export function PhaseBoard({ groups, current, userId, taskHref, labels }: PhaseBoardProps) {
+export function PhaseBoard({
+  groups,
+  current,
+  userId,
+  taskHref,
+  storyHref,
+  labels,
+}: PhaseBoardProps) {
   return (
     <div className={styles.board} role="group" aria-label={labels.board}>
       {projectPhases.map((phase) => (
@@ -41,6 +49,7 @@ export function PhaseBoard({ groups, current, userId, taskHref, labels }: PhaseB
                   key={task.id}
                   task={task}
                   href={taskHref(task.id)}
+                  storyHref={task.story ? storyHref(task.story.id) : ""}
                   mine={task.assignee_id === userId}
                   labels={labels.row}
                 />

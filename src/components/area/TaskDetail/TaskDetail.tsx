@@ -22,6 +22,7 @@ interface TaskDetailProps {
   task: TaskDetailRow;
   phaseName: string;
   backHref: string;
+  storyHref: string | null;
   doneDate: string | null;
   mine: boolean;
   labels: TaskDetailLabels;
@@ -32,6 +33,7 @@ export function TaskDetail({
   task,
   phaseName,
   backHref,
+  storyHref,
   doneDate,
   mine,
   labels,
@@ -55,7 +57,13 @@ export function TaskDetail({
         </li>
         {mine ? <li>{labels.assignedToYou}</li> : null}
         {doneDate ? <li>{labels.doneOn.replace("{date}", doneDate)}</li> : null}
-        {task.story ? <li>{labels.fromStory.replace("{title}", task.story.title)}</li> : null}
+        {task.story && storyHref ? (
+          <li>
+            {labels.fromStory.split("{title}")[0]}
+            <Link href={storyHref}>{task.story.title}</Link>
+            {labels.fromStory.split("{title}")[1]}
+          </li>
+        ) : null}
       </ul>
       <section className={styles.description} aria-labelledby="task-description">
         <Heading level={2} size="h4" id="task-description">

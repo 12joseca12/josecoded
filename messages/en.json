@@ -2424,6 +2424,109 @@
           "error": "We could not save it. Try again."
         }
       }
+    },
+    "stories": {
+      "meta": {
+        "title": "Stories",
+        "new": "Propose a story",
+        "edit": "Edit the story",
+        "detail": "Story"
+      },
+      "title": "Stories",
+      "lead": "Tell us what you need in your own words: who you are, what you want to do and why. Jose reviews it and tells you whether it fits the project.",
+      "loading": "Loading stories",
+      "new": "Propose a story",
+      "list": "Your stories",
+      "error": {
+        "title": "We could not load the stories",
+        "text": "You can try again.",
+        "retry": "Try again",
+        "retrying": "Trying again"
+      },
+      "empty": {
+        "title": "You have not proposed any story yet",
+        "text": "A story is a need written like this: “As…, I want…, so that…”. Here is an example.",
+        "cta": "Propose my first story",
+        "example": "Example",
+        "exampleTitle": "Check the status of my order",
+        "exampleAsA": "shop customer",
+        "exampleIWant": "see whether my order has shipped",
+        "exampleSoThat": "not have to write to ask",
+        "exampleCriterion1": "I can see the status: preparing, shipped or delivered.",
+        "exampleCriterion2": "It works well on a phone."
+      },
+      "status": {
+        "proposed": "Proposed, waiting for Jose",
+        "in_review": "Waiting for your confirmation",
+        "accepted": "Accepted",
+        "rejected": "Rejected",
+        "in_tasks": "Accepted and turned into a task"
+      },
+      "created": "Proposed on {date}",
+      "estimate": "{hours} h · €{amount} indicative",
+      "sent": "Story sent. Jose will review it.",
+      "form": {
+        "title": "Title",
+        "titleHint": "A short name so you can recognise it.",
+        "asA": "As…",
+        "asAHint": "Who you are in this story, for example “shop owner”.",
+        "iWant": "I want…",
+        "soThat": "So that…",
+        "criteria": "Acceptance criteria",
+        "criteriaHint": "How we will know it is done. You can add up to 12.",
+        "criterion": "Criterion {n}",
+        "addCriterion": "Add criterion",
+        "removeCriterion": "Remove criterion {n}",
+        "submit": "Send the story",
+        "submitting": "Sending",
+        "save": "Save changes",
+        "saving": "Saving",
+        "cancel": "Cancel",
+        "errors": {
+          "title": "Write a title of up to 200 characters.",
+          "asA": "Tell us who you are in this story, up to 500 characters.",
+          "iWant": "Tell us what you want to do, up to 500 characters.",
+          "soThat": "Tell us why, up to 500 characters.",
+          "criteria": "Check the criteria: up to 12, 500 characters each.",
+          "forbidden": "You do not have permission to do this.",
+          "stale": "This story has already changed and can no longer be edited. Reload the page.",
+          "error": "We could not save it. Try again."
+        }
+      },
+      "detail": {
+        "back": "Back to stories",
+        "asA": "As",
+        "iWant": "I want",
+        "soThat": "So that",
+        "criteria": "Criteria",
+        "noCriteria": "No criteria.",
+        "verdict": "Jose's answer",
+        "hours": "Estimated hours: {hours} h",
+        "amount": "Indicative amount: €{amount}",
+        "note": "Note from Jose:",
+        "decidedOn": "Decided on {date}.",
+        "task": "See the task",
+        "reviewHint": "This story is outside the agreed budget. If you confirm it, it is accepted with this estimate; Jose records the charge separately.",
+        "rejectedHint": "Jose is not including it in the project.",
+        "pendingHint": "Until Jose reviews it you can edit or delete it.",
+        "edit": "Edit",
+        "remove": "Delete",
+        "removeAsk": "Delete this story?",
+        "removeYes": "Yes, delete",
+        "removeNo": "Cancel",
+        "removing": "Deleting",
+        "confirm": "Confirm the story",
+        "confirming": "Confirming",
+        "decline": "Withdraw it",
+        "declining": "Withdrawing",
+        "doneConfirm": "Story confirmed.",
+        "doneDecline": "Story withdrawn.",
+        "errors": {
+          "forbidden": "You do not have permission to do this.",
+          "stale": "This has already changed. Reload the page to see the current state.",
+          "error": "We could not save it. Try again."
+        }
+      }
     }
   },
   "freelance": {

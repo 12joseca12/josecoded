@@ -50,3 +50,9 @@
   font-size: var(--fs-m);
   overflow-wrap: anywhere;
 }
+
+.storyLink {
+  color: var(--ink);
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.25em;
+}

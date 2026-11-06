@@ -110,3 +110,60 @@ export const taskDetailSchema = boardTaskSchema.extend({
   done_at: z.string().nullable(),
 });
 export type TaskDetailRow = z.infer<typeof taskDetailSchema>;
+
+export const storyCriteriaMax = 12;
+export const storyFields = ["title", "asA", "iWant", "soThat", "criteria"] as const;
+export type StoryField = (typeof storyFields)[number];
+
+const storyText = (limit: number) => z.string().trim().min(1).max(limit);
+
+export const storyInputSchema = z.strictObject({
+  title: storyText(200),
+  asA: storyText(500),
+  iWant: storyText(500),
+  soThat: storyText(500),
+  criteria: z
+    .array(z.string())
+    .transform((list) => list.map((entry) => entry.trim()).filter((entry) => entry !== ""))
+    .pipe(
+      z
+        .array(z.string().max(500))
+        .max(storyCriteriaMax)
+        .refine((list) => list.join("").length <= 6000),
+    ),
+});
+export type StoryInput = z.infer<typeof storyInputSchema>;
+export type StoryDraft = z.input<typeof storyInputSchema>;
+
+export type StoryActionResult =
+  | { status: "done"; id: string }
+  | { status: "invalid"; field: StoryField }
+  | { status: "stale" }
+  | { status: "forbidden" }
+  | { status: "error" };
+
+export interface StoryDeleteResult {
+  status: "done" | "stale" | "forbidden" | "error";
+}
+
+export const storyListSchema = z.object({
+  id: z.uuid(),
+  title: z.string(),
+  status: z.enum(storyStatuses),
+  estimate_hours: z.number().nullable(),
+  estimate_amount: z.number().nullable(),
+  created_at: z.string(),
+});
+export type StoryListRow = z.infer<typeof storyListSchema>;
+
+export const storyDetailSchema = storyListSchema.extend({
+  as_a: z.string(),
+  i_want: z.string(),
+  so_that: z.string(),
+  criteria: z.array(z.string()),
+  decision_note: z.string().nullable(),
+  decided_at: z.string().nullable(),
+  task_id: z.uuid().nullable(),
+  author_id: z.uuid().nullable(),
+});
+export type StoryDetailRow = z.infer<typeof storyDetailSchema>;

@@ -2424,6 +2424,109 @@
           "error": "No hemos podido guardarlo. Inténtalo de nuevo."
         }
       }
+    },
+    "stories": {
+      "meta": {
+        "title": "Historias",
+        "new": "Proponer una historia",
+        "edit": "Editar la historia",
+        "detail": "Historia"
+      },
+      "title": "Historias",
+      "lead": "Cuenta lo que necesitas con tus palabras: quién eres, qué quieres hacer y para qué. Jose la revisa y te dice si entra en el proyecto.",
+      "loading": "Cargando las historias",
+      "new": "Proponer una historia",
+      "list": "Tus historias",
+      "error": {
+        "title": "No hemos podido cargar las historias",
+        "text": "Puedes reintentarlo.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "empty": {
+        "title": "Todavía no has propuesto ninguna historia",
+        "text": "Una historia es una necesidad escrita así: «Como…, quiero…, para…». Este es un ejemplo.",
+        "cta": "Proponer mi primera historia",
+        "example": "Ejemplo",
+        "exampleTitle": "Consultar el estado de mi pedido",
+        "exampleAsA": "clienta de la tienda",
+        "exampleIWant": "ver si mi pedido ya ha salido",
+        "exampleSoThat": "no tener que escribir para preguntarlo",
+        "exampleCriterion1": "Veo el estado: preparando, enviado o entregado.",
+        "exampleCriterion2": "Funciona bien en el móvil."
+      },
+      "status": {
+        "proposed": "Propuesta, a la espera de Jose",
+        "in_review": "Pendiente de tu confirmación",
+        "accepted": "Aceptada",
+        "rejected": "Rechazada",
+        "in_tasks": "Aceptada y convertida en tarea"
+      },
+      "created": "Propuesta el {date}",
+      "estimate": "{hours} h · {amount} € orientativos",
+      "sent": "Historia enviada. Jose la revisará.",
+      "form": {
+        "title": "Título",
+        "titleHint": "Un nombre corto para reconocerla.",
+        "asA": "Como…",
+        "asAHint": "Quién eres en esta historia, por ejemplo «dueña de la tienda».",
+        "iWant": "Quiero…",
+        "soThat": "Para…",
+        "criteria": "Criterios de aceptación",
+        "criteriaHint": "Cómo sabremos que está hecha. Puedes añadir hasta 12.",
+        "criterion": "Criterio {n}",
+        "addCriterion": "Añadir criterio",
+        "removeCriterion": "Quitar el criterio {n}",
+        "submit": "Enviar la historia",
+        "submitting": "Enviando",
+        "save": "Guardar los cambios",
+        "saving": "Guardando",
+        "cancel": "Cancelar",
+        "errors": {
+          "title": "Escribe un título de hasta 200 caracteres.",
+          "asA": "Cuéntanos quién eres en esta historia, hasta 500 caracteres.",
+          "iWant": "Cuéntanos qué quieres hacer, hasta 500 caracteres.",
+          "soThat": "Cuéntanos para qué, hasta 500 caracteres.",
+          "criteria": "Revisa los criterios: hasta 12 y de 500 caracteres cada uno.",
+          "forbidden": "No tienes permiso para hacer esto.",
+          "stale": "Esta historia ya ha cambiado y no se puede editar. Recarga la página.",
+          "error": "No hemos podido guardarla. Inténtalo de nuevo."
+        }
+      },
+      "detail": {
+        "back": "Volver a las historias",
+        "asA": "Como",
+        "iWant": "Quiero",
+        "soThat": "Para",
+        "criteria": "Criterios",
+        "noCriteria": "Sin criterios.",
+        "verdict": "Respuesta de Jose",
+        "hours": "Horas estimadas: {hours} h",
+        "amount": "Importe orientativo: {amount} €",
+        "note": "Nota de Jose:",
+        "decidedOn": "Decidida el {date}.",
+        "task": "Ver la tarea",
+        "reviewHint": "Esta historia queda fuera del presupuesto acordado. Si la confirmas, se acepta con esta estimación; el cobro lo registra Jose aparte.",
+        "rejectedHint": "Jose no la incluye en el proyecto.",
+        "pendingHint": "Mientras Jose no la revise puedes editarla o borrarla.",
+        "edit": "Editar",
+        "remove": "Borrar",
+        "removeAsk": "¿Borrar esta historia?",
+        "removeYes": "Sí, borrar",
+        "removeNo": "Cancelar",
+        "removing": "Borrando",
+        "confirm": "Confirmar la historia",
+        "confirming": "Confirmando",
+        "decline": "Retirarla",
+        "declining": "Retirando",
+        "doneConfirm": "Historia confirmada.",
+        "doneDecline": "Historia retirada.",
+        "errors": {
+          "forbidden": "No tienes permiso para hacer esto.",
+          "stale": "Esto ya ha cambiado. Recarga la página para ver el estado actual.",
+          "error": "No hemos podido guardarlo. Inténtalo de nuevo."
+        }
+      }
     }
   },
   "freelance": {
