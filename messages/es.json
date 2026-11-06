@@ -2618,7 +2618,9 @@
           "tasks": "Tareas",
           "stories": "Historias",
           "storiesPending": "Historias ({count})",
-          "documents": "Documentos"
+          "documents": "Documentos",
+          "links": "Enlaces",
+          "team": "Equipo"
         },
         "head": {
           "phase": "Fase",
@@ -2841,6 +2843,86 @@
               "unavailable": "Ahora mismo no puedo guardar. Inténtalo en un momento.",
               "error": "Algo ha fallado. Inténtalo otra vez."
             }
+          }
+        },
+        "links": {
+          "region": "Enlaces del proyecto",
+          "title": "Enlaces",
+          "intro": "Los enlaces que el cliente ve en su área: la versión de pruebas, el diseño, el repositorio… Máximo 12. Solo se admiten direcciones https://.",
+          "empty": "Todavía no hay enlaces.",
+          "add": "Añadir enlace",
+          "edit": "Editar",
+          "editFor": "Editar {name}",
+          "cancel": "Cancelar",
+          "delete": "Borrar",
+          "deleteFor": "Borrar {name}",
+          "deleteConfirm": "El cliente dejará de verlo.",
+          "deleting": "Borrando",
+          "up": "Subir {name}",
+          "down": "Bajar {name}",
+          "moved": "{name} movido",
+          "deleted": "{name} borrado",
+          "saved": "Enlace guardado",
+          "limit": "Has llegado al máximo de 12 enlaces. Borra alguno para añadir otro.",
+          "openNewTab": "(se abre en una pestaña nueva)",
+          "form": {
+            "name": "Nombre",
+            "url": "Dirección",
+            "urlHint": "Empieza por https://",
+            "usage": "Para qué sirve",
+            "usageHint": "Una frase para el cliente: qué va a encontrar ahí.",
+            "optional": "(opcional)",
+            "submitAdd": "Guardar enlace",
+            "submitEdit": "Guardar cambios",
+            "submitting": "Guardando"
+          },
+          "errors": {
+            "name": "Escribe un nombre de hasta 80 caracteres.",
+            "url": "Escribe una dirección que empiece por https://",
+            "usage": "El texto es demasiado largo (280 caracteres como máximo).",
+            "forbidden": "No tienes permiso para hacerlo. Entra de nuevo con tu código.",
+            "duplicate_url": "Ese enlace ya está en el proyecto.",
+            "invalid_url": "Escribe una dirección que empiece por https://",
+            "link_not_found": "Ese enlace ya no existe.",
+            "project_not_found": "Ese proyecto ya no existe.",
+            "ids_mismatch": "La lista ha cambiado. Recarga la página e inténtalo otra vez.",
+            "unavailable": "Ahora mismo no puedo guardar. Inténtalo en un momento.",
+            "error": "No he podido guardarlo. Inténtalo otra vez."
+          }
+        },
+        "team": {
+          "title": "Equipo",
+          "client": {
+            "title": "Cliente",
+            "none": "Sin cuenta de cliente",
+            "noneHelp": "Invítale por correo: al aceptar, el proyecto aparece en su área.",
+            "assign": "Asignar un cliente que ya tiene cuenta",
+            "assignPlaceholder": "Elige un cliente",
+            "assignSubmit": "Asignar cliente",
+            "assigning": "Asignando",
+            "assigned": "Cliente asignado",
+            "noCandidates": "No hay otros clientes con cuenta."
+          },
+          "freelance": {
+            "title": "Freelance",
+            "none": "Sin freelance",
+            "field": "Freelance asignado",
+            "submit": "Guardar freelance",
+            "submitting": "Guardando",
+            "saved": "Freelance actualizado"
+          },
+          "invite": {
+            "open": "Invitar al cliente",
+            "title": "Invitar al cliente del proyecto"
+          },
+          "errors": {
+            "forbidden": "No tienes permiso para hacerlo. Entra de nuevo con tu código.",
+            "invalid_client": "Esa persona no es un cliente activo.",
+            "invalid_freelance": "Esa persona no es un freelance activo.",
+            "project_not_found": "Ese proyecto ya no existe.",
+            "project_archived": "El proyecto está archivado. Restáuralo para cambiarlo.",
+            "unavailable": "Ahora mismo no puedo guardar. Inténtalo en un momento.",
+            "error": "No he podido guardarlo. Inténtalo otra vez."
           }
         }
       }

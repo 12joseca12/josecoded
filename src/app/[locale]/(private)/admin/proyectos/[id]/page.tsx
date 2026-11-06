@@ -3,13 +3,8 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import { LeadsError } from "@/components/admin/LeadsError/LeadsError";
-import { PhaseBoard } from "@/components/admin/PhaseBoard/PhaseBoard";
 import { PriceTabs } from "@/components/admin/PriceTabs/PriceTabs";
 import { ProjectHead } from "@/components/admin/ProjectHead/ProjectHead";
-import { StoryList } from "@/components/admin/StoryList/StoryList";
-import { FileList } from "@/components/area/FileList/FileList";
-import { Uploader } from "@/components/area/Uploader/Uploader";
-import { AnnouncerProvider } from "@/components/ui/Announcer/Announcer";
 import { Heading } from "@/components/ui/Heading/Heading";
 import { Link } from "@/components/ui/Link/Link";
 import { LoadingRegion } from "@/components/ui/LoadingRegion/LoadingRegion";
@@ -17,32 +12,18 @@ import { Skeleton } from "@/components/ui/Skeleton/Skeleton";
 import { isLocale, type Locale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
 import { fetchProject, fetchProjectTasks } from "@/lib/admin/project-detail";
-import { fetchProjectStories } from "@/lib/admin/project-stories";
 import { projectTabs, tabFromParam } from "@/lib/admin/project-tabs";
 import { requireZone } from "@/lib/auth/session";
-import { fetchProjectDocuments } from "@/lib/documents/project-documents";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { Assignee } from "@/types/admin-project-detail";
 
 import styles from "../../admin.module.css";
-import {
-  archiveProject,
-  decideStory,
-  deleteTask,
-  moveTask,
-  setProjectPhase,
-  upsertTask,
-} from "../actions";
-import {
-  fileListLabels,
-  phaseBoardLabels,
-  projectHeadLabels,
-  storyDecisionLabels,
-  storyListLabels,
-  taskSheetLabels,
-  uploaderLabels,
-} from "../labels";
+import { inviteUser } from "../../usuarios/actions";
+import { inviteSheetLabels } from "../../usuarios/labels";
+import { archiveProject, setProjectPhase } from "../actions";
+import { projectHeadLabels } from "../labels";
 import detail from "./detail.module.css";
+import { ProjectTabContent } from "./tab-content";
 
 interface ProjectPageProps {
   params: Promise<{ locale: string; id: string }>;
@@ -91,8 +72,6 @@ async function ProjectSection({
 
   const row = project.project;
   const current = tabFromParam(tab);
-  const stories = current === "stories" ? await fetchProjectStories(client, id) : null;
-  const documents = current === "documents" ? await fetchProjectDocuments(client, id) : null;
   const assignees: Assignee[] = [
     ...(row.client_id !== null && row.client_name !== null
       ? [{ id: row.client_id, name: row.client_name }]
@@ -142,69 +121,16 @@ async function ProjectSection({
           }))}
         />
       ) : null}
-      {current === "documents" ? (
-        documents?.status === "ok" ? (
-          <AnnouncerProvider>
-            <section
-              className={detail.stack}
-              aria-label={t("admin.projects.detail.tabs.documents")}
-            >
-              <Uploader projectId={id} variant="admin" labels={uploaderLabels(t)} />
-              <FileList
-                files={documents.documents}
-                variant="admin"
-                currentUserId={userId}
-                locale={locale}
-                labels={fileListLabels(t)}
-              />
-            </section>
-          </AnnouncerProvider>
-        ) : (
-          <LeadsError
-            title={t("admin.projects.detail.error.title")}
-            text={t("admin.projects.detail.error.text")}
-            retryLabel={t("admin.projects.detail.error.retry")}
-            loadingLabel={t("admin.projects.detail.error.retrying")}
-          />
-        )
-      ) : current === "stories" ? (
-        stories?.status === "ok" ? (
-          <AnnouncerProvider>
-            <section aria-label={t("admin.projects.detail.tabs.stories")}>
-              <StoryList
-                stories={stories.stories}
-                locale={locale}
-                labels={storyListLabels(t)}
-                decisionLabels={storyDecisionLabels(t)}
-                decide={decideStory.bind(null, locale)}
-              />
-            </section>
-          </AnnouncerProvider>
-        ) : (
-          <LeadsError
-            title={t("admin.projects.detail.error.title")}
-            text={t("admin.projects.detail.error.text")}
-            retryLabel={t("admin.projects.detail.error.retry")}
-            loadingLabel={t("admin.projects.detail.error.retrying")}
-          />
-        )
-      ) : (
-        <section aria-label={t("admin.projects.detail.tasks.board.region")}>
-          <PhaseBoard
-            projectId={id}
-            tasks={tasks.tasks}
-            assignees={assignees}
-            currentPhase={row.phase}
-            labels={phaseBoardLabels(t)}
-            sheetLabels={taskSheetLabels(t)}
-            handlers={{
-              save: upsertTask.bind(null, locale),
-              remove: deleteTask.bind(null, locale),
-              move: moveTask.bind(null, locale),
-            }}
-          />
-        </section>
-      )}
+      <ProjectTabContent
+        tab={current}
+        locale={locale}
+        row={row}
+        tasks={tasks.tasks}
+        assignees={assignees}
+        userId={userId}
+        inviteLabels={inviteSheetLabels(t)}
+        inviteHandler={inviteUser.bind(null, locale)}
+      />
     </div>
   );
 }

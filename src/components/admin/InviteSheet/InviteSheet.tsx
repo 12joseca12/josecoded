@@ -25,6 +25,7 @@ interface InviteSheetProps {
   labels: InviteSheetLabels;
   parents: { id: string; name: string }[];
   invite: InviteHandler;
+  projectId?: string;
 }
 
 const initialValues = {
@@ -62,9 +63,11 @@ function problemOf(result: InviteActionResult, labels: InviteSheetLabels): Probl
   return null;
 }
 
-export function InviteSheet({ locale, labels, parents, invite }: InviteSheetProps) {
+export function InviteSheet({ locale, labels, parents, invite, projectId }: InviteSheetProps) {
   const [open, setOpen] = useState(false);
-  const [values, setValues] = useState<Values>(initialValues);
+  const [values, setValues] = useState<Values>(() =>
+    projectId === undefined ? initialValues : { ...initialValues, role: "client" },
+  );
   const [problem, setProblem] = useState<Problem | null>(null);
   const [path, setPath] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
@@ -102,7 +105,7 @@ export function InviteSheet({ locale, labels, parents, invite }: InviteSheetProp
     };
 
   const reset = () => {
-    setValues(initialValues);
+    setValues(projectId === undefined ? initialValues : { ...initialValues, role: "client" });
     setProblem(null);
     setPath(null);
   };
@@ -119,6 +122,7 @@ export function InviteSheet({ locale, labels, parents, invite }: InviteSheetProp
     startTransition(async () => {
       const result = await invite({
         ...values,
+        projectId: projectId ?? "",
         parentCloserId: sub ? values.parentCloserId : "",
         parentRate: sub ? values.parentRate : "",
         parentRecurringRate: sub ? values.parentRecurringRate : "",
@@ -199,21 +203,23 @@ export function InviteSheet({ locale, labels, parents, invite }: InviteSheetProp
               disabled={pending}
               required
             />
-            <Field
-              control="select"
-              name="role"
-              label={labels.role}
-              value={values.role}
-              onChange={set("role")}
-              error={errorOf("role")}
-              disabled={pending}
-            >
-              {inviteRoles.map((role) => (
-                <option key={role} value={role}>
-                  {labels.roles[role]}
-                </option>
-              ))}
-            </Field>
+            {projectId === undefined ? (
+              <Field
+                control="select"
+                name="role"
+                label={labels.role}
+                value={values.role}
+                onChange={set("role")}
+                error={errorOf("role")}
+                disabled={pending}
+              >
+                {inviteRoles.map((role) => (
+                  <option key={role} value={role}>
+                    {labels.roles[role]}
+                  </option>
+                ))}
+              </Field>
+            ) : null}
             {sub ? (
               <Field
                 control="select"

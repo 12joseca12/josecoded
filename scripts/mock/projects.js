@@ -84,6 +84,10 @@ function documentRow(overrides) {
   };
 }
 
+function linkRow(overrides) {
+  return { ...overrides };
+}
+
 function seededProjects() {
   const tasks = Array.from({ length: 8 }, (_, index) =>
     taskRow({
@@ -128,6 +132,24 @@ function seededProjects() {
           size_bytes: 1200,
           visibility: "team",
           created_at: "2026-10-03T09:00:00+00:00",
+        }),
+      ],
+      links: [
+        linkRow({
+          id: "64000000-0000-4000-8000-000000000001",
+          project_id: projectIds.shop,
+          name: "Versión de pruebas",
+          url: "https://staging.example.com/",
+          usage: "Aquí ves el avance antes de publicar.",
+          sort: 0,
+        }),
+        linkRow({
+          id: "64000000-0000-4000-8000-000000000002",
+          project_id: projectIds.shop,
+          name: "Diseño en Figma",
+          url: "https://www.figma.com/file/prueba",
+          usage: null,
+          sort: 1,
         }),
       ],
       stories: [
@@ -264,10 +286,26 @@ route("GET", "/rest/v1/offers", ({ request, response }) => {
   return send(response, 200, offers);
 });
 
-route("GET", "/rest/v1/team_profiles", ({ request, response }) => {
+const teamPeople = [
+  { id: freelanceId, full_name: "Fran Freelance", role: "freelance" },
+  { id: clientId, full_name: "Carla Client", role: "client" },
+  { id: "00000000-0000-4000-8000-0000000000d2", full_name: "Dario Cliente", role: "client" },
+];
+
+route("GET", "/rest/v1/team_profiles", ({ request, response, url }) => {
   const auth = adminCall(request, response);
   if (!auth) return;
-  return send(response, 200, [{ id: freelanceId, full_name: "Fran Freelance" }]);
+  if (auth.projectsMode === "teamError") {
+    return send(response, 500, { code: "XX000", message: "internal", details: null, hint: null });
+  }
+  const single = eq(url, "role");
+  const many = /^in\.\((.+)\)$/.exec(url.searchParams.get("role") ?? "")?.[1]?.split(",");
+  const roles = single ? [single] : (many ?? ["client", "freelance"]);
+  return send(
+    response,
+    200,
+    teamPeople.filter((person) => roles.includes(person.role)),
+  );
 });
 
 route("POST", "/rest/v1/rpc/create_project", async ({ request, response }) => {
@@ -620,3 +658,117 @@ route(
 route("GET", /^\/storage\/v1\/object\/sign\/project-documents\/(.+)$/, ({ response }) =>
   send(response, 200, "%PDF-1.4\n%mock\n", "application/pdf"),
 );
+
+const httpsPattern = /^https:\/\/[^\s/$.?#].[^\s]*$/;
+
+function linkSort(entry) {
+  return [...entry.links].sort((a, b) => a.sort - b.sort);
+}
+
+route("GET", "/rest/v1/project_links", ({ request, response, url }) => {
+  const auth = adminCall(request, response);
+  if (!auth) return;
+  if (auth.projectsMode === "linksError") {
+    return send(response, 500, { code: "XX000", message: "internal", details: null, hint: null });
+  }
+  const entry = auth.projects.find((item) => item.id === eq(url, "project_id"));
+  return send(response, 200, entry ? linkSort(entry) : []);
+});
+
+route("POST", "/rest/v1/project_links", async ({ request, response }) => {
+  const auth = adminCall(request, response);
+  if (!auth) return;
+  const body = JSON.parse(await readBody(request));
+  auth.calls.projects.push({ name: "insert-link", body });
+  const entry = auth.projects.find((item) => item.id === body.project_id);
+  if (!entry)
+    return send(response, 409, { code: "23503", message: "fk", details: null, hint: null });
+  if (!httpsPattern.test(body.url ?? "")) {
+    return send(response, 400, { code: "23514", message: "check", details: null, hint: null });
+  }
+  if (entry.links.some((item) => item.url === body.url)) {
+    return send(response, 409, { code: "23505", message: "duplicate", details: null, hint: null });
+  }
+  entry.links.push(
+    linkRow({
+      id: randomUUID(),
+      project_id: entry.id,
+      name: body.name,
+      url: body.url,
+      usage: body.usage ?? null,
+      sort: entry.links.length === 0 ? 0 : Math.max(...entry.links.map((item) => item.sort)) + 1,
+    }),
+  );
+  return send(response, 201, []);
+});
+
+function linkOf(auth, id) {
+  for (const entry of auth.projects) {
+    const link = entry.links.find((item) => item.id === id);
+    if (link) return { entry, link };
+  }
+  return null;
+}
+
+route("PATCH", "/rest/v1/project_links", async ({ request, response, url }) => {
+  const auth = adminCall(request, response);
+  if (!auth) return;
+  const body = JSON.parse(await readBody(request));
+  auth.calls.projects.push({ name: "update-link", body });
+  const found = linkOf(auth, eq(url, "id"));
+  if (!found) return send(response, 200, []);
+  if (!httpsPattern.test(body.url ?? "")) {
+    return send(response, 400, { code: "23514", message: "check", details: null, hint: null });
+  }
+  if (found.entry.links.some((item) => item !== found.link && item.url === body.url)) {
+    return send(response, 409, { code: "23505", message: "duplicate", details: null, hint: null });
+  }
+  Object.assign(found.link, { name: body.name, url: body.url, usage: body.usage ?? null });
+  return send(response, 200, [{ id: found.link.id }]);
+});
+
+route("DELETE", "/rest/v1/project_links", ({ request, response, url }) => {
+  const auth = adminCall(request, response);
+  if (!auth) return;
+  const found = linkOf(auth, eq(url, "id"));
+  if (!found) return send(response, 200, []);
+  found.entry.links = found.entry.links.filter((item) => item !== found.link);
+  return send(response, 200, [{ id: found.link.id }]);
+});
+
+rpc("reorder_project_links", ({ auth, args, response }) => {
+  const entry = projectOf(auth, args.p_project_id);
+  if (!entry) return failure(response, "P0001", "project_not_found");
+  const current = entry.links.map((item) => item.id).sort();
+  const given = [...args.p_ids].sort();
+  if (current.length !== given.length || current.some((id, index) => id !== given[index])) {
+    return failure(response, "P0001", "ids_mismatch");
+  }
+  args.p_ids.forEach((id, index) => {
+    entry.links.find((item) => item.id === id).sort = index;
+  });
+  return sendEmpty(response);
+});
+
+rpc("set_project_client", ({ auth, args, response }) => {
+  const entry = projectOf(auth, args.p_id);
+  if (!entry) return failure(response, "P0001", "project_not_found");
+  if (entry.archived_at) return failure(response, "P0001", "project_archived");
+  const person = teamPeople.find((item) => item.id === args.p_user_id && item.role === "client");
+  if (!person) return failure(response, "P0001", "invalid_client");
+  entry.client_id = person.id;
+  entry.client_name = person.full_name;
+  return sendEmpty(response);
+});
+
+rpc("set_project_freelance", ({ auth, args, response }) => {
+  const entry = projectOf(auth, args.p_id);
+  if (!entry) return failure(response, "P0001", "project_not_found");
+  if (entry.archived_at) return failure(response, "P0001", "project_archived");
+  const user = args.p_user_id ?? null;
+  const person = user && teamPeople.find((item) => item.id === user && item.role === "freelance");
+  if (user && !person) return failure(response, "P0001", "invalid_freelance");
+  entry.freelance_id = person ? person.id : null;
+  entry.freelance_name = person ? person.full_name : null;
+  return sendEmpty(response);
+});
