@@ -2617,7 +2617,8 @@
         "tabs": {
           "tasks": "Tareas",
           "stories": "Historias",
-          "storiesPending": "Historias ({count})"
+          "storiesPending": "Historias ({count})",
+          "documents": "Documentos"
         },
         "head": {
           "phase": "Fase",
@@ -2770,6 +2771,75 @@
               "estimate_required": "Escribe las horas y el importe orientativo.",
               "unavailable": "Ahora mismo no puedo guardar. Inténtalo en un momento.",
               "error": "No he podido guardarlo. Inténtalo otra vez."
+            }
+          }
+        },
+        "docs": {
+          "files": {
+            "region": "Lista de documentos",
+            "empty": {
+              "title": "Todavía no hay documentos",
+              "text": "Sube un archivo y quedará aquí. Los que marques para el cliente los verá en su área."
+            },
+            "download": "Descargar",
+            "downloadFor": "Descargar {name}",
+            "delete": "Borrar",
+            "deleteFor": "Borrar {name}",
+            "deleteConfirm": "Se borra para siempre.",
+            "deleting": "Borrando",
+            "cancel": "Cancelar",
+            "deleted": "{name} borrado",
+            "visibility": {
+              "client": "Para el cliente",
+              "team": "Solo el equipo"
+            },
+            "errors": {
+              "invalid_request": "No he entendido la subida. Recarga la página e inténtalo otra vez.",
+              "file_missing": "Elige un archivo.",
+              "file_too_large": "El archivo pesa más de 25 MB.",
+              "invalid_mime": "Ese tipo de archivo no se admite.",
+              "invalid_name": "El nombre del archivo no es válido.",
+              "project_not_found": "Ese proyecto ya no existe.",
+              "not_member": "No tienes acceso a este proyecto.",
+              "visibility_forbidden": "No puedes subir documentos solo para el equipo.",
+              "project_quota_exceeded": "El proyecto ha llegado a 1 GB de documentos. Borra alguno para subir más.",
+              "document_exists": "Ese documento ya estaba subido.",
+              "document_not_found": "Ese documento ya no existe.",
+              "forbidden": "No tienes permiso para hacerlo. Entra de nuevo con tu código.",
+              "storage_failed": "No he podido guardar el archivo. Inténtalo otra vez.",
+              "unavailable": "Ahora mismo no puedo guardar. Inténtalo en un momento.",
+              "error": "Algo ha fallado. Inténtalo otra vez."
+            }
+          },
+          "uploader": {
+            "title": "Subir un documento",
+            "file": "Archivo",
+            "fileHint": "PDF, imágenes, vídeo corto, zip, Office, texto o CSV. Hasta 25 MB.",
+            "visibility": "Quién lo ve",
+            "visibilityOptions": {
+              "client": "El cliente y el equipo",
+              "team": "Solo el equipo"
+            },
+            "submit": "Subir",
+            "submitting": "Subiendo",
+            "progress": "Progreso de la subida",
+            "done": "Documento subido",
+            "errors": {
+              "invalid_request": "No he entendido la subida. Recarga la página e inténtalo otra vez.",
+              "file_missing": "Elige un archivo.",
+              "file_too_large": "El archivo pesa más de 25 MB.",
+              "invalid_mime": "Ese tipo de archivo no se admite.",
+              "invalid_name": "El nombre del archivo no es válido.",
+              "project_not_found": "Ese proyecto ya no existe.",
+              "not_member": "No tienes acceso a este proyecto.",
+              "visibility_forbidden": "No puedes subir documentos solo para el equipo.",
+              "project_quota_exceeded": "El proyecto ha llegado a 1 GB de documentos. Borra alguno para subir más.",
+              "document_exists": "Ese documento ya estaba subido.",
+              "document_not_found": "Ese documento ya no existe.",
+              "forbidden": "No tienes permiso para hacerlo. Entra de nuevo con tu código.",
+              "storage_failed": "No he podido guardar el archivo. Inténtalo otra vez.",
+              "unavailable": "Ahora mismo no puedo guardar. Inténtalo en un momento.",
+              "error": "Algo ha fallado. Inténtalo otra vez."
             }
           }
         }

@@ -73,6 +73,17 @@ export function storyRow(overrides) {
   };
 }
 
+function documentRow(overrides) {
+  return {
+    uploaded_by: people["enrolled@example.com"].id,
+    mime: "application/pdf",
+    visibility: "client",
+    deleted_at: null,
+    ...overrides,
+    storage_path: `projects/${overrides.project_id}/${overrides.id}`,
+  };
+}
+
 function seededProjects() {
   const tasks = Array.from({ length: 8 }, (_, index) =>
     taskRow({
@@ -101,6 +112,24 @@ function seededProjects() {
       due_at: "2026-12-15",
       created_at: "2026-10-01T09:00:00+00:00",
       tasks,
+      documents: [
+        documentRow({
+          id: "63000000-0000-4000-8000-000000000001",
+          project_id: projectIds.shop,
+          name: "Contrato firmado.pdf",
+          size_bytes: 482000,
+          created_at: "2026-10-02T09:00:00+00:00",
+        }),
+        documentRow({
+          id: "63000000-0000-4000-8000-000000000002",
+          project_id: projectIds.shop,
+          name: "Notas internas.txt",
+          mime: "text/plain",
+          size_bytes: 1200,
+          visibility: "team",
+          created_at: "2026-10-03T09:00:00+00:00",
+        }),
+      ],
       stories: [
         storyRow({
           id: "62000000-0000-4000-8000-000000000001",
@@ -469,3 +498,125 @@ rpc("decide_story", ({ auth, args, response }) => {
   });
   return send(response, 200, JSON.stringify(status));
 });
+
+let documentsStorageMode = "ok";
+const documentStorage = [];
+const registeredDocuments = [];
+
+route("POST", "/__auth/documents-storage-mode", async ({ request, response }) => {
+  documentsStorageMode = JSON.parse(await readBody(request)).mode;
+  documentStorage.length = 0;
+  registeredDocuments.length = 0;
+  return send(response, 200, { ok: true });
+});
+
+route("GET", "/__auth/documents-storage", ({ response }) => send(response, 200, documentStorage));
+
+const allowedMimes = new Set([
+  "application/pdf",
+  "image/png",
+  "image/jpeg",
+  "image/webp",
+  "image/gif",
+  "video/mp4",
+  "video/webm",
+  "video/quicktime",
+  "application/zip",
+  "text/plain",
+  "text/csv",
+]);
+
+function serviceOnly(request, response) {
+  if (request.headers.authorization === "Bearer test-service-role-key") return true;
+  send(response, 401, { code: "PGRST301", message: "JWT invalid", details: null, hint: null });
+  return false;
+}
+
+route("GET", "/rest/v1/documents", ({ request, response, url }) => {
+  const auth = adminCall(request, response);
+  if (!auth) return;
+  const byProject = eq(url, "project_id");
+  const byId = eq(url, "id");
+  const rows = [...auth.projects.flatMap((entry) => entry.documents), ...registeredDocuments]
+    .filter((doc) => doc.deleted_at === null)
+    .filter((doc) => (byProject ? doc.project_id === byProject : true))
+    .filter((doc) => (byId ? doc.id === byId : true))
+    .sort((a, b) => b.created_at.localeCompare(a.created_at));
+  return send(response, 200, rows);
+});
+
+route("POST", "/rest/v1/rpc/register_document", async ({ request, response }) => {
+  if (!serviceOnly(request, response)) return;
+  const args = JSON.parse(await readBody(request));
+  if (!Object.values(projectIds).includes(args.p_project_id)) {
+    return failure(response, "P0001", "project_not_found");
+  }
+  if (documentsStorageMode === "quota") {
+    return failure(response, "P0001", "project_quota_exceeded");
+  }
+  if (!allowedMimes.has(args.p_mime)) return failure(response, "P0001", "invalid_mime");
+  const id = args.p_path.split("/")[2];
+  registeredDocuments.push({
+    id,
+    project_id: args.p_project_id,
+    uploaded_by: args.p_uploaded_by,
+    name: args.p_name,
+    mime: args.p_mime,
+    size_bytes: args.p_size,
+    storage_path: args.p_path,
+    visibility: args.p_visibility,
+    created_at: new Date().toISOString(),
+    deleted_at: null,
+  });
+  return send(response, 200, JSON.stringify(id));
+});
+
+route("POST", "/rest/v1/rpc/delete_document", async ({ request, response }) => {
+  const auth = adminCall(request, response);
+  if (!auth) return;
+  const args = JSON.parse(await readBody(request));
+  const doc = [...auth.projects.flatMap((entry) => entry.documents), ...registeredDocuments].find(
+    (item) => item.id === args.p_id && item.deleted_at === null,
+  );
+  if (!doc) return failure(response, "P0001", "document_not_found");
+  doc.deleted_at = new Date().toISOString();
+  return send(response, 200, JSON.stringify(doc.storage_path));
+});
+
+route(
+  "POST",
+  /^\/storage\/v1\/object\/project-documents\/(.+)$/,
+  async ({ request, response, match }) => {
+    if (!serviceOnly(request, response)) return;
+    const raw = await readBody(request);
+    const path = decodeURIComponent(match[1]);
+    documentStorage.push({ kind: "upload", path, size: raw.length });
+    if (documentsStorageMode === "upload-error") {
+      return send(response, 500, { statusCode: "500", error: "storage", message: "storage" });
+    }
+    return send(response, 200, { Key: `project-documents/${match[1]}`, Id: randomUUID() });
+  },
+);
+
+route("DELETE", /^\/storage\/v1\/object\/project-documents$/, async ({ request, response }) => {
+  if (!serviceOnly(request, response)) return;
+  const body = JSON.parse(await readBody(request));
+  documentStorage.push({ kind: "remove", paths: body.prefixes });
+  return send(response, 200, []);
+});
+
+route(
+  "POST",
+  /^\/storage\/v1\/object\/sign\/project-documents\/(.+)$/,
+  async ({ request, response, match }) => {
+    if (!serviceOnly(request, response)) return;
+    documentStorage.push({ kind: "sign", path: decodeURIComponent(match[1]) });
+    return send(response, 200, {
+      signedURL: `/object/sign/project-documents/${match[1]}?token=mock-token`,
+    });
+  },
+);
+
+route("GET", /^\/storage\/v1\/object\/sign\/project-documents\/(.+)$/, ({ response }) =>
+  send(response, 200, "%PDF-1.4\n%mock\n", "application/pdf"),
+);

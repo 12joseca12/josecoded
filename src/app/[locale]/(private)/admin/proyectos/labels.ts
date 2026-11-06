@@ -26,6 +26,13 @@ import {
   projectStatuses,
   type ProjectTableLabels,
 } from "@/types/admin-projects";
+import {
+  type DocumentErrorCode,
+  documentErrorCodes,
+  documentVisibilities,
+  type FileListLabels,
+  type UploaderLabels,
+} from "@/types/project-documents";
 
 type Translate = (key: MessageKey) => string;
 
@@ -243,5 +250,54 @@ export function storyDecisionLabels(t: Translate): StoryDecisionLabels {
     submitting: t(`${s}.submitting`),
     done,
     errors,
+  };
+}
+
+function documentErrors(
+  t: Translate,
+  group: "files" | "uploader",
+): Record<DocumentErrorCode, string> {
+  const errors = {} as Record<DocumentErrorCode, string>;
+  for (const code of documentErrorCodes) errors[code] = t(`${detail}.docs.${group}.errors.${code}`);
+  return errors;
+}
+
+export function fileListLabels(t: Translate): FileListLabels {
+  const f = `${detail}.docs.files` as const;
+  const visibility = {} as FileListLabels["visibility"];
+  for (const option of documentVisibilities) visibility[option] = t(`${f}.visibility.${option}`);
+  return {
+    region: t(`${f}.region`),
+    empty: { title: t(`${f}.empty.title`), text: t(`${f}.empty.text`) },
+    download: t(`${f}.download`),
+    downloadFor: t(`${f}.downloadFor`),
+    delete: t(`${f}.delete`),
+    deleteFor: t(`${f}.deleteFor`),
+    deleteConfirm: t(`${f}.deleteConfirm`),
+    deleting: t(`${f}.deleting`),
+    cancel: t(`${f}.cancel`),
+    deleted: t(`${f}.deleted`),
+    visibility,
+    errors: documentErrors(t, "files"),
+  };
+}
+
+export function uploaderLabels(t: Translate): UploaderLabels {
+  const u = `${detail}.docs.uploader` as const;
+  const visibilityOptions = {} as UploaderLabels["visibilityOptions"];
+  for (const option of documentVisibilities) {
+    visibilityOptions[option] = t(`${u}.visibilityOptions.${option}`);
+  }
+  return {
+    title: t(`${u}.title`),
+    file: t(`${u}.file`),
+    fileHint: t(`${u}.fileHint`),
+    visibility: t(`${u}.visibility`),
+    visibilityOptions,
+    submit: t(`${u}.submit`),
+    submitting: t(`${u}.submitting`),
+    progress: t(`${u}.progress`),
+    done: t(`${u}.done`),
+    errors: documentErrors(t, "uploader"),
   };
 }
