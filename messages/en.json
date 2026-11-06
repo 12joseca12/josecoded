@@ -4487,7 +4487,25 @@
           "text": "You can try again.",
           "retry": "Try again",
           "retrying": "Trying again"
-        }
+        },
+        "fee": "Decided item"
+      },
+      "counters": {
+        "label": "Summary",
+        "projects": "Projects in progress",
+        "tasks": "Pending tasks",
+        "owed": "You are owed",
+        "toDeliver": "Milestones to deliver",
+        "unknown": "Not available"
+      },
+      "todo": {
+        "title": "For you",
+        "empty": "You have nothing pending right now.",
+        "tasksTitle": "Your tasks",
+        "milestonesTitle": "Milestones to deliver",
+        "deliver": "Mark as delivered",
+        "delivering": "Marking",
+        "delivered": "Milestone marked as delivered"
       }
     },
     "projects": {

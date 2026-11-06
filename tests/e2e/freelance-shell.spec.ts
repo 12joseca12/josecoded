@@ -108,7 +108,7 @@ test("the nav lists the registry and only links the shipped screens", async ({ p
 test("a failing project query shows the retry state and keeps the shell", async ({ page }) => {
   await setMode(page, { mode: "one", error: "projects" });
   await signInFreelance(page, tag);
-  await expect(page.getByRole("button", { name: "Reintentar" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Reintentar" }).first()).toBeVisible();
   await expect(page.locator("[data-zone='freelance']")).toBeVisible();
 });
 

@@ -80,7 +80,7 @@ export const newDocumentSchema = z.object({
   created_at: z.string(),
 });
 
-export type UpdateKind = "task" | "story" | "document" | "update";
+export type UpdateKind = "task" | "story" | "document" | "update" | "fee";
 
 export const updateAuthors = ["jose", "team"] as const;
 export type UpdateAuthor = (typeof updateAuthors)[number];

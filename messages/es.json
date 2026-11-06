@@ -4487,7 +4487,25 @@
           "text": "Puedes reintentarlo.",
           "retry": "Reintentar",
           "retrying": "Reintentando"
-        }
+        },
+        "fee": "Partida decidida"
+      },
+      "counters": {
+        "label": "Resumen",
+        "projects": "Proyectos en curso",
+        "tasks": "Tareas pendientes",
+        "owed": "Te deben",
+        "toDeliver": "Hitos por entregar",
+        "unknown": "No disponible"
+      },
+      "todo": {
+        "title": "Para ti",
+        "empty": "No tienes nada pendiente ahora mismo.",
+        "tasksTitle": "Tus tareas",
+        "milestonesTitle": "Hitos por entregar",
+        "deliver": "Marcar entregado",
+        "delivering": "Marcando",
+        "delivered": "Hito marcado como entregado"
       }
     },
     "projects": {

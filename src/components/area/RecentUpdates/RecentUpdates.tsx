@@ -9,6 +9,7 @@ export interface RecentUpdatesLabels {
   task: string;
   document: string;
   update: Record<UpdateAuthor, string>;
+  fee?: string;
   story: Record<StoryStatus, string>;
 }
 
@@ -21,6 +22,7 @@ interface RecentUpdatesProps {
 function describe(update: RecentUpdate, labels: RecentUpdatesLabels): string {
   if (update.kind === "task") return labels.task;
   if (update.kind === "document") return labels.document;
+  if (update.kind === "fee") return labels.fee ?? "";
   if (update.kind === "update" && update.author) return labels.update[update.author];
   return update.status ? labels.story[update.status] : "";
 }

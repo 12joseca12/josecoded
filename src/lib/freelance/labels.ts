@@ -2,6 +2,7 @@ import type { PhaseBoardLabels } from "@/components/area/PhaseBoard/PhaseBoard";
 import type { RecentUpdatesLabels } from "@/components/area/RecentUpdates/RecentUpdates";
 import type { FeeHistoryLabels } from "@/components/freelance/FeeHistoryTable/FeeHistoryTable";
 import type { FeeItemTableLabels } from "@/components/freelance/FeeItemTable/FeeItemTable";
+import type { FreelanceTodoLabels } from "@/components/freelance/FreelanceTodo/FreelanceTodo";
 import type { PayoutStatementLabels } from "@/components/freelance/PayoutStatement/PayoutStatement";
 import type { PayoutTableLabels } from "@/components/freelance/PayoutTable/PayoutTable";
 import type { ProjectListLabels } from "@/components/freelance/ProjectList/ProjectList";
@@ -150,6 +151,7 @@ export function recentLabels(t: T): RecentUpdatesLabels {
     empty: t("freelance.home.recent.empty"),
     task: t("area.home.recent.task"),
     document: t("area.home.recent.document"),
+    fee: t("freelance.home.recent.fee"),
     update: {
       jose: t("freelance.home.recent.update.jose"),
       team: t("freelance.home.recent.update.team"),
@@ -311,5 +313,22 @@ export function statementLabels(
     items: itemTableLabels(t),
     print: t("freelance.pay.statement.print"),
     printHint: t("freelance.pay.statement.printHint"),
+  };
+}
+
+export function todoLabels(t: T): FreelanceTodoLabels {
+  const errors = {} as FreelanceTodoLabels["errors"];
+  for (const code of feeErrorCodes) {
+    errors[code] = t(`freelance.fees.errors.${code}` as MessageKey);
+  }
+  return {
+    title: t("freelance.home.todo.title"),
+    empty: t("freelance.home.todo.empty"),
+    tasksTitle: t("freelance.home.todo.tasksTitle"),
+    milestonesTitle: t("freelance.home.todo.milestonesTitle"),
+    deliver: t("freelance.home.todo.deliver"),
+    delivering: t("freelance.home.todo.delivering"),
+    delivered: t("freelance.home.todo.delivered"),
+    errors,
   };
 }

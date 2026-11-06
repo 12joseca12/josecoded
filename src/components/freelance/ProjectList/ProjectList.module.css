@@ -98,3 +98,9 @@
     transition: none;
   }
 }
+
+.fee {
+  color: var(--ink);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+}

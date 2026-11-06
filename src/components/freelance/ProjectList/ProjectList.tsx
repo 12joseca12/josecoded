@@ -24,6 +24,7 @@ interface ProjectListProps {
   locale: string;
   labels: ProjectListLabels;
   hrefFor: (id: string) => string;
+  feeLines?: Record<string, string>;
   headingLevel?: 2 | 3;
 }
 
@@ -39,6 +40,7 @@ export function ProjectList({
   locale,
   labels,
   hrefFor,
+  feeLines,
   headingLevel = 2,
 }: ProjectListProps) {
   const format = new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeZone: "UTC" });
@@ -68,6 +70,7 @@ export function ProjectList({
                 <span>{fill(labels.due, { date: format.format(new Date(project.due_at)) })}</span>
               ) : null}
             </p>
+            {feeLines?.[project.id] ? <p className={styles.fee}>{feeLines[project.id]}</p> : null}
             <div
               className={styles.bar}
               role="progressbar"
