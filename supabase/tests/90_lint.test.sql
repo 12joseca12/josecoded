@@ -85,14 +85,21 @@ select is_empty(
         'admin_users',
         'approve_commission_lines',
         'archive_conversation',
+        'archive_project',
         'assign_lead',
         'build_payout',
         'cancel_job',
         'cancel_recurring',
         'cancel_schedule_item',
         'claim_lead',
+        'complete_my_task',
+        'confirm_story',
+        'create_project',
         'deal_payments',
+        'decide_story',
+        'delete_document',
         'delete_payout_draft',
+        'delete_task',
         'discard_lead',
         'ensure_my_conversation',
         'invite_user',
@@ -102,6 +109,7 @@ select is_empty(
         'log_totp_reset',
         'mark_notifications_read',
         'mark_read',
+        'move_task',
         'omen_status',
         'reassign_portfolio',
         'record_invoice',
@@ -109,6 +117,7 @@ select is_empty(
         'reject_commission_line',
         'remove_member',
         'renew_invitation',
+        'reorder_project_links',
         'retry_job',
         'revoke_invitation',
         'send_test_notification',
@@ -118,6 +127,9 @@ select is_empty(
         'set_payment_schedule',
         'set_payout_invoice',
         'set_payout_status',
+        'set_project_client',
+        'set_project_freelance',
+        'set_project_phase',
         'set_setting',
         'set_user_active',
         'set_user_rates',
@@ -126,6 +138,7 @@ select is_empty(
         'telegram_unlink',
         'touch_lead',
         'update_my_profile',
+        'upsert_task',
         'void_invoice',
         'win_deal'
       )
@@ -226,15 +239,22 @@ select is_empty(
         'admin_users',
         'approve_commission_lines',
         'archive_conversation',
+        'archive_project',
         'assign_lead',
         'build_payout',
         'cancel_job',
         'cancel_recurring',
         'cancel_schedule_item',
         'claim_lead',
+        'complete_my_task',
+        'confirm_story',
+        'create_project',
         'crm_counters',
         'deal_payments',
+        'decide_story',
+        'delete_document',
         'delete_payout_draft',
+        'delete_task',
         'discard_lead',
         'ensure_my_conversation',
         'invite_user',
@@ -244,6 +264,7 @@ select is_empty(
         'log_totp_reset',
         'mark_notifications_read',
         'mark_read',
+        'move_task',
         'omen_status',
         'reassign_portfolio',
         'record_invoice',
@@ -251,6 +272,7 @@ select is_empty(
         'reject_commission_line',
         'remove_member',
         'renew_invitation',
+        'reorder_project_links',
         'retry_job',
         'revoke_invitation',
         'send_test_notification',
@@ -260,6 +282,9 @@ select is_empty(
         'set_payment_schedule',
         'set_payout_invoice',
         'set_payout_status',
+        'set_project_client',
+        'set_project_freelance',
+        'set_project_phase',
         'set_setting',
         'set_user_active',
         'set_user_rates',
@@ -268,6 +293,7 @@ select is_empty(
         'telegram_unlink',
         'touch_lead',
         'update_my_profile',
+        'upsert_task',
         'void_invoice',
         'win_deal'
       )
@@ -286,7 +312,7 @@ select is(
       and not has_function_privilege('authenticated', p.oid, 'execute')
       and not has_function_privilege('anon', p.oid, 'execute')
   ),
-  'omen_claim_jobs,omen_finish_job,omen_heartbeat,outbox_claim,outbox_mark,payments_notify_overdue,read_invitation,read_public_settings,submit_lead,telegram_confirm_link,visitor_forget,visitor_handoff,visitor_send,visitor_thread',
+  'omen_claim_jobs,omen_finish_job,omen_heartbeat,outbox_claim,outbox_mark,payments_notify_overdue,read_invitation,read_public_settings,register_document,submit_lead,telegram_confirm_link,visitor_forget,visitor_handoff,visitor_send,visitor_thread',
   'only the lead intake, outbox, invitation read, Telegram link and Omen job functions are service_role-only in public'
 );
 
@@ -298,7 +324,7 @@ select is(
     where n.nspname = 'private'
       and has_function_privilege('authenticated', p.oid, 'execute')
   ),
-  'ai_active,can_write_conversation,contact_has_history,conversation_topic_id,is_aal2,is_admin,is_api_client_role,is_closer,is_conversation_member,is_staff,mask_excerpt,offer_answers_valid,owns_contact,owns_lead,role,slug_list_valid,uid',
+  'ai_active,can_write_conversation,contact_has_history,conversation_topic_id,freelance_project_rows,is_aal2,is_admin,is_api_client_role,is_closer,is_conversation_member,is_project_member,is_staff,mask_excerpt,offer_answers_valid,owns_contact,owns_lead,role,slug_list_valid,uid',
   'only the policy helpers and the two constraint helpers in private are executable by authenticated (decision 9.6)'
 );
 

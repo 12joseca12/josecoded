@@ -95,6 +95,7 @@ begin
   delete from public.payment_schedule;
   delete from private.counters;
   delete from public.activities;
+  delete from public.projects;
   delete from public.deals;
   delete from public.contacts;
   delete from public.leads;
