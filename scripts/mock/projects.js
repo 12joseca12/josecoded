@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 
 import { extendAuthState, people, stateFor } from "./auth.js";
+import { currentInstant, todayInMadrid } from "./dates.js";
 import { readBody, route, send, sendEmpty } from "./registry.js";
 import { admin, deny } from "./system.js";
 
@@ -34,7 +35,7 @@ function project(overrides) {
     started_at: null,
     due_at: null,
     archived_at: null,
-    created_at: new Date().toISOString(),
+    created_at: currentInstant().toISOString(),
     tasks: [],
     stories: [],
     documents: [],
@@ -55,7 +56,7 @@ export function taskRow(overrides) {
     sort: 0,
     done_at: null,
     done_by: null,
-    created_at: new Date().toISOString(),
+    created_at: currentInstant().toISOString(),
     ...overrides,
   };
 }
@@ -104,7 +105,7 @@ function feeItem(overrides) {
     status: "pending",
     rejected_reason: null,
     submitted_by: freelanceId,
-    created_at: new Date().toISOString(),
+    created_at: currentInstant().toISOString(),
     ...overrides,
   };
 }
@@ -518,7 +519,7 @@ rpc("set_project_phase", ({ auth, args, response }) => {
 rpc("archive_project", ({ auth, args, response }) => {
   const entry = projectOf(auth, args.p_id);
   if (!entry) return failure(response, "P0001", "project_not_found");
-  entry.archived_at = args.p_archived === false ? null : new Date().toISOString();
+  entry.archived_at = args.p_archived === false ? null : currentInstant().toISOString();
   entry.status = args.p_archived === false ? "active" : "closed";
   return sendEmpty(response);
 });
@@ -541,7 +542,7 @@ rpc("upsert_task", ({ auth, args, response }) => {
       description: args.p_description ?? null,
       status,
       assignee_id: assignee,
-      done_at: status === "done" ? (task.done_at ?? new Date().toISOString()) : null,
+      done_at: status === "done" ? (task.done_at ?? currentInstant().toISOString()) : null,
     });
     return send(response, 200, JSON.stringify(task.id));
   }
@@ -555,7 +556,7 @@ rpc("upsert_task", ({ auth, args, response }) => {
     status,
     assignee_id: assignee,
     sort,
-    done_at: status === "done" ? new Date().toISOString() : null,
+    done_at: status === "done" ? currentInstant().toISOString() : null,
   });
   entry.tasks.push(task);
   return send(response, 200, JSON.stringify(task.id));
@@ -638,7 +639,7 @@ rpc("decide_story", ({ auth, args, response }) => {
     estimate_hours: args.p_hours ?? null,
     estimate_amount: args.p_amount ?? null,
     decision_note: args.p_note ?? null,
-    decided_at: new Date().toISOString(),
+    decided_at: currentInstant().toISOString(),
   });
   return send(response, 200, JSON.stringify(status));
 });
@@ -710,7 +711,7 @@ route("POST", "/rest/v1/rpc/register_document", async ({ request, response }) =>
     size_bytes: args.p_size,
     storage_path: args.p_path,
     visibility: args.p_visibility,
-    created_at: new Date().toISOString(),
+    created_at: currentInstant().toISOString(),
     deleted_at: null,
   });
   return send(response, 200, JSON.stringify(id));
@@ -724,7 +725,7 @@ route("POST", "/rest/v1/rpc/delete_document", async ({ request, response }) => {
     (item) => item.id === args.p_id && item.deleted_at === null,
   );
   if (!doc) return failure(response, "P0001", "document_not_found");
-  doc.deleted_at = new Date().toISOString();
+  doc.deleted_at = currentInstant().toISOString();
   return send(response, 200, JSON.stringify(doc.storage_path));
 });
 
@@ -1009,7 +1010,7 @@ rpc("add_fee_item", ({ auth, args, response }) => {
     id: randomUUID(),
     label: args.p_label,
     amount: args.p_amount,
-    worked_on: args.p_worked_on ?? new Date().toISOString().slice(0, 10),
+    worked_on: args.p_worked_on ?? todayInMadrid(),
     submitted_by: people["admin@example.com"].id,
   });
   entry.feeItems.push(item);
@@ -1109,7 +1110,7 @@ route("POST", "/rest/v1/project_updates", async ({ request, response }) => {
       task_id: body.task_id ?? null,
       body: body.body,
       visibility: body.visibility ?? "internal",
-      created_at: new Date().toISOString(),
+      created_at: currentInstant().toISOString(),
     }),
   );
   return sendEmpty(response);
@@ -1152,7 +1153,7 @@ route("GET", "/rest/v1/notifications", ({ request, response, url }) => {
 
 rpc("mark_notifications_read", ({ auth, args, response }) => {
   for (const item of auth.projectNotifications) {
-    if (args.p_ids.includes(item.id)) item.read_at = new Date().toISOString();
+    if (args.p_ids.includes(item.id)) item.read_at = currentInstant().toISOString();
   }
   return send(response, 200, JSON.stringify(args.p_ids.length));
 });

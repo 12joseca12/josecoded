@@ -27,6 +27,7 @@ import { headerLabels, linksLabels, phaseStepsLabels } from "@/lib/area/labels";
 import { fetchLinks } from "@/lib/area/overview";
 import { fetchBoard, groupByPhase } from "@/lib/area/tasks";
 import { requireZone } from "@/lib/auth/session";
+import { todayInMadrid } from "@/lib/dates";
 import { fetchProjectDocuments } from "@/lib/documents/project-documents";
 import { activeFee, fetchFeeItems, fetchFeeSummaries } from "@/lib/freelance/fees";
 import {
@@ -192,7 +193,7 @@ async function FeeRegion({ locale, project }: { locale: Locale; project: Freelan
       summary={summary}
       items={items?.data ?? []}
       locale={locale}
-      today={new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Madrid" }).format(new Date())}
+      today={todayInMadrid()}
       labels={feeCardLabels(t)}
       submitHours={submitHoursAction.bind(null, locale)}
       deliver={markDeliveredAction.bind(null, locale)}

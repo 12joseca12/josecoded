@@ -16,6 +16,7 @@ import { isLocale, type Locale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
 import { fetchPayoutDetail } from "@/lib/admin/payouts";
 import { requireZone } from "@/lib/auth/session";
+import { todayInMadrid } from "@/lib/dates";
 import { formatCents } from "@/lib/money";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -38,10 +39,6 @@ export async function generateMetadata({ params }: DetailProps): Promise<Metadat
   if (!isLocale(locale)) return {};
   const t = await getTranslator(locale);
   return { title: t("admin.payouts.meta.title"), robots: { index: false, follow: false } };
-}
-
-function madridToday(): string {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Madrid" }).format(new Date());
 }
 
 async function DetailSection({ locale, id }: { locale: Locale; id: string }) {
@@ -94,7 +91,7 @@ async function DetailSection({ locale, id }: { locale: Locale; id: string }) {
             status={payout.status}
             netText={formatCents(payout.net_total, locale)}
             beneficiary={beneficiary}
-            today={madridToday()}
+            today={todayInMadrid()}
             backHref={backHref}
             labels={payoutActionsLabels(t)}
             issue={issuePayoutAction.bind(null, locale)}

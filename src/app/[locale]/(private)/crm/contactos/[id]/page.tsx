@@ -30,6 +30,7 @@ import {
   reassignLabels,
 } from "@/lib/crm/detail-labels";
 import { cancelRecurringLabels, dealMoneyLabels, winSheetLabels } from "@/lib/crm/money-labels";
+import { todayInMadrid } from "@/lib/dates";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { UserRole } from "@/types/auth";
 import type { DealDetail } from "@/types/crm-detail";
@@ -100,7 +101,7 @@ async function MoneySection({ locale, role, deals, names }: MoneySectionProps) {
       names={names}
       locale={locale}
       isAdmin={role === "admin"}
-      today={new Date().toISOString().slice(0, 10)}
+      today={todayInMadrid()}
       labels={labels}
     />
   );

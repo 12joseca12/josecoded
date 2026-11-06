@@ -15,6 +15,7 @@ import { isLocale, type Locale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
 import { fetchPayouts, parsePayoutTab } from "@/lib/admin/payouts";
 import { requireZone } from "@/lib/auth/session";
+import { todayInMadrid } from "@/lib/dates";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { type PayoutTab, payoutTabs } from "@/types/payouts";
 
@@ -38,10 +39,6 @@ export async function generateMetadata({
 }
 
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
-function madridToday(): string {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Madrid" }).format(new Date());
-}
 
 async function PayoutsSection({
   locale,
@@ -89,7 +86,7 @@ async function PayoutsSection({
               role: entry.role === "freelance" ? ("freelance" as const) : ("closer" as const),
               cadence: entry.payout_cadence ?? defaultCadence,
             }))}
-          today={madridToday()}
+          today={todayInMadrid()}
           locale={locale}
           preselectId={preselectId}
           labels={payoutBuilderLabels(t)}

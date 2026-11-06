@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 
 import { bearer, extendAuthState, people, personById, stateFor } from "./auth.js";
+import { currentInstant, todayInMadrid } from "./dates.js";
 import { pass, readBody, route, send } from "./registry.js";
 
 export const freelanceProjectIds = {
@@ -384,7 +385,7 @@ freelanceRoute("POST", "/rest/v1/rpc/set_my_task_status", async ({ request, resp
     return send(response, 403, { code: "42501", message: "forbidden", details: null, hint: null });
   }
   found.status = body.p_status;
-  found.done_at = body.p_status === "done" ? new Date().toISOString() : null;
+  found.done_at = body.p_status === "done" ? currentInstant().toISOString() : null;
   return send(response, 204, "");
 });
 
@@ -416,7 +417,7 @@ route("POST", "/rest/v1/rpc/register_document", async ({ request, response }) =>
     size_bytes: args.p_size,
     storage_path: args.p_path,
     visibility: args.p_visibility,
-    created_at: new Date().toISOString(),
+    created_at: currentInstant().toISOString(),
     uploaded_by: null,
     uploaded_by_me: true,
     uploader: "me",
@@ -441,7 +442,7 @@ freelanceRoute("POST", "/rest/v1/rpc/delete_document", async ({ request, respons
   if (!found.uploaded_by_me) {
     return send(response, 403, { code: "42501", message: "forbidden", details: null, hint: null });
   }
-  found.deleted_at = new Date().toISOString();
+  found.deleted_at = currentInstant().toISOString();
   return send(response, 200, JSON.stringify(found.storage_path));
 });
 
@@ -475,7 +476,7 @@ freelanceRoute("POST", "/rest/v1/project_updates", async ({ request, response, s
     task_id: body.task_id ?? null,
     body: body.body,
     visibility: body.visibility ?? "internal",
-    created_at: new Date().toISOString(),
+    created_at: currentInstant().toISOString(),
   });
   return send(response, 201, "");
 });
@@ -628,7 +629,7 @@ freelanceRoute("POST", "/rest/v1/rpc/submit_fee_hours", async ({ request, respon
   );
   if (!fee) return feeFailure(response, "fee_not_found");
   if (fee.mode !== "hourly") return feeFailure(response, "fee_mode_mismatch");
-  const today = new Date().toISOString().slice(0, 10);
+  const today = todayInMadrid();
   const day = args.p_worked_on ?? today;
   if (day > today) return feeFailure(response, "future_date");
   if (!(args.p_hours > 0 && args.p_hours <= 24)) return feeFailure(response, "invalid_hours");

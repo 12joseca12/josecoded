@@ -23,6 +23,7 @@ import {
   primaryAction,
 } from "@/lib/crm/overview";
 import { cellLabels, dueListLabels } from "@/lib/crm/overview-labels";
+import { currentInstant } from "@/lib/dates";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 import styles from "./crm.module.css";
@@ -127,7 +128,7 @@ async function DueSection({ locale }: { locale: Locale }) {
   const t = await getTranslator(locale);
   const client = await createSupabaseServerClient();
   if (client === null) notFound();
-  const now = new Date();
+  const now = currentInstant();
   const result = await fetchDue(client, now);
   if (result.status === "error") {
     return (

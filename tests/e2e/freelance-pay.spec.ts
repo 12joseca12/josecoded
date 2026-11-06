@@ -89,11 +89,13 @@ test("logging hours adds a pending item, the cap and a future day fail in line",
 
   const form = await logHours(page, "20", "Demasiadas horas");
   await expect(form.getByText(fees("errors.hours_cap_exceeded"))).toBeVisible();
-  const future = new Date(Date.now() + 3 * 86_400_000).toISOString().slice(0, 10);
+  const future = new Date(Date.parse(process.env.E2E_FAKE_NOW ?? "") || Date.now());
+  future.setUTCDate(future.getUTCDate() + 3);
+  const futureDay = future.toISOString().slice(0, 10);
   await form.getByLabel(fees("form.date")).evaluate((input: HTMLInputElement) => {
     input.removeAttribute("max");
   });
-  await logHours(page, "1", "Mañana", future);
+  await logHours(page, "1", "Mañana", futureDay);
   await expect(form.getByText(fees("errors.future_date"))).toBeVisible();
   await expect(item(page, "Demasiadas horas")).toHaveCount(0);
 });
