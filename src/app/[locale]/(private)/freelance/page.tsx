@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
+import { RecentUpdates } from "@/components/area/RecentUpdates/RecentUpdates";
 import { RefreshError } from "@/components/crm/RefreshError/RefreshError";
 import { ProjectList } from "@/components/freelance/ProjectList/ProjectList";
 import { EmptyState } from "@/components/ui/EmptyState/EmptyState";
@@ -10,9 +11,11 @@ import { LoadingRegion } from "@/components/ui/LoadingRegion/LoadingRegion";
 import { Skeleton } from "@/components/ui/Skeleton/Skeleton";
 import { isLocale, type Locale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
+import { buildRecentUpdates } from "@/lib/area/overview";
 import { requireZone } from "@/lib/auth/session";
-import { projectListLabels } from "@/lib/freelance/labels";
+import { projectListLabels, recentLabels } from "@/lib/freelance/labels";
 import { fetchFreelanceProjects } from "@/lib/freelance/projects";
+import { fetchLatestUpdates } from "@/lib/freelance/updates";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 import styles from "./freelance.module.css";
@@ -26,6 +29,34 @@ export async function generateMetadata({ params }: FreelanceHomeProps): Promise<
   if (!isLocale(locale)) return {};
   const t = await getTranslator(locale);
   return { title: t("freelance.home.meta.title") };
+}
+
+async function RecentRegion({ locale, userId }: { locale: Locale; userId: string }) {
+  const t = await getTranslator(locale);
+  const client = await createSupabaseServerClient();
+  const latest = client ? await fetchLatestUpdates(client) : null;
+  if (latest?.status !== "ok") {
+    return (
+      <RefreshError
+        title={t("freelance.home.recent.error.title")}
+        text={t("freelance.home.recent.error.text")}
+        retryLabel={t("freelance.home.recent.error.retry")}
+        loadingLabel={t("freelance.home.recent.error.retrying")}
+      />
+    );
+  }
+  const entries = buildRecentUpdates(
+    [],
+    [],
+    [],
+    latest.data.map((update) => ({
+      id: update.id,
+      body: update.body,
+      created_at: update.created_at,
+      author_label: update.author_id === userId ? ("team" as const) : ("jose" as const),
+    })),
+  );
+  return <RecentUpdates updates={entries} locale={locale} labels={recentLabels(t)} />;
 }
 
 async function ProjectsRegion({ locale }: { locale: Locale }) {
@@ -71,7 +102,7 @@ async function ProjectsRegion({ locale }: { locale: Locale }) {
 export default async function FreelanceHomePage({ params }: FreelanceHomeProps) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  await requireZone("freelance", locale);
+  const member = await requireZone("freelance", locale);
   const t = await getTranslator(locale);
   return (
     <div className={styles.stack}>
@@ -98,6 +129,19 @@ export default async function FreelanceHomePage({ params }: FreelanceHomeProps) 
         }
       >
         <ProjectsRegion locale={locale} />
+      </Suspense>
+      <Suspense
+        fallback={
+          <LoadingRegion
+            loading
+            label={t("freelance.home.loading")}
+            fallback={<Skeleton height="6rem" />}
+          >
+            {null}
+          </LoadingRegion>
+        }
+      >
+        <RecentRegion locale={locale} userId={member.userId} />
       </Suspense>
     </div>
   );

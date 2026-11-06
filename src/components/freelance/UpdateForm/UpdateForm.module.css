@@ -1,0 +1,20 @@
+.form {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.hint {
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+}
+
+.feedback {
+  min-height: 1.25rem;
+  color: var(--error);
+  font-size: var(--fs-m);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-3);
+}

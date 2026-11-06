@@ -1,3 +1,5 @@
+import { randomUUID } from "node:crypto";
+
 import { bearer, extendAuthState, people, personById, stateFor } from "./auth.js";
 import { pass, readBody, route, send } from "./registry.js";
 
@@ -120,6 +122,26 @@ function seedData() {
       documentRow(1, "Notas del equipo.txt", "team", "jose", joseId),
       documentRow(2, "Entrega portada.pdf", "client", "me", freelanceId),
     ],
+    updates: [
+      {
+        id: "74000000-0000-4000-8000-000000000001",
+        project_id: freelanceProjectIds.shop,
+        author_id: freelanceId,
+        task_id: "71000000-0000-4000-8000-000000000001",
+        body: "Portada maquetada en móvil.",
+        visibility: "internal",
+        created_at: "2026-11-04T10:00:00+00:00",
+      },
+      {
+        id: "74000000-0000-4000-8000-000000000002",
+        project_id: freelanceProjectIds.shop,
+        author_id: joseId,
+        task_id: null,
+        body: "Mañana revisamos el catálogo.",
+        visibility: "client",
+        created_at: "2026-11-05T10:00:00+00:00",
+      },
+    ],
     hiddenDocuments: [
       documentRow(3, "Contrato firmado.pdf", "client", "jose", joseId),
       documentRow(4, "Logotipo del cliente.png", "client", "team", clientId),
@@ -139,7 +161,14 @@ function seedData() {
 }
 
 extendAuthState((state) => {
-  state.freelance = { mode: "none", error: null, taskError: null, ...seedData() };
+  state.freelance = {
+    mode: "none",
+    error: null,
+    taskError: null,
+    updateError: null,
+    updatesEmpty: false,
+    ...seedData(),
+  };
   state.calls.freelanceRpc = [];
 });
 
@@ -336,3 +365,78 @@ freelanceRoute("POST", "/rest/v1/rpc/delete_document", async ({ request, respons
 });
 
 route("GET", "/__freelance/uploads", ({ response }) => send(response, 200, uploads));
+
+function updatesOpen(state) {
+  return visibleProjects(state).some((entry) => entry.id === freelanceProjectIds.shop);
+}
+
+freelanceRoute("GET", "/rest/v1/project_updates", ({ response, url, scoped }) => {
+  if (failing(response, scoped.state, "updates")) return undefined;
+  const rows = updatesOpen(scoped.state) && !scoped.state.updatesEmpty ? scoped.state.updates : [];
+  return send(response, 200, query(rows, url));
+});
+
+freelanceRoute("POST", "/rest/v1/project_updates", async ({ request, response, scoped }) => {
+  const body = JSON.parse(await readBody(request));
+  scoped.session.auth.calls.freelanceRpc.push({ name: "project_updates.insert", args: body });
+  if (scoped.state.updateError) {
+    return send(response, 400, {
+      code: "P0001",
+      message: scoped.state.updateError,
+      details: null,
+      hint: null,
+    });
+  }
+  scoped.state.updates.push({
+    id: randomUUID(),
+    project_id: body.project_id,
+    author_id: scoped.session.userId,
+    task_id: body.task_id ?? null,
+    body: body.body,
+    visibility: body.visibility ?? "internal",
+    created_at: new Date().toISOString(),
+  });
+  return send(response, 201, "");
+});
+
+freelanceRoute("DELETE", "/rest/v1/project_updates", ({ response, url, scoped }) => {
+  const rows = query(
+    scoped.state.updates.filter((row) => row.author_id === scoped.session.userId),
+    url,
+  );
+  scoped.state.updates = scoped.state.updates.filter((row) => !rows.includes(row));
+  scoped.session.auth.calls.freelanceRpc.push({ name: "project_updates.delete" });
+  return send(
+    response,
+    200,
+    rows.map((row) => ({ id: row.id })),
+  );
+});
+
+freelanceRoute(
+  "POST",
+  "/rest/v1/rpc/set_update_visibility",
+  async ({ request, response, scoped }) => {
+    const body = JSON.parse(await readBody(request));
+    scoped.session.auth.calls.freelanceRpc.push({ name: "set_update_visibility", args: body });
+    const found = scoped.state.updates.find((row) => row.id === body.p_id);
+    if (!found) {
+      return send(response, 400, {
+        code: "P0001",
+        message: "update_not_found",
+        details: null,
+        hint: null,
+      });
+    }
+    if (found.author_id !== scoped.session.userId) {
+      return send(response, 403, {
+        code: "42501",
+        message: "forbidden",
+        details: null,
+        hint: null,
+      });
+    }
+    found.visibility = body.p_visibility;
+    return send(response, 204, "");
+  },
+);

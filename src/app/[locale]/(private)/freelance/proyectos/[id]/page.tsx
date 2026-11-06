@@ -9,7 +9,9 @@ import { ProjectHeader } from "@/components/area/ProjectHeader/ProjectHeader";
 import { ProjectLinks } from "@/components/area/ProjectLinks/ProjectLinks";
 import { Uploader } from "@/components/area/Uploader/Uploader";
 import { RefreshError } from "@/components/crm/RefreshError/RefreshError";
+import { ProgressLog } from "@/components/freelance/ProgressLog/ProgressLog";
 import { TaskStatusMenu } from "@/components/freelance/TaskStatusMenu/TaskStatusMenu";
+import { UpdateForm } from "@/components/freelance/UpdateForm/UpdateForm";
 import { AnnouncerProvider } from "@/components/ui/Announcer/Announcer";
 import { Button } from "@/components/ui/Button/Button";
 import { EmptyState } from "@/components/ui/EmptyState/EmptyState";
@@ -28,14 +30,22 @@ import { fetchProjectDocuments } from "@/lib/documents/project-documents";
 import {
   boardLabels,
   fileLabels,
+  progressLogLabels,
   statusMenuLabels,
+  updateFormLabels,
   uploaderFreelanceLabels,
 } from "@/lib/freelance/labels";
 import { fetchFreelanceProject } from "@/lib/freelance/projects";
+import { fetchTaskOptions, fetchUpdates } from "@/lib/freelance/updates";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { FreelanceProject } from "@/types/freelance";
 
-import { setTaskStatusAction } from "../../actions";
+import {
+  createUpdateAction,
+  deleteUpdateAction,
+  setTaskStatusAction,
+  setUpdateVisibilityAction,
+} from "../../actions";
 import styles from "../../freelance.module.css";
 
 interface ProjectProps {
@@ -125,6 +135,42 @@ async function FilesRegion({ locale, project }: { locale: Locale; project: Freel
   );
 }
 
+async function UpdatesRegion({
+  locale,
+  project,
+  userId,
+}: {
+  locale: Locale;
+  project: FreelanceProject;
+  userId: string;
+}) {
+  const client = await createSupabaseServerClient();
+  const [updates, tasks] = client
+    ? await Promise.all([fetchUpdates(client, project.id), fetchTaskOptions(client, project.id)])
+    : [null, null];
+  if (updates?.status !== "ok" || tasks?.status !== "ok") return regionError(locale);
+  const t = await getTranslator(locale);
+  return (
+    <ProgressLog
+      updates={updates.data}
+      userId={userId}
+      taskTitles={Object.fromEntries(tasks.data.map((task) => [task.id, task.title]))}
+      locale={locale}
+      labels={progressLogLabels(t)}
+      setVisibility={setUpdateVisibilityAction.bind(null, locale)}
+      remove={deleteUpdateAction.bind(null, locale)}
+      action={
+        <UpdateForm
+          projectId={project.id}
+          tasks={tasks.data.filter((task) => task.assigned_to_me)}
+          labels={updateFormLabels(t)}
+          save={createUpdateAction.bind(null, locale)}
+        />
+      }
+    />
+  );
+}
+
 async function LinksRegion({ locale, project }: { locale: Locale; project: FreelanceProject }) {
   const client = await createSupabaseServerClient();
   const links = client ? await fetchLinks(client, project.id) : null;
@@ -133,7 +179,15 @@ async function LinksRegion({ locale, project }: { locale: Locale; project: Freel
   return <ProjectLinks links={links.data} labels={linksLabels(t)} />;
 }
 
-async function ProjectContent({ locale, id }: { locale: Locale; id: string }) {
+async function ProjectContent({
+  locale,
+  id,
+  userId,
+}: {
+  locale: Locale;
+  id: string;
+  userId: string;
+}) {
   const t = await getTranslator(locale);
   const client = await createSupabaseServerClient();
   if (client === null) throw new Error("freelance_project_unavailable");
@@ -181,6 +235,9 @@ async function ProjectContent({ locale, id }: { locale: Locale; id: string }) {
             <BoardRegion locale={locale} project={project} />
           </Suspense>
         </section>
+        <Suspense fallback={<RegionSkeleton label={loading} height="8rem" />}>
+          <UpdatesRegion locale={locale} project={project} userId={userId} />
+        </Suspense>
         <section className={styles.section} aria-labelledby="freelance-files">
           <Heading level={2} size="h4" id="freelance-files">
             {t("freelance.project.files.title")}
@@ -206,7 +263,7 @@ async function ProjectContent({ locale, id }: { locale: Locale; id: string }) {
 export default async function FreelanceProjectPage({ params }: ProjectProps) {
   const { locale, id } = await params;
   if (!isLocale(locale)) notFound();
-  await requireZone("freelance", locale);
+  const member = await requireZone("freelance", locale);
   const t = await getTranslator(locale);
   return (
     <Suspense
@@ -225,7 +282,7 @@ export default async function FreelanceProjectPage({ params }: ProjectProps) {
         </LoadingRegion>
       }
     >
-      <ProjectContent locale={locale} id={id} />
+      <ProjectContent locale={locale} id={id} userId={member.userId} />
     </Suspense>
   );
 }

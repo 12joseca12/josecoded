@@ -1,9 +1,15 @@
 import type { PhaseBoardLabels } from "@/components/area/PhaseBoard/PhaseBoard";
+import type { RecentUpdatesLabels } from "@/components/area/RecentUpdates/RecentUpdates";
 import type { ProjectListLabels } from "@/components/freelance/ProjectList/ProjectList";
 import type { TaskStatusMenuLabels } from "@/components/freelance/TaskStatusMenu/TaskStatusMenu";
 import type { MessageKey } from "@/i18n/keys.generated";
 import { fileListLabels, phaseNames, uploaderLabels } from "@/lib/area/labels";
 import type { FileListLabels, UploaderLabels } from "@/types/project-documents";
+import {
+  type ProgressLogLabels,
+  updateErrorCodes,
+  type UpdateFormLabels,
+} from "@/types/project-updates";
 
 type T = (key: MessageKey) => string;
 
@@ -82,5 +88,73 @@ export function uploaderFreelanceLabels(t: T): UploaderLabels {
     ...uploaderLabels(t),
     title: t("freelance.project.files.uploader.title"),
     submit: t("freelance.project.files.uploader.submit"),
+  };
+}
+
+export function progressLogLabels(t: T): ProgressLogLabels {
+  const errors = {} as ProgressLogLabels["errors"];
+  for (const code of updateErrorCodes) {
+    errors[code] = t(`freelance.updates.errors.${code}` as MessageKey);
+  }
+  return {
+    title: t("freelance.updates.title"),
+    empty: t("freelance.updates.empty"),
+    list: t("freelance.updates.list"),
+    authors: { me: t("freelance.updates.authors.me"), jose: t("freelance.updates.authors.jose") },
+    task: t("freelance.updates.task"),
+    visibility: {
+      internal: t("freelance.updates.visibility.internal"),
+      client: t("freelance.updates.visibility.client"),
+    },
+    toggle: t("freelance.updates.toggle"),
+    toggling: t("freelance.updates.toggling"),
+    delete: t("freelance.updates.delete"),
+    deleteFor: t("freelance.updates.deleteFor"),
+    deleteConfirm: t("freelance.updates.deleteConfirm"),
+    deleting: t("freelance.updates.deleting"),
+    cancel: t("freelance.updates.cancel"),
+    deleted: t("freelance.updates.deleted"),
+    errors,
+  };
+}
+
+export function updateFormLabels(t: T): UpdateFormLabels {
+  const errors = {} as UpdateFormLabels["errors"];
+  for (const code of [...updateErrorCodes, "body", "taskId"] as const) {
+    errors[code] = t(`freelance.updates.form.errors.${code}` as MessageKey);
+  }
+  return {
+    open: t("freelance.updates.form.open"),
+    title: t("freelance.updates.form.title"),
+    close: t("freelance.updates.form.close"),
+    body: t("freelance.updates.form.body"),
+    bodyHint: t("freelance.updates.form.bodyHint"),
+    task: t("freelance.updates.form.task"),
+    noTask: t("freelance.updates.form.noTask"),
+    visible: t("freelance.updates.form.visible"),
+    visibleHint: t("freelance.updates.form.visibleHint"),
+    submit: t("freelance.updates.form.submit"),
+    submitting: t("freelance.updates.form.submitting"),
+    errors,
+  };
+}
+
+export function recentLabels(t: T): RecentUpdatesLabels {
+  return {
+    title: t("freelance.home.recent.title"),
+    empty: t("freelance.home.recent.empty"),
+    task: t("area.home.recent.task"),
+    document: t("area.home.recent.document"),
+    update: {
+      jose: t("freelance.home.recent.update.jose"),
+      team: t("freelance.home.recent.update.team"),
+    },
+    story: {
+      proposed: t("area.home.recent.story.proposed"),
+      in_review: t("area.home.recent.story.in_review"),
+      accepted: t("area.home.recent.story.accepted"),
+      rejected: t("area.home.recent.story.rejected"),
+      in_tasks: t("area.home.recent.story.in_tasks"),
+    },
   };
 }

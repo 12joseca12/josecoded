@@ -4269,6 +4269,20 @@
         "text": "Inténtalo de nuevo en unos segundos.",
         "retry": "Reintentar",
         "retrying": "Reintentando"
+      },
+      "recent": {
+        "title": "Últimos avances",
+        "empty": "Todavía no hay avances.",
+        "update": {
+          "jose": "Jose",
+          "team": "Yo"
+        },
+        "error": {
+          "title": "No hemos podido cargar los avances",
+          "text": "Puedes reintentarlo.",
+          "retry": "Reintentar",
+          "retrying": "Reintentando"
+        }
       }
     },
     "projects": {
@@ -4367,6 +4381,59 @@
       "taskDraft": "Sobre la tarea «{title}»: ",
       "openFromProject": "Hablar con Jose de este proyecto",
       "askAboutTask": "Preguntar a Jose sobre esta tarea"
+    },
+    "updates": {
+      "title": "Avances",
+      "list": "Avances del proyecto",
+      "empty": "Todavía no hay avances. Escribe el primero para que Jose vea cómo va.",
+      "authors": {
+        "me": "Yo",
+        "jose": "Jose"
+      },
+      "task": "Tarea: {title}",
+      "visibility": {
+        "internal": "Solo Jose",
+        "client": "Visible para el cliente"
+      },
+      "toggle": "Visibilidad: {state}. Cambiar",
+      "toggling": "Guardando",
+      "delete": "Borrar",
+      "deleteFor": "Borrar el avance del {date}",
+      "deleteConfirm": "Se borra para siempre.",
+      "deleting": "Borrando",
+      "cancel": "Cancelar",
+      "deleted": "Avance borrado",
+      "errors": {
+        "not_project_team": "Ya no formas parte de este proyecto.",
+        "project_archived": "Este proyecto está cerrado.",
+        "task_project_mismatch": "Esa tarea no es de este proyecto.",
+        "update_not_found": "Ese avance ya no existe.",
+        "forbidden": "No tienes permiso para hacerlo. Entra de nuevo con tu código.",
+        "error": "No hemos podido guardarlo. Inténtalo de nuevo."
+      },
+      "form": {
+        "open": "Nuevo avance",
+        "title": "Nuevo avance",
+        "close": "Cerrar",
+        "body": "¿Qué has hecho?",
+        "bodyHint": "Hasta 2.000 caracteres.",
+        "task": "Tarea relacionada",
+        "noTask": "Ninguna",
+        "visible": "Visible para el cliente",
+        "visibleHint": "Si lo marcas, el cliente lo verá firmado como Equipo. Sin marcar, solo lo ve Jose.",
+        "submit": "Publicar avance",
+        "submitting": "Publicando",
+        "errors": {
+          "body": "Escribe el avance (hasta 2.000 caracteres).",
+          "taskId": "Elige una tarea de la lista.",
+          "not_project_team": "Ya no formas parte de este proyecto.",
+          "project_archived": "Este proyecto está cerrado.",
+          "task_project_mismatch": "Esa tarea no es de este proyecto.",
+          "update_not_found": "Ese avance ya no existe.",
+          "forbidden": "No tienes permiso para hacerlo. Entra de nuevo con tu código.",
+          "error": "No hemos podido guardarlo. Inténtalo de nuevo."
+        }
+      }
     }
   },
   "freelancePage": {

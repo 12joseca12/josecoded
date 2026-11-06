@@ -5,8 +5,10 @@ import { revalidatePath } from "next/cache";
 import { isLocale } from "@/i18n/config";
 import { requireZone } from "@/lib/auth/session";
 import { setMyTaskStatus } from "@/lib/freelance/task-status";
+import { changeVisibility, createUpdate, removeUpdate } from "@/lib/freelance/updates";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { type TaskStatus, type TodoActionResult } from "@/types/area";
+import type { UpdateResult, UpdateVisibility } from "@/types/project-updates";
 
 async function open(locale: string) {
   if (!isLocale(locale)) return null;
@@ -25,5 +27,33 @@ export async function setTaskStatusAction(
   if (result.status === "done" || result.status === "stale") {
     revalidatePath(`/${locale}/freelance`, "layout");
   }
+  return result;
+}
+
+export async function createUpdateAction(locale: string, raw: unknown): Promise<UpdateResult> {
+  const client = await open(locale);
+  if (client === null) return { status: "error", code: "error" };
+  const result = await createUpdate(client, raw);
+  if (result.status === "done") revalidatePath(`/${locale}/freelance`, "layout");
+  return result;
+}
+
+export async function setUpdateVisibilityAction(
+  locale: string,
+  id: string,
+  visibility: UpdateVisibility,
+): Promise<UpdateResult> {
+  const client = await open(locale);
+  if (client === null) return { status: "error", code: "error" };
+  const result = await changeVisibility(client, id, visibility);
+  if (result.status === "done") revalidatePath(`/${locale}/freelance`, "layout");
+  return result;
+}
+
+export async function deleteUpdateAction(locale: string, id: string): Promise<UpdateResult> {
+  const client = await open(locale);
+  if (client === null) return { status: "error", code: "error" };
+  const result = await removeUpdate(client, id);
+  if (result.status === "done") revalidatePath(`/${locale}/freelance`, "layout");
   return result;
 }

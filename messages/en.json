@@ -4269,6 +4269,20 @@
         "text": "Try again in a few seconds.",
         "retry": "Try again",
         "retrying": "Trying again"
+      },
+      "recent": {
+        "title": "Latest progress",
+        "empty": "No progress yet.",
+        "update": {
+          "jose": "Jose",
+          "team": "Me"
+        },
+        "error": {
+          "title": "We could not load the progress",
+          "text": "You can try again.",
+          "retry": "Try again",
+          "retrying": "Trying again"
+        }
       }
     },
     "projects": {
@@ -4367,6 +4381,59 @@
       "taskDraft": "About the task “{title}”: ",
       "openFromProject": "Talk to Jose about this project",
       "askAboutTask": "Ask Jose about this task"
+    },
+    "updates": {
+      "title": "Progress",
+      "list": "Project progress",
+      "empty": "No progress yet. Write the first one so Jose can see how it is going.",
+      "authors": {
+        "me": "Me",
+        "jose": "Jose"
+      },
+      "task": "Task: {title}",
+      "visibility": {
+        "internal": "Jose only",
+        "client": "Visible to the client"
+      },
+      "toggle": "Visibility: {state}. Change",
+      "toggling": "Saving",
+      "delete": "Delete",
+      "deleteFor": "Delete the update of {date}",
+      "deleteConfirm": "This deletes it for good.",
+      "deleting": "Deleting",
+      "cancel": "Cancel",
+      "deleted": "Update deleted",
+      "errors": {
+        "not_project_team": "You are no longer part of this project.",
+        "project_archived": "This project is closed.",
+        "task_project_mismatch": "That task is not in this project.",
+        "update_not_found": "That update no longer exists.",
+        "forbidden": "You are not allowed to do this. Sign in again with your code.",
+        "error": "We could not save it. Try again."
+      },
+      "form": {
+        "open": "New update",
+        "title": "New update",
+        "close": "Close",
+        "body": "What did you do?",
+        "bodyHint": "Up to 2,000 characters.",
+        "task": "Related task",
+        "noTask": "None",
+        "visible": "Visible to the client",
+        "visibleHint": "If checked, the client sees it signed as Team. Unchecked, only Jose sees it.",
+        "submit": "Publish update",
+        "submitting": "Publishing",
+        "errors": {
+          "body": "Write the update (up to 2,000 characters).",
+          "taskId": "Pick a task from the list.",
+          "not_project_team": "You are no longer part of this project.",
+          "project_archived": "This project is closed.",
+          "task_project_mismatch": "That task is not in this project.",
+          "update_not_found": "That update no longer exists.",
+          "forbidden": "You are not allowed to do this. Sign in again with your code.",
+          "error": "We could not save it. Try again."
+        }
+      }
     }
   },
   "freelancePage": {
