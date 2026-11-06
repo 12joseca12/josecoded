@@ -1,0 +1,87 @@
+.state {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--ink);
+  font-size: var(--fs-base);
+}
+
+.stateLabel {
+  font-weight: var(--fw-semibold);
+}
+
+.dot {
+  flex: none;
+  width: 0.875rem;
+  height: 0.875rem;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-xl);
+  background: transparent;
+}
+
+.state[data-on="true"] .dot {
+  background: var(--ink);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.actions:empty {
+  display: none;
+}
+
+.pairing {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.form {
+  display: grid;
+  gap: var(--space-4);
+  max-width: 28rem;
+}
+
+.scan {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-4);
+}
+
+.scanLabel {
+  color: var(--ink);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+}
+
+.qr {
+  width: 12rem;
+  height: 12rem;
+  padding: var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: var(--white);
+}
+
+.secret {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.secretLabel {
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+}
+
+.secretValue {
+  overflow-wrap: anywhere;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: var(--fs-base);
+  letter-spacing: 0.08em;
+  user-select: all;
+}

@@ -2768,7 +2768,9 @@
           "tasks": "Tareas",
           "stories": "Historias",
           "storiesPending": "Historias ({count})",
-          "documents": "Documentos"
+          "documents": "Documentos",
+          "links": "Enlaces",
+          "team": "Equipo"
         },
         "head": {
           "phase": "Fase",
@@ -2994,6 +2996,87 @@
               "error": "Algo ha fallado. Inténtalo otra vez."
             }
           }
+        },
+        "links": {
+          "region": "Enlaces del proyecto",
+          "title": "Enlaces",
+          "intro": "Los enlaces que el cliente ve en su área: la versión de pruebas, el diseño, el repositorio… Máximo 12. Solo se admiten direcciones https://.",
+          "empty": "Todavía no hay enlaces.",
+          "add": "Añadir enlace",
+          "edit": "Editar",
+          "editFor": "Editar {name}",
+          "cancel": "Cancelar",
+          "delete": "Borrar",
+          "deleteFor": "Borrar {name}",
+          "deleteConfirm": "El cliente dejará de verlo.",
+          "deleting": "Borrando",
+          "up": "Subir {name}",
+          "down": "Bajar {name}",
+          "moved": "{name} movido",
+          "deleted": "{name} borrado",
+          "saved": "Enlace guardado",
+          "limit": "Has llegado al máximo de 12 enlaces. Borra alguno para añadir otro.",
+          "openNewTab": "(se abre en una pestaña nueva)",
+          "form": {
+            "name": "Nombre",
+            "url": "Dirección",
+            "urlHint": "Empieza por https://",
+            "usage": "Para qué sirve",
+            "usageHint": "Una frase para el cliente: qué va a encontrar ahí.",
+            "optional": "(opcional)",
+            "submitAdd": "Guardar enlace",
+            "submitEdit": "Guardar cambios",
+            "submitting": "Guardando"
+          },
+          "errors": {
+            "name": "Escribe un nombre de hasta 80 caracteres.",
+            "url": "Escribe una dirección que empiece por https://",
+            "usage": "El texto es demasiado largo (280 caracteres como máximo).",
+            "forbidden": "No tienes permiso para hacerlo. Entra de nuevo con tu código.",
+            "duplicate_url": "Ese enlace ya está en el proyecto.",
+            "invalid_url": "Escribe una dirección que empiece por https://",
+            "link_not_found": "Ese enlace ya no existe.",
+            "project_not_found": "Ese proyecto ya no existe.",
+            "ids_mismatch": "La lista ha cambiado. Recarga la página e inténtalo otra vez.",
+            "unavailable": "Ahora mismo no puedo guardar. Inténtalo en un momento.",
+            "error": "No he podido guardarlo. Inténtalo otra vez."
+          }
+        },
+        "team": {
+          "title": "Equipo",
+          "client": {
+            "title": "Cliente",
+            "none": "Sin cuenta de cliente",
+            "noneHelp": "Invítale por correo: al aceptar, el proyecto aparece en su área.",
+            "assign": "Asignar un cliente que ya tiene cuenta",
+            "assignPlaceholder": "Elige un cliente",
+            "assignSubmit": "Asignar cliente",
+            "assigning": "Asignando",
+            "assigned": "Cliente asignado",
+            "noCandidates": "No hay otros clientes con cuenta.",
+            "room": "Abrir la sala del proyecto en el chat"
+          },
+          "freelance": {
+            "title": "Freelance",
+            "none": "Sin freelance",
+            "field": "Freelance asignado",
+            "submit": "Guardar freelance",
+            "submitting": "Guardando",
+            "saved": "Freelance actualizado"
+          },
+          "invite": {
+            "open": "Invitar al cliente",
+            "title": "Invitar al cliente del proyecto"
+          },
+          "errors": {
+            "forbidden": "No tienes permiso para hacerlo. Entra de nuevo con tu código.",
+            "invalid_client": "Esa persona no es un cliente activo.",
+            "invalid_freelance": "Esa persona no es un freelance activo.",
+            "project_not_found": "Ese proyecto ya no existe.",
+            "project_archived": "El proyecto está archivado. Restáuralo para cambiarlo.",
+            "unavailable": "Ahora mismo no puedo guardar. Inténtalo en un momento.",
+            "error": "No he podido guardarlo. Inténtalo otra vez."
+          }
         }
       }
     },
@@ -3123,7 +3206,8 @@
       "moreTitle": "Más secciones",
       "close": "Cerrar",
       "switch": "Ir a administración",
-      "start": "Empezar"
+      "start": "Empezar",
+      "import": "Importar"
     },
     "overview": {
       "meta": {
@@ -3259,8 +3343,8 @@
         "clear": "Quitar filtros"
       },
       "empty": {
-        "title": "Añade tu primer contacto",
-        "text": "Los contactos son las personas a las que vendes. Crea el primero a mano; la importación llegará más adelante."
+        "title": "Añade o importa tu primer contacto",
+        "text": "Los contactos son las personas a las que vendes. Crea el primero a mano o impórtalos desde un CSV en Importar."
       },
       "emptyFiltered": {
         "title": "Ningún contacto coincide",
@@ -3853,6 +3937,127 @@
         "text": "Inténtalo de nuevo en unos segundos.",
         "retry": "Reintentar",
         "retrying": "Reintentando"
+      }
+    },
+    "import": {
+      "meta": {
+        "title": "Importar contactos"
+      },
+      "title": "Importar contactos",
+      "lead": "Sube un CSV con la plantilla, revisa lo que se va a crear y confirma. El fichero no se guarda: solo se importan las filas válidas.",
+      "loading": "Cargando la importación",
+      "region": "Importar un CSV",
+      "pick": "Elegir fichero CSV",
+      "pickAgain": "Elegir otro fichero",
+      "hint": "Solo .csv, hasta 1 MB y 500 filas, en UTF-8. También puedes soltar el fichero aquí.",
+      "selected": "Fichero: {name}",
+      "checking": "Revisando el fichero",
+      "templateDownload": "Descargar plantilla",
+      "rejections": {
+        "empty": "El fichero está vacío.",
+        "tooLarge": "El fichero pesa más de 1 MB.",
+        "extension": "Solo se admiten ficheros con extensión .csv.",
+        "mime": "El tipo del fichero no es CSV.",
+        "binary": "El contenido no es texto: parece un fichero binario.",
+        "executable": "El fichero no es un CSV: empieza como un ejecutable, un comprimido o un documento.",
+        "encoding": "El fichero no está en UTF-8. Guárdalo como «CSV UTF-8» y vuelve a subirlo.",
+        "tooManyRows": "El fichero tiene más de 500 filas. Divídelo en varios.",
+        "tooManyColumns": "El fichero tiene demasiadas columnas.",
+        "malformed": "El CSV está mal formado: revisa las comillas.",
+        "noHeader": "El fichero no tiene fila de cabecera.",
+        "noFile": "Elige un fichero.",
+        "error": "No se ha podido revisar el fichero. Inténtalo otra vez.",
+        "forbidden": "No tienes permiso para importar contactos."
+      },
+      "mapping": {
+        "legend": "Columnas",
+        "hint": "Indica qué columna del fichero corresponde a cada dato.",
+        "none": "No importar",
+        "required": "(obligatorio)",
+        "missingName": "Elige la columna del nombre para poder importar.",
+        "fields": {
+          "fullName": "Nombre",
+          "email": "Correo",
+          "phone": "Teléfono",
+          "organization": "Empresa",
+          "kind": "Tipo",
+          "notes": "Notas"
+        }
+      },
+      "preview": {
+        "title": "Vista previa",
+        "caption": "Primeras filas del fichero y filas con problemas",
+        "region": "Vista previa de la importación",
+        "line": "Línea",
+        "verdict": "Estado",
+        "summary": "{rows} filas: {valid} nuevas, {duplicates} duplicadas, {invalid} con error.",
+        "truncated": "Se muestran las primeras filas y las que tienen problemas.",
+        "alreadyImported": "Este fichero ya se importó antes. Cambia su contenido para importarlo otra vez.",
+        "neutralized": "Se ha protegido un valor que empezaba como una fórmula.",
+        "verdicts": {
+          "ok": "Nueva",
+          "duplicate": "Duplicada",
+          "invalid": "Error"
+        },
+        "problems": {
+          "columns": "Número de columnas distinto al de la cabecera",
+          "fullName": "Nombre vacío o demasiado largo",
+          "email": "Correo no válido",
+          "phone": "Teléfono no válido",
+          "organization": "Empresa demasiado larga",
+          "kind": "Tipo desconocido",
+          "notes": "Notas demasiado largas",
+          "duplicateInFile": "Correo repetido en el fichero"
+        }
+      },
+      "options": {
+        "legend": "Si el correo ya existe",
+        "skip": "Omitir",
+        "skipHint": "No se toca el contacto que ya tienes.",
+        "update": "Completar",
+        "updateHint": "Rellena teléfono, empresa y notas que estén vacíos; no pisa nada.",
+        "owner": "Cartera de destino"
+      },
+      "confirm": "Importar contactos",
+      "importing": "Importando contactos",
+      "cancel": "Descartar fichero",
+      "result": {
+        "title": "Importación terminada",
+        "created": "{count} creados",
+        "updated": "{count} completados",
+        "skipped": "{count} omitidos",
+        "invalid": "{count} con error",
+        "report": "Descargar informe de errores",
+        "again": "Importar otro fichero",
+        "contacts": "Ver contactos"
+      },
+      "report": {
+        "line": "linea",
+        "problem": "problema",
+        "status": {
+          "duplicate": "duplicada",
+          "invalid": "error"
+        }
+      },
+      "errors": {
+        "missingName": "Elige la columna del nombre.",
+        "alreadyImported": "Este fichero ya se importó. Cambia su contenido para importarlo otra vez.",
+        "failed": "No se han podido importar los contactos. Inténtalo otra vez."
+      },
+      "history": {
+        "title": "Importaciones anteriores",
+        "caption": "Importaciones realizadas",
+        "region": "Historial de importaciones",
+        "empty": "Todavía no has importado ningún fichero.",
+        "error": "No se ha podido cargar el historial.",
+        "columns": {
+          "file": "Fichero",
+          "date": "Fecha",
+          "created": "Creados",
+          "updated": "Completados",
+          "skipped": "Omitidos",
+          "invalid": "Con error"
+        }
       }
     }
   },
@@ -5950,5 +6155,143 @@
       "sizeMb": "{n} MB"
     },
     "sourcesLabel": "Fuentes"
+  },
+  "account": {
+    "meta": {
+      "title": "Mi cuenta"
+    },
+    "title": "Mi cuenta",
+    "lead": "Tus datos, cómo entras y lo que puedes pedirme sobre ellos.",
+    "menuLink": "Mi cuenta",
+    "brandLabel": "josecoded, Mi cuenta: ir al inicio",
+    "brandWord": "Mi cuenta",
+    "navLabel": "Mi cuenta",
+    "userLabel": "Sesión iniciada como {name}",
+    "signOut": "Salir",
+    "signingOut": "Saliendo",
+    "nav": {
+      "account": "Mi cuenta",
+      "back": "Volver a mi zona",
+      "soon": "Próximamente",
+      "more": "Más",
+      "moreTitle": "Más secciones",
+      "close": "Cerrar"
+    },
+    "loading": {
+      "profile": "Cargando tus datos",
+      "access": "Cargando tus sesiones",
+      "security": "Cargando el segundo factor",
+      "telegram": "Cargando Telegram",
+      "privacy": "Cargando tus datos personales"
+    },
+    "error": {
+      "title": "No se ha podido cargar esta parte",
+      "text": "No hemos podido leer tus datos. Inténtalo de nuevo.",
+      "retry": "Reintentar",
+      "retrying": "Reintentando"
+    },
+    "profile": {
+      "title": "Tus datos",
+      "lead": "Lo que ves aquí lo puedes cambiar tú.",
+      "emailLabel": "Correo",
+      "emailHint": "Es el correo con el que entras. Para cambiarlo, escríbeme.",
+      "nameLabel": "Nombre",
+      "localeLabel": "Idioma de los correos y avisos",
+      "localeHint": "Es el idioma en el que te escribo. No cambia el idioma de la web que ves ahora.",
+      "locales": {
+        "es": "Español",
+        "en": "English"
+      },
+      "save": "Guardar cambios",
+      "saving": "Guardando",
+      "saved": "Cambios guardados.",
+      "errors": {
+        "name_required": "Escribe tu nombre.",
+        "name_too_long": "El nombre es demasiado largo. Máximo 200 caracteres.",
+        "locale_invalid": "Elige un idioma de la lista.",
+        "forbidden": "No tienes permiso para hacer esto.",
+        "unavailable": "Esto no está disponible ahora mismo. Inténtalo en un rato.",
+        "error": "No hemos podido guardarlo. Inténtalo de nuevo."
+      }
+    },
+    "access": {
+      "title": "Cómo entras y tus sesiones",
+      "lead": "Entras con un código que te llega por correo, sin contraseña. No puedo enseñarte la lista de dispositivos, pero sí cerrar las sesiones abiertas.",
+      "methodsTitle": "Formas de entrar",
+      "email": "Código por correo",
+      "google": "Google",
+      "googleLinked": "Vinculado a tu cuenta",
+      "googleNotLinked": "No vinculado",
+      "others": "Cerrar las demás sesiones",
+      "othersLoading": "Cerrando",
+      "othersDone": "Hecho. La sesión de este dispositivo sigue abierta.",
+      "everywhere": "Cerrar sesión en todos los dispositivos",
+      "everywhereLoading": "Cerrando",
+      "everywhereConfirm": {
+        "question": "Se cerrará también la sesión de este dispositivo y tendrás que volver a entrar. ¿Seguimos?",
+        "yes": "Sí, cerrar todas",
+        "no": "No"
+      },
+      "error": "No hemos podido cerrar las sesiones. Inténtalo de nuevo."
+    },
+    "security": {
+      "title": "Segundo factor",
+      "lead": "Tu zona pide un código de una app de autenticación además del correo.",
+      "status": "Estado",
+      "statusOn": "Activado. Tienes una app de autenticación vinculada.",
+      "statusOff": "Sin app vinculada. La vincularás la próxima vez que entres a tu zona.",
+      "change": "Cambiar de dispositivo",
+      "starting": "Preparando",
+      "scanLabel": "Escanea este código con la app del dispositivo nuevo",
+      "qrAlt": "Código QR para vincular la app de autenticación",
+      "secretLabel": "Si no puedes escanearlo, introduce esta clave",
+      "codeLabel": "Código de 6 cifras",
+      "codeHint": "El que muestra la app del dispositivo nuevo.",
+      "confirm": "Confirmar el cambio",
+      "confirming": "Confirmando",
+      "cancel": "Cancelar",
+      "done": "Dispositivo cambiado. La app anterior ya no sirve para entrar.",
+      "errors": {
+        "code_invalid": "Introduce los 6 dígitos.",
+        "factor_invalid": "El cambio ha caducado. Empieza de nuevo."
+      },
+      "failed": "No hemos podido hacer el cambio. Inténtalo de nuevo.",
+      "wrongCode": "Ese código no es válido. Comprueba que sea el de la app nueva.",
+      "rateLimited": "Demasiados intentos. Espera un momento y vuelve a probar."
+    },
+    "notifications": {
+      "link": "Elegir qué avisos recibo"
+    },
+    "privacy": {
+      "title": "Tus datos personales",
+      "lead": "Qué guardo y cómo lo trato está en la política de privacidad.",
+      "policy": "Leer la política de privacidad",
+      "exportTitle": "Una copia de tus datos",
+      "exportText": "No hay descarga automática. Si quieres una copia, pídemela por correo.",
+      "contact": "Escribir a {email}",
+      "deletion": {
+        "title": "Borrar mi cuenta",
+        "lead": "Al pedirlo se crea una solicitud que revisaré yo. No se borra nada de forma automática.",
+        "request": "Solicitar el borrado de mi cuenta",
+        "requestLoading": "Enviando",
+        "confirm": {
+          "question": "Se enviará la solicitud de borrado de tu cuenta. Podrás retirarla mientras no se haya atendido. ¿Seguimos?",
+          "yes": "Sí, solicitar el borrado",
+          "no": "No"
+        },
+        "pendingTitle": "Solicitud enviada",
+        "pendingText": "Pediste el borrado de tu cuenta el {date}. Está pendiente de revisión.",
+        "withdraw": "Retirar la solicitud",
+        "withdrawLoading": "Retirando",
+        "done": "Solicitud enviada.",
+        "withdrawn": "Solicitud retirada.",
+        "unavailable": "Todavía no se puede pedir desde aquí. Para solicitar el borrado, escríbeme por correo.",
+        "errors": {
+          "forbidden": "No tienes permiso para hacer esto.",
+          "unavailable": "Esto no está disponible ahora mismo. Inténtalo en un rato.",
+          "error": "No hemos podido enviar la solicitud. Inténtalo de nuevo."
+        }
+      }
+    }
   }
 }

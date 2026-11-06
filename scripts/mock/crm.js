@@ -242,6 +242,14 @@ function filterContacts(contacts, url) {
   for (const column of ["lead_id", "import_id", "archived_at"]) {
     if (params.get(column) === "is.null") rows = rows.filter((contact) => !contact[column]);
   }
+  const emails = params.get("email");
+  if (emails?.startsWith("in.")) {
+    const wanted = emails
+      .slice(4, -1)
+      .split(",")
+      .map((entry) => entry.replaceAll('"', "").toLowerCase());
+    rows = rows.filter((contact) => contact.email && wanted.includes(contact.email.toLowerCase()));
+  }
   const search = params.get("or");
   if (search) rows = rows.filter((contact) => matchesSearch(contact, search));
   rows.sort((a, b) => {

@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { isLocale } from "@/i18n/config";
-import { requireZone } from "@/lib/auth/session";
+import { requireAccount, requireZone } from "@/lib/auth/session";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type {
   PrefActionResult,
@@ -15,13 +15,18 @@ import type {
 
 import { runPrefAction, runTelegramCode, runTelegramUnlink, runTestAction } from "./data";
 
-const notificationZoneSchema = z.enum(["admin", "crm"]);
-const pages = { admin: "/admin/notificaciones", crm: "/crm/ajustes" } as const;
+const notificationZoneSchema = z.enum(["admin", "crm", "account"]);
+const pages = {
+  admin: "/admin/notificaciones",
+  crm: "/crm/ajustes",
+  account: "/cuenta",
+} as const;
 
 async function open(zone: string, locale: string) {
   const parsed = notificationZoneSchema.safeParse(zone);
   if (!parsed.success || !isLocale(locale)) return null;
-  await requireZone(parsed.data, locale);
+  if (parsed.data === "account") await requireAccount(locale);
+  else await requireZone(parsed.data, locale);
   const client = await createSupabaseServerClient();
   if (client === null) return null;
   return { client, path: `/${locale}${pages[parsed.data]}` };

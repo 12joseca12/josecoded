@@ -21,7 +21,7 @@ function msg(path: string): string {
 const chat = (path: string) => msg(`freelance.chat.${path}`);
 const room = (path: string) => msg(`room.${path}`);
 
-const freelanceRoom = "c0000000-0000-4000-8000-000000000005";
+const freelanceRoom = "c0000000-0000-4000-8000-000000000006";
 const joseId = "00000000-0000-4000-8000-0000000000a2";
 const shopId = "70000000-0000-4000-8000-000000000001";
 

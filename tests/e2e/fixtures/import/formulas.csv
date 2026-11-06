@@ -1,0 +1,3 @@
+nombre,email,telefono,empresa,tipo,notas
+"=HYPERLINK(""http://evil.example"",""x"")",fx@example.com,,@empresa,,-10% de descuento
+Normal Nombre,normal@example.com,=1+1,,,

@@ -50,11 +50,27 @@ export function isInvitationPath(locale: string, value: string): boolean {
   return value.startsWith(`/${locale}/`) && invitationPathPattern.test(value);
 }
 
+export function accountPath(locale: string): string {
+  return `/${locale}/cuenta`;
+}
+
+export function isAccountPath(locale: string, value: string): boolean {
+  const path = value.split("?")[0] ?? "";
+  return path === accountPath(locale);
+}
+
+export function decideAccountAccess(state: SessionState): Access {
+  if (state.status === "anonymous") return { kind: "login" };
+  if (state.status === "inactive") return { kind: "not-found" };
+  if (needsSecondFactor(state)) return { kind: "second-factor" };
+  return { kind: "allow" };
+}
+
 export function safeNext(locale: string, value: string | null | undefined): string | null {
   if (!value || value.length > 300) return null;
   if (!value.startsWith(`/${locale}/`)) return null;
   if (value.includes("\\") || value.includes("//") || hasControlCharacter(value)) return null;
-  if (isInvitationPath(locale, value)) return value;
+  if (isInvitationPath(locale, value) || isAccountPath(locale, value)) return value;
   return zoneOfPath(locale, value) === null ? null : value;
 }
 
@@ -82,7 +98,7 @@ export function resolveDestination(
   if (state.status !== "member") return loginPath(locale, next);
   if (needsSecondFactor(state)) return secondFactorPath(locale, next);
   const target = safeNext(locale, next);
-  if (target && isInvitationPath(locale, target)) return target;
+  if (target && (isInvitationPath(locale, target) || isAccountPath(locale, target))) return target;
   const targetZone = target ? zoneOfPath(locale, target) : null;
   if (target && targetZone && canEnterZone(state.role, targetZone)) return target;
   return zonePath(locale, homeZone(state.role));

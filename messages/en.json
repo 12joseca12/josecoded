@@ -2768,7 +2768,9 @@
           "tasks": "Tasks",
           "stories": "Stories",
           "storiesPending": "Stories ({count})",
-          "documents": "Documents"
+          "documents": "Documents",
+          "links": "Links",
+          "team": "Team"
         },
         "head": {
           "phase": "Phase",
@@ -2994,6 +2996,87 @@
               "error": "Something failed. Try again."
             }
           }
+        },
+        "links": {
+          "region": "Project links",
+          "title": "Links",
+          "intro": "The links the client sees in their area: the test version, the design, the repository… Up to 12. Only https:// addresses are accepted.",
+          "empty": "No links yet.",
+          "add": "Add link",
+          "edit": "Edit",
+          "editFor": "Edit {name}",
+          "cancel": "Cancel",
+          "delete": "Delete",
+          "deleteFor": "Delete {name}",
+          "deleteConfirm": "The client will stop seeing it.",
+          "deleting": "Deleting",
+          "up": "Move {name} up",
+          "down": "Move {name} down",
+          "moved": "{name} moved",
+          "deleted": "{name} deleted",
+          "saved": "Link saved",
+          "limit": "You reached the limit of 12 links. Delete one to add another.",
+          "openNewTab": "(opens in a new tab)",
+          "form": {
+            "name": "Name",
+            "url": "Address",
+            "urlHint": "Starts with https://",
+            "usage": "What it is for",
+            "usageHint": "One sentence for the client: what they will find there.",
+            "optional": "(optional)",
+            "submitAdd": "Save link",
+            "submitEdit": "Save changes",
+            "submitting": "Saving"
+          },
+          "errors": {
+            "name": "Write a name of up to 80 characters.",
+            "url": "Write an address that starts with https://",
+            "usage": "The text is too long (280 characters at most).",
+            "forbidden": "You are not allowed to do this. Sign in again with your code.",
+            "duplicate_url": "That link is already in the project.",
+            "invalid_url": "Write an address that starts with https://",
+            "link_not_found": "That link no longer exists.",
+            "project_not_found": "That project no longer exists.",
+            "ids_mismatch": "The list changed. Reload the page and try again.",
+            "unavailable": "I cannot save right now. Try again in a moment.",
+            "error": "I could not save it. Try again."
+          }
+        },
+        "team": {
+          "title": "Team",
+          "client": {
+            "title": "Client",
+            "none": "No client account",
+            "noneHelp": "Invite them by email: once they accept, the project shows in their area.",
+            "assign": "Assign a client who already has an account",
+            "assignPlaceholder": "Pick a client",
+            "assignSubmit": "Assign client",
+            "assigning": "Assigning",
+            "assigned": "Client assigned",
+            "noCandidates": "There are no other clients with an account.",
+            "room": "Open the project room in chat"
+          },
+          "freelance": {
+            "title": "Freelance",
+            "none": "No freelance",
+            "field": "Assigned freelance",
+            "submit": "Save freelance",
+            "submitting": "Saving",
+            "saved": "Freelance updated"
+          },
+          "invite": {
+            "open": "Invite the client",
+            "title": "Invite the project client"
+          },
+          "errors": {
+            "forbidden": "You are not allowed to do this. Sign in again with your code.",
+            "invalid_client": "That person is not an active client.",
+            "invalid_freelance": "That person is not an active freelance.",
+            "project_not_found": "That project no longer exists.",
+            "project_archived": "The project is archived. Restore it to change it.",
+            "unavailable": "I cannot save right now. Try again in a moment.",
+            "error": "I could not save it. Try again."
+          }
         }
       }
     },
@@ -3123,7 +3206,8 @@
       "moreTitle": "More sections",
       "close": "Close",
       "switch": "Go to admin",
-      "start": "Get started"
+      "start": "Get started",
+      "import": "Import"
     },
     "overview": {
       "meta": {
@@ -3259,8 +3343,8 @@
         "clear": "Clear filters"
       },
       "empty": {
-        "title": "Add your first contact",
-        "text": "Contacts are the people you sell to. Create the first one by hand; import will come later."
+        "title": "Add or import your first contact",
+        "text": "Contacts are the people you sell to. Create the first one by hand or import them from a CSV in Import."
       },
       "emptyFiltered": {
         "title": "No contact matches",
@@ -3853,6 +3937,127 @@
         "text": "Try again in a few seconds.",
         "retry": "Try again",
         "retrying": "Trying again"
+      }
+    },
+    "import": {
+      "meta": {
+        "title": "Import contacts"
+      },
+      "title": "Import contacts",
+      "lead": "Upload a CSV that follows the template, review what will be created and confirm. The file is not stored: only valid rows are imported.",
+      "loading": "Loading the import",
+      "region": "Import a CSV",
+      "pick": "Choose CSV file",
+      "pickAgain": "Choose another file",
+      "hint": "Only .csv, up to 1 MB and 500 rows, in UTF-8. You can also drop the file here.",
+      "selected": "File: {name}",
+      "checking": "Checking the file",
+      "templateDownload": "Download template",
+      "rejections": {
+        "empty": "The file is empty.",
+        "tooLarge": "The file is larger than 1 MB.",
+        "extension": "Only files with the .csv extension are accepted.",
+        "mime": "The file type is not CSV.",
+        "binary": "The content is not text: it looks like a binary file.",
+        "executable": "The file is not a CSV: it starts like an executable, an archive or a document.",
+        "encoding": "The file is not UTF-8. Save it as “CSV UTF-8” and upload it again.",
+        "tooManyRows": "The file has more than 500 rows. Split it into several.",
+        "tooManyColumns": "The file has too many columns.",
+        "malformed": "The CSV is malformed: check the quotes.",
+        "noHeader": "The file has no header row.",
+        "noFile": "Choose a file.",
+        "error": "The file could not be checked. Try again.",
+        "forbidden": "You do not have permission to import contacts."
+      },
+      "mapping": {
+        "legend": "Columns",
+        "hint": "Choose which column of the file holds each field.",
+        "none": "Do not import",
+        "required": "(required)",
+        "missingName": "Choose the name column to import.",
+        "fields": {
+          "fullName": "Name",
+          "email": "Email",
+          "phone": "Phone",
+          "organization": "Company",
+          "kind": "Type",
+          "notes": "Notes"
+        }
+      },
+      "preview": {
+        "title": "Preview",
+        "caption": "First rows of the file and rows with issues",
+        "region": "Import preview",
+        "line": "Line",
+        "verdict": "Status",
+        "summary": "{rows} rows: {valid} new, {duplicates} duplicated, {invalid} with errors.",
+        "truncated": "Showing the first rows and the rows with issues.",
+        "alreadyImported": "This file was already imported. Change its content to import it again.",
+        "neutralized": "A value that started like a formula was protected.",
+        "verdicts": {
+          "ok": "New",
+          "duplicate": "Duplicated",
+          "invalid": "Error"
+        },
+        "problems": {
+          "columns": "Column count differs from the header",
+          "fullName": "Name empty or too long",
+          "email": "Invalid email",
+          "phone": "Invalid phone",
+          "organization": "Company too long",
+          "kind": "Unknown type",
+          "notes": "Notes too long",
+          "duplicateInFile": "Email repeated in the file"
+        }
+      },
+      "options": {
+        "legend": "If the email already exists",
+        "skip": "Skip",
+        "skipHint": "The contact you already have is left untouched.",
+        "update": "Fill in",
+        "updateHint": "Fills empty phone, company and notes; overwrites nothing.",
+        "owner": "Destination portfolio"
+      },
+      "confirm": "Import contacts",
+      "importing": "Importing contacts",
+      "cancel": "Discard file",
+      "result": {
+        "title": "Import finished",
+        "created": "{count} created",
+        "updated": "{count} filled in",
+        "skipped": "{count} skipped",
+        "invalid": "{count} with errors",
+        "report": "Download error report",
+        "again": "Import another file",
+        "contacts": "View contacts"
+      },
+      "report": {
+        "line": "line",
+        "problem": "problem",
+        "status": {
+          "duplicate": "duplicated",
+          "invalid": "error"
+        }
+      },
+      "errors": {
+        "missingName": "Choose the name column.",
+        "alreadyImported": "This file was already imported. Change its content to import it again.",
+        "failed": "The contacts could not be imported. Try again."
+      },
+      "history": {
+        "title": "Previous imports",
+        "caption": "Imports made",
+        "region": "Import history",
+        "empty": "You have not imported any file yet.",
+        "error": "The history could not be loaded.",
+        "columns": {
+          "file": "File",
+          "date": "Date",
+          "created": "Created",
+          "updated": "Filled in",
+          "skipped": "Skipped",
+          "invalid": "Errors"
+        }
       }
     }
   },
@@ -5950,5 +6155,143 @@
       "sizeMb": "{n} MB"
     },
     "sourcesLabel": "Sources"
+  },
+  "account": {
+    "meta": {
+      "title": "My account"
+    },
+    "title": "My account",
+    "lead": "Your details, how you sign in and what you can ask me about them.",
+    "menuLink": "My account",
+    "brandLabel": "josecoded, My account: go to the start",
+    "brandWord": "My account",
+    "navLabel": "My account",
+    "userLabel": "Signed in as {name}",
+    "signOut": "Sign out",
+    "signingOut": "Signing out",
+    "nav": {
+      "account": "My account",
+      "back": "Back to my area",
+      "soon": "Coming soon",
+      "more": "More",
+      "moreTitle": "More sections",
+      "close": "Close"
+    },
+    "loading": {
+      "profile": "Loading your details",
+      "access": "Loading your sessions",
+      "security": "Loading the second factor",
+      "telegram": "Loading Telegram",
+      "privacy": "Loading your personal data"
+    },
+    "error": {
+      "title": "This part could not be loaded",
+      "text": "We could not read your data. Try again.",
+      "retry": "Try again",
+      "retrying": "Trying again"
+    },
+    "profile": {
+      "title": "Your details",
+      "lead": "What you see here, you can change yourself.",
+      "emailLabel": "Email",
+      "emailHint": "It is the email you sign in with. To change it, write to me.",
+      "nameLabel": "Name",
+      "localeLabel": "Language of emails and alerts",
+      "localeHint": "It is the language I write to you in. It does not change the language of the site you are viewing.",
+      "locales": {
+        "es": "Español",
+        "en": "English"
+      },
+      "save": "Save changes",
+      "saving": "Saving",
+      "saved": "Changes saved.",
+      "errors": {
+        "name_required": "Enter your name.",
+        "name_too_long": "The name is too long. 200 characters at most.",
+        "locale_invalid": "Choose a language from the list.",
+        "forbidden": "You are not allowed to do this.",
+        "unavailable": "This is not available right now. Try again in a while.",
+        "error": "We could not save it. Try again."
+      }
+    },
+    "access": {
+      "title": "How you sign in and your sessions",
+      "lead": "You sign in with a code sent to your email, no password. I cannot show you a list of devices, but I can close open sessions.",
+      "methodsTitle": "Ways to sign in",
+      "email": "Code by email",
+      "google": "Google",
+      "googleLinked": "Linked to your account",
+      "googleNotLinked": "Not linked",
+      "others": "Close the other sessions",
+      "othersLoading": "Closing",
+      "othersDone": "Done. The session on this device is still open.",
+      "everywhere": "Sign out on every device",
+      "everywhereLoading": "Closing",
+      "everywhereConfirm": {
+        "question": "The session on this device will be closed too and you will need to sign in again. Continue?",
+        "yes": "Yes, close all",
+        "no": "No"
+      },
+      "error": "We could not close the sessions. Try again."
+    },
+    "security": {
+      "title": "Second factor",
+      "lead": "Your area asks for a code from an authenticator app as well as your email.",
+      "status": "Status",
+      "statusOn": "On. You have an authenticator app linked.",
+      "statusOff": "No app linked. You will link one the next time you enter your area.",
+      "change": "Change device",
+      "starting": "Preparing",
+      "scanLabel": "Scan this code with the app on the new device",
+      "qrAlt": "QR code to link the authenticator app",
+      "secretLabel": "If you cannot scan it, enter this key",
+      "codeLabel": "6-digit code",
+      "codeHint": "The one shown by the app on the new device.",
+      "confirm": "Confirm the change",
+      "confirming": "Confirming",
+      "cancel": "Cancel",
+      "done": "Device changed. The previous app no longer works to sign in.",
+      "errors": {
+        "code_invalid": "Enter the 6 digits.",
+        "factor_invalid": "The change has expired. Start again."
+      },
+      "failed": "We could not make the change. Try again.",
+      "wrongCode": "That code is not valid. Check that it comes from the new app.",
+      "rateLimited": "Too many attempts. Wait a moment and try again."
+    },
+    "notifications": {
+      "link": "Choose which alerts I get"
+    },
+    "privacy": {
+      "title": "Your personal data",
+      "lead": "What I keep and how I handle it is in the privacy policy.",
+      "policy": "Read the privacy policy",
+      "exportTitle": "A copy of your data",
+      "exportText": "There is no automatic download. If you want a copy, ask me by email.",
+      "contact": "Write to {email}",
+      "deletion": {
+        "title": "Delete my account",
+        "lead": "Asking creates a request that I will review myself. Nothing is deleted automatically.",
+        "request": "Request the deletion of my account",
+        "requestLoading": "Sending",
+        "confirm": {
+          "question": "The request to delete your account will be sent. You can withdraw it until it has been handled. Continue?",
+          "yes": "Yes, request the deletion",
+          "no": "No"
+        },
+        "pendingTitle": "Request sent",
+        "pendingText": "You asked for your account to be deleted on {date}. It is waiting for review.",
+        "withdraw": "Withdraw the request",
+        "withdrawLoading": "Withdrawing",
+        "done": "Request sent.",
+        "withdrawn": "Request withdrawn.",
+        "unavailable": "It cannot be requested from here yet. To ask for the deletion, write to me by email.",
+        "errors": {
+          "forbidden": "You are not allowed to do this.",
+          "unavailable": "This is not available right now. Try again in a while.",
+          "error": "We could not send the request. Try again."
+        }
+      }
+    }
   }
 }

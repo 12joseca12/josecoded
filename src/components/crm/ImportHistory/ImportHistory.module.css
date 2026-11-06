@@ -1,0 +1,13 @@
+.history {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.empty {
+  color: var(--ink-soft);
+}
+
+.file {
+  overflow-wrap: anywhere;
+}

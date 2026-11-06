@@ -11,8 +11,9 @@ import { SignOutButton } from "./SignOutButton";
 import styles from "./StaffShell.module.css";
 
 interface StaffShellProps {
-  zone: StaffZone;
+  zone: StaffZone | "account";
   homeHref: string;
+  accountHref: string | null;
   userName: string;
   items: StaffNavItem[];
   labels: StaffShellLabels;
@@ -24,6 +25,7 @@ interface StaffShellProps {
 export function StaffShell({
   zone,
   homeHref,
+  accountHref,
   userName,
   items,
   labels,
@@ -34,6 +36,11 @@ export function StaffShell({
   const account = (
     <div className={styles.account}>
       <p className={styles.user}>{labels.userLabel.replace("{name}", userName)}</p>
+      {accountHref ? (
+        <Button href={accountHref} variant="quiet" size="sm">
+          {labels.account}
+        </Button>
+      ) : null}
       {zoneSwitch ? (
         <Button href={zoneSwitch.href} variant="quiet" size="sm">
           {zoneSwitch.label}

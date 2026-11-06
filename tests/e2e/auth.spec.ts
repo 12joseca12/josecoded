@@ -438,7 +438,11 @@ test("the admin bottom bar and the more sheet work at 375", async ({ page }) => 
   await more.click();
   const sheet = page.getByRole("dialog", { name: admin.nav.moreTitle });
   await expect(sheet).toBeVisible();
-  await expect(sheet.getByRole("link")).toHaveCount(adminReady + 1);
+  await expect(sheet.getByRole("link")).toHaveCount(adminReady + 2);
+  await expect(sheet.getByRole("link", { name: "Mi cuenta" })).toHaveAttribute(
+    "href",
+    "/es/cuenta",
+  );
   await expect(sheet.getByText(admin.nav.soon)).toHaveCount(adminSoon);
   await expect(sheet.getByRole("button", { name: admin.signOut })).toBeVisible();
   await expect(sheet.getByRole("link", { name: admin.nav.switch })).toBeVisible();

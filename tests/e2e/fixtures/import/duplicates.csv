@@ -1,0 +1,5 @@
+nombre,email,telefono,empresa,tipo,notas
+Ada Repetida,ada@estudioada.example,600 555 000,Estudio Ada,,Segunda nota
+Rita Repetida,rita@example.com,,,,
+Rita Doble,RITA@example.com,,,,
+Nuevo Sin Correo,,,,,

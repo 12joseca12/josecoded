@@ -4,6 +4,8 @@ import type { UserRole } from "@/types/auth";
 
 import {
   decideAccess,
+  decideAccountAccess,
+  isAccountPath,
   isSessionPath,
   loginPath,
   needsSecondFactor,
@@ -173,5 +175,37 @@ describe("isSessionPath", () => {
     for (const path of ["/es", "/es/contacto", "/es/administrar", "/es/dev/ui", "/auth/callback"]) {
       expect(isSessionPath(path)).toBe(false);
     }
+  });
+});
+
+describe("account access", () => {
+  it("lets every role with an account in, whatever the zone", () => {
+    expect(decideAccountAccess(member("client", "aal1"))).toEqual({ kind: "allow" });
+    expect(decideAccountAccess(member("admin", "aal2"))).toEqual({ kind: "allow" });
+    expect(decideAccountAccess(member("closer", "aal2"))).toEqual({ kind: "allow" });
+    expect(decideAccountAccess(member("freelance", "aal2"))).toEqual({ kind: "allow" });
+  });
+
+  it("still asks staff for the second factor, and anonymous for a login", () => {
+    expect(decideAccountAccess(member("closer", "aal1"))).toEqual({ kind: "second-factor" });
+    expect(decideAccountAccess({ status: "anonymous" })).toEqual({ kind: "login" });
+    expect(decideAccountAccess({ status: "inactive" })).toEqual({ kind: "not-found" });
+  });
+
+  it("accepts the account page as a next target and nothing that only looks like it", () => {
+    expect(isAccountPath("es", "/es/cuenta")).toBe(true);
+    expect(isAccountPath("es", "/es/cuenta?x=1")).toBe(true);
+    expect(isAccountPath("es", "/es/cuenta/otra")).toBe(false);
+    expect(isAccountPath("es", "/en/cuenta")).toBe(false);
+    expect(safeNext("es", "/es/cuenta")).toBe("/es/cuenta");
+    expect(safeNext("es", "/es/cuentas")).toBeNull();
+    expect(loginPath("es", "/es/cuenta")).toBe("/es/entrar?next=%2Fes%2Fcuenta");
+  });
+
+  it("sends a session to the account page when it asked for it", () => {
+    expect(resolveDestination(member("client", "aal1"), "es", "/es/cuenta")).toBe("/es/cuenta");
+    expect(resolveDestination(member("closer", "aal1"), "es", "/es/cuenta")).toBe(
+      "/es/entrar/totp?next=%2Fes%2Fcuenta",
+    );
   });
 });
