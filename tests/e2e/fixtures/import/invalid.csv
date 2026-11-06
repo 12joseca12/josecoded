@@ -1,0 +1,5 @@
+nombre,email,telefono,empresa,tipo,notas
+,sin-nombre@example.com,,,,
+Correo Malo,no-es-correo,,,,
+Tipo Raro,tipo@example.com,,,alien,
+Buen Contacto,bueno@example.com,,,,

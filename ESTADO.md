@@ -12,6 +12,8 @@ Arquitectura cerrada del todo (2026-11-02, `docs/arquitectura/decisiones.md`): J
 
 **2026-11-04 (`public/a-medida`):** «Desarrollo a medida» en `/servicios/a-medida` (308 desde `/servicios/packs`): web en tres niveles (Presencia, Negocio, Plataforma) y app en dos (Primera versión, Producto), doce extras, garantía de 30 días y mantenimiento S/M/L, recomendador por reglas (`recommender.ts`, estado en `?q=`) con Nexo guionizado (`NexoGuide`) y resumen de la selección en el formulario de contacto. Pendiente: pasar por `redactor` los textos de `offersPage.*` y `nexoGuide.*`; `leads.via` sigue guardando `pack` hasta la migración 2.28 (con OK de Jose).
 
+**2026-11-06 (`crm/import`):** K5 `/crm/importar` con CSV de plantilla fija: validación en capas (extensión, MIME, tamaño, firmas de ejecutables, UTF-8 sin NUL, parseo estricto, zod por fila, fórmulas neutralizadas con apóstrofo), vista previa con mapeo de columnas, duplicados por correo (omitir o completar), RPC `import_contacts` en `20261106130000_contacts_import.sql` (**sin aplicar**; tabla `imports`) e informe de errores generado en el navegador. Fuera: cola de conflictos entre dueños (`import_conflicts`, admin).
+
 ## Siguiente paso
 
 1. Jose responde 5.13 (sala de cliente por proyecto), 5.15 (Nexo solo al mencionarlo) y 7.8 (closers reclaman de la bandeja común); las tres tienen recomendación y no bloquean el esquema.

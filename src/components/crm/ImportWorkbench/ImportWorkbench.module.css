@@ -1,0 +1,22 @@
+.workbench {
+  display: grid;
+  gap: var(--space-5);
+  min-width: 0;
+}
+
+.pickRow {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: start;
+}
+
+.file {
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+  overflow-wrap: anywhere;
+}
+
+.problem {
+  color: var(--error);
+  font-weight: var(--fw-medium);
+}
