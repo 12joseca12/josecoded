@@ -1,0 +1,74 @@
+.composer {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.label {
+  color: var(--ink);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+}
+
+.row {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-3);
+}
+
+.input {
+  flex: 1;
+  min-inline-size: 0;
+  min-block-size: 3.5rem;
+  max-block-size: 10rem;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-m);
+  background: var(--paper);
+  color: var(--ink);
+  field-sizing: content;
+  font-family: inherit;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  resize: none;
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.input:focus-visible {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 var(--ring) var(--ring-coral);
+  outline-offset: 0;
+}
+
+.input[aria-invalid="true"] {
+  border-color: var(--error);
+}
+
+.help {
+  color: var(--ink-soft);
+  font-size: var(--fs-s);
+  text-align: end;
+}
+
+.error {
+  color: var(--error);
+  font-size: var(--fs-m);
+  font-weight: var(--fw-medium);
+}
+
+.notice {
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: var(--panel);
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+}
+
+@media (width < 30rem) {
+  .row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

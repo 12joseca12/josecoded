@@ -128,7 +128,7 @@ route("POST", "/__auth/system-mode", async ({ request, response, url }) => {
   return send(response, 200, { ok: true });
 });
 
-route("GET", "/rest/v1/site_settings", ({ request, response }) => {
+route("GET", "/rest/v1/site_settings", ({ request, response, url }) => {
   const who = admin(request);
   if (who.denied === "unauthenticated") return deny(response, who);
   const { auth } = who.session;
@@ -142,7 +142,8 @@ route("GET", "/rest/v1/site_settings", ({ request, response }) => {
     value,
     updated_at: system.stamps[key] ?? stamp,
   }));
-  return send(response, 200, rows);
+  const wanted = /^eq\.(.+)$/.exec(url.searchParams.get("key") ?? "")?.[1];
+  return send(response, 200, wanted ? rows.filter((row) => row.key === wanted) : rows);
 });
 
 route("POST", "/rest/v1/rpc/omen_status", ({ request, response }) => {

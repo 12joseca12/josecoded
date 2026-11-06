@@ -3,14 +3,18 @@ import "./auth.js";
 import "./catalog.js";
 import "./profiles.js";
 import "./leads.js";
+import "./inbox.js";
 import "./users.js";
 import "./invitations.js";
 import "./crm.js";
+import "./money.js";
+import "./crm-counters.js";
 import "./prices.js";
 import "./system.js";
 import "./notifications.js";
 import "./overview.js";
 import "./area.js";
+import "./chat-rooms.js";
 
 import { createServer } from "node:http";
 

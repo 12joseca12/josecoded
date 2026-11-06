@@ -76,6 +76,31 @@ alter default privileges in schema public grant all on tables to anon, authentic
 alter default privileges in schema public grant all on sequences to anon, authenticated, service_role;
 alter default privileges in schema public grant all on functions to anon, authenticated, service_role;
 
+create schema realtime;
+
+create table realtime.messages (
+  id uuid primary key default gen_random_uuid(),
+  topic text not null,
+  extension text not null default 'broadcast',
+  inserted_at timestamptz not null default now()
+);
+
+alter table realtime.messages enable row level security;
+
+create function realtime.topic()
+returns text
+language sql
+stable
+as $$
+  select nullif(current_setting('realtime.topic', true), '')
+$$;
+
+grant usage on schema realtime to authenticated, service_role;
+grant select, insert on realtime.messages to authenticated;
+grant execute on function realtime.topic() to authenticated, service_role;
+
+create publication supabase_realtime;
+
 create schema storage;
 
 create table storage.buckets (

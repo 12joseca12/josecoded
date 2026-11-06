@@ -344,6 +344,15 @@
         "happy": "Contento",
         "sad": "Triste"
       }
+    },
+    "room": {
+      "title": "Kit de sala",
+      "intro": "Sala de prueba con mensajes de ejemplo. Nada de esto se guarda.",
+      "incoming": "Simular mensaje entrante",
+      "incomingBody": "Mensaje simulado número {n}",
+      "ownName": "Tú (prueba)",
+      "otherName": "Cleo (prueba)",
+      "switchSection": "Interruptor de Nexo y permiso"
     }
   },
   "nav": {
@@ -1995,6 +2004,514 @@
         "update": "Cambios",
         "delete": "Bajas"
       }
+    },
+    "payments": {
+      "meta": {
+        "title": "Cobros"
+      },
+      "title": "Cobros",
+      "lead": "Hitos de cobro, proformas y facturas de las oportunidades ganadas. La comisión se devenga con cada cobro que registras.",
+      "loading": "Cargando cobros",
+      "tabsLabel": "Filtrar cobros",
+      "tabs": {
+        "pending": "Pendientes",
+        "overdue": "Vencidos",
+        "paid": "Cobrados",
+        "proformas": "Proformas",
+        "invoices": "Facturas"
+      },
+      "toolbar": {
+        "schedule": "Crear calendario"
+      },
+      "empty": {
+        "title": "Nada que cobrar todavía",
+        "text": "Cuando una oportunidad ganada tenga su calendario de cobros, sus hitos aparecerán aquí.",
+        "tabTitle": "Sin resultados en esta pestaña",
+        "tabText": "No hay nada que mostrar con este filtro."
+      },
+      "error": {
+        "title": "No se han podido cargar los cobros",
+        "text": "Inténtalo otra vez en unos segundos.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "table": {
+        "caption": "Hitos de cobro",
+        "region": "Tabla de hitos de cobro, se desplaza en horizontal",
+        "columns": {
+          "contact": "Contacto",
+          "label": "Hito",
+          "amount": "Importe",
+          "paid": "Cobrado",
+          "due": "Vence",
+          "status": "Estado",
+          "actions": "Acciones"
+        },
+        "paidOf": "{paid} de {total}",
+        "noDue": "Sin fecha",
+        "overdue": "Vencido",
+        "statuses": {
+          "scheduled": "Programado",
+          "proforma_sent": "Proforma emitida",
+          "invoiced": "Facturado",
+          "paid": "Cobrado",
+          "cancelled": "Cancelado"
+        },
+        "kinds": {
+          "milestone": "Hito",
+          "recurring": "Mensualidad"
+        }
+      },
+      "actions": {
+        "collect": "Cobrar",
+        "collectAria": "Cobrar {label} de {name}",
+        "proforma": "Proforma",
+        "proformaAria": "Emitir proforma de {label} de {name}",
+        "invoice": "Factura",
+        "invoiceAria": "Registrar la factura de {label} de {name}",
+        "cancel": "Cancelar",
+        "cancelAria": "Cancelar el hito {label} de {name}"
+      },
+      "documents": {
+        "caption": "Proformas y facturas",
+        "region": "Tabla de documentos, se desplaza en horizontal",
+        "columns": {
+          "contact": "Contacto",
+          "number": "Número",
+          "date": "Fecha",
+          "net": "Base",
+          "vat": "IVA",
+          "gross": "Total",
+          "status": "Estado",
+          "actions": "Acciones"
+        },
+        "kinds": {
+          "proforma": "Proforma, no es factura",
+          "invoice": "Factura"
+        },
+        "statuses": {
+          "draft": "Borrador",
+          "sent": "Emitida",
+          "paid": "Cobrada",
+          "void": "Anulada"
+        },
+        "pdf": "Abrir PDF",
+        "pdfAria": "Abrir PDF de la factura {number}",
+        "print": "Ver e imprimir",
+        "printAria": "Ver e imprimir la proforma {number}",
+        "void": "Anular",
+        "voidAria": "Anular el documento {number}",
+        "empty": "Todavía no hay documentos de este tipo."
+      },
+      "record": {
+        "open": "Registrar cobro",
+        "title": "Registrar cobro",
+        "close": "Cerrar",
+        "deal": "Oportunidad",
+        "dealPlaceholder": "Elige una oportunidad ganada",
+        "schedule": "Hito",
+        "noSchedule": "Sin hito",
+        "kind": "Tipo",
+        "nature": "Naturaleza",
+        "amount": "Importe neto (sin IVA)",
+        "amountHint": "Lo que has cobrado sin contar el IVA. La comisión se calcula sobre este importe.",
+        "date": "Fecha del cobro",
+        "method": "Método",
+        "reference": "Referencia",
+        "invoice": "Factura asociada",
+        "noInvoice": "Sin factura",
+        "optional": "(opcional)",
+        "kinds": {
+          "payment": "Cobro",
+          "refund": "Devolución"
+        },
+        "natures": {
+          "project": "Proyecto",
+          "recurring": "Recurrente"
+        },
+        "methods": {
+          "transfer": "Transferencia",
+          "card": "Tarjeta",
+          "stripe": "Stripe",
+          "other": "Otro"
+        },
+        "submit": "Registrar cobro",
+        "saving": "Registrando",
+        "done": "Cobro registrado. La comisión se ha devengado.",
+        "errors": {
+          "deal": "Elige una oportunidad ganada.",
+          "amount": "Escribe un importe mayor que cero, con dos decimales como máximo.",
+          "date": "Elige la fecha del cobro.",
+          "future_date": "La fecha del cobro no puede ser futura.",
+          "payment_exceeds_schedule": "El importe supera lo que falta por cobrar de este hito.",
+          "payment_exceeds_deal": "El importe supera el total ganado de la oportunidad.",
+          "refund_exceeds_paid": "La devolución supera lo que se había cobrado.",
+          "no_recurring": "Esta oportunidad no tiene cobro recurrente.",
+          "nature_mismatch": "La naturaleza no coincide con la del hito.",
+          "schedule_cancelled": "El hito está cancelado.",
+          "schedule_mismatch": "El hito no pertenece a esta oportunidad.",
+          "invoice_mismatch": "La factura no pertenece a esta oportunidad.",
+          "invoice_void": "La factura está anulada.",
+          "deal_not_won": "La oportunidad todavía no está ganada.",
+          "invalid_payment": "Revisa los datos del cobro.",
+          "forbidden": "Solo el administrador puede registrar cobros.",
+          "error": "No se ha podido registrar el cobro. Inténtalo otra vez."
+        }
+      },
+      "scheduleSheet": {
+        "open": "Crear calendario",
+        "title": "Calendario de cobros",
+        "close": "Cerrar",
+        "deal": "Oportunidad",
+        "dealPlaceholder": "Elige una oportunidad ganada",
+        "won": "Importe ganado: {amount}",
+        "templates": "Plantillas",
+        "template442": "40 / 40 / 20",
+        "templateSingle": "Pago único",
+        "items": "Hitos",
+        "label": "Nombre",
+        "kind": "Tipo",
+        "kinds": {
+          "milestone": "Hito",
+          "recurring": "Mensualidad"
+        },
+        "percent": "%",
+        "amount": "Importe",
+        "due": "Vence",
+        "add": "Añadir hito",
+        "remove": "Quitar",
+        "removeAria": "Quitar el hito {position}",
+        "sum": "Suma de hitos: {sum} de {total}",
+        "sumOk": "La suma coincide con el importe ganado.",
+        "defaults": {
+          "first": "Anticipo",
+          "second": "Entrega intermedia",
+          "last": "Entrega final",
+          "single": "Pago único",
+          "next": "Hito"
+        },
+        "replaceNote": "Sustituye los hitos que aún no tienen cobros ni documentos.",
+        "submit": "Guardar calendario",
+        "saving": "Guardando",
+        "done": "Calendario guardado",
+        "errors": {
+          "deal": "Elige una oportunidad ganada.",
+          "items": "Revisa los hitos: nombre, importe mayor que cero y fecha válida.",
+          "schedule_total_mismatch": "Los hitos tienen que sumar exactamente el importe ganado.",
+          "invalid_schedule": "Revisa los hitos: nombre, importe mayor que cero y fecha válida.",
+          "deal_not_won": "La oportunidad todavía no está ganada.",
+          "forbidden": "Solo el administrador puede crear calendarios.",
+          "error": "No se ha podido guardar el calendario. Inténtalo otra vez."
+        }
+      },
+      "proformaSheet": {
+        "title": "Emitir proforma",
+        "close": "Cerrar",
+        "text": "Se numera PF-AAAA-NNN. Una proforma no es una factura y no tiene valor fiscal.",
+        "vat": "IVA (%)",
+        "vatHint": "Se rellena con el ajuste de facturación. Pon 0 mientras no haya alta de autónomo.",
+        "submit": "Emitir proforma",
+        "saving": "Emitiendo",
+        "done": "Proforma {number} emitida",
+        "view": "Ver e imprimir",
+        "errors": {
+          "vat": "Escribe un IVA entre 0 y 100.",
+          "proforma_already_issued": "Este hito ya tiene una proforma.",
+          "schedule_not_issuable": "Este hito ya no admite proforma.",
+          "schedule_not_found": "No encontramos el hito.",
+          "forbidden": "Solo el administrador puede emitir proformas.",
+          "error": "No se ha podido emitir la proforma. Inténtalo otra vez."
+        }
+      },
+      "invoiceSheet": {
+        "title": "Registrar factura",
+        "close": "Cerrar",
+        "text": "Las facturas las emites fuera del CRM. Aquí solo se registran: escribe el número que les diste.",
+        "number": "Número de factura",
+        "date": "Fecha de emisión",
+        "net": "Base imponible",
+        "vat": "IVA (%)",
+        "file": "PDF de la factura",
+        "fileHint": "PDF de hasta 10 MB.",
+        "optional": "(opcional)",
+        "submit": "Registrar factura",
+        "saving": "Registrando",
+        "done": "Factura registrada",
+        "errors": {
+          "number": "Escribe el número de la factura.",
+          "date": "Elige la fecha de emisión.",
+          "net": "Escribe una base mayor que cero, con dos decimales como máximo.",
+          "vat": "Escribe un IVA entre 0 y 100.",
+          "fileType": "El archivo tiene que ser un PDF.",
+          "fileSize": "El PDF pesa más de 10 MB.",
+          "upload": "No se ha podido subir el PDF. Inténtalo otra vez.",
+          "invoice_number_reserved": "Los números que empiezan por PF- son de proformas.",
+          "invoice_number_taken": "Ya hay una factura con ese número.",
+          "invalid_invoice": "Revisa los datos de la factura.",
+          "schedule_mismatch": "El hito no pertenece a esta oportunidad.",
+          "schedule_cancelled": "El hito está cancelado.",
+          "forbidden": "Solo el administrador puede registrar facturas.",
+          "error": "No se ha podido registrar la factura. Inténtalo otra vez."
+        }
+      },
+      "confirm": {
+        "cancelTitle": "Cancelar hito",
+        "cancelText": "El hito deja de contar y su proforma, si la tiene, se anula. No se puede cancelar un hito con cobros.",
+        "cancelSubmit": "Cancelar hito",
+        "cancelDone": "Hito cancelado",
+        "voidTitle": "Anular documento",
+        "voidText": "El documento queda anulado y el hito vuelve a estar pendiente. No se puede anular un documento con cobros.",
+        "voidSubmit": "Anular documento",
+        "voidDone": "Documento anulado",
+        "saving": "Guardando",
+        "close": "Cerrar",
+        "errors": {
+          "schedule_has_payments": "El hito tiene cobros registrados: no se puede cancelar.",
+          "schedule_has_invoice": "El hito tiene una factura: anúlala antes.",
+          "invoice_has_payments": "El documento tiene cobros asociados: no se puede anular.",
+          "invoice_not_voidable": "Este documento ya no se puede anular.",
+          "forbidden": "Solo el administrador puede hacerlo.",
+          "error": "No se ha podido completar la acción. Inténtalo otra vez."
+        }
+      }
+    },
+    "proformaPrint": {
+      "meta": {
+        "title": "Proforma"
+      },
+      "back": "Volver a cobros",
+      "print": "Imprimir o guardar como PDF",
+      "printHint": "En el diálogo de impresión elige «Guardar como PDF».",
+      "heading": "Proforma",
+      "notInvoice": "Este documento no es una factura y no tiene valor fiscal. La factura se emite aparte, cuando corresponda.",
+      "void": "Proforma anulada: no tiene ningún efecto.",
+      "number": "Número",
+      "issuedAt": "Fecha de emisión",
+      "dueAt": "Vencimiento",
+      "noDue": "A convenir",
+      "issuer": {
+        "title": "Emisor",
+        "name": "José Carlos Sánchez García",
+        "taxId": "NIF 06011766A",
+        "location": "Madrid (España)",
+        "email": "hola@josecoded.com"
+      },
+      "client": {
+        "title": "Cliente"
+      },
+      "concept": {
+        "title": "Concepto",
+        "deal": "Proyecto"
+      },
+      "totals": {
+        "net": "Base imponible",
+        "vat": "IVA ({rate})",
+        "gross": "Total"
+      },
+      "footer": "Importes en euros. Proforma {number}.",
+      "error": {
+        "title": "No se ha podido cargar la proforma",
+        "text": "Inténtalo otra vez en unos segundos.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "loading": "Cargando la proforma"
+    },
+    "payouts": {
+      "meta": {
+        "title": "Liquidaciones"
+      },
+      "title": "Liquidaciones",
+      "lead": "Agrupa las comisiones aprobadas por beneficiario y periodo. El pago se registra aquí; no se ejecuta desde aquí.",
+      "loading": "Cargando liquidaciones",
+      "tabsLabel": "Filtrar liquidaciones",
+      "tabs": {
+        "all": "Todas",
+        "draft": "Borrador",
+        "issued": "Emitidas",
+        "paid": "Pagadas"
+      },
+      "error": {
+        "title": "No se han podido cargar las liquidaciones",
+        "text": "Inténtalo otra vez en unos segundos.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "empty": {
+        "title": "Sin liquidaciones",
+        "text": "Cuando haya comisiones aprobadas podrás agruparlas en una liquidación.",
+        "tabTitle": "Sin liquidaciones con este estado",
+        "tabText": "No hay nada que mostrar con este filtro."
+      },
+      "list": {
+        "caption": "Liquidaciones",
+        "region": "Tabla de liquidaciones, se desplaza en horizontal",
+        "columns": {
+          "beneficiary": "Beneficiario",
+          "period": "Periodo",
+          "cadence": "Cadencia",
+          "total": "Total",
+          "withholding": "Retención",
+          "net": "Neto a pagar",
+          "status": "Estado",
+          "reference": "Referencia",
+          "actions": "Acciones"
+        },
+        "open": "Abrir",
+        "openAria": "Abrir la liquidación de {name} del {start} al {end}",
+        "none": "—",
+        "range": "{start} – {end}"
+      },
+      "cadences": {
+        "per_payment": "Por cobro",
+        "weekly": "Semanal",
+        "biweekly": "Quincenal"
+      },
+      "statuses": {
+        "draft": "Borrador",
+        "issued": "Emitida",
+        "paid": "Pagada"
+      },
+      "builder": {
+        "open": "Crear liquidación",
+        "title": "Crear liquidación",
+        "close": "Cerrar",
+        "beneficiary": "Beneficiario",
+        "placeholder": "Elige un closer",
+        "start": "Desde",
+        "end": "Hasta",
+        "suggested": "Periodo sugerido por su cadencia ({cadence}). Puedes cambiarlo.",
+        "withholding": "Retención (%)",
+        "withholdingHint": "0 si no se aplica retención.",
+        "note": "Nota del extracto",
+        "optional": "(opcional)",
+        "previewTitle": "Líneas aprobadas del periodo",
+        "previewCount": "{count} líneas",
+        "previewTotal": "Total: {amount}",
+        "previewEmpty": "No hay líneas aprobadas sin liquidar en este periodo.",
+        "previewLoading": "Calculando",
+        "submit": "Crear borrador",
+        "saving": "Creando",
+        "done": "Borrador de liquidación creado",
+        "errors": {
+          "beneficiary": "Elige un closer.",
+          "period": "Elige un periodo válido de hasta un año.",
+          "withholding": "Escribe una retención entre 0 y 100.",
+          "invalid_beneficiary": "Solo los closers tienen liquidaciones.",
+          "invalid_period": "Elige un periodo válido de hasta un año.",
+          "invalid_withholding": "Escribe una retención entre 0 y 100.",
+          "invalid_note": "La nota es demasiado larga.",
+          "no_lines_in_period": "No hay comisiones aprobadas sin liquidar en este periodo.",
+          "negative_total": "Las devoluciones superan las comisiones del periodo: amplía el periodo.",
+          "forbidden": "Solo el administrador puede crear liquidaciones.",
+          "error": "No se ha podido crear la liquidación. Inténtalo otra vez."
+        }
+      },
+      "detail": {
+        "back": "Volver a liquidaciones",
+        "heading": "Liquidación de {name}",
+        "summary": "Resumen",
+        "period": "Periodo",
+        "cadence": "Cadencia",
+        "total": "Total",
+        "withholding": "Retención",
+        "net": "Neto a pagar",
+        "status": "Estado",
+        "issuedAt": "Emitida el",
+        "paidAt": "Pagada el",
+        "reference": "Referencia",
+        "note": "Nota",
+        "notFound": "Esta liquidación no existe.",
+        "linesTitle": "Líneas incluidas",
+        "linesEmpty": "Esta liquidación no tiene líneas.",
+        "linesColumns": {
+          "date": "Cobro",
+          "contact": "Contacto",
+          "nature": "Naturaleza",
+          "base": "Base neta",
+          "rate": "Tasa",
+          "amount": "Comisión"
+        },
+        "linesCaption": "Líneas de la liquidación",
+        "linesRegion": "Tabla de líneas de la liquidación, se desplaza en horizontal",
+        "loading": "Cargando la liquidación"
+      },
+      "actions": {
+        "title": "Acciones",
+        "issue": "Emitir liquidación",
+        "issueSaving": "Emitiendo",
+        "issueDone": "Liquidación emitida",
+        "markPaid": "Marcar como pagada",
+        "deleteDraft": "Eliminar borrador",
+        "errors": {
+          "invalid_transition": "La liquidación ya no admite este cambio. Recarga la página.",
+          "payout_not_draft": "Solo se pueden eliminar borradores.",
+          "payout_not_found": "No encontramos la liquidación.",
+          "forbidden": "Solo el administrador puede hacerlo.",
+          "error": "No se ha podido completar la acción. Inténtalo otra vez."
+        }
+      },
+      "pay": {
+        "title": "Marcar como pagada",
+        "close": "Cerrar",
+        "text": "Vas a registrar que ya has pagado {amount} a {name}. Esto solo deja constancia: no ejecuta ningún pago.",
+        "date": "Fecha del pago",
+        "reference": "Referencia del pago",
+        "submit": "Registrar pago",
+        "saving": "Registrando",
+        "done": "Liquidación marcada como pagada",
+        "errors": {
+          "date": "Elige la fecha del pago.",
+          "reference": "Escribe la referencia del pago.",
+          "paid_at_required": "Elige la fecha del pago.",
+          "reference_required": "Escribe la referencia del pago.",
+          "future_date": "La fecha del pago no puede ser futura.",
+          "invalid_transition": "La liquidación ya no admite este cambio. Recarga la página.",
+          "payout_not_found": "No encontramos la liquidación.",
+          "forbidden": "Solo el administrador puede hacerlo.",
+          "error": "No se ha podido registrar el pago. Inténtalo otra vez."
+        }
+      },
+      "deleteConfirm": {
+        "title": "Eliminar borrador",
+        "text": "El borrador se elimina y sus líneas vuelven a estar disponibles para otra liquidación.",
+        "submit": "Eliminar borrador",
+        "done": "Borrador eliminado",
+        "saving": "Eliminando",
+        "close": "Cerrar"
+      },
+      "invoice": {
+        "title": "Factura del closer",
+        "none": "Todavía no hay factura del closer.",
+        "open": "Abrir factura del closer",
+        "upload": "Subir factura del closer",
+        "file": "PDF de la factura",
+        "hint": "PDF de hasta 10 MB.",
+        "submit": "Subir factura",
+        "saving": "Subiendo",
+        "done": "Factura subida",
+        "errors": {
+          "file": "Elige un PDF.",
+          "fileType": "El archivo tiene que ser un PDF.",
+          "fileSize": "El PDF pesa más de 10 MB.",
+          "upload": "No se ha podido subir el PDF. Inténtalo otra vez.",
+          "invalid_path": "No se ha podido guardar la factura.",
+          "payout_not_found": "No encontramos la liquidación.",
+          "forbidden": "Solo el administrador puede hacerlo.",
+          "error": "No se ha podido subir la factura. Inténtalo otra vez."
+        }
+      },
+      "statement": {
+        "print": "Imprimir extracto",
+        "printHint": "En el diálogo de impresión elige «Guardar como PDF».",
+        "title": "Extracto de comisiones",
+        "issuer": "José Carlos Sánchez García · NIF 06011766A · Madrid (España)",
+        "beneficiary": "Beneficiario",
+        "period": "Periodo",
+        "notPayment": "Este extracto resume comisiones. No es una factura.",
+        "footer": "Importes en euros.",
+        "range": "{start} – {end}"
+      }
     }
   },
   "crm": {
@@ -2015,16 +2532,68 @@
       "more": "Más",
       "moreTitle": "Más secciones",
       "close": "Cerrar",
-      "switch": "Ir a administración"
+      "switch": "Ir a administración",
+      "start": "Empezar"
     },
     "overview": {
       "meta": {
         "title": "Resumen"
       },
       "title": "Resumen",
-      "lead": "Lo que tienes que hacer hoy.",
+      "lead": "Lo que tienes que hacer hoy y cómo va tu cartera.",
       "emptyTitle": "Todavía no hay nada que mostrar",
-      "emptyText": "El resumen de tu cartera llega con el CRM. Mientras tanto, esta sección está vacía."
+      "emptyText": "El resumen de tu cartera llega con el CRM. Mientras tanto, esta sección está vacía.",
+      "loading": "Cargando el resumen",
+      "today": {
+        "title": "Hoy",
+        "viewOverdue": "Ver pasos vencidos",
+        "viewLeads": "Ver interesados"
+      },
+      "cells": {
+        "unknown": "Sin datos",
+        "inbox": "Interesados nuevos",
+        "overdue": "Pasos vencidos",
+        "dueToday": "Pasos de hoy",
+        "stages": {
+          "new": "Nuevas",
+          "contacted": "Contactadas",
+          "meeting": "En reunión",
+          "proposal": "Con propuesta"
+        },
+        "unavailable": {
+          "title": "Los contadores todavía no están disponibles",
+          "text": "La base de datos aún no los ofrece. Tus próximos pasos sí funcionan."
+        },
+        "error": {
+          "title": "No se han podido cargar los contadores",
+          "text": "Ha fallado la consulta. Inténtalo otra vez.",
+          "retry": "Reintentar",
+          "retrying": "Reintentando"
+        }
+      },
+      "pipeline": {
+        "title": "Oportunidades abiertas"
+      },
+      "due": {
+        "title": "Tus próximos pasos",
+        "loading": "Cargando tus próximos pasos",
+        "listLabel": "Pasos pendientes hasta hoy",
+        "noAction": "Sin descripción",
+        "overdue": "vencido",
+        "all": "Ver todos los contactos",
+        "empty": {
+          "title": "Estás al día",
+          "text": "No tienes pasos vencidos ni para hoy.",
+          "next": "Tu siguiente paso: {action}, el {date}.",
+          "nextNoAction": "Tu siguiente paso es el {date}."
+        },
+        "error": {
+          "title": "No se han podido cargar tus pasos",
+          "text": "Ha fallado la consulta. Inténtalo otra vez.",
+          "retry": "Reintentar",
+          "retrying": "Reintentando"
+        }
+      }
     },
     "contacts": {
       "meta": {
@@ -2219,7 +2788,11 @@
         "lose": "Marcar perdida",
         "loseAria": "Marcar perdida la oportunidad de {name}",
         "reopen": "Reabrir",
-        "reopenAria": "Reabrir la oportunidad de {name}"
+        "reopenAria": "Reabrir la oportunidad de {name}",
+        "recurringMonthly": "Cobro recurrente al mes",
+        "recurringStarted": "Recurrente desde",
+        "recurringCancelled": "Recurrente cancelado el",
+        "recurringNotStarted": "Aún sin primer cobro"
       },
       "activity": {
         "title": "Actividad",
@@ -2256,6 +2829,165 @@
           "forbidden": "No tienes permiso para registrar actividad aquí.",
           "error": "No se ha podido registrar. Inténtalo otra vez."
         }
+      },
+      "win": {
+        "open": "Marcar ganada",
+        "openAria": "Marcar ganada la oportunidad de {name}",
+        "title": "Marcar oportunidad ganada",
+        "close": "Cerrar",
+        "wonAmount": "Importe ganado (sin IVA)",
+        "wonAmountHint": "El importe neto acordado del proyecto, sin IVA. La comisión se calcula sobre él.",
+        "recurring": "Cobro recurrente al mes (sin IVA)",
+        "recurringHint": "Mantenimiento o plan mensual, si lo hay. Comisiona 12 meses o hasta que el cliente cancele.",
+        "optional": "(opcional)",
+        "previewTitle": "Comisión prevista",
+        "previewEmpty": "Escribe el importe ganado para ver la comisión prevista.",
+        "previewLine": "{name} ({role}): {rate} = {amount}",
+        "previewParentAnonymous": "Closer padre: {rate} = {amount}",
+        "previewRecurring": "Recurrente: {rate} = {amount} al mes",
+        "previewTotal": "Total previsto: {amount}",
+        "freezeNote": "Las tasas quedan congeladas al ganar la oportunidad; la comisión se devenga con cada cobro.",
+        "parentRole": "closer padre",
+        "closerRole": "quien cierra",
+        "noCommission": {
+          "hiring": "Las contrataciones no generan comisión.",
+          "admin": "El administrador no cobra comisión por sus propias oportunidades.",
+          "unknown_owner": "Esta oportunidad no tiene un dueño comisionable.",
+          "no_rate": "El dueño no tiene una tasa de comisión fijada."
+        },
+        "submit": "Marcar como ganada",
+        "saving": "Guardando",
+        "done": "Oportunidad marcada como ganada",
+        "errors": {
+          "wonAmount": "Escribe un importe mayor que cero, con dos decimales como máximo.",
+          "recurringMonthly": "Escribe un importe mayor que cero o deja el campo vacío.",
+          "forbidden": "No puedes marcar esta oportunidad como ganada.",
+          "not_found": "No encontramos esta oportunidad en tu cartera.",
+          "already_won": "Esta oportunidad ya estaba ganada.",
+          "lost": "Una oportunidad perdida hay que reabrirla antes de ganarla.",
+          "error": "No se ha podido guardar. Inténtalo otra vez."
+        }
+      },
+      "cancelRecurring": {
+        "open": "Cancelar recurrente",
+        "openAria": "Cancelar recurrente de {name}",
+        "title": "Cancelar cobro recurrente",
+        "close": "Cerrar",
+        "text": "El cliente deja de pagar la cuota mensual. Los cobros recibidos después de hoy ya no devengan comisión. Esto no se puede deshacer desde el CRM.",
+        "submit": "Cancelar recurrente",
+        "saving": "Cancelando",
+        "done": "Cobro recurrente cancelado",
+        "errors": {
+          "forbidden": "Solo el administrador puede cancelar un cobro recurrente.",
+          "not_recurring": "Esta oportunidad no tiene cobro recurrente.",
+          "already_cancelled": "El cobro recurrente ya estaba cancelado.",
+          "error": "No se ha podido cancelar. Inténtalo otra vez."
+        }
+      },
+      "money": {
+        "title": "Cobros y comisión",
+        "loading": "Cargando cobros y comisión",
+        "empty": "Sin oportunidades ganadas",
+        "emptyText": "Cuando ganes una oportunidad verás aquí sus cobros y su comisión.",
+        "dealHeading": "Oportunidad: {name}",
+        "expected": "Comisión prevista",
+        "expectedLine": "{name} · {rate} = {amount}",
+        "expectedNone": "Esta oportunidad no genera comisión.",
+        "scheduleTitle": "Hitos de cobro",
+        "scheduleEmpty": "Aún no hay calendario de cobros. Lo prepara el administrador.",
+        "scheduleColumns": {
+          "label": "Hito",
+          "amount": "Importe",
+          "due": "Vence",
+          "status": "Estado"
+        },
+        "scheduleStatuses": {
+          "scheduled": "Programado",
+          "proforma_sent": "Proforma enviada",
+          "invoiced": "Facturado",
+          "paid": "Cobrado",
+          "cancelled": "Cancelado"
+        },
+        "scheduleKinds": {
+          "milestone": "Hito",
+          "recurring": "Mensualidad"
+        },
+        "overdue": "Vencido",
+        "paymentsTitle": "Cobros recibidos",
+        "paymentsEmpty": "Todavía no se ha registrado ningún cobro.",
+        "paymentsColumns": {
+          "date": "Fecha",
+          "kind": "Tipo",
+          "nature": "Naturaleza",
+          "amount": "Importe neto",
+          "method": "Método",
+          "reference": "Referencia"
+        },
+        "paymentKinds": {
+          "payment": "Cobro",
+          "refund": "Devolución"
+        },
+        "paymentMethods": {
+          "transfer": "Transferencia",
+          "card": "Tarjeta",
+          "stripe": "Stripe",
+          "other": "Otro"
+        },
+        "natures": {
+          "project": "Proyecto",
+          "recurring": "Recurrente"
+        },
+        "linesTitle": "Líneas de comisión",
+        "linesEmpty": "Todavía no hay líneas: se crean con cada cobro.",
+        "linesColumns": {
+          "date": "Cobro",
+          "beneficiary": "Beneficiario",
+          "role": "Papel",
+          "nature": "Naturaleza",
+          "base": "Base neta",
+          "rate": "Tasa",
+          "amount": "Comisión",
+          "status": "Estado"
+        },
+        "roles": {
+          "closer": "Quien cierra",
+          "parent": "Closer padre"
+        },
+        "lineStatuses": {
+          "accrued": "Devengada",
+          "approved": "Aprobada",
+          "rejected": "Rechazada",
+          "paid": "Pagada",
+          "reversed": "Revertida"
+        },
+        "invoicesTitle": "Facturas y proformas",
+        "invoicesEmpty": "Sin documentos todavía.",
+        "invoicesColumns": {
+          "number": "Número",
+          "date": "Fecha",
+          "net": "Base",
+          "vat": "IVA",
+          "gross": "Total",
+          "status": "Estado"
+        },
+        "invoiceKinds": {
+          "proforma": "Proforma, no es factura",
+          "invoice": "Factura"
+        },
+        "invoiceStatuses": {
+          "draft": "Borrador",
+          "sent": "Emitida",
+          "paid": "Cobrada",
+          "void": "Anulada"
+        },
+        "unknownPerson": "Otro closer",
+        "tableLabel": "Tabla de importes, se desplaza en horizontal",
+        "error": {
+          "title": "No se han podido cargar los cobros",
+          "text": "Inténtalo otra vez en unos segundos.",
+          "retry": "Reintentar",
+          "retrying": "Reintentando"
+        }
       }
     },
     "settings": {
@@ -2282,6 +3014,228 @@
           "retry": "Reintentar",
           "retrying": "Reintentando"
         }
+      }
+    },
+    "commissions": {
+      "meta": {
+        "title": "Comisiones"
+      },
+      "title": "Comisiones",
+      "leadAdmin": "Todas las líneas de comisión. Aprueba las devengadas cuando el cobro esté confirmado; el pago se registra en Liquidaciones.",
+      "leadCloser": "Lo que has devengado por cada cobro de tus clientes. Si tienes subclosers, ves también sus líneas.",
+      "loading": "Cargando comisiones",
+      "error": {
+        "title": "No se han podido cargar las comisiones",
+        "text": "Inténtalo otra vez en unos segundos.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "empty": {
+        "title": "Todavía no hay comisiones",
+        "text": "La comisión se devenga con cada cobro de un cliente de una oportunidad ganada.",
+        "filterTitle": "Sin líneas con este filtro",
+        "filterText": "Prueba con otro estado o quita el filtro."
+      },
+      "totals": {
+        "label": "Totales por estado",
+        "all": "Todas",
+        "accrued": "Devengado",
+        "approved": "Aprobado",
+        "paid": "Pagado",
+        "reversed": "Revertido"
+      },
+      "views": {
+        "label": "Vista",
+        "lines": "Líneas",
+        "headers": "Cabeceras"
+      },
+      "lines": {
+        "caption": "Líneas de comisión",
+        "region": "Tabla de líneas de comisión, se desplaza en horizontal",
+        "columns": {
+          "select": "Seleccionar",
+          "date": "Devengada",
+          "contact": "Contacto",
+          "beneficiary": "Beneficiario",
+          "nature": "Naturaleza",
+          "base": "Base neta",
+          "rate": "Tasa",
+          "amount": "Comisión",
+          "status": "Estado",
+          "payout": "Liquidación",
+          "actions": "Acciones"
+        },
+        "selectAria": "Seleccionar la línea de {name} por {amount}",
+        "noPayout": "Sin liquidar",
+        "inPayout": "{start} a {end}",
+        "unknownPerson": "Otro closer",
+        "rejectedReason": "Motivo: {reason}",
+        "selectAll": "Seleccionar todas las devengadas",
+        "preparing": "En preparación"
+      },
+      "headers": {
+        "caption": "Cabeceras de comisión",
+        "region": "Tabla de cabeceras de comisión, se desplaza en horizontal",
+        "columns": {
+          "contact": "Contacto",
+          "closer": "Closer",
+          "subcloser": "Subcloser",
+          "rates": "Tasas",
+          "expected": "Previsto",
+          "accrued": "Devengado hasta hoy"
+        },
+        "rates": "{project} proyecto · {recurring} recurrente",
+        "noRecurring": "sin recurrente",
+        "empty": "No hay cabeceras todavía."
+      },
+      "approve": {
+        "submit": "Aprobar selección ({count})",
+        "none": "Aprobar selección",
+        "saving": "Aprobando",
+        "done": "Líneas aprobadas",
+        "selected": "{count} seleccionadas",
+        "errors": {
+          "invalid_selection": "Elige al menos una línea devengada.",
+          "line_not_accrued": "Alguna línea ya había cambiado de estado. Recarga la página.",
+          "forbidden": "Solo el administrador puede aprobar comisiones.",
+          "error": "No se han podido aprobar las líneas. Inténtalo otra vez."
+        }
+      },
+      "reject": {
+        "open": "Rechazar",
+        "openAria": "Rechazar la línea de {name} por {amount}",
+        "title": "Rechazar línea de comisión",
+        "close": "Cerrar",
+        "reason": "Motivo del rechazo",
+        "submit": "Rechazar línea",
+        "saving": "Rechazando",
+        "done": "Línea rechazada",
+        "errors": {
+          "reason_required": "Escribe el motivo del rechazo.",
+          "line_not_accrued": "La línea ya había cambiado de estado. Recarga la página.",
+          "line_not_found": "No encontramos la línea.",
+          "forbidden": "Solo el administrador puede rechazar comisiones.",
+          "error": "No se ha podido rechazar la línea. Inténtalo otra vez."
+        }
+      }
+    },
+    "leads": {
+      "meta": {
+        "title": "Interesados"
+      },
+      "title": "Interesados",
+      "lead": "Quien ha escrito y todavía no tiene a nadie al otro lado. Reclama el que quieras trabajar y pasa a tu cartera.",
+      "loading": "Cargando interesados",
+      "limit": "Mostrando los {count} más recientes.",
+      "tabs": {
+        "label": "Interesados por grupo",
+        "inbox": "Sin asignar",
+        "mine": "Míos",
+        "team": "De mi equipo"
+      },
+      "error": {
+        "title": "No se han podido cargar los interesados",
+        "text": "Ha fallado la consulta. Inténtalo otra vez.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "inbox": {
+        "note": "Aquí solo ves el nombre de pila y un extracto. El resto de datos llega cuando lo reclamas.",
+        "listLabel": "Interesados sin asignar",
+        "claim": "Reclamar",
+        "claiming": "Reclamando",
+        "claimAria": "Reclamar a {name}",
+        "extras": "Extras",
+        "noMessage": "Sin mensaje",
+        "empty": {
+          "title": "No hay nadie esperando",
+          "text": "Cuando entre un interesado nuevo lo verás aquí. Mientras tanto, trabaja los tuyos."
+        },
+        "notices": {
+          "done": "Es tuyo. Te llevo a su ficha.",
+          "handoff": "No he podido darte este interesado. Lo revisa Jose.",
+          "stale": "Alguien lo ha reclamado antes que tú. He recargado la lista.",
+          "quota": "Has llegado al tope de reclamos de hoy. Mañana puedes seguir.",
+          "forbidden": "No tienes permiso para reclamar interesados.",
+          "error": "No se ha podido reclamar. Inténtalo otra vez."
+        }
+      },
+      "own": {
+        "mineListLabel": "Mis interesados",
+        "teamListLabel": "Interesados de mi equipo",
+        "noContact": "Aún sin contacto",
+        "openContact": "Abrir contacto",
+        "openContactAria": "Abrir contacto de {name}",
+        "assignedTo": "Lo lleva {name}",
+        "noEmail": "Sin correo",
+        "mineEmpty": {
+          "title": "Todavía no tienes interesados",
+          "text": "Reclama uno de la pestaña «Sin asignar» y aparecerá aquí con sus datos completos."
+        },
+        "teamEmpty": {
+          "title": "Tu equipo no tiene interesados",
+          "text": "Los que reclamen tus subclosers aparecerán aquí."
+        }
+      },
+      "statuses": {
+        "new": "Nuevo",
+        "assigned": "Asignado",
+        "contacted": "Contactado",
+        "converted": "Convertido",
+        "discarded": "Descartado"
+      },
+      "vias": {
+        "hiring": "Contratación",
+        "freelance": "Freelance",
+        "project": "A medida",
+        "none": "Sin vía"
+      },
+      "locales": {
+        "es": "Español",
+        "en": "Inglés"
+      }
+    },
+    "start": {
+      "meta": {
+        "title": "Empezar"
+      },
+      "title": "Empezar",
+      "lead": "Cinco pasos para dejar tu cuenta lista y hacer tu primera gestión.",
+      "stepsLabel": "Pasos para empezar",
+      "steps": {
+        "telegram": {
+          "title": "Vincula Telegram",
+          "text": "Recibe un aviso cuando te asignen un interesado o venza un paso.",
+          "action": "Vincular Telegram"
+        },
+        "rates": {
+          "title": "Mira tus comisiones",
+          "text": "Consulta qué porcentaje te corresponde en proyectos y en recurrentes.",
+          "action": "Ver mis comisiones"
+        },
+        "leads": {
+          "title": "Reclama tu primer interesado",
+          "text": "La bandeja común enseña lo justo para decidir. Los datos completos llegan al reclamarlo.",
+          "action": "Abrir interesados"
+        },
+        "contact": {
+          "title": "Añade un contacto",
+          "text": "Guarda a quien ya conoces para llevar su seguimiento en un solo sitio.",
+          "action": "Abrir contactos"
+        },
+        "nextStep": {
+          "title": "Fija un siguiente paso",
+          "text": "Cada contacto vivo necesita una acción con fecha. Así el resumen te dice qué hacer hoy.",
+          "action": "Ver pasos pendientes"
+        }
+      },
+      "rules": {
+        "title": "Qué no prometer",
+        "lead": "Di solo lo que es cierto hoy.",
+        "response": "Plazo de respuesta: {time}. No prometas uno más corto.",
+        "price": "Precios: si un precio está en revisión, no des cifras. Di que se confirma por escrito antes de empezar.",
+        "invoices": "Facturas: no se emiten desde el CRM. No prometas facturas con IVA todavía.",
+        "channels": "Canales: no ofrezcas chat en vivo ni llamadas que no estén acordadas con Jose."
       }
     }
   },
@@ -3789,6 +4743,99 @@
       "invalid": "Ese código no es válido o ha caducado. Genera uno nuevo desde la web.",
       "taken": "Este Telegram ya está vinculado a otra cuenta.",
       "noCode": "Para vincular tu cuenta abre el enlace que te da la web."
+    }
+  },
+  "room": {
+    "threadLabel": "Mensajes de la sala",
+    "empty": "Aún no hay mensajes. Escribe el primero.",
+    "composer": {
+      "label": "Escribe un mensaje",
+      "placeholder": "Intro envía y Mayús + Intro hace un salto de línea.",
+      "send": "Enviar",
+      "sending": "Enviando",
+      "count": "{used} de {max}",
+      "readOnly": "Esta sala es de solo lectura para ti.",
+      "archived": "Esta sala está archivada: puedes leerla, pero ya no admite mensajes."
+    },
+    "errors": {
+      "forbidden": "No tienes permiso para escribir en esta sala.",
+      "archived": "La sala está archivada y no admite mensajes.",
+      "invalid": "Escribe un mensaje de hasta 4.000 caracteres.",
+      "error": "No se ha podido enviar el mensaje. Inténtalo de nuevo.",
+      "poll": "Ahora mismo no llegan mensajes nuevos. Seguimos intentándolo."
+    },
+    "authors": {
+      "nexo": "Nexo",
+      "visitor": "Visitante",
+      "someone": "Alguien",
+      "you": "Tú"
+    },
+    "auto": "Respondo yo, Nexo, porque nadie ha contestado a tiempo.",
+    "system": {
+      "member_added": "{name} se ha unido a la sala.",
+      "member_left": "{name} ha salido de la sala.",
+      "ai_on": "Nexo se ha activado en esta sala.",
+      "ai_off": "Nexo se ha desactivado en esta sala.",
+      "ai_off_takeover": "Jose ha tomado la conversación y Nexo se ha pausado.",
+      "consent_granted": "El cliente ha dado permiso para que Nexo use los datos del proyecto.",
+      "consent_revoked": "El cliente ha retirado el permiso a Nexo.",
+      "archived": "La sala se ha archivado.",
+      "handoff_done": "El visitante ha dejado sus datos de contacto."
+    },
+    "members": {
+      "title": "Miembros",
+      "empty": "Nadie más está en esta sala.",
+      "roles": {
+        "owner": "Jose",
+        "closer": "Closer",
+        "client": "Cliente",
+        "freelance": "Freelance"
+      },
+      "remove": "Quitar",
+      "removeAria": "Quitar a {name} de la sala",
+      "confirmTitle": "Quitar de la sala",
+      "confirmText": "{name} dejará de ver los mensajes de esta sala. El historial se conserva.",
+      "confirmSubmit": "Quitar",
+      "saving": "Quitando",
+      "close": "Cancelar",
+      "removed": "Miembro quitado",
+      "add": "Añadir a la sala",
+      "addSelect": "Persona",
+      "addPlaceholder": "Elige a alguien",
+      "addButton": "Añadir",
+      "adding": "Añadiendo",
+      "added": "Miembro añadido",
+      "errors": {
+        "error": "No se ha podido completar el cambio.",
+        "forbidden": "No tienes permiso para cambiar los miembros.",
+        "already_member": "Esa persona ya está en la sala.",
+        "client_outside_project": "Un cliente solo puede estar en la sala de su proyecto.",
+        "role_mismatch": "El rol no coincide con el de esa persona.",
+        "invalid_member": "Esa persona no está activa.",
+        "owner_cannot_leave": "Jose no puede salir de la sala.",
+        "member_not_found": "Esa persona ya no está en la sala.",
+        "conversation_archived": "La sala está archivada.",
+        "visitor_room": "No se puede añadir gente a la sala de un visitante."
+      }
+    },
+    "ai": {
+      "label": "Nexo en esta sala",
+      "on": "Nexo está activo",
+      "off": "Nexo está apagado",
+      "offTakeover": "Nexo está pausado porque has respondido tú",
+      "saving": "Guardando",
+      "changed": "Ajuste de Nexo guardado",
+      "errors": {
+        "error": "No se ha podido cambiar Nexo.",
+        "forbidden": "Solo Jose puede cambiar Nexo.",
+        "conversation_archived": "La sala está archivada."
+      }
+    },
+    "consent": {
+      "label": "Permiso de Nexo",
+      "granted": "Concedido",
+      "revoked": "Retirado",
+      "pending": "Pendiente"
     }
   }
 }

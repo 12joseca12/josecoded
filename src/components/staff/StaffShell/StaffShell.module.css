@@ -74,3 +74,18 @@
     padding: var(--space-7) var(--gutter) var(--space-8);
   }
 }
+
+@media print {
+  .frame {
+    display: block;
+  }
+
+  .rail {
+    display: none;
+  }
+
+  .main {
+    max-width: none;
+    padding: 0;
+  }
+}
