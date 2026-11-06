@@ -1988,6 +1988,65 @@ export type Database = {
           },
         ]
       }
+      project_updates: {
+        Row: {
+          author_id: string | null
+          body: string
+          created_at: string
+          id: string
+          project_id: string
+          task_id: string | null
+          visibility: Database["public"]["Enums"]["update_visibility"]
+        }
+        Insert: {
+          author_id?: string | null
+          body: string
+          created_at?: string
+          id?: string
+          project_id: string
+          task_id?: string | null
+          visibility?: Database["public"]["Enums"]["update_visibility"]
+        }
+        Update: {
+          author_id?: string | null
+          body?: string
+          created_at?: string
+          id?: string
+          project_id?: string
+          task_id?: string | null
+          visibility?: Database["public"]["Enums"]["update_visibility"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_updates_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_updates_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_updates_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_updates_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       projects: {
         Row: {
           archived_at: string | null
@@ -2421,6 +2480,33 @@ export type Database = {
       }
     }
     Views: {
+      client_project_updates: {
+        Row: {
+          author_label: string | null
+          body: string | null
+          created_at: string | null
+          id: string | null
+          project_id: string | null
+          task_id: string | null
+        }
+        Insert: {
+          author_label?: string | null
+          body?: string | null
+          created_at?: string | null
+          id?: string | null
+          project_id?: string | null
+          task_id?: string | null
+        }
+        Update: {
+          author_label?: string | null
+          body?: string | null
+          created_at?: string | null
+          id?: string | null
+          project_id?: string | null
+          task_id?: string | null
+        }
+        Relationships: []
+      }
       freelance_fee_summary: {
         Row: {
           agreed_total: number | null
@@ -3206,6 +3292,10 @@ export type Database = {
         Args: { p_key: string; p_value: Json }
         Returns: string
       }
+      set_update_visibility: {
+        Args: { p_id: string; p_visibility: Database["public"]["Enums"]["update_visibility"] }
+        Returns: undefined
+      }
       set_user_active: {
         Args: { p_active: boolean; p_user_id: string }
         Returns: undefined
@@ -3356,7 +3446,7 @@ export type Database = {
       lead_status: "new" | "assigned" | "contacted" | "converted" | "discarded"
       member_role: "owner" | "closer" | "client" | "freelance"
       message_kind: "text" | "handoff" | "reference"
-      notification_event: "lead_new" | "lead_claimed" | "message_new" | "commission_accrued" | "payment_recorded" | "payment_overdue" | "payout_paid" | "job_failed" | "omen_down" | "invitation_accepted" | "document_added" | "fee_submitted" | "fee_decided"
+      notification_event: "lead_new" | "lead_claimed" | "message_new" | "commission_accrued" | "payment_recorded" | "payment_overdue" | "payout_paid" | "job_failed" | "omen_down" | "invitation_accepted" | "document_added" | "fee_submitted" | "fee_decided" | "project_update"
       outbox_channel: "email" | "telegram"
       outbox_status: "queued" | "sending" | "sent" | "failed"
       payment_kind: "payment" | "refund"
@@ -3378,6 +3468,7 @@ export type Database = {
         | "archived"
         | "handoff_done"
       task_status: "todo" | "doing" | "done"
+      update_visibility: "internal" | "client"
       user_role: "admin" | "closer" | "freelance" | "client"
     }
     CompositeTypes: {
@@ -3550,7 +3641,7 @@ export const Constants = {
       lead_status: ["new", "assigned", "contacted", "converted", "discarded"],
       member_role: ["owner", "closer", "client", "freelance"],
       message_kind: ["text", "handoff", "reference"],
-      notification_event: ["lead_new", "lead_claimed", "message_new", "commission_accrued", "payment_recorded", "payment_overdue", "payout_paid", "job_failed", "omen_down", "invitation_accepted", "document_added", "fee_submitted", "fee_decided"],
+      notification_event: ["lead_new", "lead_claimed", "message_new", "commission_accrued", "payment_recorded", "payment_overdue", "payout_paid", "job_failed", "omen_down", "invitation_accepted", "document_added", "fee_submitted", "fee_decided", "project_update"],
       outbox_channel: ["email", "telegram"],
       outbox_status: ["queued", "sending", "sent", "failed"],
       payment_kind: ["payment", "refund"],
@@ -3573,6 +3664,7 @@ export const Constants = {
         "handoff_done",
       ],
       task_status: ["todo", "doing", "done"],
+      update_visibility: ["internal", "client"],
       user_role: ["admin", "closer", "freelance", "client"],
     },
   },

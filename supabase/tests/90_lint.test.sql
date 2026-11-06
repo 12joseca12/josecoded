@@ -139,6 +139,7 @@ select is_empty(
         'set_project_freelance',
         'set_project_phase',
         'set_setting',
+        'set_update_visibility',
         'set_user_active',
         'set_user_rates',
         'submit_fee_hours',
@@ -303,6 +304,7 @@ select is_empty(
         'set_project_freelance',
         'set_project_phase',
         'set_setting',
+        'set_update_visibility',
         'set_user_active',
         'set_user_rates',
         'submit_fee_hours',
@@ -342,7 +344,7 @@ select is(
     where n.nspname = 'private'
       and has_function_privilege('authenticated', p.oid, 'execute')
   ),
-  'ai_active,can_write_conversation,contact_has_history,conversation_topic_id,freelance_fee_rows,freelance_project_rows,is_aal2,is_admin,is_api_client_role,is_closer,is_conversation_member,is_project_member,is_staff,mask_excerpt,offer_answers_valid,owns_contact,owns_lead,role,slug_list_valid,storage_conversation_id,uid',
+  'ai_active,can_write_conversation,client_project_update_rows,contact_has_history,conversation_topic_id,freelance_fee_rows,freelance_project_rows,is_aal2,is_admin,is_api_client_role,is_closer,is_conversation_member,is_project_member,is_staff,mask_excerpt,offer_answers_valid,owns_contact,owns_lead,role,slug_list_valid,storage_conversation_id,uid',
   'only the policy helpers and the two constraint helpers in private are executable by authenticated (decision 9.6)'
 );
 
