@@ -36,13 +36,13 @@ select is((public.admin_counters() ->> 'fee_items_pending')::int, 2, 'the admin 
 select is((public.admin_counters() ->> 'fees_approved_unpaid_amount')::numeric, 140.00, 'the admin counts approved unpaid fees');
 select is((public.admin_counters() ->> 'stories_to_decide')::int, 0, 'earlier counters are kept');
 
-select throws_ok($$select public.build_payout(md5('y-client@example.com')::uuid, current_date - 7, current_date)$$, 'P0001', 'invalid_beneficiary', 'a client cannot be paid');
-select throws_ok($$select public.build_payout(md5('y-free2@example.com')::uuid, current_date - 7, current_date)$$, 'P0001', 'no_lines_in_period', 'a freelance without items has nothing to pay');
-select lives_ok($$select public.build_payout(md5('y-free@example.com')::uuid, current_date - 7, current_date)$$, 'the admin builds a payout for the freelance');
+select throws_ok($$select public.build_payout(md5('y-client@example.com')::uuid, ((now() at time zone 'Europe/Madrid')::date) - 7, ((now() at time zone 'Europe/Madrid')::date))$$, 'P0001', 'invalid_beneficiary', 'a client cannot be paid');
+select throws_ok($$select public.build_payout(md5('y-free2@example.com')::uuid, ((now() at time zone 'Europe/Madrid')::date) - 7, ((now() at time zone 'Europe/Madrid')::date))$$, 'P0001', 'no_lines_in_period', 'a freelance without items has nothing to pay');
+select lives_ok($$select public.build_payout(md5('y-free@example.com')::uuid, ((now() at time zone 'Europe/Madrid')::date) - 7, ((now() at time zone 'Europe/Madrid')::date))$$, 'the admin builds a payout for the freelance');
 select is((select kind::text || '/' || total from public.payouts), 'freelance/140.00', 'only approved items are collected and the kind is freelance');
 select is((select count(*)::int from public.freelance_fee_items where payout_id is not null), 1, 'one item is attached');
 select is((select status::text from public.freelance_fee_items where label = 'B'), 'pending', 'pending items stay out');
-select throws_ok($$select public.build_payout(md5('y-free@example.com')::uuid, current_date - 7, current_date)$$, 'P0001', 'no_lines_in_period', 'attached items are not collected twice');
+select throws_ok($$select public.build_payout(md5('y-free@example.com')::uuid, ((now() at time zone 'Europe/Madrid')::date) - 7, ((now() at time zone 'Europe/Madrid')::date))$$, 'P0001', 'no_lines_in_period', 'attached items are not collected twice');
 
 reset role;
 select tests.login_as('y-free@example.com');
@@ -66,7 +66,7 @@ select is((select count(*)::int from public.payouts), 0, 'another freelance does
 
 reset role;
 select tests.login_as('y-admin@example.com');
-select public.set_payout_status((select id from public.payouts), 'paid', current_date, 'Transfer 1');
+select public.set_payout_status((select id from public.payouts), 'paid', ((now() at time zone 'Europe/Madrid')::date), 'Transfer 1');
 
 select is((select status::text from public.freelance_fee_items where label = 'A'), 'paid', 'paying the payout marks the items paid');
 
@@ -79,12 +79,12 @@ select is(
 select tests.login_as('y-free@example.com');
 select is((public.freelance_counters() ->> 'fees_paid_amount')::numeric, 140.00, 'paid is counted');
 select is((public.freelance_counters() ->> 'fees_paid_year_amount')::numeric, 140.00, 'paid this year is counted');
-select is((public.freelance_counters() ->> 'last_paid_at')::date, current_date, 'the last payment date is exposed');
+select is((public.freelance_counters() ->> 'last_paid_at')::date, ((now() at time zone 'Europe/Madrid')::date), 'the last payment date is exposed');
 
 reset role;
 select tests.login_as('y-admin@example.com');
 select public.approve_fee_items(array[(select id from public.freelance_fee_items where label = 'B')]);
-select public.build_payout(md5('y-free@example.com')::uuid, current_date - 7, current_date);
+select public.build_payout(md5('y-free@example.com')::uuid, ((now() at time zone 'Europe/Madrid')::date) - 7, ((now() at time zone 'Europe/Madrid')::date));
 select public.delete_payout_draft((select id from public.payouts where status = 'draft'));
 select is((select payout_id from public.freelance_fee_items where label = 'B'), null, 'deleting the draft frees the items');
 

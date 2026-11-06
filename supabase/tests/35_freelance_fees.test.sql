@@ -44,11 +44,11 @@ select tests.login_as('f-admin@example.com');
 
 reset role;
 select tests.login_as('f-free@example.com');
-select lives_ok($$select public.submit_fee_hours('00000000-0000-4000-8000-0000000000c1', 5, 'Setup', current_date)$$, 'the freelance submits hours');
+select lives_ok($$select public.submit_fee_hours('00000000-0000-4000-8000-0000000000c1', 5, 'Setup', ((now() at time zone 'Europe/Madrid')::date))$$, 'the freelance submits hours');
 select is((select amount from public.freelance_fee_items where label = 'Setup'), 175.00::numeric, 'the amount is computed from hours and rate');
 select is((select status::text from public.freelance_fee_items where label = 'Setup'), 'pending', 'a submitted entry is pending');
 select throws_ok($$select public.submit_fee_hours('00000000-0000-4000-8000-0000000000c1', 16, 'Too much')$$, 'P0001', 'hours_cap_exceeded', 'the cap is enforced');
-select throws_ok($$select public.submit_fee_hours('00000000-0000-4000-8000-0000000000c1', 1, 'Future', current_date + 1)$$, 'P0001', 'future_date', 'a future date fails');
+select throws_ok($$select public.submit_fee_hours('00000000-0000-4000-8000-0000000000c1', 1, 'Future', ((now() at time zone 'Europe/Madrid')::date) + 1)$$, 'P0001', 'future_date', 'a future date fails');
 select throws_ok($$select public.submit_fee_hours('00000000-0000-4000-8000-0000000000c1', 0, 'Zero')$$, 'P0001', 'invalid_hours', 'zero hours fail');
 select throws_ok($$select public.submit_fee_hours('00000000-0000-4000-8000-0000000000c1', 2.55, 'Decimals')$$, 'P0001', 'invalid_hours', 'more than one decimal fails');
 select throws_ok($$select public.submit_fee_hours('00000000-0000-4000-8000-0000000000c2', 1, 'Other')$$, 'P0001', 'fee_not_found', 'a project that is not mine has no fee');
@@ -76,7 +76,7 @@ select is((select count(*)::int from public.notifications where event = 'fee_dec
 
 reset role;
 select tests.login_as('f-free@example.com');
-select public.submit_fee_hours('00000000-0000-4000-8000-0000000000c1', 3, 'Rework', current_date);
+select public.submit_fee_hours('00000000-0000-4000-8000-0000000000c1', 3, 'Rework', ((now() at time zone 'Europe/Madrid')::date));
 reset role;
 select tests.login_as('f-free2@example.com');
 select throws_ok($$select public.delete_fee_item((select id from public.freelance_fee_items where label = 'Rework'))$$, 'P0001', 'item_not_found', 'another freelance cannot delete my entry');
@@ -91,7 +91,7 @@ select is((select rejected_reason from public.freelance_fee_items where label = 
 
 reset role;
 select tests.login_as('f-free@example.com');
-select public.submit_fee_hours('00000000-0000-4000-8000-0000000000c1', 2, 'Oops', current_date);
+select public.submit_fee_hours('00000000-0000-4000-8000-0000000000c1', 2, 'Oops', ((now() at time zone 'Europe/Madrid')::date));
 select lives_ok($$select public.delete_fee_item((select id from public.freelance_fee_items where label = 'Oops'))$$, 'the freelance deletes a pending entry');
 select is(
   (select approved_unpaid_amount || '/' || hours_approved from public.freelance_fee_summary where project_name = 'Hourly Project'),

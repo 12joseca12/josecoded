@@ -27,7 +27,7 @@ select public.set_freelance_fee('00000000-0000-4000-8000-0000000000a1', 'hourly'
 
 reset role;
 select tests.login_as('i-free@example.com');
-select public.submit_fee_hours('00000000-0000-4000-8000-0000000000a1', 5, 'Setup', current_date);
+select public.submit_fee_hours('00000000-0000-4000-8000-0000000000a1', 5, 'Setup', ((now() at time zone 'Europe/Madrid')::date));
 select public.set_my_task_status((select id from public.project_tasks where title = 'FreeTask'), 'done');
 insert into public.project_updates (project_id, body, visibility)
 values ('00000000-0000-4000-8000-0000000000a1', 'Shared progress', 'client');
