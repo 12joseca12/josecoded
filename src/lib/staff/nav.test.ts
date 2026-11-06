@@ -53,6 +53,7 @@ describe("staff navigation registry", () => {
       "contacts",
       "leads",
       "commissions",
+      "chat",
       "start",
       "settings",
     ]);

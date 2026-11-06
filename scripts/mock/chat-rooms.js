@@ -442,8 +442,10 @@ route("GET", "/rest/v1/my_conversations", ({ request, response, url }) => {
   if (chat.mode.summaries === "error") return rejection(response, 500, "XX000", "internal");
   if (chat.mode.summaries === "empty") return send(response, 200, []);
   const wanted = /^eq\.(.+)$/.exec(url.searchParams.get("id") ?? "")?.[1];
+  const kinds = /^in\.\((.*)\)$/.exec(url.searchParams.get("kind") ?? "")?.[1]?.split(",");
   const rows = [...chat.rooms.values()]
     .filter((room) => (wanted ? room.id === wanted : true))
+    .filter((room) => (kinds ? kinds.includes(room.kind) : true))
     .filter((room) => canRead(who, room))
     .map((room) => summary(room, who.session.userId))
     .sort((a, b) => Date.parse(b.last_activity_at) - Date.parse(a.last_activity_at));
@@ -469,4 +471,37 @@ route("GET", "/rest/v1/conversations", ({ request, response, url }) => {
       first_page_path: room.first_page_path,
     }));
   return send(response, 200, rows);
+});
+
+route("POST", "/rest/v1/rpc/ensure_my_conversation", ({ request, response }) => {
+  const who = caller(request);
+  if (who.denied) return rejection(response, 401, "PGRST301", "JWT invalid");
+  const { chat } = who.auth;
+  who.auth.calls.chat.push({ name: "ensure_my_conversation" });
+  const staff = who.person.role === "closer" || who.person.role === "freelance";
+  if (!staff || who.level !== "aal2") return rejection(response, 403, "42501");
+  let room = [...chat.rooms.values()].find(
+    (entry) => entry.subject === who.session.userId && entry.kind === who.person.role,
+  );
+  if (!room) {
+    const id = randomUUID();
+    room = {
+      id,
+      kind: who.person.role,
+      status: "open",
+      ai_enabled: true,
+      ai_off_reason: null,
+      consent_at: null,
+      consent_revoked_at: null,
+      project_id: null,
+      subject: who.session.userId,
+      lead_id: null,
+      contact_id: null,
+      first_page_path: null,
+      members: [...owners(), member(who.session.userId, who.person.role)],
+      messages: [],
+    };
+    chat.rooms.set(id, room);
+  }
+  return send(response, 200, JSON.stringify(room.id));
 });

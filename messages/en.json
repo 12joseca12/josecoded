@@ -3344,6 +3344,33 @@
         "invoices": "Invoices: they are not issued from the CRM. Do not promise invoices with VAT yet.",
         "channels": "Channels: do not offer live chat or calls that Jose has not agreed to."
       }
+    },
+    "chat": {
+      "meta": {
+        "title": "Chat"
+      },
+      "title": "Chat",
+      "lead": "Your room with Jose and your clients' rooms.",
+      "loading": "Loading the chat",
+      "groups": {
+        "label": "Rooms",
+        "jose": "Jose",
+        "clients": "My clients",
+        "emptyClients": "You have no client rooms yet."
+      },
+      "room": {
+        "jose": "Room with Jose",
+        "client": "Client room",
+        "current": "Open",
+        "unread": "{count} unread",
+        "noMessages": "No messages yet"
+      },
+      "error": {
+        "title": "The chat could not be loaded",
+        "text": "Try again in a few seconds.",
+        "retry": "Try again",
+        "retrying": "Trying again"
+      }
     }
   },
   "freelancePage": {

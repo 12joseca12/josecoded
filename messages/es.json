@@ -3344,6 +3344,33 @@
         "invoices": "Facturas: no se emiten desde el CRM. No prometas facturas con IVA todavía.",
         "channels": "Canales: no ofrezcas chat en vivo ni llamadas que no estén acordadas con Jose."
       }
+    },
+    "chat": {
+      "meta": {
+        "title": "Chat"
+      },
+      "title": "Chat",
+      "lead": "Tu sala con Jose y las salas de tus clientes.",
+      "loading": "Cargando el chat",
+      "groups": {
+        "label": "Salas",
+        "jose": "Jose",
+        "clients": "Mis clientes",
+        "emptyClients": "Todavía no tienes salas de clientes."
+      },
+      "room": {
+        "jose": "Sala con Jose",
+        "client": "Sala de cliente",
+        "current": "Abierta",
+        "unread": "{count} sin leer",
+        "noMessages": "Sin mensajes todavía"
+      },
+      "error": {
+        "title": "No se ha podido cargar el chat",
+        "text": "Inténtalo de nuevo en unos segundos.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      }
     }
   },
   "freelancePage": {
