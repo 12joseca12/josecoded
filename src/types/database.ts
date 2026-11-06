@@ -799,6 +799,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "freelance_fee_items_payout_id_fkey"
+            columns: ["payout_id"]
+            isOneToOne: false
+            referencedRelation: "payouts"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "freelance_fee_items_fee_id_fkey"
             columns: ["fee_id"]
             isOneToOne: false
@@ -1737,6 +1744,7 @@ export type Database = {
           created_by: string | null
           id: string
           issued_at: string | null
+          kind: Database["public"]["Enums"]["payout_kind"]
           net_total: number
           paid_at: string | null
           paid_reference: string | null
@@ -1755,6 +1763,7 @@ export type Database = {
           created_by?: string | null
           id?: string
           issued_at?: string | null
+          kind?: Database["public"]["Enums"]["payout_kind"]
           net_total: number
           paid_at?: string | null
           paid_reference?: string | null
@@ -1773,6 +1782,7 @@ export type Database = {
           created_by?: string | null
           id?: string
           issued_at?: string | null
+          kind?: Database["public"]["Enums"]["payout_kind"]
           net_total?: number
           paid_at?: string | null
           paid_reference?: string | null
@@ -3159,6 +3169,10 @@ export type Database = {
         Args: { p_project_id: string }
         Returns: string
       }
+      freelance_counters: {
+        Args: never
+        Returns: Json
+      }
       invite_user: {
         Args: { p_auth_user_id?: string; p_closer_rate?: number; p_closer_recurring_rate?: number; p_email: string; p_note?: string; p_parent_closer_id?: string; p_parent_rate?: number; p_parent_recurring_rate?: number; p_payout_cadence?: Database["public"]["Enums"]["payout_cadence"]; p_project_id?: string; p_role: Database["public"]["Enums"]["user_role"] }
         Returns: {
@@ -3548,6 +3562,7 @@ export type Database = {
       payment_kind: "payment" | "refund"
       payment_method: "transfer" | "card" | "stripe" | "other"
       payout_cadence: "per_payment" | "weekly" | "biweekly"
+      payout_kind: "commission" | "freelance"
       payout_status: "draft" | "issued" | "paid"
       project_phase: "discover" | "design" | "build" | "publish" | "maintain"
       project_status: "active" | "paused" | "closed"
@@ -3743,6 +3758,7 @@ export const Constants = {
       payment_kind: ["payment", "refund"],
       payment_method: ["transfer", "card", "stripe", "other"],
       payout_cadence: ["per_payment", "weekly", "biweekly"],
+      payout_kind: ["commission", "freelance"],
       payout_status: ["draft", "issued", "paid"],
       project_phase: ["discover", "design", "build", "publish", "maintain"],
       project_status: ["active", "paused", "closed"],
