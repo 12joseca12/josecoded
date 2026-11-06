@@ -1,0 +1,4 @@
+nombre,email,telefono,empresa,tipo,notas
+Nora Nueva,nora@nueva.example,+34 600 000 001,Nueva SL,cliente,Viene de feria
+Oscar Otro,oscar@otro.example,600 000 002,,,"Nota con coma, y ""comillas"""
+Paula Prueba,,,,socio,

@@ -52,6 +52,7 @@ describe("staff navigation registry", () => {
     expect(ready("crm")).toEqual([
       "overview",
       "contacts",
+      "import",
       "leads",
       "commissions",
       "chat",

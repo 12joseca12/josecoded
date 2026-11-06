@@ -7,6 +7,7 @@ import "./inbox.js";
 import "./users.js";
 import "./invitations.js";
 import "./crm.js";
+import "./crm-import.js";
 import "./money.js";
 import "./crm-counters.js";
 import "./prices.js";
