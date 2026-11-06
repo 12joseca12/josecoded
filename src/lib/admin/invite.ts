@@ -65,6 +65,7 @@ export async function runInvite(
       p_parent_recurring_rate: input.parentRecurringRate ?? undefined,
       p_payout_cadence: input.payoutCadence ?? undefined,
       p_note: input.note === "" ? undefined : input.note,
+      p_project_id: input.projectId ?? undefined,
     });
     if (error) return { status: "error", code: mapInviteError(error) };
     const created = issued.safeParse(data);

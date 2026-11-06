@@ -18,6 +18,13 @@ import {
   storyStatuses,
 } from "@/types/admin-project-stories";
 import {
+  type LinkEditorLabels,
+  linkErrorCodes,
+  linkFields,
+  teamErrorCodes,
+  type TeamPanelLabels,
+} from "@/types/admin-project-team";
+import {
   projectErrorCodes,
   projectFields,
   type ProjectPhase,
@@ -299,5 +306,73 @@ export function uploaderLabels(t: Translate): UploaderLabels {
     progress: t(`${u}.progress`),
     done: t(`${u}.done`),
     errors: documentErrors(t, "uploader"),
+  };
+}
+
+export function linkEditorLabels(t: Translate): LinkEditorLabels {
+  const l = `${detail}.links` as const;
+  const errors = {} as LinkEditorLabels["errors"];
+  for (const key of [...linkFields, ...linkErrorCodes]) errors[key] = t(`${l}.errors.${key}`);
+  return {
+    region: t(`${l}.region`),
+    title: t(`${l}.title`),
+    intro: t(`${l}.intro`),
+    empty: t(`${l}.empty`),
+    add: t(`${l}.add`),
+    edit: t(`${l}.edit`),
+    editFor: t(`${l}.editFor`),
+    cancel: t(`${l}.cancel`),
+    delete: t(`${l}.delete`),
+    deleteFor: t(`${l}.deleteFor`),
+    deleteConfirm: t(`${l}.deleteConfirm`),
+    deleting: t(`${l}.deleting`),
+    up: t(`${l}.up`),
+    down: t(`${l}.down`),
+    moved: t(`${l}.moved`),
+    deleted: t(`${l}.deleted`),
+    saved: t(`${l}.saved`),
+    limit: t(`${l}.limit`),
+    openNewTab: t(`${l}.openNewTab`),
+    form: {
+      name: t(`${l}.form.name`),
+      url: t(`${l}.form.url`),
+      urlHint: t(`${l}.form.urlHint`),
+      usage: t(`${l}.form.usage`),
+      usageHint: t(`${l}.form.usageHint`),
+      optional: t(`${l}.form.optional`),
+      submitAdd: t(`${l}.form.submitAdd`),
+      submitEdit: t(`${l}.form.submitEdit`),
+      submitting: t(`${l}.form.submitting`),
+    },
+    errors,
+  };
+}
+
+export function teamPanelLabels(t: Translate): TeamPanelLabels {
+  const m = `${detail}.team` as const;
+  const errors = {} as TeamPanelLabels["errors"];
+  for (const code of teamErrorCodes) errors[code] = t(`${m}.errors.${code}`);
+  return {
+    title: t(`${m}.title`),
+    client: {
+      title: t(`${m}.client.title`),
+      none: t(`${m}.client.none`),
+      noneHelp: t(`${m}.client.noneHelp`),
+      assign: t(`${m}.client.assign`),
+      assignPlaceholder: t(`${m}.client.assignPlaceholder`),
+      assignSubmit: t(`${m}.client.assignSubmit`),
+      assigning: t(`${m}.client.assigning`),
+      assigned: t(`${m}.client.assigned`),
+      noCandidates: t(`${m}.client.noCandidates`),
+    },
+    freelance: {
+      title: t(`${m}.freelance.title`),
+      none: t(`${m}.freelance.none`),
+      field: t(`${m}.freelance.field`),
+      submit: t(`${m}.freelance.submit`),
+      submitting: t(`${m}.freelance.submitting`),
+      saved: t(`${m}.freelance.saved`),
+    },
+    errors,
   };
 }

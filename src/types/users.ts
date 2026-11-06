@@ -50,6 +50,10 @@ export const inviteInputSchema = z
     parentRecurringRate: rate,
     payoutCadence: z.union([z.enum(payoutCadences), z.literal("")]).transform((v) => v || null),
     note: z.string().trim().max(inviteNoteMax),
+    projectId: z
+      .union([z.uuid(), z.literal("")])
+      .transform((value) => value || null)
+      .optional(),
   })
   .superRefine((value, ctx) => {
     const fail = (path: InviteField) => {
@@ -57,6 +61,7 @@ export const inviteInputSchema = z
     };
     const sub = value.role === "subcloser";
     const closerLike = sub || value.role === "closer";
+    if (value.projectId && value.role !== "client") fail("role");
     if (sub && value.parentCloserId === null) fail("parentCloserId");
     if (!sub && value.parentCloserId !== null) fail("parentCloserId");
     if (!sub && (value.parentRate !== null || value.parentRecurringRate !== null)) {
