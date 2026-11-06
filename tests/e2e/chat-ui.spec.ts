@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { expect, type Page, test } from "@playwright/test";
 
 import AxeBuilder from "./support/axe";
+import { hydrated } from "./support/hydrated";
 
 interface ChatMessages {
   chat: {
@@ -101,6 +102,7 @@ test("typing and sending adds the visitor bubble and drops the starters", async 
 
 test("Shift+Enter adds a line and the composer stops growing at six lines", async ({ page }) => {
   await open(page, "fresh");
+  await hydrated(composer(page));
   await composer(page).fill(
     Array.from({ length: 12 }, (_, index) => `línea ${String(index)}`).join("\n"),
   );

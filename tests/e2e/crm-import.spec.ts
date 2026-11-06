@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { expect, type Page, test } from "@playwright/test";
 
 import AxeBuilder from "./support/axe";
+import { hydrated } from "./support/hydrated";
 import { mockOrigin as mock, signInAdmin, signInCloser, type Tag, withTag } from "./support/staff";
 
 interface ImportMessages {
@@ -102,7 +103,9 @@ async function openAsCloser(page: Page) {
 }
 
 async function pick(page: Page, file: string | { name: string; mimeType: string; buffer: Buffer }) {
-  await page.getByTestId("csv-input").setInputFiles(file);
+  const input = page.getByTestId("csv-input");
+  await hydrated(input);
+  await input.setInputFiles(file);
 }
 
 function rejection(page: Page, key: string) {
