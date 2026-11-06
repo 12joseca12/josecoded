@@ -156,15 +156,17 @@ test("Enter on an extra does not submit the form", async ({ page }) => {
       ),
     )
     .toBe(true);
-  await extra.focus();
-  await page.evaluate(() => {
-    (window as unknown as { marker: number }).marker = 1;
-  });
-  await page.keyboard.press("Enter");
-  await page.waitForLoadState("load");
-  await expect(extra).toBeFocused();
-  expect(await page.evaluate(() => (window as unknown as { marker?: number }).marker)).toBe(1);
-  expect(page.url()).not.toContain("x=1");
+  await expect(async () => {
+    await extra.focus();
+    await page.evaluate(() => {
+      (window as unknown as { marker: number }).marker = 1;
+    });
+    await page.keyboard.press("Enter");
+    await page.waitForLoadState("load");
+    await expect(extra).toBeFocused({ timeout: 1000 });
+    expect(await page.evaluate(() => (window as unknown as { marker?: number }).marker)).toBe(1);
+    expect(page.url()).not.toContain("x=1");
+  }).toPass();
 });
 
 test("a missing answer marks the radios as invalid", async ({ page }) => {

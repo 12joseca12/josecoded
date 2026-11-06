@@ -40,6 +40,10 @@
   outline: none;
 }
 
+.frame[data-zone="area"] .main {
+  gap: var(--space-7);
+}
+
 @media (min-width: 64rem) {
   .frame {
     display: grid;

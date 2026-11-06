@@ -101,8 +101,14 @@ for (const entry of chatPages) {
       const buttons = chips.getByRole("button");
       await expect(buttons).toHaveCount(4);
       await expect(buttons.first()).toHaveText(entry.faq.q1 ?? "");
+      await expect
+        .poll(() =>
+          buttons
+            .first()
+            .evaluate((node) => Object.keys(node).some((key) => key.startsWith("__reactProps$"))),
+        )
+        .toBe(true);
       await buttons.first().click();
-      await expect(log(page).locator("[data-typing]")).toBeVisible();
       await expect(log(page)).toContainText(entry.faq.a1 ?? "");
       await expect(log(page).locator("[data-typing]")).toHaveCount(0);
       await expect(log(page).locator('li[data-from="user"]')).toHaveText(

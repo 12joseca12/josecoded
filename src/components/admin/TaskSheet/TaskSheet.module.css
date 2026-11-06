@@ -1,0 +1,41 @@
+.form,
+.confirm {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.text {
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+  line-height: var(--lh-body);
+}
+
+.feedback {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+}
+
+.feedback:empty {
+  display: none;
+}
+
+.feedback[data-tone="error"] {
+  color: var(--error);
+}
+
+@media (min-width: 40rem) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

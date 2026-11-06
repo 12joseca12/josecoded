@@ -1,0 +1,33 @@
+{
+  "conversation": {
+    "id": "70000000-0000-4000-8000-000000000001",
+    "kind": "client",
+    "locale": "es",
+    "ai_enabled": true,
+    "consent_state": "granted"
+  },
+  "members": [
+    { "role": "owner", "display_name": "Jose" },
+    { "role": "client", "display_name": "Carla Client" },
+    { "role": "closer", "display_name": "Cleo Closer" }
+  ],
+  "messages": [
+    {
+      "author_kind": "human",
+      "role": "client",
+      "body": "¿Cuándo tendré la primera versión?",
+      "created_at": "2026-11-05T10:00:00+00:00"
+    },
+    {
+      "author_kind": "system",
+      "role": null,
+      "body": "",
+      "created_at": "2026-11-05T10:01:00+00:00"
+    }
+  ],
+  "project": {
+    "name": "Tienda de Carla",
+    "phase": "build",
+    "brief": "Tienda pequeña con catálogo."
+  }
+}

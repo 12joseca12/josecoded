@@ -15,6 +15,7 @@ export const countersSchema = z.looseObject({
   proformas_unpaid: count,
   payouts_draft: count,
   jobs_failed: count,
+  stories_to_decide: count,
 });
 
 export type Counters = z.infer<typeof countersSchema>;
@@ -29,6 +30,7 @@ export const counterKeys = [
   "proformas_unpaid",
   "payouts_draft",
   "jobs_failed",
+  "stories_to_decide",
 ] as const;
 export type CounterKey = (typeof counterKeys)[number];
 

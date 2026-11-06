@@ -1,0 +1,32 @@
+.card {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: var(--panel);
+}
+
+.text {
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+}
+
+.state {
+  font-weight: var(--fw-semibold);
+}
+
+.card[data-state="granted"] .state {
+  color: var(--ink);
+}
+
+.status {
+  min-height: 1.5em;
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+}
+
+.status[data-failed] {
+  color: var(--error);
+}

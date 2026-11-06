@@ -1,0 +1,108 @@
+.groups,
+.group {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.groups {
+  gap: var(--space-6);
+}
+
+.groupTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-semibold);
+}
+
+.count {
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+  font-variant-numeric: tabular-nums;
+}
+
+.card {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-l);
+  background: var(--panel);
+}
+
+.card[data-status="proposed"] {
+  border-color: var(--charcoal);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.title {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-semibold);
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.story {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.story dt {
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+  font-weight: var(--fw-medium);
+}
+
+.story dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.criteria ul,
+.decision {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding-left: var(--space-5);
+}
+
+.decision {
+  padding-left: 0;
+  list-style: none;
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+}
+
+.criteriaTitle {
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+  font-weight: var(--fw-medium);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+@media (min-width: 40rem) {
+  .story {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+  }
+}

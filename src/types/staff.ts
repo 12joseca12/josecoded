@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const staffZones = ["admin", "crm"] as const;
+export const staffZones = ["admin", "crm", "area", "freelance"] as const;
 export const staffZoneSchema = z.enum(staffZones);
 export type StaffZone = z.infer<typeof staffZoneSchema>;
 

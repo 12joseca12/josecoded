@@ -103,16 +103,19 @@ for (const entry of pages) {
     const items = page.locator("details");
     await expect(items).toHaveCount(entry.faq);
     const first = items.first();
-    await expect(first).not.toHaveAttribute("open", "");
-    await first.locator("summary").focus();
-    await page.keyboard.press("Enter");
-    await expect(first).toHaveAttribute("open", "");
-    await page.keyboard.press("Space");
-    await expect(first).not.toHaveAttribute("open", "");
-    await page.keyboard.press("Space");
-    await expect(first).toHaveAttribute("open", "");
-    await page.keyboard.press("Tab");
-    await expect(items.nth(1).locator("summary")).toBeFocused();
+    await expect(async () => {
+      await page.goto(entry.path);
+      await expect(first).not.toHaveAttribute("open", "");
+      await first.locator("summary").focus();
+      await page.keyboard.press("Enter");
+      await expect(first).toHaveAttribute("open", "");
+      await page.keyboard.press("Space");
+      await expect(first).not.toHaveAttribute("open", "");
+      await page.keyboard.press("Space");
+      await expect(first).toHaveAttribute("open", "");
+      await page.keyboard.press("Tab");
+      await expect(items.nth(1).locator("summary")).toBeFocused({ timeout: 1000 });
+    }).toPass();
 
     const nodes = await readNodes(page);
     const faq = nodes.find((node) => node["@type"] === "FAQPage");

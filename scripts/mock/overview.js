@@ -13,6 +13,7 @@ const fullCounters = {
   proformas_unpaid: 5,
   payouts_draft: 0,
   jobs_failed: 2,
+  stories_to_decide: 3,
 };
 
 const partialCounters = {

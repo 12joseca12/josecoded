@@ -1,0 +1,21 @@
+.section {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: start;
+}
+
+.title {
+  font-size: var(--fs-l);
+  font-weight: var(--fw-bold);
+}
+
+.text {
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
+}

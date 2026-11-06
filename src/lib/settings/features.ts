@@ -46,10 +46,14 @@ export async function fetchPublicSettings(env: Env): Promise<PublicRows | null> 
   }
 }
 
-const readCached = unstable_cache(() => fetchPublicSettings(process.env), [settingsCacheTag], {
-  revalidate: settingsRevalidateSeconds,
-  tags: [settingsCacheTag],
-});
+const readCached = unstable_cache(
+  () => fetchPublicSettings(process.env),
+  [settingsCacheTag, process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""],
+  {
+    revalidate: settingsRevalidateSeconds,
+    tags: [settingsCacheTag],
+  },
+);
 
 export async function getFeatures(): Promise<typeof features> {
   try {

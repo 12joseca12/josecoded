@@ -110,6 +110,7 @@ interface AuthCalls {
 const adminReady = staffNav.admin.filter((entry) => entry.ready).length;
 const adminSoon = staffNav.admin.length - adminReady;
 const crmReady = staffNav.crm.filter((entry) => entry.ready).length;
+const crmSoon = staffNav.crm.length - crmReady;
 
 test.describe.configure({ mode: "serial" });
 test.use({ extraHTTPHeaders: { "cf-connecting-ip": "203.0.113.9" } });
@@ -470,7 +471,7 @@ test("a closer lands on the CRM shell and cannot enter the admin", async ({ page
     "page",
   );
   await expect(rail.getByRole("link")).toHaveCount(crmReady);
-  await expect(rail.getByText(crm.nav.soon).first()).toBeVisible();
+  await expect(rail.getByText(crm.nav.soon)).toHaveCount(crmSoon);
   await expect(page.getByRole("link", { name: es.admin.nav.switch })).toHaveCount(0);
   await expect(page.getByRole("link", { name: crm.nav.switch })).toHaveCount(0);
   await expectClean(page);

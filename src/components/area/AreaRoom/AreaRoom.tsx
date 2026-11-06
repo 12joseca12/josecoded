@@ -1,0 +1,64 @@
+"use client";
+
+import type { ReactNode } from "react";
+
+import { MemberList } from "@/components/chat/MemberList/MemberList";
+import { RoomLive } from "@/components/chat/RoomLive/RoomLive";
+import { AnnouncerProvider } from "@/components/ui/Announcer/Announcer";
+import type { MemberListLabels, RoomLabels, RoomMember, RoomMessage } from "@/types/room";
+
+import styles from "./AreaRoom.module.css";
+
+interface AreaRoomProps {
+  conversationId: string;
+  locale: string;
+  userId: string;
+  initial: RoomMessage[];
+  members: RoomMember[];
+  archived: boolean;
+  canWrite: boolean;
+  labels: RoomLabels;
+  memberLabels: MemberListLabels;
+  pollMs: number;
+  consent: ReactNode;
+}
+
+export function AreaRoom({
+  conversationId,
+  locale,
+  userId,
+  initial,
+  members,
+  archived,
+  canWrite,
+  labels,
+  memberLabels,
+  pollMs,
+  consent,
+}: AreaRoomProps) {
+  return (
+    <AnnouncerProvider>
+      <div className={styles.layout}>
+        <div className={styles.chat}>
+          <RoomLive
+            conversationId={conversationId}
+            zone="area"
+            locale={locale}
+            currentUserId={userId}
+            initial={initial}
+            members={members}
+            archived={archived}
+            canWrite={canWrite}
+            allowFiles
+            labels={labels}
+            pollMs={pollMs}
+          />
+        </div>
+        <aside className={styles.side}>
+          {consent}
+          <MemberList members={members} headingLevel={2} labels={memberLabels} />
+        </aside>
+      </div>
+    </AnnouncerProvider>
+  );
+}

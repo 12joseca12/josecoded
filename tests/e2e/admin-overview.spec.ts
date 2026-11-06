@@ -142,6 +142,10 @@ test("full counters show the accrued amount and zero state", async ({ page }) =>
     "href",
     "/es/admin/sistema?estado=failed",
   );
+  await expect(cell(page, "stories_to_decide").getByRole("link")).toHaveAttribute(
+    "href",
+    "/es/admin/proyectos",
+  );
   await setMode(page, { countersMode: "zero" });
   await page.reload();
   await expect(cell(page, "leads_new")).toContainText("0");

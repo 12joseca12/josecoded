@@ -1,0 +1,11 @@
+.panel {
+  display: grid;
+  gap: var(--space-5);
+  align-content: start;
+}
+
+.block {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: start;
+}

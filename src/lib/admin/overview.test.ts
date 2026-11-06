@@ -15,6 +15,7 @@ const ready = [
   { zone: "admin" as const, key: "leads", path: "/interesados" },
   { zone: "admin" as const, key: "users", path: "/usuarios" },
   { zone: "admin" as const, key: "system", path: "/sistema" },
+  { zone: "admin" as const, key: "projects", path: "/proyectos" },
 ];
 
 function clientWith(result: { data: unknown; error: unknown }) {
@@ -66,6 +67,7 @@ describe("buildCells", () => {
     expect(byKey.leads_new?.href).toBe("/es/admin/interesados?status=new");
     expect(byKey.leads_waiting_admin?.href).toBe("/es/admin/interesados?status=waiting");
     expect(byKey.jobs_failed?.href).toBe("/es/admin/sistema?estado=failed");
+    expect(byKey.stories_to_decide?.href).toBe("/es/admin/proyectos");
     expect(byKey.payments_overdue?.href).toBeNull();
     expect(byKey.accrued_pending_count?.href).toBeNull();
   });

@@ -108,6 +108,16 @@ function alert(page: Page) {
   return page.getByRole("main").getByRole("alert");
 }
 
+async function claimLead(page: Page, name: string) {
+  const button = claimButton(page, name);
+  await expect
+    .poll(() =>
+      button.evaluate((node) => Object.keys(node).some((key) => key.startsWith("__reactProps$"))),
+    )
+    .toBe(true);
+  await button.click();
+}
+
 function inboxList(page: Page) {
   return page.getByRole("list", { name: text.inbox.listLabel });
 }
@@ -155,7 +165,7 @@ test("a closer sees the masked inbox and nothing beyond the first name", async (
 
 test("claiming opens the contact that was created and empties the inbox", async ({ page }) => {
   await openAsCloser(page);
-  await claimButton(page, "Cara").click();
+  await claimLead(page, "Cara");
   await expect(page).toHaveURL(/\/es\/crm\/contactos\/[0-9a-f-]{36}$/);
   await expect(page.getByRole("heading", { level: 1, name: "Cara Pack" })).toBeVisible();
   const claims = (await inboxCalls(page)).filter((call) => call.name === "claim_lead");
@@ -173,7 +183,7 @@ test("claiming opens the contact that was created and empties the inbox", async 
 test("a lead someone else claimed first is explained and leaves the list", async ({ page }) => {
   await openAsCloser(page);
   await setInbox(page, { claim: "stale" });
-  await claimButton(page, "Cara").click();
+  await claimLead(page, "Cara");
   await expect(alert(page)).toHaveText(text.inbox.notices.stale);
   await expect(page).toHaveURL(/\/es\/crm\/interesados$/);
   await expect(page.getByRole("heading", { name: text.inbox.empty.title })).toBeVisible();
@@ -184,16 +194,16 @@ test("the daily claim limit, the admin hand-off and a failure each get their own
 }) => {
   await openAsCloser(page);
   await setInbox(page, { claim: "quota" });
-  await claimButton(page, "Cara").click();
+  await claimLead(page, "Cara");
   await expect(alert(page)).toHaveText(text.inbox.notices.quota);
   await expect(claimButton(page, "Cara")).toBeEnabled();
 
   await setInbox(page, { claim: "error" });
-  await claimButton(page, "Cara").click();
+  await claimLead(page, "Cara");
   await expect(alert(page)).toHaveText(text.inbox.notices.error);
 
   await setInbox(page, { claim: "handoff" });
-  await claimButton(page, "Cara").click();
+  await claimLead(page, "Cara");
   await expect(alert(page)).toHaveText(text.inbox.notices.handoff);
   await expect(page.getByRole("heading", { name: text.inbox.empty.title })).toBeVisible();
 });
@@ -291,7 +301,7 @@ test("on a phone the inbox is a column of cards that still passes axe", async ({
   const box = await card.boundingBox();
   expect(box?.width ?? 0).toBeGreaterThan(300);
   await expectClean(page);
-  await claimButton(page, "Cara").click();
+  await claimLead(page, "Cara");
   await expect(page).toHaveURL(/\/es\/crm\/contactos\/[0-9a-f-]{36}$/);
 });
 
@@ -301,7 +311,7 @@ test("the admin can reach the inbox, claim from it and has no team tab", async (
   await expect(page).toHaveURL(/\/es\/crm\/interesados$/);
   await expect(tab(page, text.tabs.team)).toHaveCount(0);
   await expectClean(page);
-  await claimButton(page, "Cara").click();
+  await claimLead(page, "Cara");
   await expect(page).toHaveURL(/\/es\/crm\/contactos\/[0-9a-f-]{36}$/);
 });
 

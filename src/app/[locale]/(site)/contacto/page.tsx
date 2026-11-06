@@ -12,7 +12,6 @@ import { PageHead } from "@/components/site/PageHead/PageHead";
 import { Button } from "@/components/ui/Button/Button";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 import { contact } from "@/config/contact";
-import { features } from "@/config/features";
 import { site } from "@/config/site";
 import { isLocale } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
@@ -28,6 +27,7 @@ import { localePath } from "@/lib/seo/routes";
 import { isAuditRequest } from "@/lib/services/audit";
 import { extraCopyKeys, offerCopyKeys, priceOf } from "@/lib/services/offers";
 import { isPilotRequest } from "@/lib/services/pilot";
+import { getFeatures } from "@/lib/settings/features";
 import type { WayId } from "@/types/services";
 
 import styles from "./page.module.css";
@@ -62,7 +62,11 @@ export async function generateMetadata({ params }: ContactProps): Promise<Metada
 export default async function ContactPage({ params, searchParams }: ContactProps) {
   const [{ locale }, query] = await Promise.all([params, searchParams]);
   if (!isLocale(locale)) notFound();
-  const [t, catalog] = await Promise.all([getTranslator(locale), getCatalog()]);
+  const [t, catalog, { chat }] = await Promise.all([
+    getTranslator(locale),
+    getCatalog(),
+    getFeatures(),
+  ]);
   const book = { offers: catalog.offers, extras: catalog.extras };
   const channels = resolveChannels(contact, t("contactChooser.whatsappMessage"));
   const emails = Object.fromEntries(
@@ -147,7 +151,7 @@ export default async function ContactPage({ params, searchParams }: ContactProps
       <section className={styles.channels} aria-label={t("contactPage.channelsLabel")}>
         <ul className={styles.list}>
           {initialWay ? formChannel : null}
-          {features.chat ? (
+          {chat ? (
             <ChatChannel
               title={t("contactPage.chat.title")}
               hint={t("contactPage.chat.hint")}
