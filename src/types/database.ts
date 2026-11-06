@@ -2730,6 +2730,10 @@ export type Database = {
         Args: never
         Returns: string
       }
+      ensure_project_conversation: {
+        Args: { p_project_id: string }
+        Returns: string
+      }
       invite_user: {
         Args: { p_auth_user_id?: string; p_closer_rate?: number; p_closer_recurring_rate?: number; p_email: string; p_note?: string; p_parent_closer_id?: string; p_parent_rate?: number; p_parent_recurring_rate?: number; p_payout_cadence?: Database["public"]["Enums"]["payout_cadence"]; p_project_id?: string; p_role: Database["public"]["Enums"]["user_role"] }
         Returns: {
@@ -2791,6 +2795,10 @@ export type Database = {
           payload: Json
         }[]
       }
+      omen_conversation_context: {
+        Args: { p_job_id: string }
+        Returns: Json
+      }
       omen_finish_job: {
         Args: { p_error?: string; p_id: string; p_result?: Json }
         Returns: Database["public"]["Enums"]["job_status"]
@@ -2798,6 +2806,10 @@ export type Database = {
       omen_heartbeat: {
         Args: { p_models?: Json; p_version?: string }
         Returns: undefined
+      }
+      omen_post_reply: {
+        Args: { p_body: string; p_confidence?: number; p_interest?: boolean; p_job_id: string; p_model?: string; p_sources?: string[] }
+        Returns: string
       }
       omen_status: {
         Args: never

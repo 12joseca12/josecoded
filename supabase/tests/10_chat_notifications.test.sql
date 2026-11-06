@@ -27,6 +27,9 @@ insert into public.visitors (id, token_hash) values ('f2000000-0000-4000-8000-00
 insert into public.conversations (id, kind, visitor_id)
 values ('f0000000-0000-4000-8000-0000000000e1', 'visitor', 'f2000000-0000-4000-8000-000000000001');
 
+insert into public.projects (id, name) values ('f3000000-0000-4000-8000-000000000001', 'Notification project');
+delete from public.conversations where project_id = 'f3000000-0000-4000-8000-000000000001';
+
 insert into public.conversations (id, kind, project_id, ai_consent_at)
 values ('f0000000-0000-4000-8000-0000000000c1', 'client', 'f3000000-0000-4000-8000-000000000001', now());
 insert into public.conversation_members (conversation_id, user_id, role)
