@@ -2,54 +2,62 @@
 
 import { type ReactNode, useEffect, useRef } from "react";
 
+import { VisuallyHidden } from "@/components/ui/VisuallyHidden/VisuallyHidden";
 import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
+import type { ChatLabels, ChatMessage } from "@/types/chat";
 
+import { ChatBubble, type ChatBubbleLabels } from "../ChatBubble/ChatBubble";
 import styles from "./ChatThread.module.css";
 
+export type ChatThreadLabels = ChatBubbleLabels & Pick<ChatLabels, "logLabel" | "typing">;
+
 interface ChatThreadProps {
-  label: string;
-  empty: string;
-  count: number;
-  children: ReactNode;
+  messages: readonly ChatMessage[];
+  greeting: ChatMessage | null;
+  labels: ChatThreadLabels;
+  typing: boolean;
+  children?: ReactNode;
 }
 
-const nearBottomRem = 5;
-
-export function ChatThread({ label, empty, count, children }: ChatThreadProps) {
-  const scroller = useRef<HTMLDivElement>(null);
-  const stuck = useRef(true);
-  const reduced = usePrefersReducedMotion();
+export function ChatThread({ messages, greeting, labels, typing, children }: ChatThreadProps) {
+  const log = useRef<HTMLDivElement>(null);
+  const reducedMotion = usePrefersReducedMotion();
+  const last = messages.at(-1)?.id;
+  const hasExtra = children !== undefined && children !== null && children !== false;
 
   useEffect(() => {
-    const element = scroller.current;
-    if (!element || !stuck.current) return;
-    element.scrollTo({ top: element.scrollHeight, behavior: reduced ? "instant" : "smooth" });
-  }, [count, reduced]);
-
-  const onScroll = () => {
-    const element = scroller.current;
-    if (!element) return;
-    const rem = Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-    const gap = element.scrollHeight - element.scrollTop - element.clientHeight;
-    stuck.current = gap <= nearBottomRem * rem;
-  };
+    const node = log.current;
+    if (!node) return;
+    node.scrollTo({ top: node.scrollHeight, behavior: reducedMotion ? "auto" : "smooth" });
+  }, [last, typing, hasExtra, reducedMotion]);
 
   return (
     <div
-      ref={scroller}
-      className={styles.thread}
+      ref={log}
+      className={styles.log}
       role="log"
-      aria-label={label}
       aria-live="polite"
       aria-relevant="additions"
+      aria-label={labels.logLabel}
       tabIndex={0}
-      onScroll={onScroll}
     >
-      {count === 0 ? (
-        <p className={styles.empty}>{empty}</p>
-      ) : (
-        <ol className={styles.list}>{children}</ol>
-      )}
+      <ul className={styles.list}>
+        {greeting ? <ChatBubble message={greeting} labels={labels} /> : null}
+        {messages.map((message) => (
+          <ChatBubble key={message.id} message={message} labels={labels} />
+        ))}
+        {typing ? (
+          <li className={styles.typing} data-variant="nexo">
+            <VisuallyHidden>{labels.typing}</VisuallyHidden>
+            <span className={styles.dots} aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </span>
+          </li>
+        ) : null}
+      </ul>
+      {children}
     </div>
   );
 }

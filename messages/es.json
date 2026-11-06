@@ -353,6 +353,21 @@
       "ownName": "Tú (prueba)",
       "otherName": "Cleo (prueba)",
       "switchSection": "Interruptor de Nexo y permiso"
+    },
+    "chat": {
+      "title": "Chat de visitantes",
+      "scenario": "Escenario",
+      "panel": "Abrir el panel",
+      "scenarios": {
+        "fresh": "Recién llegado",
+        "conversation": "Conversación",
+        "thinking": "Nexo pensando",
+        "offline": "Nexo desconectado",
+        "takeover": "Jose ha entrado",
+        "quota": "Cuota agotada",
+        "handoff": "Contacto guardado",
+        "failed": "Envío fallido"
+      }
     }
   },
   "nav": {
@@ -833,7 +848,122 @@
         "happy": "Nexo está contento",
         "sad": "Nexo lo siente"
       }
-    }
+    },
+    "title": "Chat con Nexo",
+    "close": "Cerrar el chat",
+    "fullscreen": "Abrir a pantalla completa",
+    "page": {
+      "metaTitle": "Chat con Nexo",
+      "metaDescription": "Habla con Nexo, el asistente IA de josecoded, o deja tu contacto para que te responda Jose.",
+      "title": "Chat con Nexo",
+      "back": "Volver al inicio"
+    },
+    "header": {
+      "online": "Asistente IA de josecoded",
+      "offline": "Desconectado",
+      "takeover": "Te atiende Jose"
+    },
+    "greeting": "Hola, soy Nexo, el asistente IA de josecoded. ¿Qué te gustaría contarme?",
+    "log": "Conversación con Nexo",
+    "author": {
+      "you": "Tú",
+      "jose": "Jose"
+    },
+    "sources": "Fuentes",
+    "delivery": {
+      "sending": "Enviando",
+      "failed": "No se ha enviado"
+    },
+    "typing": "Nexo está escribiendo",
+    "composer": {
+      "label": "Tu mensaje",
+      "placeholder": "Escribe tu mensaje",
+      "send": "Enviar mensaje",
+      "sending": "Enviando mensaje",
+      "remaining": "Quedan {count} caracteres"
+    },
+    "starters": {
+      "label": "Ideas para empezar",
+      "default": {
+        "s1": "¿Qué hace josecoded?",
+        "s2": "Quiero hablar de un proyecto",
+        "s3": "¿Cómo trabaja Jose?"
+      },
+      "services": {
+        "s1": "¿Qué nivel me conviene?",
+        "s2": "¿Qué incluye cada servicio?",
+        "s3": "Quiero hablar de un proyecto"
+      },
+      "freelance": {
+        "s1": "¿Cómo funciona por horas?",
+        "s2": "Necesito ayuda con una app",
+        "s3": "¿Cuándo puede empezar Jose?"
+      },
+      "about": {
+        "s1": "¿Con qué tecnologías trabaja Jose?",
+        "s2": "¿Dónde ha trabajado antes?",
+        "s3": "Quiero contratar a Jose"
+      },
+      "contact": {
+        "s1": "¿Cuándo me respondéis?",
+        "s2": "Prefiero que me escriba Jose",
+        "s3": "Tengo una duda antes de escribir"
+      }
+    },
+    "system": {
+      "ai_off": "Jose ha entrado en la conversación.",
+      "ai_on": "Nexo vuelve a la conversación.",
+      "handoff_done": "Jose ya tiene tu contacto.",
+      "archived": "La conversación se ha cerrado."
+    },
+    "notice": {
+      "takeover": {
+        "title": "Jose ha entrado",
+        "text": "Ahora te responde él. Nexo no contestará mientras tanto."
+      },
+      "offline": {
+        "title": "Nexo está desconectado",
+        "text": "Jose te responde en {responseTime}. Deja tu mensaje y, si quieres, tu contacto."
+      },
+      "quota": {
+        "title": "Has llegado al límite de hoy",
+        "text": "No puedo recibir más mensajes por ahora. Escríbeme por el formulario y te respondo en {responseTime}."
+      },
+      "quotaAction": "Ir al formulario"
+    },
+    "errors": {
+      "quota": "Has llegado al límite de mensajes. Prueba más tarde o usa el formulario.",
+      "closed": "Esta conversación está cerrada. Recarga para empezar otra.",
+      "verification": "No he podido comprobar que eres una persona. Inténtalo de nuevo.",
+      "invalid": "El mensaje no es válido. Revisa que no esté vacío ni pase de 2.000 caracteres.",
+      "unavailable": "El chat no está disponible ahora mismo. Usa el formulario de contacto."
+    },
+    "handoff": {
+      "title": "¿Prefieres que te escriba Jose?",
+      "lead": "Déjame un correo o un teléfono y te responde él en {responseTime}.",
+      "name": "Nombre",
+      "email": "Correo",
+      "phone": "Teléfono",
+      "contactHint": "Basta con uno de los dos.",
+      "optional": "opcional",
+      "consentBefore": "Acepto que Jose use estos datos para responderme, según la ",
+      "consentLink": "política de privacidad",
+      "consentAfter": ".",
+      "newTab": "se abre en una pestaña nueva",
+      "submit": "Que me escriba Jose",
+      "submitting": "Guardando tu contacto",
+      "doneTitle": "Contacto guardado",
+      "doneText": "Jose te responde en {responseTime}.",
+      "failed": "No he podido guardar tu contacto. Inténtalo de nuevo o usa el formulario.",
+      "errors": {
+        "contact_required": "Escribe un correo o un teléfono.",
+        "email_invalid": "Escribe un correo válido.",
+        "phone_invalid": "Escribe un teléfono válido.",
+        "name_invalid": "Revisa el nombre.",
+        "consent_required": "Necesito tu consentimiento para guardar el contacto."
+      }
+    },
+    "avatarOffline": "Nexo está desconectado"
   },
   "auth": {
     "meta": {
@@ -4685,6 +4815,7 @@
       "granted": "Concedido",
       "revoked": "Retirado",
       "pending": "Pendiente"
-    }
+    },
+    "sourcesLabel": "Fuentes"
   }
 }
