@@ -1,4 +1,5 @@
 import type { CompleteTaskLabels } from "@/components/area/CompleteTask/CompleteTask";
+import type { NexoConsentLabels } from "@/components/area/NexoConsentCard/NexoConsentCard";
 import type { PhaseBoardLabels } from "@/components/area/PhaseBoard/PhaseBoard";
 import type { PhaseStepsLabels } from "@/components/area/PhaseSteps/PhaseSteps";
 import type { ProjectHeaderLabels } from "@/components/area/ProjectHeader/ProjectHeader";
@@ -228,6 +229,29 @@ export function storyFormLabels(t: T, mode: "create" | "edit"): StoryFormLabels 
       forbidden: t("area.stories.form.errors.forbidden"),
       stale: t("area.stories.form.errors.stale"),
       error: t("area.stories.form.errors.error"),
+    },
+  };
+}
+
+export function consentLabels(t: T): NexoConsentLabels {
+  return {
+    title: t("area.chat.consent.title"),
+    text: t("area.chat.consent.text"),
+    state: {
+      granted: t("area.chat.consent.state.granted"),
+      revoked: t("area.chat.consent.state.revoked"),
+      pending: t("area.chat.consent.state.pending"),
+    },
+    grant: t("area.chat.consent.grant"),
+    revoke: t("area.chat.consent.revoke"),
+    saving: t("area.chat.consent.saving"),
+    done: {
+      granted: t("area.chat.consent.done.granted"),
+      revoked: t("area.chat.consent.done.revoked"),
+    },
+    errors: {
+      forbidden: t("area.chat.consent.errors.forbidden"),
+      error: t("area.chat.consent.errors.error"),
     },
   };
 }

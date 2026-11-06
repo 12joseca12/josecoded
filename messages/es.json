@@ -3481,6 +3481,45 @@
           "error": "No hemos podido guardarlo. Inténtalo de nuevo."
         }
       }
+    },
+    "chat": {
+      "meta": {
+        "title": "Chat"
+      },
+      "title": "Chat",
+      "lead": "Aquí hablas con Jose sobre tu proyecto.",
+      "loading": "Cargando el chat",
+      "error": {
+        "title": "No hemos podido cargar el chat",
+        "text": "Puedes reintentarlo.",
+        "retry": "Reintentar",
+        "retrying": "Reintentando"
+      },
+      "empty": {
+        "title": "El chat de este proyecto todavía no está abierto",
+        "text": "Se abrirá cuando tu proyecto esté preparado. Mientras tanto puedes dejar tus dudas en Historias."
+      },
+      "side": "Sobre este chat",
+      "consent": {
+        "title": "Nexo, el asistente de josecoded",
+        "text": "Si lo permites, Nexo puede responder en este chat cuando nadie del equipo ha contestado todavía. Para hacerlo lee los mensajes de esta conversación y el resumen de tu proyecto. Sin tu permiso, Nexo no participa ni lee nada. Puedes retirarlo cuando quieras.",
+        "state": {
+          "granted": "Nexo puede participar en este chat.",
+          "revoked": "Has retirado el permiso. Nexo no participa.",
+          "pending": "Todavía no has dado permiso. Nexo no participa."
+        },
+        "grant": "Permitir que Nexo participe",
+        "revoke": "Retirar el permiso",
+        "saving": "Guardando",
+        "done": {
+          "granted": "Permiso concedido.",
+          "revoked": "Permiso retirado."
+        },
+        "errors": {
+          "forbidden": "No tienes permiso para cambiar esto.",
+          "error": "No hemos podido guardarlo. Inténtalo de nuevo."
+        }
+      }
     }
   },
   "freelance": {

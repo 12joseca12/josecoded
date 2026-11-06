@@ -121,7 +121,7 @@ test("an unknown task or one of another project is a 404", async ({ page }) => {
   await signInClient(page, tag);
   const notFoundTitle = msg("errors.notFound.title");
   for (const target of [
-    "/es/area/tareas/21000000-0000-4000-8000-000000000099?proyecto=10000000-0000-4000-8000-000000000001",
+    "/es/area/tareas/21000000-0000-4000-8000-000000000099?proyecto=d0000000-0000-4000-8000-000000000001",
     "/es/area/tareas/21000000-0000-4000-8000-000000000003?proyecto=10000000-0000-4000-8000-000000000002",
     "/es/area/tareas/not-an-id",
   ]) {

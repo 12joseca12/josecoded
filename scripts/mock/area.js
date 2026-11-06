@@ -2,7 +2,7 @@ import { bearer, extendAuthState, personById, stateFor } from "./auth.js";
 import { readBody, route, send } from "./registry.js";
 
 const clientId = "00000000-0000-4000-8000-0000000000d1";
-const firstId = "10000000-0000-4000-8000-000000000001";
+const firstId = "d0000000-0000-4000-8000-000000000001";
 const secondId = "10000000-0000-4000-8000-000000000002";
 
 const projects = {

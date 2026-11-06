@@ -3481,6 +3481,45 @@
           "error": "We could not save it. Try again."
         }
       }
+    },
+    "chat": {
+      "meta": {
+        "title": "Chat"
+      },
+      "title": "Chat",
+      "lead": "Here you talk to Jose about your project.",
+      "loading": "Loading the chat",
+      "error": {
+        "title": "We could not load the chat",
+        "text": "You can try again.",
+        "retry": "Try again",
+        "retrying": "Trying again"
+      },
+      "empty": {
+        "title": "This project's chat is not open yet",
+        "text": "It opens once your project is set up. Meanwhile you can leave your questions in Stories."
+      },
+      "side": "About this chat",
+      "consent": {
+        "title": "Nexo, the josecoded assistant",
+        "text": "If you allow it, Nexo can reply in this chat when nobody on the team has answered yet. To do so it reads the messages in this conversation and your project summary. Without your permission Nexo does not take part or read anything. You can withdraw it at any time.",
+        "state": {
+          "granted": "Nexo can take part in this chat.",
+          "revoked": "You have withdrawn the permission. Nexo does not take part.",
+          "pending": "You have not given permission yet. Nexo does not take part."
+        },
+        "grant": "Allow Nexo to take part",
+        "revoke": "Withdraw permission",
+        "saving": "Saving",
+        "done": {
+          "granted": "Permission granted.",
+          "revoked": "Permission withdrawn."
+        },
+        "errors": {
+          "forbidden": "You do not have permission to change this.",
+          "error": "We could not save it. Try again."
+        }
+      }
     }
   },
   "freelance": {
