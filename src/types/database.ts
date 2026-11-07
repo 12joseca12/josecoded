@@ -418,6 +418,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "conversation_members_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "my_conversations"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "conversation_members_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
@@ -524,6 +531,13 @@ export type Database = {
             columns: ["lead_id"]
             isOneToOne: false
             referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
           {
@@ -799,20 +813,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "freelance_fee_items_payout_id_fkey"
-            columns: ["payout_id"]
-            isOneToOne: false
-            referencedRelation: "payouts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "freelance_fee_items_fee_id_fkey"
-            columns: ["fee_id"]
-            isOneToOne: false
-            referencedRelation: "freelance_fees"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "freelance_fee_items_approved_by_fkey"
             columns: ["approved_by"]
             isOneToOne: false
@@ -824,6 +824,20 @@ export type Database = {
             columns: ["approved_by"]
             isOneToOne: false
             referencedRelation: "team_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "freelance_fee_items_fee_id_fkey"
+            columns: ["fee_id"]
+            isOneToOne: false
+            referencedRelation: "freelance_fees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "freelance_fee_items_payout_id_fkey"
+            columns: ["payout_id"]
+            isOneToOne: false
+            referencedRelation: "payouts"
             referencedColumns: ["id"]
           },
           {
@@ -1319,6 +1333,20 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "leads_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "my_conversations"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "leads_deal_id_fkey"
             columns: ["deal_id"]
             isOneToOne: false
@@ -1426,6 +1454,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "message_attachments_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "my_conversations"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "message_attachments_message_id_fkey"
             columns: ["message_id"]
             isOneToOne: false
@@ -1450,9 +1485,9 @@ export type Database = {
       }
       messages: {
         Row: {
-          auto: boolean
           author_id: string | null
           author_kind: Database["public"]["Enums"]["author_kind"]
+          auto: boolean
           body: string
           conversation_id: string
           created_at: string
@@ -1469,9 +1504,9 @@ export type Database = {
           system_event: Database["public"]["Enums"]["system_event"] | null
         }
         Insert: {
-          auto?: boolean
           author_id?: string | null
           author_kind: Database["public"]["Enums"]["author_kind"]
+          auto?: boolean
           body?: string
           conversation_id: string
           created_at?: string
@@ -1488,9 +1523,9 @@ export type Database = {
           system_event?: Database["public"]["Enums"]["system_event"] | null
         }
         Update: {
-          auto?: boolean
           author_id?: string | null
           author_kind?: Database["public"]["Enums"]["author_kind"]
+          auto?: boolean
           body?: string
           conversation_id?: string
           created_at?: string
@@ -1526,6 +1561,13 @@ export type Database = {
             columns: ["conversation_id"]
             isOneToOne: false
             referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "my_conversations"
             referencedColumns: ["id"]
           },
           {
@@ -1912,7 +1954,7 @@ export type Database = {
           changed_at?: string
           changed_by?: string | null
           field: string
-          id?: number
+          id?: never
           row_id: string
           table_name: string
         }
@@ -1922,7 +1964,7 @@ export type Database = {
           changed_at?: string
           changed_by?: string | null
           field?: string
-          id?: number
+          id?: never
           row_id?: string
           table_name?: string
         }
@@ -2245,7 +2287,14 @@ export type Database = {
             columns: ["offer_slug"]
             isOneToOne: false
             referencedRelation: "offers"
-            referencedColumns: ["id"]
+            referencedColumns: ["slug"]
+          },
+          {
+            foreignKeyName: "projects_offer_slug_fkey"
+            columns: ["offer_slug"]
+            isOneToOne: false
+            referencedRelation: "public_offers"
+            referencedColumns: ["slug"]
           },
         ]
       }
@@ -2292,14 +2341,14 @@ export type Database = {
         }
         Insert: {
           key: string
-          public?: never
+          public?: boolean | null
           updated_at?: string
           updated_by?: string | null
           value: Json
         }
         Update: {
           key?: string
-          public?: never
+          public?: boolean | null
           updated_at?: string
           updated_by?: string | null
           value?: Json
@@ -2570,22 +2619,6 @@ export type Database = {
           project_id: string | null
           task_id: string | null
         }
-        Insert: {
-          author_label?: string | null
-          body?: string | null
-          created_at?: string | null
-          id?: string | null
-          project_id?: string | null
-          task_id?: string | null
-        }
-        Update: {
-          author_label?: string | null
-          body?: string | null
-          created_at?: string | null
-          id?: string | null
-          project_id?: string | null
-          task_id?: string | null
-        }
         Relationships: []
       }
       freelance_fee_summary: {
@@ -2608,44 +2641,6 @@ export type Database = {
           project_name: string | null
           project_phase: Database["public"]["Enums"]["project_phase"] | null
         }
-        Insert: {
-          agreed_total?: number | null
-          amount?: number | null
-          approved_unpaid_amount?: number | null
-          closed_at?: string | null
-          delivered_amount?: number | null
-          fee_id?: string | null
-          freelance_id?: string | null
-          hourly_rate?: number | null
-          hours_approved?: number | null
-          hours_cap?: number | null
-          mode?: Database["public"]["Enums"]["fee_mode"] | null
-          paid_amount?: number | null
-          pending_amount?: number | null
-          project_archived_at?: string | null
-          project_id?: string | null
-          project_name?: string | null
-          project_phase?: Database["public"]["Enums"]["project_phase"] | null
-        }
-        Update: {
-          agreed_total?: number | null
-          amount?: number | null
-          approved_unpaid_amount?: number | null
-          closed_at?: string | null
-          delivered_amount?: number | null
-          fee_id?: string | null
-          freelance_id?: string | null
-          hourly_rate?: number | null
-          hours_approved?: number | null
-          hours_cap?: number | null
-          mode?: Database["public"]["Enums"]["fee_mode"] | null
-          paid_amount?: number | null
-          pending_amount?: number | null
-          project_archived_at?: string | null
-          project_id?: string | null
-          project_name?: string | null
-          project_phase?: Database["public"]["Enums"]["project_phase"] | null
-        }
         Relationships: []
       }
       freelance_projects: {
@@ -2662,34 +2657,6 @@ export type Database = {
           started_at: string | null
           status: Database["public"]["Enums"]["project_status"] | null
           total: number | null
-        }
-        Insert: {
-          archived_at?: string | null
-          brief?: string | null
-          created_at?: string | null
-          done?: number | null
-          due_at?: string | null
-          id?: string | null
-          name?: string | null
-          percent?: number | null
-          phase?: Database["public"]["Enums"]["project_phase"] | null
-          started_at?: string | null
-          status?: Database["public"]["Enums"]["project_status"] | null
-          total?: number | null
-        }
-        Update: {
-          archived_at?: string | null
-          brief?: string | null
-          created_at?: string | null
-          done?: number | null
-          due_at?: string | null
-          id?: string | null
-          name?: string | null
-          percent?: number | null
-          phase?: Database["public"]["Enums"]["project_phase"] | null
-          started_at?: string | null
-          status?: Database["public"]["Enums"]["project_status"] | null
-          total?: number | null
         }
         Relationships: []
       }
@@ -2708,35 +2675,15 @@ export type Database = {
           status: Database["public"]["Enums"]["conversation_status"] | null
           unread_count: number | null
         }
-        Insert: {
-          ai_active?: boolean | null
-          ai_enabled?: boolean | null
-          consent_state?: string | null
-          counterpart_name?: string | null
-          first_page_path?: string | null
-          id?: string | null
-          kind?: Database["public"]["Enums"]["conversation_kind"] | null
-          last_activity_at?: string | null
-          last_message_excerpt?: string | null
-          project_id?: string | null
-          status?: Database["public"]["Enums"]["conversation_status"] | null
-          unread_count?: number | null
-        }
-        Update: {
-          ai_active?: boolean | null
-          ai_enabled?: boolean | null
-          consent_state?: string | null
-          counterpart_name?: string | null
-          first_page_path?: string | null
-          id?: string | null
-          kind?: Database["public"]["Enums"]["conversation_kind"] | null
-          last_activity_at?: string | null
-          last_message_excerpt?: string | null
-          project_id?: string | null
-          status?: Database["public"]["Enums"]["conversation_status"] | null
-          unread_count?: number | null
-        }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "conversations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       project_documents: {
         Row: {
@@ -2751,32 +2698,6 @@ export type Database = {
           uploaded_by_me: boolean | null
           uploader: string | null
           visibility: Database["public"]["Enums"]["document_visibility"] | null
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string | null
-          mime?: string | null
-          name?: string | null
-          project_id?: string | null
-          size_bytes?: number | null
-          storage_path?: string | null
-          uploaded_by?: string | null
-          uploaded_by_me?: boolean | null
-          uploader?: string | null
-          visibility?: Database["public"]["Enums"]["document_visibility"] | null
-        }
-        Update: {
-          created_at?: string | null
-          id?: string | null
-          mime?: string | null
-          name?: string | null
-          project_id?: string | null
-          size_bytes?: number | null
-          storage_path?: string | null
-          uploaded_by?: string | null
-          uploaded_by_me?: boolean | null
-          uploader?: string | null
-          visibility?: Database["public"]["Enums"]["document_visibility"] | null
         }
         Relationships: []
       }
@@ -2802,48 +2723,6 @@ export type Database = {
           stories_to_decide: number | null
           total: number | null
         }
-        Insert: {
-          archived_at?: string | null
-          client_id?: string | null
-          client_name?: string | null
-          contact_id?: string | null
-          created_at?: string | null
-          deal_id?: string | null
-          done?: number | null
-          due_at?: string | null
-          freelance_id?: string | null
-          freelance_name?: string | null
-          id?: string | null
-          name?: string | null
-          offer_slug?: string | null
-          percent?: number | null
-          phase?: Database["public"]["Enums"]["project_phase"] | null
-          started_at?: string | null
-          status?: Database["public"]["Enums"]["project_status"] | null
-          stories_to_decide?: number | null
-          total?: number | null
-        }
-        Update: {
-          archived_at?: string | null
-          client_id?: string | null
-          client_name?: string | null
-          contact_id?: string | null
-          created_at?: string | null
-          deal_id?: string | null
-          done?: number | null
-          due_at?: string | null
-          freelance_id?: string | null
-          freelance_name?: string | null
-          id?: string | null
-          name?: string | null
-          offer_slug?: string | null
-          percent?: number | null
-          phase?: Database["public"]["Enums"]["project_phase"] | null
-          started_at?: string | null
-          status?: Database["public"]["Enums"]["project_status"] | null
-          stories_to_decide?: number | null
-          total?: number | null
-        }
         Relationships: []
       }
       project_progress: {
@@ -2852,18 +2731,6 @@ export type Database = {
           percent: number | null
           project_id: string | null
           total: number | null
-        }
-        Insert: {
-          done?: number | null
-          percent?: number | null
-          project_id?: string | null
-          total?: number | null
-        }
-        Update: {
-          done?: number | null
-          percent?: number | null
-          project_id?: string | null
-          total?: number | null
         }
         Relationships: []
       }
@@ -2884,40 +2751,6 @@ export type Database = {
           story_id: string | null
           title: string | null
           updated_at: string | null
-        }
-        Insert: {
-          assigned_to_me?: boolean | null
-          assignee_id?: string | null
-          assignee_kind?: string | null
-          created_at?: string | null
-          description?: string | null
-          done_at?: string | null
-          done_by?: string | null
-          id?: string | null
-          phase?: Database["public"]["Enums"]["project_phase"] | null
-          project_id?: string | null
-          sort?: number | null
-          status?: Database["public"]["Enums"]["task_status"] | null
-          story_id?: string | null
-          title?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          assigned_to_me?: boolean | null
-          assignee_id?: string | null
-          assignee_kind?: string | null
-          created_at?: string | null
-          description?: string | null
-          done_at?: string | null
-          done_by?: string | null
-          id?: string | null
-          phase?: Database["public"]["Enums"]["project_phase"] | null
-          project_id?: string | null
-          sort?: number | null
-          status?: Database["public"]["Enums"]["task_status"] | null
-          story_id?: string | null
-          title?: string | null
-          updated_at?: string | null
         }
         Relationships: []
       }
@@ -3062,35 +2895,46 @@ export type Database = {
     }
     Functions: {
       accept_invitation: {
-        Args: { p_full_name: string; p_locale?: Database["public"]["Enums"]["app_locale"]; p_token: string }
+        Args: {
+          p_full_name: string
+          p_locale?: Database["public"]["Enums"]["app_locale"]
+          p_token: string
+        }
         Returns: Database["public"]["Enums"]["user_role"]
       }
       add_fee_item: {
-        Args: { p_amount: number; p_fee_id: string; p_label: string; p_worked_on?: string }
+        Args: {
+          p_amount: number
+          p_fee_id: string
+          p_label: string
+          p_worked_on?: string
+        }
         Returns: string
       }
       add_member: {
-        Args: { p_can_write?: boolean; p_conversation_id: string; p_role: Database["public"]["Enums"]["member_role"]; p_user_id: string }
+        Args: {
+          p_can_write?: boolean
+          p_conversation_id: string
+          p_role: Database["public"]["Enums"]["member_role"]
+          p_user_id: string
+        }
         Returns: undefined
       }
       admin_audit_log: {
         Args: { p_limit?: number; p_row_id?: string; p_table?: string }
         Returns: {
           action: string
-          actor_id: string | null
-          actor_name: string | null
-          after: Json | null
+          actor_id: string
+          actor_name: string
+          after: Json
           at: string
-          before: Json | null
+          before: Json
           id: number
-          row_id: string | null
+          row_id: string
           table_name: string
         }[]
       }
-      admin_counters: {
-        Args: never
-        Returns: Json
-      }
+      admin_counters: { Args: never; Returns: Json }
       admin_jobs: {
         Args: {
           p_limit?: number
@@ -3112,32 +2956,26 @@ export type Database = {
         Args: never
         Returns: {
           accrued_pending: number
-          archived_at: string | null
-          closer_rate: number | null
-          closer_recurring_rate: number | null
+          archived_at: string
+          closer_rate: number
+          closer_recurring_rate: number
           contacts_count: number
           created_at: string
-          email: string | null
+          email: string
           full_name: string
           has_totp: boolean
           id: string
           is_active: boolean
           open_deals: number
-          parent_closer_id: string | null
-          parent_rate: number | null
-          parent_recurring_rate: number | null
-          payout_cadence: Database["public"]["Enums"]["payout_cadence"] | null
+          parent_closer_id: string
+          parent_rate: number
+          parent_recurring_rate: number
+          payout_cadence: Database["public"]["Enums"]["payout_cadence"]
           role: Database["public"]["Enums"]["user_role"]
         }[]
       }
-      approve_commission_lines: {
-        Args: { p_ids: string[] }
-        Returns: number
-      }
-      approve_fee_items: {
-        Args: { p_ids: string[] }
-        Returns: number
-      }
+      approve_commission_lines: { Args: { p_ids: string[] }; Returns: number }
+      approve_fee_items: { Args: { p_ids: string[] }; Returns: number }
       archive_conversation: {
         Args: { p_conversation_id: string }
         Returns: undefined
@@ -3151,39 +2989,39 @@ export type Database = {
         Returns: string
       }
       build_payout: {
-        Args: { p_beneficiary_id: string; p_note?: string; p_period_end: string; p_period_start: string; p_withholding_rate?: number }
+        Args: {
+          p_beneficiary_id: string
+          p_note?: string
+          p_period_end: string
+          p_period_start: string
+          p_withholding_rate?: number
+        }
         Returns: string
       }
-      cancel_account_deletion: {
-        Args: never
-        Returns: undefined
-      }
+      cancel_account_deletion: { Args: never; Returns: undefined }
       cancel_job: {
         Args: { p_id: string }
         Returns: Database["public"]["Enums"]["job_status"]
       }
-      cancel_recurring: {
-        Args: { p_deal_id: string }
-        Returns: undefined
-      }
-      cancel_schedule_item: {
-        Args: { p_id: string }
-        Returns: undefined
-      }
-      claim_lead: {
-        Args: { p_lead_id: string }
-        Returns: string
-      }
-      complete_my_task: {
-        Args: { p_id: string }
-        Returns: undefined
-      }
+      cancel_recurring: { Args: { p_deal_id: string }; Returns: undefined }
+      cancel_schedule_item: { Args: { p_id: string }; Returns: undefined }
+      claim_lead: { Args: { p_lead_id: string }; Returns: string }
+      complete_my_task: { Args: { p_id: string }; Returns: undefined }
       confirm_story: {
         Args: { p_accept?: boolean; p_id: string }
         Returns: Database["public"]["Enums"]["story_status"]
       }
       create_project: {
-        Args: { p_brief?: string; p_contact_id?: string; p_deal_id?: string; p_due_at?: string; p_freelance_id?: string; p_name: string; p_offer_slug?: string; p_started_at?: string }
+        Args: {
+          p_brief?: string
+          p_contact_id?: string
+          p_deal_id?: string
+          p_due_at?: string
+          p_freelance_id?: string
+          p_name: string
+          p_offer_slug?: string
+          p_started_at?: string
+        }
         Returns: string
       }
       crm_counters: {
@@ -3205,55 +3043,62 @@ export type Database = {
           amount_net: number
           id: string
           kind: Database["public"]["Enums"]["payment_kind"]
-          method: Database["public"]["Enums"]["payment_method"] | null
+          method: Database["public"]["Enums"]["payment_method"]
           nature: Database["public"]["Enums"]["commission_nature"]
           received_at: string
-          reference: string | null
-          schedule_id: string | null
+          reference: string
+          schedule_id: string
         }[]
       }
       decide_story: {
-        Args: { p_amount?: number; p_create_task?: boolean; p_decision: string; p_hours?: number; p_id: string; p_note?: string }
+        Args: {
+          p_amount?: number
+          p_create_task?: boolean
+          p_decision: string
+          p_hours?: number
+          p_id: string
+          p_note?: string
+        }
         Returns: Database["public"]["Enums"]["story_status"]
       }
-      delete_document: {
-        Args: { p_id: string }
-        Returns: string
-      }
-      delete_fee_item: {
-        Args: { p_id: string }
-        Returns: undefined
-      }
-      delete_payout_draft: {
-        Args: { p_id: string }
-        Returns: undefined
-      }
-      delete_task: {
-        Args: { p_id: string }
-        Returns: undefined
-      }
+      delete_document: { Args: { p_id: string }; Returns: string }
+      delete_fee_item: { Args: { p_id: string }; Returns: undefined }
+      delete_payout_draft: { Args: { p_id: string }; Returns: undefined }
+      delete_task: { Args: { p_id: string }; Returns: undefined }
       discard_lead: {
         Args: { p_lead_id: string; p_reason: string }
         Returns: undefined
       }
-      ensure_my_conversation: {
-        Args: never
-        Returns: string
-      }
+      ensure_my_conversation: { Args: never; Returns: string }
       ensure_project_conversation: {
         Args: { p_project_id: string }
         Returns: string
       }
-      freelance_counters: {
-        Args: never
-        Returns: Json
-      }
+      freelance_counters: { Args: never; Returns: Json }
       import_contacts: {
-        Args: { p_file_hash: string; p_file_name: string; p_on_duplicate?: string; p_owner_id?: string; p_rows: Json }
+        Args: {
+          p_file_hash: string
+          p_file_name: string
+          p_on_duplicate?: string
+          p_owner_id?: string
+          p_rows: Json
+        }
         Returns: Json
       }
       invite_user: {
-        Args: { p_auth_user_id?: string; p_closer_rate?: number; p_closer_recurring_rate?: number; p_email: string; p_note?: string; p_parent_closer_id?: string; p_parent_rate?: number; p_parent_recurring_rate?: number; p_payout_cadence?: Database["public"]["Enums"]["payout_cadence"]; p_project_id?: string; p_role: Database["public"]["Enums"]["user_role"] }
+        Args: {
+          p_auth_user_id?: string
+          p_closer_rate?: number
+          p_closer_recurring_rate?: number
+          p_email: string
+          p_note?: string
+          p_parent_closer_id?: string
+          p_parent_rate?: number
+          p_parent_recurring_rate?: number
+          p_payout_cadence?: Database["public"]["Enums"]["payout_cadence"]
+          p_project_id?: string
+          p_role: Database["public"]["Enums"]["user_role"]
+        }
         Returns: {
           invitation_id: string
           token: string
@@ -3287,30 +3132,19 @@ export type Database = {
           user_id: string
         }[]
       }
-      log_totp_reset: {
-        Args: { p_user_id: string }
-        Returns: undefined
-      }
-      mark_item_delivered: {
-        Args: { p_id: string }
-        Returns: undefined
-      }
-      mark_notifications_read: {
-        Args: { p_ids: string[] }
-        Returns: number
-      }
-      mark_read: {
-        Args: { p_conversation_id: string }
-        Returns: undefined
-      }
+      log_totp_reset: { Args: { p_user_id: string }; Returns: undefined }
+      mark_item_delivered: { Args: { p_id: string }; Returns: undefined }
+      mark_notifications_read: { Args: { p_ids: string[] }; Returns: number }
+      mark_read: { Args: { p_conversation_id: string }; Returns: undefined }
       move_task: {
-        Args: { p_id: string; p_phase: Database["public"]["Enums"]["project_phase"]; p_sort: number }
+        Args: {
+          p_id: string
+          p_phase: Database["public"]["Enums"]["project_phase"]
+          p_sort: number
+        }
         Returns: undefined
       }
-      my_account_deletion: {
-        Args: never
-        Returns: string
-      }
+      my_account_deletion: { Args: never; Returns: string }
       omen_claim_jobs: {
         Args: { p_limit?: number; p_worker: string }
         Returns: {
@@ -3321,10 +3155,7 @@ export type Database = {
           payload: Json
         }[]
       }
-      omen_conversation_context: {
-        Args: { p_job_id: string }
-        Returns: Json
-      }
+      omen_conversation_context: { Args: { p_job_id: string }; Returns: Json }
       omen_finish_job: {
         Args: { p_error?: string; p_id: string; p_result?: Json }
         Returns: Database["public"]["Enums"]["job_status"]
@@ -3334,13 +3165,17 @@ export type Database = {
         Returns: undefined
       }
       omen_post_reply: {
-        Args: { p_body: string; p_confidence?: number; p_interest?: boolean; p_job_id: string; p_model?: string; p_sources?: string[] }
+        Args: {
+          p_body: string
+          p_confidence?: number
+          p_interest?: boolean
+          p_job_id: string
+          p_model?: string
+          p_sources?: string[]
+        }
         Returns: string
       }
-      omen_status: {
-        Args: never
-        Returns: Json
-      }
+      omen_status: { Args: never; Returns: Json }
       outbox_claim: {
         Args: { p_limit?: number }
         Returns: {
@@ -3356,10 +3191,7 @@ export type Database = {
         Args: { p_error?: string; p_id: number; p_ok: boolean }
         Returns: undefined
       }
-      payments_notify_overdue: {
-        Args: never
-        Returns: number
-      }
+      payments_notify_overdue: { Args: never; Returns: number }
       read_invitation: {
         Args: { p_token: string }
         Returns: {
@@ -3387,19 +3219,52 @@ export type Database = {
         }[]
       }
       record_invoice: {
-        Args: { p_deal_id: string; p_issued_at: string; p_net: number; p_number: string; p_pdf_path?: string; p_schedule_id?: string; p_vat_rate: number }
+        Args: {
+          p_deal_id: string
+          p_issued_at: string
+          p_net: number
+          p_number: string
+          p_pdf_path?: string
+          p_schedule_id?: string
+          p_vat_rate: number
+        }
         Returns: string
       }
       record_payment: {
-        Args: { p_amount_net: number; p_deal_id: string; p_invoice_id?: string; p_kind: Database["public"]["Enums"]["payment_kind"]; p_method: Database["public"]["Enums"]["payment_method"]; p_nature: Database["public"]["Enums"]["commission_nature"]; p_received_at: string; p_reference?: string; p_schedule_id?: string }
+        Args: {
+          p_amount_net: number
+          p_deal_id: string
+          p_invoice_id?: string
+          p_kind: Database["public"]["Enums"]["payment_kind"]
+          p_method: Database["public"]["Enums"]["payment_method"]
+          p_nature: Database["public"]["Enums"]["commission_nature"]
+          p_received_at: string
+          p_reference?: string
+          p_schedule_id?: string
+        }
         Returns: string
       }
       register_attachment: {
-        Args: { p_message_id: string; p_mime: string; p_name: string; p_path: string; p_size: number; p_uploaded_by: string }
+        Args: {
+          p_message_id: string
+          p_mime: string
+          p_name: string
+          p_path: string
+          p_size: number
+          p_uploaded_by: string
+        }
         Returns: string
       }
       register_document: {
-        Args: { p_mime: string; p_name: string; p_path: string; p_project_id: string; p_size: number; p_uploaded_by: string; p_visibility?: Database["public"]["Enums"]["document_visibility"] }
+        Args: {
+          p_mime: string
+          p_name: string
+          p_path: string
+          p_project_id: string
+          p_size: number
+          p_uploaded_by: string
+          p_visibility?: Database["public"]["Enums"]["document_visibility"]
+        }
         Returns: string
       }
       reject_commission_line: {
@@ -3425,18 +3290,12 @@ export type Database = {
         Args: { p_ids: string[]; p_project_id: string }
         Returns: undefined
       }
-      request_account_deletion: {
-        Args: never
-        Returns: string
-      }
+      request_account_deletion: { Args: never; Returns: string }
       retry_job: {
         Args: { p_id: string }
         Returns: Database["public"]["Enums"]["job_status"]
       }
-      revoke_invitation: {
-        Args: { p_id: string }
-        Returns: undefined
-      }
+      revoke_invitation: { Args: { p_id: string }; Returns: undefined }
       send_test_notification: {
         Args: { p_channel: string }
         Returns: undefined
@@ -3450,15 +3309,29 @@ export type Database = {
         Returns: undefined
       }
       set_freelance_fee: {
-        Args: { p_amount?: number; p_hourly_rate?: number; p_hours_cap?: number; p_mode: Database["public"]["Enums"]["fee_mode"]; p_note?: string; p_project_id: string }
+        Args: {
+          p_amount?: number
+          p_hourly_rate?: number
+          p_hours_cap?: number
+          p_mode: Database["public"]["Enums"]["fee_mode"]
+          p_note?: string
+          p_project_id: string
+        }
         Returns: string
       }
       set_my_task_status: {
-        Args: { p_id: string; p_status: Database["public"]["Enums"]["task_status"] }
+        Args: {
+          p_id: string
+          p_status: Database["public"]["Enums"]["task_status"]
+        }
         Returns: undefined
       }
       set_notification_pref: {
-        Args: { p_channel: string; p_enabled: boolean; p_event: Database["public"]["Enums"]["notification_event"] }
+        Args: {
+          p_channel: string
+          p_enabled: boolean
+          p_event: Database["public"]["Enums"]["notification_event"]
+        }
         Returns: undefined
       }
       set_payment_schedule: {
@@ -3470,7 +3343,12 @@ export type Database = {
         Returns: undefined
       }
       set_payout_status: {
-        Args: { p_id: string; p_paid_at?: string; p_reference?: string; p_status: Database["public"]["Enums"]["payout_status"] }
+        Args: {
+          p_id: string
+          p_paid_at?: string
+          p_reference?: string
+          p_status: Database["public"]["Enums"]["payout_status"]
+        }
         Returns: undefined
       }
       set_project_client: {
@@ -3482,15 +3360,18 @@ export type Database = {
         Returns: undefined
       }
       set_project_phase: {
-        Args: { p_id: string; p_phase: Database["public"]["Enums"]["project_phase"] }
+        Args: {
+          p_id: string
+          p_phase: Database["public"]["Enums"]["project_phase"]
+        }
         Returns: undefined
       }
-      set_setting: {
-        Args: { p_key: string; p_value: Json }
-        Returns: string
-      }
+      set_setting: { Args: { p_key: string; p_value: Json }; Returns: string }
       set_update_visibility: {
-        Args: { p_id: string; p_visibility: Database["public"]["Enums"]["update_visibility"] }
+        Args: {
+          p_id: string
+          p_visibility: Database["public"]["Enums"]["update_visibility"]
+        }
         Returns: undefined
       }
       set_user_active: {
@@ -3498,11 +3379,23 @@ export type Database = {
         Returns: undefined
       }
       set_user_rates: {
-        Args: { p_closer_rate?: number; p_closer_recurring_rate?: number; p_parent_rate?: number; p_parent_recurring_rate?: number; p_payout_cadence?: Database["public"]["Enums"]["payout_cadence"]; p_user_id: string }
+        Args: {
+          p_closer_rate?: number
+          p_closer_recurring_rate?: number
+          p_parent_rate?: number
+          p_parent_recurring_rate?: number
+          p_payout_cadence?: Database["public"]["Enums"]["payout_cadence"]
+          p_user_id: string
+        }
         Returns: undefined
       }
       submit_fee_hours: {
-        Args: { p_hours: number; p_label: string; p_project_id: string; p_worked_on?: string }
+        Args: {
+          p_hours: number
+          p_label: string
+          p_project_id: string
+          p_worked_on?: string
+        }
         Returns: string
       }
       submit_lead: {
@@ -3534,26 +3427,17 @@ export type Database = {
         Args: { p_chat_id: number; p_code: string }
         Returns: string
       }
-      telegram_link_code: {
-        Args: never
-        Returns: string
-      }
+      telegram_link_code: { Args: never; Returns: string }
       telegram_link_status: {
         Args: never
         Returns: {
-          linked_at: string | null
-          pending_code: string | null
-          pending_expires_at: string | null
+          linked_at: string
+          pending_code: string
+          pending_expires_at: string
         }[]
       }
-      telegram_unlink: {
-        Args: never
-        Returns: undefined
-      }
-      touch_lead: {
-        Args: { p_lead_id: string }
-        Returns: undefined
-      }
+      telegram_unlink: { Args: never; Returns: undefined }
+      touch_lead: { Args: { p_lead_id: string }; Returns: undefined }
       update_my_profile: {
         Args: {
           p_full_name?: string
@@ -3562,7 +3446,16 @@ export type Database = {
         Returns: undefined
       }
       upsert_task: {
-        Args: { p_assignee_id?: string; p_description?: string; p_id?: string; p_phase: Database["public"]["Enums"]["project_phase"]; p_project_id: string; p_status?: Database["public"]["Enums"]["task_status"]; p_story_id?: string; p_title: string }
+        Args: {
+          p_assignee_id?: string
+          p_description?: string
+          p_id?: string
+          p_phase: Database["public"]["Enums"]["project_phase"]
+          p_project_id: string
+          p_status?: Database["public"]["Enums"]["task_status"]
+          p_story_id?: string
+          p_title: string
+        }
         Returns: string
       }
       visitor_forget: {
@@ -3570,11 +3463,23 @@ export type Database = {
         Returns: number
       }
       visitor_handoff: {
-        Args: { p_consent: boolean; p_email: string; p_name: string; p_phone: string; p_token_hash: string }
+        Args: {
+          p_consent: boolean
+          p_email: string
+          p_name: string
+          p_phone: string
+          p_token_hash: string
+        }
         Returns: string
       }
       visitor_send: {
-        Args: { p_body: string; p_ip_hash: string; p_locale: Database["public"]["Enums"]["app_locale"]; p_page_path: string; p_token_hash: string }
+        Args: {
+          p_body: string
+          p_ip_hash: string
+          p_locale: Database["public"]["Enums"]["app_locale"]
+          p_page_path: string
+          p_token_hash: string
+        }
         Returns: {
           conversation_id: string
           message_id: string
@@ -3584,12 +3489,13 @@ export type Database = {
         Args: { p_since?: string; p_token_hash: string }
         Returns: Json
       }
-      void_invoice: {
-        Args: { p_id: string }
-        Returns: undefined
-      }
+      void_invoice: { Args: { p_id: string }; Returns: undefined }
       win_deal: {
-        Args: { p_deal_id: string; p_recurring_monthly?: number; p_won_amount: number }
+        Args: {
+          p_deal_id: string
+          p_recurring_monthly?: number
+          p_won_amount: number
+        }
         Returns: string
       }
     }
@@ -3607,7 +3513,12 @@ export type Database = {
       app_locale: "es" | "en"
       author_kind: "human" | "nexo" | "system"
       catalog_platform: "web" | "app"
-      commission_line_status: "accrued" | "approved" | "rejected" | "paid" | "reversed"
+      commission_line_status:
+        | "accrued"
+        | "approved"
+        | "rejected"
+        | "paid"
+        | "reversed"
       commission_nature: "project" | "recurring"
       commission_role: "closer" | "parent"
       contact_kind: "prospect" | "client" | "recruiter" | "partner" | "other"
@@ -3624,7 +3535,12 @@ export type Database = {
       deal_stage: "new" | "contacted" | "meeting" | "proposal" | "won" | "lost"
       document_visibility: "client" | "team"
       extra_billing: "once" | "monthly" | "yearly" | "per_unit"
-      fee_item_status: "pending" | "delivered" | "approved" | "rejected" | "paid"
+      fee_item_status:
+        | "pending"
+        | "delivered"
+        | "approved"
+        | "rejected"
+        | "paid"
       fee_mode: "hourly" | "milestones" | "fixed"
       invoice_kind: "proforma" | "invoice"
       invoice_status: "draft" | "sent" | "paid" | "void"
@@ -3643,7 +3559,21 @@ export type Database = {
       lead_status: "new" | "assigned" | "contacted" | "converted" | "discarded"
       member_role: "owner" | "closer" | "client" | "freelance"
       message_kind: "text" | "handoff" | "reference"
-      notification_event: "lead_new" | "lead_claimed" | "message_new" | "commission_accrued" | "payment_recorded" | "payment_overdue" | "payout_paid" | "job_failed" | "omen_down" | "invitation_accepted" | "document_added" | "fee_submitted" | "fee_decided" | "project_update"
+      notification_event:
+        | "lead_new"
+        | "lead_claimed"
+        | "message_new"
+        | "commission_accrued"
+        | "payment_recorded"
+        | "payment_overdue"
+        | "payout_paid"
+        | "job_failed"
+        | "omen_down"
+        | "invitation_accepted"
+        | "document_added"
+        | "fee_submitted"
+        | "fee_decided"
+        | "project_update"
       outbox_channel: "email" | "telegram"
       outbox_status: "queued" | "sending" | "sent" | "failed"
       payment_kind: "payment" | "refund"
@@ -3654,8 +3584,18 @@ export type Database = {
       project_phase: "discover" | "design" | "build" | "publish" | "maintain"
       project_status: "active" | "paused" | "closed"
       schedule_kind: "milestone" | "recurring"
-      schedule_status: "scheduled" | "proforma_sent" | "invoiced" | "paid" | "cancelled"
-      story_status: "proposed" | "in_review" | "accepted" | "rejected" | "in_tasks"
+      schedule_status:
+        | "scheduled"
+        | "proforma_sent"
+        | "invoiced"
+        | "paid"
+        | "cancelled"
+      story_status:
+        | "proposed"
+        | "in_review"
+        | "accepted"
+        | "rejected"
+        | "in_tasks"
       system_event:
         | "member_added"
         | "member_left"
@@ -3670,6 +3610,7 @@ export type Database = {
       user_role: "admin" | "closer" | "freelance" | "client"
     }
     CompositeTypes: {
+      [_ in never]: never
     }
   }
 }
@@ -3808,7 +3749,13 @@ export const Constants = {
       app_locale: ["es", "en"],
       author_kind: ["human", "nexo", "system"],
       catalog_platform: ["web", "app"],
-      commission_line_status: ["accrued", "approved", "rejected", "paid", "reversed"],
+      commission_line_status: [
+        "accrued",
+        "approved",
+        "rejected",
+        "paid",
+        "reversed",
+      ],
       commission_nature: ["project", "recurring"],
       commission_role: ["closer", "parent"],
       contact_kind: ["prospect", "client", "recruiter", "partner", "other"],
@@ -3839,7 +3786,22 @@ export const Constants = {
       lead_status: ["new", "assigned", "contacted", "converted", "discarded"],
       member_role: ["owner", "closer", "client", "freelance"],
       message_kind: ["text", "handoff", "reference"],
-      notification_event: ["lead_new", "lead_claimed", "message_new", "commission_accrued", "payment_recorded", "payment_overdue", "payout_paid", "job_failed", "omen_down", "invitation_accepted", "document_added", "fee_submitted", "fee_decided", "project_update"],
+      notification_event: [
+        "lead_new",
+        "lead_claimed",
+        "message_new",
+        "commission_accrued",
+        "payment_recorded",
+        "payment_overdue",
+        "payout_paid",
+        "job_failed",
+        "omen_down",
+        "invitation_accepted",
+        "document_added",
+        "fee_submitted",
+        "fee_decided",
+        "project_update",
+      ],
       outbox_channel: ["email", "telegram"],
       outbox_status: ["queued", "sending", "sent", "failed"],
       payment_kind: ["payment", "refund"],
@@ -3850,8 +3812,20 @@ export const Constants = {
       project_phase: ["discover", "design", "build", "publish", "maintain"],
       project_status: ["active", "paused", "closed"],
       schedule_kind: ["milestone", "recurring"],
-      schedule_status: ["scheduled", "proforma_sent", "invoiced", "paid", "cancelled"],
-      story_status: ["proposed", "in_review", "accepted", "rejected", "in_tasks"],
+      schedule_status: [
+        "scheduled",
+        "proforma_sent",
+        "invoiced",
+        "paid",
+        "cancelled",
+      ],
+      story_status: [
+        "proposed",
+        "in_review",
+        "accepted",
+        "rejected",
+        "in_tasks",
+      ],
       system_event: [
         "member_added",
         "member_left",
