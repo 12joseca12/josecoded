@@ -56,8 +56,7 @@
       "Bash(git push -f*)",
       "Bash(git push * --force*)",
       "Bash(git push * -f*)",
-      "Read(~/.ssh/id_*)",
-      "Read(~/.config/gh/**)"
+      "Read(~/.ssh/id_*)"
     ]
   }
 }
