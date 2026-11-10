@@ -1,0 +1,5 @@
+# Capa de seguridad v2 (bloque 2). El bloque 3 (/harness) añade aquí lint, tipos y tests.
+pre-commit:
+  commands:
+    gitleaks:
+      run: gitleaks git --pre-commit --staged --redact --no-banner

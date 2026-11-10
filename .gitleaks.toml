@@ -1,0 +1,36 @@
+# gitleaks: reglas por defecto + allowlists acotadas (linea base del historial, 2026-11-10).
+# No se permite ningun *.test.ts entero: un secreto real en un test debe seguir detectandose.
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Generated output, tool caches and files that only carry placeholders or public config"
+paths = [
+  '''(^|/)graphify-out/''',
+  '''(^|/)\.next/''',
+  '''(^|/)\.gstack/''',
+  '''(^|/)pnpm-lock\.yaml$''',
+  '''(^|/)package-lock\.json$''',
+  '''^apps/api/\.dev\.vars\.example$''',
+  '''^apps/api/src/adapters/github\.contract\.test\.ts$''',
+  '''^apps/web/lib/crm/import-mapping\.ts$''',
+  '''^\.github/workflows/ci\.yml$''',
+]
+
+[[allowlists]]
+description = "Known test fixture values and Supabase publishable key (public by design)"
+regexTarget = "secret"
+regexes = [
+  '''^sb_secret_test_''',
+  '''^sb_secret_0123''',
+  '''^re_test_''',
+  '''^re_0123456789''',
+  '''^test-anon-k''',
+  '''^sb_publishable_''',
+]
+
+[[allowlists]]
+description = "UUID idempotency keys in tests (not credentials)"
+targetRules = ["generic-api-key"]
+regexTarget = "secret"
+regexes = ['''^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$''']
