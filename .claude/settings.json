@@ -7,18 +7,55 @@
     "gsap-skills@gsap-skills": true
   },
   "extraKnownMarketplaces": {
-    "impeccable": { "source": { "source": "github", "repo": "pbakaus/impeccable" } },
-    "taste-skill": { "source": { "source": "github", "repo": "Leonxlnx/taste-skill" } },
-    "gsap-skills": { "source": { "source": "github", "repo": "greensock/gsap-skills" } }
+    "impeccable": {
+      "source": {
+        "source": "github",
+        "repo": "pbakaus/impeccable"
+      }
+    },
+    "taste-skill": {
+      "source": {
+        "source": "github",
+        "repo": "Leonxlnx/taste-skill"
+      }
+    },
+    "gsap-skills": {
+      "source": {
+        "source": "github",
+        "repo": "greensock/gsap-skills"
+      }
+    }
   },
   "hooks": {
     "SessionStart": [
       {
         "matcher": "startup|resume",
         "hooks": [
-          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/estado-sesion.sh", "timeout": 5 }
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/estado-sesion.sh",
+            "timeout": 5
+          }
         ]
       }
+    ]
+  },
+  "permissions": {
+    "deny": [
+      "Read(**/.env)",
+      "Read(**/.env.local)",
+      "Read(**/.env.*.local)",
+      "Read(**/.env.development)",
+      "Read(**/.env.production)",
+      "Read(**/.env.staging)",
+      "Read(**/.env.test)",
+      "Read(**/.dev.vars)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(git push * --force*)",
+      "Bash(git push * -f*)"
     ]
   }
 }
