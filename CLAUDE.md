@@ -17,12 +17,12 @@ Web personal de Jose: muestra su trabajo y capta clientes por tres vías (contra
 - Email Resend, Telegram para Jose, Turnstile en formularios públicos.
 
 ## Comandos
-Placeholders hasta que exista el scaffold (primer bloque de `infra/`): `pnpm install` · `pnpm dev` · `pnpm lint` · `pnpm typecheck` · `pnpm test` · `pnpm e2e` · `pnpm build` · `pnpm db:reset` (local) · `pnpm db:types` (regenera `database.ts`). Se confirman en `README.md` cuando existan. **pnpm siempre, nunca npm/npx.**
+Fuente: `scripts` de `package.json`. Los habituales: `pnpm dev` · `pnpm lint` (+ `lint:css`, `lint:rules`) · `pnpm typecheck` · `pnpm test` (vitest) · `pnpm e2e` (Playwright) · `pnpm build` · `pnpm cf:preview` (Worker local) · `pnpm db:test:local` (pgTAP en Supabase local) · `pnpm db:types` (regenera `database.ts`) · comprobaciones `content:check`, `i18n:check`, `tokens:check`, `og:check`, `perf:budget`. **pnpm siempre, nunca npm/npx.**
 
 ## Reglas del proyecto
 1. **Estilo B** (acero `#929DA7`, carbón `#17191C`, coral `#FF4B32`; `prototipos/estilo-b/`). `tokens.css` a mano es la fuente; los componentes consumen solo `var(--token)` desde CSS Modules. Sin Tailwind ni shadcn.
 2. **Sin comentarios en el código**, vigilado por lint. El porqué va al nombre, al commit o a `decisiones.md`.
-3. **Un componente por concepto con variantes** (`variant`/`size`/`tone` como `data-*`), textos solo en `messages/es.json`, tipos en `src/types/` (zod en las fronteras, tipos inferidos), `database.ts` generado y nunca editado.
+3. **Un componente por concepto con variantes** (`variant`/`size`/`tone` como `data-*`), textos solo en `messages/{es,en}.json`, tipos en `src/types/` (zod en las fronteras, tipos inferidos), `database.ts` generado y nunca editado.
 4. **UX del brief en todo:** transición de pantalla (View Transitions), botones con hover/foco/pulsado/desactivado, esqueleto en todo lo que carga, estado de carga en todo botón que lanza una acción, pantalla propia para 404 y cada error. Motion en CSS nativo; `prefers-reduced-motion` sin animaciones.
 5. **Accesibilidad WCAG 2.2 AA** por componente: teclado, foco visible, contraste, axe bloqueante en E2E, lector de pantalla por pantalla.
 6. **Seguridad base** (decisión 9.1): RLS en toda tabla, `anon` sin permisos salvo lo público explícito, clave de servicio solo en servidor y Omen, CSP con nonce, Turnstile y límite de peticiones en lo público, URL firmadas, zod en toda frontera, advisors de Supabase a cero.
