@@ -10,6 +10,7 @@ Requisitos: estar en la rama de la feature, con la app arrancable en local y la 
 ## Pasos
 
 1. **Preparar.** Identifica la spec de la rama (la más reciente que la nombre) y su sección "Persona objetivo". Arranca el dev server (`preview_start`) o build de simulador y confirma que carga. Calcula el rango `main...HEAD`.
+   Si existe `.claude/hooks/harness/prepush.sh`, ejecútalo con `--base <rama base>` antes de lanzar agentes (en repos sin remoto es la única vez que corre esa verificación, además del `Stop`): si sale 1 (typecheck o tests en rojo), se corrige primero y no se lanza ningún agente sobre una rama que no compila. Avisos (herramienta ausente, rango vacío) no bloquean.
 2. **Lanzar en paralelo** (una sola respuesta con varias llamadas a Agent, `run_in_background: true`), según perfil:
    - `web`/`movil`: `qa`, `revisor-seguridad`, `revisor-accesibilidad`, `usuario-ejemplo` y `ui` en modo revisión (que ejecuta `/impeccable audit` y `/impeccable critique`, y `review-animations` si la rama toca movimiento).
    - `infra`: solo `revisor-seguridad`.
