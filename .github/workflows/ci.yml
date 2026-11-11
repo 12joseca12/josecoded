@@ -17,6 +17,35 @@ env:
   NEXT_PUBLIC_TURNSTILE_SITE_KEY: "1x00000000000000000000AA"
 
 jobs:
+  # Decides whether the PR touches the app. Any failure or doubt leaves app=true
+  # (run everything). .github/ is deliberately not in the "not app" list, so a
+  # workflow change always runs the full suite.
+  changes:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    outputs:
+      app: ${{ steps.filter.outputs.app }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - id: filter
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          app=true
+          if [ "$EVENT" = pull_request ]; then
+            if files="$(git diff --no-renames --name-only "$BASE...$HEAD")" && [ -n "$files" ] &&
+               ! printf '%s\n' "$files" | grep -qvE '^(\.claude/|docs/|[^/]+\.md$|lefthook\.yml$|\.gitleaks\.toml$)'; then
+              app=false
+            fi
+          fi
+          echo "files changed:"; printf '%s\n' "${files:-}" | sed 's/^/  /'
+          echo "app=$app" >> "$GITHUB_OUTPUT"
+
   static:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -41,6 +70,8 @@ jobs:
       - run: pnpm test
 
   e2e:
+    needs: changes
+    if: needs.changes.outputs.app == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     strategy:
@@ -80,6 +111,8 @@ jobs:
       - run: pnpm e2e --shard="$E2E_SHARD"
 
   db:
+    needs: changes
+    if: needs.changes.outputs.app == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
@@ -93,14 +126,22 @@ jobs:
 
   checks:
     if: always()
-    needs: [static, e2e, db]
+    needs: [changes, static, e2e, db]
     runs-on: ubuntu-24.04
     timeout-minutes: 2
     steps:
       - env:
-          RESULTS: ${{ needs.static.result }} ${{ needs.e2e.result }} ${{ needs.db.result }}
+          APP: ${{ needs.changes.outputs.app }}
+          CHANGES: ${{ needs.changes.result }}
+          STATIC: ${{ needs.static.result }}
+          E2E: ${{ needs.e2e.result }}
+          DB: ${{ needs.db.result }}
         run: |
-          echo "static e2e db: $RESULTS"
-          for result in $RESULTS; do
-            [ "$result" = "success" ] || exit 1
+          echo "changes=$CHANGES (app=$APP) static=$STATIC e2e=$E2E db=$DB"
+          [ "$CHANGES" = "success" ] || exit 1
+          [ "$STATIC" = "success" ] || exit 1
+          for result in "$E2E" "$DB"; do
+            [ "$result" = "success" ] && continue
+            [ "$result" = "skipped" ] && [ "$APP" = "false" ] && continue
+            exit 1
           done
