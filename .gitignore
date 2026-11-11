@@ -26,3 +26,4 @@ graphify-out/
 .impeccable/questions/
 .impeccable/hook.cache.json
 AGENTS.md
+.claude/.harness-tmp.*

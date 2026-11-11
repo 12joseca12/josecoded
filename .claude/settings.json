@@ -26,20 +26,6 @@
       }
     }
   },
-  "hooks": {
-    "SessionStart": [
-      {
-        "matcher": "startup|resume",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/estado-sesion.sh",
-            "timeout": 5
-          }
-        ]
-      }
-    ]
-  },
   "permissions": {
     "deny": [
       "Read(**/.env)",
@@ -56,7 +42,161 @@
       "Bash(git push -f*)",
       "Bash(git push * --force*)",
       "Bash(git push * -f*)",
-      "Read(~/.ssh/id_*)"
+      "Read(~/.ssh/id_*)",
+      "Bash(git *--output*)",
+      "Bash(git *--no-index*)",
+      "Bash(git *--ext-diff*)",
+      "Bash(git *--textconv*)",
+      "Bash(git commit*--no-verify*)",
+      "Bash(*core.hooksPath*)",
+      "Bash(*LEFTHOOK=0*)",
+      "Bash(*supabase db reset*--linked*)",
+      "Bash(*supabase@* db reset*--linked*)",
+      "Bash(*supabase db reset*--db-url*)",
+      "Bash(*supabase@* db reset*--db-url*)",
+      "Bash(*supabase*--linked*db reset*)",
+      "Bash(*supabase*--db-url*db reset*)",
+      "Bash(*supabase migration repair*)",
+      "Bash(*supabase@* migration repair*)",
+      "mcp__Blender",
+      "mcp__Claude_Code_iOS_Simulator",
+      "mcp__Shadcn_UI"
+    ],
+    "allow": [
+      "Bash(git status)",
+      "Bash(git diff)",
+      "Bash(git diff --stat)",
+      "Bash(git diff --cached)",
+      "Bash(git log --oneline -20)",
+      "Bash(pnpm dev)",
+      "Bash(pnpm lint)",
+      "Bash(pnpm typecheck)",
+      "Bash(pnpm test)",
+      "Bash(pnpm format)",
+      "Bash(pnpm build)",
+      "Bash(supabase status*)"
+    ],
+    "ask": [
+      "Edit(.claude/**)",
+      "Edit(**/package.json)",
+      "Edit(**/wrangler.*)",
+      "Edit(**/*.config.js)",
+      "Edit(**/*.config.mjs)",
+      "Edit(**/*.config.cjs)",
+      "Edit(**/*.config.ts)",
+      "Edit(**/*.config.mts)",
+      "Edit(**/*.config.cts)",
+      "Edit(**/.prettierrc*)",
+      "Edit(**/.stylelintrc*)",
+      "Edit(**/lefthook.yml)",
+      "Edit(**/.lefthook.yml)",
+      "Write(.claude/**)",
+      "Write(**/package.json)",
+      "Write(**/wrangler.*)",
+      "Write(**/*.config.js)",
+      "Write(**/*.config.mjs)",
+      "Write(**/*.config.cjs)",
+      "Write(**/*.config.ts)",
+      "Write(**/*.config.mts)",
+      "Write(**/*.config.cts)",
+      "Write(**/.prettierrc*)",
+      "Write(**/.stylelintrc*)",
+      "Write(**/lefthook.yml)",
+      "Write(**/.lefthook.yml)",
+      "Bash(*wrangler deploy*)",
+      "Bash(*wrangler@* deploy*)",
+      "Bash(*wrangler publish*)",
+      "Bash(*wrangler@* publish*)",
+      "Bash(*wrangler versions deploy*)",
+      "Bash(*wrangler@* versions deploy*)",
+      "Bash(*wrangler pages deploy*)",
+      "Bash(*wrangler@* pages deploy*)",
+      "Bash(*wrangler secret *)",
+      "Bash(*wrangler@* secret *)",
+      "Bash(*opennextjs-cloudflare deploy*)",
+      "Bash(*opennextjs-cloudflare@* deploy*)",
+      "Bash(*opennextjs-cloudflare upload*)",
+      "Bash(*opennextjs-cloudflare@* upload*)",
+      "Bash(*cf:deploy*)",
+      "Bash(*supabase db push*)",
+      "Bash(*supabase@* db push*)",
+      "Bash(*supabase db reset*)",
+      "Bash(*supabase@* db reset*)",
+      "Bash(*supabase functions deploy*)",
+      "Bash(*supabase@* functions deploy*)",
+      "Bash(*supabase secrets set*)",
+      "Bash(*supabase@* secrets set*)",
+      "Bash(*supabase secrets unset*)",
+      "Bash(*supabase@* secrets unset*)"
+    ]
+  },
+  "skillOverrides": {
+    "ios-qa": "off",
+    "ios-fix": "off",
+    "ios-clean": "off",
+    "ios-design-review": "off",
+    "ios-sync": "off",
+    "write-swift": "off",
+    "animate-expo": "off",
+    "vercel-react-native-skills": "off"
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/harness/session-check.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/harness/estado-sesion.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/harness/guard-bash.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/harness/format.sh",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/harness/stop-verify.sh",
+            "timeout": 120
+          }
+        ]
+      }
     ]
   }
 }
