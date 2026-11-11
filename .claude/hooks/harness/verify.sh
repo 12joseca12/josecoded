@@ -1,19 +1,23 @@
 #!/usr/bin/env bash
 # Generado por /harness (claude-config). No editar: se sobrescribe en /harness update.
 # Verificacion de ficheros concretos (nunca el proyecto entero): typecheck, lint, css, formato, tests.
-# Uso: verify.sh [--no-tests] [--format-check] (--staged | --files-from <fichero> | -- <f>...)
+# Uso: verify.sh [--no-tests] [--no-lint] [--format-check] (--staged | --since <rev> | --files-from <fichero> | -- <f>...)
+# --since <rev>: ficheros cambiados entre merge-base(<rev>, HEAD) y HEAD; se verifica lo que hay en disco.
+# <rev> invalido o sin merge-base: lista vacia, exit 0. --no-lint salta eslint y stylelint.
 # Exit 0 si todo pasa, se salta o solo hay avisos; 1 si falla algo atribuible a los ficheros de la lista
 # (imprime `--- <nombre> ---` y las ultimas 40 lineas). Los avisos (fallo de la herramienta, errores en
 # ficheros ajenos) salen en stdout como lineas `!! harness: ...` y no cuentan como fallo.
 . "$(dirname "${BASH_SOURCE[0]}")/lib.sh" || exit 0
 
 CALLER_PWD="$PWD"
-no_tests=0; fmt=0; mode=""; src=""
+force_tsc=0; no_tests=0; no_lint=0; fmt=0; mode=""; src=""
 while [ $# -gt 0 ]; do
   case "$1" in
     --no-tests) no_tests=1; shift ;;
+    --no-lint) no_lint=1; shift ;;
     --format-check) fmt=1; shift ;;
     --staged) mode=staged; shift ;;
+    --since) mode=since; src="${2:-}"; shift; [ $# -gt 0 ] && shift ;;
     --files-from) mode=from; src="${2:-}"; shift; [ $# -gt 0 ] && shift ;;
     --) mode=args; shift; break ;;
     *) shift ;;
@@ -25,17 +29,28 @@ trap 'rm -f "$raw" "$raw.l" "$raw.t"' EXIT
 base="$CALLER_PWD"   # relative inputs resolve against the caller's cwd (staged ones against the root)
 case "$mode" in
   staged) base="$HARNESS_ROOT"
-    git -C "$HARNESS_ROOT" -c core.quotePath=false diff --cached --name-only --relative --diff-filter=ACMR 2>/dev/null > "$raw" ;;
+    git -C "$HARNESS_ROOT" diff --cached --name-only -z --relative --diff-filter=ACMR 2>/dev/null > "$raw" ;;
+  since) base="$HARNESS_ROOT"
+    case "$src" in ""|-*) ;; *)
+      mb="$(git -C "$HARNESS_ROOT" merge-base "$src" HEAD 2>/dev/null)" && {
+        git -C "$HARNESS_ROOT" diff --name-only -z --relative --diff-filter=ACMR "$mb" HEAD 2>/dev/null > "$raw"
+        # deleted or renamed-away TypeScript files can break importers that are not in the list
+        git -C "$HARNESS_ROOT" diff --name-only -z --no-renames --relative --diff-filter=D "$mb" HEAD 2>/dev/null |
+          tr '\0' '\n' | grep -qE '\.(ts|tsx|mts|cts)$' && force_tsc=1
+      } ;;
+    esac ;;
   from) case "$src" in /*|"") ;; *) src="$CALLER_PWD/$src" ;; esac
-    [ -n "$src" ] && [ -f "$src" ] && cat "$src" > "$raw" ;;
-  args) for f in "$@"; do printf '%s\n' "$f"; done > "$raw" ;;
+    [ -n "$src" ] && [ -f "$src" ] && tr '\n' '\0' < "$src" > "$raw" ;;
+  args) for f in "$@"; do printf '%s\0' "$f"; done > "$raw" ;;
 esac
 
 cd "$HARNESS_ROOT" 2>/dev/null || exit 0
 
 # Normalize: absolute path inside the project, existing regular file, not node_modules/.git, unique.
-while IFS= read -r f; do
+while IFS= read -r -d '' f; do
   [ -n "$f" ] || continue
+  case "$f" in *"
+"*) continue ;; esac   # names with a newline cannot travel through the line-based lists below
   case "$f" in /*) ;; *) f="$base/$f" ;; esac
   [ -f "$f" ] || continue
   f="$(norm_path "$f")" || continue
@@ -58,7 +73,7 @@ while IFS= read -r f; do
 " ;;
   esac
 done < "$raw.l"
-[ -n "$all" ] || exit 0
+[ -n "$all" ] || [ "$force_tsc" = 1 ] || exit 0
 
 failed=0
 # capture <files (one per line)> <cmd> [args...]: runs cmd with the files as last args; sets CAP_OUT, CAP_RC.
@@ -95,7 +110,7 @@ abs() { # path (relative to root or absolute) -> normalized absolute path
 }
 
 # --- typecheck: only errors located in the checked files block ---
-if [ -n "$ts" ] && [ -f tsconfig.json ] && t="$(bin tsc)"; then
+if { [ -n "$ts" ] || [ "$force_tsc" = 1 ]; } && [ -f tsconfig.json ] && t="$(bin tsc)"; then
   mkdir -p node_modules/.cache/harness 2>/dev/null
   CAP_OUT="$("$t" --noEmit --pretty false --incremental --tsBuildInfoFile node_modules/.cache/harness/tsc.tsbuildinfo 2>&1)"; CAP_RC=$?
   strip_ansi
@@ -125,13 +140,13 @@ EOT
 fi
 
 # --- lint ---
-if [ -n "$code" ] && t="$(bin eslint)" && ls eslint.config.* >/dev/null 2>&1; then
+if [ "$no_lint" = 0 ] && [ -n "$code" ] && t="$(bin eslint)" && ls eslint.config.* >/dev/null 2>&1; then
   run_check lint "$code" "$t" --no-warn-ignored --
 fi
 
 has_stylelint_config() { local c; for c in .stylelintrc* stylelint.config.*; do [ -e "$c" ] && return 0; done; return 1; }
 # --- css: only with a stylelint config ---
-if [ -n "$css" ] && t="$(bin stylelint)" && { has_stylelint_config ||
+if [ "$no_lint" = 0 ] && [ -n "$css" ] && t="$(bin stylelint)" && { has_stylelint_config ||
   grep -q '"stylelint"[[:space:]]*:' package.json 2>/dev/null; }; then
   # stylelint: 2 = lint problems (block); 1, 78, 64... = the tool failed (warn).
   capture "$css" "$t" --allow-empty-input --
