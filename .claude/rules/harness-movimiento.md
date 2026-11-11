@@ -9,7 +9,7 @@ Si el `CLAUDE.md` del proyecto o sus documentos de decisiones dicen otra cosa, m
 Las librerías citadas aplican si ya están en `package.json`; añadir una nueva necesita aprobación del proyecto.
 
 - Anima solo `transform` y `opacity`. Nunca `width`, `height`, `top`, `left` ni `margin`; nada de `transition: all`: lista las propiedades.
-- Duraciones y curvas salen de la escala de tokens del proyecto (`var(--duration-*)`, `var(--ease-*)`); sin milisegundos ni `cubic-bezier()` sueltos. Si falta el token, propónlo; no lo inventes.
+- Duraciones y curvas salen de la escala de tokens del proyecto (busca su nombre real en los tokens: p. ej. `--duration-*`, `--dur-*`, `--ease-*`); sin milisegundos ni `cubic-bezier()` sueltos. Si falta el token, propónlo; no lo inventes.
 - Interrumpible: para estados que el usuario puede revertir (hover, abrir/cerrar, pulsado) usa transiciones CSS, que parten del valor actual; los keyframes, solo para entradas de una vez.
 - La salida es más rápida que la entrada.
 - `prefers-reduced-motion: reduce`: quita desplazamientos y escalas. Que quede o no un fundido de `opacity` lo decide el `CLAUDE.md` del proyecto.
