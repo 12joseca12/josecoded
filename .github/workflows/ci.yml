@@ -38,12 +38,12 @@ jobs:
         run: |
           app=true
           if [ "$EVENT" = pull_request ]; then
-            if files="$(git diff --name-only "$BASE...$HEAD")" && [ -n "$files" ] &&
+            if files="$(git diff --no-renames --name-only "$BASE...$HEAD")" && [ -n "$files" ] &&
                ! printf '%s\n' "$files" | grep -qvE '^(\.claude/|docs/|[^/]+\.md$|lefthook\.yml$|\.gitleaks\.toml$)'; then
               app=false
             fi
           fi
-          echo "files changed:"; printf '%s\n' "${files:-}"
+          echo "files changed:"; printf '%s\n' "${files:-}" | sed 's/^/  /'
           echo "app=$app" >> "$GITHUB_OUTPUT"
 
   static:
