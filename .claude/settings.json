@@ -90,19 +90,6 @@
       "Edit(**/.stylelintrc*)",
       "Edit(**/lefthook.yml)",
       "Edit(**/.lefthook.yml)",
-      "Write(.claude/**)",
-      "Write(**/package.json)",
-      "Write(**/wrangler.*)",
-      "Write(**/*.config.js)",
-      "Write(**/*.config.mjs)",
-      "Write(**/*.config.cjs)",
-      "Write(**/*.config.ts)",
-      "Write(**/*.config.mts)",
-      "Write(**/*.config.cts)",
-      "Write(**/.prettierrc*)",
-      "Write(**/.stylelintrc*)",
-      "Write(**/lefthook.yml)",
-      "Write(**/.lefthook.yml)",
       "Bash(*wrangler deploy*)",
       "Bash(*wrangler@* deploy*)",
       "Bash(*wrangler publish*)",
@@ -173,6 +160,16 @@
             "timeout": 5
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/harness/bash-mark.sh",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "PostToolUse": [
@@ -183,6 +180,16 @@
             "type": "command",
             "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/harness/format.sh",
             "timeout": 15
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/harness/bash-track.sh",
+            "timeout": 5
           }
         ]
       }
