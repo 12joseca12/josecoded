@@ -1,0 +1,9 @@
+# Generado por /harness (claude-config). No editar: se sobrescribe en /harness update.
+# Pre-commit del harness: solo formato de lo que va en el commit. gitleaks vive en el lefthook.yml del repo
+# (capa de seguridad). Aqui solo hay "commands", sin opciones de hook (piped, parallel...) que chocarian con las
+# del proyecto. Consecuencia aceptada: el formato puede correr (y re-stagear) aunque gitleaks bloquee; el commit
+# se bloquea igual.
+pre-commit:
+  commands:
+    harness-format:
+      run: '[ ! -x .claude/hooks/harness/precommit-format.sh ] || .claude/hooks/harness/precommit-format.sh'

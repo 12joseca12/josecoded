@@ -1,0 +1,33 @@
+# Generado por /harness (claude-config). No editar: se sobrescribe en /harness update.
+# decision<TAB>regex<TAB>motivo
+deny	@S@(cat|less|more|head|tail|grep|egrep|fgrep|rg|ag|sed|awk|gawk|nl|tac|bat|batcat|xxd|od|hexdump|strings|base64|cut|sort|uniq|diff|source|\.|vi|vim|nano|open|code|jq|python3?|node|dd|perl|ruby|paste|column|view|ex)[[:space:]]+@SECRET@	lectura de secretos por shell (.env, .dev.vars, claves y certificados); .env.example sí es legible
+deny	(^|[^<])<[[:space:]]*@SECRET@	lectura de secretos por shell (redirección de entrada)
+deny	@S@@G@[[:space:]]+(show|diff|log|blame|cat-file)[[:space:]]+@SECRET@	lectura de secretos por git
+deny	@S@@G@[[:space:]]+push[^;&|]*[[:space:]](-f|--force[a-z=-]*|-[a-zA-Z]*f[a-zA-Z]*|--mirror|--all|\+[^[:space:]]+)([^A-Za-z0-9_./-]|$)	git push forzado
+deny	@S@@G@[[:space:]]+push[^;&|]*([[:space:]:"']|refs/heads/)(main|master|develop)(["'[:space:];&|]|$)	push directo a rama protegida (main, master, develop)
+deny	@S@gh[[:space:]]+pr[[:space:]]+merge[^;&|]*--admin	gh pr merge --admin (salta la protección de main)
+deny	@S@@G@[[:space:]]+[^;&|]*[[:space:]]--(output|no-index|ext-diff|textconv)([^A-Za-z-]|$)	git con --output, --no-index, --ext-diff o --textconv (escribe o ejecuta fuera de control)
+deny	>[>|]?[[:space:]]*["']?[^[:space:];&|"']*(\.claude/(settings(\.local)?\.json|harness\.json|hooks)|\.git/hooks|\.?lefthook(-local)?\.(ya?ml|json|toml))	escritura por shell en la configuración del harness o en hooks de git
+deny	@S@(tee|rm|chmod|chown|truncate|ln|mv|install)[[:space:]]+[^;&|]*(\.claude/(settings(\.local)?\.json|harness\.json|hooks)|\.git/hooks|\.?lefthook(-local)?\.(ya?ml|json|toml))	escritura por shell en la configuración del harness o en hooks de git
+deny	@S@(cp|rsync)[[:space:]]+[^;&|]*(\.claude/(settings(\.local)?\.json|harness\.json|hooks)|\.git/hooks|\.?lefthook(-local)?\.(ya?ml|json|toml))[^[:space:];&|]*["']?[[:space:]]*([;&|)]|$)	escritura por shell en la configuración del harness o en hooks de git
+deny	@S@(sed|perl)[^;&|]*[[:space:]](-[A-Za-z]*i[A-Za-z.]*|--in-place[^[:space:]]*)([[:space:]][^;&|]*)?(\.claude/(settings(\.local)?\.json|harness\.json|hooks)|\.git/hooks|\.?lefthook(-local)?\.(ya?ml|json|toml))	escritura por shell en la configuración del harness o en hooks de git
+deny	@S@dd[[:space:]]+[^;&|]*of=[^;&|]*(\.claude/(settings(\.local)?\.json|harness\.json|hooks)|\.git/hooks|\.?lefthook(-local)?\.(ya?ml|json|toml))	escritura por shell en la configuración del harness o en hooks de git
+deny	@S@@G@[[:space:]]+[^;&|]*[[:space:]]--no-verify([^A-Za-z0-9-]|$)	git --no-verify (salta los hooks de git)
+deny	@S@@G@[[:space:]]+[^;&|]*commit[^;&|]*[[:space:]]-[a-ln-zA-Z]*n[a-zA-Z]*([^A-Za-z0-9-]|$)	git commit -n (salta el pre-commit)
+deny	(^|[^A-Za-z0-9_])LEFTHOOK(_EXCLUDE)?=	desactivar lefthook por variable de entorno (salta el pre-commit)
+deny	@S@@G@[[:space:]]+[^;&|]*core\.[Hh]ooks[Pp]ath=	cambiar core.hooksPath (salta los hooks de git)
+deny	@S@@G@[[:space:]]+[^;&|]*config[^;&|]*core\.[Hh]ooks[Pp]ath[[:space:]]+[^-[:space:];&|]	cambiar core.hooksPath (salta los hooks de git)
+deny	@S@find[[:space:]]+[^;&|]*(\.claude/(settings(\.local)?\.json|harness\.json|hooks)|\.git/hooks|\.?lefthook(-local)?\.(ya?ml|json|toml))[^;&|]*[[:space:]](-delete|-exec)	borrado por find en la configuración del harness o en hooks de git
+deny	@S@@G@[[:space:]]+(checkout|restore|rm|mv|clean|apply)[[:space:]][^;&|]*(\.claude/(settings(\.local)?\.json|harness\.json|hooks)|\.git/hooks|\.?lefthook(-local)?\.(ya?ml|json|toml))	git checkout/restore/rm sobre la configuración del harness o hooks de git
+# Generado por /harness (claude-config). No editar: se sobrescribe en /harness update.
+ask	@S@@X@wrangler@V@[[:space:]]+([^;&|]*[[:space:]])?(deploy|publish)([^A-Za-z0-9_:.-]|$)	deploy de Cloudflare (wrangler deploy)
+ask	@S@@X@wrangler@V@[[:space:]]+([^;&|]*[[:space:]])?secret[[:space:]]+(put|bulk|delete)([^A-Za-z0-9_:.-]|$)	escritura de secretos en Cloudflare (wrangler secret)
+ask	@S@@X@opennextjs-cloudflare@V@[[:space:]]+(deploy|upload)([^A-Za-z0-9_:.-]|$)	deploy de Cloudflare (opennextjs-cloudflare)
+ask	@S@(pnpm|yarn|npm|bun)[[:space:]]+((-F|--filter|-C|--dir|--prefix|-w|--workspace|workspace)[[:space:]]+[^[:space:]]+[[:space:]]+|--[a-z]+=[^[:space:]]+[[:space:]]+|-[a-zA-Z-]+[[:space:]]+)*(run[[:space:]]+)?(cf:)?deploy[A-Za-z0-9:_-]*([^A-Za-z0-9_:.-]|$)	deploy de Cloudflare (script deploy)
+# Generado por /harness (claude-config). No editar: se sobrescribe en /harness update.
+deny	@S@@X@supabase@V@[[:space:]]+[^;&|]*(--linked|--db-url)([^;&|]*[[:space:]])?db[[:space:]]+reset([^A-Za-z0-9_:.-]|$)	supabase db reset contra el remoto (destructivo)
+deny	@S@@X@supabase@V@[[:space:]]+([^;&|]*[[:space:]])?db[[:space:]]+reset[^;&|]*[[:space:]](--linked|--db-url)	supabase db reset contra el remoto (destructivo)
+deny	@S@@X@supabase@V@[[:space:]]+([^;&|]*[[:space:]])?migration[[:space:]]+repair([^A-Za-z0-9_:.-]|$)	supabase migration repair (altera el historial remoto)
+ask	@S@@X@supabase@V@[[:space:]]+([^;&|]*[[:space:]])?db[[:space:]]+(push|reset)([^A-Za-z0-9_:.-]|$)	supabase db push o reset
+ask	@S@@X@supabase@V@[[:space:]]+([^;&|]*[[:space:]])?functions[[:space:]]+deploy([^A-Za-z0-9_:.-]|$)	deploy de funciones de Supabase
+ask	@S@@X@supabase@V@[[:space:]]+([^;&|]*[[:space:]])?secrets[[:space:]]+(set|unset)([^A-Za-z0-9_:.-]|$)	escritura de secretos en Supabase

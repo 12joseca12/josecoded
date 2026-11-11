@@ -3,3 +3,6 @@ pre-commit:
   commands:
     gitleaks:
       run: gitleaks git --pre-commit --staged --redact --no-banner
+
+extends:
+  - .claude/harness/lefthook.yml
