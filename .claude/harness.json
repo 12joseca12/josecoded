@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "perfil": "web",
   "stack": [
     "cloudflare",
@@ -106,6 +106,7 @@
       ".claude/agents/revisor-accesibilidad.md",
       ".claude/agents/revisor-seguridad.md",
       ".claude/agents/revisor.md",
+      ".claude/agents/tech-lead.md",
       ".claude/agents/ui.md",
       ".claude/agents/usuario-ejemplo.md",
       ".claude/agents/ux.md",
@@ -124,6 +125,30 @@
       ".claude/skills/web-design-guidelines",
       ".claude/vendor/emilkowalski/LICENSE",
       ".claude/vendor/emilkowalski/PROCEDENCIA.md"
+    ]
+  },
+  "puerta": {
+    "incluir": [
+      {
+        "categoria": "publica",
+        "patron": "^(content|src/content)/",
+        "motivo": "contenido del portfolio (CV, blog, proyectos)"
+      },
+      {
+        "categoria": "publica",
+        "patron": "^src/.*(seo|jsonld|llms)",
+        "motivo": "SEO y GEO (metadatos, JSON-LD, llms.txt)"
+      },
+      {
+        "categoria": "datos",
+        "patron": "^(contracts|src/types/contracts)/",
+        "motivo": "contratos de jobs con el Omen"
+      },
+      {
+        "categoria": "flujos",
+        "patron": "^src/lib/(contact|chat|area|crm|services|outbox)/",
+        "motivo": "logica de los flujos de usuario"
+      }
     ]
   }
 }
