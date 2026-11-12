@@ -2,7 +2,6 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
 
 import type { Database } from "@/types/database";
-import { formSource, normalizeEmail, withSubmissionCounts } from "./lead-filters";
 import {
   assigneeRowSchema,
   type LeadAssignee,
@@ -11,6 +10,8 @@ import {
   leadRowSchema,
   type LeadsResult,
 } from "@/types/leads";
+
+import { formSource, normalizeEmail, withSubmissionCounts } from "./lead-filters";
 
 export const leadsLimit = 200;
 
@@ -68,7 +69,6 @@ async function countSubmissions(
   const email = normalizeEmail(lead.email);
   if (!email) return own;
   try {
-    // email is citext: eq matches regardless of case.
     const { count, error } = await client
       .from("leads")
       .select("id", { count: "exact", head: true })

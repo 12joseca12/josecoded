@@ -175,7 +175,7 @@ function detailClient(
   const maybeSingle = vi.fn().mockResolvedValue(lead);
   const eq = vi.fn().mockReturnValue({ maybeSingle });
   const select = vi.fn((columns: string, options?: object) =>
-    columns === leadDetailColumns ? { eq } : countSelectFn(columns, options),
+    columns === leadDetailColumns ? { eq } : (countSelectFn(columns, options) as unknown),
   );
   const dealMaybe = vi.fn().mockResolvedValue(deal);
   const dealEq = vi.fn().mockReturnValue({ maybeSingle: dealMaybe });

@@ -8,8 +8,8 @@ import {
   hasFieldFilters,
   leadQueryMax,
   leadsHref,
-  parseLeadFilters,
   normalizeEmail,
+  parseLeadFilters,
   tabOf,
   withSubmissionCounts,
 } from "./lead-filters";

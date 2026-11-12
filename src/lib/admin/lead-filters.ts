@@ -39,11 +39,10 @@ export function parseLeadFilters(params: LeadSearchParams): LeadFilters {
 export const formSource = "form";
 
 export function normalizeEmail(email: string | null): string | null {
-  const value = email?.trim().toLowerCase();
-  return value ? value : null;
+  const value = (email ?? "").trim().toLowerCase();
+  return value === "" ? null : value;
 }
 
-/** Adds, to each row, how many contact-form submissions its normalized email has in `rows`. */
 export function withSubmissionCounts(rows: LeadRow[]): LeadListRow[] {
   const totals = new Map<string, number>();
   for (const row of rows) {

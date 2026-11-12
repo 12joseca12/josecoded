@@ -26,7 +26,6 @@ export const leadRowSchema = z.object({
 
 export type LeadRow = z.infer<typeof leadRowSchema>;
 
-/** A lead plus how many contact-form submissions its email has sent (loaded rows only). */
 export type LeadListRow = LeadRow & { submissionCount: number };
 
 export const leadDetailSchema = leadRowSchema.extend({
