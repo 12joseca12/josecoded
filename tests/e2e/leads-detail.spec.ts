@@ -341,3 +341,34 @@ test("the add sheet is still available when there are no leads yet", async ({ pa
   await expect(page.getByRole("button", { name: leads("new.open") })).toBeVisible();
   await expectClean(page);
 });
+
+test("an email that wrote twice gets a pill that links to every submission", async ({ page }) => {
+  const label = leads("repeat.label").replace("{count}", "2");
+  const link = leads("repeat.link").replace("{count}", "2");
+  await openList(page);
+  const cara = bodyRows(page).filter({ hasText: "Cara Pack" });
+  await expect(cara.getByText(label)).toBeVisible();
+  await expect(bodyRows(page).filter({ hasText: "Wanda Waiting" }).getByText(label)).toBeVisible();
+  await expect(
+    bodyRows(page)
+      .filter({ hasText: "Hilda Hiring" })
+      .getByText(/envíos/),
+  ).toHaveCount(0);
+  await expectClean(page);
+
+  const repeat = cara.getByRole("link", { name: link });
+  await expect(repeat).toHaveAttribute("href", "/es/admin/interesados?q=cara%40example.com");
+  await repeat.click();
+  await expect(page).toHaveURL(/\/es\/admin\/interesados\?q=cara%40example\.com/);
+  await expect(bodyRows(page)).toHaveCount(2);
+
+  await page.goto(`/es/admin/interesados/${ids.cara}`);
+  const record = page.locator("#content");
+  await expect(record.getByRole("link", { name: link })).toHaveAttribute(
+    "href",
+    "/es/admin/interesados?q=cara%40example.com",
+  );
+  await page.goto(`/es/admin/interesados/${ids.hilda}`);
+  await expect(page.getByRole("heading", { level: 1, name: "Hilda Hiring" })).toBeVisible();
+  await expect(page.getByRole("link", { name: /envíos de este email/ })).toHaveCount(0);
+});

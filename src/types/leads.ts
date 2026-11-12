@@ -26,6 +26,8 @@ export const leadRowSchema = z.object({
 
 export type LeadRow = z.infer<typeof leadRowSchema>;
 
+export type LeadListRow = LeadRow & { submissionCount: number };
+
 export const leadDetailSchema = leadRowSchema.extend({
   phone: z.string().nullable(),
   message: z.string().nullable(),
@@ -116,10 +118,17 @@ export type LeadActionResult =
   | { status: "error" };
 
 export type LeadsResult =
-  { status: "ok"; rows: LeadRow[]; assignees: LeadAssignee[]; limit: number } | { status: "error" };
+  | { status: "ok"; rows: LeadListRow[]; assignees: LeadAssignee[]; limit: number }
+  | { status: "error" };
 
 export type LeadDetailResult =
-  | { status: "ok"; lead: LeadDetailRow; assignees: LeadAssignee[]; dealStage: string | null }
+  | {
+      status: "ok";
+      lead: LeadDetailRow;
+      assignees: LeadAssignee[];
+      dealStage: string | null;
+      submissionCount: number;
+    }
   | { status: "missing" }
   | { status: "error" };
 
@@ -238,5 +247,6 @@ export interface LeadTableLabels {
   sources: Record<(typeof leadSources)[number], string>;
   unassigned: string;
   unknownAssignee: string;
+  repeat: { label: string; link: string };
   actions: LeadActionLabels;
 }

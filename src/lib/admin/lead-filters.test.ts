@@ -8,8 +8,10 @@ import {
   hasFieldFilters,
   leadQueryMax,
   leadsHref,
+  normalizeEmail,
   parseLeadFilters,
   tabOf,
+  withSubmissionCounts,
 } from "./lead-filters";
 
 const closer = "00000000-0000-4000-8000-0000000000c1";
@@ -151,5 +153,31 @@ describe("leadsHref and hasFieldFilters", () => {
     expect(hasFieldFilters(none)).toBe(false);
     expect(hasFieldFilters({ ...none, tab: "new" })).toBe(false);
     expect(hasFieldFilters({ ...none, q: "a" })).toBe(true);
+  });
+});
+
+describe("normalizeEmail", () => {
+  it("lowercases and trims, and treats blank as none", () => {
+    expect(normalizeEmail(" Ana@Example.COM ")).toBe("ana@example.com");
+    expect(normalizeEmail("  ")).toBeNull();
+    expect(normalizeEmail(null)).toBeNull();
+  });
+});
+
+describe("withSubmissionCounts", () => {
+  it("counts form submissions per normalized email", () => {
+    const result = withSubmissionCounts([
+      row({ id: "1", email: "Ana@Example.com" }),
+      row({ id: "2", email: "ana@example.com" }),
+      row({ id: "3", email: "ana@example.com", source: "manual" }),
+      row({ id: "4", email: "bob@example.com" }),
+      row({ id: "5", email: null }),
+    ]);
+    expect(result.map((entry) => entry.submissionCount)).toEqual([2, 2, 2, 1, 0]);
+  });
+
+  it("gives 0 to an email that never used the form", () => {
+    const [entry] = withSubmissionCounts([row({ source: "whatsapp", email: "z@example.com" })]);
+    expect(entry?.submissionCount).toBe(0);
   });
 });

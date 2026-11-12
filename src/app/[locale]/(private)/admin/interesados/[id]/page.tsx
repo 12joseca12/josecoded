@@ -86,7 +86,7 @@ async function LeadSection({ locale, id }: { locale: Locale; id: string }) {
     );
   }
 
-  const { lead, assignees, dealStage } = result;
+  const { lead, assignees, dealStage, submissionCount } = result;
   const labels = leadDetailLabels(t);
   const contacts = staffNav.crm.find((entry) => entry.key === "contacts");
   const contactHref =
@@ -101,7 +101,13 @@ async function LeadSection({ locale, id }: { locale: Locale; id: string }) {
         </Heading>
       </header>
       <div className={detail.grid}>
-        <LeadDetail lead={lead} locale={locale} labels={labels} offerLabels={buildOfferLabels(t)} />
+        <LeadDetail
+          lead={lead}
+          locale={locale}
+          labels={labels}
+          offerLabels={buildOfferLabels(t)}
+          submissionCount={submissionCount}
+        />
         <OwnerCard
           lead={lead}
           assignees={assignees}

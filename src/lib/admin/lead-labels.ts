@@ -76,6 +76,7 @@ export function leadTableLabels(t: Translate): LeadTableLabels {
     noOrganization: t(key("noOrganization")),
     unassigned: t(key("unassigned")),
     unknownAssignee: t(key("unknownAssignee")),
+    repeat: { label: t(key("repeat.label")), link: t(key("repeat.link")) },
     actions: leadActionLabels(t),
   };
 }

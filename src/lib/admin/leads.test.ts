@@ -66,7 +66,7 @@ describe("fetchLeads", () => {
     const { client, from, select, order, limit } = clientReturning({ data: [row], error: null });
     expect(await fetchLeads(client)).toEqual({
       status: "ok",
-      rows: [row],
+      rows: [{ ...row, submissionCount: 1 }],
       assignees: [{ id: person.id, name: "Cleo Closer", assignable: true }],
       limit: leadsLimit,
     });
@@ -164,10 +164,19 @@ const detailRow = {
   offer_answers: { start: "idea", more: ["payments"] },
 };
 
-function detailClient(lead: Result, deal: Result = { data: { stage: "new" }, error: null }) {
+function detailClient(
+  lead: Result,
+  deal: Result = { data: { stage: "new" }, error: null },
+  count: Result & { count?: number | null } = { data: null, error: null, count: 3 },
+) {
+  const countSource = vi.fn().mockResolvedValue(count);
+  const countEmail = vi.fn().mockReturnValue({ eq: countSource });
+  const countSelectFn = vi.fn().mockReturnValue({ eq: countEmail });
   const maybeSingle = vi.fn().mockResolvedValue(lead);
   const eq = vi.fn().mockReturnValue({ maybeSingle });
-  const select = vi.fn().mockReturnValue({ eq });
+  const select = vi.fn((columns: string, options?: object) =>
+    columns === leadDetailColumns ? { eq } : (countSelectFn(columns, options) as unknown),
+  );
   const dealMaybe = vi.fn().mockResolvedValue(deal);
   const dealEq = vi.fn().mockReturnValue({ maybeSingle: dealMaybe });
   const dealSelect = vi.fn().mockReturnValue({ eq: dealEq });
@@ -180,7 +189,15 @@ function detailClient(lead: Result, deal: Result = { data: { stage: "new" }, err
     if (table === "deals") return { select: dealSelect };
     return { select };
   });
-  return { client: { from } as unknown as SupabaseClient<Database>, select, eq, dealEq };
+  return {
+    client: { from } as unknown as SupabaseClient<Database>,
+    select,
+    eq,
+    dealEq,
+    countSelectFn,
+    countEmail,
+    countSource,
+  };
 }
 
 describe("fetchLeadDetail", () => {
@@ -191,6 +208,34 @@ describe("fetchLeadDetail", () => {
     expect(eq).toHaveBeenCalledWith("id", row.id);
     expect(dealEq).toHaveBeenCalledWith("id", detailRow.deal_id);
     expect(result).toMatchObject({ status: "ok", dealStage: "new" });
+  });
+
+  it("counts the form submissions of the same email, case-insensitively", async () => {
+    const { client, countSelectFn, countEmail, countSource } = detailClient({
+      data: { ...detailRow, email: " Cara@Example.com " },
+      error: null,
+    });
+    expect(await fetchLeadDetail(client, row.id)).toMatchObject({ submissionCount: 3 });
+    expect(countSelectFn).toHaveBeenCalledWith("id", { count: "exact", head: true });
+    expect(countEmail).toHaveBeenCalledWith("email", "cara@example.com");
+    expect(countSource).toHaveBeenCalledWith("source", "form");
+  });
+
+  it("falls back to the lead itself when the count fails or there is no email", async () => {
+    const failed = detailClient({ data: detailRow, error: null }, undefined, {
+      data: null,
+      error: { code: "XX000" },
+      count: null,
+    });
+    expect(await fetchLeadDetail(failed.client, row.id)).toMatchObject({ submissionCount: 1 });
+    const noEmail = detailClient({ data: { ...detailRow, email: null }, error: null });
+    expect(await fetchLeadDetail(noEmail.client, row.id)).toMatchObject({ submissionCount: 1 });
+    expect(noEmail.countSelectFn).not.toHaveBeenCalled();
+    const manual = detailClient({
+      data: { ...detailRow, email: null, source: "manual" },
+      error: null,
+    });
+    expect(await fetchLeadDetail(manual.client, row.id)).toMatchObject({ submissionCount: 0 });
   });
 
   it("skips the deal read when the lead has none and tolerates a failed deal read", async () => {

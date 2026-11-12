@@ -1,14 +1,15 @@
 import Link from "next/link";
 
+import { StatusPill } from "@/components/ui/StatusPill/StatusPill";
 import { formatLeadDate } from "@/lib/admin/leads";
-import type { LeadActionHandler, LeadAssignee, LeadRow, LeadTableLabels } from "@/types/leads";
+import type { LeadActionHandler, LeadAssignee, LeadListRow, LeadTableLabels } from "@/types/leads";
 
 import { LeadStatus } from "../LeadStatus/LeadStatus";
 import { LeadActions } from "./LeadActions";
 import styles from "./LeadTable.module.css";
 
 interface LeadTableProps {
-  rows: LeadRow[];
+  rows: LeadListRow[];
   assignees: LeadAssignee[];
   locale: string;
   detailBase: string;
@@ -58,6 +59,17 @@ export function LeadTable({
               </th>
               <td className={styles.email}>
                 {row.email ?? <span className={styles.muted}>{labels.noEmail}</span>}
+                {row.email && row.submissionCount >= 2 ? (
+                  <Link
+                    className={styles.repeat}
+                    href={`${detailBase}?q=${encodeURIComponent(row.email)}`}
+                    aria-label={labels.repeat.link.replace("{count}", String(row.submissionCount))}
+                  >
+                    <StatusPill tone="alert">
+                      {labels.repeat.label.replace("{count}", String(row.submissionCount))}
+                    </StatusPill>
+                  </Link>
+                ) : null}
               </td>
               <td>
                 {row.organization ?? <span className={styles.muted}>{labels.noOrganization}</span>}
