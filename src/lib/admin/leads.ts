@@ -2,6 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
 
 import type { Database } from "@/types/database";
+import { formSource, normalizeEmail, withSubmissionCounts } from "./lead-filters";
 import {
   assigneeRowSchema,
   type LeadAssignee,
@@ -53,9 +54,29 @@ export async function fetchLeads(client: SupabaseClient<Database>): Promise<Lead
     const rows = rowsSchema.safeParse(leads.data);
     const assignees = toAssignees(people.data);
     if (!rows.success || !assignees) return { status: "error" };
-    return { status: "ok", rows: rows.data, assignees, limit: leadsLimit };
+    return { status: "ok", rows: withSubmissionCounts(rows.data), assignees, limit: leadsLimit };
   } catch {
     return { status: "error" };
+  }
+}
+
+async function countSubmissions(
+  client: SupabaseClient<Database>,
+  lead: { email: string | null; source: string },
+): Promise<number> {
+  const own = lead.source === formSource ? 1 : 0;
+  const email = normalizeEmail(lead.email);
+  if (!email) return own;
+  try {
+    // email is citext: eq matches regardless of case.
+    const { count, error } = await client
+      .from("leads")
+      .select("id", { count: "exact", head: true })
+      .eq("email", email)
+      .eq("source", formSource);
+    return error || count === null ? own : count;
+  } catch {
+    return own;
   }
 }
 
@@ -82,7 +103,8 @@ export async function fetchLeadDetail(
         .maybeSingle();
       dealStage = deal.data?.stage ?? null;
     }
-    return { status: "ok", lead: parsed.data, assignees, dealStage };
+    const submissionCount = await countSubmissions(client, parsed.data);
+    return { status: "ok", lead: parsed.data, assignees, dealStage, submissionCount };
   } catch {
     return { status: "error" };
   }

@@ -1,5 +1,6 @@
 import {
   type LeadFilters,
+  type LeadListRow,
   type LeadRow,
   leadSources,
   type LeadTab,
@@ -33,6 +34,26 @@ export function parseLeadFilters(params: LeadSearchParams): LeadFilters {
     owner: owner === noneValue || uuidPattern.test(owner) ? owner : null,
     q: single(params, "q").trim().slice(0, leadQueryMax),
   };
+}
+
+export const formSource = "form";
+
+export function normalizeEmail(email: string | null): string | null {
+  const value = email?.trim().toLowerCase();
+  return value ? value : null;
+}
+
+/** Adds, to each row, how many contact-form submissions its normalized email has in `rows`. */
+export function withSubmissionCounts(rows: LeadRow[]): LeadListRow[] {
+  const totals = new Map<string, number>();
+  for (const row of rows) {
+    const email = normalizeEmail(row.email);
+    if (email && row.source === formSource) totals.set(email, (totals.get(email) ?? 0) + 1);
+  }
+  return rows.map((row) => {
+    const email = normalizeEmail(row.email);
+    return { ...row, submissionCount: email ? (totals.get(email) ?? 0) : 0 };
+  });
 }
 
 export function tabOf(row: LeadRow): Exclude<LeadTab, "all"> {
@@ -69,7 +90,7 @@ function matchesFields(row: LeadRow, filters: LeadFilters): boolean {
   );
 }
 
-export function filterLeads(rows: LeadRow[], filters: LeadFilters): LeadRow[] {
+export function filterLeads<T extends LeadRow>(rows: T[], filters: LeadFilters): T[] {
   return rows.filter(
     (row) => matchesFields(row, filters) && (filters.tab === "all" || tabOf(row) === filters.tab),
   );
