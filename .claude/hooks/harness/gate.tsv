@@ -1,0 +1,82 @@
+# Generado por /harness (claude-config). No editar: se sobrescribe en /harness update.
+# categoria<TAB>ERE de ruta<TAB>motivo[<TAB>ERE de contenido]   ·   -categoria = exclusion (gana)
+-*	^(src/)?(tests?|__tests__|__mocks__|e2e)/	tests en la raiz
+-*	\.(test|spec)\.[a-z]+$	ficheros de test
+-*	^(docs|archivo|prototipos)/	documentacion y prototipos
+-*	(^|/)(README|CHANGELOG|ESTADO|LICENSE)[^/]*$	documentacion
+datos	(^|/)[^/]*(auth|session|login|sign-?in|sign-?up|logout|oauth|jwt|token|password|secret|credential|permission|polic|rbac|role|csrf|cookie|middleware)[^/]*(/|$)	autenticacion y permisos
+datos	(^|[^a-z])rls([^a-z]|$)	politicas RLS
+datos	(^|/)[^/]*(stripe|payment|pago|cobro|checkout|billing|invoice|factura|webhook)[^/]*(/|$)	pagos
+datos	(^|/)(api|server|backend|db|database)/	API y datos
+datos	(^|/)migrations/	migraciones
+datos	^drizzle/	migraciones
+datos	(^|/)app/.*actions\.tsx?$	server actions
+datos	\.(sql|prisma)$	esquema de datos
+datos	^\.github/	CI y acciones de GitHub
+datos	(^|/)(([^/]*\.)?Dockerfile[^/]*|docker-compose[^/]*|compose\.ya?ml)$	contenedores
+datos	(^|/)\.env[^/]*(\.example)?$	variables de entorno
+datos	(^|/)\.dev\.vars[^/]*$	variables de entorno
+datos	(^|/)(lefthook\.yml|\.gitleaks\.toml|osv-scanner\.toml)$	capa de seguridad del repo
+datos	^\.claude/(hooks|settings|harness\.json|agents|rules)	configuracion de Claude y de la puerta
+datos	(^|/)\.mcp\.json$	servidores MCP
+datos	(^|/)(package\.json|pnpm-lock\.yaml|package-lock\.json|yarn\.lock|bun\.lockb|\.npmrc|\.gitleaksignore|\.gitattributes|\.gitlab-ci\.yml|vercel\.json|netlify\.toml|fly\.toml|Caddyfile|Makefile)$	dependencias, lockfiles y despliegue
+datos	(^|/)\.?lefthook(-local)?\.(ya?ml|json|toml)$	hooks de git
+datos	(^|/)\.gitignore$	ignora ficheros de la revision
+datos	^\.husky/	hooks de git
+datos	(^|/)cloudflared/	tunel
+datos	\.tf$	infraestructura como codigo
+datos	^(k8s|infra|deploy)/	infraestructura
+datos	(^|/)scripts/deploy	despliegue
+datos	(^|/)(routes|controllers|trpc|graphql)/	API
+datos	^functions/	funciones desplegadas
+rendimiento	(^|/)package\.json$	dependencias (peso del bundle)
+# Generado por /harness (claude-config). No editar: se sobrescribe en /harness update.
+# categoria<TAB>ERE de ruta<TAB>motivo[<TAB>ERE de contenido (awk) sobre lineas anadidas]   ·   -categoria = exclusion (gana)
+datos	(^|/)wrangler\.(toml|jsonc?)$	bindings y secretos
+datos	(^|/)(open-next\.config\.[a-z]+|worker[^/]*\.(ts|js))$	worker
+datos	^cloudflare/	infraestructura
+# Generado por /harness (claude-config). No editar: se sobrescribe en /harness update.
+# categoria<TAB>ERE de ruta<TAB>motivo[<TAB>ERE de contenido (awk) sobre lineas anadidas]   ·   -categoria = exclusion (gana)
+ui	\.(tsx|jsx)$	componente o pantalla
+ui	\.(css|scss)$	estilos
+ui	(^|/)components/.*\.(ts|tsx)$	componentes y su logica
+ui	(^|/)messages/[^/]+\.json$	textos de interfaz
+motion	\.(tsx|jsx|ts|css)$	movimiento	(framer-motion|motion/react|gsap|@keyframes|animate-|transition|view-transition|useReducedMotion)
+publica	(^|/)app/.*(page|layout|template|not-found)\.(tsx|jsx|mdx)$	pagina
+publica	(^|/)app/(sitemap|robots|manifest)\.(ts|js)$	SEO tecnico
+publica	(^|/)app/.*(opengraph|twitter)-image\.	imagen social
+publica	(^|/)(llms\.txt|content/.*\.mdx?|lib/seo/.*)$	contenido y SEO
+-publica	\((private|admin|auth|dashboard|app|protected)\)/	grupo de rutas privado
+datos	(^|/)app/.*route\.(ts|js)$	route handler
+datos	(^|/)[^/]*actions?\.(ts|js)$	server action
+datos	(^|/)actions?/.*\.(ts|tsx|js|jsx)$	server actions
+datos	\.(ts|tsx|js|jsx)$	server action ("use server")	["']use server["']
+datos	(^|/)(middleware|proxy)\.(ts|js)$	middleware
+datos	(^|/)(lib|config)/(security|headers|csp)[^/]*	seguridad y cabeceras
+datos	(^|/)next\.config\.[a-z]+$	cabeceras y configuracion
+datos	\.(ts|tsx|js|jsx)$	comprobacion de sesion (alta o baja)	(requireUser|requireAuth|requireSession|getUser\(|getSession\(|checkAuth|(^|[^A-Za-z_.])auth\(\)|getServerSession\(|currentUser\()
+datos	\.(ts|tsx|js|jsx|mjs)$	codigo peligroso	(dangerouslySetInnerHTML|child_process|(^|[^A-Za-z_.])exec\(|(^|[^A-Za-z_.])eval\(|new Function\()
+datos	\.(ts|tsx|js)$	uso de credenciales	(service_role|SUPABASE_SERVICE|createServerClient|cookies\(\)|process\.env\.)
+flujos	(^|/)app/.*(page|layout)\.(tsx|jsx)$	pantalla
+flujos	(^|/)[^/]*actions?\.(ts|js)$	server action
+flujos	(^|/)actions?/.*\.(ts|tsx|js|jsx)$	server actions
+flujos	(^|/)app/.*route\.(ts|js)$	endpoint
+flujos	(^|/)(middleware|proxy)\.(ts|js)$	navegacion y redirecciones
+flujos	\.(tsx|jsx)$	formulario	(<form|useActionState|useFormStatus|onSubmit)
+rendimiento	(^|/)public/.*\.(png|jpe?g|webp|avif|gif|svg|mp4|webm|woff2?)$	asset
+rendimiento	(^|/)(fonts|images)/	asset
+rendimiento	(^|/)app/layout\.(tsx|jsx)$	arranque
+rendimiento	(^|/)next\.config\.[a-z]+$	configuracion de build
+rendimiento	\.(tsx|jsx)$	lista o carga diferida	(\.map\(|next/image|next/font|next/dynamic|dynamic\(|useVirtualizer)
+# Generado por /harness (claude-config). No editar: se sobrescribe en /harness update.
+# categoria<TAB>ERE de ruta<TAB>motivo[<TAB>ERE de contenido (awk) sobre lineas anadidas]   ·   -categoria = exclusion (gana)
+datos	^supabase/(migrations|functions|seed|policies)/	base de datos
+datos	^supabase/(config\.toml|seed\.sql)$	configuracion de Supabase
+datos	(^|/)(lib|utils)/supabase/	cliente de Supabase
+datos	(^|/)types/(database|supabase)[^/]*$	tipos de la base de datos
+datos	\.(ts|tsx|js)$	consulta directa	(\.from\(|\.rpc\(|\.storage\.|\.auth\.)
+# proyecto (.claude/harness.json -> puerta)
+publica	^(content|src/content)/	contenido del portfolio (CV, blog, proyectos)
+publica	^src/.*(seo|jsonld|llms)	SEO y GEO (metadatos, JSON-LD, llms.txt)
+datos	^(contracts|src/types/contracts)/	contratos de jobs con el Omen
+flujos	^src/lib/(contact|chat|area|crm|services|outbox)/	logica de los flujos de usuario

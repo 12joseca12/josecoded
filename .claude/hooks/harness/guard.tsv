@@ -19,6 +19,10 @@ deny	@S@@G@[[:space:]]+[^;&|]*core\.[Hh]ooks[Pp]ath=	cambiar core.hooksPath (sal
 deny	@S@@G@[[:space:]]+[^;&|]*config[^;&|]*core\.[Hh]ooks[Pp]ath[[:space:]]+[^-[:space:];&|]	cambiar core.hooksPath (salta los hooks de git)
 deny	@S@find[[:space:]]+[^;&|]*(\.claude/(settings(\.local)?\.json|harness\.json|hooks)|\.git/hooks|\.?lefthook(-local)?\.(ya?ml|json|toml))[^;&|]*[[:space:]](-delete|-exec)	borrado por find en la configuración del harness o en hooks de git
 deny	@S@@G@[[:space:]]+(checkout|restore|rm|mv|clean|apply)[[:space:]][^;&|]*(\.claude/(settings(\.local)?\.json|harness\.json|hooks)|\.git/hooks|\.?lefthook(-local)?\.(ya?ml|json|toml))	git checkout/restore/rm sobre la configuración del harness o hooks de git
+ask	@S@@G@[[:space:]]+([^;&|]*[[:space:]])?remote[[:space:]]+(set-url|add|rename|remove|rm)([^A-Za-z0-9_-]|$)	cambiar los remotos de git (altera la base de la puerta de calidad)
+ask	@S@@G@[[:space:]]+[^;&|]*config[^;&|]*url\.[^;&|]*insteadOf	reescribir URLs de git (insteadOf)
+ask	@S@@G@[[:space:]]+([^;&|]*[[:space:]])?symbolic-ref[[:space:]]+(-d|--delete|-m|[^;&|[:space:]-][^;&|[:space:]]*[[:space:]]+[^;&|[:space:]-])	git symbolic-ref que escribe (puede redirigir origin/HEAD)
+ask	@S@@G@[[:space:]]+([^;&|]*[[:space:]])?update-ref([^A-Za-z0-9_-]|$)	git update-ref (mueve refs a mano)
 # Generado por /harness (claude-config). No editar: se sobrescribe en /harness update.
 ask	@S@@X@wrangler@V@[[:space:]]+([^;&|]*[[:space:]])?(deploy|publish)([^A-Za-z0-9_:.-]|$)	deploy de Cloudflare (wrangler deploy)
 ask	@S@@X@wrangler@V@[[:space:]]+([^;&|]*[[:space:]])?secret[[:space:]]+(put|bulk|delete)([^A-Za-z0-9_:.-]|$)	escritura de secretos en Cloudflare (wrangler secret)
