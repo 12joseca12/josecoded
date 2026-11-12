@@ -408,6 +408,8 @@ export type MessageKey =
   | "admin.leads.noEmail"
   | "admin.leads.noOrganization"
   | "admin.leads.region"
+  | "admin.leads.repeat.label"
+  | "admin.leads.repeat.link"
   | "admin.leads.source.form"
   | "admin.leads.source.manual"
   | "admin.leads.source.nexo"

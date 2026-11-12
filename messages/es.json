@@ -1178,6 +1178,10 @@
       "noEmail": "Sin correo",
       "unassigned": "Sin asignar",
       "unknownAssignee": "Persona dada de baja",
+      "repeat": {
+        "label": "{count} envíos",
+        "link": "{count} envíos de este email: ver todos"
+      },
       "actions": {
         "assignLabel": "Asignar a",
         "assignPlaceholder": "Elige un closer",

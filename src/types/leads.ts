@@ -248,5 +248,6 @@ export interface LeadTableLabels {
   sources: Record<(typeof leadSources)[number], string>;
   unassigned: string;
   unknownAssignee: string;
+  repeat: { label: string; link: string };
   actions: LeadActionLabels;
 }

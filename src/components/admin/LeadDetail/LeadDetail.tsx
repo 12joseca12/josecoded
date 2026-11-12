@@ -1,6 +1,8 @@
+import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { Heading } from "@/components/ui/Heading/Heading";
+import { StatusPill } from "@/components/ui/StatusPill/StatusPill";
 import {
   describeAnswers,
   describeExtras,
@@ -17,6 +19,7 @@ interface LeadDetailProps {
   locale: string;
   labels: LeadDetailLabels;
   offerLabels: OfferLabels;
+  submissionCount: number;
 }
 
 interface RowProps {
@@ -44,7 +47,13 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-export function LeadDetail({ lead, locale, labels, offerLabels }: LeadDetailProps) {
+export function LeadDetail({
+  lead,
+  locale,
+  labels,
+  offerLabels,
+  submissionCount,
+}: LeadDetailProps) {
   const { origin, offer, contact } = labels;
   const answers = lead.offer_answers ? describeAnswers(lead.offer_answers, offerLabels) : [];
   const yesNo = (value: boolean) => (value ? offer.yes : offer.no);
@@ -71,6 +80,17 @@ export function LeadDetail({ lead, locale, labels, offerLabels }: LeadDetailProp
         <dl className={styles.list}>
           <Row term={contact.email}>
             {lead.email ?? <span className={styles.muted}>{contact.none}</span>}
+            {lead.email && submissionCount >= 2 ? (
+              <Link
+                className={styles.repeat}
+                href={`/${locale}/admin/interesados?q=${encodeURIComponent(lead.email)}`}
+                aria-label={labels.table.repeat.link.replace("{count}", String(submissionCount))}
+              >
+                <StatusPill tone="alert">
+                  {labels.table.repeat.label.replace("{count}", String(submissionCount))}
+                </StatusPill>
+              </Link>
+            ) : null}
           </Row>
           <Row term={contact.phone}>
             {lead.phone ?? <span className={styles.muted}>{contact.none}</span>}

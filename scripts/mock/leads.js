@@ -104,7 +104,7 @@ const seededLeads = [
     id: "10000000-0000-4000-8000-0000000000ff",
     via: "hiring",
     full_name: "Wanda Waiting",
-    email: "wanda@example.com",
+    email: "Cara@Example.com",
     status: "new",
     created_at: "2026-10-29T10:00:00+00:00",
     contact_id: "30000000-0000-4000-8000-000000000002",
@@ -188,6 +188,24 @@ route("GET", "/rest/v1/leads", ({ request, response, url }) => {
     return send(response, 200, found[0]);
   }
   return send(response, 200, found);
+});
+
+route("HEAD", "/rest/v1/leads", ({ request, response, url }) => {
+  const session = bearer(request);
+  if (!session) return send(response, 401, { code: "PGRST301", message: "JWT invalid" });
+  const email = (url.searchParams.get("email") ?? "").replace(/^eq\./, "").toLowerCase();
+  const source = (url.searchParams.get("source") ?? "").replace(/^eq\./, "");
+  const total = session.auth.leads.filter(
+    (entry) =>
+      canRead(session, entry) &&
+      (email === "" || entry.email?.toLowerCase() === email) &&
+      (source === "" || entry.source === source),
+  ).length;
+  response.writeHead(200, {
+    "content-type": "application/json",
+    "content-range": total === 0 ? "*/0" : `0-${total - 1}/${total}`,
+  });
+  response.end();
 });
 
 route("POST", "/rest/v1/leads", async ({ request, response }) => {

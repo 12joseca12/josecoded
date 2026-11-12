@@ -1178,6 +1178,10 @@
       "noEmail": "No email",
       "unassigned": "Unassigned",
       "unknownAssignee": "Person no longer active",
+      "repeat": {
+        "label": "{count} submissions",
+        "link": "{count} submissions from this email: view all"
+      },
       "actions": {
         "assignLabel": "Assign to",
         "assignPlaceholder": "Choose a closer",
