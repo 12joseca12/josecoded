@@ -1,0 +1,6 @@
+# Security overrides for vulnerable transitive dev dependencies (osv-scanner).
+overrides:
+  adm-zip@<0.6.1: 0.6.1
+  undici@>=7 <7.30.1: 7.30.1
+  glob@>=10 <15: 14.0.2
+  minimatch@>=9 <11.0.1: 11.0.1
