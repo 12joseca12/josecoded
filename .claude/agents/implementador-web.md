@@ -15,7 +15,7 @@ Eres el implementador web. Recibes una tarea concreta de un plan y la ejecutas d
 
 ## Especialidad
 - Aplica `vercel-react-best-practices` (Server Components por defecto, `use client` solo donde hace falta, sin waterfalls de fetch, imágenes con `next/image`).
-- **Todo cambio de interfaz pasa por `impeccable`**: lee su suelo de calidad antes de editar markup o estilos, y cierra con `/impeccable polish` sobre lo que has tocado. No es opcional. Si hay documento de `ui`, manda el documento: `impeccable` afina el acabado, no redecide la dirección.
+- **Todo cambio de interfaz pasa por `impeccable`**: lee su suelo de calidad antes de editar markup o estilos, y cierra con `/impeccable polish` sobre lo que has tocado. No es opcional. Si hay documento de `director-arte`, manda el documento: `impeccable` afina el acabado, no redecide la dirección.
 - Movimiento: `animate` para implementarlo (decide primero si debe animarse, y con qué curva y duración), `review-animations` para comprobar lo que ya existe. `mobile-native` cuando la web se ve en móvil. Nada de transiciones por defecto ni `ease` de CSS sin pensar.
 - Si el proyecto tiene Figma, `get_design_context` y `get_variable_defs` antes de maquetar a ojo.
 - Antes de cerrar cualquier cambio de UI, pasa `web-design-guidelines`.

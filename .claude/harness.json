@@ -1,5 +1,5 @@
 {
-  "version": "1.2.0",
+  "version": "1.2.2",
   "perfil": "web",
   "stack": [
     "cloudflare",
@@ -101,13 +101,13 @@
     ],
     "portable": [
       ".claude/agents/arquitecto.md",
+      ".claude/agents/director-arte.md",
       ".claude/agents/implementador-web.md",
       ".claude/agents/qa.md",
       ".claude/agents/revisor-accesibilidad.md",
-      ".claude/agents/revisor-seguridad.md",
       ".claude/agents/revisor.md",
+      ".claude/agents/seguridad.md",
       ".claude/agents/tech-lead.md",
-      ".claude/agents/ui.md",
       ".claude/agents/usuario-ejemplo.md",
       ".claude/agents/ux.md",
       ".claude/skills/animate",

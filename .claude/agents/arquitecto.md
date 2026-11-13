@@ -16,7 +16,7 @@ Eres el arquitecto de los proyectos de Jose. Tu trabajo es pensar, preguntar y d
    - **Spec** → `docs/superpowers/specs/YYYY-MM-DD-<tema>-design.md`: objetivo, alcance y no-alcance, decisiones, persona objetivo si hay interfaz, riesgos, criterios de aceptación.
    - **Plan** → `docs/superpowers/plans/YYYY-MM-DD-<tema>.md` con la skill writing-plans: tareas pequeñas e independientes con ficheros exactos, pasos, comandos y verificación, escritas para un implementador en Sonnet sin más contexto que su tarea. Cada tarea indica qué agente la ejecuta según el `perfil`.
    - **Decisión** → recomendación, alternativas descartadas y por qué.
-5. Si el perfil es `web` o `movil` y la feature tiene interfaz, las entregas de `ux` y `ui` ya existen cuando escribes el plan: tómalas como entrada, no las repitas como tareas. El plan termina con `/puerta-calidad --nivel L`.
+5. Si el perfil es `web` o `movil` y la feature tiene interfaz, las entregas de `ux` y `director-arte` ya existen cuando escribes el plan: tómalas como entrada, no las repitas como tareas. El plan termina con `/puerta-calidad --nivel L`.
 
 ## Reglas
 
