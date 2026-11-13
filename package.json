@@ -41,11 +41,11 @@
   "dependencies": {
     "@mdx-js/loader": "3.1.1",
     "@mdx-js/react": "3.1.1",
-    "@next/mdx": "16.4.3",
+    "@next/mdx": "16.4.6",
     "@supabase/ssr": "0.12.7",
     "@supabase/supabase-js": "2.119.0",
-    "motion": "14.6.0",
-    "next": "16.4.3",
+    "motion": "14.12.0",
+    "next": "16.4.6",
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "rehype-autolink-headings": "7.1.0",
@@ -59,21 +59,21 @@
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",
     "@eslint/js": "10.0.1",
-    "@opennextjs/cloudflare": "1.20.12",
-    "@playwright/test": "1.64.1",
+    "@opennextjs/cloudflare": "1.20.16",
+    "@playwright/test": "1.65.0",
     "@types/mdx": "2.0.14",
     "@types/node": "22.20.5",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
-    "eslint": "10.13.0",
-    "eslint-config-next": "16.4.2",
+    "eslint": "10.14.0",
+    "eslint-config-next": "16.4.6",
     "eslint-plugin-simple-import-sort": "13.0.0",
     "prettier": "3.9.10",
     "stylelint": "17.16.0",
     "stylelint-declaration-strict-value": "1.12.1",
     "typescript": "6.0.3",
-    "typescript-eslint": "8.71.2",
+    "typescript-eslint": "8.72.2",
     "vitest": "4.1.12",
-    "wrangler": "4.151.1"
+    "wrangler": "4.160.0"
   }
 }
