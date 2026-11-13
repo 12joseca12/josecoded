@@ -11,9 +11,9 @@ Al empezar cada encargo, di el nivel en una línea (`Nivel S: <motivo>`) y sigue
 
 | Nivel | Qué es | Flujo |
 |---|---|---|
-| **S** | Bug, texto, estilo, componente aprobado | `implementador-web` + hooks; `bash .claude/hooks/harness/gate-diff.sh --level S` al terminar; `revisor-seguridad` si marca auth, datos, API o pagos, o si el script falla o no existe |
+| **S** | Bug, texto, estilo, componente aprobado | `implementador-web` + hooks; `bash .claude/hooks/harness/gate-diff.sh --level S` al terminar; `seguridad` si marca auth, datos, API o pagos, o si el script falla o no existe |
 | **M** | Feature, pantalla, endpoint | `tech-lead` (plan corto; si devuelve `PARAR-ARQUITECTURA`, decide `arquitecto`) → con UI nueva, alternativas dibujadas y elige Jose → por tarea `implementador-web` → `revisor` → `/puerta-calidad` |
-| **L** | Producto o módulo nuevo, rediseño | batería y spec (`arquitecto`) → `ux` → `usuario-ejemplo` → `ui` → plan → tareas como en M → `/puerta-calidad --nivel L` |
+| **L** | Producto o módulo nuevo, rediseño | batería y spec (`arquitecto`) → `ux` → `usuario-ejemplo` → `director-arte` → plan → tareas como en M → `/puerta-calidad --nivel L` |
 
 La puerta por diff (`gate-diff.sh`) decide los verificadores: se pueden añadir, nunca quitar. Se para en el diseño (si lo hay), antes de merge y ante producción, dinero o acciones destructivas.
 
@@ -28,8 +28,8 @@ El controlador orquesta, mantiene el contexto y decide; delega y no implementa e
 | `tech-lead` | Nivel M: plan corto en el chat. Solo lectura. |
 | `implementador-web` | Una tarea del plan por invocación, con TDD. |
 | `revisor` | Revisión de cada tarea y de la rama, solo lectura. |
-| `ux`, `ui` | Flujos y sistema visual entre spec y plan (nivel L, o M con UI nueva). |
-| `revisor-seguridad`, `revisor-accesibilidad`, `qa`, `usuario-ejemplo` | Puerta de calidad. |
+| `ux`, `director-arte` | Flujos y sistema visual entre spec y plan (nivel L, o M con UI nueva). |
+| `seguridad`, `revisor-accesibilidad`, `qa`, `usuario-ejemplo` | Puerta de calidad. |
 
 `comercial` y `redactor` no están en la nube: necesitan el vault (tarifas, condiciones, voz). Los textos que deban pasar por `redactor` se dejan marcados y se hacen en el Mac.
 
