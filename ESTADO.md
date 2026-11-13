@@ -20,7 +20,7 @@ Arquitectura cerrada del todo (2026-11-02, `docs/arquitectura/decisiones.md`): J
 
 ## Siguiente paso
 
-1. Jose responde 5.13 (sala de cliente por proyecto), 5.15 (Nexo solo al mencionarlo) y 7.8 (closers reclaman de la bandeja común); las tres tienen recomendación y no bloquean el esquema.
+1. Antes de aplicar las migraciones del chat, ajustar `datos.md` §10 y `docs/plan/migraciones-chat.md` a 5.13 y 5.15 del 2026-11-13 (closer y Nexo solo si Jose los añade; aviso inicial e interruptor de Nexo para el usuario).
 2. Cargar los bloques W01–W46 y M01–M11 en el tablón (GitHub Issues + Projects, decisión 10.5).
 3. Arrancar M01 `data/base` → M02 `data/leads` → M03+M04 en Supabase local del Mac; cada `db push` a `josecoded` con OK de Jose en la sesión (10.7).
 4. En paralelo sigue la zona pública (`public/home-hero`, `public/header-contact`, `chat/nexo-avatar`).
@@ -30,18 +30,20 @@ Arquitectura cerrada del todo (2026-11-02, `docs/arquitectura/decisiones.md`): J
 - **Envíos repetidos (2026-11-12):** el aviso por correo, Telegram o campana necesita una migración nueva sobre `private.leads_notify_new()` (añadir `repeat_count` al payload de `lead_new`), aplicable solo después de M04 y de `20261105130000_outbox_notifications_base`; con OK de Jose. Mejoras menores de la puerta: efecto `:hover` y `border-radius` del foco en la pastilla `.repeat` (LeadTable y LeadDetail), zona táctil de 44 px en móvil, pastilla sin enlace cuando la lista ya está filtrada por ese email, recuento del detalle en paralelo con la consulta del deal, y el filtro `q` busca por subcadena sin mirar el origen (puede enseñar más filas que el número de la pastilla). Textos `admin.leads.repeat.*` para `redactor` (Mac).
 - **Dependencias:** osv-scanner marca 21 vulnerabilidades (10 altas: adm-zip, undici; medias: glob, minimatch); el job `deps` falla de forma informativa hasta limpiarlas y quitar su `continue-on-error`. Revisar y fusionar los PR de Dependabot #93–#95.
 - **Jose, de la noche del 2026-11-05:**
-  - **M04** fusionada y endurecida pero no aplicada: el token de gestión de Supabase de la nube es inválido. Aplicarla desde el Mac (`supabase db push`, advisors antes y después) o poner una credencial nueva en el entorno; justo después, desplegar la web y `pnpm db:types`.
+  - **M04** aplicada en remoto (comprobado el 2026-11-12: migración en `josecoded` y tipos al día).
   - **Seguridad (M4, M5):** comprobar en el panel de Supabase Auth captcha Turnstile, OTP de 600 s y límite de verificación (`config.toml` local aún dice 3600); comprobar que el entorno *preview* de Cloudflare no tiene la service role.
   - **CV PDF:** nombre sin tildes, LinkedIn distinto del de la web, teléfono y «Leganés» publicados, sin enlace a la web (decide Jose).
   - **3Cat/Alten:** «Sobre mí» y el CV nombran 3CatInfo y 3Cat; confirmar qué permite el NDA.
   - **Datos que faltan** (los textos ya no los prometen): política de NDA, franja de solape horario, continuidad si Jose no está, cesión de derechos, condiciones de cierre anticipado, «sin permanencia» del mantenimiento, cifras de dominio/alojamiento, modalidad y disponibilidad, retrato, GitHub y Malt.
-  - **Decisiones:** ¿la auditoría de accesibilidad de apps RN es oferta (Q6)? · tercer breakpoint de la cabecera en #61 (oculta «josecoded» bajo 360 px) · ¿se ofrece llamada por teléfono en el contacto? · el CI de pgTAP usa PostgreSQL 16 y producción 17.
+  - **Decisiones:** ¿la auditoría de accesibilidad de apps RN es oferta (Q6)? · tercer breakpoint de la cabecera en #61 (oculta «josecoded» bajo 360 px). Cerradas el 2026-11-13: llamada por teléfono sí (2.9 en `decisiones.md`) y pgTAP con PostgreSQL 16 aceptado.
   - **Textos para `redactor` (Mac):** todos los nuevos de la noche; cada PR lista sus claves.
   - Informes completos en la sesión: investigación, seguridad, accesibilidad, usuarios de ejemplo.
-- **Jose (decisiones, con recomendación):** 5.13, 5.15, 7.8 (`decisiones.md`, tabla «Abiertas»).
-- **Jose (acciones):** crear el repo GitHub `josecoded-omen` (10.8); borrar `develop` y las ramas `chore/*`, `design/*`, `docs/*`, `claude/*` del remoto (se quedan las `archivo/*`).
+- **Jose (decisión, con recomendación):** Q1 (home). 5.13, 5.15, 7.8 y Q2–Q7 cerradas el 2026-11-13 (`decisiones.md`, «Ronda del 2026-11-13»).
+- **Diseño pendiente (con aprobación de Jose):** chat de Nexo también en `/contacto` y panel del chat con fondo tipo *liquid glass*.
+- **Backend:** el repo es `josecoded-backend` (10.8, ya existe); renombrar `josecoded-omen` en `docs/plan/bloques.md` cuando arranque la lista O.
+- **Jose (acciones):** borrar `develop` y las ramas `chore/*`, `design/*`, `docs/*`, `claude/*` del remoto (se quedan las `archivo/*`).
 - **Disparador de `josecoded-dev` (10.7):** crear el proyecto de desarrollo **antes** de lo primero que ocurra: invitar a un cliente, closer o freelance real · guardar el primer interesado o contacto real · activar Resend o Turnstile en modo real sobre `josecoded` · W46. Hasta entonces `josecoded` (`echlwywbucgbhwpncviy`) es la base compartida de desarrollo y cada migración se aplica con OK de Jose por migración.
-- **Jose (datos):** número de WhatsApp (2.9); tarifas reales tras la ronda de evaluación de servicios (2.23: hasta entonces `00 €/h` y `000 €` marcados `{{DATO: tarifa}}`); buzones `hola@`, `freelance@` y `proyectos@josecoded.com` creados y verificados en Resend cuando toque W35.
+- **Jose (datos):** número de empresa para WhatsApp (2.9; de momento el personal); tarifas reales tras la ronda de evaluación de servicios (2.23: hasta entonces `00 €/h` y `000 €` marcados `{{DATO: tarifa}}`); buzones `hola@`, `freelance@` y `proyectos@josecoded.com` creados y verificados en Resend cuando toque W35.
 - **Jose (decisiones en el navegador):** navegación A cápsula / B terminal / C raíl (10.9); feedback del hero animado, los estados y la barra de scroll (10.10).
 - **Jose (cuando toque, cada bloque lo marca):** token de Cloudflare (W06), claves de Turnstile (W31), dominio y clave de Resend (W35), textos y datos `{{DATO}}` (hero, proyectos, sobre mí, legales), modelo local y `GROQ_API_KEY` (O05).
 - El dominio `josecoded.com` responde 521 (origen caído) hasta W46.
