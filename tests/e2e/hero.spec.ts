@@ -74,6 +74,35 @@ test.describe("hero copy", () => {
     await expect(primary).toBeFocused();
   });
 
+  test("tabbing out of the chooser opened from the hero closes it", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/es");
+    const primary = page.locator("#hero").getByRole("link", { name: hero.ctaPrimary });
+    const dialog = page.getByRole("dialog", { name: es.contactChooser.title });
+    await hydrated(primary);
+    await primary.click();
+    await expect(dialog).toBeVisible();
+    await expect(dialog.locator("[data-option]").first()).toBeFocused();
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Tab");
+    await expect(dialog).toBeHidden();
+    await expect(primary).toHaveAttribute("aria-expanded", "false");
+  });
+
+  test("only the hero call to action reports expanded when it opens the chooser", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/es");
+    const primary = page.locator("#hero").getByRole("link", { name: hero.ctaPrimary });
+    const trigger = page.locator("[data-chooser-trigger]");
+    await hydrated(primary);
+    await primary.click();
+    await expect(primary).toHaveAttribute("aria-expanded", "true");
+    await expect(trigger).toHaveAttribute("aria-expanded", "false");
+  });
+
   test("says who Jose is and offers the hiring route without scrolling", async ({ page }) => {
     await page.goto("/es");
     await expect(page.getByText(hero.lead)).toBeVisible();

@@ -171,6 +171,22 @@ test("hub frames the ways as needs and keeps the five phases only here", async (
   }
 });
 
+test("the hiring anchor leaves the tile below the floating header", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/es/servicios#contratacion");
+  const tile = page.locator("#contratacion");
+  await expect(tile).toBeVisible();
+  await expect
+    .poll(async () => {
+      const [tileBox, headerBox] = await Promise.all([
+        tile.boundingBox(),
+        page.locator("header").first().boundingBox(),
+      ]);
+      return tileBox && headerBox ? tileBox.y - (headerBox.y + headerBox.height) : -1;
+    })
+    .toBeGreaterThanOrEqual(0);
+});
+
 test("hub tiles stay compact and show no price while it is under review", async ({ page }) => {
   await page.goto("/es/servicios");
   await expect(page.locator("#vias [data-variant='review']")).toHaveCount(0);

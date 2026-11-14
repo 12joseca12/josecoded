@@ -95,10 +95,19 @@ export function ContactChooserPanel({
       onClose();
       restoreFocus();
     };
+    const onFocusIn = (event: globalThis.FocusEvent) => {
+      if (dialog?.dataset.mode !== "popover") return;
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (dialog.contains(target) || openerRef.current?.contains(target)) return;
+      onClose();
+    };
     document.addEventListener("pointerdown", onPointerDown);
     document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("focusin", onFocusIn);
     return () => {
       document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("focusin", onFocusIn);
       document.removeEventListener("keydown", onKeyDown);
     };
   }, [open, onClose, restoreFocus, openerRef]);
@@ -127,13 +136,7 @@ export function ContactChooserPanel({
   const leaveByTab = (event: FocusEvent<HTMLDialogElement>) => {
     const next = event.relatedTarget;
     if (event.currentTarget.dataset.mode !== "popover" || !(next instanceof Element)) return;
-    if (
-      event.currentTarget.contains(next) ||
-      next.closest(triggerSelector) ||
-      openerRef.current?.contains(next)
-    ) {
-      return;
-    }
+    if (event.currentTarget.contains(next) || openerRef.current?.contains(next)) return;
     onClose();
   };
 

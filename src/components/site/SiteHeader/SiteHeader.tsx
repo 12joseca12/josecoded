@@ -71,9 +71,14 @@ export function SiteHeader({
     triggerRef.current?.focus({ preventScroll: true });
   }, []);
 
-  const [chooser, setChooser] = useState<{ path: string | null; focus: ChooserFocus }>({
+  const [chooser, setChooser] = useState<{
+    path: string | null;
+    focus: ChooserFocus;
+    viaTrigger: boolean;
+  }>({
     path: null,
     focus: "first",
+    viaTrigger: false,
   });
   const chooserOpen = chooser.path === pathname;
   const chooserOpenerRef = useRef<HTMLElement | null>(null);
@@ -81,8 +86,8 @@ export function SiteHeader({
     setChooser((current) => (current.path === null ? current : { ...current, path: null }));
   }, []);
   const openChooser = useCallback(
-    (focus: ChooserFocus) => {
-      setChooser({ path: pathname, focus });
+    (focus: ChooserFocus, viaTrigger = false) => {
+      setChooser({ path: pathname, focus, viaTrigger });
     },
     [pathname],
   );
@@ -235,6 +240,7 @@ export function SiteHeader({
             id={contactChooserId}
             open={chooserOpen}
             focus={chooser.focus}
+            viaTrigger={chooser.viaTrigger}
             onOpen={openChooser}
             onClose={closeChooser}
             triggerLabel={labels.cta}

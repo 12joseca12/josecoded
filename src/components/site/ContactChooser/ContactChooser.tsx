@@ -22,7 +22,8 @@ interface ContactChooserProps {
   id: string;
   open: boolean;
   focus: ChooserFocus;
-  onOpen: (focus: ChooserFocus) => void;
+  viaTrigger: boolean;
+  onOpen: (focus: ChooserFocus, viaTrigger?: boolean) => void;
   onClose: () => void;
   triggerLabel: string;
   labels: ContactChooserLabels;
@@ -37,6 +38,7 @@ export function ContactChooser({
   id,
   open,
   focus,
+  viaTrigger,
   onOpen,
   onClose,
   triggerLabel,
@@ -55,7 +57,7 @@ export function ContactChooser({
       <Button
         size="sm"
         icon={<ChevronIcon />}
-        aria-expanded={open}
+        aria-expanded={open && viaTrigger}
         aria-controls={armed ? id : undefined}
         aria-haspopup="dialog"
         data-chooser-trigger=""
@@ -65,7 +67,7 @@ export function ContactChooser({
             return;
           }
           openerRef.current = event.currentTarget;
-          onOpen("first");
+          onOpen("first", true);
         }}
       >
         {triggerLabel}

@@ -4,6 +4,7 @@
   --tile-focus: var(--focus);
   --tile-line: var(--line);
   position: relative;
+  scroll-margin-top: calc(var(--nav-h) + var(--space-4));
   display: grid;
   min-width: 0;
   padding: var(--space-4);
