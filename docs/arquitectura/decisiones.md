@@ -157,7 +157,7 @@
 
 ## Ronda del 2026-11-13 (Jose)
 
-- **Q1** sigue abierta (recomendada: home escaparate).
+- **Q1: a)** home **escaparate** (cerrada el 2026-11-14 viendo las maquetas de `docs/diseno/2026-11-14-home-escaparate/`): cada sección es un teaser de su pantalla; sale la franja «Cómo trabajo» (vive en `/como-trabajo` y el hero ya enseña las cinco fases); el stack es teaser hacia `/sobre-mi#stack`; botón principal del hero «Hablemos».
 - **Q2: a)** el stack vive en la sección `#stack` de Sobre mí, desde `cv.json`.
 - **Q3:** no se llama «Cómo está hecha»; nombre tipo **«Tecnologías de esta web»** (el texto final lo propone `redactor`). Ubicación según la recomendación: sección de la ficha `/proyectos/josecoded` hasta que vuelvan las métricas vivas.
 - **Q4: a)** categorías del blog por tema.
@@ -167,10 +167,16 @@
 - **2.9 (teléfono y WhatsApp):** se ofrece **llamada por teléfono** al número español de Jose, +34 683 883 407, y ese mismo número se usa de momento para WhatsApp. Más adelante Jose decide si contrata un número de empresa para WhatsApp.
 - **CI de pgTAP con PostgreSQL 16 frente a 17 en producción:** aceptado tal cual.
 
+## Ronda del 2026-11-14 (Jose, en el navegador)
+
+- **Q1: a)** escaparate (ver arriba).
+- **Panel del chat: variante A «Escarcha»** (`docs/diseno/2026-11-14-chat-cristal/`, tokens en `tokens.md`): cristal claro al 80 %, blur 20 px (16 px en la hoja móvil), saturación 150 %; burbujas casi opacas; error en placa blanca; sin `backdrop-filter` sube al 95 %; con `prefers-reduced-transparency` panel opaco; sin animar el blur; apertura 260 ms ease-out desde escala 0,97. Barra de Nexo fija bajo la cabecera con «Parar a Nexo», etiqueta «IA» y cuenta atrás no anunciada segundo a segundo (5.13, 5.15). Con el chat abierto se pausan las animaciones del hero.
+- **Título del chat: «Chat con Jose»** (sustituye a «Chat con Nexo» en `contactChooser.chat` y `contactPage.chat.title`; texto final de `redactor`).
+- **`/contacto`:** formulario 7/12 y chat incrustado 5/12, fijo al hacer scroll; en móvil el chat va **debajo** del formulario.
+
 ## Abiertas (resumen)
 
 | Id | Qué falta | Quién |
 |---|---|---|
 | 10.7 | Crear `josecoded-dev` cuando se cumpla el disparador (hasta entonces, OK por migración sobre `josecoded`) | Jose (acción, condicionada) |
 | 2.9 / 2.23 | Número de empresa para WhatsApp (de momento el personal); tarifas reales tras la ronda de evaluación de servicios | Jose (datos) |
-| Q1 | Home escaparate (recomendada), long-form o mínima (`division-pantallas.md` §4); Q2–Q7 cerradas el 2026-11-13 | Jose (decisión) |

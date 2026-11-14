@@ -38,8 +38,7 @@ Arquitectura cerrada del todo (2026-11-02, `docs/arquitectura/decisiones.md`): J
   - **Decisiones:** ¿la auditoría de accesibilidad de apps RN es oferta (Q6)? · tercer breakpoint de la cabecera en #61 (oculta «josecoded» bajo 360 px). Cerradas el 2026-11-13: llamada por teléfono sí (2.9 en `decisiones.md`) y pgTAP con PostgreSQL 16 aceptado.
   - **Textos para `redactor` (Mac):** todos los nuevos de la noche; cada PR lista sus claves.
   - Informes completos en la sesión: investigación, seguridad, accesibilidad, usuarios de ejemplo.
-- **Jose (decisión, con recomendación):** Q1 (home). 5.13, 5.15, 7.8 y Q2–Q7 cerradas el 2026-11-13 (`decisiones.md`, «Ronda del 2026-11-13»).
-- **Diseño pendiente (con aprobación de Jose):** chat de Nexo también en `/contacto` y panel del chat con fondo tipo *liquid glass*.
+- **Diseño aprobado el 2026-11-14, por implementar (nivel M):** home escaparate (Q1) y panel del chat en cristal variante A «Escarcha», también incrustado en `/contacto` (`decisiones.md`, «Ronda del 2026-11-14»; maquetas en `docs/diseno/`). Textos nuevos para `redactor`: «Chat con Jose», «Ver contratación», «Tecnologías de esta web». Pendiente de Jose: tercer proyecto destacado de la home (hoy solo 3CatInfo y josecoded tienen `featured`).
 - **Backend:** el repo es `josecoded-backend` (10.8, ya existe); renombrar `josecoded-omen` en `docs/plan/bloques.md` cuando arranque la lista O.
 - **Jose (acciones):** borrar `develop` y las ramas `chore/*`, `design/*`, `docs/*`, `claude/*` del remoto (se quedan las `archivo/*`).
 - **Disparador de `josecoded-dev` (10.7):** crear el proyecto de desarrollo **antes** de lo primero que ocurra: invitar a un cliente, closer o freelance real · guardar el primer interesado o contacto real · activar Resend o Turnstile en modo real sobre `josecoded` · W46. Hasta entonces `josecoded` (`echlwywbucgbhwpncviy`) es la base compartida de desarrollo y cada migración se aplica con OK de Jose por migración.
