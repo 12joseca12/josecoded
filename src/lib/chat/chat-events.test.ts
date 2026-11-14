@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
   chatFallbackHref,
@@ -11,6 +11,25 @@ import {
 } from "./chat-events";
 
 describe("chat events", () => {
+  const marks = new Set<string>();
+
+  beforeEach(() => {
+    marks.clear();
+    vi.stubGlobal("document", {
+      documentElement: {
+        toggleAttribute: (name: string, force: boolean) => {
+          if (force) marks.add(name);
+          else marks.delete(name);
+        },
+      },
+    });
+  });
+
+  afterEach(() => {
+    setChatOpen(false);
+    vi.unstubAllGlobals();
+  });
+
   it("returns false and does nothing when no panel is subscribed", () => {
     expect(chatPanelMounted()).toBe(false);
     expect(openChat()).toBe(false);
@@ -31,16 +50,14 @@ describe("chat events", () => {
     expect(chatFallbackHref("en")).toBe("/en/contacto#chat");
   });
 
+  it("re-marks the document when the open state is re-asserted after a reset", () => {
+    setChatOpen(true);
+    setChatOpen(false);
+    setChatOpen(true);
+    expect(marks.has("data-chat-open")).toBe(true);
+  });
+
   it("marks the document while the panel is open and notifies once per change", () => {
-    const marks = new Set<string>();
-    vi.stubGlobal("document", {
-      documentElement: {
-        toggleAttribute: (name: string, force: boolean) => {
-          if (force) marks.add(name);
-          else marks.delete(name);
-        },
-      },
-    });
     const listener = vi.fn();
     const off = onChatOpenChange(listener);
     setChatOpen(true);
@@ -53,6 +70,5 @@ describe("chat events", () => {
     expect(marks.has("data-chat-open")).toBe(false);
     expect(listener).toHaveBeenCalledTimes(2);
     off();
-    vi.unstubAllGlobals();
   });
 });

@@ -43,12 +43,15 @@ export function ChatPanel({ locale, labels, config, openRequest, openerRef }: Ch
     if (!node.open) {
       const current = ++entrance.current;
       node.setAttribute("data-entering", "");
+      node.querySelectorAll('[role="log"] > ul > li').forEach((item) => {
+        item.setAttribute("data-stagger", "");
+      });
       node.show();
-      setChatOpen(true);
       void settleEntrance(node).then(() => {
         if (entrance.current === current) node.removeAttribute("data-entering");
       });
     }
+    if (node.open) setChatOpen(true);
     input.current?.focus({ preventScroll: true });
   }, [openRequest]);
 
