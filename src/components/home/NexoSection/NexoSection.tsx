@@ -1,5 +1,4 @@
 import { ChatInvite } from "@/components/chat/ChatInvite/ChatInvite";
-import { Button } from "@/components/ui/Button/Button";
 import type { Locale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
 import { withResponseTime } from "@/lib/common/response-time";
@@ -14,6 +13,8 @@ interface NexoSectionProps {
 const titleId = "nexo-title";
 
 export async function NexoSection({ locale, chat }: NexoSectionProps) {
+  if (!chat) return null;
+
   const t = await getTranslator(locale);
 
   return (
@@ -24,21 +25,8 @@ export async function NexoSection({ locale, chat }: NexoSectionProps) {
           <h2 id={titleId} className={styles.title}>
             {t("home.nexo.title")}
           </h2>
-          <p className={styles.text}>
-            {withResponseTime(t, chat ? t("home.chatInvite.hint") : t("home.closing.lead"))}
-          </p>
-          {chat ? (
-            <ChatInvite
-              locale={locale}
-              label={t("home.chatInvite.label")}
-              hint=""
-              variant="action"
-            />
-          ) : (
-            <Button href={`/${locale}/contacto`} variant="light">
-              {t("home.closing.cta")}
-            </Button>
-          )}
+          <p className={styles.text}>{withResponseTime(t, t("home.chatInvite.hint"))}</p>
+          <ChatInvite locale={locale} label={t("home.chatInvite.label")} hint="" variant="action" />
         </div>
       </div>
     </section>

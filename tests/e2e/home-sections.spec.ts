@@ -58,6 +58,16 @@ test.describe("home sections below the hero", () => {
     }
   });
 
+  test("without the chat the Nexo section is absent and the closing keeps its contact button", async ({
+    page,
+  }) => {
+    await page.goto("/es");
+    await expect(page.locator("#nexo")).toHaveCount(0);
+    await expect(
+      page.locator("#cierre").getByRole("link", { name: es.home.closing.cta }),
+    ).toHaveAttribute("href", "/es/contacto");
+  });
+
   test("shows one card per configured project, each linking to its case", async ({ page }) => {
     await page.goto("/es");
     const section = page.getByRole("region", {
