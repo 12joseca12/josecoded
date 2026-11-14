@@ -3,7 +3,7 @@ import { PageSection } from "@/components/site/PageSection/PageSection";
 import { Link } from "@/components/ui/Link/Link";
 import { features } from "@/config/features";
 import { homeProjectSlugs } from "@/config/home";
-import { getProject } from "@/content";
+import { getProjectMeta } from "@/content/projects-meta";
 import type { Locale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
 
@@ -18,7 +18,7 @@ interface FeaturedProjectsProps {
 export async function FeaturedProjects({ locale }: FeaturedProjectsProps) {
   if (!features.projects) return null;
   const t = await getTranslator(locale);
-  const entries = pickProjects(homeProjectSlugs, getProject);
+  const entries = pickProjects(homeProjectSlugs, getProjectMeta);
   if (entries.length === 0) return null;
 
   return (

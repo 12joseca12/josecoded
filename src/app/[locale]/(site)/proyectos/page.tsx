@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/Button/Button";
 import { EmptyState } from "@/components/ui/EmptyState/EmptyState";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 import { site } from "@/config/site";
-import { hasPublishedProjects, listProjects } from "@/content";
+import { hasPublishedProjects, listProjectMetas } from "@/content/projects-meta";
 import { isLocale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
 import {
@@ -48,7 +48,7 @@ export default async function ProjectsPage({ params, searchParams }: ProjectsPro
   const [{ locale }, query] = await Promise.all([params, searchParams]);
   if (!isLocale(locale)) notFound();
   const t = await getTranslator(locale);
-  const all = listProjects();
+  const all = listProjectMetas();
   const showFilters = filtersAvailable(all);
   const filter = showFilters ? parseProjectFilter(query.tipo) : "all";
   const entries = filterProjects(all, filter);

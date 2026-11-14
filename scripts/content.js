@@ -10,10 +10,12 @@ import {
   readContent,
   readCv,
   renderIndex,
+  renderProjectMetaIndex,
 } from "../src/content/loader.ts";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const generatedFile = join(root, "src/content/index.generated.ts");
+const metaFile = join(root, "src/content/projects-meta.generated.ts");
 
 let entries;
 try {
@@ -29,9 +31,14 @@ try {
 
 const options = await resolveConfig(generatedFile);
 const expected = await format(renderIndex(entries), { ...options, filepath: generatedFile });
+const expectedMeta = await format(renderProjectMetaIndex(entries), {
+  ...options,
+  filepath: metaFile,
+});
 
 if (process.argv.includes("--write")) {
   writeFileSync(generatedFile, expected);
+  writeFileSync(metaFile, expectedMeta);
   console.log(`content: wrote ${entries.length} entries to src/content/index.generated.ts`);
   process.exit(0);
 }
@@ -48,8 +55,9 @@ for (const { file, line, text } of pending) {
 }
 
 const current = existsSync(generatedFile) ? readFileSync(generatedFile, "utf8") : "";
-if (current !== expected) {
-  console.error("content: src/content/index.generated.ts is stale: run pnpm content:build");
+const currentMeta = existsSync(metaFile) ? readFileSync(metaFile, "utf8") : "";
+if (current !== expected || currentMeta !== expectedMeta) {
+  console.error("content: generated content files are stale: run pnpm content:build");
   process.exit(1);
 }
 console.log(`content: ok (${entries.length} entries, ${pending.length} pending placeholders)`);

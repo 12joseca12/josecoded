@@ -192,6 +192,17 @@ export function findPlaceholders(
 
 const metaTypes = { projects: "ProjectMeta", blog: "BlogMeta", legal: "LegalMeta" } as const;
 
+export function renderProjectMetaIndex(entries: LoadedEntry[]): string {
+  const items = entries
+    .filter((entry) => entry.type === "projects")
+    .map((entry) => `{ slug: "${entry.slug}", meta: ${JSON.stringify(entry.meta)} }`);
+  return [
+    `import type { ProjectMeta } from "./schemas";`,
+    `export const projectMetas: { slug: string; meta: ProjectMeta }[] = [${items.join(",")}];`,
+    "",
+  ].join("\n");
+}
+
 export function renderIndex(entries: LoadedEntry[]): string {
   const sections = contentTypes.map((type) => {
     const items = entries
