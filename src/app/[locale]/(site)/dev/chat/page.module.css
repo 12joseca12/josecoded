@@ -12,6 +12,7 @@
 
 .frame {
   composes: glass from "../../../../../components/chat/ChatPanel/glass.module.css";
+  position: relative;
   inline-size: min(100%, 30rem);
   block-size: 36rem;
   overflow: hidden;

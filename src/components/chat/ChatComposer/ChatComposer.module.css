@@ -55,6 +55,7 @@
   border-radius: var(--radius-s);
   background: var(--chat-error-plate);
   box-shadow: inset 0 0 0 1px var(--chat-error-line);
+  outline: 1px solid transparent;
   color: var(--error);
   font-weight: var(--fw-semibold);
 }
