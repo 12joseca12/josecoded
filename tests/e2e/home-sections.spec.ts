@@ -51,7 +51,11 @@ test.describe("home sections below the hero", () => {
       "/es/servicios#contratacion",
     );
     await expect(page.locator("#como-trabajo")).toHaveCount(0);
-    await expect(section).not.toContainText("€");
+    const tiers = page.locator("#a-medida li");
+    await expect(tiers.first()).toBeVisible();
+    for (const tier of await tiers.all()) {
+      await expect(tier.locator("[data-variant='review']")).toHaveCount(1);
+    }
   });
 
   test("shows one card per configured project, each linking to its case", async ({ page }) => {
@@ -87,7 +91,11 @@ test.describe("home sections below the hero", () => {
     for (const slug of ["app-primera-version", "app-producto"] as const) {
       await expect(app.getByText(es.offersPage.tiers[slug].name, { exact: true })).toBeVisible();
     }
-    await expect(section).not.toContainText("€");
+    const tiers = page.locator("#a-medida li");
+    await expect(tiers.first()).toBeVisible();
+    for (const tier of await tiers.all()) {
+      await expect(tier.locator("[data-variant='review']")).toHaveCount(1);
+    }
     await expect(section.getByRole("link", { name: project.cta })).toHaveAttribute(
       "href",
       "/es/servicios/a-medida",

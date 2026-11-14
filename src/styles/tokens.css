@@ -41,6 +41,7 @@
   --radius-m: 1rem;
   --radius-l: 1.5rem;
   --radius-xl: 2rem;
+  --radius-round: 50%;
   --font-body:
     var(--font-inter-tight), "Inter Tight", "Helvetica Neue", Arial, system-ui, sans-serif;
   --font-mono: ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace;

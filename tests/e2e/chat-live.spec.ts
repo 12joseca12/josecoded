@@ -102,6 +102,14 @@ test("the contact chooser, the home and the 404 all open the same panel", async 
   await expect(panel(page)).toBeVisible();
 });
 
+test("the Nexo section of the home is visible and its button opens the panel", async ({ page }) => {
+  await page.goto("/es");
+  const nexo = page.locator("#nexo");
+  await expect(nexo).toBeVisible();
+  await nexo.getByRole("button", { name: es.home.chatInvite.label }).click();
+  await expect(panel(page)).toBeVisible();
+});
+
 test("the hero call to action opens the contact chooser, not the chat", async ({ page }) => {
   await page.goto("/es");
   const cta = page.locator("#hero").getByRole("link", { name: es.home.hero.ctaPrimary });

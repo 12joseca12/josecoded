@@ -26,38 +26,42 @@ export async function TierTeaser({ locale }: TierTeaserProps) {
       fit="content"
     >
       <div className={styles.tiers}>
-        {platforms.map((platform) => {
-          const headingId = `home-tiers-${platform}`;
-          return (
-            <section
-              key={platform}
-              className={styles.group}
-              data-platform={platform}
-              aria-labelledby={headingId}
-            >
-              <h3 id={headingId} className={styles.groupTitle}>
-                {t(platform === "web" ? "offersPage.compare.tabWeb" : "offersPage.compare.tabApp")}
-              </h3>
-              <ul className={styles.list}>
-                {offersOn(platform, catalog.offers).map((offer) => (
-                  <li key={offer.slug} className={styles.tier}>
-                    <strong className={styles.name}>{t(offerCopyKeys(offer.slug).name)}</strong>
-                    {isProvisional(offer) ? (
-                      <PriceState variant="review" label={t("services.price.review")} />
-                    ) : (
-                      <PriceState
-                        variant="final"
-                        prefix={t("offersPage.compare.from")}
-                        amount={offer.from}
-                        unit={t("offersPage.compare.unit")}
-                      />
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </section>
-          );
-        })}
+        <div className={styles.groups}>
+          {platforms.map((platform) => {
+            const headingId = `home-tiers-${platform}`;
+            return (
+              <section
+                key={platform}
+                className={styles.group}
+                data-platform={platform}
+                aria-labelledby={headingId}
+              >
+                <h3 id={headingId} className={styles.groupTitle}>
+                  {t(
+                    platform === "web" ? "offersPage.compare.tabWeb" : "offersPage.compare.tabApp",
+                  )}
+                </h3>
+                <ul className={styles.list}>
+                  {offersOn(platform, catalog.offers).map((offer) => (
+                    <li key={offer.slug} className={styles.tier}>
+                      <strong className={styles.name}>{t(offerCopyKeys(offer.slug).name)}</strong>
+                      {isProvisional(offer) ? (
+                        <PriceState variant="review" label={t("services.price.review")} />
+                      ) : (
+                        <PriceState
+                          variant="final"
+                          prefix={t("offersPage.compare.from")}
+                          amount={offer.from}
+                          unit={t("offersPage.compare.unit")}
+                        />
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            );
+          })}
+        </div>
       </div>
       <div className={styles.foot}>
         <Button href={base} variant="ghost">

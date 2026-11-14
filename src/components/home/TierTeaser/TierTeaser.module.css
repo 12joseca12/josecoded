@@ -1,7 +1,10 @@
 .tiers {
+  container-type: inline-size;
+}
+
+.groups {
   display: grid;
   gap: var(--space-5);
-  container-type: inline-size;
 }
 
 .group {
@@ -56,7 +59,7 @@
 }
 
 @container (min-width: 47.5rem) {
-  .tiers {
+  .groups {
     grid-template-columns: 3fr 2fr;
   }
 

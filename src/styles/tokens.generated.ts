@@ -40,6 +40,7 @@ export const tokenNames = [
   "--radius-m",
   "--radius-l",
   "--radius-xl",
+  "--radius-round",
   "--font-body",
   "--font-mono",
   "--ease-out",
