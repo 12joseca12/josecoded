@@ -7,7 +7,7 @@ import { createPortal } from "react-dom";
 import { ChatPanelHost } from "@/components/chat/ChatPanel/ChatPanelHost";
 import type { ChatRuntimeConfig } from "@/components/chat/ChatPanel/ChatSession";
 import { ChatView } from "@/components/chat/ChatView/ChatView";
-import { NexoBar } from "@/components/chat/NexoBar/NexoBar";
+import { NexoBar, type NexoBarState } from "@/components/chat/NexoBar/NexoBar";
 import { Button } from "@/components/ui/Button/Button";
 import { Heading } from "@/components/ui/Heading/Heading";
 import type { Locale } from "@/i18n/config";
@@ -30,7 +30,15 @@ interface ChatShowcaseProps {
     title: string;
     scenario: string;
     panel: string;
-    nexoBar: { title: string; active: string; stopping: string; stopped: string };
+    nexoBar: {
+      title: string;
+      waiting: string;
+      countdown: string;
+      active: string;
+      stopping: string;
+      stopped: string;
+      live: string;
+    };
   };
 }
 
@@ -49,6 +57,29 @@ function Scenario({ id, labels }: { id: ChatScenario; labels: ChatLabels }) {
 }
 
 const subscribe = () => () => undefined;
+const noop = () => undefined;
+
+function LiveBar({ labels }: { labels: NexoBarLabels }) {
+  const [state, setState] = useState<NexoBarState>({ kind: "active" });
+  const [busy, setBusy] = useState(false);
+  return (
+    <NexoBar
+      labels={labels}
+      state={state}
+      busy={busy}
+      onStop={() => {
+        setBusy(true);
+        setTimeout(() => {
+          setBusy(false);
+          setState({ kind: "stopped" });
+        }, 300);
+      }}
+      onResume={() => {
+        setState({ kind: "waiting" });
+      }}
+    />
+  );
+}
 
 export function ChatShowcase({
   locale,
@@ -100,22 +131,66 @@ export function ChatShowcase({
         <Heading id="nexo-bar-demo" level={2} size="h3">
           {copy.nexoBar.title}
         </Heading>
+        <div className={styles.barRow} data-state="waiting">
+          <p className={styles.barName}>{copy.nexoBar.waiting}</p>
+          <div className={styles.barFrame}>
+            <NexoBar
+              labels={nexoBarLabels}
+              state={{ kind: "waiting" }}
+              onStop={noop}
+              onResume={noop}
+            />
+          </div>
+        </div>
+        <div className={styles.barRow} data-state="countdown">
+          <p className={styles.barName}>{copy.nexoBar.countdown}</p>
+          <div className={styles.barFrame}>
+            <NexoBar
+              labels={nexoBarLabels}
+              state={{ kind: "countdown", dueAt }}
+              onStop={noop}
+              onResume={noop}
+            />
+          </div>
+        </div>
         <div className={styles.barRow} data-state="active">
           <p className={styles.barName}>{copy.nexoBar.active}</p>
           <div className={styles.barFrame}>
-            <NexoBar labels={nexoBarLabels} dueAt={dueAt} onStop={() => undefined} />
+            <NexoBar
+              labels={nexoBarLabels}
+              state={{ kind: "active" }}
+              onStop={noop}
+              onResume={noop}
+            />
           </div>
         </div>
         <div className={styles.barRow} data-state="stopping">
           <p className={styles.barName}>{copy.nexoBar.stopping}</p>
           <div className={styles.barFrame}>
-            <NexoBar labels={nexoBarLabels} dueAt={dueAt} onStop={() => undefined} stopping />
+            <NexoBar
+              labels={nexoBarLabels}
+              state={{ kind: "active" }}
+              onStop={noop}
+              onResume={noop}
+              busy
+            />
           </div>
         </div>
         <div className={styles.barRow} data-state="stopped">
           <p className={styles.barName}>{copy.nexoBar.stopped}</p>
           <div className={styles.barFrame}>
-            <NexoBar labels={nexoBarLabels} onStop={() => undefined} stopped />
+            <NexoBar
+              labels={nexoBarLabels}
+              state={{ kind: "stopped" }}
+              onStop={noop}
+              onResume={noop}
+            />
+          </div>
+        </div>
+        <div className={styles.barRow} data-state="live">
+          <p className={styles.barName}>{copy.nexoBar.live}</p>
+          <div className={styles.barFrame}>
+            <LiveBar labels={nexoBarLabels} />
           </div>
         </div>
       </section>

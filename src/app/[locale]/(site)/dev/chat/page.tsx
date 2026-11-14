@@ -27,9 +27,12 @@ export default async function ChatDevPage({ params }: { params: Promise<{ locale
         panel: t("dev.chat.panel"),
         nexoBar: {
           title: t("dev.chat.nexoBar.title"),
+          waiting: t("dev.chat.nexoBar.waiting"),
+          countdown: t("dev.chat.nexoBar.countdown"),
           active: t("dev.chat.nexoBar.active"),
           stopping: t("dev.chat.nexoBar.stopping"),
           stopped: t("dev.chat.nexoBar.stopped"),
+          live: t("dev.chat.nexoBar.live"),
         },
       }}
     />

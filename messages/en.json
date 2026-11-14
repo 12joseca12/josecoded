@@ -379,9 +379,12 @@
       },
       "nexoBar": {
         "title": "Nexo bar",
+        "waiting": "On standby",
+        "countdown": "Countdown",
         "active": "Active",
         "stopping": "Stopping",
-        "stopped": "Stopped"
+        "stopped": "Stopped",
+        "live": "Interactive"
       }
     }
   },
@@ -983,14 +986,21 @@
     "openChat": "Open the chat",
     "nexoBar": {
       "region": "Nexo, AI assistant",
-      "tag": "AI",
-      "activeTitle": "Nexo is answering for Jose",
-      "activeAnnouncement": "Nexo is answering for Jose; you can stop it.",
-      "remaining": "Time left",
+      "waitingTitle": "Nexo on standby",
+      "waitingText": "Steps in if Jose takes more than 10 min",
+      "countdownTitle": "Nexo steps in in",
+      "countdownText": "if Jose doesn't reply first",
+      "approxMinutes": "about {minutes} minutes",
+      "approxSoon": "under a minute",
+      "activeTitle": "Nexo is helping you",
+      "activeText": "Jose will see the whole conversation",
       "stop": "Stop Nexo",
       "stopping": "Stopping Nexo",
       "stoppedTitle": "Nexo is stopped",
-      "stoppedText": "Only Jose will answer you."
+      "stoppedText": "Only Jose will reply to you",
+      "announceWaiting": "Nexo turned back on, on standby",
+      "announceActive": "Nexo has joined, it is helping you",
+      "announceStopped": "Nexo stopped, only Jose will reply to you"
     }
   },
   "auth": {

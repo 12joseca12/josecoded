@@ -30,6 +30,7 @@ interface LiveMessages {
     errors: { burst: string; verification: string };
     system: { handoff_done: string; ai_off: string };
     page: { alternative: string; alternativeLink: string };
+    nexoBar: { region: string; stop: string };
   };
   home: { chatInvite: { label: string }; hero: { ctaPrimary: string } };
 }
@@ -553,4 +554,11 @@ test.describe("embedded on the contact page", () => {
       expect(violations).toEqual([]);
     });
   }
+});
+
+test("the open panel on /es does not show the Nexo bar", async ({ page }) => {
+  await openPanel(page);
+  await expect(panel(page).getByRole("group", { name: chat.nexoBar.region })).toHaveCount(0);
+  await expect(panel(page).getByRole("button", { name: chat.nexoBar.stop })).toHaveCount(0);
+  await expect(page.getByRole("group", { name: chat.nexoBar.region })).toHaveCount(0);
 });

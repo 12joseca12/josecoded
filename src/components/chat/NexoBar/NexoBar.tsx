@@ -1,83 +1,186 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { type CSSProperties, useEffect, useId, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/Button/Button";
 import { VisuallyHidden } from "@/components/ui/VisuallyHidden/VisuallyHidden";
-import { formatCountdown, type NexoBarLabels } from "@/lib/chat/nexo-bar";
+import {
+  defaultWindowMs,
+  describeApproximate,
+  formatCountdown,
+  type NexoBarKind,
+  type NexoBarLabels,
+  remainingFraction,
+} from "@/lib/chat/nexo-bar";
 
 import styles from "./NexoBar.module.css";
 
+export type NexoBarState =
+  | { kind: "waiting" }
+  | { kind: "countdown"; dueAt: string }
+  | { kind: "active" }
+  | { kind: "stopped" };
+
 export interface NexoBarProps {
   labels: NexoBarLabels;
-  dueAt?: string | null;
+  state: NexoBarState;
   onStop: () => void;
-  stopping?: boolean;
-  stopped?: boolean;
+  onResume: () => void;
+  busy?: boolean;
+  windowMs?: number;
 }
 
-function useNow(active: boolean): number | null {
-  const [now, setNow] = useState<number | null>(null);
+interface Tick {
+  dueAt: string;
+  at: number;
+}
+
+function useNow(dueAt: string | null): number | null {
+  const [tick, setTick] = useState<Tick | null>(null);
   useEffect(() => {
-    if (!active) return;
-    const tick = () => {
-      setNow(Date.now());
-    };
-    tick();
-    const timer = setInterval(tick, 1000);
+    if (dueAt === null) return;
+    const due = Date.parse(dueAt);
+    if (Number.isNaN(due)) return;
+    const timer = setInterval(update, 1000);
+    function update() {
+      const at = Date.now();
+      setTick({ dueAt: dueAt ?? "", at });
+      if (at >= due) clearInterval(timer);
+    }
+    update();
     return () => {
       clearInterval(timer);
     };
-  }, [active]);
-  return now;
+  }, [dueAt]);
+  return tick !== null && tick.dueAt === dueAt ? tick.at : null;
+}
+
+function Mark({ stopped }: { stopped: boolean }) {
+  return (
+    <svg className={styles.mark} viewBox="0 0 28 28" aria-hidden="true">
+      <circle cx="14" cy="14" r="12" strokeDasharray={stopped ? "3 3" : undefined} />
+      <circle cx="14" cy="14" r="6.5" />
+      {stopped ? (
+        <path d="M7 21L21 7" />
+      ) : (
+        <circle className={styles.dot} cx="20.5" cy="7.5" r="3" />
+      )}
+    </svg>
+  );
+}
+
+function StopIcon() {
+  return (
+    <svg className={styles.stopIcon} viewBox="0 0 12 12" aria-hidden="true">
+      <rect x="1.5" y="1.5" width="9" height="9" rx="2" />
+    </svg>
+  );
+}
+
+function announcement(kind: NexoBarKind, labels: NexoBarLabels): string {
+  if (kind === "active") return labels.announceActive;
+  if (kind === "stopped") return labels.announceStopped;
+  if (kind === "waiting") return labels.announceWaiting;
+  return "";
 }
 
 export function NexoBar({
   labels,
-  dueAt = null,
+  state,
   onStop,
-  stopping = false,
-  stopped = false,
+  onResume,
+  busy = false,
+  windowMs = defaultWindowMs,
 }: NexoBarProps) {
-  const counting = !stopped && dueAt !== null;
-  const now = useNow(counting);
-  const phase = stopped ? "stopped" : stopping ? "stopping" : "active";
-  const title = stopped ? labels.stoppedTitle : labels.activeTitle;
+  const textId = useId();
+  const textRef = useRef<HTMLParagraphElement>(null);
+  const kind = state.kind;
+  const dueAt = state.kind === "countdown" ? state.dueAt : null;
+  const now = useNow(dueAt);
+  const stopped = kind === "stopped";
+
+  const stop = () => {
+    textRef.current?.focus();
+    onStop();
+  };
+
+  const toggle = () => {
+    if (busy) return;
+    if (stopped) onResume();
+    else onStop();
+  };
+
+  const progress: CSSProperties & Record<"--p", string> = {
+    "--p": String(dueAt !== null && now !== null ? remainingFraction(dueAt, now, windowMs) : 1),
+  };
 
   return (
-    <div className={styles.bar} role="group" data-phase={phase} aria-label={labels.region}>
-      <span className={styles.tag}>{labels.tag}</span>
-      <div className={styles.text}>
-        <p className={styles.title} role="status">
-          {title}
-          <VisuallyHidden>
-            {stopped ? labels.stoppedText : labels.activeAnnouncement}
-          </VisuallyHidden>
+    <div className={styles.bar} data-kind={kind} role="group" aria-label={labels.region}>
+      <div className={styles.grid}>
+        <Mark stopped={stopped} />
+        <p ref={textRef} className={styles.text} id={textId} tabIndex={-1}>
+          {kind === "countdown" ? (
+            <>
+              <b className={styles.title}>
+                {labels.countdownTitle}{" "}
+                <span className={styles.time} aria-hidden="true" data-testid="nexo-bar-time">
+                  {dueAt !== null && now !== null ? formatCountdown(dueAt, now) : "-:--"}
+                </span>
+                <VisuallyHidden>
+                  {dueAt !== null && now !== null ? describeApproximate(labels, dueAt, now) : ""}
+                </VisuallyHidden>
+              </b>
+              <span className={styles.detail}>{labels.countdownText}</span>
+            </>
+          ) : kind === "active" ? (
+            <>
+              <b className={styles.title}>{labels.activeTitle}</b>
+              <span className={styles.detail}>{labels.activeText}</span>
+            </>
+          ) : kind === "stopped" ? (
+            <>
+              <b className={styles.title}>{labels.stoppedTitle}</b>
+              <span className={styles.detail}>{labels.stoppedText}</span>
+            </>
+          ) : (
+            <>
+              <b className={styles.title}>{labels.waitingTitle}</b>
+              <span className={styles.detail}>{labels.waitingText}</span>
+            </>
+          )}
         </p>
-        {stopped ? (
-          <p className={styles.detail} aria-hidden="true">
-            {labels.stoppedText}
-          </p>
-        ) : counting ? (
-          <p className={styles.detail} aria-hidden="true">
-            {labels.remaining}{" "}
-            <span className={styles.time} data-testid="nexo-bar-time">
-              {now === null ? "--:--" : formatCountdown(dueAt, now)}
-            </span>
-          </p>
+        {kind === "active" ? (
+          <Button
+            variant="light"
+            size="sm"
+            icon={<StopIcon />}
+            iconStart
+            loading={busy}
+            loadingLabel={labels.stopping}
+            onClick={stop}
+          >
+            {labels.stop}
+          </Button>
+        ) : (
+          <button
+            type="button"
+            className={styles.switch}
+            role="switch"
+            aria-checked={!stopped}
+            aria-labelledby={textId}
+            aria-disabled={busy || undefined}
+            onClick={toggle}
+          />
+        )}
+        {kind === "countdown" ? (
+          <div className={styles.progress} aria-hidden="true">
+            <i style={progress} />
+          </div>
         ) : null}
       </div>
-      {stopped ? null : (
-        <Button
-          variant="light"
-          size="sm"
-          loading={stopping}
-          loadingLabel={labels.stopping}
-          onClick={onStop}
-        >
-          {labels.stop}
-        </Button>
-      )}
+      <div role="status">
+        <VisuallyHidden>{announcement(kind, labels)}</VisuallyHidden>
+      </div>
     </div>
   );
 }

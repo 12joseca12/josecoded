@@ -379,9 +379,12 @@
       },
       "nexoBar": {
         "title": "Barra de Nexo",
-        "active": "Activa",
+        "waiting": "En espera",
+        "countdown": "Cuenta atrás",
+        "active": "Activo",
         "stopping": "Parando",
-        "stopped": "Parado"
+        "stopped": "Parado",
+        "live": "Interactivo"
       }
     }
   },
@@ -983,14 +986,21 @@
     "openChat": "Abrir el chat",
     "nexoBar": {
       "region": "Nexo, asistente de IA",
-      "tag": "IA",
-      "activeTitle": "Nexo responde por Jose",
-      "activeAnnouncement": "Nexo responde por Jose; puedes pararlo.",
-      "remaining": "Tiempo restante",
+      "waitingTitle": "Nexo en espera",
+      "waitingText": "Entra si Jose tarda más de 10 min",
+      "countdownTitle": "Nexo entrará en",
+      "countdownText": "si Jose no responde antes",
+      "approxMinutes": "unos {minutes} minutos",
+      "approxSoon": "menos de un minuto",
+      "activeTitle": "Te está atendiendo Nexo",
+      "activeText": "Jose verá toda la conversación",
       "stop": "Parar a Nexo",
       "stopping": "Parando a Nexo",
       "stoppedTitle": "Nexo está parado",
-      "stoppedText": "Solo te responderá Jose."
+      "stoppedText": "Solo te responderá Jose",
+      "announceWaiting": "Nexo reactivado, en espera",
+      "announceActive": "Entra Nexo, te está atendiendo",
+      "announceStopped": "Nexo parado, solo te responderá Jose"
     }
   },
   "auth": {
