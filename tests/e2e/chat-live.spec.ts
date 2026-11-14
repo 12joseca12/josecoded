@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 
-import { expect, type Page, test } from "@playwright/test";
+import { expect, type Locator, type Page, test } from "@playwright/test";
 
 import AxeBuilder from "./support/axe";
 import { omen, uniqueText, visitorTokenHash } from "./support/chat";
@@ -355,6 +355,155 @@ test.describe("mobile", () => {
     result = await new AxeBuilder({ page }).analyze();
     expect(result.violations).toEqual([]);
   });
+});
+
+async function openSheet(page: Page) {
+  await page.goto("/es");
+  const opener = page.getByRole("button", { name: es.chatButton.label }).first();
+  await hydrated(opener);
+  await opener.click();
+  await expect(panel(page)).toBeVisible();
+  await expect(composer(page)).toBeFocused();
+  await expect.poll(() => sheetTop(page)).toBe(52);
+  return opener;
+}
+
+const sheetTop = async (page: Page) => Math.round((await panel(page).boundingBox())?.y ?? -1);
+
+const focusInsidePanel = (page: Page) =>
+  page.evaluate(() => {
+    const dialog = document.querySelector("dialog[open]");
+    return Boolean(dialog?.contains(document.activeElement));
+  });
+
+async function dragSheet(page: Page, from: { x: number; y: number }, distance: number) {
+  await page.mouse.move(from.x, from.y);
+  await page.mouse.down();
+  for (let step = 1; step <= 10; step += 1) {
+    await page.mouse.move(from.x, from.y + (distance * step) / 10);
+    await page.waitForTimeout(30);
+  }
+  await page.waitForTimeout(200);
+  await page.mouse.up();
+}
+
+async function centerOf(locator: Locator) {
+  const box = await locator.boundingBox();
+  if (!box) throw new Error("no box");
+  return { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+}
+
+test.describe("mobile sheet", () => {
+  test.use({ viewport: { width: 375, height: 812 } });
+
+  test("opens as a modal sheet over a scrim with a visible grabber", async ({ page }) => {
+    await openSheet(page);
+    expect(await panel(page).evaluate((node) => node.matches(":modal"))).toBe(true);
+    await expect
+      .poll(() =>
+        panel(page).evaluate((node) => {
+          const scrim = getComputedStyle(node, "::backdrop");
+          return `${scrim.backgroundColor} ${scrim.opacity}`;
+        }),
+      )
+      .toBe("rgba(23, 25, 28, 0.22) 1");
+    await expect(panel(page).locator("[data-sheet-handle]")).toBeVisible();
+    const covered = await page.evaluate(
+      () => document.elementFromPoint(40, 24)?.closest("dialog") != null,
+    );
+    expect(covered).toBe(true);
+  });
+
+  test("Tab and Shift+Tab never leave the sheet", async ({ page }) => {
+    await openSheet(page);
+    for (let press = 0; press < 14; press += 1) {
+      await page.keyboard.press("Tab");
+      expect(await focusInsidePanel(page)).toBe(true);
+    }
+    for (let press = 0; press < 14; press += 1) {
+      await page.keyboard.press("Shift+Tab");
+      expect(await focusInsidePanel(page)).toBe(true);
+    }
+  });
+
+  test("Escape closes the sheet, lifts the scrim and returns the focus", async ({ page }) => {
+    const opener = await openSheet(page);
+    await page.keyboard.press("Escape");
+    await expect(panel(page)).toBeHidden();
+    await expect(opener).toBeFocused();
+    expect(await page.evaluate(() => document.querySelector("dialog:modal") === null)).toBe(true);
+  });
+
+  test("the sheet follows the finger and a long drag down closes it", async ({ page }) => {
+    const opener = await openSheet(page);
+    const start = await centerOf(panel(page).locator("[data-sheet-handle]"));
+    await page.mouse.move(start.x, start.y);
+    await page.mouse.down();
+    await page.mouse.move(start.x, start.y + 120, { steps: 6 });
+    await expect.poll(() => sheetTop(page)).toBe(172);
+    for (let step = 1; step <= 6; step += 1) {
+      await page.mouse.move(start.x, start.y + 120 + step * 50);
+      await page.waitForTimeout(30);
+    }
+    await page.waitForTimeout(200);
+    await page.mouse.up();
+    await expect(panel(page)).toBeHidden();
+    await expect(opener).toBeFocused();
+  });
+
+  test("a short slow drag from the header puts the sheet back", async ({ page }) => {
+    await openSheet(page);
+    const title = panel(page).getByRole("heading", { name: chat.title });
+    await dragSheet(page, await centerOf(title), 80);
+    await expect(panel(page)).toBeVisible();
+    await expect.poll(() => sheetTop(page)).toBe(52);
+  });
+
+  test("a quick flick down closes the sheet", async ({ page }) => {
+    await openSheet(page);
+    const start = await centerOf(panel(page).locator("[data-sheet-handle]"));
+    await page.mouse.move(start.x, start.y);
+    await page.mouse.down();
+    await page.mouse.move(start.x, start.y + 70, { steps: 4 });
+    await page.mouse.up();
+    await expect(panel(page)).toBeHidden();
+  });
+
+  test("the thread still scrolls and the header buttons still work", async ({ page }) => {
+    await openSheet(page);
+    const touchAction = await log(page).evaluate((node) => getComputedStyle(node).touchAction);
+    expect(touchAction).toBe("auto");
+    await panel(page).getByRole("button", { name: chat.close }).click();
+    await expect(panel(page)).toBeHidden();
+  });
+});
+
+test.describe("mobile sheet with reduced motion", () => {
+  test.use({ reducedMotion: "reduce", viewport: { width: 375, height: 812 } });
+
+  test("the scrim and a released drag settle without a transition", async ({ page }) => {
+    await openSheet(page);
+    const scrim = await panel(page).evaluate((node) => {
+      const style = getComputedStyle(node, "::backdrop");
+      return { property: style.transitionProperty, opacity: style.opacity };
+    });
+    expect(scrim).toEqual({ property: "none", opacity: "1" });
+    await dragSheet(page, await centerOf(panel(page).locator("[data-sheet-handle]")), 80);
+    expect(await sheetTop(page)).toBe(52);
+    expect(await panel(page).evaluate((node) => node.getAnimations().length)).toBe(0);
+  });
+});
+
+test("the desktop panel stays non-modal and has no scrim", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/es");
+  await hydrated(headerChat(page));
+  await headerChat(page).click();
+  await expect(panel(page)).toBeVisible();
+  expect(await panel(page).evaluate((node) => node.matches(":modal"))).toBe(false);
+  await expect(panel(page).locator("[data-sheet-handle]")).toBeHidden();
+  await page.getByRole("banner").getByRole("link").first().click({ trial: true });
+  expect(await page.evaluate(() => document.querySelector("dialog:modal") === null)).toBe(true);
 });
 
 test.describe("without JavaScript", () => {

@@ -85,6 +85,7 @@ export const tokenNames = [
   "--chat-error-plate",
   "--chat-error-line",
   "--chat-shadow",
+  "--chat-scrim",
   "--fs-2xs",
   "--fs-xs",
   "--fs-s",

@@ -19,20 +19,80 @@
   transform-origin: bottom right;
   transition:
     transform var(--dur) var(--ease-drawer),
-    display var(--dur) allow-discrete;
+    display var(--dur) allow-discrete,
+    overlay var(--dur) allow-discrete;
 }
 
 .panel[open] {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
   transform: none;
   transition:
     transform var(--dur-slow) var(--ease-drawer),
-    display var(--dur-slow) allow-discrete;
+    display var(--dur-slow) allow-discrete,
+    overlay var(--dur-slow) allow-discrete;
 }
 
 @starting-style {
   .panel[open] {
     transform: translateY(100%);
   }
+}
+
+.panel::backdrop {
+  background: var(--chat-scrim);
+  opacity: 0;
+  transition:
+    opacity var(--dur) var(--ease-drawer),
+    display var(--dur) allow-discrete,
+    overlay var(--dur) allow-discrete;
+}
+
+.panel[open]::backdrop {
+  opacity: calc(1 - var(--sheet-progress, 0));
+  transition:
+    opacity var(--dur-slow) var(--ease-drawer),
+    display var(--dur-slow) allow-discrete,
+    overlay var(--dur-slow) allow-discrete;
+}
+
+@starting-style {
+  .panel[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+.panel[data-dragging],
+.panel[data-dragging]::backdrop {
+  transition: none;
+}
+
+.grab {
+  display: flex;
+  justify-content: center;
+  padding-block: var(--space-2) 0;
+  cursor: grab;
+  touch-action: none;
+}
+
+.grab span {
+  inline-size: 2.25rem;
+  block-size: 0.3125rem;
+  border-radius: var(--radius-m);
+  background: var(--ink-soft);
+  opacity: 0.5;
+}
+
+.panel[data-dragging] .grab {
+  cursor: grabbing;
+}
+
+.panel [data-chat-head] {
+  touch-action: none;
+}
+
+.body {
+  min-block-size: 0;
 }
 
 .panel[data-entering] [role="log"] > ul > li[data-stagger] {
@@ -107,6 +167,14 @@
     display: inline-grid;
   }
 
+  .grab {
+    display: none;
+  }
+
+  .panel [data-chat-head] {
+    touch-action: auto;
+  }
+
   .panel {
     inset: auto var(--space-5) var(--space-5) auto;
     inline-size: 26rem;
@@ -141,12 +209,25 @@
 
 @media (prefers-reduced-motion: reduce) {
   .panel,
-  .panel[open] {
+  .panel[open],
+  .panel::backdrop,
+  .panel[open]::backdrop {
     transform: none;
     transition: none;
   }
 
   .fullscreen {
     transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .grab {
+    --forced-line: CanvasText;
+  }
+
+  .grab span {
+    background: var(--forced-line);
+    forced-color-adjust: none;
   }
 }
