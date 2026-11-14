@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/Button/Button";
 import { Heading } from "@/components/ui/Heading/Heading";
+import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 import { Link } from "@/components/ui/Link/Link";
 import { contact } from "@/config/contact";
 import type { Locale } from "@/i18n/config";
@@ -26,7 +27,7 @@ export async function Closing({ locale }: ClosingProps) {
         </Heading>
         <p className={styles.lead}>{withResponseTime(t, t("home.closing.lead"))}</p>
         <div className={styles.actions}>
-          <Button href={`/${locale}/contacto`} variant="primary">
+          <Button href={`/${locale}/contacto`} variant="primary" icon={<ArrowIcon />}>
             {t("home.closing.cta")}
           </Button>
           {email ? (

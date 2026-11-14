@@ -58,11 +58,13 @@
   font-size: var(--fs-base);
 }
 
-@container (min-width: 43rem) {
+@container (min-width: 56rem) {
   .groups {
     grid-template-columns: 3fr 2fr;
   }
+}
 
+@container (min-width: 43rem) {
   .group[data-platform="web"] .list {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
