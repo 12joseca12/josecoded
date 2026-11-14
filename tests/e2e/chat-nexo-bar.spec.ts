@@ -68,7 +68,7 @@ test.describe("nexo bar on the dev page", () => {
     expect(results.violations).toEqual([]);
   });
 
-  test("keeps focus on the text and announces the phase when stopped", async ({ page }) => {
+  test("moves focus to the text only when the stop button goes away", async ({ page }) => {
     await page.goto("/es/dev/chat");
     const live = page.getByTestId("nexo-bar-demo").locator('[data-state="live"]');
     await hydrated(live);
@@ -77,13 +77,16 @@ test.describe("nexo bar on the dev page", () => {
     await expect(page.locator(":focus")).toContainText(nexoBar.stoppedTitle);
     await expect(live.getByRole("status")).toContainText(nexoBar.announceStopped);
 
-    await live.getByRole("switch").click();
+    const toggle = live.getByRole("switch", { name: nexoBar.region });
+    await toggle.focus();
+    await page.keyboard.press("Space");
     await expect(live.getByText(nexoBar.waitingTitle)).toBeVisible();
-    await expect(page.locator(":focus")).toContainText(nexoBar.waitingTitle);
-    await expect(live.getByRole("switch", { name: nexoBar.region })).toHaveAttribute(
-      "aria-checked",
-      "true",
-    );
+    await expect(toggle).toHaveAttribute("aria-checked", "true");
+    await expect(toggle).toBeFocused();
+
+    await page.keyboard.press("Space");
+    await expect(toggle).toHaveAttribute("aria-checked", "false");
+    await expect(toggle).toBeFocused();
   });
 });
 

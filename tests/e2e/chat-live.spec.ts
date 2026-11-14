@@ -340,7 +340,7 @@ test.describe("mobile", () => {
     });
     expect(shape.top).toBe("24px");
     expect(shape.bottom).toBe("0px");
-    expect(Math.round(shape.height)).toBe(800);
+    expect(Math.round(shape.height)).toBeGreaterThanOrEqual(800);
   });
 
   test("the panel and the full page pass axe on a phone", async ({ page }) => {
@@ -469,6 +469,48 @@ test.describe("mobile sheet", () => {
     await expect(panel(page)).toBeHidden();
   });
 
+  test("a drag up that ends above the sheet keeps it open", async ({ page }) => {
+    await openSheet(page);
+    const start = await centerOf(panel(page).locator("[data-sheet-handle]"));
+    await page.mouse.move(start.x, start.y);
+    await page.mouse.down();
+    await page.mouse.move(start.x, 12, { steps: 8 });
+    await page.mouse.up();
+    await page.waitForTimeout(500);
+    await expect(panel(page)).toBeVisible();
+    await expect.poll(() => sheetTop(page)).toBe(52);
+  });
+
+  test("pulling up stretches the sheet a little and lets it settle back", async ({ page }) => {
+    await openSheet(page);
+    const start = await centerOf(panel(page).locator("[data-sheet-handle]"));
+    await page.mouse.move(start.x, start.y);
+    await page.mouse.down();
+    await page.mouse.move(start.x, start.y - 200, { steps: 10 });
+    const lifted = await sheetTop(page);
+    expect(lifted).toBeLessThan(52);
+    expect(lifted).toBeGreaterThanOrEqual(52 - 14);
+    const bottom = await panel(page).evaluate((node) => node.getBoundingClientRect().bottom);
+    expect(bottom).toBeGreaterThanOrEqual(812);
+    await page.mouse.up();
+    await expect.poll(() => sheetTop(page)).toBe(52);
+  });
+
+  test("a released drag times the exit by the distance left", async ({ page }) => {
+    await openSheet(page);
+    const start = await centerOf(panel(page).locator("[data-sheet-handle]"));
+    await page.mouse.move(start.x, start.y);
+    await page.mouse.down();
+    await page.mouse.move(start.x, start.y + 70, { steps: 4 });
+    await page.mouse.up();
+    await expect(panel(page)).toBeHidden();
+    const exit = await page
+      .locator("dialog")
+      .evaluate((node) => Number.parseFloat(node.style.getPropertyValue("--sheet-exit")));
+    expect(exit).toBeGreaterThanOrEqual(180);
+    expect(exit).toBeLessThanOrEqual(420);
+  });
+
   test("the thread still scrolls and the header buttons still work", async ({ page }) => {
     await openSheet(page);
     const touchAction = await log(page).evaluate((node) => getComputedStyle(node).touchAction);
@@ -504,6 +546,104 @@ test("the desktop panel stays non-modal and has no scrim", async ({ page }) => {
   await expect(panel(page).locator("[data-sheet-handle]")).toBeHidden();
   await page.getByRole("banner").getByRole("link").first().click({ trial: true });
   expect(await page.evaluate(() => document.querySelector("dialog:modal") === null)).toBe(true);
+});
+
+test.describe("desktop panel layout", () => {
+  test.use({ viewport: { width: 1024, height: 768 } });
+
+  test("the composer sits on the bottom edge and a long thread scrolls inside", async ({
+    page,
+  }) => {
+    await page.goto("/es");
+    await hydrated(headerChat(page));
+    await headerChat(page).click();
+    await expect(panel(page)).toBeVisible();
+    const form = panel(page)
+      .locator("form")
+      .filter({ has: composer(page) });
+    const edges = async () => {
+      const box = await panel(page).boundingBox();
+      const own = await form.boundingBox();
+      if (!box || !own) throw new Error("no box");
+      return { panel: box.y + box.height, composer: own.y + own.height, height: box.height };
+    };
+    await expect
+      .poll(async () => panel(page).evaluate((node) => getComputedStyle(node).opacity))
+      .toBe("1");
+    const before = await edges();
+    expect(Math.abs(before.panel - before.composer)).toBeLessThanOrEqual(2);
+
+    await log(page).evaluate((node) => {
+      const list = node.querySelector("ul") ?? node;
+      for (let index = 0; index < 40; index += 1) {
+        const item = document.createElement("li");
+        item.textContent = `línea ${index}`;
+        item.style.blockSize = "3rem";
+        list.append(item);
+      }
+    });
+    const after = await edges();
+    expect(after.height).toBe(before.height);
+    expect(Math.abs(after.panel - after.composer)).toBeLessThanOrEqual(2);
+    const scroll = await log(page).evaluate((node) => {
+      const scroller = [node, ...node.querySelectorAll("*")].find(
+        (element) =>
+          element.scrollHeight > element.clientHeight + 1 &&
+          ["auto", "scroll"].includes(getComputedStyle(element).overflowY),
+      );
+      return Boolean(scroller);
+    });
+    expect(scroll).toBe(true);
+  });
+});
+
+test.describe("turning the device", () => {
+  test("a sheet opened upright becomes the floating panel and keeps the draft", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await openSheet(page);
+    await composer(page).fill("borrador al girar");
+    await page.setViewportSize({ width: 1024, height: 768 });
+    await expect.poll(() => panel(page).evaluate((node) => node.matches(":modal"))).toBe(false);
+    await expect(panel(page)).toBeVisible();
+    await expect(panel(page).locator("[data-sheet-handle]")).toBeHidden();
+    await expect(composer(page)).toHaveValue("borrador al girar");
+    await expect(composer(page)).toBeFocused();
+    expect(await page.evaluate(() => document.querySelector("dialog:modal") === null)).toBe(true);
+    expect(await panel(page).evaluate((node) => node.getAnimations().length)).toBe(0);
+  });
+
+  test("a floating panel turned upright becomes the modal sheet", async ({ page }) => {
+    await page.setViewportSize({ width: 1024, height: 768 });
+    await page.goto("/es");
+    await hydrated(headerChat(page));
+    await headerChat(page).click();
+    await expect(composer(page)).toBeFocused();
+    await composer(page).fill("otro borrador");
+    await page.setViewportSize({ width: 375, height: 812 });
+    await expect.poll(() => panel(page).evaluate((node) => node.matches(":modal"))).toBe(true);
+    await expect(panel(page).locator("[data-sheet-handle]")).toBeVisible();
+    await expect(composer(page)).toHaveValue("otro borrador");
+    await expect(composer(page)).toBeFocused();
+    await expect.poll(() => sheetTop(page)).toBe(52);
+    await page.keyboard.press("Escape");
+    await expect(panel(page)).toBeHidden();
+  });
+});
+
+test.describe("touch phone", () => {
+  test.use({ viewport: { width: 375, height: 812 }, hasTouch: true, isMobile: true });
+
+  test("opening the sheet by touch focuses the dialog, not the keyboard", async ({ page }) => {
+    await page.goto("/es");
+    const opener = page.getByRole("button", { name: es.chatButton.label }).first();
+    await hydrated(opener);
+    await opener.tap();
+    await expect(panel(page)).toBeVisible();
+    await expect(panel(page)).toBeFocused();
+    await expect(composer(page)).not.toBeFocused();
+  });
 });
 
 test.describe("without JavaScript", () => {

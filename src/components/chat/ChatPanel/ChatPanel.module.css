@@ -1,13 +1,13 @@
 .panel {
   composes: glass from "./glass.module.css";
   position: fixed;
-  inset: 3.25rem 0 0;
+  inset: 3.25rem 0 calc(-1 * var(--space-4));
   inline-size: 100%;
   block-size: auto;
   max-inline-size: none;
   max-block-size: none;
   margin: 0;
-  padding: 0;
+  padding: 0 0 var(--space-4);
   overflow: hidden;
   border-block-end: 0;
   border-start-start-radius: var(--radius-l);
@@ -18,9 +18,9 @@
   transform: translateY(100%);
   transform-origin: bottom right;
   transition:
-    transform var(--dur) var(--ease-drawer),
-    display var(--dur) allow-discrete,
-    overlay var(--dur) allow-discrete;
+    transform var(--sheet-exit, var(--dur)) var(--ease-drawer),
+    display var(--sheet-exit, var(--dur)) allow-discrete,
+    overlay var(--sheet-exit, var(--dur)) allow-discrete;
 }
 
 .panel[open] {
@@ -43,9 +43,9 @@
   background: var(--chat-scrim);
   opacity: 0;
   transition:
-    opacity var(--dur) var(--ease-drawer),
-    display var(--dur) allow-discrete,
-    overlay var(--dur) allow-discrete;
+    opacity var(--sheet-exit, var(--dur)) var(--ease-drawer),
+    display var(--sheet-exit, var(--dur)) allow-discrete,
+    overlay var(--sheet-exit, var(--dur)) allow-discrete;
 }
 
 .panel[open]::backdrop {
@@ -60,6 +60,10 @@
   .panel[open]::backdrop {
     opacity: 0;
   }
+}
+
+.panel:focus:not(:focus-visible) {
+  outline: none;
 }
 
 .panel[data-dragging],
@@ -92,6 +96,7 @@
 }
 
 .body {
+  grid-row: 2;
   min-block-size: 0;
 }
 
@@ -177,6 +182,7 @@
 
   .panel {
     inset: auto var(--space-5) var(--space-5) auto;
+    padding: 0;
     inline-size: 26rem;
     block-size: min(40rem, calc(100dvh - var(--space-7)));
     border-block-end: 1px solid var(--chat-edge);
@@ -205,6 +211,11 @@
       transform: translateY(0.75rem) scale(0.97);
     }
   }
+}
+
+.panel[data-switching],
+.panel[data-switching]::backdrop {
+  transition: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

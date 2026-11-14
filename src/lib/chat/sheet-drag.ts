@@ -6,10 +6,14 @@ export interface DragSample {
 export const sheetDismissVelocity = 0.11;
 export const sheetDismissRatio = 0.25;
 export const sheetFlickSlop = 12;
+export const sheetStretchLimit = 14;
+export const sheetExitMinVelocity = 1.2;
 const velocityWindowMs = 100;
 
 export function sheetOffset(start: number, originY: number, y: number): number {
-  return Math.max(0, start + y - originY);
+  const raw = start + y - originY;
+  if (raw >= 0) return raw;
+  return -sheetStretchLimit * (1 - Math.exp(raw / (sheetStretchLimit * 2)));
 }
 
 export function releaseVelocity(samples: readonly DragSample[]): number {
@@ -20,8 +24,22 @@ export function releaseVelocity(samples: readonly DragSample[]): number {
   return elapsed > 0 ? (last.y - first.y) / elapsed : 0;
 }
 
-export function shouldDismissSheet(offset: number, velocity: number, height: number): boolean {
+export function shouldDismissSheet(travel: number, velocity: number, height: number): boolean {
   if (velocity < -sheetDismissVelocity) return false;
-  if (offset > height * sheetDismissRatio) return true;
-  return offset >= sheetFlickSlop && velocity > sheetDismissVelocity;
+  if (travel > height * sheetDismissRatio) return true;
+  return travel >= sheetFlickSlop && velocity > sheetDismissVelocity;
+}
+
+export interface ExitBounds {
+  min: number;
+  max: number;
+}
+
+export function sheetExitDuration(
+  remaining: number,
+  velocity: number,
+  { min, max }: ExitBounds,
+): number {
+  const speed = Math.max(Math.abs(velocity), sheetExitMinVelocity);
+  return Math.min(max, Math.max(min, Math.max(0, remaining) / speed));
 }

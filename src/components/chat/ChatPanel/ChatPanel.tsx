@@ -10,7 +10,7 @@ import type { ChatLabels } from "@/types/chat";
 
 import styles from "./ChatPanel.module.css";
 import { type ChatRuntimeConfig, ChatSession } from "./ChatSession";
-import { isSheetLayout, useSheetDrag } from "./use-sheet-drag";
+import { clearSheetExit, isSheetLayout, sheetLayoutQuery, useSheetDrag } from "./use-sheet-drag";
 
 const tabbableSelector =
   "a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]):not([type='hidden']), select:not([disabled]), [tabindex]:not([tabindex='-1'])";
@@ -27,6 +27,31 @@ function keepFocusInside(node: HTMLDialogElement, backwards: boolean): boolean {
   if (active !== edge && node.contains(active)) return false;
   (backwards ? last : first).focus();
   return true;
+}
+
+const coarsePointerQuery = "(pointer: coarse)";
+const switchingMark = "data-switching";
+
+function onScrim(node: HTMLDialogElement, target: EventTarget | null, clientY: number): boolean {
+  return target === node && node.matches(":modal") && clientY < node.getBoundingClientRect().top;
+}
+
+function reopen(node: HTMLDialogElement): void {
+  const focused = document.activeElement;
+  node.setAttribute(switchingMark, "");
+  node.removeAttribute("data-entering");
+  clearSheetExit(node);
+  node.close();
+  if (isSheetLayout()) node.showModal();
+  else node.show();
+  if (focused instanceof HTMLElement && node.contains(focused)) {
+    focused.focus({ preventScroll: true });
+  }
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      node.removeAttribute(switchingMark);
+    });
+  });
 }
 
 async function settleEntrance(node: HTMLElement): Promise<void> {
@@ -49,6 +74,7 @@ export function ChatPanel({ locale, labels, config, openRequest, openerRef }: Ch
   const dialog = useRef<HTMLDialogElement>(null);
   const input = useRef<HTMLTextAreaElement>(null);
   const entrance = useRef(0);
+  const scrimPress = useRef(false);
 
   const closeDialog = useCallback(() => {
     const node = dialog.current;
@@ -65,6 +91,7 @@ export function ChatPanel({ locale, labels, config, openRequest, openerRef }: Ch
     if (!node || openRequest === 0) return;
     if (!node.open) {
       const current = ++entrance.current;
+      clearSheetExit(node);
       node.setAttribute("data-entering", "");
       node.querySelectorAll('[role="log"] > ul > li').forEach((item) => {
         item.setAttribute("data-stagger", "");
@@ -76,8 +103,23 @@ export function ChatPanel({ locale, labels, config, openRequest, openerRef }: Ch
       });
     }
     if (node.open) setChatOpen(true);
-    input.current?.focus({ preventScroll: true });
+    if (window.matchMedia(coarsePointerQuery).matches) node.focus({ preventScroll: true });
+    else input.current?.focus({ preventScroll: true });
   }, [openRequest]);
+
+  useEffect(() => {
+    const query = window.matchMedia(sheetLayoutQuery);
+    const change = () => {
+      const node = dialog.current;
+      if (!node?.open || node.matches(":modal") === isSheetLayout()) return;
+      resetDrag();
+      reopen(node);
+    };
+    query.addEventListener("change", change);
+    return () => {
+      query.removeEventListener("change", change);
+    };
+  }, [resetDrag]);
 
   useEffect(
     () => () => {
@@ -91,7 +133,10 @@ export function ChatPanel({ locale, labels, config, openRequest, openerRef }: Ch
       ref={dialog}
       className={styles.panel}
       aria-label={labels.title}
-      onClose={() => {
+      tabIndex={-1}
+      onClose={(event) => {
+        if (event.currentTarget.open) return;
+        resetDrag();
         entrance.current += 1;
         dialog.current?.removeAttribute("data-entering");
         setChatOpen(false);
@@ -113,12 +158,16 @@ export function ChatPanel({ locale, labels, config, openRequest, openerRef }: Ch
           event.preventDefault();
         }
       }}
-      onClick={(event) => {
-        const node = event.currentTarget;
-        if (event.target !== node || !node.matches(":modal")) return;
-        if (event.clientY < node.getBoundingClientRect().top) close();
-      }}
       {...dragHandlers}
+      onPointerDown={(event) => {
+        scrimPress.current = onScrim(event.currentTarget, event.target, event.clientY);
+        dragHandlers.onPointerDown(event);
+      }}
+      onClick={(event) => {
+        const pressed = scrimPress.current;
+        scrimPress.current = false;
+        if (pressed && onScrim(event.currentTarget, event.target, event.clientY)) close();
+      }}
     >
       <div className={styles.grab} data-sheet-handle="" aria-hidden="true">
         <span />

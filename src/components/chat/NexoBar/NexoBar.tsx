@@ -110,7 +110,6 @@ export function NexoBar({
 
   const toggle = () => {
     if (busy) return;
-    textRef.current?.focus();
     if (stopped) onResume();
     else onStop();
   };

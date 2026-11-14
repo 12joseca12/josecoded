@@ -171,6 +171,11 @@
     --forced-surface: Canvas;
     --forced-line: ButtonText;
     --forced-active: Highlight;
+    --forced-focus: Highlight;
+  }
+
+  .switch:focus-visible {
+    outline-color: var(--forced-focus);
   }
 
   .switch {

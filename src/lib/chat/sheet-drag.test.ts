@@ -4,9 +4,14 @@ import {
   releaseVelocity,
   sheetDismissRatio,
   sheetDismissVelocity,
+  sheetExitDuration,
+  sheetExitMinVelocity,
   sheetOffset,
+  sheetStretchLimit,
   shouldDismissSheet,
 } from "./sheet-drag";
+
+const bounds = { min: 180, max: 420 };
 
 describe("sheet drag", () => {
   it("follows the finger downwards from where the sheet was grabbed", () => {
@@ -14,9 +19,16 @@ describe("sheet drag", () => {
     expect(sheetOffset(30, 100, 160)).toBe(90);
   });
 
-  it("never lifts the sheet above its resting place", () => {
-    expect(sheetOffset(0, 100, 40)).toBe(0);
-    expect(sheetOffset(20, 100, 50)).toBe(0);
+  it("resists an upward pull and never lifts the sheet more than the stretch limit", () => {
+    expect(sheetStretchLimit).toBe(14);
+    const small = sheetOffset(0, 100, 95);
+    expect(small).toBeLessThan(0);
+    expect(small).toBeGreaterThan(-5);
+    const long = sheetOffset(0, 100, -400);
+    expect(long).toBeLessThan(sheetOffset(0, 100, 40));
+    expect(long).toBeGreaterThan(-sheetStretchLimit);
+    expect(sheetOffset(20, 100, 80)).toBe(0);
+    expect(sheetOffset(20, 100, 50)).toBeLessThan(0);
   });
 
   it("measures the release speed over the last 100 ms only", () => {
@@ -67,5 +79,24 @@ describe("sheet drag", () => {
     expect(shouldDismissSheet(4, 2, 800)).toBe(false);
     expect(shouldDismissSheet(120, -0.5, 800)).toBe(false);
     expect(shouldDismissSheet(300, -0.5, 800)).toBe(false);
+  });
+
+  it("counts only the distance dragged when the sheet was grabbed mid-opening", () => {
+    const start = 300;
+    const offset = sheetOffset(start, 100, 140);
+    expect(shouldDismissSheet(offset - start, 0, 800)).toBe(false);
+    expect(shouldDismissSheet(sheetOffset(start, 100, 310) - start, 0, 800)).toBe(true);
+  });
+
+  it("times the exit by the distance left and the release speed", () => {
+    expect(sheetExitDuration(600, 2, bounds)).toBe(300);
+    expect(sheetExitDuration(400, -2, bounds)).toBe(200);
+  });
+
+  it("keeps the exit between the fast and slow durations", () => {
+    expect(sheetExitMinVelocity).toBe(1.2);
+    expect(sheetExitDuration(700, 0, bounds)).toBe(420);
+    expect(sheetExitDuration(100, 3, bounds)).toBe(180);
+    expect(sheetExitDuration(-20, 1, bounds)).toBe(180);
   });
 });
