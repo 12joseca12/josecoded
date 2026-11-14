@@ -11,7 +11,6 @@ const newestFirst = (a: ContentEntry<BlogMeta>, b: ContentEntry<BlogMeta>) =>
   b.meta.date.localeCompare(a.meta.date);
 
 export const listProjects = () => [...projects].sort(byOrder);
-export const listFeaturedProjects = () => listProjects().filter((entry) => entry.meta.featured);
 export const getProject = (slug: string) => projects.find((entry) => entry.slug === slug);
 
 export const listPosts = () =>

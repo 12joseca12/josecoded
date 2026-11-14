@@ -26,7 +26,7 @@ export async function Closing({ locale }: ClosingProps) {
         </Heading>
         <p className={styles.lead}>{withResponseTime(t, t("home.closing.lead"))}</p>
         <div className={styles.actions}>
-          <Button href={`/${locale}/contacto`} variant="ghost">
+          <Button href={`/${locale}/contacto`} variant="primary">
             {t("home.closing.cta")}
           </Button>
           {email ? (

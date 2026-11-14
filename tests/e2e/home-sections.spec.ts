@@ -51,11 +51,7 @@ test.describe("home sections below the hero", () => {
       "/es/servicios#contratacion",
     );
     await expect(page.locator("#como-trabajo")).toHaveCount(0);
-    const tiers = page.locator("#a-medida li");
-    await expect(tiers.first()).toBeVisible();
-    for (const tier of await tiers.all()) {
-      await expect(tier.locator("[data-variant='review']")).toHaveCount(1);
-    }
+    await expect(section).not.toContainText("€");
   });
 
   test("without the chat the Nexo section is absent and the closing keeps its contact button", async ({
@@ -101,11 +97,7 @@ test.describe("home sections below the hero", () => {
     for (const slug of ["app-primera-version", "app-producto"] as const) {
       await expect(app.getByText(es.offersPage.tiers[slug].name, { exact: true })).toBeVisible();
     }
-    const tiers = page.locator("#a-medida li");
-    await expect(tiers.first()).toBeVisible();
-    for (const tier of await tiers.all()) {
-      await expect(tier.locator("[data-variant='review']")).toHaveCount(1);
-    }
+    await expect(section).not.toContainText("€");
     await expect(section.getByRole("link", { name: project.cta })).toHaveAttribute(
       "href",
       "/es/servicios/a-medida",

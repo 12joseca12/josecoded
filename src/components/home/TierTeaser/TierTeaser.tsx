@@ -64,7 +64,7 @@ export async function TierTeaser({ locale }: TierTeaserProps) {
         </div>
       </div>
       <div className={styles.foot}>
-        <Button href={base} variant="ghost">
+        <Button href={base} variant="light">
           {t("services.ways.project.cta")}
         </Button>
         <p className={styles.notSure}>

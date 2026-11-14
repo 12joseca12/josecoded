@@ -10,7 +10,11 @@
   padding: 0;
 }
 
-@container (min-width: 47.5rem) {
+.cards > li {
+  display: grid;
+}
+
+@container (min-width: 43rem) {
   .cards {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
