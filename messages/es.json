@@ -423,10 +423,7 @@
     },
     "channelsLabel": "Vías de contacto",
     "chat": {
-      "title": "Chat con Jose",
-      "hint": "Por aquí te respondo yo.",
-      "open": "Abrir chat",
-      "soon": "Todavía no está disponible. Escríbeme por el formulario o por correo."
+      "title": "Chat con Jose"
     },
     "whatsapp": {
       "title": "WhatsApp",

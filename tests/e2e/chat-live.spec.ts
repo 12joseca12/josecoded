@@ -379,3 +379,88 @@ test("a returning visitor can send from the plain form", async ({ browser, page 
   await expect(plainPage.getByText(text)).toBeVisible();
   await plain.close();
 });
+
+test.describe("embedded on the contact page", () => {
+  const embedded = (page: Page) => page.locator("#chat");
+  const embeddedComposer = (page: Page) => embedded(page).getByLabel(chat.composer.label);
+  const noOverflow = (page: Page) =>
+    page.evaluate(
+      () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+    );
+
+  test("sits to the right of the form on desktop and stays in view while scrolling", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/es/contacto");
+    await expect(embedded(page)).toBeVisible();
+    await expect(embeddedComposer(page)).toBeVisible();
+    const form = await page.locator("#formulario").boundingBox();
+    const box = await embedded(page).boundingBox();
+    if (!form || !box) throw new Error("missing boxes");
+    expect(box.x).toBeGreaterThanOrEqual(form.x + form.width - 1);
+    await page.evaluate(() => {
+      window.scrollTo(0, 1400);
+    });
+    await expect
+      .poll(async () => (await embedded(page).boundingBox())?.y ?? Number.POSITIVE_INFINITY)
+      .toBeLessThan(200);
+    expect((await embedded(page).boundingBox())?.y).toBeGreaterThanOrEqual(0);
+    expect(await noOverflow(page)).toBe(true);
+  });
+
+  test("goes below the form on a phone without horizontal scroll", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 800 });
+    await page.goto("/es/contacto");
+    await expect(embedded(page)).toBeVisible();
+    const form = await page.locator("#formulario").boundingBox();
+    const box = await embedded(page).boundingBox();
+    if (!form || !box) throw new Error("missing boxes");
+    expect(box.y).toBeGreaterThanOrEqual(form.y + form.height - 1);
+    expect(await noOverflow(page)).toBe(true);
+  });
+
+  test("the header button and the chooser focus the embedded chat and open no panel", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/es/contacto");
+    await expect(embeddedComposer(page)).toBeVisible();
+    await headerChat(page).click();
+    await expect(embeddedComposer(page)).toBeFocused();
+    await expect(panel(page)).toHaveCount(0);
+    expect(await chatOpenMark(page)).toBe(false);
+
+    await page.getByLabel(chat.composer.label).evaluate((node) => {
+      (node as HTMLElement).blur();
+    });
+    await page.getByRole("button", { name: es.nav.cta }).click();
+    await page.getByRole("button", { name: es.contactChooser.chat }).click();
+    await expect(embeddedComposer(page)).toBeFocused();
+    await expect(panel(page)).toHaveCount(0);
+    await expect(page.getByLabel(chat.composer.label)).toHaveCount(1);
+  });
+
+  test("on a phone the button scrolls the embedded chat into view", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 800 });
+    await page.goto("/es/contacto");
+    await expect(embeddedComposer(page)).toBeVisible();
+    await headerChat(page).click();
+    await expect(embeddedComposer(page)).toBeFocused();
+    await expect(embeddedComposer(page)).toBeInViewport();
+    await expect(panel(page)).toHaveCount(0);
+  });
+
+  for (const viewport of [
+    { width: 1440, height: 900 },
+    { width: 375, height: 800 },
+  ]) {
+    test(`passes axe at ${viewport.width}px`, async ({ page }) => {
+      await page.setViewportSize(viewport);
+      await page.goto("/es/contacto");
+      await expect(embeddedComposer(page)).toBeVisible();
+      const { violations } = await new AxeBuilder({ page }).analyze();
+      expect(violations).toEqual([]);
+    });
+  }
+});

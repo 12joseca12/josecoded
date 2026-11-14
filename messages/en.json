@@ -423,10 +423,7 @@
     },
     "channelsLabel": "Ways to get in touch",
     "chat": {
-      "title": "Chat with Jose",
-      "hint": "Here you get an answer from me.",
-      "open": "Open chat",
-      "soon": "Not available yet. Write to me through the form or by email."
+      "title": "Chat with Jose"
     },
     "whatsapp": {
       "title": "WhatsApp",
