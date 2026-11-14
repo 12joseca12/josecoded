@@ -37,13 +37,15 @@ async function runningHeroAnimations(page: Page) {
 }
 
 test.describe("hero copy", () => {
-  test("shows the headline, the lead and both calls to action", async ({ page }) => {
+  test("shows the headline, the lead, and a primary call to action that opens the contact chooser", async ({ page }) => {
     await page.goto("/es");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
       `${hero.title} ${hero.accent}`,
     );
-    const primary = page.getByRole("link", { name: hero.ctaPrimary });
-    await expect(primary).toHaveAttribute("href", "/es/contacto");
+    const primary = page.locator("#hero").getByRole("button", { name: hero.ctaPrimary });
+    await expect(primary).toBeVisible();
+    await primary.click();
+    await expect(page.getByRole("dialog")).toBeVisible();
     const secondary = page.getByRole("link", { name: hero.ctaSecondary });
     await expect(secondary).toHaveAttribute("href", "/es/proyectos");
   });

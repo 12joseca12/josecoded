@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 
 import { Closing } from "@/components/home/Closing/Closing";
 import { Hero } from "@/components/home/Hero/Hero";
-import { HowStrip } from "@/components/home/HowStrip/HowStrip";
 import { RecommenderTeaser } from "@/components/home/RecommenderTeaser/RecommenderTeaser";
 import { ServicesStrip } from "@/components/home/ServicesStrip/ServicesStrip";
 import { StackRow } from "@/components/home/StackRow/StackRow";
@@ -41,7 +40,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <ServicesStrip locale={locale} />
         <RecommenderTeaser locale={locale} />
         <StackRow locale={locale} />
-        <HowStrip locale={locale} />
         <Closing locale={locale} chat={(await getFeatures()).chat} />
       </div>
     </>

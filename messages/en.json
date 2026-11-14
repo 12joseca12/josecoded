@@ -16,7 +16,7 @@
       "title": "Full stack developer specialised in",
       "accent": "React Native.",
       "lead": "I design, build and maintain mobile apps and websites for companies and businesses. From Madrid and remote: by the hour, by the task, with tailored development at a fixed price or inside your team.",
-      "ctaPrimary": "Ask for a proposal",
+      "ctaPrimary": "Let's talk",
       "ctaSecondary": "See projects",
       "identity": "I am José Carlos Sánchez García, a full stack developer in Madrid specialised in React Native.",
       "identityLink": "Career and CV",
@@ -113,7 +113,8 @@
     },
     "services": {
       "title": "Three ways to work with me",
-      "lead": "Start from your situation: each card leads to its page."
+      "lead": "Start from your situation: each card leads to its page.",
+      "hiringCta": "See hiring"
     },
     "recommender": {
       "lead": "Six short questions tell you which tier fits and which extras you need. Answer the first one here and carry on where you left off.",
@@ -121,9 +122,6 @@
     },
     "stack": {
       "title": "What I build with"
-    },
-    "how": {
-      "line": "Discover, design, build, publish and maintain: the same five phases on any route."
     },
     "closing": {
       "title": "Shall we take it",

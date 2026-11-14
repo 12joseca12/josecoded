@@ -6,9 +6,8 @@ import AxeBuilder from "./support/axe";
 
 interface Messages {
   home: {
-    services: { title: string };
+    services: { title: string; hiringCta: string };
     stack: { title: string };
-    how: { line: string };
     closing: { title: string; accent: string; cta: string };
     recommender: { more: string };
   };
@@ -28,7 +27,6 @@ interface Messages {
       needs: Record<"contratacion" | "project" | "freelance", { title: string }>;
       proof: { stack: string };
     };
-    how: { more: string };
   };
 }
 
@@ -49,7 +47,10 @@ test.describe("home sections below the hero", () => {
     ).toBeVisible();
     await expect(section.locator('a[href="/es/servicios/a-medida"]')).toHaveCount(1);
     await expect(section.locator('a[href="/es/servicios/freelance"]')).toHaveCount(1);
-    await expect(section.locator('a[href="/es/sobre-mi"]')).toHaveCount(1);
+    await expect(
+      section.getByRole("link", { name: es.home.services.hiringCta }),
+    ).toHaveAttribute("href", "/es/servicios#contratacion");
+    await expect(page.locator("#como-trabajo")).toHaveCount(0);
     await expect(section).not.toContainText("€");
   });
 
@@ -77,16 +78,6 @@ test.describe("home sections below the hero", () => {
     await expect(
       section.getByRole("link", { name: es.services.bento.proof.stack }),
     ).toHaveAttribute("href", "/es/sobre-mi#stack");
-  });
-
-  test("the how strip is one line with a link", async ({ page }) => {
-    await page.goto("/es");
-    const strip = page.locator("#como-trabajo");
-    await expect(strip).toContainText(es.home.how.line);
-    await expect(strip.getByRole("link", { name: es.services.how.more })).toHaveAttribute(
-      "href",
-      "/es/como-trabajo",
-    );
   });
 
   test("the closing leads to contact", async ({ page }) => {
