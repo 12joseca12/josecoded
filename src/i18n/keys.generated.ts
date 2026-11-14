@@ -2417,6 +2417,7 @@ export type MessageKey =
   | "chat.nexoBar.stoppedText"
   | "chat.nexoBar.stoppedTitle"
   | "chat.nexoBar.stopping"
+  | "chat.nexoBar.tag"
   | "chat.nexoBar.waitingText"
   | "chat.nexoBar.waitingTitle"
   | "chat.notice.offline.text"

@@ -986,6 +986,7 @@
     "openChat": "Abrir el chat",
     "nexoBar": {
       "region": "Nexo, asistente de IA",
+      "tag": "IA",
       "waitingTitle": "Nexo en espera",
       "waitingText": "Entra si Jose tarda más de 10 min",
       "countdownTitle": "Nexo entrará en",

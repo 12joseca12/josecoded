@@ -12,6 +12,24 @@
   padding: var(--space-2) var(--space-3) var(--space-2) var(--space-4);
 }
 
+.identity {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-1);
+}
+
+.tag {
+  padding: 0 var(--space-2);
+  border: 1px solid var(--chat-bubble-nexo-line);
+  border-radius: var(--radius-xl);
+  background: var(--chat-bubble-nexo);
+  color: var(--ink);
+  font-size: var(--fs-s);
+  font-weight: var(--fw-black);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--lh-ui);
+}
+
 .mark {
   flex: none;
   inline-size: 1.75rem;

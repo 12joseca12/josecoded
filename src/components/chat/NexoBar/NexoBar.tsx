@@ -117,7 +117,14 @@ export function NexoBar({
   return (
     <div className={styles.bar} data-kind={kind} role="group" aria-label={labels.region}>
       <div className={styles.grid}>
-        <Mark stopped={stopped} />
+        <div className={styles.identity}>
+          <Mark stopped={stopped} />
+          {stopped ? null : (
+            <span className={styles.tag} data-testid="nexo-bar-tag">
+              {labels.tag}
+            </span>
+          )}
+        </div>
         <p ref={textRef} className={styles.text} id={textId} tabIndex={-1}>
           {kind === "countdown" ? (
             <>

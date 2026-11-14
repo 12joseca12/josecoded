@@ -986,6 +986,7 @@
     "openChat": "Open the chat",
     "nexoBar": {
       "region": "Nexo, AI assistant",
+      "tag": "AI",
       "waitingTitle": "Nexo on standby",
       "waitingText": "Steps in if Jose takes more than 10 min",
       "countdownTitle": "Nexo steps in in",

@@ -9,6 +9,7 @@ interface BarMessages {
   chat: {
     nexoBar: {
       region: string;
+      tag: string;
       waitingTitle: string;
       countdownTitle: string;
       activeTitle: string;
@@ -31,11 +32,13 @@ test.describe("nexo bar on the dev page", () => {
     await expect(demo.getByRole("group", { name: nexoBar.region })).toHaveCount(6);
 
     const waiting = demo.locator('[data-state="waiting"]');
+    await expect(waiting.getByTestId("nexo-bar-tag")).toHaveText(nexoBar.tag);
     await expect(waiting.getByText(nexoBar.waitingTitle)).toBeVisible();
     await expect(waiting.getByRole("switch")).toHaveAttribute("aria-checked", "true");
     await expect(waiting.getByTestId("nexo-bar-time")).toHaveCount(0);
 
     const countdown = demo.locator('[data-state="countdown"]');
+    await expect(countdown.getByTestId("nexo-bar-tag")).toHaveText(nexoBar.tag);
     await expect(countdown.getByText(nexoBar.countdownTitle)).toBeVisible();
     await expect(countdown.getByTestId("nexo-bar-time")).toHaveText(/^[67]:\d\d$/);
     await expect(countdown.getByTestId("nexo-bar-time")).toHaveAttribute("aria-hidden", "true");
@@ -43,6 +46,7 @@ test.describe("nexo bar on the dev page", () => {
     await expect(countdown.getByRole("switch")).toHaveAttribute("aria-checked", "true");
 
     const active = demo.locator('[data-state="active"]');
+    await expect(active.getByTestId("nexo-bar-tag")).toHaveText(nexoBar.tag);
     await expect(active.getByText(nexoBar.activeTitle)).toBeVisible();
     await expect(active.getByTestId("nexo-bar-time")).toHaveCount(0);
     await expect(active.getByRole("switch")).toHaveCount(0);

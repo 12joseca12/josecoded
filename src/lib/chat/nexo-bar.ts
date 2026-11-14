@@ -4,6 +4,7 @@ export type NexoBarKind = "waiting" | "countdown" | "active" | "stopped";
 
 export interface NexoBarLabels {
   region: string;
+  tag: string;
   waitingTitle: string;
   waitingText: string;
   countdownTitle: string;
@@ -26,6 +27,7 @@ type Translate = (key: MessageKey) => string;
 export function buildNexoBarLabels(t: Translate): NexoBarLabels {
   return {
     region: t("chat.nexoBar.region"),
+    tag: t("chat.nexoBar.tag"),
     waitingTitle: t("chat.nexoBar.waitingTitle"),
     waitingText: t("chat.nexoBar.waitingText"),
     countdownTitle: t("chat.nexoBar.countdownTitle"),
