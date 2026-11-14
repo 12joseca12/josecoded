@@ -123,6 +123,7 @@
   --dur-morph: 900ms;
   --dur-morph-out: 500ms;
   --dur-stagger: 85ms;
+  --dur-chat-stagger: 40ms;
   --dur-scan: 1180ms;
   --dur-float: 7000ms;
   --dur-draw: 1920ms;

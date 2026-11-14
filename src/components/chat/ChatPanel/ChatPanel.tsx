@@ -5,10 +5,18 @@ import { type RefObject, useCallback, useEffect, useRef, useState } from "react"
 
 import { IconButton } from "@/components/ui/IconButton/IconButton";
 import type { Locale } from "@/i18n/config";
+import { setChatOpen } from "@/lib/chat/chat-events";
 import type { ChatLabels } from "@/types/chat";
 
 import styles from "./ChatPanel.module.css";
 import { type ChatRuntimeConfig, ChatSession } from "./ChatSession";
+
+async function settleEntrance(node: HTMLElement): Promise<void> {
+  const entrance = node
+    .getAnimations({ subtree: true })
+    .filter((animation) => animation.effect?.getTiming().iterations !== Infinity);
+  await Promise.allSettled(entrance.map((animation) => animation.finished));
+}
 
 interface ChatPanelProps {
   locale: Locale;
@@ -22,6 +30,7 @@ export function ChatPanel({ locale, labels, config, openRequest, openerRef }: Ch
   const [closedAt, setClosedAt] = useState(0);
   const dialog = useRef<HTMLDialogElement>(null);
   const input = useRef<HTMLTextAreaElement>(null);
+  const entrance = useRef(0);
 
   const close = useCallback(() => {
     const node = dialog.current;
@@ -31,9 +40,24 @@ export function ChatPanel({ locale, labels, config, openRequest, openerRef }: Ch
   useEffect(() => {
     const node = dialog.current;
     if (!node || openRequest === 0) return;
-    if (!node.open) node.show();
+    if (!node.open) {
+      const current = ++entrance.current;
+      node.setAttribute("data-entering", "");
+      node.show();
+      setChatOpen(true);
+      void settleEntrance(node).then(() => {
+        if (entrance.current === current) node.removeAttribute("data-entering");
+      });
+    }
     input.current?.focus({ preventScroll: true });
   }, [openRequest]);
+
+  useEffect(
+    () => () => {
+      setChatOpen(false);
+    },
+    [],
+  );
 
   return (
     <dialog
@@ -41,6 +65,9 @@ export function ChatPanel({ locale, labels, config, openRequest, openerRef }: Ch
       className={styles.panel}
       aria-label={labels.title}
       onClose={() => {
+        entrance.current += 1;
+        dialog.current?.removeAttribute("data-entering");
+        setChatOpen(false);
         setClosedAt(openRequest);
         const target = openerRef.current;
         openerRef.current = null;

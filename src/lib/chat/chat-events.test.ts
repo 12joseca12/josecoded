@@ -1,6 +1,14 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { chatFallbackHref, chatPanelMounted, onOpenChat, openChat } from "./chat-events";
+import {
+  chatFallbackHref,
+  chatPanelMounted,
+  isChatOpen,
+  onChatOpenChange,
+  onOpenChat,
+  openChat,
+  setChatOpen,
+} from "./chat-events";
 
 describe("chat events", () => {
   it("returns false and does nothing when no panel is subscribed", () => {
@@ -21,5 +29,30 @@ describe("chat events", () => {
   it("builds the contact fallback for a locale", () => {
     expect(chatFallbackHref("es")).toBe("/es/contacto#chat");
     expect(chatFallbackHref("en")).toBe("/en/contacto#chat");
+  });
+
+  it("marks the document while the panel is open and notifies once per change", () => {
+    const marks = new Set<string>();
+    vi.stubGlobal("document", {
+      documentElement: {
+        toggleAttribute: (name: string, force: boolean) => {
+          if (force) marks.add(name);
+          else marks.delete(name);
+        },
+      },
+    });
+    const listener = vi.fn();
+    const off = onChatOpenChange(listener);
+    setChatOpen(true);
+    setChatOpen(true);
+    expect(isChatOpen()).toBe(true);
+    expect(marks.has("data-chat-open")).toBe(true);
+    expect(listener).toHaveBeenCalledOnce();
+    setChatOpen(false);
+    expect(isChatOpen()).toBe(false);
+    expect(marks.has("data-chat-open")).toBe(false);
+    expect(listener).toHaveBeenCalledTimes(2);
+    off();
+    vi.unstubAllGlobals();
   });
 });

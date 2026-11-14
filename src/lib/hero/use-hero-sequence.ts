@@ -2,6 +2,7 @@
 
 import { type RefObject, useCallback, useEffect, useReducer, useSyncExternalStore } from "react";
 
+import { isChatOpen, onChatOpenChange } from "../chat/chat-events";
 import { usePrefersReducedMotion } from "../use-prefers-reduced-motion";
 import { initialSequence, isPaused, parityOf, sequenceReducer, shownPhase } from "./sequence";
 
@@ -36,6 +37,7 @@ export function useHeroSequence(stageRef: RefObject<HTMLDivElement | null>): Her
   const reduced = usePrefersReducedMotion();
   const hidden = useSyncExternalStore(subscribeHidden, readHidden, readFalse);
   const hydrated = useSyncExternalStore(subscribeNothing, readTrue, readFalse);
+  const covered = useSyncExternalStore(onChatOpenChange, isChatOpen, readFalse);
 
   useEffect(() => {
     const stage = stageRef.current;
@@ -62,7 +64,7 @@ export function useHeroSequence(stageRef: RefObject<HTMLDivElement | null>): Her
     dispatch({ type: "toggle" });
   }, []);
 
-  const environment = { hidden, reduced };
+  const environment = { hidden: hidden || covered, reduced };
   return {
     phase: shownPhase(state, environment),
     parity: parityOf(state),

@@ -65,6 +65,19 @@ async function say(page: Page, text: string) {
   await expect(log(page).getByText(text)).toBeVisible();
 }
 
+async function runningHeroAnimations(page: Page) {
+  return page.evaluate(
+    () =>
+      document
+        .getElementById("hero")
+        ?.getAnimations({ subtree: true })
+        .filter((animation) => animation.playState === "running").length ?? -1,
+  );
+}
+
+const chatOpenMark = (page: Page) =>
+  page.evaluate(() => document.documentElement.hasAttribute("data-chat-open"));
+
 async function hashOf(page: Page): Promise<string> {
   await expect.poll(() => visitorTokenHash(page.context())).not.toBeNull();
   const hash = await visitorTokenHash(page.context());
@@ -274,8 +287,59 @@ test("the full page is noindex, server-renders the thread and passes axe", async
   expect(violations).toEqual([]);
 });
 
+test("the open panel pauses the hero and closing it resumes the hero", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/es");
+  await hydrated(headerChat(page));
+  await expect.poll(() => runningHeroAnimations(page)).toBeGreaterThan(0);
+  await headerChat(page).click();
+  await expect(panel(page)).toBeVisible();
+  expect(await chatOpenMark(page)).toBe(true);
+  await expect.poll(() => runningHeroAnimations(page)).toBe(0);
+  await page.keyboard.press("Escape");
+  await expect(panel(page)).toBeHidden();
+  expect(await chatOpenMark(page)).toBe(false);
+  await expect.poll(() => runningHeroAnimations(page)).toBeGreaterThan(0);
+});
+
+test.describe("reduced motion", () => {
+  test.use({ reducedMotion: "reduce" });
+
+  test("the panel appears and leaves without a transition or a stagger", async ({ page }) => {
+    await openPanel(page);
+    const motion = await panel(page).evaluate((node) => ({
+      property: getComputedStyle(node).transitionProperty,
+      durations: getComputedStyle(node)
+        .transitionDuration.split(", ")
+        .map((value) => Number.parseFloat(value)),
+      animations: node.getAnimations({ subtree: true }).length,
+    }));
+    expect(motion.property).toBe("none");
+    expect(motion.durations.every((value) => value <= 0.00001)).toBe(true);
+    expect(motion.animations).toBe(0);
+  });
+});
+
 test.describe("mobile", () => {
   test.use({ viewport: { width: 375, height: 800 } });
+
+  test("the panel is a sheet with a top margin and rounded top corners", async ({ page }) => {
+    await page.goto("/es");
+    await page.getByRole("button", { name: es.chatButton.label }).first().click();
+    await expect(panel(page)).toBeVisible();
+    await expect.poll(async () => Math.round((await panel(page).boundingBox())?.y ?? -1)).toBe(52);
+    const shape = await panel(page).evaluate((node) => {
+      const style = getComputedStyle(node);
+      return {
+        top: style.borderTopLeftRadius,
+        bottom: style.borderBottomLeftRadius,
+        height: node.getBoundingClientRect().bottom,
+      };
+    });
+    expect(shape.top).toBe("24px");
+    expect(shape.bottom).toBe("0px");
+    expect(Math.round(shape.height)).toBe(800);
+  });
 
   test("the panel and the full page pass axe on a phone", async ({ page }) => {
     await page.goto("/es");

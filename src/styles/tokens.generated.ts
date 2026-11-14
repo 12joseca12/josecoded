@@ -121,6 +121,7 @@ export const tokenNames = [
   "--dur-morph",
   "--dur-morph-out",
   "--dur-stagger",
+  "--dur-chat-stagger",
   "--dur-scan",
   "--dur-float",
   "--dur-draw",
