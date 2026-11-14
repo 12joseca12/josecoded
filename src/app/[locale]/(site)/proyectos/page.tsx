@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { FilterTabs } from "@/components/projects/FilterTabs/FilterTabs";
 import { ProjectCard } from "@/components/projects/ProjectCard/ProjectCard";
+import { projectCardProps } from "@/components/projects/ProjectCard/projectCardProps";
 import { PageGraph } from "@/components/seo/PageGraph/PageGraph";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs/Breadcrumbs";
 import { PageHead } from "@/components/site/PageHead/PageHead";
@@ -42,8 +43,6 @@ export async function generateMetadata({ params }: ProjectsProps): Promise<Metad
     indexable: hasPublishedProjects(),
   });
 }
-
-const dateFormat = new Intl.DateTimeFormat("es-ES", { dateStyle: "long", timeZone: "UTC" });
 
 export default async function ProjectsPage({ params, searchParams }: ProjectsProps) {
   const [{ locale }, query] = await Promise.all([params, searchParams]);
@@ -105,31 +104,7 @@ export default async function ProjectsPage({ params, searchParams }: ProjectsPro
             ) : null}
             <div className={styles.cards}>
               {entries.map(({ slug, meta }) => (
-                <ProjectCard
-                  key={slug}
-                  title={meta.title}
-                  href={localePath(locale, `/proyectos/${slug}`)}
-                  kindLabel={t(`projects.kind.${meta.kind}`)}
-                  status={meta.status}
-                  statusLabel={t(`projects.status.${meta.status}`)}
-                  headline={meta.headline}
-                  roleLabel={t("projects.card.role")}
-                  role={meta.role}
-                  period={meta.period}
-                  stack={meta.stack}
-                  viewLabel={t("projects.card.view")}
-                  {...(meta.metric
-                    ? {
-                        metric: {
-                          label: meta.metric.label,
-                          value: meta.metric.value,
-                          source: t("projects.card.metricSource")
-                            .replace("{source}", meta.metric.source)
-                            .replace("{date}", dateFormat.format(new Date(meta.metric.date))),
-                        },
-                      }
-                    : {})}
-                />
+                <ProjectCard key={slug} {...projectCardProps(slug, meta, locale, t)} />
               ))}
             </div>
           </>

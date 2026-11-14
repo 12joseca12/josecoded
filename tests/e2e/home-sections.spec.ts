@@ -8,7 +8,7 @@ import AxeBuilder from "./support/axe";
 interface Messages {
   home: {
     services: { title: string; hiringCta: string };
-    projects: { title: string; all: string };
+    projects: { title: string; accent: string; all: string };
     stack: { title: string };
     closing: { title: string; accent: string; cta: string };
     recommender: { more: string };
@@ -59,7 +59,9 @@ test.describe("home sections below the hero", () => {
 
   test("shows one card per configured project, each linking to its case", async ({ page }) => {
     await page.goto("/es");
-    const section = page.getByRole("region", { name: es.home.projects.title });
+    const section = page.getByRole("region", {
+      name: `${es.home.projects.title} ${es.home.projects.accent}`,
+    });
     await expect(section).toBeVisible();
     await expect(section.getByRole("article")).toHaveCount(homeProjectSlugs.length);
     for (const slug of homeProjectSlugs) {

@@ -3752,6 +3752,7 @@ export type MessageKey =
   | "home.metaDescription"
   | "home.metaTitle"
   | "home.name"
+  | "home.projects.accent"
   | "home.projects.all"
   | "home.projects.title"
   | "home.recommender.lead"

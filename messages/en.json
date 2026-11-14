@@ -121,7 +121,8 @@
       "more": "Start the recommender from scratch"
     },
     "projects": {
-      "title": "Apps and websites I have built",
+      "title": "Apps and websites",
+      "accent": "I have built",
       "all": "See all projects"
     },
     "stack": {

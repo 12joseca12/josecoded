@@ -121,7 +121,8 @@
       "more": "Empezar el recomendador desde cero"
     },
     "projects": {
-      "title": "Apps y webs que he construido",
+      "title": "Apps y webs",
+      "accent": "que he construido",
       "all": "Ver todos los proyectos"
     },
     "stack": {

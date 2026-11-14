@@ -14,6 +14,11 @@ describe("pickProjects", () => {
     expect(pickProjects(["a", "missing", "b"], find)).toEqual(["A", "B"]);
   });
 
+  it("caps the result at three projects", () => {
+    const many = (slug: string) => slug;
+    expect(pickProjects(["a", "b", "c", "d"], many)).toEqual(["a", "b", "c"]);
+  });
+
   it("returns nothing for an empty list", () => {
     expect(pickProjects([], find)).toEqual([]);
   });

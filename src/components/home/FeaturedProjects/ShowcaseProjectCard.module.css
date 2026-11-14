@@ -1,0 +1,65 @@
+.card {
+  display: grid;
+  gap: var(--space-2);
+  align-content: start;
+  padding: var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-l);
+  background: var(--paper);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  background: var(--white);
+  color: var(--ink-soft);
+  font-size: var(--fs-s);
+}
+
+.chip[data-status]::before {
+  content: "";
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: var(--radius-xl);
+  background: var(--coral);
+}
+
+.chip[data-status="live"]::before {
+  background: var(--status-live);
+}
+
+.headline {
+  color: var(--ink-soft);
+  font-size: var(--fs-base);
+}
+
+.metric {
+  padding: var(--space-3);
+  border-radius: var(--radius-s);
+  background: var(--charcoal);
+  color: var(--on-dark);
+  font-size: var(--fs-base);
+}
+
+.metric strong {
+  margin-inline-end: var(--space-1);
+  color: var(--coral-soft);
+  font-size: var(--fs-lead);
+}
+
+.metric small {
+  display: block;
+  margin-block-start: var(--space-1);
+  color: var(--on-dark-soft);
+  font-size: var(--fs-xs);
+}
