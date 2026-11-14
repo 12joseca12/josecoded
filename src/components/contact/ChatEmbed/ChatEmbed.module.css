@@ -20,3 +20,17 @@
     block-size: min(40rem, calc(100dvh - var(--nav-h) - var(--space-6)));
   }
 }
+
+.skeleton {
+  padding: var(--space-5);
+}
+
+.plain {
+  padding: var(--space-5);
+}
+
+@media (scripting: none) {
+  .skeleton {
+    display: none;
+  }
+}

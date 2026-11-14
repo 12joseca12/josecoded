@@ -10,13 +10,14 @@ import { mockOrigin } from "./support/staff";
 interface LiveMessages {
   chatButton: { label: string };
   contactChooser: { title: string; chat: string };
-  nav: { cta: string };
+  nav: { cta: string; contact: string; home: string };
   chat: {
     title: string;
     close: string;
     greeting: string;
     typing: string;
     openChat: string;
+    fullscreen: string;
     composer: { label: string; send: string };
     notice: { offline: { title: string }; takeover: { title: string }; quota: { title: string } };
     handoff: {
@@ -449,6 +450,95 @@ test.describe("embedded on the contact page", () => {
     await expect(embeddedComposer(page)).toBeFocused();
     await expect(embeddedComposer(page)).toBeInViewport();
     await expect(panel(page)).toHaveCount(0);
+  });
+
+  test.describe("without JavaScript", () => {
+    test.use({ javaScriptEnabled: false });
+
+    test("the embed offers the full page instead of a composer that cannot send", async ({
+      page,
+    }) => {
+      await page.goto("/es/contacto");
+      await expect(embedded(page).getByRole("link", { name: chat.fullscreen })).toBeVisible();
+      await expect(embeddedComposer(page)).toHaveCount(0);
+      await expect(page.locator("#formulario")).toBeVisible();
+    });
+  });
+
+  test("an open panel closes when the visitor navigates to the contact page", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await openPanel(page);
+    expect(await chatOpenMark(page)).toBe(true);
+    await page
+      .getByRole("banner")
+      .getByRole("link", { name: es.nav.contact, exact: true })
+      .first()
+      .click();
+    await expect(page).toHaveURL(/\/es\/contacto/);
+    await expect(embeddedComposer(page)).toBeVisible();
+    await expect(page.getByLabel(chat.composer.label)).toHaveCount(1);
+    await expect(panel(page)).toBeHidden();
+    await expect.poll(() => chatOpenMark(page)).toBe(false);
+  });
+
+  test("leaving the contact page makes the header button open the panel again", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/es/contacto");
+    await expect(embeddedComposer(page)).toBeVisible();
+    await page
+      .getByRole("banner")
+      .getByRole("link", { name: es.nav.home, exact: true })
+      .first()
+      .click();
+    await expect(page).toHaveURL(/\/es\/?$/);
+    await expect(embedded(page)).toHaveCount(0);
+    await headerChat(page).click();
+    await expect(panel(page)).toBeVisible();
+    await expect(composer(page)).toBeFocused();
+    await expect(page.getByLabel(chat.composer.label)).toHaveCount(1);
+  });
+
+  test("on a phone the sheet chooser hands the focus to the embedded composer", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 375, height: 800 });
+    await page.goto("/es/contacto");
+    await expect(embeddedComposer(page)).toBeVisible();
+    await page.getByRole("button", { name: es.nav.cta }).click();
+    await page.getByRole("button", { name: es.contactChooser.chat }).click();
+    await expect(page.getByRole("dialog", { name: es.contactChooser.title })).toBeHidden();
+    await expect(embeddedComposer(page)).toBeFocused();
+    await expect(panel(page)).toHaveCount(0);
+  });
+
+  test.describe("reduced motion on a phone", () => {
+    test.use({ reducedMotion: "reduce", viewport: { width: 375, height: 800 } });
+
+    test("the button jumps to the embedded chat without smooth scrolling", async ({ page }) => {
+      await page.goto("/es/contacto");
+      await expect(embeddedComposer(page)).toBeVisible();
+      await page.evaluate(() => {
+        const recorded: unknown[] = [];
+        const proto = Element.prototype;
+        const scroll: unknown = Reflect.get(proto, "scrollIntoView");
+        Reflect.set(proto, "scrollIntoView", function patched(this: Element, arg?: unknown) {
+          recorded.push(
+            typeof arg === "object" && arg !== null ? Reflect.get(arg, "behavior") : null,
+          );
+          Reflect.apply(scroll as () => void, this, [arg]);
+        });
+        Object.assign(window, { scrollBehaviors: recorded });
+      });
+      await headerChat(page).click();
+      await expect(embeddedComposer(page)).toBeFocused();
+      await expect(embeddedComposer(page)).toBeInViewport();
+      const behaviors = await page.evaluate(
+        () => (window as unknown as { scrollBehaviors: unknown[] }).scrollBehaviors,
+      );
+      expect(behaviors).toEqual(["auto"]);
+    });
   });
 
   for (const viewport of [

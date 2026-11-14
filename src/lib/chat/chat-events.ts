@@ -2,11 +2,14 @@ import { createSignal } from "@/lib/events/signal";
 
 const chatSignal = createSignal();
 const openSignal = createSignal();
+const closeSignal = createSignal();
 const openMark = "data-chat-open";
 let chatOpen = false;
 
 export const openChat = chatSignal.emit;
 export const onOpenChat = chatSignal.subscribe;
+export const closeChat = closeSignal.emit;
+export const onCloseChat = closeSignal.subscribe;
 export const chatPanelMounted = chatSignal.hasListeners;
 
 export function setChatOpen(open: boolean): void {

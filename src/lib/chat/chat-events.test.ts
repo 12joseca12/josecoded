@@ -3,8 +3,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   chatFallbackHref,
   chatPanelMounted,
+  closeChat,
   isChatOpen,
   onChatOpenChange,
+  onCloseChat,
   onOpenChat,
   openChat,
   setChatOpen,
@@ -43,6 +45,16 @@ describe("chat events", () => {
     expect(panel).toHaveBeenCalledOnce();
     off();
     expect(openChat()).toBe(false);
+  });
+
+  it("tells the panel to close and reports whether anyone listens", () => {
+    expect(closeChat()).toBe(false);
+    const close = vi.fn();
+    const off = onCloseChat(close);
+    expect(closeChat()).toBe(true);
+    expect(close).toHaveBeenCalledOnce();
+    off();
+    expect(closeChat()).toBe(false);
   });
 
   it("builds the contact fallback for a locale", () => {
