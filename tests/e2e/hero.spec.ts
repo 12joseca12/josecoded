@@ -3,8 +3,10 @@ import { readFileSync } from "node:fs";
 import { expect, type Page, test } from "@playwright/test";
 
 import AxeBuilder from "./support/axe";
+import { hydrated } from "./support/hydrated";
 
 const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
+  contactChooser: { title: string };
   home: {
     hero: {
       title: string;
@@ -37,17 +39,39 @@ async function runningHeroAnimations(page: Page) {
 }
 
 test.describe("hero copy", () => {
-  test("shows the headline, the lead, and a primary call to action that opens the contact chooser", async ({ page }) => {
+  test("shows the headline, the lead, and a contact call to action", async ({ page }) => {
     await page.goto("/es");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
       `${hero.title} ${hero.accent}`,
     );
-    const primary = page.locator("#hero").getByRole("button", { name: hero.ctaPrimary });
+    const primary = page.locator("#hero").getByRole("link", { name: hero.ctaPrimary });
     await expect(primary).toBeVisible();
-    await primary.click();
-    await expect(page.getByRole("dialog")).toBeVisible();
+    await expect(primary).toHaveAttribute("href", "/es/contacto");
     const secondary = page.getByRole("link", { name: hero.ctaSecondary });
     await expect(secondary).toHaveAttribute("href", "/es/proyectos");
+  });
+
+  test("the call to action opens the contact chooser, toggles it and keeps the focus", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/es");
+    const primary = page.locator("#hero").getByRole("link", { name: hero.ctaPrimary });
+    const dialog = page.getByRole("dialog", { name: es.contactChooser.title });
+    await hydrated(primary);
+    await expect(primary).toHaveAttribute("aria-expanded", "false");
+    await primary.click();
+    await expect(dialog).toBeVisible();
+    await expect(page).toHaveURL(/\/es$/);
+    await expect(primary).toHaveAttribute("aria-expanded", "true");
+    await primary.click();
+    await expect(dialog).toBeHidden();
+    await expect(primary).toHaveAttribute("aria-expanded", "false");
+    await primary.click();
+    await expect(dialog).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(dialog).toBeHidden();
+    await expect(primary).toBeFocused();
   });
 
   test("says who Jose is and offers the hiring route without scrolling", async ({ page }) => {

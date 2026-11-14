@@ -87,6 +87,7 @@ export function ContactChooserPanel({
       const target = event.target;
       if (!(target instanceof Element)) return;
       if (dialog.contains(target) || target.closest(triggerSelector)) return;
+      if (openerRef.current?.contains(target)) return;
       onClose();
     };
     const onKeyDown = (event: globalThis.KeyboardEvent) => {
@@ -100,7 +101,7 @@ export function ContactChooserPanel({
       document.removeEventListener("pointerdown", onPointerDown);
       document.removeEventListener("keydown", onKeyDown);
     };
-  }, [open, onClose, restoreFocus]);
+  }, [open, onClose, restoreFocus, openerRef]);
 
   const moveFocus = (event: KeyboardEvent<HTMLDialogElement>) => {
     const keys = ["ArrowDown", "ArrowUp", "Home", "End"];

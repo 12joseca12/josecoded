@@ -4,6 +4,7 @@ import { expect, type Page, test } from "@playwright/test";
 
 import AxeBuilder from "./support/axe";
 import { omen, uniqueText, visitorTokenHash } from "./support/chat";
+import { hydrated } from "./support/hydrated";
 import { mockOrigin } from "./support/staff";
 
 interface LiveMessages {
@@ -29,7 +30,7 @@ interface LiveMessages {
     system: { handoff_done: string; ai_off: string };
     page: { alternative: string; alternativeLink: string };
   };
-  home: { chatInvite: { label: string } };
+  home: { chatInvite: { label: string }; hero: { ctaPrimary: string } };
 }
 
 const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as LiveMessages;
@@ -99,6 +100,17 @@ test("the contact chooser, the home and the 404 all open the same panel", async 
   await page.goto("/es/esta-pagina-no-existe");
   await page.getByRole("button", { name: chat.openChat }).click();
   await expect(panel(page)).toBeVisible();
+});
+
+test("the hero call to action opens the contact chooser, not the chat", async ({ page }) => {
+  await page.goto("/es");
+  const cta = page.locator("#hero").getByRole("link", { name: es.home.hero.ctaPrimary });
+  await hydrated(cta);
+  await cta.click();
+  await expect(page.getByRole("dialog", { name: es.contactChooser.title })).toBeVisible();
+  await expect(panel(page)).toHaveCount(0);
+  await page.keyboard.press("Escape");
+  await expect(cta).toBeFocused();
 });
 
 test("a first message passes the invisible check, shows offline and offers the handoff", async ({

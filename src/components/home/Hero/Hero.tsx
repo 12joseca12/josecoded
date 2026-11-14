@@ -43,7 +43,9 @@ export async function Hero({ locale }: HeroProps) {
         </Heading>
         <p className={styles.lead}>{t("home.hero.lead")}</p>
         <div className={styles.actions}>
-          <HeroContactButton icon={<ArrowIcon />}>{t("home.hero.ctaPrimary")}</HeroContactButton>
+          <HeroContactButton href={`/${locale}/contacto`} icon={<ArrowIcon />}>
+            {t("home.hero.ctaPrimary")}
+          </HeroContactButton>
           {features.projects ? (
             <Button href={`/${locale}/proyectos`} variant="light">
               {t("home.hero.ctaSecondary")}

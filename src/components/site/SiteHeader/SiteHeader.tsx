@@ -10,6 +10,11 @@ import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 import type { Locale } from "@/i18n/config";
 import { chatPanelMounted, openChat } from "@/lib/chat/chat-events";
 import { useOpenChat } from "@/lib/chat/use-open-chat";
+import {
+  contactChooserId,
+  onOpenContactChooser,
+  publishChooserState,
+} from "@/lib/contact/chooser-events";
 import { homeSlug, resolveActive, stripLocale } from "@/lib/nav/nav";
 import { useNavState } from "@/lib/nav/use-nav-state";
 import { preloadLater } from "@/lib/preload-later";
@@ -38,7 +43,6 @@ const MobileMenu = lazy(loadMobileMenu);
 preloadLater(loadMobileMenu);
 
 const menuId = "site-menu";
-const chooserId = "contact-chooser";
 
 export function SiteHeader({
   locale,
@@ -81,6 +85,27 @@ export function SiteHeader({
       setChooser({ path: pathname, focus });
     },
     [pathname],
+  );
+  useEffect(() => {
+    publishChooserState(chooserOpen, chooserOpen ? chooserOpenerRef.current : null);
+  }, [chooserOpen]);
+  useEffect(
+    () => () => {
+      publishChooserState(false, null);
+    },
+    [],
+  );
+  useEffect(
+    () =>
+      onOpenContactChooser((opener) => {
+        if (chooserOpen && chooserOpenerRef.current === opener) {
+          closeChooser();
+          return;
+        }
+        chooserOpenerRef.current = opener;
+        openChooser("first");
+      }),
+    [chooserOpen, closeChooser, openChooser],
   );
   const openChatFallback = useOpenChat(locale);
   const onChatButton = (opener: HTMLElement) => {
@@ -207,7 +232,7 @@ export function SiteHeader({
           {searchEnabled ? <SearchButton labels={labels.search} /> : null}
           {chatEnabled ? <ChatButton labels={labels.chat} onClick={onChatButton} /> : null}
           <ContactChooser
-            id={chooserId}
+            id={contactChooserId}
             open={chooserOpen}
             focus={chooser.focus}
             onOpen={openChooser}
