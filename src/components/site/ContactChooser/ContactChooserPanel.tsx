@@ -1,14 +1,7 @@
 "use client";
 
 import NextLink from "next/link";
-import {
-  type FocusEvent,
-  type KeyboardEvent,
-  type RefObject,
-  useCallback,
-  useEffect,
-  useRef,
-} from "react";
+import { type KeyboardEvent, type RefObject, useCallback, useEffect, useRef } from "react";
 
 import { IconButton } from "@/components/ui/IconButton/IconButton";
 import { ChatIcon } from "@/components/ui/icons/ChatIcon";
@@ -133,13 +126,6 @@ export function ContactChooserPanel({
     options[next]?.focus();
   };
 
-  const leaveByTab = (event: FocusEvent<HTMLDialogElement>) => {
-    const next = event.relatedTarget;
-    if (event.currentTarget.dataset.mode !== "popover" || !(next instanceof Element)) return;
-    if (event.currentTarget.contains(next) || openerRef.current?.contains(next)) return;
-    onClose();
-  };
-
   const afterClose = () => {
     onClose();
     const active = document.activeElement;
@@ -154,7 +140,6 @@ export function ContactChooserPanel({
       aria-labelledby={titleId}
       onClose={afterClose}
       onKeyDown={moveFocus}
-      onBlur={leaveByTab}
       onClick={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
