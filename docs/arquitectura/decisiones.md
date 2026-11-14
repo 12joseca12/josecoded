@@ -174,6 +174,9 @@
 - **Título del chat: «Chat con Jose»** (sustituye a «Chat con Nexo» en `contactChooser.chat` y `contactPage.chat.title`; texto final de `redactor`).
 - **`/contacto`:** formulario 7/12 y chat incrustado 5/12, fijo al hacer scroll; en móvil el chat va **debajo** del formulario.
 
+- **Sección de Nexo de la home con el chat apagado (Jose, 2026-11-14):** no se muestra; el cierre ya ofrece «Escríbeme». Sustituye a «con public_chat apagado: Escríbeme → /contacto» de la maqueta.
+- **Barra fija de Nexo (Jose, 2026-11-14):** se implementa ahora solo la parte de interfaz (etiqueta «IA», «Parar a Nexo», cuenta atrás), sin mostrarse hasta que exista el backend (ruta para parar a Nexo, plazo en el estado del chat, mensaje `system` y `audit_log` de 5.15), que llega con las migraciones del chat.
+
 ## Abiertas (resumen)
 
 | Id | Qué falta | Quién |
