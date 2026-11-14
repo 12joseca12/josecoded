@@ -116,9 +116,11 @@
       "lead": "Start from your situation: each card leads to its page.",
       "hiringCta": "See hiring"
     },
-    "recommender": {
-      "lead": "Six short questions tell you which tier fits and which extras you need. Answer the first one here and carry on where you left off.",
-      "more": "Start the recommender from scratch"
+    "tiers": {
+      "accent": "with a fixed price and date"
+    },
+    "nexo": {
+      "title": "Your questions, answered by Nexo"
     },
     "projects": {
       "title": "Apps and websites",

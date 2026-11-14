@@ -1,4 +1,3 @@
-import { ChatInvite } from "@/components/chat/ChatInvite/ChatInvite";
 import { Button } from "@/components/ui/Button/Button";
 import { Heading } from "@/components/ui/Heading/Heading";
 import { Link } from "@/components/ui/Link/Link";
@@ -11,12 +10,11 @@ import styles from "./Closing.module.css";
 
 interface ClosingProps {
   locale: Locale;
-  chat: boolean;
 }
 
 const titleId = "closing-title";
 
-export async function Closing({ locale, chat }: ClosingProps) {
+export async function Closing({ locale }: ClosingProps) {
   const t = await getTranslator(locale);
   const email = contact.ways.find((entry) => entry.way === "contratacion")?.email;
 
@@ -31,13 +29,6 @@ export async function Closing({ locale, chat }: ClosingProps) {
           <Button href={`/${locale}/contacto`} variant="ghost">
             {t("home.closing.cta")}
           </Button>
-          {chat ? (
-            <ChatInvite
-              locale={locale}
-              label={t("home.chatInvite.label")}
-              hint={withResponseTime(t, t("home.chatInvite.hint"))}
-            />
-          ) : null}
           {email ? (
             <p className={styles.direct}>
               {t("home.closing.email")} <Link href={`mailto:${email}`}>{email}</Link>

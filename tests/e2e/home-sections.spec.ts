@@ -11,20 +11,17 @@ interface Messages {
     projects: { title: string; accent: string; all: string };
     stack: { title: string };
     closing: { title: string; accent: string; cta: string };
-    recommender: { more: string };
+    tiers: { accent: string };
   };
   offersPage: {
-    recommender: {
-      title: string;
-      questions: {
-        start: {
-          legend: string;
-          options: Record<"idea" | "defined" | "existing", { label: string }>;
-        };
-      };
-    };
+    compare: { tabWeb: string; tabApp: string; notSureLink: string };
+    tiers: Record<
+      "web-presencia" | "web-negocio" | "web-plataforma" | "app-primera-version" | "app-producto",
+      { name: string }
+    >;
   };
   services: {
+    ways: { project: { title: string; cta: string } };
     bento: {
       needs: Record<"contratacion" | "project" | "freelance", { title: string }>;
       proof: { stack: string };
@@ -73,19 +70,33 @@ test.describe("home sections below the hero", () => {
     );
   });
 
-  test("the recommender teaser links each answer with step one answered", async ({ page }) => {
+  test("the tier teaser lists every level without invented prices and links to the recommender", async ({
+    page,
+  }) => {
     await page.goto("/es");
-    const start = es.offersPage.recommender.questions.start;
-    const group = page.getByRole("group", { name: start.legend });
-    await expect(group).toBeVisible();
-    const idea = group.getByRole("link", { name: start.options.idea.label });
-    await expect(idea).toHaveAttribute("href", "/es/servicios/a-medida?q=idea#recomendador");
-    await expect(group.getByRole("link", { name: start.options.existing.label })).toHaveAttribute(
+    const { project } = es.services.ways;
+    const section = page.getByRole("region", {
+      name: `${project.title} ${es.home.tiers.accent}`,
+    });
+    await expect(section).toBeVisible();
+    const web = section.getByRole("region", { name: es.offersPage.compare.tabWeb });
+    const app = section.getByRole("region", { name: es.offersPage.compare.tabApp });
+    for (const slug of ["web-presencia", "web-negocio", "web-plataforma"] as const) {
+      await expect(web.getByText(es.offersPage.tiers[slug].name, { exact: true })).toBeVisible();
+    }
+    for (const slug of ["app-primera-version", "app-producto"] as const) {
+      await expect(app.getByText(es.offersPage.tiers[slug].name, { exact: true })).toBeVisible();
+    }
+    await expect(section).not.toContainText("€");
+    await expect(section.getByRole("link", { name: project.cta })).toHaveAttribute(
       "href",
-      "/es/servicios/a-medida?q=existing#recomendador",
+      "/es/servicios/a-medida",
     );
-    await idea.click();
-    await expect(page).toHaveURL(/\/es\/servicios\/a-medida\?q=idea/);
+    const finder = section.getByRole("link", { name: es.offersPage.compare.notSureLink });
+    await expect(finder).toHaveAttribute("href", "/es/servicios/a-medida#recomendador");
+    await finder.click();
+    await expect(page).toHaveURL(/\/es\/servicios\/a-medida#recomendador/);
+    await expect(page.locator("#recomendador")).toBeVisible();
   });
 
   test("the stack row lists real stack items and links to the CV stack", async ({ page }) => {

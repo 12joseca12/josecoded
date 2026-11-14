@@ -4,9 +4,10 @@ import { notFound } from "next/navigation";
 import { Closing } from "@/components/home/Closing/Closing";
 import { FeaturedProjects } from "@/components/home/FeaturedProjects/FeaturedProjects";
 import { Hero } from "@/components/home/Hero/Hero";
-import { RecommenderTeaser } from "@/components/home/RecommenderTeaser/RecommenderTeaser";
+import { NexoSection } from "@/components/home/NexoSection/NexoSection";
 import { ServicesStrip } from "@/components/home/ServicesStrip/ServicesStrip";
 import { StackRow } from "@/components/home/StackRow/StackRow";
+import { TierTeaser } from "@/components/home/TierTeaser/TierTeaser";
 import { BlockScroll } from "@/components/site/BlockScroll/BlockScroll";
 import { isLocale } from "@/i18n/config";
 import { buildPageMetadata } from "@/lib/seo/metadata";
@@ -40,9 +41,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <div className={styles.sections}>
         <ServicesStrip locale={locale} />
         <FeaturedProjects locale={locale} />
-        <RecommenderTeaser locale={locale} />
+        <TierTeaser locale={locale} />
         <StackRow locale={locale} />
-        <Closing locale={locale} chat={(await getFeatures()).chat} />
+        <NexoSection locale={locale} chat={(await getFeatures()).chat} />
+        <Closing locale={locale} />
       </div>
     </>
   );
