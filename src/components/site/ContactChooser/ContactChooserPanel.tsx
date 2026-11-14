@@ -127,7 +127,13 @@ export function ContactChooserPanel({
   const leaveByTab = (event: FocusEvent<HTMLDialogElement>) => {
     const next = event.relatedTarget;
     if (event.currentTarget.dataset.mode !== "popover" || !(next instanceof Element)) return;
-    if (event.currentTarget.contains(next) || next.closest(triggerSelector)) return;
+    if (
+      event.currentTarget.contains(next) ||
+      next.closest(triggerSelector) ||
+      openerRef.current?.contains(next)
+    ) {
+      return;
+    }
     onClose();
   };
 
