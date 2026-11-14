@@ -376,6 +376,12 @@
         "quota": "Quota used",
         "handoff": "Contact saved",
         "failed": "Send failed"
+      },
+      "nexoBar": {
+        "title": "Nexo bar",
+        "active": "Active",
+        "stopping": "Stopping",
+        "stopped": "Stopped"
       }
     }
   },
@@ -974,7 +980,18 @@
       }
     },
     "avatarOffline": "Nexo is offline",
-    "openChat": "Open the chat"
+    "openChat": "Open the chat",
+    "nexoBar": {
+      "region": "Nexo, AI assistant",
+      "tag": "AI",
+      "activeTitle": "Nexo is answering for Jose",
+      "activeAnnouncement": "Nexo is answering for Jose; you can stop it.",
+      "remaining": "Time left",
+      "stop": "Stop Nexo",
+      "stopping": "Stopping Nexo",
+      "stoppedTitle": "Nexo is stopped",
+      "stoppedText": "Only Jose will answer you."
+    }
   },
   "auth": {
     "meta": {

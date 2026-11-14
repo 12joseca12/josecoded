@@ -18,3 +18,26 @@
   overflow: hidden;
   border-radius: var(--radius-l);
 }
+
+.nexoBars {
+  display: grid;
+  gap: var(--space-3);
+  inline-size: min(100%, 30rem);
+}
+
+.barRow {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.barName {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: var(--fs-m);
+}
+
+.barFrame {
+  composes: glass from "../../../../../components/chat/ChatPanel/glass.module.css";
+  padding-block: var(--space-3);
+  border-radius: var(--radius-l);
+}

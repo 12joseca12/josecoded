@@ -376,6 +376,12 @@
         "quota": "Cuota agotada",
         "handoff": "Contacto guardado",
         "failed": "Envío fallido"
+      },
+      "nexoBar": {
+        "title": "Barra de Nexo",
+        "active": "Activa",
+        "stopping": "Parando",
+        "stopped": "Parado"
       }
     }
   },
@@ -974,7 +980,18 @@
       }
     },
     "avatarOffline": "Nexo está desconectado",
-    "openChat": "Abrir el chat"
+    "openChat": "Abrir el chat",
+    "nexoBar": {
+      "region": "Nexo, asistente de IA",
+      "tag": "IA",
+      "activeTitle": "Nexo responde por Jose",
+      "activeAnnouncement": "Nexo responde por Jose; puedes pararlo.",
+      "remaining": "Tiempo restante",
+      "stop": "Parar a Nexo",
+      "stopping": "Parando a Nexo",
+      "stoppedTitle": "Nexo está parado",
+      "stoppedText": "Solo te responderá Jose."
+    }
   },
   "auth": {
     "meta": {

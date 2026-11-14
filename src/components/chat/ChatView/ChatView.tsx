@@ -9,6 +9,7 @@ import { ChatComposer, type PlainSend } from "../ChatComposer/ChatComposer";
 import { ChatNotice } from "../ChatNotice/ChatNotice";
 import { ChatThread } from "../ChatThread/ChatThread";
 import { HandoffCard } from "../HandoffCard/HandoffCard";
+import { NexoBar, type NexoBarProps } from "../NexoBar/NexoBar";
 import { NexoAvatar } from "../NexoFaqChat/NexoAvatar";
 import { Starters } from "../Starters/Starters";
 import styles from "./ChatView.module.css";
@@ -22,6 +23,7 @@ interface ChatViewProps {
   titleLevel?: 1 | 2;
   inputRef?: Ref<HTMLTextAreaElement>;
   plainAction?: PlainSend;
+  nexoBar?: NexoBarProps;
 }
 
 const minSpeakingMs = 1200;
@@ -64,6 +66,7 @@ export function ChatView({
   titleLevel = 2,
   inputRef,
   plainAction,
+  nexoBar,
 }: ChatViewProps) {
   const { messages, status, handoff, sending, sendError } = controller;
   const [drafting, setDrafting] = useState(false);
@@ -109,6 +112,7 @@ export function ChatView({
         </div>
         {actions ? <div className={styles.actions}>{actions}</div> : null}
       </div>
+      {nexoBar ? <NexoBar {...nexoBar} /> : null}
       {notice ? (
         <ChatNotice
           variant={notice}

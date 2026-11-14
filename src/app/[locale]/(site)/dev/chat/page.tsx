@@ -5,6 +5,7 @@ import { isLocale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
 import { chatScenarios } from "@/lib/chat/fixtures";
 import { buildChatLabels } from "@/lib/chat/labels";
+import { buildNexoBarLabels } from "@/lib/chat/nexo-bar";
 import { readChatClientConfig } from "@/lib/chat/server/client-config";
 
 import { ChatShowcase } from "./chat-showcase";
@@ -17,12 +18,19 @@ export default async function ChatDevPage({ params }: { params: Promise<{ locale
     <ChatShowcase
       locale={locale}
       labels={buildChatLabels(t, locale)}
+      nexoBarLabels={buildNexoBarLabels(t)}
       config={readChatClientConfig(process.env)}
       scenarios={chatScenarios.map((id) => ({ id, name: t(`dev.chat.scenarios.${id}`) }))}
       copy={{
         title: t("dev.chat.title"),
         scenario: t("dev.chat.scenario"),
         panel: t("dev.chat.panel"),
+        nexoBar: {
+          title: t("dev.chat.nexoBar.title"),
+          active: t("dev.chat.nexoBar.active"),
+          stopping: t("dev.chat.nexoBar.stopping"),
+          stopped: t("dev.chat.nexoBar.stopped"),
+        },
       }}
     />
   );
