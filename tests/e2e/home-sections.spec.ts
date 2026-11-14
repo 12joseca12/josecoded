@@ -2,11 +2,13 @@ import { readFileSync } from "node:fs";
 
 import { expect, test } from "@playwright/test";
 
+import { homeProjectSlugs } from "../../src/config/home";
 import AxeBuilder from "./support/axe";
 
 interface Messages {
   home: {
     services: { title: string; hiringCta: string };
+    projects: { title: string; all: string };
     stack: { title: string };
     closing: { title: string; accent: string; cta: string };
     recommender: { more: string };
@@ -47,11 +49,26 @@ test.describe("home sections below the hero", () => {
     ).toBeVisible();
     await expect(section.locator('a[href="/es/servicios/a-medida"]')).toHaveCount(1);
     await expect(section.locator('a[href="/es/servicios/freelance"]')).toHaveCount(1);
-    await expect(
-      section.getByRole("link", { name: es.home.services.hiringCta }),
-    ).toHaveAttribute("href", "/es/servicios#contratacion");
+    await expect(section.getByRole("link", { name: es.home.services.hiringCta })).toHaveAttribute(
+      "href",
+      "/es/servicios#contratacion",
+    );
     await expect(page.locator("#como-trabajo")).toHaveCount(0);
     await expect(section).not.toContainText("€");
+  });
+
+  test("shows one card per configured project, each linking to its case", async ({ page }) => {
+    await page.goto("/es");
+    const section = page.getByRole("region", { name: es.home.projects.title });
+    await expect(section).toBeVisible();
+    await expect(section.getByRole("article")).toHaveCount(homeProjectSlugs.length);
+    for (const slug of homeProjectSlugs) {
+      await expect(section.locator(`a[href="/es/proyectos/${slug}"]`)).toHaveCount(1);
+    }
+    await expect(section.getByRole("link", { name: es.home.projects.all })).toHaveAttribute(
+      "href",
+      "/es/proyectos",
+    );
   });
 
   test("the recommender teaser links each answer with step one answered", async ({ page }) => {

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { Closing } from "@/components/home/Closing/Closing";
+import { FeaturedProjects } from "@/components/home/FeaturedProjects/FeaturedProjects";
 import { Hero } from "@/components/home/Hero/Hero";
 import { RecommenderTeaser } from "@/components/home/RecommenderTeaser/RecommenderTeaser";
 import { ServicesStrip } from "@/components/home/ServicesStrip/ServicesStrip";
@@ -38,6 +39,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <Hero locale={locale} />
       <div className={styles.sections}>
         <ServicesStrip locale={locale} />
+        <FeaturedProjects locale={locale} />
         <RecommenderTeaser locale={locale} />
         <StackRow locale={locale} />
         <Closing locale={locale} chat={(await getFeatures()).chat} />

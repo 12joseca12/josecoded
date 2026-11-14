@@ -21,6 +21,7 @@ interface ProjectCardProps {
   stack: string[];
   metric?: { label: string; value: string; source: string };
   viewLabel: string;
+  headingLevel?: 2 | 3;
 }
 
 export function ProjectCard({
@@ -36,6 +37,7 @@ export function ProjectCard({
   stack,
   metric,
   viewLabel,
+  headingLevel = 2,
 }: ProjectCardProps) {
   return (
     <Card as="article" size="lg" className={styles.card}>
@@ -43,7 +45,7 @@ export function ProjectCard({
         <span className={styles.kind}>{kindLabel}</span>
         <StatusBadge status={status} label={statusLabel} />
       </div>
-      <Heading level={2} size="h3">
+      <Heading level={headingLevel} size="h3">
         {title}
       </Heading>
       <p className={styles.headline}>{headline}</p>

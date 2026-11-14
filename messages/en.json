@@ -120,6 +120,10 @@
       "lead": "Six short questions tell you which tier fits and which extras you need. Answer the first one here and carry on where you left off.",
       "more": "Start the recommender from scratch"
     },
+    "projects": {
+      "title": "Apps and websites I have built",
+      "all": "See all projects"
+    },
     "stack": {
       "title": "What I build with"
     },

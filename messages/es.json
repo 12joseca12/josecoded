@@ -120,6 +120,10 @@
       "lead": "Seis preguntas cortas te dicen qué nivel encaja y qué extras necesitas. Responde a la primera aquí y sigues donde lo dejes.",
       "more": "Empezar el recomendador desde cero"
     },
+    "projects": {
+      "title": "Apps y webs que he construido",
+      "all": "Ver todos los proyectos"
+    },
     "stack": {
       "title": "Con qué construyo"
     },
