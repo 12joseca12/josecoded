@@ -1,0 +1,58 @@
+.glass {
+  isolation: isolate;
+  border: 1px solid var(--chat-edge);
+  background: var(--chat-glass);
+  -webkit-backdrop-filter: blur(var(--chat-blur-sheet)) saturate(var(--chat-saturate));
+  backdrop-filter: blur(var(--chat-blur-sheet)) saturate(var(--chat-saturate));
+  box-shadow:
+    inset 0 1px 0 var(--chat-edge-in),
+    inset 0 0 0 1px var(--chat-rim),
+    var(--chat-shadow);
+  color: var(--ink);
+}
+
+.glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-behind);
+  border-radius: inherit;
+  background: linear-gradient(180deg, var(--chat-sheen), transparent 7rem);
+  pointer-events: none;
+}
+
+@media (min-width: 40rem) {
+  .glass {
+    -webkit-backdrop-filter: blur(var(--chat-blur)) saturate(var(--chat-saturate));
+    backdrop-filter: blur(var(--chat-blur)) saturate(var(--chat-saturate));
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass {
+    background: var(--chat-glass-solid);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: var(--chat-glass-opaque);
+  }
+
+  .glass::before {
+    display: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .glass {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .glass::before {
+    display: none;
+  }
+}

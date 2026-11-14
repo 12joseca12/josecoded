@@ -25,10 +25,10 @@
 .typing {
   justify-self: start;
   padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--line);
+  border: 1px solid var(--chat-bubble-nexo-line);
   border-radius: var(--radius-m);
   border-start-start-radius: var(--radius-xs);
-  background: var(--paper);
+  background: var(--chat-bubble-nexo);
 }
 
 .dots {

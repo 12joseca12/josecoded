@@ -402,7 +402,7 @@
     "close": "Cerrar",
     "whatsapp": "WhatsApp",
     "whatsappHint": "Escríbeme y respondo en cuanto puedo",
-    "chat": "Chat con Nexo",
+    "chat": "Chat con Jose",
     "chatHint": "Por aquí te respondo yo",
     "whatsappMessage": "Hola José Carlos, te escribo desde josecoded.com. Me gustaría hablar de un proyecto.",
     "form": "Formulario",
@@ -423,7 +423,7 @@
     },
     "channelsLabel": "Vías de contacto",
     "chat": {
-      "title": "Chat con Nexo",
+      "title": "Chat con Jose",
       "hint": "Por aquí te respondo yo.",
       "open": "Abrir chat",
       "soon": "Todavía no está disponible. Escríbeme por el formulario o por correo."
@@ -858,7 +858,7 @@
         "sad": "Nexo lo siente"
       }
     },
-    "title": "Chat con Nexo",
+    "title": "Chat con Jose",
     "close": "Cerrar el chat",
     "fullscreen": "Abrir a pantalla completa",
     "page": {

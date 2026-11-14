@@ -402,7 +402,7 @@
     "close": "Close",
     "whatsapp": "WhatsApp",
     "whatsappHint": "Message me and I reply as soon as I can",
-    "chat": "Chat with Nexo",
+    "chat": "Chat with Jose",
     "chatHint": "Here you get an answer from me",
     "whatsappMessage": "Hi José Carlos, I'm writing from josecoded.com. I'd like to talk about a project.",
     "form": "Form",
@@ -423,7 +423,7 @@
     },
     "channelsLabel": "Ways to get in touch",
     "chat": {
-      "title": "Chat with Nexo",
+      "title": "Chat with Jose",
       "hint": "Here you get an answer from me.",
       "open": "Open chat",
       "soon": "Not available yet. Write to me through the form or by email."
@@ -858,7 +858,7 @@
         "sad": "Nexo is sorry"
       }
     },
-    "title": "Chat with Nexo",
+    "title": "Chat with Jose",
     "close": "Close the chat",
     "fullscreen": "Open full screen",
     "page": {

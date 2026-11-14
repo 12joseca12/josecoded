@@ -1,4 +1,5 @@
 .panel {
+  composes: glass from "./glass.module.css";
   position: fixed;
   inset: 0;
   inline-size: 100%;
@@ -9,9 +10,6 @@
   padding: 0;
   overflow: hidden;
   border: 0;
-  background: var(--panel);
-  color: var(--ink);
-  box-shadow: var(--shadow-deep);
   z-index: var(--z-toast);
   opacity: 0;
   transform: translateY(1rem);
@@ -84,7 +82,7 @@
     inset: auto var(--space-5) var(--space-5) auto;
     inline-size: 26rem;
     block-size: min(40rem, calc(100dvh - var(--space-7)));
-    border: 1px solid var(--glass-border);
+    border: 1px solid var(--chat-edge);
     border-radius: var(--radius-l);
   }
 }
