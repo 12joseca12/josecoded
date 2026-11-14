@@ -3,8 +3,10 @@ import { readFileSync } from "node:fs";
 import { expect, type Page, test } from "@playwright/test";
 
 import AxeBuilder from "./support/axe";
+import { hydrated } from "./support/hydrated";
 
 const es = JSON.parse(readFileSync("messages/es.json", "utf8")) as {
+  contactChooser: { title: string };
   home: {
     hero: {
       title: string;
@@ -37,15 +39,68 @@ async function runningHeroAnimations(page: Page) {
 }
 
 test.describe("hero copy", () => {
-  test("shows the headline, the lead and both calls to action", async ({ page }) => {
+  test("shows the headline, the lead, and a contact call to action", async ({ page }) => {
     await page.goto("/es");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
       `${hero.title} ${hero.accent}`,
     );
-    const primary = page.getByRole("link", { name: hero.ctaPrimary });
+    const primary = page.locator("#hero").getByRole("link", { name: hero.ctaPrimary });
+    await expect(primary).toBeVisible();
     await expect(primary).toHaveAttribute("href", "/es/contacto");
     const secondary = page.getByRole("link", { name: hero.ctaSecondary });
     await expect(secondary).toHaveAttribute("href", "/es/proyectos");
+  });
+
+  test("the call to action opens the contact chooser, toggles it and keeps the focus", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/es");
+    const primary = page.locator("#hero").getByRole("link", { name: hero.ctaPrimary });
+    const dialog = page.getByRole("dialog", { name: es.contactChooser.title });
+    await hydrated(primary);
+    await expect(primary).toHaveAttribute("aria-expanded", "false");
+    await primary.click();
+    await expect(dialog).toBeVisible();
+    await expect(page).toHaveURL(/\/es$/);
+    await expect(primary).toHaveAttribute("aria-expanded", "true");
+    await primary.click();
+    await expect(dialog).toBeHidden();
+    await expect(primary).toHaveAttribute("aria-expanded", "false");
+    await primary.click();
+    await expect(dialog).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(dialog).toBeHidden();
+    await expect(primary).toBeFocused();
+  });
+
+  test("tabbing out of the chooser opened from the hero closes it", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/es");
+    const primary = page.locator("#hero").getByRole("link", { name: hero.ctaPrimary });
+    const dialog = page.getByRole("dialog", { name: es.contactChooser.title });
+    await hydrated(primary);
+    await primary.click();
+    await expect(dialog).toBeVisible();
+    await expect(dialog.locator("[data-option]").first()).toBeFocused();
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Tab");
+    await expect(dialog).toBeHidden();
+    await expect(primary).toHaveAttribute("aria-expanded", "false");
+  });
+
+  test("only the hero call to action reports expanded when it opens the chooser", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/es");
+    const primary = page.locator("#hero").getByRole("link", { name: hero.ctaPrimary });
+    const trigger = page.locator("[data-chooser-trigger]");
+    await hydrated(primary);
+    await primary.click();
+    await expect(primary).toHaveAttribute("aria-expanded", "true");
+    await expect(trigger).toHaveAttribute("aria-expanded", "false");
   });
 
   test("says who Jose is and offers the hiring route without scrolling", async ({ page }) => {

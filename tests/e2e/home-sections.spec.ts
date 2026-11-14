@@ -2,33 +2,30 @@ import { readFileSync } from "node:fs";
 
 import { expect, test } from "@playwright/test";
 
+import { homeProjectSlugs } from "../../src/config/home";
 import AxeBuilder from "./support/axe";
 
 interface Messages {
   home: {
-    services: { title: string };
+    services: { title: string; hiringCta: string };
+    projects: { title: string; accent: string; all: string };
     stack: { title: string };
-    how: { line: string };
     closing: { title: string; accent: string; cta: string };
-    recommender: { more: string };
+    tiers: { accent: string };
   };
   offersPage: {
-    recommender: {
-      title: string;
-      questions: {
-        start: {
-          legend: string;
-          options: Record<"idea" | "defined" | "existing", { label: string }>;
-        };
-      };
-    };
+    compare: { tabWeb: string; tabApp: string; notSureLink: string };
+    tiers: Record<
+      "web-presencia" | "web-negocio" | "web-plataforma" | "app-primera-version" | "app-producto",
+      { name: string }
+    >;
   };
   services: {
+    ways: { project: { title: string; cta: string } };
     bento: {
       needs: Record<"contratacion" | "project" | "freelance", { title: string }>;
       proof: { stack: string };
     };
-    how: { more: string };
   };
 }
 
@@ -49,23 +46,67 @@ test.describe("home sections below the hero", () => {
     ).toBeVisible();
     await expect(section.locator('a[href="/es/servicios/a-medida"]')).toHaveCount(1);
     await expect(section.locator('a[href="/es/servicios/freelance"]')).toHaveCount(1);
-    await expect(section.locator('a[href="/es/sobre-mi"]')).toHaveCount(1);
+    await expect(section.getByRole("link", { name: es.home.services.hiringCta })).toHaveAttribute(
+      "href",
+      "/es/servicios#contratacion",
+    );
+    await expect(page.locator("#como-trabajo")).toHaveCount(0);
     await expect(section).not.toContainText("€");
   });
 
-  test("the recommender teaser links each answer with step one answered", async ({ page }) => {
+  test("without the chat the Nexo section is absent and the closing keeps its contact button", async ({
+    page,
+  }) => {
     await page.goto("/es");
-    const start = es.offersPage.recommender.questions.start;
-    const group = page.getByRole("group", { name: start.legend });
-    await expect(group).toBeVisible();
-    const idea = group.getByRole("link", { name: start.options.idea.label });
-    await expect(idea).toHaveAttribute("href", "/es/servicios/a-medida?q=idea#recomendador");
-    await expect(group.getByRole("link", { name: start.options.existing.label })).toHaveAttribute(
+    await expect(page.locator("#nexo")).toHaveCount(0);
+    await expect(
+      page.locator("#cierre").getByRole("link", { name: es.home.closing.cta }),
+    ).toHaveAttribute("href", "/es/contacto");
+  });
+
+  test("shows one card per configured project, each linking to its case", async ({ page }) => {
+    await page.goto("/es");
+    const section = page.getByRole("region", {
+      name: `${es.home.projects.title} ${es.home.projects.accent}`,
+    });
+    await expect(section).toBeVisible();
+    await expect(section.getByRole("article")).toHaveCount(homeProjectSlugs.length);
+    for (const slug of homeProjectSlugs) {
+      await expect(section.locator(`a[href="/es/proyectos/${slug}"]`)).toHaveCount(1);
+    }
+    await expect(section.getByRole("link", { name: es.home.projects.all })).toHaveAttribute(
       "href",
-      "/es/servicios/a-medida?q=existing#recomendador",
+      "/es/proyectos",
     );
-    await idea.click();
-    await expect(page).toHaveURL(/\/es\/servicios\/a-medida\?q=idea/);
+  });
+
+  test("the tier teaser lists every level without invented prices and links to the recommender", async ({
+    page,
+  }) => {
+    await page.goto("/es");
+    const { project } = es.services.ways;
+    const section = page.getByRole("region", {
+      name: `${project.title} ${es.home.tiers.accent}`,
+    });
+    await expect(section).toBeVisible();
+    const web = section.getByRole("region", { name: es.offersPage.compare.tabWeb });
+    const app = section.getByRole("region", { name: es.offersPage.compare.tabApp });
+    for (const slug of ["web-presencia", "web-negocio", "web-plataforma"] as const) {
+      await expect(web.getByText(es.offersPage.tiers[slug].name, { exact: true })).toBeVisible();
+    }
+    for (const slug of ["app-primera-version", "app-producto"] as const) {
+      await expect(app.getByText(es.offersPage.tiers[slug].name, { exact: true })).toBeVisible();
+    }
+    await expect(section).not.toContainText("€");
+    await expect(section.getByRole("link", { name: project.cta })).toHaveAttribute(
+      "href",
+      "/es/servicios/a-medida",
+    );
+    const finder = section.getByRole("link", { name: es.offersPage.compare.notSureLink });
+    await expect(finder).toHaveAttribute("href", "/es/servicios/a-medida#recomendador");
+    await finder.click();
+    await expect(page).toHaveURL(/\/es\/servicios\/a-medida#recomendador/);
+    await expect(page.locator("#recomendador")).toBeVisible();
   });
 
   test("the stack row lists real stack items and links to the CV stack", async ({ page }) => {
@@ -77,16 +118,6 @@ test.describe("home sections below the hero", () => {
     await expect(
       section.getByRole("link", { name: es.services.bento.proof.stack }),
     ).toHaveAttribute("href", "/es/sobre-mi#stack");
-  });
-
-  test("the how strip is one line with a link", async ({ page }) => {
-    await page.goto("/es");
-    const strip = page.locator("#como-trabajo");
-    await expect(strip).toContainText(es.home.how.line);
-    await expect(strip.getByRole("link", { name: es.services.how.more })).toHaveAttribute(
-      "href",
-      "/es/como-trabajo",
-    );
   });
 
   test("the closing leads to contact", async ({ page }) => {

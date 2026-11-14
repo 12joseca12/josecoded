@@ -13,6 +13,7 @@
   --coral-text: #e2361e;
   --coral-deep: #b42a14;
   --coral-soft: #ff8a75;
+  --status-live: #2f9e5a;
   --nexo-glow: #ffd2bd;
   --coral-raised: #ff6550;
   --ink: #17191c;
@@ -40,6 +41,7 @@
   --radius-m: 1rem;
   --radius-l: 1.5rem;
   --radius-xl: 2rem;
+  --radius-round: 50%;
   --font-body:
     var(--font-inter-tight), "Inter Tight", "Helvetica Neue", Arial, system-ui, sans-serif;
   --font-mono: ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace;

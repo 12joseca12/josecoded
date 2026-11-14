@@ -16,7 +16,7 @@
       "title": "Desarrollador full stack especializado en",
       "accent": "React Native.",
       "lead": "Diseño, construyo y mantengo apps móviles y webs para empresas y negocios. Desde Madrid y en remoto: por horas, por tarea, con desarrollo a medida de precio cerrado o en tu equipo.",
-      "ctaPrimary": "Pide propuesta",
+      "ctaPrimary": "Hablemos",
       "ctaSecondary": "Ver proyectos",
       "identity": "Soy José Carlos Sánchez García, desarrollador full stack en Madrid, especializado en React Native.",
       "identityLink": "Trayectoria y CV",
@@ -113,17 +113,22 @@
     },
     "services": {
       "title": "Tres formas de trabajar conmigo",
-      "lead": "Empieza por tu situación: cada tarjeta lleva a su página."
+      "lead": "Empieza por tu situación: cada tarjeta lleva a su página.",
+      "hiringCta": "Ver contratación"
     },
-    "recommender": {
-      "lead": "Seis preguntas cortas te dicen qué nivel encaja y qué extras necesitas. Responde a la primera aquí y sigues donde lo dejes.",
-      "more": "Empezar el recomendador desde cero"
+    "tiers": {
+      "accent": "con precio y fecha cerrados."
+    },
+    "nexo": {
+      "title": "Tus dudas, con Nexo"
+    },
+    "projects": {
+      "title": "Apps y webs",
+      "accent": "que he construido.",
+      "all": "Ver todos los proyectos"
     },
     "stack": {
       "title": "Con qué construyo"
-    },
-    "how": {
-      "line": "Descubrir, diseñar, construir, publicar y mantener: las mismas cinco fases en cualquier vía."
     },
     "closing": {
       "title": "¿Lo llevamos",

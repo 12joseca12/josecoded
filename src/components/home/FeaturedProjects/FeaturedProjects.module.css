@@ -1,0 +1,25 @@
+.grid {
+  container-type: inline-size;
+  margin-block-start: calc(var(--space-7) - var(--space-5));
+}
+
+.cards {
+  display: grid;
+  gap: var(--space-4);
+  list-style: none;
+  padding: 0;
+}
+
+.cards > li {
+  display: grid;
+}
+
+@container (min-width: 43rem) {
+  .cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.foot {
+  margin-block-start: calc(var(--space-6) - var(--space-5));
+}

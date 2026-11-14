@@ -8,6 +8,7 @@ import styles from "./PageSection.module.css";
 interface PageSectionProps {
   id: string;
   title: string;
+  accent?: string;
   lead?: string;
   size?: PageSectionSize;
   fit?: PageSectionFit;
@@ -17,6 +18,7 @@ interface PageSectionProps {
 export function PageSection({
   id,
   title,
+  accent,
   lead,
   size = "narrow",
   fit = "screen",
@@ -32,7 +34,7 @@ export function PageSection({
       aria-labelledby={headingId}
     >
       <div className={styles.body} data-size={size}>
-        <Heading level={2} id={headingId} marker>
+        <Heading level={2} id={headingId} marker accent={accent}>
           {title}
         </Heading>
         {lead ? <p className={styles.lead}>{lead}</p> : null}

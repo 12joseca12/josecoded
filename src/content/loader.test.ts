@@ -13,6 +13,7 @@ import {
   readContent,
   readCv,
   renderIndex,
+  renderProjectMetaIndex,
 } from "./loader.ts";
 
 let base = "";
@@ -119,6 +120,15 @@ describe("renderIndex", () => {
     expect(source).toContain('import("../../content/projects/demo.mdx")');
     expect(source).toContain("export const projects: ContentEntry<ProjectMeta>[]");
     expect(source).toContain("export const blog: ContentEntry<BlogMeta>[] = []");
+  });
+});
+
+describe("renderProjectMetaIndex", () => {
+  it("emits project metadata without loading the documents", () => {
+    write("content/projects/demo.mdx", project());
+    const source = renderProjectMetaIndex(readContent(base));
+    expect(source).toContain('slug: "demo"');
+    expect(source).not.toContain("import(");
   });
 });
 

@@ -3,7 +3,6 @@ import { ServiceBento } from "@/components/services/ServiceBento/ServiceBento";
 import { PageSection } from "@/components/site/PageSection/PageSection";
 import type { Locale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
-import { buildHiringLinks } from "@/lib/services/hiring-links";
 
 interface ServicesStripProps {
   locale: Locale;
@@ -11,7 +10,6 @@ interface ServicesStripProps {
 
 export async function ServicesStrip({ locale }: ServicesStripProps) {
   const t = await getTranslator(locale);
-  const hiring = buildHiringLinks(t, locale);
 
   return (
     <PageSection
@@ -26,8 +24,10 @@ export async function ServicesStrip({ locale }: ServicesStripProps) {
           area="hiring"
           title={t("services.bento.needs.contratacion.title")}
           text={t("services.bento.needs.contratacion.line")}
-          cta={hiring.cta}
-          more={hiring.more}
+          cta={{
+            href: `/${locale}/servicios#contratacion`,
+            label: t("home.services.hiringCta"),
+          }}
         />
         <NeedTile
           way="project"

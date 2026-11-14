@@ -15,6 +15,7 @@ import { DevicePhone } from "../DevicePhone/DevicePhone";
 import { HeroStage } from "../HeroStage/HeroStage";
 import { PhaseNote } from "../PhaseNote/PhaseNote";
 import styles from "./Hero.module.css";
+import { HeroContactButton } from "./HeroContactButton";
 
 interface HeroProps {
   locale: Locale;
@@ -42,9 +43,9 @@ export async function Hero({ locale }: HeroProps) {
         </Heading>
         <p className={styles.lead}>{t("home.hero.lead")}</p>
         <div className={styles.actions}>
-          <Button href={`/${locale}/contacto`} icon={<ArrowIcon />}>
+          <HeroContactButton href={`/${locale}/contacto`} icon={<ArrowIcon />}>
             {t("home.hero.ctaPrimary")}
-          </Button>
+          </HeroContactButton>
           {features.projects ? (
             <Button href={`/${locale}/proyectos`} variant="light">
               {t("home.hero.ctaSecondary")}

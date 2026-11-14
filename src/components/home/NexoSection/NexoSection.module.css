@@ -1,0 +1,63 @@
+.section {
+  padding-block: var(--space-7);
+  border-top: 1px solid var(--line);
+}
+
+.card {
+  container-type: inline-size;
+  display: grid;
+  gap: var(--space-5);
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  background: var(--charcoal);
+  color: var(--on-dark);
+}
+
+.avatar {
+  inline-size: 4.5rem;
+  block-size: 4.5rem;
+  border-radius: var(--radius-round);
+  background: radial-gradient(
+    circle at 35% 35%,
+    var(--nexo-glow),
+    var(--coral) 55%,
+    var(--coral-deep)
+  );
+  box-shadow:
+    0 0 0 6px var(--charcoal-raised),
+    0 0 40px var(--coral-glow);
+}
+
+.body {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-3);
+}
+
+.title {
+  color: var(--on-dark);
+  font-size: clamp(1.6rem, 6cqi, 2.4rem);
+  font-weight: var(--fw-black);
+  letter-spacing: var(--tracking-display);
+  line-height: var(--lh-tight);
+  text-wrap: balance;
+}
+
+.text {
+  max-inline-size: 36rem;
+  margin-block-end: var(--space-2);
+  color: var(--on-dark-soft);
+  text-wrap: pretty;
+}
+
+@media (min-width: 48rem) {
+  .section {
+    padding-block: var(--space-8);
+  }
+
+  .card {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    padding: var(--space-7);
+  }
+}

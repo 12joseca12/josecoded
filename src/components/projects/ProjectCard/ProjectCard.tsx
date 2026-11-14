@@ -8,7 +8,7 @@ import type { ProjectStatus } from "@/types/projects";
 import { StatusBadge } from "../StatusBadge/StatusBadge";
 import styles from "./ProjectCard.module.css";
 
-interface ProjectCardProps {
+export interface ProjectCardProps {
   title: string;
   href: string;
   kindLabel: string;
