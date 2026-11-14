@@ -58,7 +58,7 @@
   font-size: var(--fs-base);
 }
 
-@container (min-width: 56rem) {
+@container (min-width: 58rem) {
   .groups {
     grid-template-columns: 3fr 2fr;
   }
