@@ -24,7 +24,7 @@ function keepFocusInside(node: HTMLDialogElement, backwards: boolean): boolean {
   if (!first || !last) return false;
   const active = document.activeElement;
   const edge = backwards ? first : last;
-  if (active !== edge && node.contains(active)) return false;
+  if (active !== edge && active !== node && node.contains(active)) return false;
   (backwards ? last : first).focus();
   return true;
 }

@@ -108,10 +108,20 @@ export function NexoBar({
     onStop();
   };
 
+  const resuming = useRef(false);
+
+  useEffect(() => {
+    if (!resuming.current) return;
+    resuming.current = false;
+    if (document.activeElement === document.body) textRef.current?.focus();
+  }, [kind]);
+
   const toggle = () => {
     if (busy) return;
-    if (stopped) onResume();
-    else onStop();
+    if (stopped) {
+      resuming.current = true;
+      onResume();
+    } else onStop();
   };
 
   const progress: CSSProperties & Record<"--p", string> = {
