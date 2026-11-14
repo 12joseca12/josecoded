@@ -38,6 +38,10 @@
   background: var(--status-live);
 }
 
+.chip[data-status="archived"]::before {
+  background: var(--ink-soft);
+}
+
 .headline {
   color: var(--ink-soft);
   font-size: var(--fs-base);

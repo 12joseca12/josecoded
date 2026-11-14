@@ -12,6 +12,7 @@ export const tokenNames = [
   "--coral-text",
   "--coral-deep",
   "--coral-soft",
+  "--status-live",
   "--nexo-glow",
   "--coral-raised",
   "--ink",
