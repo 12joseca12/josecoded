@@ -95,6 +95,9 @@
   background: var(--chat-progress);
   transform-origin: 0 50%;
   transform: scaleX(var(--p, 1));
+}
+
+.progress[data-ready] i {
   transition: transform 1s linear;
 }
 
@@ -159,8 +162,54 @@
   outline-offset: 2px;
 }
 
+.bar button[data-variant="light"] {
+  border-color: var(--chat-input-line);
+}
+
+@media (forced-colors: active) {
+  .bar {
+    --forced-surface: Canvas;
+    --forced-line: ButtonText;
+    --forced-active: Highlight;
+  }
+
+  .switch {
+    border: 1px solid var(--forced-line);
+    background: var(--forced-surface);
+    box-shadow: none;
+    forced-color-adjust: none;
+  }
+
+  .switch::after {
+    background: var(--forced-line);
+    box-shadow: none;
+  }
+
+  .switch[aria-checked="true"] {
+    background: var(--forced-surface);
+  }
+
+  .switch[aria-checked="true"]::after {
+    background: var(--forced-active);
+  }
+
+  .tag {
+    border: 1px solid var(--forced-line);
+  }
+
+  .progress {
+    block-size: 0.375rem;
+    border: 1px solid var(--forced-line);
+  }
+
+  .progress i {
+    background: var(--forced-active);
+    forced-color-adjust: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .progress i,
+  .progress[data-ready] i,
   .switch,
   .switch::after {
     transition: none;

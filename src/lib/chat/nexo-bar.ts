@@ -81,3 +81,36 @@ export function remainingFraction(dueAt: string, now: number, windowMs: number):
   if (Number.isNaN(due)) return 0;
   return Math.min(1, Math.max(0, (due - now) / windowMs));
 }
+
+export interface CountdownTimer {
+  setInterval: (handler: () => void, ms: number) => unknown;
+  clearInterval: (handle: unknown) => void;
+  now: () => number;
+}
+
+const browserTimer: CountdownTimer = {
+  setInterval: (handler, ms) => setInterval(handler, ms),
+  clearInterval: (handle) => {
+    clearInterval(handle as ReturnType<typeof setInterval>);
+  },
+  now: () => Date.now(),
+};
+
+export function runCountdown(
+  dueAt: string,
+  onTick: (at: number) => void,
+  timer: CountdownTimer = browserTimer,
+): () => void {
+  const due = Date.parse(dueAt);
+  if (Number.isNaN(due)) return () => undefined;
+  const handle = timer.setInterval(update, 1000);
+  function update() {
+    const at = timer.now();
+    onTick(at);
+    if (at >= due) timer.clearInterval(handle);
+  }
+  update();
+  return () => {
+    timer.clearInterval(handle);
+  };
+}

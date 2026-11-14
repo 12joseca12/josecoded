@@ -7,19 +7,21 @@ import { chatScenarios } from "@/lib/chat/fixtures";
 import { buildChatLabels } from "@/lib/chat/labels";
 import { buildNexoBarLabels } from "@/lib/chat/nexo-bar";
 import { readChatClientConfig } from "@/lib/chat/server/client-config";
+import { getFeatures } from "@/lib/settings/features";
 
 import { ChatShowcase } from "./chat-showcase";
 
 export default async function ChatDevPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!devPagesEnabled || !isLocale(locale)) notFound();
-  const t = await getTranslator(locale);
+  const [t, { chat }] = await Promise.all([getTranslator(locale), getFeatures()]);
   return (
     <ChatShowcase
       locale={locale}
       labels={buildChatLabels(t, locale)}
       nexoBarLabels={buildNexoBarLabels(t)}
       config={readChatClientConfig(process.env)}
+      siteHostsPanel={chat}
       scenarios={chatScenarios.map((id) => ({ id, name: t(`dev.chat.scenarios.${id}`) }))}
       copy={{
         title: t("dev.chat.title"),

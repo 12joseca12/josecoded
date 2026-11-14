@@ -25,6 +25,7 @@ interface ChatShowcaseProps {
   labels: ChatLabels;
   nexoBarLabels: NexoBarLabels;
   config: ChatRuntimeConfig;
+  siteHostsPanel: boolean;
   scenarios: { id: ChatScenario; name: string }[];
   copy: {
     title: string;
@@ -86,6 +87,7 @@ export function ChatShowcase({
   labels,
   nexoBarLabels,
   config,
+  siteHostsPanel,
   scenarios,
   copy,
 }: ChatShowcaseProps) {
@@ -194,7 +196,7 @@ export function ChatShowcase({
           </div>
         </div>
       </section>
-      {client
+      {client && !siteHostsPanel
         ? createPortal(
             <ChatPanelHost locale={locale} labels={labels} config={config} />,
             document.body,

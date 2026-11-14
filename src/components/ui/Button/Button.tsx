@@ -27,6 +27,7 @@ interface ButtonBaseProps {
   iconStart?: boolean;
   badge?: boolean;
   collapse?: boolean;
+  iconOnly?: boolean;
   children: ReactNode;
 }
 
@@ -96,6 +97,7 @@ export function Button(props: ButtonProps) {
     iconStart = false,
     badge = false,
     collapse = false,
+    iconOnly = false,
     children,
     ...rest
   } = props;
@@ -123,6 +125,7 @@ export function Button(props: ButtonProps) {
     "data-size": size,
     "data-icon": slot && !ghost ? (iconStart ? "start" : "true") : undefined,
     "data-collapse": collapse ? "narrow" : undefined,
+    "data-icon-only": iconOnly || undefined,
     "aria-busy": loading || undefined,
   };
   const withPress =

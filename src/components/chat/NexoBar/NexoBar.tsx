@@ -11,6 +11,7 @@ import {
   type NexoBarKind,
   type NexoBarLabels,
   remainingFraction,
+  runCountdown,
 } from "@/lib/chat/nexo-bar";
 
 import styles from "./NexoBar.module.css";
@@ -33,26 +34,22 @@ export interface NexoBarProps {
 interface Tick {
   dueAt: string;
   at: number;
+  count: number;
 }
 
-function useNow(dueAt: string | null): number | null {
+function useNow(dueAt: string | null): Tick | null {
   const [tick, setTick] = useState<Tick | null>(null);
   useEffect(() => {
     if (dueAt === null) return;
-    const due = Date.parse(dueAt);
-    if (Number.isNaN(due)) return;
-    const timer = setInterval(update, 1000);
-    function update() {
-      const at = Date.now();
-      setTick({ dueAt: dueAt ?? "", at });
-      if (at >= due) clearInterval(timer);
-    }
-    update();
-    return () => {
-      clearInterval(timer);
-    };
+    return runCountdown(dueAt, (at) => {
+      setTick((previous) => ({
+        dueAt,
+        at,
+        count: previous?.dueAt === dueAt ? previous.count + 1 : 1,
+      }));
+    });
   }, [dueAt]);
-  return tick !== null && tick.dueAt === dueAt ? tick.at : null;
+  return tick !== null && tick.dueAt === dueAt ? tick : null;
 }
 
 function Mark({ stopped }: { stopped: boolean }) {
@@ -96,8 +93,15 @@ export function NexoBar({
   const textRef = useRef<HTMLParagraphElement>(null);
   const kind = state.kind;
   const dueAt = state.kind === "countdown" ? state.dueAt : null;
-  const now = useNow(dueAt);
+  const tick = useNow(dueAt);
+  const now = tick?.at ?? null;
   const stopped = kind === "stopped";
+  const [mountedKind, setMountedKind] = useState(kind);
+  const [transitioned, setTransitioned] = useState(false);
+  if (mountedKind !== kind) {
+    setMountedKind(kind);
+    setTransitioned(true);
+  }
 
   const stop = () => {
     textRef.current?.focus();
@@ -106,6 +110,7 @@ export function NexoBar({
 
   const toggle = () => {
     if (busy) return;
+    textRef.current?.focus();
     if (stopped) onResume();
     else onStop();
   };
@@ -174,19 +179,24 @@ export function NexoBar({
             className={styles.switch}
             role="switch"
             aria-checked={!stopped}
-            aria-labelledby={textId}
+            aria-label={labels.region}
+            aria-describedby={textId}
             aria-disabled={busy || undefined}
             onClick={toggle}
           />
         )}
         {kind === "countdown" ? (
-          <div className={styles.progress} aria-hidden="true">
+          <div
+            className={styles.progress}
+            aria-hidden="true"
+            data-ready={(tick?.count ?? 0) > 1 || undefined}
+          >
             <i style={progress} />
           </div>
         ) : null}
       </div>
       <div role="status">
-        <VisuallyHidden>{announcement(kind, labels)}</VisuallyHidden>
+        <VisuallyHidden>{transitioned ? announcement(kind, labels) : ""}</VisuallyHidden>
       </div>
     </div>
   );

@@ -423,7 +423,7 @@
   "contactPage": {
     "meta": {
       "title": "Contacto",
-      "description": "Todas las formas de hablar con José Carlos: correo por vía y formulario."
+      "description": "Todas las formas de hablar con José Carlos: chat, correo por vía y formulario."
     },
     "head": {
       "title": "Hablemos de tu",
@@ -869,7 +869,7 @@
     "fullscreen": "Abrir a pantalla completa",
     "page": {
       "metaTitle": "Chat con Jose",
-      "metaDescription": "Habla con Nexo, el asistente IA de josecoded, o deja tu contacto para que te responda Jose.",
+      "metaDescription": "Escribe a Jose directamente; si tarda, te atiende Nexo, su asistente IA.",
       "title": "Chat con Jose",
       "back": "Volver al inicio",
       "noscriptFailed": "No he podido enviar el mensaje. Usa el formulario de contacto.",
@@ -896,7 +896,7 @@
     "composer": {
       "label": "Tu mensaje",
       "placeholder": "Escribe tu mensaje",
-      "send": "Enviar mensaje",
+      "send": "Enviar mensaje al chat",
       "sending": "Enviando mensaje",
       "remaining": "Quedan {count} caracteres"
     },

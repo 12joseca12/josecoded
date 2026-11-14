@@ -1,10 +1,11 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import {
   approximateMinutes,
   describeApproximate,
   formatCountdown,
   remainingFraction,
+  runCountdown,
 } from "./nexo-bar";
 
 const due = "2026-11-14T10:10:00.000Z";
@@ -65,5 +66,42 @@ describe("remainingFraction", () => {
   it("clamps to the 0 to 1 range", () => {
     expect(remainingFraction(due, at("2026-11-14T10:30:00.000Z"), 600_000)).toBe(0);
     expect(remainingFraction(due, at("2026-11-14T09:00:00.000Z"), 600_000)).toBe(1);
+  });
+});
+
+describe("runCountdown", () => {
+  const deadline = "2026-11-14T10:00:03.000Z";
+
+  it("ticks every second and stops itself once the deadline passes", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(at("2026-11-14T10:00:00.000Z"));
+    const ticks: number[] = [];
+    const stop = runCountdown(deadline, (now) => ticks.push(now));
+    expect(ticks).toHaveLength(1);
+    vi.advanceTimersByTime(3000);
+    expect(ticks).toHaveLength(4);
+    expect(vi.getTimerCount()).toBe(0);
+    vi.advanceTimersByTime(5000);
+    expect(ticks).toHaveLength(4);
+    stop();
+    vi.useRealTimers();
+  });
+
+  it("stops ticking when cancelled early", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(at("2026-11-14T10:00:00.000Z"));
+    const ticks: number[] = [];
+    const stop = runCountdown(deadline, (now) => ticks.push(now));
+    stop();
+    vi.advanceTimersByTime(5000);
+    expect(ticks).toHaveLength(1);
+    expect(vi.getTimerCount()).toBe(0);
+    vi.useRealTimers();
+  });
+
+  it("does nothing for an unparsable deadline", () => {
+    const onTick = vi.fn();
+    runCountdown("not a date", onTick)();
+    expect(onTick).not.toHaveBeenCalled();
   });
 });

@@ -79,7 +79,11 @@ test.describe("nexo bar on the dev page", () => {
 
     await live.getByRole("switch").click();
     await expect(live.getByText(nexoBar.waitingTitle)).toBeVisible();
-    await expect(live.getByRole("switch")).toBeFocused();
+    await expect(page.locator(":focus")).toContainText(nexoBar.waitingTitle);
+    await expect(live.getByRole("switch", { name: nexoBar.region })).toHaveAttribute(
+      "aria-checked",
+      "true",
+    );
   });
 });
 
