@@ -1,0 +1,80 @@
+:root {
+  --fx-light-at: 80% 28%;
+  --fx-light-size: 52vw 62vh;
+  --fx-light-soft: radial-gradient(ellipse var(--fx-light-size) at var(--fx-light-at), rgb(255 75 50 / 0.08), rgb(255 75 50 / 0.035) 48%, transparent 74%);
+  --fx-light-dark: radial-gradient(ellipse var(--fx-light-size) at var(--fx-light-at), rgb(255 75 50 / 0.2), rgb(255 75 50 / 0.075) 48%, transparent 76%);
+  --fx-wash-soft: radial-gradient(ellipse 75% 60% at 68% 50%, rgb(255 75 50 / 0.08), rgb(255 75 50 / 0.03) 55%, transparent 82%);
+  --fx-light-warm: radial-gradient(ellipse var(--fx-light-size) at var(--fx-light-at), rgb(255 75 50 / 0.12), rgb(255 75 50 / 0.05) 48%, transparent 74%);
+  --fx-wash-warm: radial-gradient(ellipse 75% 60% at 68% 50%, rgb(255 75 50 / 0.14), rgb(255 75 50 / 0.05) 55%, transparent 82%);
+  --fx-wash-dark: radial-gradient(ellipse 75% 70% at 70% 45%, rgb(255 75 50 / 0.16), rgb(255 75 50 / 0.06) 55%, transparent 85%);
+}
+@media (max-width: 47.99rem) {
+  :root { --fx-light-at: 78% 20%; --fx-light-size: 95vw 48vh; }
+}
+
+.fx-c { display: none; }
+
+:root[data-fondo]:not([data-fondo="none"]) .x .reach-row dt { color: var(--ink-soft); }
+:root[data-fondo]:not([data-fondo="none"]) .x .dato:not(.on-dark .dato) { background: linear-gradient(rgb(255 75 50 / 0.08), rgb(255 75 50 / 0.08)), var(--paper); }
+
+:root[data-fondo="a"] .x {
+  & :is(.proof, .x-dark, .closing) { position: relative; clip-path: inset(0); }
+  & :is(.proof, .x-dark, .closing) > .wrap { position: relative; z-index: 1; }
+  & :is(.proof, .x-dark, .closing)::after {
+    content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background: var(--fx-light-soft);
+  }
+  & .x-dark::after { background: var(--fx-light-dark); }
+  & .closing::after { background: var(--fx-light-warm); }
+  & .x-dark .case-media.dark-stage { background-color: rgb(33 36 40 / 0.72); }
+  & .mvp { background-image: radial-gradient(ellipse 95% 75% at 92% 0%, rgb(255 75 50 / 0.2), rgb(255 75 50 / 0.075) 48%, transparent 80%); }
+}
+
+:root[data-fondo="b"] .x {
+  & :is(.proof, #oferta, .closing) { position: relative; view-timeline: --fxb; }
+  & .x-dark { isolation: isolate; view-timeline: --fxb; }
+  & :is(.proof, #oferta, .closing)::before {
+    content: ""; position: absolute; inset: -14vh 0; z-index: -1; pointer-events: none;
+    background: var(--fx-wash-soft); opacity: 0.6;
+  }
+  & :is(#oferta, .closing)::before { background: var(--fx-wash-warm); }
+  & .x-dark::before {
+    content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+    background: var(--fx-wash-dark); opacity: 0.6;
+  }
+}
+
+:root[data-fondo="c"] .fx-c {
+  display: block; position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none;
+}
+.fx-c i {
+  position: absolute; inset: -20vh -15vw;
+  background:
+    radial-gradient(30% 24% at 16% 20%, rgb(255 75 50 / 0.075), transparent 72%),
+    radial-gradient(28% 26% at 88% 42%, rgb(255 75 50 / 0.07), transparent 72%),
+    radial-gradient(36% 26% at 22% 80%, rgb(255 75 50 / 0.065), transparent 74%);
+}
+
+@supports (animation-timeline: view()) {
+@media (prefers-reduced-motion: no-preference) {
+  :root[data-fondo="b"]:not([data-sys="off"]) .x :is(.proof, #oferta, .closing, .x-dark)::before {
+    opacity: 0;
+    animation-name: fx-breathe;
+    animation-duration: auto;
+    animation-timeline: --fxb;
+    animation-range: cover 0% cover 100%;
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+  }
+  :root[data-fondo="c"]:not([data-sys="off"]) .fx-c i {
+    animation-name: fx-drift;
+    animation-duration: auto;
+    animation-timeline: scroll(root);
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+  }
+}
+}
+
+@keyframes fx-breathe { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes fx-drift { to { translate: -5vw -16vh; scale: 1.08; } }

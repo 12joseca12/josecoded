@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="es" data-hp="12" data-fb="01" data-bi="08" data-bo="04" data-ot="12" data-ov="05" data-vc="11" data-h2="06" data-an="14">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Home v2 · transiciones en vivo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap">
+<!-- Copias: home-base.css = ../home.css; home-expresivo.css = ../expresivo-v1.css sin sus animaciones de costura. -->
+<link rel="stylesheet" href="home-base.css">
+<link rel="stylesheet" href="home-expresivo.css">
+<link rel="stylesheet" href="home-transiciones.css">
+</head>
+<body class="x">
+<header class="head">
+  <div class="wrap head-in">
+    <a class="brand" href="#"><span class="brand-mark" aria-hidden="true"></span>josecoded</a>
+    <nav class="nav" aria-label="Principal">
+      <a href="#" aria-current="page">Inicio</a><a href="#">Servicios</a><a href="#">Sobre mí</a><a href="#">Proyectos</a><a href="#">Blog</a><a href="#">Contacto</a>
+    </nav>
+    <a class="btn btn-s" href="#contacto">Hablemos <span class="arr" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></a>
+    <button class="menu-btn" type="button">Menú</button>
+  </div>
+</header>
+<main>
+<section class="hero" aria-labelledby="h1">
+  <div class="wrap hero-grid">
+      <h1 id="h1"><span class="l">Tu app y tu web, publicadas</span> <span class="l">y <em>funcionando<span class="x-dot">.</span></em></span></h1>
+    <div class="hero-copy">
+      <p class="lead">Soy José Carlos, <strong>desarrollador React Native y Next.js</strong>. Hago la app y la web de tu negocio con precio y fecha cerrados, y trabajo en las apps de 3Cat.</p>
+      <div class="hero-ctas">
+        <a class="btn" href="#contacto">Hablemos <span class="arr" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></a>
+        <a class="btn btn-light" href="#trabajo">Ver proyectos</a>
+      </div>
+      <p class="hero-safe"><span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5 16 5v4.5c0 4-2.6 6.6-6 8-3.4-1.4-6-4-6-8V5z"/></svg>30 días de garantía</span><span><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="7" cy="12" r="3.5"/><path d="M9.5 9.5 16 3M13 6l2 2"/></svg>Código y cuentas a tu nombre</span><span><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="7" r="3.2"/><path d="M3.5 17c1.2-3.2 3.6-4.6 6.5-4.6s5.3 1.4 6.5 4.6"/></svg>Te respondo yo</span></p>
+    </div>
+    <div class="stage" data-phase="3" aria-label="Cómo trabajo, contado con trabajo real">
+      <div class="stage-scene">
+        <div class="browser" aria-hidden="true">
+          <div class="browser-bar"><i></i><i></i><i></i><span>josecoded.com</span></div>
+          <div class="mini">
+            <div class="mini-nav"><b>josecoded</b><span>Servicios · Proyectos · Sobre mí</span><s>Hablemos</s></div>
+            <div><h4>Tu app y tu web, publicadas y <em>funcionando.</em></h4><p>Desarrollador React Native y Next.js. Precio y fecha cerrados.</p></div>
+            <div class="mini-kpis">
+              <div class="mini-kpi"><b>145 KB</b><span>JS en la home</span></div>
+              <div class="mini-kpi"><b>100</b><span>accesibilidad, Lighthouse</span></div>
+              <div class="mini-kpi"><b>0</b><span>saltos de diseño (CLS)</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="phone" aria-hidden="true">
+          <div class="phone-screen">
+            <div class="slot slot-dark solo-datos">{{DATO: captura de 3CatInfo de su ficha pública de App Store, si el NDA lo permite}}</div>
+            <div class="phone-real solo-hoy">
+              <span class="app-ico">3Cat<br>Info</span>
+              <b>3CatInfo</b>
+              <span>App de noticias de 3Cat. React Native, iOS y Android.</span>
+              <div class="p-store"><i>App Store</i><i>Google Play</i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ol class="rail" aria-label="Fases de cada proyecto"><li data-i="0">Descubrir</li><li data-i="1">Diseñar</li><li data-i="2">Construir</li><li class="on" data-i="3">Publicar</li><li data-i="4">Mantener</li></ol>
+      <p class="rail-note" aria-live="off"><b>3CatInfo y 3Cat</b>, publicadas en App Store y Google Play.</p>
+    </div>
+  </div>
+</section>
+<div class="seam-fb">
+<section class="proof" aria-label="Prueba">
+  <div class="wrap proof-grid">
+    <div>
+      <h2>Quién lo hace</h2>
+      <div class="who">
+        <div class="slot solo-datos">{{DATO: retrato}}</div>
+        <span class="app-ico solo-hoy" aria-hidden="true" style="width:4.25rem;height:4.25rem;border-radius:50%;font-size:1rem">JC</span>
+        <div><b>José Carlos Sánchez García</b><p>Madrid. Remoto o híbrido.</p><span class="avail"><span class="solo-datos">Disponible <span class="dato">{{DATO: desde …, jornada …}}</span></span><span class="solo-hoy">Pregúntame por disponibilidad</span></span></div>
+        <div class="who-links"><a class="link" href="#">CV (PDF) <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a><a class="link" href="#">LinkedIn <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a><a class="link solo-datos" href="#">GitHub <span class="dato">{{DATO: URL}}</span></a></div>
+      </div>
+    </div>
+    <div>
+      <h2>Apps publicadas</h2>
+      <div class="apps"><div class="app-row"><span class="app-ico" aria-hidden="true">3Cat<br>Info</span><div><b>3CatInfo</b><span>App de noticias. Responsable de IA y accesibilidad.</span>
+          <div class="stores"><a class="store" href="#" title="Pendiente: URL de la ficha">App Store <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2h6v6M10 2 3 9"/></svg></a><a class="store" href="#" title="Pendiente: URL de la ficha">Google Play <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2h6v6M10 2 3 9"/></svg></a></div></div></div><div class="app-row"><span class="app-ico" aria-hidden="true">3Cat</span><div><b>3Cat</b><span>App principal de la radiotelevisión pública catalana.</span>
+          <div class="stores"><a class="store" href="#" title="Pendiente: URL de la ficha">App Store <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2h6v6M10 2 3 9"/></svg></a><a class="store" href="#" title="Pendiente: URL de la ficha">Google Play <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2h6v6M10 2 3 9"/></svg></a></div></div></div></div>
+    </div>
+    <div>
+      <h2>En cifras</h2>
+      <div class="facts">
+        <div class="fact"><b>2</b><span>apps en App Store y Google Play, para 3Cat</span></div>
+        <div class="fact"><b>2024</b><span>desde entonces, React Native en producción</span></div>
+        <div class="fact"><b>100</b><span>de accesibilidad en Lighthouse en esta web</span></div>
+        <div class="fact solo-datos"><b><span class="dato">{{DATO: n}}</span></b><span><span class="dato">{{DATO: usuarios o valoración}}</span></span></div>
+      </div>
+    </div>
+    <div class="quote">
+      <h2 class="solo-datos">Lo que dicen</h2>
+      <figure class="solo-datos">
+        <blockquote><span class="dato">{{DATO: testimonio de 2 líneas de un cliente de NextRaket o de quien te haya subcontratado}}</span></blockquote>
+        <cite><b><span class="dato">{{DATO: Nombre Apellido}}</span></b>, <span class="dato">{{DATO: cargo, empresa}}</span></cite>
+      </figure>
+      <h2 class="solo-hoy">Por escrito, siempre</h2>
+      <ul class="promise solo-hoy">
+        <li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5 8 14.5 16 6"/></svg><div><b>Precio y fecha cerrados</b> <span>antes de empezar.</span></div></li>
+        <li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5 8 14.5 16 6"/></svg><div><b>30 días de corrección</b> <span>incluidos tras la entrega.</span></div></li>
+        <li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5 8 14.5 16 6"/></svg><div><b>Tarea piloto</b> <span>si no encajo, solo pagas esa tarea.</span></div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+<section class="sec x-dark on-dark" id="trabajo" aria-labelledby="h-trabajo">
+  <div class="wrap">
+    <div class="sec-head"><div><h2 id="h-trabajo">Trabajo publicado, con mi papel exacto</h2></div><a class="link" href="#">Ver todos los proyectos <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+    <div class="work">
+      <a class="case case-big" href="#">
+        <div class="case-media dark-stage on-dark">
+          <div class="ds-copy"><b>3CatInfo</b><span>La app de noticias de la radiotelevisión pública catalana.</span>
+            <div class="stores"><span class="store">App Store <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2h6v6M10 2 3 9"/></svg></span><span class="store">Google Play <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2h6v6M10 2 3 9"/></svg></span></div></div>
+          <div class="ds-phone"><div class="slot slot-dark solo-datos">{{DATO: captura de la ficha de App Store (permiso NDA)}}</div><div class="solo-hoy" style="height:100%;border-radius:1rem 1rem 0 0;background:var(--charcoal-2);display:grid;place-items:center;color:var(--on-dark-soft);font-size:.7rem;text-align:center;padding:.5rem">Icono de la app<br>de su ficha pública</div></div>
+        </div>
+        <div class="case-meta"><span class="tag">App</span><span class="tag live">En producción</span><span class="tag">iOS y Android</span></div>
+        <h3>3CatInfo y 3Cat: IA en el producto y accesibilidad como requisito</h3>
+        <p>Responsable de la integración de IA en 3CatInfo y referente de accesibilidad (WCAG) del equipo. He formado a los equipos de React Native, iOS, Android y QA.</p>
+        <dl><dt>Mi papel</dt><dd>Desarrollador React Native en el equipo de 3Cat, vía Alten</dd><dt>Desde</dt><dd>Abril de 2024</dd></dl>
+        <p class="case-metric solo-datos">Resultado: <span class="dato">{{DATO: cifra verificable, por ejemplo valoración media o descargas}}</span></p>
+      </a>
+      <a class="case case-side" href="#">
+        <div class="case-media"><div class="slot solo-datos">{{DATO: captura de una web o app de NextRaket con permiso del cliente}}</div>
+          <div class="mini-site solo-hoy" style="background:var(--charcoal);color:var(--on-dark-soft)"><span>NextRaket</span><h5 style="color:var(--on-dark)">Webs y apps para negocios</h5><span>React Native · Next.js · Supabase · n8n</span></div></div>
+        <div><div class="case-meta"><span class="tag">Web y app</span><span class="tag live">En producción</span></div>
+          <h3 style="margin-top:.6rem">NextRaket: de los requisitos al mantenimiento</h3>
+          <p>Webs para negocios locales con su panel de gestión, apps con Expo y automatizaciones con n8n que quitan trabajo manual.</p>
+          <p class="case-metric solo-datos"><span class="dato">{{DATO: cliente o sector y una cifra}}</span></p></div>
+      </a>
+      <a class="case case-side" href="#">
+        <div class="case-media"><div class="mini-site" aria-hidden="true"><span>josecoded.com</span><h5>Tu app y tu web, publicadas y <em>funcionando.</em></h5><span>Captura real de esta web (la genera la build)</span></div></div>
+        <div><div class="case-meta"><span class="tag">Web</span><span class="tag wip">En construcción</span></div>
+          <h3 style="margin-top:.6rem">josecoded: esta web, medida</h3>
+          <p class="case-metric"><b>145 KB</b> de JavaScript en la home, con un presupuesto de 150 KB. Accesibilidad 100 en todas las páginas.</p></div>
+      </a>
+      <div class="work-foot"><div class="chips"><span>React Native</span><span>Expo</span><span>Next.js</span><span>TypeScript</span><span>Supabase</span><span>Cloudflare</span></div><a class="link" href="#">Ver el stack completo <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+    </div>
+  </div>
+</section>
+</div>
+<section class="sec" id="oferta" aria-labelledby="h-oferta">
+  <div class="wrap">
+    <div class="sec-head"><div><h2 id="h-oferta">Lo que puedo hacer por ti, con precio</h2><p class="sec-lead">Cada nivel incluye diseño, desarrollo y publicación. El precio y la fecha te los doy cerrados, por escrito, antes de empezar.</p></div></div>
+    <div class="offer">
+      <div class="tiers">
+        <div class="tier-group"><h3>Web</h3><a class="tier" href="#"><b>Presencia</b><p>Quién eres, qué haces y cómo contactarte. <i>Por ejemplo: Una clínica: tratamientos, equipo, cómo llegar y cita por WhatsApp.</i></p><span class="price solo-datos"><b>desde <span class="dato">{{DATO: €}}</span></b><span class="dato">{{DATO: 2-4 sem}}</span></span><span class="price solo-hoy">Ver qué incluye</span></a><a class="tier" href="#"><b>Negocio</b><p>Tú cambias textos, fotos y novedades sin depender de nadie. <i>Por ejemplo: Una academia que publica horarios y novedades cada semana.</i></p><span class="price solo-datos"><b>desde <span class="dato">{{DATO: €}}</span></b><span class="dato">{{DATO: 4-6 sem}}</span></span><span class="price solo-hoy">Ver qué incluye</span></a><a class="tier" href="#"><b>Plataforma</b><p>Usuarios con cuenta y procesos que hoy se hacen a mano. <i>Por ejemplo: Reservas con cuenta de cliente y panel para el equipo.</i></p><span class="price solo-datos"><b>desde <span class="dato">{{DATO: €}}</span></b><span class="dato">{{DATO: 6-10 sem}}</span></span><span class="price solo-hoy">Ver qué incluye</span></a></div><div class="tier-group"><h3>App móvil (iOS y Android)</h3><a class="tier" href="#"><b>Primera versión</b><p>Sales a las tiendas con lo esencial y creces después. <i>Por ejemplo: Tus clientes piden o reservan desde el móvil.</i></p><span class="price solo-datos"><b>desde <span class="dato">{{DATO: €}}</span></b><span class="dato">{{DATO: 8-12 sem}}</span></span><span class="price solo-hoy">Ver qué incluye</span></a><a class="tier" href="#"><b>Producto</b><p>Varios tipos de usuario, avisos y métricas desde el primer día. <i>Por ejemplo: App de cliente y de profesional con notificaciones.</i></p><span class="price solo-datos"><b>desde <span class="dato">{{DATO: €}}</span></b><span class="dato">{{DATO: 12-20 sem}}</span></span><span class="price solo-hoy">Ver qué incluye</span></a></div>
+        <p class="hoy-price solo-hoy"><b>Precio y fecha cerrados antes de empezar.</b> Te paso el presupuesto por escrito en uno o dos días laborables.</p>
+        <div class="tiers-foot"><span>30 días de corrección incluidos en todos los niveles</span><a class="link" href="#">Comparar niveles <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+      </div>
+      <aside class="mvp on-dark" id="mvp" aria-labelledby="h-mvp">
+        <div><h3 id="h-mvp">¿Tienes una startup? Tu MVP de app y web</h3></div>
+        <p>App para iOS y Android con React Native y la web o el panel con Next.js, de un solo desarrollador que se hace cargo de todo.</p>
+        <dl>
+          <dt>Plazo</dt><dd><span class="solo-datos"><span class="dato">{{DATO: 8-12 semanas}}</span></span><span class="solo-hoy">Cerrado por escrito</span></dd>
+          <dt>Precio</dt><dd><span class="solo-datos">desde <span class="dato">{{DATO: €}}</span></span><span class="solo-hoy">Cerrado por escrito</span></dd>
+          <dt>Dedicación</dt><dd><span class="solo-datos"><span class="dato">{{DATO: días por semana}}</span></span><span class="solo-hoy">Acordada antes de empezar</span></dd>
+          <dt>Tuyo</dt><dd>Repositorio, cuentas y tiendas a tu nombre</dd>
+        </dl>
+        <div class="pilot"><b>Empieza por una tarea piloto</b><p>Una tarea pequeña y cerrada. Si no encajo con tu equipo, no seguimos y solo pagas esa tarea.</p>
+          <a class="link link-dark" href="#">Cómo funciona el piloto <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+      </aside>
+    </div>
+    <div class="paths">
+      <div class="path"><b>Refuerzo freelance</b><p>Una pantalla, una auditoría o un rescate, por horas o por tarea. <span class="solo-datos"><span class="dato">{{DATO: €/hora}}</span></span></p><a class="link" href="#">Ver tarifa y ejemplos <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+      <div class="path"><b>Para tu equipo</b><p>Me sumo a tu equipo de React Native o web. Remoto o híbrido en Madrid.</p><a class="link" href="#">Ver CV y trayectoria <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+    </div>
+  </div>
+</section>
+<section class="closing" id="contacto" aria-labelledby="h-cierre">
+  <div class="wrap">
+    <h2 id="h-cierre">Cuéntame qué necesitas</h2>
+    <div class="closing-in">
+      <div>
+        <p class="lead">Te respondo yo en uno o dos días laborables, con una propuesta o con lo que necesito saber.</p>
+        <div class="hero-ctas"><a class="btn" href="#">Hablemos <span class="arr" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></a></div>
+        <p class="nexo-line solo-chat" style="margin-top:var(--space-3)">¿Una duda rápida sobre precios o plazos? <a href="#">Pregunta en el chat</a>. Si no estoy, te atiende Nexo.</p>
+      </div>
+      <dl class="reach">
+        <div class="reach-row"><dt>Correo</dt><dd><a href="#">hola@josecoded.com</a><button class="copy" type="button" data-copy="hola@josecoded.com">Copiar</button></dd></div>
+        <div class="reach-row solo-datos"><dt>WhatsApp</dt><dd><span class="dato">{{DATO: número}}</span></dd></div>
+        <div class="reach-row solo-datos"><dt>Llamada</dt><dd><span class="dato">{{DATO: enlace de agenda, 15 min}}</span></dd></div>
+        <div class="reach-row"><dt>Sin letra pequeña</dt><dd>Sin compromiso. No vendo ni cedo tus datos.</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="foot">
+  <div class="wrap foot-in">
+    <a class="brand" href="#"><span class="brand-mark" aria-hidden="true"></span>josecoded</a>
+    <nav aria-label="Pie"><a href="#">Servicios</a><a href="#">Proyectos</a><a href="#">Sobre mí</a><a href="#">Blog</a><a href="#">Contacto</a><a href="#">Aviso legal</a><a href="#">Privacidad</a></nav>
+    <span>© 2026 José Carlos Sánchez García</span>
+  </div>
+</footer>
+<aside class="tp" id="tp" aria-label="Elegir transiciones">
+  <button class="tp-tog" type="button" aria-expanded="true" aria-controls="tp-body"><span class="tp-dot" aria-hidden="true"></span><span class="tp-tog-l">Transiciones</span><span class="tp-state" data-state></span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 10l4-4 4 4"/></svg></button>
+  <div class="tp-body" id="tp-body">
+    <div class="tp-rows" data-rows></div>
+    <div class="tp-out">
+      <p class="tp-lab">Tu elección · ★ = recomendada · «Ver» te deja antes de la costura: baja despacio</p>
+      <p class="tp-sum" data-sum aria-live="polite"></p>
+    </div>
+    <div class="tp-act">
+      <button class="tp-btn" type="button" data-copy-sel>Copiar elección</button>
+      <button class="tp-btn tp-btn-2" type="button" data-reset>Restablecer recomendada</button>
+      <span class="tp-mode" role="group" aria-label="Contenido de la maqueta"><button type="button" data-mode="datos" aria-pressed="true" title="Con huecos {{DATO}}">{{DATO}}</button><button type="button" data-mode="hoy" aria-pressed="false" title="Solo lo que hay hoy">Hoy</button></span>
+    </div>
+    <p class="tp-env" data-env></p>
+  </div>
+</aside>
+<script>
+(function () {
+  var q = new URLSearchParams(location.search);
+  var b = document.body;
+  if (q.get("embed")) b.classList.add("embed");
+  function setMode(m) {
+    b.classList.toggle("hoy", m === "hoy");
+    document.querySelectorAll("[data-mode]").forEach(function (x) { x.setAttribute("aria-pressed", String(x.dataset.mode === m)); });
+  }
+  setMode(q.get("modo") === "hoy" ? "hoy" : "datos");
+  if (q.get("chat") === "1") b.classList.add("chat");
+  document.querySelectorAll("[data-mode]").forEach(function (x) { x.addEventListener("click", function () { setMode(x.dataset.mode); }); });
+  var c = document.querySelector("[data-chat]");
+  if (c) { c.setAttribute("aria-pressed", String(b.classList.contains("chat"))); c.addEventListener("click", function () { b.classList.toggle("chat"); c.setAttribute("aria-pressed", String(b.classList.contains("chat"))); }); }
+
+  var notes = ["Alcance escrito, con lo que entra y lo que no, antes de escribir código.", "Pantallas y flujos en un prototipo que recorres antes de construir.", "<b class=\"num\">145 KB</b> de JavaScript en esta home, con un presupuesto de 150 KB.", "<b>3CatInfo y 3Cat</b>, publicadas en App Store y Google Play.", "<b>30 días</b> de corrección incluidos después de entregar."];
+  var rail = document.querySelectorAll(".rail li[data-i]");
+  var note = document.querySelector(".rail-note");
+  if (rail.length && note) {
+    var i = 3, timer = null;
+    var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var stage = document.querySelector(".stage");
+    function show(n) {
+      i = n;
+      stage.setAttribute("data-phase", String(n));
+      rail.forEach(function (li) { li.classList.toggle("on", Number(li.dataset.i) === n); });
+      note.innerHTML = notes[n];
+      note.classList.remove("swap"); void note.offsetWidth; note.classList.add("swap");
+    }
+    var btn = document.createElement("button");
+    btn.className = "rail-pause"; btn.type = "button";
+    function play() { timer = setInterval(function () { show((i + 1) % rail.length); }, 4100); btn.textContent = "Pausar"; btn.setAttribute("aria-label", "Pausar animación"); stage.classList.remove("paused"); }
+    function stop() { clearInterval(timer); timer = null; btn.textContent = "Reanudar"; btn.setAttribute("aria-label", "Reanudar animación"); stage.classList.add("paused"); }
+    btn.addEventListener("click", function () { timer ? stop() : play(); });
+    rail[0].parentNode.appendChild(btn);
+    if (reduce) stop(); else play();
+    rail.forEach(function (li) { li.addEventListener("click", function () { show(Number(li.dataset.i)); if (timer) { clearInterval(timer); play(); } }); });
+  }
+
+  document.querySelectorAll("[data-copy]").forEach(function (b) {
+    var t = null;
+    b.addEventListener("click", function () {
+      if (navigator.clipboard) navigator.clipboard.writeText(b.dataset.copy).catch(function () {});
+      b.textContent = "Copiado"; b.classList.add("done");
+      clearTimeout(t); t = setTimeout(function () { b.textContent = "Copiar"; b.classList.remove("done"); }, 1600);
+    });
+  });
+
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
+  function sel(t, focus) {
+    tabs.forEach(function (x) {
+      var on = x === t;
+      x.setAttribute("aria-selected", String(on)); x.tabIndex = on ? 0 : -1;
+      var p = document.getElementById(x.getAttribute("aria-controls"));
+      p.hidden = !on; if (on) { p.classList.remove("in"); void p.offsetWidth; p.classList.add("in"); }
+    });
+    if (focus) t.focus();
+  }
+  tabs.forEach(function (t, k) {
+    t.addEventListener("click", function () { sel(t); });
+    t.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight") sel(tabs[(k + 1) % tabs.length], true);
+      if (e.key === "ArrowLeft") sel(tabs[(k - 1 + tabs.length) % tabs.length], true);
+    });
+  });
+})();
+</script>
+
+<script src="home-panel.js"></script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+/* Sistema de movimiento de la home R expresivo (ronda 6).
+   Un comportamiento por tipo de componente, igual en toda la página. Todo va ligado al scroll con view():
+   cada pieza se resuelve en el mismo tramo de scroll desde que asoma por abajo (--m-r), sea grande o pequeña.
+
+   Tres principios:
+   1. Los contenedores se mueven, el contenido aparece. Bloque, banda y tarjeta solo usan translate y scale
+      al entrar; la opacidad la llevan las piezas de lectura (título, párrafo, ítem, chip, CTA). Así la
+      opacidad nunca se multiplica y nada arranca en blanco.
+   2. Un tipo dentro de una pieza que ya aparece no se anima aparte. La excepción es la cifra, que se asienta
+      dentro de su línea (solo scale y translate).
+   3. El escalonado sale del layout: lo que está apilado ya entra en orden por su posición. Solo las piezas
+      que comparten fila reciben retraso (--i para el grupo, que heredan sus hijos; --j para chips).
+
+   Valores de propuesta: los fija director-arte. Solo translate, scale y opacity. El H1 y el hero no se tocan.
+   Sin soporte de animation-timeline, con «reducir movimiento» o con data-motion="off": página estática. */
+
+:root,
+:root[data-mi="media"] {
+  --m-r: 34vh;      /* tramo de scroll en que se resuelve cada pieza */
+  --m-k: 3.5vh;     /* paso del escalonado */
+  --m-d: 1.25rem;   /* distancia de las piezas de lectura */
+  --m-o: 0.12;      /* opacidad de partida de las piezas de lectura */
+  --m-cd: 2rem;     /* tarjeta: distancia */
+  --m-cs: 0.975;    /* tarjeta: escala */
+  --m-bd: 2.5rem;   /* bloque: distancia */
+  --m-bs: 0.99;     /* bloque: escala */
+  --m-ws: 0.975;    /* banda carbón: escala */
+  --m-xr: 30vh;     /* bloque: tramo de salida (su último tramo en pantalla) */
+  --m-xd: 1.5rem;   /* bloque: distancia de salida */
+  --m-xo: 0.55;     /* bloque: opacidad al salir */
+  --m-xs: 0.985;    /* bloque: escala al salir */
+  --m-ns: 0.9;      /* cifra: escala */
+  --m-ms: 1.07;     /* imagen: escala interior */
+  --m-ad: 0.5rem;   /* CTA: recorrido de la flecha */
+  --m-ease: cubic-bezier(0.33, 0.7, 0.4, 1); /* casi lineal, frena al final: acompaña el scroll y asienta */
+}
+:root[data-mi="sutil"] {
+  --m-r: 26vh; --m-k: 2vh; --m-d: 0.625rem; --m-o: 0.35;
+  --m-cd: 1rem; --m-cs: 0.99; --m-bd: 1.25rem; --m-bs: 0.997; --m-ws: 0.99;
+  --m-xr: 24vh; --m-xd: 0.75rem; --m-xo: 0.8; --m-xs: 0.995;
+  --m-ns: 0.96; --m-ms: 1.035; --m-ad: 0.25rem;
+}
+:root[data-mi="marcada"] {
+  --m-r: 44vh; --m-k: 5vh; --m-d: 2.25rem; --m-o: 0;
+  --m-cd: 3.5rem; --m-cs: 0.95; --m-bd: 4.5rem; --m-bs: 0.975; --m-ws: 0.94;
+  --m-xr: 38vh; --m-xd: 3rem; --m-xo: 0.3; --m-xs: 0.965;
+  --m-ns: 0.8; --m-ms: 1.12; --m-ad: 0.9rem;
+}
+
+/* Grupos que comparten fila: el retraso lo heredan sus hijos */
+.proof-grid > :nth-child(2) { --i: 1; }
+.proof-grid > :nth-child(3) { --i: 2; }
+.proof-grid > :nth-child(4) { --i: 3; }
+.case-side, .mvp, .path + .path, .sec-head > .link, .reach { --i: 1; }
+.case-meta > :nth-child(2), .chips > :nth-child(2) { --j: 1; }
+.case-meta > :nth-child(3), .chips > :nth-child(3) { --j: 2; }
+.chips > :nth-child(4) { --j: 3; }
+.chips > :nth-child(5) { --j: 4; }
+.chips > :nth-child(6) { --j: 5; }
+@media (max-width: 64rem) {
+  .proof-grid > :nth-child(odd) { --i: 0; }
+  .proof-grid > :nth-child(even), .case-side + .case-side { --i: 1; }
+  .case-side:not(.case-side + .case-side), .mvp, .reach { --i: 0; }
+}
+@media (max-width: 47.99rem) {
+  .proof-grid > *, .case-side, .case-side + .case-side, .path + .path, .sec-head > .link { --i: 0; }
+}
+
+/* La cifra necesita caja propia para moverse; se fija siempre, con o sin movimiento, para que el layout no cambie */
+.fact b, .case-metric b, .tier .price b { display: inline-block; }
+
+@supports (animation-timeline: view()) {
+@media (prefers-reduced-motion: no-preference) {
+:root:not([data-motion="off"]) {
+
+  /* Rango común: empieza cuando la pieza asoma por abajo, más su retraso (--m-at), y dura --m-r */
+  & :where(.proof, .x-dark, #oferta, .closing,
+        .proof-grid > *, .case, .tiers, .mvp, .path,
+        main h2, .case h3, .mvp h3, .tier-group h3, .path > b,
+        .sec-lead, .closing .lead, .nexo-line, .case p, .tier, .mvp > p, .pilot, .path > p, .hoy-price, .tiers-foot,
+        .who, .apps .app-row, .fact, .promise li, .quote blockquote, .quote cite, .case dl > *, .mvp dl > *, .reach-row,
+        .fact b, .case-metric b, .tier .price b,
+        .case-meta .tag, .work-foot .chips span,
+        .sec-head > .link, .work-foot > .link, .path > .link, .closing .btn,
+        .sec-head > .link > svg, .work-foot > .link > svg, .path > .link > svg, .closing .btn .arr,
+        .case-media > .slot, .case-media > .mini-site, .case-media > .ds-phone) {
+    --m-at: calc(var(--i, 0) * var(--m-k));
+    animation-timeline: view();
+    animation-range: cover var(--m-at) cover calc(var(--m-at) + var(--m-r));
+    animation-timing-function: var(--m-ease);
+    animation-fill-mode: both;
+  }
+
+  /* 1 · Bloque: sube y se asienta al entrar; al salir por arriba se aparta y se atenúa.
+     El siguiente bloque entra mientras el anterior sale: se encadenan sin costura. */
+  & :is(.proof, .x-dark, #oferta) {
+    animation-name: m-block-in, m-block-out;
+    animation-timeline: view(), view();
+    animation-range: cover 0% cover var(--m-r), cover calc(100% - var(--m-xr)) cover 100%;
+    animation-timing-function: var(--m-ease), linear;
+    animation-fill-mode: both, forwards;
+    transform-origin: 50% 0;
+  }
+  /* 2 · Banda carbón: el mismo bloque, con su escala propia (una superficie que se apoya a sangre) */
+  & .x-dark { --m-bs: var(--m-ws); }
+  /* 3 · Cierre: entra como bloque y no sale; es el final */
+  & .closing { animation-name: m-block-in; transform-origin: 50% 0; }
+
+  /* 4 · Tarjeta (proyecto, niveles, MVP, vía, columna de prueba): se eleva y se asienta, sin opacidad */
+  & :is(.proof-grid > *, .case, .tiers, .mvp, .path) { animation-name: m-card; transform-origin: 50% 100%; }
+
+  /* 5 · Título (H2 de sección, H3 de tarjeta) · 6 · Párrafo · 7 · Ítem de lista: aparecen y suben.
+     Mismo gesto para las tres piezas de lectura; el orden lo da su posición en la página. */
+  & :is(main h2, .case h3, .mvp h3, .tier-group h3, .path > b,
+        .sec-lead, .closing .lead, .nexo-line, .case p, .tier, .mvp > p, .pilot, .path > p, .hoy-price, .tiers-foot,
+        .who, .apps .app-row, .fact, .promise li, .quote blockquote, .quote cite, .case dl > *, .mvp dl > *, .reach-row) {
+    animation-name: m-read;
+  }
+  /* El título es el primero de su grupo; el párrafo y la lista van medio paso detrás */
+  & :is(.sec-lead, .closing .lead, .nexo-line, .case p, .mvp > p, .path > p) { --m-at: calc((var(--i, 0) + 0.5) * var(--m-k)); }
+
+  /* 8 · Cifra: llega un paso después que su línea y se asienta desde abajo a la izquierda */
+  & :is(.fact b, .case-metric b, .tier .price b) {
+    --m-at: calc((var(--i, 0) + 1) * var(--m-k));
+    animation-name: m-num; transform-origin: 0 100%;
+  }
+
+  /* 9 · Chip o etiqueta: aparecen en fila, de izquierda a derecha, a medio paso */
+  & :is(.case-meta .tag, .work-foot .chips span) {
+    --m-at: calc((var(--i, 0) + var(--j, 0) * 0.5) * var(--m-k));
+    animation-name: m-chip;
+  }
+
+  /* 10 · Botón o CTA: aparece como el texto y su flecha llega la última */
+  & :is(.sec-head > .link, .work-foot > .link, .path > .link, .closing .btn) {
+    --m-at: calc((var(--i, 0) + 1) * var(--m-k));
+    animation-name: m-read;
+  }
+  & :is(.sec-head > .link, .work-foot > .link, .path > .link) > svg, & .closing .btn .arr {
+    --m-at: calc((var(--i, 0) + 1.5) * var(--m-k));
+    animation-name: m-arrow;
+  }
+
+  /* 11 · Imagen, captura o dispositivo: el marco va con su tarjeta; lo de dentro se asienta (escala) */
+  & :is(.case-media > .slot, .case-media > .mini-site, .case-media > .ds-phone) {
+    animation-name: m-media; transform-origin: 50% 100%;
+  }
+}
+}
+}
+
+@keyframes m-block-in { from { translate: 0 var(--m-bd); scale: var(--m-bs); } }
+@keyframes m-block-out { to { opacity: var(--m-xo); translate: 0 calc(var(--m-xd) * -1); scale: var(--m-xs); } }
+@keyframes m-card { from { translate: 0 var(--m-cd); scale: var(--m-cs); } }
+@keyframes m-read { from { opacity: var(--m-o); translate: 0 var(--m-d); } 60% { opacity: 1; } to { opacity: 1; translate: 0 0; } }
+@keyframes m-num { from { scale: var(--m-ns); translate: 0 calc(var(--m-d) * 0.5); } }
+@keyframes m-chip { from { opacity: 0; translate: 0 calc(var(--m-d) * 0.5); } 60% { opacity: 1; } to { opacity: 1; translate: 0 0; } }
+@keyframes m-arrow { from { translate: calc(var(--m-ad) * -1) 0; opacity: 0; } 50% { opacity: 1; } to { translate: 0 0; opacity: 1; } }
+@keyframes m-media { from { scale: var(--m-ms); } }

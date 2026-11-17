@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Home v2 · comparador</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="home.css">
+<style>
+.cmp { padding-block: var(--space-7); }
+.cmp h1 { font-size: clamp(2rem, 1.4rem + 2.4vw, 3.25rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
+.cmp-lead { margin-top: var(--space-4); color: var(--ink-soft); max-width: 46rem; }
+.cmp-meta { margin-top: var(--space-5); display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: var(--space-3) var(--space-6); font-size: var(--fs-base); color: var(--ink-soft); }
+.cmp-meta b { color: var(--ink); font-weight: 600; display: block; }
+.ctl { margin-top: var(--space-6); display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; font-size: var(--fs-base); }
+.ctl button { font: inherit; font-size: var(--fs-base); border: 1px solid var(--line-strong); background: transparent; border-radius: 999px; min-height: 2.5rem; padding: 0 1rem; cursor: pointer; }
+.ctl button[aria-pressed="true"] { background: var(--charcoal); color: var(--on-dark); border-color: var(--charcoal); }
+.cols2 { margin-top: var(--space-6); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); }
+.round { margin-top: var(--space-8); }
+.round > h2 { font-size: var(--fs-h2); font-weight: 600; letter-spacing: -0.03em; line-height: 1.05; }
+.round > p { margin-top: var(--space-3); color: var(--ink-soft); max-width: 46rem; }
+.cost { margin-top: var(--space-5); }
+.steps { margin-top: var(--space-5); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); }
+.steps figure { margin: 0; gap: var(--space-2); }
+.steps b { color: var(--ink); font-weight: 600; }
+code { font-family: var(--font-mono); font-size: 0.86em; }
+.cost table { min-width: 40rem; }
+.cols { margin-top: var(--space-6); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); }
+.col { display: grid; gap: var(--space-4); align-content: start; }
+.col h2 { font-size: var(--fs-h3); font-weight: 600; letter-spacing: -0.02em; display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
+.badge { font-size: var(--fs-s); font-weight: 600; padding: 0.15rem 0.6rem; border-radius: 999px; background: var(--charcoal); color: var(--on-dark); }
+.axis { font-size: var(--fs-m); color: var(--ink-soft); }
+.frames { display: grid; grid-template-columns: 1fr 0.42fr; gap: var(--space-3); align-items: start; }
+.frame { position: relative; overflow: hidden; border-radius: var(--radius-m); background: var(--white); box-shadow: var(--shadow-card); }
+.frame iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: 0 0; pointer-events: none; }
+.f-d { aspect-ratio: 1440 / 900; }
+.f-d iframe { width: 1440px; height: 900px; }
+.f-m { aspect-ratio: 390 / 844; }
+.f-m iframe { width: 390px; height: 844px; }
+.why { display: grid; gap: var(--space-2); font-size: var(--fs-base); }
+.why li { display: grid; grid-template-columns: 4.5rem 1fr; gap: var(--space-2); }
+.why li b { font-weight: 600; }
+.why li span { color: var(--ink-soft); }
+.opens { display: flex; flex-wrap: wrap; gap: 0 var(--space-4); }
+table { width: 100%; border-collapse: collapse; font-size: var(--fs-base); min-width: 44rem; }
+.tbl { margin-top: var(--space-5); overflow-x: auto; border-radius: var(--radius-m); background: var(--paper); box-shadow: var(--shadow-card); }
+th, td { text-align: left; padding: 0.7rem 1rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 600; font-size: var(--fs-m); color: var(--ink-soft); }
+td:first-child { font-weight: 600; }
+.need { font-weight: 600; } .opt { color: var(--ink-soft); } .no { color: var(--ink-faint); }
+.sec2 { margin-top: var(--space-8); }
+.sec2 h2 { font-size: var(--fs-h2); font-weight: 600; letter-spacing: -0.03em; line-height: 1.05; }
+.decide { margin-top: var(--space-5); display: grid; gap: var(--space-3); max-width: 52rem; }
+.decide li { display: grid; grid-template-columns: 2rem 1fr; gap: var(--space-3); padding: var(--space-4) 0; border-top: 1px solid var(--line); }
+.decide li > b { font-variant-numeric: tabular-nums; color: var(--ink-faint); }
+.decide p { color: var(--ink-soft); font-size: var(--fs-base); margin-top: var(--space-1); }
+.decide strong { font-weight: 600; }
+@media (max-width: 64rem) { .steps { grid-template-columns: 1fr; } .cols2 { grid-template-columns: 1fr; } .cols { grid-template-columns: 1fr; } .frames { grid-template-columns: 1fr 0.38fr; } }
+</style>
+</head>
+<body class="embed">
+<main class="wrap cmp">
+  <h1>Home v2: R expresivo mejorado frente a la v1</h1>
+  <p class="cmp-lead">Ronda 3. Jose aprobó R expresivo con la banda carbón a sangre y el titular a 86 px, y pidió cuatro mejoras: transiciones más fluidas entre bloques, que el móvil del inicio se desplace para enseñar las apps, un poco más de naranja y una textura sutil de fondo. Arriba, la v1 aprobada frente a la mejorada. Debajo siguen las rondas 2 y 1 como referencia. Cada vista tiene dos modos: <strong>con huecos</strong> (lo que Jose tiene que aportar, marcado como <span class="dato">{{DATO: …}}</span>) y <strong>solo lo que hay hoy</strong>.</p>
+  <div class="cmp-meta">
+    <div><b>Una cadena, no cinco revelados</b>Cada bloque pasa el testigo al siguiente: el móvil del hero baja bajo la franja de prueba, la franja se hunde mientras la banda carbón se abre, la banda se vuelve a cerrar en tarjeta al dar paso a la oferta y el punto coral del H1 vuelve a cerrar la página.</div>
+    <div><b>Más coral, siempre con un trabajo</b>Costura de la banda, foco de luz tras el móvil de 3CatInfo, cifras de resultado, estados de hover, indicador de pantallas del móvil, progreso de lectura y punto del cierre. Todo con AA.</div>
+    <div><b>Mismo presupuesto</b>0 KB de JS nuevo: todo es CSS nativo con scroll-driven animations. El grano es un SVG inline de 0,4 KB. Sin soporte o con «reducir movimiento», la página queda estática y completa.</div>
+  </div>
+  <div class="ctl" role="group" aria-label="Modo de las vistas">
+    <span>Ver las vistas:</span>
+    <button type="button" data-m="datos" aria-pressed="true">Con huecos</button>
+    <button type="button" data-m="hoy" aria-pressed="false">Solo lo que hay hoy</button>
+    <button type="button" data-c aria-pressed="false">Chat encendido</button>
+  </div>
+
+  <section class="round" aria-labelledby="h-r3">
+    <h2 id="h-r3">Ronda 3: R expresivo mejorado</h2>
+    <p>La misma página, con los cambios que pidió Jose. Las vistas pequeñas no se desplazan, así que la fila de abajo abre la mejorada a media bajada (escritorio). Para sentir las transiciones, abre cada una a tamaño real en Chrome o Safari y baja despacio.</p>
+    <div class="cols2">
+      <section class="col" aria-labelledby="c-v1x">
+        <h2 id="c-v1x">R expresivo v1 <span class="badge">aprobada</span></h2>
+        <p class="axis">La versión de la ronda 2: escenario con cámara por fase, paralaje, cortina carbón y revelados al hacer scroll.</p>
+        <div class="frames"><div class="frame f-d"><iframe data-src="r-expresivo-v1.html" title="R expresivo v1, escritorio" tabindex="-1"></iframe></div><div class="frame f-m"><iframe data-src="r-expresivo-v1.html" title="R expresivo v1, móvil" tabindex="-1"></iframe></div></div>
+        <div class="opens"><a class="link" href="r-expresivo-v1.html">Abrir a tamaño real <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+      </section>
+      <section class="col" aria-labelledby="c-r3">
+        <h2 id="c-r3">R expresivo mejorado <span class="badge">recomendada</span></h2>
+        <p class="axis">El móvil viaja con el scroll y pasa 3CatInfo, 3Cat y NextRaket; los bloques se encadenan; más coral con intención; grano fino en el fondo y en la banda.</p>
+        <div class="frames"><div class="frame f-d"><iframe data-src="r-expresivo.html" title="R expresivo mejorado, escritorio" tabindex="-1"></iframe></div><div class="frame f-m"><iframe data-src="r-expresivo.html" title="R expresivo mejorado, móvil" tabindex="-1"></iframe></div></div>
+        <div class="opens"><a class="link" href="r-expresivo.html">Abrir a tamaño real <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+      </section>
+    </div>
+    <div class="steps">
+      <figure class="col"><div class="frame f-d"><iframe data-src="r-expresivo.html" data-y="200" title="Mejorada a 200 px: el móvil baja y enseña 3Cat" tabindex="-1"></iframe></div><figcaption class="axis"><b>200 px.</b> El navegador se retira y el móvil baja con el scroll: ya enseña 3Cat. El indicador coral marca la pantalla.</figcaption></figure>
+      <figure class="col"><div class="frame f-d"><iframe data-src="r-expresivo.html" data-y="420" title="Mejorada a 420 px: el móvil pasa bajo la franja de prueba" tabindex="-1"></iframe></div><figcaption class="axis"><b>420 px.</b> NextRaket. El móvil pasa por debajo de la franja de prueba, camino de la banda.</figcaption></figure>
+      <figure class="col"><div class="frame f-d"><iframe data-src="r-expresivo.html" data-y="760" title="Mejorada a 760 px: la banda se abre" tabindex="-1"></iframe></div><figcaption class="axis"><b>760 px.</b> El móvil se disuelve, la franja se hunde y la banda carbón se abre con su costura coral. Sube el móvil de 3CatInfo, con el mismo bisel.</figcaption></figure>
+    </div>
+    <div class="tbl cost">
+      <table>
+        <thead><tr><th>Mejora (lo que pidió Jose)</th><th>Cómo</th><th>JS</th><th>CSS (gz)</th><th>Riesgo de presupuesto</th></tr></thead>
+        <tbody>
+          <tr><td>Transiciones entre bloques</td><td>Cadena con <code>scroll()</code>, <code>view()</code> y <code>timeline-scope</code>: la franja reacciona a la banda y el MVP a la salida de la banda. Fuera los «sube 1,5 rem» repetidos de casos, niveles y vías</td><td>0</td><td>≈ +1,2 KB</td><td>Sin listeners; INP intacto. Un <code>clip-path</code> a la vez en pantalla</td></tr>
+          <tr><td>Móvil que se desplaza y enseña las apps</td><td>Carrete de tres pantallas dentro del móvil, desplazado con <code>scroll(root)</code>; el móvil baja casi pegado al scroll y se disuelve al llegar la banda. En móvil, sin viaje: solo pasa pantallas mientras se ve entero</td><td>0</td><td>≈ +0,6 KB · HTML +0,6 KB</td><td>Solo <code>transform</code>, <code>translate</code> y <code>opacity</code>; CLS 0</td></tr>
+          <tr><td>Más naranja coral</td><td>Costura de 2 px, foco de luz, cifras, hovers, cámara e indicador del móvil, progreso de lectura, punto del cierre</td><td>0</td><td>≈ +0,4 KB</td><td>Ninguno. Contraste AA comprobado</td></tr>
+          <tr><td>Textura sutil</td><td>Ruido <code>feTurbulence</code> en SVG inline como capa de fondo (claro y oscuro) y trama de puntos tras el escenario. Nada se anima ni usa <code>filter</code> en vivo</td><td>0</td><td>≈ +0,8 KB</td><td>Se rasteriza una vez por tesela; sin capa fija ni <code>mix-blend-mode</code></td></tr>
+          <tr><td><strong>Total</strong></td><td>JS de la home sigue en ≈ 145,8 / 150 KB (la v1 ya sumaba 0,3)</td><td><strong>0</strong></td><td><strong>≈ +3 KB</strong> (5,4 KB frente a 2,4 KB de la v1, con comentarios)</td><td>LCP: el H1 sigue sin animarse</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="round" aria-labelledby="h-r2">
+    <h2 id="h-r2">Ronda 2 (cerrada): el mismo R en dos registros</h2>
+    <p>Mismo contenido, mismo orden y mismos modos. Cambia solo el registro. Las vistas pequeñas no se desplazan: para notar los revelados, la banda carbón y el paralaje, abre cada una a tamaño real y baja despacio.</p>
+    <div class="cols2">
+      <section class="col" aria-labelledby="c-re">
+        <h2 id="c-re">R equilibrado</h2>
+        <p class="axis">Un solo momento memorable, el escenario de cinco fases. El resto, sobrio y sin entradas al hacer scroll.</p>
+        <div class="frames"><div class="frame f-d"><iframe data-src="r.html" title="R equilibrado, escritorio" tabindex="-1"></iframe></div><div class="frame f-m"><iframe data-src="r.html" title="R equilibrado, móvil" tabindex="-1"></iframe></div></div>
+        <ul class="why">
+          <li><b>Gana</b><span>Lectura más rápida y nada que medir: cero coste de rendimiento.</span></li>
+          <li><b>Pierde</b><span>Correcta pero contenida; se parece más a una plantilla bien hecha que a una firma.</span></li>
+        </ul>
+        <div class="opens"><a class="link" href="r.html">Abrir a tamaño real <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+      </section>
+      <section class="col" aria-labelledby="c-rx">
+        <h2 id="c-rx">R expresivo <span class="badge">aprobado</span></h2>
+        <p class="axis">Titular en dos líneas a 86 px que abraza el escenario; el escenario mueve la cámara según la fase y tiene paralaje; el trabajo publicado entra como una banda carbón que se abre a sangre; los titulares se descubren al llegar.</p>
+        <div class="frames"><div class="frame f-d"><iframe data-src="r-expresivo-v1.html" title="R expresivo, escritorio" tabindex="-1"></iframe></div><div class="frame f-m"><iframe data-src="r-expresivo-v1.html" title="R expresivo, móvil" tabindex="-1"></iframe></div></div>
+        <ul class="why">
+          <li><b>Gana</b><span>Presencia de estudio sin perder la prueba: el titular manda, el trabajo real se convierte en escena y la página tiene ritmo.</span></li>
+          <li><b>Pierde</b><span>La franja de prueba asoma menos en la primera pantalla (solo sus títulos a 1440×900). En Firefox los revelados no se ven: la página queda estática, que es la alternativa prevista.</span></li>
+        </ul>
+        <div class="opens"><a class="link" href="r-expresivo.html">Abrir a tamaño real <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+      </section>
+    </div>
+    <div class="tbl cost">
+      <table>
+        <thead><tr><th>Efecto (R expresivo)</th><th>Cómo</th><th>JS</th><th>Riesgo de presupuesto</th></tr></thead>
+        <tbody>
+          <tr><td>Titular a 5,375 rem en dos líneas</td><td>CSS. El H1 no se anima nunca: es el LCP</td><td>0</td><td>Ninguno</td></tr>
+          <tr><td>Punto final que late (3 veces)</td><td>CSS, box-shadow en un elemento de 0,15 em</td><td>0</td><td>Ninguno</td></tr>
+          <tr><td>Entrada del escenario y de la franja de prueba</td><td>CSS, opacidad y transform</td><td>0</td><td>CLS 0: no mueve la caja</td></tr>
+          <tr><td>Cámara por fase y barra de progreso</td><td>CSS; el JS existente solo pone data-phase</td><td>≈ +0,1 KB</td><td>Ninguno</td></tr>
+          <tr><td>Paralaje del escenario, cabecera que se asienta, cortina carbón, revelados</td><td>CSS scroll-driven (animation-timeline)</td><td>0</td><td>Sin listeners de scroll; INP intacto</td></tr>
+          <tr><td>Flecha que se recicla, subrayado que aparece, filas que se desplazan</td><td>CSS</td><td>0</td><td>Ninguno</td></tr>
+          <tr><td>«Copiar» → «Copiado»</td><td>JS</td><td>≈ +0,2 KB</td><td>Ninguno</td></tr>
+          <tr><td>GSAP + ScrollTrigger</td><td>Descartado</td><td>≈ 39 KB</td><td>No cabe: hay 4,5 KB de margen</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="round" aria-labelledby="h-r1">
+    <h2 id="h-r1">Ronda 1 (cerrada): R, V1 y V2</h2>
+    <p>Jose eligió R. Se deja como referencia.</p>
+
+  <div class="cols">
+    <section class="col" aria-labelledby="c-r">
+      <h2 id="c-r">R) Prueba primero <span class="badge">recomendada</span></h2>
+      <p class="axis">Se mantiene el escenario animado de las cinco fases, pero con trabajo real: la propia web y 3CatInfo. Fuera el «EJEMPLO».</p>
+      <div class="frames"><div class="frame f-d"><iframe data-src="r.html" title="R, escritorio" tabindex="-1"></iframe></div><div class="frame f-m"><iframe data-src="r.html" title="R, móvil" tabindex="-1"></iframe></div></div>
+      <ul class="why">
+        <li><b>Gana</b><span>Conserva el único elemento que el benchmark sitúa a la altura de Callstack y Kiwop, y deja de enseñar un producto inventado.</span></li>
+        <li><b>Pierde</b><span>Hasta que el NDA permita la captura de 3CatInfo, el móvil del escenario enseña una ficha tipográfica en vez de la app.</span></li>
+        <li><b>Por qué</b><span>Funciona hoy sin ningún dato nuevo. Cada dato que llegue la mejora, pero ninguno la bloquea.</span></li>
+      </ul>
+      <div class="opens"><a class="link" href="r.html">Abrir a tamaño real <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+    </section>
+
+    <section class="col" aria-labelledby="c-v1">
+      <h2 id="c-v1">V1) Cara primero</h2>
+      <p class="axis">Eje cambiado: el visual del hero. Sale el escenario animado y entra el retrato grande con la disponibilidad debajo.</p>
+      <div class="frames"><div class="frame f-d"><iframe data-src="v1.html" title="V1, escritorio" tabindex="-1"></iframe></div><div class="frame f-m"><iframe data-src="v1.html" title="V1, móvil" tabindex="-1"></iframe></div></div>
+      <ul class="why">
+        <li><b>Gana</b><span>Es el patrón de los independientes que convierten: en un freelance, la persona es el producto. Más ligera, sin JS de animación.</span></li>
+        <li><b>Pierde</b><span>Renuncia al hero animado ya aprobado (10.10) y el registro baja hacia elegante. Sin retrato, la primera pantalla se queda en una tarjeta.</span></li>
+        <li><b>Por qué</b><span>Es la mejor si el retrato es bueno. Depende del dato D1 para tener sentido.</span></li>
+      </ul>
+      <div class="opens"><a class="link" href="v1.html">Abrir a tamaño real <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+    </section>
+
+    <section class="col" aria-labelledby="c-v2">
+      <h2 id="c-v2">V2) Tres puertas</h2>
+      <p class="axis">Eje cambiado: cómo habla el hero a los tres públicos. Un selector cambia el texto, las tres garantías y el botón secundario.</p>
+      <div class="frames"><div class="frame f-d"><iframe data-src="v2.html" title="V2, escritorio" tabindex="-1"></iframe></div><div class="frame f-m"><iframe data-src="v2.html" title="V2, móvil" tabindex="-1"></iframe></div></div>
+      <ul class="why">
+        <li><b>Gana</b><span>Marta, Andrés y Laura leen su propia promesa en la primera pantalla, con su atajo: niveles, oferta MVP o CV.</span></li>
+        <li><b>Pierde</b><span>Pide un clic antes de leer, esconde dos tercios del mensaje a Google y a quien no toca nada, y es un componente más que mantener.</span></li>
+        <li><b>Por qué</b><span>Compensa si los tres públicos llegan en volúmenes parecidos. Si domina uno, sobra.</span></li>
+      </ul>
+      <div class="opens"><a class="link" href="v2.html">Abrir a tamaño real <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+    </section>
+  </div>
+  </section>
+
+  <section class="sec2" aria-labelledby="h-datos">
+    <h2 id="h-datos">Qué datos necesita cada una</h2>
+    <p class="sec-lead">Necesario: sin él la sección queda pobre o desaparece. Mejora: con él sube un escalón, pero la página funciona sin él. Los códigos D1 a D7 son los del benchmark (§4.1).</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Dato</th><th>Dónde va</th><th>R) Prueba primero</th><th>V1) Cara primero</th><th>V2) Tres puertas</th></tr></thead>
+        <tbody>
+          <tr><td>D1 Retrato (vertical 4:5 y cuadrado)</td><td>Franja de prueba; en V1, el hero</td><td class="opt">Mejora</td><td class="need">Necesario</td><td class="opt">Mejora</td></tr>
+          <tr><td>D2 Precios «desde», plazos y €/hora</td><td>Niveles, bloque MVP, refuerzo freelance; en V2, también el hero</td><td class="opt">Mejora (hoy: «cerrado por escrito»)</td><td class="opt">Mejora</td><td class="need">Necesario en «Tengo un negocio» y «startup»</td></tr>
+          <tr><td>D3 Testimonios con nombre y cargo (2 o 3)</td><td>Franja de prueba, columna 4</td><td class="opt">Mejora (hoy: garantías por escrito)</td><td class="opt">Mejora</td><td class="opt">Mejora</td></tr>
+          <tr><td>D4 Permiso NDA y capturas de 3CatInfo y 3Cat</td><td>Móvil del escenario, tarjeta grande de proyectos</td><td class="need">Necesario para el móvil del escenario</td><td class="opt">Mejora</td><td class="need">Necesario para el móvil del escenario</td></tr>
+          <tr><td>URL de las fichas de App Store y Google Play</td><td>Botones de tienda (franja y proyectos)</td><td class="need">Necesario</td><td class="need">Necesario</td><td class="need">Necesario</td></tr>
+          <tr><td>D5 Cifras de resultado (usuarios, valoración, procesos)</td><td>«En cifras» y resultado de cada caso</td><td class="opt">Mejora</td><td class="opt">Mejora</td><td class="opt">Mejora</td></tr>
+          <tr><td>D6 Captura de una web o app de NextRaket con permiso</td><td>Tarjeta de NextRaket</td><td class="opt">Mejora</td><td class="opt">Mejora (en V1 también sustituye a 3Cat en «Apps» sin datos)</td><td class="opt">Mejora</td></tr>
+          <tr><td>D7 Disponibilidad, jornada y GitHub</td><td>«Quién lo hace»; en V1 bajo el retrato; en V2, pestaña de equipo</td><td class="opt">Mejora</td><td class="need">Necesario</td><td class="need">Necesario en «Busco a alguien»</td></tr>
+          <tr><td>WhatsApp y enlace de agenda (15 min)</td><td>Cierre</td><td class="opt">Mejora</td><td class="opt">Mejora</td><td class="opt">Mejora</td></tr>
+          <tr><td>Dedicación semanal para un MVP</td><td>Bloque MVP</td><td class="opt">Mejora</td><td class="opt">Mejora</td><td class="opt">Mejora</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="sec2" aria-labelledby="h-decide">
+    <h2 id="h-decide">Lo que decide Jose</h2>
+    <ol class="decide">
+      <li><b>7</b><div><strong>¿Te quedas con R expresivo mejorado?</strong> Recomendada: sí.<p>Si algo sobra, se quita por separado sin tocar lo demás: el grano, la barra de progreso de la cabecera o el viaje del móvil (que volvería al paralaje de la v1 y conservaría el carrete de pantallas).</p></div></li>
+      <li><b>8</b><div><strong>¿El móvil pasa por debajo de la franja de prueba en escritorio?</strong> Recomendada: sí.<p>Es lo que une el hero con la banda. La alternativa es que se disuelva antes, sin cruzar la franja, a cambio de un enlace menos visible con «Trabajo publicado».</p></div></li>
+      <li><b>5–6</b><div><strong>Cerradas en la ronda 2</strong><p>Banda carbón a sangre y titular a 86 px.</p></div></li>
+      <li><b>1–4</b><div><strong>Cerradas en la ronda 1</strong><p>R; «Hablemos» en cabecera, hero y cierre; solo hola@ visible; sin scroll por bloques.</p></div></li>
+    </ol>
+  </section>
+</main>
+<script>
+(function () {
+  var frames = document.querySelectorAll("iframe[data-src]");
+  var mode = "datos", chat = false;
+  function load(m) {
+    mode = m;
+    frames.forEach(function (f) { f.src = f.dataset.src + "?embed=1&modo=" + m + (chat ? "&chat=1" : "") + (f.dataset.y ? "&y=" + f.dataset.y : ""); });
+    document.querySelectorAll("[data-m]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.m === m)); });
+  }
+  function fit() {
+    frames.forEach(function (f) { var w = f.parentNode.clientWidth; var base = f.parentNode.classList.contains("f-d") ? 1440 : 390; f.style.transform = "scale(" + (w / base) + ")"; });
+  }
+  document.querySelectorAll("[data-m]").forEach(function (b) { b.addEventListener("click", function () { load(b.dataset.m); }); });
+  var cb = document.querySelector("[data-c]");
+  cb.addEventListener("click", function () { chat = !chat; cb.setAttribute("aria-pressed", String(chat)); load(mode); });
+  load("datos"); fit(); addEventListener("resize", fit);
+})();
+</script>
+</body>
+</html>

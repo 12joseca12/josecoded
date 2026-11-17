@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="es" data-mi="media" data-sys="v1" data-motion="off">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Referentes aplicados · movimiento v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../home-base.css">
+<link rel="stylesheet" href="../home-expresivo.css">
+<link rel="stylesheet" href="../movimiento.css">
+<link rel="stylesheet" href="sistema-v2.css">
+<link rel="stylesheet" href="ejemplos.css">
+</head>
+<body class="x g">
+<main>
+<header class="g-top">
+  <div class="wrap">
+    <span class="eyebrow">Home v2 · movimiento</span>
+    <h1>Lo que hacen los referentes, aplicado a tu página</h1>
+    <p class="lead">Ocho hallazgos del análisis de Linear, Stripe, Resend, Raycast, Apple, Framer y Darkroom, cada uno sobre contenido real de la home. En cada lámina puedes comparar en el mismo sitio lo que hay ahora con lo que hace el referente.</p>
+    <div class="g-how">
+      <div><b>Ahora / Referente</b>Cambia el comportamiento sin moverte de sitio. Al cambiar, el ejemplo se repite.</div>
+      <div><b>Repetir</b>Reproduce el ejemplo por tiempo. Lo ligado al scroll se ve igual bajando despacio.</div>
+      <div><b>Baja despacio</b>Lo que va con el scroll (bloque, mockup, fondo) solo se aprecia haciendo scroll de verdad.</div>
+    </div>
+    <nav class="g-index" aria-label="Ejemplos">
+      <a href="#a"><span>a</span>Tarjetas</a><a href="#b"><span>b</span>Cabecera</a><a href="#c"><span>c</span>Bloque</a><a href="#d"><span>d</span>Mockup</a><a href="#e"><span>e</span>Cifras</a><a href="#f"><span>f</span>Anidado</a><a href="#g"><span>g</span>Hover</a><a href="#h"><span>h</span>Fondo entre bloques</a><a class="g-home" href="home.html">Home completa aplicada</a>
+    </nav>
+    <p class="g-env" data-env></p>
+  </div>
+</header>
+
+<section class="ej" id="a" data-ej="a" data-v="ref" aria-labelledby="t-a">
+  <div class="wrap">
+    <div class="ej-head">
+      <div class="ej-title"><span class="ej-k" aria-hidden="true">a</span><h2 id="t-a">Tarjetas de una fila: entran juntas, por tiempo y una vez</h2><p class="ej-src">Resend (tarjetas de features); Framer usa el mismo criterio</p></div>
+      <div class="ej-ctl"><div class="ej-seg" role="group" aria-label="Comparar"><button type="button" data-set="ahora" aria-pressed="false">Ahora</button><button type="button" data-set="ref" aria-pressed="true">Referente</button></div><button class="ej-btn" type="button" data-replay><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8a5.5 5.5 0 1 0 1.6-3.9M2.5 2.5v3h3"/></svg>Repetir</button></div>
+    </div>
+    <div class="ej-vals">
+      <div data-for="ahora"><b>Ahora (v1)</b>Ligadas al scroll. Cada tarjeta sube <code>2rem</code> y escala de <code>0,975</code>, escalonada <code>3,5vh</code>; dentro, título, párrafo y etiquetas se funden aparte desde <code>0,12</code>.</div>
+      <div data-for="ref"><b>Referente</b><code>opacity 0 → 1</code> · <code>translateY 20px → 0</code> · muelle de <code>600 ms</code> con rebote de ≈1,6 px · la fila entera a la vez, sin escalonado · el interior quieto.</div>
+    </div>
+    <p class="ej-look"><b>Fíjate en</b> que la fila llega como una unidad y en menos de un segundo deja de moverse, aunque sigas bajando. En la home v2, como su bloque ya sube con el scroll, la tarjeta solo aparece (sin los 20 px): ver la lámina f.</p>
+    <div class="ej-stage">
+      <div class="g-row">
+        <a class="case" href="#" data-v1="card" data-v2="rise" style="--i:0">
+          <div class="case-media"><div class="mini-site ms-dark" data-v1="media"><span>3CatInfo</span><h5>Noticias de 3Cat, en el móvil</h5><span>React Native · iOS y Android</span></div></div>
+          <div><div class="case-meta"><span class="tag" data-v1="chip">App</span><span class="tag live" data-v1="chip" style="--o:.5">En producción</span></div>
+            <h3 data-v1="read">3CatInfo y 3Cat</h3>
+            <p data-v1="read" style="--o:.5">IA en el producto y accesibilidad como requisito. Formación a los equipos de React Native, iOS, Android y QA.</p></div>
+        </a>
+        <a class="case" href="#" data-v1="card" data-v2="rise" style="--i:1">
+          <div class="case-media"><div class="mini-site ms-dark" data-v1="media"><span>NextRaket</span><h5>Webs y apps para negocios</h5><span>React Native · Next.js · Supabase · n8n</span></div></div>
+          <div><div class="case-meta"><span class="tag" data-v1="chip">Web y app</span><span class="tag live" data-v1="chip" style="--o:.5">En producción</span></div>
+            <h3 data-v1="read">NextRaket: de los requisitos al mantenimiento</h3>
+            <p data-v1="read" style="--o:.5">Webs con su panel de gestión, apps con Expo y automatizaciones con n8n.</p></div>
+        </a>
+        <a class="case" href="#" data-v1="card" data-v2="rise" style="--i:2">
+          <div class="case-media"><div class="mini-site" data-v1="media"><span>josecoded.com</span><h5>Tu app y tu web, publicadas y <em>funcionando.</em></h5><span>Captura real de esta web</span></div></div>
+          <div><div class="case-meta"><span class="tag" data-v1="chip">Web</span><span class="tag wip" data-v1="chip" style="--o:.5">En construcción</span></div>
+            <h3 data-v1="read">josecoded: esta web, medida</h3>
+            <p data-v1="read" style="--o:.5">145 KB de JavaScript en la home, con un presupuesto de 150 KB.</p></div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ej" id="b" data-ej="b" data-v="ref" aria-labelledby="t-b">
+  <div class="wrap">
+    <div class="ej-head">
+      <div class="ej-title"><span class="ej-k" aria-hidden="true">b</span><h2 id="t-b">Cabecera de sección: título y párrafo como un grupo</h2><p class="ej-src">Apple (AirPods Pro) y Raycast; Resend con 16 px</p></div>
+      <div class="ej-ctl"><div class="ej-seg" role="group" aria-label="Comparar"><button type="button" data-set="ahora" aria-pressed="false">Ahora</button><button type="button" data-set="ref" aria-pressed="true">Referente</button></div><button class="ej-btn" type="button" data-replay><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8a5.5 5.5 0 1 0 1.6-3.9M2.5 2.5v3h3"/></svg>Repetir</button></div>
+    </div>
+    <div class="ej-vals">
+      <div data-for="ahora"><b>Ahora (v1)</b>Ligados al scroll. Título y párrafo, cada uno por su lado: suben <code>1,25rem</code> desde opacidad <code>0,12</code> en <code>34vh</code>; el párrafo, medio paso (<code>1,75vh</code>) detrás.</div>
+      <div data-for="ref"><b>Referente</b>Por tiempo, una vez. El grupo: <code>opacity 0 → 1</code> · <code>translateY 24px → 0</code> · <code>700 ms</code> · <code>cubic-bezier(0.16, 1, 0.3, 1)</code> · el párrafo <code>+100 ms</code>, nada más.</div>
+    </div>
+    <p class="ej-look"><b>Fíjate en</b> que el párrafo nunca se queda a medio fundir si te paras con él abajo: en cuanto asoma, el grupo se presenta entero. Los niveles de debajo no se mueven.</p>
+    <div class="ej-stage">
+      <div class="sec-head"><div><h2 data-v1="read" data-v2="head">Lo que puedo hacer por ti, con precio</h2><p class="sec-lead" data-v1="read" data-v2="lead" style="--o:.5">Cada nivel incluye diseño, desarrollo y publicación. El precio y la fecha te los doy cerrados, por escrito, antes de empezar.</p></div></div>
+      <div class="tiers g-head-ctx">
+        <div class="tier-group"><h3>Web</h3>
+          <a class="tier" href="#"><b>Presencia</b><p>Quién eres, qué haces y cómo contactarte. <i>Por ejemplo: una clínica con tratamientos, equipo y cita por WhatsApp.</i></p><span class="price">Ver qué incluye</span></a>
+          <a class="tier" href="#"><b>Negocio</b><p>Tú cambias textos, fotos y novedades sin depender de nadie. <i>Por ejemplo: una academia que publica horarios cada semana.</i></p><span class="price">Ver qué incluye</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ej" id="c" data-ej="c" data-v="ref" aria-labelledby="t-c">
+  <div class="wrap">
+    <div class="ej-head">
+      <div class="ej-title"><span class="ej-k" aria-hidden="true">c</span><h2 id="t-c">Bloque que sube y se asienta con el scroll, sin salida</h2><p class="ej-src">Darkroom (marco del hero) y Locomotive (hero); Stripe solo funde el fondo, nunca el contenido</p></div>
+      <div class="ej-ctl"><div class="ej-seg" role="group" aria-label="Comparar"><button type="button" data-set="ahora" aria-pressed="false">Ahora</button><button type="button" data-set="ref" aria-pressed="true">Referente</button></div><button class="ej-btn" type="button" data-replay><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8a5.5 5.5 0 1 0 1.6-3.9M2.5 2.5v3h3"/></svg>Repetir</button></div>
+    </div>
+    <div class="ej-vals">
+      <div data-for="ahora"><b>Ahora (v1)</b>Entra subiendo <code>2,5rem</code> y escala <code>0,99</code> en <code>34vh</code>. En sus últimos <code>30vh</code> sale: opacidad <code>0,55</code>, sube <code>1,5rem</code> y escala <code>0,985</code>.</div>
+      <div data-for="ref"><b>Referente</b>Ligado al scroll: <code>translateY 28px → 0</code> entre <code>cover 0%</code> y <code>cover 40vh</code>, <code>cubic-bezier(0.33, 0.7, 0.4, 1)</code>. Sin opacidad, sin escala y sin salida.</div>
+    </div>
+    <p class="ej-look"><b>Fíjate en</b> la parte de arriba de la franja cuando sigue en pantalla y ya estás leyendo lo de debajo: en «Ahora» se apaga y se encoge; en el referente se queda entera. El repetir de «Ahora» enseña la entrada y, después, la salida.</p>
+    <p class="ej-meter" data-meter="[data-v1='block']" aria-live="off"></p>
+    <div class="ej-stage">
+      <section class="proof" aria-label="Prueba" data-v1="block" data-v2="block">
+        <div class="proof-grid">
+          <div><h2>Quién lo hace</h2>
+            <div class="who"><span class="app-ico" aria-hidden="true" style="width:4.25rem;height:4.25rem;border-radius:50%;font-size:1rem">JC</span>
+              <div><b>José Carlos Sánchez García</b><p>Madrid. Remoto o híbrido.</p><span class="avail">Pregúntame por disponibilidad</span></div></div></div>
+          <div><h2>Apps publicadas</h2>
+            <div class="apps"><div class="app-row"><span class="app-ico" aria-hidden="true">3Cat<br>Info</span><div><b>3CatInfo</b><span>App de noticias. Responsable de IA y accesibilidad.</span></div></div><div class="app-row"><span class="app-ico" aria-hidden="true">3Cat</span><div><b>3Cat</b><span>App principal de la radiotelevisión pública catalana.</span></div></div></div></div>
+          <div><h2>En cifras</h2>
+            <div class="facts"><div class="fact"><b>2</b><span>apps en App Store y Google Play, para 3Cat</span></div><div class="fact"><b>2024</b><span>desde entonces, React Native en producción</span></div><div class="fact"><b>100</b><span>de accesibilidad en Lighthouse en esta web</span></div></div></div>
+          <div class="quote"><h2>Por escrito, siempre</h2>
+            <ul class="promise"><li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5 8 14.5 16 6"/></svg><div><b>Precio y fecha cerrados</b> <span>antes de empezar.</span></div></li><li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5 8 14.5 16 6"/></svg><div><b>30 días de corrección</b> <span>incluidos tras la entrega.</span></div></li><li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5 8 14.5 16 6"/></svg><div><b>Tarea piloto</b> <span>si no encajo, solo pagas esa tarea.</span></div></li></ul></div>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
+
+<section class="ej" id="d" data-ej="d" data-v="ref" aria-labelledby="t-d">
+  <div class="wrap">
+    <div class="ej-head">
+      <div class="ej-title"><span class="ej-k" aria-hidden="true">d</span><h2 id="t-d">El mockup se abre con el scroll y lo de dentro «funciona»</h2><p class="ej-src">Darkroom (apertura con clip-path), Linear y Stripe (piezas internas)</p></div>
+      <div class="ej-ctl"><div class="ej-seg" role="group" aria-label="Comparar"><button type="button" data-set="ahora" aria-pressed="false">Ahora</button><button type="button" data-set="ref" aria-pressed="true">Referente</button></div><button class="ej-btn" type="button" data-replay><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8a5.5 5.5 0 1 0 1.6-3.9M2.5 2.5v3h3"/></svg>Repetir</button></div>
+    </div>
+    <div class="ej-vals">
+      <div data-for="ahora"><b>Ahora (v1)</b>Toda la tarjeta sube <code>2rem</code> y escala <code>0,975</code>; la imagen, dentro, escala de <code>1,07</code> a <code>1</code>; el texto se funde aparte. Todo con el scroll.</div>
+      <div data-for="ref"><b>Referente</b>Marco: <code>clip-path inset(7% 5% round 1.5rem) → inset(0)</code>, ligado al scroll en <code>45vh</code>, lineal. Piezas: <code>opacity</code> + <code>8px</code> + <code>blur(2px) → 0</code>, <code>500 ms</code>, cada una <code>70 ms</code> después. El texto, quieto.</div>
+    </div>
+    <p class="ej-look"><b>Fíjate en</b> que el marco se abre a la velocidad de tu scroll (como una ventana que se agranda) y, una vez dentro, la web del mockup se monta pieza a pieza, como si cargara. El texto de al lado no se mueve.</p>
+    <p class="ej-meter" data-meter=".g-shot" aria-live="off"></p>
+    <div class="ej-stage">
+      <a class="g-case" href="#" data-v1="card">
+        <div><div class="case-meta"><span class="tag" data-v1="chip">Web</span><span class="tag wip" data-v1="chip" style="--o:.5">En construcción</span></div>
+          <h3 data-v1="read">josecoded: esta web, medida</h3>
+          <p class="case-metric" data-v1="read" style="--o:.5"><b>145 KB</b> de JavaScript en la home, con un presupuesto de 150 KB. Accesibilidad 100 en todas las páginas.</p></div>
+        <div class="g-shot" data-v2="clip">
+          <div class="browser" aria-hidden="true" data-v1="media">
+            <div class="browser-bar"><i></i><i></i><i></i><span>josecoded.com</span></div>
+            <div class="mini">
+              <div class="mini-nav" data-v2="piece" style="--k:0"><b>josecoded</b><span>Servicios · Proyectos · Sobre mí</span><s>Hablemos</s></div>
+              <div><h4 data-v2="piece" style="--k:1">Tu app y tu web, publicadas y <em>funcionando.</em></h4><p data-v2="piece" style="--k:2">Desarrollador React Native y Next.js. Precio y fecha cerrados.</p></div>
+              <div class="mini-kpis">
+                <div class="mini-kpi" data-v2="piece" style="--k:3"><b>145 KB</b><span>JS en la home</span></div>
+                <div class="mini-kpi" data-v2="piece" style="--k:4"><b>100</b><span>accesibilidad, Lighthouse</span></div>
+                <div class="mini-kpi" data-v2="piece" style="--k:5"><b>0</b><span>saltos de diseño (CLS)</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="ej" id="e" data-ej="e" data-v="ref" aria-labelledby="t-e">
+  <div class="wrap">
+    <div class="ej-head">
+      <div class="ej-title"><span class="ej-k" aria-hidden="true">e</span><h2 id="t-e">Cifras: un resalte de color en secuencia, sin escala</h2><p class="ej-src">Stripe (bloque de cifras con una resaltada cada vez)</p></div>
+      <div class="ej-ctl"><div class="ej-seg" role="group" aria-label="Comparar"><button type="button" data-set="ahora" aria-pressed="false">Ahora</button><button type="button" data-set="ref" aria-pressed="true">Referente</button></div><button class="ej-btn" type="button" data-replay><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8a5.5 5.5 0 1 0 1.6-3.9M2.5 2.5v3h3"/></svg>Repetir</button></div>
+    </div>
+    <div class="ej-vals">
+      <div data-for="ahora"><b>Ahora (v1)</b>Ligadas al scroll. Cada cifra escala de <code>0,9</code> a <code>1</code> y sube medio paso, un paso detrás de su línea, que se funde desde <code>0,12</code>.</div>
+      <div data-for="ref"><b>Referente</b>Por tiempo, una vez. Cada cifra pasa de opacidad <code>0,4</code> a <code>1</code> con un destello coral (<code>--coral-text</code>) que se apaga, <code>1000 ms</code>, <code>cubic-bezier(0.65, 0, 0.35, 1)</code>, <code>200 ms</code> entre cifras. Tamaño fijo.</div>
+    </div>
+    <p class="ej-look"><b>Fíjate en</b> que el texto no cambia de tamaño (el escalado de cifras es lo que más «huele a plantilla») y que el ojo va de una cifra a la siguiente. Al terminar, todo queda en tinta.</p>
+    <div class="ej-stage">
+      <div class="g-facts-box">
+        <h2>En cifras</h2>
+        <div class="facts" data-v2="num">
+          <div class="fact"><b data-n="2" data-v1="num" style="--o:1;--k:0">2</b><span data-v1="read">apps en App Store y Google Play, para 3Cat</span></div>
+          <div class="fact"><b data-n="2024" data-v1="num" style="--o:1;--k:1">2024</b><span data-v1="read">desde entonces, React Native en producción</span></div>
+          <div class="fact"><b data-n="100" data-v1="num" style="--o:1;--k:2">100</b><span data-v1="read">de accesibilidad en Lighthouse en esta web</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ej" id="f" data-ej="f" data-v="ahora" aria-labelledby="t-f">
+  <div class="wrap">
+    <div class="ej-head">
+      <div class="ej-title"><span class="ej-k" aria-hidden="true">f</span><h2 id="t-f">Movimiento anidado frente a un solo nivel por región</h2><p class="ej-src">El problema que detectó el análisis; ninguna referencia mueve contenedor y contenido a la vez</p></div>
+      <div class="ej-ctl"><div class="ej-seg" role="group" aria-label="Comparar"><button type="button" data-set="ahora" aria-pressed="true">Ahora</button><button type="button" data-set="ref" aria-pressed="false">Referente</button></div><button class="ej-btn" type="button" data-levels aria-pressed="false">Ver niveles</button><button class="ej-btn" type="button" data-replay><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8a5.5 5.5 0 1 0 1.6-3.9M2.5 2.5v3h3"/></svg>Repetir</button></div>
+    </div>
+    <div class="ej-vals">
+      <div data-for="ahora"><b>Ahora (v1)</b>Tres niveles se desplazan a la vez, con tres velocidades: el bloque <code>2,5rem</code>, la tarjeta <code>2rem</code> (y escala) y cada pieza de lectura <code>1,25rem</code>. Hasta ≈5,75rem sumados.</div>
+      <div data-for="ref"><b>Referente (sistema v2)</b>Solo el bloque se desplaza (<code>28px</code>, con el scroll). Las tarjetas solo aparecen: <code>opacity 0 → 1</code>, <code>500 ms</code>, la de la derecha <code>60 ms</code> después. Títulos, filas y precios, quietos.</div>
+    </div>
+    <p class="ej-look"><b>Fíjate en</b> el temblor de «Ahora»: cada fila llega a una velocidad distinta de la de su tarjeta. Con «Ver niveles», en discontinuo coral lo que se desplaza y en punteado lo que solo aparece. Empieza en «Ahora» a propósito.</p>
+    <div class="g-legend"><span><i class="lg-move"></i>Se desplaza</span><span><i class="lg-fade"></i>Solo aparece</span></div>
+    <div class="ej-stage">
+      <div class="g-block" data-v1="blockin" data-v2="block" data-lvl="1">
+        <div class="offer">
+          <div class="tiers" data-v1="card" data-v2="fade" data-lvl="2" style="--i:0">
+            <div class="tier-group"><h3 data-v1="read" data-lvl="3">Web</h3>
+              <a class="tier" href="#" data-v1="read" data-lvl="3"><b>Presencia</b><p>Quién eres, qué haces y cómo contactarte.</p><span class="price">Ver qué incluye</span></a>
+              <a class="tier" href="#" data-v1="read" data-lvl="3" style="--o:.5"><b>Negocio</b><p>Tú cambias textos, fotos y novedades sin depender de nadie.</p><span class="price">Ver qué incluye</span></a>
+              <a class="tier" href="#" data-v1="read" data-lvl="3" style="--o:1"><b>Plataforma</b><p>Usuarios con cuenta y procesos que hoy se hacen a mano.</p><span class="price">Ver qué incluye</span></a>
+            </div>
+          </div>
+          <aside class="mvp on-dark" data-v1="card" data-v2="fade" data-lvl="2" style="--i:1" aria-label="MVP">
+            <h3 data-v1="read" data-lvl="3">¿Tienes una startup? Tu MVP de app y web</h3>
+            <p data-v1="read" data-lvl="3" style="--o:.5">App para iOS y Android con React Native y la web o el panel con Next.js, de un solo desarrollador.</p>
+            <div class="pilot" data-v1="read" data-lvl="3" style="--o:1"><b>Empieza por una tarea piloto</b><p>Si no encajo con tu equipo, no seguimos y solo pagas esa tarea.</p></div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ej ej-g" id="g" data-ej="g" data-v="ref" aria-labelledby="t-g">
+  <div class="wrap">
+    <div class="ej-head">
+      <div class="ej-title"><span class="ej-k" aria-hidden="true">g</span><h2 id="t-g">Hover unificado: una curva y una duración para toda la interfaz</h2><p class="ej-src">Darkroom (una sola curva), Raycast y Linear (≤ 160 ms)</p></div>
+      <div class="ej-ctl"><div class="ej-seg" role="group" aria-label="Comparar"><button type="button" data-set="ahora" aria-pressed="false">Ahora</button><button type="button" data-set="ref" aria-pressed="true">Referente</button></div><button class="ej-btn" type="button" data-replay><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8a5.5 5.5 0 1 0 1.6-3.9M2.5 2.5v3h3"/></svg>Repetir</button></div>
+    </div>
+    <div class="ej-vals">
+      <div data-for="ahora"><b>Ahora (v1)</b>Cuatro duraciones (<code>120</code>, <code>180</code>, <code>260</code> y <code>420 ms</code>). La flecha del botón cruza ≈19 px y se cambia por otra; la del enlace se mueve 2 px; el nombre del nivel, 4 px.</div>
+      <div data-for="ref"><b>Referente</b>Todo a <code>160 ms</code> · <code>cubic-bezier(0.23, 1, 0.32, 1)</code>. Flechas y nombre del nivel <code>3 px</code>, la tarjeta sube <code>3 px</code>, aro, fondo o subrayado. Al pulsar, <code>scale(0.97)</code> en <code>120 ms</code>.</div>
+    </div>
+    <p class="ej-look"><b>Fíjate en</b> que todos responden con el mismo pulso. Pasa el ratón por encima o pulsa Repetir: se encienden uno detrás de otro.</p>
+    <div class="ej-stage">
+      <div class="g-hov">
+        <div class="g-hov-cell"><span>Botones</span>
+          <a class="btn" href="#" data-h>Hablemos <span class="arr" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></a>
+          <a class="btn btn-light" href="#" data-h>Ver proyectos</a>
+        </div>
+        <div class="g-hov-cell"><span>Enlaces y tiendas</span>
+          <a class="link" href="#" data-h>Ver todos los proyectos <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+          <div class="stores"><a class="store" href="#" data-h>App Store <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2h6v6M10 2 3 9"/></svg></a><a class="store" href="#" data-h>Google Play <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2h6v6M10 2 3 9"/></svg></a></div>
+        </div>
+        <div class="g-hov-cell"><span>Nivel y proyecto</span>
+          <a class="tier" href="#" data-h><b>Presencia</b><p>Quién eres, qué haces y cómo contactarte.</p><span class="price">Ver qué incluye</span></a>
+          <a class="case" href="#" data-h><div class="case-media"><div class="mini-site"><span>josecoded.com</span><h5>Tu app y tu web, publicadas y <em>funcionando.</em></h5></div></div><h3>josecoded: esta web, medida</h3></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ej" id="h" data-ej="h" data-v="ref" aria-labelledby="t-h">
+  <div class="wrap">
+    <div class="ej-head">
+      <div class="ej-title"><span class="ej-k" aria-hidden="true">h</span><h2 id="t-h">Continuidad entre bloques: el color de fondo se funde</h2><p class="ej-src">Stripe (capa de fondo de sección con opacidad ligada al scroll)</p></div>
+      <div class="ej-ctl"><div class="ej-seg" role="group" aria-label="Comparar"><button type="button" data-set="ahora" aria-pressed="false">Ahora</button><button type="button" data-set="ref" aria-pressed="true">Referente</button></div><button class="ej-btn" type="button" data-replay><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8a5.5 5.5 0 1 0 1.6-3.9M2.5 2.5v3h3"/></svg>Recorrer</button></div>
+    </div>
+    <div class="ej-vals">
+      <div data-for="ahora"><b>Ahora (v1)</b>Cada bloque con su fondo y un corte: borde de 1 px y cambio de tono seco entre la franja de prueba, la oferta y el cierre.</div>
+      <div data-for="ref"><b>Referente</b>Una capa de color por bloque, fija a la ventana, con <code>opacity 0 → 1 → 0</code> ligada a <code>view()</code>: se enciende mientras su borde de arriba sube del 70 % al 45 % de la ventana y se apaga igual con el de abajo. Tonos de la paleta: <code>--paper</code>, <code>--bg-top</code> con coral al 6 % y <code>--white</code>.</div>
+    </div>
+    <p class="ej-look"><b>Fíjate en</b> que al pasar de un bloque a otro toda la ventana cambia de temperatura, sin línea de corte. «Recorrer» hace el scroll por ti. La banda carbón conserva su corte: fundir a carbón dejaría el texto, a mitad de camino, por debajo de AA.</p>
+    <div class="ej-stage">
+      <div class="g-cont">
+        <section class="g-tone" data-tone="1" aria-label="Prueba">
+          <h2>Apps publicadas</h2>
+          <div class="apps"><div class="app-row"><span class="app-ico" aria-hidden="true">3Cat<br>Info</span><div><b>3CatInfo</b><span>App de noticias. Responsable de IA y accesibilidad.</span></div></div><div class="app-row"><span class="app-ico" aria-hidden="true">3Cat</span><div><b>3Cat</b><span>App principal de la radiotelevisión pública catalana.</span></div></div></div>
+        </section>
+        <section class="g-tone" data-tone="2" aria-label="Oferta">
+          <h2>Lo que puedo hacer por ti, con precio</h2>
+          <p class="sec-lead">Cada nivel incluye diseño, desarrollo y publicación. El precio y la fecha te los doy cerrados, por escrito, antes de empezar.</p>
+          <div class="paths">
+            <div class="path"><b>Refuerzo freelance</b><p>Una pantalla, una auditoría o un rescate, por horas o por tarea.</p><a class="link" href="#">Ver tarifa y ejemplos <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+            <div class="path"><b>Para tu equipo</b><p>Me sumo a tu equipo de React Native o web. Remoto o híbrido en Madrid.</p><a class="link" href="#">Ver CV y trayectoria <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+          </div>
+        </section>
+        <section class="g-tone" data-tone="3" aria-label="Cierre">
+          <h2>Cuéntame qué necesitas</h2>
+          <p class="sec-lead">Te respondo yo en uno o dos días laborables, con una propuesta o con lo que necesito saber.</p>
+          <div class="hero-ctas"><a class="btn" href="#">Hablemos <span class="arr" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></a></div>
+        </section>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<script src="ejemplos.js"></script>
+</body>
+</html>

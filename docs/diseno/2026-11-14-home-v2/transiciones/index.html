@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transiciones · home v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="transiciones.css">
+</head>
+<body>
+<header class="top wrap">
+  <p class="eyebrow">josecoded · home v2 · R expresivo · batería de transiciones</p>
+  <h1 class="title">Elige una transición por bloque</h1>
+  <p class="intro">Catorce transiciones entre bloques reales de la home, cada una aislada en su propia ventana con scroll. Desplázate dentro de la ventana o pulsa «Reproducir». Al final, la tabla «bloque → opciones» con mi recomendación. No está el móvil del hero que viajaba con el scroll.</p>
+  <div class="live"><p><b>Elige en la home real.</b> Todas las transiciones aplicadas en sus costuras, a tamaño real, con un panel para cambiar cada una en vivo y copiar tu elección.</p><a href="home.html">Abrir la home con transiciones <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+  <ul class="rules">
+    <li><b>CSS nativo.</b> Doce son 0 KB de JS. Las dos disparadas suman 0,40 KB de los 4,5 KB que quedan.</li>
+    <li><b>Ligadas al scroll, curva lineal.</b> La curva la pone tu dedo. Las disparadas usan <code>--ease-out</code>.</li>
+    <li><b>El H1 no se anima nunca</b> (es el LCP). Solo <code>transform</code>, <code>opacity</code> y <code>clip-path</code>; el desenfoque de 10, aparte.</li>
+    <li><b>Reducir movimiento y Firefox:</b> la página queda estática y completa. Pruébalo con «Ver estático».</li>
+  </ul>
+  <p class="env" data-env></p>
+</header>
+<div class="bar">
+  <div class="wrap bar-in">
+    <div class="bar-ctl">
+      <div class="seg" role="group" aria-label="Velocidad de Reproducir"><button type="button" data-speed="1" aria-pressed="true">1×</button><button type="button" data-speed="0.4" aria-pressed="false">Lento</button></div>
+      <button class="tog" type="button" data-static aria-pressed="false"><span class="sw" aria-hidden="true"></span>Ver estático</button>
+    </div>
+    <nav aria-label="Transiciones"><ol class="chips"><li><a href="#t01"><span class="tnum">01</span> Cortina</a></li>
+<li><a href="#t02"><span class="tnum">02</span> Punto que se abre</a></li>
+<li><a href="#t03"><span class="tnum">03</span> Fundido a carbón</a></li>
+<li><a href="#t04"><span class="tnum">04</span> Subida con escala</a></li>
+<li><a href="#t05"><span class="tnum">05</span> Fundido cruzado</a></li>
+<li><a href="#t06"><span class="tnum">06</span> Títulos por líneas</a></li>
+<li><a href="#t07"><span class="tnum">07</span> Apilado</a></li>
+<li><a href="#t08"><span class="tnum">08</span> Capas</a></li>
+<li><a href="#t09"><span class="tnum">09</span> Borde curvo</a></li>
+<li><a href="#t10"><span class="tnum">10</span> Enfoque</a></li>
+<li><a href="#t11"><span class="tnum">11</span> Costura coral</a></li>
+<li><a href="#t12"><span class="tnum">12</span> Escalonado al entrar</a></li>
+<li><a href="#t13"><span class="tnum">13</span> Retroceso</a></li>
+<li><a href="#t14"><span class="tnum">14</span> Salto con View Transition</a></li><li><a href="#recomendacion">Recomendación</a></li></ol></nav>
+  </div>
+</div>
+<main class="wrap">
+<article class="demo" id="t01" aria-labelledby="t01-h">
+  <header class="demo-h"><span class="num">01</span><h2 id="t01-h">Cortina</h2><p class="one">La banda carbón llega como una tarjeta redondeada y se abre hasta los bordes.</p><div class="tags"><span class="mode">Ligada al scroll</span><span class="badge">Recomendada</span></div></header>
+  <div class="demo-body">
+    <div class="stage">
+      <div class="vp t01" tabindex="0" role="region" aria-label="Demo 01, Franja de prueba → Trabajo publicado. Se desplaza por dentro.">
+        <div class="track">
+<section class="k k-proof">
+  <div class="k-proof-g">
+    <div><h4 class="k-lab">Quién lo hace</h4><div class="k-who"><span class="k-ava" aria-hidden="true">JC</span><div><b>José Carlos Sánchez</b><span class="k-soft">Madrid. Remoto o híbrido.</span></div></div></div>
+    <div><h4 class="k-lab">Apps publicadas</h4><div class="k-app"><span class="k-ico" aria-hidden="true">3Cat<br>Info</span><div><b>3CatInfo</b><span class="k-soft">App de noticias</span></div></div><div class="k-app"><span class="k-ico" aria-hidden="true">3Cat</span><div><b>3Cat</b><span class="k-soft">App principal</span></div></div></div>
+    <div><h4 class="k-lab">En cifras</h4><div class="k-facts"><p><b>2</b><span class="k-soft">apps en tiendas</span></p><p><b>2024</b><span class="k-soft">RN en producción</span></p><p><b>100</b><span class="k-soft">accesibilidad</span></p></div></div>
+    <div><h4 class="k-lab">Por escrito, siempre</h4><ul class="k-prom"><li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5 8 14.5 16 6"/></svg>Precio y fecha cerrados</li><li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5 8 14.5 16 6"/></svg>30 días de corrección</li><li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5 8 14.5 16 6"/></svg>Tarea piloto</li></ul></div>
+  </div>
+</section><section class="k k-band" data-anchor="band">
+  <div class="k-sec-h"><h3 class="k-h">Trabajo publicado, con mi papel exacto</h3><span class="k-link">Ver todos <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></div>
+  <div class="k-work">
+    <div class="k-case">
+      <div class="k-stage"><div class="k-copy"><b>3CatInfo</b><span>La app de noticias de la radiotelevisión pública catalana.</span><span class="k-store">App Store <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2h6v6M10 2 3 9"/></svg></span></div><div class="k-phone" aria-hidden="true"><div class="k-screen"><i></i><i></i><i></i><i></i></div></div></div>
+      <div class="k-meta"><span class="k-tag">App</span><span class="k-tag k-live">En producción</span><span class="k-tag">iOS y Android</span></div>
+      <h4>3CatInfo y 3Cat: IA en el producto y accesibilidad como requisito</h4>
+    </div>
+    <div class="k-sides">
+      <div class="k-side"><div class="k-mini k-mini-d"><span>NextRaket</span><b>Webs y apps para negocios</b></div><h4>NextRaket: de los requisitos al mantenimiento</h4></div>
+      <div class="k-side"><div class="k-mini"><span>josecoded.com</span><b>Tu app y tu web, publicadas y <em>funcionando.</em></b></div><h4>josecoded: esta web, medida</h4></div>
+    </div>
+  </div>
+</section><div class="k k-tail" aria-hidden="true"><i></i><i></i><i></i></div>
+        </div>
+      </div>
+      <div class="ctl"><button class="btn play" type="button" aria-pressed="false"><span class="lbl">Reproducir</span> <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9l7-4.5z"/></svg></button><button class="btn btn-ghost reset" type="button">Al principio</button><span class="pair">Franja de prueba → Trabajo publicado</span></div>
+    </div>
+    <dl class="spec">
+      <div><dt>Encaja en</dt><dd>Franja → banda carbón. Es la de la v1 aprobada, aislada.</dd></div>
+      <div><dt>Duración y curva</dt><dd>Ligada al scroll: de «entra» a «cubre 35 %» (unos 0,6 viewport). Línea temporal lineal: la curva la pone el dedo.</dd></div>
+      <div><dt>Técnica</dt><dd><code>animation-timeline: view()</code> sobre <code>clip-path: inset(… round …)</code>.</dd></div>
+      <div><dt>Coste (gzip)</dt><dd><b class="tnum">CSS 0,21 KB · JS 0 KB</b></dd></div>
+      <div><dt>Reducir movimiento</dt><dd>Banda a sangre desde el principio, sin recorte.</dd></div>
+      <div><dt>Sin soporte</dt><dd>Firefox: banda a sangre, estática y completa.</dd></div>
+    </dl>
+  </div>
+</article>
+<article class="demo" id="t02" aria-labelledby="t02-h">
+  <header class="demo-h"><span class="num">02</span><h2 id="t02-h">Punto que se abre</h2><p class="one">Un punto coral aparece en la costura y se convierte en un círculo carbón que llena la sección.</p><div class="tags"><span class="mode">Ligada al scroll</span></div></header>
+  <div class="demo-body">
+    <div class="stage">
+      <div class="vp t02" tabindex="0" role="region" aria-label="Demo 02, Franja de prueba → Trabajo publicado. Se desplaza por dentro.">
+        <div class="track">
+<section class="k k-proof">
+  <div class="k-proof-g">
+    <div><h4 class="k-lab">Quién lo hace</h4><div class="k-who"><span class="k-ava" aria-hidden="true">JC</span><div><b>José Carlos Sánchez</b><span class="k-soft">Madrid. Remoto o híbrido.</span></div></div></div>
+    <div><h4 class="k-lab">Apps publicadas</h4><div class="k-app"><span class="k-ico" aria-hidden="true">3Cat<br>Info</span><div><b>3CatInfo</b><span class="k-soft">App de noticias</span></div></div><div class="k-app"><span class="k-ico" aria-hidden="true">3Cat</span><div><b>3Cat</b><span class="k-soft">App principal</span></div></div></div>
+    <div><h4 class="k-lab">En cifras</h4><div class="k-facts"><p><b>2</b><span class="k-soft">apps en tiendas</span></p><p><b>2024</b><span class="k-soft">RN en producción</span></p><p><b>100</b><span class="k-soft">accesibilidad</span></p></div></div>
+    <div><h4 class="k-lab">Por escrito, siempre</h4><ul class="k-prom"><li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5 8 14.5 16 6"/></svg>Precio y fecha cerrados</li><li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5 8 14.5 16 6"/></svg>30 días de corrección</li><li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5 8 14.5 16 6"/></svg>Tarea piloto</li></ul></div>
+  </div>
+</section><section class="k k-band" data-anchor="band">
+  <div class="k-sec-h"><h3 class="k-h">Trabajo publicado, con mi papel exacto</h3><span class="k-link">Ver todos <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></div>
+  <div class="k-work">
+    <div class="k-case">
+      <div class="k-stage"><div class="k-copy"><b>3CatInfo</b><span>La app de noticias de la radiotelevisión pública catalana.</span><span class="k-store">App Store <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2h6v6M10 2 3 9"/></svg></span></div><div class="k-phone" aria-hidden="true"><div class="k-screen"><i></i><i></i><i></i><i></i></div></div></div>
+      <div class="k-meta"><span class="k-tag">App</span><span class="k-tag k-live">En producción</span><span class="k-tag">iOS y Android</span></div>
+      <h4>3CatInfo y 3Cat: IA en el producto y accesibilidad como requisito</h4>
+    </div>
+    <div class="k-sides">
+      <div class="k-side"><div class="k-mini k-mini-d"><span>NextRaket</span><b>Webs y apps para negocios</b></div><h4>NextRaket: de los requisitos al mantenimiento</h4></div>
+      <div class="k-side"><div class="k-mini"><span>josecoded.com</span><b>Tu app y tu web, publicadas y <em>funcionando.</em></b></div><h4>josecoded: esta web, medida</h4></div>
+    </div>
+  </div>
+</section><div class="k k-tail" aria-hidden="true"><i></i><i></i><i></i></div>
+        </div>
+      </div>
+      <div class="ctl"><button class="btn play" type="button" aria-pressed="false"><span class="lbl">Reproducir</span> <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9l7-4.5z"/></svg></button><button class="btn btn-ghost reset" type="button">Al principio</button><span class="pair">Franja de prueba → Trabajo publicado</span></div>
+    </div>
+    <dl class="spec">
+      <div><dt>Encaja en</dt><dd>Franja → banda carbón, si quieres un gesto de marca (el punto de «funcionando.»). Es la más atrevida.</dd></div>
+      <div><dt>Duración y curva</dt><dd>Ligada al scroll: el punto en «entra 0–30 %», el círculo en «entra 5–100 %». Lineal.</dd></div>
+      <div><dt>Técnica</dt><dd><code>clip-path: circle()</code> con origen en el borde superior, y <code>timeline-scope</code> para que la franja lea la línea de tiempo de la banda.</dd></div>
+      <div><dt>Coste (gzip)</dt><dd><b class="tnum">CSS 0,38 KB · JS 0 KB</b></dd></div>
+      <div><dt>Reducir movimiento</dt><dd>Sin punto ni círculo: la banda aparece entera.</dd></div>
+      <div><dt>Sin soporte</dt><dd>Firefox: banda entera, sin punto.</dd></div>
+    </dl>
+  </div>
+</article>
+<article class="demo" id="t03" aria-labelledby="t03-h">
+  <header class="demo-h"><span class="num">03</span><h2 id="t03-h">Fundido a carbón</h2><p class="one">La franja se apaga hasta el carbón justo antes de que llegue la banda: la página cambia de luz sin costura.</p><div class="tags"><span class="mode">Ligada al scroll</span></div></header>
+  <div class="demo-body">
+    <div class="stage">
+      <div class="vp t03" tabindex="0" role="region" aria-label="Demo 03, Franja de prueba → Trabajo publicado. Se desplaza por dentro.">
+        <div class="track">
+<section class="k k-proof">
+  <div class="k-proof-g">
+    <div><h4 class="k-lab">Quién lo hace</h4><div class="k-who"><span class="k-ava" aria-hidden="true">JC</span><div><b>José Carlos Sánchez</b><span class="k-soft">Madrid. Remoto o híbrido.</span></div></div></div>
+    <div><h4 class="k-lab">Apps publicadas</h4><div class="k-app"><span class="k-ico" aria-hidden="true">3Cat<br>Info</span><div><b>3CatInfo</b><span class="k-soft">App de noticias</span></div></div><div class="k-app"><span class="k-ico" aria-hidden="true">3Cat</span><div><b>3Cat</b><span class="k-soft">App principal</span></div></div></div>
+    <div><h4 class="k-lab">En cifras</h4><div class="k-facts"><p><b>2</b><span class="k-soft">apps en tiendas</span></p><p><b>2024</b><span class="k-soft">RN en producción</span></p><p><b>100</b><span class="k-soft">accesibilidad</span></p></div></div>
+    <div><h4 class="k-lab">Por escrito, siempre</h4><ul class="k-prom"><li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5 8 14.5 16 6"/></svg>Precio y fecha cerrados</li><li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5 8 14.5 16 6"/></svg>30 días de corrección</li><li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5 8 14.5 16 6"/></svg>Tarea piloto</li></ul></div>
+  </div>
+</section><section class="k k-band" data-anchor="band">
+  <div class="k-sec-h"><h3 class="k-h">Trabajo publicado, con mi papel exacto</h3><span class="k-link">Ver todos <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></div>
+  <div class="k-work">
+    <div class="k-case">
+      <div class="k-stage"><div class="k-copy"><b>3CatInfo</b><span>La app de noticias de la radiotelevisión pública catalana.</span><span class="k-store">App Store <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2h6v6M10 2 3 9"/></svg></span></div><div class="k-phone" aria-hidden="true"><div class="k-screen"><i></i><i></i><i></i><i></i></div></div></div>
+      <div class="k-meta"><span class="k-tag">App</span><span class="k-tag k-live">En producción</span><span class="k-tag">iOS y Android</span></div>
+      <h4>3CatInfo y 3Cat: IA en el producto y accesibilidad como requisito</h4>
+    </div>
+    <div class="k-sides">
+      <div class="k-side"><div class="k-mini k-mini-d"><span>NextRaket</span><b>Webs y apps para negocios</b></div><h4>NextRaket: de los requisitos al mantenimiento</h4></div>
+      <div class="k-side"><div class="k-mini"><span>josecoded.com</span><b>Tu app y tu web, publicadas y <em>funcionando.</em></b></div><h4>josecoded: esta web, medida</h4></div>
+    </div>
+  </div>
+</section><div class="k k-tail" aria-hidden="true"><i></i><i></i><i></i></div>
+        </div>
+      </div>
+      <div class="ctl"><button class="btn play" type="button" aria-pressed="false"><span class="lbl">Reproducir</span> <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9l7-4.5z"/></svg></button><button class="btn btn-ghost reset" type="button">Al principio</button><span class="pair">Franja de prueba → Trabajo publicado</span></div>
+    </div>
+    <dl class="spec">
+      <div><dt>Encaja en</dt><dd>Franja → banda carbón, si quieres continuidad sin bordes ni formas. Muy editorial.</dd></div>
+      <div><dt>Duración y curva</dt><dd>Ligada al scroll: «entra 0–70 %» de la banda. Lineal.</dd></div>
+      <div><dt>Técnica</dt><dd>Capa carbón detrás del contenido con <code>opacity</code> y <code>color</code> del texto interpolado; <code>timeline-scope</code>.</dd></div>
+      <div><dt>Coste (gzip)</dt><dd><b class="tnum">CSS 0,31 KB · JS 0 KB</b></dd></div>
+      <div><dt>Reducir movimiento</dt><dd>Cambio seco de claro a carbón en el borde, como hoy.</dd></div>
+      <div><dt>Sin soporte</dt><dd>Firefox: franja clara y banda carbón, con su borde.</dd></div>
+    </dl>
+  </div>
+</article>
+<article class="demo" id="t04" aria-labelledby="t04-h">
+  <header class="demo-h"><span class="num">04</span><h2 id="t04-h">Subida con escala</h2><p class="one">La oferta sube como una hoja que se asienta: llega un 5 % más pequeña y con esquinas, y se aplana al encajar.</p><div class="tags"><span class="mode">Ligada al scroll</span><span class="badge">Recomendada</span></div></header>
+  <div class="demo-body">
+    <div class="stage">
+      <div class="vp t04" tabindex="0" role="region" aria-label="Demo 04, Trabajo publicado → Oferta. Se desplaza por dentro.">
+        <div class="track">
+<section class="k k-band" data-anchor="band">
+  <div class="k-sec-h"><h3 class="k-h">Trabajo publicado, con mi papel exacto</h3><span class="k-link">Ver todos <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></div>
+  <div class="k-work">
+    <div class="k-case">
+      <div class="k-stage"><div class="k-copy"><b>3CatInfo</b><span>La app de noticias de la radiotelevisión pública catalana.</span><span class="k-store">App Store <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2h6v6M10 2 3 9"/></svg></span></div><div class="k-phone" aria-hidden="true"><div class="k-screen"><i></i><i></i><i></i><i></i></div></div></div>
+      <div class="k-meta"><span class="k-tag">App</span><span class="k-tag k-live">En producción</span><span class="k-tag">iOS y Android</span></div>
+      <h4>3CatInfo y 3Cat: IA en el producto y accesibilidad como requisito</h4>
+    </div>
+    <div class="k-sides">
+      <div class="k-side"><div class="k-mini k-mini-d"><span>NextRaket</span><b>Webs y apps para negocios</b></div><h4>NextRaket: de los requisitos al mantenimiento</h4></div>
+      <div class="k-side"><div class="k-mini"><span>josecoded.com</span><b>Tu app y tu web, publicadas y <em>funcionando.</em></b></div><h4>josecoded: esta web, medida</h4></div>
+    </div>
+  </div>
+</section><section class="k k-offer">
+  <div class="k-offer-in">
+    <div class="k-sec-h k-span"><div><h3 class="k-h">Lo que puedo hacer por ti, con precio</h3><p class="k-soft k-sub">Diseño, desarrollo y publicación. Precio y fecha cerrados antes de empezar.</p></div></div>
+    <div class="k-tiers">
+      <div class="k-tier"><b>Presencia</b><span class="k-soft">Quién eres, qué haces y cómo contactarte.</span><em>Ver qué incluye</em></div>
+      <div class="k-tier"><b>Negocio</b><span class="k-soft">Cambias textos y fotos sin depender de nadie.</span><em>Ver qué incluye</em></div>
+      <div class="k-tier"><b>Plataforma</b><span class="k-soft">Usuarios con cuenta y procesos automáticos.</span><em>Ver qué incluye</em></div>
+    </div>
+    <aside class="k-mvp"><b>¿Tienes una startup? Tu MVP de app y web</b><dl><dt>Plazo</dt><dd>Cerrado por escrito</dd><dt>Tuyo</dt><dd>Repositorio, cuentas y tiendas a tu nombre</dd></dl><span class="k-link k-link-d">Cómo funciona el piloto <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></aside>
+  </div>
+</section><div class="k k-tail" aria-hidden="true"><i></i><i></i><i></i></div>
+        </div>
+      </div>
+      <div class="ctl"><button class="btn play" type="button" aria-pressed="false"><span class="lbl">Reproducir</span> <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9l7-4.5z"/></svg></button><button class="btn btn-ghost reset" type="button">Al principio</button><span class="pair">Trabajo publicado → Oferta</span></div>
+    </div>
+    <dl class="spec">
+      <div><dt>Encaja en</dt><dd>Banda carbón → oferta. También vale para oferta → vías.</dd></div>
+      <div><dt>Duración y curva</dt><dd>Ligada al scroll: «entra 0–90 %». Lineal.</dd></div>
+      <div><dt>Técnica</dt><dd><code>view()</code> con <code>transform</code> (translate + scale) y <code>clip-path</code> para las esquinas.</dd></div>
+      <div><dt>Coste (gzip)</dt><dd><b class="tnum">CSS 0,24 KB · JS 0 KB</b></dd></div>
+      <div><dt>Reducir movimiento</dt><dd>La oferta en su sitio, sin escala ni esquinas.</dd></div>
+      <div><dt>Sin soporte</dt><dd>Firefox: estática.</dd></div>
+    </dl>
+  </div>
+</article>
+<article class="demo" id="t05" aria-labelledby="t05-h">
+  <header class="demo-h"><span class="num">05</span><h2 id="t05-h">Fundido cruzado</h2><p class="one">La oferta baja la voz mientras las vías aparecen. Nada se mueve, solo cambia quién habla.</p><div class="tags"><span class="mode">Ligada al scroll</span></div></header>
+  <div class="demo-body">
+    <div class="stage">
+      <div class="vp t05" tabindex="0" role="region" aria-label="Demo 05, Oferta → vías (freelance y equipo). Se desplaza por dentro.">
+        <div class="track">
+<section class="k k-offer">
+  <div class="k-offer-in">
+    <div class="k-sec-h k-span"><div><h3 class="k-h">Lo que puedo hacer por ti, con precio</h3><p class="k-soft k-sub">Diseño, desarrollo y publicación. Precio y fecha cerrados antes de empezar.</p></div></div>
+    <div class="k-tiers">
+      <div class="k-tier"><b>Presencia</b><span class="k-soft">Quién eres, qué haces y cómo contactarte.</span><em>Ver qué incluye</em></div>
+      <div class="k-tier"><b>Negocio</b><span class="k-soft">Cambias textos y fotos sin depender de nadie.</span><em>Ver qué incluye</em></div>
+      <div class="k-tier"><b>Plataforma</b><span class="k-soft">Usuarios con cuenta y procesos automáticos.</span><em>Ver qué incluye</em></div>
+    </div>
+    <aside class="k-mvp"><b>¿Tienes una startup? Tu MVP de app y web</b><dl><dt>Plazo</dt><dd>Cerrado por escrito</dd><dt>Tuyo</dt><dd>Repositorio, cuentas y tiendas a tu nombre</dd></dl><span class="k-link k-link-d">Cómo funciona el piloto <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></aside>
+  </div>
+</section><section class="k k-paths">
+  <div class="k-paths-g">
+    <div class="k-path"><b>Refuerzo freelance</b><span class="k-soft">Una pantalla, una auditoría o un rescate, por horas o por tarea.</span><span class="k-link">Ver tarifa y ejemplos <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></div>
+    <div class="k-path"><b>Para tu equipo</b><span class="k-soft">Me sumo a tu equipo de React Native o web. Remoto o híbrido en Madrid.</span><span class="k-link">Ver CV y trayectoria <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></div>
+  </div>
+</section><div class="k k-tail" aria-hidden="true"><i></i><i></i><i></i></div>
+        </div>
+      </div>
+      <div class="ctl"><button class="btn play" type="button" aria-pressed="false"><span class="lbl">Reproducir</span> <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9l7-4.5z"/></svg></button><button class="btn btn-ghost reset" type="button">Al principio</button><span class="pair">Oferta → vías (freelance y equipo)</span></div>
+    </div>
+    <dl class="spec">
+      <div><dt>Encaja en</dt><dd>Oferta → vías. La más sobria: deja respirar entre dos momentos fuertes.</dd></div>
+      <div><dt>Duración y curva</dt><dd>Ligada al scroll: «entra 10–90 %» de las vías. Lineal.</dd></div>
+      <div><dt>Técnica</dt><dd>Solo <code>opacity</code>, con <code>timeline-scope</code> para que la oferta lea la entrada de las vías.</dd></div>
+      <div><dt>Coste (gzip)</dt><dd><b class="tnum">CSS 0,24 KB · JS 0 KB</b></dd></div>
+      <div><dt>Reducir movimiento</dt><dd>Todo a opacidad completa.</dd></div>
+      <div><dt>Sin soporte</dt><dd>Firefox: estática.</dd></div>
+    </dl>
+  </div>
+</article>
+<article class="demo" id="t06" aria-labelledby="t06-h">
+  <header class="demo-h"><span class="num">06</span><h2 id="t06-h">Títulos por líneas</h2><p class="one">Cada línea del título sube desde detrás de su propia máscara, una tras otra; luego el texto.</p><div class="tags"><span class="mode">Ligada al scroll</span><span class="badge">Recomendada</span></div></header>
+  <div class="demo-body">
+    <div class="stage">
+      <div class="vp t06" tabindex="0" role="region" aria-label="Demo 06, Vías → cierre (título «Cuéntame qué necesitas»). Se desplaza por dentro.">
+        <div class="track">
+<section class="k k-paths">
+  <div class="k-paths-g">
+    <div class="k-path"><b>Refuerzo freelance</b><span class="k-soft">Una pantalla, una auditoría o un rescate, por horas o por tarea.</span><span class="k-link">Ver tarifa y ejemplos <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></div>
+    <div class="k-path"><b>Para tu equipo</b><span class="k-soft">Me sumo a tu equipo de React Native o web. Remoto o híbrido en Madrid.</span><span class="k-link">Ver CV y trayectoria <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></div>
+  </div>
+</section><section class="k k-closing">
+  <h3 class="k-close-h"><span class="ln"><span>Cuéntame</span></span> <span class="ln"><span>qué necesitas</span></span></h3>
+  <div class="k-close-in"><p class="k-soft">Te respondo yo en uno o dos días laborables.</p><span class="k-btn">Hablemos <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span><span class="k-mail">hola@josecoded.com</span></div>
+</section><div class="k k-tail" aria-hidden="true"><i></i><i></i><i></i></div>
+        </div>
+      </div>
+      <div class="ctl"><button class="btn play" type="button" aria-pressed="false"><span class="lbl">Reproducir</span> <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9l7-4.5z"/></svg></button><button class="btn btn-ghost reset" type="button">Al principio</button><span class="pair">Vías → cierre (título «Cuéntame qué necesitas»)</span></div>
+    </div>
+    <dl class="spec">
+      <div><dt>Encaja en</dt><dd>Entrada de los H2 en todos los bloques. Sustituye al barrido de la v1 como firma tipográfica.</dd></div>
+      <div><dt>Duración y curva</dt><dd>Ligada al scroll: línea 1 en «cubre 5–30 %», línea 2 en «cubre 12–37 %». Curva <code>--ease-out</code> sobre el tramo.</dd></div>
+      <div><dt>Técnica</dt><dd>Líneas con <code>overflow: clip</code> y <code>transform: translateY</code>; <code>view-timeline</code> del título. En producción las líneas se marcan a mano (sin JS de partir texto).</dd></div>
+      <div><dt>Coste (gzip)</dt><dd><b class="tnum">CSS 0,28 KB · JS 0 KB</b></dd></div>
+      <div><dt>Reducir movimiento</dt><dd>El título entero, quieto.</dd></div>
+      <div><dt>Sin soporte</dt><dd>Firefox: el título entero, quieto.</dd></div>
+    </dl>
+  </div>
+</article>
+<article class="demo" id="t07" aria-labelledby="t07-h">
+  <header class="demo-h"><span class="num">07</span><h2 id="t07-h">Apilado</h2><p class="one">La franja se queda clavada y la banda carbón la tapa como una carta que se pone encima; la de abajo retrocede.</p><div class="tags"><span class="mode">Ligada al scroll</span></div></header>
+  <div class="demo-body">
+    <div class="stage">
+      <div class="vp t07" tabindex="0" role="region" aria-label="Demo 07, Franja de prueba → Trabajo publicado. Se desplaza por dentro.">
+        <div class="track">
+<section class="k k-proof">
+  <div class="k-proof-g">
+    <div><h4 class="k-lab">Quién lo hace</h4><div class="k-who"><span class="k-ava" aria-hidden="true">JC</span><div><b>José Carlos Sánchez</b><span class="k-soft">Madrid. Remoto o híbrido.</span></div></div></div>
+    <div><h4 class="k-lab">Apps publicadas</h4><div class="k-app"><span class="k-ico" aria-hidden="true">3Cat<br>Info</span><div><b>3CatInfo</b><span class="k-soft">App de noticias</span></div></div><div class="k-app"><span class="k-ico" aria-hidden="true">3Cat</span><div><b>3Cat</b><span class="k-soft">App principal</span></div></div></div>
+    <div><h4 class="k-lab">En cifras</h4><div class="k-facts"><p><b>2</b><span class="k-soft">apps en tiendas</span></p><p><b>2024</b><span class="k-soft">RN en producción</span></p><p><b>100</b><span class="k-soft">accesibilidad</span></p></div></div>
+    <div><h4 class="k-lab">Por escrito, siempre</h4><ul class="k-prom"><li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5 8 14.5 16 6"/></svg>Precio y fecha cerrados</li><li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5 8 14.5 16 6"/></svg>30 días de corrección</li><li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5 8 14.5 16 6"/></svg>Tarea piloto</li></ul></div>
+  </div>
+</section><section class="k k-band" data-anchor="band">
+  <div class="k-sec-h"><h3 class="k-h">Trabajo publicado, con mi papel exacto</h3><span class="k-link">Ver todos <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></div>
+  <div class="k-work">
+    <div class="k-case">
+      <div class="k-stage"><div class="k-copy"><b>3CatInfo</b><span>La app de noticias de la radiotelevisión pública catalana.</span><span class="k-store">App Store <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2h6v6M10 2 3 9"/></svg></span></div><div class="k-phone" aria-hidden="true"><div class="k-screen"><i></i><i></i><i></i><i></i></div></div></div>
+      <div class="k-meta"><span class="k-tag">App</span><span class="k-tag k-live">En producción</span><span class="k-tag">iOS y Android</span></div>
+      <h4>3CatInfo y 3Cat: IA en el producto y accesibilidad como requisito</h4>
+    </div>
+    <div class="k-sides">
+      <div class="k-side"><div class="k-mini k-mini-d"><span>NextRaket</span><b>Webs y apps para negocios</b></div><h4>NextRaket: de los requisitos al mantenimiento</h4></div>
+      <div class="k-side"><div class="k-mini"><span>josecoded.com</span><b>Tu app y tu web, publicadas y <em>funcionando.</em></b></div><h4>josecoded: esta web, medida</h4></div>
+    </div>
+  </div>
+</section><div class="k k-tail" aria-hidden="true"><i></i><i></i><i></i></div>
+        </div>
+      </div>
+      <div class="ctl"><button class="btn play" type="button" aria-pressed="false"><span class="lbl">Reproducir</span> <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9l7-4.5z"/></svg></button><button class="btn btn-ghost reset" type="button">Al principio</button><span class="pair">Franja de prueba → Trabajo publicado</span></div>
+    </div>
+    <dl class="spec">
+      <div><dt>Encaja en</dt><dd>Franja → banda, solo en escritorio: la franja cabe en la pantalla. En móvil mide más que el viewport y se desactiva bajo 48rem.</dd></div>
+      <div><dt>Duración y curva</dt><dd>Ligada al scroll: «entra 0–100 %» de la banda. Lineal.</dd></div>
+      <div><dt>Técnica</dt><dd><code>position: sticky</code> + <code>timeline-scope</code>; la de abajo usa <code>scale</code> y <code>opacity</code>.</dd></div>
+      <div><dt>Coste (gzip)</dt><dd><b class="tnum">CSS 0,31 KB · JS 0 KB</b></dd></div>
+      <div><dt>Reducir movimiento</dt><dd>Sin clavar: las dos secciones en flujo normal.</dd></div>
+      <div><dt>Sin soporte</dt><dd>Firefox: flujo normal, sin clavar.</dd></div>
+    </dl>
+  </div>
+</article>
+<article class="demo" id="t08" aria-labelledby="t08-h">
+  <header class="demo-h"><span class="num">08</span><h2 id="t08-h">Capas</h2><p class="one">Dentro de la banda, el móvil de 3CatInfo se mueve más que el texto y los casos pequeños un poco menos: profundidad sin mareo.</p><div class="tags"><span class="mode">Ligada al scroll</span></div></header>
+  <div class="demo-body">
+    <div class="stage">
+      <div class="vp t08" tabindex="0" role="region" aria-label="Demo 08, Franja → Trabajo publicado (interior de la banda). Se desplaza por dentro.">
+        <div class="track">
+<section class="k k-proof">
+  <div class="k-proof-g">
+    <div><h4 class="k-lab">Quién lo hace</h4><div class="k-who"><span class="k-ava" aria-hidden="true">JC</span><div><b>José Carlos Sánchez</b><span class="k-soft">Madrid. Remoto o híbrido.</span></div></div></div>
+    <div><h4 class="k-lab">Apps publicadas</h4><div class="k-app"><span class="k-ico" aria-hidden="true">3Cat<br>Info</span><div><b>3CatInfo</b><span class="k-soft">App de noticias</span></div></div><div class="k-app"><span class="k-ico" aria-hidden="true">3Cat</span><div><b>3Cat</b><span class="k-soft">App principal</span></div></div></div>
+    <div><h4 class="k-lab">En cifras</h4><div class="k-facts"><p><b>2</b><span class="k-soft">apps en tiendas</span></p><p><b>2024</b><span class="k-soft">RN en producción</span></p><p><b>100</b><span class="k-soft">accesibilidad</span></p></div></div>
+    <div><h4 class="k-lab">Por escrito, siempre</h4><ul class="k-prom"><li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5 8 14.5 16 6"/></svg>Precio y fecha cerrados</li><li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5 8 14.5 16 6"/></svg>30 días de corrección</li><li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5 8 14.5 16 6"/></svg>Tarea piloto</li></ul></div>
+  </div>
+</section><section class="k k-band" data-anchor="band">
+  <div class="k-sec-h"><h3 class="k-h">Trabajo publicado, con mi papel exacto</h3><span class="k-link">Ver todos <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></div>
+  <div class="k-work">
+    <div class="k-case">
+      <div class="k-stage"><div class="k-copy"><b>3CatInfo</b><span>La app de noticias de la radiotelevisión pública catalana.</span><span class="k-store">App Store <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2h6v6M10 2 3 9"/></svg></span></div><div class="k-phone" aria-hidden="true"><div class="k-screen"><i></i><i></i><i></i><i></i></div></div></div>
+      <div class="k-meta"><span class="k-tag">App</span><span class="k-tag k-live">En producción</span><span class="k-tag">iOS y Android</span></div>
+      <h4>3CatInfo y 3Cat: IA en el producto y accesibilidad como requisito</h4>
+    </div>
+    <div class="k-sides">
+      <div class="k-side"><div class="k-mini k-mini-d"><span>NextRaket</span><b>Webs y apps para negocios</b></div><h4>NextRaket: de los requisitos al mantenimiento</h4></div>
+      <div class="k-side"><div class="k-mini"><span>josecoded.com</span><b>Tu app y tu web, publicadas y <em>funcionando.</em></b></div><h4>josecoded: esta web, medida</h4></div>
+    </div>
+  </div>
+</section><div class="k k-tail" aria-hidden="true"><i></i><i></i><i></i></div>
+        </div>
+      </div>
+      <div class="ctl"><button class="btn play" type="button" aria-pressed="false"><span class="lbl">Reproducir</span> <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9l7-4.5z"/></svg></button><button class="btn btn-ghost reset" type="button">Al principio</button><span class="pair">Franja → Trabajo publicado (interior de la banda)</span></div>
+    </div>
+    <dl class="spec">
+      <div><dt>Encaja en</dt><dd>Interior de «Trabajo publicado». Se combina con cualquiera de 01–03, 07.</dd></div>
+      <div><dt>Duración y curva</dt><dd>Ligada al scroll: «cubre 0–100 %» de la banda. Móvil ±4 rem, casos ±1,5 rem. Lineal.</dd></div>
+      <div><dt>Técnica</dt><dd><code>view-timeline</code> de la banda; <code>transform</code> en dos capas. El móvil va dentro de una ventana con <code>overflow: hidden</code>.</dd></div>
+      <div><dt>Coste (gzip)</dt><dd><b class="tnum">CSS 0,23 KB · JS 0 KB</b></dd></div>
+      <div><dt>Reducir movimiento</dt><dd>Todo quieto.</dd></div>
+      <div><dt>Sin soporte</dt><dd>Firefox: quieto.</dd></div>
+    </dl>
+  </div>
+</article>
+<article class="demo" id="t09" aria-labelledby="t09-h">
+  <header class="demo-h"><span class="num">09</span><h2 id="t09-h">Borde curvo</h2><p class="one">La oferta clara sube sobre el carbón con el borde superior en arco, y el arco se aplana al llegar.</p><div class="tags"><span class="mode">Ligada al scroll</span></div></header>
+  <div class="demo-body">
+    <div class="stage">
+      <div class="vp t09" tabindex="0" role="region" aria-label="Demo 09, Trabajo publicado → Oferta. Se desplaza por dentro.">
+        <div class="track">
+<section class="k k-band" data-anchor="band">
+  <div class="k-sec-h"><h3 class="k-h">Trabajo publicado, con mi papel exacto</h3><span class="k-link">Ver todos <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></div>
+  <div class="k-work">
+    <div class="k-case">
+      <div class="k-stage"><div class="k-copy"><b>3CatInfo</b><span>La app de noticias de la radiotelevisión pública catalana.</span><span class="k-store">App Store <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2h6v6M10 2 3 9"/></svg></span></div><div class="k-phone" aria-hidden="true"><div class="k-screen"><i></i><i></i><i></i><i></i></div></div></div>
+      <div class="k-meta"><span class="k-tag">App</span><span class="k-tag k-live">En producción</span><span class="k-tag">iOS y Android</span></div>
+      <h4>3CatInfo y 3Cat: IA en el producto y accesibilidad como requisito</h4>
+    </div>
+    <div class="k-sides">
+      <div class="k-side"><div class="k-mini k-mini-d"><span>NextRaket</span><b>Webs y apps para negocios</b></div><h4>NextRaket: de los requisitos al mantenimiento</h4></div>
+      <div class="k-side"><div class="k-mini"><span>josecoded.com</span><b>Tu app y tu web, publicadas y <em>funcionando.</em></b></div><h4>josecoded: esta web, medida</h4></div>
+    </div>
+  </div>
+</section><section class="k k-offer">
+  <div class="k-offer-in">
+    <div class="k-sec-h k-span"><div><h3 class="k-h">Lo que puedo hacer por ti, con precio</h3><p class="k-soft k-sub">Diseño, desarrollo y publicación. Precio y fecha cerrados antes de empezar.</p></div></div>
+    <div class="k-tiers">
+      <div class="k-tier"><b>Presencia</b><span class="k-soft">Quién eres, qué haces y cómo contactarte.</span><em>Ver qué incluye</em></div>
+      <div class="k-tier"><b>Negocio</b><span class="k-soft">Cambias textos y fotos sin depender de nadie.</span><em>Ver qué incluye</em></div>
+      <div class="k-tier"><b>Plataforma</b><span class="k-soft">Usuarios con cuenta y procesos automáticos.</span><em>Ver qué incluye</em></div>
+    </div>
+    <aside class="k-mvp"><b>¿Tienes una startup? Tu MVP de app y web</b><dl><dt>Plazo</dt><dd>Cerrado por escrito</dd><dt>Tuyo</dt><dd>Repositorio, cuentas y tiendas a tu nombre</dd></dl><span class="k-link k-link-d">Cómo funciona el piloto <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></aside>
+  </div>
+</section><div class="k k-tail" aria-hidden="true"><i></i><i></i><i></i></div>
+        </div>
+      </div>
+      <div class="ctl"><button class="btn play" type="button" aria-pressed="false"><span class="lbl">Reproducir</span> <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9l7-4.5z"/></svg></button><button class="btn btn-ghost reset" type="button">Al principio</button><span class="pair">Trabajo publicado → Oferta</span></div>
+    </div>
+    <dl class="spec">
+      <div><dt>Encaja en</dt><dd>Banda carbón → oferta: la salida del carbón, en espejo de la cortina. Más blanda que 04.</dd></div>
+      <div><dt>Duración y curva</dt><dd>Ligada al scroll: «entra 0–70 %». Lineal.</dd></div>
+      <div><dt>Técnica</dt><dd><code>clip-path: inset(0 round 50% 50% 0 0 / 4rem 4rem 0 0)</code> → radio 0; la oferta solapa 3 rem el final de la banda.</dd></div>
+      <div><dt>Coste (gzip)</dt><dd><b class="tnum">CSS 0,23 KB · JS 0 KB</b></dd></div>
+      <div><dt>Reducir movimiento</dt><dd>Borde recto, sin solape.</dd></div>
+      <div><dt>Sin soporte</dt><dd>Firefox: borde recto, sin solape.</dd></div>
+    </dl>
+  </div>
+</article>
+<article class="demo" id="t10" aria-labelledby="t10-h">
+  <header class="demo-h"><span class="num">10</span><h2 id="t10-h">Enfoque</h2><p class="one">El título del cierre llega desenfocado y se enfoca, como una cámara que encuentra el sujeto.</p><div class="tags"><span class="mode">Ligada al scroll</span></div></header>
+  <div class="demo-body">
+    <div class="stage">
+      <div class="vp t10" tabindex="0" role="region" aria-label="Demo 10, Oferta → cierre. Se desplaza por dentro.">
+        <div class="track">
+<section class="k k-offer">
+  <div class="k-offer-in">
+    <div class="k-sec-h k-span"><div><h3 class="k-h">Lo que puedo hacer por ti, con precio</h3><p class="k-soft k-sub">Diseño, desarrollo y publicación. Precio y fecha cerrados antes de empezar.</p></div></div>
+    <div class="k-tiers">
+      <div class="k-tier"><b>Presencia</b><span class="k-soft">Quién eres, qué haces y cómo contactarte.</span><em>Ver qué incluye</em></div>
+      <div class="k-tier"><b>Negocio</b><span class="k-soft">Cambias textos y fotos sin depender de nadie.</span><em>Ver qué incluye</em></div>
+      <div class="k-tier"><b>Plataforma</b><span class="k-soft">Usuarios con cuenta y procesos automáticos.</span><em>Ver qué incluye</em></div>
+    </div>
+    <aside class="k-mvp"><b>¿Tienes una startup? Tu MVP de app y web</b><dl><dt>Plazo</dt><dd>Cerrado por escrito</dd><dt>Tuyo</dt><dd>Repositorio, cuentas y tiendas a tu nombre</dd></dl><span class="k-link k-link-d">Cómo funciona el piloto <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></aside>
+  </div>
+</section><section class="k k-closing">
+  <h3 class="k-close-h">Cuéntame qué necesitas</h3>
+  <div class="k-close-in"><p class="k-soft">Te respondo yo en uno o dos días laborables.</p><span class="k-btn">Hablemos <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span><span class="k-mail">hola@josecoded.com</span></div>
+</section><div class="k k-tail" aria-hidden="true"><i></i><i></i><i></i></div>
+        </div>
+      </div>
+      <div class="ctl"><button class="btn play" type="button" aria-pressed="false"><span class="lbl">Reproducir</span> <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9l7-4.5z"/></svg></button><button class="btn btn-ghost reset" type="button">Al principio</button><span class="pair">Oferta → cierre</span></div>
+    </div>
+    <dl class="spec">
+      <div><dt>Encaja en</dt><dd>Solo el H2 del cierre (texto, área pequeña). Nunca en bloques enteros ni en imágenes.</dd></div>
+      <div><dt>Duración y curva</dt><dd>Ligada al scroll: título en «entra 0 – cubre 35 %», texto en «entra 20 – cubre 45 %». Lineal.</dd></div>
+      <div><dt>Técnica</dt><dd><code>filter: blur()</code> de 10 px a 0 en el título y 4 px en el texto, con <code>opacity</code>. <b>Coste:</b> el desenfoque repinta en cada frame; por eso solo en un título y solo en escritorio. Bajo 48rem cambia a opacidad + 0,75 rem.</dd></div>
+      <div><dt>Coste (gzip)</dt><dd><b class="tnum">CSS 0,29 KB · JS 0 KB</b></dd></div>
+      <div><dt>Reducir movimiento</dt><dd>Título nítido y quieto.</dd></div>
+      <div><dt>Sin soporte</dt><dd>Firefox: nítido y quieto.</dd></div>
+    </dl>
+  </div>
+</article>
+<article class="demo" id="t11" aria-labelledby="t11-h">
+  <header class="demo-h"><span class="num">11</span><h2 id="t11-h">Costura coral</h2><p class="one">Una línea coral se dibuja desde el centro sobre el filete del cierre, se apaga y deja el filete gris de siempre.</p><div class="tags"><span class="mode">Ligada al scroll</span><span class="badge">Recomendada</span></div></header>
+  <div class="demo-body">
+    <div class="stage">
+      <div class="vp t11" tabindex="0" role="region" aria-label="Demo 11, Vías → cierre. Se desplaza por dentro.">
+        <div class="track">
+<section class="k k-paths">
+  <div class="k-paths-g">
+    <div class="k-path"><b>Refuerzo freelance</b><span class="k-soft">Una pantalla, una auditoría o un rescate, por horas o por tarea.</span><span class="k-link">Ver tarifa y ejemplos <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></div>
+    <div class="k-path"><b>Para tu equipo</b><span class="k-soft">Me sumo a tu equipo de React Native o web. Remoto o híbrido en Madrid.</span><span class="k-link">Ver CV y trayectoria <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></div>
+  </div>
+</section><section class="k k-closing">
+  <h3 class="k-close-h">Cuéntame qué necesitas</h3>
+  <div class="k-close-in"><p class="k-soft">Te respondo yo en uno o dos días laborables.</p><span class="k-btn">Hablemos <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span><span class="k-mail">hola@josecoded.com</span></div>
+</section><div class="k k-tail" aria-hidden="true"><i></i><i></i><i></i></div>
+        </div>
+      </div>
+      <div class="ctl"><button class="btn play" type="button" aria-pressed="false"><span class="lbl">Reproducir</span> <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9l7-4.5z"/></svg></button><button class="btn btn-ghost reset" type="button">Al principio</button><span class="pair">Vías → cierre</span></div>
+    </div>
+    <dl class="spec">
+      <div><dt>Encaja en</dt><dd>Oferta o vías → cierre. Es el único coral en movimiento de la página: anuncia la acción final.</dd></div>
+      <div><dt>Duración y curva</dt><dd>Ligada al scroll: línea en «entra 0–60 %» (se dibuja hasta el 75 % del tramo y se apaga), contenido en «entra 35–95 %». Lineal.</dd></div>
+      <div><dt>Técnica</dt><dd><code>::before</code> de 2 px con <code>transform: scaleX</code> desde el centro y <code>opacity</code>.</dd></div>
+      <div><dt>Coste (gzip)</dt><dd><b class="tnum">CSS 0,34 KB · JS 0 KB</b></dd></div>
+      <div><dt>Reducir movimiento</dt><dd>Solo el filete gris, sin línea coral.</dd></div>
+      <div><dt>Sin soporte</dt><dd>Firefox: filete gris.</dd></div>
+    </dl>
+  </div>
+</article>
+<article class="demo" id="t12" aria-labelledby="t12-h">
+  <header class="demo-h"><span class="num">12</span><h2 id="t12-h">Escalonado al entrar</h2><p class="one">Título, niveles y MVP suben 1,25 rem uno tras otro, una sola vez, cuando la sección entra. No depende de dónde pares el scroll.</p><div class="tags"><span class="mode">Disparada</span><span class="badge">Recomendada</span></div></header>
+  <div class="demo-body">
+    <div class="stage">
+      <div class="vp t12" tabindex="0" role="region" aria-label="Demo 12, Trabajo publicado → Oferta (tarjetas). Se desplaza por dentro.">
+        <div class="track">
+<section class="k k-band" data-anchor="band">
+  <div class="k-sec-h"><h3 class="k-h">Trabajo publicado, con mi papel exacto</h3><span class="k-link">Ver todos <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></div>
+  <div class="k-work">
+    <div class="k-case">
+      <div class="k-stage"><div class="k-copy"><b>3CatInfo</b><span>La app de noticias de la radiotelevisión pública catalana.</span><span class="k-store">App Store <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2h6v6M10 2 3 9"/></svg></span></div><div class="k-phone" aria-hidden="true"><div class="k-screen"><i></i><i></i><i></i><i></i></div></div></div>
+      <div class="k-meta"><span class="k-tag">App</span><span class="k-tag k-live">En producción</span><span class="k-tag">iOS y Android</span></div>
+      <h4>3CatInfo y 3Cat: IA en el producto y accesibilidad como requisito</h4>
+    </div>
+    <div class="k-sides">
+      <div class="k-side"><div class="k-mini k-mini-d"><span>NextRaket</span><b>Webs y apps para negocios</b></div><h4>NextRaket: de los requisitos al mantenimiento</h4></div>
+      <div class="k-side"><div class="k-mini"><span>josecoded.com</span><b>Tu app y tu web, publicadas y <em>funcionando.</em></b></div><h4>josecoded: esta web, medida</h4></div>
+    </div>
+  </div>
+</section><section class="k k-offer">
+  <div class="k-offer-in stg">
+    <div class="k-sec-h k-span stg-i" style="--i:0"><div><h3 class="k-h">Lo que puedo hacer por ti, con precio</h3><p class="k-soft k-sub">Diseño, desarrollo y publicación. Precio y fecha cerrados antes de empezar.</p></div></div>
+    <div class="k-tiers">
+      <div class="k-tier stg-i" style="--i:1"><b>Presencia</b><span class="k-soft">Quién eres, qué haces y cómo contactarte.</span><em>Ver qué incluye</em></div>
+      <div class="k-tier stg-i" style="--i:2"><b>Negocio</b><span class="k-soft">Cambias textos y fotos sin depender de nadie.</span><em>Ver qué incluye</em></div>
+      <div class="k-tier stg-i" style="--i:3"><b>Plataforma</b><span class="k-soft">Usuarios con cuenta y procesos automáticos.</span><em>Ver qué incluye</em></div>
+    </div>
+    <aside class="k-mvp stg-i" style="--i:4"><b>¿Tienes una startup? Tu MVP de app y web</b><dl><dt>Plazo</dt><dd>Cerrado por escrito</dd><dt>Tuyo</dt><dd>Repositorio, cuentas y tiendas a tu nombre</dd></dl><span class="k-link k-link-d">Cómo funciona el piloto <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></aside>
+  </div>
+</section><div class="k k-tail" aria-hidden="true"><i></i><i></i><i></i></div>
+        </div>
+      </div>
+      <div class="ctl"><button class="btn play" type="button" aria-pressed="false"><span class="lbl">Reproducir</span> <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9l7-4.5z"/></svg></button><button class="btn btn-ghost reset" type="button">Al principio</button><span class="pair">Trabajo publicado → Oferta (tarjetas)</span></div>
+    </div>
+    <dl class="spec">
+      <div><dt>Encaja en</dt><dd>Tarjetas: niveles y MVP de la oferta, casos de «Trabajo publicado», vías. También las columnas de la franja al cargar (como la v1).</dd></div>
+      <div><dt>Duración y curva</dt><dd>Disparada al entrar (30 % visible): 500 ms, <code>--ease-out</code>, 60 ms entre elementos. Se puede interrumpir: son transiciones.</dd></div>
+      <div><dt>Técnica</dt><dd><code>IntersectionObserver</code> añade <code>.in</code> una vez; el resto es <code>transition</code> CSS con <code>transition-delay: calc(var(--i) * 60ms)</code>. Sin JS, todo visible.</dd></div>
+      <div><dt>Coste (gzip)</dt><dd><b class="tnum">CSS 0,17 KB · JS 0,16 KB</b> del margen de 4,5 KB</dd></div>
+      <div><dt>Reducir movimiento</dt><dd>Todo visible desde el principio, sin entrada.</dd></div>
+      <div><dt>Sin soporte</dt><dd>Funciona en todos los navegadores (IntersectionObserver).</dd></div>
+    </dl>
+  </div>
+</article>
+<article class="demo" id="t13" aria-labelledby="t13-h">
+  <header class="demo-h"><span class="num">13</span><h2 id="t13-h">Retroceso</h2><p class="one">La banda carbón se aleja (escala 0,9 y esquinas) mientras la oferta sube por encima: el bloque que se va cede el sitio.</p><div class="tags"><span class="mode">Ligada al scroll</span></div></header>
+  <div class="demo-body">
+    <div class="stage">
+      <div class="vp t13" tabindex="0" role="region" aria-label="Demo 13, Trabajo publicado → Oferta. Se desplaza por dentro.">
+        <div class="track">
+<section class="k k-band" data-anchor="band">
+  <div class="k-sec-h"><h3 class="k-h">Trabajo publicado, con mi papel exacto</h3><span class="k-link">Ver todos <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></div>
+  <div class="k-work">
+    <div class="k-case">
+      <div class="k-stage"><div class="k-copy"><b>3CatInfo</b><span>La app de noticias de la radiotelevisión pública catalana.</span><span class="k-store">App Store <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2h6v6M10 2 3 9"/></svg></span></div><div class="k-phone" aria-hidden="true"><div class="k-screen"><i></i><i></i><i></i><i></i></div></div></div>
+      <div class="k-meta"><span class="k-tag">App</span><span class="k-tag k-live">En producción</span><span class="k-tag">iOS y Android</span></div>
+      <h4>3CatInfo y 3Cat: IA en el producto y accesibilidad como requisito</h4>
+    </div>
+    <div class="k-sides">
+      <div class="k-side"><div class="k-mini k-mini-d"><span>NextRaket</span><b>Webs y apps para negocios</b></div><h4>NextRaket: de los requisitos al mantenimiento</h4></div>
+      <div class="k-side"><div class="k-mini"><span>josecoded.com</span><b>Tu app y tu web, publicadas y <em>funcionando.</em></b></div><h4>josecoded: esta web, medida</h4></div>
+    </div>
+  </div>
+</section><section class="k k-offer">
+  <div class="k-offer-in">
+    <div class="k-sec-h k-span"><div><h3 class="k-h">Lo que puedo hacer por ti, con precio</h3><p class="k-soft k-sub">Diseño, desarrollo y publicación. Precio y fecha cerrados antes de empezar.</p></div></div>
+    <div class="k-tiers">
+      <div class="k-tier"><b>Presencia</b><span class="k-soft">Quién eres, qué haces y cómo contactarte.</span><em>Ver qué incluye</em></div>
+      <div class="k-tier"><b>Negocio</b><span class="k-soft">Cambias textos y fotos sin depender de nadie.</span><em>Ver qué incluye</em></div>
+      <div class="k-tier"><b>Plataforma</b><span class="k-soft">Usuarios con cuenta y procesos automáticos.</span><em>Ver qué incluye</em></div>
+    </div>
+    <aside class="k-mvp"><b>¿Tienes una startup? Tu MVP de app y web</b><dl><dt>Plazo</dt><dd>Cerrado por escrito</dd><dt>Tuyo</dt><dd>Repositorio, cuentas y tiendas a tu nombre</dd></dl><span class="k-link k-link-d">Cómo funciona el piloto <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></aside>
+  </div>
+</section><div class="k k-tail" aria-hidden="true"><i></i><i></i><i></i></div>
+        </div>
+      </div>
+      <div class="ctl"><button class="btn play" type="button" aria-pressed="false"><span class="lbl">Reproducir</span> <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9l7-4.5z"/></svg></button><button class="btn btn-ghost reset" type="button">Al principio</button><span class="pair">Trabajo publicado → Oferta</span></div>
+    </div>
+    <dl class="spec">
+      <div><dt>Encaja en</dt><dd>Banda carbón → oferta, si quieres que la salida del carbón sea un gesto. Alternativa a 09.</dd></div>
+      <div><dt>Duración y curva</dt><dd>Ligada al scroll: «sale 0–70 %» de la banda. Lineal.</dd></div>
+      <div><dt>Técnica</dt><dd><code>view()</code> en salida con <code>transform: scale</code> y <code>clip-path</code>; la oferta solapa 6 rem con sombra.</dd></div>
+      <div><dt>Coste (gzip)</dt><dd><b class="tnum">CSS 0,30 KB · JS 0 KB</b></dd></div>
+      <div><dt>Reducir movimiento</dt><dd>Sin escala ni solape.</dd></div>
+      <div><dt>Sin soporte</dt><dd>Firefox: sin escala ni solape.</dd></div>
+    </dl>
+  </div>
+</article>
+<article class="demo" id="t14" aria-labelledby="t14-h">
+  <header class="demo-h"><span class="num">14</span><h2 id="t14-h">Salto con View Transition</h2><p class="one">Al pulsar «Ver proyectos», en vez de un scroll largo, la vista sale hacia arriba y la sección destino entra desde abajo.</p><div class="tags"><span class="mode">Disparada</span></div></header>
+  <div class="demo-body">
+    <div class="stage">
+      <div class="vp t14" tabindex="0" role="region" aria-label="Demo 14, Hero → Trabajo publicado (enlace de ancla). Se desplaza por dentro.">
+        <div class="track">
+<section class="k k-hero" data-anchor="top">
+  <div class="k-hero-g">
+    <div>
+      <h3 class="k-h1">Tu app y tu web, publicadas y <em>funcionando.</em></h3>
+      <p class="k-lead">Desarrollador React Native y Next.js. Diseño, construyo, publico y mantengo. Hoy, en las apps de 3Cat.</p>
+      <div class="k-ctas"><span class="k-btn">Hablemos <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span><button class="k-btn k-btn-2" type="button" data-vt="band">Ver proyectos <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button></div>
+    </div>
+    <div class="k-browser" aria-hidden="true"><i></i><i></i><i></i><b></b><b></b><b></b></div>
+  </div>
+</section><section class="k k-band" data-anchor="band">
+  <div class="k-sec-h"><h3 class="k-h">Trabajo publicado, con mi papel exacto</h3><span class="k-link">Ver todos <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></div>
+  <div class="k-work">
+    <div class="k-case">
+      <div class="k-stage"><div class="k-copy"><b>3CatInfo</b><span>La app de noticias de la radiotelevisión pública catalana.</span><span class="k-store">App Store <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2h6v6M10 2 3 9"/></svg></span></div><div class="k-phone" aria-hidden="true"><div class="k-screen"><i></i><i></i><i></i><i></i></div></div></div>
+      <div class="k-meta"><span class="k-tag">App</span><span class="k-tag k-live">En producción</span><span class="k-tag">iOS y Android</span></div>
+      <h4>3CatInfo y 3Cat: IA en el producto y accesibilidad como requisito</h4>
+    </div>
+    <div class="k-sides">
+      <div class="k-side"><div class="k-mini k-mini-d"><span>NextRaket</span><b>Webs y apps para negocios</b></div><h4>NextRaket: de los requisitos al mantenimiento</h4></div>
+      <div class="k-side"><div class="k-mini"><span>josecoded.com</span><b>Tu app y tu web, publicadas y <em>funcionando.</em></b></div><h4>josecoded: esta web, medida</h4></div>
+    </div>
+  </div>
+</section><div class="k k-tail" aria-hidden="true"><i></i><i></i><i></i></div>
+        </div>
+      </div>
+      <div class="ctl"><button class="btn play" type="button" aria-pressed="false"><span class="lbl">Reproducir</span> <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9l7-4.5z"/></svg></button><button class="btn btn-ghost reset" type="button">Al principio</button><span class="pair">Hero → Trabajo publicado (enlace de ancla)</span></div>
+    </div>
+    <dl class="spec">
+      <div><dt>Encaja en</dt><dd>Enlaces de ancla de la cabecera y del hero. El scroll a mano sigue siendo normal.</dd></div>
+      <div><dt>Duración y curva</dt><dd>Disparada al pulsar: 420 ms, <code>--ease-out</code>; sale 2,5 rem, entra desde 2,5 rem.</dd></div>
+      <div><dt>Técnica</dt><dd><code>document.startViewTransition()</code> envolviendo el salto; animaciones en <code>::view-transition-old/new</code>. Pulsa «Reproducir» o el botón «Ver proyectos» de la demo.</dd></div>
+      <div><dt>Coste (gzip)</dt><dd><b class="tnum">CSS 0,24 KB · JS 0,24 KB</b> del margen de 4,5 KB</dd></div>
+      <div><dt>Reducir movimiento</dt><dd>Salto instantáneo, sin transición.</dd></div>
+      <div><dt>Sin soporte</dt><dd>Navegadores sin View Transitions: salto instantáneo.</dd></div>
+    </dl>
+  </div>
+</article>
+<section class="recs" id="recomendacion" aria-labelledby="rec-h">
+  <h2 id="rec-h">Bloque → opciones recomendadas</h2>
+  <p class="intro">Una por fila. Mi recomendación va primero; la elección es tuya. Regla para combinarlas: un solo gesto fuerte por costura (cortina, punto, apilado, borde o retroceso) y nunca dos seguidos.</p>
+  <div class="tbl"><table>
+    <thead><tr><th scope="col">Bloque o costura</th><th scope="col">Recomendada</th><th scope="col">Alternativas</th></tr></thead>
+    <tbody>
+<tr><th scope="row">Hero → franja de prueba</th><td><a href="#t12"><span class="tnum">12</span> Escalonado al entrar</a><p>Escalonado de las cuatro columnas al cargar (como la v1). El H1 no se anima nunca.</p></td><td>Ninguna</td></tr>
+<tr><th scope="row">Franja → «Trabajo publicado»</th><td><a href="#t01"><span class="tnum">01</span> Cortina</a><p>Cortina: la aprobada en la v1, ahora sin el móvil viajero.</p></td><td>03 Fundido a carbón (más editorial) · 02 Punto que se abre (más marca) · 07 Apilado (solo escritorio)</td></tr>
+<tr><th scope="row">Interior de «Trabajo publicado»</th><td><a href="#t08"><span class="tnum">08</span> Capas</a><p>Capas suaves en el móvil de 3CatInfo y los casos.</p></td><td>12 Escalonado de los casos · ninguna</td></tr>
+<tr><th scope="row">«Trabajo publicado» → oferta</th><td><a href="#t04"><span class="tnum">04</span> Subida con escala</a><p>Subida con escala: la salida del carbón más limpia.</p></td><td>09 Borde curvo (más blanda) · 13 Retroceso (más gesto)</td></tr>
+<tr><th scope="row">Tarjetas de la oferta (niveles y MVP)</th><td><a href="#t12"><span class="tnum">12</span> Escalonado al entrar</a><p>Escalonado una vez al entrar: no deja tarjetas a medias si paras el scroll.</p></td><td>Ninguna</td></tr>
+<tr><th scope="row">Oferta → vías</th><td><a href="#t05"><span class="tnum">05</span> Fundido cruzado</a><p>Fundido cruzado: respiro entre dos momentos fuertes.</p></td><td>04 Subida con escala · ninguna</td></tr>
+<tr><th scope="row">Vías → cierre</th><td><a href="#t11"><span class="tnum">11</span> Costura coral</a><p>Costura coral: el único coral en movimiento, antes de «Hablemos».</p></td><td>10 Enfoque · 06 en el título</td></tr>
+<tr><th scope="row">Títulos H2 de todos los bloques</th><td><a href="#t06"><span class="tnum">06</span> Títulos por líneas</a><p>Títulos por líneas: la firma tipográfica, la misma en toda la página.</p></td><td>Ninguna (títulos quietos)</td></tr>
+<tr><th scope="row">Enlaces de ancla (cabecera y hero)</th><td><a href="#t14"><span class="tnum">14</span> Salto con View Transition</a><p>Salto con View Transition en lugar de un scroll largo.</p></td><td>Scroll suave nativo · salto instantáneo</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">Con la recomendación completa: CSS ≈ 1,95 KB y JS ≈ 0,40 KB gzip; sin listeners de scroll, así que el INP no cambia, y nada cambia el tamaño de una caja (CLS 0). Valores de propuesta: los fija <code>director-arte</code> en los tokens.</p>
+</section>
+</main>
+<footer class="foot wrap"><p>Propuesta de <code>motion</code> para <code>director-arte</code> · 2026-11-14 · Demos con contenido real de la v1 aprobada, reducido a escala.</p></footer>
+<script src="transiciones.js"></script>
+</body>
+</html>
