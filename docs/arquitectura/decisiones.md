@@ -176,6 +176,7 @@
 
 - **Sección de Nexo de la home con el chat apagado (Jose, 2026-11-14):** no se muestra; el cierre ya ofrece «Escríbeme». Sustituye a «con public_chat apagado: Escríbeme → /contacto» de la maqueta.
 - **Barra fija de Nexo (Jose, 2026-11-14):** se implementa ahora solo la parte de interfaz (etiqueta «IA», «Parar a Nexo», cuenta atrás), sin mostrarse hasta que exista el backend (ruta para parar a Nexo, plazo en el estado del chat, mensaje `system` y `audit_log` de 5.15), que llega con las migraciones del chat.
+  El punto de enganche de la barra en `ChatView` se añadirá con el backend; mientras tanto solo la monta el escaparate dev.
 
 ## Abiertas (resumen)
 

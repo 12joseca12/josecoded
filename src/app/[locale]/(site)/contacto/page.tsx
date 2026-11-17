@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { ChannelCard } from "@/components/contact/ChannelCard/ChannelCard";
-import { ChatChannel } from "@/components/contact/ChatChannel/ChatChannel";
+import { ChatEmbed } from "@/components/contact/ChatEmbed/ChatEmbed";
 import { buildContactFormLabels } from "@/components/contact/ContactForm/labels";
 import { FormChannel } from "@/components/contact/FormChannel/FormChannel";
 import { WayChannel } from "@/components/contact/WayChannel/WayChannel";
@@ -17,6 +17,8 @@ import { isLocale } from "@/i18n/config";
 import type { MessageKey } from "@/i18n/keys.generated";
 import { getTranslator } from "@/i18n/messages";
 import { getCatalog } from "@/lib/catalog/load";
+import { buildChatLabels } from "@/lib/chat/labels";
+import { readChatClientConfig } from "@/lib/chat/server/client-config";
 import { hasLiveChannel, resolveChannels } from "@/lib/contact/channels";
 import { isContactAvailable, readContactClientConfig } from "@/lib/contact/env";
 import { parseSelection } from "@/lib/contact/selection";
@@ -117,6 +119,7 @@ export default async function ContactPage({ params, searchParams }: ContactProps
             : undefined
       }
       selection={selection}
+      stacked={chat}
       privacyHref={`/${locale}/legal/privacidad`}
       newTabLabel={t("contactPage.form.newTab")}
       turnstile={isContactAvailable(process.env) ? readContactClientConfig(process.env) : null}
@@ -149,47 +152,49 @@ export default async function ContactPage({ params, searchParams }: ContactProps
         breadcrumbs={<Breadcrumbs label={t("breadcrumbs.label")} items={crumbs} />}
       />
       <section className={styles.channels} aria-label={t("contactPage.channelsLabel")}>
-        <ul className={styles.list}>
-          {initialWay ? formChannel : null}
-          {chat ? (
-            <ChatChannel
-              title={t("contactPage.chat.title")}
-              hint={t("contactPage.chat.hint")}
-              openLabel={t("contactPage.chat.open")}
-              soonLabel={t("contactPage.chat.soon")}
-            />
-          ) : null}
-          {channels.whatsappHref ? (
-            <ChannelCard
-              title={t("contactPage.whatsapp.title")}
-              hint={t("contactPage.whatsapp.hint")}
-            >
-              <Button
-                href={channels.whatsappHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                icon={<ArrowIcon />}
+        <div className={styles.layout} data-chat={chat ? "true" : undefined}>
+          <ul className={styles.list}>
+            {initialWay ? formChannel : null}
+            {channels.whatsappHref ? (
+              <ChannelCard
+                title={t("contactPage.whatsapp.title")}
+                hint={t("contactPage.whatsapp.hint")}
               >
-                {t("contactPage.whatsapp.open")}
-              </Button>
-            </ChannelCard>
-          ) : null}
-          {channels.ways.map((entry) => (
-            <WayChannel
-              key={entry.way}
-              id={entry.way}
-              title={t(wayKeys[entry.way].title)}
-              hint={t(wayKeys[entry.way].hint)}
-              email={entry.email}
-              href={entry.href}
-              openLabel={t("contactPage.mail.open")}
-              copyLabel={t("contactPage.copy.label")}
-              copyAriaLabel={t("contactPage.copy.aria").replace("{email}", entry.email)}
-              copiedLabel={t("contactPage.copy.done")}
+                <Button
+                  href={channels.whatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  icon={<ArrowIcon />}
+                >
+                  {t("contactPage.whatsapp.open")}
+                </Button>
+              </ChannelCard>
+            ) : null}
+            {channels.ways.map((entry) => (
+              <WayChannel
+                key={entry.way}
+                id={entry.way}
+                title={t(wayKeys[entry.way].title)}
+                hint={t(wayKeys[entry.way].hint)}
+                email={entry.email}
+                href={entry.href}
+                openLabel={t("contactPage.mail.open")}
+                copyLabel={t("contactPage.copy.label")}
+                copyAriaLabel={t("contactPage.copy.aria").replace("{email}", entry.email)}
+                copiedLabel={t("contactPage.copy.done")}
+              />
+            ))}
+            {initialWay ? null : formChannel}
+          </ul>
+          {chat ? (
+            <ChatEmbed
+              locale={locale}
+              labels={buildChatLabels(t, locale)}
+              config={readChatClientConfig(process.env)}
+              title={t("contactPage.chat.title")}
             />
-          ))}
-          {initialWay ? null : formChannel}
-        </ul>
+          ) : null}
+        </div>
       </section>
     </>
   );

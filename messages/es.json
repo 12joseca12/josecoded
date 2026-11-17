@@ -376,6 +376,15 @@
         "quota": "Cuota agotada",
         "handoff": "Contacto guardado",
         "failed": "Envío fallido"
+      },
+      "nexoBar": {
+        "title": "Barra de Nexo",
+        "waiting": "En espera",
+        "countdown": "Cuenta atrás",
+        "active": "Activo",
+        "stopping": "Parando",
+        "stopped": "Parado",
+        "live": "Interactivo"
       }
     }
   },
@@ -402,7 +411,7 @@
     "close": "Cerrar",
     "whatsapp": "WhatsApp",
     "whatsappHint": "Escríbeme y respondo en cuanto puedo",
-    "chat": "Chat con Nexo",
+    "chat": "Chat con Jose",
     "chatHint": "Por aquí te respondo yo",
     "whatsappMessage": "Hola José Carlos, te escribo desde josecoded.com. Me gustaría hablar de un proyecto.",
     "form": "Formulario",
@@ -414,7 +423,7 @@
   "contactPage": {
     "meta": {
       "title": "Contacto",
-      "description": "Todas las formas de hablar con José Carlos: correo por vía y formulario."
+      "description": "Todas las formas de hablar con José Carlos: chat, correo por vía y formulario."
     },
     "head": {
       "title": "Hablemos de tu",
@@ -423,10 +432,7 @@
     },
     "channelsLabel": "Vías de contacto",
     "chat": {
-      "title": "Chat con Nexo",
-      "hint": "Por aquí te respondo yo.",
-      "open": "Abrir chat",
-      "soon": "Todavía no está disponible. Escríbeme por el formulario o por correo."
+      "title": "Chat con Jose"
     },
     "whatsapp": {
       "title": "WhatsApp",
@@ -858,13 +864,13 @@
         "sad": "Nexo lo siente"
       }
     },
-    "title": "Chat con Nexo",
+    "title": "Chat con Jose",
     "close": "Cerrar el chat",
     "fullscreen": "Abrir a pantalla completa",
     "page": {
-      "metaTitle": "Chat con Nexo",
-      "metaDescription": "Habla con Nexo, el asistente IA de josecoded, o deja tu contacto para que te responda Jose.",
-      "title": "Chat con Nexo",
+      "metaTitle": "Chat con Jose",
+      "metaDescription": "Escribe a Jose directamente; si tarda, te atiende Nexo, su asistente IA.",
+      "title": "Chat con Jose",
       "back": "Volver al inicio",
       "noscriptFailed": "No he podido enviar el mensaje. Usa el formulario de contacto.",
       "alternative": "Si el chat no te funciona, también puedes escribirme por el formulario de contacto.",
@@ -890,7 +896,7 @@
     "composer": {
       "label": "Tu mensaje",
       "placeholder": "Escribe tu mensaje",
-      "send": "Enviar mensaje",
+      "send": "Enviar mensaje al chat",
       "sending": "Enviando mensaje",
       "remaining": "Quedan {count} caracteres"
     },
@@ -977,7 +983,26 @@
       }
     },
     "avatarOffline": "Nexo está desconectado",
-    "openChat": "Abrir el chat"
+    "openChat": "Abrir el chat",
+    "nexoBar": {
+      "region": "Nexo, asistente de IA",
+      "tag": "IA",
+      "waitingTitle": "Nexo en espera",
+      "waitingText": "Entra si Jose tarda más de 10 min",
+      "countdownTitle": "Nexo entrará en",
+      "countdownText": "si Jose no responde antes",
+      "approxMinutes": "unos {minutes} minutos",
+      "approxSoon": "menos de un minuto",
+      "activeTitle": "Te está atendiendo Nexo",
+      "activeText": "Jose verá toda la conversación",
+      "stop": "Parar a Nexo",
+      "stopping": "Parando a Nexo",
+      "stoppedTitle": "Nexo está parado",
+      "stoppedText": "Solo te responderá Jose",
+      "announceWaiting": "Nexo reactivado, en espera",
+      "announceActive": "Entra Nexo, te está atendiendo",
+      "announceStopped": "Nexo parado, solo te responderá Jose"
+    }
   },
   "auth": {
     "meta": {

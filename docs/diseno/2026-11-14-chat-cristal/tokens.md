@@ -25,7 +25,7 @@ Tokens nuevos para `src/styles/tokens.css`. Los demás ya existen.
 --chat-bubble-nexo-line: rgb(23 25 28 / 0.14);
 --chat-bubble-own: var(--charcoal);
 --chat-input: rgb(255 255 255 / 0.94);
---chat-input-line: rgb(23 25 28 / 0.22);
+--chat-input-line: rgb(23 25 28 / 0.55);
 --chat-track: rgb(23 25 28 / 0.12);
 --chat-progress: var(--coral-deep);
 --chat-error-plate: rgb(255 255 255 / 0.94);

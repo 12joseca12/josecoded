@@ -3,7 +3,7 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 
 import type { Locale } from "@/i18n/config";
-import { onOpenChat } from "@/lib/chat/chat-events";
+import { onCloseChat, onOpenChat } from "@/lib/chat/chat-events";
 import type { ChatLabels } from "@/types/chat";
 
 import type { ChatRuntimeConfig } from "./ChatSession";
@@ -29,6 +29,15 @@ export function ChatPanelHost({ locale, labels, config }: ChatPanelHostProps) {
           opener.current = document.activeElement;
         }
         setOpenRequest((count) => count + 1);
+      }),
+    [],
+  );
+
+  useEffect(
+    () =>
+      onCloseChat(() => {
+        opener.current = null;
+        setOpenRequest(0);
       }),
     [],
   );

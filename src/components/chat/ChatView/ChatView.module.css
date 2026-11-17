@@ -4,7 +4,6 @@
   gap: var(--space-2);
   block-size: 100%;
   min-block-size: 0;
-  background: var(--panel);
   color: var(--ink);
 }
 
@@ -45,8 +44,12 @@
 }
 
 .error {
-  margin: 0;
-  padding-inline: var(--space-4);
+  margin: 0 var(--space-4);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-s);
+  background: var(--chat-error-plate);
+  box-shadow: inset 0 0 0 1px var(--chat-error-line);
+  outline: 1px solid transparent;
   color: var(--error);
   font-size: var(--fs-m);
   font-weight: var(--fw-semibold);

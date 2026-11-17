@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/Button/Button";
 import { IconButton } from "@/components/ui/IconButton/IconButton";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 import type { Locale } from "@/i18n/config";
-import { chatPanelMounted, openChat } from "@/lib/chat/chat-events";
+import { chatEmbedMounted, openChatOrEmbed } from "@/lib/chat/chat-embed";
+import { chatPanelMounted } from "@/lib/chat/chat-events";
 import { useOpenChat } from "@/lib/chat/use-open-chat";
 import {
   contactChooserId,
@@ -114,8 +115,8 @@ export function SiteHeader({
   );
   const openChatFallback = useOpenChat(locale);
   const onChatButton = (opener: HTMLElement) => {
-    if (chatPanelMounted()) {
-      openChat();
+    if (chatEmbedMounted() || chatPanelMounted()) {
+      openChatOrEmbed();
       return;
     }
     chooserOpenerRef.current = opener;

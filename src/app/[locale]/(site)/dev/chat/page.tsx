@@ -5,24 +5,37 @@ import { isLocale } from "@/i18n/config";
 import { getTranslator } from "@/i18n/messages";
 import { chatScenarios } from "@/lib/chat/fixtures";
 import { buildChatLabels } from "@/lib/chat/labels";
+import { buildNexoBarLabels } from "@/lib/chat/nexo-bar";
 import { readChatClientConfig } from "@/lib/chat/server/client-config";
+import { getFeatures } from "@/lib/settings/features";
 
 import { ChatShowcase } from "./chat-showcase";
 
 export default async function ChatDevPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!devPagesEnabled || !isLocale(locale)) notFound();
-  const t = await getTranslator(locale);
+  const [t, { chat }] = await Promise.all([getTranslator(locale), getFeatures()]);
   return (
     <ChatShowcase
       locale={locale}
       labels={buildChatLabels(t, locale)}
+      nexoBarLabels={buildNexoBarLabels(t)}
       config={readChatClientConfig(process.env)}
+      siteHostsPanel={chat}
       scenarios={chatScenarios.map((id) => ({ id, name: t(`dev.chat.scenarios.${id}`) }))}
       copy={{
         title: t("dev.chat.title"),
         scenario: t("dev.chat.scenario"),
         panel: t("dev.chat.panel"),
+        nexoBar: {
+          title: t("dev.chat.nexoBar.title"),
+          waiting: t("dev.chat.nexoBar.waiting"),
+          countdown: t("dev.chat.nexoBar.countdown"),
+          active: t("dev.chat.nexoBar.active"),
+          stopping: t("dev.chat.nexoBar.stopping"),
+          stopped: t("dev.chat.nexoBar.stopped"),
+          live: t("dev.chat.nexoBar.live"),
+        },
       }}
     />
   );

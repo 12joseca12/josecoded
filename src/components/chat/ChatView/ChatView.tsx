@@ -97,7 +97,7 @@ export function ChatView({
 
   return (
     <div className={styles.view}>
-      <div className={styles.head}>
+      <div className={styles.head} data-chat-head="">
         <NexoAvatar state={state} label={avatarLabel} />
         <div className={styles.intro}>
           <Title id={titleId} className={styles.title}>

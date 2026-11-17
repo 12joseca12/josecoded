@@ -1,41 +1,133 @@
 .panel {
+  composes: glass from "./glass.module.css";
   position: fixed;
-  inset: 0;
+  inset: 3.25rem 0 calc(-1 * var(--space-4));
   inline-size: 100%;
-  block-size: 100dvh;
+  block-size: auto;
   max-inline-size: none;
   max-block-size: none;
   margin: 0;
-  padding: 0;
+  padding: 0 0 var(--space-4);
   overflow: hidden;
-  border: 0;
-  background: var(--panel);
-  color: var(--ink);
-  box-shadow: var(--shadow-deep);
+  border-block-end: 0;
+  border-start-start-radius: var(--radius-l);
+  border-start-end-radius: var(--radius-l);
+  border-end-start-radius: 0;
+  border-end-end-radius: 0;
   z-index: var(--z-toast);
-  opacity: 0;
-  transform: translateY(1rem);
+  transform: translateY(100%);
   transform-origin: bottom right;
   transition:
-    opacity var(--dur-fast) ease,
-    transform var(--dur-fast) var(--ease-out),
-    display var(--dur-fast) allow-discrete;
+    transform var(--sheet-exit, var(--dur)) var(--ease-drawer),
+    display var(--sheet-exit, var(--dur)) allow-discrete,
+    overlay var(--sheet-exit, var(--dur)) allow-discrete;
 }
 
 .panel[open] {
-  opacity: 1;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
   transform: none;
   transition:
-    opacity var(--dur) ease,
     transform var(--dur-slow) var(--ease-drawer),
-    display var(--dur-slow) allow-discrete;
+    display var(--dur-slow) allow-discrete,
+    overlay var(--dur-slow) allow-discrete;
 }
 
 @starting-style {
   .panel[open] {
-    opacity: 0;
-    transform: translateY(1rem);
+    transform: translateY(100%);
   }
+}
+
+.panel::backdrop {
+  background: var(--chat-scrim);
+  opacity: 0;
+  transition:
+    opacity var(--sheet-exit, var(--dur)) var(--ease-drawer),
+    display var(--sheet-exit, var(--dur)) allow-discrete,
+    overlay var(--sheet-exit, var(--dur)) allow-discrete;
+}
+
+.panel[open]::backdrop {
+  opacity: calc(1 - var(--sheet-progress, 0));
+  transition:
+    opacity var(--dur-slow) var(--ease-drawer),
+    display var(--dur-slow) allow-discrete,
+    overlay var(--dur-slow) allow-discrete;
+}
+
+@starting-style {
+  .panel[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+.panel:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.panel[data-dragging],
+.panel[data-dragging]::backdrop {
+  transition: none;
+}
+
+.grab {
+  display: flex;
+  justify-content: center;
+  padding-block: var(--space-2) 0;
+  cursor: grab;
+  touch-action: none;
+}
+
+.grab span {
+  inline-size: 2.25rem;
+  block-size: 0.3125rem;
+  border-radius: var(--radius-m);
+  background: var(--ink-soft);
+  opacity: 0.5;
+}
+
+.panel[data-dragging] .grab {
+  cursor: grabbing;
+}
+
+.panel [data-chat-head] {
+  touch-action: none;
+}
+
+.body {
+  grid-row: 2;
+  min-block-size: 0;
+}
+
+.panel[data-entering] [role="log"] > ul > li[data-stagger] {
+  --i: 6;
+  animation-delay: calc(var(--dur-chat-stagger) * (3 + var(--i)));
+  animation-fill-mode: backwards;
+}
+
+.panel[data-entering] [role="log"] > ul > li[data-stagger]:nth-last-child(1) {
+  --i: 0;
+}
+
+.panel[data-entering] [role="log"] > ul > li[data-stagger]:nth-last-child(2) {
+  --i: 1;
+}
+
+.panel[data-entering] [role="log"] > ul > li[data-stagger]:nth-last-child(3) {
+  --i: 2;
+}
+
+.panel[data-entering] [role="log"] > ul > li[data-stagger]:nth-last-child(4) {
+  --i: 3;
+}
+
+.panel[data-entering] [role="log"] > ul > li[data-stagger]:nth-last-child(5) {
+  --i: 4;
+}
+
+.panel[data-entering] [role="log"] > ul > li[data-stagger]:nth-last-child(6) {
+  --i: 5;
 }
 
 .fullscreen {
@@ -45,9 +137,9 @@
   block-size: 2.75rem;
   border-radius: var(--radius-xl);
   color: inherit;
-  transition-property: background-color, transform;
-  transition-duration: var(--dur-fast);
-  transition-timing-function: var(--ease-out);
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-press) var(--ease-out);
 }
 
 .fullscreen:focus-visible {
@@ -80,19 +172,73 @@
     display: inline-grid;
   }
 
+  .grab {
+    display: none;
+  }
+
+  .panel [data-chat-head] {
+    touch-action: auto;
+  }
+
   .panel {
     inset: auto var(--space-5) var(--space-5) auto;
+    padding: 0;
     inline-size: 26rem;
     block-size: min(40rem, calc(100dvh - var(--space-7)));
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius-l);
+    border-block-end: 1px solid var(--chat-edge);
+    border-end-start-radius: var(--radius-l);
+    border-end-end-radius: var(--radius-l);
+    opacity: 0;
+    transform: translateY(0.75rem) scale(0.97);
+    transition:
+      opacity var(--dur-fast) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out),
+      display var(--dur-fast) allow-discrete;
   }
+
+  .panel[open] {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity var(--dur) var(--ease-out),
+      transform var(--dur) var(--ease-out),
+      display var(--dur) allow-discrete;
+  }
+
+  @starting-style {
+    .panel[open] {
+      opacity: 0;
+      transform: translateY(0.75rem) scale(0.97);
+    }
+  }
+}
+
+.panel[data-switching],
+.panel[data-switching]::backdrop {
+  transition: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .panel,
-  .panel[open] {
+  .panel[open],
+  .panel::backdrop,
+  .panel[open]::backdrop {
     transform: none;
-    transition-duration: var(--dur-reduced);
+    transition: none;
+  }
+
+  .fullscreen {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .grab {
+    --forced-line: CanvasText;
+  }
+
+  .grab span {
+    background: var(--forced-line);
+    forced-color-adjust: none;
   }
 }

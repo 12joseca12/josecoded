@@ -109,7 +109,7 @@ export function ChatComposer({
       />
       <Button
         type="submit"
-        size="sm"
+        iconOnly
         icon={<ArrowIcon />}
         loading={sending}
         loadingLabel={labels.sendingMessage}

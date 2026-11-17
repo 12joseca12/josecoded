@@ -1,0 +1,36 @@
+.chat {
+  composes: glass from "../../chat/ChatPanel/glass.module.css";
+  position: relative;
+  inline-size: 100%;
+  block-size: 34rem;
+  overflow: hidden;
+  border-radius: var(--radius-l);
+  scroll-margin-top: calc(var(--nav-h) + var(--space-4));
+}
+
+.chat:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+@media (min-width: 64rem) {
+  .chat {
+    position: sticky;
+    inset-block-start: calc(var(--nav-h) + var(--space-4));
+    block-size: min(40rem, calc(100dvh - var(--nav-h) - var(--space-6)));
+  }
+}
+
+.skeleton {
+  padding: var(--space-5);
+}
+
+.plain {
+  padding: var(--space-5);
+}
+
+@media (scripting: none) {
+  .skeleton {
+    display: none;
+  }
+}

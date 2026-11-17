@@ -4,19 +4,21 @@
   justify-items: start;
   margin-inline: var(--space-4);
   padding: var(--space-3);
-  border: 1px solid var(--line);
+  border: 1px solid var(--chat-hair);
   border-radius: var(--radius-m);
-  background: var(--paper);
+  background: var(--chat-plate);
   color: var(--ink);
 }
 
 .notice[data-variant="takeover"] {
   border-color: var(--coral-deep);
-  background: var(--coral-tint);
+  background-color: var(--chat-plate);
+  background-image: linear-gradient(var(--coral-tint), var(--coral-tint));
 }
 
 .notice[data-variant="quota"] {
-  border-color: var(--error);
+  border-color: var(--chat-error-line);
+  background: var(--chat-error-plate);
 }
 
 .title {

@@ -176,6 +176,32 @@
   }
 }
 
+.button[data-icon-only] {
+  gap: 0;
+  min-width: 2.75rem;
+  padding: 0;
+  border-radius: var(--radius-round);
+}
+
+.button[data-icon-only][data-size="sm"] {
+  min-width: 2.25rem;
+}
+
+@media (pointer: coarse) {
+  .button[data-icon-only][data-size="sm"] {
+    min-width: 2.75rem;
+  }
+}
+
+.button[data-icon-only] .label {
+  position: absolute;
+  width: 0.0625rem;
+  height: 0.0625rem;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 @media (hover: hover) and (pointer: fine) {
   .button:hover,
   .button[data-hover="true"] {

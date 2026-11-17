@@ -34,28 +34,32 @@
 }
 
 .item[data-variant="nexo"] .bubble {
-  border: 1px solid var(--line);
+  border: 1px solid var(--chat-bubble-nexo-line);
   border-start-start-radius: var(--radius-xs);
-  background: var(--paper);
+  background: var(--chat-bubble-nexo);
   color: var(--ink);
 }
 
 .item[data-variant="staff"] .bubble {
   border-start-start-radius: var(--radius-xs);
-  background: var(--charcoal-raised);
-  color: var(--on-dark);
+  background: var(--chat-bubble-jose);
+  box-shadow: inset 0 0 0 1px var(--chat-hair);
+  outline: 1px solid transparent;
+  color: var(--ink);
 }
 
 .item[data-own="true"] .bubble {
   border-start-start-radius: var(--radius-m);
   border-end-end-radius: var(--radius-xs);
-  background: var(--charcoal);
+  background: var(--chat-bubble-own);
   color: var(--on-dark);
 }
 
 .item[data-variant="visitor"]:not([data-own="true"]) .bubble {
   border-start-start-radius: var(--radius-xs);
-  background: var(--panel);
+  background: var(--chat-bubble-jose);
+  box-shadow: inset 0 0 0 1px var(--chat-hair);
+  outline: 1px solid transparent;
   color: var(--ink);
 }
 
@@ -72,7 +76,9 @@
   margin: 0;
   padding: var(--space-1) var(--space-3);
   border-radius: var(--radius-xl);
-  background: var(--sk-base);
+  background: var(--chat-pill);
+  box-shadow: inset 0 0 0 1px var(--chat-hair);
+  outline: 1px solid transparent;
   color: var(--ink-soft);
   font-size: var(--fs-m);
   line-height: var(--lh-ui);
@@ -105,6 +111,10 @@
 }
 
 .item[data-delivery="failed"] .meta {
+  border-radius: var(--radius-s);
+  background: var(--chat-error-plate);
+  box-shadow: inset 0 0 0 1px var(--chat-error-line);
+  outline: 1px solid transparent;
   color: var(--error);
   font-weight: var(--fw-semibold);
 }

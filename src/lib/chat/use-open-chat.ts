@@ -3,11 +3,12 @@
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 
-import { chatFallbackHref, openChat } from "./chat-events";
+import { openChatOrEmbed } from "./chat-embed";
+import { chatFallbackHref } from "./chat-events";
 
 export function useOpenChat(locale: string): () => void {
   const router = useRouter();
   return useCallback(() => {
-    if (!openChat()) router.push(chatFallbackHref(locale));
+    if (!openChatOrEmbed()) router.push(chatFallbackHref(locale));
   }, [router, locale]);
 }

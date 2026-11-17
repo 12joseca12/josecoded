@@ -5,12 +5,24 @@
   padding: 0 var(--gutter) var(--space-9);
 }
 
+.layout {
+  display: grid;
+  gap: var(--space-4);
+  align-items: start;
+}
+
 .list {
   display: grid;
   gap: var(--space-4);
+  min-inline-size: 0;
 }
 
 @media (min-width: 64rem) {
+  .layout[data-chat="true"] {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: var(--space-6);
+  }
+
   .list {
     grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
   }
