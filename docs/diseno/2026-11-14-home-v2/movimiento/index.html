@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Home v2 · tabla del sistema de movimiento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="home-base.css">
+<style>
+  body { background: var(--bg); }
+  .doc { max-width: 72rem; margin: 0 auto; padding: var(--space-8) var(--gutter) var(--space-9); }
+  .doc h1 { font-size: var(--fs-h2); font-weight: 600; letter-spacing: -0.03em; line-height: 1.05; }
+  .doc h2 { font-size: var(--fs-h3); font-weight: 600; letter-spacing: -0.02em; margin-top: var(--space-8); }
+  .doc > p, .doc li { color: var(--ink-soft); max-width: 46rem; margin-top: var(--space-3); text-wrap: pretty; }
+  .doc ul { padding-left: 1.1rem; }
+  .doc code { font-family: var(--font-mono); font-size: 0.85em; color: var(--ink); }
+  .go { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: var(--space-5); min-height: 2.75rem; padding: 0 1.1rem; border-radius: 99px; background: var(--charcoal); color: var(--on-dark); font-weight: 600; text-decoration: none; }
+  .scroll { overflow-x: auto; margin-top: var(--space-5); background: var(--paper); border-radius: var(--radius-l); box-shadow: var(--shadow-card); }
+  table { width: 100%; border-collapse: collapse; font-size: var(--fs-base); min-width: 58rem; }
+  th, td { text-align: left; vertical-align: top; padding: 0.75rem 1rem; border-top: 1px solid var(--line); }
+  thead th { border-top: 0; font-size: var(--fs-s); text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); font-weight: 600; }
+  th[scope="row"] { font-weight: 600; white-space: nowrap; }
+  td.v { font-family: var(--font-mono); font-size: var(--fs-s); color: var(--ink); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  td.rec { background: rgb(255 75 50 / 0.06); }
+  td small { display: block; color: var(--ink-soft); font-family: var(--font-body); font-size: var(--fs-s); white-space: normal; margin-top: 0.2rem; }
+</style>
+</head>
+<body class="embed">
+<main class="doc">
+  <h1>Sistema de movimiento de la home</h1>
+  <p>Un comportamiento por tipo de componente, igual en toda la página: todas las tarjetas hacen lo mismo, todos los bloques también. Todo va ligado al scroll con <code>view()</code>, así que solo se mueve cuando el visitante se mueve y se puede parar o volver atrás a mitad. Cada pieza se resuelve en el mismo tramo de scroll desde que asoma por abajo, sea grande o pequeña. Sin fondos decorativos.</p>
+  <a class="go" href="home.html">Ver la home con el selector</a>
+
+  <h2>Tres principios</h2>
+  <ul>
+    <li><b>Los contenedores se mueven, el contenido aparece.</b> Bloque, banda y tarjeta solo suben y se asientan; la opacidad la llevan las piezas de lectura. Así la opacidad no se multiplica y nada arranca en blanco.</li>
+    <li><b>Una pieza dentro de otra que ya aparece no se anima aparte.</b> La excepción es la cifra, que se asienta dentro de su línea.</li>
+    <li><b>El escalonado sale del layout.</b> Lo apilado ya entra en orden por su posición. Solo lo que comparte fila recibe retraso (columnas de prueba, caso grande y laterales, niveles y MVP, las dos vías, chips).</li>
+  </ul>
+
+  <h2>Tipo → comportamiento → valores</h2>
+  <div class="scroll">
+  <table>
+    <thead><tr><th scope="col">Tipo</th><th scope="col">Dónde</th><th scope="col">Comportamiento</th><th scope="col">Sutil</th><th scope="col">Media ★</th><th scope="col">Marcada</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Tramo común</th><td>Todo</td><td>Desde que la pieza asoma por abajo; curva casi lineal que frena al final</td><td class="v">26vh · paso 2vh</td><td class="v rec">34vh · paso 3,5vh</td><td class="v">44vh · paso 5vh</td></tr>
+      <tr><th scope="row">Bloque</th><td>Franja de prueba, oferta</td><td>Entra subiendo y se asienta (sin opacidad). En su último tramo en pantalla se aparta hacia arriba y se atenúa, mientras el siguiente ya entra: se encadenan sin costura</td><td class="v">↑1,25rem · 0,997<small>sale: 24vh, −0,75rem, 0,8, 0,995</small></td><td class="v rec">↑2,5rem · 0,99<small>sale: 30vh, −1,5rem, 0,55, 0,985</small></td><td class="v">↑4,5rem · 0,975<small>sale: 38vh, −3rem, 0,3, 0,965</small></td></tr>
+      <tr><th scope="row">Banda carbón</th><td>Trabajo publicado</td><td>El mismo bloque, con más escala: una superficie que se apoya a sangre. Sin cortina ni costura</td><td class="v">0,99</td><td class="v rec">0,975</td><td class="v">0,94</td></tr>
+      <tr><th scope="row">Cierre</th><td>Cuéntame qué necesitas</td><td>Entra como bloque y no sale: es el final</td><td class="v">como bloque</td><td class="v rec">como bloque</td><td class="v">como bloque</td></tr>
+      <tr><th scope="row">Tarjeta</th><td>Proyecto, niveles, MVP, vía, columna de prueba</td><td>Se eleva y se asienta desde abajo (translate y scale, sin opacidad); su contenido aparece por tipos</td><td class="v">↑1rem · 0,99</td><td class="v rec">↑2rem · 0,975</td><td class="v">↑3,5rem · 0,95</td></tr>
+      <tr><th scope="row">Título</th><td>H2 de sección, H3 de tarjeta, nombre de vía</td><td>Aparece y sube; es el primero de su grupo</td><td class="v">0,35→1 · ↑0,625rem</td><td class="v rec">0,12→1 · ↑1,25rem</td><td class="v">0→1 · ↑2,25rem</td></tr>
+      <tr><th scope="row">Párrafo de entrada</th><td>Entradilla, texto de tarjeta, lead del cierre</td><td>El mismo gesto, medio paso detrás del título</td><td class="v">+1vh</td><td class="v rec">+1,75vh</td><td class="v">+2,5vh</td></tr>
+      <tr><th scope="row">Ítem de lista</th><td>Niveles (filas), apps, cifras, promesas, datos del MVP y del caso, contacto</td><td>El mismo gesto; el orden lo da su posición</td><td class="v">como título</td><td class="v rec">como título</td><td class="v">como título</td></tr>
+      <tr><th scope="row">Cifra</th><td>«2», «2024», «100», «145 KB», precios</td><td>Un paso después que su línea, se asienta desde abajo a la izquierda (solo scale y translate)</td><td class="v">0,96 · ↑0,3rem</td><td class="v rec">0,9 · ↑0,6rem</td><td class="v">0,8 · ↑1,1rem</td></tr>
+      <tr><th scope="row">Chip o etiqueta</th><td>Etiquetas de caso, stack</td><td>En fila, de izquierda a derecha, a medio paso</td><td class="v">0→1 · ↑0,3rem · 1vh</td><td class="v rec">0→1 · ↑0,6rem · 1,75vh</td><td class="v">0→1 · ↑1,1rem · 2,5vh</td></tr>
+      <tr><th scope="row">Botón o CTA</th><td>Enlaces de cabecera de sección, vías, «Hablemos» del cierre</td><td>Aparece como el texto, un paso detrás; su flecha llega la última desde la izquierda</td><td class="v">flecha 0,25rem</td><td class="v rec">flecha 0,5rem</td><td class="v">flecha 0,9rem</td></tr>
+      <tr><th scope="row">Imagen o dispositivo</th><td>Capturas y móvil de los casos</td><td>El marco va con su tarjeta; lo de dentro se asienta desde una escala mayor, anclado abajo (sin huecos)</td><td class="v">1,035→1</td><td class="v rec">1,07→1</td><td class="v">1,12→1</td></tr>
+      <tr><th scope="row">Hero</th><td>H1, texto, escenario</td><td>Sin movimiento al hacer scroll. El H1 no se anima (LCP); el escenario conserva su entrada y sus fases aprobadas. Ya no hay paralaje ni móvil que viaja</td><td class="v">—</td><td class="v rec">—</td><td class="v">—</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2>Reglas</h2>
+  <ul>
+    <li>Solo <code>translate</code>, <code>scale</code> y <code>opacity</code>. Sin <code>clip-path</code>: no hizo falta. CLS 0: nada cambia el tamaño de una caja (las cifras tienen <code>inline-block</code> siempre, con o sin movimiento).</li>
+    <li>CSS nativo dentro de <code>@supports (animation-timeline: view())</code> y <code>prefers-reduced-motion: no-preference</code>. Sin soporte o con «reducir movimiento», la página es la estática completa.</li>
+    <li>Sin listeners de scroll: el INP no cambia. El JS de la maqueta solo cambia la intensidad; en producción va fija en el CSS.</li>
+    <li>Valores de propuesta; los fija <code>director-arte</code>.</li>
+  </ul>
+
+  <h2>Coste</h2>
+  <ul>
+    <li>CSS: ≈ 1,2 KB gz con una sola intensidad y minificado (2,9 KB gz la hoja de la maqueta, con las tres y los comentarios). No cuenta en el límite de JS.</li>
+    <li>JS: 0 KB. La home sigue en ≈ 145,8 / 150 KB.</li>
+  </ul>
+</main>
+</body>
+</html>

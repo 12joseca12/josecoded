@@ -1,0 +1,131 @@
+/* Copia de expresivo-v1.css para transiciones/home.html. Quitadas las animaciones de costura de la v1
+   (cortina, barrido de H2, subidas de casos, niveles, MVP, vías, crecida del cierre y escalonado de la franja):
+   ahora las pone home-transiciones.css según el selector del panel. */
+:root {
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-slow: 420ms;
+  --dur-reveal: 360ms;
+  --dur-morph: 900ms;
+  --dur-phase: 4100ms;
+  --dur-hero-pulse: 1600ms;
+  --dur-enter: 700ms;
+  --fs-hero-x: clamp(2.6rem, 1.15rem + 4.6vw, 5.375rem);
+  --fs-close-x: clamp(2.25rem, 1.1rem + 3.6vw, 4.5rem);
+}
+
+.x .link { text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 0.5em; transition: text-decoration-color var(--dur-fast) var(--ease-out), text-underline-offset var(--dur) var(--ease-out); }
+.x .link:hover { text-decoration-color: currentColor; text-underline-offset: 0.24em; }
+
+.x .btn .arr { display: inline-grid; width: 1rem; height: 1rem; overflow: hidden; }
+.x .btn .arr svg { grid-area: 1 / 1; transition: transform var(--dur) var(--ease-out); }
+.x .btn .arr svg + svg { transform: translateX(-120%); }
+.x .btn:hover .arr svg { transform: translateX(120%); }
+.x .btn:hover .arr svg + svg { transform: translateX(0); }
+
+.x .hero { padding-block: var(--space-7) var(--space-7); }
+.x .hero-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 0 var(--space-5); align-items: start; }
+.x .hero h1 { grid-column: 1 / -1; font-size: var(--fs-hero-x); line-height: 0.92; letter-spacing: -0.04em; max-width: none; text-wrap: balance; }
+.x .hero h1 .l { display: block; white-space: nowrap; }
+.x .hero h1 em { position: relative; }
+.x-dot { position: relative; display: inline-block; }
+.x-dot::after { content: ""; position: absolute; left: 0.035em; bottom: 0.075em; width: 0.15em; height: 0.15em; border-radius: 50%; pointer-events: none; }
+.x .hero-copy { grid-column: 1 / span 5; padding-top: var(--space-6); }
+.x .hero-copy .lead { margin-top: 0; }
+.x .stage { grid-column: 7 / -1; margin-top: calc(var(--fs-hero-x) * -0.55); }
+.x .stage-scene { aspect-ratio: 16 / 10.6; }
+.x .browser, .x .phone { scale: 1; rotate: 0deg; transition: scale var(--dur-morph) var(--ease-in-out), rotate var(--dur-morph) var(--ease-in-out), box-shadow var(--dur-morph) var(--ease-in-out); }
+.x .stage[data-phase="0"] .browser, .x .stage[data-phase="1"] .browser, .x .stage[data-phase="2"] .browser { scale: 1.025; }
+.x .stage[data-phase="0"] .phone, .x .stage[data-phase="1"] .phone, .x .stage[data-phase="2"] .phone { scale: 0.95; rotate: 2deg; }
+.x .stage[data-phase="3"] .phone, .x .stage[data-phase="4"] .phone { scale: 1.05; rotate: -2deg; }
+.x .stage[data-phase="3"] .browser, .x .stage[data-phase="4"] .browser { scale: 0.975; }
+
+.x .rail li { position: relative; overflow: hidden; }
+.x .rail li.on::after { content: ""; position: absolute; left: 0.6rem; right: 0.6rem; bottom: 0.15rem; height: 2px; border-radius: 2px; background: var(--coral); transform-origin: 0 50%; transform: scaleX(0); }
+.x .rail-note { font-size: var(--fs-base); }
+
+.x .proof { background: rgb(247 248 249 / 0.7); }
+
+.x-dark { position: relative; background: var(--charcoal); color: var(--on-dark); padding-block: var(--space-9); margin-block: var(--space-8) 0; }
+.x-dark + .sec { padding-top: var(--space-9); }
+.x .x-dark .sec h2, .x .x-dark h2 { color: var(--on-dark); }
+.x-dark .sec-lead, .x-dark .case p, .x-dark .case-metric, .x-dark .chips { color: var(--on-dark-soft); }
+.x-dark .case-metric b { color: var(--on-dark); }
+.x-dark .case dt { color: var(--on-dark-soft); }
+.x-dark .link svg { stroke: var(--coral); }
+.x-dark .tag { background: var(--charcoal-raised); color: var(--on-dark-soft); box-shadow: none; border: 1px solid var(--line-dark); }
+.x-dark .case-media { box-shadow: 0 0 0 1px var(--line-dark), 0 30px 60px -30px rgb(0 0 0 / 0.7); }
+.x-dark .case-media.dark-stage { background: var(--charcoal-2); }
+.x-dark .work-foot { border-top-color: var(--line-dark); }
+.x-dark .chips span { border-color: var(--line-dark); }
+.x-dark a.case:hover .case-media { box-shadow: 0 0 0 1px rgb(255 255 255 / 0.28), 0 30px 60px -30px rgb(0 0 0 / 0.8); }
+.x-dark :focus-visible { outline-color: var(--coral); }
+.x .case-media > .ds-phone, .x .case-media .mini-site { transition: transform var(--dur-slow) var(--ease-out); }
+.x a.case:hover .ds-phone { transform: translateY(-6px); }
+
+.x .tier b { transition: transform var(--dur) var(--ease-out); }
+.x a.tier:hover b { transform: translateX(4px); }
+.x .tier .price { transition: color var(--dur-fast) var(--ease-out); }
+.x a.tier:hover .price { color: var(--ink); }
+
+.x .closing { padding-block: var(--space-9) var(--space-8); border-top: 1px solid var(--line); }
+.x .closing h2 { font-size: var(--fs-close-x); font-weight: 700; letter-spacing: -0.04em; line-height: 0.95; max-width: 16ch; }
+.x .closing-in { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: var(--space-7); align-items: start; margin-top: var(--space-6); padding: 0; background: none; box-shadow: none; border-radius: 0; }
+.x .closing .lead { margin-top: 0; }
+.x .copy { transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out); }
+.x .copy.done { background: var(--charcoal); color: var(--on-dark); border-color: var(--charcoal); }
+
+@view-transition { navigation: auto; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .x-dot::after { animation: x-ping var(--dur-hero-pulse) var(--ease-out) 900ms 3 both; }
+  .x .stage-scene { animation: x-rise var(--dur-enter) var(--ease-out) 120ms both; }
+  .x .phone { animation: x-rise var(--dur-enter) var(--ease-out) 280ms both; }
+  .x .rail li.on::after { animation: x-fill var(--dur-phase) linear both; }
+  .x .stage.paused .rail li.on::after { animation-play-state: paused; }
+  .x .rail-note.swap { animation: x-note var(--dur-slow) var(--ease-out); }
+}
+
+@keyframes x-ping { from { box-shadow: 0 0 0 0 rgb(255 75 50 / 0.6); } to { box-shadow: 0 0 0 0.32em rgb(255 75 50 / 0); } }
+@keyframes x-rise { from { opacity: 0; transform: translateY(1.25rem); } }
+@keyframes x-fill { to { transform: scaleX(1); } }
+@keyframes x-note { from { opacity: 0; transform: translateY(6px); filter: blur(4px); } }
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .x .head { animation: x-head linear both; animation-timeline: scroll(root); animation-range: 0 7rem; }
+    .x .hero { view-timeline: --hero; }
+    .x .browser { animation: x-par-b linear both; animation-timeline: --hero; animation-range: exit 0% exit 100%; }
+    .x .phone { animation: x-rise var(--dur-enter) var(--ease-out) 280ms both, x-par-p linear both; animation-timeline: auto, --hero; animation-range: normal, exit 0% exit 100%; }
+  }
+}
+
+@keyframes x-head { to { background-color: rgb(238 240 242 / 0.95); border-bottom-color: var(--line); box-shadow: 0 8px 24px -18px rgb(23 25 28 / 0.4); } }
+@keyframes x-par-b { to { translate: 0 -2.5rem; } }
+@keyframes x-par-p { to { translate: 0 -7rem; } }
+@keyframes x-curtain { from { clip-path: inset(0 var(--gutter) 0 var(--gutter) round var(--radius-l)); } to { clip-path: inset(0 0 0 0 round 0); } }
+@keyframes x-wipe { from { clip-path: inset(0 0 100% 0); transform: translateY(0.35em); } to { clip-path: inset(-0.3em -0.3em -0.3em -0.3em); transform: none; } }
+@keyframes x-up { from { opacity: 0; transform: translateY(1.5rem); } }
+@keyframes x-phone-up { from { transform: translateY(35%); } }
+@keyframes x-grow { from { opacity: 0.2; transform: scale(0.94); } }
+
+@media (max-width: 64rem) {
+  .x .hero-grid { grid-template-columns: 1fr; }
+  .x .hero h1, .x .hero-copy, .x .stage { grid-column: 1; }
+  .x .hero h1 .l { display: inline; white-space: normal; }
+  .x .hero h1 { max-width: 15ch; }
+  .x .hero-copy { padding-top: var(--space-5); }
+  .x .stage { margin-top: var(--space-6); }
+  .x .closing-in { grid-template-columns: 1fr; gap: var(--space-6); }
+}
+
+@media (max-width: 47.99rem) {
+  .x .hero h1 { font-size: clamp(2.6rem, 11.4vw, 3.4rem); }
+  .x .hero-copy { padding-top: var(--space-4); }
+  .x .stage { margin-top: var(--space-5); }
+  .x-dark { padding-block: var(--space-8); margin-top: var(--space-7); }
+  .x-dark + .sec { padding-top: var(--space-8); }
+  .x .closing { padding-block: var(--space-8) var(--space-7); }
+  @keyframes x-par-p { to { translate: 0 -3rem; } }
+  @keyframes x-par-b { to { translate: 0 -1rem; } }
+  @keyframes x-curtain { from { clip-path: inset(0 0.75rem 0 0.75rem round var(--radius-m)); } to { clip-path: inset(0 0 0 0 round 0); } }
+}

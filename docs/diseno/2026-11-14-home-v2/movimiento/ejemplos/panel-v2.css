@@ -1,0 +1,5 @@
+.mp-v2 { width: min(21rem, calc(100vw - 2rem)); }
+.mp-v2 .mp-body { max-height: calc(100svh - 7rem); overflow-y: auto; overscroll-behavior: contain; }
+.mp-lbl { font-size: var(--fs-s); font-weight: 600; color: var(--ink-soft); margin-bottom: -0.3rem; }
+.mp-seg-2 { grid-template-columns: repeat(2, 1fr); border-radius: 1.2rem; }
+.mp-seg-2 button { border-radius: 1rem; }

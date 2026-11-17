@@ -1,0 +1,196 @@
+/* Transiciones de la batería aplicadas en las costuras reales de la home R expresivo v1.
+   Cada costura se elige con un atributo en <html> (data-hp, data-fb, data-bi, data-bo, data-ot, data-ov,
+   data-vc, data-h2, data-an). Solo transform, translate, opacity y clip-path (el desenfoque de 10, aparte).
+   Las ligadas al scroll van dentro de @supports (animation-timeline) + no-preference: sin soporte o con
+   «reducir movimiento», la página queda estática y completa. Valores de propuesta: los fija director-arte. */
+
+html { scroll-padding-top: 5rem; }
+main { timeline-scope: --band, --paths, --close; }
+.x .proof { position: relative; }
+.x .x-dark { view-timeline: --band; }
+.x .paths { view-timeline: --paths; }
+.x .closing { position: relative; view-timeline: --close; }
+.seam-fb + .sec { padding-top: var(--space-9); }
+
+/* El panel y la cabecera no se mueven en el salto con View Transition (14) */
+.head { view-transition-name: head; }
+.tp { view-transition-name: tpanel; }
+
+/* ---------- Disparadas: 12 Escalonado al entrar (hero→franja, casos, tarjetas de la oferta) ----------
+   El estado oculto existe solo mientras el grupo no ha entrado; el JS marca .is-in al entrar
+   (o de inmediato si ya está por encima de la pantalla). Sin JS no hay .js y todo se ve. */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-stg]:not(.is-in) .stg-i { opacity: 0; }
+  .js [data-stg].is-in .stg-i { animation: tc-stg 520ms var(--ease-out) calc(var(--i, 0) * 60ms) both; }
+}
+@keyframes tc-stg { from { opacity: 0; translate: 0 1.25rem; } }
+
+/* ---------- 14 Salto con View Transition (anclas) ---------- */
+::view-transition-old(root) { animation: 420ms var(--ease-out) both tc-vt-out; }
+::view-transition-new(root) { animation: 420ms var(--ease-out) both tc-vt-in; }
+:root[data-vt="up"]::view-transition-old(root) { animation-name: tc-vt-out-up; }
+:root[data-vt="up"]::view-transition-new(root) { animation-name: tc-vt-in-up; }
+@keyframes tc-vt-out { to { opacity: 0; transform: translateY(-2.5rem); } }
+@keyframes tc-vt-in { from { opacity: 0; transform: translateY(2.5rem); } }
+@keyframes tc-vt-out-up { to { opacity: 0; transform: translateY(2.5rem); } }
+@keyframes tc-vt-in-up { from { opacity: 0; transform: translateY(-2.5rem); } }
+
+@media (prefers-reduced-motion: no-preference) {
+  html[data-an="smooth"] { scroll-behavior: smooth; }
+}
+
+/* ---------- Ligadas al scroll ---------- */
+@supports (animation-timeline: view()) {
+@media (prefers-reduced-motion: no-preference) {
+
+  /* Franja → banda */
+  /* 01 Cortina */
+  html[data-fb="01"] .x .x-dark { animation: tc-curtain linear both; animation-timeline: view(); animation-range: entry 0% cover 35%; }
+  /* 02 Punto que se abre */
+  html[data-fb="02"] .x .x-dark { margin-top: 0; animation: tc-dot-open linear both; animation-timeline: view(); animation-range: entry 5% entry 100%; }
+  html[data-fb="02"] .x .proof::after { content: ""; position: absolute; z-index: 2; left: 50%; bottom: -0.5rem; width: 1rem; height: 1rem; margin-left: -0.5rem; border-radius: 50%; background: var(--coral); pointer-events: none; animation: tc-dot linear both; animation-timeline: --band; animation-range: entry 0% entry 30%; }
+  /* 03 Fundido a carbón: la franja se apaga hasta el carbón justo antes de que llegue la banda */
+  html[data-fb="03"] .x .x-dark { margin-top: 0; }
+  html[data-fb="03"] .x .proof { isolation: isolate; }
+  html[data-fb="03"] .x .proof::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--charcoal); pointer-events: none; animation: tc-fade linear both; animation-timeline: --band; animation-range: entry 0% entry 70%; }
+  html[data-fb="03"] .x .proof-grid { animation: tc-dim-out linear both; animation-timeline: --band; animation-range: entry 0% entry 70%; }
+
+  /* Interior de la banda: 08 Capas (translate, para no pisar el hover del móvil) */
+  html[data-bi="08"] .x .case-big .ds-phone { animation: tc-layer-a linear both; animation-timeline: --band; animation-range: cover 0% cover 55%; }
+  html[data-bi="08"] .x .case-side { animation: tc-layer-b linear both; animation-timeline: --band; animation-range: cover 0% cover 100%; }
+
+  /* Banda → oferta */
+  /* 04 Subida con escala */
+  html[data-bo="04"] .x #oferta { position: relative; background: var(--bg); transform-origin: 50% 0; animation: tc-sheet linear both; animation-timeline: view(); animation-range: entry 0% entry 90%; }
+  /* 09 Borde curvo */
+  html[data-bo="09"] .x #oferta { position: relative; z-index: 1; margin-top: -3rem; background: var(--bg); animation: tc-arc linear both; animation-timeline: view(); animation-range: entry 0% entry 70%; }
+  /* 13 Retroceso: la banda se aleja mientras la oferta sube por encima */
+  html[data-bo="13"] .x .x-dark { padding-bottom: calc(var(--space-9) + 8rem); transform-origin: 50% 100%; animation: tc-recede linear forwards; animation-timeline: view(); animation-range: exit 0% exit 70%; }
+  html[data-bo="13"] .x #oferta { position: relative; z-index: 1; margin-top: -6rem; background: var(--bg); border-radius: var(--radius-l) var(--radius-l) 0 0; box-shadow: 0 -1.5rem 3rem -1.5rem rgb(23 25 28 / 0.55); }
+  /* Cortina o punto + retroceso tocan el mismo clip-path de la banda: se encadenan en una sola lista */
+  html[data-fb="01"][data-bo="13"] .x .x-dark { animation: tc-curtain linear both, tc-recede linear forwards; animation-timeline: view(), view(); animation-range: entry 0% cover 35%, exit 0% exit 70%; }
+  html[data-fb="02"][data-bo="13"] .x .x-dark { animation: tc-dot-open linear both, tc-recede linear forwards; animation-timeline: view(), view(); animation-range: entry 5% entry 100%, exit 0% exit 70%; }
+
+  /* Oferta → vías */
+  /* 05 Fundido cruzado: la oferta baja la voz mientras las vías aparecen */
+  html[data-ov="05"] .x #oferta .sec-head, html[data-ov="05"] .x .offer { animation: tc-quiet linear both; animation-timeline: --paths; animation-range: entry 0% entry 100%; }
+  html[data-ov="05"] .x .path { animation: tc-fade linear both; animation-timeline: --paths; animation-range: entry 10% entry 90%; }
+  /* 04 Subida con escala, aplicada a las vías */
+  html[data-ov="04"] .x .paths { transform-origin: 50% 0; animation: tc-rise-scale linear both; animation-timeline: view(); animation-range: entry 0% entry 90%; }
+
+  /* Vías → cierre */
+  /* 11 Costura coral */
+  html[data-vc="11"] .x .closing::before { content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 2px; background: var(--coral); transform: scaleX(0); pointer-events: none; animation: tc-seam linear both; animation-timeline: --close; animation-range: entry 0% entry 60%; }
+  html[data-vc="11"] .x .closing-in { animation: tc-rise-in linear both; animation-timeline: --close; animation-range: entry 35% entry 95%; }
+  /* 10 Enfoque */
+  html[data-vc="10"] .x .closing h2 { animation: tc-focus linear both; animation-timeline: --close; animation-range: entry 0% cover 35%; }
+  html[data-vc="10"] .x .closing-in { animation: tc-focus-in linear both; animation-timeline: --close; animation-range: entry 20% cover 45%; }
+
+  /* Títulos H2: 06 Títulos por líneas (el JS de la maqueta parte el título en líneas medidas) */
+  html[data-h2="06"] .x :is(.sec, .closing) h2 { view-timeline: --h2; }
+  html[data-h2="06"] .x h2 .ln > span { animation: tc-line var(--ease-out) both; animation-timeline: --h2; animation-range: cover 5% cover 30%; }
+  html[data-h2="06"] .x h2 .ln:nth-child(2) > span { animation-range: cover 12% cover 37%; }
+  html[data-h2="06"] .x h2 .ln:nth-child(3) > span { animation-range: cover 19% cover 44%; }
+  html[data-h2="06"] .x h2 .ln:nth-child(n+4) > span { animation-range: cover 26% cover 51%; }
+}
+}
+
+/* 07 Apilado: solo escritorio (en móvil la franja es más alta que la pantalla y se taparía sin leerse) */
+@supports (animation-timeline: view()) {
+@media (prefers-reduced-motion: no-preference) and (min-width: 64rem) {
+  html[data-fb="07"] .x .proof { position: sticky; top: 4.25rem; transform-origin: 50% 0; animation: tc-stack linear both; animation-timeline: --band; animation-range: entry 0% entry 100%; }
+  html[data-fb="07"] .x .x-dark { z-index: 1; margin-top: 0; border-radius: 1.25rem 1.25rem 0 0; box-shadow: 0 -1.5rem 3rem -1.5rem rgb(23 25 28 / 0.5); }
+}
+}
+
+h2 .ln { display: block; overflow: clip; padding-block: 0.04em 0.1em; margin-block: -0.04em -0.1em; }
+h2 .ln > span { display: inline-block; }
+
+@keyframes tc-curtain { from { clip-path: inset(0 var(--gutter) 0 var(--gutter) round var(--radius-l)); } to { clip-path: inset(0 0 0 0 round 0); } }
+@keyframes tc-dot-open { from { clip-path: circle(0.5rem at 50% 0); } to { clip-path: circle(110vmax at 50% 0); } }
+@keyframes tc-dot { 0% { transform: scale(0); } 45% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.6); opacity: 0; } }
+@keyframes tc-fade { from { opacity: 0; } }
+@keyframes tc-dim-out { to { opacity: 0; } }
+@keyframes tc-layer-a { from { translate: 0 3.5rem; } to { translate: 0 0; } }
+@keyframes tc-layer-b { from { translate: 0 1.5rem; } to { translate: 0 -1.5rem; } }
+@keyframes tc-sheet { from { transform: translateY(3rem) scale(0.95); clip-path: inset(0 round var(--radius-l) var(--radius-l) 0 0); } to { transform: none; clip-path: inset(0 round 0); } }
+@keyframes tc-arc { from { clip-path: inset(0 round 50% 50% 0 0 / 4rem 4rem 0 0); } to { clip-path: inset(0 round 50% 50% 0 0 / 0 0 0 0); } }
+@keyframes tc-recede { to { transform: scale(0.9); clip-path: inset(0 round var(--radius-l)); } }
+@keyframes tc-quiet { to { opacity: 0.35; } }
+@keyframes tc-rise-scale { from { transform: translateY(3rem) scale(0.95); } }
+@keyframes tc-seam { 0% { transform: scaleX(0); opacity: 1; } 75% { transform: scaleX(1); opacity: 1; } 100% { transform: scaleX(1); opacity: 0; } }
+@keyframes tc-rise-in { from { opacity: 0; transform: translateY(1rem); } }
+@keyframes tc-focus { from { filter: blur(10px); opacity: 0.15; } }
+@keyframes tc-focus-in { from { filter: blur(4px); opacity: 0; } }
+@keyframes tc-line { from { transform: translateY(110%); } }
+@keyframes tc-stack { to { transform: scale(0.94); opacity: 0.45; } }
+
+@media (max-width: 47.99rem) {
+  .seam-fb + .sec { padding-top: var(--space-8); }
+  /* En móvil, el enfoque sin desenfoque (coste de pintado) */
+  @keyframes tc-focus { from { opacity: 0.15; transform: translateY(0.75rem); } }
+  @keyframes tc-focus-in { from { opacity: 0; transform: translateY(0.75rem); } }
+  @keyframes tc-curtain { from { clip-path: inset(0 0.75rem 0 0.75rem round var(--radius-m)); } to { clip-path: inset(0 0 0 0 round 0); } }
+}
+
+/* ---------- Panel de la maqueta (no es parte de la home) ---------- */
+.tp {
+  position: fixed; z-index: 80;
+  right: max(1rem, env(safe-area-inset-right, 0px));
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  width: min(27rem, calc(100vw - 2rem));
+  display: flex; flex-direction: column; align-items: stretch;
+  background: var(--white); color: var(--ink);
+  border-radius: var(--radius-m);
+  box-shadow: 0 0 0 1px var(--line), 0 24px 48px -20px rgb(23 25 28 / 0.45);
+  font-size: var(--fs-m); line-height: 1.35;
+}
+.tp[data-closed] { width: auto; border-radius: 99px; }
+.tp-tog {
+  display: flex; align-items: center; gap: 0.5rem; width: 100%;
+  min-height: 2.75rem; padding: 0.5rem 0.9rem;
+  font: 600 var(--fs-m)/1 var(--font-body); color: var(--ink);
+  background: none; border: 0; border-radius: inherit; cursor: pointer; text-align: left;
+}
+.tp-tog svg { width: 1rem; height: 1rem; margin-left: auto; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: rotate var(--dur) var(--ease-out); rotate: 180deg; }
+.tp[data-closed] .tp-tog svg { rotate: 0deg; }
+.tp-dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--coral); flex: none; }
+.tp-state { font-weight: 500; color: var(--ink-faint); font-size: var(--fs-s); }
+.tp-body { border-top: 1px solid var(--line); padding: 0.5rem 0.75rem 0.7rem; max-height: calc(100dvh - 7rem); overflow-y: auto; overscroll-behavior: contain; }
+.tp[data-closed] .tp-body { display: none; }
+.tp-hint { color: var(--ink-faint); font-size: var(--fs-s); }
+.tp-hint b { color: var(--ink); font-weight: 600; }
+.tp-rows { display: grid; gap: 0.2rem; }
+.tp-row { display: grid; grid-template-columns: 7.25rem minmax(0, 1fr) auto; gap: 0.35rem; align-items: center; }
+.tp-row label { font-size: var(--fs-s); font-weight: 600; color: var(--ink-soft); display: flex; align-items: center; gap: 0.35rem; }
+.tp-row label i { width: 0.35rem; height: 0.35rem; border-radius: 50%; background: var(--coral); visibility: hidden; }
+.tp-row[data-changed] label i { visibility: visible; }
+.tp-row select {
+  min-width: 0; width: 100%; min-height: 1.875rem;
+  font: 500 var(--fs-m)/1.2 var(--font-body); color: var(--ink);
+  background: var(--paper); border: 1px solid var(--line-strong); border-radius: var(--radius-xs);
+  padding: 0.35rem 0.5rem;
+}
+.tp-go { min-height: 1.875rem; padding: 0 0.6rem; font: 500 var(--fs-s)/1 var(--font-body); color: var(--ink-soft); background: none; border: 1px solid var(--line); border-radius: var(--radius-xs); cursor: pointer; }
+.tp-go:hover { color: var(--ink); border-color: var(--line-strong); }
+.tp-out { margin-top: 0.55rem; padding: 0.5rem 0.6rem; background: var(--bg); border-radius: var(--radius-s); }
+.tp-lab { font-size: var(--fs-xs); line-height: 1.3; color: var(--ink-faint); }
+.tp-sum { margin-top: 0.25rem; font: 500 var(--fs-xs)/1.45 var(--font-mono); color: var(--ink); user-select: all; overflow-wrap: anywhere; }
+.tp-act { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.55rem; }
+.tp-btn { min-height: 2.25rem; padding: 0 0.85rem; font: 600 var(--fs-m)/1 var(--font-body); color: var(--on-dark); background: var(--charcoal); border: 0; border-radius: 99px; cursor: pointer; transition: transform var(--dur-press) var(--ease-out), background-color var(--dur-fast) var(--ease-out); }
+.tp-btn:active, .tp-go:active { transform: scale(0.97); }
+.tp-btn-2 { color: var(--ink); background: rgb(23 25 28 / 0.07); }
+.tp-btn.done { background: #2f7a4b; }
+.tp-env { margin-top: 0.6rem; font-size: var(--fs-s); color: var(--coral-deep); }
+.tp-env:empty { display: none; }
+.tp-mode { display: inline-flex; align-items: center; gap: 0.2rem; margin-left: auto; }
+.tp-mode button { min-height: 1.75rem; padding: 0 0.55rem; font: 500 var(--fs-s)/1 var(--font-body); color: var(--ink-soft); background: none; border: 1px solid var(--line); border-radius: 99px; cursor: pointer; }
+.tp-mode button[aria-pressed="true"] { color: var(--on-dark); background: var(--charcoal); border-color: var(--charcoal); }
+
+@media (max-width: 47.99rem) {
+  .tp { left: max(1rem, env(safe-area-inset-left, 0px)); width: auto; }
+  .tp[data-closed] { left: auto; }
+  .tp-body { max-height: 62dvh; }
+  .tp-row { grid-template-columns: 6.25rem minmax(0, 1fr) auto; }
+  .tp-row select { font-size: 1rem; }
+}

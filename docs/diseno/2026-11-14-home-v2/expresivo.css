@@ -1,0 +1,266 @@
+/* R expresivo · ronda 3
+   Sobre la v1 aprobada (expresivo-v1.css). Cambios: cadena de transiciones entre bloques,
+   móvil del hero que viaja y pasa sus pantallas con el scroll, coral con intención. (Ronda 4: sin grano ni trama.)
+   Todo CSS nativo; 0 KB de JS nuevo en la home. */
+
+:root {
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-slow: 420ms;
+  --dur-reveal: 360ms;
+  --dur-morph: 900ms;
+  --dur-phase: 4100ms;
+  --dur-hero-pulse: 1600ms;
+  --dur-enter: 700ms;
+  --fs-hero-x: clamp(2.6rem, 1.15rem + 4.6vw, 5.375rem);
+  --fs-close-x: clamp(2.25rem, 1.1rem + 3.6vw, 4.5rem);
+  /* Viaje del móvil del hero: tramo de scroll (raíz) en el que se desplaza y pasa pantallas */
+  --travel-from: 0vh;
+  --travel-to: 72vh;
+  --reel-from: 4vh;
+  --reel-to: 56vh;
+  --travel-x: 3%;
+  --travel-y: 29rem;
+}
+
+/* ---------- Fondo ---------- */
+/* Ronda 4: fuera el grano SVG y la trama de puntos (Jose no quiere textura). Los elementos decorativos
+   de fondo se eligen en fondo/index.html */
+body.x {
+  background-color: var(--bg);
+  background-image: linear-gradient(var(--bg-top), var(--bg) 34rem);
+}
+html:has(body.x) { scrollbar-color: var(--steel) var(--bg); }
+.x input, .x textarea { caret-color: var(--coral); }
+
+/* ---------- Microinteracciones (v1) ---------- */
+.x .link { text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 0.5em; transition: text-decoration-color var(--dur-fast) var(--ease-out), text-underline-offset var(--dur) var(--ease-out); }
+.x .link:hover { text-decoration-color: currentColor; text-underline-offset: 0.24em; }
+
+.x .btn .arr { display: inline-grid; width: 1rem; height: 1rem; overflow: hidden; }
+.x .btn .arr svg { grid-area: 1 / 1; transition: transform var(--dur) var(--ease-out); }
+.x .btn .arr svg + svg { transform: translateX(-120%); }
+.x .btn:hover .arr svg { transform: translateX(120%); }
+.x .btn:hover .arr svg + svg { transform: translateX(0); }
+
+/* ---------- Hero ---------- */
+.x .hero { padding-block: var(--space-7) var(--space-7); }
+.x .hero-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 0 var(--space-5); align-items: start; }
+.x .hero h1 { grid-column: 1 / -1; font-size: var(--fs-hero-x); line-height: 0.92; letter-spacing: -0.04em; max-width: none; text-wrap: balance; }
+.x .hero h1 .l { display: block; white-space: nowrap; }
+.x .hero h1 em { position: relative; }
+.x-dot { position: relative; display: inline-block; }
+.x-dot::after { content: ""; position: absolute; left: 0.035em; bottom: 0.075em; width: 0.15em; height: 0.15em; border-radius: 50%; pointer-events: none; }
+.x .hero-copy { grid-column: 1 / span 5; padding-top: var(--space-6); }
+.x .hero-copy .lead { margin-top: 0; }
+.x .stage { grid-column: 7 / -1; margin-top: calc(var(--fs-hero-x) * -0.55); }
+.x .stage-scene { aspect-ratio: 16 / 10.6; }
+
+.x .browser, .x .phone { scale: 1; rotate: 0deg; transition: scale var(--dur-morph) var(--ease-in-out), rotate var(--dur-morph) var(--ease-in-out), box-shadow var(--dur-morph) var(--ease-in-out); }
+.x .stage[data-phase="0"] .browser, .x .stage[data-phase="1"] .browser, .x .stage[data-phase="2"] .browser { scale: 1.025; }
+.x .stage[data-phase="0"] .phone, .x .stage[data-phase="1"] .phone, .x .stage[data-phase="2"] .phone { scale: 0.95; rotate: 2deg; }
+.x .stage[data-phase="3"] .phone, .x .stage[data-phase="4"] .phone { scale: 1.05; rotate: -2deg; }
+.x .stage[data-phase="3"] .browser, .x .stage[data-phase="4"] .browser { scale: 0.975; }
+
+/* Coral en el escenario: el primer piloto del navegador y la cámara del móvil */
+.x .browser-bar i:first-child { background: var(--coral); }
+.x .phone { z-index: 2; pointer-events: none; }
+/* El carril y su nota quedan por encima del móvil cuando este baja: los controles siempre se ven y se pulsan */
+.x .rail, .x .rail-note { position: relative; z-index: 3; }
+.x .phone::before { content: ""; position: absolute; z-index: 3; top: 0.95rem; left: 50%; width: 0.32rem; height: 0.32rem; margin-left: -0.16rem; border-radius: 50%; background: var(--coral); box-shadow: 0 0 0 2px var(--charcoal); }
+
+/* Móvil: carrete de tres pantallas (3CatInfo, 3Cat, NextRaket), el mismo orden que «Trabajo publicado» */
+.x .phone-screen { position: relative; display: block; }
+.x .reel { height: 300%; display: grid; grid-template-rows: repeat(3, minmax(0, 1fr)); }
+.x .scr { display: grid; min-height: 0; overflow: hidden; }
+.x .scr .slot { border-radius: 0; border-width: 0 0 1px; font-size: 0.625rem; padding: 0.6rem; }
+.x .scr:first-child .slot { border-radius: 1.2rem 1.2rem 0 0; }
+.x .scr:last-child .slot { border-radius: 0 0 1.2rem 1.2rem; border-bottom-width: 0; }
+.x .phone-real { padding-top: 1.9rem; }
+.x .phone-real.scr-alt { background: linear-gradient(var(--charcoal-raised), var(--charcoal-2) 60%); }
+.x .phone-real.scr-alt .app-ico { background: var(--coral); color: var(--charcoal); }
+.x .phone-real.scr-light { background: var(--paper); color: var(--ink); }
+.x .phone-real.scr-light span { color: var(--ink-soft); }
+.x .phone-real.scr-light .app-ico { background: var(--charcoal); color: var(--on-dark); }
+.x .phone-real.scr-light .p-store i { border-color: var(--line); }
+.x .reel-ind { position: absolute; left: 50%; bottom: 0.55rem; width: 2.4rem; height: 0.22rem; margin-left: -1.2rem; border-radius: 1rem; background: rgb(146 157 167 / 0.45); overflow: hidden; }
+.x .reel-ind i { display: block; width: 33.334%; height: 100%; border-radius: inherit; background: var(--coral); }
+
+.x .rail li { position: relative; overflow: hidden; }
+.x .rail li.on::after { content: ""; position: absolute; left: 0.6rem; right: 0.6rem; bottom: 0.15rem; height: 2px; border-radius: 2px; background: var(--coral); transform-origin: 0 50%; transform: scaleX(0); }
+.x .rail li[data-i] { cursor: pointer; transition: color var(--dur-fast) var(--ease-out); }
+.x .rail li[data-i]:not(.on):hover { color: var(--ink); }
+.x .rail li[data-i]:not(.on):hover::before { border-color: var(--coral); }
+.x .rail-note { font-size: var(--fs-base); }
+
+/* ---------- Franja de prueba ---------- */
+/* Más opaca que en v1 (0,86): el móvil pasa por debajo y el texto gris mantiene AA */
+.x .proof { position: relative; z-index: 3; background: rgb(247 248 249 / 0.86); }
+.x .store { transition: box-shadow var(--dur-fast) var(--ease-out); }
+.x .store:hover { box-shadow: 0 0 0 1px var(--coral), var(--shadow-hair); }
+
+/* ---------- Banda carbón «Trabajo publicado» ---------- */
+.x main { timeline-scope: --band; }
+.x-dark {
+  position: relative; color: var(--on-dark); padding-block: var(--space-9); margin-block: var(--space-8) 0;
+  background-color: var(--charcoal);
+}
+/* Costura coral: marca el comienzo del capítulo del trabajo publicado */
+.x-dark::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--coral); transform-origin: 50% 0; }
+.x-dark + .sec { padding-top: var(--space-9); }
+.x .x-dark .sec h2, .x .x-dark h2 { color: var(--on-dark); }
+.x-dark .sec-lead, .x-dark .case p, .x-dark .case-metric, .x-dark .chips { color: var(--on-dark-soft); }
+.x-dark .case-metric b { color: var(--coral); }
+.x-dark .case dt { color: var(--on-dark-soft); }
+.x-dark .link svg { stroke: var(--coral); }
+.x-dark .tag { background: var(--charcoal-raised); color: var(--on-dark-soft); box-shadow: none; border: 1px solid var(--line-dark); }
+.x-dark .case-media { box-shadow: 0 0 0 1px var(--line-dark), 0 30px 60px -30px rgb(0 0 0 / 0.7); }
+/* Foco de escena: luz coral baja detrás del móvil de 3CatInfo */
+.x-dark .case-media.dark-stage { background: radial-gradient(70% 80% at 74% 108%, rgb(255 75 50 / 0.26), rgb(255 75 50 / 0) 70%), var(--charcoal-2); }
+.x-dark .work-foot { border-top-color: var(--line-dark); }
+.x-dark .chips span { border-color: var(--line-dark); }
+.x-dark a.case:hover .case-media { box-shadow: 0 0 0 1px rgb(255 75 50 / 0.55), 0 30px 60px -30px rgb(0 0 0 / 0.8); }
+.x-dark a.case h3 { text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 2px; text-underline-offset: 0.3em; transition: text-decoration-color var(--dur-fast) var(--ease-out); }
+.x-dark a.case:hover h3 { text-decoration-color: var(--coral); }
+.x-dark :focus-visible { outline-color: var(--coral); }
+.x .case-media > .ds-phone, .x .case-media .mini-site { transition: transform var(--dur-slow) var(--ease-out); }
+.x a.case:hover .ds-phone { transform: translateY(-6px); }
+/* Mismo bisel y cámara coral que el móvil del hero: es el mismo objeto que ha llegado */
+.x .ds-phone { position: relative; background: var(--charcoal); }
+.x .ds-phone::before { content: ""; position: absolute; z-index: 2; top: 0.75rem; left: 50%; width: 0.3rem; height: 0.3rem; margin-left: -0.15rem; border-radius: 50%; background: var(--coral); box-shadow: 0 0 0 2px var(--charcoal); }
+
+/* ---------- Oferta ---------- */
+.x .tier b { transition: transform var(--dur) var(--ease-out), color var(--dur-fast) var(--ease-out); }
+.x a.tier:hover b { transform: translateX(4px); color: var(--coral-deep); }
+.x .tier .price { transition: color var(--dur-fast) var(--ease-out); }
+.x a.tier:hover .price { color: var(--ink); }
+.x .pilot b { display: inline-flex; align-items: center; gap: 0.5rem; }
+.x .pilot b::before { content: ""; width: 0.45rem; height: 0.45rem; border-radius: 50%; background: var(--coral); flex: none; }
+
+/* ---------- Cierre ---------- */
+.x .closing { padding-block: var(--space-9) var(--space-8); border-top: 1px solid var(--line); }
+.x .closing h2 { font-size: var(--fs-close-x); font-weight: 700; letter-spacing: -0.04em; line-height: 0.95; max-width: 16ch; }
+/* El punto coral que cierra el H1 vuelve a cerrar la página */
+.x .closing h2::after { content: ""; display: inline-block; width: 0.15em; height: 0.15em; margin-left: 0.05em; border-radius: 50%; background: var(--coral); }
+.x .closing-in { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: var(--space-7); align-items: start; margin-top: var(--space-6); padding: 0; background: none; box-shadow: none; border-radius: 0; }
+.x .closing .lead { margin-top: 0; }
+.x .copy { transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out); }
+.x .copy.done { background: var(--charcoal); color: var(--on-dark); border-color: var(--charcoal); }
+
+@view-transition { navigation: auto; }
+
+/* ---------- Movimiento por tiempo (v1) ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .x-dot::after { animation: x-ping var(--dur-hero-pulse) var(--ease-out) 900ms 3 both; }
+  .x .stage-scene { animation: x-rise var(--dur-enter) var(--ease-out) 120ms both; }
+  .x .phone { animation: x-rise var(--dur-enter) var(--ease-out) 280ms both; }
+  .x .rail li.on::after { animation: x-fill var(--dur-phase) linear both; }
+  .x .stage.paused .rail li.on::after { animation-play-state: paused; }
+  .x .rail-note.swap { animation: x-note var(--dur-slow) var(--ease-out); }
+  .x .proof-grid > * { animation: x-rise 600ms var(--ease-out) both; }
+  .x .proof-grid > :nth-child(1) { animation-delay: 420ms; }
+  .x .proof-grid > :nth-child(2) { animation-delay: 500ms; }
+  .x .proof-grid > :nth-child(3) { animation-delay: 580ms; }
+  .x .proof-grid > :nth-child(4) { animation-delay: 660ms; }
+}
+
+@keyframes x-ping { from { box-shadow: 0 0 0 0 rgb(255 75 50 / 0.6); } to { box-shadow: 0 0 0 0.32em rgb(255 75 50 / 0); } }
+@keyframes x-rise { from { opacity: 0; transform: translateY(1.25rem); } }
+@keyframes x-fill { to { transform: scaleX(1); } }
+@keyframes x-note { from { opacity: 0; transform: translateY(6px); filter: blur(4px); } }
+
+/* ---------- Cadena ligada al scroll (solo con soporte y sin «reducir movimiento») ----------
+   1 Hero → franja: el navegador se retira y el móvil viaja hacia abajo pasando sus tres pantallas.
+   2 Franja → banda: la franja se hunde mientras la banda carbón se abre desde una tarjeta y dibuja su costura coral.
+   3 Banda: el móvil de 3CatInfo sube al foco; las capturas se destapan de abajo arriba.
+   4 Banda → oferta: la banda se vuelve a cerrar en tarjeta y el bloque MVP (el carbón que queda) se asienta.
+   5 Cierre: el titular crece y su punto coral aterriza. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .x .head { animation: x-head linear both; animation-timeline: scroll(root); animation-range: 0 7rem; }
+    .x .head::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--coral); transform-origin: 0 50%; animation: x-progress linear both; animation-timeline: scroll(root); }
+
+    /* 1 */
+    .x .browser { animation: x-recede linear both; animation-timeline: scroll(root); animation-range: var(--travel-from) var(--travel-to); }
+    .x .phone {
+      animation: x-rise-t var(--dur-enter) var(--ease-out) 280ms both, x-travel linear both;
+      animation-timeline: auto, scroll(root);
+      animation-range: normal, var(--travel-from) var(--travel-to);
+    }
+    .x .reel { animation: x-reel linear both; animation-timeline: scroll(root); animation-range: var(--reel-from) var(--reel-to); }
+    .x .reel-ind i { animation: x-ind linear both; animation-timeline: scroll(root); animation-range: var(--reel-from) var(--reel-to); }
+
+    /* 2 */
+    .x .x-dark { view-timeline: --band; }
+    .x .proof .wrap { transform-origin: 50% 0; animation: x-sink linear both; animation-timeline: --band; animation-range: entry 10% entry 80%; }
+    .x .x-dark { animation: x-curtain linear both, x-curtain-out linear forwards; animation-timeline: --band, --band; animation-range: entry 0% cover 32%, exit 30% exit 100%; }
+    .x .x-dark::before { animation: x-seam linear both; animation-timeline: --band; animation-range: entry 5% cover 30%; }
+
+    /* 3 */
+    .x .x-dark .sec-head h2, .x #oferta h2 { animation: x-wipe linear both; animation-timeline: view(); animation-range: entry 15% entry 85%; }
+    .x .x-dark .case-media { animation: x-unmask linear both; animation-timeline: view(); animation-range: entry 0% cover 30%; }
+    .x .case-big .ds-phone { animation: x-phone-up linear both; animation-timeline: view(); animation-range: entry 10% cover 45%; }
+    .x .x-dark .case-media.dark-stage { animation: x-unmask linear both, x-light linear both; animation-timeline: view(), view(); animation-range: entry 0% cover 30%, entry 20% cover 50%; }
+
+    /* 4 */
+    .x .mvp { animation: x-settle linear both; animation-timeline: --band; animation-range: exit 25% exit 95%; }
+
+    /* 5 */
+    .x .closing { view-timeline: --close; }
+    .x .closing h2 { transform-origin: 0 100%; animation: x-grow linear both; animation-timeline: --close; animation-range: entry 0% cover 40%; }
+    .x .closing h2::after { animation: x-land linear both; animation-timeline: --close; animation-range: cover 25% cover 42%; }
+  }
+}
+
+@keyframes x-head { to { background-color: rgb(238 240 242 / 0.95); border-bottom-color: var(--line); box-shadow: 0 8px 24px -18px rgb(23 25 28 / 0.4); } }
+@keyframes x-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes x-recede { to { translate: 0 -2.5rem; opacity: 0.5; } }
+@keyframes x-travel { 0% { translate: 0 0; opacity: 1; } 80% { opacity: 1; } 100% { translate: var(--travel-x) var(--travel-y); opacity: 0; } }
+@keyframes x-rise-t { from { transform: translateY(1.25rem); } }
+@keyframes x-reel {
+  0%, 12% { transform: translateY(0); }
+  42%, 56% { transform: translateY(-33.3333%); }
+  86%, 100% { transform: translateY(-66.6667%); }
+}
+@keyframes x-ind {
+  0%, 12% { transform: translateX(0); }
+  42%, 56% { transform: translateX(100%); }
+  86%, 100% { transform: translateX(200%); }
+}
+@keyframes x-sink { to { opacity: 0.55; transform: translateY(-1.5rem) scale(0.985); } }
+@keyframes x-curtain { from { clip-path: inset(0 var(--gutter) 0 var(--gutter) round var(--radius-l)); } to { clip-path: inset(0 0 0 0 round 0); } }
+@keyframes x-curtain-out { from { clip-path: inset(0 0 0 0 round 0); } to { clip-path: inset(0 var(--gutter) 0 var(--gutter) round var(--radius-l)); } }
+@keyframes x-seam { from { transform: scaleX(0.08); } to { transform: scaleX(1); } }
+@keyframes x-wipe { from { clip-path: inset(0 0 100% 0); transform: translateY(0.35em); } to { clip-path: inset(-0.3em -0.3em -0.3em -0.3em); transform: none; } }
+@keyframes x-unmask { from { clip-path: inset(22% 0 0 0 round var(--radius-l)); } to { clip-path: inset(-4rem -4rem -4rem -4rem); } }
+@keyframes x-phone-up { from { transform: translateY(35%); } }
+@keyframes x-light { from { background-position: 0 6rem, 0 0; } to { background-position: 0 0, 0 0; } }
+@keyframes x-settle { from { transform: translateY(3rem) scale(0.97); } }
+@keyframes x-grow { from { opacity: 0.2; transform: scale(0.94); } }
+@keyframes x-land { from { transform: translateY(-0.9em) scale(0.4); opacity: 0; } 70% { transform: translateY(0.06em) scale(1.08); opacity: 1; } to { transform: none; opacity: 1; } }
+
+@media (max-width: 64rem) {
+  .x .hero-grid { grid-template-columns: 1fr; }
+  .x .hero h1, .x .hero-copy, .x .stage { grid-column: 1; }
+  .x .hero h1 .l { display: inline; white-space: normal; }
+  .x .hero h1 { max-width: 15ch; }
+  .x .hero-copy { padding-top: var(--space-5); }
+  .x .stage { margin-top: var(--space-6); }
+  .x .closing-in { grid-template-columns: 1fr; gap: var(--space-6); }
+  .x .mvp { animation: none; }
+}
+
+@media (max-width: 47.99rem) {
+  /* En móvil el carril de fases va justo debajo: el móvil no viaja, solo pasa pantallas mientras se ve entero */
+  :root { --travel-from: 0vh; --travel-to: 62vh; --reel-from: 10vh; --reel-to: 46vh; --travel-x: 0%; --travel-y: 1.5rem; }
+  .x .hero h1 { font-size: clamp(2.6rem, 11.4vw, 3.4rem); }
+  .x .hero-copy { padding-top: var(--space-4); }
+  .x .stage { margin-top: var(--space-5); }
+  .x .phone::before { top: 0.6rem; width: 0.24rem; height: 0.24rem; margin-left: -0.12rem; }
+  .x .phone-real { padding-top: 1.3rem; }
+  .x-dark { padding-block: var(--space-8); margin-top: var(--space-7); }
+  .x-dark + .sec { padding-top: var(--space-8); }
+  .x .closing { padding-block: var(--space-8) var(--space-7); }
+  @keyframes x-recede { to { translate: 0 -1rem; opacity: 0.6; } }
+  @keyframes x-curtain { from { clip-path: inset(0 0.75rem 0 0.75rem round var(--radius-m)); } to { clip-path: inset(0 0 0 0 round 0); } }
+  @keyframes x-curtain-out { from { clip-path: inset(0 0 0 0 round 0); } to { clip-path: inset(0 0.75rem 0 0.75rem round var(--radius-m)); } }
+}
